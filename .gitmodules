@@ -1,0 +1,3 @@
+[submodule "cmake/common"]
+	path = cmake/common
+	url = https://github.com/mpusz/cmake_scripts.git
