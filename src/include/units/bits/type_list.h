@@ -27,21 +27,18 @@
 
 namespace mp {
 
-//  namespace detail {
-//
-//    template<typename T>
-//    struct is_type_list : std::false_type {};
-//
-//    template<template<typename...> typename T, typename... Types>
-//    struct is_type_list<T<Types...>> : std::true_type {};
-//
-//  }
+  namespace detail {
 
-//  template<template<typename...> typename T, typename... Types>
-//  concept bool TypeList = requires(T<Types...>) {
-//    std::is_empty_v<T<Types...>>;
-//  };
-#define TypeList typename
+    template<typename T>
+    struct is_type_list : std::false_type {};
+
+    template<template<typename...> typename T, typename... Types>
+    struct is_type_list<T<Types...>> : std::true_type {};
+
+  }
+
+  template<typename T>
+  concept bool TypeList = detail::is_type_list<T>::value;
 
   // push_front
 
