@@ -28,6 +28,9 @@ namespace {
   using namespace mp;
   using namespace units;
 
+  template<typename... Types>
+  struct type_list;
+
   // type_list_push_front
 
   static_assert(std::is_same_v<type_list_push_front_t<type_list<>, int>, type_list<int>>);
@@ -95,8 +98,8 @@ namespace {
 
   // type_list_sort
 
-  template<typename TypeList>
-  using dim_sort_t = type_list_sort_t<TypeList, dim_id_less>;
+  template<TypeList List>
+  using dim_sort_t = type_list_sort_t<List, dim_id_less>;
 
   static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>>>, type_list<dim_id<0>>>);
   static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>, dim_id<1>>>, type_list<dim_id<0>, dim_id<1>>>);
@@ -110,8 +113,8 @@ namespace {
   template<int Id, int Value>
   using e = exp<dim_id<Id>, Value>;
 
-  template<typename TypeList>
-  using exp_sort_t = type_list_sort_t<TypeList, exp_less>;
+  template<TypeList List>
+  using exp_sort_t = type_list_sort_t<List, exp_less>;
 
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>>>, dimension<e<0, 1>>>);
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>, e<1, -1>>>, dimension<e<0, 1>, e<1, -1>>>);
