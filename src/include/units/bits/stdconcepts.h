@@ -29,14 +29,14 @@ namespace mp {
 
   namespace detail {
     template<class T, class U>
-    bool concept SameHelper = std::is_same_v<T, U>;
+    concept bool SameHelper = std::is_same_v<T, U>;
   }
 
   template<class T, class U>
-  bool concept Same = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
+  concept bool Same = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
 
   template <class From, class To>
-  bool concept ConvertibleTo = std::is_convertible_v<From, To> &&
+  concept bool ConvertibleTo = std::is_convertible_v<From, To> &&
       requires(From (&f)()) {
           static_cast<To>(f());
       };

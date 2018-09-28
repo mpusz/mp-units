@@ -46,7 +46,7 @@ namespace units {
   }
 
   template<typename T>
-  bool concept Quantity = detail::is_quantity<T>::value;
+  concept bool Quantity = detail::is_quantity<T>::value;
 
   // treat_as_floating_point
 

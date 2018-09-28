@@ -58,7 +58,7 @@ namespace units {
   }
 
   template<typename T>
-  bool concept Exponent = detail::is_exp<T>::value;
+  concept bool Exponent = detail::is_exp<T>::value;
 
 
   // exp_less
@@ -83,7 +83,7 @@ namespace units {
   // dimension
 
   template<Exponent... Es>
-  using dimension = mp::type_list<Es...>;
+  struct dimension;
 
   // is_dimension
   namespace detail {
@@ -95,7 +95,7 @@ namespace units {
   }
 
   template<typename T>
-  bool concept Dimension = detail::is_dimension<T>::value;
+  concept bool Dimension = detail::is_dimension<T>::value;
 
 
   // make_dimension

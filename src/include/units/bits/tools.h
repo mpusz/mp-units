@@ -69,7 +69,7 @@ namespace mp {
   }
 
   template<typename T>
-  bool concept Ratio = detail::is_ratio<T>::value;
+  concept bool Ratio = detail::is_ratio<T>::value;
 
   // common_ratio
 
