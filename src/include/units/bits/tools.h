@@ -22,15 +22,11 @@
 
 #pragma once
 
+#include "stdconcepts.h"
 #include <ratio>
 #include <type_traits>
 
 namespace mp {
-
-  // Requires
-
-  template<bool B>
-  using Requires = std::enable_if_t<B, bool>;
 
   // static_sign
 
@@ -60,6 +56,8 @@ namespace mp {
 
   // is_ratio
 
+  namespace detail {
+
   template<typename T>
   struct is_ratio : std::false_type {
   };
@@ -68,17 +66,22 @@ namespace mp {
   struct is_ratio<std::ratio<Num, Den>> : std::true_type {
   };
 
+  }
+
+  template<typename T>
+  bool concept Ratio = detail::is_ratio<T>::value;
+
   // common_ratio
 
   // todo: simplified
-  template<typename Ratio1, typename Ratio2>
+  template<Ratio Ratio1, Ratio Ratio2>
   struct common_ratio {
     using gcd_num = static_gcd<Ratio1::num, Ratio2::num>;
     using gcd_den = static_gcd<Ratio1::den, Ratio2::den>;
     using type = std::ratio<gcd_num::value, (Ratio1::den / gcd_den::value) * Ratio2::den>;
   };
 
-  template<typename Ratio1, typename Ratio2>
+  template<Ratio Ratio1, Ratio Ratio2>
   using common_ratio_t = typename common_ratio<Ratio1, Ratio2>::type;
 
 }  // namespace mp

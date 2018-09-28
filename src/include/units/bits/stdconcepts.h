@@ -22,41 +22,23 @@
 
 #pragma once
 
-#include "base_dimensions.h"
-#include "../quantity.h"
+#include <ratio>
+#include <type_traits>
 
-namespace units {
+namespace mp {
 
-  using dimension_length = make_dimension_t<exp<base_dim_length, 1>>;
+  namespace detail {
+    template<class T, class U>
+    bool concept SameHelper = std::is_same_v<T, U>;
+  }
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using length = quantity<dimension_length, Rep, Ratio>;
+  template<class T, class U>
+  bool concept Same = detail::SameHelper<T, U> && detail::SameHelper<U, T>;
 
-  template<typename Rep>
-  using millimeters = length<Rep, std::milli>;
+  template <class From, class To>
+  bool concept ConvertibleTo = std::is_convertible_v<From, To> &&
+      requires(From (&f)()) {
+          static_cast<To>(f());
+      };
 
-  template<typename Rep>
-  using meters = length<Rep>;
-
-  template<typename Rep>
-  using kilometers = length<Rep, std::kilo>;
-
-  // ...
-
-  namespace literals {
-
-    // mm
-    constexpr auto operator""_mm(unsigned long long l) { return millimeters<std::int64_t>(l); }
-    constexpr auto operator""_mm(long double l) { return millimeters<long double>(l); }
-
-    // m
-    constexpr auto operator""_m(unsigned long long l) { return meters<std::int64_t>(l); }
-    constexpr auto operator""_m(long double l) { return meters<long double>(l); }
-
-    // km
-    constexpr auto operator""_km(unsigned long long l) { return kilometers<std::int64_t>(l); }
-    constexpr auto operator""_km(long double l) { return kilometers<long double>(l); }
-
-  }  // namespace literals
-
-}  // namespace units
+}  // namespace mp

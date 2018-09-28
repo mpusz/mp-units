@@ -20,51 +20,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "units/si/frequency.h"
 #include "units/si/length.h"
 #include "units/si/time.h"
-#include "units/si/frequency.h"
 #include "units/si/velocity.h"
-#include <gtest/gtest.h>
 #include <utility>
 
-using namespace units;
-using namespace units::literals;
+namespace {
+  using namespace units;
+  using namespace units::literals;
 
+  // frequency
 
-// frequency
+  static_assert(2 / 1_s == 2_Hz);
+  static_assert(1000 / 1_s == 1_kHz);
+  static_assert(3.2_GHz == 3'200'000'000_Hz);
 
-static_assert(2 / 1_s == 2_Hz);
-static_assert(1000 / 1_s == 1_kHz);
-static_assert(3.2_GHz == 3'200'000'000_Hz);
+  // time
 
+  static_assert(1_h == 3600_s);
 
-// time
+  // length
 
-static_assert(1_h == 3600_s);
+  static_assert(1_km == 1000_m);
+  static_assert(1_km + 1_m == 1001_m);
+  static_assert(10_km / 5_km == 2);
+  static_assert(10_km / 2 == 5_km);
 
+  // velocity
 
-// length
+  static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<long long int, std::ratio<1000, 1>>>);
 
-static_assert(1_km == 1000_m);
-static_assert(10_km / 5_km == 2);
-static_assert(10_km / 2 == 5_km);
+  static_assert(10_m / 5_s == 2_mps);
+  static_assert(10 / 5_s * 1_m == 2_mps);
+  static_assert(1_km / 1_s == 1000_mps);
+  // static_assert(1_km / 1_h == 1_kmph);  // should not compile
+  static_assert(1.0_km / 1_h == 1_kmph);
+  static_assert(1000.0_m / 3600.0_s == 1_kmph);
 
+  static_assert(2_kmph * 2_h == 4_km);
+  // static_assert(2_kmph * 15_min == 500_m); // should not compile
+  static_assert(2_kmph * 15.0_min == 500_m);
+  static_assert(2.0_kmph * 15_min == 500_m);
 
-// velocity
+  static_assert(2_km / 2_kmph == 1_h);
+  // static_assert(2000_m / 2_kmph == 1_h); // should not compile
+  static_assert(quantity_cast<kilometers<int>>(2000_m) / 2_kmph == 1_h);
 
-static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<long long int, std::ratio<1000, 1>>>);
-
-static_assert(10_m / 5_s == 2_mps);
-static_assert(1_km / 1_s == 1000_mps);
-//static_assert(1_km / 1_h == 1_kmph);  // should not compile
-static_assert(1.0_km / 1_h == 1_kmph);
-static_assert(1000.0_m / 3600.0_s == 1_kmph);
-
-static_assert(2_kmph * 2_h == 4_km);
-//static_assert(2_kmph * 15_min == 500_m); // should not compile
-static_assert(2_kmph * 15.0_min == 500_m);
-static_assert(2.0_kmph * 15_min == 500_m);
-
-static_assert(2_km / 2_kmph == 1_h);
-// static_assert(2000_m / 2_kmph == 1_h); // should not compile
-static_assert(quantity_cast<kilometers<int>>(2000_m) / 2_kmph == 1_h);
+}  // namespace

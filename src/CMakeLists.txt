@@ -47,7 +47,7 @@ add_library(units INTERFACE)
 #    include/units/bits/quantity.h
 #    include/units/bits/tools.h
 #)
-target_compile_features(units INTERFACE cxx_std_17)
+target_compile_features(units INTERFACE cxx_std_20)
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

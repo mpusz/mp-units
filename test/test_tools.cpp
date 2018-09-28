@@ -20,43 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "units/si/velocity.h"
+#include <utility>
 
-#include "base_dimensions.h"
-#include "../quantity.h"
+namespace {
 
-namespace units {
+  // static_sign
 
-  using dimension_length = make_dimension_t<exp<base_dim_length, 1>>;
+  static_assert(mp::static_sign<2>::value == 1);
+  static_assert(mp::static_sign<-3>::value == -1);
+  static_assert(mp::static_sign<0>::value == 1);
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using length = quantity<dimension_length, Rep, Ratio>;
+  // static_abs
 
-  template<typename Rep>
-  using millimeters = length<Rep, std::milli>;
+  static_assert(mp::static_abs<2>::value == 2);
+  static_assert(mp::static_abs<-3>::value == 3);
+  static_assert(mp::static_abs<0>::value == 0);
 
-  template<typename Rep>
-  using meters = length<Rep>;
+  // common_ratio
 
-  template<typename Rep>
-  using kilometers = length<Rep, std::kilo>;
+  static_assert(std::is_same_v<mp::common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
+  static_assert(std::is_same_v<mp::common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
+  static_assert(std::is_same_v<mp::common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
+  static_assert(std::is_same_v<mp::common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
 
-  // ...
-
-  namespace literals {
-
-    // mm
-    constexpr auto operator""_mm(unsigned long long l) { return millimeters<std::int64_t>(l); }
-    constexpr auto operator""_mm(long double l) { return millimeters<long double>(l); }
-
-    // m
-    constexpr auto operator""_m(unsigned long long l) { return meters<std::int64_t>(l); }
-    constexpr auto operator""_m(long double l) { return meters<long double>(l); }
-
-    // km
-    constexpr auto operator""_km(unsigned long long l) { return kilometers<std::int64_t>(l); }
-    constexpr auto operator""_km(long double l) { return kilometers<long double>(l); }
-
-  }  // namespace literals
-
-}  // namespace units
+}  // namespace

@@ -32,9 +32,22 @@ namespace mp {
   template<typename... Types>
   struct type_list;
 
+  namespace detail {
+
+    template<typename T>
+    struct is_type_list : std::false_type {};
+
+    template<typename... Types>
+    struct is_type_list<type_list<Types...>> : std::true_type {};
+
+  }
+
+  template<typename T>
+  bool concept TypeList = detail::is_type_list<T>::value;
+
   // push_front
 
-  template<typename TypeList, typename... Types>
+  template<TypeList List, typename... Types>
   struct type_list_push_front;
 
   template<typename... OldTypes, typename... NewTypes>
@@ -42,12 +55,12 @@ namespace mp {
     using type = type_list<NewTypes..., OldTypes...>;
   };
 
-  template<typename TypeList, typename... Types>
-  using type_list_push_front_t = typename type_list_push_front<TypeList, Types...>::type;
+  template<TypeList List, typename... Types>
+  using type_list_push_front_t = typename type_list_push_front<List, Types...>::type;
 
   // push_back
 
-  template<typename TypeList, typename... Types>
+  template<TypeList List, typename... Types>
   struct type_list_push_back;
 
   template<typename... OldTypes, typename... NewTypes>
@@ -55,8 +68,8 @@ namespace mp {
     using type = type_list<OldTypes..., NewTypes...>;
   };
 
-  template<typename TypeList, typename... Types>
-  using type_list_push_back_t = typename type_list_push_back<TypeList, Types...>::type;
+  template<TypeList List, typename... Types>
+  using type_list_push_back_t = typename type_list_push_back<List, Types...>::type;
 
   // split
 
@@ -76,17 +89,18 @@ namespace mp {
       using base = split_impl<Idx + 1, N, Rest...>;
       using base_first = typename base::first_list;
       using base_second = typename base::second_list;
-      using first_list = std::conditional_t < Idx<N, type_list_push_front_t<base_first, T>, base_first>;
-      using second_list = std::conditional_t < Idx<N, base_second, type_list_push_front_t<base_second, T>>;
+      using first_list = std::conditional_t<Idx<N, type_list_push_front_t<base_first, T>, base_first>;
+      using second_list = std::conditional_t<Idx<N, base_second, type_list_push_front_t<base_second, T>>;
     };
 
   }  // namespace detail
 
-  template<typename T, std::size_t N>
+  template<TypeList List, std::size_t N>
   struct type_list_split;
 
   template<std::size_t N, typename... Types>
   struct type_list_split<type_list<Types...>, N> {
+    static_assert(N <= sizeof...(Types), "Invalid index provided");
     using split = detail::split_impl<0, N, Types...>;
     using first_list = typename split::first_list;
     using second_list = typename split::second_list;
@@ -94,7 +108,7 @@ namespace mp {
 
   // split_half
 
-  template<typename T>
+  template<TypeList List>
   struct type_list_split_half;
 
   template<typename... Types>
@@ -103,11 +117,11 @@ namespace mp {
 
   // merge_sorted
 
-  template<typename T1, typename T2, template<typename, typename> typename Pred>
+  template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
   struct type_list_merge_sorted;
 
-  template<typename T1, typename T2, template<typename, typename> typename Pred>
-  using type_list_merge_sorted_t = typename type_list_merge_sorted<T1, T2, Pred>::type;
+  template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
+  using type_list_merge_sorted_t = typename type_list_merge_sorted<SortedList1, SortedList2, Pred>::type;
 
   template<typename... Lhs, template<typename, typename> typename Pred>
   struct type_list_merge_sorted<type_list<Lhs...>, type_list<>, Pred> {
@@ -132,7 +146,7 @@ namespace mp {
 
   // sort
 
-  template<typename T, template<typename, typename> typename Pred>
+  template<TypeList List, template<typename, typename> typename Pred>
   struct type_list_sort;
 
   template<template<typename, typename> typename Pred>
@@ -154,7 +168,7 @@ namespace mp {
     using type = type_list_merge_sorted_t<left, right, Pred>;
   };
 
-  template<typename T, template<typename, typename> typename Pred>
-  using type_list_sort_t = typename type_list_sort<T, Pred>::type;
+  template<TypeList TypeList, template<typename, typename> typename Pred>
+  using type_list_sort_t = typename type_list_sort<TypeList, Pred>::type;
 
 }  // namespace mp

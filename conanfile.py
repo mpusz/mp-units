@@ -6,13 +6,8 @@ class UnitConan(ConanFile):
     author = "Mateusz Pusz"
     license = "https://github.com/mpusz/units/blob/master/LICENSE"
     url = "https://github.com/mpusz/units"
-    description = "Physical Units library implementation for C++"
+    description = "Physical Units library for C++"
     settings = "os", "compiler", "build_type", "arch"
-    build_requires = (
-        "gtest/1.8.0@bincrafters/stable"
-    )
-    default_options = "gtest:shared=False"
-    generators = "cmake_paths"
 
     def build(self):
         cmake = CMake(self)

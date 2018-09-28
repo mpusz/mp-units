@@ -37,16 +37,16 @@ if(NOT TARGET mp::units)
 endif()
 
 # unit tests
-add_executable(unit_tests
+add_library(unit_tests
     test_dimension.cpp
     test_quantity.cpp
+    test_tools.cpp
     test_type_list.cpp
     test_units.cpp
 )
 target_link_libraries(unit_tests
     PRIVATE
         mp::units
-        GTest::Main
 )
 add_test(NAME units.unit_tests
     COMMAND

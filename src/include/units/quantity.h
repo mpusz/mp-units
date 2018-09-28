@@ -28,10 +28,10 @@
 
 namespace units {
 
-  template<typename Dimension, typename Rep, class Ratio>
-  class quantity;
-
   // is_quantity
+
+  template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
+  class quantity;
 
   namespace detail {
 
@@ -39,11 +39,14 @@ namespace units {
     struct is_quantity : std::false_type {
     };
 
-    template<typename Dimension, typename Rep, class Ratio>
+    template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
     struct is_quantity<quantity<Dimension, Rep, Ratio>> : std::true_type {
     };
 
   }
+
+  template<typename T>
+  bool concept Quantity = detail::is_quantity<T>::value;
 
   // treat_as_floating_point
 
@@ -57,9 +60,9 @@ namespace units {
 
   namespace detail {
 
-    template<typename To, typename CRatio, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
+    template<Quantity To, mp::Ratio CRatio, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
     struct quantity_cast_impl {
-      template<typename Dimension, typename Rep, typename Ratio>
+      template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
       static constexpr To cast(const quantity<Dimension, Rep, Ratio>& q)
       {
         return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) /
@@ -67,27 +70,27 @@ namespace units {
       }
     };
 
-    template<typename To, typename CRatio, typename CRep>
+    template<Quantity To, mp::Ratio CRatio, typename CRep>
     struct quantity_cast_impl<To, CRatio, CRep, true, true> {
-      template<typename Dimension, typename Rep, typename Ratio>
+      template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
       static constexpr To cast(const quantity<Dimension, Rep, Ratio>& q)
       {
         return To(static_cast<typename To::rep>(q.count()));
       }
     };
 
-    template<typename To, typename CRatio, typename CRep>
+    template<Quantity To, mp::Ratio CRatio, typename CRep>
     struct quantity_cast_impl<To, CRatio, CRep, true, false> {
-      template<typename Dimension, typename Rep, typename Ratio>
+      template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
       static constexpr To cast(const quantity<Dimension, Rep, Ratio>& q)
       {
         return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio::den)));
       }
     };
 
-    template<typename To, typename CRatio, typename CRep>
+    template<Quantity To, mp::Ratio CRatio, typename CRep>
     struct quantity_cast_impl<To, CRatio, CRep, false, true> {
-      template<typename Dimension, typename Rep, typename Ratio>
+      template<Dimension Dimension, typename Rep, mp::Ratio Ratio>
       static constexpr To cast(const quantity<Dimension, Rep, Ratio>& q)
       {
         return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num)));
@@ -96,8 +99,8 @@ namespace units {
 
   }  // namespace detail
 
-  template<typename To, typename Dimension, typename Rep, typename Ratio,
-           mp::Requires<detail::is_quantity<To>::value && std::is_same_v<typename To::dimension, Dimension>> = true>
+  template<Quantity To, Dimension Dimension, typename Rep, mp::Ratio Ratio>
+    requires mp::Same<typename To::dimension, Dimension>
   constexpr To quantity_cast(const quantity<Dimension, Rep, Ratio>& q)
   {
     using c_ratio = std::ratio_divide<Ratio, typename To::ratio>;
@@ -117,7 +120,7 @@ namespace units {
 
   // quantity
 
-  template<typename Dimension, typename Rep, class Ratio = std::ratio<1>>
+  template<Dimension Dimension, typename Rep, mp::Ratio Ratio = std::ratio<1>>
   class quantity {
     Rep value_;
   public:
@@ -126,21 +129,20 @@ namespace units {
     using ratio = Ratio;
 
     static_assert(!detail::is_quantity<Rep>::value, "rep cannot be a quantity");
-    static_assert(mp::is_ratio<ratio>::value, "ratio must be a specialization of std::ratio");
     static_assert(ratio::num > 0, "ratio must be positive");
 
     quantity() = default;
     quantity(const quantity&) = default;
 
-    template<class Rep2, mp::Requires<std::is_convertible_v<Rep2, rep> &&
-                                     (treat_as_floating_point_v<rep> || !treat_as_floating_point_v<Rep2>)> = true>
+    template<class Rep2>
+      requires mp::ConvertibleTo<Rep2, rep> && (treat_as_floating_point_v<rep> || !treat_as_floating_point_v<Rep2>)
     constexpr explicit quantity(const Rep2& r) : value_{static_cast<rep>(r)}
     {
     }
 
-    template<class Rep2, class Ratio2,
-             mp::Requires<treat_as_floating_point_v<rep> ||
-                         (std::ratio_divide<Ratio2, ratio>::den == 1 && !treat_as_floating_point<Rep2>::value)> = true>
+    template<class Rep2, mp::Ratio Ratio2>
+      requires mp::ConvertibleTo<Rep2, rep> && (treat_as_floating_point_v<rep> ||
+               (std::ratio_divide<Ratio2, ratio>::den == 1 && !treat_as_floating_point_v<Rep2>))
     constexpr quantity(const quantity<Dimension, Rep2, Ratio2>& q) : value_{quantity_cast<quantity>(q).count()}
     {
     }
@@ -208,7 +210,7 @@ namespace units {
   };
 
   // clang-format off
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   std::common_type_t<quantity<Dimension, Rep1, Ratio1>, quantity<Dimension, Rep2, Ratio2>>
   constexpr operator+(const quantity<Dimension, Rep1, Ratio1>& lhs,
                       const quantity<Dimension, Rep2, Ratio2>& rhs)
@@ -217,7 +219,7 @@ namespace units {
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   std::common_type_t<quantity<Dimension, Rep1, Ratio1>, quantity<Dimension, Rep2, Ratio2>>
   constexpr operator-(const quantity<Dimension, Rep1, Ratio1>& lhs,
                       const quantity<Dimension, Rep2, Ratio2>& rhs)
@@ -226,7 +228,7 @@ namespace units {
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-  template<typename Dimension, typename Rep1, class Ratio, typename Rep2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio, typename Rep2>
   quantity<Dimension, std::common_type_t<Rep1, Rep2>, Ratio>
   constexpr operator*(const quantity<Dimension, Rep1, Ratio>& q,
                       const Rep2& v)
@@ -235,7 +237,7 @@ namespace units {
     return ret(ret(q).count() * v);
   }
 
-  template<typename Dimension, typename Rep1, typename Rep2, class Ratio>
+  template<typename Rep1, Dimension Dimension, typename Rep2, mp::Ratio Ratio>
   quantity<Dimension, std::common_type_t<Rep1, Rep2>, Ratio>
   constexpr operator*(const Rep1& v,
                       const quantity<Dimension, Rep2, Ratio>& q)
@@ -243,8 +245,8 @@ namespace units {
     return q * v;
   }
 
-  template<typename Dimension1, typename Rep1, class Ratio1, typename Dimension2, typename Rep2, class Ratio2,
-      mp::Requires<treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<Ratio1, Ratio2>::den == 1> = true>
+  template<Dimension Dimension1, typename Rep1, mp::Ratio Ratio1, Dimension Dimension2, typename Rep2, mp::Ratio Ratio2>
+      requires treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<Ratio1, Ratio2>::den == 1
   quantity<dimension_multiply_t<Dimension1, Dimension2>, std::common_type_t<Rep1, Rep2>, std::ratio_multiply<Ratio1, Ratio2>>
   constexpr operator*(const quantity<Dimension1, Rep1, Ratio1>& lhs,
                       const quantity<Dimension2, Rep2, Ratio2>& rhs)
@@ -253,7 +255,7 @@ namespace units {
     return ret(lhs.count() * rhs.count());
   }
 
-  template<typename Rep1, typename Exponent, class Ratio, typename Rep2>
+  template<typename Rep1, Exp Exponent, mp::Ratio Ratio, typename Rep2>
   quantity<dimension<exp_invert_t<Exponent>>, std::common_type_t<Rep1, Rep2>, Ratio>
   constexpr operator/(const Rep1& v,
                       const quantity<dimension<Exponent>, Rep2, Ratio>& q)
@@ -263,7 +265,7 @@ namespace units {
     return ret(v / den(q).count());
   }
 
-  template<typename Dimension, typename Rep1, class Ratio, typename Rep2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio, typename Rep2>
   quantity<Dimension, std::common_type_t<Rep1, Rep2>, Ratio>
   constexpr operator/(const quantity<Dimension, Rep1, Ratio>& q,
                       const Rep2& v)
@@ -272,7 +274,7 @@ namespace units {
     return ret(ret(q).count() / v);
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   std::common_type_t<Rep1, Rep2>
   constexpr operator/(const quantity<Dimension, Rep1, Ratio1>& lhs,
                       const quantity<Dimension, Rep2, Ratio2>& rhs)
@@ -281,8 +283,8 @@ namespace units {
     return cq(lhs).count() / cq(rhs).count();
   }
 
-  template<typename Dimension1, typename Rep1, class Ratio1, typename Dimension2, typename Rep2, class Ratio2,
-      mp::Requires<treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<Ratio1, Ratio2>::den == 1> = true>
+  template<Dimension Dimension1, typename Rep1, mp::Ratio Ratio1, Dimension Dimension2, typename Rep2, mp::Ratio Ratio2>
+      requires treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<Ratio1, Ratio2>::den == 1
   quantity<dimension_divide_t<Dimension1, Dimension2>, std::common_type_t<Rep1, Rep2>, std::ratio_divide<Ratio1, Ratio2>>
   constexpr operator/(const quantity<Dimension1, Rep1, Ratio1>& lhs,
                       const quantity<Dimension2, Rep2, Ratio2>& rhs)
@@ -291,7 +293,7 @@ namespace units {
     return ret(lhs.count() / rhs.count());
   }
 
-  template<typename Dimension, typename Rep1, class Ratio, typename Rep2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio, typename Rep2>
   quantity<Dimension, std::common_type_t<Rep1, Rep2>, Ratio>
   constexpr operator%(const quantity<Dimension, Rep1, Ratio>& q,
                       const Rep2& v)
@@ -300,7 +302,7 @@ namespace units {
     return ret(ret(q).count() % v);
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   std::common_type_t<quantity<Dimension, Rep1, Ratio1>, quantity<Dimension, Rep2, Ratio2>>
   constexpr operator%(const quantity<Dimension, Rep1, Ratio1>& lhs,
                       const quantity<Dimension, Rep2, Ratio2>& rhs)
@@ -309,7 +311,9 @@ namespace units {
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  // clang-format on
+
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator==(const quantity<Dimension, Rep1, Ratio1>& lhs,
                             const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
@@ -317,14 +321,14 @@ namespace units {
     return ct(lhs).count() == ct(rhs).count();
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator!=(const quantity<Dimension, Rep1, Ratio1>& lhs,
                             const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
     return !(lhs == rhs);
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator<(const quantity<Dimension, Rep1, Ratio1>& lhs,
                            const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
@@ -332,34 +336,33 @@ namespace units {
     return ct(lhs).count() < ct(rhs).count();
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator<=(const quantity<Dimension, Rep1, Ratio1>& lhs,
                             const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
     return !(rhs < lhs);
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator>(const quantity<Dimension, Rep1, Ratio1>& lhs,
                            const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
     return rhs < lhs;
   }
 
-  template<typename Dimension, typename Rep1, class Ratio1, typename Rep2, class Ratio2>
+  template<Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   constexpr bool operator>=(const quantity<Dimension, Rep1, Ratio1>& lhs,
                             const quantity<Dimension, Rep2, Ratio2>& rhs)
   {
     return !(lhs < rhs);
   }
-  // clang-format on
 
 }  // namespace units
 
 namespace std {
 
   // todo: simplified
-  template<typename Dimension, typename Rep1, typename Ratio1, typename Rep2, typename Ratio2>
+  template<units::Dimension Dimension, typename Rep1, mp::Ratio Ratio1, typename Rep2, mp::Ratio Ratio2>
   struct common_type<units::quantity<Dimension, Rep1, Ratio1>, units::quantity<Dimension, Rep2, Ratio2>> {
     using type =
         units::quantity<Dimension, std::common_type_t<Rep1, Rep2>, mp::common_ratio_t<Ratio1, Ratio2>>;

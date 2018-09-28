@@ -23,7 +23,6 @@
 #pragma once
 
 #include "../dimension.h"
-#include "../quantity.h"
 
 namespace units {
 
