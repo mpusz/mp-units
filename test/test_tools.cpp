@@ -20,28 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/si/velocity.h"
-#include <utility>
+#include "units/bits/tools.h"
 
 namespace {
 
+  using namespace units;
+  
   // static_sign
 
-  static_assert(mp::static_sign<2>::value == 1);
-  static_assert(mp::static_sign<-3>::value == -1);
-  static_assert(mp::static_sign<0>::value == 1);
+  static_assert(static_sign<2>::value == 1);
+  static_assert(static_sign<-3>::value == -1);
+  static_assert(static_sign<0>::value == 1);
 
   // static_abs
 
-  static_assert(mp::static_abs<2>::value == 2);
-  static_assert(mp::static_abs<-3>::value == 3);
-  static_assert(mp::static_abs<0>::value == 0);
+  static_assert(static_abs<2>::value == 2);
+  static_assert(static_abs<-3>::value == 3);
+  static_assert(static_abs<0>::value == 0);
 
   // common_ratio
 
-  static_assert(std::is_same_v<mp::common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
-  static_assert(std::is_same_v<mp::common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
-  static_assert(std::is_same_v<mp::common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
-  static_assert(std::is_same_v<mp::common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
+  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
+  static_assert(std::is_same_v<common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
+  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
+  static_assert(std::is_same_v<common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
 
 }  // namespace

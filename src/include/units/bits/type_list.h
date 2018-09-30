@@ -30,12 +30,14 @@ namespace mp {
   namespace detail {
 
     template<typename T>
-    struct is_type_list : std::false_type {};
+    struct is_type_list : std::false_type {
+    };
 
     template<template<typename...> typename T, typename... Types>
-    struct is_type_list<T<Types...>> : std::true_type {};
+    struct is_type_list<T<Types...>> : std::true_type {
+    };
 
-  }
+  }  // namespace detail
 
   template<typename T>
   concept bool TypeList = detail::is_type_list<T>::value;
@@ -84,8 +86,8 @@ namespace mp {
       using base = split_impl<List, Idx + 1, N, Rest...>;
       using base_first = typename base::first_list;
       using base_second = typename base::second_list;
-      using first_list = std::conditional_t<Idx<N, type_list_push_front_t<base_first, T>, base_first>;
-      using second_list = std::conditional_t<Idx<N, base_second, type_list_push_front_t<base_second, T>>;
+      using first_list = std::conditional_t < Idx<N, type_list_push_front_t<base_first, T>, base_first>;
+      using second_list = std::conditional_t < Idx<N, base_second, type_list_push_front_t<base_second, T>>;
     };
 
   }  // namespace detail
@@ -133,10 +135,8 @@ namespace mp {
   struct type_list_merge_sorted<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
     using type = std::conditional_t<
         Pred<Lhs1, Rhs1>::value,
-        type_list_push_front_t<type_list_merge_sorted_t<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>,
-                               Lhs1>,
-        type_list_push_front_t<type_list_merge_sorted_t<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>,
-                               Rhs1>>;
+        type_list_push_front_t<type_list_merge_sorted_t<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>, Lhs1>,
+        type_list_push_front_t<type_list_merge_sorted_t<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>, Rhs1>>;
   };
 
   // sort

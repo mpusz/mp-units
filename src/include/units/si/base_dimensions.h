@@ -26,6 +26,8 @@
 
 namespace units {
 
+  // todo: to be replaced with fixed_string when supported by the compilers
+
   struct base_dim_length : dim_id<0> {};
   struct base_dim_mass : dim_id<1> {};
   struct base_dim_time : dim_id<2> {};

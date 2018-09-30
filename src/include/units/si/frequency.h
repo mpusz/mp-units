@@ -29,54 +29,43 @@ namespace units {
 
   using dimension_frequency = make_dimension_t<exp<base_dim_time, -1>>;
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using frequency = quantity<dimension_frequency, Rep, Ratio>;
+  using millihertz = unit<dimension_frequency, std::milli>;
+  using hertz = unit<dimension_frequency, std::ratio<1>>;
+  using kilohertz = unit<dimension_frequency, std::kilo>;
+  using megahertz = unit<dimension_frequency, std::mega>;
+  using gigahertz = unit<dimension_frequency, std::giga>;
+  using terahertz = unit<dimension_frequency, std::tera>;
 
-  template<typename Rep>
-  using millihertzs = frequency<Rep, std::milli>;
-
-  template<typename Rep>
-  using hertzs = frequency<Rep>;
-
-  template<typename Rep>
-  using kilohertzs = frequency<Rep, std::kilo>;
-
-  template<typename Rep>
-  using megahertzs = frequency<Rep, std::mega>;
-
-  template<typename Rep>
-  using gigahertzs = frequency<Rep, std::giga>;
-
-  template<typename Rep>
-  using terahertzs = frequency<Rep, std::tera>;
+  template<Unit U = hertz, typename Rep = std::intmax_t>
+  using frequency = quantity<dimension_frequency, U, Rep>;
 
   // ...
 
   namespace literals {
 
     // mHz
-    constexpr auto operator""_mHz(unsigned long long l) { return millihertzs<std::int64_t>(l); }
-    constexpr auto operator""_mHz(long double l) { return millihertzs<long double>(l); }
+    constexpr auto operator""_mHz(unsigned long long l) { return frequency<millihertz, std::int64_t>(l); }
+    constexpr auto operator""_mHz(long double l) { return frequency<millihertz, long double>(l); }
 
     // Hz
-    constexpr auto operator""_Hz(unsigned long long l) { return hertzs<std::int64_t>(l); }
-    constexpr auto operator""_Hz(long double l) { return hertzs<long double>(l); }
+    constexpr auto operator""_Hz(unsigned long long l) { return frequency<hertz, std::int64_t>(l); }
+    constexpr auto operator""_Hz(long double l) { return frequency<hertz, long double>(l); }
 
     // kHz
-    constexpr auto operator""_kHz(unsigned long long l) { return kilohertzs<std::int64_t>(l); }
-    constexpr auto operator""_kHz(long double l) { return kilohertzs<long double>(l); }
+    constexpr auto operator""_kHz(unsigned long long l) { return frequency<kilohertz, std::int64_t>(l); }
+    constexpr auto operator""_kHz(long double l) { return frequency<kilohertz, long double>(l); }
 
     // MHz
-    constexpr auto operator""_MHz(unsigned long long l) { return megahertzs<std::int64_t>(l); }
-    constexpr auto operator""_MHz(long double l) { return megahertzs<long double>(l); }
+    constexpr auto operator""_MHz(unsigned long long l) { return frequency<megahertz, std::int64_t>(l); }
+    constexpr auto operator""_MHz(long double l) { return frequency<megahertz, long double>(l); }
 
     // GHz
-    constexpr auto operator""_GHz(unsigned long long l) { return gigahertzs<std::int64_t>(l); }
-    constexpr auto operator""_GHz(long double l) { return gigahertzs<long double>(l); }
+    constexpr auto operator""_GHz(unsigned long long l) { return frequency<gigahertz, std::int64_t>(l); }
+    constexpr auto operator""_GHz(long double l) { return frequency<gigahertz, long double>(l); }
 
     // THz
-    constexpr auto operator""_THz(unsigned long long l) { return terahertzs<std::int64_t>(l); }
-    constexpr auto operator""_THz(long double l) { return terahertzs<long double>(l); }
+    constexpr auto operator""_THz(unsigned long long l) { return frequency<terahertz, std::int64_t>(l); }
+    constexpr auto operator""_THz(long double l) { return frequency<terahertz, long double>(l); }
 
   }  // namespace literals
 

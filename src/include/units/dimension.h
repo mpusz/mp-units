@@ -35,12 +35,13 @@ namespace units {
   // dim_id_less
 
   template<typename D1, typename D2>
-      struct dim_id_less : std::bool_constant<D1::value < D2::value> {
+      struct dim_id_less : std::bool_constant < D1::value<D2::value> {
   };
 
   // exp
 
-  template<typename BaseDimension, int Value>
+  template<typename BaseDimension, int Value>  // todo: to be replaced with fixed_string when supported by the compilers
+  // template<fixed_string BaseDimension, int Value>
   struct exp {
     using dimension = BaseDimension;
     static constexpr int value = Value;
@@ -55,11 +56,10 @@ namespace units {
     template<typename BaseDim, int Value>
     struct is_exp<exp<BaseDim, Value>> : std::true_type {
     };
-  }
+  }  // namespace detail
 
   template<typename T>
   concept bool Exponent = detail::is_exp<T>::value;
-
 
   // exp_less
 
@@ -88,15 +88,16 @@ namespace units {
   // is_dimension
   namespace detail {
     template<typename T>
-    struct is_dimension : std::false_type {};
+    struct is_dimension : std::false_type {
+    };
 
     template<Exponent... Es>
-    struct is_dimension<dimension<Es...>> : std::bool_constant<(is_exp<Es>::value && ...)> {};
-  }
+    struct is_dimension<dimension<Es...>> : std::bool_constant<(is_exp<Es>::value && ...)> {
+    };
+  }  // namespace detail
 
   template<typename T>
   concept bool Dimension = detail::is_dimension<T>::value;
-
 
   // make_dimension
 
@@ -121,8 +122,8 @@ namespace units {
     template<Exponent E1, Exponent... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
       using rest = dim_consolidate_t<dimension<ERest...>>;
-      using type = std::conditional_t<std::is_same_v<rest, dimension<>>, dimension<E1>,
-                                      mp::type_list_push_front_t<rest, E1>>;
+      using type =
+          std::conditional_t<std::is_same_v<rest, dimension<>>, dimension<E1>, mp::type_list_push_front_t<rest, E1>>;
     };
 
     template<typename D, int V1, int V2, Exponent... ERest>
@@ -140,8 +141,6 @@ namespace units {
 
   template<Exponent... Es>
   using make_dimension_t = typename make_dimension<Es...>::type;
-
-
 
   // dimension_multiply
 

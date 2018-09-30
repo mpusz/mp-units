@@ -26,7 +26,9 @@
 #include <ratio>
 #include <type_traits>
 
-namespace mp {
+namespace units {
+
+  using namespace mp::std_concepts;  // todo Remove when std::concepts will arrive
 
   // static_sign
 
@@ -58,15 +60,15 @@ namespace mp {
 
   namespace detail {
 
-  template<typename T>
-  struct is_ratio : std::false_type {
-  };
+    template<typename T>
+    struct is_ratio : std::false_type {
+    };
 
-  template<intmax_t Num, intmax_t Den>
-  struct is_ratio<std::ratio<Num, Den>> : std::true_type {
-  };
+    template<intmax_t Num, intmax_t Den>
+    struct is_ratio<std::ratio<Num, Den>> : std::true_type {
+    };
 
-  }
+  }  // namespace detail
 
   template<typename T>
   concept bool Ratio = detail::is_ratio<T>::value;
@@ -84,4 +86,4 @@ namespace mp {
   template<Ratio Ratio1, Ratio Ratio2>
   using common_ratio_t = typename common_ratio<Ratio1, Ratio2>::type;
 
-}  // namespace mp
+}  // namespace units

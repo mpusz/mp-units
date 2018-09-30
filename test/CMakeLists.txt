@@ -31,7 +31,6 @@ include(tools)
 
 # add dependencies
 enable_testing()
-find_package(GTest MODULE REQUIRED)
 if(NOT TARGET mp::units)
     find_package(units CONFIG REQUIRED)
 endif()

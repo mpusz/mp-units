@@ -22,26 +22,41 @@
 
 #pragma once
 
-#include <ratio>
-#include <type_traits>
+#include "bits/tools.h"
+#include "dimension.h"
 
-namespace mp {
+namespace units {
 
-  namespace std_concepts {
+  template<Dimension D, Ratio R>
+  struct unit {
+    using dimension = D;
+    using ratio = R;
+    static_assert(ratio::num > 0, "ratio must be positive");
+  };
 
-    namespace detail {
-      template<class T, class U>
-      concept bool SameHelper = std::is_same_v<T, U>;
-    }
+  // is_unit
 
-    template<class T, class U>
-    concept bool Same = detail::SameHelper<T, U>&& detail::SameHelper<U, T>;
+  namespace detail {
 
-    template<class From, class To>
-    concept bool ConvertibleTo = std::is_convertible_v<From, To>&& requires(From (&f)())
-    {
-      static_cast<To>(f());
+    template<typename T>
+    struct is_unit : std::false_type {
     };
 
-  }  // namespace std_concepts
-}  // namespace mp
+    template<Dimension D, Ratio R>
+    struct is_unit<unit<D, R>> : std::true_type {
+    };
+
+  }
+
+  template<typename T>
+  concept bool Unit = detail::is_unit<T>::value;
+
+//  template<Unit U1, Unit U2>
+//  auto operator/(U1, U2)
+//  {
+//    return ;
+//  }
+//
+//  unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename::U2::ratio>>
+
+}  // namespace units

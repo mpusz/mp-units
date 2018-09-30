@@ -34,6 +34,7 @@ namespace {
 
   static_assert(2 / 1_s == 2_Hz);
   static_assert(1000 / 1_s == 1_kHz);
+  static_assert(1 / 1_ms == 1_kHz);
   static_assert(3.2_GHz == 3'200'000'000_Hz);
 
   // time
@@ -49,7 +50,7 @@ namespace {
 
   // velocity
 
-  static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<long long int, std::ratio<1000, 1>>>);
+  static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<unit<dimension_velocity, std::ratio<1000, 1>>, long long int>>);
 
   static_assert(10_m / 5_s == 2_mps);
   static_assert(10 / 5_s * 1_m == 2_mps);
@@ -65,6 +66,6 @@ namespace {
 
   static_assert(2_km / 2_kmph == 1_h);
   // static_assert(2000_m / 2_kmph == 1_h); // should not compile
-  static_assert(quantity_cast<kilometers<int>>(2000_m) / 2_kmph == 1_h);
+  static_assert(quantity_cast<length<kilometer, int>>(2000_m) / 2_kmph == 1_h);
 
 }  // namespace

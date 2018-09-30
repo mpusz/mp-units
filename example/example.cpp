@@ -23,18 +23,21 @@
 #include "units/si/velocity.h"
 #include <iostream>
 
+using namespace units;
+
+template<Unit U1, typename Rep1, Unit U2, typename Rep2>
+void foo(velocity<U1, Rep1> v, time<U2, Rep2> t)
+{
+  const auto distance = v * t;
+
+  std::cout << "A car driving " << v.count() << " km/h in a time of " << t.count() << " minutes will pass "
+            << quantity_cast<length<meter, int>>(distance).count() << " meters.\n";
+}
 
 void foo()
 {
-  using namespace units;
   using namespace units::literals;
-
-  const auto speed = 60_kmph;
-  const auto time = 10.0_min;
-  const auto distance = speed * time;
-
-  std::cout << "A car driving " << speed.count() << " km/h in a time of " << time.count() << " minutes will pass "
-            << quantity_cast<meters<int>>(distance).count() << " meters.\n";
+  foo(60_kmph, 10.0_min);
 }
 
 int main()

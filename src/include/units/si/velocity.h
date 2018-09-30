@@ -30,33 +30,28 @@ namespace units {
 
   using dimension_velocity = make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>>;
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using velocity = quantity<dimension_velocity, Rep, Ratio>;
+  using meter_per_second = unit<dimension_velocity, std::ratio<1>>;
+  using kilometer_per_hour = unit<dimension_velocity, std::ratio<1000, 3600>>;
+  using mile_per_hour = unit<dimension_velocity, std::ratio<44'704, 100'000>>;
 
-  template<typename Rep>
-  using meters_per_second = velocity<Rep>;
-
-  template<typename Rep>
-  using kilometers_per_hour = velocity<Rep, std::ratio<1000, 3600>>;
-
-  template<typename Rep>
-  using miles_per_hour = velocity<Rep, std::ratio<44'704, 100'000>>;
+  template<Unit U = meter_per_second, typename Rep = std::intmax_t>
+  using velocity = quantity<dimension_velocity, U, Rep>;
 
   // ...
 
   namespace literals {
 
     // mps
-    constexpr auto operator""_mps(unsigned long long l) { return meters_per_second<std::int64_t>(l); }
-    constexpr auto operator""_mps(long double l) { return meters_per_second<long double>(l); }
+    constexpr auto operator""_mps(unsigned long long l) { return velocity<meter_per_second, std::int64_t>(l); }
+    constexpr auto operator""_mps(long double l) { return velocity<meter_per_second, long double>(l); }
 
     // kmph
-    constexpr auto operator""_kmph(unsigned long long l) { return kilometers_per_hour<std::int64_t>(l); }
-    constexpr auto operator""_kmph(long double l) { return kilometers_per_hour<long double>(l); }
+    constexpr auto operator""_kmph(unsigned long long l) { return velocity<kilometer_per_hour, std::int64_t>(l); }
+    constexpr auto operator""_kmph(long double l) { return velocity<kilometer_per_hour, long double>(l); }
 
     // mph
-    constexpr auto operator""_mph(unsigned long long l) { return miles_per_hour<std::int64_t>(l); }
-    constexpr auto operator""_mph(long double l) { return miles_per_hour<long double>(l); }
+    constexpr auto operator""_mph(unsigned long long l) { return velocity<mile_per_hour, std::int64_t>(l); }
+    constexpr auto operator""_mph(long double l) { return velocity<mile_per_hour, long double>(l); }
 
   }  // namespace literals
 

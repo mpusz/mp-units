@@ -29,54 +29,43 @@ namespace units {
 
   using dimension_time = make_dimension_t<exp<base_dim_time, 1>>;
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using time = quantity<dimension_time, Rep, Ratio>;
+  using nanosecond = unit<dimension_time, std::nano>;
+  using microsecond = unit<dimension_time, std::micro>;
+  using millisecond = unit<dimension_time, std::milli>;
+  using second = unit<dimension_time, std::ratio<1>>;
+  using minute = unit<dimension_time, std::ratio<60>>;
+  using hour = unit<dimension_time, std::ratio<3600>>;
 
-  template<typename Rep>
-  using nanoseconds = time<Rep, std::nano>;
-
-  template<typename Rep>
-  using microseconds = time<Rep, std::micro>;
-
-  template<typename Rep>
-  using milliseconds = time<Rep, std::milli>;
-
-  template<typename Rep>
-  using seconds = time<Rep>;
-
-  template<typename Rep>
-  using minutes = time<Rep, std::ratio<60>>;
-
-  template<typename Rep>
-  using hours = time<Rep, std::ratio<3600>>;
+  template<Unit U = second, typename Rep = std::intmax_t>
+  using time = quantity<dimension_time, U, Rep>;
 
   // ...
 
   namespace literals {
 
     // ns
-    constexpr auto operator""_ns(unsigned long long l) { return nanoseconds<std::int64_t>(l); }
-    constexpr auto operator""_ns(long double l) { return nanoseconds<long double>(l); }
+    constexpr auto operator""_ns(unsigned long long l) { return time<nanosecond, std::int64_t>(l); }
+    constexpr auto operator""_ns(long double l) { return time<nanosecond, long double>(l); }
 
     // us
-    constexpr auto operator""_us(unsigned long long l) { return microseconds<std::int64_t>(l); }
-    constexpr auto operator""_us(long double l) { return microseconds<long double>(l); }
+    constexpr auto operator""_us(unsigned long long l) { return time<microsecond, std::int64_t>(l); }
+    constexpr auto operator""_us(long double l) { return time<microsecond, long double>(l); }
 
     // ms
-    constexpr auto operator""_ms(unsigned long long l) { return milliseconds<std::int64_t>(l); }
-    constexpr auto operator""_ms(long double l) { return milliseconds<long double>(l); }
+    constexpr auto operator""_ms(unsigned long long l) { return time<millisecond, std::int64_t>(l); }
+    constexpr auto operator""_ms(long double l) { return time<millisecond, long double>(l); }
 
     // s
-    constexpr auto operator""_s(unsigned long long l) { return seconds<std::int64_t>(l); }
-    constexpr auto operator""_s(long double l) { return seconds<long double>(l); }
+    constexpr auto operator""_s(unsigned long long l) { return time<second, std::int64_t>(l); }
+    constexpr auto operator""_s(long double l) { return time<second, long double>(l); }
 
     // min
-    constexpr auto operator""_min(unsigned long long l) { return minutes<std::int64_t>(l); }
-    constexpr auto operator""_min(long double l) { return minutes<long double>(l); }
+    constexpr auto operator""_min(unsigned long long l) { return time<minute, std::int64_t>(l); }
+    constexpr auto operator""_min(long double l) { return time<minute, long double>(l); }
 
     // h
-    constexpr auto operator""_h(unsigned long long l) { return hours<std::int64_t>(l); }
-    constexpr auto operator""_h(long double l) { return hours<long double>(l); }
+    constexpr auto operator""_h(unsigned long long l) { return time<hour, std::int64_t>(l); }
+    constexpr auto operator""_h(long double l) { return time<hour, long double>(l); }
 
   }  // namespace literals
 

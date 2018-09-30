@@ -29,33 +29,26 @@ namespace units {
 
   using dimension_length = make_dimension_t<exp<base_dim_length, 1>>;
 
-  template<typename Rep, class Ratio = std::ratio<1>>
-  using length = quantity<dimension_length, Rep, Ratio>;
+  using millimeter = unit<dimension_length, std::milli>;
+  using meter = unit<dimension_length, std::ratio<1>>;
+  using kilometer = unit<dimension_length, std::kilo>;
 
-  template<typename Rep>
-  using millimeters = length<Rep, std::milli>;
-
-  template<typename Rep>
-  using meters = length<Rep>;
-
-  template<typename Rep>
-  using kilometers = length<Rep, std::kilo>;
-
-  // ...
+  template<Unit U = meter, typename Rep = std::intmax_t>
+  using length = quantity<dimension_length, U, Rep>;
 
   namespace literals {
 
     // mm
-    constexpr auto operator""_mm(unsigned long long l) { return millimeters<std::int64_t>(l); }
-    constexpr auto operator""_mm(long double l) { return millimeters<long double>(l); }
+    constexpr auto operator""_mm(unsigned long long l) { return length<millimeter, std::int64_t>(l); }
+    constexpr auto operator""_mm(long double l) { return length<millimeter, long double>(l); }
 
     // m
-    constexpr auto operator""_m(unsigned long long l) { return meters<std::int64_t>(l); }
-    constexpr auto operator""_m(long double l) { return meters<long double>(l); }
+    constexpr auto operator""_m(unsigned long long l) { return length<meter, std::int64_t>(l); }
+    constexpr auto operator""_m(long double l) { return length<meter, long double>(l); }
 
     // km
-    constexpr auto operator""_km(unsigned long long l) { return kilometers<std::int64_t>(l); }
-    constexpr auto operator""_km(long double l) { return kilometers<long double>(l); }
+    constexpr auto operator""_km(unsigned long long l) { return length<kilometer, std::int64_t>(l); }
+    constexpr auto operator""_km(long double l) { return length<kilometer, long double>(l); }
 
   }  // namespace literals
 
