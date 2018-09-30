@@ -39,6 +39,19 @@ namespace units {
   template<Unit U = second, typename Rep = std::intmax_t>
   using time = quantity<dimension_time, U, Rep>;
 
+  namespace detail {
+
+    template<typename T>
+    struct is_time : std::false_type {};
+
+    template<Unit U, typename Rep>
+    struct is_time<time<U, Rep>> : std::true_type {};
+
+  }
+
+  template<typename T>
+  concept bool Time = detail::is_time<T>::value;
+
   // ...
 
   namespace literals {

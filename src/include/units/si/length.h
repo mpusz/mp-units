@@ -36,6 +36,19 @@ namespace units {
   template<Unit U = meter, typename Rep = std::intmax_t>
   using length = quantity<dimension_length, U, Rep>;
 
+  namespace detail {
+
+    template<typename T>
+    struct is_length : std::false_type {};
+
+    template<Unit U, typename Rep>
+    struct is_length<length<U, Rep>> : std::true_type {};
+
+  }
+
+  template<typename T>
+  concept bool Length = detail::is_length<T>::value;
+
   namespace literals {
 
     // mm

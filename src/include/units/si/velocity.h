@@ -37,6 +37,19 @@ namespace units {
   template<Unit U = meter_per_second, typename Rep = std::intmax_t>
   using velocity = quantity<dimension_velocity, U, Rep>;
 
+  namespace detail {
+
+    template<typename T>
+    struct is_velocity : std::false_type {};
+
+    template<Unit U, typename Rep>
+    struct is_velocity<velocity<U, Rep>> : std::true_type {};
+
+  }
+
+  template<typename T>
+  concept bool Velocity = detail::is_velocity<T>::value;
+
   // ...
 
   namespace literals {
