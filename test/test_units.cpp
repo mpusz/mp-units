@@ -48,6 +48,8 @@ namespace {
   static_assert(10_km / 5_km == 2);
   static_assert(10_km / 2 == 5_km);
 
+  static_assert(1_m == 100_cm)//static_assert(5_in + 8_cm == 207_mm);
+
   // velocity
 
   static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<unit<dimension_velocity, std::ratio<1000, 1>>, long long int>>);

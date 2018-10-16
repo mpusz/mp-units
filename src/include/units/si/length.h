@@ -30,6 +30,7 @@ namespace units {
   using dimension_length = make_dimension_t<exp<base_dim_length, 1>>;
 
   using millimeter = unit<dimension_length, std::milli>;
+  using centimeter = unit<dimension_length, std::ratio<1, 100>>;
   using meter = unit<dimension_length, std::ratio<1>>;
   using kilometer = unit<dimension_length, std::kilo>;
 
@@ -54,6 +55,10 @@ namespace units {
     // mm
     constexpr auto operator""_mm(unsigned long long l) { return length<millimeter, std::int64_t>(l); }
     constexpr auto operator""_mm(long double l) { return length<millimeter, long double>(l); }
+
+    // cm
+    constexpr auto operator""_cm(unsigned long long l) { return length<centimeter, std::int64_t>(l); }
+    constexpr auto operator""_cm(long double l) { return length<centimeter, long double>(l); }
 
     // m
     constexpr auto operator""_m(unsigned long long l) { return length<meter, std::int64_t>(l); }
