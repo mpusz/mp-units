@@ -25,11 +25,10 @@
 
 using namespace units;
 
-template<typename V, typename T>
-  requires Velocity<V> && Time<T>
+template<Velocity V, Time T>
 void foo(V v, T t)
 {
-  const auto distance = v * t;
+  const Length distance = v * t;
   std::cout << "A car driving " << v.count() << " km/h in a time of " << t.count() << " minutes will pass "
             << quantity_cast<length<meter, int>>(distance).count() << " meters.\n";
 }
