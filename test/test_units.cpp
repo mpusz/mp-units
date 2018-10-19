@@ -48,7 +48,9 @@ namespace {
   static_assert(10_km / 5_km == 2);
   static_assert(10_km / 2 == 5_km);
 
-  static_assert(1_m == 100_cm)//static_assert(5_in + 8_cm == 207_mm);
+//  static_assert(1_ft == 12_in);
+  static_assert(1_m == 100_cm);
+//  static_assert(5_in + 8_cm == 207_mm);
 
   // velocity
 

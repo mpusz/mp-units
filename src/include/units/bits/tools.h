@@ -30,6 +30,22 @@ namespace units {
 
   using namespace mp::std_concepts;  // todo Remove when std::concepts will arrive
 
+  template<typename T>
+  concept bool Number = requires(T a, T b) {
+    { a + b} -> T;
+    { a - b } -> T;
+    { a * b } -> T;
+    { a / b } -> T;
+    { -a } -> T;
+    { a += b } -> T&;
+    { a -= b } -> T&;
+    { a *= b } -> T&;
+    { a /= b } -> T&;
+    { T{0} };// can construct a T from a zero
+    // …
+  } ;
+
+
   // static_sign
 
   template<std::intmax_t Pn>
