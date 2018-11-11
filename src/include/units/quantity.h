@@ -48,7 +48,7 @@ namespace units {
 
   // treat_as_floating_point
 
-  template<class Rep>
+  template<typename Rep> // todo Conceptify that
   inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
   // quantity_cast

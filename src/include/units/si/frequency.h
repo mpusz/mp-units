@@ -36,21 +36,11 @@ namespace units {
   using gigahertz = unit<dimension_frequency, std::giga>;
   using terahertz = unit<dimension_frequency, std::tera>;
 
-  template<Unit U = hertz, typename Rep = std::intmax_t>
+  template<Unit U = hertz, Number Rep = std::intmax_t>
   using frequency = quantity<dimension_frequency, U, Rep>;
 
-  namespace detail {
-
-    template<typename T>
-    struct is_frequency : std::false_type {};
-
-    template<Unit U, typename Rep>
-    struct is_frequency<frequency<U, Rep>> : std::true_type {};
-
-  }
-
   template<typename T>
-  concept bool Frequency = detail::is_frequency<T>::value;
+  concept bool Frequency =  Quantity<T> && Same<typename T::dimension, dimension_frequency>;
 
   // ...
 

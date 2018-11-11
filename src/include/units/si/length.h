@@ -34,21 +34,11 @@ namespace units {
   using meter = unit<dimension_length, std::ratio<1>>;
   using kilometer = unit<dimension_length, std::kilo>;
 
-  template<Unit U = meter, typename Rep = std::intmax_t>
+  template<Unit U = meter, Number Rep = std::intmax_t>
   using length = quantity<dimension_length, U, Rep>;
 
-  namespace detail {
-
-    template<typename T>
-    struct is_length : std::false_type {};
-
-    template<Unit U, typename Rep>
-    struct is_length<length<U, Rep>> : std::true_type {};
-
-  }
-
   template<typename T>
-  concept bool Length = detail::is_length<T>::value;
+  concept bool Length = Quantity<T> && Same<typename T::dimension, dimension_length>;
 
   namespace literals {
 

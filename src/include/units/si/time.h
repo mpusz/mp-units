@@ -36,21 +36,12 @@ namespace units {
   using minute = unit<dimension_time, std::ratio<60>>;
   using hour = unit<dimension_time, std::ratio<3600>>;
 
-  template<Unit U = second, typename Rep = std::intmax_t>
+  template<Unit U = second, Number Rep = std::intmax_t>
   using time = quantity<dimension_time, U, Rep>;
 
-  namespace detail {
-
-    template<typename T>
-    struct is_time : std::false_type {};
-
-    template<Unit U, typename Rep>
-    struct is_time<time<U, Rep>> : std::true_type {};
-
-  }
 
   template<typename T>
-  concept bool Time = detail::is_time<T>::value;
+  concept bool Time = Quantity<T> && Same<typename T::dimension, dimension_time>;
 
   // ...
 

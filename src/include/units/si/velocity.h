@@ -34,21 +34,11 @@ namespace units {
   using kilometer_per_hour = unit<dimension_velocity, std::ratio<1000, 3600>>;
   using mile_per_hour = unit<dimension_velocity, std::ratio<44'704, 100'000>>;
 
-  template<Unit U = meter_per_second, typename Rep = std::intmax_t>
+  template<Unit U = meter_per_second, Number Rep = std::intmax_t>
   using velocity = quantity<dimension_velocity, U, Rep>;
 
-  namespace detail {
-
-    template<typename T>
-    struct is_velocity : std::false_type {};
-
-    template<Unit U, typename Rep>
-    struct is_velocity<velocity<U, Rep>> : std::true_type {};
-
-  }
-
   template<typename T>
-  concept bool Velocity = detail::is_velocity<T>::value;
+  concept bool Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
 
   // ...
 
