@@ -49,8 +49,7 @@ namespace {
 namespace units {
 
   template<typename T>
-  struct treat_as_floating_point<my_value<T>> : std::is_floating_point<T> {
-  };
+  inline constexpr bool treat_as_floating_point<my_value<T>> = std::is_floating_point_v<T>;
 
   template<typename T>
   struct quantity_values<my_value<T>> {
@@ -248,9 +247,9 @@ namespace {
   static_assert(1000_m >= 1_km);
   static_assert(1000_m <= 1_km);
 
-// is_quantity
+  // is_quantity
 
-  static_assert(units::detail::is_quantity<length<millimeter, int>>::value);
+  static_assert(Quantity<length<millimeter, int>>);
 
   // common_type
 

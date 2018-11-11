@@ -77,17 +77,15 @@ namespace units {
   namespace detail {
 
     template<typename T>
-    struct is_ratio : std::false_type {
-    };
+    inline constexpr bool is_ratio = false;
 
     template<intmax_t Num, intmax_t Den>
-    struct is_ratio<std::ratio<Num, Den>> : std::true_type {
-    };
+    inline constexpr bool is_ratio<std::ratio<Num, Den>> = true;
 
   }  // namespace detail
 
   template<typename T>
-  concept bool Ratio = detail::is_ratio<T>::value;
+  concept bool Ratio = detail::is_ratio<T>;
 
   // common_ratio
 

@@ -35,7 +35,7 @@ namespace units {
   // dim_id_less
 
   template<typename D1, typename D2>
-      struct dim_id_less : std::bool_constant < D1::value<D2::value> {
+  struct dim_id_less : std::bool_constant<D1::value < D2::value> {
   };
 
   // exp
@@ -50,16 +50,14 @@ namespace units {
   // is_exp
   namespace detail {
     template<typename T>
-    struct is_exp : std::false_type {
-    };
+    inline constexpr bool is_exp = false;
 
     template<typename BaseDim, int Value>
-    struct is_exp<exp<BaseDim, Value>> : std::true_type {
-    };
+    inline constexpr bool is_exp<exp<BaseDim, Value>> = true;
   }  // namespace detail
 
   template<typename T>
-  concept bool Exponent = detail::is_exp<T>::value;
+  concept bool Exponent = detail::is_exp<T>;
 
   // exp_less
 
@@ -88,16 +86,14 @@ namespace units {
   // is_dimension
   namespace detail {
     template<typename T>
-    struct is_dimension : std::false_type {
-    };
+    inline constexpr bool is_dimension = false;
 
     template<Exponent... Es>
-    struct is_dimension<dimension<Es...>> : std::bool_constant<(is_exp<Es>::value && ...)> {
-    };
+    inline constexpr bool is_dimension<dimension<Es...>> = true;
   }  // namespace detail
 
   template<typename T>
-  concept bool Dimension = detail::is_dimension<T>::value;
+  concept bool Dimension = detail::is_dimension<T>;
 
   // make_dimension
 

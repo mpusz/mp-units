@@ -30,17 +30,15 @@ namespace mp {
   namespace detail {
 
     template<typename T>
-    struct is_type_list : std::false_type {
-    };
+    inline constexpr bool is_type_list = false;
 
     template<template<typename...> typename T, typename... Types>
-    struct is_type_list<T<Types...>> : std::true_type {
-    };
+    inline constexpr bool is_type_list<T<Types...>> = true;
 
   }  // namespace detail
 
   template<typename T>
-  concept bool TypeList = detail::is_type_list<T>::value;
+  concept bool TypeList = detail::is_type_list<T>;
 
   // push_front
 

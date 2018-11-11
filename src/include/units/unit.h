@@ -39,17 +39,15 @@ namespace units {
   namespace detail {
 
     template<typename T>
-    struct is_unit : std::false_type {
-    };
+    inline constexpr bool is_unit = false;
 
     template<Dimension D, Ratio R>
-    struct is_unit<unit<D, R>> : std::true_type {
-    };
+    inline constexpr bool is_unit<unit<D, R>> = true;
 
   }
 
   template<typename T>
-  concept bool Unit = detail::is_unit<T>::value;
+  concept bool Unit = detail::is_unit<T>;
 
 //  template<Unit U1, Unit U2>
 //  auto operator/(U1, U2)

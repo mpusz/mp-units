@@ -36,26 +36,20 @@ namespace units {
   namespace detail {
 
     template<typename T>
-    struct is_quantity : std::false_type {
-    };
+    inline constexpr bool is_quantity = false;
 
     template<Dimension D, Unit U, Number Rep>
-    struct is_quantity<quantity<D, U, Rep>> : std::true_type {
-    };
+    inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
 
   }  // namespace detail
 
   template<typename T>
-  concept bool Quantity = detail::is_quantity<T>::value;
+  concept bool Quantity = detail::is_quantity<T>;
 
   // treat_as_floating_point
 
   template<class Rep>
-  struct treat_as_floating_point : std::is_floating_point<Rep> {
-  };
-
-  template<class Rep>
-  inline constexpr bool treat_as_floating_point_v = treat_as_floating_point<Rep>::value;
+  inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
   // quantity_cast
 
@@ -131,23 +125,22 @@ namespace units {
     using unit = U;
     using rep = Rep;
 
-    static_assert(!detail::is_quantity<Rep>::value, "rep cannot be a quantity");
+    static_assert(!Quantity<Rep>, "rep cannot be a quantity");
 
     quantity() = default;
     quantity(const quantity&) = default;
 
-    template<class Rep2>
-        requires ConvertibleTo<Rep2, rep> &&
-        (treat_as_floating_point_v<rep> || !treat_as_floating_point_v<Rep2>)
+    template<ConvertibleTo<rep> Rep2>
+        requires (treat_as_floating_point<rep> || !treat_as_floating_point<Rep2>)
     constexpr explicit quantity(const Rep2& r) : value_{static_cast<rep>(r)}
     {
     }
 
     template<Quantity Q2>
-        requires Same<dimension, typename Q2::dimension>&& ConvertibleTo<typename Q2::rep, rep> &&
-        (treat_as_floating_point_v<rep> ||
+        requires Same<dimension, typename Q2::dimension> && ConvertibleTo<typename Q2::rep, rep> &&
+        (treat_as_floating_point<rep> ||
          (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
-          !treat_as_floating_point_v<typename Q2::rep>))
+          !treat_as_floating_point<typename Q2::rep>))
     constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()}
     {
     }
@@ -251,7 +244,7 @@ namespace units {
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
+      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
   quantity<dimension_multiply_t<D1, D2>, unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
@@ -291,7 +284,7 @@ namespace units {
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point_v<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
+      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
   quantity<dimension_divide_t<D1, D2>, unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
