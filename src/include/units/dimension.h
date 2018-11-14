@@ -78,10 +78,18 @@ namespace units {
   template<Exponent E>
   using exp_invert_t = typename exp_invert<E>::type;
 
+  // dimension_traits
+
+  template<typename T>
+  struct dimension_traits : std::type_identity<T> {};
+
+  template<typename T>
+  using dimension_traits_t = typename dimension_traits<T>::type;
+
   // dimension
 
   template<Exponent... Es>
-  struct dimension;
+  struct dimension : std::type_identity<dimension<Es...>> {};
 
   // is_dimension
   namespace detail {
@@ -93,7 +101,20 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Dimension = detail::is_dimension<T>;
+  concept bool Dimension = detail::is_dimension<typename T::type>;
+
+
+  // dim_invert
+
+  template<Dimension E>
+  struct dim_invert;
+
+  template<Exponent... Es>
+  struct dim_invert<dimension<Es...>> : std::type_identity<dimension_traits_t<dimension<exp_invert_t<Es>...>>> {};
+
+  template<Dimension D>
+  using dim_invert_t = typename dim_invert<typename D::type>::type;
+
 
   // make_dimension
 
@@ -144,12 +165,10 @@ namespace units {
   struct dimension_multiply;
 
   template<Exponent... E1, Exponent... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
-    using type = make_dimension_t<E1..., E2...>;
-  };
+  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<dimension_traits_t<make_dimension_t<E1..., E2...>>> {};
 
   template<Dimension D1, Dimension D2>
-  using dimension_multiply_t = typename dimension_multiply<D1, D2>::type;
+  using dimension_multiply_t = typename dimension_multiply<typename D1::type, typename D2::type>::type;
 
   // dimension_divide
 
@@ -162,6 +181,6 @@ namespace units {
   };
 
   template<Dimension D1, Dimension D2>
-  using dimension_divide_t = typename dimension_divide<D1, D2>::type;
+  using dimension_divide_t = typename dimension_divide<typename D1::type, typename D2::type>::type;
 
 }  // namespace units

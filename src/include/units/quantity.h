@@ -254,14 +254,14 @@ namespace units {
     return ret(lhs.count() * rhs.count());
   }
 
-  template<Number Rep1, Exponent... E, Unit U, Number Rep2>
-  quantity<dimension<exp_invert_t<E>...>, unit<dimension<exp_invert_t<E>...>, std::ratio<U::ratio::den, U::ratio::num>>, std::common_type_t<Rep1, Rep2>>
+  template<Number Rep1, Dimension D, Unit U, Number Rep2>
+  quantity<dim_invert_t<D>, unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const Rep1& v,
-                      const quantity<dimension<E...>, U, Rep2>& q)
+                      const quantity<D, U, Rep2>& q)
   {
-    using dim = dimension<exp_invert_t<E>...>;
+    using dim = dim_invert_t<D>;
     using ret = quantity<dim, unit<dim, std::ratio<U::ratio::den, U::ratio::num>>, std::common_type_t<Rep1, Rep2>>;
-    using den = quantity<dimension<E...>, U, std::common_type_t<Rep1, Rep2>>;
+    using den = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
     return ret(v / den(q).count());
   }
 

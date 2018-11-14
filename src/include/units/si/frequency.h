@@ -27,7 +27,6 @@
 
 namespace units {
 
-  using dimension_frequency = make_dimension_t<exp<base_dim_time, -1>>;
 
   using millihertz = unit<dimension_frequency, std::milli>;
   using hertz = unit<dimension_frequency, std::ratio<1>>;
@@ -35,6 +34,8 @@ namespace units {
   using megahertz = unit<dimension_frequency, std::mega>;
   using gigahertz = unit<dimension_frequency, std::giga>;
   using terahertz = unit<dimension_frequency, std::tera>;
+  struct dimension_frequency : make_dimension_t<exp<base_dim_time, -1>> {};
+  template<> struct dimension_traits<typename dimension_frequency::type> : std::type_identity<dimension_frequency> {};
 
   template<Unit U = hertz, Number Rep = std::intmax_t>
   using frequency = quantity<dimension_frequency, U, Rep>;

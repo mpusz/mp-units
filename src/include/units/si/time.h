@@ -27,14 +27,15 @@
 
 namespace units {
 
-  using dimension_time = make_dimension_t<exp<base_dim_time, 1>>;
-
   using nanosecond = unit<dimension_time, std::nano>;
   using microsecond = unit<dimension_time, std::micro>;
   using millisecond = unit<dimension_time, std::milli>;
   using second = unit<dimension_time, std::ratio<1>>;
   using minute = unit<dimension_time, std::ratio<60>>;
   using hour = unit<dimension_time, std::ratio<3600>>;
+  struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
+  template<> struct dimension_traits<typename dimension_time::type> : std::type_identity<dimension_time> {};
+
 
   template<Unit U = second, Number Rep = std::intmax_t>
   using time = quantity<dimension_time, U, Rep>;

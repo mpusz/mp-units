@@ -28,7 +28,8 @@
 
 namespace units {
 
-  using dimension_velocity = make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>>;
+  struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+  template<> struct dimension_traits<typename dimension_velocity::type> : std::type_identity<dimension_velocity> {};
 
   using meter_per_second = unit<dimension_velocity, std::ratio<1>>;
   using kilometer_per_hour = unit<dimension_velocity, std::ratio<1000, 3600>>;

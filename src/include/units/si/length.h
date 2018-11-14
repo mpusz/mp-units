@@ -27,7 +27,8 @@
 
 namespace units {
 
-  using dimension_length = make_dimension_t<exp<base_dim_length, 1>>;
+  struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
+  template<> struct dimension_traits<typename dimension_length::type> : std::type_identity<dimension_length> {};
 
   using millimeter = unit<dimension_length, std::milli>;
   using centimeter = unit<dimension_length, std::ratio<1, 100>>;

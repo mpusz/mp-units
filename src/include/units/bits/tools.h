@@ -26,6 +26,16 @@
 #include <ratio>
 #include <type_traits>
 
+namespace std {
+
+  template<typename T>
+  struct type_identity { using type = T; };
+
+  template<typename T>
+  using type_identity_t = typename type_identity<T>::type;
+
+}
+
 namespace units {
 
   using namespace mp::std_concepts;  // todo Remove when std::concepts will arrive
