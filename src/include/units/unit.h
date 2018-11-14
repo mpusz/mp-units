@@ -28,7 +28,7 @@
 namespace units {
 
   template<Dimension D, Ratio R>
-  struct unit {
+  struct unit : std::type_identity<unit<D, R>> {
     using dimension = D;
     using ratio = R;
     static_assert(ratio::num > 0, "ratio must be positive");
@@ -47,14 +47,14 @@ namespace units {
   }
 
   template<typename T>
-  concept bool Unit = detail::is_unit<T>;
+  concept bool Unit = detail::is_unit<typename T::type>;
 
-//  template<Unit U1, Unit U2>
-//  auto operator/(U1, U2)
-//  {
-//    return ;
-//  }
-//
-//  unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename::U2::ratio>>
+  // dimension_traits
+
+  template<typename T>
+  struct unit_traits : std::type_identity<T> {};
+
+  template<typename T>
+  using unit_traits_t = typename unit_traits<T>::type;
 
 }  // namespace units

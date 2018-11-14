@@ -27,15 +27,26 @@
 
 namespace units {
 
-
-  using millihertz = unit<dimension_frequency, std::milli>;
-  using hertz = unit<dimension_frequency, std::ratio<1>>;
-  using kilohertz = unit<dimension_frequency, std::kilo>;
-  using megahertz = unit<dimension_frequency, std::mega>;
-  using gigahertz = unit<dimension_frequency, std::giga>;
-  using terahertz = unit<dimension_frequency, std::tera>;
   struct dimension_frequency : make_dimension_t<exp<base_dim_time, -1>> {};
   template<> struct dimension_traits<typename dimension_frequency::type> : std::type_identity<dimension_frequency> {};
+
+  struct millihertz : unit<dimension_frequency, std::milli> {};
+  template<> struct unit_traits<typename millihertz::type> : std::type_identity<millihertz> {};
+
+  struct hertz : unit<dimension_frequency, std::ratio<1>> {};
+  template<> struct unit_traits<typename hertz::type> : std::type_identity<hertz> {};
+
+  struct kilohertz : unit<dimension_frequency, std::kilo> {};
+  template<> struct unit_traits<typename kilohertz::type> : std::type_identity<kilohertz> {};
+
+  struct megahertz : unit<dimension_frequency, std::mega> {};
+  template<> struct unit_traits<typename megahertz::type> : std::type_identity<megahertz> {};
+
+  struct gigahertz : unit<dimension_frequency, std::giga> {};
+  template<> struct unit_traits<typename gigahertz::type> : std::type_identity<gigahertz> {};
+
+  struct terahertz : unit<dimension_frequency, std::tera> {};
+  template<> struct unit_traits<typename terahertz::type> : std::type_identity<terahertz> {};
 
   template<Unit U = hertz, Number Rep = std::intmax_t>
   using frequency = quantity<dimension_frequency, U, Rep>;

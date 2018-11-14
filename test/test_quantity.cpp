@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "units/si/velocity.h"
+#include "units/si/frequency.h"
 #include <utility>
 #include <chrono>
 
@@ -190,12 +191,13 @@ namespace {
 
   static_assert(std::is_same_v<decltype(length<meter, int>() + length<meter, double>()), quantity<dimension_length, meter, double>>);
   static_assert(std::is_same_v<decltype(length<meter, int>() + length<meter, double>()), quantity<dimension_length, meter, double>>);
-  static_assert(std::is_same_v<decltype(length<kilometer, int>() + length<meter, double>()), quantity<dimension_length, unit<dimension_length, std::ratio<1>>, double>>);
+  static_assert(std::is_same_v<decltype(length<kilometer, int>() + length<meter, double>()), quantity<dimension_length, meter, double>>);
   static_assert(std::is_same_v<decltype(length<meter, double>() - length<meter, int>()), quantity<dimension_length, meter, double>>);
-  static_assert(std::is_same_v<decltype(length<kilometer, double>() - length<meter, int>()), quantity<dimension_length, unit<dimension_length, std::ratio<1>>, double>>);
+  static_assert(std::is_same_v<decltype(length<kilometer, double>() - length<meter, int>()), quantity<dimension_length, meter, double>>);
   static_assert(std::is_same_v<decltype(length<meter, int>() * 1.0), quantity<dimension_length, meter, double>>);
   static_assert(std::is_same_v<decltype(1.0 * length<meter, int>()), quantity<dimension_length, meter, double>>);
-  static_assert(std::is_same_v<decltype(velocity<meter_per_second, int>() * units::time<second, int>()), quantity<dimension_length, unit<dimension_length, std::ratio<1>>, int>>);
+  static_assert(std::is_same_v<decltype(velocity<meter_per_second, int>() * units::time<second, int>()), quantity<dimension_length, units::meter, int>>);
+  static_assert(std::is_same_v<decltype(1 / units::time<second, int>()), quantity<dimension_frequency, hertz, int>>);
   static_assert(std::is_same_v<decltype(length<meter, int>() / 1.0), quantity<dimension_length, meter, double>>);
   static_assert(std::is_same_v<decltype(length<meter, int>() / length<meter, double>()), double>);
   static_assert(std::is_same_v<decltype(length<kilometer, int>() / length<meter, double>()), double>);
@@ -253,9 +255,9 @@ namespace {
 
   // common_type
 
-  static_assert(std::is_same_v<std::common_type_t<length<meter, int>, length<kilometer, int>>, length<unit<dimension_length, std::ratio<1>>, int>>);
-  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<meter, int>>, length<unit<dimension_length, std::ratio<1>>, long long>>);
-  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<millimeter, double>>, length<unit<dimension_length, std::ratio<1, 1000>>, double>>);
+  static_assert(std::is_same_v<std::common_type_t<length<meter, int>, length<kilometer, int>>, length<meter, int>>);
+  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<meter, int>>, length<meter, long long>>);
+  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<millimeter, double>>, length<millimeter, double>>);
 
   // quantity_cast
 

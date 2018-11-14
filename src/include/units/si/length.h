@@ -30,10 +30,17 @@ namespace units {
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
   template<> struct dimension_traits<typename dimension_length::type> : std::type_identity<dimension_length> {};
 
-  using millimeter = unit<dimension_length, std::milli>;
-  using centimeter = unit<dimension_length, std::ratio<1, 100>>;
-  using meter = unit<dimension_length, std::ratio<1>>;
-  using kilometer = unit<dimension_length, std::kilo>;
+  struct millimeter : unit<dimension_length, std::milli> {};
+  template<> struct unit_traits<typename millimeter::type> : std::type_identity<millimeter> {};
+
+  struct centimeter : unit<dimension_length, std::ratio<1, 100>> {};
+  template<> struct unit_traits<typename centimeter::type> : std::type_identity<centimeter> {};
+
+  struct meter : unit<dimension_length, std::ratio<1>> {};
+  template<> struct unit_traits<typename meter::type> : std::type_identity<meter> {};
+
+  struct kilometer : unit<dimension_length, std::kilo> {};
+  template<> struct unit_traits<typename kilometer::type> : std::type_identity<kilometer> {};
 
   template<Unit U = meter, Number Rep = std::intmax_t>
   using length = quantity<dimension_length, U, Rep>;

@@ -31,9 +31,14 @@ namespace units {
   struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
   template<> struct dimension_traits<typename dimension_velocity::type> : std::type_identity<dimension_velocity> {};
 
-  using meter_per_second = unit<dimension_velocity, std::ratio<1>>;
-  using kilometer_per_hour = unit<dimension_velocity, std::ratio<1000, 3600>>;
-  using mile_per_hour = unit<dimension_velocity, std::ratio<44'704, 100'000>>;
+  struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
+  template<> struct unit_traits<typename meter_per_second::type> : std::type_identity<meter_per_second> {};
+
+  struct kilometer_per_hour : unit<dimension_velocity, std::ratio<1000, 3600>> {};
+  template<> struct unit_traits<typename kilometer_per_hour::type> : std::type_identity<kilometer_per_hour> {};
+
+  struct mile_per_hour : unit<dimension_velocity, std::ratio<44'704, 100'000>> {};
+  template<> struct unit_traits<typename mile_per_hour::type> : std::type_identity<mile_per_hour> {};
 
   template<Unit U = meter_per_second, Number Rep = std::intmax_t>
   using velocity = quantity<dimension_velocity, U, Rep>;

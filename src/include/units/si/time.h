@@ -27,15 +27,26 @@
 
 namespace units {
 
-  using nanosecond = unit<dimension_time, std::nano>;
-  using microsecond = unit<dimension_time, std::micro>;
-  using millisecond = unit<dimension_time, std::milli>;
-  using second = unit<dimension_time, std::ratio<1>>;
-  using minute = unit<dimension_time, std::ratio<60>>;
-  using hour = unit<dimension_time, std::ratio<3600>>;
   struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
   template<> struct dimension_traits<typename dimension_time::type> : std::type_identity<dimension_time> {};
 
+  struct nanosecond : unit<dimension_time, std::nano> {};
+  template<> struct unit_traits<typename nanosecond::type> : std::type_identity<nanosecond> {};
+
+  struct microsecond : unit<dimension_time, std::micro> {};
+  template<> struct unit_traits<typename microsecond::type> : std::type_identity<microsecond> {};
+
+  struct millisecond : unit<dimension_time, std::milli> {};
+  template<> struct unit_traits<typename millisecond::type> : std::type_identity<millisecond> {};
+
+  struct second : unit<dimension_time, std::ratio<1>> {};
+  template<> struct unit_traits<typename second::type> : std::type_identity<second> {};
+
+  struct minute : unit<dimension_time, std::ratio<60>> {};
+  template<> struct unit_traits<typename minute::type> : std::type_identity<minute> {};
+
+  struct hour : unit<dimension_time, std::ratio<3600>> {};
+  template<> struct unit_traits<typename hour::type> : std::type_identity<hour> {};
 
   template<Unit U = second, Number Rep = std::intmax_t>
   using time = quantity<dimension_time, U, Rep>;
