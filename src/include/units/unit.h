@@ -28,7 +28,8 @@
 namespace units {
 
   template<Dimension D, Ratio R>
-  struct unit : std::type_identity<unit<D, R>> {
+  struct unit {
+    using base_type = unit<D, R>;
     using dimension = D;
     using ratio = R;
     static_assert(ratio::num > 0, "ratio must be positive");
@@ -49,8 +50,8 @@ namespace units {
   template<typename T>
   concept bool Unit =
       std::is_empty_v<T> &&
-      detail::is_unit<typename T::type> &&
-      DerivedFrom<T, typename T::type>;
+      detail::is_unit<typename T::base_type> &&
+      DerivedFrom<T, typename T::base_type>;
 
   // dimension_traits
 
