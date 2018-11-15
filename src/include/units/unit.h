@@ -47,7 +47,10 @@ namespace units {
   }
 
   template<typename T>
-  concept bool Unit = detail::is_unit<typename T::type>;
+  concept bool Unit =
+      std::is_empty_v<T> &&
+      detail::is_unit<typename T::type> &&
+      DerivedFrom<T, typename T::type>;
 
   // dimension_traits
 

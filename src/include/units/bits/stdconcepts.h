@@ -39,5 +39,10 @@ namespace mp {
         static_cast<To>(f());
       };
 
+    template<class Derived, class Base>
+    concept bool DerivedFrom =
+      std::is_base_of_v<Base, Derived> &&
+      std::is_convertible_v<const volatile Derived*, const volatile Base*>;
+
   }  // namespace std_concepts
 }  // namespace mp

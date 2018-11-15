@@ -101,7 +101,10 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Dimension = detail::is_dimension<typename T::type>;
+  concept bool Dimension =
+      std::is_empty_v<T> &&
+      detail::is_dimension<typename T::type> &&
+      DerivedFrom<T, typename T::type>;
 
 
   // dim_invert
