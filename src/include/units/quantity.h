@@ -245,22 +245,22 @@ namespace units {
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_multiply_t<D1, D2>, unit_traits_t<unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dimension_multiply_t<D1, D2>, upcasting_traits_t<unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
   {
     using dim = dimension_multiply_t<D1, D2>;
-    using ret = quantity<dim, unit_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
     return ret(lhs.count() * rhs.count());
   }
 
   template<Number Rep1, Dimension D, Unit U, Number Rep2>
-  quantity<dim_invert_t<D>, unit_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dim_invert_t<D>, upcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const Rep1& v,
                       const quantity<D, U, Rep2>& q)
   {
     using dim = dim_invert_t<D>;
-    using ret = quantity<dim, unit_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>;
     using den = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
     return ret(v / den(q).count());
   }
@@ -285,12 +285,12 @@ namespace units {
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_divide_t<D1, D2>, unit_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
   {
     using dim = dimension_divide_t<D1, D2>;
-    using ret = quantity<dim, unit_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
     return ret(lhs.count() / rhs.count());
   }
 
@@ -364,7 +364,7 @@ namespace std {
   // todo: simplified
   template<units::Dimension D, units::Unit U1, units::Number Rep1, units::Unit U2, units::Number Rep2>
   struct common_type<units::quantity<D, U1, Rep1>, units::quantity<D, U2, Rep2>> {
-    using type = units::quantity<D, units::unit_traits_t<units::unit<D, units::common_ratio_t<typename U1::ratio, typename U2::ratio>>>,
+    using type = units::quantity<D, units::upcasting_traits_t<units::unit<D, units::common_ratio_t<typename U1::ratio, typename U2::ratio>>>,
                                  std::common_type_t<Rep1, Rep2>>;
   };
 

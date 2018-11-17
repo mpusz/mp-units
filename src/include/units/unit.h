@@ -53,12 +53,4 @@ namespace units {
       detail::is_unit<typename T::base_type> &&
       DerivedFrom<T, typename T::base_type>;
 
-  // dimension_traits
-
-  template<typename T>
-  struct unit_traits : std::type_identity<T> {};
-
-  template<typename T>
-  using unit_traits_t = typename unit_traits<T>::type;
-
 }  // namespace units

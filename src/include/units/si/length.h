@@ -28,19 +28,19 @@
 namespace units {
 
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct dimension_traits<typename dimension_length::base_type> : std::type_identity<dimension_length> {};
+  template<> struct upcasting_traits<typename dimension_length::base_type> : std::type_identity<dimension_length> {};
 
   struct millimeter : unit<dimension_length, std::milli> {};
-  template<> struct unit_traits<typename millimeter::base_type> : std::type_identity<millimeter> {};
+  template<> struct upcasting_traits<typename millimeter::base_type> : std::type_identity<millimeter> {};
 
   struct centimeter : unit<dimension_length, std::ratio<1, 100>> {};
-  template<> struct unit_traits<typename centimeter::base_type> : std::type_identity<centimeter> {};
+  template<> struct upcasting_traits<typename centimeter::base_type> : std::type_identity<centimeter> {};
 
   struct meter : unit<dimension_length, std::ratio<1>> {};
-  template<> struct unit_traits<typename meter::base_type> : std::type_identity<meter> {};
+  template<> struct upcasting_traits<typename meter::base_type> : std::type_identity<meter> {};
 
   struct kilometer : unit<dimension_length, std::kilo> {};
-  template<> struct unit_traits<typename kilometer::base_type> : std::type_identity<kilometer> {};
+  template<> struct upcasting_traits<typename kilometer::base_type> : std::type_identity<kilometer> {};
 
   template<Unit U = meter, Number Rep = std::intmax_t>
   using length = quantity<dimension_length, U, Rep>;

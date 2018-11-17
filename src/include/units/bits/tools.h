@@ -110,4 +110,13 @@ namespace units {
   template<Ratio Ratio1, Ratio Ratio2>
   using common_ratio_t = typename common_ratio<Ratio1, Ratio2>::type;
 
+  // upcasting_traits
+
+  template<typename T>
+  struct upcasting_traits : std::type_identity<T> {};
+
+  template<typename T>
+  using upcasting_traits_t = typename upcasting_traits<T>::type;
+
+
 }  // namespace units
