@@ -28,11 +28,11 @@
 namespace units {
 
   template<Dimension D, Ratio R>
+    requires (R::num > 0)
   struct unit {
     using base_type = unit<D, R>;
     using dimension = D;
     using ratio = R;
-    static_assert(ratio::num > 0, "ratio must be positive");
   };
 
   // is_unit
