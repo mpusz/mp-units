@@ -2,11 +2,11 @@
 
 ## Summary
 
-`Units` is a compile-time friendly Modern C++ library that provides support for converting units.
-The basic idea and design heavily bases on `std::chrono::duration` extending it to work properly
-with many dimensions. 
+`Units` is a compile-time enabled Modern C++ library that provides support for converting physical
+units and dimensions. The basic idea and design heavily bases on `std::chrono::duration` and extends
+it to work properly with many dimensions. 
 
-Here is a small example of possible conversions:
+Here is a small example of possible operations:
 
 ```cpp
 static_assert(1000 / 1_s == 1_kHz);
@@ -39,15 +39,15 @@ derived from `units::dimension` class template:
 
 ```cpp
 template<typename T>
-concept bool Dimension =
+concept Dimension =
     std::is_empty_v<T> &&
-    detail::is_dimension<typename T::base_type> &&
+    detail::is_dimension<typename T::base_type> &&  // exposition only
     DerivedFrom<T, typename T::base_type>;
 ```
 
 #### `Exponents`
 
-`units::exp` provides an information about single base dimension and its exponent in a derived
+`units::exp` provides an information about a single base dimension and its exponent in a derived
 dimension:
 
 ```cpp
@@ -74,14 +74,15 @@ template:
 
 ```cpp
 template<typename T>
-concept bool Exponent = detail::is_exp<T>;
+concept Exponent =
+    detail::is_exp<T>;  // exposition only
 ```
 
 #### `make_dimension`
 
 Above design of dimensions is created with the ease of use for end users in mind. Compile-time
 errors should provide as short as possible template instantiations strings that should be easy to
-understand by every C++ programmer. Also types visible in debugger should be easy to understand.
+understand by every C++ programmer. Also types visible in a debugger should be easy to understand.
 That is why `units::dimension` type for derived dimensions always stores information about only
 those base dimensions that are used to form that derived dimension.
 
@@ -96,8 +97,8 @@ static_assert(v1 == v2);
 ``` 
 
 Above code, no matter what is the order of the base dimensions in an expression forming our result,
-must produce the same `Velocity` type so that both values can be easily compared. To achieve that
-dimension class templates should never be instantiated manually but through a `make_dimension_t`
+must produce the same `Velocity` type so that both values can be easily compared. In order to achieve
+that, `dimension` class templates should never be instantiated manually but through a `make_dimension_t`
 template metaprogramming factory function:
 
 ```cpp
@@ -138,8 +139,8 @@ contained base dimensions. Beside providing ordering to base dimensions it also 
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
 Additionally, it would be good if the final type produced by `make_dimension_t` would be easy to
-understand by the user, so for example base dimensions could be sorted with decreasing order of
-their exponents. That is why second sorting of a type list may be required, for example:
+understand by the user. For example we may decide to order base dimensions with decreasing order of
+their exponents. That is why second sorting of a type list may be required. For example:
 
 ```cpp
 template<Exponent... Es>
@@ -150,7 +151,7 @@ struct make_dimension {
 
 ### `Units`
 
-`units::unit` is a class template that expresses the unit of a specific dimension:
+`units::unit` is a class template that expresses the unit of a specific physical dimension:
 
 ```cpp
 template<Dimension D, Ratio R>
@@ -167,9 +168,9 @@ derived from `units::unit` class template:
 
 ```cpp
 template<typename T>
-concept bool Unit =
+concept Unit =
     std::is_empty_v<T> &&
-    detail::is_unit<typename T::base_type> &&
+    detail::is_unit<typename T::base_type> &&  // exposition only
     DerivedFrom<T, typename T::base_type>;
 ```
 
@@ -184,12 +185,13 @@ template<Dimension D, Unit U, Number Rep>
 class quantity;
 ```
 
-`units::Unit` is a Concept that is satisfied by a type that is a specialization of `units::quantity`
+`units::Quantity` is a Concept that is satisfied by a type that is an instantiation of `units::quantity`
 class template:
 
 ```cpp
 template<typename T>
-concept bool Quantity = detail::is_quantity<T>;
+concept Quantity =
+    detail::is_quantity<T>;  // exposition only
 ```
 
 `units::quantity` provides the interface really similar to `std::chrono::duration` with additional
@@ -230,12 +232,12 @@ than those of their arguments.
 To explicitly force truncating conversions `quantity_cast` function is provided which is a direct
 counterpart of `std::chrono::duration_cast`.
 
-## Strong types instead of aliases and type upcasting capability
+## Strong types instead of aliases, and type upcasting capability
 
 Most of the important design decisions in the library are dictated by the requirement of providing
 the best user experience as possible.
 
-For example the following code:
+For example with template aliases usage the following code:
 
 ```cpp
 const Velocity t = 20_s;
@@ -249,22 +251,32 @@ C:\repos\units\example\example.cpp:39:22: error: deduced initializer does not sa
                       ^~~~
 In file included from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
-   concept bool Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
-                ^~~~~~~~
+   concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+           ^~~~~~~~
 In file included from C:/repos/units/src/include/units/bits/tools.h:25,
                  from C:/repos/units/src/include/units/dimension.h:25,
                  from C:/repos/units/src/include/units/si/base_dimensions.h:25,
                  from C:/repos/units/src/include/units/si/velocity.h:25,
                  from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool mp::std_concepts::Same<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]'
-     concept bool Same = std::is_same_v<T, U>;
-                  ^~~~
+     concept Same = std::is_same_v<T, U>;
+             ^~~~
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ```
 
 Time and velocity are not that complicated dimensions and there are much more complicated dimensions
-out there, but even for those dimensions `[with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]`
-and `[with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]`
+out there, but even for those dimensions
+
+```text
+[with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]
+```
+
+and
+
+```text
+[with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]
+```
+
 starts to be really hard to analyze or debug.
 
 That is why it was decided to provide automated upcasting capability when possible. With that the
@@ -276,22 +288,32 @@ C:\repos\units\example\example.cpp:40:22: error: deduced initializer does not sa
                       ^~~~
 In file included from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension_time, units::second, long long int>]'
-   concept bool Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
-                ^~~~~~~~
+   concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+           ^~~~~~~~
 In file included from C:/repos/units/src/include/units/bits/tools.h:25,
                  from C:/repos/units/src/include/units/dimension.h:25,
                  from C:/repos/units/src/include/units/si/base_dimensions.h:25,
                  from C:/repos/units/src/include/units/si/velocity.h:25,
                  from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool mp::std_concepts::Same<T, U> [with T = units::dimension_time; U = units::dimension_velocity]'
-     concept bool Same = std::is_same_v<T, U>;
-                  ^~~~
+     concept Same = std::is_same_v<T, U>;
+             ^~~~
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ``` 
 
-Now `[with T = units::quantity<units::dimension_time, units::second, long long int>]` and
-`[with T = units::dimension_time; U = units::dimension_velocity]` are not arguably much better
-user experience.
+Now
+
+```text
+[with T = units::quantity<units::dimension_time, units::second, long long int>]
+```
+
+and
+
+```text
+[with T = units::dimension_time; U = units::dimension_velocity]
+```
+
+are not arguably much easier to understand thus provide better user experience.
 
 Upcasting capability is provided through dedicated `upcasting_traits` and by `base_type` member
 type in `dimension` and `unit` class templates.
@@ -323,7 +345,7 @@ struct upcasting_traits<typename kilometer::base_type> :
 
 ## Adding new dimensions
 
-The user to extend the library with his/her own dimensions has to:
+In order to extend the library with custom dimensions the user has to:
 1. Create a new dimension type and provide upcasting trait for it:
 
 ```cpp
@@ -331,8 +353,7 @@ struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_d
 template<> struct upcasting_traits<typename dimension_velocity::base_type> : std::type_identity<dimension_velocity> {};
 ``` 
 
-2. Define the base unit (`std::ratio<1>`) and additional ones plus provide upcasting traits for them
-via:
+2. Define the base unit (`std::ratio<1>`) and secondary ones and provide upcasting traits for them via:
 
 ```cpp
 struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
@@ -343,10 +364,10 @@ template<> struct upcasting_traits<typename meter_per_second::base_type> : std::
 
 ```cpp
 template<typename T>
-concept bool Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
 ```
 
-4. Provide user-defined literals for most important units:
+4. Provide user-defined literals for the most important units:
 
 ```cpp
 namespace literals {
@@ -378,9 +399,11 @@ base dimensions will be just a text values. For example:
 inline constexpr base_dim base_dim_length = "length";
 ```
 
-With that it should be really easy to add support for any new non-standard base unit to the
+With that it should be really easy to add support for any new non-standard base units to the
 library without the risk of collision with any dimension type defined by the library itself or
 by other users extending the library with their own dimension types.
+
+Additionally, it should make the error logs even shorter thus easier to understand.
 
 
 ## Open questions
