@@ -59,7 +59,7 @@ namespace {
   static_assert(std::is_same_v<dimension_multiply_t<dimension<e<0, 1>, e<1, 1>, e<2, 1>>, dimension<e<3, 1>>>,
                                dimension<e<0, 1>, e<1, 1>, e<2, 1>, e<3, 1>>>);
   static_assert(std::is_same_v<dimension_multiply_t<dimension<e<0, 1>, e<1, 1>, e<2, 1>>, dimension<e<1, 1>>>,
-                               dimension<e<0, 1>, e<1, 2>, e<2, 1>>>);
+                               dimension<e<1, 2>, e<0, 1>, e<2, 1>>>);
   static_assert(std::is_same_v<dimension_multiply_t<dimension<e<0, 1>, e<1, 1>, e<2, 1>>, dimension<e<1, -1>>>,
                                dimension<e<0, 1>, e<2, 1>>>);
 

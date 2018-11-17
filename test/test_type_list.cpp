@@ -108,13 +108,13 @@ namespace {
                 dim_sort_t<type_list<dim_id<38>, dim_id<27>, dim_id<43>, dim_id<3>, dim_id<9>, dim_id<82>, dim_id<10>>>,
                 type_list<dim_id<3>, dim_id<9>, dim_id<10>, dim_id<27>, dim_id<38>, dim_id<43>, dim_id<82>>>);
 
-  // exp_less
+  // exp_dim_id_less
 
   template<int Id, int Value>
   using e = exp<dim_id<Id>, Value>;
 
   template<TypeList List>
-  using exp_sort_t = type_list_sort_t<List, exp_less>;
+  using exp_sort_t = type_list_sort_t<List, exp_dim_id_less>;
 
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>>>, dimension<e<0, 1>>>);
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>, e<1, -1>>>, dimension<e<0, 1>, e<1, -1>>>);

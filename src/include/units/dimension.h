@@ -59,13 +59,19 @@ namespace units {
   template<typename T>
   concept bool Exponent = detail::is_exp<T>;
 
-  // exp_less
+  // exp_dim_id_less
 
   template<Exponent E1, Exponent E2>
-  struct exp_less : dim_id_less<typename E1::dimension, typename E2::dimension> {
+  struct exp_dim_id_less : dim_id_less<typename E1::dimension, typename E2::dimension> {
   };
 
-  // exp_invert
+  // exp_dim_id_less
+
+  template<Exponent E1, Exponent E2>
+  struct exp_greater_equal : std::bool_constant<(E1::value >= E2::value)> {
+  };
+
+// exp_invert
 
   template<Exponent E>
   struct exp_invert;
@@ -158,7 +164,7 @@ namespace units {
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = detail::dim_consolidate_t<mp::type_list_sort_t<dimension<Es...>, exp_less>>;
+    using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_sort_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
   };
 
   template<Exponent... Es>
