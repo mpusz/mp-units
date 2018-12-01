@@ -108,9 +108,9 @@ namespace units {
 
   template<Number Rep>
   struct quantity_values {
-    static constexpr Rep zero() { return Rep(0); }
-    static constexpr Rep max() { return std::numeric_limits<Rep>::max(); }
-    static constexpr Rep min() { return std::numeric_limits<Rep>::lowest(); }
+    static constexpr Rep zero() noexcept { return Rep(0); }
+    static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
+    static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
   };
 
   // quantity
@@ -149,9 +149,9 @@ namespace units {
 
     constexpr rep count() const noexcept { return value_; }
 
-    static constexpr quantity zero() { return quantity(quantity_values<Rep>::zero()); }
-    static constexpr quantity min() { return quantity(quantity_values<Rep>::min()); }
-    static constexpr quantity max() { return quantity(quantity_values<Rep>::max()); }
+    static constexpr quantity zero() noexcept { return quantity(quantity_values<Rep>::zero()); }
+    static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
+    static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
 
     constexpr std::common_type_t<quantity> operator+() const { return quantity(*this); }
     constexpr std::common_type_t<quantity> operator-() const { return quantity(-count()); }
