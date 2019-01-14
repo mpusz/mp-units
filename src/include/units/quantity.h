@@ -131,7 +131,7 @@ namespace units {
     quantity(const quantity&) = default;
 
     template<ConvertibleTo<rep> Rep2>
-        requires (treat_as_floating_point<rep> || !treat_as_floating_point<Rep2>)
+        requires treat_as_floating_point<rep> || (!treat_as_floating_point<Rep2>)
     constexpr explicit quantity(const Rep2& r) : value_{static_cast<rep>(r)}
     {
     }
