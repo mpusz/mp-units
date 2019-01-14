@@ -162,13 +162,21 @@ namespace units {
   template<Exponent... Es>
   using make_dimension_t = typename make_dimension<Es...>::type;
 
+  template<Exponent... Es>
+  struct merge_dimension {
+    using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_merge_sorted_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
+  };
+
+  template<Exponent... Es>
+  using merge_dimension_t = typename merge_dimension<Es...>::type;
+
   // dimension_multiply
 
   template<Dimension D1, Dimension D2>
   struct dimension_multiply;
 
   template<Exponent... E1, Exponent... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<upcasting_traits_t<make_dimension_t<E1..., E2...>>> {};
+  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<upcasting_traits_t<merge_dimension_t<E1..., E2...>>> {};
 
   template<Dimension D1, Dimension D2>
   using dimension_multiply_t = typename dimension_multiply<typename D1::base_type, typename D2::base_type>::type;

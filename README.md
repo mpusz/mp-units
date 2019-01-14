@@ -117,29 +117,13 @@ So for example to create a `dimension_velocity` type we have to do:
 struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
 ```
 
-Also for example to return the result of multiplying two different dimensions we have to
-create a final dimension type using:
-
-```cpp
-template<Dimension D1, Dimension D2>
-struct dimension_multiply;
-
-template<Exponent... E1, Exponent... E2>
-struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
-  using type = upcasting_traits_t<make_dimension_t<E1..., E2...>>;
-};
-
-template<Dimension D1, Dimension D2>
-using dimension_multiply_t = typename dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
-```
-
 In order to make `make_dimension_t` work as expected it has to provide unique ordering for
 contained base dimensions. Beside providing ordering to base dimensions it also has to:
 - aggregate two arguments of the same base dimension but different exponents
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
 Additionally, it would be good if the final type produced by `make_dimension_t` would be easy to
-understand by the user. For example we may decide to order base dimensions with decreasing order of
+understand for the user. For example we may decide to order base dimensions with decreasing order of
 their exponents. That is why second sorting of a type list may be required. For example:
 
 ```cpp
@@ -148,6 +132,39 @@ struct make_dimension {
   using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_sort_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
 };
 ```
+
+
+#### `merge_dimension`
+
+`units::merge_dimension` is similar to `make_dimension` but instead of sorting the whole list
+of base dimensions from scratch it assumes that provided input `dimension` types are already
+sorted as a result of `make_dimension`.
+
+Typical use case for `merge_dimension` is to produce final `dimension` return type of multiplying
+two different dimensions:
+
+```cpp
+template<Dimension D1, Dimension D2>
+struct dimension_multiply;
+
+template<Exponent... E1, Exponent... E2>
+struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
+  using type = upcasting_traits_t<merge_dimension_t<E1..., E2...>>;
+};
+
+template<Dimension D1, Dimension D2>
+using dimension_multiply_t = typename dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+```
+
+Example implementation of `merge_dimension` may look like:
+
+```cpp
+template<Exponent... Es>
+struct merge_dimension {
+  using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_merge_sorted_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
+};
+```
+
 
 ### `Units`
 
@@ -414,7 +431,7 @@ Additionally, it should make the error logs even shorter thus easier to understa
 
     In such a case all the operators have to be provided to a child class. Or maybe use CRTP? 
 
-3. What to do with time which ia ambiguous?
+3. What to do with `time` which is ambiguous?
 
 4. What to do with `std::chrono::duration`?
 
