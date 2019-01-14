@@ -245,7 +245,7 @@ namespace units {
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
-  [[nodiscard]] quantity<dimension_multiply_t<D1, D2>, upcasting_traits_t<unit<dimension_multiply_t<D1, D2>,
+  /* [[nodiscard]] */ quantity<dimension_multiply_t<D1, D2>, upcasting_traits_t<unit<dimension_multiply_t<D1, D2>,
                                                                           std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>,
                                                                           std::common_type_t<Rep1, Rep2>>
   constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
@@ -287,7 +287,7 @@ namespace units {
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
-  [[nodiscard]] quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
+  /* [[nodiscard]] */ quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
   {
