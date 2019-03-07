@@ -71,7 +71,7 @@ namespace units {
   struct exp_greater_equal : std::bool_constant<(E1::value >= E2::value)> {
   };
 
-// exp_invert
+  // exp_invert
 
   template<Exponent E>
   struct exp_invert;
@@ -87,9 +87,7 @@ namespace units {
   // dimension
 
   template<Exponent... Es>
-  struct dimension {
-    using base_type = dimension<Es...>;
-  };
+  struct dimension : upcastable<dimension<Es...>> {};
 
   // is_dimension
   namespace detail {

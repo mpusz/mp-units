@@ -29,9 +29,7 @@ or more base dimensions:
 
 ```cpp
 template<Exponent... Es>
-struct dimension {
-  using base_type = dimension<Es...>;
-};
+struct dimension : upcastable<dimension<Es...>> {};
 ```
 
 `units::Dimension` is a Concept that is satisfied by a type that is empty and publicly
@@ -173,8 +171,7 @@ struct merge_dimension {
 ```cpp
 template<Dimension D, Ratio R>
   requires (R::num > 0)
-struct unit {
-  using base_type = unit<D, R>;
+struct unit : upcastable<unit<D, R>> {
   using dimension = D;
   using ratio = R;
 };
@@ -333,7 +330,7 @@ and
 are not arguably much easier to understand thus provide better user experience.
 
 Upcasting capability is provided through dedicated `upcasting_traits` and by `base_type` member
-type in `dimension` and `unit` class templates.
+type in `upcastable` class template.
 
 ```cpp
 template<typename T>
