@@ -19,6 +19,19 @@ static_assert(2_kmph * 2_h == 4_km);
 static_assert(2_km / 2_kmph == 1_h);
 ```
 
+## Requirements
+
+1. Safety and performance
+  - strong types
+  - template metaprogramming
+  - `constexpr` all the things
+2. The best possible user experience
+  - compiler errors
+  - debugging
+3. No macros in the user interface
+4. No external dependencies
+5. Possibility to be standardized as a part of C++ Standard Library 
+
 
 ## Basic Concepts
 
