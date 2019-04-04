@@ -29,8 +29,9 @@ static_assert(2_km / 2_kmph == 1_h);
   - compiler errors
   - debugging
 3. No macros in the user interface
-4. No external dependencies
-5. Possibility to be standardized as a part of C++ Standard Library 
+4. Easy extensibility
+5. No external dependencies
+6. Possibility to be standardized as a part of C++ Standard Library 
 
 
 ## Basic Concepts
