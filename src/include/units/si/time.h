@@ -53,7 +53,7 @@ namespace units {
 
 
   template<typename T>
-  concept bool Time = Quantity<T> && Same<typename T::dimension, dimension_time>;
+  concept bool Time = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_time>;
 
   // ...
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "stdconcepts.h"
+#include <experimental/ranges/concepts>
 #include <ratio>
 #include <type_traits>
 
@@ -37,8 +37,6 @@ namespace std {
 }
 
 namespace units {
-
-  using namespace mp::std_concepts;  // todo Remove when std::concepts will arrive
 
   template<typename T>
   concept bool Number = requires(T a, T b) {

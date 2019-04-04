@@ -44,7 +44,7 @@ namespace units {
   using velocity = quantity<dimension_velocity, U, Rep>;
 
   template<typename T>
-  concept bool Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+  concept bool Velocity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_velocity>;
 
   // ...
 

@@ -46,7 +46,7 @@ namespace units {
   using length = quantity<dimension_length, U, Rep>;
 
   template<typename T>
-  concept bool Length = Quantity<T> && Same<typename T::dimension, dimension_length>;
+  concept bool Length = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_length>;
 
   namespace literals {
 

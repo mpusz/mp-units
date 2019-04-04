@@ -52,7 +52,7 @@ namespace units {
   using frequency = quantity<dimension_frequency, U, Rep>;
 
   template<typename T>
-  concept bool Frequency =  Quantity<T> && Same<typename T::dimension, dimension_frequency>;
+  concept bool Frequency =  Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_frequency>;
 
   // ...
 

@@ -30,6 +30,8 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     settings = "os", "compiler", "build_type", "arch"
+    requires = ( "cmcstl2/2019.03.18@mpusz/stable" )
+    generators = "cmake"
 
     def build(self):
         cmake = CMake(self)

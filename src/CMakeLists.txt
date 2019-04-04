@@ -48,6 +48,10 @@ add_library(units INTERFACE)
 #    include/units/bits/tools.h
 #)
 target_compile_features(units INTERFACE cxx_std_20)
+target_link_libraries(units
+    INTERFACE
+        CONAN_PKG::cmcstl2
+)
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

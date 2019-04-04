@@ -30,7 +30,7 @@ namespace units {
   // is_quantity
 
   template<Dimension D, Unit U, Number Rep>
-      requires Same<D, typename U::dimension>
+      requires std::experimental::ranges::Same<D, typename U::dimension>
   class quantity;
 
   namespace detail {
@@ -95,7 +95,7 @@ namespace units {
   }  // namespace detail
 
   template<Quantity To, Dimension D, Unit U, Number Rep>
-      requires Same<typename To::dimension, D> constexpr
+      requires std::experimental::ranges::Same<typename To::dimension, D> constexpr
   To quantity_cast(const quantity<D, U, Rep>& q)
   {
     using c_ratio = std::ratio_divide<typename U::ratio, typename To::unit::ratio>;
@@ -116,7 +116,7 @@ namespace units {
   // quantity
 
   template<Dimension D, Unit U, Number Rep>
-      requires Same<D, typename U::dimension>
+      requires std::experimental::ranges::Same<D, typename U::dimension>
   class quantity {
     Rep value_;
 
@@ -130,17 +130,18 @@ namespace units {
     quantity() = default;
     quantity(const quantity&) = default;
 
-    template<ConvertibleTo<rep> Rep2>
+    template<std::experimental::ranges::ConvertibleTo<rep> Rep2>
         requires treat_as_floating_point<rep> || (!treat_as_floating_point<Rep2>)
     constexpr explicit quantity(const Rep2& r) : value_{static_cast<rep>(r)}
     {
     }
 
     template<Quantity Q2>
-        requires Same<dimension, typename Q2::dimension> && ConvertibleTo<typename Q2::rep, rep> &&
-        (treat_as_floating_point<rep> ||
-         (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
-          !treat_as_floating_point<typename Q2::rep>))
+        requires std::experimental::ranges::Same<dimension, typename Q2::dimension> &&
+                 std::experimental::ranges::ConvertibleTo<typename Q2::rep, rep> &&
+                 (treat_as_floating_point<rep> ||
+                   (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
+                   !treat_as_floating_point<typename Q2::rep>))
     constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()}
     {
     }

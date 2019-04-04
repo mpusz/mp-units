@@ -50,6 +50,6 @@ namespace units {
   concept bool Unit =
       std::is_empty_v<T> &&
       detail::is_unit<typename T::base_type> &&
-      DerivedFrom<T, typename T::base_type>;
+      std::experimental::ranges::DerivedFrom<T, typename T::base_type>;
 
 }  // namespace units
