@@ -40,7 +40,7 @@ namespace units {
   struct mile_per_hour : unit<dimension_velocity, std::ratio<44'704, 100'000>> {};
   template<> struct upcasting_traits<typename mile_per_hour::base_type> : std::type_identity<mile_per_hour> {};
 
-  template<Unit U = meter_per_second, Number Rep = std::intmax_t>
+  template<Unit U = meter_per_second, Number Rep = double>
   using velocity = quantity<dimension_velocity, U, Rep>;
 
   template<typename T>

@@ -42,7 +42,7 @@ namespace units {
   struct kilometer : unit<dimension_length, std::kilo> {};
   template<> struct upcasting_traits<typename kilometer::base_type> : std::type_identity<kilometer> {};
 
-  template<Unit U = meter, Number Rep = std::intmax_t>
+  template<Unit U = meter, Number Rep = double>
   using length = quantity<dimension_length, U, Rep>;
 
   template<typename T>

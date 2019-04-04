@@ -48,7 +48,7 @@ namespace units {
   struct terahertz : unit<dimension_frequency, std::tera> {};
   template<> struct upcasting_traits<typename terahertz::base_type> : std::type_identity<terahertz> {};
 
-  template<Unit U = hertz, Number Rep = std::intmax_t>
+  template<Unit U = hertz, Number Rep = double>
   using frequency = quantity<dimension_frequency, U, Rep>;
 
   template<typename T>

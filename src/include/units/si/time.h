@@ -48,7 +48,7 @@ namespace units {
   struct hour : unit<dimension_time, std::ratio<3600>> {};
   template<> struct upcasting_traits<typename hour::base_type> : std::type_identity<hour> {};
 
-  template<Unit U = second, Number Rep = std::intmax_t>
+  template<Unit U = second, Number Rep = double>
   using time = quantity<dimension_time, U, Rep>;
 
 
