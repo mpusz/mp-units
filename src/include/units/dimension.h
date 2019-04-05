@@ -87,7 +87,7 @@ namespace units {
   // dimension
 
   template<Exponent... Es>
-  struct dimension : upcastable<dimension<Es...>> {};
+  struct dimension : upcast_base<dimension<Es...>> {};
 
   // is_dimension
   namespace detail {
