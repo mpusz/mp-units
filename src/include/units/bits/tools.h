@@ -39,18 +39,20 @@ namespace std {
 namespace units {
 
   template<typename T>
-  concept bool Number = requires(T a, T b) {
-    { a + b } -> T;
-    { a - b } -> T;
-    { a * b } -> T;
-    { a / b } -> T;
-    { -a } -> T;
-    { a += b } -> T&;
-    { a -= b } -> T&;
-    { a *= b } -> T&;
-    { a /= b } -> T&;
-    { T{0} };// can construct a T from a zero
-    // …
+  concept bool Number = std::experimental::ranges::Regular<T> &&
+      std::experimental::ranges::StrictTotallyOrdered<T> &&
+      requires(T a, T b) {
+        { a + b } -> T;
+        { a - b } -> T;
+        { a * b } -> T;
+        { a / b } -> T;
+        { -a } -> T;
+        { a += b } -> T&;
+        { a -= b } -> T&;
+        { a *= b } -> T&;
+        { a /= b } -> T&;
+        { T{0} };// can construct a T from a zero
+        // …
   } ;
 
 
