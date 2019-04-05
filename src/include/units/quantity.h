@@ -24,6 +24,7 @@
 
 #include "unit.h"
 #include <limits>
+#include <gsl/gsl-lite.hpp>
 
 namespace units {
 
@@ -262,6 +263,8 @@ namespace units {
   constexpr operator/(const Rep1& v,
                       const quantity<D, U, Rep2>& q)
   {
+    Expects(q != std::decay_t<decltype(q)>(0));
+
     using dim = dim_invert_t<D>;
     using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>;
     using den = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
@@ -273,6 +276,8 @@ namespace units {
   constexpr operator/(const quantity<D, U, Rep1>& q,
                       const Rep2& v)
   {
+    Expects(v != Rep2{0});
+
     using ret = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
     return ret(ret(q).count() / v);
   }
@@ -282,6 +287,8 @@ namespace units {
   constexpr operator/(const quantity<D, U1, Rep1>& lhs,
                       const quantity<D, U2, Rep2>& rhs)
   {
+    Expects(rhs != std::decay_t<decltype(rhs)>(0));
+
     using cq = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return cq(lhs).count() / cq(rhs).count();
   }
@@ -292,6 +299,8 @@ namespace units {
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs)
   {
+    Expects(rhs != std::decay_t<decltype(rhs)>(0));
+
     using dim = dimension_divide_t<D1, D2>;
     using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
     return ret(lhs.count() / rhs.count());
