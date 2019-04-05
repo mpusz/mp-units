@@ -31,7 +31,7 @@ static_assert(2_km / 2_kmph == 1_h);
 3. No macros in the user interface
 4. Easy extensibility
 5. No external dependencies
-6. Possibility to be standardized as a part of C++ Standard Library 
+6. Possibility to be standardized as a part of the C++ Standard Library 
 
 
 ## Basic Concepts
@@ -70,14 +70,14 @@ struct exp {
 };
 ```
 
-where `BaseDimension` for now is:
+where `BaseDimension` is a unique sortable compile-time value and for now is implemented as:
 
 ```cpp
 template<int UniqueValue>
 using dim_id = std::integral_constant<int, UniqueValue>;
 ```
 
-but it is meant to be replaced with C++20 class constexpr values provided as non-type template
+but it is meant to be replaced with C++20 class `constexpr` values provided as non-type template
 parameters (when feature will be available in a compiler) so that for example base dimension for
 length will be expressed as `dimension<exp<"length", 1>>`.
 
@@ -94,7 +94,7 @@ concept Exponent =
 
 Above design of dimensions is created with the ease of use for end users in mind. Compile-time
 errors should provide as short as possible template instantiations strings that should be easy to
-understand by every C++ programmer. Also types visible in a debugger should be easy to understand.
+understand by every engineer. Also types visible in a debugger should be easy to understand.
 That is why `units::dimension` type for derived dimensions always stores information about only
 those base dimensions that are used to form that derived dimension.
 
