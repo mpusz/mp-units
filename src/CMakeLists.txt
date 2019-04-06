@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.8)
+#cmake_policy(SET CMP0076 NEW)
+
 project(units
     VERSION 0.0.1
-    LANGUAGES C CXX
+    LANGUAGES CXX
 )
 
 # set path to custom cmake modules
@@ -32,20 +34,21 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/common/cmake
 # include common tools and workarounds
 include(tools)
 
-# add dependencies
-# find_package(...)
-
 # library definition
 add_library(units INTERFACE)
 #target_sources(units INTERFACE
-#    include/units/units.h
-#    include/units/length.h
-#    include/units/time.h
+#    include/units/dimension.h
+#    include/units/quantity.h
+#    include/units/unit.h
 #
-#    include/units/bits/common_type.h
-#    include/units/bits/dimensions.h
-#    include/units/bits/quantity.h
 #    include/units/bits/tools.h
+#    include/units/bits/type_list.h
+#
+#    include/units/si/base_dimensions.h
+#    include/units/si/frequency.h
+#    include/units/si/length.h
+#    include/units/si/time.h
+#    include/units/si/velocity.h
 #)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
@@ -59,7 +62,7 @@ target_include_directories(units
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:include>
 )
-add_library(mp::units ALIAS units)
+add_library(units::units ALIAS units)
 
 # installation info
 install(TARGETS units EXPORT ${CMAKE_PROJECT_NAME}Targets
@@ -74,4 +77,4 @@ install(DIRECTORY include/units
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in SameMajorVersion)
+configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in units SameMajorVersion)

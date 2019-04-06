@@ -20,44 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools, RunEnvironment
+import os
 
-class UnitsConan(ConanFile):
-    name = "units"
-    version = "0.0.1"
-    author = "Mateusz Pusz"
-    license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
-    url = "https://github.com/mpusz/units"
-    description = "Physical Units library for C++"
-    exports = ["LICENSE.md"]
+class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = (
-        "cmcstl2/2019.03.18@mpusz/stable",
-        "gsl-lite/0.33.0@nonstd-lite/stable"
-    )
-    scm = {
-        "type": "git",
-        "url": "auto",
-        "revision": "auto"
-    }
     generators = "cmake"
-
-    def _configure_cmake(self):
-        cmake = CMake(self)
-        cmake.configure(source_dir="%s/src" % self.source_folder)
-        return cmake
-
+    
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
-    def package(self):
-        self.copy(pattern="*license*", dst="licenses", excludes="cmake/common/*", ignore_case=True, keep_path=False)
-        cmake = self._configure_cmake()
-        cmake.install()
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
+        self.copy('*.so*', dst='bin', src='lib')
 
-    def package_info(self):
-        self.cpp_info.includedirs = ['include']
+    def _test_run(self, bin_path):
+        if self.settings.os == "Windows":
+            self.run(bin_path)
+        elif self.settings.os == "Macos":
+            self.run("DYLD_LIBRARY_PATH=%s %s" % (os.environ.get('DYLD_LIBRARY_PATH', ''), bin_path))
+        else:
+            self.run("LD_LIBRARY_PATH=%s %s" % (os.environ.get('LD_LIBRARY_PATH', ''), bin_path))
 
-    def package_id(self):
-        self.info.header_only()
+    def test(self):
+        if not tools.cross_building(self.settings):
+            with tools.environment_append(RunEnvironment(self).vars):
+                self._test_run(os.path.join("bin", "test_package_conan"))
+                self._test_run(os.path.join("bin", "test_package_cmake"))

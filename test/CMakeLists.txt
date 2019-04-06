@@ -20,21 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.8)
-project(units_test)
-
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../cmake/common/cmake")
-
-# include common tools and workarounds
-include(tools)
-
-# add dependencies
-enable_testing()
-if(NOT TARGET mp::units)
-    find_package(units CONFIG REQUIRED)
-endif()
-
 # unit tests
 add_library(unit_tests
     test_dimension.cpp
@@ -45,9 +30,5 @@ add_library(unit_tests
 )
 target_link_libraries(unit_tests
     PRIVATE
-        mp::units
-)
-add_test(NAME units.unit_tests
-    COMMAND
-        unit_tests
+        units::units
 )

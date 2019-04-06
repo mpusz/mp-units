@@ -39,7 +39,6 @@ include(compile_flags)
 add_subdirectory(src)
 
 # add unit tests
-enable_testing()
 add_subdirectory(test)
 
 # add usage example

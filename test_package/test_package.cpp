@@ -20,10 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/si/velocity.h"
+#include <units/si/velocity.h>
 #include <iostream>
-
-namespace {
 
 using namespace units::literals;
 
@@ -33,35 +31,7 @@ constexpr units::Velocity avg_speed(D d, T t)
   return d / t;
 }
 
-template<units::Velocity V, units::Time T>
-void example_1(V v, T t)
-{
-  const units::Length distance = v * t;
-  std::cout << "A car driving " << v.count() << " km/h in a time of " << t.count() << " minutes will pass "
-            << units::quantity_cast<units::length<units::meter, double>>(distance).count() << " meters.\n";
-}
-
-void example_2(double distance_v, double duration_v)
-{
-  units::length<units::kilometer> distance(distance_v);
-  units::time<units::hour> duration(duration_v);
-  const auto kmph = avg_speed(distance, duration);
-  std::cout << "Average speed of a car that makes " << distance.count() << " km in "
-            << duration.count() << " hours is " << kmph.count() << " km/h.\n";
-}
-
-}
-
 int main()
 {
-  try {
-    example_1(60_kmph, 10.0_min);
-    example_2(220, 2);
-  }
-  catch (const std::exception& ex) {
-    std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
-  }
-  catch (...) {
-    std::cerr << "Unhandled unknown exception caught\n";
-  }
+  std::cout << "Average speed = " << avg_speed(240.0_km, 2_h).count() << " kmph\n";
 }
