@@ -7,7 +7,7 @@ env:
      - CONAN_STABLE_BRANCH_PATTERN: "release/*"
      - CONAN_UPLOAD_ONLY_WHEN_STABLE: 0
      - CONAN_DOCKER_32_IMAGES: 1
-     - CONAN_REMOTES: "https://api.bintray.com/conan/martinmoene/nonstd-lite"
+     - CONAN_REMOTES: "https://api.bintray.com/conan/mpusz/conan-mpusz, https://api.bintray.com/conan/martinmoene/nonstd-lite"
 
 linux: &linux
    os: linux
