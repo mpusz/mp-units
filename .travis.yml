@@ -1,11 +1,5 @@
 env:
    global:
-     - CONAN_USERNAME: "mpusz"
-     - CONAN_LOGIN_USERNAME: "mpusz"
-     - CONAN_CHANNEL: "testing"
-     - CONAN_UPLOAD: "https://api.bintray.com/conan/mpusz/conan-mpusz"
-     - CONAN_STABLE_BRANCH_PATTERN: "release/*"
-     - CONAN_UPLOAD_ONLY_WHEN_STABLE: 0
      - CONAN_DOCKER_32_IMAGES: 1
 
 linux: &linux
