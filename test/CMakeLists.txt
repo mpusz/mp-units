@@ -30,5 +30,5 @@ add_library(unit_tests
 )
 target_link_libraries(unit_tests
     PRIVATE
-        units::units
+        mp::units
 )

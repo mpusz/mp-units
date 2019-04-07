@@ -56,7 +56,7 @@ $ conan remote add conan-nonstd https://api.bintray.com/conan/martinmoene/nonstd
 - add the following dependency to your `conanfile.txt` or `conanfile.py` files
 
 ```python
-requires = "units/0.0.1@mpusz/testing"
+requires = "mp-units/0.0.1@mpusz/testing"
 ```
 
 - install conan dependencies before configuring cmake
@@ -92,5 +92,5 @@ $ conan create . <username>/<channel> --build=outdated <your_profile_and_setting
 # Upload package to conan server
 
 ```bash
-$ conan upload -r <remote-name> --all units/0.0.1@<user>/<channel>
+$ conan upload -r <remote-name> --all mp-units/0.0.1@<user>/<channel>
 ```

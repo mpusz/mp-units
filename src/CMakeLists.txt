@@ -62,7 +62,7 @@ target_include_directories(units
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:include>
 )
-add_library(units::units ALIAS units)
+add_library(mp::units ALIAS units)
 
 # installation info
 install(TARGETS units EXPORT ${CMAKE_PROJECT_NAME}Targets
@@ -77,4 +77,4 @@ install(DIRECTORY include/units
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in units SameMajorVersion)
+configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in mp SameMajorVersion)

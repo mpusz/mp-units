@@ -23,7 +23,7 @@
 from conans import ConanFile, CMake
 
 class UnitsConan(ConanFile):
-    name = "units"
+    name = "mp-units"
     version = "0.0.1"
     author = "Mateusz Pusz"
     license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
