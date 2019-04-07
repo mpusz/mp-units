@@ -496,3 +496,35 @@ Additionally, it should make the error logs even shorter thus easier to understa
     Because dimensionless quantities have no associated units, they behave as normal scalars,
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
+
+17. Should we leave `quantity` and specific dimensions as
+    ```cpp
+    template<Dimension D, Unit U, Number Rep>
+        requires std::experimental::ranges::Same<D, typename U::dimension>
+    class quantity;
+    
+    template<Unit U = meter_per_second, Number Rep = double>
+    using velocity = quantity<dimension_velocity, U, Rep>;
+    
+    units::velocity<units::kilometer_per_hour> kmph = avg_speed(d, t);
+    ```
+    or maybe we should leave the dimension only in unit
+    ```cpp
+    template<Unit U, Number Rep>
+    class quantity;
+    
+    units::quantity<units::kilometer_per_hour> kmph = avg_speed(d, t);
+    ```
+    which will simplify the design and shorten compile time errors but possibly will add
+    more ambiguity to some cases. For example when using CTAD:
+    ```cpp
+    units::velocity kmph = avg_speed(d, t);
+    ```
+    vs
+    ```cpp
+    units::quantity kmph = avg_speed(d, t);
+    ```
+    It would be also incopatible with concepts named i.e. `Velocity`.
+
+18. Should we standardize accompany tools (`type_list` operations, `static_sign`, `static_abs`,
+    `static_gcd`, `common_ratio`)? 
