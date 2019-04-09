@@ -46,9 +46,7 @@ namespace units {
   template<typename T>
   concept bool Velocity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_velocity>;
 
-  // ...
-
-  namespace literals {
+  inline namespace literals {
 
     // mps
     constexpr auto operator""_mps(unsigned long long l) { return velocity<meter_per_second, std::int64_t>(l); }

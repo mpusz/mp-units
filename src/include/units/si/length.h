@@ -64,7 +64,7 @@ namespace units {
   template<typename T>
   concept bool Length = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_length>;
 
-  namespace literals {
+  inline namespace literals {
 
     // mm
     constexpr auto operator""_mm(unsigned long long l) { return length<millimeter, std::int64_t>(l); }

@@ -54,9 +54,7 @@ namespace units {
   template<typename T>
   concept bool Frequency =  Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_frequency>;
 
-  // ...
-
-  namespace literals {
+  inline namespace literals {
 
     // mHz
     constexpr auto operator""_mHz(unsigned long long l) { return frequency<millihertz, std::int64_t>(l); }

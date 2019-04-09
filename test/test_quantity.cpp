@@ -26,7 +26,6 @@
 #include <chrono>
 
 using namespace units;
-using namespace units::literals;
 
 namespace {
 
@@ -76,7 +75,6 @@ namespace std {
 namespace {
 
   using namespace units;
-  using namespace units::literals;
 
   // class invariants
 

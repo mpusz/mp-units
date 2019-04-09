@@ -27,8 +27,8 @@
 #include <utility>
 
 namespace {
+
   using namespace units;
-  using namespace units::literals;
 
   // frequency
 

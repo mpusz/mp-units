@@ -55,9 +55,7 @@ namespace units {
   template<typename T>
   concept bool Time = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_time>;
 
-  // ...
-
-  namespace literals {
+  inline namespace literals {
 
     // ns
     constexpr auto operator""_ns(unsigned long long l) { return time<nanosecond, std::int64_t>(l); }
