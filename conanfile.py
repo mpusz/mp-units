@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
 
 class UnitsConan(ConanFile):
     name = "mp-units"
