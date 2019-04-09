@@ -44,7 +44,10 @@ class UnitsConan(ConanFile):
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure(source_dir="%s/src" % self.source_folder)
+        if tools.get_env("CONAN_RUN_TESTS", False):
+            cmake.configure()
+        else:
+            cmake.configure(source_dir="%s/src" % self.source_folder)
         return cmake
 
     def build(self):
