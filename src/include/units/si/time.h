@@ -28,25 +28,25 @@
 namespace units {
 
   struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
-  template<> struct upcasting_traits<typename dimension_time::base_type> : std::type_identity<dimension_time> {};
+  template<> struct upcasting_traits<upcast_from<dimension_time>> : upcast_to<dimension_time> {};
 
   struct nanosecond : unit<dimension_time, std::nano> {};
-  template<> struct upcasting_traits<typename nanosecond::base_type> : std::type_identity<nanosecond> {};
+  template<> struct upcasting_traits<upcast_from<nanosecond>> : upcast_to<nanosecond> {};
 
   struct microsecond : unit<dimension_time, std::micro> {};
-  template<> struct upcasting_traits<typename microsecond::base_type> : std::type_identity<microsecond> {};
+  template<> struct upcasting_traits<upcast_from<microsecond>> : upcast_to<microsecond> {};
 
   struct millisecond : unit<dimension_time, std::milli> {};
-  template<> struct upcasting_traits<typename millisecond::base_type> : std::type_identity<millisecond> {};
+  template<> struct upcasting_traits<upcast_from<millisecond>> : upcast_to<millisecond> {};
 
   struct second : unit<dimension_time, std::ratio<1>> {};
-  template<> struct upcasting_traits<typename second::base_type> : std::type_identity<second> {};
+  template<> struct upcasting_traits<upcast_from<second>> : upcast_to<second> {};
 
   struct minute : unit<dimension_time, std::ratio<60>> {};
-  template<> struct upcasting_traits<typename minute::base_type> : std::type_identity<minute> {};
+  template<> struct upcasting_traits<upcast_from<minute>> : upcast_to<minute> {};
 
   struct hour : unit<dimension_time, std::ratio<3600>> {};
-  template<> struct upcasting_traits<typename hour::base_type> : std::type_identity<hour> {};
+  template<> struct upcasting_traits<upcast_from<hour>> : upcast_to<hour> {};
 
   template<Unit U = second, Number Rep = double>
   using time = quantity<dimension_time, U, Rep>;

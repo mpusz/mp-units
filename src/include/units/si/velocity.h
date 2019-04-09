@@ -29,16 +29,16 @@
 namespace units {
 
   struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-  template<> struct upcasting_traits<typename dimension_velocity::base_type> : std::type_identity<dimension_velocity> {};
+  template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
 
   struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
-  template<> struct upcasting_traits<typename meter_per_second::base_type> : std::type_identity<meter_per_second> {};
+  template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
 
   struct kilometer_per_hour : unit<dimension_velocity, std::ratio_divide<kilometer::ratio, hour::ratio>> {};
-  template<> struct upcasting_traits<typename kilometer_per_hour::base_type> : std::type_identity<kilometer_per_hour> {};
+  template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
 
   struct mile_per_hour : unit<dimension_velocity, std::ratio_divide<mile::ratio, hour::ratio>> {};
-  template<> struct upcasting_traits<typename mile_per_hour::base_type> : std::type_identity<mile_per_hour> {};
+  template<> struct upcasting_traits<upcast_from<mile_per_hour>> : upcast_to<mile_per_hour> {};
 
   template<Unit U = meter_per_second, Number Rep = double>
   using velocity = quantity<dimension_velocity, U, Rep>;

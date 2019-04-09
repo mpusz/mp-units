@@ -29,33 +29,33 @@ namespace units {
 
   // dimension
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct upcasting_traits<typename dimension_length::base_type> : std::type_identity<dimension_length> {};
+  template<> struct upcasting_traits<upcast_from<dimension_length>> : upcast_to<dimension_length> {};
 
   // SI units
   struct millimeter : unit<dimension_length, std::milli> {};
-  template<> struct upcasting_traits<typename millimeter::base_type> : std::type_identity<millimeter> {};
+  template<> struct upcasting_traits<upcast_from<millimeter>> : upcast_to<millimeter> {};
 
   struct centimeter : unit<dimension_length, std::ratio<1, 100>> {};
-  template<> struct upcasting_traits<typename centimeter::base_type> : std::type_identity<centimeter> {};
+  template<> struct upcasting_traits<upcast_from<centimeter>> : upcast_to<centimeter> {};
 
   struct meter : unit<dimension_length, std::ratio<1>> {};
-  template<> struct upcasting_traits<typename meter::base_type> : std::type_identity<meter> {};
+  template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
 
   struct kilometer : unit<dimension_length, std::kilo> {};
-  template<> struct upcasting_traits<typename kilometer::base_type> : std::type_identity<kilometer> {};
+  template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
 
   // US customary units
   struct yard : unit<dimension_length, std::ratio<9'144, 10'000>> {};
-  template<> struct upcasting_traits<typename yard::base_type> : std::type_identity<yard> {};
+  template<> struct upcasting_traits<upcast_from<yard>> : upcast_to<yard> {};
 
   struct foot : unit<dimension_length, std::ratio_multiply<std::ratio<1, 3>, yard::ratio>> {};
-  template<> struct upcasting_traits<typename foot::base_type> : std::type_identity<foot> {};
+  template<> struct upcasting_traits<upcast_from<foot>> : upcast_to<foot> {};
 
   struct inch : unit<dimension_length, std::ratio_multiply<std::ratio<1, 12>, foot::ratio>> {};
-  template<> struct upcasting_traits<typename inch::base_type> : std::type_identity<inch> {};
+  template<> struct upcasting_traits<upcast_from<inch>> : upcast_to<inch> {};
 
   struct mile : unit<dimension_length, std::ratio_multiply<std::ratio<1'760>, yard::ratio>> {};
-  template<> struct upcasting_traits<typename mile::base_type> : std::type_identity<mile> {};
+  template<> struct upcasting_traits<upcast_from<mile>> : upcast_to<mile> {};
 
   // length
   template<Unit U = meter, Number Rep = double>

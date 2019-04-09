@@ -54,8 +54,7 @@ derived from `units::dimension` class template:
 template<typename T>
 concept Dimension =
     std::is_empty_v<T> &&
-    detail::is_dimension<typename T::base_type> &&  // exposition only
-    DerivedFrom<T, typename T::base_type>;
+    detail::is_dimension<upcast_from<T>>; // exposition only
 ```
 
 #### `Exponents`
@@ -199,8 +198,7 @@ derived from `units::unit` class template:
 template<typename T>
 concept Unit =
     std::is_empty_v<T> &&
-    detail::is_unit<typename T::base_type> &&  // exposition only
-    DerivedFrom<T, typename T::base_type>;
+    detail::is_unit<upcast_from<T>>;  // exposition only
 ```
 
 ### `Quantities`
@@ -344,31 +342,33 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-Upcasting capability is provided through dedicated `upcasting_traits` and by `base_type` member
-type in `upcast_base` class template.
+Upcasting capability is provided through dedicated `upcasting_traits`, a few helper aliases and by
+`base_type` member type in `upcast_base` class template.
 
 ```cpp
+template<Upcastable T>
+using upcast_from = typename T::base_type;
+
 template<typename T>
-struct upcasting_traits : std::type_identity<T> {};
+using upcast_to = std::type_identity<T>;
+
+template<typename T>
+struct upcasting_traits : upcast_to<T> {};
 
 template<typename T>
 using upcasting_traits_t = typename upcasting_traits<T>::type;
 ```
 
+With that the upcasting functionality is enabled by:
+
 ```cpp
 struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-
-template<>
-struct upcasting_traits<typename dimension_length::base_type> :
-    std::type_identity<dimension_length> {};
+template<> struct upcasting_traits<upcast_from<dimension_length>> : upcast_to<dimension_length> {};
 ```
 
 ```cpp
 struct kilometer : unit<dimension_length, std::kilo> {};
-
-template<>
-struct upcasting_traits<typename kilometer::base_type> :
-    std::type_identity<kilometer> {};
+template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
 ```
 
 
@@ -379,14 +379,14 @@ In order to extend the library with custom dimensions the user has to:
 
 ```cpp
 struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-template<> struct upcasting_traits<typename dimension_velocity::base_type> : std::type_identity<dimension_velocity> {};
+template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
 ``` 
 
 2. Define the base unit (`std::ratio<1>`) and secondary ones and provide upcasting traits for them via:
 
 ```cpp
 struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
-template<> struct upcasting_traits<typename meter_per_second::base_type> : std::type_identity<meter_per_second> {};
+template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
 ``` 
 
 3. Define a concept that will match a new dimension:
@@ -528,3 +528,12 @@ Additionally, it should make the error logs even shorter thus easier to understa
 
 18. Should we standardize accompany tools (`type_list` operations, `static_sign`, `static_abs`,
     `static_gcd`, `common_ratio`)? 
+     
+19. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)? 
+
+20. implicit conversion of quantity<Unit,Y> to quantity<Unit,Z> is allowed if Y and Z are implicitly convertible.
+    assignment between quantity<Unit,Y> and quantity<Unit,Z> is allowed if Y and Z are implicitly convertible.
+
+21. explicit conversion between quantity<Unit1,Y> and quantity<Unit2,Z> is allowed if Unit1 and Unit2 have the same dimensions and if Y and Z are implicitly convertible.
+    implicit conversion between quantity<Unit1,Y> and quantity<Unit2,Z> is allowed if Unit1 reduces to exactly the same combination of base units as Unit2 and if Y and Z are convertible.
+

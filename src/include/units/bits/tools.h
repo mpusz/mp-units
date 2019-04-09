@@ -110,20 +110,30 @@ namespace units {
   template<Ratio Ratio1, Ratio Ratio2>
   using common_ratio_t = typename common_ratio<Ratio1, Ratio2>::type;
 
-  // upcast_base
+  // upcasting
 
   template<typename BaseType>
   struct upcast_base {
     using base_type = BaseType;
   };
 
-  // upcasting_traits
+  template<typename T>
+  concept bool Upcastable =
+      requires {
+        typename T::base_type;
+      } &&
+      std::experimental::ranges::DerivedFrom<T, upcast_base<typename T::base_type>>;
+
+  template<Upcastable T>
+  using upcast_from = typename T::base_type;
 
   template<typename T>
-  struct upcasting_traits : std::type_identity<T> {};
+  using upcast_to = std::type_identity<T>;
+
+  template<typename T>
+  struct upcasting_traits : upcast_to<T> {};
 
   template<typename T>
   using upcasting_traits_t = typename upcasting_traits<T>::type;
-
 
 }  // namespace units

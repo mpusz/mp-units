@@ -101,8 +101,7 @@ namespace units {
   template<typename T>
   concept bool Dimension =
       std::is_empty_v<T> &&
-      detail::is_dimension<typename T::base_type> &&
-      std::experimental::ranges::DerivedFrom<T, typename T::base_type>;
+      detail::is_dimension<upcast_from<T>>;
 
 
   // dim_invert
