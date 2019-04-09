@@ -27,9 +27,11 @@
 
 namespace units {
 
+  // dimension
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
   template<> struct upcasting_traits<typename dimension_length::base_type> : std::type_identity<dimension_length> {};
 
+  // SI units
   struct millimeter : unit<dimension_length, std::milli> {};
   template<> struct upcasting_traits<typename millimeter::base_type> : std::type_identity<millimeter> {};
 
@@ -42,6 +44,20 @@ namespace units {
   struct kilometer : unit<dimension_length, std::kilo> {};
   template<> struct upcasting_traits<typename kilometer::base_type> : std::type_identity<kilometer> {};
 
+  // US customary units
+  struct yard : unit<dimension_length, std::ratio<9'144, 10'000>> {};
+  template<> struct upcasting_traits<typename yard::base_type> : std::type_identity<yard> {};
+
+  struct foot : unit<dimension_length, std::ratio_multiply<std::ratio<1, 3>, yard::ratio>> {};
+  template<> struct upcasting_traits<typename foot::base_type> : std::type_identity<foot> {};
+
+  struct inch : unit<dimension_length, std::ratio_multiply<std::ratio<1, 12>, foot::ratio>> {};
+  template<> struct upcasting_traits<typename inch::base_type> : std::type_identity<inch> {};
+
+  struct mile : unit<dimension_length, std::ratio_multiply<std::ratio<1'760>, yard::ratio>> {};
+  template<> struct upcasting_traits<typename mile::base_type> : std::type_identity<mile> {};
+
+  // length
   template<Unit U = meter, Number Rep = double>
   using length = quantity<dimension_length, U, Rep>;
 
@@ -65,6 +81,22 @@ namespace units {
     // km
     constexpr auto operator""_km(unsigned long long l) { return length<kilometer, std::int64_t>(l); }
     constexpr auto operator""_km(long double l) { return length<kilometer, long double>(l); }
+
+    // yd
+    constexpr auto operator""_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
+    constexpr auto operator""_yd(long double l) { return length<yard, long double>(l); }
+
+    // ft
+    constexpr auto operator""_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
+    constexpr auto operator""_ft(long double l) { return length<foot, long double>(l); }
+
+    // in
+    constexpr auto operator""_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
+    constexpr auto operator""_in(long double l) { return length<inch, long double>(l); }
+
+    // mi
+    constexpr auto operator""_mi(unsigned long long l) { return length<mile, std::int64_t>(l); }
+    constexpr auto operator""_mi(long double l) { return length<mile, long double>(l); }
 
   }  // namespace literals
 

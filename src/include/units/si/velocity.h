@@ -34,10 +34,10 @@ namespace units {
   struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
   template<> struct upcasting_traits<typename meter_per_second::base_type> : std::type_identity<meter_per_second> {};
 
-  struct kilometer_per_hour : unit<dimension_velocity, std::ratio<1000, 3600>> {};
+  struct kilometer_per_hour : unit<dimension_velocity, std::ratio_divide<kilometer::ratio, hour::ratio>> {};
   template<> struct upcasting_traits<typename kilometer_per_hour::base_type> : std::type_identity<kilometer_per_hour> {};
 
-  struct mile_per_hour : unit<dimension_velocity, std::ratio<44'704, 100'000>> {};
+  struct mile_per_hour : unit<dimension_velocity, std::ratio_divide<mile::ratio, hour::ratio>> {};
   template<> struct upcasting_traits<typename mile_per_hour::base_type> : std::type_identity<mile_per_hour> {};
 
   template<Unit U = meter_per_second, Number Rep = double>

@@ -44,12 +44,17 @@ namespace {
   // length
 
   static_assert(1_km == 1000_m);
+  static_assert(1_m == 100_cm);
+  static_assert(1_m == 1000_mm);
   static_assert(1_km + 1_m == 1001_m);
   static_assert(10_km / 5_km == 2);
   static_assert(10_km / 2 == 5_km);
 
-//  static_assert(1_ft == 12_in);
-  static_assert(1_m == 100_cm);
+  static_assert(1_yd == 0.9144_m);
+  static_assert(1_yd == 3_ft);
+  static_assert(1_ft == 12_in);
+  static_assert(1_mi == 1760_yd);
+
 //  static_assert(5_in + 8_cm == 207_mm);
 
   // velocity
@@ -62,6 +67,8 @@ namespace {
   // static_assert(1_km / 1_h == 1_kmph);  // should not compile
   static_assert(1.0_km / 1_h == 1_kmph);
   static_assert(1000.0_m / 3600.0_s == 1_kmph);
+
+  static_assert(10.0_mi / 2_h == 5_mph);
 
   static_assert(2_kmph * 2_h == 4_km);
   // static_assert(2_kmph * 15_min == 500_m); // should not compile
