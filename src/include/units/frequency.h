@@ -22,13 +22,19 @@
 
 #pragma once
 
-#include "base_dimensions.h"
-#include "time.h"
+#include <units/base_dimensions.h>
+#include <units/time.h>
 
 namespace units {
 
   struct dimension_frequency : make_dimension_t<exp<base_dim_time, -1>> {};
   template<> struct upcasting_traits<upcast_from<dimension_frequency>> : upcast_to<dimension_frequency> {};
+
+  template<typename T>
+  concept bool Frequency =  Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_frequency>;
+
+  template<Unit U = struct hertz, Number Rep = double>
+  using frequency = quantity<dimension_frequency, U, Rep>;
 
   struct millihertz : unit<dimension_frequency, std::milli> {};
   template<> struct upcasting_traits<upcast_from<millihertz>> : upcast_to<millihertz> {};
@@ -47,12 +53,6 @@ namespace units {
 
   struct terahertz : unit<dimension_frequency, std::tera> {};
   template<> struct upcasting_traits<upcast_from<terahertz>> : upcast_to<terahertz> {};
-
-  template<Unit U = hertz, Number Rep = double>
-  using frequency = quantity<dimension_frequency, U, Rep>;
-
-  template<typename T>
-  concept bool Frequency =  Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_frequency>;
 
   inline namespace literals {
 

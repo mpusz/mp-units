@@ -22,13 +22,19 @@
 
 #pragma once
 
-#include "base_dimensions.h"
-#include "../quantity.h"
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
   struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
   template<> struct upcasting_traits<upcast_from<dimension_time>> : upcast_to<dimension_time> {};
+
+  template<typename T>
+  concept bool Time = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_time>;
+
+  template<Unit U = struct second, Number Rep = double>
+  using time = quantity<dimension_time, U, Rep>;
 
   struct nanosecond : unit<dimension_time, std::nano> {};
   template<> struct upcasting_traits<upcast_from<nanosecond>> : upcast_to<nanosecond> {};
@@ -47,13 +53,6 @@ namespace units {
 
   struct hour : unit<dimension_time, std::ratio<3600>> {};
   template<> struct upcasting_traits<upcast_from<hour>> : upcast_to<hour> {};
-
-  template<Unit U = second, Number Rep = double>
-  using time = quantity<dimension_time, U, Rep>;
-
-
-  template<typename T>
-  concept bool Time = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_time>;
 
   inline namespace literals {
 

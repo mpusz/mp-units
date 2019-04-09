@@ -22,18 +22,29 @@
 
 #pragma once
 
-#include "../dimension.h"
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  // todo: to be replaced with fixed_string when supported by the compilers
+  struct dimension_current : make_dimension_t<exp<base_dim_current, 1>> {};
+  template<> struct upcasting_traits<upcast_from<dimension_current>> : upcast_to<dimension_current> {};
 
-  struct base_dim_length : dim_id<0> {};
-  struct base_dim_mass : dim_id<1> {};
-  struct base_dim_time : dim_id<2> {};
-  struct base_dim_electric_current : dim_id<3> {};
-  struct base_dim_temperature : dim_id<4> {};
-  struct base_dim_amount_of_substance : dim_id<5> {};
-  struct base_dim_luminous_intensity : dim_id<6> {};
+  template<typename T>
+  concept bool Current = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_current>;
+
+  template<Unit U = struct ampere, Number Rep = double>
+  using current = quantity<dimension_current, U, Rep>;
+
+  struct ampere : unit<dimension_current, std::ratio<1>> {};
+  template<> struct upcasting_traits<upcast_from<ampere>> : upcast_to<ampere> {};
+
+  inline namespace literals {
+
+    // A
+    constexpr auto operator""_A(unsigned long long l) { return current<ampere, std::int64_t>(l); }
+    constexpr auto operator""_A(long double l) { return current<ampere, long double>(l); }
+
+  }
 
 }  // namespace units

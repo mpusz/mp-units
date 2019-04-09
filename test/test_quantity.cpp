@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/si/velocity.h"
-#include "units/si/frequency.h"
+#include "units/velocity.h"
+#include "units/frequency.h"
 #include <utility>
 #include <chrono>
 

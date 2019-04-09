@@ -22,32 +22,32 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
-
-  // is_unit
-
-  namespace detail {
-
-    template<typename T>
-    inline constexpr bool is_unit = false;
-
-    template<Dimension D, Ratio R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
-
-  }
+  struct dimension_mass : make_dimension_t<exp<base_dim_mass, 1>> {};
+  template<> struct upcasting_traits<upcast_from<dimension_mass>> : upcast_to<dimension_mass> {};
 
   template<typename T>
-  concept bool Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+  concept bool Mass = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_mass>;
+
+  template<Unit U = class kilogram, Number Rep = double>
+  using mass = quantity<dimension_mass, U, Rep>;
+
+  struct gram : unit<dimension_mass, std::milli> {};
+  template<> struct upcasting_traits<upcast_from<gram>> : upcast_to<gram> {};
+
+  struct kilogram : unit<dimension_mass, std::ratio<1>> {};
+  template<> struct upcasting_traits<upcast_from<kilogram>> : upcast_to<kilogram> {};
+
+  inline namespace literals {
+
+    // kg
+    constexpr auto operator""_kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
+    constexpr auto operator""_kg(long double l) { return mass<kilogram, long double>(l); }
+
+  }  // namespace literals
 
 }  // namespace units

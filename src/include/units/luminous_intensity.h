@@ -22,32 +22,29 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
-
-  // is_unit
-
-  namespace detail {
-
-    template<typename T>
-    inline constexpr bool is_unit = false;
-
-    template<Dimension D, Ratio R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
-
-  }
+  struct dimension_luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
+  template<> struct upcasting_traits<upcast_from<dimension_luminous_intensity>> : upcast_to<dimension_luminous_intensity> {};
 
   template<typename T>
-  concept bool Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+  concept bool LuminousIntensity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_luminous_intensity>;
+
+  template<Unit U = struct candela, Number Rep = double>
+  using luminous_intensity = quantity<dimension_luminous_intensity, U, Rep>;
+
+  struct candela : unit<dimension_luminous_intensity, std::ratio<1>> {};
+  template<> struct upcasting_traits<upcast_from<candela>> : upcast_to<candela> {};
+
+  inline namespace literals {
+
+    // cd
+    constexpr auto operator""_cd(unsigned long long l) { return luminous_intensity<candela, std::int64_t>(l); }
+    constexpr auto operator""_cd(long double l) { return luminous_intensity<candela, long double>(l); }
+
+  }  // namespace literals
 
 }  // namespace units

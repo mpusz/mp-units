@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/si/velocity.h"
+#include <units/velocity.h>
 #include <iostream>
 
 namespace {

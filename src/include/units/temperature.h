@@ -22,32 +22,29 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
-
-  // is_unit
-
-  namespace detail {
-
-    template<typename T>
-    inline constexpr bool is_unit = false;
-
-    template<Dimension D, Ratio R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
-
-  }
+  struct dimension_temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
+  template<> struct upcasting_traits<upcast_from<dimension_temperature>> : upcast_to<dimension_temperature> {};
 
   template<typename T>
-  concept bool Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+  concept bool ThermodynamicTemperature = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_temperature>;
+
+  template<Unit U = struct kelvin, Number Rep = double>
+  using temperature = quantity<dimension_temperature, U, Rep>;
+
+  struct kelvin : unit<dimension_temperature, std::ratio<1>> {};
+  template<> struct upcasting_traits<upcast_from<kelvin>> : upcast_to<kelvin> {};
+
+  inline namespace literals {
+
+    // K
+    constexpr auto operator""_K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
+    constexpr auto operator""_K(long double l) { return temperature<kelvin, long double>(l); }
+
+  }  // namespace literals
 
 }  // namespace units

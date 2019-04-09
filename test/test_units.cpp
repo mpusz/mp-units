@@ -20,10 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/si/frequency.h"
-#include "units/si/length.h"
-#include "units/si/time.h"
-#include "units/si/velocity.h"
+#include <units/time.h>
+#include <units/length.h>
+#include <units/mass.h>
+#include <units/current.h>
+#include <units/current.h>
+#include <units/temperature.h>
+#include <units/substance.h>
+#include <units/luminous_intensity.h>
+
+#include <units/frequency.h>
+#include <units/velocity.h>
+
 #include <utility>
 
 namespace {

@@ -26,28 +26,14 @@
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
+  // todo: to be replaced with fixed_string when supported by the compilers
 
-  // is_unit
-
-  namespace detail {
-
-    template<typename T>
-    inline constexpr bool is_unit = false;
-
-    template<Dimension D, Ratio R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
-
-  }
-
-  template<typename T>
-  concept bool Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+  struct base_dim_length : dim_id<0> {};
+  struct base_dim_mass : dim_id<1> {};
+  struct base_dim_time : dim_id<2> {};
+  struct base_dim_current : dim_id<3> {};
+  struct base_dim_temperature : dim_id<4> {};
+  struct base_dim_substance : dim_id<5> {};
+  struct base_dim_luminous_intensity : dim_id<6> {};
 
 }  // namespace units

@@ -22,32 +22,29 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
-
-  // is_unit
-
-  namespace detail {
-
-    template<typename T>
-    inline constexpr bool is_unit = false;
-
-    template<Dimension D, Ratio R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
-
-  }
+  struct dimension_substance : make_dimension_t<exp<base_dim_substance, 1>> {};
+  template<> struct upcasting_traits<upcast_from<dimension_substance>> : upcast_to<dimension_substance> {};
 
   template<typename T>
-  concept bool Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+  concept bool Substance = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_substance>;
+
+  template<Unit U = struct mole, Number Rep = double>
+  using substance = quantity<dimension_substance, U, Rep>;
+
+  struct mole : unit<dimension_substance, std::ratio<1>> {};
+  template<> struct upcasting_traits<upcast_from<mole>> : upcast_to<mole> {};
+
+  inline namespace literals {
+
+    // mol
+    constexpr auto operator""_mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
+    constexpr auto operator""_mol(long double l) { return substance<mole, long double>(l); }
+
+  }  // namespace literals
 
 }  // namespace units

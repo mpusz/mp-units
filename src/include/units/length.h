@@ -22,14 +22,19 @@
 
 #pragma once
 
-#include "base_dimensions.h"
-#include "../quantity.h"
+#include <units/base_dimensions.h>
+#include <units/quantity.h>
 
 namespace units {
 
-  // dimension
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
   template<> struct upcasting_traits<upcast_from<dimension_length>> : upcast_to<dimension_length> {};
+
+  template<typename T>
+  concept bool Length = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_length>;
+
+  template<Unit U = struct meter, Number Rep = double>
+  using length = quantity<dimension_length, U, Rep>;
 
   // SI units
   struct millimeter : unit<dimension_length, std::milli> {};
@@ -43,26 +48,6 @@ namespace units {
 
   struct kilometer : unit<dimension_length, std::kilo> {};
   template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
-
-  // US customary units
-  struct yard : unit<dimension_length, std::ratio<9'144, 10'000>> {};
-  template<> struct upcasting_traits<upcast_from<yard>> : upcast_to<yard> {};
-
-  struct foot : unit<dimension_length, std::ratio_multiply<std::ratio<1, 3>, yard::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<foot>> : upcast_to<foot> {};
-
-  struct inch : unit<dimension_length, std::ratio_multiply<std::ratio<1, 12>, foot::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<inch>> : upcast_to<inch> {};
-
-  struct mile : unit<dimension_length, std::ratio_multiply<std::ratio<1'760>, yard::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<mile>> : upcast_to<mile> {};
-
-  // length
-  template<Unit U = meter, Number Rep = double>
-  using length = quantity<dimension_length, U, Rep>;
-
-  template<typename T>
-  concept bool Length = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_length>;
 
   inline namespace literals {
 
@@ -81,6 +66,23 @@ namespace units {
     // km
     constexpr auto operator""_km(unsigned long long l) { return length<kilometer, std::int64_t>(l); }
     constexpr auto operator""_km(long double l) { return length<kilometer, long double>(l); }
+
+  } // namespace literals
+
+  // US customary units
+  struct yard : unit<dimension_length, std::ratio<9'144, 10'000>> {};
+  template<> struct upcasting_traits<upcast_from<yard>> : upcast_to<yard> {};
+
+  struct foot : unit<dimension_length, std::ratio_multiply<std::ratio<1, 3>, yard::ratio>> {};
+  template<> struct upcasting_traits<upcast_from<foot>> : upcast_to<foot> {};
+
+  struct inch : unit<dimension_length, std::ratio_multiply<std::ratio<1, 12>, foot::ratio>> {};
+  template<> struct upcasting_traits<upcast_from<inch>> : upcast_to<inch> {};
+
+  struct mile : unit<dimension_length, std::ratio_multiply<std::ratio<1'760>, yard::ratio>> {};
+  template<> struct upcasting_traits<upcast_from<mile>> : upcast_to<mile> {};
+
+  inline namespace literals {
 
     // yd
     constexpr auto operator""_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }

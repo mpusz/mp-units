@@ -22,14 +22,20 @@
 
 #pragma once
 
-#include "base_dimensions.h"
-#include "length.h"
-#include "time.h"
+#include <units/base_dimensions.h>
+#include <units/length.h>
+#include <units/time.h>
 
 namespace units {
 
   struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
   template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
+
+  template<typename T>
+  concept bool Velocity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_velocity>;
+
+  template<Unit U = struct meter_per_second, Number Rep = double>
+  using velocity = quantity<dimension_velocity, U, Rep>;
 
   struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
   template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
@@ -39,12 +45,6 @@ namespace units {
 
   struct mile_per_hour : unit<dimension_velocity, std::ratio_divide<mile::ratio, hour::ratio>> {};
   template<> struct upcasting_traits<upcast_from<mile_per_hour>> : upcast_to<mile_per_hour> {};
-
-  template<Unit U = meter_per_second, Number Rep = double>
-  using velocity = quantity<dimension_velocity, U, Rep>;
-
-  template<typename T>
-  concept bool Velocity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_velocity>;
 
   inline namespace literals {
 
