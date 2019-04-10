@@ -57,6 +57,8 @@ class UnitsConan(ConanFile):
     generators = "cmake"
 
     def configure(self):
+        if self.settings.compiler != "gcc":
+            raise ConanInvalidConfiguration("Library units works only with gcc")
         if self.settings.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library units requires at least C++20 support")
 
