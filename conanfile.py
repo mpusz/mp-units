@@ -43,7 +43,7 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     exports = ["LICENSE.md"]
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "cppstd", "os", "compiler", "build_type", "arch"
     requires = (
         "cmcstl2/2019.03.18@mpusz/stable",
         "gsl-lite/0.33.0@nonstd-lite/stable"
@@ -54,6 +54,10 @@ class UnitsConan(ConanFile):
         "revision": "auto"
     }
     generators = "cmake"
+
+    def configure(self):
+        if self.settings.cppstd not in ["20", "gnu20"]:
+            raise ConanInvalidConfiguration("Library units requires at least C++20 support")
 
     def _configure_cmake(self):
         cmake = CMake(self)
