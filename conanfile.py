@@ -52,7 +52,8 @@ class UnitsConan(ConanFile):
     scm = {
         "type": "git",
         "url": "auto",
-        "revision": "auto"
+        "revision": "auto",
+        "submodule": "recursive"
     }
     generators = "cmake"
 
