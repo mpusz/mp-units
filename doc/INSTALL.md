@@ -1,6 +1,8 @@
 # Installation and Reuse
 
-There are a few different ways of installing/reusing `units` in your project 
+There are a few different ways of installing/reusing `units` in your project.
+
+NOTE: This library as of now compiles correctly only with gcc-8.  
 
 ## Copy
 
@@ -17,54 +19,43 @@ requires = (
 )
 ```
 
-## cmake
+## cmake + conan
 
 To use `units` as a `cmake` imported library via `cmake` configuration files the following
-steps may be done.
-
-### cmake install
-
-```bash
-$ mkdir build && cd build
-$ cmake ../src -DCMAKE_INSTALL_PREFIX=<your_cmake_installation_dir> <your_cmake_configuration>
-$ cmake --build . --target install <your_cmake_configuration>
-```
-
-To use such `cmake` target in your project it is enough to add following line to your
-`CMakeList.txt` file
-
-```cmake
-find_package(units CONFIG REQUIRED)
-```
-
-and configure it with
-
-```bash
-$ cmake .. -DCMAKE_INSTALL_PREFIX=<your_cmake_installation_dir> <your_cmake_configuration>
-```
-
-### cmake + conan
-
-To use `units` with `cmake` via `conan` it is enough to:
+steps may be done:
 - add the following remotes to your local `conan` instance
 
-```bash
-$ conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
-$ conan remote add conan-nonstd https://api.bintray.com/conan/martinmoene/nonstd-lite
-```
+  ```bash
+  $ conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
+  $ conan remote add conan-nonstd https://api.bintray.com/conan/martinmoene/nonstd-lite
+  ```
 
-- add the following dependency to your `conanfile.txt` or `conanfile.py` files
+- add `units` as a dependency to your `conan` file 
+  - `conanfile.txt`
+  
+    ```text
+    [requires]
+    mp-units/0.0.1@mpusz/testing
+    ```
+    
+  - `conanfile.py`
 
-```python
-requires = "mp-units/0.0.1@mpusz/testing"
-```
+    ```python
+    requires = "mp-units/0.0.1@mpusz/testing"
+    ```
+
+- link your `cmake` target with units
+
+  ```text
+  target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE CONAN_PKG::mp-units)
+  ```
 
 - install conan dependencies before configuring cmake
 
-```bash
-$ cd build
-$ conan install .. -pr <your_conan_profile> -b=outdated -u
-```
+  ```bash
+  $ cd build
+  $ conan install .. -pr <your_conan_profile> -s cppstd=20 -b=outdated -u
+  ```
 
 
 # Full build and unit testing
@@ -74,7 +65,7 @@ you should use `CMakeLists.txt` from the parent directory.
 
 ```bash
 mkdir build && cd build
-conan install .. <your_profile_and_settings>
+conan install .. <your_profile_and_settings> -s cppstd=20
 cmake .. <your_cmake_configuration>
 cmake --build .
 ```
@@ -85,7 +76,7 @@ cmake --build .
 To create a `conan` package and test `cmake` installation and `conan` packaging run:  
 
 ```bash
-$ conan create . <username>/<channel> --build=outdated <your_profile_and_settings>
+$ conan create . <username>/<channel> -s cppstd=20 -b=outdated <your_profile_and_settings>
 ```
 
 
