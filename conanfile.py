@@ -21,10 +21,23 @@
 # SOFTWARE.
 
 from conans import ConanFile, CMake, tools
+from conans.tools import load
+from conans.errors import ConanInvalidConfiguration
+import re
+
+
+def get_version():
+    try:
+        content = load("src/CMakeLists.txt")
+        version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
+        return version.strip()
+    except Exception:
+        return None
+
 
 class UnitsConan(ConanFile):
     name = "mp-units"
-    version = "0.0.1"
+    version = get_version()
     author = "Mateusz Pusz"
     license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
     url = "https://github.com/mpusz/units"
