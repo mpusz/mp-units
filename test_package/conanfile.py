@@ -48,5 +48,4 @@ class TestPackageConan(ConanFile):
     def test(self):
         if not tools.cross_building(self.settings):
             with tools.environment_append(RunEnvironment(self).vars):
-                self._test_run(os.path.join("bin", "test_package_conan"))
-                self._test_run(os.path.join("bin", "test_package_cmake"))
+                self._test_run(os.path.join("bin", "test_package"))
