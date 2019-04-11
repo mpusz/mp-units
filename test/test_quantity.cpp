@@ -32,16 +32,14 @@ namespace {
   template<typename T>
   class my_value {
     T value_{};
-
   public:
     my_value() = default;
-    constexpr my_value(T v) : value_{v} {}
+    constexpr my_value(T v) : value_{std::move(v)} {}
     constexpr my_value& operator+=(const my_value& other) { value_ += other.value_; return *this; }
     constexpr my_value& operator-=(const my_value& other) { value_ -= other.value_; return *this; }
     constexpr my_value& operator*=(const my_value& other) { value_ *= other.value_; return *this; }
     constexpr my_value& operator/=(const my_value& other) { value_ /= other.value_; return *this; }
-    constexpr operator const T&() const { return value_; }
-    constexpr operator T&() { return value_; }
+    constexpr operator const T&() const & { return value_; }
   };
 
 }  // namespace
