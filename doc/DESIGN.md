@@ -404,12 +404,25 @@ template<typename T>
 concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 ```
 
-4. Define the base and secondary units and provide upcasting traits for them:
+4. Define units and provide upcasting traits for them:
+
+ - base unit
 
 ```cpp
-struct meter_per_second : derived_unit<dimension_velocity, meter, second> {};
-template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
+struct meter : unit<dimension_length, std::ratio<1>> {};
+template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
+```
 
+ - units with prefixes
+
+```cpp
+struct kilometer : kilo<meter> {};
+template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
+```
+
+ - derived units
+
+```cpp
 struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
 template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
 ``` 
