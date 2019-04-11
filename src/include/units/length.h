@@ -37,16 +37,16 @@ namespace units {
   using length = quantity<dimension_length, U, Rep>;
 
   // SI units
-  struct millimeter : unit<dimension_length, std::milli> {};
-  template<> struct upcasting_traits<upcast_from<millimeter>> : upcast_to<millimeter> {};
-
-  struct centimeter : unit<dimension_length, std::ratio<1, 100>> {};
-  template<> struct upcasting_traits<upcast_from<centimeter>> : upcast_to<centimeter> {};
-
   struct meter : unit<dimension_length, std::ratio<1>> {};
   template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
 
-  struct kilometer : unit<dimension_length, std::kilo> {};
+  struct millimeter : milli<meter> {};
+  template<> struct upcasting_traits<upcast_from<millimeter>> : upcast_to<millimeter> {};
+
+  struct centimeter : centi<meter> {};
+  template<> struct upcasting_traits<upcast_from<centimeter>> : upcast_to<centimeter> {};
+
+  struct kilometer : kilo<meter> {};
   template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
 
   inline namespace literals {

@@ -36,22 +36,22 @@ namespace units {
   template<Unit U = struct hertz, Number Rep = double>
   using frequency = quantity<dimension_frequency, U, Rep>;
 
-  struct millihertz : unit<dimension_frequency, std::milli> {};
-  template<> struct upcasting_traits<upcast_from<millihertz>> : upcast_to<millihertz> {};
-
   struct hertz : derived_unit<dimension_frequency, second> {};
   template<> struct upcasting_traits<upcast_from<hertz>> : upcast_to<hertz> {};
 
-  struct kilohertz : unit<dimension_frequency, std::kilo> {};
+  struct millihertz : milli<hertz> {};
+  template<> struct upcasting_traits<upcast_from<millihertz>> : upcast_to<millihertz> {};
+
+  struct kilohertz : kilo<hertz> {};
   template<> struct upcasting_traits<upcast_from<kilohertz>> : upcast_to<kilohertz> {};
 
-  struct megahertz : unit<dimension_frequency, std::mega> {};
+  struct megahertz : mega<hertz> {};
   template<> struct upcasting_traits<upcast_from<megahertz>> : upcast_to<megahertz> {};
 
-  struct gigahertz : unit<dimension_frequency, std::giga> {};
+  struct gigahertz : giga<hertz> {};
   template<> struct upcasting_traits<upcast_from<gigahertz>> : upcast_to<gigahertz> {};
 
-  struct terahertz : unit<dimension_frequency, std::tera> {};
+  struct terahertz : tera<hertz> {};
   template<> struct upcasting_traits<upcast_from<terahertz>> : upcast_to<terahertz> {};
 
   inline namespace literals {

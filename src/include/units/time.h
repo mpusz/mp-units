@@ -36,17 +36,17 @@ namespace units {
   template<Unit U = struct second, Number Rep = double>
   using time = quantity<dimension_time, U, Rep>;
 
-  struct nanosecond : unit<dimension_time, std::nano> {};
-  template<> struct upcasting_traits<upcast_from<nanosecond>> : upcast_to<nanosecond> {};
-
-  struct microsecond : unit<dimension_time, std::micro> {};
-  template<> struct upcasting_traits<upcast_from<microsecond>> : upcast_to<microsecond> {};
-
-  struct millisecond : unit<dimension_time, std::milli> {};
-  template<> struct upcasting_traits<upcast_from<millisecond>> : upcast_to<millisecond> {};
-
   struct second : unit<dimension_time, std::ratio<1>> {};
   template<> struct upcasting_traits<upcast_from<second>> : upcast_to<second> {};
+
+  struct nanosecond : nano<second> {};
+  template<> struct upcasting_traits<upcast_from<nanosecond>> : upcast_to<nanosecond> {};
+
+  struct microsecond : micro<second> {};
+  template<> struct upcasting_traits<upcast_from<microsecond>> : upcast_to<microsecond> {};
+
+  struct millisecond : milli<second> {};
+  template<> struct upcasting_traits<upcast_from<millisecond>> : upcast_to<millisecond> {};
 
   struct minute : unit<dimension_time, std::ratio<60>> {};
   template<> struct upcasting_traits<upcast_from<minute>> : upcast_to<minute> {};

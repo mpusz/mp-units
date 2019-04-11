@@ -112,4 +112,21 @@ namespace units {
   template<Dimension D, Unit... Us>
   using derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
 
+  // prefixes
+  template<Unit U> using atto = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::atto>>;
+  template<Unit U> using femto = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::femto>>;
+  template<Unit U> using pico = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::pico>>;
+  template<Unit U> using nano = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::nano>>;
+  template<Unit U> using micro = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::micro>>;
+  template<Unit U> using milli = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::milli>>;
+  template<Unit U> using centi = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::centi>>;
+  template<Unit U> using deca = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::deca>>;
+  template<Unit U> using hecto = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::hecto>>;
+  template<Unit U> using kilo = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::kilo>>;
+  template<Unit U> using mega = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::mega>>;
+  template<Unit U> using giga = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::giga>>;
+  template<Unit U> using tera = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::tera>>;
+  template<Unit U> using peta = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::peta>>;
+  template<Unit U> using exa = unit<typename U::dimension, std::ratio_multiply<typename U::ratio, std::exa>>;
+
 }  // namespace units

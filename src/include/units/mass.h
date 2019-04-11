@@ -39,10 +39,14 @@ namespace units {
   struct gram : unit<dimension_mass, std::milli> {};
   template<> struct upcasting_traits<upcast_from<gram>> : upcast_to<gram> {};
 
-  struct kilogram : unit<dimension_mass, std::ratio<1>> {};
+  struct kilogram : kilo<gram> {};
   template<> struct upcasting_traits<upcast_from<kilogram>> : upcast_to<kilogram> {};
 
   inline namespace literals {
+
+    // g
+    constexpr auto operator""_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+    constexpr auto operator""_g(long double l) { return mass<gram, long double>(l); }
 
     // kg
     constexpr auto operator""_kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
