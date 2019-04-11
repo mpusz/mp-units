@@ -39,7 +39,7 @@ static_assert(10_km / 5_km == 2);
 3. No macros in the user interface
 4. Easy extensibility
 5. No external dependencies
-6. Possibility to be standardized as a part of the C++ Standard Library 
+6. Possibility to be standardized as a freestanding part of the C++ Standard Library 
 
 
 ## Basic Concepts
@@ -111,7 +111,7 @@ However, such an approach have some challenges:
 constexpr Velocity auto v1 = 1_m / 1_s;
 constexpr Velocity auto v2 = 2 / 2_s * 1_m;
 
-static_assert(Same<decltype(v1), decltype(v2)>);
+static_assert(std::Same<decltype(v1), decltype(v2)>);
 static_assert(v1 == v2);
 ``` 
 
@@ -215,7 +215,7 @@ expressed in a specific unit of that dimension:
 
 ```cpp
 template<Dimension D, Unit U, Number Rep>
-  requires Same<D, typename U::dimension>
+  requires std::Same<D, typename U::dimension>
 class quantity;
 ```
 
@@ -233,7 +233,7 @@ member types and functions as below:
 
 ```cpp
 template<Dimension D, Unit U, Number Rep>
-    requires Same<D, typename U::dimension>
+    requires std::Same<D, typename U::dimension>
 class quantity {
 public:
   using dimension = D;
@@ -248,13 +248,13 @@ public:
   template<Number Rep1, Dimension D, Unit U, Number Rep2>
   quantity<dim_invert_t<D>, upcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const Rep1& v,
-                      const quantity<D, U, Rep2>& q);
+                      const quantity<D, U, Rep2>& q) [[expects: q != quantity<D, U, Rep2>(0)]];
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
   quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
-                      const quantity<D2, U2, Rep2>& rhs);
+                      const quantity<D2, U2, Rep2>& rhs) [[expects: rhs != quantity<D, U2, Rep2>(0)]];
 };
 ```
 
@@ -285,14 +285,14 @@ C:\repos\units\example\example.cpp:39:22: error: deduced initializer does not sa
                       ^~~~
 In file included from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
-   concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+   concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
            ^~~~~~~~
 In file included from C:/repos/units/src/include/units/bits/tools.h:25,
                  from C:/repos/units/src/include/units/dimension.h:25,
                  from C:/repos/units/src/include/units/si/base_dimensions.h:25,
                  from C:/repos/units/src/include/units/si/velocity.h:25,
                  from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool mp::std_concepts::Same<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]'
+C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]'
      concept Same = std::is_same_v<T, U>;
              ^~~~
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
@@ -322,14 +322,14 @@ C:\repos\units\example\example.cpp:40:22: error: deduced initializer does not sa
                       ^~~~
 In file included from C:\repos\units\example\example.cpp:23:
 C:/repos/units/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension_time, units::second, long long int>]'
-   concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+   concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
            ^~~~~~~~
 In file included from C:/repos/units/src/include/units/bits/tools.h:25,
                  from C:/repos/units/src/include/units/dimension.h:25,
                  from C:/repos/units/src/include/units/si/base_dimensions.h:25,
                  from C:/repos/units/src/include/units/si/velocity.h:25,
                  from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool mp::std_concepts::Same<T, U> [with T = units::dimension_time; U = units::dimension_velocity]'
+C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension_time; U = units::dimension_velocity]'
      concept Same = std::is_same_v<T, U>;
              ^~~~
 C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
@@ -379,36 +379,50 @@ template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer
 ```
 
 
-## Adding new dimensions
+## Adding new derived dimensions
 
 In order to extend the library with custom dimensions the user has to:
-1. Create a new dimension type and provide upcasting trait for it:
+1. Create a new dimension type with the recipe of how to construct it from base dimensions and provide
+   upcasting trait for it:
 
 ```cpp
 struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
 template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
 ``` 
 
-2. Define the base unit (`std::ratio<1>`) and secondary ones and provide upcasting traits for them via:
+2. Provide `quantity` class template partial specialization for new dimension and provide its base type:
 
 ```cpp
-struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
-template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
+template<Unit U = struct meter_per_second, Number Rep = double>
+using velocity = quantity<dimension_velocity, U, Rep>;
 ``` 
 
 3. Define a concept that will match a new dimension:
 
 ```cpp
 template<typename T>
-concept Velocity = Quantity<T> && Same<typename T::dimension, dimension_velocity>;
+concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 ```
 
-4. Provide user-defined literals for the most important units:
+4. Define the base and secondary units and provide upcasting traits for them:
+
+```cpp
+struct meter_per_second : derived_unit<dimension_velocity, meter, second> {};
+template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
+
+struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
+template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
+``` 
+
+5. Provide user-defined literals for the most important units:
 
 ```cpp
 inline namespace literals {
   constexpr auto operator""_mps(unsigned long long l) { return velocity<meter_per_second, std::int64_t>(l); }
   constexpr auto operator""_mps(long double l)        { return velocity<meter_per_second, long double>(l); }
+  
+  constexpr auto operator""_kmph(unsigned long long l) { return velocity<kilometer_per_hour, std::int64_t>(l); }
+  constexpr auto operator""_kmph(long double l) { return velocity<kilometer_per_hour, long double>(l); }
 }
 ```
 
@@ -507,7 +521,7 @@ Additionally, it should make the error logs even shorter thus easier to understa
 17. Should we leave `quantity` and specific dimensions as
     ```cpp
     template<Dimension D, Unit U, Number Rep>
-        requires std::experimental::ranges::Same<D, typename U::dimension>
+        requires std::Same<D, typename U::dimension>
     class quantity;
     
     template<Unit U = meter_per_second, Number Rep = double>
