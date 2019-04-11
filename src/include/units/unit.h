@@ -50,4 +50,66 @@ namespace units {
       std::is_empty_v<T> &&
       detail::is_unit<upcast_from<T>>;
 
+
+  // derived_unit
+
+  namespace detail {
+
+    template<Dimension D>
+    struct get_unit_base_dim;
+
+    template<Exponent E, Exponent... Rest>
+    struct get_unit_base_dim<dimension<E, Rest...>> {
+      static_assert(sizeof...(Rest) == 0, "Base unit expected");
+      using dimension = typename E::dimension;
+    };
+
+    template<typename BaseDimension, Unit... Us>
+    struct get_ratio {
+      using ratio = std::ratio<1>;
+    };
+
+    template<typename BaseDimension, Unit U, Unit... Rest>
+    struct get_ratio<BaseDimension, U, Rest...> {
+      using unit_base_dim = typename get_unit_base_dim<typename U::dimension::base_type>::dimension;
+      using ratio = std::conditional_t<unit_base_dim::value == BaseDimension::value, typename U::ratio,
+                                       typename get_ratio<BaseDimension, Rest...>::ratio>;
+    };
+
+    template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
+    struct ratio_op;
+
+    template<Ratio Result, Ratio UnitRatio>
+    struct ratio_op<Result, 0, UnitRatio> {
+      using ratio = Result;
+    };
+
+    template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
+    struct ratio_op {
+      using calc_ratio = std::conditional_t<(UnitExpValue > 0), std::ratio_multiply<Result, UnitRatio>,
+                                            std::ratio_divide<Result, UnitRatio>>;
+      static constexpr int value = UnitExpValue > 0 ? UnitExpValue - 1 : UnitExpValue + 1;
+      using ratio = typename ratio_op<calc_ratio, value, UnitRatio>::ratio;
+    };
+
+    template<Dimension D, Unit... Us>
+    struct derived_ratio;
+
+    template<Unit... Us>
+    struct derived_ratio<dimension<>, Us...> {
+      using ratio = std::ratio<1>;
+    };
+
+    template<Exponent E, Exponent... Rest, Unit... Us>
+    struct derived_ratio<dimension<E, Rest...>, Us...> {
+      using rest_ratio = typename derived_ratio<dimension<Rest...>, Us...>::ratio;
+      using e_ratio = typename get_ratio<typename E::dimension, Us...>::ratio;
+      using ratio = typename ratio_op<rest_ratio, E::value, e_ratio>::ratio;
+    };
+
+  }
+
+  template<Dimension D, Unit... Us>
+  using derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
+
 }  // namespace units

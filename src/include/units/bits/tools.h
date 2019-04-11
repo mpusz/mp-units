@@ -100,15 +100,15 @@ namespace units {
   // common_ratio
 
   // todo: simplified
-  template<Ratio Ratio1, Ratio Ratio2>
+  template<Ratio R1, Ratio R2>
   struct common_ratio {
-    using gcd_num = static_gcd<Ratio1::num, Ratio2::num>;
-    using gcd_den = static_gcd<Ratio1::den, Ratio2::den>;
-    using type = std::ratio<gcd_num::value, (Ratio1::den / gcd_den::value) * Ratio2::den>;
+    using gcd_num = static_gcd<R1::num, R2::num>;
+    using gcd_den = static_gcd<R1::den, R2::den>;
+    using type = std::ratio<gcd_num::value, (R1::den / gcd_den::value) * R2::den>;
   };
 
-  template<Ratio Ratio1, Ratio Ratio2>
-  using common_ratio_t = typename common_ratio<Ratio1, Ratio2>::type;
+  template<Ratio R1, Ratio R2>
+  using common_ratio_t = typename common_ratio<R1, R2>::type;
 
   // upcasting
 

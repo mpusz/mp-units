@@ -39,7 +39,7 @@ namespace units {
   struct millihertz : unit<dimension_frequency, std::milli> {};
   template<> struct upcasting_traits<upcast_from<millihertz>> : upcast_to<millihertz> {};
 
-  struct hertz : unit<dimension_frequency, std::ratio<1>> {};
+  struct hertz : derived_unit<dimension_frequency, second> {};
   template<> struct upcasting_traits<upcast_from<hertz>> : upcast_to<hertz> {};
 
   struct kilohertz : unit<dimension_frequency, std::kilo> {};

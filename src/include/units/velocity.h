@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/base_dimensions.h>
 #include <units/length.h>
 #include <units/time.h>
 
@@ -37,13 +36,13 @@ namespace units {
   template<Unit U = struct meter_per_second, Number Rep = double>
   using velocity = quantity<dimension_velocity, U, Rep>;
 
-  struct meter_per_second : unit<dimension_velocity, std::ratio<1>> {};
+  struct meter_per_second : derived_unit<dimension_velocity, meter, second> {};
   template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
 
-  struct kilometer_per_hour : unit<dimension_velocity, std::ratio_divide<kilometer::ratio, hour::ratio>> {};
+  struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
   template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
 
-  struct mile_per_hour : unit<dimension_velocity, std::ratio_divide<mile::ratio, hour::ratio>> {};
+  struct mile_per_hour : derived_unit<dimension_velocity, mile, hour> {};
   template<> struct upcasting_traits<upcast_from<mile_per_hour>> : upcast_to<mile_per_hour> {};
 
   inline namespace literals {

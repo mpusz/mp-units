@@ -38,12 +38,7 @@ namespace {
 
   using namespace units;
 
-  // frequency
-
-  static_assert(2 / 1_s == 2_Hz);
-  static_assert(1000 / 1_s == 1_kHz);
-  static_assert(1 / 1_ms == 1_kHz);
-  static_assert(3.2_GHz == 3'200'000'000_Hz);
+  /* ************** BASE DIMENSIONS **************** */
 
   // time
 
@@ -64,6 +59,17 @@ namespace {
   static_assert(1_mi == 1760_yd);
 
 //  static_assert(5_in + 8_cm == 207_mm);
+
+
+
+  /* ************** DERIVED DIMENSIONS **************** */
+
+  // frequency
+
+  static_assert(2 / 1_s == 2_Hz);
+  static_assert(1000 / 1_s == 1_kHz);
+  static_assert(1 / 1_ms == 1_kHz);
+  static_assert(3.2_GHz == 3'200'000'000_Hz);
 
   // velocity
 
