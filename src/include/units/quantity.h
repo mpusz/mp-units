@@ -110,6 +110,7 @@ namespace units {
   template<Number Rep>
   struct quantity_values {
     static constexpr Rep zero() noexcept { return Rep(0); }
+    static constexpr Rep one() noexcept { return Rep(1); }
     static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
     static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
   };
@@ -152,6 +153,7 @@ namespace units {
     [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
     [[nodiscard]] static constexpr quantity zero() noexcept { return quantity(quantity_values<Rep>::zero()); }
+    [[nodiscard]] static constexpr quantity one() noexcept { return quantity(quantity_values<Rep>::one()); }
     [[nodiscard]] static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
     [[nodiscard]] static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
 
