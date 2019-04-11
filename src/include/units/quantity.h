@@ -71,7 +71,7 @@ namespace units {
   };
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-  using common_quantity_t = typename common_quantity<Q1, Q2, Rep>::type;
+  using common_quantity_t = common_quantity<Q1, Q2, Rep>::type;
 
   // treat_as_floating_point
 
@@ -87,8 +87,8 @@ namespace units {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
-        return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num) /
-                                                static_cast<CRep>(CR::den)));
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num) /
+                                       static_cast<CRep>(CR::den)));
       }
     };
 
@@ -97,7 +97,7 @@ namespace units {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
-        return To(static_cast<typename To::rep>(q.count()));
+        return To(static_cast<To::rep>(q.count()));
       }
     };
 
@@ -106,7 +106,7 @@ namespace units {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
-        return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CR::den)));
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CR::den)));
       }
     };
 
@@ -115,7 +115,7 @@ namespace units {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
-        return To(static_cast<typename To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num)));
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num)));
       }
     };
 
@@ -183,8 +183,8 @@ namespace units {
     [[nodiscard]] static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
     [[nodiscard]] static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
 
-    [[nodiscard]] constexpr quantity operator-() const { return quantity(-count()); }
     [[nodiscard]] constexpr quantity operator+() const { return quantity(*this); }
+    [[nodiscard]] constexpr quantity operator-() const { return quantity(-count()); }
 
     constexpr quantity& operator++()
     {

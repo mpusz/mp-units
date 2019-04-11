@@ -50,7 +50,7 @@ namespace units {
   };
 
   template<TypeList List, typename... Types>
-  using type_list_push_front_t = typename type_list_push_front<List, Types...>::type;
+  using type_list_push_front_t = type_list_push_front<List, Types...>::type;
 
   // push_back
 
@@ -63,7 +63,7 @@ namespace units {
   };
 
   template<TypeList List, typename... Types>
-  using type_list_push_back_t = typename type_list_push_back<List, Types...>::type;
+  using type_list_push_back_t = type_list_push_back<List, Types...>::type;
 
   // split
 
@@ -81,8 +81,8 @@ namespace units {
     template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename T, typename... Rest>
     struct split_impl<List, Idx, N, T, Rest...> : split_impl<List, Idx + 1, N, Rest...> {
       using base = split_impl<List, Idx + 1, N, Rest...>;
-      using base_first = typename base::first_list;
-      using base_second = typename base::second_list;
+      using base_first = base::first_list;
+      using base_second = base::second_list;
       using first_list = std::conditional_t<Idx < N, type_list_push_front_t<base_first, T>, base_first>;
       using second_list = std::conditional_t<Idx < N, base_second, type_list_push_front_t<base_second, T>>;
     };
@@ -96,8 +96,8 @@ namespace units {
   struct type_list_split<List<Types...>, N> {
     static_assert(N <= sizeof...(Types), "Invalid index provided");
     using split = detail::split_impl<List, 0, N, Types...>;
-    using first_list = typename split::first_list;
-    using second_list = typename split::second_list;
+    using first_list = split::first_list;
+    using second_list = split::second_list;
   };
 
   // split_half
@@ -115,7 +115,7 @@ namespace units {
   struct type_list_merge_sorted;
 
   template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
-  using type_list_merge_sorted_t = typename type_list_merge_sorted<SortedList1, SortedList2, Pred>::type;
+  using type_list_merge_sorted_t = type_list_merge_sorted<SortedList1, SortedList2, Pred>::type;
 
   template<template<typename...> typename List, typename... Lhs, template<typename, typename> typename Pred>
   struct type_list_merge_sorted<List<Lhs...>, List<>, Pred> {
@@ -155,12 +155,12 @@ namespace units {
   struct type_list_sort<List<Types...>, Pred> {
     using types = List<Types...>;
     using split = type_list_split_half<List<Types...>>;
-    using left = typename type_list_sort<typename split::first_list, Pred>::type;
-    using right = typename type_list_sort<typename split::second_list, Pred>::type;
+    using left = type_list_sort<typename split::first_list, Pred>::type;
+    using right = type_list_sort<typename split::second_list, Pred>::type;
     using type = type_list_merge_sorted_t<left, right, Pred>;
   };
 
   template<TypeList List, template<typename, typename> typename Pred>
-  using type_list_sort_t = typename type_list_sort<List, Pred>::type;
+  using type_list_sort_t = type_list_sort<List, Pred>::type;
 
 }  // namespace units

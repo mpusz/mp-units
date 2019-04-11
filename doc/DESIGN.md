@@ -127,7 +127,7 @@ struct make_dimension {
 };
 
 template<Exponent... Es>
-using make_dimension_t = typename make_dimension<Es...>::type;
+using make_dimension_t = make_dimension<Es...>::type;
 ``` 
 
 So for example to create a `dimension_velocity` type we have to do:
@@ -172,7 +172,7 @@ struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
 };
 
 template<Dimension D1, Dimension D2>
-using dimension_multiply_t = typename dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
 ```
 
 Example implementation of `merge_dimension` may look like:
@@ -361,7 +361,7 @@ Upcasting capability is provided through dedicated `upcasting_traits`, a few hel
 
 ```cpp
 template<Upcastable T>
-using upcast_from = typename T::base_type;
+using upcast_from = T::base_type;
 
 template<typename T>
 using upcast_to = std::type_identity<T>;
@@ -370,7 +370,7 @@ template<typename T>
 struct upcasting_traits : upcast_to<T> {};
 
 template<typename T>
-using upcasting_traits_t = typename upcasting_traits<T>::type;
+using upcasting_traits_t = upcasting_traits<T>::type;
 ```
 
 With that the upcasting functionality is enabled by:

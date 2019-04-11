@@ -79,6 +79,6 @@ namespace units {
   };
 
   template<Ratio R1, Ratio R2>
-  using common_ratio_t = typename common_ratio<R1, R2>::type;
+  using common_ratio_t = common_ratio<R1, R2>::type;
 
 }  // namespace units

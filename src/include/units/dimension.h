@@ -82,7 +82,7 @@ namespace units {
   };
 
   template<Exponent E>
-  using exp_invert_t = typename exp_invert<E>::type;
+  using exp_invert_t = exp_invert<E>::type;
 
   // dimension
 
@@ -115,7 +115,7 @@ namespace units {
   struct dim_invert<dimension<Es...>> : std::type_identity<upcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<Dimension D>
-  using dim_invert_t = typename dim_invert<typename D::base_type>::type;
+  using dim_invert_t = dim_invert<typename D::base_type>::type;
 
 
   // make_dimension
@@ -126,7 +126,7 @@ namespace units {
     struct dim_consolidate;
 
     template<Dimension D>
-    using dim_consolidate_t = typename dim_consolidate<D>::type;
+    using dim_consolidate_t = dim_consolidate<D>::type;
 
     template<>
     struct dim_consolidate<dimension<>> {
@@ -159,7 +159,7 @@ namespace units {
   };
 
   template<Exponent... Es>
-  using make_dimension_t = typename make_dimension<Es...>::type;
+  using make_dimension_t = make_dimension<Es...>::type;
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
@@ -167,7 +167,7 @@ namespace units {
   };
 
   template<Dimension D1, Dimension D2>
-  using merge_dimension_t = typename merge_dimension<D1, D2>::type;
+  using merge_dimension_t = merge_dimension<D1, D2>::type;
 
   // dimension_multiply
 
@@ -178,7 +178,7 @@ namespace units {
   struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<upcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<Dimension D1, Dimension D2>
-  using dimension_multiply_t = typename dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
 
   // dimension_divide
 
@@ -191,6 +191,6 @@ namespace units {
   };
 
   template<Dimension D1, Dimension D2>
-  using dimension_divide_t = typename dimension_divide<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
 
 }  // namespace units
