@@ -294,7 +294,7 @@ namespace units {
                                              const quantity<D, U, Rep2>& q)
     requires (!Quantity<Rep1>)
   {
-    Expects(q != std::decay_t<decltype(q)>(0));
+    Expects(q != std::remove_cvref_t<decltype(q)>(0));
 
     using dim = dim_invert_t<D>;
     using common_rep = decltype(v / q.count());
@@ -320,7 +320,7 @@ namespace units {
   [[nodiscard]] constexpr Scalar operator/(const quantity<D, U1, Rep1>& lhs,
                                            const quantity<D, U2, Rep2>& rhs)
   {
-    Expects(rhs != std::decay_t<decltype(rhs)>(0));
+    Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using cq = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
@@ -333,7 +333,7 @@ namespace units {
     requires treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
              (std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
   {
-    Expects(rhs != std::decay_t<decltype(rhs)>(0));
+    Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide_t<D1, D2>;
