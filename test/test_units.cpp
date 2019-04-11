@@ -31,6 +31,7 @@
 
 #include <units/frequency.h>
 #include <units/velocity.h>
+#include <units/area.h>
 
 #include <utility>
 
@@ -92,5 +93,11 @@ namespace {
   static_assert(2_km / 2_kmph == 1_h);
   // static_assert(2000_m / 2_kmph == 1_h); // should not compile
   static_assert(quantity_cast<length<kilometer, int>>(2000_m) / 2_kmph == 1_h);
+
+  // area
+
+  static_assert(1_m * 1_m == 1_sq_m);
+  static_assert(10_km * 10_km == 100_sq_km);
+  static_assert(1_sq_m == 10'000_sq_cm);
 
 }  // namespace
