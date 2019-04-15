@@ -164,8 +164,8 @@ namespace units {
     using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>, exp_greater_equal>;
   };
 
-  template<Exponent... Es>
-  using merge_dimension_t = typename merge_dimension<Es...>::type;
+  template<Dimension D1, Dimension D2>
+  using merge_dimension_t = typename merge_dimension<D1, D2>::type;
 
   // dimension_multiply
 
