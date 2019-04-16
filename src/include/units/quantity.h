@@ -97,7 +97,7 @@ namespace units {
 
   template<Quantity To, Dimension D, Unit U, Number Rep>
       requires std::experimental::ranges::Same<typename To::dimension, D> constexpr
-  To quantity_cast(const quantity<D, U, Rep>& q)
+  constexpr To quantity_cast(const quantity<D, U, Rep>& q)
   {
     using c_ratio = std::ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
