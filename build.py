@@ -1,13 +1,14 @@
 from cpt.packager import ConanMultiPackager
 
 if __name__ == "__main__":
-    builder = ConanMultiPackager(username = "mpusz", login_username = "mpusz",
+    builder = ConanMultiPackager(username = "mpusz",
                                  channel = "testing",
-                                 stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
+                                 login_username = "mpusz",
                                  upload = "https://api.bintray.com/conan/mpusz/conan-mpusz",
-                                 remotes = "https://api.bintray.com/conan/martinmoene/nonstd-lite",
+                                 stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
                                  build_policy = "outdated",
-                                 upload_dependencies="all")
+                                 upload_dependencies="all",
+                                 remotes = "https://api.bintray.com/conan/martinmoene/nonstd-lite")
     builder.add_common_builds(pure_c=False)
     for settings, options, env_vars, build_requires, reference in builder.items:
         settings["cppstd"] = "20"
