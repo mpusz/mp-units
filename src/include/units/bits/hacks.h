@@ -20,29 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/bits/ratio_tools.h"
+#pragma once
 
-namespace {
+namespace std {
 
-  using namespace units;
-  
-  // static_sign
+  template<typename T>
+  struct type_identity { using type = T; };
 
-  static_assert(static_sign<2>::value == 1);
-  static_assert(static_sign<-3>::value == -1);
-  static_assert(static_sign<0>::value == 1);
+  template<typename T>
+  using type_identity_t = typename type_identity<T>::type;
 
-  // static_abs
-
-  static_assert(static_abs<2>::value == 2);
-  static_assert(static_abs<-3>::value == 3);
-  static_assert(static_abs<0>::value == 0);
-
-  // common_ratio
-
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
-  static_assert(std::is_same_v<common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
-
-}  // namespace
+}

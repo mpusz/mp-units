@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/tools.h>
+#include <units/bits/upcasting.h>
 #include <units/bits/type_list.h>
 
 namespace units {

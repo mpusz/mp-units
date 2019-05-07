@@ -22,39 +22,10 @@
 
 #pragma once
 
-#include <experimental/ranges/concepts>
 #include <ratio>
 #include <type_traits>
 
-namespace std {
-
-  template<typename T>
-  struct type_identity { using type = T; };
-
-  template<typename T>
-  using type_identity_t = typename type_identity<T>::type;
-
-}
-
 namespace units {
-
-  template<typename T>
-  concept bool Number = std::experimental::ranges::Regular<T> &&
-      std::experimental::ranges::StrictTotallyOrdered<T> &&
-      requires(T a, T b) {
-        { a + b } -> T;
-        { a - b } -> T;
-        { a * b } -> T;
-        { a / b } -> T;
-        { -a } -> T;
-        { a += b } -> T&;
-        { a -= b } -> T&;
-        { a *= b } -> T&;
-        { a /= b } -> T&;
-        { T{0} };// can construct a T from a zero
-        // …
-  } ;
-
 
   // static_sign
 
@@ -109,31 +80,5 @@ namespace units {
 
   template<Ratio R1, Ratio R2>
   using common_ratio_t = typename common_ratio<R1, R2>::type;
-
-  // upcasting
-
-  template<typename BaseType>
-  struct upcast_base {
-    using base_type = BaseType;
-  };
-
-  template<typename T>
-  concept bool Upcastable =
-      requires {
-        typename T::base_type;
-      } &&
-      std::experimental::ranges::DerivedFrom<T, upcast_base<typename T::base_type>>;
-
-  template<Upcastable T>
-  using upcast_from = typename T::base_type;
-
-  template<typename T>
-  using upcast_to = std::type_identity<T>;
-
-  template<typename T>
-  struct upcasting_traits : upcast_to<T> {};
-
-  template<typename T>
-  using upcasting_traits_t = typename upcasting_traits<T>::type;
 
 }  // namespace units

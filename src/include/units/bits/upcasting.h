@@ -20,29 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/bits/ratio_tools.h"
+#pragma once
 
-namespace {
+#include <units/bits/hacks.h>
+#include <experimental/ranges/concepts>
 
-  using namespace units;
-  
-  // static_sign
+namespace units {
 
-  static_assert(static_sign<2>::value == 1);
-  static_assert(static_sign<-3>::value == -1);
-  static_assert(static_sign<0>::value == 1);
+  template<typename BaseType>
+  struct upcast_base {
+    using base_type = BaseType;
+  };
 
-  // static_abs
+  template<typename T>
+  concept bool Upcastable =
+      requires {
+        typename T::base_type;
+      } &&
+      std::experimental::ranges::DerivedFrom<T, upcast_base<typename T::base_type>>;
 
-  static_assert(static_abs<2>::value == 2);
-  static_assert(static_abs<-3>::value == 3);
-  static_assert(static_abs<0>::value == 0);
+  template<Upcastable T>
+  using upcast_from = typename T::base_type;
 
-  // common_ratio
+  template<Upcastable T>
+  using upcast_to = typename std::type_identity<T>;
 
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
-  static_assert(std::is_same_v<common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
+  template<Upcastable T>
+  struct upcasting_traits : upcast_to<T> {};
 
-}  // namespace
+  template<Upcastable T>
+  using upcasting_traits_t = typename upcasting_traits<T>::type;
+
+}  // namespace units

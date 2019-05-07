@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/dimension.h>
+#include <units/bits/ratio_tools.h>
 
 namespace units {
 
