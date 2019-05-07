@@ -158,8 +158,8 @@ namespace units {
     [[nodiscard]] static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
     [[nodiscard]] static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
 
-    [[nodiscard]] constexpr std::common_type_t<quantity> operator+() const { return quantity(*this); }
-    [[nodiscard]] constexpr std::common_type_t<quantity> operator-() const { return quantity(-count()); }
+    [[nodiscard]] constexpr quantity operator-() const { return quantity(-count()); }
+    [[nodiscard]] constexpr quantity operator+() const { return quantity(*this); }
 
     constexpr quantity& operator++()
     {
@@ -214,18 +214,16 @@ namespace units {
 
   // clang-format off
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
-  [[nodiscard]] std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>
-  constexpr operator+(const quantity<D, U1, Rep1>& lhs,
-                      const quantity<D, U2, Rep2>& rhs)
+  [[nodiscard]] constexpr Quantity operator+(const quantity<D, U1, Rep1>& lhs,
+                                             const quantity<D, U2, Rep2>& rhs)
   {
     using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
-  [[nodiscard]] std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>
-  constexpr operator-(const quantity<D, U1, Rep1>& lhs,
-                      const quantity<D, U2, Rep2>& rhs)
+  [[nodiscard]] constexpr Quantity operator-(const quantity<D, U1, Rep1>& lhs,
+                                             const quantity<D, U2, Rep2>& rhs)
   {
     using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return ret(ret(lhs).count() - ret(rhs).count());
@@ -249,12 +247,9 @@ namespace units {
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
-  /* [[nodiscard]] */ quantity<dimension_multiply_t<D1, D2>, upcasting_traits_t<unit<dimension_multiply_t<D1, D2>,
-                                                                          std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>,
-                                                                          std::common_type_t<Rep1, Rep2>>
-  constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
-                      const quantity<D2, U2, Rep2>& rhs)
+      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
+  /* [[nodiscard]] */ constexpr Quantity operator*(const quantity<D1, U1, Rep1>& lhs,
+                                                   const quantity<D2, U2, Rep2>& rhs)
   {
     using dim = dimension_multiply_t<D1, D2>;
     using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
@@ -286,9 +281,8 @@ namespace units {
   }
 
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
-  [[nodiscard]] std::common_type_t<Rep1, Rep2>
-  constexpr operator/(const quantity<D, U1, Rep1>& lhs,
-                      const quantity<D, U2, Rep2>& rhs)
+  [[nodiscard]] constexpr Number operator/(const quantity<D, U1, Rep1>& lhs,
+                                           const quantity<D, U2, Rep2>& rhs)
   {
     Expects(rhs != std::decay_t<decltype(rhs)>(0));
 
@@ -297,10 +291,9 @@ namespace units {
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
-  /* [[nodiscard]] */ quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
-  constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
-                      const quantity<D2, U2, Rep2>& rhs)
+      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || (std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
+  /* [[nodiscard]] */ constexpr Quantity operator/(const quantity<D1, U1, Rep1>& lhs,
+                                                   const quantity<D2, U2, Rep2>& rhs)
   {
     Expects(rhs != std::decay_t<decltype(rhs)>(0));
 
@@ -310,18 +303,16 @@ namespace units {
   }
 
   template<Dimension D, Unit U, Number Rep1, Number Rep2>
-  [[nodiscard]] quantity<D, U, std::common_type_t<Rep1, Rep2>>
-  constexpr operator%(const quantity<D, U, Rep1>& q,
-                      const Rep2& v)
+  [[nodiscard]] constexpr Quantity operator%(const quantity<D, U, Rep1>& q,
+                                             const Rep2& v)
   {
     using ret = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
     return ret(ret(q).count() % v);
   }
 
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
-  [[nodiscard]] std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>
-  constexpr operator%(const quantity<D, U1, Rep1>& lhs,
-                      const quantity<D, U2, Rep2>& rhs)
+  [[nodiscard]] constexpr Quantity operator%(const quantity<D, U1, Rep1>& lhs,
+                                             const quantity<D, U2, Rep2>& rhs)
   {
     using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return ret(ret(lhs).count() % ret(rhs).count());
