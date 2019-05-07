@@ -25,7 +25,6 @@
 
 namespace {
 
-  using namespace mp;
   using namespace units;
 
   template<typename... Types>

@@ -24,7 +24,7 @@
 
 #include <type_traits>
 
-namespace mp {
+namespace units {
 
   namespace detail {
 
@@ -163,4 +163,4 @@ namespace mp {
   template<TypeList List, template<typename, typename> typename Pred>
   using type_list_sort_t = typename type_list_sort<List, Pred>::type;
 
-}  // namespace mp
+}  // namespace units

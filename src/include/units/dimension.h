@@ -140,7 +140,7 @@ namespace units {
     struct dim_consolidate<dimension<E1, ERest...>> {
       using rest = dim_consolidate_t<dimension<ERest...>>;
       using type =
-          std::conditional_t<std::is_same_v<rest, dimension<>>, dimension<E1>, mp::type_list_push_front_t<rest, E1>>;
+          std::conditional_t<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front_t<rest, E1>>;
     };
 
     template<typename D, int V1, int V2, Exponent... ERest>
@@ -153,7 +153,7 @@ namespace units {
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_sort_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
+    using type = type_list_sort_t<detail::dim_consolidate_t<type_list_sort_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
   };
 
   template<Exponent... Es>
@@ -161,7 +161,7 @@ namespace units {
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
-    using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>, exp_greater_equal>;
+    using type = type_list_sort_t<detail::dim_consolidate_t<type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>, exp_greater_equal>;
   };
 
   template<Dimension D1, Dimension D2>
