@@ -8,6 +8,7 @@ environment:
     - MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
 
 install:
+  - git submodule update --init --recursive
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan --upgrade
   - pip.exe install conan_package_tools
