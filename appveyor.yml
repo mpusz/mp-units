@@ -5,7 +5,7 @@ environment:
   PYTHON: "C:\\Python37"
 
   matrix:
-    - MINGW_CONFIGURATIONS: "8@x86_64@seh@posix"
+    - MINGW_CONFIGURATIONS: "9@x86_64@seh@posix"
 
 install:
   - git submodule update --init --recursive
