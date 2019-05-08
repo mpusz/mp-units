@@ -32,7 +32,7 @@ namespace units {
   // is_quantity
 
   template<Dimension D, Unit U, Number Rep>
-      requires std::experimental::ranges::Same<D, typename U::dimension>
+      requires std::Same<D, typename U::dimension>
   class quantity;
 
   namespace detail {
@@ -114,7 +114,7 @@ namespace units {
   }  // namespace detail
 
   template<Quantity To, Dimension D, Unit U, Number Rep>
-      requires std::experimental::ranges::Same<typename To::dimension, D>
+      requires std::Same<typename To::dimension, D>
   constexpr To quantity_cast(const quantity<D, U, Rep>& q)
   {
     using c_ratio = std::ratio_divide<typename U::ratio, typename To::unit::ratio>;
@@ -136,7 +136,7 @@ namespace units {
   // quantity
 
   template<Dimension D, Unit U, Number Rep>
-      requires std::experimental::ranges::Same<D, typename U::dimension>
+      requires std::Same<D, typename U::dimension>
   class quantity {
     Rep value_;
 
@@ -150,15 +150,15 @@ namespace units {
     quantity() = default;
     quantity(const quantity&) = default;
 
-    template<std::experimental::ranges::ConvertibleTo<rep> Rep2>
+    template<std::ConvertibleTo<rep> Rep2>
         requires treat_as_floating_point<rep> || (!treat_as_floating_point<Rep2>)
     constexpr explicit quantity(const Rep2& r) : value_{static_cast<rep>(r)}
     {
     }
 
     template<Quantity Q2>
-        requires std::experimental::ranges::Same<dimension, typename Q2::dimension> &&
-                 std::experimental::ranges::ConvertibleTo<typename Q2::rep, rep> &&
+        requires std::Same<dimension, typename Q2::dimension> &&
+                 std::ConvertibleTo<typename Q2::rep, rep> &&
                  (treat_as_floating_point<rep> ||
                    (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
                    !treat_as_floating_point<typename Q2::rep>))

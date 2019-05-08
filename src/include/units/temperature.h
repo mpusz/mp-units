@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_temperature>> : upcast_to<dimension_temperature> {};
 
   template<typename T>
-  concept bool ThermodynamicTemperature = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_temperature>;
+  concept bool ThermodynamicTemperature = Quantity<T> && std::Same<typename T::dimension, dimension_temperature>;
 
   template<Unit U = struct kelvin, Number Rep = double>
   using temperature = quantity<dimension_temperature, U, Rep>;

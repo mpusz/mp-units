@@ -30,7 +30,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_area>> : upcast_to<dimension_area> {};
 
   template<typename T>
-  concept bool Area = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_area>;
+  concept bool Area = Quantity<T> && std::Same<typename T::dimension, dimension_area>;
 
   template<Unit U = struct square_meter, Number Rep = double>
   using area = quantity<dimension_area, U, Rep>;

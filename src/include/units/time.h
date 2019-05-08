@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_time>> : upcast_to<dimension_time> {};
 
   template<typename T>
-  concept bool Time = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_time>;
+  concept bool Time = Quantity<T> && std::Same<typename T::dimension, dimension_time>;
 
   template<Unit U = struct second, Number Rep = double>
   using time = quantity<dimension_time, U, Rep>;

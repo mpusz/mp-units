@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <experimental/ranges/concepts>
+#include <units/bits/hacks.h>
 
 namespace units {
 
   template<typename T>
-  concept bool Number = std::experimental::ranges::Regular<T> &&
-      std::experimental::ranges::StrictTotallyOrdered<T> &&
+  concept bool Number = std::Regular<T> &&
+      std::StrictTotallyOrdered<T> &&
       requires(T a, T b) {
         { a + b } -> T;
         { a - b } -> T;

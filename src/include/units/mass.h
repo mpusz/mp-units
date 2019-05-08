@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_mass>> : upcast_to<dimension_mass> {};
 
   template<typename T>
-  concept bool Mass = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_mass>;
+  concept bool Mass = Quantity<T> && std::Same<typename T::dimension, dimension_mass>;
 
   template<Unit U = class kilogram, Number Rep = double>
   using mass = quantity<dimension_mass, U, Rep>;

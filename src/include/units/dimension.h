@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/bits/upcasting.h>
 #include <units/bits/type_list.h>
+#include <units/bits/upcasting.h>
 
 namespace units {
 
@@ -91,11 +91,13 @@ namespace units {
 
   // is_dimension
   namespace detail {
+
     template<typename T>
     inline constexpr bool is_dimension = false;
 
     template<Exponent... Es>
     inline constexpr bool is_dimension<dimension<Es...>> = true;
+
   }  // namespace detail
 
   template<typename T>

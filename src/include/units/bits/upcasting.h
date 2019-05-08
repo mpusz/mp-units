@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/bits/hacks.h>
-#include <experimental/ranges/concepts>
+#include <type_traits>
 
 namespace units {
 
@@ -37,7 +37,7 @@ namespace units {
       requires {
         typename T::base_type;
       } &&
-      std::experimental::ranges::DerivedFrom<T, upcast_base<typename T::base_type>>;
+      std::DerivedFrom<T, upcast_base<typename T::base_type>>;
 
   template<Upcastable T>
   using upcast_from = typename T::base_type;

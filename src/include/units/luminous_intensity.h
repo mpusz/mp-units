@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_luminous_intensity>> : upcast_to<dimension_luminous_intensity> {};
 
   template<typename T>
-  concept bool LuminousIntensity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_luminous_intensity>;
+  concept bool LuminousIntensity = Quantity<T> && std::Same<typename T::dimension, dimension_luminous_intensity>;
 
   template<Unit U = struct candela, Number Rep = double>
   using luminous_intensity = quantity<dimension_luminous_intensity, U, Rep>;

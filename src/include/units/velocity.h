@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
 
   template<typename T>
-  concept bool Velocity = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_velocity>;
+  concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 
   template<Unit U = struct meter_per_second, Number Rep = double>
   using velocity = quantity<dimension_velocity, U, Rep>;

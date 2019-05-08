@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_frequency>> : upcast_to<dimension_frequency> {};
 
   template<typename T>
-  concept bool Frequency =  Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_frequency>;
+  concept bool Frequency =  Quantity<T> && std::Same<typename T::dimension, dimension_frequency>;
 
   template<Unit U = struct hertz, Number Rep = double>
   using frequency = quantity<dimension_frequency, U, Rep>;

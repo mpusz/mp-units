@@ -22,12 +22,23 @@
 
 #pragma once
 
+#include <experimental/ranges/concepts>
+
 namespace std {
 
+  // type_identity
   template<typename T>
   struct type_identity { using type = T; };
 
   template<typename T>
   using type_identity_t = typename type_identity<T>::type;
+
+  // concepts
+  using experimental::ranges::Same;
+  using experimental::ranges::Integral;
+  using experimental::ranges::DerivedFrom;
+  using experimental::ranges::Regular;
+  using experimental::ranges::StrictTotallyOrdered;
+  using experimental::ranges::ConvertibleTo;
 
 }

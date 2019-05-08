@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_current>> : upcast_to<dimension_current> {};
 
   template<typename T>
-  concept bool Current = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_current>;
+  concept bool Current = Quantity<T> && std::Same<typename T::dimension, dimension_current>;
 
   template<Unit U = struct ampere, Number Rep = double>
   using current = quantity<dimension_current, U, Rep>;

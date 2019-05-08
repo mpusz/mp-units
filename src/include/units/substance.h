@@ -31,7 +31,7 @@ namespace units {
   template<> struct upcasting_traits<upcast_from<dimension_substance>> : upcast_to<dimension_substance> {};
 
   template<typename T>
-  concept bool Substance = Quantity<T> && std::experimental::ranges::Same<typename T::dimension, dimension_substance>;
+  concept bool Substance = Quantity<T> && std::Same<typename T::dimension, dimension_substance>;
 
   template<Unit U = struct mole, Number Rep = double>
   using substance = quantity<dimension_substance, U, Rep>;
