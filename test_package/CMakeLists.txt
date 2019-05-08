@@ -30,7 +30,6 @@ conan_basic_setup(TARGETS)
 
 # test conan-generated target
 add_executable(${PROJECT_NAME}_conan test_package.cpp)
-target_compile_features(${PROJECT_NAME}_conan PRIVATE cxx_std_20)  # Conan is not able to propagate that yet :-(
 target_link_libraries(${PROJECT_NAME}_conan PRIVATE CONAN_PKG::mp-units)
 
 # test cmake-generated target
