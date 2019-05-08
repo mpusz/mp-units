@@ -43,7 +43,7 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     exports = ["LICENSE.md"]
-    settings = "cppstd", "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     requires = (
         "cmcstl2/2019.03.18@mpusz/stable",
         "gsl-lite/0.33.0@nonstd-lite/stable"
@@ -58,9 +58,11 @@ class UnitsConan(ConanFile):
 
     def configure(self):
         if self.settings.compiler != "gcc":
-            raise ConanInvalidConfiguration("Library units works only with gcc")
-        if self.settings.cppstd not in ["20", "gnu20"]:
-            raise ConanInvalidConfiguration("Library units requires at least C++20 support")
+            raise ConanInvalidConfiguration("Library works only with gcc")
+        # if int(self.settings.compiler.version) < 8:
+        #     raise ConanInvalidConfiguration("Library works only with at least gcc 8.0")
+        if self.settings.compiler.cppstd not in ["20", "gnu20"]:
+            raise ConanInvalidConfiguration("Library requires at least C++20 support")
 
     def _configure_cmake(self):
         cmake = CMake(self)

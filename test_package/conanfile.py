@@ -24,7 +24,7 @@ from conans import ConanFile, CMake, tools, RunEnvironment
 import os
 
 class TestPackageConan(ConanFile):
-    settings = "cppstd", "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     
     def build(self):
