@@ -29,10 +29,13 @@
 *.app
 
 # IDE-specific
-.idea/
-.vs/
-.vscode/
-*build*/
+/.idea/
+/.vs/
+/.vscode/
+/*build*/
+/out/
+/CMakeSettings.json
 
 # Conan
 *.pyc
+/test_package/build/
