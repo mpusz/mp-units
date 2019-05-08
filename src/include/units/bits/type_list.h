@@ -83,8 +83,8 @@ namespace units {
       using base = split_impl<List, Idx + 1, N, Rest...>;
       using base_first = typename base::first_list;
       using base_second = typename base::second_list;
-      using first_list = std::conditional_t < Idx<N, type_list_push_front_t<base_first, T>, base_first>;
-      using second_list = std::conditional_t < Idx<N, base_second, type_list_push_front_t<base_second, T>>;
+      using first_list = std::conditional_t<Idx < N, type_list_push_front_t<base_first, T>, base_first>;
+      using second_list = std::conditional_t<Idx < N, base_second, type_list_push_front_t<base_second, T>>;
     };
 
   }  // namespace detail
