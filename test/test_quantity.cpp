@@ -112,7 +112,7 @@ namespace {
 
   static_assert(length<meter, int>(km).count() == 1000);
   //  static_assert(length<meter, int>(length<meter, double>(3.14)).count() == 3);   // should not compile
-  static_assert(length<meter, int>(quantity_cast<length<meter, int>>(3.14_m)).count() == 3);
+  static_assert(length<meter, int>(quantity_cast<length<meter, my_value<int>>>(3.14_m)).count() == 3);
   //  static_assert(length<meter, int>(length<meter, my_value<double>>(1000.0)).count() == 1000);   // should not compile
   //  static_assert(length<meter, my_value>(1000.0_m).count() == 1000);   // should not compile
   static_assert(length<meter, double>(1000.0_m).count() == 1000.0);
@@ -123,7 +123,7 @@ namespace {
   static_assert(length<meter, int>(1_km).count() == 1000);
   //  static_assert(length<meter, int>(1_s).count() == 1);   // should not compile
   //  static_assert(length<kilometer, int>(1010_m).count() == 1);   // should not compile
-  static_assert(length<kilometer, int>(quantity_cast<length<kilometer, int>>(1010_m)).count() == 1);
+  static_assert(length<kilometer, int>(quantity_cast<length<kilometer, my_value<int>>>(1010_m)).count() == 1);
 
   // assignment operator
 
