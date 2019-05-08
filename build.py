@@ -21,5 +21,5 @@ if __name__ == "__main__":
     )
     builder.add_common_builds(pure_c=False)
     for settings, options, env_vars, build_requires, reference in builder.items:
-        settings["cppstd"] = "20"
+        settings["compiler.cppstd"] = "20"
     builder.run()
