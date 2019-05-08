@@ -261,6 +261,13 @@ public:
 Additional functions provide the support for operations that result in a different dimension type
 than those of their arguments.
 
+Another change comparing to `std::chrono::duration` is that the `duration` is using
+`std::common_type_t<Rep1, Rep2>` to find a common representation for a calculation result. Such
+a design was reported as problematic by numerics study group members as sometimes we want to provide
+a different type in case of multiplication and different in case of division. `std::common_type` lacks
+that additional information. That is why `units::quantity` uses the resulting type of a concrete operator
+operation and provides it directly to `units::common_quantity_t` type trait.
+
 #### `quantity_cast`
 
 To explicitly force truncating conversions `quantity_cast` function is provided which is a direct
