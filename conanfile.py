@@ -24,7 +24,6 @@ from conans import ConanFile, CMake, tools
 from conans.tools import load
 from conans.errors import ConanInvalidConfiguration
 import re
-import os
 
 
 def get_version():
@@ -63,17 +62,22 @@ class UnitsConan(ConanFile):
         if self.settings.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library units requires at least C++20 support")
 
-    def build(self):
+    def _configure_cmake(self):
         cmake = CMake(self)
         if tools.get_env("CONAN_RUN_TESTS", False):
             cmake.configure()
         else:
             cmake.configure(source_dir="%s/src" % self.source_folder)
+        return cmake
+
+    def build(self):
+        cmake = self._configure_cmake()
         cmake.build()
 
     def package(self):
         self.copy(pattern="*license*", dst="licenses", excludes="cmake/common/*", ignore_case=True, keep_path=False)
-        self.copy(pattern="*", dst="include", src=os.path.join("src", "include"))
+        cmake = self._configure_cmake()
+        cmake.install()
 
     def package_info(self):
         self.cpp_info.includedirs = ['include']

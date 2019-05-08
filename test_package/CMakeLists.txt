@@ -29,6 +29,11 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
 # test conan-generated target
-add_executable(${PROJECT_NAME} test_package.cpp)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)  # conan is not able to propagate that yet :-(
-target_link_libraries(${PROJECT_NAME} PRIVATE CONAN_PKG::mp-units)
+add_executable(${PROJECT_NAME}_conan test_package.cpp)
+target_compile_features(${PROJECT_NAME}_conan PRIVATE cxx_std_20)  # Conan is not able to propagate that yet :-(
+target_link_libraries(${PROJECT_NAME}_conan PRIVATE CONAN_PKG::mp-units)
+
+# test cmake-generated target
+find_package(units CONFIG REQUIRED)
+add_executable(${PROJECT_NAME}_cmake test_package.cpp)
+target_link_libraries(${PROJECT_NAME}_cmake PRIVATE mp::units)

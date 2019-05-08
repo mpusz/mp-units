@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=3600)](https://raw.githubusercontent.com/mpusz/units/master/LICENSE)
-[![Travis CI](https://img.shields.io/travis/com/mpusz/units/master.svg?label=Travis%20CI)](https://travis-ci.org/mpusz/units)
+[![Travis CI](https://img.shields.io/travis/com/mpusz/units/master.svg?label=Travis%20CI)](https://travis-ci.com/mpusz/units)
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/units/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/units)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/units%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/units%3Ampusz/_latestVersion)
 
@@ -34,18 +34,19 @@ static_assert(10_km / 5_km == 2);
 
 ## Repository structure
 
-That repository contains the following `cmake`-based projects:
+That repository contains the following independent `cmake`-based projects:
  - `./src` - header-only project for `units`
  - `.` - project used for development needs that wraps `./src` project together with
    usage examples and unit tests
- - `./test_package` - library installation and conan package verification
+ - `./test_package` - library installation and Conan package verification
  
-Please note that all projects depend on some `cmake` modules in `./cmake` directory.
+Please note that the projects depend on `cmake` git submodule in the `./cmake/common`
+subdirectory.
 
 
-## Building, testing and installation
+## Building, testing, and installation
 
-For detailed information on project compilation, testing and reuse please refer to
+For a detailed information on project compilation, testing and reuse please refer to
 [doc/INSTALL.md](doc/INSTALL.md).
 
 

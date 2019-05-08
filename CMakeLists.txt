@@ -32,7 +32,7 @@ include(tools)
 # use Conan configuration if available
 conan_init(cmake)
 
-# project-specific compilation flags
+# compilation options and flags used in a project development process
 include(compile_flags)
 
 # add project code
