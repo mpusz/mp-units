@@ -32,9 +32,12 @@
 /.idea/
 /.vs/
 /.vscode/
-/*build*/
-/out/
 /CMakeSettings.json
+
+# build artifacts
+/cmake-build-*/
+/build/
+/out/
 
 # Conan
 *.pyc
