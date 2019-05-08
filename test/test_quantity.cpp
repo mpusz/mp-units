@@ -249,11 +249,11 @@ namespace {
 
   static_assert(Quantity<length<millimeter, int>>);
 
-  // common_type
+  // common_quantity
 
-  static_assert(std::is_same_v<std::common_type_t<length<meter, int>, length<kilometer, int>>, length<meter, int>>);
-  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<meter, int>>, length<meter, long long>>);
-  static_assert(std::is_same_v<std::common_type_t<length<kilometer, long long>, length<millimeter, double>>, length<millimeter, double>>);
+  static_assert(std::is_same_v<common_quantity_t<length<meter, int>, length<kilometer, int>>, length<meter, int>>);
+  static_assert(std::is_same_v<common_quantity_t<length<kilometer, long long>, length<meter, int>>, length<meter, long long>>);
+  static_assert(std::is_same_v<common_quantity_t<length<kilometer, long long>, length<millimeter, double>>, length<millimeter, double>>);
 
   // quantity_cast
 

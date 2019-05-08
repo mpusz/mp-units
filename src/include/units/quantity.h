@@ -48,6 +48,23 @@ namespace units {
   template<typename T>
   concept bool Quantity = detail::is_quantity<T>;
 
+  // common_quantity
+  template<Quantity Q1, Quantity Q2, Number Rep>
+  struct common_quantity;
+
+  template<Dimension D, Unit U, Number Rep1, Number Rep2, Number Rep>
+  struct common_quantity<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
+    using type = quantity<D, U, Rep>;
+  };
+
+  template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2, Number Rep>
+  struct common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
+    using type = quantity<D, upcasting_traits_t<unit<D, common_ratio_t<typename U1::ratio, typename U2::ratio>>>, Rep>;
+  };
+
+  template<Quantity Q1, Quantity Q2, Number Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+  using common_quantity_t = typename common_quantity<Q1, Q2, Rep>::type;
+
   // treat_as_floating_point
 
   template<typename Rep> // todo Conceptify that
@@ -217,7 +234,8 @@ namespace units {
   [[nodiscard]] constexpr Quantity operator+(const quantity<D, U1, Rep1>& lhs,
                                              const quantity<D, U2, Rep2>& rhs)
   {
-    using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using common_rep = decltype(lhs.count() + rhs.count());
+    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
@@ -225,58 +243,66 @@ namespace units {
   [[nodiscard]] constexpr Quantity operator-(const quantity<D, U1, Rep1>& lhs,
                                              const quantity<D, U2, Rep2>& rhs)
   {
-    using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using common_rep = decltype(lhs.count() - rhs.count());
+    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-  template<Dimension D, Unit U, Number Rep1, Number Rep2>
-  [[nodiscard]] quantity<D, U, std::common_type_t<Rep1, Rep2>>
-  constexpr operator*(const quantity<D, U, Rep1>& q,
-                      const Rep2& v)
+//  template<Dimension D, Unit U, Number Rep1, Number Rep2>
+  template<typename D, typename U, typename Rep1, typename Rep2>
+    requires !Quantity<Rep2>
+  /* [[nodiscard]]*/ constexpr Quantity operator*(const quantity<D, U, Rep1>& q,
+                                                  const Rep2& v)
   {
-    using ret = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
+    using common_rep = decltype(q.count()* v);
+    using ret = quantity<D, U, common_rep>;
     return ret(ret(q).count() * v);
   }
 
-  template<Number Rep1, Dimension D, Unit U, Number Rep2>
-  [[nodiscard]] quantity<D, U, std::common_type_t<Rep1, Rep2>>
-  constexpr operator*(const Rep1& v,
-                      const quantity<D, U, Rep2>& q)
+  //template<Number Rep1, Dimension D, Unit U, Number Rep2>
+  template<typename Rep1, typename D, typename U, typename Rep2>
+    requires !Quantity<Rep1>
+  /* [[nodiscard]]*/ constexpr Quantity operator*(const Rep1& v,
+                                                  const quantity<D, U, Rep2>& q)
   {
     return q * v;
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
-  /* [[nodiscard]] */ constexpr Quantity operator*(const quantity<D1, U1, Rep1>& lhs,
+  [[nodiscard]] constexpr Quantity operator*(const quantity<D1, U1, Rep1>& lhs,
                                                    const quantity<D2, U2, Rep2>& rhs)
+      requires treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
+               (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
   {
     using dim = dimension_multiply_t<D1, D2>;
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
+    using common_rep = decltype(lhs.count() * rhs.count());
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
-  template<Number Rep1, Dimension D, Unit U, Number Rep2>
-  [[nodiscard]] quantity<dim_invert_t<D>, upcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
-  constexpr operator/(const Rep1& v,
-                      const quantity<D, U, Rep2>& q)
+//  template<Number Rep1, Dimension D, Unit U, Number Rep2>
+  template<typename Rep1, typename D, typename U, typename Rep2>
+  [[nodiscard]] constexpr Quantity operator/(const Rep1& v,
+                                             const quantity<D, U, Rep2>& q)
   {
     Expects(q != std::decay_t<decltype(q)>(0));
 
     using dim = dim_invert_t<D>;
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>;
-    using den = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
+    using common_rep = decltype(v / q.count());
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    using den = quantity<D, U, common_rep>;
     return ret(v / den(q).count());
   }
 
-  template<Dimension D, Unit U, Number Rep1, Number Rep2>
-  [[nodiscard]] quantity<D, U, std::common_type_t<Rep1, Rep2>>
-  constexpr operator/(const quantity<D, U, Rep1>& q,
-                      const Rep2& v)
+//  template<Dimension D, Unit U, Number Rep1, Number Rep2>
+  template<typename D, typename U, typename Rep1, typename Rep2>
+  [[nodiscard]] constexpr Quantity operator/(const quantity<D, U, Rep1>& q,
+                                             const Rep2& v)
   {
     Expects(v != Rep2{0});
 
-    using ret = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
+    using common_rep = decltype(q.count() / v);
+    using ret = quantity<D, U, common_rep>;
     return ret(ret(q).count() / v);
   }
 
@@ -286,19 +312,22 @@ namespace units {
   {
     Expects(rhs != std::decay_t<decltype(rhs)>(0));
 
-    using cq = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using common_rep = decltype(lhs.count() / rhs.count());
+    using cq = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
     return cq(lhs).count() / cq(rhs).count();
   }
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || (std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
-  /* [[nodiscard]] */ constexpr Quantity operator/(const quantity<D1, U1, Rep1>& lhs,
-                                                   const quantity<D2, U2, Rep2>& rhs)
+  [[nodiscard]] constexpr Quantity operator/(const quantity<D1, U1, Rep1>& lhs,
+                                             const quantity<D2, U2, Rep2>& rhs)
+    requires treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
+             (std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
   {
     Expects(rhs != std::decay_t<decltype(rhs)>(0));
 
+    using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide_t<D1, D2>;
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 
@@ -306,7 +335,8 @@ namespace units {
   [[nodiscard]] constexpr Quantity operator%(const quantity<D, U, Rep1>& q,
                                              const Rep2& v)
   {
-    using ret = quantity<D, U, std::common_type_t<Rep1, Rep2>>;
+    using common_rep = decltype(q.count() % v);
+    using ret = quantity<D, U, common_rep>;
     return ret(ret(q).count() % v);
   }
 
@@ -314,7 +344,8 @@ namespace units {
   [[nodiscard]] constexpr Quantity operator%(const quantity<D, U1, Rep1>& lhs,
                                              const quantity<D, U2, Rep2>& rhs)
   {
-    using ret = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using common_rep = decltype(lhs.count() % rhs.count());
+    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
@@ -323,7 +354,7 @@ namespace units {
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
   [[nodiscard]] constexpr bool operator==(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
   {
-    using ct = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using ct = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return ct(lhs).count() == ct(rhs).count();
   }
 
@@ -336,7 +367,7 @@ namespace units {
   template<Dimension D, Unit U1, Number Rep1, Unit U2, Number Rep2>
   [[nodiscard]] constexpr bool operator<(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
   {
-    using ct = std::common_type_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using ct = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
     return ct(lhs).count() < ct(rhs).count();
   }
 
@@ -359,19 +390,3 @@ namespace units {
   }
 
 }  // namespace units
-
-namespace std {
-
-  template<units::Dimension D, units::Unit U, units::Number Rep1, units::Number Rep2>
-  struct common_type<units::quantity<D, U, Rep1>, units::quantity<D, U, Rep2>> {
-    using type = units::quantity<D, U, std::common_type_t<Rep1, Rep2>>;
-  };
-
-  // todo: simplified
-  template<units::Dimension D, units::Unit U1, units::Number Rep1, units::Unit U2, units::Number Rep2>
-  struct common_type<units::quantity<D, U1, Rep1>, units::quantity<D, U2, Rep2>> {
-    using type = units::quantity<D, units::upcasting_traits_t<units::unit<D, units::common_ratio_t<typename U1::ratio, typename U2::ratio>>>,
-                                 std::common_type_t<Rep1, Rep2>>;
-  };
-
-}  // namespace std
