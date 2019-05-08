@@ -45,7 +45,7 @@ class UnitsConan(ConanFile):
     exports = ["LICENSE.md"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "cmcstl2/2019.03.18@mpusz/stable",
+        "cmcstl2/2019.04.26@mpusz/stable",
         "gsl-lite/0.33.0@nonstd-lite/stable"
     )
     scm = {
