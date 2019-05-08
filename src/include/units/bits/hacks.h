@@ -37,7 +37,6 @@ namespace std {
   using type_identity_t = typename type_identity<T>::type;
 
 #endif // UNITS_HAS_STD_TYPE_IDENTITY
-
   // concepts
   using experimental::ranges::Same;
   using experimental::ranges::Integral;
