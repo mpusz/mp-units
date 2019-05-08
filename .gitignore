@@ -30,6 +30,7 @@
 
 # IDE-specific
 .idea/
+.vs/
 .vscode/
 *build*/
 
