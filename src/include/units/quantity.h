@@ -258,9 +258,9 @@ namespace units {
 
 //  template<Dimension D, Unit U, Scalar Rep1, Scalar Rep2>
   template<typename D, typename U, typename Rep1, typename Rep2>
-    requires !Quantity<Rep2>
-  /* [[nodiscard]]*/ constexpr Quantity operator*(const quantity<D, U, Rep1>& q,
-                                                  const Rep2& v)
+  [[nodiscard]] constexpr Quantity operator*(const quantity<D, U, Rep1>& q,
+                                             const Rep2& v)
+    requires (!Quantity<Rep2>)
   {
     using common_rep = decltype(q.count()* v);
     using ret = quantity<D, U, common_rep>;
@@ -269,16 +269,16 @@ namespace units {
 
   //template<Scalar Rep1, Dimension D, Unit U, Scalar Rep2>
   template<typename Rep1, typename D, typename U, typename Rep2>
-    requires !Quantity<Rep1>
-  /* [[nodiscard]]*/ constexpr Quantity operator*(const Rep1& v,
-                                                  const quantity<D, U, Rep2>& q)
+  [[nodiscard]] constexpr Quantity operator*(const Rep1& v,
+                                             const quantity<D, U, Rep2>& q)
+    requires (!Quantity<Rep1>)
   {
     return q * v;
   }
 
   template<Dimension D1, Unit U1, Scalar Rep1, Dimension D2, Unit U2, Scalar Rep2>
   [[nodiscard]] constexpr Quantity operator*(const quantity<D1, U1, Rep1>& lhs,
-                                                   const quantity<D2, U2, Rep2>& rhs)
+                                             const quantity<D2, U2, Rep2>& rhs)
       requires treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
   {
@@ -292,6 +292,7 @@ namespace units {
   template<typename Rep1, typename D, typename U, typename Rep2>
   [[nodiscard]] constexpr Quantity operator/(const Rep1& v,
                                              const quantity<D, U, Rep2>& q)
+    requires (!Quantity<Rep1>)
   {
     Expects(q != std::decay_t<decltype(q)>(0));
 
@@ -306,6 +307,7 @@ namespace units {
   template<typename D, typename U, typename Rep1, typename Rep2>
   [[nodiscard]] constexpr Quantity operator/(const quantity<D, U, Rep1>& q,
                                              const Rep2& v)
+    requires (!Quantity<Rep2>)
   {
     Expects(v != Rep2{0});
 
