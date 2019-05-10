@@ -27,7 +27,7 @@
 
 namespace units {
 
-  template<Dimension D, Ratio R>
+  template<Dimension D, Ratio R = std::ratio<1>>
     requires (R::num > 0)
   struct unit : upcast_base<unit<D, R>> {
     using dimension = D;

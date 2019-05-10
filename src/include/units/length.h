@@ -37,7 +37,7 @@ namespace units {
   using length = quantity<dimension_length, U, Rep>;
 
   // SI units
-  struct meter : unit<dimension_length, std::ratio<1>> {};
+  struct meter : unit<dimension_length> {};
   template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
 
   struct millimeter : milli<meter> {};

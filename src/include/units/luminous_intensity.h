@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = struct candela, Number Rep = double>
   using luminous_intensity = quantity<dimension_luminous_intensity, U, Rep>;
 
-  struct candela : unit<dimension_luminous_intensity, std::ratio<1>> {};
+  struct candela : unit<dimension_luminous_intensity> {};
   template<> struct upcasting_traits<upcast_from<candela>> : upcast_to<candela> {};
 
   inline namespace literals {

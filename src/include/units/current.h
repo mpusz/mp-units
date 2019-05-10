@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = struct ampere, Number Rep = double>
   using current = quantity<dimension_current, U, Rep>;
 
-  struct ampere : unit<dimension_current, std::ratio<1>> {};
+  struct ampere : unit<dimension_current> {};
   template<> struct upcasting_traits<upcast_from<ampere>> : upcast_to<ampere> {};
 
   inline namespace literals {

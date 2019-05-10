@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = struct kelvin, Number Rep = double>
   using temperature = quantity<dimension_temperature, U, Rep>;
 
-  struct kelvin : unit<dimension_temperature, std::ratio<1>> {};
+  struct kelvin : unit<dimension_temperature> {};
   template<> struct upcasting_traits<upcast_from<kelvin>> : upcast_to<kelvin> {};
 
   inline namespace literals {

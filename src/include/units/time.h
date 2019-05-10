@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = struct second, Number Rep = double>
   using time = quantity<dimension_time, U, Rep>;
 
-  struct second : unit<dimension_time, std::ratio<1>> {};
+  struct second : unit<dimension_time> {};
   template<> struct upcasting_traits<upcast_from<second>> : upcast_to<second> {};
 
   struct nanosecond : nano<second> {};

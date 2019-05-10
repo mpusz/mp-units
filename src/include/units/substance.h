@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = struct mole, Number Rep = double>
   using substance = quantity<dimension_substance, U, Rep>;
 
-  struct mole : unit<dimension_substance, std::ratio<1>> {};
+  struct mole : unit<dimension_substance> {};
   template<> struct upcasting_traits<upcast_from<mole>> : upcast_to<mole> {};
 
   inline namespace literals {
