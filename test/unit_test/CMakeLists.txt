@@ -20,5 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(unit_test)
-add_subdirectory(metabench)
+# unit tests
+add_library(unit_tests
+    test_dimension.cpp
+    test_quantity.cpp
+    test_tools.cpp
+    test_type_list.cpp
+    test_units.cpp
+)
+target_link_libraries(unit_tests
+    PRIVATE
+        mp::units
+)

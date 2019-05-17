@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 3.8)
 project(units)
 
 # set path to custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/common/cmake")
 
 # include common tools and workarounds
