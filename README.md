@@ -54,3 +54,11 @@ For a detailed information on project compilation, testing and reuse please refe
 
 `units` library design rationale and documentation can be found in
 [doc/DESIGN.md](doc/DESIGN.md) 
+
+
+## Release notes
+
+- 0.1.0 May 18, 2019
+  - Initial library release
+  - Begin semantic versioning
+  - The last version to work with gcc-8
