@@ -25,6 +25,7 @@
 #include <type_traits>
 #include <numeric>
 #include <cstdint>
+#include <gsl/gsl-lite.hpp>
 
 namespace units {
 
@@ -66,16 +67,33 @@ namespace units {
 
   namespace detail {
 
+    static constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
+    {
+      constexpr std::uintmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
+
+      const std::uintmax_t a0 = detail::abs(lhs) % c;
+      const std::uintmax_t a1 = detail::abs(lhs) / c;
+      const std::uintmax_t b0 = detail::abs(rhs) % c;
+      const std::uintmax_t b1 = detail::abs(rhs) / c;
+
+      Expects(a1 == 0 || b1 == 0); //  overflow in multiplication
+      Expects(a0 * b1 + b0 * a1 < (c >> 1)); // overflow in multiplication
+      Expects(b0 * a0 <= INTMAX_MAX); // overflow in multiplication
+      Expects((a0 * b1 + b0 * a1) * c <= INTMAX_MAX -  b0 * a0); // overflow in multiplication
+
+      return lhs * rhs;
+    }
+
     template<typename R1, typename R2>
     struct ratio_multiply {
     private:
-      static constexpr intmax_t gcd1 = std::gcd(R1::num, R2::den);
-      static constexpr intmax_t gcd2 = std::gcd(R2::num, R1::den);
+      static constexpr std::intmax_t gcd1 = std::gcd(R1::num, R2::den);
+      static constexpr std::intmax_t gcd2 = std::gcd(R2::num, R1::den);
 
     public:
-      using type = ratio<(R1::num / gcd1) * (R2::num / gcd2), (R1::den / gcd2) * (R2::den / gcd1)>;
-      static constexpr intmax_t num = type::num;
-      static constexpr intmax_t den = type::den;
+      using type = ratio<safe_multiply(R1::num / gcd1, R2::num / gcd2), safe_multiply(R1::den / gcd2, R2::den / gcd1)>;
+      static constexpr std::intmax_t num = type::num;
+      static constexpr std::intmax_t den = type::den;
     };
 
   }
@@ -91,8 +109,8 @@ namespace units {
     struct ratio_divide {
       static_assert(R2::num != 0, "division by 0");
       using type = ratio_multiply<R1, ratio<R2::den, R2::num>>;
-      static constexpr intmax_t num = type::num;
-      static constexpr intmax_t den = type::den;
+      static constexpr std::intmax_t num = type::num;
+      static constexpr std::intmax_t den = type::den;
     };
 
   }
@@ -105,8 +123,8 @@ namespace units {
   // todo: simplified
   template<Ratio R1, Ratio R2>
   struct common_ratio {
-    static constexpr intmax_t gcd_num = std::gcd(R1::num, R2::num);
-    static constexpr intmax_t gcd_den = std::gcd(R1::den, R2::den);
+    static constexpr std::intmax_t gcd_num = std::gcd(R1::num, R2::num);
+    static constexpr std::intmax_t gcd_den = std::gcd(R1::den, R2::den);
     using type = ratio<gcd_num, (R1::den / gcd_den) * R2::den>;
   };
 
