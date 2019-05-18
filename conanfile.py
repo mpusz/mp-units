@@ -85,4 +85,6 @@ class UnitsConan(ConanFile):
         self.cpp_info.includedirs = ['include']
 
     def package_id(self):
-        self.info.header_only()
+        self.info.settings.clear()
+        self.info.settings.compiler = self.settings.compiler
+        self.info.settings.compiler.version = self.settings.compiler.version

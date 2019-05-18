@@ -29,10 +29,13 @@ project(units
 )
 
 # set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/common/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
 # include common tools and workarounds
-include(tools)
+include(common/cmake/tools)
+
+# check availability of C++20 features
+include(check_features)
 
 # library definition
 add_library(units INTERFACE)
@@ -59,7 +62,7 @@ target_link_libraries(units
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 add_library(mp::units ALIAS units)
@@ -72,6 +75,10 @@ install(TARGETS units EXPORT ${CMAKE_PROJECT_NAME}Targets
     INCLUDES DESTINATION include
 )
 install(DIRECTORY include/units
+    DESTINATION include
+    COMPONENT Devel
+)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/units
     DESTINATION include
     COMPONENT Devel
 )

@@ -20,26 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.8)
-project(units)
+set(CMAKE_REQUIRED_FLAGS -std=c++2a)
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CheckTypeSize)
 
-# include common tools and workarounds
-include(common/cmake/tools)
+set(CMAKE_EXTRA_INCLUDE_FILES type_traits)
+check_type_size("std::type_identity<int>" UNITS_HAS_STD_TYPE_IDENTITY LANGUAGE CXX)
 
-# use Conan configuration if available
-conan_init(cmake)
-
-# compilation options and flags used in a project development process
-include(common/cmake/compile_flags)
-
-# add project code
-add_subdirectory(src)
-
-# add unit tests
-add_subdirectory(test)
-
-# add usage example
-add_subdirectory(example)
+configure_file(../cmake/config.h.in include/units/bits/config.h)
