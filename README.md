@@ -49,6 +49,7 @@ subdirectory.
 For a detailed information on project compilation, testing and reuse please refer to
 [doc/INSTALL.md](doc/INSTALL.md).
 
+NOTE: This library as of now compiles correctly only with gcc-9.  
 
 ## Library design
 

@@ -2,8 +2,6 @@
 
 There are a few different ways of installing/reusing `units` in your project.
 
-NOTE: This library as of now compiles correctly only with gcc-8.  
-
 ## Copy
 
 As `units` is a header-only library you can simply copy `src/include` directory to
