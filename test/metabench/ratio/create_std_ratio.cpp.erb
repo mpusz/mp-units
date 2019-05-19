@@ -1,0 +1,15 @@
+#include "std_ratio.h"
+
+<% (1..n).each do |i| %>
+  struct test<%= i %> {
+#if defined(METABENCH)
+    using r1 = std::ratio<<%= i %>, <%= n + 1 - i %>>;
+    using r2 = std::ratio<<%= n + 1 - i %>, <%= i %>>;
+#endif
+  };
+<% end %>
+
+
+int main()
+{
+}

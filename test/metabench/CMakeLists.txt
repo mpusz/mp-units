@@ -39,14 +39,4 @@ endif()
 
 enable_testing()
 
-add_metabench_test(metabench.data.std_ratio "std::ratio" ratio/std_ratio.cpp.erb "[10, 50, 100, 500, 1000]")
-add_metabench_test(metabench.data.ratio_type_constexpr "ratio with constexpr" ratio/ratio_type_constexpr.cpp.erb "[10, 50, 100, 500, 1000]")
-metabench_add_chart(metabench.chart.ratio
-    TITLE "Ratio on n operations"
-    SUBTITLE "(smaller is better)"
-    DATASETS
-        metabench.data.std_ratio
-        metabench.data.ratio_type_constexpr
-)
-
-add_custom_target(metabench DEPENDS metabench.chart.ratio)
+add_subdirectory(ratio)
