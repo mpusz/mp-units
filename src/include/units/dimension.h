@@ -141,14 +141,13 @@ namespace units {
     template<Exponent E1, Exponent... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
       using rest = dim_consolidate_t<dimension<ERest...>>;
-      using type =
-          std::conditional_t<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
+      using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
     template<typename D, int V1, int V2, Exponent... ERest>
     struct dim_consolidate<dimension<exp<D, V1>, exp<D, V2>, ERest...>> {
-      using type = std::conditional_t<V1 + V2 == 0, dim_consolidate_t<dimension<ERest...>>,
-                                      dim_consolidate_t<dimension<exp<D, V1 + V2>, ERest...>>>;
+      using type = conditional<V1 + V2 == 0, dim_consolidate_t<dimension<ERest...>>,
+                               dim_consolidate_t<dimension<exp<D, V1 + V2>, ERest...>>>;
     };
 
   }  // namespace detail

@@ -74,8 +74,8 @@ namespace units {
     template<typename BaseDimension, Unit U, Unit... Rest>
     struct get_ratio<BaseDimension, U, Rest...> {
       using unit_base_dim = get_unit_base_dim<typename U::dimension::base_type>::dimension;
-      using ratio = std::conditional_t<unit_base_dim::value == BaseDimension::value, typename U::ratio,
-                                       typename get_ratio<BaseDimension, Rest...>::ratio>;
+      using ratio = conditional<unit_base_dim::value == BaseDimension::value, typename U::ratio,
+                                typename get_ratio<BaseDimension, Rest...>::ratio>;
     };
 
     template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
@@ -88,8 +88,8 @@ namespace units {
 
     template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
     struct ratio_op {
-      using calc_ratio = std::conditional_t<(UnitExpValue > 0), ratio_multiply<Result, UnitRatio>,
-                                            ratio_divide<Result, UnitRatio>>;
+      using calc_ratio = conditional<(UnitExpValue > 0), ratio_multiply<Result, UnitRatio>,
+                                     ratio_divide<Result, UnitRatio>>;
       static constexpr int value = UnitExpValue > 0 ? UnitExpValue - 1 : UnitExpValue + 1;
       using ratio = ratio_op<calc_ratio, value, UnitRatio>::ratio;
     };
