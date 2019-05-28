@@ -36,7 +36,7 @@ namespace units {
   template<Unit U = class kilogram, Number Rep = double>
   using mass = quantity<dimension_mass, U, Rep>;
 
-  struct gram : unit<dimension_mass, std::milli> {};
+  struct gram : unit<dimension_mass, ratio<1, 1000>> {};
   template<> struct upcasting_traits<upcast_from<gram>> : upcast_to<gram> {};
 
   struct kilogram : kilo<gram> {};

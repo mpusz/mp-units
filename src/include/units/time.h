@@ -48,10 +48,10 @@ namespace units {
   struct millisecond : milli<second> {};
   template<> struct upcasting_traits<upcast_from<millisecond>> : upcast_to<millisecond> {};
 
-  struct minute : unit<dimension_time, std::ratio<60>> {};
+  struct minute : unit<dimension_time, ratio<60>> {};
   template<> struct upcasting_traits<upcast_from<minute>> : upcast_to<minute> {};
 
-  struct hour : unit<dimension_time, std::ratio<3600>> {};
+  struct hour : unit<dimension_time, ratio<3600>> {};
   template<> struct upcasting_traits<upcast_from<hour>> : upcast_to<hour> {};
 
   inline namespace literals {

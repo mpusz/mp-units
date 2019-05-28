@@ -48,6 +48,21 @@ namespace units {
     using type = ratio<num, den>;
   };
 
+  // is_ratio
+
+  namespace detail {
+
+    template<typename T>
+    inline constexpr bool is_ratio = false;
+
+    template<intmax_t Num, intmax_t Den>
+    inline constexpr bool is_ratio<ratio<Num, Den>> = true;
+
+  }  // namespace detail
+
+  template<typename T>
+  concept bool Ratio = detail::is_ratio<T>;
+
   // ratio_multiply
 
   namespace detail {
@@ -70,7 +85,7 @@ namespace units {
     }
 
     template<typename R1, typename R2>
-    struct ratio_multiply {
+    struct ratio_multiply_impl {
     private:
       static constexpr std::intmax_t gcd1 = std::gcd(R1::num, R2::den);
       static constexpr std::intmax_t gcd2 = std::gcd(R2::num, R1::den);
@@ -83,15 +98,15 @@ namespace units {
 
   }
 
-  template<typename R1, typename R2>
-  using ratio_multiply = typename detail::ratio_multiply<R1, R2>::type;
+  template<Ratio R1, Ratio R2>
+  using ratio_multiply = typename detail::ratio_multiply_impl<R1, R2>::type;
 
   // ratio_divide
 
   namespace detail {
 
     template<typename R1, typename R2>
-    struct ratio_divide {
+    struct ratio_divide_impl {
       static_assert(R2::num != 0, "division by 0");
       using type = ratio_multiply<R1, ratio<R2::den, R2::num>>;
       static constexpr std::intmax_t num = type::num;
@@ -100,8 +115,8 @@ namespace units {
 
   }
 
-  template<typename R1, typename R2>
-  using ratio_divide = typename detail::ratio_divide<R1, R2>::type;
+  template<Ratio R1, Ratio R2>
+  using ratio_divide = typename detail::ratio_divide_impl<R1, R2>::type;
 
   // common_ratio
 
@@ -117,7 +132,7 @@ namespace units {
 
   }
 
-  template<typename R1, typename R2>
-  using common_ratio_t = typename detail::common_ratio_impl<R1, R2>::type;
+  template<Ratio R1, Ratio R2>
+  using common_ratio = typename detail::common_ratio_impl<R1, R2>::type;
 
 }  // namespace units

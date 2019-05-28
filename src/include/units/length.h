@@ -70,16 +70,16 @@ namespace units {
   } // namespace literals
 
   // US customary units
-  struct yard : unit<dimension_length, std::ratio<9'144, 10'000>> {};
+  struct yard : unit<dimension_length, ratio<9'144, 10'000>> {};
   template<> struct upcasting_traits<upcast_from<yard>> : upcast_to<yard> {};
 
-  struct foot : unit<dimension_length, std::ratio_multiply<std::ratio<1, 3>, yard::ratio>> {};
+  struct foot : unit<dimension_length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
   template<> struct upcasting_traits<upcast_from<foot>> : upcast_to<foot> {};
 
-  struct inch : unit<dimension_length, std::ratio_multiply<std::ratio<1, 12>, foot::ratio>> {};
+  struct inch : unit<dimension_length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
   template<> struct upcasting_traits<upcast_from<inch>> : upcast_to<inch> {};
 
-  struct mile : unit<dimension_length, std::ratio_multiply<std::ratio<1'760>, yard::ratio>> {};
+  struct mile : unit<dimension_length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
   template<> struct upcasting_traits<upcast_from<mile>> : upcast_to<mile> {};
 
   inline namespace literals {

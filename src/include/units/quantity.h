@@ -125,7 +125,7 @@ namespace units {
       requires std::Same<typename To::dimension, D>
   constexpr To quantity_cast(const quantity<D, U, Rep>& q)
   {
-    using c_ratio = std::ratio_divide<typename U::ratio, typename To::unit::ratio>;
+    using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
     using cast = detail::quantity_cast_impl<To, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
     return cast::cast(q);
@@ -284,7 +284,7 @@ namespace units {
   {
     using dim = dimension_multiply_t<D1, D2>;
     using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
@@ -298,7 +298,7 @@ namespace units {
 
     using dim = dim_invert_t<D>;
     using common_rep = decltype(v / q.count());
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
     using den = quantity<D, U, common_rep>;
     return ret(v / den(q).count());
   }
@@ -331,13 +331,13 @@ namespace units {
   [[nodiscard]] constexpr Quantity operator/(const quantity<D1, U1, Rep1>& lhs,
                                              const quantity<D2, U2, Rep2>& rhs)
     requires treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
-             (std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
+             (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide_t<D1, D2>;
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 

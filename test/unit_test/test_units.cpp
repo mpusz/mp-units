@@ -74,7 +74,7 @@ namespace {
 
   // velocity
 
-  static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<unit<dimension_velocity, std::ratio<1000, 1>>, std::int64_t>>);
+  static_assert(std::is_same_v<decltype(1_km / 1_s), velocity<unit<dimension_velocity, ratio<1000, 1>>, std::int64_t>>);
 
   static_assert(10_m / 5_s == 2_mps);
   static_assert(10 / 5_s * 1_m == 2_mps);
