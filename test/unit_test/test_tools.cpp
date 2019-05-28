@@ -40,9 +40,9 @@ namespace {
 
   // common_ratio
 
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::kilo>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::kilo, std::ratio<1>>, std::ratio<1>>);
-  static_assert(std::is_same_v<common_ratio_t<std::ratio<1>, std::milli>, std::milli>);
-  static_assert(std::is_same_v<common_ratio_t<std::milli, std::ratio<1>>, std::milli>);
+  static_assert(std::is_same_v<common_ratio<std::ratio<1>, std::kilo>, std::ratio<1>>);
+  static_assert(std::is_same_v<common_ratio<std::kilo, std::ratio<1>>, std::ratio<1>>);
+  static_assert(std::is_same_v<common_ratio<std::ratio<1>, std::milli>, std::milli>);
+  static_assert(std::is_same_v<common_ratio<std::milli, std::ratio<1>>, std::milli>);
 
 }  // namespace

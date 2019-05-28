@@ -67,7 +67,7 @@ namespace units {
 
   template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2, Scalar Rep>
   struct common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-    using type = quantity<D, upcasting_traits_t<unit<D, common_ratio_t<typename U1::ratio, typename U2::ratio>>>, Rep>;
+    using type = quantity<D, upcasting_traits_t<unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
   };
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
