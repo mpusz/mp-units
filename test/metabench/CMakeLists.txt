@@ -39,4 +39,7 @@ endif()
 
 enable_testing()
 
+add_custom_target(metabench)
+
 add_subdirectory(ratio)
+add_subdirectory(list)

@@ -69,4 +69,4 @@ add_custom_target(metabench.chart.ratio
         metabench.chart.ratio.all
 )
 
-add_custom_target(metabench DEPENDS metabench.chart.ratio)
+add_dependencies(metabench metabench.chart.ratio)
