@@ -32,15 +32,15 @@ namespace {
 
   // type_list_push_front
 
-  static_assert(std::is_same_v<type_list_push_front_t<type_list<>, int>, type_list<int>>);
-  static_assert(std::is_same_v<type_list_push_front_t<type_list<>, int, long, double>, type_list<int, long, double>>);
-  static_assert(std::is_same_v<type_list_push_front_t<type_list<double>, int, long>, type_list<int, long, double>>);
+  static_assert(std::is_same_v<type_list_push_front<type_list<>, int>, type_list<int>>);
+  static_assert(std::is_same_v<type_list_push_front<type_list<>, int, long, double>, type_list<int, long, double>>);
+  static_assert(std::is_same_v<type_list_push_front<type_list<double>, int, long>, type_list<int, long, double>>);
 
   // type_list_push_back
 
-  static_assert(std::is_same_v<type_list_push_back_t<type_list<>, int>, type_list<int>>);
-  static_assert(std::is_same_v<type_list_push_back_t<type_list<>, int, long, double>, type_list<int, long, double>>);
-  static_assert(std::is_same_v<type_list_push_back_t<type_list<double>, int, long>, type_list<double, int, long>>);
+  static_assert(std::is_same_v<type_list_push_back<type_list<>, int>, type_list<int>>);
+  static_assert(std::is_same_v<type_list_push_back<type_list<>, int, long, double>, type_list<int, long, double>>);
+  static_assert(std::is_same_v<type_list_push_back<type_list<double>, int, long>, type_list<double, int, long>>);
 
   // type_list_split
 
@@ -83,22 +83,22 @@ namespace {
 
   // type_list_merge_sorted
 
-  static_assert(std::is_same_v<type_list_merge_sorted_t<type_list<dim_id<0>>, type_list<dim_id<1>>, dim_id_less>,
+  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<0>>, type_list<dim_id<1>>, dim_id_less>,
                                type_list<dim_id<0>, dim_id<1>>>);
-  static_assert(std::is_same_v<type_list_merge_sorted_t<type_list<dim_id<1>>, type_list<dim_id<0>>, dim_id_less>,
+  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<1>>, type_list<dim_id<0>>, dim_id_less>,
                                type_list<dim_id<0>, dim_id<1>>>);
 
-  static_assert(std::is_same_v<type_list_merge_sorted_t<type_list<dim_id<27>, dim_id<38>>,
+  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<27>, dim_id<38>>,
                                                         type_list<dim_id<3>, dim_id<43>>, dim_id_less>,
                                type_list<dim_id<3>, dim_id<27>, dim_id<38>, dim_id<43>>>);
   static_assert(
-      std::is_same_v<type_list_merge_sorted_t<type_list<dim_id<9>, dim_id<82>>, type_list<dim_id<10>>, dim_id_less>,
+      std::is_same_v<type_list_merge_sorted<type_list<dim_id<9>, dim_id<82>>, type_list<dim_id<10>>, dim_id_less>,
                      type_list<dim_id<9>, dim_id<10>, dim_id<82>>>);
 
   // type_list_sort
 
   template<TypeList List>
-  using dim_sort_t = type_list_sort_t<List, dim_id_less>;
+  using dim_sort_t = type_list_sort<List, dim_id_less>;
 
   static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>>>, type_list<dim_id<0>>>);
   static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>, dim_id<1>>>, type_list<dim_id<0>, dim_id<1>>>);
@@ -113,7 +113,7 @@ namespace {
   using e = exp<dim_id<Id>, Value>;
 
   template<TypeList List>
-  using exp_sort_t = type_list_sort_t<List, exp_dim_id_less>;
+  using exp_sort_t = type_list_sort<List, exp_dim_id_less>;
 
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>>>, dimension<e<0, 1>>>);
   static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>, e<1, -1>>>, dimension<e<0, 1>, e<1, -1>>>);
