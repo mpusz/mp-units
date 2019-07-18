@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_luminous_intensity>> : upcast_to<dimension_luminous_intensity> {};
+  template<> struct downcasting_traits<downcast_from<dimension_luminous_intensity>> : downcast_to<dimension_luminous_intensity> {};
 
   template<typename T>
   concept bool LuminousIntensity = Quantity<T> && std::Same<typename T::dimension, dimension_luminous_intensity>;
@@ -37,7 +37,7 @@ namespace units {
   using luminous_intensity = quantity<dimension_luminous_intensity, U, Rep>;
 
   struct candela : unit<dimension_luminous_intensity> {};
-  template<> struct upcasting_traits<upcast_from<candela>> : upcast_to<candela> {};
+  template<> struct downcasting_traits<downcast_from<candela>> : downcast_to<candela> {};
 
   inline namespace literals {
 

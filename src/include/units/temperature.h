@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_temperature>> : upcast_to<dimension_temperature> {};
+  template<> struct downcasting_traits<downcast_from<dimension_temperature>> : downcast_to<dimension_temperature> {};
 
   template<typename T>
   concept bool ThermodynamicTemperature = Quantity<T> && std::Same<typename T::dimension, dimension_temperature>;
@@ -37,7 +37,7 @@ namespace units {
   using temperature = quantity<dimension_temperature, U, Rep>;
 
   struct kelvin : unit<dimension_temperature> {};
-  template<> struct upcasting_traits<upcast_from<kelvin>> : upcast_to<kelvin> {};
+  template<> struct downcasting_traits<downcast_from<kelvin>> : downcast_to<kelvin> {};
 
   inline namespace literals {
 

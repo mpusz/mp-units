@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_mass : make_dimension_t<exp<base_dim_mass, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_mass>> : upcast_to<dimension_mass> {};
+  template<> struct downcasting_traits<downcast_from<dimension_mass>> : downcast_to<dimension_mass> {};
 
   template<typename T>
   concept bool Mass = Quantity<T> && std::Same<typename T::dimension, dimension_mass>;
@@ -37,10 +37,10 @@ namespace units {
   using mass = quantity<dimension_mass, U, Rep>;
 
   struct gram : unit<dimension_mass, ratio<1, 1000>> {};
-  template<> struct upcasting_traits<upcast_from<gram>> : upcast_to<gram> {};
+  template<> struct downcasting_traits<downcast_from<gram>> : downcast_to<gram> {};
 
   struct kilogram : kilo<gram> {};
-  template<> struct upcasting_traits<upcast_from<kilogram>> : upcast_to<kilogram> {};
+  template<> struct downcasting_traits<downcast_from<kilogram>> : downcast_to<kilogram> {};
 
   inline namespace literals {
 

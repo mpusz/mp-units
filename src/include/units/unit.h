@@ -30,7 +30,7 @@ namespace units {
 
   template<Dimension D, Ratio R = ratio<1>>
     requires (R::num > 0)
-  struct unit : upcast_base<unit<D, R>> {
+  struct unit : downcast_base<unit<D, R>> {
     using dimension = D;
     using ratio = R;
   };
@@ -50,7 +50,7 @@ namespace units {
   template<typename T>
   concept bool Unit =
       std::is_empty_v<T> &&
-      detail::is_unit<upcast_from<T>>;
+      detail::is_unit<downcast_from<T>>;
 
 
   // derived_unit

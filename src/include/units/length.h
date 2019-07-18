@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_length>> : upcast_to<dimension_length> {};
+  template<> struct downcasting_traits<downcast_from<dimension_length>> : downcast_to<dimension_length> {};
 
   template<typename T>
   concept bool Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
@@ -38,16 +38,16 @@ namespace units {
 
   // SI units
   struct meter : unit<dimension_length> {};
-  template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
+  template<> struct downcasting_traits<downcast_from<meter>> : downcast_to<meter> {};
 
   struct millimeter : milli<meter> {};
-  template<> struct upcasting_traits<upcast_from<millimeter>> : upcast_to<millimeter> {};
+  template<> struct downcasting_traits<downcast_from<millimeter>> : downcast_to<millimeter> {};
 
   struct centimeter : centi<meter> {};
-  template<> struct upcasting_traits<upcast_from<centimeter>> : upcast_to<centimeter> {};
+  template<> struct downcasting_traits<downcast_from<centimeter>> : downcast_to<centimeter> {};
 
   struct kilometer : kilo<meter> {};
-  template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
+  template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
 
   inline namespace literals {
 
@@ -71,16 +71,16 @@ namespace units {
 
   // US customary units
   struct yard : unit<dimension_length, ratio<9'144, 10'000>> {};
-  template<> struct upcasting_traits<upcast_from<yard>> : upcast_to<yard> {};
+  template<> struct downcasting_traits<downcast_from<yard>> : downcast_to<yard> {};
 
   struct foot : unit<dimension_length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<foot>> : upcast_to<foot> {};
+  template<> struct downcasting_traits<downcast_from<foot>> : downcast_to<foot> {};
 
   struct inch : unit<dimension_length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<inch>> : upcast_to<inch> {};
+  template<> struct downcasting_traits<downcast_from<inch>> : downcast_to<inch> {};
 
   struct mile : unit<dimension_length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
-  template<> struct upcasting_traits<upcast_from<mile>> : upcast_to<mile> {};
+  template<> struct downcasting_traits<downcast_from<mile>> : downcast_to<mile> {};
 
   inline namespace literals {
 

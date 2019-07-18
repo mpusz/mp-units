@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_current : make_dimension_t<exp<base_dim_current, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_current>> : upcast_to<dimension_current> {};
+  template<> struct downcasting_traits<downcast_from<dimension_current>> : downcast_to<dimension_current> {};
 
   template<typename T>
   concept bool Current = Quantity<T> && std::Same<typename T::dimension, dimension_current>;
@@ -37,7 +37,7 @@ namespace units {
   using current = quantity<dimension_current, U, Rep>;
 
   struct ampere : unit<dimension_current> {};
-  template<> struct upcasting_traits<upcast_from<ampere>> : upcast_to<ampere> {};
+  template<> struct downcasting_traits<downcast_from<ampere>> : downcast_to<ampere> {};
 
   inline namespace literals {
 

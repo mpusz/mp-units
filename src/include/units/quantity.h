@@ -67,7 +67,7 @@ namespace units {
 
   template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2, Scalar Rep>
   struct common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-    using type = quantity<D, upcasting_traits_t<unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
+    using type = quantity<D, downcasting_traits_t<unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
   };
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
@@ -284,7 +284,7 @@ namespace units {
   {
     using dim = dimension_multiply_t<D1, D2>;
     using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
@@ -298,7 +298,7 @@ namespace units {
 
     using dim = dim_invert_t<D>;
     using common_rep = decltype(v / q.count());
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
     using den = quantity<D, U, common_rep>;
     return ret(v / den(q).count());
   }
@@ -337,7 +337,7 @@ namespace units {
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide_t<D1, D2>;
-    using ret = quantity<dim, upcasting_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 

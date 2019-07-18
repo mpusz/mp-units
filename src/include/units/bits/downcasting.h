@@ -28,27 +28,27 @@
 namespace units {
 
   template<typename BaseType>
-  struct upcast_base {
+  struct downcast_base {
     using base_type = BaseType;
   };
 
   template<typename T>
-  concept bool Upcastable =
+  concept bool Downcastable =
       requires {
         typename T::base_type;
       } &&
-      std::DerivedFrom<T, upcast_base<typename T::base_type>>;
+      std::DerivedFrom<T, downcast_base<typename T::base_type>>;
 
-  template<Upcastable T>
-  using upcast_from = T::base_type;
+  template<Downcastable T>
+  using downcast_from = T::base_type;
 
-  template<Upcastable T>
-  using upcast_to = std::type_identity<T>;
+  template<Downcastable T>
+  using downcast_to = std::type_identity<T>;
 
-  template<Upcastable T>
-  struct upcasting_traits : upcast_to<T> {};
+  template<Downcastable T>
+  struct downcasting_traits : downcast_to<T> {};
 
-  template<Upcastable T>
-  using upcasting_traits_t = upcasting_traits<T>::type;
+  template<Downcastable T>
+  using downcasting_traits_t = downcasting_traits<T>::type;
 
 }  // namespace units

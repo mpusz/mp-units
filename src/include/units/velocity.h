@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
+  template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
 
   template<typename T>
   concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
@@ -37,13 +37,13 @@ namespace units {
   using velocity = quantity<dimension_velocity, U, Rep>;
 
   struct meter_per_second : derived_unit<dimension_velocity, meter, second> {};
-  template<> struct upcasting_traits<upcast_from<meter_per_second>> : upcast_to<meter_per_second> {};
+  template<> struct downcasting_traits<downcast_from<meter_per_second>> : downcast_to<meter_per_second> {};
 
   struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
-  template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
+  template<> struct downcasting_traits<downcast_from<kilometer_per_hour>> : downcast_to<kilometer_per_hour> {};
 
   struct mile_per_hour : derived_unit<dimension_velocity, mile, hour> {};
-  template<> struct upcasting_traits<upcast_from<mile_per_hour>> : upcast_to<mile_per_hour> {};
+  template<> struct downcasting_traits<downcast_from<mile_per_hour>> : downcast_to<mile_per_hour> {};
 
   inline namespace literals {
 

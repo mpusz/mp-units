@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_substance : make_dimension_t<exp<base_dim_substance, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_substance>> : upcast_to<dimension_substance> {};
+  template<> struct downcasting_traits<downcast_from<dimension_substance>> : downcast_to<dimension_substance> {};
 
   template<typename T>
   concept bool Substance = Quantity<T> && std::Same<typename T::dimension, dimension_substance>;
@@ -37,7 +37,7 @@ namespace units {
   using substance = quantity<dimension_substance, U, Rep>;
 
   struct mole : unit<dimension_substance> {};
-  template<> struct upcasting_traits<upcast_from<mole>> : upcast_to<mole> {};
+  template<> struct downcasting_traits<downcast_from<mole>> : downcast_to<mole> {};
 
   inline namespace literals {
 

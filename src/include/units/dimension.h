@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/bits/type_list.h>
-#include <units/bits/upcasting.h>
+#include <units/bits/downcasting.h>
 
 namespace units {
 
@@ -81,7 +81,7 @@ namespace units {
   // dimension
 
   template<Exponent... Es>
-  struct dimension : upcast_base<dimension<Es...>> {};
+  struct dimension : downcast_base<dimension<Es...>> {};
 
   // is_dimension
   namespace detail {
@@ -97,7 +97,7 @@ namespace units {
   template<typename T>
   concept bool Dimension =
       std::is_empty_v<T> &&
-      detail::is_dimension<upcast_from<T>>;
+      detail::is_dimension<downcast_from<T>>;
 
 
   // dim_invert
@@ -106,7 +106,7 @@ namespace units {
   struct dim_invert;
 
   template<Exponent... Es>
-  struct dim_invert<dimension<Es...>> : std::type_identity<upcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
+  struct dim_invert<dimension<Es...>> : std::type_identity<downcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<Dimension D>
   using dim_invert_t = dim_invert<typename D::base_type>::type;
@@ -168,7 +168,7 @@ namespace units {
   struct dimension_multiply;
 
   template<Exponent... E1, Exponent... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<upcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
+  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<Dimension D1, Dimension D2>
   using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;

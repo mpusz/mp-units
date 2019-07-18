@@ -27,7 +27,7 @@ static_assert(10_km / 5_km == 2);
 ```
 
 
-## Requirements
+## Approach
 
 1. Safety and performance
   - strong types
@@ -89,7 +89,7 @@ or more base dimensions:
 
 ```cpp
 template<Exponent... Es>
-struct dimension : upcast_base<dimension<Es...>> {};
+struct dimension : downcast_base<dimension<Es...>> {};
 ```
 
 `units::Dimension` is a Concept that is satisfied by a type that is empty and publicly
@@ -99,7 +99,7 @@ derived from `units::dimension` class template:
 template<typename T>
 concept Dimension =
     std::is_empty_v<T> &&
-    detail::is_dimension<upcast_from<T>>; // exposition only
+    detail::is_dimension<downcast_from<T>>; // exposition only
 ```
 
 #### `Exponents`
@@ -195,7 +195,7 @@ struct dimension_multiply;
 
 template<Exponent... E1, Exponent... E2>
 struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
-  using type = upcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>;
+  using type = downcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>;
 };
 
 template<Dimension D1, Dimension D2>
@@ -219,7 +219,7 @@ struct merge_dimension {
 ```cpp
 template<Dimension D, Ratio R>
   requires (R::num > 0)
-struct unit : upcast_base<unit<D, R>> {
+struct unit : downcast_base<unit<D, R>> {
   using dimension = D;
   using ratio = R;
 };
@@ -232,7 +232,7 @@ derived from `units::unit` class template:
 template<typename T>
 concept Unit =
     std::is_empty_v<T> &&
-    detail::is_unit<upcast_from<T>>;  // exposition only
+    detail::is_unit<downcast_from<T>>;  // exposition only
 ```
 
 ### `Quantities`
@@ -268,18 +268,18 @@ public:
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_multiply_t<D1, D2>, upcasting_traits_t<unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dimension_multiply_t<D1, D2>, downcasting_traits_t<unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs);
 
   template<Number Rep1, Dimension D, Unit U, Number Rep2>
-  quantity<dim_invert_t<D>, upcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dim_invert_t<D>, downcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const Rep1& v,
                       const quantity<D, U, Rep2>& q) [[expects: q != quantity<D, U, Rep2>(0)]];
 
   template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
       requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_divide_t<D1, D2>, upcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
+  quantity<dimension_divide_t<D1, D2>, downcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
   constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
                       const quantity<D2, U2, Rep2>& rhs) [[expects: rhs != quantity<D, U2, Rep2>(0)]];
 };
@@ -300,7 +300,7 @@ operation and provides it directly to `units::common_quantity_t` type trait.
 To explicitly force truncating conversions `quantity_cast` function is provided which is a direct
 counterpart of `std::chrono::duration_cast`.
 
-## Strong types instead of aliases, and type upcasting capability
+## Strong types instead of aliases, and type downcasting capability
 
 Most of the important design decisions in the library are dictated by the requirement of providing
 the best user experience as possible.
@@ -347,7 +347,7 @@ and
 
 starts to be really hard to analyze or debug.
 
-That is why it was decided to provide automated upcasting capability when possible. With that the
+That is why it was decided to provide automated downcasting capability when possible. With that the
 same code will result with such an error:
 
 ```text
@@ -383,33 +383,33 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-Upcasting capability is provided through dedicated `upcasting_traits`, a few helper aliases and by
-`base_type` member type in `upcast_base` class template.
+downcasting capability is provided through dedicated `downcasting_traits`, a few helper aliases and by
+`base_type` member type in `downcast_base` class template.
 
 ```cpp
-template<Upcastable T>
-using upcast_from = T::base_type;
+template<Downcastable T>
+using downcast_from = T::base_type;
 
 template<typename T>
-using upcast_to = std::type_identity<T>;
+using downcast_to = std::type_identity<T>;
 
 template<typename T>
-struct upcasting_traits : upcast_to<T> {};
+struct downcasting_traits : downcast_to<T> {};
 
 template<typename T>
-using upcasting_traits_t = upcasting_traits<T>::type;
+using downcasting_traits_t = downcasting_traits<T>::type;
 ```
 
-With that the upcasting functionality is enabled by:
+With that the downcasting functionality is enabled by:
 
 ```cpp
 struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-template<> struct upcasting_traits<upcast_from<dimension_length>> : upcast_to<dimension_length> {};
+template<> struct downcasting_traits<downcast_from<dimension_length>> : downcast_to<dimension_length> {};
 ```
 
 ```cpp
 struct kilometer : unit<dimension_length, std::kilo> {};
-template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
+template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
 ```
 
 
@@ -417,11 +417,11 @@ template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer
 
 In order to extend the library with custom dimensions the user has to:
 1. Create a new dimension type with the recipe of how to construct it from base dimensions and provide
-   upcasting trait for it:
+   downcasting trait for it:
 
 ```cpp
 struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-template<> struct upcasting_traits<upcast_from<dimension_velocity>> : upcast_to<dimension_velocity> {};
+template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
 ``` 
 
 2. Provide `quantity` class template partial specialization for new dimension and provide its base type:
@@ -438,27 +438,27 @@ template<typename T>
 concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 ```
 
-4. Define units and provide upcasting traits for them:
+4. Define units and provide downcasting traits for them:
 
  - base unit
 
 ```cpp
 struct meter : unit<dimension_length, std::ratio<1>> {};
-template<> struct upcasting_traits<upcast_from<meter>> : upcast_to<meter> {};
+template<> struct downcasting_traits<downcast_from<meter>> : downcast_to<meter> {};
 ```
 
  - units with prefixes
 
 ```cpp
 struct kilometer : kilo<meter> {};
-template<> struct upcasting_traits<upcast_from<kilometer>> : upcast_to<kilometer> {};
+template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
 ```
 
  - derived units
 
 ```cpp
 struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
-template<> struct upcasting_traits<upcast_from<kilometer_per_hour>> : upcast_to<kilometer_per_hour> {};
+template<> struct downcasting_traits<downcast_from<kilometer_per_hour>> : downcast_to<kilometer_per_hour> {};
 ``` 
 
 5. Provide user-defined literals for the most important units:
@@ -507,7 +507,7 @@ Additionally, it should make the error logs even shorter thus easier to understa
 
 1. Should we ensure that dimension is always a result of `make_dimension`? How to do it?
 
-2. Should we provide strong types and upcasting_traits for `quantity` type?
+2. Should we provide strong types and downcasting_traits for `quantity` type?
 
     In such a case all the operators have to be provided to a child class. Or maybe use CRTP? 
 

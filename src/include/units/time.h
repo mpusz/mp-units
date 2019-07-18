@@ -28,7 +28,7 @@
 namespace units {
 
   struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
-  template<> struct upcasting_traits<upcast_from<dimension_time>> : upcast_to<dimension_time> {};
+  template<> struct downcasting_traits<downcast_from<dimension_time>> : downcast_to<dimension_time> {};
 
   template<typename T>
   concept bool Time = Quantity<T> && std::Same<typename T::dimension, dimension_time>;
@@ -37,22 +37,22 @@ namespace units {
   using time = quantity<dimension_time, U, Rep>;
 
   struct second : unit<dimension_time> {};
-  template<> struct upcasting_traits<upcast_from<second>> : upcast_to<second> {};
+  template<> struct downcasting_traits<downcast_from<second>> : downcast_to<second> {};
 
   struct nanosecond : nano<second> {};
-  template<> struct upcasting_traits<upcast_from<nanosecond>> : upcast_to<nanosecond> {};
+  template<> struct downcasting_traits<downcast_from<nanosecond>> : downcast_to<nanosecond> {};
 
   struct microsecond : micro<second> {};
-  template<> struct upcasting_traits<upcast_from<microsecond>> : upcast_to<microsecond> {};
+  template<> struct downcasting_traits<downcast_from<microsecond>> : downcast_to<microsecond> {};
 
   struct millisecond : milli<second> {};
-  template<> struct upcasting_traits<upcast_from<millisecond>> : upcast_to<millisecond> {};
+  template<> struct downcasting_traits<downcast_from<millisecond>> : downcast_to<millisecond> {};
 
   struct minute : unit<dimension_time, ratio<60>> {};
-  template<> struct upcasting_traits<upcast_from<minute>> : upcast_to<minute> {};
+  template<> struct downcasting_traits<downcast_from<minute>> : downcast_to<minute> {};
 
   struct hour : unit<dimension_time, ratio<3600>> {};
-  template<> struct upcasting_traits<upcast_from<hour>> : upcast_to<hour> {};
+  template<> struct downcasting_traits<downcast_from<hour>> : downcast_to<hour> {};
 
   inline namespace literals {
 
