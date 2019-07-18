@@ -179,17 +179,6 @@ contained base dimensions. Beside providing ordering to base dimensions it also 
 - aggregate two arguments of the same base dimension but different exponents
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
-Additionally, it would be good if the final type produced by `make_dimension_t` would be easy to
-understand for the user. For example we may decide to order base dimensions with decreasing order of
-their exponents. That is why second sorting of a type list may be required. For example:
-
-```cpp
-template<Exponent... Es>
-struct make_dimension {
-  using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_sort_t<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
-};
-```
-
 
 #### `merge_dimension`
 
@@ -218,7 +207,7 @@ Example implementation of `merge_dimension` may look like:
 ```cpp
 template<Dimension D1, Dimension D2>
 struct merge_dimension {
-  using type = mp::type_list_sort_t<detail::dim_consolidate_t<mp::type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>, exp_greater_equal>;
+  using type = detail::dim_consolidate_t<mp::type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>;
 };
 ```
 

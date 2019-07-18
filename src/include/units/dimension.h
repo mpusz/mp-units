@@ -65,12 +65,6 @@ namespace units {
   struct exp_dim_id_less : dim_id_less<typename E1::dimension, typename E2::dimension> {
   };
 
-  // exp_dim_id_less
-
-  template<Exponent E1, Exponent E2>
-  struct exp_greater_equal : std::bool_constant<(E1::value >= E2::value)> {
-  };
-
   // exp_invert
 
   template<Exponent E>
@@ -154,7 +148,7 @@ namespace units {
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = type_list_sort<detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_dim_id_less>>, exp_greater_equal>;
+    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_dim_id_less>>;
   };
 
   template<Exponent... Es>
@@ -162,7 +156,7 @@ namespace units {
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
-    using type = type_list_sort<detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_dim_id_less>>, exp_greater_equal>;
+    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_dim_id_less>>;
   };
 
   template<Dimension D1, Dimension D2>
