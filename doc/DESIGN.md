@@ -31,7 +31,7 @@ static_assert(10_km / 5_km == 2);
 
 1. Safety and performance
   - strong types
-  - template metaprogramming
+  - compile-time safety
   - `constexpr` all the things
 2. The best possible user experience
   - compiler errors
@@ -41,6 +41,44 @@ static_assert(10_km / 5_km == 2);
 5. No external dependencies
 6. Possibility to be standardized as a freestanding part of the C++ Standard Library 
 
+
+## Overview
+
+The library framework consists of a few concepts: quantities, units, dimensions and their exponents. From the user's
+point of view the most important is a quantity.
+
+Quantity is a concrete amount of a unit for a specified dimension with a specific representation:
+
+```cpp
+units::quantity<units::dimension_length, units::kilometer, double> d1(123);
+auto d2 = 123_km;    // units::quantity<units::dimension_length, units::kilometer, std::int64_t>
+```
+
+There are helper aliases provided to improve the work with quantities:
+
+```
+template<Unit U = struct meter, Number Rep = double>
+using length = quantity<dimension_length, U, Rep>;
+
+units::length d1(123);                // units::length<units::meter, int>
+units::length<units::mile> d2(3.14);  // units::length<units::mile, double>
+```
+
+Also there are C++ concepts provided for each such quantity type:
+
+```cpp
+template<typename T>
+concept Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
+```
+
+With that we can easily write a function template like this:
+
+```cpp
+constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto t)
+{
+  return d / t;
+}
+```
 
 ## Basic Concepts
 
