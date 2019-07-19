@@ -33,17 +33,14 @@ namespace units {
   template<typename T>
   concept bool Substance = Quantity<T> && std::Same<typename T::dimension, dimension_substance>;
 
-  template<Unit U = struct mole, Number Rep = double>
-  using substance = quantity<dimension_substance, U, Rep>;
-
   struct mole : unit<dimension_substance> {};
   template<> struct downcasting_traits<downcast_from<mole>> : downcast_to<mole> {};
 
   inline namespace literals {
 
     // mol
-    constexpr auto operator""_mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
-    constexpr auto operator""_mol(long double l) { return substance<mole, long double>(l); }
+    constexpr auto operator""_mol(unsigned long long l) { return quantity<mole, std::int64_t>(l); }
+    constexpr auto operator""_mol(long double l) { return quantity<mole, long double>(l); }
 
   }  // namespace literals
 

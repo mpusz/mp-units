@@ -33,9 +33,6 @@ namespace units {
   template<typename T>
   concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 
-  template<Unit U = struct meter_per_second, Number Rep = double>
-  using velocity = quantity<dimension_velocity, U, Rep>;
-
   struct meter_per_second : derived_unit<dimension_velocity, meter, second> {};
   template<> struct downcasting_traits<downcast_from<meter_per_second>> : downcast_to<meter_per_second> {};
 
@@ -48,16 +45,16 @@ namespace units {
   inline namespace literals {
 
     // mps
-    constexpr auto operator""_mps(unsigned long long l) { return velocity<meter_per_second, std::int64_t>(l); }
-    constexpr auto operator""_mps(long double l) { return velocity<meter_per_second, long double>(l); }
+    constexpr auto operator""_mps(unsigned long long l) { return quantity<meter_per_second, std::int64_t>(l); }
+    constexpr auto operator""_mps(long double l) { return quantity<meter_per_second, long double>(l); }
 
     // kmph
-    constexpr auto operator""_kmph(unsigned long long l) { return velocity<kilometer_per_hour, std::int64_t>(l); }
-    constexpr auto operator""_kmph(long double l) { return velocity<kilometer_per_hour, long double>(l); }
+    constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
+    constexpr auto operator""_kmph(long double l) { return quantity<kilometer_per_hour, long double>(l); }
 
     // mph
-    constexpr auto operator""_mph(unsigned long long l) { return velocity<mile_per_hour, std::int64_t>(l); }
-    constexpr auto operator""_mph(long double l) { return velocity<mile_per_hour, long double>(l); }
+    constexpr auto operator""_mph(unsigned long long l) { return quantity<mile_per_hour, std::int64_t>(l); }
+    constexpr auto operator""_mph(long double l) { return quantity<mile_per_hour, long double>(l); }
 
   }  // namespace literals
 

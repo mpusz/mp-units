@@ -33,17 +33,14 @@ namespace units {
   template<typename T>
   concept bool Current = Quantity<T> && std::Same<typename T::dimension, dimension_current>;
 
-  template<Unit U = struct ampere, Number Rep = double>
-  using current = quantity<dimension_current, U, Rep>;
-
   struct ampere : unit<dimension_current> {};
   template<> struct downcasting_traits<downcast_from<ampere>> : downcast_to<ampere> {};
 
   inline namespace literals {
 
     // A
-    constexpr auto operator""_A(unsigned long long l) { return current<ampere, std::int64_t>(l); }
-    constexpr auto operator""_A(long double l) { return current<ampere, long double>(l); }
+    constexpr auto operator""_A(unsigned long long l) { return quantity<ampere, std::int64_t>(l); }
+    constexpr auto operator""_A(long double l) { return quantity<ampere, long double>(l); }
 
   }
 

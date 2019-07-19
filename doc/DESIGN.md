@@ -50,21 +50,11 @@ point of view the most important is a quantity.
 Quantity is a concrete amount of a unit for a specified dimension with a specific representation:
 
 ```cpp
-units::quantity<units::dimension_length, units::kilometer, double> d1(123);
-auto d2 = 123_km;    // units::quantity<units::dimension_length, units::kilometer, std::int64_t>
+units::quantity<units::kilometer, double> d1(123);
+auto d2 = 123_km;    // units::quantity<units::kilometer, std::int64_t>
 ```
 
-There are helper aliases provided to improve the work with quantities:
-
-```
-template<Unit U = struct meter, Number Rep = double>
-using length = quantity<dimension_length, U, Rep>;
-
-units::length d1(123);                // units::length<units::meter, int>
-units::length<units::mile> d2(3.14);  // units::length<units::mile, double>
-```
-
-Also there are C++ concepts provided for each such quantity type:
+There are C++ concepts provided for each such quantity type:
 
 ```cpp
 template<typename T>
@@ -241,8 +231,7 @@ concept Unit =
 expressed in a specific unit of that dimension:
 
 ```cpp
-template<Dimension D, Unit U, Number Rep>
-  requires std::Same<D, typename U::dimension>
+template<Unit U, Scalar Rep>
 class quantity;
 ```
 
@@ -259,29 +248,36 @@ concept Quantity =
 member types and functions as below:
 
 ```cpp
-template<Dimension D, Unit U, Number Rep>
-    requires std::Same<D, typename U::dimension>
+template<Unit U, Scalar Rep>
 class quantity {
 public:
-  using dimension = D;
   using unit = U;
+  using rep = Rep;
+  using dimension = U::dimension;
 
-  template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_multiply_t<D1, D2>, downcasting_traits_t<unit<dimension_multiply_t<D1, D2>, std::ratio_multiply<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
-  constexpr operator*(const quantity<D1, U1, Rep1>& lhs,
-                      const quantity<D2, U2, Rep2>& rhs);
+  [[nodiscard]] static constexpr quantity one() noexcept { return quantity(quantity_values<Rep>::one()); }
 
-  template<Number Rep1, Dimension D, Unit U, Number Rep2>
-  quantity<dim_invert_t<D>, downcasting_traits_t<unit<dim_invert_t<D>, std::ratio<U::ratio::den, U::ratio::num>>>, std::common_type_t<Rep1, Rep2>>
-  constexpr operator/(const Rep1& v,
-                      const quantity<D, U, Rep2>& q) [[expects: q != quantity<D, U, Rep2>(0)]];
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+      requires treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
+               (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
+  [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs);
 
-  template<Dimension D1, Unit U1, Number Rep1, Dimension D2, Unit U2, Number Rep2>
-      requires treat_as_floating_point<std::common_type_t<Rep1, Rep2>> || std::ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1
-  quantity<dimension_divide_t<D1, D2>, downcasting_traits_t<unit<dimension_divide_t<D1, D2>, std::ratio_divide<typename U1::ratio, typename U2::ratio>>>, std::common_type_t<Rep1, Rep2>>
-  constexpr operator/(const quantity<D1, U1, Rep1>& lhs,
-                      const quantity<D2, U2, Rep2>& rhs) [[expects: rhs != quantity<D, U2, Rep2>(0)]];
+  template<Scalar Rep1, typename U, typename Rep2>
+  [[nodiscard]] constexpr Quantity operator/(const Rep1& v,
+                                             const quantity<U, Rep2>& q)
+
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+    requires std::Same<typename U1::dimension, typename U2::dimension>
+  [[nodiscard]] constexpr Scalar operator/(const quantity<U1, Rep1>& lhs,
+                                           const quantity<U2, Rep2>& rhs);
+
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+    requires (!std::Same<typename U1::dimension, typename U2::dimension>) &&
+             (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
+              (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
+  [[nodiscard]] constexpr Quantity operator/(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs);
 };
 ```
 
@@ -308,35 +304,35 @@ the best user experience as possible.
 For example with template aliases usage the following code:
 
 ```cpp
-const Velocity t = 20_s;
+const Velocity auto t = 20_s;
 ```
 
 could generate a following compile time error:
 
 ```text
-C:\repos\units\example\example.cpp:39:22: error: deduced initializer does not satisfy placeholder constraints
-   const Velocity t = 20_s;
-                      ^~~~
-In file included from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
+<path>\example\example.cpp:39:22: error: deduced initializer does not satisfy placeholder constraints
+   const Velocity auto t = 20_s;
+                           ^~~~
+In file included from <path>\example\example.cpp:23:
+<path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
    concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
            ^~~~~~~~
-In file included from C:/repos/units/src/include/units/bits/tools.h:25,
-                 from C:/repos/units/src/include/units/dimension.h:25,
-                 from C:/repos/units/src/include/units/si/base_dimensions.h:25,
-                 from C:/repos/units/src/include/units/si/velocity.h:25,
-                 from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]'
+In file included from <path>/src/include/units/bits/tools.h:25,
+                 from <path>/src/include/units/dimension.h:25,
+                 from <path>/src/include/units/si/base_dimensions.h:25,
+                 from <path>/src/include/units/si/velocity.h:25,
+                 from <path>\example\example.cpp:23:
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>, units::exp<units::base_dim_time, -1> >]'
      concept Same = std::is_same_v<T, U>;
              ^~~~
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ```
 
 Time and velocity are not that complicated dimensions and there are much more complicated dimensions
 out there, but even for those dimensions
 
 ```text
-[with T = units::quantity<units::dimension<units::exp<units::base_dim_time, 1> >, units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]
+[with T = units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]
 ```
 
 and
@@ -351,28 +347,28 @@ That is why it was decided to provide automated downcasting capability when poss
 same code will result with such an error:
 
 ```text
-C:\repos\units\example\example.cpp:40:22: error: deduced initializer does not satisfy placeholder constraints
+<path>\example\example.cpp:40:22: error: deduced initializer does not satisfy placeholder constraints
    const Velocity t = 20_s;
                       ^~~~
-In file included from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::dimension_time, units::second, long long int>]'
+In file included from <path>\example\example.cpp:23:
+<path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::second, long long int>]'
    concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
            ^~~~~~~~
-In file included from C:/repos/units/src/include/units/bits/tools.h:25,
-                 from C:/repos/units/src/include/units/dimension.h:25,
-                 from C:/repos/units/src/include/units/si/base_dimensions.h:25,
-                 from C:/repos/units/src/include/units/si/velocity.h:25,
-                 from C:\repos\units\example\example.cpp:23:
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension_time; U = units::dimension_velocity]'
+In file included from <path>/src/include/units/bits/tools.h:25,
+                 from <path>/src/include/units/dimension.h:25,
+                 from <path>/src/include/units/si/base_dimensions.h:25,
+                 from <path>/src/include/units/si/velocity.h:25,
+                 from <path>\example\example.cpp:23:
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = units::dimension_time; U = units::dimension_velocity]'
      concept Same = std::is_same_v<T, U>;
              ^~~~
-C:/repos/units/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ``` 
 
 Now
 
 ```text
-[with T = units::quantity<units::dimension_time, units::second, long long int>]
+[with T = units::quantity<units::second, long long int>]
 ```
 
 and
@@ -383,20 +379,32 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-downcasting capability is provided through dedicated `downcasting_traits`, a few helper aliases and by
+Downcasting capability is provided through dedicated `downcasting_traits`, concept, a few helper aliases and by
 `base_type` member type in `downcast_base` class template.
 
 ```cpp
+template<typename BaseType>
+struct downcast_base {
+  using base_type = BaseType;
+};
+
+template<typename T>
+concept bool Downcastable =
+    requires {
+      typename T::base_type;
+    } &&
+    std::DerivedFrom<T, downcast_base<typename T::base_type>>;
+
 template<Downcastable T>
 using downcast_from = T::base_type;
 
-template<typename T>
+template<Downcastable T>
 using downcast_to = std::type_identity<T>;
 
-template<typename T>
+template<Downcastable T>
 struct downcasting_traits : downcast_to<T> {};
 
-template<typename T>
+template<Downcastable T>
 using downcasting_traits_t = downcasting_traits<T>::type;
 ```
 
@@ -424,21 +432,14 @@ struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_d
 template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
 ``` 
 
-2. Provide `quantity` class template partial specialization for new dimension and provide its base type:
-
-```cpp
-template<Unit U = struct meter_per_second, Number Rep = double>
-using velocity = quantity<dimension_velocity, U, Rep>;
-``` 
-
-3. Define a concept that will match a new dimension:
+2. Define a concept that will match a new dimension:
 
 ```cpp
 template<typename T>
 concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
 ```
 
-4. Define units and provide downcasting traits for them:
+3. Define units and provide downcasting traits for them:
 
  - base unit
 
@@ -465,11 +466,11 @@ template<> struct downcasting_traits<downcast_from<kilometer_per_hour>> : downca
 
 ```cpp
 inline namespace literals {
-  constexpr auto operator""_mps(unsigned long long l) { return velocity<meter_per_second, std::int64_t>(l); }
-  constexpr auto operator""_mps(long double l)        { return velocity<meter_per_second, long double>(l); }
+  constexpr auto operator""_mps(unsigned long long l) { return quantity<meter_per_second, std::int64_t>(l); }
+  constexpr auto operator""_mps(long double l)        { return quantity<meter_per_second, long double>(l); }
   
-  constexpr auto operator""_kmph(unsigned long long l) { return velocity<kilometer_per_hour, std::int64_t>(l); }
-  constexpr auto operator""_kmph(long double l) { return velocity<kilometer_per_hour, long double>(l); }
+  constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
+  constexpr auto operator""_kmph(long double l) { return quantity<kilometer_per_hour, long double>(l); }
 }
 ```
 
@@ -507,101 +508,39 @@ Additionally, it should make the error logs even shorter thus easier to understa
 
 1. Should we ensure that dimension is always a result of `make_dimension`? How to do it?
 
-2. Should we provide strong types and downcasting_traits for `quantity` type?
+2. What to do with `time` which is ambiguous (conflict wit ANSI C)?
 
-    In such a case all the operators have to be provided to a child class. Or maybe use CRTP? 
+3. What to do with `std::chrono::duration`?
 
-3. What to do with `time` which is ambiguous (conflict wit ANSI C)?
+4. Should we provide `seconds<int>` or stay with `quantity<second, int>`?
 
-4. What to do with `std::chrono::duration`? Is it possible to make it derive from
-  `quantity<dimension_time, U, Rep>` which will most probably an ABI break? Alternatively,
-  should we provide specialization of `quantity<dimension_time, U, Rep>` to work with/covnert
-  from/to `std::duration`?
+5. What is the best way to add support for temperatures?
 
-5. Should we provide `seconds<int>` or stay with `time<second, int>`? What about CTAD problem
-   for `units::length<units::mile> d3(3);`?
+    Temperature absolute values not only require `std::ratio` but also should be adjusted/shifted
+    by some constant values (i.e. [°C] = [K] − 273.15). Relative temperatures does need an offset.
+    Users will most probably have problems with differentiating those two. Maybe the best solution
+    is to provide only `K` support in quantity and provide non-member helper conversion functions
+    with verbose names to convert to `°C` and `°C`?
 
-6. What is the best way to add support for temperatures?
+6. Do we need non-linear scale?
 
-    Temperatures not only require `std::ratio` but also should be adjusted/shifted by some
-    constant values (i.e. [°C] = [K] − 273.15).
+7. Should we provide cmath-like functions for quantities?
 
-7. Should we use `units::multiply` or stay with `std::ratio` for multiplication?
+8. What should be the resulting type of `auto d = 1_km + 1_ft;`?
 
-8. Should we consider making `units::multiply` and `units::offset` a non-class template parameters
-    as they provide different ratio values rather than types?
-
-    In example instead:
- 
-    ```cpp
-    struct celsius    : unit<dimension_temperature, convert<offset<-27315, 100>>> {};
-    ```
+9. Should we require explicit casts (i.e. quantity_cast) between different systems of
+   measurement?
     
-    we could think about something like:
- 
-    ```cpp
-    struct celsius    : unit<dimension_temperature, kelvin() - 27315/100>>> {};
-    ```
+10. Should we support integral representations?
 
-9. Do we need non-linear scale?
+11. Provide ostream overloads to print quantity units (use `std::format`)?
 
-10. Should we provide cmath-like functions for quantities?
-
-11. What should be the resulting type of `auto d = 1_km + 1_ft;`?
-
-12. Should we require explicit casts (i.e. quantity_cast) between different systems of
-    measurement?
-    
-13. Should we provide Boost-like support for a `quantity_cast` to a reference that allows
-    direct access to the underlying value of a quantity variable?
-
-14. What should be the default representation (integral or `double`)?
-
-15. Provide ostream overloads to print quantity units (use `std::format`)?
-
-16. Should we provide support for dimensionless quantities? 
+12. Should we provide support for dimensionless quantities? 
 
     Because dimensionless quantities have no associated units, they behave as normal scalars,
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
 
-17. Should we leave `quantity` and specific dimensions as
-    ```cpp
-    template<Dimension D, Unit U, Number Rep>
-        requires std::Same<D, typename U::dimension>
-    class quantity;
-    
-    template<Unit U = meter_per_second, Number Rep = double>
-    using velocity = quantity<dimension_velocity, U, Rep>;
-    
-    units::velocity<units::kilometer_per_hour> kmph = avg_speed(d, t);
-    ```
-    or maybe we should leave the dimension only in unit
-    ```cpp
-    template<Unit U, Number Rep>
-    class quantity;
-    
-    units::quantity<units::kilometer_per_hour> kmph = avg_speed(d, t);
-    ```
-    which will simplify the design and shorten compile time errors but possibly will add
-    more ambiguity to some cases. For example when using CTAD:
-    ```cpp
-    units::velocity kmph = avg_speed(d, t);
-    ```
-    vs
-    ```cpp
-    units::quantity kmph = avg_speed(d, t);
-    ```
-    It would be also incopatible with concepts named i.e. `Velocity`.
-
-18. Should we standardize accompany tools (`type_list` operations, `static_sign`, `static_abs`,
-    `static_gcd`, `common_ratio`)? 
+13. Should we standardize accompany tools (`downcasting_traits`, `type_list` operations, `common_ratio`, etc)? 
      
-19. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)? 
-
-20. implicit conversion of quantity<Unit,Y> to quantity<Unit,Z> is allowed if Y and Z are implicitly convertible.
-    assignment between quantity<Unit,Y> and quantity<Unit,Z> is allowed if Y and Z are implicitly convertible.
-
-21. explicit conversion between quantity<Unit1,Y> and quantity<Unit2,Z> is allowed if Unit1 and Unit2 have the same dimensions and if Y and Z are implicitly convertible.
-    implicit conversion between quantity<Unit1,Y> and quantity<Unit2,Z> is allowed if Unit1 reduces to exactly the same combination of base units as Unit2 and if Y and Z are convertible.
-
+14. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)?

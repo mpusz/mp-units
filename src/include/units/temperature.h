@@ -33,17 +33,14 @@ namespace units {
   template<typename T>
   concept bool ThermodynamicTemperature = Quantity<T> && std::Same<typename T::dimension, dimension_temperature>;
 
-  template<Unit U = struct kelvin, Number Rep = double>
-  using temperature = quantity<dimension_temperature, U, Rep>;
-
   struct kelvin : unit<dimension_temperature> {};
   template<> struct downcasting_traits<downcast_from<kelvin>> : downcast_to<kelvin> {};
 
   inline namespace literals {
 
     // K
-    constexpr auto operator""_K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
-    constexpr auto operator""_K(long double l) { return temperature<kelvin, long double>(l); }
+    constexpr auto operator""_K(unsigned long long l) { return quantity<kelvin, std::int64_t>(l); }
+    constexpr auto operator""_K(long double l) { return quantity<kelvin, long double>(l); }
 
   }  // namespace literals
 

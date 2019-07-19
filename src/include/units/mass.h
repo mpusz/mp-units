@@ -33,9 +33,6 @@ namespace units {
   template<typename T>
   concept bool Mass = Quantity<T> && std::Same<typename T::dimension, dimension_mass>;
 
-  template<Unit U = class kilogram, Number Rep = double>
-  using mass = quantity<dimension_mass, U, Rep>;
-
   struct gram : unit<dimension_mass, ratio<1, 1000>> {};
   template<> struct downcasting_traits<downcast_from<gram>> : downcast_to<gram> {};
 
@@ -45,12 +42,12 @@ namespace units {
   inline namespace literals {
 
     // g
-    constexpr auto operator""_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-    constexpr auto operator""_g(long double l) { return mass<gram, long double>(l); }
+    constexpr auto operator""_g(unsigned long long l) { return quantity<gram, std::int64_t>(l); }
+    constexpr auto operator""_g(long double l) { return quantity<gram, long double>(l); }
 
     // kg
-    constexpr auto operator""_kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-    constexpr auto operator""_kg(long double l) { return mass<kilogram, long double>(l); }
+    constexpr auto operator""_kg(unsigned long long l) { return quantity<kilogram, std::int64_t>(l); }
+    constexpr auto operator""_kg(long double l) { return quantity<kilogram, long double>(l); }
 
   }  // namespace literals
 

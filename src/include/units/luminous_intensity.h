@@ -33,17 +33,14 @@ namespace units {
   template<typename T>
   concept bool LuminousIntensity = Quantity<T> && std::Same<typename T::dimension, dimension_luminous_intensity>;
 
-  template<Unit U = struct candela, Number Rep = double>
-  using luminous_intensity = quantity<dimension_luminous_intensity, U, Rep>;
-
   struct candela : unit<dimension_luminous_intensity> {};
   template<> struct downcasting_traits<downcast_from<candela>> : downcast_to<candela> {};
 
   inline namespace literals {
 
     // cd
-    constexpr auto operator""_cd(unsigned long long l) { return luminous_intensity<candela, std::int64_t>(l); }
-    constexpr auto operator""_cd(long double l) { return luminous_intensity<candela, long double>(l); }
+    constexpr auto operator""_cd(unsigned long long l) { return quantity<candela, std::int64_t>(l); }
+    constexpr auto operator""_cd(long double l) { return quantity<candela, long double>(l); }
 
   }  // namespace literals
 

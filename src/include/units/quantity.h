@@ -45,14 +45,13 @@ namespace units {
   template<typename T>
   concept bool Scalar = Number<T> && !Quantity<T>;
 
-  template<Dimension D, Unit U, Scalar Rep>
-      requires std::Same<D, typename U::dimension>
+  template<Unit U, Scalar Rep>
   class quantity;
 
   namespace detail {
 
-    template<Dimension D, Unit U, Scalar Rep>
-    inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
+    template<Unit U, Scalar Rep>
+    inline constexpr bool is_quantity<quantity<U, Rep>> = true;
 
   }  // namespace detail
 
@@ -60,14 +59,15 @@ namespace units {
   template<Quantity Q1, Quantity Q2, Scalar Rep>
   struct common_quantity;
 
-  template<Dimension D, Unit U, Scalar Rep1, Scalar Rep2, Scalar Rep>
-  struct common_quantity<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
-    using type = quantity<D, U, Rep>;
+  template<Unit U, Scalar Rep1, Scalar Rep2, Scalar Rep>
+  struct common_quantity<quantity<U, Rep1>, quantity<U, Rep2>, Rep> {
+    using type = quantity<U, Rep>;
   };
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2, Scalar Rep>
-  struct common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-    using type = quantity<D, downcasting_traits_t<unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2, Scalar Rep>
+    requires std::Same<typename U1::dimension, typename U2::dimension>
+  struct common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
+    using type = quantity<downcasting_traits_t<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
   };
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
@@ -121,9 +121,9 @@ namespace units {
 
   }  // namespace detail
 
-  template<Quantity To, Dimension D, Unit U, Scalar Rep>
-      requires std::Same<typename To::dimension, D>
-  constexpr To quantity_cast(const quantity<D, U, Rep>& q)
+  template<Quantity To, Unit U, Scalar Rep>
+      requires std::Same<typename To::dimension, typename U::dimension>
+  constexpr To quantity_cast(const quantity<U, Rep>& q)
   {
     using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
@@ -143,15 +143,14 @@ namespace units {
 
   // quantity
 
-  template<Dimension D, Unit U, Scalar Rep>
-      requires std::Same<D, typename U::dimension>
+  template<Unit U, Scalar Rep = double>
   class quantity {
     Rep value_;
 
   public:
-    using dimension = D;
     using unit = U;
     using rep = Rep;
+    using dimension = U::dimension;
 
     static_assert(!Quantity<Rep>, "rep cannot be a quantity");
 
@@ -238,163 +237,173 @@ namespace units {
   };
 
   // clang-format off
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator+(const quantity<D, U1, Rep1>& lhs,
-                                             const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator+(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() + rhs.count());
-    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator-(const quantity<D, U1, Rep1>& lhs,
-                                             const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator-(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() - rhs.count());
-    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-//  template<Dimension D, Unit U, Scalar Rep1, Scalar Rep2>
-  template<typename D, typename U, typename Rep1, typename Rep2>
-  [[nodiscard]] constexpr Quantity operator*(const quantity<D, U, Rep1>& q,
+//  template<Unit U, Scalar Rep1, Scalar Rep2>
+  template<typename U, typename Rep1, typename Rep2>
+  [[nodiscard]] constexpr Quantity operator*(const quantity<U, Rep1>& q,
                                              const Rep2& v)
     requires (!Quantity<Rep2>)
   {
     using common_rep = decltype(q.count()* v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<U, common_rep>;
     return ret(ret(q).count() * v);
   }
 
-  //template<Scalar Rep1, Dimension D, Unit U, Scalar Rep2>
-  template<typename Rep1, typename D, typename U, typename Rep2>
+  //template<Scalar Rep1, Unit U, Scalar Rep2>
+  template<typename Rep1, typename U, typename Rep2>
   [[nodiscard]] constexpr Quantity operator*(const Rep1& v,
-                                             const quantity<D, U, Rep2>& q)
+                                             const quantity<U, Rep2>& q)
     requires (!Quantity<Rep1>)
   {
     return q * v;
   }
 
-  template<Dimension D1, Unit U1, Scalar Rep1, Dimension D2, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator*(const quantity<D1, U1, Rep1>& lhs,
-                                             const quantity<D2, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs)
       requires treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
   {
-    using dim = dimension_multiply_t<D1, D2>;
+    using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<downcasting_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
-//  template<Scalar Rep1, Dimension D, Unit U, Scalar Rep2>
-  template<typename Rep1, typename D, typename U, typename Rep2>
+//  template<Scalar Rep1, Unit U, Scalar Rep2>
+  template<typename Rep1, typename U, typename Rep2>
   [[nodiscard]] constexpr Quantity operator/(const Rep1& v,
-                                             const quantity<D, U, Rep2>& q)
+                                             const quantity<U, Rep2>& q)
     requires (!Quantity<Rep1>)
   {
     Expects(q != std::remove_cvref_t<decltype(q)>(0));
 
-    using dim = dim_invert_t<D>;
+    using dim = dim_invert_t<typename U::dimension>;
     using common_rep = decltype(v / q.count());
-    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
-    using den = quantity<D, U, common_rep>;
+    using ret = quantity<downcasting_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    using den = quantity<U, common_rep>;
     return ret(v / den(q).count());
   }
 
-//  template<Dimension D, Unit U, Scalar Rep1, Scalar Rep2>
-  template<typename D, typename U, typename Rep1, typename Rep2>
-  [[nodiscard]] constexpr Quantity operator/(const quantity<D, U, Rep1>& q,
+//  template<Unit U, Scalar Rep1, Scalar Rep2>
+  template<typename U, typename Rep1, typename Rep2>
+  [[nodiscard]] constexpr Quantity operator/(const quantity<U, Rep1>& q,
                                              const Rep2& v)
     requires (!Quantity<Rep2>)
   {
     Expects(v != Rep2{0});
 
     using common_rep = decltype(q.count() / v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<U, common_rep>;
     return ret(ret(q).count() / v);
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Scalar operator/(const quantity<D, U1, Rep1>& lhs,
-                                           const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Scalar operator/(const quantity<U1, Rep1>& lhs,
+                                           const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
-    using cq = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+    using cq = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return cq(lhs).count() / cq(rhs).count();
   }
 
-  template<Dimension D1, Unit U1, Scalar Rep1, Dimension D2, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator/(const quantity<D1, U1, Rep1>& lhs,
-                                             const quantity<D2, U2, Rep2>& rhs)
-    requires treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
-             (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator/(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs)
+    requires (!std::Same<typename U1::dimension, typename U2::dimension>) &&
+             (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
+              (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
-    using dim = dimension_divide_t<D1, D2>;
-    using ret = quantity<dim, downcasting_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using dim = dimension_divide_t<typename U1::dimension, typename U2::dimension>;
+    using ret = quantity<downcasting_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 
-  template<Dimension D, Unit U, Scalar Rep1, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator%(const quantity<D, U, Rep1>& q,
+  template<Unit U, Scalar Rep1, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator%(const quantity<U, Rep1>& q,
                                              const Rep2& v)
   {
     using common_rep = decltype(q.count() % v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<U, common_rep>;
     return ret(ret(q).count() % v);
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr Quantity operator%(const quantity<D, U1, Rep1>& lhs,
-                                             const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Quantity operator%(const quantity<U1, Rep1>& lhs,
+                                             const quantity<U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() % rhs.count());
-    using ret = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
   // clang-format on
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator==(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator==(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() == ct(rhs).count();
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator!=(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator!=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     return !(lhs == rhs);
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator<(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator<(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity_t<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>>;
+    using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() < ct(rhs).count();
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator<=(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator<=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     return !(rhs < lhs);
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator>(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator>(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     return rhs < lhs;
   }
 
-  template<Dimension D, Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-  [[nodiscard]] constexpr bool operator>=(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr bool operator>=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires std::Same<typename U1::dimension, typename U2::dimension>
   {
     return !(lhs < rhs);
   }

@@ -33,9 +33,6 @@ namespace units {
   template<typename T>
   concept bool Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
 
-  template<Unit U = struct meter, Number Rep = double>
-  using length = quantity<dimension_length, U, Rep>;
-
   // SI units
   struct meter : unit<dimension_length> {};
   template<> struct downcasting_traits<downcast_from<meter>> : downcast_to<meter> {};
@@ -52,20 +49,20 @@ namespace units {
   inline namespace literals {
 
     // mm
-    constexpr auto operator""_mm(unsigned long long l) { return length<millimeter, std::int64_t>(l); }
-    constexpr auto operator""_mm(long double l) { return length<millimeter, long double>(l); }
+    constexpr auto operator""_mm(unsigned long long l) { return quantity<millimeter, std::int64_t>(l); }
+    constexpr auto operator""_mm(long double l) { return quantity<millimeter, long double>(l); }
 
     // cm
-    constexpr auto operator""_cm(unsigned long long l) { return length<centimeter, std::int64_t>(l); }
-    constexpr auto operator""_cm(long double l) { return length<centimeter, long double>(l); }
+    constexpr auto operator""_cm(unsigned long long l) { return quantity<centimeter, std::int64_t>(l); }
+    constexpr auto operator""_cm(long double l) { return quantity<centimeter, long double>(l); }
 
     // m
-    constexpr auto operator""_m(unsigned long long l) { return length<meter, std::int64_t>(l); }
-    constexpr auto operator""_m(long double l) { return length<meter, long double>(l); }
+    constexpr auto operator""_m(unsigned long long l) { return quantity<meter, std::int64_t>(l); }
+    constexpr auto operator""_m(long double l) { return quantity<meter, long double>(l); }
 
     // km
-    constexpr auto operator""_km(unsigned long long l) { return length<kilometer, std::int64_t>(l); }
-    constexpr auto operator""_km(long double l) { return length<kilometer, long double>(l); }
+    constexpr auto operator""_km(unsigned long long l) { return quantity<kilometer, std::int64_t>(l); }
+    constexpr auto operator""_km(long double l) { return quantity<kilometer, long double>(l); }
 
   } // namespace literals
 
@@ -85,20 +82,20 @@ namespace units {
   inline namespace literals {
 
     // yd
-    constexpr auto operator""_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
-    constexpr auto operator""_yd(long double l) { return length<yard, long double>(l); }
+    constexpr auto operator""_yd(unsigned long long l) { return quantity<yard, std::int64_t>(l); }
+    constexpr auto operator""_yd(long double l) { return quantity<yard, long double>(l); }
 
     // ft
-    constexpr auto operator""_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
-    constexpr auto operator""_ft(long double l) { return length<foot, long double>(l); }
+    constexpr auto operator""_ft(unsigned long long l) { return quantity<foot, std::int64_t>(l); }
+    constexpr auto operator""_ft(long double l) { return quantity<foot, long double>(l); }
 
     // in
-    constexpr auto operator""_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
-    constexpr auto operator""_in(long double l) { return length<inch, long double>(l); }
+    constexpr auto operator""_in(unsigned long long l) { return quantity<inch, std::int64_t>(l); }
+    constexpr auto operator""_in(long double l) { return quantity<inch, long double>(l); }
 
     // mi
-    constexpr auto operator""_mi(unsigned long long l) { return length<mile, std::int64_t>(l); }
-    constexpr auto operator""_mi(long double l) { return length<mile, long double>(l); }
+    constexpr auto operator""_mi(unsigned long long l) { return quantity<mile, std::int64_t>(l); }
+    constexpr auto operator""_mi(long double l) { return quantity<mile, long double>(l); }
 
   }  // namespace literals
 

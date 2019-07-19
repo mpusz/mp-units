@@ -32,9 +32,6 @@ namespace units {
   template<typename T>
   concept bool Area = Quantity<T> && std::Same<typename T::dimension, dimension_area>;
 
-  template<Unit U = struct square_meter, Number Rep = double>
-  using area = quantity<dimension_area, U, Rep>;
-
   struct square_millimeter : derived_unit<dimension_area, millimeter> {};
   template<> struct downcasting_traits<downcast_from<square_millimeter>> : downcast_to<square_millimeter> {};
 
@@ -53,20 +50,20 @@ namespace units {
   inline namespace literals {
 
     // sq_mm
-    constexpr auto operator""_sq_mm(unsigned long long l) { return area<square_millimeter, std::int64_t>(l); }
-    constexpr auto operator""_sq_mm(long double l) { return area<square_millimeter, long double>(l); }
+    constexpr auto operator""_sq_mm(unsigned long long l) { return quantity<square_millimeter, std::int64_t>(l); }
+    constexpr auto operator""_sq_mm(long double l) { return quantity<square_millimeter, long double>(l); }
 
     // sq_cm
-    constexpr auto operator""_sq_cm(unsigned long long l) { return area<square_centimeter, std::int64_t>(l); }
-    constexpr auto operator""_sq_cm(long double l) { return area<square_centimeter, long double>(l); }
+    constexpr auto operator""_sq_cm(unsigned long long l) { return quantity<square_centimeter, std::int64_t>(l); }
+    constexpr auto operator""_sq_cm(long double l) { return quantity<square_centimeter, long double>(l); }
 
     // sq_m
-    constexpr auto operator""_sq_m(unsigned long long l) { return area<square_meter, std::int64_t>(l); }
-    constexpr auto operator""_sq_m(long double l) { return area<square_meter, long double>(l); }
+    constexpr auto operator""_sq_m(unsigned long long l) { return quantity<square_meter, std::int64_t>(l); }
+    constexpr auto operator""_sq_m(long double l) { return quantity<square_meter, long double>(l); }
 
     // sq_km
-    constexpr auto operator""_sq_km(unsigned long long l) { return area<square_kilometer, std::int64_t>(l); }
-    constexpr auto operator""_sq_km(long double l) { return area<square_kilometer, long double>(l); }
+    constexpr auto operator""_sq_km(unsigned long long l) { return quantity<square_kilometer, std::int64_t>(l); }
+    constexpr auto operator""_sq_km(long double l) { return quantity<square_kilometer, long double>(l); }
 
   }  // namespace literals
 
