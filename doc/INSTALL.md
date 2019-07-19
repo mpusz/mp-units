@@ -24,7 +24,7 @@ steps may be done:
 - add the following remotes to your local `conan` instance
 
   ```bash
-  $ conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
+  $ conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
   $ conan remote add conan-nonstd https://api.bintray.com/conan/martinmoene/nonstd-lite
   ```
 
