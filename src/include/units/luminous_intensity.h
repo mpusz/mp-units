@@ -25,7 +25,7 @@
 #include <units/base_dimensions.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace std::experimental::units {
 
   struct dimension_luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
   template<> struct downcasting_traits<downcast_from<dimension_luminous_intensity>> : downcast_to<dimension_luminous_intensity> {};
@@ -44,4 +44,4 @@ namespace units {
 
   }  // namespace literals
 
-}  // namespace units
+}  // namespace std::experimental::units

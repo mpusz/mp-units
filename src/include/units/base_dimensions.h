@@ -24,7 +24,7 @@
 
 #include <units/dimension.h>
 
-namespace units {
+namespace std::experimental::units {
 
   // todo: to be replaced with fixed_string when supported by the compilers
 
@@ -36,4 +36,4 @@ namespace units {
   struct base_dim_substance : dim_id<5> {};
   struct base_dim_luminous_intensity : dim_id<6> {};
 
-}  // namespace units
+}  // namespace std::experimental::units

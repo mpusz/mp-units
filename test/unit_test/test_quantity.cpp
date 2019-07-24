@@ -25,7 +25,7 @@
 #include <utility>
 #include <chrono>
 
-using namespace units;
+using namespace std::experimental::units;
 
 namespace {
 
@@ -44,7 +44,7 @@ namespace {
 
 }  // namespace
 
-namespace units {
+namespace std::experimental::units {
 
   template<typename T>
   inline constexpr bool treat_as_floating_point<my_value<T>> = std::is_floating_point_v<T>;
@@ -56,7 +56,7 @@ namespace units {
     static constexpr my_value<T> min() { return std::numeric_limits<T>::lowest(); }
   };
 
-}  // namespace units
+}  // namespace std::experimental::units
 
 namespace std {
 
@@ -72,7 +72,7 @@ namespace std {
 
 namespace {
 
-  using namespace units;
+  using namespace std::experimental::units;
 
   // class invariants
 
@@ -192,12 +192,12 @@ namespace {
   static_assert(std::is_same_v<decltype(quantity<kilometer, double>() - quantity<meter, int>()), quantity<meter, double>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() * 1.0), quantity<meter, double>>);
   static_assert(std::is_same_v<decltype(1.0 * quantity<meter, int>()), quantity<meter, double>>);
-  static_assert(std::is_same_v<decltype(quantity<meter_per_second, int>() * units::quantity<second, int>()), quantity<units::meter, int>>);
-  static_assert(std::is_same_v<decltype(1 / units::quantity<second, int>()), quantity<hertz, int>>);
+  static_assert(std::is_same_v<decltype(quantity<meter_per_second, int>() * quantity<second, int>()), quantity<meter, int>>);
+  static_assert(std::is_same_v<decltype(1 / quantity<second, int>()), quantity<hertz, int>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() / 1.0), quantity<meter, double>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() / quantity<meter, double>()), double>);
   static_assert(std::is_same_v<decltype(quantity<kilometer, int>() / quantity<meter, double>()), double>);
-  static_assert(std::is_same_v<decltype(quantity<meter, int>() / units::quantity<second, int>()), quantity<meter_per_second, int>>);
+  static_assert(std::is_same_v<decltype(quantity<meter, int>() / quantity<second, int>()), quantity<meter_per_second, int>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() % short(1)), quantity<meter, int>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() % quantity<meter, short>(1)), quantity<meter, int>>);
 

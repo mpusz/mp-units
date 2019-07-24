@@ -24,7 +24,7 @@
 
 #include <type_traits>
 
-namespace units {
+namespace std::experimental::units {
 
   namespace detail {
 

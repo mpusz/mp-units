@@ -24,7 +24,7 @@
 
 #include <units/bits/hacks.h>
 
-namespace units {
+namespace std::experimental::units {
 
   template<typename T>
   concept bool Number = std::Regular<T> &&
@@ -43,4 +43,4 @@ namespace units {
         // …
   } ;
 
-}  // namespace units
+}  // namespace std::experimental::units

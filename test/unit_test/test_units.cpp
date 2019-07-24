@@ -37,7 +37,7 @@
 
 namespace {
 
-  using namespace units;
+  using namespace std::experimental::units;
 
   /* ************** BASE DIMENSIONS **************** */
 
@@ -71,6 +71,7 @@ namespace {
   static_assert(1000 / 1_s == 1_kHz);
   static_assert(1 / 1_ms == 1_kHz);
   static_assert(3.2_GHz == 3'200'000'000_Hz);
+//  static_assert(10_Hz * 1_min == 600);
 
   // velocity
 
@@ -99,5 +100,15 @@ namespace {
   static_assert(1_m * 1_m == 1_sq_m);
   static_assert(10_km * 10_km == 100_sq_km);
   static_assert(1_sq_m == 10'000_sq_cm);
+
+
+
+  // amplitude spectral density
+
+//  struct dimension_amplitude_spectral_density : make_dimension_t<exp<dim_voltage, 1>, exp<dim_frequency, ratio(-1, 2)>> {};
+//  template<> struct downcasting_traits<downcast_from<dimension_amplitude_spectral_density>> : downcast_to<dimension_amplitude_spectral_density> {};
+//
+//  struct volt_per_sq_hertz : derived_unit<dimension_amplitude_spectral_density, meter, second> {};
+//  template<> struct downcasting_traits<downcast_from<meter_per_second>> : downcast_to<meter_per_second> {};
 
 }  // namespace

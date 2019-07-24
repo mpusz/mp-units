@@ -24,7 +24,7 @@
 
 #include <units/length.h>
 
-namespace units {
+namespace std::experimental::units {
 
   struct dimension_area : make_dimension_t<exp<base_dim_length, 2>> {};
   template<> struct downcasting_traits<downcast_from<dimension_area>> : downcast_to<dimension_area> {};
@@ -67,4 +67,4 @@ namespace units {
 
   }  // namespace literals
 
-}  // namespace units
+}  // namespace std::experimental::units

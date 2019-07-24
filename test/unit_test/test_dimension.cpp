@@ -23,7 +23,7 @@
 #include "units/dimension.h"
 #include <utility>
 
-using namespace units;
+using namespace std::experimental::units;
 
 namespace {
 

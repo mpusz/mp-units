@@ -24,7 +24,7 @@
 
 #include <type_traits>
 
-namespace units {
+namespace std::experimental::units {
 
   namespace detail {
 
@@ -182,4 +182,4 @@ namespace units {
   template<TypeList List, template<typename, typename> typename Pred>
   using type_list_sort_t = type_list_sort<List, Pred>::type;
 
-}  // namespace units
+}  // namespace std::experimental::units

@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <gsl/gsl-lite.hpp>
 
-namespace units {
+namespace std::experimental::units {
 
   namespace detail {
 
@@ -135,4 +135,4 @@ namespace units {
   template<Ratio R1, Ratio R2>
   using common_ratio = typename detail::common_ratio_impl<R1, R2>::type;
 
-}  // namespace units
+}  // namespace std::experimental::units

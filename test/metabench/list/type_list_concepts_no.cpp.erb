@@ -1,5 +1,7 @@
 #include "type_list_concepts_no.h"
 
+namespace stde = std::experimental;
+
 template<int UniqueValue>
 using dim_id = std::integral_constant<int, UniqueValue>;
 
@@ -20,7 +22,7 @@ using <%= "dim#{i}" %> = dimension<<%=
     xs.shuffle(random: rng).join(', ')
 %>>;
 #if defined(METABENCH)
-using <%= "result#{i}" %> = units::type_list_sort<<%= "dim#{i}" %>, dim_id_less>;
+using <%= "result#{i}" %> = stde::units::type_list_sort<<%= "dim#{i}" %>, dim_id_less>;
 #endif
 <% end %>
 

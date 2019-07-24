@@ -26,7 +26,7 @@
 #include <units/ratio.h>
 #include <ratio>
 
-namespace units {
+namespace std::experimental::units {
 
   template<Dimension D, Ratio R = ratio<1>>
     requires (R::num > 0)
@@ -68,7 +68,7 @@ namespace units {
 
     template<typename BaseDimension, Unit... Us>
     struct get_ratio {
-      using ratio = ::units::ratio<1>;
+      using ratio = ::std::experimental::units::ratio<1>;
     };
 
     template<typename BaseDimension, Unit U, Unit... Rest>
@@ -99,7 +99,7 @@ namespace units {
 
     template<Unit... Us>
     struct derived_ratio<dimension<>, Us...> {
-      using ratio = ::units::ratio<1>;
+      using ratio = ::std::experimental::units::ratio<1>;
     };
 
     template<Exponent E, Exponent... Rest, Unit... Us>
@@ -131,4 +131,4 @@ namespace units {
   template<Unit U> using peta = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::peta::num>>>;
   template<Unit U> using exa = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::exa::num>>>;
 
-}  // namespace units
+}  // namespace std::experimental::units

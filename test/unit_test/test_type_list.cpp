@@ -25,7 +25,7 @@
 
 namespace {
 
-  using namespace units;
+  using namespace std::experimental::units;
 
   template<typename... Types>
   struct type_list;

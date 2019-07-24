@@ -6,6 +6,7 @@ using dim_id = std::integral_constant<int, UniqueValue>;
 template<typename D1, typename D2>
 using dim_id_less = std::bool_constant<D1::value < D2::value>;
 
+namespace stde = std::experimental;
 
 template<typename... Es>
 struct dimension;
@@ -20,7 +21,7 @@ using <%= "dim#{i}" %> = dimension<<%=
     xs.shuffle(random: rng).join(', ')
 %>>;
 #if defined(METABENCH)
-using <%= "result#{i}" %> = units::type_list_sort_t<<%= "dim#{i}" %>, dim_id_less>;
+using <%= "result#{i}" %> = stde::units::type_list_sort_t<<%= "dim#{i}" %>, dim_id_less>;
 #endif
 <% end %>
 

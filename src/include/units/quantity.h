@@ -27,7 +27,7 @@
 #include <limits>
 #include <gsl/gsl-lite.hpp>
 
-namespace units {
+namespace std::experimental::units {
 
   // is_quantity
   namespace detail {
@@ -408,4 +408,4 @@ namespace units {
     return !(lhs < rhs);
   }
 
-}  // namespace units
+}  // namespace std::experimental::units

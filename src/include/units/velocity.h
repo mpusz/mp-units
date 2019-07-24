@@ -25,7 +25,7 @@
 #include <units/length.h>
 #include <units/time.h>
 
-namespace units {
+namespace std::experimental::units {
 
   struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
@@ -58,4 +58,4 @@ namespace units {
 
   }  // namespace literals
 
-}  // namespace units
+}  // namespace std::experimental::units

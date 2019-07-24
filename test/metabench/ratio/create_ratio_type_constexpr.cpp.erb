@@ -1,10 +1,12 @@
 #include "ratio_type_constexpr.h"
 
+namespace stde = std::experimental;
+
 <% (1..n).each do |i| %>
   struct test<%= i %> {
 #if defined(METABENCH)
-    using r1 = units::ratio<<%= i %>, <%= n + 1 - i %>>;
-    using r2 = units::ratio<<%= n + 1 - i %>, <%= i %>>;
+    using r1 = stde::units::ratio<<%= i %>, <%= n + 1 - i %>>;
+    using r2 = stde::units::ratio<<%= n + 1 - i %>, <%= i %>>;
 #endif
   };
 <% end %>

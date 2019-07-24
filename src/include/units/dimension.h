@@ -25,7 +25,7 @@
 #include <units/bits/type_list.h>
 #include <units/bits/downcasting.h>
 
-namespace units {
+namespace std::experimental::units {
 
   // dim_id
 
@@ -186,4 +186,4 @@ namespace units {
   template<Dimension D1, Dimension D2>
   using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
 
-}  // namespace units
+}  // namespace std::experimental::units

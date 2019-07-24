@@ -25,7 +25,7 @@
 #include <units/base_dimensions.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace std::experimental::units {
 
   struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
   template<> struct downcasting_traits<downcast_from<dimension_time>> : downcast_to<dimension_time> {};
@@ -79,4 +79,4 @@ namespace units {
 
   }  // namespace literals
 
-}  // namespace units
+}  // namespace std::experimental::units

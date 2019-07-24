@@ -25,7 +25,7 @@
 #include <units/bits/hacks.h>
 #include <type_traits>
 
-namespace units {
+namespace std::experimental::units {
 
   template<typename BaseType>
   struct downcast_base {
@@ -51,4 +51,4 @@ namespace units {
   template<Downcastable T>
   using downcasting_traits_t = downcasting_traits<T>::type;
 
-}  // namespace units
+}  // namespace std::experimental::units
