@@ -59,6 +59,11 @@ NOTE: This library as of now compiles correctly only with gcc-9.
 
 ## Release notes
 
+- 0.2.0 July 18, 2019
+  - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)
+  - The design as described on C++Now 2019 talk (https://youtu.be/wKchCktZPHU)
+  - Compile-time performance opimisations (type_list, common_ratio, ratio, conditional_t)
+
 - 0.1.0 May 18, 2019
   - Initial library release
   - Begin semantic versioning
