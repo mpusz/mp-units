@@ -244,11 +244,11 @@ concept Quantity =
     detail::is_quantity<T>;  // exposition only
 ```
 
-`units::quantity` provides the interface really similar to `std::chrono::duration` with additional
-member types and functions as below:
+`units::quantity` provides the interface really similar to `std::chrono::duration`. The difference is that
+it uses `double` as a default representation and has a few additional member types and functions as below:
 
 ```cpp
-template<Unit U, Scalar Rep>
+template<Unit U, Scalar Rep = double>
 class quantity {
 public:
   using unit = U;
@@ -278,6 +278,8 @@ public:
               (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
   [[nodiscard]] constexpr Quantity operator/(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs);
+
+  // ...
 };
 ```
 
