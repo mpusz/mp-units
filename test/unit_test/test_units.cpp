@@ -24,14 +24,23 @@
 #include <units/length.h>
 #include <units/mass.h>
 #include <units/current.h>
-#include <units/current.h>
 #include <units/temperature.h>
 #include <units/substance.h>
 #include <units/luminous_intensity.h>
 
 #include <units/frequency.h>
+#include <units/force.h>
+#include <units/pressure.h>
+#include <units/energy.h>
+#include <units/power.h>
+#include <units/electric_charge.h>
+#include <units/voltage.h>
+#include <units/capacitance.h>
+
 #include <units/velocity.h>
+#include <units/acceleration.h>
 #include <units/area.h>
+#include <units/volume.h>
 
 #include <utility>
 
@@ -63,7 +72,7 @@ namespace {
 
 
 
-  /* ************** DERIVED DIMENSIONS **************** */
+  /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 
   // frequency
 
@@ -72,6 +81,39 @@ namespace {
   static_assert(1 / 1ms == 1kHz);
   static_assert(3.2GHz == 3'200'000'000Hz);
 //  static_assert(10hz * 1min == 600);
+
+  // force
+
+  static_assert(10kg * 10mps_sq == 100N);
+
+  // pressure
+
+  static_assert(10N / 10sq_m == 1Pa);
+
+  // energy
+
+  static_assert(10N * 10m == 100_J);
+  static_assert(10Pa * 10cub_m == 100_J);
+
+  // power
+
+  static_assert(10_J / 10s == 1W);
+
+  // electric charge
+
+  static_assert(10A * 10s == 100C);
+
+  // voltage
+
+  static_assert(10W / 10A == 1V);
+  static_assert(10_J / 10C == 1V);
+
+  // capacitance
+
+  static_assert(10C / 10V == 1F);
+
+
+  /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
   // velocity
 
@@ -95,10 +137,21 @@ namespace {
   // static_assert(2000m / 2kmph == 1h); // should not compile
   static_assert(quantity_cast<quantity<kilometer, int>>(2000m) / 2kmph == 1h);
 
+  // acceleration
+
+  static_assert(10mps / 10s == 1mps_sq);
+
   // area
 
   static_assert(1m * 1m == 1sq_m);
   static_assert(10km * 10km == 100sq_km);
   static_assert(1sq_m == 10'000sq_cm);
+
+  // volume
+
+  static_assert(1m * 1m * 1m == 1cub_m);
+  static_assert(10sq_m * 10m == 100cub_m);
+  static_assert(10km * 10km * 10km == 1000cub_km);
+  static_assert(1cub_m == 1'000'000cub_cm);
 
 }  // namespace

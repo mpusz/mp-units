@@ -547,5 +547,7 @@ Additionally, it should make the error logs even shorter thus easier to understa
      
 14. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)?
 
-15. `k` and `K` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
+15. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
     for floating point types.
+
+16. `J` imaginary constants are a GCC extension
