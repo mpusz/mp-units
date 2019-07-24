@@ -39,8 +39,8 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // cd
-    constexpr auto operator""_cd(unsigned long long l) { return quantity<candela, std::int64_t>(l); }
-    constexpr auto operator""_cd(long double l) { return quantity<candela, long double>(l); }
+    constexpr auto operator""cd(unsigned long long l) { return quantity<candela, std::int64_t>(l); }
+    constexpr auto operator""cd(long double l) { return quantity<candela, long double>(l); }
 
   }  // namespace literals
 

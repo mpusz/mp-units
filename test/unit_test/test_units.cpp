@@ -43,23 +43,23 @@ namespace {
 
   // time
 
-  static_assert(1_h == 3600_s);
+  static_assert(1h == 3600s);
 
   // length
 
-  static_assert(1_km == 1000_m);
-  static_assert(1_m == 100_cm);
-  static_assert(1_m == 1000_mm);
-  static_assert(1_km + 1_m == 1001_m);
-  static_assert(10_km / 5_km == 2);
-  static_assert(10_km / 2 == 5_km);
+  static_assert(1km == 1000m);
+  static_assert(1m == 100cm);
+  static_assert(1m == 1000mm);
+  static_assert(1km + 1m == 1001m);
+  static_assert(10km / 5km == 2);
+  static_assert(10km / 2 == 5km);
 
-  static_assert(1_yd == 0.9144_m);
-  static_assert(1_yd == 3_ft);
-  static_assert(1_ft == 12_in);
-  static_assert(1_mi == 1760_yd);
+  static_assert(1yd == 0.9144m);
+  static_assert(1yd == 3ft);
+  static_assert(1ft == 12in);
+  static_assert(1mi == 1760yd);
 
-//  static_assert(5_in + 8_cm == 207_mm);
+//  static_assert(5in + 8cm == 207mm);
 
 
 
@@ -67,48 +67,38 @@ namespace {
 
   // frequency
 
-  static_assert(2 / 1_s == 2_Hz);
-  static_assert(1000 / 1_s == 1_kHz);
-  static_assert(1 / 1_ms == 1_kHz);
-  static_assert(3.2_GHz == 3'200'000'000_Hz);
-//  static_assert(10_Hz * 1_min == 600);
+  static_assert(2 / 1s == 2Hz);
+  static_assert(1000 / 1s == 1kHz);
+  static_assert(1 / 1ms == 1kHz);
+  static_assert(3.2GHz == 3'200'000'000Hz);
+//  static_assert(10hz * 1min == 600);
 
   // velocity
 
-  static_assert(std::is_same_v<decltype(1_km / 1_s), quantity<unit<dimension_velocity, ratio<1000, 1>>, std::int64_t>>);
+  static_assert(std::is_same_v<decltype(1km / 1s), quantity<unit<dimension_velocity, ratio<1000, 1>>, std::int64_t>>);
 
-  static_assert(10_m / 5_s == 2_mps);
-  static_assert(10 / 5_s * 1_m == 2_mps);
-  static_assert(1_km / 1_s == 1000_mps);
-  // static_assert(1_km / 1_h == 1_kmph);  // should not compile
-  static_assert(1.0_km / 1_h == 1_kmph);
-  static_assert(1000.0_m / 3600.0_s == 1_kmph);
+  static_assert(10m / 5s == 2mps);
+  static_assert(10 / 5s * 1m == 2mps);
+  static_assert(1km / 1s == 1000mps);
+  // static_assert(1km / 1h == 1kmph);  // should not compile
+  static_assert(1.0km / 1h == 1kmph);
+  static_assert(1000.0m / 3600.0s == 1kmph);
 
-  static_assert(10.0_mi / 2_h == 5_mph);
+  static_assert(10.0mi / 2h == 5mph);
 
-  static_assert(2_kmph * 2_h == 4_km);
-  // static_assert(2_kmph * 15_min == 500_m); // should not compile
-  static_assert(2_kmph * 15.0_min == 500_m);
-  static_assert(2.0_kmph * 15_min == 500_m);
+  static_assert(2kmph * 2h == 4km);
+  // static_assert(2kmph * 15min == 500m); // should not compile
+  static_assert(2kmph * 15.0min == 500m);
+  static_assert(2.0kmph * 15min == 500m);
 
-  static_assert(2_km / 2_kmph == 1_h);
-  // static_assert(2000_m / 2_kmph == 1_h); // should not compile
-  static_assert(quantity_cast<quantity<kilometer, int>>(2000_m) / 2_kmph == 1_h);
+  static_assert(2km / 2kmph == 1h);
+  // static_assert(2000m / 2kmph == 1h); // should not compile
+  static_assert(quantity_cast<quantity<kilometer, int>>(2000m) / 2kmph == 1h);
 
   // area
 
-  static_assert(1_m * 1_m == 1_sq_m);
-  static_assert(10_km * 10_km == 100_sq_km);
-  static_assert(1_sq_m == 10'000_sq_cm);
-
-
-
-  // amplitude spectral density
-
-//  struct dimension_amplitude_spectral_density : make_dimension_t<exp<dim_voltage, 1>, exp<dim_frequency, ratio(-1, 2)>> {};
-//  template<> struct downcasting_traits<downcast_from<dimension_amplitude_spectral_density>> : downcast_to<dimension_amplitude_spectral_density> {};
-//
-//  struct volt_per_sq_hertz : derived_unit<dimension_amplitude_spectral_density, meter, second> {};
-//  template<> struct downcasting_traits<downcast_from<meter_per_second>> : downcast_to<meter_per_second> {};
+  static_assert(1m * 1m == 1sq_m);
+  static_assert(10km * 10km == 100sq_km);
+  static_assert(1sq_m == 10'000sq_cm);
 
 }  // namespace

@@ -39,8 +39,8 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // K
-    constexpr auto operator""_K(unsigned long long l) { return quantity<kelvin, std::int64_t>(l); }
-    constexpr auto operator""_K(long double l) { return quantity<kelvin, long double>(l); }
+    constexpr auto operator""K(unsigned long long l) { return quantity<kelvin, std::int64_t>(l); }
+    constexpr auto operator""_K(long double l) { return quantity<kelvin, long double>(l); }   // todo: conflicts with gcc GNU extension
 
   }  // namespace literals
 

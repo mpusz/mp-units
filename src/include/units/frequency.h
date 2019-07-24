@@ -54,28 +54,28 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // mHz
-    constexpr auto operator""_mHz(unsigned long long l) { return quantity<millihertz, std::int64_t>(l); }
-    constexpr auto operator""_mHz(long double l) { return quantity<millihertz, long double>(l); }
+    constexpr auto operator""mHz(unsigned long long l) { return quantity<millihertz, std::int64_t>(l); }
+    constexpr auto operator""mHz(long double l) { return quantity<millihertz, long double>(l); }
 
     // Hz
-    constexpr auto operator""_Hz(unsigned long long l) { return quantity<hertz, std::int64_t>(l); }
-    constexpr auto operator""_Hz(long double l) { return quantity<hertz, long double>(l); }
+    constexpr auto operator""Hz(unsigned long long l) { return quantity<hertz, std::int64_t>(l); }
+    constexpr auto operator""Hz(long double l) { return quantity<hertz, long double>(l); }
 
     // kHz
-    constexpr auto operator""_kHz(unsigned long long l) { return quantity<kilohertz, std::int64_t>(l); }
-    constexpr auto operator""_kHz(long double l) { return quantity<kilohertz, long double>(l); }
+    constexpr auto operator""kHz(unsigned long long l) { return quantity<kilohertz, std::int64_t>(l); }
+    constexpr auto operator""kHz(long double l) { return quantity<kilohertz, long double>(l); }
 
     // MHz
-    constexpr auto operator""_MHz(unsigned long long l) { return quantity<megahertz, std::int64_t>(l); }
-    constexpr auto operator""_MHz(long double l) { return quantity<megahertz, long double>(l); }
+    constexpr auto operator""MHz(unsigned long long l) { return quantity<megahertz, std::int64_t>(l); }
+    constexpr auto operator""MHz(long double l) { return quantity<megahertz, long double>(l); }
 
     // GHz
-    constexpr auto operator""_GHz(unsigned long long l) { return quantity<gigahertz, std::int64_t>(l); }
-    constexpr auto operator""_GHz(long double l) { return quantity<gigahertz, long double>(l); }
+    constexpr auto operator""GHz(unsigned long long l) { return quantity<gigahertz, std::int64_t>(l); }
+    constexpr auto operator""GHz(long double l) { return quantity<gigahertz, long double>(l); }
 
     // THz
-    constexpr auto operator""_THz(unsigned long long l) { return quantity<terahertz, std::int64_t>(l); }
-    constexpr auto operator""_THz(long double l) { return quantity<terahertz, long double>(l); }
+    constexpr auto operator""THz(unsigned long long l) { return quantity<terahertz, std::int64_t>(l); }
+    constexpr auto operator""THz(long double l) { return quantity<terahertz, long double>(l); }
 
   }  // namespace literals
 

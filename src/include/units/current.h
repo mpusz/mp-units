@@ -39,8 +39,8 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // A
-    constexpr auto operator""_A(unsigned long long l) { return quantity<ampere, std::int64_t>(l); }
-    constexpr auto operator""_A(long double l) { return quantity<ampere, long double>(l); }
+    constexpr auto operator""A(unsigned long long l) { return quantity<ampere, std::int64_t>(l); }
+    constexpr auto operator""A(long double l) { return quantity<ampere, long double>(l); }
 
   }
 

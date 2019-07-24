@@ -39,8 +39,8 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // mol
-    constexpr auto operator""_mol(unsigned long long l) { return quantity<mole, std::int64_t>(l); }
-    constexpr auto operator""_mol(long double l) { return quantity<mole, long double>(l); }
+    constexpr auto operator""mol(unsigned long long l) { return quantity<mole, std::int64_t>(l); }
+    constexpr auto operator""mol(long double l) { return quantity<mole, long double>(l); }
 
   }  // namespace literals
 

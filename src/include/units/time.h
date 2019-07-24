@@ -54,28 +54,28 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // ns
-    constexpr auto operator""_ns(unsigned long long l) { return quantity<nanosecond, std::int64_t>(l); }
-    constexpr auto operator""_ns(long double l) { return quantity<nanosecond, long double>(l); }
+    constexpr auto operator""ns(unsigned long long l) { return quantity<nanosecond, std::int64_t>(l); }
+    constexpr auto operator""ns(long double l) { return quantity<nanosecond, long double>(l); }
 
     // us
-    constexpr auto operator""_us(unsigned long long l) { return quantity<microsecond, std::int64_t>(l); }
-    constexpr auto operator""_us(long double l) { return quantity<microsecond, long double>(l); }
+    constexpr auto operator""us(unsigned long long l) { return quantity<microsecond, std::int64_t>(l); }
+    constexpr auto operator""us(long double l) { return quantity<microsecond, long double>(l); }
 
     // ms
-    constexpr auto operator""_ms(unsigned long long l) { return quantity<millisecond, std::int64_t>(l); }
-    constexpr auto operator""_ms(long double l) { return quantity<millisecond, long double>(l); }
+    constexpr auto operator""ms(unsigned long long l) { return quantity<millisecond, std::int64_t>(l); }
+    constexpr auto operator""ms(long double l) { return quantity<millisecond, long double>(l); }
 
     // s
-    constexpr auto operator""_s(unsigned long long l) { return quantity<second, std::int64_t>(l); }
-    constexpr auto operator""_s(long double l) { return quantity<second, long double>(l); }
+    constexpr auto operator""s(unsigned long long l) { return quantity<second, std::int64_t>(l); }
+    constexpr auto operator""s(long double l) { return quantity<second, long double>(l); }
 
     // min
-    constexpr auto operator""_min(unsigned long long l) { return quantity<minute, std::int64_t>(l); }
-    constexpr auto operator""_min(long double l) { return quantity<minute, long double>(l); }
+    constexpr auto operator""min(unsigned long long l) { return quantity<minute, std::int64_t>(l); }
+    constexpr auto operator""min(long double l) { return quantity<minute, long double>(l); }
 
     // h
-    constexpr auto operator""_h(unsigned long long l) { return quantity<hour, std::int64_t>(l); }
-    constexpr auto operator""_h(long double l) { return quantity<hour, long double>(l); }
+    constexpr auto operator""h(unsigned long long l) { return quantity<hour, std::int64_t>(l); }
+    constexpr auto operator""h(long double l) { return quantity<hour, long double>(l); }
 
   }  // namespace literals
 

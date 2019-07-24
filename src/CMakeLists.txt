@@ -65,6 +65,10 @@ target_include_directories(units
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
+target_compile_options(units
+    INTERFACE
+        -Wno-literal-suffix
+)
 add_library(mp::units ALIAS units)
 
 # installation info

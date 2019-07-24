@@ -50,20 +50,20 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // sq_mm
-    constexpr auto operator""_sq_mm(unsigned long long l) { return quantity<square_millimeter, std::int64_t>(l); }
-    constexpr auto operator""_sq_mm(long double l) { return quantity<square_millimeter, long double>(l); }
+    constexpr auto operator""sq_mm(unsigned long long l) { return quantity<square_millimeter, std::int64_t>(l); }
+    constexpr auto operator""sq_mm(long double l) { return quantity<square_millimeter, long double>(l); }
 
     // sq_cm
-    constexpr auto operator""_sq_cm(unsigned long long l) { return quantity<square_centimeter, std::int64_t>(l); }
-    constexpr auto operator""_sq_cm(long double l) { return quantity<square_centimeter, long double>(l); }
+    constexpr auto operator""sq_cm(unsigned long long l) { return quantity<square_centimeter, std::int64_t>(l); }
+    constexpr auto operator""sq_cm(long double l) { return quantity<square_centimeter, long double>(l); }
 
     // sq_m
-    constexpr auto operator""_sq_m(unsigned long long l) { return quantity<square_meter, std::int64_t>(l); }
-    constexpr auto operator""_sq_m(long double l) { return quantity<square_meter, long double>(l); }
+    constexpr auto operator""sq_m(unsigned long long l) { return quantity<square_meter, std::int64_t>(l); }
+    constexpr auto operator""sq_m(long double l) { return quantity<square_meter, long double>(l); }
 
     // sq_km
-    constexpr auto operator""_sq_km(unsigned long long l) { return quantity<square_kilometer, std::int64_t>(l); }
-    constexpr auto operator""_sq_km(long double l) { return quantity<square_kilometer, long double>(l); }
+    constexpr auto operator""sq_km(unsigned long long l) { return quantity<square_kilometer, std::int64_t>(l); }
+    constexpr auto operator""sq_km(long double l) { return quantity<square_kilometer, long double>(l); }
 
   }  // namespace literals
 

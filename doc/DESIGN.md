@@ -10,20 +10,20 @@ Here is a small example of possible operations:
 
 ```cpp
 // simple numeric operations
-static_assert(10_km / 2 == 5_km);
+static_assert(10km / 2 == 5km);
 
 // unit conversions
-static_assert(1_h == 3600_s);
-static_assert(1_km + 1_m == 1001_m);
+static_assert(1h == 3600s);
+static_assert(1km + 1m == 1001m);
 
 // dimension conversions
-static_assert(1_km / 1_s == 1000_mps);
-static_assert(2_kmph * 2_h == 4_km);
-static_assert(2_km / 2_kmph == 1_h);
+static_assert(1km / 1s == 1000mps);
+static_assert(2kmph * 2h == 4km);
+static_assert(2km / 2kmph == 1h);
 
-static_assert(1000 / 1_s == 1_kHz);
+static_assert(1000 / 1s == 1kHz);
 
-static_assert(10_km / 5_km == 2);
+static_assert(10km / 5km == 2);
 ```
 
 
@@ -51,7 +51,7 @@ Quantity is a concrete amount of a unit for a specified dimension with a specifi
 
 ```cpp
 units::quantity<units::kilometer, double> d1(123);
-auto d2 = 123_km;    // stde::units::quantity<units::kilometer, std::int64_t>
+auto d2 = 123km;    // stde::units::quantity<units::kilometer, std::int64_t>
 ```
 
 There are C++ concepts provided for each such quantity type:
@@ -136,8 +136,8 @@ those base dimensions that are used to form that derived dimension.
 However, such an approach have some challenges:
 
 ```cpp
-constexpr Velocity auto v1 = 1_m / 1_s;
-constexpr Velocity auto v2 = 2 / 2_s * 1_m;
+constexpr Velocity auto v1 = 1_m / 1s;
+constexpr Velocity auto v2 = 2 / 2s * 1m;
 
 static_assert(std::Same<decltype(v1), decltype(v2)>);
 static_assert(v1 == v2);
@@ -306,14 +306,14 @@ the best user experience as possible.
 For example with template aliases usage the following code:
 
 ```cpp
-const Velocity auto t = 20_s;
+const Velocity auto t = 20s;
 ```
 
 could generate a following compile time error:
 
 ```text
 <path>\example\example.cpp:39:22: error: deduced initializer does not satisfy placeholder constraints
-   const Velocity auto t = 20_s;
+   const Velocity auto t = 20s;
                            ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
@@ -350,7 +350,7 @@ same code will result with such an error:
 
 ```text
 <path>\example\example.cpp:40:22: error: deduced initializer does not satisfy placeholder constraints
-   const Velocity t = 20_s;
+   const Velocity t = 20s;
                       ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::second, long long int>]'
@@ -472,7 +472,7 @@ inline namespace literals {
   constexpr auto operator""_mps(long double l)        { return quantity<meter_per_second, long double>(l); }
   
   constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
-  constexpr auto operator""_kmph(long double l) { return quantity<kilometer_per_hour, long double>(l); }
+  constexpr auto operator""_kmph(long double l)        { return quantity<kilometer_per_hour, long double>(l); }
 }
 ```
 
@@ -528,7 +528,7 @@ Additionally, it should make the error logs even shorter thus easier to understa
 
 7. Should we provide cmath-like functions for quantities?
 
-8. What should be the resulting type of `auto d = 1_km + 1_ft;`?
+8. What should be the resulting type of `auto d = 1km + 1ft;`?
 
 9. Should we require explicit casts (i.e. quantity_cast) between different systems of
    measurement?
@@ -546,3 +546,6 @@ Additionally, it should make the error logs even shorter thus easier to understa
 13. Should we standardize accompany tools (`downcasting_traits`, `type_list` operations, `common_ratio`, etc)? 
      
 14. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)?
+
+15. `k` and `K` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
+    for floating point types.

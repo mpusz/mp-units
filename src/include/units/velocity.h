@@ -45,16 +45,16 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // mps
-    constexpr auto operator""_mps(unsigned long long l) { return quantity<meter_per_second, std::int64_t>(l); }
-    constexpr auto operator""_mps(long double l) { return quantity<meter_per_second, long double>(l); }
+    constexpr auto operator""mps(unsigned long long l) { return quantity<meter_per_second, std::int64_t>(l); }
+    constexpr auto operator""mps(long double l) { return quantity<meter_per_second, long double>(l); }
 
     // kmph
-    constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
-    constexpr auto operator""_kmph(long double l) { return quantity<kilometer_per_hour, long double>(l); }
+    constexpr auto operator""kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
+    constexpr auto operator""kmph(long double l) { return quantity<kilometer_per_hour, long double>(l); }
 
     // mph
-    constexpr auto operator""_mph(unsigned long long l) { return quantity<mile_per_hour, std::int64_t>(l); }
-    constexpr auto operator""_mph(long double l) { return quantity<mile_per_hour, long double>(l); }
+    constexpr auto operator""mph(unsigned long long l) { return quantity<mile_per_hour, std::int64_t>(l); }
+    constexpr auto operator""mph(long double l) { return quantity<mile_per_hour, long double>(l); }
 
   }  // namespace literals
 

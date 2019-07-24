@@ -77,7 +77,7 @@ namespace {
   // class invariants
 
   // constexpr quantity<dimension_length, second, int> q;  // should a static_assert
-  // constexpr quantity<dimension_length, meter, quantity<meter, int>> error(0_m);  // should trigger a static_assert
+  // constexpr quantity<dimension_length, meter, quantity<meter, int>> error(0m);  // should trigger a static_assert
   // constexpr quantity<int, int, double> error(0);  // should trigger a static_assert
   // constexpr quantity<dimension_length, unit<dimension_length, std::ratio<-1, 1>>, int> error(0);  // should trigger a static_assert
 
@@ -112,18 +112,18 @@ namespace {
 
   static_assert(quantity<meter, int>(km).count() == 1000);
   //  static_assert(quantity<meter, int>(quantity<meter, double>(3.14)).count() == 3);   // should not compile
-  static_assert(quantity<meter, int>(quantity_cast<quantity<meter, my_value<int>>>(3.14_m)).count() == 3);
+  static_assert(quantity<meter, int>(quantity_cast<quantity<meter, my_value<int>>>(3.14m)).count() == 3);
   //  static_assert(quantity<meter, int>(quantity<meter, my_value<double>>(1000.0)).count() == 1000);   // should not compile
-  //  static_assert(quantity<meter, my_value>(1000.0_m).count() == 1000);   // should not compile
-  static_assert(quantity<meter, double>(1000.0_m).count() == 1000.0);
+  //  static_assert(quantity<meter, my_value>(1000.0m).count() == 1000);   // should not compile
+  static_assert(quantity<meter, double>(1000.0m).count() == 1000.0);
   static_assert(quantity<meter, double>(quantity<meter, my_value<double>>(1000.0)).count() == 1000.0);
-  static_assert(quantity<meter, my_value<double>>(1000.0_m).count() == 1000.0);
+  static_assert(quantity<meter, my_value<double>>(1000.0m).count() == 1000.0);
   static_assert(quantity<meter, double>(km).count() == 1000.0);
   static_assert(quantity<meter, my_value<double>>(km).count() == 1000.0);
-  static_assert(quantity<meter, int>(1_km).count() == 1000);
+  static_assert(quantity<meter, int>(1km).count() == 1000);
   //  static_assert(quantity<meter, int>(1_s).count() == 1);   // should not compile
-  //  static_assert(quantity<kilometer, int>(1010_m).count() == 1);   // should not compile
-  static_assert(quantity<kilometer, int>(quantity_cast<quantity<kilometer, my_value<int>>>(1010_m)).count() == 1);
+  //  static_assert(quantity<kilometer, int>(1010m).count() == 1);   // should not compile
+  static_assert(quantity<kilometer, int>(quantity_cast<quantity<kilometer, my_value<int>>>(1010m)).count() == 1);
 
   // assignment operator
 
@@ -176,12 +176,12 @@ namespace {
 
   // compound assignment
 
-  static_assert((1_m += 1_m).count() == 2);
-  static_assert((2_m -= 1_m).count() == 1);
-  static_assert((1_m *= 2).count() == 2);
-  static_assert((2_m /= 2).count() == 1);
-  static_assert((7_m %= 2).count() == 1);
-  static_assert((7_m %= 2_m).count() == 1);
+  static_assert((1m += 1m).count() == 2);
+  static_assert((2m -= 1m).count() == 1);
+  static_assert((1m *= 2).count() == 2);
+  static_assert((2m /= 2).count() == 1);
+  static_assert((7m %= 2).count() == 1);
+  static_assert((7m %= 2m).count() == 1);
 
   // non-member arithmetic operators
 
@@ -201,49 +201,49 @@ namespace {
   static_assert(std::is_same_v<decltype(quantity<meter, int>() % short(1)), quantity<meter, int>>);
   static_assert(std::is_same_v<decltype(quantity<meter, int>() % quantity<meter, short>(1)), quantity<meter, int>>);
 
-  static_assert((1_m + km).count() == 1001);
-  static_assert((1_m + 1_km).count() == 1001);
-  static_assert((km - 1_m).count() == 999);
-  static_assert((1_km - 1_m).count() == 999);
-  static_assert((2_m * 2).count() == 4);
-  static_assert((3 * 3_m).count() == 9);
-  static_assert((4_m / 2).count() == 2);
-  static_assert(4_m / 2_m == 2);
-  static_assert(4_km / 2000_m == 2);
-  static_assert((7_m % 2).count() == 1);
-  static_assert((7_m % 2_m).count() == 1);
-  static_assert((7_km % 2000_m).count() == 1000);
+  static_assert((1m + km).count() == 1001);
+  static_assert((1m + 1km).count() == 1001);
+  static_assert((km - 1m).count() == 999);
+  static_assert((1km - 1m).count() == 999);
+  static_assert((2m * 2).count() == 4);
+  static_assert((3 * 3m).count() == 9);
+  static_assert((4m / 2).count() == 2);
+  static_assert(4m / 2m == 2);
+  static_assert(4km / 2000m == 2);
+  static_assert((7m % 2).count() == 1);
+  static_assert((7m % 2m).count() == 1);
+  static_assert((7km % 2000m).count() == 1000);
 
   // comparators
 
-  static_assert(2_m + 1_m == 3_m);
-  static_assert(!(2_m + 2_m == 3_m));
-  static_assert(2_m + 2_m != 3_m);
-  static_assert(!(2_m + 2_m != 4_m));
-  static_assert(2_m > 1_m);
-  static_assert(!(1_m > 1_m));
-  static_assert(1_m < 2_m);
-  static_assert(!(2_m < 2_m));
-  static_assert(2_m >= 1_m);
-  static_assert(2_m >= 2_m);
-  static_assert(!(2_m >= 3_m));
-  static_assert(1_m <= 2_m);
-  static_assert(2_m <= 2_m);
-  static_assert(!(3_m <= 2_m));
+  static_assert(2m + 1m == 3m);
+  static_assert(!(2m + 2m == 3m));
+  static_assert(2m + 2m != 3m);
+  static_assert(!(2m + 2m != 4m));
+  static_assert(2m > 1m);
+  static_assert(!(1m > 1m));
+  static_assert(1m < 2m);
+  static_assert(!(2m < 2m));
+  static_assert(2m >= 1m);
+  static_assert(2m >= 2m);
+  static_assert(!(2m >= 3m));
+  static_assert(1m <= 2m);
+  static_assert(2m <= 2m);
+  static_assert(!(3m <= 2m));
 
-  static_assert(3_m == 3.0_m);
-  static_assert(3_m != 3.14_m);
-  static_assert(2_m > 1.0_m);
-  static_assert(1.0_m < 2_m);
-  static_assert(2.0_m >= 1_m);
-  static_assert(1_m <= 2.0_m);
+  static_assert(3m == 3.0m);
+  static_assert(3m != 3.14m);
+  static_assert(2m > 1.0m);
+  static_assert(1.0m < 2m);
+  static_assert(2.0m >= 1m);
+  static_assert(1m <= 2.0m);
 
-  static_assert(1000_m == 1_km);
-  static_assert(1001_m != 1_km);
-  static_assert(1001_m > 1_km);
-  static_assert(999_m < 1_km);
-  static_assert(1000_m >= 1_km);
-  static_assert(1000_m <= 1_km);
+  static_assert(1000m == 1km);
+  static_assert(1001m != 1km);
+  static_assert(1001m > 1km);
+  static_assert(999m < 1km);
+  static_assert(1000m >= 1km);
+  static_assert(1000m <= 1km);
 
   // is_quantity
 
@@ -257,28 +257,28 @@ namespace {
 
   // quantity_cast
 
-  // static_assert(quantity_cast<int>(2_km).count() == 2000);  // should not compile
-  static_assert(quantity_cast<quantity<meter, int>>(2_km).count() == 2000);
-  static_assert(quantity_cast<quantity<kilometer, int>>(2000_m).count() == 2);
+  // static_assert(quantity_cast<int>(2km).count() == 2000);  // should not compile
+  static_assert(quantity_cast<quantity<meter, int>>(2km).count() == 2000);
+  static_assert(quantity_cast<quantity<kilometer, int>>(2000m).count() == 2);
 
   // time
 
-  //  static_assert(1_s == 1_m);  // should not compile
-  static_assert(1_h == 3600_s);
+  //  static_assert(1s == 1m);  // should not compile
+  static_assert(1h == 3600s);
 
   // length
 
-  static_assert(1_km == 1000_m);
-  static_assert(1_km + 1_m == 1001_m);
-  static_assert(10_km / 5_km == 2);
-  static_assert(10_km / 2 == 5_km);
+  static_assert(1km == 1000m);
+  static_assert(1km + 1m == 1001m);
+  static_assert(10km / 5km == 2);
+  static_assert(10km / 2 == 5km);
 
   // velocity
 
-  static_assert(10_m / 5_s == 2_mps);
-  static_assert(10 / 5_s * 1_m == 2_mps);
-  static_assert(1_km / 1_s == 1000_mps);
-  static_assert(2_kmph * 2_h == 4_km);
-  static_assert(2_km / 2_kmph == 1_h);
+  static_assert(10m / 5s == 2mps);
+  static_assert(10 / 5s * 1m == 2mps);
+  static_assert(1km / 1s == 1000mps);
+  static_assert(2kmph * 2h == 4km);
+  static_assert(2km / 2kmph == 1h);
 
 }  // namespace

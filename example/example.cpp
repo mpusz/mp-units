@@ -56,7 +56,7 @@ void example_2(double distance_v, double duration_v)
 int main()
 {
   try {
-    example_1(60_kmph, 10.0_min);
+    example_1(60kmph, 10.0min);
     example_2(220, 2);
   }
   catch (const std::exception& ex) {

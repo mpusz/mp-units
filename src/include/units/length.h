@@ -49,20 +49,20 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // mm
-    constexpr auto operator""_mm(unsigned long long l) { return quantity<millimeter, std::int64_t>(l); }
-    constexpr auto operator""_mm(long double l) { return quantity<millimeter, long double>(l); }
+    constexpr auto operator""mm(unsigned long long l) { return quantity<millimeter, std::int64_t>(l); }
+    constexpr auto operator""mm(long double l) { return quantity<millimeter, long double>(l); }
 
     // cm
-    constexpr auto operator""_cm(unsigned long long l) { return quantity<centimeter, std::int64_t>(l); }
-    constexpr auto operator""_cm(long double l) { return quantity<centimeter, long double>(l); }
+    constexpr auto operator""cm(unsigned long long l) { return quantity<centimeter, std::int64_t>(l); }
+    constexpr auto operator""cm(long double l) { return quantity<centimeter, long double>(l); }
 
     // m
-    constexpr auto operator""_m(unsigned long long l) { return quantity<meter, std::int64_t>(l); }
-    constexpr auto operator""_m(long double l) { return quantity<meter, long double>(l); }
+    constexpr auto operator""m(unsigned long long l) { return quantity<meter, std::int64_t>(l); }
+    constexpr auto operator""m(long double l) { return quantity<meter, long double>(l); }
 
     // km
-    constexpr auto operator""_km(unsigned long long l) { return quantity<kilometer, std::int64_t>(l); }
-    constexpr auto operator""_km(long double l) { return quantity<kilometer, long double>(l); }
+    constexpr auto operator""km(unsigned long long l) { return quantity<kilometer, std::int64_t>(l); }
+    constexpr auto operator""km(long double l) { return quantity<kilometer, long double>(l); }
 
   } // namespace literals
 
@@ -82,20 +82,20 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // yd
-    constexpr auto operator""_yd(unsigned long long l) { return quantity<yard, std::int64_t>(l); }
-    constexpr auto operator""_yd(long double l) { return quantity<yard, long double>(l); }
+    constexpr auto operator""yd(unsigned long long l) { return quantity<yard, std::int64_t>(l); }
+    constexpr auto operator""yd(long double l) { return quantity<yard, long double>(l); }
 
     // ft
-    constexpr auto operator""_ft(unsigned long long l) { return quantity<foot, std::int64_t>(l); }
-    constexpr auto operator""_ft(long double l) { return quantity<foot, long double>(l); }
+    constexpr auto operator""ft(unsigned long long l) { return quantity<foot, std::int64_t>(l); }
+    constexpr auto operator""ft(long double l) { return quantity<foot, long double>(l); }
 
     // in
-    constexpr auto operator""_in(unsigned long long l) { return quantity<inch, std::int64_t>(l); }
-    constexpr auto operator""_in(long double l) { return quantity<inch, long double>(l); }
+    constexpr auto operator""in(unsigned long long l) { return quantity<inch, std::int64_t>(l); }
+    constexpr auto operator""in(long double l) { return quantity<inch, long double>(l); }
 
     // mi
-    constexpr auto operator""_mi(unsigned long long l) { return quantity<mile, std::int64_t>(l); }
-    constexpr auto operator""_mi(long double l) { return quantity<mile, long double>(l); }
+    constexpr auto operator""mi(unsigned long long l) { return quantity<mile, std::int64_t>(l); }
+    constexpr auto operator""mi(long double l) { return quantity<mile, long double>(l); }
 
   }  // namespace literals
 
