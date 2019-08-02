@@ -34,7 +34,7 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Energy =  Quantity<T> && std::Same<typename T::dimension, dimension_energy>;
 
-  struct joule : derived_unit<dimension_energy, kilogram, meter, second> {};
+  struct joule : derived_unit<dimension_energy, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<joule>> : downcast_to<joule> {};
 
   inline namespace literals {

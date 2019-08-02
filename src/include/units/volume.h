@@ -32,17 +32,17 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Volume = Quantity<T> && std::Same<typename T::dimension, dimension_volume>;
 
-  struct cubic_millimeter : derived_unit<dimension_volume, millimeter> {};
-  template<> struct downcasting_traits<downcast_from<cubic_millimeter>> : downcast_to<cubic_millimeter> {};
+  struct cubic_millimetre : derived_unit<dimension_volume, millimetre> {};
+  template<> struct downcasting_traits<downcast_from<cubic_millimetre>> : downcast_to<cubic_millimetre> {};
 
-  struct cubic_centimeter : derived_unit<dimension_volume, centimeter> {};
-  template<> struct downcasting_traits<downcast_from<cubic_centimeter>> : downcast_to<cubic_centimeter> {};
+  struct cubic_centimetre : derived_unit<dimension_volume, centimetre> {};
+  template<> struct downcasting_traits<downcast_from<cubic_centimetre>> : downcast_to<cubic_centimetre> {};
 
-  struct cubic_meter : derived_unit<dimension_volume, meter> {};
-  template<> struct downcasting_traits<downcast_from<cubic_meter>> : downcast_to<cubic_meter> {};
+  struct cubic_metre : derived_unit<dimension_volume, metre> {};
+  template<> struct downcasting_traits<downcast_from<cubic_metre>> : downcast_to<cubic_metre> {};
 
-  struct cubic_kilometer : derived_unit<dimension_volume, kilometer, meter> {};
-  template<> struct downcasting_traits<downcast_from<cubic_kilometer>> : downcast_to<cubic_kilometer> {};
+  struct cubic_kilometre : derived_unit<dimension_volume, kilometre, metre> {};
+  template<> struct downcasting_traits<downcast_from<cubic_kilometre>> : downcast_to<cubic_kilometre> {};
 
   struct cubic_foot : derived_unit<dimension_volume, foot> {};
   template<> struct downcasting_traits<downcast_from<cubic_foot>> : downcast_to<cubic_foot> {};
@@ -50,20 +50,20 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // cub_mm
-    constexpr auto operator""cub_mm(unsigned long long l) { return quantity<cubic_millimeter, std::int64_t>(l); }
-    constexpr auto operator""cub_mm(long double l) { return quantity<cubic_millimeter, long double>(l); }
+    constexpr auto operator""cub_mm(unsigned long long l) { return quantity<cubic_millimetre, std::int64_t>(l); }
+    constexpr auto operator""cub_mm(long double l) { return quantity<cubic_millimetre, long double>(l); }
 
     // cub_cm
-    constexpr auto operator""cub_cm(unsigned long long l) { return quantity<cubic_centimeter, std::int64_t>(l); }
-    constexpr auto operator""cub_cm(long double l) { return quantity<cubic_centimeter, long double>(l); }
+    constexpr auto operator""cub_cm(unsigned long long l) { return quantity<cubic_centimetre, std::int64_t>(l); }
+    constexpr auto operator""cub_cm(long double l) { return quantity<cubic_centimetre, long double>(l); }
 
     // cub_m
-    constexpr auto operator""cub_m(unsigned long long l) { return quantity<cubic_meter, std::int64_t>(l); }
-    constexpr auto operator""cub_m(long double l) { return quantity<cubic_meter, long double>(l); }
+    constexpr auto operator""cub_m(unsigned long long l) { return quantity<cubic_metre, std::int64_t>(l); }
+    constexpr auto operator""cub_m(long double l) { return quantity<cubic_metre, long double>(l); }
 
     // cub_km
-    constexpr auto operator""cub_km(unsigned long long l) { return quantity<cubic_kilometer, std::int64_t>(l); }
-    constexpr auto operator""cub_km(long double l) { return quantity<cubic_kilometer, long double>(l); }
+    constexpr auto operator""cub_km(unsigned long long l) { return quantity<cubic_kilometre, std::int64_t>(l); }
+    constexpr auto operator""cub_km(long double l) { return quantity<cubic_kilometre, long double>(l); }
 
   }  // namespace literals
 

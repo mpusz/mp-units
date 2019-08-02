@@ -135,7 +135,7 @@ namespace {
 
   static_assert(2km / 2kmph == 1h);
   // static_assert(2000m / 2kmph == 1h); // should not compile
-  static_assert(quantity_cast<quantity<kilometer, int>>(2000m) / 2kmph == 1h);
+  static_assert(quantity_cast<quantity<kilometre, int>>(2000m) / 2kmph == 1h);
 
   // acceleration
 

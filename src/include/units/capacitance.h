@@ -34,7 +34,7 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Capacitance =  Quantity<T> && std::Same<typename T::dimension, dimension_capacitance>;
 
-  struct farad : derived_unit<dimension_capacitance, kilogram, meter, second, ampere> {};
+  struct farad : derived_unit<dimension_capacitance, kilogram, metre, second, ampere> {};
   template<> struct downcasting_traits<downcast_from<farad>> : downcast_to<farad> {};
 
   inline namespace literals {

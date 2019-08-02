@@ -35,7 +35,7 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Force =  Quantity<T> && std::Same<typename T::dimension, dimension_force>;
 
-  struct newton : derived_unit<dimension_force, kilogram, meter, second> {};
+  struct newton : derived_unit<dimension_force, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<newton>> : downcast_to<newton> {};
 
   inline namespace literals {

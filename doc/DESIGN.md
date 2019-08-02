@@ -50,8 +50,8 @@ point of view the most important is a quantity.
 Quantity is a concrete amount of a unit for a specified dimension with a specific representation:
 
 ```cpp
-units::quantity<units::kilometer, double> d1(123);
-auto d2 = 123km;    // stde::units::quantity<units::kilometer, std::int64_t>
+units::quantity<units::kilometre, double> d1(123);
+auto d2 = 123km;    // stde::units::quantity<units::kilometre, std::int64_t>
 ```
 
 There are C++ concepts provided for each such quantity type:
@@ -418,8 +418,8 @@ template<> struct downcasting_traits<downcast_from<dimension_length>> : downcast
 ```
 
 ```cpp
-struct kilometer : unit<dimension_length, std::kilo> {};
-template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
+struct kilometre : unit<dimension_length, std::kilo> {};
+template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
 ```
 
 
@@ -446,33 +446,33 @@ concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_vel
  - base unit
 
 ```cpp
-struct meter : unit<dimension_length, std::ratio<1>> {};
-template<> struct downcasting_traits<downcast_from<meter>> : downcast_to<meter> {};
+struct metre : unit<dimension_length, std::ratio<1>> {};
+template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
 ```
 
  - units with prefixes
 
 ```cpp
-struct kilometer : kilo<meter> {};
-template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
+struct kilometre : kilo<metre> {};
+template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
 ```
 
  - derived units
 
 ```cpp
-struct kilometer_per_hour : derived_unit<dimension_velocity, kilometer, hour> {};
-template<> struct downcasting_traits<downcast_from<kilometer_per_hour>> : downcast_to<kilometer_per_hour> {};
+struct kilometre_per_hour : derived_unit<dimension_velocity, kilometre, hour> {};
+template<> struct downcasting_traits<downcast_from<kilometre_per_hour>> : downcast_to<kilometre_per_hour> {};
 ``` 
 
 5. Provide user-defined literals for the most important units:
 
 ```cpp
 inline namespace literals {
-  constexpr auto operator""_mps(unsigned long long l) { return quantity<meter_per_second, std::int64_t>(l); }
-  constexpr auto operator""_mps(long double l)        { return quantity<meter_per_second, long double>(l); }
+  constexpr auto operator""_mps(unsigned long long l) { return quantity<metre_per_second, std::int64_t>(l); }
+  constexpr auto operator""_mps(long double l)        { return quantity<metre_per_second, long double>(l); }
   
-  constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometer_per_hour, std::int64_t>(l); }
-  constexpr auto operator""_kmph(long double l)        { return quantity<kilometer_per_hour, long double>(l); }
+  constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometre_per_hour, std::int64_t>(l); }
+  constexpr auto operator""_kmph(long double l)        { return quantity<kilometre_per_hour, long double>(l); }
 }
 ```
 

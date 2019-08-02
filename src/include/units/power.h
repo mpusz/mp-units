@@ -33,7 +33,7 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Power =  Quantity<T> && std::Same<typename T::dimension, dimension_power>;
 
-  struct watt : derived_unit<dimension_power, kilogram, meter, second> {};
+  struct watt : derived_unit<dimension_power, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<watt>> : downcast_to<watt> {};
 
   inline namespace literals {

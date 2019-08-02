@@ -32,17 +32,17 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Area = Quantity<T> && std::Same<typename T::dimension, dimension_area>;
 
-  struct square_millimeter : derived_unit<dimension_area, millimeter> {};
-  template<> struct downcasting_traits<downcast_from<square_millimeter>> : downcast_to<square_millimeter> {};
+  struct square_millimetre : derived_unit<dimension_area, millimetre> {};
+  template<> struct downcasting_traits<downcast_from<square_millimetre>> : downcast_to<square_millimetre> {};
 
-  struct square_centimeter : derived_unit<dimension_area, centimeter> {};
-  template<> struct downcasting_traits<downcast_from<square_centimeter>> : downcast_to<square_centimeter> {};
+  struct square_centimetre : derived_unit<dimension_area, centimetre> {};
+  template<> struct downcasting_traits<downcast_from<square_centimetre>> : downcast_to<square_centimetre> {};
 
-  struct square_meter : derived_unit<dimension_area, meter> {};
-  template<> struct downcasting_traits<downcast_from<square_meter>> : downcast_to<square_meter> {};
+  struct square_metre : derived_unit<dimension_area, metre> {};
+  template<> struct downcasting_traits<downcast_from<square_metre>> : downcast_to<square_metre> {};
 
-  struct square_kilometer : derived_unit<dimension_area, kilometer, meter> {};
-  template<> struct downcasting_traits<downcast_from<square_kilometer>> : downcast_to<square_kilometer> {};
+  struct square_kilometre : derived_unit<dimension_area, kilometre, metre> {};
+  template<> struct downcasting_traits<downcast_from<square_kilometre>> : downcast_to<square_kilometre> {};
 
   struct square_foot : derived_unit<dimension_area, foot> {};
   template<> struct downcasting_traits<downcast_from<square_foot>> : downcast_to<square_foot> {};
@@ -50,20 +50,20 @@ namespace std::experimental::units {
   inline namespace literals {
 
     // sq_mm
-    constexpr auto operator""sq_mm(unsigned long long l) { return quantity<square_millimeter, std::int64_t>(l); }
-    constexpr auto operator""sq_mm(long double l) { return quantity<square_millimeter, long double>(l); }
+    constexpr auto operator""sq_mm(unsigned long long l) { return quantity<square_millimetre, std::int64_t>(l); }
+    constexpr auto operator""sq_mm(long double l) { return quantity<square_millimetre, long double>(l); }
 
     // sq_cm
-    constexpr auto operator""sq_cm(unsigned long long l) { return quantity<square_centimeter, std::int64_t>(l); }
-    constexpr auto operator""sq_cm(long double l) { return quantity<square_centimeter, long double>(l); }
+    constexpr auto operator""sq_cm(unsigned long long l) { return quantity<square_centimetre, std::int64_t>(l); }
+    constexpr auto operator""sq_cm(long double l) { return quantity<square_centimetre, long double>(l); }
 
     // sq_m
-    constexpr auto operator""sq_m(unsigned long long l) { return quantity<square_meter, std::int64_t>(l); }
-    constexpr auto operator""sq_m(long double l) { return quantity<square_meter, long double>(l); }
+    constexpr auto operator""sq_m(unsigned long long l) { return quantity<square_metre, std::int64_t>(l); }
+    constexpr auto operator""sq_m(long double l) { return quantity<square_metre, long double>(l); }
 
     // sq_km
-    constexpr auto operator""sq_km(unsigned long long l) { return quantity<square_kilometer, std::int64_t>(l); }
-    constexpr auto operator""sq_km(long double l) { return quantity<square_kilometer, long double>(l); }
+    constexpr auto operator""sq_km(unsigned long long l) { return quantity<square_kilometre, std::int64_t>(l); }
+    constexpr auto operator""sq_km(long double l) { return quantity<square_kilometre, long double>(l); }
 
   }  // namespace literals
 

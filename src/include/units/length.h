@@ -34,35 +34,35 @@ namespace std::experimental::units {
   concept bool Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
 
   // SI units
-  struct meter : unit<dimension_length> {};
-  template<> struct downcasting_traits<downcast_from<meter>> : downcast_to<meter> {};
+  struct metre : unit<dimension_length> {};
+  template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
 
-  struct millimeter : milli<meter> {};
-  template<> struct downcasting_traits<downcast_from<millimeter>> : downcast_to<millimeter> {};
+  struct millimetre : milli<metre> {};
+  template<> struct downcasting_traits<downcast_from<millimetre>> : downcast_to<millimetre> {};
 
-  struct centimeter : centi<meter> {};
-  template<> struct downcasting_traits<downcast_from<centimeter>> : downcast_to<centimeter> {};
+  struct centimetre : centi<metre> {};
+  template<> struct downcasting_traits<downcast_from<centimetre>> : downcast_to<centimetre> {};
 
-  struct kilometer : kilo<meter> {};
-  template<> struct downcasting_traits<downcast_from<kilometer>> : downcast_to<kilometer> {};
+  struct kilometre : kilo<metre> {};
+  template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
 
   inline namespace literals {
 
     // mm
-    constexpr auto operator""mm(unsigned long long l) { return quantity<millimeter, std::int64_t>(l); }
-    constexpr auto operator""mm(long double l) { return quantity<millimeter, long double>(l); }
+    constexpr auto operator""mm(unsigned long long l) { return quantity<millimetre, std::int64_t>(l); }
+    constexpr auto operator""mm(long double l) { return quantity<millimetre, long double>(l); }
 
     // cm
-    constexpr auto operator""cm(unsigned long long l) { return quantity<centimeter, std::int64_t>(l); }
-    constexpr auto operator""cm(long double l) { return quantity<centimeter, long double>(l); }
+    constexpr auto operator""cm(unsigned long long l) { return quantity<centimetre, std::int64_t>(l); }
+    constexpr auto operator""cm(long double l) { return quantity<centimetre, long double>(l); }
 
     // m
-    constexpr auto operator""m(unsigned long long l) { return quantity<meter, std::int64_t>(l); }
-    constexpr auto operator""m(long double l) { return quantity<meter, long double>(l); }
+    constexpr auto operator""m(unsigned long long l) { return quantity<metre, std::int64_t>(l); }
+    constexpr auto operator""m(long double l) { return quantity<metre, long double>(l); }
 
     // km
-    constexpr auto operator""km(unsigned long long l) { return quantity<kilometer, std::int64_t>(l); }
-    constexpr auto operator""km(long double l) { return quantity<kilometer, long double>(l); }
+    constexpr auto operator""km(unsigned long long l) { return quantity<kilometre, std::int64_t>(l); }
+    constexpr auto operator""km(long double l) { return quantity<kilometre, long double>(l); }
 
   } // namespace literals
 

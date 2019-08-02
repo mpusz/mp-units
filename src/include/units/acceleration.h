@@ -32,14 +32,14 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Acceleration = Quantity<T> && std::Same<typename T::dimension, dimension_acceleration>;
 
-  struct meter_per_second_sq : derived_unit<dimension_acceleration, meter, second> {};
-  template<> struct downcasting_traits<downcast_from<meter_per_second_sq>> : downcast_to<meter_per_second_sq> {};
+  struct metre_per_second_sq : derived_unit<dimension_acceleration, metre, second> {};
+  template<> struct downcasting_traits<downcast_from<metre_per_second_sq>> : downcast_to<metre_per_second_sq> {};
 
   inline namespace literals {
 
     // mps_sq
-    constexpr auto operator""mps_sq(unsigned long long l) { return quantity<meter_per_second_sq, std::int64_t>(l); }
-    constexpr auto operator""mps_sq(long double l) { return quantity<meter_per_second_sq, long double>(l); }
+    constexpr auto operator""mps_sq(unsigned long long l) { return quantity<metre_per_second_sq, std::int64_t>(l); }
+    constexpr auto operator""mps_sq(long double l) { return quantity<metre_per_second_sq, long double>(l); }
 
   }  // namespace literals
 
