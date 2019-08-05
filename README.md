@@ -31,7 +31,6 @@ static_assert(1000 / 1_s == 1_kHz);
 static_assert(10_km / 5_km == 2);
 ```
 
-
 ## Repository structure
 
 That repository contains the following independent `cmake`-based projects:
@@ -43,21 +42,29 @@ That repository contains the following independent `cmake`-based projects:
 Please note that the projects depend on `cmake` git submodule in the `./cmake/common`
 subdirectory.
 
-
 ## Building, testing, and installation
 
 For a detailed information on project compilation, testing and reuse please refer to
 [doc/INSTALL.md](doc/INSTALL.md).
 
-NOTE: This library as of now compiles correctly only with gcc-9.  
+NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.  
 
 ## Library design
 
 `units` library design rationale and documentation can be found in
 [doc/DESIGN.md](doc/DESIGN.md) 
 
-
 ## Release notes
+
+- ???
+  - Applied the feedback from the Cologne evening session
+    - `upcasting_traits` renamed to `downcasting_traits`
+    - `Dimension` template parameter removed from quantity
+  - `units` moved to a `std::experimental` namespace
+  - Leading underscore prefix removed from UDLs
+  - Added a few more derived dimensions
+  - `meter` renamed to `metre`
+  - Missing `operator*` added 
 
 - 0.2.0 July 18, 2019
   - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)
