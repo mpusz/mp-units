@@ -61,6 +61,7 @@ namespace {
   static_assert(1m == 1000mm);
   static_assert(1km + 1m == 1001m);
   static_assert(10km / 5km == 2);
+  static_assert(100mm / 5cm == 2);
   static_assert(10km / 2 == 5km);
 
   static_assert(1yd == 0.9144m);
@@ -77,10 +78,11 @@ namespace {
   // frequency
 
   static_assert(2 / 1s == 2Hz);
+  static_assert(120 / 1min == 2Hz);
   static_assert(1000 / 1s == 1kHz);
   static_assert(1 / 1ms == 1kHz);
   static_assert(3.2GHz == 3'200'000'000Hz);
-//  static_assert(10hz * 1min == 600);
+  static_assert(10Hz * 1min == 600);
 
   // force
 

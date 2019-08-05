@@ -278,10 +278,21 @@ namespace std::experimental::units {
   }
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
+  [[nodiscard]] constexpr Scalar operator*(const quantity<U1, Rep1>& lhs,
+                                           const quantity<U2, Rep2>& rhs)
+      requires std::Same<typename U1::dimension, dim_invert_t<typename U2::dimension>>
+  {
+    using common_rep = decltype(lhs.count() * rhs.count());
+    using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
+    return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) / common_rep(ratio::den);
+  }
+
+  template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
   [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-      requires treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
-               (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)
+      requires (!std::Same<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
+               (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
+                (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
   {
     using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
