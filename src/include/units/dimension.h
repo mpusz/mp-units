@@ -89,7 +89,7 @@ namespace std::experimental::units {
     template<typename T>
     inline constexpr bool is_dimension = false;
 
-    template<Exponent... Es>
+    template<typename... Es>
     inline constexpr bool is_dimension<dimension<Es...>> = true;
 
   }  // namespace detail
@@ -105,7 +105,7 @@ namespace std::experimental::units {
   template<Dimension E>
   struct dim_invert;
 
-  template<Exponent... Es>
+  template<typename... Es>
   struct dim_invert<dimension<Es...>> : std::type_identity<downcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<Dimension D>
@@ -127,18 +127,18 @@ namespace std::experimental::units {
       using type = dimension<>;
     };
 
-    template<Exponent E>
+    template<typename E>
     struct dim_consolidate<dimension<E>> {
       using type = dimension<E>;
     };
 
-    template<Exponent E1, Exponent... ERest>
+    template<typename E1, typename... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
       using rest = dim_consolidate_t<dimension<ERest...>>;
       using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
-    template<typename D, int V1, int V2, Exponent... ERest>
+    template<typename D, int V1, int V2, typename... ERest>
     struct dim_consolidate<dimension<exp<D, V1>, exp<D, V2>, ERest...>> {
       using type = conditional<V1 + V2 == 0, dim_consolidate_t<dimension<ERest...>>,
                                dim_consolidate_t<dimension<exp<D, V1 + V2>, ERest...>>>;
@@ -167,7 +167,7 @@ namespace std::experimental::units {
   template<Dimension D1, Dimension D2>
   struct dimension_multiply;
 
-  template<Exponent... E1, Exponent... E2>
+  template<typename... E1, typename... E2>
   struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<Dimension D1, Dimension D2>
@@ -178,7 +178,7 @@ namespace std::experimental::units {
   template<Dimension D1, Dimension D2>
   struct dimension_divide;
 
-  template<Exponent... E1, Exponent... E2>
+  template<typename... E1, typename... E2>
   struct dimension_divide<dimension<E1...>, dimension<E2...>>
       : dimension_multiply<dimension<E1...>, dimension<exp_invert_t<E2>...>> {
   };
