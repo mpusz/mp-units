@@ -23,27 +23,24 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/power.h>
-#include <units/current.h>
-#include <units/energy.h>
-#include <units/electric_charge.h>
+#include <units/dimensions/force.h>
 
 namespace std::experimental::units {
 
-  struct dimension_voltage : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>, exp<base_dim_current, -1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_voltage>> : downcast_to<dimension_voltage> {};
+  struct dimension_pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_pressure>> : downcast_to<dimension_pressure> {};
 
   template<typename T>
-  concept bool Voltage =  Quantity<T> && std::Same<typename T::dimension, dimension_voltage>;
+  concept bool Pressure =  Quantity<T> && std::Same<typename T::dimension, dimension_pressure>;
 
-  struct volt : derived_unit<dimension_voltage, kilogram, metre, second, ampere> {};
-  template<> struct downcasting_traits<downcast_from<volt>> : downcast_to<volt> {};
+  struct pascal : derived_unit<dimension_pressure, kilogram, metre, second> {};
+  template<> struct downcasting_traits<downcast_from<pascal>> : downcast_to<pascal> {};
 
   inline namespace literals {
 
-    // V
-    constexpr auto operator""V(unsigned long long l) { return quantity<volt, std::int64_t>(l); }
-    constexpr auto operator""V(long double l) { return quantity<volt, long double>(l); }
+    // Pa
+    constexpr auto operator""Pa(unsigned long long l) { return quantity<pascal, std::int64_t>(l); }
+    constexpr auto operator""Pa(long double l) { return quantity<pascal, long double>(l); }
 
   }  // namespace literals
 

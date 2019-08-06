@@ -65,6 +65,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - Added a few more derived dimensions
   - `meter` renamed to `metre`
   - Missing `operator*` added 
+  - Predefined dimensions moved to a dedicated directory
 
 - 0.2.0 July 18, 2019
   - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)

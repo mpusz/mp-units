@@ -23,25 +23,26 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/electric_charge.h>
-#include <units/voltage.h>
+#include <units/dimensions/mass.h>
+#include <units/dimensions/length.h>
+#include <units/dimensions/time.h>
 
 namespace std::experimental::units {
 
-  struct dimension_capacitance : make_dimension_t<exp<base_dim_mass, -1>, exp<base_dim_length, -2>, exp<base_dim_time, 4>, exp<base_dim_current, 2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_capacitance>> : downcast_to<dimension_capacitance> {};
+  struct dimension_force : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_force>> : downcast_to<dimension_force> {};
 
   template<typename T>
-  concept bool Capacitance =  Quantity<T> && std::Same<typename T::dimension, dimension_capacitance>;
+  concept bool Force =  Quantity<T> && std::Same<typename T::dimension, dimension_force>;
 
-  struct farad : derived_unit<dimension_capacitance, kilogram, metre, second, ampere> {};
-  template<> struct downcasting_traits<downcast_from<farad>> : downcast_to<farad> {};
+  struct newton : derived_unit<dimension_force, kilogram, metre, second> {};
+  template<> struct downcasting_traits<downcast_from<newton>> : downcast_to<newton> {};
 
   inline namespace literals {
 
-    // F
-    constexpr auto operator""F(unsigned long long l) { return quantity<farad, std::int64_t>(l); }
-    constexpr auto operator""_F(long double l) { return quantity<farad, long double>(l); }
+    // N
+    constexpr auto operator""N(unsigned long long l) { return quantity<newton, std::int64_t>(l); }
+    constexpr auto operator""N(long double l) { return quantity<newton, long double>(l); }
 
   }  // namespace literals
 

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/length.h>
-#include <units/time.h>
+#include <units/dimensions/length.h>
+#include <units/dimensions/time.h>
 
 namespace std::experimental::units {
 

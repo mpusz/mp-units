@@ -23,26 +23,24 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/mass.h>
-#include <units/length.h>
-#include <units/time.h>
+#include <units/dimensions/energy.h>
 
 namespace std::experimental::units {
 
-  struct dimension_force : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_force>> : downcast_to<dimension_force> {};
+  struct dimension_power : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_power>> : downcast_to<dimension_power> {};
 
   template<typename T>
-  concept bool Force =  Quantity<T> && std::Same<typename T::dimension, dimension_force>;
+  concept bool Power =  Quantity<T> && std::Same<typename T::dimension, dimension_power>;
 
-  struct newton : derived_unit<dimension_force, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<newton>> : downcast_to<newton> {};
+  struct watt : derived_unit<dimension_power, kilogram, metre, second> {};
+  template<> struct downcasting_traits<downcast_from<watt>> : downcast_to<watt> {};
 
   inline namespace literals {
 
-    // N
-    constexpr auto operator""N(unsigned long long l) { return quantity<newton, std::int64_t>(l); }
-    constexpr auto operator""N(long double l) { return quantity<newton, long double>(l); }
+    // W
+    constexpr auto operator""W(unsigned long long l) { return quantity<watt, std::int64_t>(l); }
+    constexpr auto operator""_W(long double l) { return quantity<watt, long double>(l); }
 
   }  // namespace literals
 

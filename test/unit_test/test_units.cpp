@@ -20,27 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/time.h>
-#include <units/length.h>
-#include <units/mass.h>
-#include <units/current.h>
-#include <units/temperature.h>
-#include <units/substance.h>
-#include <units/luminous_intensity.h>
+#include <units/dimensions/time.h>
+#include <units/dimensions/length.h>
+#include <units/dimensions/mass.h>
+#include <units/dimensions/current.h>
+#include <units/dimensions/temperature.h>
+#include <units/dimensions/substance.h>
+#include <units/dimensions/luminous_intensity.h>
 
-#include <units/frequency.h>
-#include <units/force.h>
-#include <units/pressure.h>
-#include <units/energy.h>
-#include <units/power.h>
-#include <units/electric_charge.h>
-#include <units/voltage.h>
-#include <units/capacitance.h>
+#include <units/dimensions/frequency.h>
+#include <units/dimensions/force.h>
+#include <units/dimensions/pressure.h>
+#include <units/dimensions/energy.h>
+#include <units/dimensions/power.h>
+#include <units/dimensions/electric_charge.h>
+#include <units/dimensions/voltage.h>
+#include <units/dimensions/capacitance.h>
 
-#include <units/velocity.h>
-#include <units/acceleration.h>
-#include <units/area.h>
-#include <units/volume.h>
+#include <units/dimensions/velocity.h>
+#include <units/dimensions/acceleration.h>
+#include <units/dimensions/area.h>
+#include <units/dimensions/volume.h>
 
 #include <utility>
 

@@ -23,24 +23,25 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/force.h>
+#include <units/dimensions/force.h>
+#include <units/dimensions/pressure.h>
 
 namespace std::experimental::units {
 
-  struct dimension_pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_pressure>> : downcast_to<dimension_pressure> {};
+  struct dimension_energy : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_energy>> : downcast_to<dimension_energy> {};
 
   template<typename T>
-  concept bool Pressure =  Quantity<T> && std::Same<typename T::dimension, dimension_pressure>;
+  concept bool Energy =  Quantity<T> && std::Same<typename T::dimension, dimension_energy>;
 
-  struct pascal : derived_unit<dimension_pressure, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<pascal>> : downcast_to<pascal> {};
+  struct joule : derived_unit<dimension_energy, kilogram, metre, second> {};
+  template<> struct downcasting_traits<downcast_from<joule>> : downcast_to<joule> {};
 
   inline namespace literals {
 
-    // Pa
-    constexpr auto operator""Pa(unsigned long long l) { return quantity<pascal, std::int64_t>(l); }
-    constexpr auto operator""Pa(long double l) { return quantity<pascal, long double>(l); }
+    // J
+    constexpr auto operator""_J(unsigned long long l) { return quantity<joule, std::int64_t>(l); }
+    constexpr auto operator""_J(long double l) { return quantity<joule, long double>(l); }
 
   }  // namespace literals
 

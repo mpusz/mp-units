@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/time.h>
+#include <units/dimensions/time.h>
 
 namespace std::experimental::units {
 

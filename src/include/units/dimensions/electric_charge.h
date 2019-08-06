@@ -23,24 +23,25 @@
 #pragma once
 
 #include <units/base_dimensions.h>
-#include <units/energy.h>
+#include <units/dimensions/time.h>
+#include <units/dimensions/current.h>
 
 namespace std::experimental::units {
 
-  struct dimension_power : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_power>> : downcast_to<dimension_power> {};
+  struct dimension_electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_electric_charge>> : downcast_to<dimension_electric_charge> {};
 
   template<typename T>
-  concept bool Power =  Quantity<T> && std::Same<typename T::dimension, dimension_power>;
+  concept bool ElectricCharge =  Quantity<T> && std::Same<typename T::dimension, dimension_electric_charge>;
 
-  struct watt : derived_unit<dimension_power, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<watt>> : downcast_to<watt> {};
+  struct coulomb : derived_unit<dimension_electric_charge, second, ampere> {};
+  template<> struct downcasting_traits<downcast_from<coulomb>> : downcast_to<coulomb> {};
 
   inline namespace literals {
 
-    // W
-    constexpr auto operator""W(unsigned long long l) { return quantity<watt, std::int64_t>(l); }
-    constexpr auto operator""_W(long double l) { return quantity<watt, long double>(l); }
+    // C
+    constexpr auto operator""C(unsigned long long l) { return quantity<coulomb, std::int64_t>(l); }
+    constexpr auto operator""C(long double l) { return quantity<coulomb, long double>(l); }
 
   }  // namespace literals
 

@@ -22,24 +22,26 @@
 
 #pragma once
 
-#include <units/velocity.h>
+#include <units/base_dimensions.h>
+#include <units/dimensions/electric_charge.h>
+#include <units/dimensions/voltage.h>
 
 namespace std::experimental::units {
 
-  struct dimension_acceleration : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_acceleration>> : downcast_to<dimension_acceleration> {};
+  struct dimension_capacitance : make_dimension_t<exp<base_dim_mass, -1>, exp<base_dim_length, -2>, exp<base_dim_time, 4>, exp<base_dim_current, 2>> {};
+  template<> struct downcasting_traits<downcast_from<dimension_capacitance>> : downcast_to<dimension_capacitance> {};
 
   template<typename T>
-  concept bool Acceleration = Quantity<T> && std::Same<typename T::dimension, dimension_acceleration>;
+  concept bool Capacitance =  Quantity<T> && std::Same<typename T::dimension, dimension_capacitance>;
 
-  struct metre_per_second_sq : derived_unit<dimension_acceleration, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<metre_per_second_sq>> : downcast_to<metre_per_second_sq> {};
+  struct farad : derived_unit<dimension_capacitance, kilogram, metre, second, ampere> {};
+  template<> struct downcasting_traits<downcast_from<farad>> : downcast_to<farad> {};
 
   inline namespace literals {
 
-    // mps_sq
-    constexpr auto operator""mps_sq(unsigned long long l) { return quantity<metre_per_second_sq, std::int64_t>(l); }
-    constexpr auto operator""mps_sq(long double l) { return quantity<metre_per_second_sq, long double>(l); }
+    // F
+    constexpr auto operator""F(unsigned long long l) { return quantity<farad, std::int64_t>(l); }
+    constexpr auto operator""_F(long double l) { return quantity<farad, long double>(l); }
 
   }  // namespace literals
 
