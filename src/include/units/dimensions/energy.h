@@ -28,13 +28,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_energy : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_energy>> : downcast_to<dimension_energy> {};
+  struct energy : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<energy>> : downcast_to<energy> {};
 
   template<typename T>
-  concept bool Energy =  Quantity<T> && std::Same<typename T::dimension, dimension_energy>;
+  concept bool Energy =  Quantity<T> && std::Same<typename T::dimension, energy>;
 
-  struct joule : derived_unit<dimension_energy, kilogram, metre, second> {};
+  struct joule : derived_unit<energy, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<joule>> : downcast_to<joule> {};
 
   inline namespace literals {

@@ -27,14 +27,14 @@
 
 namespace std::experimental::units {
 
-  struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_length>> : downcast_to<dimension_length> {};
+  struct length : make_dimension_t<exp<base_dim_length, 1>> {};
+  template<> struct downcasting_traits<downcast_from<length>> : downcast_to<length> {};
 
   template<typename T>
-  concept bool Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
+  concept bool Length = Quantity<T> && std::Same<typename T::dimension, length>;
 
   // SI units
-  struct metre : unit<dimension_length> {};
+  struct metre : unit<length> {};
   template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
 
   struct millimetre : milli<metre> {};
@@ -67,16 +67,16 @@ namespace std::experimental::units {
   } // namespace literals
 
   // US customary units
-  struct yard : unit<dimension_length, ratio<9'144, 10'000>> {};
+  struct yard : unit<length, ratio<9'144, 10'000>> {};
   template<> struct downcasting_traits<downcast_from<yard>> : downcast_to<yard> {};
 
-  struct foot : unit<dimension_length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
+  struct foot : unit<length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
   template<> struct downcasting_traits<downcast_from<foot>> : downcast_to<foot> {};
 
-  struct inch : unit<dimension_length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct inch : unit<length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
   template<> struct downcasting_traits<downcast_from<inch>> : downcast_to<inch> {};
 
-  struct mile : unit<dimension_length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
+  struct mile : unit<length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
   template<> struct downcasting_traits<downcast_from<mile>> : downcast_to<mile> {};
 
   inline namespace literals {

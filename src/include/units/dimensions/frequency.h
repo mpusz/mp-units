@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_frequency : make_dimension_t<exp<base_dim_time, -1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_frequency>> : downcast_to<dimension_frequency> {};
+  struct frequency : make_dimension_t<exp<base_dim_time, -1>> {};
+  template<> struct downcasting_traits<downcast_from<frequency>> : downcast_to<frequency> {};
 
   template<typename T>
-  concept bool Frequency =  Quantity<T> && std::Same<typename T::dimension, dimension_frequency>;
+  concept bool Frequency =  Quantity<T> && std::Same<typename T::dimension, frequency>;
 
-  struct hertz : derived_unit<dimension_frequency, second> {};
+  struct hertz : derived_unit<frequency, second> {};
   template<> struct downcasting_traits<downcast_from<hertz>> : downcast_to<hertz> {};
 
   struct millihertz : milli<hertz> {};

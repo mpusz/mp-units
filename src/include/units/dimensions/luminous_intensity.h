@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_luminous_intensity>> : downcast_to<dimension_luminous_intensity> {};
+  struct luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
+  template<> struct downcasting_traits<downcast_from<luminous_intensity>> : downcast_to<luminous_intensity> {};
 
   template<typename T>
-  concept bool LuminousIntensity = Quantity<T> && std::Same<typename T::dimension, dimension_luminous_intensity>;
+  concept bool LuminousIntensity = Quantity<T> && std::Same<typename T::dimension, luminous_intensity>;
 
-  struct candela : unit<dimension_luminous_intensity> {};
+  struct candela : unit<luminous_intensity> {};
   template<> struct downcasting_traits<downcast_from<candela>> : downcast_to<candela> {};
 
   inline namespace literals {

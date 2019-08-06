@@ -27,19 +27,19 @@
 
 namespace std::experimental::units {
 
-  struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
+  struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+  template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velocity> {};
 
   template<typename T>
-  concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
+  concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
 
-  struct metre_per_second : derived_unit<dimension_velocity, metre, second> {};
+  struct metre_per_second : derived_unit<velocity, metre, second> {};
   template<> struct downcasting_traits<downcast_from<metre_per_second>> : downcast_to<metre_per_second> {};
 
-  struct kilometre_per_hour : derived_unit<dimension_velocity, kilometre, hour> {};
+  struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
   template<> struct downcasting_traits<downcast_from<kilometre_per_hour>> : downcast_to<kilometre_per_hour> {};
 
-  struct mile_per_hour : derived_unit<dimension_velocity, mile, hour> {};
+  struct mile_per_hour : derived_unit<velocity, mile, hour> {};
   template<> struct downcasting_traits<downcast_from<mile_per_hour>> : downcast_to<mile_per_hour> {};
 
   inline namespace literals {

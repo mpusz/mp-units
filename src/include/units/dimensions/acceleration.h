@@ -26,13 +26,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_acceleration : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_acceleration>> : downcast_to<dimension_acceleration> {};
+  struct acceleration : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<acceleration>> : downcast_to<acceleration> {};
 
   template<typename T>
-  concept bool Acceleration = Quantity<T> && std::Same<typename T::dimension, dimension_acceleration>;
+  concept bool Acceleration = Quantity<T> && std::Same<typename T::dimension, acceleration>;
 
-  struct metre_per_second_sq : derived_unit<dimension_acceleration, metre, second> {};
+  struct metre_per_second_sq : derived_unit<acceleration, metre, second> {};
   template<> struct downcasting_traits<downcast_from<metre_per_second_sq>> : downcast_to<metre_per_second_sq> {};
 
   inline namespace literals {

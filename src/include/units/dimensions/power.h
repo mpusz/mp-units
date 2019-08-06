@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_power : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_power>> : downcast_to<dimension_power> {};
+  struct power : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>> {};
+  template<> struct downcasting_traits<downcast_from<power>> : downcast_to<power> {};
 
   template<typename T>
-  concept bool Power =  Quantity<T> && std::Same<typename T::dimension, dimension_power>;
+  concept bool Power =  Quantity<T> && std::Same<typename T::dimension, power>;
 
-  struct watt : derived_unit<dimension_power, kilogram, metre, second> {};
+  struct watt : derived_unit<power, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<watt>> : downcast_to<watt> {};
 
   inline namespace literals {

@@ -28,13 +28,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_electric_charge>> : downcast_to<dimension_electric_charge> {};
+  struct electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
+  template<> struct downcasting_traits<downcast_from<electric_charge>> : downcast_to<electric_charge> {};
 
   template<typename T>
-  concept bool ElectricCharge =  Quantity<T> && std::Same<typename T::dimension, dimension_electric_charge>;
+  concept bool ElectricCharge =  Quantity<T> && std::Same<typename T::dimension, electric_charge>;
 
-  struct coulomb : derived_unit<dimension_electric_charge, second, ampere> {};
+  struct coulomb : derived_unit<electric_charge, second, ampere> {};
   template<> struct downcasting_traits<downcast_from<coulomb>> : downcast_to<coulomb> {};
 
   inline namespace literals {

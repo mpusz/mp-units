@@ -28,13 +28,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_capacitance : make_dimension_t<exp<base_dim_mass, -1>, exp<base_dim_length, -2>, exp<base_dim_time, 4>, exp<base_dim_current, 2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_capacitance>> : downcast_to<dimension_capacitance> {};
+  struct capacitance : make_dimension_t<exp<base_dim_mass, -1>, exp<base_dim_length, -2>, exp<base_dim_time, 4>, exp<base_dim_current, 2>> {};
+  template<> struct downcasting_traits<downcast_from<capacitance>> : downcast_to<capacitance> {};
 
   template<typename T>
-  concept bool Capacitance =  Quantity<T> && std::Same<typename T::dimension, dimension_capacitance>;
+  concept bool Capacitance =  Quantity<T> && std::Same<typename T::dimension, capacitance>;
 
-  struct farad : derived_unit<dimension_capacitance, kilogram, metre, second, ampere> {};
+  struct farad : derived_unit<capacitance, kilogram, metre, second, ampere> {};
   template<> struct downcasting_traits<downcast_from<farad>> : downcast_to<farad> {};
 
   inline namespace literals {

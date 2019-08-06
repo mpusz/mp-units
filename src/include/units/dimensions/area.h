@@ -26,25 +26,25 @@
 
 namespace std::experimental::units {
 
-  struct dimension_area : make_dimension_t<exp<base_dim_length, 2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_area>> : downcast_to<dimension_area> {};
+  struct area : make_dimension_t<exp<base_dim_length, 2>> {};
+  template<> struct downcasting_traits<downcast_from<area>> : downcast_to<area> {};
 
   template<typename T>
-  concept bool Area = Quantity<T> && std::Same<typename T::dimension, dimension_area>;
+  concept bool Area = Quantity<T> && std::Same<typename T::dimension, area>;
 
-  struct square_millimetre : derived_unit<dimension_area, millimetre> {};
+  struct square_millimetre : derived_unit<area, millimetre> {};
   template<> struct downcasting_traits<downcast_from<square_millimetre>> : downcast_to<square_millimetre> {};
 
-  struct square_centimetre : derived_unit<dimension_area, centimetre> {};
+  struct square_centimetre : derived_unit<area, centimetre> {};
   template<> struct downcasting_traits<downcast_from<square_centimetre>> : downcast_to<square_centimetre> {};
 
-  struct square_metre : derived_unit<dimension_area, metre> {};
+  struct square_metre : derived_unit<area, metre> {};
   template<> struct downcasting_traits<downcast_from<square_metre>> : downcast_to<square_metre> {};
 
-  struct square_kilometre : derived_unit<dimension_area, kilometre, metre> {};
+  struct square_kilometre : derived_unit<area, kilometre, metre> {};
   template<> struct downcasting_traits<downcast_from<square_kilometre>> : downcast_to<square_kilometre> {};
 
-  struct square_foot : derived_unit<dimension_area, foot> {};
+  struct square_foot : derived_unit<area, foot> {};
   template<> struct downcasting_traits<downcast_from<square_foot>> : downcast_to<square_foot> {};
 
   inline namespace literals {

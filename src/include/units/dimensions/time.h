@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_time : make_dimension_t<exp<base_dim_time, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_time>> : downcast_to<dimension_time> {};
+  struct time : make_dimension_t<exp<base_dim_time, 1>> {};
+  template<> struct downcasting_traits<downcast_from<time>> : downcast_to<time> {};
 
   template<typename T>
-  concept bool Time = Quantity<T> && std::Same<typename T::dimension, dimension_time>;
+  concept bool Time = Quantity<T> && std::Same<typename T::dimension, time>;
 
-  struct second : unit<dimension_time> {};
+  struct second : unit<time> {};
   template<> struct downcasting_traits<downcast_from<second>> : downcast_to<second> {};
 
   struct nanosecond : nano<second> {};
@@ -45,10 +45,10 @@ namespace std::experimental::units {
   struct millisecond : milli<second> {};
   template<> struct downcasting_traits<downcast_from<millisecond>> : downcast_to<millisecond> {};
 
-  struct minute : unit<dimension_time, ratio<60>> {};
+  struct minute : unit<time, ratio<60>> {};
   template<> struct downcasting_traits<downcast_from<minute>> : downcast_to<minute> {};
 
-  struct hour : unit<dimension_time, ratio<3600>> {};
+  struct hour : unit<time, ratio<3600>> {};
   template<> struct downcasting_traits<downcast_from<hour>> : downcast_to<hour> {};
 
   inline namespace literals {

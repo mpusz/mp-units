@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_current : make_dimension_t<exp<base_dim_current, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_current>> : downcast_to<dimension_current> {};
+  struct current : make_dimension_t<exp<base_dim_current, 1>> {};
+  template<> struct downcasting_traits<downcast_from<current>> : downcast_to<current> {};
 
   template<typename T>
-  concept bool Current = Quantity<T> && std::Same<typename T::dimension, dimension_current>;
+  concept bool Current = Quantity<T> && std::Same<typename T::dimension, current>;
 
-  struct ampere : unit<dimension_current> {};
+  struct ampere : unit<current> {};
   template<> struct downcasting_traits<downcast_from<ampere>> : downcast_to<ampere> {};
 
   inline namespace literals {

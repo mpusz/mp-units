@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_temperature>> : downcast_to<dimension_temperature> {};
+  struct temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
+  template<> struct downcasting_traits<downcast_from<temperature>> : downcast_to<temperature> {};
 
   template<typename T>
-  concept bool ThermodynamicTemperature = Quantity<T> && std::Same<typename T::dimension, dimension_temperature>;
+  concept bool ThermodynamicTemperature = Quantity<T> && std::Same<typename T::dimension, temperature>;
 
-  struct kelvin : unit<dimension_temperature> {};
+  struct kelvin : unit<temperature> {};
   template<> struct downcasting_traits<downcast_from<kelvin>> : downcast_to<kelvin> {};
 
   inline namespace literals {

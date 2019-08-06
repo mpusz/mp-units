@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_pressure>> : downcast_to<dimension_pressure> {};
+  struct pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<pressure>> : downcast_to<pressure> {};
 
   template<typename T>
-  concept bool Pressure =  Quantity<T> && std::Same<typename T::dimension, dimension_pressure>;
+  concept bool Pressure =  Quantity<T> && std::Same<typename T::dimension, pressure>;
 
-  struct pascal : derived_unit<dimension_pressure, kilogram, metre, second> {};
+  struct pascal : derived_unit<pressure, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<pascal>> : downcast_to<pascal> {};
 
   inline namespace literals {

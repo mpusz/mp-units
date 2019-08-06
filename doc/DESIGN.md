@@ -58,7 +58,7 @@ There are C++ concepts provided for each such quantity type:
 
 ```cpp
 template<typename T>
-concept Length = Quantity<T> && std::Same<typename T::dimension, dimension_length>;
+concept Length = Quantity<T> && std::Same<typename T::dimension, length>;
 ```
 
 With that we can easily write a function template like this:
@@ -158,10 +158,10 @@ template<Exponent... Es>
 using make_dimension_t = make_dimension<Es...>::type;
 ``` 
 
-So for example to create a `dimension_velocity` type we have to do:
+So for example to create a `velocity` type we have to do:
 
 ```cpp
-struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
 ```
 
 In order to make `make_dimension_t` work as expected it has to provide unique ordering for
@@ -323,7 +323,7 @@ could generate a following compile time error:
                            ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
-   concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
+   concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/dimension.h:25,
@@ -360,14 +360,14 @@ same code will result with such an error:
                       ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::second, long long int>]'
-   concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
+   concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/dimension.h:25,
                  from <path>/src/include/units/si/base_dimensions.h:25,
                  from <path>/src/include/units/si/velocity.h:25,
                  from <path>\example\example.cpp:23:
-<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = stde::units::dimension_time; U = stde::units::dimension_velocity]'
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = stde::units::time; U = stde::units::velocity]'
      concept Same = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
@@ -382,7 +382,7 @@ Now
 and
 
 ```text
-[with T = stde::units::dimension_time; U = stde::units::dimension_velocity]
+[with T = stde::units::time; U = stde::units::velocity]
 ```
 
 are not arguably much easier to understand thus provide better user experience.
@@ -419,12 +419,12 @@ using downcasting_traits_t = downcasting_traits<T>::type;
 With that the downcasting functionality is enabled by:
 
 ```cpp
-struct dimension_length : make_dimension_t<exp<base_dim_length, 1>> {};
-template<> struct downcasting_traits<downcast_from<dimension_length>> : downcast_to<dimension_length> {};
+struct length : make_dimension_t<exp<base_dim_length, 1>> {};
+template<> struct downcasting_traits<downcast_from<length>> : downcast_to<length> {};
 ```
 
 ```cpp
-struct kilometre : unit<dimension_length, std::kilo> {};
+struct kilometre : unit<length, std::kilo> {};
 template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
 ```
 
@@ -436,15 +436,15 @@ In order to extend the library with custom dimensions the user has to:
    downcasting trait for it:
 
 ```cpp
-struct dimension_velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-template<> struct downcasting_traits<downcast_from<dimension_velocity>> : downcast_to<dimension_velocity> {};
+struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velocity> {};
 ``` 
 
 2. Define a concept that will match a new dimension:
 
 ```cpp
 template<typename T>
-concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_velocity>;
+concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
 ```
 
 3. Define units and provide downcasting traits for them:
@@ -452,7 +452,7 @@ concept Velocity = Quantity<T> && std::Same<typename T::dimension, dimension_vel
  - base unit
 
 ```cpp
-struct metre : unit<dimension_length, std::ratio<1>> {};
+struct metre : unit<length, std::ratio<1>> {};
 template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
 ```
 
@@ -466,7 +466,7 @@ template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kil
  - derived units
 
 ```cpp
-struct kilometre_per_hour : derived_unit<dimension_velocity, kilometre, hour> {};
+struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
 template<> struct downcasting_traits<downcast_from<kilometre_per_hour>> : downcast_to<kilometre_per_hour> {};
 ``` 
 

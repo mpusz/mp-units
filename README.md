@@ -3,7 +3,7 @@
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/units/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/units)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg) ](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
 
-# `units` - Physical Units Library for C++
+# `units` - A Units Library for C++
 
 ## Summary
 
@@ -66,6 +66,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - `meter` renamed to `metre`
   - Missing `operator*` added 
   - Predefined dimensions moved to a dedicated directory
+  - `dimension_` prefix removed from names of derived dimensions
 
 - 0.2.0 July 18, 2019
   - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)

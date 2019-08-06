@@ -29,13 +29,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_force : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_force>> : downcast_to<dimension_force> {};
+  struct force : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
+  template<> struct downcasting_traits<downcast_from<force>> : downcast_to<force> {};
 
   template<typename T>
-  concept bool Force =  Quantity<T> && std::Same<typename T::dimension, dimension_force>;
+  concept bool Force =  Quantity<T> && std::Same<typename T::dimension, force>;
 
-  struct newton : derived_unit<dimension_force, kilogram, metre, second> {};
+  struct newton : derived_unit<force, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<newton>> : downcast_to<newton> {};
 
   inline namespace literals {

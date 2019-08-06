@@ -27,13 +27,13 @@
 
 namespace std::experimental::units {
 
-  struct dimension_substance : make_dimension_t<exp<base_dim_substance, 1>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_substance>> : downcast_to<dimension_substance> {};
+  struct substance : make_dimension_t<exp<base_dim_substance, 1>> {};
+  template<> struct downcasting_traits<downcast_from<substance>> : downcast_to<substance> {};
 
   template<typename T>
-  concept bool Substance = Quantity<T> && std::Same<typename T::dimension, dimension_substance>;
+  concept bool Substance = Quantity<T> && std::Same<typename T::dimension, substance>;
 
-  struct mole : unit<dimension_substance> {};
+  struct mole : unit<substance> {};
   template<> struct downcasting_traits<downcast_from<mole>> : downcast_to<mole> {};
 
   inline namespace literals {

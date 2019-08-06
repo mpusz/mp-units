@@ -26,25 +26,25 @@
 
 namespace std::experimental::units {
 
-  struct dimension_volume : make_dimension_t<exp<base_dim_length, 3>> {};
-  template<> struct downcasting_traits<downcast_from<dimension_volume>> : downcast_to<dimension_volume> {};
+  struct volume : make_dimension_t<exp<base_dim_length, 3>> {};
+  template<> struct downcasting_traits<downcast_from<volume>> : downcast_to<volume> {};
 
   template<typename T>
-  concept bool Volume = Quantity<T> && std::Same<typename T::dimension, dimension_volume>;
+  concept bool Volume = Quantity<T> && std::Same<typename T::dimension, volume>;
 
-  struct cubic_millimetre : derived_unit<dimension_volume, millimetre> {};
+  struct cubic_millimetre : derived_unit<volume, millimetre> {};
   template<> struct downcasting_traits<downcast_from<cubic_millimetre>> : downcast_to<cubic_millimetre> {};
 
-  struct cubic_centimetre : derived_unit<dimension_volume, centimetre> {};
+  struct cubic_centimetre : derived_unit<volume, centimetre> {};
   template<> struct downcasting_traits<downcast_from<cubic_centimetre>> : downcast_to<cubic_centimetre> {};
 
-  struct cubic_metre : derived_unit<dimension_volume, metre> {};
+  struct cubic_metre : derived_unit<volume, metre> {};
   template<> struct downcasting_traits<downcast_from<cubic_metre>> : downcast_to<cubic_metre> {};
 
-  struct cubic_kilometre : derived_unit<dimension_volume, kilometre, metre> {};
+  struct cubic_kilometre : derived_unit<volume, kilometre, metre> {};
   template<> struct downcasting_traits<downcast_from<cubic_kilometre>> : downcast_to<cubic_kilometre> {};
 
-  struct cubic_foot : derived_unit<dimension_volume, foot> {};
+  struct cubic_foot : derived_unit<volume, foot> {};
   template<> struct downcasting_traits<downcast_from<cubic_foot>> : downcast_to<cubic_foot> {};
 
   inline namespace literals {
