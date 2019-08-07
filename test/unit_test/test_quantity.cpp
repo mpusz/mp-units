@@ -76,10 +76,10 @@ namespace {
 
   // class invariants
 
-  // constexpr quantity<dimension_length, second, int> q;  // should a static_assert
-  // constexpr quantity<dimension_length, metre, quantity<metre, int>> error(0m);  // should trigger a static_assert
+  // constexpr quantity<length, second, int> q;  // should a static_assert
+  // constexpr quantity<length, metre, quantity<metre, int>> error(0m);  // should trigger a static_assert
   // constexpr quantity<int, int, double> error(0);  // should trigger a static_assert
-  // constexpr quantity<dimension_length, unit<dimension_length, std::ratio<-1, 1>>, int> error(0);  // should trigger a static_assert
+  // constexpr quantity<length, unit<length, std::ratio<-1, 1>>, int> error(0);  // should trigger a static_assert
 
   // member types
 
