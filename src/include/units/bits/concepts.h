@@ -27,8 +27,8 @@
 namespace std::experimental::units {
 
   template<typename T>
-  concept bool Number = std::Regular<T> &&
-      std::StrictTotallyOrdered<T> &&
+  concept bool Number = std::regular<T> &&
+      std::totally_ordered<T> &&
       requires(T a, T b) {
         { a + b } -> T;
         { a - b } -> T;
@@ -41,6 +41,6 @@ namespace std::experimental::units {
         { a /= b } -> T&;
         { T{0} };// can construct a T from a zero
         // …
-  } ;
+  };
 
 }  // namespace std::experimental::units

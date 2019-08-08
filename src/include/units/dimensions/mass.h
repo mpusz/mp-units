@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<mass>> : downcast_to<mass> {};
 
   template<typename T>
-  concept bool Mass = Quantity<T> && std::Same<typename T::dimension, mass>;
+  concept bool Mass = Quantity<T> && std::same_as<typename T::dimension, mass>;
 
   struct gram : unit<mass, ratio<1, 1000>> {};
   template<> struct downcasting_traits<downcast_from<gram>> : downcast_to<gram> {};

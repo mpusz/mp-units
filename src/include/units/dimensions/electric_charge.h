@@ -32,7 +32,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<electric_charge>> : downcast_to<electric_charge> {};
 
   template<typename T>
-  concept bool ElectricCharge =  Quantity<T> && std::Same<typename T::dimension, electric_charge>;
+  concept bool ElectricCharge =  Quantity<T> && std::same_as<typename T::dimension, electric_charge>;
 
   struct coulomb : derived_unit<electric_charge, second, ampere> {};
   template<> struct downcasting_traits<downcast_from<coulomb>> : downcast_to<coulomb> {};

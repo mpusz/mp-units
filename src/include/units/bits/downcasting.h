@@ -37,7 +37,7 @@ namespace std::experimental::units {
       requires {
         typename T::base_type;
       } &&
-      std::DerivedFrom<T, downcast_base<typename T::base_type>>;
+      std::derived_from<T, downcast_base<typename T::base_type>>;
 
   template<Downcastable T>
   using downcast_from = T::base_type;

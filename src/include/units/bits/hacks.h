@@ -39,11 +39,10 @@ namespace std {
 #endif // UNITS_HAS_STD_TYPE_IDENTITY
 
   // concepts
-  using experimental::ranges::Same;
-  using experimental::ranges::Integral;
-  using experimental::ranges::DerivedFrom;
-  using experimental::ranges::Regular;
-  using experimental::ranges::StrictTotallyOrdered;
-  using experimental::ranges::ConvertibleTo;
+  using experimental::ranges::same_as;
+  using experimental::ranges::derived_from;
+  using experimental::ranges::regular;
+  using experimental::ranges::totally_ordered;
+  using experimental::ranges::convertible_to;
 
 }

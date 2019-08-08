@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<current>> : downcast_to<current> {};
 
   template<typename T>
-  concept bool Current = Quantity<T> && std::Same<typename T::dimension, current>;
+  concept bool Current = Quantity<T> && std::same_as<typename T::dimension, current>;
 
   struct ampere : unit<current> {};
   template<> struct downcasting_traits<downcast_from<ampere>> : downcast_to<ampere> {};

@@ -30,7 +30,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<area>> : downcast_to<area> {};
 
   template<typename T>
-  concept bool Area = Quantity<T> && std::Same<typename T::dimension, area>;
+  concept bool Area = Quantity<T> && std::same_as<typename T::dimension, area>;
 
   struct square_millimetre : derived_unit<area, millimetre> {};
   template<> struct downcasting_traits<downcast_from<square_millimetre>> : downcast_to<square_millimetre> {};

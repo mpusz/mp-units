@@ -32,7 +32,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<energy>> : downcast_to<energy> {};
 
   template<typename T>
-  concept bool Energy =  Quantity<T> && std::Same<typename T::dimension, energy>;
+  concept bool Energy =  Quantity<T> && std::same_as<typename T::dimension, energy>;
 
   struct joule : derived_unit<energy, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<joule>> : downcast_to<joule> {};

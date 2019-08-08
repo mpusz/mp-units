@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<pressure>> : downcast_to<pressure> {};
 
   template<typename T>
-  concept bool Pressure =  Quantity<T> && std::Same<typename T::dimension, pressure>;
+  concept bool Pressure =  Quantity<T> && std::same_as<typename T::dimension, pressure>;
 
   struct pascal : derived_unit<pressure, kilogram, metre, second> {};
   template<> struct downcasting_traits<downcast_from<pascal>> : downcast_to<pascal> {};

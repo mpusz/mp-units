@@ -58,7 +58,7 @@ There are C++ concepts provided for each such quantity type:
 
 ```cpp
 template<typename T>
-concept Length = Quantity<T> && std::Same<typename T::dimension, length>;
+concept Length = Quantity<T> && std::same_as<typename T::dimension, length>;
 ```
 
 With that we can easily write a function template like this:
@@ -139,7 +139,7 @@ However, such an approach have some challenges:
 constexpr Velocity auto v1 = 1_m / 1s;
 constexpr Velocity auto v2 = 2 / 2s * 1m;
 
-static_assert(std::Same<decltype(v1), decltype(v2)>);
+static_assert(std::same_as<decltype(v1), decltype(v2)>);
 static_assert(v1 == v2);
 ``` 
 
@@ -258,12 +258,12 @@ public:
   [[nodiscard]] static constexpr quantity one() noexcept { return quantity(quantity_values<Rep>::one()); }
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-      requires std::Same<typename U1::dimension, dim_invert_t<typename U2::dimension>>
+      requires std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>
   [[nodiscard]] constexpr Scalar operator*(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs);
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-      requires (!std::Same<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
+      requires (!std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
                (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                 (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
   [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
@@ -274,12 +274,12 @@ public:
                                              const quantity<U, Rep2>& q);
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-    requires std::Same<typename U1::dimension, typename U2::dimension>
+    requires std::same_as<typename U1::dimension, typename U2::dimension>
   [[nodiscard]] constexpr Scalar operator/(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs);
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-    requires (!std::Same<typename U1::dimension, typename U2::dimension>) &&
+    requires (!std::same_as<typename U1::dimension, typename U2::dimension>) &&
              (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
               (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
   [[nodiscard]] constexpr Quantity operator/(const quantity<U1, Rep1>& lhs,
@@ -323,15 +323,15 @@ could generate a following compile time error:
                            ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
-   concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
+   concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/dimension.h:25,
                  from <path>/src/include/units/si/base_dimensions.h:25,
                  from <path>/src/include/units/si/velocity.h:25,
                  from <path>\example\example.cpp:23:
-<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = stde::units::dimension<units::exp<units::base_dim_time, 1> >; U = stde::units::dimension<units::exp<units::base_dim_length, 1>,stde::units::exp<units::base_dim_time, -1> >]'
-     concept Same = std::is_same_v<T, U>;
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = stde::units::dimension<units::exp<units::base_dim_time, 1> >; U = stde::units::dimension<units::exp<units::base_dim_length, 1>,stde::units::exp<units::base_dim_time, -1> >]'
+     concept same_as = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ```
@@ -360,15 +360,15 @@ same code will result with such an error:
                       ^~~~
 In file included from <path>\example\example.cpp:23:
 <path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::second, long long int>]'
-   concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
+   concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/dimension.h:25,
                  from <path>/src/include/units/si/base_dimensions.h:25,
                  from <path>/src/include/units/si/velocity.h:25,
                  from <path>\example\example.cpp:23:
-<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::Same<T, U> [with T = stde::units::time; U = stde::units::velocity]'
-     concept Same = std::is_same_v<T, U>;
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = stde::units::time; U = stde::units::velocity]'
+     concept same_as = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
 ``` 
@@ -401,7 +401,7 @@ concept bool Downcastable =
     requires {
       typename T::base_type;
     } &&
-    std::DerivedFrom<T, downcast_base<typename T::base_type>>;
+    std::derived_from<T, downcast_base<typename T::base_type>>;
 
 template<Downcastable T>
 using downcast_from = T::base_type;
@@ -444,7 +444,7 @@ template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velo
 
 ```cpp
 template<typename T>
-concept Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
+concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
 ```
 
 3. Define units and provide downcasting traits for them:

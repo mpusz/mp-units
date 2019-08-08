@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velocity> {};
 
   template<typename T>
-  concept bool Velocity = Quantity<T> && std::Same<typename T::dimension, velocity>;
+  concept bool Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
 
   struct metre_per_second : derived_unit<velocity, metre, second> {};
   template<> struct downcasting_traits<downcast_from<metre_per_second>> : downcast_to<metre_per_second> {};

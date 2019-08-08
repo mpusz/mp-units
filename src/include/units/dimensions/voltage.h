@@ -34,7 +34,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<voltage>> : downcast_to<voltage> {};
 
   template<typename T>
-  concept bool Voltage =  Quantity<T> && std::Same<typename T::dimension, voltage>;
+  concept bool Voltage =  Quantity<T> && std::same_as<typename T::dimension, voltage>;
 
   struct volt : derived_unit<voltage, kilogram, metre, second, ampere> {};
   template<> struct downcasting_traits<downcast_from<volt>> : downcast_to<volt> {};
