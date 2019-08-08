@@ -42,7 +42,7 @@ namespace std::experimental::units {
     template<typename T>
     inline constexpr bool is_unit = false;
 
-    template<Dimension D, Ratio R>
+    template<typename D, typename R>
     inline constexpr bool is_unit<unit<D, R>> = true;
 
   }
@@ -57,36 +57,36 @@ namespace std::experimental::units {
 
   namespace detail {
 
-    template<Dimension D>
+    template<typename D>
     struct get_unit_base_dim;
 
-    template<Exponent E, Exponent... Rest>
+    template<typename E, typename... Rest>
     struct get_unit_base_dim<dimension<E, Rest...>> {
       static_assert(sizeof...(Rest) == 0, "Base unit expected");
       using dimension = E::dimension;
     };
 
-    template<typename BaseDimension, Unit... Us>
+    template<typename BaseDimension, typename... Us>
     struct get_ratio {
       using ratio = ::std::experimental::units::ratio<1>;
     };
 
-    template<typename BaseDimension, Unit U, Unit... Rest>
+    template<typename BaseDimension, typename U, typename... Rest>
     struct get_ratio<BaseDimension, U, Rest...> {
       using unit_base_dim = get_unit_base_dim<typename U::dimension::base_type>::dimension;
       using ratio = conditional<unit_base_dim::value == BaseDimension::value, typename U::ratio,
                                 typename get_ratio<BaseDimension, Rest...>::ratio>;
     };
 
-    template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
+    template<typename Result, int UnitExpValue, typename UnitRatio>
     struct ratio_op;
 
-    template<Ratio Result, Ratio UnitRatio>
+    template<typename Result, typename UnitRatio>
     struct ratio_op<Result, 0, UnitRatio> {
       using ratio = Result;
     };
 
-    template<Ratio Result, int UnitExpValue, Ratio UnitRatio>
+    template<typename Result, int UnitExpValue, typename UnitRatio>
     struct ratio_op {
       using calc_ratio = conditional<(UnitExpValue > 0), ratio_multiply<Result, UnitRatio>,
                                      ratio_divide<Result, UnitRatio>>;
@@ -94,15 +94,15 @@ namespace std::experimental::units {
       using ratio = ratio_op<calc_ratio, value, UnitRatio>::ratio;
     };
 
-    template<Dimension D, Unit... Us>
+    template<typename D, typename... Us>
     struct derived_ratio;
 
-    template<Unit... Us>
+    template<typename... Us>
     struct derived_ratio<dimension<>, Us...> {
       using ratio = ::std::experimental::units::ratio<1>;
     };
 
-    template<Exponent E, Exponent... Rest, Unit... Us>
+    template<typename E, typename... Rest, typename... Us>
     struct derived_ratio<dimension<E, Rest...>, Us...> {
       using rest_ratio = derived_ratio<dimension<Rest...>, Us...>::ratio;
       using e_ratio = get_ratio<typename E::dimension, Us...>::ratio;
