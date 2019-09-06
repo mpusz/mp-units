@@ -82,41 +82,21 @@ namespace {
       std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
   // type_list_merge_sorted
+  inline constexpr base_dimension d0{"d0"};
+  inline constexpr base_dimension d1{"d1"};
 
-  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<0>>, type_list<dim_id<1>>, dim_id_less>,
-                               type_list<dim_id<0>, dim_id<1>>>);
-  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<1>>, type_list<dim_id<0>>, dim_id_less>,
-                               type_list<dim_id<0>, dim_id<1>>>);
-
-  static_assert(std::is_same_v<type_list_merge_sorted<type_list<dim_id<27>, dim_id<38>>,
-                                                        type_list<dim_id<3>, dim_id<43>>, dim_id_less>,
-                               type_list<dim_id<3>, dim_id<27>, dim_id<38>, dim_id<43>>>);
-  static_assert(
-      std::is_same_v<type_list_merge_sorted<type_list<dim_id<9>, dim_id<82>>, type_list<dim_id<10>>, dim_id_less>,
-                     type_list<dim_id<9>, dim_id<10>, dim_id<82>>>);
+  static_assert(std::is_same_v<type_list_merge_sorted<type_list<exp<d0, 1>>, type_list<exp<d1, 1>>, exp_less>,
+                               type_list<exp<d0, 1>, exp<d1, 1>>>);
+  static_assert(std::is_same_v<type_list_merge_sorted<type_list<exp<d1, 1>>, type_list<exp<d0, 1>>, exp_less>,
+                               type_list<exp<d0, 1>, exp<d1, 1>>>);
 
   // type_list_sort
 
   template<TypeList List>
-  using dim_sort_t = type_list_sort<List, dim_id_less>;
+  using exp_sort_t = type_list_sort<List, exp_less>;
 
-  static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>>>, type_list<dim_id<0>>>);
-  static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<0>, dim_id<1>>>, type_list<dim_id<0>, dim_id<1>>>);
-  static_assert(std::is_same_v<dim_sort_t<type_list<dim_id<1>, dim_id<0>>>, type_list<dim_id<0>, dim_id<1>>>);
-  static_assert(std::is_same_v<
-                dim_sort_t<type_list<dim_id<38>, dim_id<27>, dim_id<43>, dim_id<3>, dim_id<9>, dim_id<82>, dim_id<10>>>,
-                type_list<dim_id<3>, dim_id<9>, dim_id<10>, dim_id<27>, dim_id<38>, dim_id<43>, dim_id<82>>>);
-
-  // exp_dim_id_less
-
-  template<int Id, int Value>
-  using e = exp<dim_id<Id>, Value>;
-
-  template<TypeList List>
-  using exp_sort_t = type_list_sort<List, exp_dim_id_less>;
-
-  static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>>>, dimension<e<0, 1>>>);
-  static_assert(std::is_same_v<exp_sort_t<dimension<e<0, 1>, e<1, -1>>>, dimension<e<0, 1>, e<1, -1>>>);
-  static_assert(std::is_same_v<exp_sort_t<dimension<e<1, 1>, e<0, -1>>>, dimension<e<0, -1>, e<1, 1>>>);
+  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d0, 1>>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d0, 1>, exp<d1, -1>>>, dimension<exp<d0, 1>, exp<d1, -1>>>);
+  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d1, 1>, exp<d0, -1>>>, dimension<exp<d0, -1>, exp<d1, 1>>>);
 
 }  // namespace

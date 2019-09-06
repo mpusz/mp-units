@@ -26,14 +26,12 @@
 
 namespace std::experimental::units {
 
-  // todo: to be replaced with fixed_string when supported by the compilers
-
-  struct base_dim_length : dim_id<0> {};
-  struct base_dim_mass : dim_id<1> {};
-  struct base_dim_time : dim_id<2> {};
-  struct base_dim_current : dim_id<3> {};
-  struct base_dim_temperature : dim_id<4> {};
-  struct base_dim_substance : dim_id<5> {};
-  struct base_dim_luminous_intensity : dim_id<6> {};
+  inline constexpr base_dimension base_dim_length{"length"};
+  inline constexpr base_dimension base_dim_mass{"mass"};
+  inline constexpr base_dimension base_dim_time{"time"};
+  inline constexpr base_dimension base_dim_current{"current"};
+  inline constexpr base_dimension base_dim_temperature{"temperature"};
+  inline constexpr base_dimension base_dim_substance{"substance"};
+  inline constexpr base_dimension base_dim_luminous_intensity{"luminous intensity"};
 
 }  // namespace std::experimental::units

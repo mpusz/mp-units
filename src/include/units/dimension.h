@@ -27,23 +27,42 @@
 
 namespace std::experimental::units {
 
-  // dim_id
+  struct base_dimension {
+    const char* name;
+  };
 
-  template<int UniqueValue>
-  using dim_id = std::integral_constant<int, UniqueValue>;
+  constexpr bool operator==(const base_dimension& lhs, const base_dimension& rhs)
+  {
+    const char* p1 = lhs.name;
+    const char* p2 = rhs.name;
+    for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void)++p2) {
+      if(*p1 != *p2) return false;
+    }
+    return *p1 == *p2;
+  }
 
-  // dim_id_less
+  constexpr bool operator<(const base_dimension& lhs, const base_dimension& rhs)
+  {
+    const char* p1 = lhs.name;
+    const char* p2 = rhs.name;
+    for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void)++p2) {
+      if(*p1 < *p2) return true;
+      if(*p2 < *p1) return false;
+    }
+    return (*p1 == '\0') && (*p2 != '\0');
+  }
 
-  template<typename D1, typename D2>
-  struct dim_id_less : std::bool_constant<D1::value < D2::value> {
+  // base_dimension_less
+
+  template<const base_dimension& D1, const base_dimension& D2>
+  struct base_dimension_less : std::bool_constant<D1 < D2> {
   };
 
   // exp
 
-  template<typename BaseDimension, int Value>  // todo: to be replaced with fixed_string when supported by the compilers
-  // template<fixed_string BaseDimension, int Value>
+  template<const base_dimension& BaseDimension, int Value>
   struct exp {
-    using dimension = BaseDimension;
+    static constexpr const base_dimension& dimension = BaseDimension;
     static constexpr int value = Value;
   };
 
@@ -52,8 +71,8 @@ namespace std::experimental::units {
     template<typename T>
     inline constexpr bool is_exp = false;
 
-    template<typename BaseDim, int Value>
-    inline constexpr bool is_exp<exp<BaseDim, Value>> = true;
+    template<const base_dimension& BaseDimension, int Value>
+    inline constexpr bool is_exp<exp<BaseDimension, Value>> = true;
   }  // namespace detail
 
   template<typename T>
@@ -62,7 +81,7 @@ namespace std::experimental::units {
   // exp_dim_id_less
 
   template<Exponent E1, Exponent E2>
-  struct exp_dim_id_less : dim_id_less<typename E1::dimension, typename E2::dimension> {
+  struct exp_less : base_dimension_less<E1::dimension, E2::dimension> {
   };
 
   // exp_invert
@@ -70,7 +89,7 @@ namespace std::experimental::units {
   template<Exponent E>
   struct exp_invert;
 
-  template<typename BaseDimension, int Value>
+  template<const base_dimension& BaseDimension, int Value>
   struct exp_invert<exp<BaseDimension, Value>> {
     using type = exp<BaseDimension, -Value>;
   };
@@ -138,7 +157,7 @@ namespace std::experimental::units {
       using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
-    template<typename D, int V1, int V2, typename... ERest>
+    template<const base_dimension& D, int V1, int V2, typename... ERest>
     struct dim_consolidate<dimension<exp<D, V1>, exp<D, V2>, ERest...>> {
       using type = conditional<V1 + V2 == 0, dim_consolidate_t<dimension<ERest...>>,
                                dim_consolidate_t<dimension<exp<D, V1 + V2>, ERest...>>>;
@@ -148,7 +167,7 @@ namespace std::experimental::units {
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_dim_id_less>>;
+    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_less>>;
   };
 
   template<Exponent... Es>
@@ -156,7 +175,7 @@ namespace std::experimental::units {
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
-    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_dim_id_less>>;
+    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_less>>;
   };
 
   template<Dimension D1, Dimension D2>

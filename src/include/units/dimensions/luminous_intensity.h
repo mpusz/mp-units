@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/base_dimensions.h>
+#include <units/dimensions/base_dimensions.h>
 #include <units/quantity.h>
 
 namespace std::experimental::units {
