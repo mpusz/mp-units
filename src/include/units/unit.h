@@ -29,7 +29,7 @@
 namespace std::experimental::units {
 
   template<Dimension D, Ratio R = ratio<1>>
-    requires (R::num > 0)
+    requires (R::num * R::den > 0)
   struct unit : downcast_base<unit<D, R>> {
     using dimension = D;
     using ratio = R;
