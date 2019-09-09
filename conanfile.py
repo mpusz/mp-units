@@ -59,8 +59,8 @@ class UnitsConan(ConanFile):
     def configure(self):
         if self.settings.compiler != "gcc":
             raise ConanInvalidConfiguration("Library works only with gcc")
-        if int(self.settings.compiler.version.value) < 8:
-            raise ConanInvalidConfiguration("Library requires at least gcc-8")
+        if int(self.settings.compiler.version.value) < 9:
+            raise ConanInvalidConfiguration("Library requires at least gcc-9")
         if self.settings.compiler.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library requires at least C++20 support")
 
