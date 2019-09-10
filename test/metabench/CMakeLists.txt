@@ -27,7 +27,6 @@ function(add_metabench_test target name erb_path range)
     target_link_libraries(${target}
         PUBLIC
             CONAN_PKG::cmcstl2
-            CONAN_PKG::gsl-lite
     )
 endfunction()
 

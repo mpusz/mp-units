@@ -23,6 +23,10 @@
 #pragma once
 
 #include <experimental/ranges/concepts>
+#include <exception>
+
+
+#define Expects(cond) if(!(cond)) ::std::terminate();
 
 namespace std {
 

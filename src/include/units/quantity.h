@@ -25,7 +25,6 @@
 #include <units/unit.h>
 #include <units/bits/concepts.h>
 #include <limits>
-#include <gsl/gsl-lite.hpp>
 
 namespace std::experimental::units {
 

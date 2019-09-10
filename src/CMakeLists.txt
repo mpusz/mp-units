@@ -54,7 +54,6 @@ target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
         CONAN_PKG::cmcstl2
-        CONAN_PKG::gsl-lite
 )
 target_include_directories(units
     INTERFACE

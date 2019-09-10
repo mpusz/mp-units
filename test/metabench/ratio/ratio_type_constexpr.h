@@ -22,10 +22,12 @@
 
 #pragma once
 
+#include <exception>
 #include <type_traits>
 #include <numeric>
 #include <cstdint>
-#include <gsl/gsl-lite.hpp>
+
+#define Expects(cond) if(!(cond)) ::std::terminate();
 
 namespace std::experimental::units {
 

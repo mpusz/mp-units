@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include <units/bits/hacks.h>
 #include <type_traits>
 #include <numeric>
 #include <cstdint>
-#include <gsl/gsl-lite.hpp>
 
 namespace std::experimental::units {
 
