@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<luminous_intensity>> : downcast_to<luminous_intensity> {};
 
   template<typename T>
-  concept bool LuminousIntensity = Quantity<T> && std::same_as<typename T::dimension, luminous_intensity>;
+  concept bool LuminousIntensity = QuantityOf<T, luminous_intensity>;
 
   struct candela : unit<luminous_intensity> {};
   template<> struct downcasting_traits<downcast_from<candela>> : downcast_to<candela> {};

@@ -30,7 +30,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<acceleration>> : downcast_to<acceleration> {};
 
   template<typename T>
-  concept bool Acceleration = Quantity<T> && std::same_as<typename T::dimension, acceleration>;
+  concept bool Acceleration = QuantityOf<T, acceleration>;
 
   struct metre_per_second_sq : derived_unit<acceleration, metre, second> {};
   template<> struct downcasting_traits<downcast_from<metre_per_second_sq>> : downcast_to<metre_per_second_sq> {};

@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<time>> : downcast_to<time> {};
 
   template<typename T>
-  concept bool Time = Quantity<T> && std::same_as<typename T::dimension, time>;
+  concept bool Time = QuantityOf<T, time>;
 
   struct second : unit<time> {};
   template<> struct downcasting_traits<downcast_from<second>> : downcast_to<second> {};

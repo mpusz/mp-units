@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<frequency>> : downcast_to<frequency> {};
 
   template<typename T>
-  concept bool Frequency =  Quantity<T> && std::same_as<typename T::dimension, frequency>;
+  concept bool Frequency =  QuantityOf<T, frequency>;
 
   struct hertz : derived_unit<frequency, second> {};
   template<> struct downcasting_traits<downcast_from<hertz>> : downcast_to<hertz> {};

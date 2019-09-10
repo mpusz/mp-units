@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<substance>> : downcast_to<substance> {};
 
   template<typename T>
-  concept bool Substance = Quantity<T> && std::same_as<typename T::dimension, substance>;
+  concept bool Substance = QuantityOf<T, substance>;
 
   struct mole : unit<substance> {};
   template<> struct downcasting_traits<downcast_from<mole>> : downcast_to<mole> {};

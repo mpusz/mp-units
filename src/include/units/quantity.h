@@ -41,6 +41,9 @@ namespace std::experimental::units {
   template<typename T>
   concept bool Quantity = detail::is_quantity<T>;
 
+  template<typename T, typename D>
+  concept bool QuantityOf = Quantity<T> && Dimension<D> && std::same_as<typename T::dimension, D>;
+
   // Scalar
 
   template<typename T>

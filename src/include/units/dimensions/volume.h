@@ -30,7 +30,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<volume>> : downcast_to<volume> {};
 
   template<typename T>
-  concept bool Volume = Quantity<T> && std::same_as<typename T::dimension, volume>;
+  concept bool Volume = QuantityOf<T, volume>;
 
   struct cubic_millimetre : derived_unit<volume, millimetre> {};
   template<> struct downcasting_traits<downcast_from<cubic_millimetre>> : downcast_to<cubic_millimetre> {};

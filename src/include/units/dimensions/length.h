@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<length>> : downcast_to<length> {};
 
   template<typename T>
-  concept bool Length = Quantity<T> && std::same_as<typename T::dimension, length>;
+  concept bool Length = QuantityOf<T, length>;
 
   // SI units
   struct metre : unit<length> {};

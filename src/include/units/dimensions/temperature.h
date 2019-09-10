@@ -31,7 +31,7 @@ namespace std::experimental::units {
   template<> struct downcasting_traits<downcast_from<temperature>> : downcast_to<temperature> {};
 
   template<typename T>
-  concept bool ThermodynamicTemperature = Quantity<T> && std::same_as<typename T::dimension, temperature>;
+  concept bool ThermodynamicTemperature = QuantityOf<T, temperature>;
 
   struct kelvin : unit<temperature> {};
   template<> struct downcasting_traits<downcast_from<kelvin>> : downcast_to<kelvin> {};
