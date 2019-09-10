@@ -27,7 +27,44 @@
 
 namespace {
 
-using namespace std::experimental::units;
+  using namespace std::experimental;
+
+  inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
+
+  struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
+
+  template<typename T>
+  concept bool DigitalInformation = units::QuantityOf<T, digital_information>;
+
+  struct bit : units::unit<digital_information> {};
+  struct byte : units::unit<digital_information, units::ratio<8>> {};
+
+  inline namespace literals {
+
+    constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
+    constexpr auto operator""_b(long double l) { return units::quantity<bit, long double>(l); }
+
+    constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
+    constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
+
+  }
+}
+
+namespace stde = std::experimental;
+
+template<> struct stde::units::downcasting_traits<stde::units::downcast_from<digital_information>> : stde::units::downcast_to<digital_information> {};
+template<> struct stde::units::downcasting_traits<stde::units::downcast_from<bit>> : stde::units::downcast_to<bit> {};
+template<> struct stde::units::downcasting_traits<stde::units::downcast_from<::byte>> : stde::units::downcast_to<::byte> {};
+
+namespace {
+
+  static_assert(1_B == 8_b);
+
+}
+
+namespace {
+
+  using namespace stde::units;
 
   // power spectral density
   // todo: add support for make_dimension_t of non base units
