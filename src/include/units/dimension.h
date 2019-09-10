@@ -24,6 +24,8 @@
 
 #include <units/bits/type_list.h>
 #include <units/bits/downcasting.h>
+#include <units/ratio.h>
+#include <ratio>
 
 namespace std::experimental::units {
 
@@ -60,10 +62,11 @@ namespace std::experimental::units {
 
   // exp
 
-  template<const base_dimension& BaseDimension, int Value>
+  template<const base_dimension& BaseDimension, int Num, int Den = 1>
   struct exp {
     static constexpr const base_dimension& dimension = BaseDimension;
-    static constexpr int value = Value;
+    static constexpr int num = Num;
+    static constexpr int den = Den;
   };
 
   // is_exp
@@ -71,8 +74,8 @@ namespace std::experimental::units {
     template<typename T>
     inline constexpr bool is_exp = false;
 
-    template<const base_dimension& BaseDimension, int Value>
-    inline constexpr bool is_exp<exp<BaseDimension, Value>> = true;
+    template<const base_dimension& BaseDimension, int Num, int Den>
+    inline constexpr bool is_exp<exp<BaseDimension, Num, Den>> = true;
   }  // namespace detail
 
   template<typename T>
@@ -89,9 +92,9 @@ namespace std::experimental::units {
   template<Exponent E>
   struct exp_invert;
 
-  template<const base_dimension& BaseDimension, int Value>
-  struct exp_invert<exp<BaseDimension, Value>> {
-    using type = exp<BaseDimension, -Value>;
+  template<const base_dimension& BaseDimension, int Num, int Den>
+  struct exp_invert<exp<BaseDimension, Num, Den>> {
+    using type = exp<BaseDimension, -Num, Den>;
   };
 
   template<Exponent E>
@@ -131,6 +134,7 @@ namespace std::experimental::units {
   using dim_invert_t = dim_invert<typename D::base_type>::type;
 
 
+  // todo: force as the only user interface to create dimensions through modules
   // make_dimension
 
   namespace detail {
@@ -157,10 +161,14 @@ namespace std::experimental::units {
       using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
-    template<const base_dimension& D, int V1, int V2, typename... ERest>
-    struct dim_consolidate<dimension<exp<D, V1>, exp<D, V2>, ERest...>> {
-      using type = conditional<V1 + V2 == 0, dim_consolidate_t<dimension<ERest...>>,
-                               dim_consolidate_t<dimension<exp<D, V1 + V2>, ERest...>>>;
+    template<const base_dimension& D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
+    struct dim_consolidate<dimension<exp<D, Num1, Den1>, exp<D, Num2, Den2>, ERest...>> {
+      // todo: provide custom implementation for ratio_add
+      using r1 = std::ratio<Num1, Den1>;
+      using r2 = std::ratio<Num2, Den2>;
+      using r = std::ratio_add<r1, r2>;
+      using type = conditional<r::num == 0, dim_consolidate_t<dimension<ERest...>>,
+                               dim_consolidate_t<dimension<exp<D, r::num, r::den>, ERest...>>>;
     };
 
   }  // namespace detail

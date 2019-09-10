@@ -78,20 +78,20 @@ namespace std::experimental::units {
                                 typename get_ratio<BaseDimension, Rest...>::ratio>;
     };
 
-    template<typename Result, int UnitExpValue, typename UnitRatio>
+    template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
     struct ratio_op;
 
-    template<typename Result, typename UnitRatio>
-    struct ratio_op<Result, 0, UnitRatio> {
+    template<typename Result, int UnitExpDen, typename UnitRatio>
+    struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
       using ratio = Result;
     };
 
-    template<typename Result, int UnitExpValue, typename UnitRatio>
+    template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
     struct ratio_op {
-      using calc_ratio = conditional<(UnitExpValue > 0), ratio_multiply<Result, UnitRatio>,
+      using calc_ratio = conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>,
                                      ratio_divide<Result, UnitRatio>>;
-      static constexpr int value = UnitExpValue > 0 ? UnitExpValue - 1 : UnitExpValue + 1;
-      using ratio = ratio_op<calc_ratio, value, UnitRatio>::ratio;
+      static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
+      using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
     };
 
     template<typename D, typename... Us>
@@ -106,7 +106,7 @@ namespace std::experimental::units {
     struct derived_ratio<dimension<E, Rest...>, Us...> {
       using rest_ratio = derived_ratio<dimension<Rest...>, Us...>::ratio;
       using e_ratio = get_ratio<E::dimension, Us...>::ratio;
-      using ratio = ratio_op<rest_ratio, E::value, e_ratio>::ratio;
+      using ratio = ratio_op<rest_ratio, E::num, E::den, e_ratio>::ratio;
     };
 
   }

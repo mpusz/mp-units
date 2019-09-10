@@ -22,6 +22,7 @@
 
 # unit tests
 add_library(unit_tests
+    test_custom_units.cpp
     test_dimension.cpp
     test_quantity.cpp
     test_tools.cpp
