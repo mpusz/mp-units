@@ -23,10 +23,13 @@
 #pragma once
 
 #include <experimental/ranges/concepts>
-#include <exception>
 
-
-#define Expects(cond) if(!(cond)) ::std::terminate();
+#ifdef NDEBUG
+#define Expects(cond) (void)(cond);
+#else
+#include <cassert>
+#define Expects(cond) assert(cond);
+#endif
 
 namespace std {
 
