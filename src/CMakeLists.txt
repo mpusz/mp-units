@@ -34,9 +34,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 # include common tools and workarounds
 include(common/cmake/tools)
 
-# check availability of C++20 features
-include(check_features)
-
 # library definition
 add_library(units INTERFACE)
 #target_sources(units INTERFACE
@@ -62,7 +59,6 @@ target_link_libraries(units
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 target_compile_options(units
