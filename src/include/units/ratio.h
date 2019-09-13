@@ -99,7 +99,7 @@ namespace std::experimental::units {
   }
 
   template<Ratio R1, Ratio R2>
-  using ratio_multiply = typename detail::ratio_multiply_impl<R1, R2>::type;
+  using ratio_multiply = detail::ratio_multiply_impl<R1, R2>::type;
 
   // ratio_divide
 
@@ -116,7 +116,7 @@ namespace std::experimental::units {
   }
 
   template<Ratio R1, Ratio R2>
-  using ratio_divide = typename detail::ratio_divide_impl<R1, R2>::type;
+  using ratio_divide = detail::ratio_divide_impl<R1, R2>::type;
 
   // common_ratio
 
@@ -133,6 +133,6 @@ namespace std::experimental::units {
   }
 
   template<Ratio R1, Ratio R2>
-  using common_ratio = typename detail::common_ratio_impl<R1, R2>::type;
+  using common_ratio = detail::common_ratio_impl<R1, R2>::type;
 
 }  // namespace std::experimental::units
