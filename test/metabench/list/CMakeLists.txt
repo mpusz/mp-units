@@ -26,7 +26,7 @@ add_metabench_test(metabench.data.list.type_list.concepts_iface "concepts in int
 add_metabench_test(metabench.data.list.type_list.concepts_no "no concepts" type_list_concepts_no.cpp.erb "[3, 6, 9, 12, 15]")
 metabench_add_chart(metabench.chart.list.concepts
     TITLE "Sorting a list of size N"
-    SUBTITLE "(smaller is better)"
+    SUBTITLE "(lower is better)"
     DATASETS
         metabench.data.list.type_list.concepts_all
         metabench.data.list.type_list.concepts_iface
@@ -38,7 +38,7 @@ add_metabench_test(metabench.data.list.type_list.conditional_alias "alias condit
 add_metabench_test(metabench.data.list.type_list.conditional_alias_hard "alias conditional hard" type_list_conditional_alias_hard.cpp.erb "[3, 6, 9, 12, 15]")
 metabench_add_chart(metabench.chart.list.conditional
     TITLE "Sorting a list of size N"
-    SUBTITLE "(smaller is better)"
+    SUBTITLE "(lower is better)"
     DATASETS
         metabench.data.list.type_list.conditional_std
         metabench.data.list.type_list.conditional_alias

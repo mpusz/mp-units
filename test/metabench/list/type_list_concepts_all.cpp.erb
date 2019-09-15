@@ -22,6 +22,8 @@ using <%= "dim#{i}" %> = dimension<<%=
 %>>;
 #if defined(METABENCH)
 using <%= "result#{i}" %> = stde::units::type_list_sort_t<<%= "dim#{i}" %>, dim_id_less>;
+#else
+using <%= "result#{i}" %> = void;
 #endif
 <% end %>
 
