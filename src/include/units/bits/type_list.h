@@ -147,7 +147,7 @@ namespace std::experimental::units {
 
   }
 
-  template<TypeList SortedList1, typename SortedList2, template<typename, typename> typename Pred>
+  template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
   using type_list_merge_sorted = detail::type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
 
 
