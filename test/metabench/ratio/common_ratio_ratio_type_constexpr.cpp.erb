@@ -4,14 +4,13 @@ namespace stde = std::experimental;
 
 <% (1..n).each do |i| %>
   struct test<%= i %> {
-    using r1 = stde::units::ratio<<%= i %>, <%= n + 1 - i %>>;
-    using r2 = stde::units::ratio<<%= n + 1 - i %>, <%= i %>>;
-
-    using r3 = stde::units::ratio_multiply<r1, r2>;
-    using r4 = stde::units::ratio_divide<r1, r2>;
+    using r1 = stde::units::ratio<<%= 2 * i - 1 %>, <%= 2 * n %>>;
+    using r2 = stde::units::ratio<<%= 2 * i %>, <%= 2 * n %>>;
 
 #if defined(METABENCH)
-    using r5 = stde::units::common_ratio_t<r1, r2>;
+    using r3 = stde::units::common_ratio_t<r1, r2>;
+#else
+    using r3 = void;
 #endif
   };
 <% end %>

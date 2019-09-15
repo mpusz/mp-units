@@ -1,15 +1,16 @@
-#include "std_ratio.h"
-
-namespace stde = std::experimental;
+#include <ratio>
 
 <% (1..n).each do |i| %>
   struct test<%= i %> {
-    using r1 = std::ratio<<%= i %>, <%= n + 1 - i %>>;
-    using r2 = std::ratio<<%= n + 1 - i %>, <%= i %>>;
+    using r1 = std::ratio<<%= 2 * i - 1 %>, <%= 2 * n %>>;
+    using r2 = std::ratio<<%= 2 * i %>, <%= 2 * n %>>;
 
 #if defined(METABENCH)
     using r3 = std::ratio_multiply<r1, r2>;
     using r4 = std::ratio_divide<r1, r2>;
+#else
+    using r3 = void;
+    using r4 = void;
 #endif
   };
 <% end %>
