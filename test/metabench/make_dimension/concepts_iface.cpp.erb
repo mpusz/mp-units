@@ -1,0 +1,25 @@
+#include "dimension_concepts_iface.h"
+
+namespace stde = std::experimental;
+
+<% (1..100).each do |k| %>
+struct test<%= k %> {
+  <% (1..n).each do |i| %>
+  static constexpr stde::units::base_dimension dim<%= i %>{"dim<%= i %>"};
+  <% end %>
+
+#if defined(METABENCH)
+  using dim = stde::units::make_dimension_t<<%=
+      xs = ((1)..(n)).map { |j| "stde::units::exp<dim#{j}, 1>" }
+      rng = Random.new(k)
+      xs.shuffle(random: rng).join(', ')
+  %>>;
+#else
+  using dim = void;
+#endif
+};
+<% end %>
+
+int main()
+{
+}

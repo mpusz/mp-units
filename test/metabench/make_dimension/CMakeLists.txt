@@ -21,25 +21,16 @@
 # SOFTWARE.
 
 
-function(add_metabench_test target name erb_path range)
-    metabench_add_dataset(${target} "${erb_path}" "${range}" NAME "${name}")
-    target_compile_features(${target} PUBLIC cxx_std_20)
-    target_link_libraries(${target}
-        PUBLIC
-            CONAN_PKG::cmcstl2
-    )
-endfunction()
+add_metabench_test(metabench.data.make_dimension.no_concepts "no concepts" no_concepts.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
+add_metabench_test(metabench.data.make_dimension.concepts_iface "concepts iface" concepts_iface.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
+add_metabench_test(metabench.data.make_dimension.concepts_all "concepts all" concepts_all.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
+metabench_add_chart(metabench.chart.make_dimension
+    TITLE "100 x make_dimension"
+    SUBTITLE "(lower is better)"
+    DATASETS
+        metabench.data.make_dimension.no_concepts
+        metabench.data.make_dimension.concepts_iface
+        metabench.data.make_dimension.concepts_all
+)
 
-
-include(metabench)
-if(NOT METABENCH_DIR)
-    return()
-endif()
-
-enable_testing()
-
-add_custom_target(metabench)
-
-add_subdirectory(list)
-add_subdirectory(make_dimension)
-add_subdirectory(ratio)
+add_dependencies(metabench metabench.chart.make_dimension)
