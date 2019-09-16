@@ -24,7 +24,7 @@
 add_metabench_test(metabench.data.ratio.create.std_ratio "std::ratio" create_std_ratio.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
 add_metabench_test(metabench.data.ratio.create.ratio_type_constexpr "ratio with constexpr" create_ratio_type_constexpr.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
 metabench_add_chart(metabench.chart.ratio.create
-    TITLE "Creation on 2*N ratios"
+    TITLE "Creation of 2*N ratios"
     SUBTITLE "(lower is better)"
     DATASETS
         metabench.data.ratio.create.std_ratio
