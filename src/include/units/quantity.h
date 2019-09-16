@@ -135,6 +135,13 @@ namespace std::experimental::units {
     return cast::cast(q);
   }
 
+  template<Unit ToU, Scalar ToRep = double, typename U, typename Rep>
+  constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  {
+    return quantity_cast<quantity<ToU, ToRep>>(q);
+  }
+
+
   // quantity_values
 
   template<Scalar Rep>

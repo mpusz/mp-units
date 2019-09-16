@@ -46,7 +46,7 @@ void example_2(double distance_v, double duration_v)
 {
   stde::units::quantity<stde::units::kilometre> distance(distance_v);
   stde::units::quantity<stde::units::hour> duration(duration_v);
-  const auto kmph = avg_speed(distance, duration);
+  const auto kmph = quantity_cast<stde::units::kilometre_per_hour>(avg_speed(distance, duration));
   std::cout << "Average speed of a car that makes " << distance.count() << " km in "
             << duration.count() << " hours is " << kmph.count() << " km/h.\n";
 }
