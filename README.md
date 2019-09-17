@@ -56,7 +56,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
 
 ## Release notes
 
-- 0.3.0 Sep 16, 2019 (CppCon 2019 release)
+- 0.3.0 Sep 16, 2019 (CppCon 2019 design)
   - Applied the feedback from the Cologne evening session
     - `upcasting_traits` renamed to `downcasting_traits`
     - `Dimension` template parameter removed from quantity
@@ -75,7 +75,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - `QuantityOf` concept introduced
   - `quantity_cast<U, Rep>()` support added 
 
-- 0.2.0 July 18, 2019
+- 0.2.0 July 18, 2019 (C++Now 2019 design)
   - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)
   - The design as described on C++Now 2019 talk (https://youtu.be/wKchCktZPHU)
   - Compile-time performance optimisations (type_list, common_ratio, ratio, conditional_t)
