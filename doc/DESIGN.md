@@ -1,4 +1,4 @@
-# `units` - Physical Units Library for C++
+# `mp-units` - A Units Library for C++
 
 ## Summary
 
@@ -30,12 +30,12 @@ static_assert(10km / 5km == 2);
 ## Approach
 
 1. Safety and performance
-  - strong types
-  - compile-time safety
-  - `constexpr` all the things
+    - strong types
+    - compile-time safety
+    - `constexpr` all the things
 2. The best possible user experience
-  - compiler errors
-  - debugging
+    - compiler errors
+    - debugging
 3. No macros in the user interface
 4. Easy extensibility
 5. No external dependencies
@@ -58,13 +58,13 @@ There are C++ concepts provided for each such quantity type:
 
 ```cpp
 template<typename T>
-concept Length = Quantity<T> && std::same_as<typename T::dimension, length>;
+concept Length = QuantityOf<T, length>;
 ```
 
 With that we can easily write a function template like this:
 
 ```cpp
-constexpr stde::units::Velocity auto avg_speed(units::Length auto d,stde::units::Time auto t)
+constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto t)
 {
   return d / t;
 }
@@ -94,27 +94,27 @@ concept Dimension =
 
 #### `Exponents`
 
-`units::exp` provides an information about a single base dimension and its exponent in a derived
-dimension:
+`units::exp` provides an information about a single base dimension and its (possibly fractional)
+exponent in a derived dimension:
 
 ```cpp
-template<typename BaseDimension, int Value>
+template<const base_dimension& BaseDimension, int Num, int Den = 1>
 struct exp {
-  using dimension = BaseDimension;
-  static constexpr int value = Value;
+  static constexpr const base_dimension& dimension = BaseDimension;
+  static constexpr int num = Num;
+  static constexpr int den = Den;
 };
 ```
 
-where `BaseDimension` is a unique sortable compile-time value and for now is implemented as:
+where `BaseDimension` is a unique sortable compile-time value:
 
 ```cpp
-template<int UniqueValue>
-using dim_id = std::integral_constant<int, UniqueValue>;
+struct base_dimension {
+  const char* name;
+};
+constexpr bool operator==(const base_dimension& lhs, const base_dimension& rhs);
+constexpr bool operator<(const base_dimension& lhs, const base_dimension& rhs);
 ```
-
-but it is meant to be replaced with C++20 class `constexpr` values provided as non-type template
-parameters (when feature will be available in a compiler) so that for example base dimension for
-length will be expressed as `dimension<exp<"length", 1>>`.
 
 `units::Exponent` concept is satisfied if provided type is an instantiation of `units::exp` class
 template:
@@ -208,12 +208,31 @@ struct merge_dimension {
 
 ```cpp
 template<Dimension D, Ratio R>
-  requires (R::num > 0)
+  requires (R::num * R::den > 0)
 struct unit : downcast_base<unit<D, R>> {
   using dimension = D;
   using ratio = R;
 };
 ```
+
+For example to define the base unit of `length`:
+ 
+```cpp
+struct metre : unit<length> {};
+```
+
+Also there are few alias templates provided as convenience helpers to simplify `Ratio` handling:
+- units with prefixes
+
+```cpp
+struct kilometre : kilo<metre> {};
+```
+
+- derived units
+
+```cpp
+struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
+``` 
 
 `units::Unit` is a Concept that is satisfied by a type that is empty and publicly
 derived from `units::unit` class template: 
@@ -302,7 +321,17 @@ operation and provides it directly to `units::common_quantity_t` type trait.
 #### `quantity_cast`
 
 To explicitly force truncating conversions `quantity_cast` function is provided which is a direct
-counterpart of `std::chrono::duration_cast`.
+counterpart of `std::chrono::duration_cast`. As a template argument user can provide here either 
+a `quantity` type or only its template parameters (`Unit`, `Rep`):  
+
+```cpp
+template<Quantity To, typename U, typename Rep>
+  requires std::same_as<typename To::dimension, typename U::dimension>
+constexpr To quantity_cast(const quantity<U, Rep>& q);
+
+template<Unit ToU, Scalar ToRep = double, typename U, typename Rep>
+constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q);
+```
 
 ## Strong types instead of aliases, and type downcasting capability
 
@@ -429,87 +458,52 @@ template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kil
 ```
 
 
-## Adding new derived dimensions
+## Adding custom dimensions and units
 
 In order to extend the library with custom dimensions the user has to:
-1. Create a new dimension type with the recipe of how to construct it from base dimensions and provide
+1. Create a new base dimension if the predefined ones are not enough to form a new derived dimension:
+
+    ```cpp
+    inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
+    ```
+
+2. Create a new dimension type with the recipe of how to construct it from base dimensions and provide
    downcasting trait for it:
 
-```cpp
-struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velocity> {};
-``` 
+    ```cpp
+    struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
+    template<>
+    struct units::downcasting_traits<units::downcast_from<digital_information>> : units::downcast_to<digital_information> {};
+    ``` 
 
 2. Define a concept that will match a new dimension:
 
-```cpp
-template<typename T>
-concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
-```
+    ```cpp
+    template<typename T>
+    concept DigitalInformation = units::QuantityOf<T, digital_information>;
+    ```
 
 3. Define units and provide downcasting traits for them:
 
- - base unit
+    ```cpp
+    struct bit : units::unit<digital_information> {};
+    template<> struct units::downcasting_traits<units::downcast_from<bit>> : units::downcast_to<bit> {};
+   
+    struct byte : units::unit<digital_information, units::ratio<8>> {};
+    template<> struct units::downcasting_traits<units::downcast_from<byte>> : units::downcast_to<byte> {};
+    ```
 
-```cpp
-struct metre : unit<length, std::ratio<1>> {};
-template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
-```
+4. Provide user-defined literals for the most important units:
 
- - units with prefixes
-
-```cpp
-struct kilometre : kilo<metre> {};
-template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
-```
-
- - derived units
-
-```cpp
-struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
-template<> struct downcasting_traits<downcast_from<kilometre_per_hour>> : downcast_to<kilometre_per_hour> {};
-``` 
-
-5. Provide user-defined literals for the most important units:
-
-```cpp
-inline namespace literals {
-  constexpr auto operator""_mps(unsigned long long l) { return quantity<metre_per_second, std::int64_t>(l); }
-  constexpr auto operator""_mps(long double l)        { return quantity<metre_per_second, long double>(l); }
-  
-  constexpr auto operator""_kmph(unsigned long long l) { return quantity<kilometre_per_hour, std::int64_t>(l); }
-  constexpr auto operator""_kmph(long double l)        { return quantity<kilometre_per_hour, long double>(l); }
-}
-```
-
-
-## Adding new base dimensions
-
-For now base dimensions are defined in terms of `std::integral_constant<int, ...>` and the provided
-values must be unique. For example:
-
-```cpp
-struct base_dim_length : dim_id<0> {};
-struct base_dim_mass : dim_id<1> {};
-struct base_dim_time : dim_id<2> {};
-struct base_dim_electric_current : dim_id<3> {};
-struct base_dim_temperature : dim_id<4> {};
-struct base_dim_amount_of_substance : dim_id<5> {};
-struct base_dim_luminous_intensity : dim_id<6> {};
-```
-
-However, as soon as C++20 class type values will be supported as non-type template parameters
-base dimensions will be just a text values. For example:
-
-```cpp
-inline constexpr base_dim base_dim_length = "length";
-```
-
-With that it should be really easy to add support for any new non-standard base units to the
-library without the risk of collision with any dimension type defined by the library itself or
-by other users extending the library with their own dimension types.
-
-Additionally, it should make the error logs even shorter thus easier to understand.
+    ```cpp
+    inline namespace literals {
+      constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
+      constexpr auto operator""_b(long double l) { return units::quantity<bit, long double>(l); }
+    
+      constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
+      constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
+    }
+    ```
 
 
 ## Open questions

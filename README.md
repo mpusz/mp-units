@@ -3,7 +3,7 @@
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/units/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/units)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg) ](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
 
-# `units` - A Units Library for C++
+# `mp-units` - A Units Library for C++
 
 ## Summary
 
@@ -56,7 +56,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
 
 ## Release notes
 
-- ???
+- 0.3.0 Sep 16, 2019 (CppCon 2019 release)
   - Applied the feedback from the Cologne evening session
     - `upcasting_traits` renamed to `downcasting_traits`
     - `Dimension` template parameter removed from quantity
@@ -67,11 +67,18 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - Missing `operator*` added 
   - Predefined dimensions moved to a dedicated directory
   - `dimension_` prefix removed from names of derived dimensions
+  - cmcstl2 library updated to 2019.09.19
+  - `base_dimension` is a value provided as `const&` to the `exp` type
+  - integrated with Compiler Explorer
+  - gsl-lite deppendency removed
+  - Fractional dimension exponents support added
+  - `QuantityOf` concept introduced
+  - `quantity_cast<U, Rep>()` support added 
 
 - 0.2.0 July 18, 2019
   - Added C++20 features supported by gcc-9.1 (std::remove_cvref_t, down with typename, std::type_identity)
   - The design as described on C++Now 2019 talk (https://youtu.be/wKchCktZPHU)
-  - Compile-time performance opimisations (type_list, common_ratio, ratio, conditional_t)
+  - Compile-time performance optimisations (type_list, common_ratio, ratio, conditional_t)
 
 - 0.1.0 May 18, 2019
   - Initial library release
