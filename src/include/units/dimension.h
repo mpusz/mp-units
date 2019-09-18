@@ -130,7 +130,11 @@ namespace std::experimental::units {
 
   template<Exponent E, int Num, int Den>
   struct exp_multiply {
-    using type = exp<typename E::dimension, E::num * Num, E::den * Den>;
+    // todo: provide custom implementation for ratio_add
+    using r1 = std::ratio<E::num, E::den>;
+    using r2 = std::ratio<Num, Den>;
+    using r = std::ratio_multiply<r1, r2>;
+    using type = exp<typename E::dimension, r::num, r::den>;
   };
 
   template<Exponent E, int Num, int Den>
@@ -256,5 +260,25 @@ namespace std::experimental::units {
 
   template<Dimension D1, Dimension D2>
   using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
+
+  // dimension_sqrt
+  template<Dimension D>
+  struct dimension_sqrt;
+
+  template<typename... Es>
+  struct dimension_sqrt<dimension<Es...>> : std::type_identity<downcasting_traits_t<dimension<exp_multiply_t<Es, 1, 2>...>>> {};
+
+  template<Dimension D>
+  using dimension_sqrt_t = dimension_sqrt<typename D::base_type>::type;
+
+  // dimension_pow
+  template<Dimension D, std::size_t N>
+  struct dimension_pow;
+
+  template<typename... Es, std::size_t N>
+  struct dimension_pow<dimension<Es...>, N> : std::type_identity<downcasting_traits_t<dimension<exp_multiply_t<Es, N, 1>...>>> {};
+
+  template<Dimension D, std::size_t N>
+  using dimension_pow_t = dimension_pow<typename D::base_type, N>::type;
 
 }  // namespace std::experimental::units

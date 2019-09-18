@@ -90,6 +90,9 @@ template<> struct downcasting_traits<downcast_from<volt_per_sqrt_hertz>> : downc
 
 namespace {
 
+  static_assert(std::is_same_v<dimension_sqrt_t<power_spectral_density>, amplitude_spectral_density>);
+  static_assert(std::is_same_v<dimension_pow_t<amplitude_spectral_density, 2>, power_spectral_density>);
+
   //static_assert(sqrt(quantity<sq_volt_per_hertz>(4)) = quantity<volt_per_sqrt_hertz>(2));
 
 }
