@@ -53,7 +53,7 @@ add_library(units INTERFACE)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
-        CONAN_PKG::cmcstl2
+        CONAN_PKG::range-v3
 )
 target_include_directories(units
     INTERFACE
@@ -63,6 +63,7 @@ target_include_directories(units
 target_compile_options(units
     INTERFACE
         -Wno-literal-suffix
+        -fconcepts
 )
 add_library(mp::units ALIAS units)
 

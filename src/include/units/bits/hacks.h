@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <experimental/ranges/concepts>
+#include <concepts/concepts.hpp>
 
 #ifdef NDEBUG
 #define Expects(cond) (void)(cond);
@@ -34,10 +34,10 @@
 namespace std {
 
   // concepts
-  using experimental::ranges::same_as;
-  using experimental::ranges::derived_from;
-  using experimental::ranges::regular;
-  using experimental::ranges::totally_ordered;
-  using experimental::ranges::convertible_to;
+  using concepts::same_as;
+  using concepts::derived_from;
+  using concepts::regular;
+  using concepts::totally_ordered;
+  using concepts::convertible_to;
 
 }

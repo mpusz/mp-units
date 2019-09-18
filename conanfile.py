@@ -45,7 +45,7 @@ class UnitsConan(ConanFile):
     exports = ["LICENSE.md"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "cmcstl2/2019.09.09@mpusz/stable"
+        "range-v3/0.9.1@ericniebler/stable"
     )
     scm = {
         "type": "git",
