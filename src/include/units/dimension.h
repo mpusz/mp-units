@@ -150,7 +150,7 @@ namespace std::experimental::units {
   struct dim_invert<dimension<Es...>> : std::type_identity<downcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<Dimension D>
-  using dim_invert_t = dim_invert<typename D::base_type>::type;
+  using dim_invert_t = dim_invert<downcast_from<D>>::type;
 
 
   // todo: force as the only user interface to create dimensions through modules
@@ -176,8 +176,7 @@ namespace std::experimental::units {
 
     template<typename E1, typename... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
-      using rest = dim_consolidate_t<dimension<ERest...>>;
-      using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
+      using type = type_list_push_front<dim_consolidate_t<dimension<ERest...>>, E1>;
     };
 
     template<BaseDimension D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
