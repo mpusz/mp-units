@@ -45,7 +45,7 @@ class UnitsConan(ConanFile):
     exports = ["LICENSE.md"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "cmcstl2/2019.09.09@mpusz/stable"
+        "range-v3/0.9.1@ericniebler/stable"
     )
     scm = {
         "type": "git",
@@ -82,6 +82,8 @@ class UnitsConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.includedirs = ['include']
+        if self.settings.compiler == "gcc":
+            self.cpp_info.cxxflags = ["-fconcepts"]
 
     def package_id(self):
         self.info.settings.clear()

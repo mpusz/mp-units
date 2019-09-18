@@ -56,6 +56,9 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
 
 ## Release notes
 
+- 0.3.1 Sep 18, 2019
+  - cmcstl2 dependency changed to range-v3 0.9.1
+
 - 0.3.0 Sep 16, 2019 (CppCon 2019 design)
   - The design as described on CppCon 2019 talk
   - Applied the feedback from the Cologne evening session

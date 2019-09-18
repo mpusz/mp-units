@@ -53,17 +53,20 @@ add_library(units INTERFACE)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
-        CONAN_PKG::cmcstl2
+        CONAN_PKG::range-v3
 )
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-target_compile_options(units
-    INTERFACE
-        -Wno-literal-suffix
-)
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(units
+        INTERFACE
+            -Wno-literal-suffix
+            -fconcepts
+    )
+endif()
 add_library(mp::units ALIAS units)
 
 # installation info
