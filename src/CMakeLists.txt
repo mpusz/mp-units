@@ -60,11 +60,13 @@ target_include_directories(units
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-target_compile_options(units
-    INTERFACE
-        -Wno-literal-suffix
-        -fconcepts
-)
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(units
+        INTERFACE
+            -Wno-literal-suffix
+            -fconcepts
+    )
+endif()
 add_library(mp::units ALIAS units)
 
 # installation info
