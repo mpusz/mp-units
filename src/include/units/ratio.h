@@ -118,6 +118,52 @@ namespace std::experimental::units {
   template<Ratio R1, Ratio R2>
   using ratio_divide = detail::ratio_divide_impl<R1, R2>::type;
 
+  // ratio_pow
+
+  namespace detail {
+
+    template<typename R, std::size_t N>
+    struct ratio_pow_impl {
+      using type = ratio_multiply<typename ratio_pow_impl<R, N - 1>::type, R>;
+    };
+
+    template<typename R>
+    struct ratio_pow_impl<R, 0> {
+      using type = R;
+    };
+
+  }
+
+  template<Ratio R, std::size_t N>
+  using ratio_pow = detail::ratio_pow_impl<R, N>::type;
+
+  // ratio_sqrt
+
+  namespace detail {
+
+    constexpr std::intmax_t sqrt_impl(std::intmax_t v, std::intmax_t l, std::intmax_t r)
+    {
+      if(l == r)
+        return r;
+
+      const auto mid = (r + l) / 2;
+      if(mid * mid >= v)
+        return sqrt_impl(v, l, mid);
+      else
+        return sqrt_impl(v, mid + 1, r);
+    }
+
+    static constexpr std::intmax_t sqrt_impl(std::intmax_t v)
+    {
+      return sqrt_impl(v, 1, v);
+    }
+
+  }
+
+  template<Ratio R>
+  using ratio_sqrt = ratio<detail::sqrt_impl(R::den), detail::sqrt_impl(R::num)>;
+
+
   // common_ratio
 
   namespace detail {

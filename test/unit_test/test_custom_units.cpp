@@ -22,7 +22,7 @@
 
 #include <units/dimensions/voltage.h>
 #include <units/dimensions/frequency.h>
-
+#include <units/math.h>
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 
@@ -68,11 +68,11 @@ namespace {
   using namespace stde::units;
 
   // power spectral density
-  struct power_spectral_density : make_dimension_t<exp<voltage, 2>, exp<frequency, -1>> {};
+  struct power_spectral_density : make_dimension_t<units::exp<voltage, 2>, units::exp<frequency, -1>> {};
   struct sq_volt_per_hertz : unit<power_spectral_density> {};
 
   // amplitude spectral density
-  struct amplitude_spectral_density : make_dimension_t<exp<voltage, 1>, exp<frequency, -1, 2>> {};
+  struct amplitude_spectral_density : make_dimension_t<units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
   // todo: add support for derived_unit
   //struct volt_per_sq_hertz : derived_unit<amplitude_spectral_density, kilogram, metre, second, ampere> {};
   struct volt_per_sqrt_hertz : unit<amplitude_spectral_density> {};
@@ -93,6 +93,7 @@ namespace {
   static_assert(std::is_same_v<dimension_sqrt_t<power_spectral_density>, amplitude_spectral_density>);
   static_assert(std::is_same_v<dimension_pow_t<amplitude_spectral_density, 2>, power_spectral_density>);
 
-  //static_assert(sqrt(quantity<sq_volt_per_hertz>(4)) = quantity<volt_per_sqrt_hertz>(2));
+  static_assert(std::is_same_v<decltype(pow<2>(quantity<volt_per_sqrt_hertz>(4))), decltype(quantity<sq_volt_per_hertz>(16))>);
+  static_assert(std::is_same_v<decltype(sqrt(quantity<sq_volt_per_hertz>(16))), decltype(quantity<volt_per_sqrt_hertz>(4))>);
 
 }
