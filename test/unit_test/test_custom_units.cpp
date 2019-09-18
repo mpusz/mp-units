@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/dimensions/voltage.h>
+#include <units/dimensions/frequency.h>
 
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
@@ -67,20 +68,13 @@ namespace {
   using namespace stde::units;
 
   // power spectral density
-  // todo: add support for make_dimension_t of non base units
-  //  struct power_spectral_density : make_dimension_t<exp<voltage, 2>, exp<frequency, -1>> {};
-  struct power_spectral_density
-      : make_dimension_t<exp<base_dim_mass, 2>, exp<base_dim_length, 4>, exp<base_dim_time, -6>, exp<base_dim_time, -1>> {
-  };
+  struct power_spectral_density : make_dimension_t<exp<voltage, 2>, exp<frequency, -1>> {};
   struct sq_volt_per_hertz : unit<power_spectral_density> {};
 
   // amplitude spectral density
-  //  struct dimension_amplitude_spectral_density : make_dimension_t<exp<voltage, 1>, exp<frequency, -1, 2>> {};
-  struct amplitude_spectral_density
-      : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>, exp<base_dim_current, -1>, exp<base_dim_time, 1, 2>> {
-  };
+  struct amplitude_spectral_density : make_dimension_t<exp<voltage, 1>, exp<frequency, -1, 2>> {};
   // todo: add support for derived_unit
-  //struct volt_per_sq_hertz : derived_unit<amplitude_spectral_density, kilogram, metre, second, ampere > {};
+  //struct volt_per_sq_hertz : derived_unit<amplitude_spectral_density, kilogram, metre, second, ampere> {};
   struct volt_per_sqrt_hertz : unit<amplitude_spectral_density> {};
 }
 
