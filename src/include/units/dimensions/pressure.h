@@ -24,10 +24,11 @@
 
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/force.h>
+#include <units/dimensions/area.h>
 
 namespace std::experimental::units {
 
-  struct pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
+  struct pressure : make_dimension_t<exp<force, 1>, exp<area, -1>> {};
   template<> struct downcasting_traits<downcast_from<pressure>> : downcast_to<pressure> {};
 
   template<typename T>

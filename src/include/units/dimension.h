@@ -29,81 +29,49 @@
 
 namespace std::experimental::units {
 
-  struct base_dimension {
-    const char* name;
-  };
+  template<typename T>
+  concept bool BaseDimension = std::is_empty_v<T> &&
+      requires {
+        { T::value } -> std::same_as<const char*>;
+      };
 
-  constexpr bool operator==(const base_dimension& lhs, const base_dimension& rhs)
-  {
-    const char* p1 = lhs.name;
-    const char* p2 = rhs.name;
-    for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void)++p2) {
-      if(*p1 != *p2) return false;
-    }
-    return *p1 == *p2;
-  }
+  namespace detail {
 
-  constexpr bool operator<(const base_dimension& lhs, const base_dimension& rhs)
-  {
-    const char* p1 = lhs.name;
-    const char* p2 = rhs.name;
-    for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void)++p2) {
-      if(*p1 < *p2) return true;
-      if(*p2 < *p1) return false;
+    template<BaseDimension D1, BaseDimension D2>
+    constexpr bool less()
+    {
+      const char* p1 = D1::value;
+      const char* p2 = D2::value;
+      for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void) ++p2) {
+        if(*p1 < *p2) return true;
+        if(*p2 < *p1) return false;
+      }
+      return (*p1 == '\0') && (*p2 != '\0');
     }
-    return (*p1 == '\0') && (*p2 != '\0');
+
   }
 
   // base_dimension_less
 
-  template<const base_dimension& D1, const base_dimension& D2>
-  struct base_dimension_less : std::bool_constant<D1 < D2> {
-  };
-
-  // exp
-
-  template<const base_dimension& BaseDimension, int Num, int Den = 1>
-  struct exp {
-    static constexpr const base_dimension& dimension = BaseDimension;
-    static constexpr int num = Num;
-    static constexpr int den = Den;
+  template<BaseDimension D1, BaseDimension D2>
+  struct base_dimension_less : std::bool_constant<detail::less<D1, D2>()> {
   };
 
   // is_exp
   namespace detail {
+
     template<typename T>
     inline constexpr bool is_exp = false;
 
-    template<const base_dimension& BaseDimension, int Num, int Den>
-    inline constexpr bool is_exp<exp<BaseDimension, Num, Den>> = true;
+    // partial specialization for an exp type provided below
+
   }  // namespace detail
 
   template<typename T>
   concept bool Exponent = detail::is_exp<T>;
 
-  // exp_dim_id_less
-
-  template<Exponent E1, Exponent E2>
-  struct exp_less : base_dimension_less<E1::dimension, E2::dimension> {
-  };
-
-  // exp_invert
-
-  template<Exponent E>
-  struct exp_invert;
-
-  template<const base_dimension& BaseDimension, int Num, int Den>
-  struct exp_invert<exp<BaseDimension, Num, Den>> {
-    using type = exp<BaseDimension, -Num, Den>;
-  };
-
-  template<Exponent E>
-  using exp_invert_t = exp_invert<E>::type;
-
-  // dimension
-
   template<Exponent... Es>
-  struct dimension : downcast_base<dimension<Es...>> {};
+  struct dimension;
 
   // is_dimension
   namespace detail {
@@ -121,6 +89,57 @@ namespace std::experimental::units {
       std::is_empty_v<T> &&
       detail::is_dimension<downcast_from<T>>;
 
+  // exp
+
+  template<typename Dim, int Num, int Den = 1>
+    requires BaseDimension<Dim> || Dimension<Dim>
+  struct exp {
+    using dimension = Dim;
+    static constexpr int num = Num;
+    static constexpr int den = Den;
+  };
+
+  // is_exp
+  namespace detail {
+
+    template<typename Dim, int Num, int Den>
+    inline constexpr bool is_exp<exp<Dim, Num, Den>> = true;
+
+  }  // namespace detail
+
+  // exp_less
+
+  template<Exponent E1, Exponent E2>
+  struct exp_less : base_dimension_less<typename E1::dimension, typename E2::dimension> {
+  };
+
+  // exp_invert
+
+  template<Exponent E>
+  struct exp_invert;
+
+  template<typename Dim, int Num, int Den>
+  struct exp_invert<exp<Dim, Num, Den>> {
+    using type = exp<Dim, -Num, Den>;
+  };
+
+  template<Exponent E>
+  using exp_invert_t = exp_invert<E>::type;
+
+  // exp_multiply
+
+  template<Exponent E, int Num, int Den>
+  struct exp_multiply {
+    using type = exp<typename E::dimension, E::num * Num, E::den * Den>;
+  };
+
+  template<Exponent E, int Num, int Den>
+  using exp_multiply_t = exp_multiply<E, Num, Den>::type;
+
+  // dimension
+
+  template<Exponent... Es>
+  struct dimension : downcast_base<dimension<Es...>> {};
 
   // dim_invert
 
@@ -161,7 +180,7 @@ namespace std::experimental::units {
       using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
-    template<const base_dimension& D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
+    template<BaseDimension D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
     struct dim_consolidate<dimension<exp<D, Num1, Den1>, exp<D, Num2, Den2>, ERest...>> {
       // todo: provide custom implementation for ratio_add
       using r1 = std::ratio<Num1, Den1>;
@@ -171,11 +190,37 @@ namespace std::experimental::units {
                                dim_consolidate_t<dimension<exp<D, r::num, r::den>, ERest...>>>;
     };
 
+    template<Exponent... Es>
+    struct extract;
+
+    template<Exponent... Es>
+    using extract_t = extract<Es...>::type;
+
+    template<>
+    struct extract<> {
+      using type = dimension<>;
+    };
+
+    template<BaseDimension Dim, int Num, int Den, Exponent... ERest>
+    struct extract<exp<Dim, Num, Den>, ERest...> {
+      using type = type_list_push_front<extract_t<ERest...>, exp<Dim, Num, Den>>;
+    };
+
+    template<Exponent... Es, int Num, int Den, Exponent... ERest>
+    struct extract<exp<dimension<Es...>, Num, Den>, ERest...> {
+      using type = type_list_push_front<extract_t<ERest...>, exp_multiply_t<Es, Num, Den>...>;
+    };
+
+    template<Dimension Dim, int Num, int Den, Exponent... ERest>
+    struct extract<exp<Dim, Num, Den>, ERest...> {
+      using type = extract_t<exp<downcast_from<Dim>, Num, Den>, ERest...>;
+    };
+
   }  // namespace detail
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_less>>;
+    using type = detail::dim_consolidate_t<type_list_sort<detail::extract_t<Es...>, exp_less>>;
   };
 
   template<Exponent... Es>

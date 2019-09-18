@@ -27,15 +27,30 @@ using namespace std::experimental::units;
 
 namespace {
 
-  inline constexpr base_dimension d0{"d0"};
-  inline constexpr base_dimension d1{"d1"};
-  inline constexpr base_dimension d2{"d2"};
-  inline constexpr base_dimension d3{"d3"};
+  struct d0 { static constexpr const char* value = "d0"; };
+  struct d1 { static constexpr const char* value = "d1"; };
+  struct d2 { static constexpr const char* value = "d2"; };
+  struct d3 { static constexpr const char* value = "d3"; };
 
   // exp_invert
 
   static_assert(std::is_same_v<exp_invert_t<exp<d0, 1>>, exp<d0, -1>>);
   static_assert(std::is_same_v<exp_invert_t<exp<d1, -1>>, exp<d1, 1>>);
+
+  // extract
+
+  template<typename T>
+  struct typeinfo;
+
+  static_assert(std::is_same_v<detail::extract_t<>, dimension<>>);
+  static_assert(std::is_same_v<detail::extract_t<exp<d0, 1>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<detail::extract_t<exp<d0, 1>, exp<d1, 2>>, dimension<exp<d0, 1>, exp<d1, 2>>>);
+  using dim0 = dimension<>;
+  using dim1 = dimension<exp<d0, 1>>;
+  using dim2 = dimension<exp<d0, 1>, exp<d1, 2>>;
+  static_assert(std::is_same_v<detail::extract_t<exp<dim0, 2>, exp<d0, 1>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<detail::extract_t<exp<dim1, 2>, exp<d0, 1>>, dimension<exp<d0, 2>, exp<d0, 1>>>);
+  static_assert(std::is_same_v<detail::extract_t<exp<dim2, -2>, exp<d0, 1>, exp<d1, 2>>, dimension<exp<d0, -2>, exp<d1, -4>, exp<d0, 1>, exp<d1, 2>>>);
 
   // make_dimension
 

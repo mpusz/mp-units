@@ -82,8 +82,8 @@ namespace {
       std::is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
   // type_list_merge_sorted
-  inline constexpr base_dimension d0{"d0"};
-  inline constexpr base_dimension d1{"d1"};
+  struct d0 { static constexpr const char* value = "d0"; };
+  struct d1 { static constexpr const char* value = "d1"; };
 
   static_assert(std::is_same_v<type_list_merge_sorted<type_list<exp<d0, 1>>, type_list<exp<d1, 1>>, exp_less>,
                                type_list<exp<d0, 1>, exp<d1, 1>>>);

@@ -26,12 +26,12 @@
 
 namespace std::experimental::units {
 
-  inline constexpr base_dimension base_dim_length{"length"};
-  inline constexpr base_dimension base_dim_mass{"mass"};
-  inline constexpr base_dimension base_dim_time{"time"};
-  inline constexpr base_dimension base_dim_current{"current"};
-  inline constexpr base_dimension base_dim_temperature{"temperature"};
-  inline constexpr base_dimension base_dim_substance{"substance"};
-  inline constexpr base_dimension base_dim_luminous_intensity{"luminous intensity"};
+  struct base_dim_length { static constexpr const char* value = "length"; };
+  struct base_dim_mass { static constexpr const char* value = "mass"; };
+  struct base_dim_time { static constexpr const char* value = "time"; };
+  struct base_dim_current { static constexpr const char* value = "current"; };
+  struct base_dim_temperature { static constexpr const char* value = "temperature"; };
+  struct base_dim_substance { static constexpr const char* value = "substance"; };
+  struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
 
 }  // namespace std::experimental::units

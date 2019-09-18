@@ -24,12 +24,11 @@
 
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/mass.h>
-#include <units/dimensions/length.h>
-#include <units/dimensions/time.h>
+#include <units/dimensions/acceleration.h>
 
 namespace std::experimental::units {
 
-  struct force : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
+  struct force : make_dimension_t<exp<base_dim_mass, 1>, exp<acceleration, 1>> {};
   template<> struct downcasting_traits<downcast_from<force>> : downcast_to<force> {};
 
   template<typename T>

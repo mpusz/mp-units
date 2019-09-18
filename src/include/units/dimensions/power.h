@@ -27,7 +27,7 @@
 
 namespace std::experimental::units {
 
-  struct power : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>> {};
+  struct power : make_dimension_t<exp<energy, 1>, exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<power>> : downcast_to<power> {};
 
   template<typename T>

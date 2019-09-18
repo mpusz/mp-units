@@ -29,7 +29,7 @@ namespace {
 
   using namespace std::experimental;
 
-  inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
+  struct base_dim_digital_information { static constexpr const char* value = "digital information"; };
 
   struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
 

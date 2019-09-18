@@ -74,8 +74,8 @@ constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto 
 
 ### `Dimensions`
 
-`units::dimension` is a type-list like type that stores an ordered list of exponents of one
-or more base dimensions:
+`units::dimension` represents a derived dimension and is implemented as a type-list like type that
+stores an ordered list of exponents of one or more base dimensions:
 
 ```cpp
 template<Exponent... Es>
@@ -94,28 +94,6 @@ concept Dimension =
 
 #### `Exponents`
 
-`units::exp` provides an information about a single base dimension and its (possibly fractional)
-exponent in a derived dimension:
-
-```cpp
-template<const base_dimension& BaseDimension, int Num, int Den = 1>
-struct exp {
-  static constexpr const base_dimension& dimension = BaseDimension;
-  static constexpr int num = Num;
-  static constexpr int den = Den;
-};
-```
-
-where `BaseDimension` is a unique sortable compile-time value:
-
-```cpp
-struct base_dimension {
-  const char* name;
-};
-constexpr bool operator==(const base_dimension& lhs, const base_dimension& rhs);
-constexpr bool operator<(const base_dimension& lhs, const base_dimension& rhs);
-```
-
 `units::Exponent` concept is satisfied if provided type is an instantiation of `units::exp` class
 template:
 
@@ -124,6 +102,45 @@ template<typename T>
 concept Exponent =
     detail::is_exp<T>;  // exposition only
 ```
+
+`units::exp` provides an information about a single dimension and its (possibly fractional)
+exponent in a derived dimension.
+
+```cpp
+template<typename Dim, int Num, int Den = 1>
+  requires BaseDimension<Dim> || Dimension<Dim>
+struct exp {
+  using dimension = Dim;
+  static constexpr int num = Num;
+  static constexpr int den = Den;
+};
+```
+
+Both a base dimension and a derived dimension can be provided to `units::exp` class template.
+
+`units::BaseDimension` represents a base dimension and should be implemented as a type with
+a unique compile-time text describing the dimension name:
+
+```cpp
+template<typename T>
+concept BaseDimension = std::is_empty_v<T> &&
+  requires {
+    { T::value } -> std::same_as<const char*>;
+  };
+```
+
+For example here is a list of SI base dimensions:
+
+```cpp
+struct base_dim_length { static constexpr const char* value = "length"; };
+struct base_dim_mass { static constexpr const char* value = "mass"; };
+struct base_dim_time { static constexpr const char* value = "time"; };
+struct base_dim_current { static constexpr const char* value = "current"; };
+struct base_dim_temperature { static constexpr const char* value = "temperature"; };
+struct base_dim_substance { static constexpr const char* value = "substance"; };
+struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
+``` 
+
 
 #### `make_dimension`
 
@@ -169,6 +186,23 @@ contained base dimensions. Beside providing ordering to base dimensions it also 
 - aggregate two arguments of the same base dimension but different exponents
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
+`make_dimension_t` is also able to form a dimension type based not only on base dimensions but
+it can take other derived dimensions as well. So for some more complex dimensions user can
+type either:
+
+```cpp
+struct pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
+```
+
+or
+
+```cpp
+struct pressure : make_dimension_t<exp<force, 1>, exp<area, -1>> {};
+```
+
+In the second case `make_dimension_t` will extract all derived dimensions into the list of
+exponents of base dimensions. Thanks to that both cases will result with exactly the same base
+class formed only from the exponents of base units. 
 
 #### `merge_dimension`
 
@@ -426,7 +460,7 @@ struct downcast_base {
 };
 
 template<typename T>
-concept bool Downcastable =
+concept Downcastable =
     requires {
       typename T::base_type;
     } &&

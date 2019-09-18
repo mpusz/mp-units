@@ -30,7 +30,7 @@
 
 namespace std::experimental::units {
 
-  struct voltage : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, 2>, exp<base_dim_time, -3>, exp<base_dim_current, -1>> {};
+  struct voltage : make_dimension_t<exp<power, 1>, exp<base_dim_current, -1>> {};
   template<> struct downcasting_traits<downcast_from<voltage>> : downcast_to<voltage> {};
 
   template<typename T>

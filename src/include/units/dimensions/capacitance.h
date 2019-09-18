@@ -28,7 +28,7 @@
 
 namespace std::experimental::units {
 
-  struct capacitance : make_dimension_t<exp<base_dim_mass, -1>, exp<base_dim_length, -2>, exp<base_dim_time, 4>, exp<base_dim_current, 2>> {};
+  struct capacitance : make_dimension_t<exp<electric_charge, 1>, exp<voltage, -1>> {};
   template<> struct downcasting_traits<downcast_from<capacitance>> : downcast_to<capacitance> {};
 
   template<typename T>

@@ -63,19 +63,19 @@ namespace std::experimental::units {
     template<typename E, typename... Rest>
     struct get_unit_base_dim<dimension<E, Rest...>> {
       static_assert(sizeof...(Rest) == 0, "Base unit expected");
-      static constexpr const base_dimension& dimension = E::dimension;
+      using dimension = E::dimension;
     };
 
-    template<const base_dimension& BaseDimension, typename... Us>
+    template<BaseDimension BD, typename... Us>
     struct get_ratio {
       using ratio = ::std::experimental::units::ratio<1>;
     };
 
-    template<const base_dimension& BaseDimension, typename U, typename... Rest>
-    struct get_ratio<BaseDimension, U, Rest...> {
-      static constexpr const base_dimension& unit_base_dim = get_unit_base_dim<typename U::dimension::base_type>::dimension;
-      using ratio = conditional<&unit_base_dim == &BaseDimension, typename U::ratio,
-                                typename get_ratio<BaseDimension, Rest...>::ratio>;
+    template<BaseDimension BD, typename U, typename... Rest>
+    struct get_ratio<BD, U, Rest...> {
+      using unit_base_dim = get_unit_base_dim<typename U::dimension::base_type>::dimension;
+      using ratio = conditional<std::is_same_v<unit_base_dim, BD>, typename U::ratio,
+                                typename get_ratio<BD, Rest...>::ratio>;
     };
 
     template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
@@ -105,7 +105,7 @@ namespace std::experimental::units {
     template<typename E, typename... Rest, typename... Us>
     struct derived_ratio<dimension<E, Rest...>, Us...> {
       using rest_ratio = derived_ratio<dimension<Rest...>, Us...>::ratio;
-      using e_ratio = get_ratio<E::dimension, Us...>::ratio;
+      using e_ratio = get_ratio<typename E::dimension, Us...>::ratio;
       using ratio = ratio_op<rest_ratio, E::num, E::den, e_ratio>::ratio;
     };
 

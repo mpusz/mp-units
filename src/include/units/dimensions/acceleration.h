@@ -26,7 +26,7 @@
 
 namespace std::experimental::units {
 
-  struct acceleration : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -2>> {};
+  struct acceleration : make_dimension_t<exp<velocity, 1>, exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<acceleration>> : downcast_to<acceleration> {};
 
   template<typename T>
