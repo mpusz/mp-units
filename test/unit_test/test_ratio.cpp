@@ -41,6 +41,21 @@ namespace {
   static_assert(std::is_same_v<ratio_divide<ratio<1, 8>, ratio<2>>, ratio<1, 16>>);
   static_assert(std::is_same_v<ratio_divide<ratio<6>, ratio<3>>, ratio<2>>);
 
+  static_assert(std::is_same_v<ratio_pow<ratio<2>, 0>, ratio<1>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<2>, 1>, ratio<2>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<2>, 2>, ratio<4>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<2>, 3>, ratio<8>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 0>, ratio<1>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 1>, ratio<1, 2>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 2>, ratio<1, 4>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 3>, ratio<1, 8>>);
+
+  static_assert(std::is_same_v<ratio_sqrt<ratio<9>>, ratio<3>>);
+  static_assert(std::is_same_v<ratio_sqrt<ratio<4>>, ratio<2>>);
+  static_assert(std::is_same_v<ratio_sqrt<ratio<1>>, ratio<1>>);
+  static_assert(std::is_same_v<ratio_sqrt<ratio<0>>, ratio<0>>);
+  static_assert(std::is_same_v<ratio_sqrt<ratio<1, 4>>, ratio<1, 2>>);
+
   // common_ratio
 
   static_assert(std::is_same_v<common_ratio<ratio<1>, ratio<1000>>, ratio<1>>);

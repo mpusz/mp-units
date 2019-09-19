@@ -25,7 +25,7 @@ add_library(unit_tests
     test_custom_units.cpp
     test_dimension.cpp
     test_quantity.cpp
-    test_tools.cpp
+    test_ratio.cpp
     test_type_list.cpp
     test_units.cpp
 )

@@ -128,8 +128,13 @@ namespace std::experimental::units {
     };
 
     template<typename R>
-    struct ratio_pow_impl<R, 0> {
+    struct ratio_pow_impl<R, 1> {
       using type = R;
+    };
+
+    template<typename R>
+    struct ratio_pow_impl<R, 0> {
+      using type = ratio<1>;
     };
 
   }
@@ -158,10 +163,20 @@ namespace std::experimental::units {
       return sqrt_impl(v, 1, v);
     }
 
+    template<typename R>
+    struct ratio_sqrt_impl {
+      using type = ratio<detail::sqrt_impl(R::num), detail::sqrt_impl(R::den)>;
+    };
+
+    template<std::intmax_t Den>
+    struct ratio_sqrt_impl<ratio<0, Den>> {
+      using type = ratio<0>;
+    };
+
   }
 
   template<Ratio R>
-  using ratio_sqrt = ratio<detail::sqrt_impl(R::den), detail::sqrt_impl(R::num)>;
+  using ratio_sqrt = detail::ratio_sqrt_impl<R>::type;
 
 
   // common_ratio
