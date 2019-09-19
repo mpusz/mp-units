@@ -145,6 +145,11 @@ namespace std::experimental::units {
   template<Exponent... Es>
   struct dimension : downcast_base<dimension<Es...>> {};
 
+  // same_dim
+
+  template<Dimension D1, Dimension D2>
+  inline constexpr bool same_dim = std::is_same_v<typename D1::base_type, typename D2::base_type>;
+
   // dim_invert
 
   template<Dimension E>

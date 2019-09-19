@@ -42,7 +42,7 @@ namespace std::experimental::units {
   concept bool Quantity = detail::is_quantity<T>;
 
   template<typename T, typename D>
-  concept bool QuantityOf = Quantity<T> && Dimension<D> && std::same_as<typename T::dimension, D>;
+  concept bool QuantityOf = Quantity<T> && Dimension<D> && same_dim<typename T::dimension, D>;
 
   // Scalar
 
@@ -69,7 +69,7 @@ namespace std::experimental::units {
   };
 
   template<typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   struct common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
     using type = quantity<downcasting_traits_t<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
   };
@@ -126,7 +126,7 @@ namespace std::experimental::units {
   }  // namespace detail
 
   template<Quantity To, typename U, typename Rep>
-      requires std::same_as<typename To::dimension, typename U::dimension>
+      requires same_dim<typename To::dimension, typename U::dimension>
   constexpr To quantity_cast(const quantity<U, Rep>& q)
   {
     using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
@@ -175,7 +175,7 @@ namespace std::experimental::units {
     }
 
     template<Quantity Q2>
-        requires std::same_as<dimension, typename Q2::dimension> &&
+        requires same_dim<dimension, typename Q2::dimension> &&
                  std::convertible_to<typename Q2::rep, rep> &&
                  (treat_as_floating_point<rep> ||
                    (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
@@ -251,7 +251,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity operator+(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() + rhs.count());
     using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -261,7 +261,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity operator-(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() - rhs.count());
     using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -291,7 +291,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Scalar operator*(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs)
-      requires std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>
+      requires same_dim<typename U1::dimension, dim_invert_t<typename U2::dimension>>
   {
     using common_rep = decltype(lhs.count() * rhs.count());
     using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -301,7 +301,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-      requires (!std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
+      requires (!same_dim<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
                (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                 (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
   {
@@ -342,7 +342,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Scalar operator/(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
@@ -354,7 +354,7 @@ namespace std::experimental::units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity operator/(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-    requires (!std::same_as<typename U1::dimension, typename U2::dimension>) &&
+    requires (!same_dim<typename U1::dimension, typename U2::dimension>) &&
              (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
               (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
   {
@@ -388,7 +388,7 @@ namespace std::experimental::units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator==(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() == ct(rhs).count();
@@ -396,14 +396,14 @@ namespace std::experimental::units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator!=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     return !(lhs == rhs);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator<(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() < ct(rhs).count();
@@ -411,21 +411,21 @@ namespace std::experimental::units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator<=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     return !(rhs < lhs);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator>(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     return rhs < lhs;
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator>=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires std::same_as<typename U1::dimension, typename U2::dimension>
+    requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     return !(lhs < rhs);
   }
