@@ -69,7 +69,7 @@ namespace {
   static_assert(1ft == 12in);
   static_assert(1mi == 1760yd);
 
-//  static_assert(5in + 8cm == 207mm);
+  static_assert(5in + 8cm == 207mm);
 
 
 
