@@ -26,7 +26,7 @@
 #include <units/bits/concepts.h>
 #include <limits>
 
-namespace std::experimental::units {
+namespace units {
 
   // is_quantity
   namespace detail {
@@ -430,4 +430,4 @@ namespace std::experimental::units {
     return !(lhs < rhs);
   }
 
-}  // namespace std::experimental::units
+}  // namespace units

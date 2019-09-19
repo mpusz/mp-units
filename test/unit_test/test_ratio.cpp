@@ -24,7 +24,7 @@
 
 namespace {
 
-  using namespace std::experimental::units;
+  using namespace units;
 
   template<Ratio R1, Ratio R2>
   inline constexpr bool same = R1::num == R2::num && R1::den == R2::den;

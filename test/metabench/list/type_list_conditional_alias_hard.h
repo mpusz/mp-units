@@ -24,7 +24,7 @@
 
 #include <type_traits>
 
-namespace std::experimental::units {
+namespace units {
 
   template<bool>
   struct conditional {
@@ -194,4 +194,4 @@ namespace std::experimental::units {
   template<TypeList List, template<typename, typename> typename Pred>
   using type_list_sort = detail::type_list_sort_impl<List, Pred>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

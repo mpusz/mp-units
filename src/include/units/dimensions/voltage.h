@@ -28,7 +28,7 @@
 #include <units/dimensions/energy.h>
 #include <units/dimensions/electric_charge.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct voltage : make_dimension_t<exp<power, 1>, exp<base_dim_current, -1>> {};
   template<> struct downcasting_traits<downcast_from<voltage>> : downcast_to<voltage> {};
@@ -47,4 +47,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

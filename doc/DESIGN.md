@@ -51,7 +51,7 @@ Quantity is a concrete amount of a unit for a specified dimension with a specifi
 
 ```cpp
 units::quantity<units::kilometre, double> d1(123);
-auto d2 = 123km;    // stde::units::quantity<units::kilometre, std::int64_t>
+auto d2 = 123km;    // units::quantity<units::kilometre, std::int64_t>
 ```
 
 There are C++ concepts provided for each such quantity type:
@@ -385,7 +385,7 @@ could generate a following compile time error:
    const Velocity auto t = 20s;
                            ^~~~
 In file included from <path>\example\example.cpp:23:
-<path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
+<path>/src/include/units/si/velocity.h:41:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]'
    concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
@@ -393,7 +393,7 @@ In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/si/base_dimensions.h:25,
                  from <path>/src/include/units/si/velocity.h:25,
                  from <path>\example\example.cpp:23:
-<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = stde::units::dimension<units::exp<units::base_dim_time, 1> >; U = stde::units::dimension<units::exp<units::base_dim_length, 1>,stde::units::exp<units::base_dim_time, -1> >]'
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>,units::exp<units::base_dim_time, -1> >]'
      concept same_as = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
@@ -403,13 +403,13 @@ Time and velocity are not that complicated dimensions and there are much more co
 out there, but even for those dimensions
 
 ```text
-[with T = stde::units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]
+[with T = units::quantity<units::unit<units::dimension<units::exp<units::base_dim_time, 1> >, std::ratio<1> >, long long int>]
 ```
 
 and
 
 ```text
-[with T = stde::units::dimension<units::exp<units::base_dim_time, 1> >; U = stde::units::dimension<units::exp<units::base_dim_length, 1>,stde::units::exp<units::base_dim_time, -1> >]
+[with T = units::dimension<units::exp<units::base_dim_time, 1> >; U = units::dimension<units::exp<units::base_dim_length, 1>,units::exp<units::base_dim_time, -1> >]
 ```
 
 starts to be really hard to analyze or debug.
@@ -422,7 +422,7 @@ same code will result with such an error:
    const Velocity t = 20s;
                       ^~~~
 In file included from <path>\example\example.cpp:23:
-<path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool stde::units::Velocity<T> [with T = stde::units::quantity<units::second, long long int>]'
+<path>/src/include/units/si/velocity.h:48:16: note: within 'template<class T> concept const bool units::Velocity<T> [with T = units::quantity<units::second, long long int>]'
    concept Velocity = Quantity<T> && std::same_as<typename T::dimension, velocity>;
            ^~~~~~~~
 In file included from <path>/src/include/units/bits/tools.h:25,
@@ -430,7 +430,7 @@ In file included from <path>/src/include/units/bits/tools.h:25,
                  from <path>/src/include/units/si/base_dimensions.h:25,
                  from <path>/src/include/units/si/velocity.h:25,
                  from <path>\example\example.cpp:23:
-<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = stde::units::time; U = stde::units::velocity]'
+<path>/src/include/units/bits/stdconcepts.h:33:18: note: within 'template<class T, class U> concept const bool std::same_as<T, U> [with T = units::time; U = units::velocity]'
      concept same_as = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
@@ -439,13 +439,13 @@ In file included from <path>/src/include/units/bits/tools.h:25,
 Now
 
 ```text
-[with T = stde::units::quantity<units::second, long long int>]
+[with T = units::quantity<units::second, long long int>]
 ```
 
 and
 
 ```text
-[with T = stde::units::time; U = stde::units::velocity]
+[with T = units::time; U = units::velocity]
 ```
 
 are not arguably much easier to understand thus provide better user experience.

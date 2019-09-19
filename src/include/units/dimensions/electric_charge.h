@@ -26,7 +26,7 @@
 #include <units/dimensions/time.h>
 #include <units/dimensions/current.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
   template<> struct downcasting_traits<downcast_from<electric_charge>> : downcast_to<electric_charge> {};
@@ -45,4 +45,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

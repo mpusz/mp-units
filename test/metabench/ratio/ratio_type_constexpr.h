@@ -29,7 +29,7 @@
 
 #define Expects(cond) if(!(cond)) ::std::terminate();
 
-namespace std::experimental::units {
+namespace units {
 
   namespace detail {
 
@@ -122,4 +122,4 @@ namespace std::experimental::units {
   template<typename R1, typename R2>
   using common_ratio_t = typename detail::common_ratio_impl<R1, R2>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

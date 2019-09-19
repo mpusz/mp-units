@@ -28,8 +28,6 @@
 
 namespace {
 
-  using namespace std::experimental;
-
   struct base_dim_digital_information { static constexpr const char* value = "digital information"; };
 
   struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
@@ -51,11 +49,9 @@ namespace {
   }
 }
 
-namespace stde = std::experimental;
-
-template<> struct stde::units::downcasting_traits<stde::units::downcast_from<digital_information>> : stde::units::downcast_to<digital_information> {};
-template<> struct stde::units::downcasting_traits<stde::units::downcast_from<bit>> : stde::units::downcast_to<bit> {};
-template<> struct stde::units::downcasting_traits<stde::units::downcast_from<::byte>> : stde::units::downcast_to<::byte> {};
+template<> struct units::downcasting_traits<units::downcast_from<digital_information>> : units::downcast_to<digital_information> {};
+template<> struct units::downcasting_traits<units::downcast_from<bit>> : units::downcast_to<bit> {};
+template<> struct units::downcasting_traits<units::downcast_from<::byte>> : units::downcast_to<::byte> {};
 
 namespace {
 
@@ -65,7 +61,7 @@ namespace {
 
 namespace {
 
-  using namespace stde::units;
+  using namespace units;
 
   // power spectral density
   struct power_spectral_density : make_dimension_t<units::exp<voltage, 2>, units::exp<frequency, -1>> {};
@@ -78,7 +74,7 @@ namespace {
   struct volt_per_sqrt_hertz : unit<amplitude_spectral_density> {};
 }
 
-namespace std::experimental::units {
+namespace units {
 
 template<> struct downcasting_traits<downcast_from<power_spectral_density>> : downcast_to<power_spectral_density> {};
 template<> struct downcasting_traits<downcast_from<sq_volt_per_hertz>> : downcast_to<sq_volt_per_hertz> {};

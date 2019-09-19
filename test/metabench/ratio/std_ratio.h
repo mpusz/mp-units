@@ -25,7 +25,7 @@
 #include <ratio>
 #include <type_traits>
 
-namespace std::experimental::units {
+namespace units {
 
   // static_sign
 
@@ -66,4 +66,4 @@ namespace std::experimental::units {
   template<typename R1, typename R2>
   using common_ratio_t = typename common_ratio<R1, R2>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

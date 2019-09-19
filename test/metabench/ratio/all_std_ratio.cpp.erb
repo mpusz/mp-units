@@ -1,7 +1,5 @@
 #include "std_ratio.h"
 
-namespace stde = std::experimental;
-
 <% (1..n).each do |i| %>
   struct test<%= i %> {
 #if defined(METABENCH)
@@ -11,7 +9,7 @@ namespace stde = std::experimental;
     using r3 = std::ratio_multiply<r1, r2>;
     using r4 = std::ratio_divide<r1, r2>;
 
-    using r5 = stde::units::common_ratio_t<r1, r2>;
+    using r5 = units::common_ratio_t<r1, r2>;
 #else
     using r1 = void;
     using r2 = void;

@@ -25,7 +25,7 @@
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/energy.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct power : make_dimension_t<exp<energy, 1>, exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<power>> : downcast_to<power> {};
@@ -44,4 +44,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

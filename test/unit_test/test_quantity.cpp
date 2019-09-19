@@ -25,7 +25,7 @@
 #include <utility>
 #include <chrono>
 
-using namespace std::experimental::units;
+using namespace units;
 
 namespace {
 
@@ -44,7 +44,7 @@ namespace {
 
 }  // namespace
 
-namespace std::experimental::units {
+namespace units {
 
   template<typename T>
   inline constexpr bool treat_as_floating_point<my_value<T>> = std::is_floating_point_v<T>;
@@ -56,7 +56,7 @@ namespace std::experimental::units {
     static constexpr my_value<T> min() { return std::numeric_limits<T>::lowest(); }
   };
 
-}  // namespace std::experimental::units
+}  // namespace units
 
 namespace std {
 
@@ -72,7 +72,7 @@ namespace std {
 
 namespace {
 
-  using namespace std::experimental::units;
+  using namespace units;
 
   // class invariants
 

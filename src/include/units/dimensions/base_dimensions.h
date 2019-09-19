@@ -24,7 +24,7 @@
 
 #include <units/dimension.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct base_dim_length { static constexpr const char* value = "length"; };
   struct base_dim_mass { static constexpr const char* value = "mass"; };
@@ -34,4 +34,4 @@ namespace std::experimental::units {
   struct base_dim_substance { static constexpr const char* value = "substance"; };
   struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
 
-}  // namespace std::experimental::units
+}  // namespace units

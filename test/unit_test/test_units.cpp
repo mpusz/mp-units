@@ -46,7 +46,7 @@
 
 namespace {
 
-  using namespace std::experimental::units;
+  using namespace units;
 
   /* ************** BASE DIMENSIONS **************** */
 

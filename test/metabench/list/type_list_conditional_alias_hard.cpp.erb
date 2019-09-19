@@ -1,7 +1,5 @@
 #include "type_list_conditional_alias_hard.h"
 
-namespace stde = std::experimental;
-
 template<int UniqueValue>
 using dim_id = std::integral_constant<int, UniqueValue>;
 
@@ -22,7 +20,7 @@ using <%= "dim#{i}" %> = dimension<<%=
     xs.shuffle(random: rng).join(', ')
 %>>;
 #if defined(METABENCH)
-using <%= "result#{i}" %> = stde::units::type_list_sort<<%= "dim#{i}" %>, dim_id_less>;
+using <%= "result#{i}" %> = units::type_list_sort<<%= "dim#{i}" %>, dim_id_less>;
 #else
 using <%= "result#{i}" %> = void;
 #endif

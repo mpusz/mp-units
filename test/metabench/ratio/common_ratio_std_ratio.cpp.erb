@@ -1,14 +1,12 @@
 #include "std_ratio.h"
 
-namespace stde = std::experimental;
-
 <% (1..n).each do |i| %>
   struct test<%= i %> {
     using r1 = std::ratio<<%= 2 * i - 1 %>, <%= 2 * n %>>;
     using r2 = std::ratio<<%= 2 * i %>, <%= 2 * n %>>;
 
 #if defined(METABENCH)
-    using r3 = stde::units::common_ratio_t<r1, r2>;
+    using r3 = units::common_ratio_t<r1, r2>;
 #else
     using r3 = void;
 #endif

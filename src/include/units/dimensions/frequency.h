@@ -25,7 +25,7 @@
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/time.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct frequency : make_dimension_t<exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<frequency>> : downcast_to<frequency> {};
@@ -79,4 +79,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

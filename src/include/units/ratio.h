@@ -27,7 +27,7 @@
 #include <numeric>
 #include <cstdint>
 
-namespace std::experimental::units {
+namespace units {
 
   namespace detail {
 
@@ -196,4 +196,4 @@ namespace std::experimental::units {
   template<Ratio R1, Ratio R2>
   using common_ratio = detail::common_ratio_impl<R1, R2>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

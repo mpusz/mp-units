@@ -24,7 +24,7 @@
 
 #include <units/dimensions/velocity.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct acceleration : make_dimension_t<exp<velocity, 1>, exp<base_dim_time, -1>> {};
   template<> struct downcasting_traits<downcast_from<acceleration>> : downcast_to<acceleration> {};
@@ -43,4 +43,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

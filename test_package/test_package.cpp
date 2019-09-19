@@ -23,11 +23,10 @@
 #include <units/dimensions/velocity.h>
 #include <iostream>
 
-namespace stde = std::experimental;
-using namespace stde::units::literals;
+using namespace units::literals;
 
-template<stde::units::Length D, stde::units::Time T>
-constexpr stde::units::Velocity avg_speed(D d, T t)
+template<units::Length D, units::Time T>
+constexpr units::Velocity avg_speed(D d, T t)
 {
   return d / t;
 }

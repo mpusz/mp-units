@@ -25,7 +25,7 @@
 #include <units/quantity.h>
 #include <cmath>
 
-namespace std::experimental::units {
+namespace units {
 
   template<std::size_t N, typename U, typename Rep>
   inline Quantity pow(const quantity<U, Rep>& q) noexcept
@@ -43,4 +43,4 @@ namespace std::experimental::units {
     return quantity<downcasting_traits_t<unit<dim, r>>, Rep>(std::sqrt(q.count()));
   }
 
-}  // namespace std::experimental::units
+}  // namespace units

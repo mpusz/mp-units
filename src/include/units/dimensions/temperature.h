@@ -25,7 +25,7 @@
 #include <units/dimensions/base_dimensions.h>
 #include <units/quantity.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
   template<> struct downcasting_traits<downcast_from<temperature>> : downcast_to<temperature> {};
@@ -44,4 +44,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

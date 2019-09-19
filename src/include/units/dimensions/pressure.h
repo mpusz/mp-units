@@ -26,7 +26,7 @@
 #include <units/dimensions/force.h>
 #include <units/dimensions/area.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct pressure : make_dimension_t<exp<force, 1>, exp<area, -1>> {};
   template<> struct downcasting_traits<downcast_from<pressure>> : downcast_to<pressure> {};
@@ -45,4 +45,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

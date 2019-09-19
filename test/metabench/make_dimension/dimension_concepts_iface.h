@@ -27,7 +27,7 @@
 #include "ratio_concepts_iface.h"
 #include <ratio>
 
-namespace std::experimental::units {
+namespace units {
 
   struct base_dimension {
     const char* name;
@@ -213,4 +213,4 @@ namespace std::experimental::units {
   template<Dimension D1, Dimension D2>
   using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

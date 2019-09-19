@@ -26,7 +26,7 @@
 #include <units/dimensions/mass.h>
 #include <units/dimensions/acceleration.h>
 
-namespace std::experimental::units {
+namespace units {
 
   struct force : make_dimension_t<exp<base_dim_mass, 1>, exp<acceleration, 1>> {};
   template<> struct downcasting_traits<downcast_from<force>> : downcast_to<force> {};
@@ -45,4 +45,4 @@ namespace std::experimental::units {
 
   }  // namespace literals
 
-}  // namespace std::experimental::units
+}  // namespace units

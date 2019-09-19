@@ -27,7 +27,7 @@
 #include <units/ratio.h>
 #include <ratio>
 
-namespace std::experimental::units {
+namespace units {
 
   template<typename T>
   concept bool BaseDimension = std::is_empty_v<T> &&
@@ -286,4 +286,4 @@ namespace std::experimental::units {
   template<Dimension D, std::size_t N>
   using dimension_pow_t = dimension_pow<typename D::base_type, N>::type;
 
-}  // namespace std::experimental::units
+}  // namespace units

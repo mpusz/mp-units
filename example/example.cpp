@@ -25,28 +25,27 @@
 
 namespace {
 
-namespace stde = std::experimental;
-using namespace stde::units::literals;
+using namespace units::literals;
 
-template<stde::units::Length D, stde::units::Time T>
-constexpr stde::units::Velocity avg_speed(D d, T t)
+template<units::Length D, units::Time T>
+constexpr units::Velocity avg_speed(D d, T t)
 {
   return d / t;
 }
 
-template<stde::units::Velocity V, stde::units::Time T>
+template<units::Velocity V, units::Time T>
 void example_1(V v, T t)
 {
-  const stde::units::Length distance = v * t;
+  const units::Length distance = v * t;
   std::cout << "A car driving " << v.count() << " km/h in a time of " << t.count() << " minutes will pass "
-            << stde::units::quantity_cast<stde::units::quantity<stde::units::metre, double>>(distance).count() << " metres.\n";
+            << units::quantity_cast<units::quantity<units::metre, double>>(distance).count() << " metres.\n";
 }
 
 void example_2(double distance_v, double duration_v)
 {
-  stde::units::quantity<stde::units::kilometre> distance(distance_v);
-  stde::units::quantity<stde::units::hour> duration(duration_v);
-  const auto kmph = quantity_cast<stde::units::kilometre_per_hour>(avg_speed(distance, duration));
+  units::quantity<units::kilometre> distance(distance_v);
+  units::quantity<units::hour> duration(duration_v);
+  const auto kmph = quantity_cast<units::kilometre_per_hour>(avg_speed(distance, duration));
   std::cout << "Average speed of a car that makes " << distance.count() << " km in "
             << duration.count() << " hours is " << kmph.count() << " km/h.\n";
 }
