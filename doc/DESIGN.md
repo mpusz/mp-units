@@ -544,13 +544,11 @@ In order to extend the library with custom dimensions the user has to:
 
 1. Should we ensure that dimension is always a result of `make_dimension`? How to do it?
 
-2. What to do with `time` which is ambiguous (conflict wit ANSI C)?
+2. What to do with `std::chrono::duration`?
 
-3. What to do with `std::chrono::duration`?
+3. Should we provide `seconds<int>` or stay with `quantity<second, int>`?
 
-4. Should we provide `seconds<int>` or stay with `quantity<second, int>`?
-
-5. What is the best way to add support for temperatures?
+4. What is the best way to add support for temperatures?
 
     Temperature absolute values not only require `std::ratio` but also should be adjusted/shifted
     by some constant values (i.e. [°C] = [K] − 273.15). Relative temperatures does need an offset.
@@ -558,30 +556,21 @@ In order to extend the library with custom dimensions the user has to:
     is to provide only `K` support in quantity and provide non-member helper conversion functions
     with verbose names to convert to `°C` and `°C`?
 
-6. Do we need non-linear scale?
+5. Do we need non-linear scale?
 
-7. Should we provide cmath-like functions for quantities?
+6. Should we provide integral UDLs?
 
-8. What should be the resulting type of `auto d = 1km + 1ft;`?
+7. Provide ostream overloads to print quantity units (use `std::format`)?
 
-9. Should we require explicit casts (i.e. quantity_cast) between different systems of
-   measurement?
-    
-10. Should we support integral representations?
-
-11. Provide ostream overloads to print quantity units (use `std::format`)?
-
-12. Should we provide support for dimensionless quantities? 
+8. Should we provide support for dimensionless quantities? 
 
     Because dimensionless quantities have no associated units, they behave as normal scalars,
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
 
-13. Should we standardize accompany tools (`downcasting_traits`, `type_list` operations, `common_ratio`, etc)? 
-     
-14. Do we need to support fractional exponents (i.e. `dimension<exp<"length", 2, 3>>` as 2/3)?
+9. Should we standardize accompany tools (`downcasting_traits`, `type_list` operations, `common_ratio`, etc)? 
 
-15. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
+10. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
     for floating point types.
 
-16. `J` imaginary constants are a GCC extension
+11. `J` imaginary constants are a GCC extension
