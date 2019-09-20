@@ -29,13 +29,13 @@
 namespace units {
 
   struct pressure : make_dimension_t<exp<force, 1>, exp<area, -1>> {};
-  template<> struct downcasting_traits<downcast_from<pressure>> : downcast_to<pressure> {};
+  template<> struct downcast_traits<downcast_base_t<pressure>> : std::type_identity<pressure> {};
 
   template<typename T>
   concept bool Pressure =  QuantityOf<T, pressure>;
 
   struct pascal : derived_unit<pressure, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<pascal>> : downcast_to<pascal> {};
+  template<> struct downcast_traits<downcast_base_t<pascal>> : std::type_identity<pascal> {};
 
   inline namespace literals {
 

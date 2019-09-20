@@ -40,15 +40,12 @@ namespace units {
       std::derived_from<T, downcast_base<typename T::base_type>>;
 
   template<Downcastable T>
-  using downcast_from = T::base_type;
+  using downcast_base_t = T::base_type;
 
   template<Downcastable T>
-  using downcast_to = std::type_identity<T>;
+  struct downcast_traits : std::type_identity<T> {};
 
   template<Downcastable T>
-  struct downcasting_traits : downcast_to<T> {};
-
-  template<Downcastable T>
-  using downcasting_traits_t = downcasting_traits<T>::type;
+  using downcast_traits_t = downcast_traits<T>::type;
 
 }  // namespace units

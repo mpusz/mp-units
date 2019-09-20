@@ -28,23 +28,23 @@
 namespace units {
 
   struct length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct downcasting_traits<downcast_from<length>> : downcast_to<length> {};
+  template<> struct downcast_traits<downcast_base_t<length>> : std::type_identity<length> {};
 
   template<typename T>
   concept bool Length = QuantityOf<T, length>;
 
   // SI units
   struct metre : unit<length> {};
-  template<> struct downcasting_traits<downcast_from<metre>> : downcast_to<metre> {};
+  template<> struct downcast_traits<downcast_base_t<metre>> : std::type_identity<metre> {};
 
   struct millimetre : milli<metre> {};
-  template<> struct downcasting_traits<downcast_from<millimetre>> : downcast_to<millimetre> {};
+  template<> struct downcast_traits<downcast_base_t<millimetre>> : std::type_identity<millimetre> {};
 
   struct centimetre : centi<metre> {};
-  template<> struct downcasting_traits<downcast_from<centimetre>> : downcast_to<centimetre> {};
+  template<> struct downcast_traits<downcast_base_t<centimetre>> : std::type_identity<centimetre> {};
 
   struct kilometre : kilo<metre> {};
-  template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
+  template<> struct downcast_traits<downcast_base_t<kilometre>> : std::type_identity<kilometre> {};
 
   inline namespace literals {
 
@@ -68,16 +68,16 @@ namespace units {
 
   // US customary units
   struct yard : unit<length, ratio<9'144, 10'000>> {};
-  template<> struct downcasting_traits<downcast_from<yard>> : downcast_to<yard> {};
+  template<> struct downcast_traits<downcast_base_t<yard>> : std::type_identity<yard> {};
 
   struct foot : unit<length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  template<> struct downcasting_traits<downcast_from<foot>> : downcast_to<foot> {};
+  template<> struct downcast_traits<downcast_base_t<foot>> : std::type_identity<foot> {};
 
   struct inch : unit<length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  template<> struct downcasting_traits<downcast_from<inch>> : downcast_to<inch> {};
+  template<> struct downcast_traits<downcast_base_t<inch>> : std::type_identity<inch> {};
 
   struct mile : unit<length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
-  template<> struct downcasting_traits<downcast_from<mile>> : downcast_to<mile> {};
+  template<> struct downcast_traits<downcast_base_t<mile>> : std::type_identity<mile> {};
 
   inline namespace literals {
 

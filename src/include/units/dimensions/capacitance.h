@@ -29,13 +29,13 @@
 namespace units {
 
   struct capacitance : make_dimension_t<exp<electric_charge, 1>, exp<voltage, -1>> {};
-  template<> struct downcasting_traits<downcast_from<capacitance>> : downcast_to<capacitance> {};
+  template<> struct downcast_traits<downcast_base_t<capacitance>> : std::type_identity<capacitance> {};
 
   template<typename T>
   concept bool Capacitance =  QuantityOf<T, capacitance>;
 
   struct farad : derived_unit<capacitance, kilogram, metre, second, ampere> {};
-  template<> struct downcasting_traits<downcast_from<farad>> : downcast_to<farad> {};
+  template<> struct downcast_traits<downcast_base_t<farad>> : std::type_identity<farad> {};
 
   inline namespace literals {
 

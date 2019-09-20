@@ -50,7 +50,7 @@ namespace units {
   template<typename T>
   concept bool Unit =
       std::is_empty_v<T> &&
-      detail::is_unit<downcast_from<T>>;
+      detail::is_unit<downcast_base_t<T>>;
 
 
   // derived_unit

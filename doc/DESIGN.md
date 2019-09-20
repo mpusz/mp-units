@@ -89,7 +89,7 @@ derived from `units::dimension` class template:
 template<typename T>
 concept Dimension =
     std::is_empty_v<T> &&
-    detail::is_dimension<downcast_from<T>>; // exposition only
+    detail::is_dimension<downcast_base_t<T>>; // exposition only
 ```
 
 #### `Exponents`
@@ -219,7 +219,7 @@ struct dimension_multiply;
 
 template<Exponent... E1, Exponent... E2>
 struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
-  using type = downcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>;
+  using type = downcast_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>;
 };
 
 template<Dimension D1, Dimension D2>
@@ -275,7 +275,7 @@ derived from `units::unit` class template:
 template<typename T>
 concept Unit =
     std::is_empty_v<T> &&
-    detail::is_unit<downcast_from<T>>;  // exposition only
+    detail::is_unit<downcast_base_t<T>>;  // exposition only
 ```
 
 ### `Quantities`
@@ -450,7 +450,7 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-Downcasting capability is provided through dedicated `downcasting_traits`, concept, a few helper aliases and by
+Downcasting capability is provided through dedicated `downcast_traits`, concept, a few helper aliases and by
 `base_type` member type in `downcast_base` class template.
 
 ```cpp
@@ -467,28 +467,25 @@ concept Downcastable =
     std::derived_from<T, downcast_base<typename T::base_type>>;
 
 template<Downcastable T>
-using downcast_from = T::base_type;
+using downcast_base_t = T::base_type;
 
 template<Downcastable T>
-using downcast_to = std::type_identity<T>;
+struct downcast_traits : std::type_identity<T> {};
 
 template<Downcastable T>
-struct downcasting_traits : downcast_to<T> {};
-
-template<Downcastable T>
-using downcasting_traits_t = downcasting_traits<T>::type;
+using downcast_traits_t = downcast_traits<T>::type;
 ```
 
 With that the downcasting functionality is enabled by:
 
 ```cpp
 struct length : make_dimension_t<exp<base_dim_length, 1>> {};
-template<> struct downcasting_traits<downcast_from<length>> : downcast_to<length> {};
+template<> struct downcast_traits<downcast_base_t<length>> : std::type_identity<length> {};
 ```
 
 ```cpp
 struct kilometre : unit<length, std::kilo> {};
-template<> struct downcasting_traits<downcast_from<kilometre>> : downcast_to<kilometre> {};
+template<> struct downcast_traits<downcast_base_t<kilometre>> : std::type_identity<kilometre> {};
 ```
 
 
@@ -507,7 +504,7 @@ In order to extend the library with custom dimensions the user has to:
     ```cpp
     struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
     template<>
-    struct units::downcasting_traits<units::downcast_from<digital_information>> : units::downcast_to<digital_information> {};
+    struct units::downcast_traits<units::downcast_base_t<digital_information>> : units::std::type_identity_t<digital_information> {};
     ``` 
 
 2. Define a concept that will match a new dimension:
@@ -521,10 +518,10 @@ In order to extend the library with custom dimensions the user has to:
 
     ```cpp
     struct bit : units::unit<digital_information> {};
-    template<> struct units::downcasting_traits<units::downcast_from<bit>> : units::downcast_to<bit> {};
+    template<> struct units::downcast_traits<units::downcast_base_t<bit>> : units::std::type_identity_t<bit> {};
    
     struct byte : units::unit<digital_information, units::ratio<8>> {};
-    template<> struct units::downcasting_traits<units::downcast_from<byte>> : units::downcast_to<byte> {};
+    template<> struct units::downcast_traits<units::downcast_base_t<byte>> : units::std::type_identity_t<byte> {};
     ```
 
 4. Provide user-defined literals for the most important units:
@@ -568,7 +565,7 @@ In order to extend the library with custom dimensions the user has to:
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
 
-9. Should we standardize accompany tools (`downcasting_traits`, `type_list` operations, `common_ratio`, etc)? 
+9. Should we standardize accompany tools (`downcast_traits`, `type_list` operations, `common_ratio`, etc)? 
 
 10. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
     for floating point types.

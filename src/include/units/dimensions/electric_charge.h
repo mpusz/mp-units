@@ -29,13 +29,13 @@
 namespace units {
 
   struct electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
-  template<> struct downcasting_traits<downcast_from<electric_charge>> : downcast_to<electric_charge> {};
+  template<> struct downcast_traits<downcast_base_t<electric_charge>> : std::type_identity<electric_charge> {};
 
   template<typename T>
   concept bool ElectricCharge =  QuantityOf<T, electric_charge>;
 
   struct coulomb : derived_unit<electric_charge, second, ampere> {};
-  template<> struct downcasting_traits<downcast_from<coulomb>> : downcast_to<coulomb> {};
+  template<> struct downcast_traits<downcast_base_t<coulomb>> : std::type_identity<coulomb> {};
 
   inline namespace literals {
 

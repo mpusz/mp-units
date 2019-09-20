@@ -99,7 +99,7 @@ namespace units {
   struct dim_invert;
 
   template<typename... Es>
-  struct dim_invert<dimension<Es...>> : std::type_identity<downcasting_traits_t<dimension<exp_invert_t<Es>...>>> {};
+  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<typename D>
   using dim_invert_t = dim_invert<typename D::base_type>::type;
@@ -166,7 +166,7 @@ namespace units {
   struct dimension_multiply;
 
   template<typename... E1, typename... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcasting_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
+  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<typename D1, typename D2>
   using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;

@@ -28,19 +28,19 @@
 namespace units {
 
   struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
-  template<> struct downcasting_traits<downcast_from<velocity>> : downcast_to<velocity> {};
+  template<> struct downcast_traits<downcast_base_t<velocity>> : std::type_identity<velocity> {};
 
   template<typename T>
   concept bool Velocity = QuantityOf<T, velocity>;
 
   struct metre_per_second : derived_unit<velocity, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<metre_per_second>> : downcast_to<metre_per_second> {};
+  template<> struct downcast_traits<downcast_base_t<metre_per_second>> : std::type_identity<metre_per_second> {};
 
   struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
-  template<> struct downcasting_traits<downcast_from<kilometre_per_hour>> : downcast_to<kilometre_per_hour> {};
+  template<> struct downcast_traits<downcast_base_t<kilometre_per_hour>> : std::type_identity<kilometre_per_hour> {};
 
   struct mile_per_hour : derived_unit<velocity, mile, hour> {};
-  template<> struct downcasting_traits<downcast_from<mile_per_hour>> : downcast_to<mile_per_hour> {};
+  template<> struct downcast_traits<downcast_base_t<mile_per_hour>> : std::type_identity<mile_per_hour> {};
 
   inline namespace literals {
 

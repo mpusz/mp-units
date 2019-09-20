@@ -28,28 +28,28 @@
 namespace units {
 
   struct frequency : make_dimension_t<exp<base_dim_time, -1>> {};
-  template<> struct downcasting_traits<downcast_from<frequency>> : downcast_to<frequency> {};
+  template<> struct downcast_traits<downcast_base_t<frequency>> : std::type_identity<frequency> {};
 
   template<typename T>
   concept bool Frequency =  QuantityOf<T, frequency>;
 
   struct hertz : derived_unit<frequency, second> {};
-  template<> struct downcasting_traits<downcast_from<hertz>> : downcast_to<hertz> {};
+  template<> struct downcast_traits<downcast_base_t<hertz>> : std::type_identity<hertz> {};
 
   struct millihertz : milli<hertz> {};
-  template<> struct downcasting_traits<downcast_from<millihertz>> : downcast_to<millihertz> {};
+  template<> struct downcast_traits<downcast_base_t<millihertz>> : std::type_identity<millihertz> {};
 
   struct kilohertz : kilo<hertz> {};
-  template<> struct downcasting_traits<downcast_from<kilohertz>> : downcast_to<kilohertz> {};
+  template<> struct downcast_traits<downcast_base_t<kilohertz>> : std::type_identity<kilohertz> {};
 
   struct megahertz : mega<hertz> {};
-  template<> struct downcasting_traits<downcast_from<megahertz>> : downcast_to<megahertz> {};
+  template<> struct downcast_traits<downcast_base_t<megahertz>> : std::type_identity<megahertz> {};
 
   struct gigahertz : giga<hertz> {};
-  template<> struct downcasting_traits<downcast_from<gigahertz>> : downcast_to<gigahertz> {};
+  template<> struct downcast_traits<downcast_base_t<gigahertz>> : std::type_identity<gigahertz> {};
 
   struct terahertz : tera<hertz> {};
-  template<> struct downcasting_traits<downcast_from<terahertz>> : downcast_to<terahertz> {};
+  template<> struct downcast_traits<downcast_base_t<terahertz>> : std::type_identity<terahertz> {};
 
   inline namespace literals {
 

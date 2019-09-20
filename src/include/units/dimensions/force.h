@@ -29,13 +29,13 @@
 namespace units {
 
   struct force : make_dimension_t<exp<base_dim_mass, 1>, exp<acceleration, 1>> {};
-  template<> struct downcasting_traits<downcast_from<force>> : downcast_to<force> {};
+  template<> struct downcast_traits<downcast_base_t<force>> : std::type_identity<force> {};
 
   template<typename T>
   concept bool Force =  QuantityOf<T, force>;
 
   struct newton : derived_unit<force, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<newton>> : downcast_to<newton> {};
+  template<> struct downcast_traits<downcast_base_t<newton>> : std::type_identity<newton> {};
 
   inline namespace literals {
 

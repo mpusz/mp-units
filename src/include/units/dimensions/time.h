@@ -28,28 +28,28 @@
 namespace units {
 
   struct time : make_dimension_t<exp<base_dim_time, 1>> {};
-  template<> struct downcasting_traits<downcast_from<time>> : downcast_to<time> {};
+  template<> struct downcast_traits<downcast_base_t<time>> : std::type_identity<time> {};
 
   template<typename T>
   concept bool Time = QuantityOf<T, time>;
 
   struct second : unit<time> {};
-  template<> struct downcasting_traits<downcast_from<second>> : downcast_to<second> {};
+  template<> struct downcast_traits<downcast_base_t<second>> : std::type_identity<second> {};
 
   struct nanosecond : nano<second> {};
-  template<> struct downcasting_traits<downcast_from<nanosecond>> : downcast_to<nanosecond> {};
+  template<> struct downcast_traits<downcast_base_t<nanosecond>> : std::type_identity<nanosecond> {};
 
   struct microsecond : micro<second> {};
-  template<> struct downcasting_traits<downcast_from<microsecond>> : downcast_to<microsecond> {};
+  template<> struct downcast_traits<downcast_base_t<microsecond>> : std::type_identity<microsecond> {};
 
   struct millisecond : milli<second> {};
-  template<> struct downcasting_traits<downcast_from<millisecond>> : downcast_to<millisecond> {};
+  template<> struct downcast_traits<downcast_base_t<millisecond>> : std::type_identity<millisecond> {};
 
   struct minute : unit<time, ratio<60>> {};
-  template<> struct downcasting_traits<downcast_from<minute>> : downcast_to<minute> {};
+  template<> struct downcast_traits<downcast_base_t<minute>> : std::type_identity<minute> {};
 
   struct hour : unit<time, ratio<3600>> {};
-  template<> struct downcasting_traits<downcast_from<hour>> : downcast_to<hour> {};
+  template<> struct downcast_traits<downcast_base_t<hour>> : std::type_identity<hour> {};
 
   inline namespace literals {
 

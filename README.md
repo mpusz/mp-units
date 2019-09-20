@@ -60,6 +60,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - Support for derived dimensions in `exp` added
   - Added `pow()` and `sqrt()` operations on quantities
   - `units` removed from a `std::experimental` namespace
+  - `downcasting_traits` renamed to `downcast_traits` and refactored helpers
 
 - 0.3.1 Sep 18, 2019
   - cmcstl2 dependency changed to range-v3 0.9.1

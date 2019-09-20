@@ -49,9 +49,9 @@ namespace {
   }
 }
 
-template<> struct units::downcasting_traits<units::downcast_from<digital_information>> : units::downcast_to<digital_information> {};
-template<> struct units::downcasting_traits<units::downcast_from<bit>> : units::downcast_to<bit> {};
-template<> struct units::downcasting_traits<units::downcast_from<::byte>> : units::downcast_to<::byte> {};
+template<> struct units::downcast_traits<units::downcast_base_t<digital_information>> : std::type_identity<digital_information> {};
+template<> struct units::downcast_traits<units::downcast_base_t<bit>> : std::type_identity<bit> {};
+template<> struct units::downcast_traits<units::downcast_base_t<::byte>> : std::type_identity<::byte> {};
 
 namespace {
 
@@ -76,11 +76,11 @@ namespace {
 
 namespace units {
 
-template<> struct downcasting_traits<downcast_from<power_spectral_density>> : downcast_to<power_spectral_density> {};
-template<> struct downcasting_traits<downcast_from<sq_volt_per_hertz>> : downcast_to<sq_volt_per_hertz> {};
+template<> struct downcast_traits<downcast_base_t<power_spectral_density>> : std::type_identity<power_spectral_density> {};
+template<> struct downcast_traits<downcast_base_t<sq_volt_per_hertz>> : std::type_identity<sq_volt_per_hertz> {};
 
-template<> struct downcasting_traits<downcast_from<amplitude_spectral_density>> : downcast_to<amplitude_spectral_density> {};
-template<> struct downcasting_traits<downcast_from<volt_per_sqrt_hertz>> : downcast_to<volt_per_sqrt_hertz> {};
+template<> struct downcast_traits<downcast_base_t<amplitude_spectral_density>> : std::type_identity<amplitude_spectral_density> {};
+template<> struct downcast_traits<downcast_base_t<volt_per_sqrt_hertz>> : std::type_identity<volt_per_sqrt_hertz> {};
 
 }
 

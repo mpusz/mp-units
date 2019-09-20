@@ -28,13 +28,13 @@
 namespace units {
 
   struct power : make_dimension_t<exp<energy, 1>, exp<base_dim_time, -1>> {};
-  template<> struct downcasting_traits<downcast_from<power>> : downcast_to<power> {};
+  template<> struct downcast_traits<downcast_base_t<power>> : std::type_identity<power> {};
 
   template<typename T>
   concept bool Power =  QuantityOf<T, power>;
 
   struct watt : derived_unit<power, kilogram, metre, second> {};
-  template<> struct downcasting_traits<downcast_from<watt>> : downcast_to<watt> {};
+  template<> struct downcast_traits<downcast_base_t<watt>> : std::type_identity<watt> {};
 
   inline namespace literals {
 

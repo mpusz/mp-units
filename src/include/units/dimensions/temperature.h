@@ -28,13 +28,13 @@
 namespace units {
 
   struct temperature : make_dimension_t<exp<base_dim_temperature, 1>> {};
-  template<> struct downcasting_traits<downcast_from<temperature>> : downcast_to<temperature> {};
+  template<> struct downcast_traits<downcast_base_t<temperature>> : std::type_identity<temperature> {};
 
   template<typename T>
   concept bool ThermodynamicTemperature = QuantityOf<T, temperature>;
 
   struct kelvin : unit<temperature> {};
-  template<> struct downcasting_traits<downcast_from<kelvin>> : downcast_to<kelvin> {};
+  template<> struct downcast_traits<downcast_base_t<kelvin>> : std::type_identity<kelvin> {};
 
   inline namespace literals {
 

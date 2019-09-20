@@ -28,16 +28,16 @@
 namespace units {
 
   struct mass : make_dimension_t<exp<base_dim_mass, 1>> {};
-  template<> struct downcasting_traits<downcast_from<mass>> : downcast_to<mass> {};
+  template<> struct downcast_traits<downcast_base_t<mass>> : std::type_identity<mass> {};
 
   template<typename T>
   concept bool Mass = QuantityOf<T, mass>;
 
   struct gram : unit<mass, ratio<1, 1000>> {};
-  template<> struct downcasting_traits<downcast_from<gram>> : downcast_to<gram> {};
+  template<> struct downcast_traits<downcast_base_t<gram>> : std::type_identity<gram> {};
 
   struct kilogram : kilo<gram> {};
-  template<> struct downcasting_traits<downcast_from<kilogram>> : downcast_to<kilogram> {};
+  template<> struct downcast_traits<downcast_base_t<kilogram>> : std::type_identity<kilogram> {};
 
   inline namespace literals {
 
