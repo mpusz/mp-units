@@ -22,6 +22,8 @@
 
 #include "units/dimensions/velocity.h"
 #include "units/dimensions/frequency.h"
+#include "units/dimensions/area.h"
+#include "units/math.h"
 #include <utility>
 #include <chrono>
 
@@ -130,8 +132,7 @@ namespace {
   static_assert([]() {
     quantity<metre, int> l1(1), l2(2);
     return l2 = l1;
-  }()
-                    .count() == 1);
+  }().count() == 1);
 
   // static member functions
 
@@ -280,5 +281,7 @@ namespace {
   static_assert(1km / 1s == 1000mps);
   static_assert(2kmph * 2h == 4km);
   static_assert(2km / 2kmph == 1h);
+
+  static_assert(std::is_same_v<decltype(pow<2>(2m)), decltype(4sq_m)>);
 
 }  // namespace
