@@ -27,24 +27,16 @@
 
 namespace units {
 
-  struct length : make_dimension_t<exp<base_dim_length, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<length>> : std::type_identity<length> {};
+  struct length : derived_dimension<length, exp<base_dim_length, 1>> {};
 
   template<typename T>
   concept bool Length = QuantityOf<T, length>;
 
   // SI units
-  struct metre : unit<length> {};
-  template<> struct downcast_traits<downcast_base_t<metre>> : std::type_identity<metre> {};
-
-  struct millimetre : milli<metre> {};
-  template<> struct downcast_traits<downcast_base_t<millimetre>> : std::type_identity<millimetre> {};
-
-  struct centimetre : centi<metre> {};
-  template<> struct downcast_traits<downcast_base_t<centimetre>> : std::type_identity<centimetre> {};
-
-  struct kilometre : kilo<metre> {};
-  template<> struct downcast_traits<downcast_base_t<kilometre>> : std::type_identity<kilometre> {};
+  struct metre : derived_unit<metre, length> {};
+  struct millimetre : derived_unit<millimetre, milli<metre>> {};
+  struct centimetre : derived_unit<centimetre, centi<metre>> {};
+  struct kilometre : derived_unit<kilometre, kilo<metre>> {};
 
   inline namespace literals {
 
@@ -67,17 +59,10 @@ namespace units {
   } // namespace literals
 
   // US customary units
-  struct yard : unit<length, ratio<9'144, 10'000>> {};
-  template<> struct downcast_traits<downcast_base_t<yard>> : std::type_identity<yard> {};
-
-  struct foot : unit<length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  template<> struct downcast_traits<downcast_base_t<foot>> : std::type_identity<foot> {};
-
-  struct inch : unit<length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  template<> struct downcast_traits<downcast_base_t<inch>> : std::type_identity<inch> {};
-
-  struct mile : unit<length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
-  template<> struct downcast_traits<downcast_base_t<mile>> : std::type_identity<mile> {};
+  struct yard : derived_unit<yard, length, ratio<9'144, 10'000>> {};
+  struct foot : derived_unit<foot, length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
+  struct inch : derived_unit<inch, length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct mile : derived_unit<mile, length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
 
   inline namespace literals {
 

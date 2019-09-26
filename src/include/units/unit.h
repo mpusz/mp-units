@@ -52,8 +52,7 @@ namespace units {
       std::is_empty_v<T> &&
       detail::is_unit<downcast_base_t<T>>;
 
-
-  // derived_unit
+  // make_derived_unit
 
   namespace detail {
 
@@ -109,12 +108,30 @@ namespace units {
       using ratio = ratio_op<rest_ratio, E::num, E::den, e_ratio>::ratio;
     };
 
+    template<Dimension D, Unit... Us>
+    using make_derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
+
   }
 
-  template<Dimension D, Unit... Us>
-  using derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
+  // derived_unit
 
-  // prefixes
+  template<typename Child, typename...>
+  struct derived_unit;
+
+  template<typename Child, Dimension D>
+  struct derived_unit<Child, D> : downcast_helper<Child, unit<D, ratio<1>>> {};
+
+  template<typename Child, Dimension D, Ratio R>
+  struct derived_unit<Child, D, R> : downcast_helper<Child, unit<D, R>> {};
+
+  template<typename Child, Unit U>
+  struct derived_unit<Child, U> : downcast_helper<Child, U> {};
+
+  template<typename Child, Dimension D, Unit U, Unit... Us>
+  struct derived_unit<Child, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {};
+
+  // SI prefixes
+
   template<Unit U> using atto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::atto::den>>>;
   template<Unit U> using femto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::femto::den>>>;
   template<Unit U> using pico = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::pico::den>>>;

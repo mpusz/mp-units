@@ -28,14 +28,12 @@
 
 namespace units {
 
-  struct electric_charge : make_dimension_t<exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<electric_charge>> : std::type_identity<electric_charge> {};
+  struct electric_charge : derived_dimension<electric_charge, exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
 
   template<typename T>
   concept bool ElectricCharge =  QuantityOf<T, electric_charge>;
 
-  struct coulomb : derived_unit<electric_charge, second, ampere> {};
-  template<> struct downcast_traits<downcast_base_t<coulomb>> : std::type_identity<coulomb> {};
+  struct coulomb : derived_unit<coulomb, electric_charge, second, ampere> {};
 
   inline namespace literals {
 

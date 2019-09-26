@@ -27,14 +27,12 @@
 
 namespace units {
 
-  struct substance : make_dimension_t<exp<base_dim_substance, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<substance>> : std::type_identity<substance> {};
+  struct substance : derived_dimension<substance, exp<base_dim_substance, 1>> {};
 
   template<typename T>
   concept bool Substance = QuantityOf<T, substance>;
 
-  struct mole : unit<substance> {};
-  template<> struct downcast_traits<downcast_base_t<mole>> : std::type_identity<mole> {};
+  struct mole : derived_unit<mole, substance> {};
 
   inline namespace literals {
 

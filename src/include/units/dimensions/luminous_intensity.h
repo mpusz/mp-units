@@ -27,14 +27,12 @@
 
 namespace units {
 
-  struct luminous_intensity : make_dimension_t<exp<base_dim_luminous_intensity, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<luminous_intensity>> : std::type_identity<luminous_intensity> {};
+  struct luminous_intensity : derived_dimension<luminous_intensity, exp<base_dim_luminous_intensity, 1>> {};
 
   template<typename T>
   concept bool LuminousIntensity = QuantityOf<T, luminous_intensity>;
 
-  struct candela : unit<luminous_intensity> {};
-  template<> struct downcast_traits<downcast_base_t<candela>> : std::type_identity<candela> {};
+  struct candela : derived_unit<candela, luminous_intensity> {};
 
   inline namespace literals {
 

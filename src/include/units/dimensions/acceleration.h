@@ -26,14 +26,12 @@
 
 namespace units {
 
-  struct acceleration : make_dimension_t<exp<velocity, 1>, exp<base_dim_time, -1>> {};
-  template<> struct downcast_traits<downcast_base_t<acceleration>> : std::type_identity<acceleration> {};
+  struct acceleration : derived_dimension<acceleration, exp<velocity, 1>, exp<base_dim_time, -1>> {};
 
   template<typename T>
   concept bool Acceleration = QuantityOf<T, acceleration>;
 
-  struct metre_per_second_sq : derived_unit<acceleration, metre, second> {};
-  template<> struct downcast_traits<downcast_base_t<metre_per_second_sq>> : std::type_identity<metre_per_second_sq> {};
+  struct metre_per_second_sq : derived_unit<metre_per_second_sq, acceleration, metre, second> {};
 
   inline namespace literals {
 

@@ -82,7 +82,7 @@ template<Exponent... Es>
 struct dimension : downcast_base<dimension<Es...>> {};
 ```
 
-`units::Dimension` is a Concept that is satisfied by a type that is empty and publicly
+`units::Dimension` is a concept that is satisfied by a type that is empty and publicly
 derived from `units::dimension` class template: 
 
 ```cpp
@@ -139,10 +139,9 @@ struct base_dim_current { static constexpr const char* value = "current"; };
 struct base_dim_temperature { static constexpr const char* value = "temperature"; };
 struct base_dim_substance { static constexpr const char* value = "substance"; };
 struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
-``` 
+```
 
-
-#### `make_dimension`
+#### `derived_dimension`
 
 Above design of dimensions is created with the ease of use for end users in mind. Compile-time
 errors should provide as short as possible template instantiations strings that should be easy to
@@ -162,53 +161,52 @@ static_assert(v1 == v2);
 
 Above code, no matter what is the order of the base dimensions in an expression forming our result,
 must produce the same `Velocity` type so that both values can be easily compared. In order to achieve
-that, `dimension` class templates should never be instantiated manually but through a `make_dimension_t`
-template metaprogramming factory function:
+that, `dimension` class templates should never be instantiated manually but through a `derived_dimension`
+helper:
 
 ```cpp
-template<Exponent... Es>
-struct make_dimension {
-  using type = /* unspecified */;
-};
-
-template<Exponent... Es>
-using make_dimension_t = make_dimension<Es...>::type;
+template<typename Child, Exponent... Es>
+struct derived_dimension;
 ``` 
+
+`Child` class template parameter is a part of a CRTP idiom and is used to provide a downcasting facility
+described later in this document. 
 
 So for example to create a `velocity` type we have to do:
 
 ```cpp
-struct velocity : make_dimension_t<exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+struct velocity : derived_dimension<velocity, exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
 ```
 
-In order to make `make_dimension_t` work as expected it has to provide unique ordering for
+In order to make `derived_dimension` work as expected it has to provide unique ordering for
 contained base dimensions. Beside providing ordering to base dimensions it also has to:
 - aggregate two arguments of the same base dimension but different exponents
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
-`make_dimension_t` is also able to form a dimension type based not only on base dimensions but
+`derived_dimension` is also able to form a dimension type based not only on base dimensions but
 it can take other derived dimensions as well. So for some more complex dimensions user can
 type either:
 
 ```cpp
-struct pressure : make_dimension_t<exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
+struct pressure : derived_dimension<pressure, exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
 ```
 
 or
 
 ```cpp
-struct pressure : make_dimension_t<exp<force, 1>, exp<area, -1>> {};
+struct pressure : derived_dimension<pressure, exp<force, 1>, exp<area, -1>> {};
 ```
 
-In the second case `make_dimension_t` will extract all derived dimensions into the list of
+In the second case `derived_dimension` will extract all derived dimensions into the list of
 exponents of base dimensions. Thanks to that both cases will result with exactly the same base
-class formed only from the exponents of base units. 
+class formed only from the exponents of base units.
 
 #### `merge_dimension`
 
-`units::merge_dimension` is similar to `make_dimension` but instead of sorting the whole list
-of base dimensions from scratch it assumes that provided input `dimension` types are already
-sorted as a result of `make_dimension`.
+`units::merge_dimension` is a type alias that works similarly to `derived_dimension` but instead
+of sorting the whole list of base dimensions from scratch it assumes that provided input `dimension`
+types are already sorted as a result of `derived_dimension`. Also contrary to `derived_dimension`
+it works only with exponents of bas dimensions (no derived dimensions allowed).
 
 Typical use case for `merge_dimension` is to produce final `dimension` return type of multiplying
 two different dimensions:
@@ -226,15 +224,6 @@ template<Dimension D1, Dimension D2>
 using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
 ```
 
-Example implementation of `merge_dimension` may look like:
-
-```cpp
-template<Dimension D1, Dimension D2>
-struct merge_dimension {
-  using type = detail::dim_consolidate_t<mp::type_list_merge_sorted_t<D1, D2, exp_dim_id_less>>;
-};
-```
-
 
 ### `Units`
 
@@ -249,26 +238,69 @@ struct unit : downcast_base<unit<D, R>> {
 };
 ```
 
+All units are created with a `derived_unit` helper:
+
+```cpp
+template<typename Child, typename...>
+struct derived_unit;
+```
+
 For example to define the base unit of `length`:
  
 ```cpp
-struct metre : unit<length> {};
+struct metre : derived_unit<metre, length> {};
 ```
 
-Also there are few alias templates provided as convenience helpers to simplify `Ratio` handling:
-- units with prefixes
+Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
+to provide downcasting facility (described below).
+
+`derived_unit` has a few partial useful specializations:
+- helper to create a base unit of a specified dimension
 
 ```cpp
-struct kilometre : kilo<metre> {};
+template<typename Child, Dimension D>
+struct derived_unit<Child, D>;
 ```
 
-- derived units
+```cpp
+struct metre : derived_unit<metre, length> {};
+```
+
+- helper to create other units for a specified dimension
 
 ```cpp
-struct kilometre_per_hour : derived_unit<velocity, kilometre, hour> {};
-``` 
+template<typename Child, Dimension D, Ratio R>
+struct derived_unit<Child, D, R>;
+```
 
-`units::Unit` is a Concept that is satisfied by a type that is empty and publicly
+```cpp
+struct yard : derived_unit<yard, length, ratio<9'144, 10'000>> {};
+```
+
+- helper to create a unit with a SI prefix
+
+```cpp
+template<typename Child, Unit U>
+struct derived_unit<Child, U>;
+```
+
+```cpp
+struct kilometre : derived_unit<kilometre, kilo<metre>> {};
+```
+
+- helper that automatically calculates ratio based on info in desired dimension and provided list 
+  of units of base dimensions
+
+```cpp
+template<typename Child, Dimension D, Unit U, Unit... Us>
+struct derived_unit<Child, D, U, Us...>;
+```
+
+```cpp
+struct kilometre_per_hour : derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};
+```
+
+`units::Unit` is a concept that is satisfied by a type that is empty and publicly
 derived from `units::unit` class template: 
 
 ```cpp
@@ -284,11 +316,11 @@ concept Unit =
 expressed in a specific unit of that dimension:
 
 ```cpp
-template<Unit U, Scalar Rep>
+template<Unit U, Scalar Rep = double>
 class quantity;
 ```
 
-`units::Quantity` is a Concept that is satisfied by a type that is an instantiation of `units::quantity`
+`units::Quantity` is a concept that is satisfied by a type that is an instantiation of `units::quantity`
 class template:
 
 ```cpp
@@ -367,7 +399,7 @@ template<Unit ToU, Scalar ToRep = double, typename U, typename Rep>
 constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q);
 ```
 
-## Strong types instead of aliases, and type downcasting capability
+## Strong types instead of aliases, and type downcasting facility
 
 Most of the important design decisions in the library are dictated by the requirement of providing
 the best user experience as possible.
@@ -414,7 +446,7 @@ and
 
 starts to be really hard to analyze or debug.
 
-That is why it was decided to provide automated downcasting capability when possible. With that the
+That is why it was decided to provide automated downcasting capability when possible. Thanks to this feature the
 same code will result with such an error:
 
 ```text
@@ -450,42 +482,126 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-Downcasting capability is provided through dedicated `downcast_traits`, concept, a few helper aliases and by
-`base_type` member type in `downcast_base` class template.
+Downcasting facility provides a type substitution mechanism. It connects a specific primary template
+class specialization with a strong type assigned to it by the user. A simplified mental model of the
+facility may be represented as:
+
+```cpp
+struct metre : unit<dimension<exp<base_dim_length, 1>>, std::ratio<1, 1, 0>>; 
+```
+
+In the above example `metre` is a downcasting target (child class) and a specific `unit` class 
+template specialization is a downcasting source (base class). The downcasting facility provides
+1 to 1 tpe substitution mechanism. Only one child class can be created for a specific base class
+template instantiation.
+
+Downcasting facility is provided through 2 dedicated types, a concept, and a few helper template aliases.
 
 ```cpp
 template<typename BaseType>
 struct downcast_base {
   using base_type = BaseType;
+  friend auto downcast_guide(downcast_base);
 };
+```
 
+`units::downcast_base` is a class that implements CRTP idiom, marks the base of downcasting
+facility with a `base_type` member type, and provides a declaration of downcasting ADL friendly
+(Hidden Friend) entry point member function `downcast_guide` that here does not return any specific
+type. This non-member function is going to be defined in a child class template `downcast_helper`
+and will return a target type of the downcasting operation.
+
+```cpp
 template<typename T>
 concept Downcastable =
     requires {
       typename T::base_type;
     } &&
     std::derived_from<T, downcast_base<typename T::base_type>>;
+```
 
+`units::Downcastable` is a concepts that verifies if a type implements and can be used in a downcasting
+facility.
+
+```cpp
+template<typename Target, Downcastable T>
+struct downcast_helper : T {
+  friend auto downcast_guide(typename downcast_helper::downcast_base) { return Target(); }
+};
+```
+
+`units::downcast_helper` is another CRTP class template that provides the implementation of a
+non-member friend function of the `downcast_base` class template which defines the target
+type of downcasting operation. It is used in the following way to define `dimension` and
+`unit` types in the library:
+
+```cpp
+template<typename Child, Exponent... Es>
+struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...>> {};
+```
+
+```cpp
+template<typename Child, Dimension D>
+struct derived_unit<Child, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
+```
+
+With such CRTP types the only thing the user has to do to register a new type to a downcasting
+facility is to publicly derive from one of those CRTP types and provide its new child type as
+the first template parameter of the CRTP type.
+
+```cpp
+struct metre : derived_unit<metre, length> {};
+```
+
+Above types are used to define base and target of a downcasting operation. To perform the actual
+downcasting operation a dedicated template alias is provided:
+
+```cpp
+template<Downcastable T>
+using downcast_target = decltype(detail::downcast_target_impl<T>());
+```
+
+`units::downcast_target` is used to obtain the target type of the downcasting operation registered
+for a given specialization in a base type.
+
+For example to determine a downcasted type of a quantity multiply operation the following can be done: 
+
+```cpp
+using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
+using common_rep = decltype(lhs.count() * rhs.count());
+using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+```
+
+`detail::downcast_target_impl` checks if downcasting target is registered for the specific base class.
+If yes, it returns the registered type. Otherwise, it works like a regular identity type returning
+a provided base class. 
+
+```cpp
+namespace detail {
+
+  template<typename T>
+  concept bool has_downcast = requires {
+    downcast_guide(std::declval<downcast_base<T>>());
+  };
+
+  template<typename T>
+  constexpr auto downcast_target_impl()
+  {
+    if constexpr(has_downcast<T>)
+      return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
+    else
+      return T();
+  }
+
+}
+```
+
+Additionally there is on more simple helper alias provided that is used in the internal
+library implementation:
+
+```cpp
 template<Downcastable T>
 using downcast_base_t = T::base_type;
-
-template<Downcastable T>
-struct downcast_traits : std::type_identity<T> {};
-
-template<Downcastable T>
-using downcast_traits_t = downcast_traits<T>::type;
-```
-
-With that the downcasting functionality is enabled by:
-
-```cpp
-struct length : make_dimension_t<exp<base_dim_length, 1>> {};
-template<> struct downcast_traits<downcast_base_t<length>> : std::type_identity<length> {};
-```
-
-```cpp
-struct kilometre : unit<length, std::kilo> {};
-template<> struct downcast_traits<downcast_base_t<kilometre>> : std::type_identity<kilometre> {};
 ```
 
 
@@ -498,13 +614,11 @@ In order to extend the library with custom dimensions the user has to:
     inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
     ```
 
-2. Create a new dimension type with the recipe of how to construct it from base dimensions and provide
-   downcasting trait for it:
+2. Create a new dimension type with the recipe of how to construct it from base dimensions and 
+   register it for a downcasting facitlity:
 
     ```cpp
-    struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
-    template<>
-    struct units::downcast_traits<units::downcast_base_t<digital_information>> : units::std::type_identity_t<digital_information> {};
+    struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
     ``` 
 
 2. Define a concept that will match a new dimension:
@@ -514,14 +628,11 @@ In order to extend the library with custom dimensions the user has to:
     concept DigitalInformation = units::QuantityOf<T, digital_information>;
     ```
 
-3. Define units and provide downcasting traits for them:
+3. Define units and register them to a downcasting facility:
 
     ```cpp
-    struct bit : units::unit<digital_information> {};
-    template<> struct units::downcast_traits<units::downcast_base_t<bit>> : units::std::type_identity_t<bit> {};
-   
-    struct byte : units::unit<digital_information, units::ratio<8>> {};
-    template<> struct units::downcast_traits<units::downcast_base_t<byte>> : units::std::type_identity_t<byte> {};
+    struct bit : units::derived_unit<bit, digital_information> {};   
+    struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};
     ```
 
 4. Provide user-defined literals for the most important units:

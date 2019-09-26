@@ -156,13 +156,11 @@ namespace units {
   struct dim_invert;
 
   template<typename... Es>
-  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exp_invert_t<Es>...>>> {};
+  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_invert_t<Es>...>>> {};
 
   template<Dimension D>
   using dim_invert_t = dim_invert<downcast_base_t<D>>::type;
 
-
-  // todo: force as the only user interface to create dimensions through modules
   // make_dimension
 
   namespace detail {
@@ -224,15 +222,22 @@ namespace units {
       using type = extract_t<exp<downcast_base_t<Dim>, Num, Den>, ERest...>;
     };
 
+    template<Exponent... Es>
+    struct make_dimension {
+      using type = detail::dim_consolidate_t<type_list_sort<detail::extract_t<Es...>, exp_less>>;
+    };
+
+    template<Exponent... Es>
+    using make_dimension_t = make_dimension<Es...>::type;
+
   }  // namespace detail
 
-  template<Exponent... Es>
-  struct make_dimension {
-    using type = detail::dim_consolidate_t<type_list_sort<detail::extract_t<Es...>, exp_less>>;
-  };
+  // derived_dimension
 
-  template<Exponent... Es>
-  using make_dimension_t = make_dimension<Es...>::type;
+  template<typename Child, Exponent... Es>
+  struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...>> {};
+
+  // merge_dimension
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
@@ -248,7 +253,7 @@ namespace units {
   struct dimension_multiply;
 
   template<typename... E1, typename... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
+  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_target<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<Dimension D1, Dimension D2>
   using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
@@ -267,21 +272,23 @@ namespace units {
   using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
 
   // dimension_sqrt
+
   template<Dimension D>
   struct dimension_sqrt;
 
   template<typename... Es>
-  struct dimension_sqrt<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exp_multiply_t<Es, 1, 2>...>>> {};
+  struct dimension_sqrt<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_multiply_t<Es, 1, 2>...>>> {};
 
   template<Dimension D>
   using dimension_sqrt_t = dimension_sqrt<typename D::base_type>::type;
 
   // dimension_pow
+
   template<Dimension D, std::size_t N>
   struct dimension_pow;
 
   template<typename... Es, std::size_t N>
-  struct dimension_pow<dimension<Es...>, N> : std::type_identity<downcast_traits_t<dimension<exp_multiply_t<Es, N, 1>...>>> {};
+  struct dimension_pow<dimension<Es...>, N> : std::type_identity<downcast_target<dimension<exp_multiply_t<Es, N, 1>...>>> {};
 
   template<Dimension D, std::size_t N>
   using dimension_pow_t = dimension_pow<typename D::base_type, N>::type;

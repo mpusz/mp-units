@@ -30,13 +30,13 @@ namespace {
 
   struct base_dim_digital_information { static constexpr const char* value = "digital information"; };
 
-  struct digital_information : units::make_dimension_t<units::exp<base_dim_digital_information, 1>> {};
+  struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
 
   template<typename T>
   concept bool DigitalInformation = units::QuantityOf<T, digital_information>;
 
-  struct bit : units::unit<digital_information> {};
-  struct byte : units::unit<digital_information, units::ratio<8>> {};
+  struct bit : units::derived_unit<bit, digital_information> {};
+  struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};
 
   inline namespace literals {
 
@@ -49,10 +49,6 @@ namespace {
   }
 }
 
-template<> struct units::downcast_traits<units::downcast_base_t<digital_information>> : std::type_identity<digital_information> {};
-template<> struct units::downcast_traits<units::downcast_base_t<bit>> : std::type_identity<bit> {};
-template<> struct units::downcast_traits<units::downcast_base_t<::byte>> : std::type_identity<::byte> {};
-
 namespace {
 
   static_assert(1_B == 8_b);
@@ -64,24 +60,14 @@ namespace {
   using namespace units;
 
   // power spectral density
-  struct power_spectral_density : make_dimension_t<units::exp<voltage, 2>, units::exp<frequency, -1>> {};
-  struct sq_volt_per_hertz : unit<power_spectral_density> {};
+  struct power_spectral_density : derived_dimension<power_spectral_density, units::exp<voltage, 2>, units::exp<frequency, -1>> {};
+  struct sq_volt_per_hertz : derived_unit<sq_volt_per_hertz, power_spectral_density> {};
 
   // amplitude spectral density
-  struct amplitude_spectral_density : make_dimension_t<units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
+  struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
   // todo: add support for derived_unit
   //struct volt_per_sq_hertz : derived_unit<amplitude_spectral_density, kilogram, metre, second, ampere> {};
-  struct volt_per_sqrt_hertz : unit<amplitude_spectral_density> {};
-}
-
-namespace units {
-
-template<> struct downcast_traits<downcast_base_t<power_spectral_density>> : std::type_identity<power_spectral_density> {};
-template<> struct downcast_traits<downcast_base_t<sq_volt_per_hertz>> : std::type_identity<sq_volt_per_hertz> {};
-
-template<> struct downcast_traits<downcast_base_t<amplitude_spectral_density>> : std::type_identity<amplitude_spectral_density> {};
-template<> struct downcast_traits<downcast_base_t<volt_per_sqrt_hertz>> : std::type_identity<volt_per_sqrt_hertz> {};
-
+  struct volt_per_sqrt_hertz : derived_unit<volt_per_sqrt_hertz, amplitude_spectral_density> {};
 }
 
 namespace {

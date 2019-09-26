@@ -54,23 +54,23 @@ namespace {
 
   // make_dimension
 
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>>, dimension<exp<d0, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d1, 1>>, dimension<exp<d0, 1>, exp<d1, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 1>, exp<d0, 1>>, dimension<exp<d0, 1>, exp<d1, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 1>, exp<d1, 1>>, dimension<exp<d1, 2>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 1>, exp<d1, -1>>, dimension<>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 1>, exp<d1, 1, 2>>, dimension<exp<d1, 3, 2>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 1, 2>, exp<d1, 1, 2>>, dimension<exp<d1, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d1, 2>, exp<d1, 1, 2>>, dimension<exp<d1, 5, 2>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d1, 1>>, dimension<exp<d0, 1>, exp<d1, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 1>, exp<d0, 1>>, dimension<exp<d0, 1>, exp<d1, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 1>, exp<d1, 1>>, dimension<exp<d1, 2>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 1>, exp<d1, -1>>, dimension<>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 1>, exp<d1, 1, 2>>, dimension<exp<d1, 3, 2>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 1, 2>, exp<d1, 1, 2>>, dimension<exp<d1, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d1, 2>, exp<d1, 1, 2>>, dimension<exp<d1, 5, 2>>>);
 
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, 1>, exp<d1, 1>>, dimension<exp<d0, 2>, exp<d1, 2>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, 1>, exp<d1, 1>>, dimension<exp<d0, 2>, exp<d1, 2>>>);
   static_assert(
-      std::is_same_v<make_dimension_t<exp<d0, -1>, exp<d1, -1>, exp<d0, -1>, exp<d1, -1>>, dimension<exp<d0, -2>, exp<d1, -2>>>);
+      std::is_same_v<detail::make_dimension_t<exp<d0, -1>, exp<d1, -1>, exp<d0, -1>, exp<d1, -1>>, dimension<exp<d0, -2>, exp<d1, -2>>>);
 
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d1, -1>>, dimension<exp<d0, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d0, -1>, exp<d1, 1>>, dimension<exp<d1, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>>, dimension<exp<d1, 1>>>);
-  static_assert(std::is_same_v<make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>, exp<d1, -1>>, dimension<>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d1, -1>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d0, -1>, exp<d1, 1>>, dimension<exp<d1, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>>, dimension<exp<d1, 1>>>);
+  static_assert(std::is_same_v<detail::make_dimension_t<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>, exp<d1, -1>>, dimension<>>);
 
   // dimension_multiply
 

@@ -27,14 +27,12 @@
 
 namespace units {
 
-  struct current : make_dimension_t<exp<base_dim_current, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<current>> : std::type_identity<current> {};
+  struct current : derived_dimension<current, exp<base_dim_current, 1>> {};
 
   template<typename T>
   concept bool Current = QuantityOf<T, current>;
 
-  struct ampere : unit<current> {};
-  template<> struct downcast_traits<downcast_base_t<ampere>> : std::type_identity<ampere> {};
+  struct ampere : derived_unit<ampere, current> {};
 
   inline namespace literals {
 

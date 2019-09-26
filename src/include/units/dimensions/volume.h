@@ -26,26 +26,16 @@
 
 namespace units {
 
-  struct volume : make_dimension_t<exp<base_dim_length, 3>> {};
-  template<> struct downcast_traits<downcast_base_t<volume>> : std::type_identity<volume> {};
+  struct volume : derived_dimension<volume, exp<base_dim_length, 3>> {};
 
   template<typename T>
   concept bool Volume = QuantityOf<T, volume>;
 
-  struct cubic_millimetre : derived_unit<volume, millimetre> {};
-  template<> struct downcast_traits<downcast_base_t<cubic_millimetre>> : std::type_identity<cubic_millimetre> {};
-
-  struct cubic_centimetre : derived_unit<volume, centimetre> {};
-  template<> struct downcast_traits<downcast_base_t<cubic_centimetre>> : std::type_identity<cubic_centimetre> {};
-
-  struct cubic_metre : derived_unit<volume, metre> {};
-  template<> struct downcast_traits<downcast_base_t<cubic_metre>> : std::type_identity<cubic_metre> {};
-
-  struct cubic_kilometre : derived_unit<volume, kilometre, metre> {};
-  template<> struct downcast_traits<downcast_base_t<cubic_kilometre>> : std::type_identity<cubic_kilometre> {};
-
-  struct cubic_foot : derived_unit<volume, foot> {};
-  template<> struct downcast_traits<downcast_base_t<cubic_foot>> : std::type_identity<cubic_foot> {};
+  struct cubic_millimetre : derived_unit<cubic_millimetre, volume, millimetre> {};
+  struct cubic_centimetre : derived_unit<cubic_centimetre, volume, centimetre> {};
+  struct cubic_metre : derived_unit<cubic_metre, volume, metre> {};
+  struct cubic_kilometre : derived_unit<cubic_kilometre, volume, kilometre, metre> {};
+  struct cubic_foot : derived_unit<cubic_foot, volume, foot> {};
 
   inline namespace literals {
 

@@ -28,14 +28,12 @@
 
 namespace units {
 
-  struct energy : make_dimension_t<exp<force, 1>, exp<length, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<energy>> : std::type_identity<energy> {};
+  struct energy : derived_dimension<energy, exp<force, 1>, exp<length, 1>> {};
 
   template<typename T>
   concept bool Energy =  QuantityOf<T, energy>;
 
-  struct joule : derived_unit<energy, kilogram, metre, second> {};
-  template<> struct downcast_traits<downcast_base_t<joule>> : std::type_identity<joule> {};
+  struct joule : derived_unit<joule, energy, kilogram, metre, second> {};
 
   inline namespace literals {
 

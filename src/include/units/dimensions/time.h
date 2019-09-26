@@ -27,29 +27,17 @@
 
 namespace units {
 
-  struct time : make_dimension_t<exp<base_dim_time, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<time>> : std::type_identity<time> {};
+  struct time : derived_dimension<time, exp<base_dim_time, 1>> {};
 
   template<typename T>
   concept bool Time = QuantityOf<T, time>;
 
-  struct second : unit<time> {};
-  template<> struct downcast_traits<downcast_base_t<second>> : std::type_identity<second> {};
-
-  struct nanosecond : nano<second> {};
-  template<> struct downcast_traits<downcast_base_t<nanosecond>> : std::type_identity<nanosecond> {};
-
-  struct microsecond : micro<second> {};
-  template<> struct downcast_traits<downcast_base_t<microsecond>> : std::type_identity<microsecond> {};
-
-  struct millisecond : milli<second> {};
-  template<> struct downcast_traits<downcast_base_t<millisecond>> : std::type_identity<millisecond> {};
-
-  struct minute : unit<time, ratio<60>> {};
-  template<> struct downcast_traits<downcast_base_t<minute>> : std::type_identity<minute> {};
-
-  struct hour : unit<time, ratio<3600>> {};
-  template<> struct downcast_traits<downcast_base_t<hour>> : std::type_identity<hour> {};
+  struct second : derived_unit<second, time> {};
+  struct nanosecond : derived_unit<nanosecond, nano<second>> {};
+  struct microsecond : derived_unit<microsecond, micro<second>> {};
+  struct millisecond : derived_unit<millisecond, milli<second>> {};
+  struct minute : derived_unit<minute, time, ratio<60>> {};
+  struct hour : derived_unit<hour, time, ratio<3600>> {};
 
   inline namespace literals {
 

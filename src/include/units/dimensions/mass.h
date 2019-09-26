@@ -27,17 +27,13 @@
 
 namespace units {
 
-  struct mass : make_dimension_t<exp<base_dim_mass, 1>> {};
-  template<> struct downcast_traits<downcast_base_t<mass>> : std::type_identity<mass> {};
+  struct mass : derived_dimension<mass, exp<base_dim_mass, 1>> {};
 
   template<typename T>
   concept bool Mass = QuantityOf<T, mass>;
 
-  struct gram : unit<mass, ratio<1, 1000>> {};
-  template<> struct downcast_traits<downcast_base_t<gram>> : std::type_identity<gram> {};
-
-  struct kilogram : kilo<gram> {};
-  template<> struct downcast_traits<downcast_base_t<kilogram>> : std::type_identity<kilogram> {};
+  struct gram : derived_unit<gram, mass, ratio<1, 1000>> {};
+  struct kilogram : derived_unit<kilogram, kilo<gram>> {};
 
   inline namespace literals {
 

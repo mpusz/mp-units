@@ -30,14 +30,12 @@
 
 namespace units {
 
-  struct voltage : make_dimension_t<exp<power, 1>, exp<base_dim_current, -1>> {};
-  template<> struct downcast_traits<downcast_base_t<voltage>> : std::type_identity<voltage> {};
+  struct voltage : derived_dimension<voltage, exp<power, 1>, exp<base_dim_current, -1>> {};
 
   template<typename T>
   concept bool Voltage =  QuantityOf<T, voltage>;
 
-  struct volt : derived_unit<voltage, kilogram, metre, second, ampere> {};
-  template<> struct downcast_traits<downcast_base_t<volt>> : std::type_identity<volt> {};
+  struct volt : derived_unit<volt, voltage, kilogram, metre, second, ampere> {};
 
   inline namespace literals {
 

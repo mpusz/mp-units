@@ -27,29 +27,17 @@
 
 namespace units {
 
-  struct frequency : make_dimension_t<exp<base_dim_time, -1>> {};
-  template<> struct downcast_traits<downcast_base_t<frequency>> : std::type_identity<frequency> {};
+  struct frequency : derived_dimension<frequency, exp<base_dim_time, -1>> {};
 
   template<typename T>
   concept bool Frequency =  QuantityOf<T, frequency>;
 
-  struct hertz : derived_unit<frequency, second> {};
-  template<> struct downcast_traits<downcast_base_t<hertz>> : std::type_identity<hertz> {};
-
-  struct millihertz : milli<hertz> {};
-  template<> struct downcast_traits<downcast_base_t<millihertz>> : std::type_identity<millihertz> {};
-
-  struct kilohertz : kilo<hertz> {};
-  template<> struct downcast_traits<downcast_base_t<kilohertz>> : std::type_identity<kilohertz> {};
-
-  struct megahertz : mega<hertz> {};
-  template<> struct downcast_traits<downcast_base_t<megahertz>> : std::type_identity<megahertz> {};
-
-  struct gigahertz : giga<hertz> {};
-  template<> struct downcast_traits<downcast_base_t<gigahertz>> : std::type_identity<gigahertz> {};
-
-  struct terahertz : tera<hertz> {};
-  template<> struct downcast_traits<downcast_base_t<terahertz>> : std::type_identity<terahertz> {};
+  struct hertz : derived_unit<hertz, frequency, second> {};
+  struct millihertz : derived_unit<millihertz, milli<hertz>> {};
+  struct kilohertz : derived_unit<kilohertz, kilo<hertz>> {};
+  struct megahertz : derived_unit<megahertz, mega<hertz>> {};
+  struct gigahertz : derived_unit<gigahertz, giga<hertz>> {};
+  struct terahertz : derived_unit<terahertz, tera<hertz>> {};
 
   inline namespace literals {
 

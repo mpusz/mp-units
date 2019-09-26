@@ -71,7 +71,7 @@ namespace units {
   template<typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
     requires same_dim<typename U1::dimension, typename U2::dimension>
   struct common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
-    using type = quantity<downcast_traits_t<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
+    using type = quantity<downcast_target<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
   };
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
@@ -307,7 +307,7 @@ namespace units {
   {
     using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<downcast_traits_t<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
@@ -321,7 +321,7 @@ namespace units {
 
     using dim = dim_invert_t<typename U::dimension>;
     using common_rep = decltype(v / q.count());
-    using ret = quantity<downcast_traits_t<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    using ret = quantity<downcast_target<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
     using den = quantity<U, common_rep>;
     return ret(v / den(q).count());
   }
@@ -362,7 +362,7 @@ namespace units {
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide_t<typename U1::dimension, typename U2::dimension>;
-    using ret = quantity<downcast_traits_t<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<downcast_target<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 
