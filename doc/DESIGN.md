@@ -650,7 +650,8 @@ In order to extend the library with custom dimensions the user has to:
 
 ## Open questions
 
-1. Should we ensure that dimension is always a result of `make_dimension`? How to do it?
+1. Should we ensure that dimension is always a result of `derived_dimension` and unit is a result
+    of `derived_unit`? How to do it?
 
 2. What to do with `std::chrono::duration`?
 
@@ -664,21 +665,21 @@ In order to extend the library with custom dimensions the user has to:
     is to provide only `K` support in quantity and provide non-member helper conversion functions
     with verbose names to convert to `°C` and `°C`?
 
-5. Do we need non-linear scale?
+5. Do we need a non-linear scale?
 
-6. Should we provide integral UDLs?
+6. Should we provide integral UDLs or just leave floating point ones?
 
-7. Provide ostream overloads to print quantity units (use `std::format`)?
-
-8. Should we provide support for dimensionless quantities? 
+7. Should we provide support for dimensionless quantities? 
 
     Because dimensionless quantities have no associated units, they behave as normal scalars,
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
 
-9. Should we standardize accompany tools (`downcast_traits`, `type_list` operations, `common_ratio`, etc)? 
+9. Should we standardize accompany tools (downcasting facility, `type_list` operations, `common_ratio`, etc)? 
 
 10. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
     for floating point types.
 
 11. `J` imaginary constants are a GCC extension
+
+12. Do we need custom/multiple systems?
