@@ -63,8 +63,9 @@ target_include_directories(units
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(units
         INTERFACE
-            -Wno-literal-suffix
             -fconcepts
+            -Wno-literal-suffix
+            -Wno-non-template-friend
     )
 endif()
 add_library(mp::units ALIAS units)
