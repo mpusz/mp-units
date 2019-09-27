@@ -66,7 +66,7 @@ namespace {
   // amplitude spectral density
   struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
   // todo: add support for derived_unit
-  //struct volt_per_sq_hertz : derived_unit<amplitude_spectral_density, kilogram, metre, second, ampere> {};
+  //struct volt_per_sq_hertz : derived_unit<volt_per_sq_hertz, amplitude_spectral_density, volt, hertz> {};
   struct volt_per_sqrt_hertz : derived_unit<volt_per_sqrt_hertz, amplitude_spectral_density> {};
 }
 
