@@ -130,10 +130,9 @@ namespace units {
 
   template<Exponent E, int Num, int Den>
   struct exp_multiply {
-    // todo: provide custom implementation for ratio_add
-    using r1 = std::ratio<E::num, E::den>;
-    using r2 = std::ratio<Num, Den>;
-    using r = std::ratio_multiply<r1, r2>;
+    using r1 = ratio<E::num, E::den>;
+    using r2 = ratio<Num, Den>;
+    using r = ratio_multiply<r1, r2>;
     using type = exp<typename E::dimension, r::num, r::den>;
   };
 
