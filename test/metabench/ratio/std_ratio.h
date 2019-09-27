@@ -55,7 +55,6 @@ namespace units {
 
   // common_ratio
 
-  // todo: simplified
   template<typename R1, typename R2>
   struct common_ratio {
     using gcd_num = static_gcd<R1::num, R2::num>;

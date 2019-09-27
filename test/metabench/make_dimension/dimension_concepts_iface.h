@@ -134,7 +134,6 @@ namespace units {
   using dim_invert_t = dim_invert<typename D::base_type>::type;
 
 
-  // todo: force as the only user interface to create dimensions through modules
   // make_dimension
 
   namespace detail {
@@ -163,7 +162,6 @@ namespace units {
 
     template<const base_dimension& D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
     struct dim_consolidate<dimension<exp<D, Num1, Den1>, exp<D, Num2, Den2>, ERest...>> {
-      // todo: provide custom implementation for ratio_add
       using r1 = std::ratio<Num1, Den1>;
       using r2 = std::ratio<Num2, Den2>;
       using r = std::ratio_add<r1, r2>;

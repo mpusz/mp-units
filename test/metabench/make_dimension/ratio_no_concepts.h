@@ -107,7 +107,6 @@ namespace units {
 
   namespace detail {
 
-    // todo: simplified
     template<typename R1, typename R2>
     struct common_ratio_impl {
       static constexpr std::intmax_t gcd_num = std::gcd(R1::num, R2::num);
