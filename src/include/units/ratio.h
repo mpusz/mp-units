@@ -37,8 +37,8 @@ namespace units {
   }
 
   template<std::intmax_t Num, std::intmax_t Den = 1>
+      requires (Den != 0)
   struct ratio {
-    static_assert(Den != 0, "zero denominator");
     static_assert(-INTMAX_MAX <= Num, "numerator too negative");
     static_assert(-INTMAX_MAX <= Den, "denominator too negative");
 
