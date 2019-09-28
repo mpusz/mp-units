@@ -30,7 +30,7 @@ namespace units {
   struct time : derived_dimension<time, exp<base_dim_time, 1>> {};
 
   template<typename T>
-  concept bool Time = QuantityOf<T, time>;
+  concept Time = QuantityOf<T, time>;
 
   struct second : derived_unit<second, time> {};
   struct nanosecond : derived_unit<nanosecond, nano<second>> {};

@@ -33,7 +33,7 @@ namespace {
   struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
 
   template<typename T>
-  concept bool DigitalInformation = units::QuantityOf<T, digital_information>;
+  concept DigitalInformation = units::QuantityOf<T, digital_information>;
 
   struct bit : units::derived_unit<bit, digital_information> {};
   struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};

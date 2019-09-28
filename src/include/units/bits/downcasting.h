@@ -34,7 +34,7 @@ namespace units {
   };
 
   template<typename T>
-  concept bool Downcastable =
+  concept Downcastable =
       requires {
         typename T::base_type;
       } &&
@@ -48,7 +48,7 @@ namespace units {
   namespace detail {
 
     template<typename T>
-    concept bool has_downcast = requires {
+    concept has_downcast = requires {
         downcast_guide(std::declval<downcast_base<T>>());
     };
 

@@ -29,7 +29,7 @@ namespace units {
   struct volume : derived_dimension<volume, exp<base_dim_length, 3>> {};
 
   template<typename T>
-  concept bool Volume = QuantityOf<T, volume>;
+  concept Volume = QuantityOf<T, volume>;
 
   struct cubic_millimetre : derived_unit<cubic_millimetre, volume, millimetre> {};
   struct cubic_centimetre : derived_unit<cubic_centimetre, volume, centimetre> {};

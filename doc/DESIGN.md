@@ -580,7 +580,7 @@ a provided base class.
 namespace detail {
 
   template<typename T>
-  concept bool has_downcast = requires {
+  concept has_downcast = requires {
     downcast_guide(std::declval<downcast_base<T>>());
   };
 

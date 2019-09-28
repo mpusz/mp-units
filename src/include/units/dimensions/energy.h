@@ -31,7 +31,7 @@ namespace units {
   struct energy : derived_dimension<energy, exp<force, 1>, exp<length, 1>> {};
 
   template<typename T>
-  concept bool Energy =  QuantityOf<T, energy>;
+  concept Energy =  QuantityOf<T, energy>;
 
   struct joule : derived_unit<joule, energy, kilogram, metre, second> {};
 

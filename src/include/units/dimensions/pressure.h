@@ -31,7 +31,7 @@ namespace units {
   struct pressure : derived_dimension<pressure, exp<force, 1>, exp<area, -1>> {};
 
   template<typename T>
-  concept bool Pressure =  QuantityOf<T, pressure>;
+  concept Pressure =  QuantityOf<T, pressure>;
 
   struct pascal : derived_unit<pascal, pressure, kilogram, metre, second> {};
 

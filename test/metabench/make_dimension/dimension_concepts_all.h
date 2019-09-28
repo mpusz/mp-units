@@ -79,7 +79,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Exponent = detail::is_exp<T>;
+  concept Exponent = detail::is_exp<T>;
 
   // exp_dim_id_less
 
@@ -117,7 +117,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Dimension =
+  concept Dimension =
       std::is_empty_v<T> &&
       detail::is_dimension<downcast_base_t<T>>;
 

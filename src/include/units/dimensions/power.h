@@ -30,7 +30,7 @@ namespace units {
   struct power : derived_dimension<power, exp<energy, 1>, exp<base_dim_time, -1>> {};
 
   template<typename T>
-  concept bool Power =  QuantityOf<T, power>;
+  concept Power =  QuantityOf<T, power>;
 
   struct watt : derived_unit<watt, power, kilogram, metre, second> {};
 

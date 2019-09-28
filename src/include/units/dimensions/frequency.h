@@ -30,7 +30,7 @@ namespace units {
   struct frequency : derived_dimension<frequency, exp<base_dim_time, -1>> {};
 
   template<typename T>
-  concept bool Frequency =  QuantityOf<T, frequency>;
+  concept Frequency =  QuantityOf<T, frequency>;
 
   struct hertz : derived_unit<hertz, frequency, second> {};
   struct millihertz : derived_unit<millihertz, milli<hertz>> {};

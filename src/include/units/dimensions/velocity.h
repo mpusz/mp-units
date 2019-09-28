@@ -30,7 +30,7 @@ namespace units {
   struct velocity : derived_dimension<velocity, exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
 
   template<typename T>
-  concept bool Velocity = QuantityOf<T, velocity>;
+  concept Velocity = QuantityOf<T, velocity>;
 
   struct metre_per_second : derived_unit<metre_per_second, velocity, metre, second> {};
   struct kilometre_per_hour : derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};

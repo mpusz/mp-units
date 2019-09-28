@@ -30,7 +30,7 @@ namespace units {
   struct current : derived_dimension<current, exp<base_dim_current, 1>> {};
 
   template<typename T>
-  concept bool Current = QuantityOf<T, current>;
+  concept Current = QuantityOf<T, current>;
 
   struct ampere : derived_unit<ampere, current> {};
 

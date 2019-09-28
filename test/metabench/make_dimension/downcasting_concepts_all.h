@@ -33,7 +33,7 @@ namespace units {
   };
 
   template<typename T>
-  concept bool Downcastable =
+  concept Downcastable =
       requires {
         typename T::base_type;
       } &&

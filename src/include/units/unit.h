@@ -48,7 +48,7 @@ namespace units {
   }
 
   template<typename T>
-  concept bool Unit =
+  concept Unit =
       std::is_empty_v<T> &&
       detail::is_unit<downcast_base_t<T>>;
 

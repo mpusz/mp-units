@@ -30,7 +30,7 @@ namespace units {
   struct temperature : derived_dimension<temperature, exp<base_dim_temperature, 1>> {};
 
   template<typename T>
-  concept bool ThermodynamicTemperature = QuantityOf<T, temperature>;
+  concept ThermodynamicTemperature = QuantityOf<T, temperature>;
 
   struct kelvin : derived_unit<kelvin, temperature> {};
 

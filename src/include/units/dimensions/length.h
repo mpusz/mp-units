@@ -30,7 +30,7 @@ namespace units {
   struct length : derived_dimension<length, exp<base_dim_length, 1>> {};
 
   template<typename T>
-  concept bool Length = QuantityOf<T, length>;
+  concept Length = QuantityOf<T, length>;
 
   // SI units
   struct metre : derived_unit<metre, length> {};

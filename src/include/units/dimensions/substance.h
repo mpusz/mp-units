@@ -30,7 +30,7 @@ namespace units {
   struct substance : derived_dimension<substance, exp<base_dim_substance, 1>> {};
 
   template<typename T>
-  concept bool Substance = QuantityOf<T, substance>;
+  concept Substance = QuantityOf<T, substance>;
 
   struct mole : derived_unit<mole, substance> {};
 

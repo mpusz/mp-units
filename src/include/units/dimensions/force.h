@@ -31,7 +31,7 @@ namespace units {
   struct force : derived_dimension<force, exp<base_dim_mass, 1>, exp<acceleration, 1>> {};
 
   template<typename T>
-  concept bool Force =  QuantityOf<T, force>;
+  concept Force =  QuantityOf<T, force>;
 
   struct newton : derived_unit<newton, force, kilogram, metre, second> {};
 

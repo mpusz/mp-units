@@ -33,7 +33,7 @@ namespace units {
   struct voltage : derived_dimension<voltage, exp<power, 1>, exp<base_dim_current, -1>> {};
 
   template<typename T>
-  concept bool Voltage =  QuantityOf<T, voltage>;
+  concept Voltage =  QuantityOf<T, voltage>;
 
   struct volt : derived_unit<volt, voltage, kilogram, metre, second, ampere> {};
 

@@ -30,7 +30,7 @@ namespace units {
   struct luminous_intensity : derived_dimension<luminous_intensity, exp<base_dim_luminous_intensity, 1>> {};
 
   template<typename T>
-  concept bool LuminousIntensity = QuantityOf<T, luminous_intensity>;
+  concept LuminousIntensity = QuantityOf<T, luminous_intensity>;
 
   struct candela : derived_unit<candela, luminous_intensity> {};
 

@@ -31,7 +31,7 @@ namespace units {
   struct capacitance : derived_dimension<capacitance, exp<electric_charge, 1>, exp<voltage, -1>> {};
 
   template<typename T>
-  concept bool Capacitance =  QuantityOf<T, capacitance>;
+  concept Capacitance =  QuantityOf<T, capacitance>;
 
   struct farad : derived_unit<farad, capacitance, kilogram, metre, second, ampere> {};
 

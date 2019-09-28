@@ -29,7 +29,7 @@ namespace units {
   struct area : derived_dimension<area, exp<base_dim_length, 2>> {};
 
   template<typename T>
-  concept bool Area = QuantityOf<T, area>;
+  concept Area = QuantityOf<T, area>;
 
   struct square_millimetre : derived_unit<square_millimetre, area, millimetre> {};
   struct square_centimetre : derived_unit<square_centimetre, area, centimetre> {};

@@ -30,7 +30,7 @@
 namespace units {
 
   template<typename T>
-  concept bool BaseDimension = std::is_empty_v<T> &&
+  concept BaseDimension = std::is_empty_v<T> &&
       requires {
         { T::value } -> std::same_as<const char*>;
       };
@@ -68,7 +68,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Exponent = detail::is_exp<T>;
+  concept Exponent = detail::is_exp<T>;
 
   template<Exponent... Es>
   struct dimension;
@@ -85,7 +85,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Dimension =
+  concept Dimension =
       std::is_empty_v<T> &&
       detail::is_dimension<downcast_base_t<T>>;
 

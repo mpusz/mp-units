@@ -30,7 +30,7 @@ namespace units {
   struct mass : derived_dimension<mass, exp<base_dim_mass, 1>> {};
 
   template<typename T>
-  concept bool Mass = QuantityOf<T, mass>;
+  concept Mass = QuantityOf<T, mass>;
 
   struct gram : derived_unit<gram, mass, ratio<1, 1000>> {};
   struct kilogram : derived_unit<kilogram, kilo<gram>> {};

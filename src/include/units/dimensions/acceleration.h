@@ -29,7 +29,7 @@ namespace units {
   struct acceleration : derived_dimension<acceleration, exp<velocity, 1>, exp<base_dim_time, -1>> {};
 
   template<typename T>
-  concept bool Acceleration = QuantityOf<T, acceleration>;
+  concept Acceleration = QuantityOf<T, acceleration>;
 
   struct metre_per_second_sq : derived_unit<metre_per_second_sq, acceleration, metre, second> {};
 

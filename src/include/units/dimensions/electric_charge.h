@@ -31,7 +31,7 @@ namespace units {
   struct electric_charge : derived_dimension<electric_charge, exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
 
   template<typename T>
-  concept bool ElectricCharge =  QuantityOf<T, electric_charge>;
+  concept ElectricCharge =  QuantityOf<T, electric_charge>;
 
   struct coulomb : derived_unit<coulomb, electric_charge, second, ampere> {};
 

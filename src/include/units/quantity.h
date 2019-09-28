@@ -39,15 +39,15 @@ namespace units {
   }
 
   template<typename T>
-  concept bool Quantity = detail::is_quantity<T>;
+  concept Quantity = detail::is_quantity<T>;
 
   template<typename T, typename D>
-  concept bool QuantityOf = Quantity<T> && Dimension<D> && same_dim<typename T::dimension, D>;
+  concept QuantityOf = Quantity<T> && Dimension<D> && same_dim<typename T::dimension, D>;
 
   // Scalar
 
   template<typename T>
-  concept bool Scalar = Number<T> && !Quantity<T>;
+  concept Scalar = Number<T> && !Quantity<T>;
 
   template<Unit U, Scalar Rep>
   class quantity;

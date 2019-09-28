@@ -37,7 +37,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool TypeList = detail::is_type_list<T>;
+  concept TypeList = detail::is_type_list<T>;
 
   // push_front
 

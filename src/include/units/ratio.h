@@ -61,7 +61,7 @@ namespace units {
   }  // namespace detail
 
   template<typename T>
-  concept bool Ratio = detail::is_ratio<T>;
+  concept Ratio = detail::is_ratio<T>;
 
   // ratio_multiply
 

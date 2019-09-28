@@ -27,7 +27,7 @@
 namespace units {
 
   template<typename T>
-  concept bool Number = std::regular<T> &&
+  concept Number = std::regular<T> &&
       std::totally_ordered<T> &&
       requires(T a, T b) {
         { a + b } -> T;
