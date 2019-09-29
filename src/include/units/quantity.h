@@ -135,10 +135,20 @@ namespace units {
     return cast::cast(q);
   }
 
-  template<Unit ToU, Scalar ToRep = double, typename U, typename Rep>
+  template<Unit ToU, Scalar ToRep, typename U, typename Rep>
   constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
+  }
+  template<Unit ToU, typename U, typename Rep>
+  constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q)
+  {
+    return quantity_cast<quantity<ToU, Rep>>(q);
+  }
+  template<Scalar ToRep, typename U, typename Rep>
+  constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  {
+    return quantity_cast<quantity<U, ToRep>>(q);
   }
 
 
