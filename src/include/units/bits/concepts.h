@@ -34,12 +34,13 @@ namespace units {
         { a - b } -> T;
         { a * b } -> T;
         { a / b } -> T;
+        { +a } -> T;
         { -a } -> T;
         { a += b } -> T&;
         { a -= b } -> T&;
         { a *= b } -> T&;
         { a /= b } -> T&;
-        { T{0} };// can construct a T from a zero
+        { T{0} };    // can construct a T from a zero
         // …
   };
 
