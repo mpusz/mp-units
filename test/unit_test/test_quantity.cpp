@@ -63,7 +63,7 @@ namespace units {
 namespace std {
 
   template<typename T, typename U>
-  struct common_type<my_value<T>, my_value<U>> : common_type<T, U> {
+  struct common_type<my_value<T>, my_value<U>> : std::type_identity<my_value<common_type_t<T, U>>> {
   };
 
   template<typename T, typename U>
