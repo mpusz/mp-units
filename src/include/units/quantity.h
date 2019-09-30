@@ -173,8 +173,6 @@ namespace units {
     using rep = Rep;
     using dimension = U::dimension;
 
-    static_assert(!Quantity<Rep>, "rep cannot be a quantity");
-
     quantity() = default;
     quantity(const quantity&) = default;
 
