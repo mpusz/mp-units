@@ -513,9 +513,10 @@ struct downcast_base {
 
 `units::downcast_base` is a class that implements CRTP idiom, marks the base of downcasting
 facility with a `base_type` member type, and provides a declaration of downcasting ADL friendly
-(Hidden Friend) entry point member function `downcast_guide` that here does not return any specific
-type. This non-member function is going to be defined in a child class template `downcast_helper`
-and will return a target type of the downcasting operation.
+(Hidden Friend) entry point member function `downcast_guide`. An important design point is that
+this function does not return any specific type in its declaration. This non-member function
+is going to be defined in a child class template `downcast_helper` and will return a target
+type of the downcasting operation there.
 
 ```cpp
 template<typename T>
@@ -538,7 +539,7 @@ struct downcast_helper : T {
 
 `units::downcast_helper` is another CRTP class template that provides the implementation of a
 non-member friend function of the `downcast_base` class template which defines the target
-type of downcasting operation. It is used in the following way to define `dimension` and
+type of a downcasting operation. It is used in the following way to define `dimension` and
 `unit` types in the library:
 
 ```cpp
@@ -551,7 +552,7 @@ template<typename Child, Dimension D>
 struct derived_unit<Child, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
 ```
 
-With such CRTP types the only thing the user has to do to register a new type to a downcasting
+With such CRTP types the only thing the user has to do to register a new type to the downcasting
 facility is to publicly derive from one of those CRTP types and provide its new child type as
 the first template parameter of the CRTP type.
 
@@ -578,8 +579,8 @@ using common_rep = decltype(lhs.count() * rhs.count());
 using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
 ```
 
-`detail::downcast_target_impl` checks if downcasting target is registered for the specific base class.
-If yes, it returns the registered type. Otherwise, it works like a regular identity type returning
+`detail::downcast_target_impl` checks if a downcasting target is registered for the specific base class.
+If yes, it returns the registered type, otherwise it works like a regular identity type returning
 a provided base class. 
 
 ```cpp
