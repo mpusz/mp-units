@@ -83,7 +83,7 @@ class UnitsConan(ConanFile):
     def package_info(self):
         self.cpp_info.includedirs = ['include']
         if self.settings.compiler == "gcc":
-            self.cpp_info.cxxflags = ["-fconcepts", "-Wno-literal-suffix"]
+            self.cpp_info.cxxflags = ["-fconcepts", "-Wno-literal-suffix", "-Wno-non-template-friend"]
 
     def package_id(self):
         self.info.settings.clear()
