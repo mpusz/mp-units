@@ -392,11 +392,17 @@ a `quantity` type or only its template parameters (`Unit`, `Rep`):
 
 ```cpp
 template<Quantity To, typename U, typename Rep>
-  requires std::same_as<typename To::dimension, typename U::dimension>
-constexpr To quantity_cast(const quantity<U, Rep>& q);
+  requires same_dim<typename To::dimension, typename U::dimension>
+[[nodiscard]] constexpr To quantity_cast(const quantity<U, Rep>& q);
 
-template<Unit ToU, Scalar ToRep = double, typename U, typename Rep>
-constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q);
+template<Unit ToU, Scalar ToRep, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q);
+
+template<Unit ToU, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q);
+
+template<Scalar ToRep, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q);
 ```
 
 ## Strong types instead of aliases, and type downcasting facility

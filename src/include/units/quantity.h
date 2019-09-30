@@ -126,8 +126,8 @@ namespace units {
   }  // namespace detail
 
   template<Quantity To, typename U, typename Rep>
-      requires same_dim<typename To::dimension, typename U::dimension>
-  constexpr To quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr To quantity_cast(const quantity<U, Rep>& q)
+    requires same_dim<typename To::dimension, typename U::dimension>
   {
     using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
@@ -136,17 +136,17 @@ namespace units {
   }
 
   template<Unit ToU, Scalar ToRep, typename U, typename Rep>
-  constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
   }
   template<Unit ToU, typename U, typename Rep>
-  constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, Rep>>(q);
   }
   template<Scalar ToRep, typename U, typename Rep>
-  constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<U, ToRep>>(q);
   }
