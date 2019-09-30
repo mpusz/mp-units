@@ -25,6 +25,12 @@ project(test_package)
 
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
+# set path to custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+
+# compilation options and flags used in a project development process
+include(common/cmake/compile_flags)
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
