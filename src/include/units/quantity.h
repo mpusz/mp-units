@@ -89,6 +89,14 @@ namespace units {
     template<typename To, typename CR, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
     struct quantity_cast_impl {
       template<typename Q>
+      requires treat_as_floating_point<CRep>
+      static constexpr To cast(const Q& q)
+      {
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(CR::num) /
+                                       static_cast<CRep>(CR::den))));
+      }
+      template<typename Q>
+      requires !treat_as_floating_point<CRep>
       static constexpr To cast(const Q& q)
       {
         return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num) /
@@ -108,6 +116,13 @@ namespace units {
     template<typename To, typename CR, typename CRep>
     struct quantity_cast_impl<To, CR, CRep, true, false> {
       template<Quantity Q>
+      requires treat_as_floating_point<CRep>
+      static constexpr To cast(const Q& q)
+      {
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (CRep{1} / static_cast<CRep>(CR::den))));
+      }
+      template<Quantity Q>
+      requires !treat_as_floating_point<CRep>
       static constexpr To cast(const Q& q)
       {
         return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CR::den)));
