@@ -187,6 +187,13 @@ namespace {
   static_assert((2m /= 2).count() == 1);
   static_assert((7m %= 2).count() == 1);
   static_assert((7m %= 2m).count() == 1);
+//  static_assert((7.m %= 2.).count() == 1);  // should not compile
+//  static_assert((7.m %= 2).count() == 1);  // should not compile
+//  static_assert((7m %= 2.).count() == 1);  // should not compile
+  static_assert((7m %= 2m).count() == 1);
+//  static_assert((7.m %= 2.m).count() == 1);  // should not compile
+//  static_assert((7.m %= 2m).count() == 1);  // should not compile
+//  static_assert((7m %= 2.m).count() == 1);  // should not compile
 
   // non-member arithmetic operators
 

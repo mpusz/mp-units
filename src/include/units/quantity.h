@@ -242,13 +242,16 @@ namespace units {
       return *this;
     }
 
-    constexpr quantity& operator%=(const rep& rhs)
+    template<Scalar Rep2>
+    constexpr quantity& operator%=(const Rep2& rhs)
+      requires (!treat_as_floating_point<rep> && !treat_as_floating_point<Rep2>)
     {
       value_ %= rhs;
       return *this;
     }
 
     constexpr quantity& operator%=(const quantity& q)
+        requires (!treat_as_floating_point<rep>)
     {
       value_ %= q.count();
       return *this;
