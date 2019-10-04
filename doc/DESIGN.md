@@ -4,7 +4,7 @@
 
 `Units` is a compile-time enabled Modern C++ library that provides compile-time dimensional
 analysis and unit/quantity manipulation. The basic idea and design heavily bases on
-`std::chrono::duration` and extends it to work properly with many dimensions. 
+`std::chrono::duration` and extends it to work properly with many dimensions.
 
 Here is a small example of possible operations:
 
@@ -39,7 +39,7 @@ static_assert(10km / 5km == 2);
 3. No macros in the user interface
 4. Easy extensibility
 5. No external dependencies
-6. Possibility to be standardized as a freestanding part of the C++ Standard Library 
+6. Possibility to be standardized as a freestanding part of the C++ Standard Library
 
 
 ## Overview
@@ -83,7 +83,7 @@ struct dimension : downcast_base<dimension<Es...>> {};
 ```
 
 `units::Dimension` is a concept that is satisfied by a type that is empty and publicly
-derived from `units::dimension` class template: 
+derived from `units::dimension` class template:
 
 ```cpp
 template<typename T>
@@ -157,7 +157,7 @@ constexpr Velocity auto v2 = 2 / 2s * 1m;
 
 static_assert(std::same_as<decltype(v1), decltype(v2)>);
 static_assert(v1 == v2);
-``` 
+```
 
 Above code, no matter what is the order of the base dimensions in an expression forming our result,
 must produce the same `Velocity` type so that both values can be easily compared. In order to achieve
@@ -167,10 +167,10 @@ helper:
 ```cpp
 template<typename Child, Exponent... Es>
 struct derived_dimension;
-``` 
+```
 
 `Child` class template parameter is a part of a CRTP idiom and is used to provide a downcasting facility
-described later in this document. 
+described later in this document.
 
 So for example to create a `velocity` type we have to do:
 
@@ -246,7 +246,7 @@ struct derived_unit;
 ```
 
 For example to define the base unit of `length`:
- 
+
 ```cpp
 struct metre : derived_unit<metre, length> {};
 ```
@@ -288,7 +288,7 @@ struct derived_unit<Child, U>;
 struct kilometre : derived_unit<kilometre, kilo<metre>> {};
 ```
 
-- helper that automatically calculates ratio based on info in desired dimension and provided list 
+- helper that automatically calculates ratio based on info in desired dimension and provided list
   of units of base dimensions
 
 ```cpp
@@ -301,7 +301,7 @@ struct kilometre_per_hour : derived_unit<kilometre_per_hour, velocity, kilometre
 ```
 
 `units::Unit` is a concept that is satisfied by a type that is empty and publicly
-derived from `units::unit` class template: 
+derived from `units::unit` class template:
 
 ```cpp
 template<typename T>
@@ -312,7 +312,7 @@ concept Unit =
 
 ### `Quantities`
 
-`units::quantity` is a class template that expresses the quantity/amount of a specific dimension 
+`units::quantity` is a class template that expresses the quantity/amount of a specific dimension
 expressed in a specific unit of that dimension:
 
 ```cpp
@@ -392,7 +392,7 @@ Beside adding new elements a few other changes where applied compared to the `st
 #### `quantity_cast`
 
 To explicitly force truncating conversions `quantity_cast` function is provided which is a direct
-counterpart of `std::chrono::duration_cast`. As a template argument user can provide here either 
+counterpart of `std::chrono::duration_cast`. As a template argument user can provide here either
 a `quantity` type or only its template parameters (`Unit`, `Rep`):  
 
 ```cpp
@@ -477,7 +477,7 @@ In file included from <path>/src/include/units/bits/tools.h:25,
      concept same_as = std::is_same_v<T, U>;
              ^~~~
 <path>/src/include/units/bits/stdconcepts.h:33:18: note: 'std::is_same_v' evaluated to false
-``` 
+```
 
 Now
 
@@ -498,10 +498,10 @@ class specialization with a strong type assigned to it by the user. A simplified
 facility may be represented as:
 
 ```cpp
-struct metre : unit<dimension<exp<base_dim_length, 1>>, std::ratio<1, 1, 0>>; 
+struct metre : unit<dimension<exp<base_dim_length, 1>>, std::ratio<1, 1, 0>>;
 ```
 
-In the above example `metre` is a downcasting target (child class) and a specific `unit` class 
+In the above example `metre` is a downcasting target (child class) and a specific `unit` class
 template specialization is a downcasting source (base class). The downcasting facility provides
 1 to 1 tpe substitution mechanism. Only one child class can be created for a specific base class
 template instantiation.
@@ -576,7 +576,7 @@ using downcast_target = decltype(detail::downcast_target_impl<T>());
 `units::downcast_target` is used to obtain the target type of the downcasting operation registered
 for a given specialization in a base type.
 
-For example to determine a downcasted type of a quantity multiply operation the following can be done: 
+For example to determine a downcasted type of a quantity multiply operation the following can be done:
 
 ```cpp
 using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
@@ -586,7 +586,7 @@ using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio
 
 `detail::downcast_target_impl` checks if a downcasting target is registered for the specific base class.
 If yes, it returns the registered type, otherwise it works like a regular identity type returning
-a provided base class. 
+a provided base class.
 
 ```cpp
 namespace detail {
@@ -626,34 +626,34 @@ In order to extend the library with custom dimensions the user has to:
     inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
     ```
 
-2. Create a new dimension type with the recipe of how to construct it from base dimensions and 
-   register it for a downcasting facitlity:
+2. Create a new dimension type with the recipe of how to construct it from base dimensions and
+   register it for a downcasting facility:
 
     ```cpp
     struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
-    ``` 
+    ```
 
-2. Define a concept that will match a new dimension:
+3. Define a concept that will match a new dimension:
 
     ```cpp
     template<typename T>
     concept DigitalInformation = units::QuantityOf<T, digital_information>;
     ```
 
-3. Define units and register them to a downcasting facility:
+4. Define units and register them to a downcasting facility:
 
     ```cpp
-    struct bit : units::derived_unit<bit, digital_information> {};   
+    struct bit : units::derived_unit<bit, digital_information> {};
     struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};
     ```
 
-4. Provide user-defined literals for the most important units:
+5. Provide user-defined literals for the most important units:
 
     ```cpp
     inline namespace literals {
       constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
       constexpr auto operator""_b(long double l) { return units::quantity<bit, long double>(l); }
-    
+
       constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
       constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
     }
@@ -681,17 +681,17 @@ In order to extend the library with custom dimensions the user has to:
 
 6. Should we provide integral UDLs or just leave floating point ones?
 
-7. Should we provide support for dimensionless quantities? 
+7. Should we provide support for dimensionless quantities?
 
     Because dimensionless quantities have no associated units, they behave as normal scalars,
     and allow implicit conversion to and from the underlying value type or types that are
     convertible to/from that value type.
 
-9. Should we standardize accompany tools (downcasting facility, `type_list` operations, `common_ratio`, etc)? 
+8. Should we standardize accompany tools (downcasting facility, `type_list` operations, `common_ratio`, etc)?
 
-10. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html)
+9. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (<https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html>)
     for floating point types.
 
-11. `J` imaginary constants are a GCC extension
+10. `J` imaginary constants are a GCC extension
 
-12. Do we need custom/multiple systems?
+11. Do we need custom/multiple systems?
