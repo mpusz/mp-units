@@ -221,7 +221,7 @@ struct dimension_multiply<dimension<E1...>, dimension<E2...>> {
 };
 
 template<Dimension D1, Dimension D2>
-using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+using dimension_multiply = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
 ```
 
 
@@ -343,12 +343,12 @@ public:
   [[nodiscard]] static constexpr quantity one() noexcept { return quantity(quantity_values<Rep>::one()); }
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-      requires std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>
+      requires std::same_as<typename U1::dimension, dim_invert<typename U2::dimension>>
   [[nodiscard]] constexpr Scalar operator*(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs);
 
   template<Unit U1, Scalar Rep1, Unit U2, Scalar Rep2>
-      requires (!std::same_as<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
+      requires (!std::same_as<typename U1::dimension, dim_invert<typename U2::dimension>>) &&
                (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                 (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
   [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
@@ -579,7 +579,7 @@ for a given specialization in a base type.
 For example to determine a downcasted type of a quantity multiply operation the following can be done:
 
 ```cpp
-using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
+using dim = dimension_multiply<typename U1::dimension, typename U2::dimension>;
 using common_rep = decltype(lhs.count() * rhs.count());
 using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
 ```

@@ -90,7 +90,6 @@ namespace units {
       detail::is_dimension<downcast_base_t<T>>;
 
   // exp
-
   template<typename Dim, int Num, int Den = 1>
     requires BaseDimension<Dim> || Dimension<Dim>
   struct exp {
@@ -108,67 +107,69 @@ namespace units {
   }  // namespace detail
 
   // exp_less
-
   template<Exponent E1, Exponent E2>
   struct exp_less : base_dimension_less<typename E1::dimension, typename E2::dimension> {
   };
 
   // exp_invert
+  namespace detail {
+
+    template<Exponent E>
+    struct exp_invert_impl;
+
+    template<typename Dim, int Num, int Den>
+    struct exp_invert_impl<exp<Dim, Num, Den>> {
+      using type = exp<Dim, -Num, Den>;
+    };
+
+  }
 
   template<Exponent E>
-  struct exp_invert;
-
-  template<typename Dim, int Num, int Den>
-  struct exp_invert<exp<Dim, Num, Den>> {
-    using type = exp<Dim, -Num, Den>;
-  };
-
-  template<Exponent E>
-  using exp_invert_t = exp_invert<E>::type;
+  using exp_invert = detail::exp_invert_impl<E>::type;
 
   // exp_multiply
+  namespace detail {
+
+    template<Exponent E, int Num, int Den>
+    struct exp_multiply_impl {
+      using r1 = ratio<E::num, E::den>;
+      using r2 = ratio<Num, Den>;
+      using r = ratio_multiply<r1, r2>;
+      using type = exp<typename E::dimension, r::num, r::den>;
+    };
+
+  }
 
   template<Exponent E, int Num, int Den>
-  struct exp_multiply {
-    using r1 = ratio<E::num, E::den>;
-    using r2 = ratio<Num, Den>;
-    using r = ratio_multiply<r1, r2>;
-    using type = exp<typename E::dimension, r::num, r::den>;
-  };
-
-  template<Exponent E, int Num, int Den>
-  using exp_multiply_t = exp_multiply<E, Num, Den>::type;
+  using exp_multiply = detail::exp_multiply_impl<E, Num, Den>::type;
 
   // dimension
-
   template<Exponent... Es>
   struct dimension : downcast_base<dimension<Es...>> {};
 
   // same_dim
-
   template<Dimension D1, Dimension D2>
   inline constexpr bool same_dim = std::is_same_v<typename D1::base_type, typename D2::base_type>;
 
   // dim_invert
+  namespace detail {
 
-  template<Dimension E>
-  struct dim_invert;
+    template<Dimension E>
+    struct dim_invert_impl;
 
-  template<typename... Es>
-  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_invert_t<Es>...>>> {};
+    template<typename... Es>
+    struct dim_invert_impl<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_invert<Es>...>>> {};
+
+  }
 
   template<Dimension D>
-  using dim_invert_t = dim_invert<downcast_base_t<D>>::type;
+  using dim_invert = detail::dim_invert_impl<downcast_base_t<D>>::type;
 
   // make_dimension
-
   namespace detail {
 
     template<Dimension D>
     struct dim_consolidate;
-
-    template<Dimension D>
-    using dim_consolidate_t = dim_consolidate<D>::type;
 
     template<>
     struct dim_consolidate<dimension<>> {
@@ -182,7 +183,7 @@ namespace units {
 
     template<typename E1, typename... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
-      using type = type_list_push_front<dim_consolidate_t<dimension<ERest...>>, E1>;
+      using type = type_list_push_front<typename dim_consolidate<dimension<ERest...>>::type, E1>;
     };
 
     template<BaseDimension D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
@@ -191,15 +192,12 @@ namespace units {
       using r1 = std::ratio<Num1, Den1>;
       using r2 = std::ratio<Num2, Den2>;
       using r = std::ratio_add<r1, r2>;
-      using type = conditional<r::num == 0, dim_consolidate_t<dimension<ERest...>>,
-                               dim_consolidate_t<dimension<exp<D, r::num, r::den>, ERest...>>>;
+      using type = conditional<r::num == 0, typename dim_consolidate<dimension<ERest...>>::type,
+                               typename dim_consolidate<dimension<exp<D, r::num, r::den>, ERest...>>::type>;
     };
 
     template<Exponent... Es>
     struct extract;
-
-    template<Exponent... Es>
-    using extract_t = extract<Es...>::type;
 
     template<>
     struct extract<> {
@@ -208,88 +206,99 @@ namespace units {
 
     template<BaseDimension Dim, int Num, int Den, Exponent... ERest>
     struct extract<exp<Dim, Num, Den>, ERest...> {
-      using type = type_list_push_front<extract_t<ERest...>, exp<Dim, Num, Den>>;
+      using type = type_list_push_front<typename extract<ERest...>::type, exp<Dim, Num, Den>>;
     };
 
     template<Exponent... Es, int Num, int Den, Exponent... ERest>
     struct extract<exp<dimension<Es...>, Num, Den>, ERest...> {
-      using type = type_list_push_front<extract_t<ERest...>, exp_multiply_t<Es, Num, Den>...>;
+      using type = type_list_push_front<typename extract<ERest...>::type, exp_multiply<Es, Num, Den>...>;
     };
 
     template<Dimension Dim, int Num, int Den, Exponent... ERest>
     struct extract<exp<Dim, Num, Den>, ERest...> {
-      using type = extract_t<exp<downcast_base_t<Dim>, Num, Den>, ERest...>;
+      using type = extract<exp<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
     };
 
     template<Exponent... Es>
     struct make_dimension {
-      using type = detail::dim_consolidate_t<type_list_sort<detail::extract_t<Es...>, exp_less>>;
+      using type = detail::dim_consolidate<type_list_sort<typename detail::extract<Es...>::type, exp_less>>::type;
     };
-
-    template<Exponent... Es>
-    using make_dimension_t = make_dimension<Es...>::type;
 
   }  // namespace detail
 
   // derived_dimension
-
   template<typename Child, Exponent... Es>
-  struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...>> {};
+  struct derived_dimension : downcast_helper<Child, typename detail::make_dimension<Es...>::type> {};
 
   // merge_dimension
+  namespace detail {
+
+    template<Dimension D1, Dimension D2>
+    struct merge_dimension_impl {
+      using type = detail::dim_consolidate<type_list_merge_sorted<D1, D2, exp_less>>::type;
+    };
+
+  }
 
   template<Dimension D1, Dimension D2>
-  struct merge_dimension {
-    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_less>>;
-  };
-
-  template<Dimension D1, Dimension D2>
-  using merge_dimension_t = merge_dimension<D1, D2>::type;
+  using merge_dimension = detail::merge_dimension_impl<D1, D2>::type;
 
   // dimension_multiply
+  namespace detail {
+
+    template<Dimension D1, Dimension D2>
+    struct dimension_multiply_impl;
+
+    template<typename... E1, typename... E2>
+    struct dimension_multiply_impl<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_target<merge_dimension<dimension<E1...>, dimension<E2...>>>> {};
+
+  }
 
   template<Dimension D1, Dimension D2>
-  struct dimension_multiply;
-
-  template<typename... E1, typename... E2>
-  struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_target<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
-
-  template<Dimension D1, Dimension D2>
-  using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_multiply = detail::dimension_multiply_impl<typename D1::base_type, typename D2::base_type>::type;
 
   // dimension_divide
+  namespace detail {
+
+    template<Dimension D1, Dimension D2>
+    struct dimension_divide_impl;
+
+    template<typename... E1, typename... E2>
+    struct dimension_divide_impl<dimension<E1...>, dimension<E2...>>
+        : dimension_multiply_impl<dimension<E1...>, dimension<exp_invert<E2>...>> {
+    };
+
+  }
 
   template<Dimension D1, Dimension D2>
-  struct dimension_divide;
-
-  template<typename... E1, typename... E2>
-  struct dimension_divide<dimension<E1...>, dimension<E2...>>
-      : dimension_multiply<dimension<E1...>, dimension<exp_invert_t<E2>...>> {
-  };
-
-  template<Dimension D1, Dimension D2>
-  using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_divide = detail::dimension_divide_impl<typename D1::base_type, typename D2::base_type>::type;
 
   // dimension_sqrt
+  namespace detail {
+
+    template<Dimension D>
+    struct dimension_sqrt_impl;
+
+    template<typename... Es>
+    struct dimension_sqrt_impl<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_multiply<Es, 1, 2>...>>> {};
+  
+  }
 
   template<Dimension D>
-  struct dimension_sqrt;
-
-  template<typename... Es>
-  struct dimension_sqrt<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_multiply_t<Es, 1, 2>...>>> {};
-
-  template<Dimension D>
-  using dimension_sqrt_t = dimension_sqrt<typename D::base_type>::type;
+  using dimension_sqrt = detail::dimension_sqrt_impl<typename D::base_type>::type;
 
   // dimension_pow
+  namespace detail {
+
+    template<Dimension D, std::size_t N>
+    struct dimension_pow_impl;
+
+    template<typename... Es, std::size_t N>
+    struct dimension_pow_impl<dimension<Es...>, N> : std::type_identity<downcast_target<dimension<exp_multiply<Es, N, 1>...>>> {};
+
+  }
 
   template<Dimension D, std::size_t N>
-  struct dimension_pow;
-
-  template<typename... Es, std::size_t N>
-  struct dimension_pow<dimension<Es...>, N> : std::type_identity<downcast_target<dimension<exp_multiply_t<Es, N, 1>...>>> {};
-
-  template<Dimension D, std::size_t N>
-  using dimension_pow_t = dimension_pow<typename D::base_type, N>::type;
+  using dimension_pow = detail::dimension_pow_impl<typename D::base_type, N>::type;
 
 }  // namespace units

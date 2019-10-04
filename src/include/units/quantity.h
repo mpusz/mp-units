@@ -60,22 +60,26 @@ namespace units {
   }  // namespace detail
 
   // common_quantity
-  template<Quantity Q1, Quantity Q2, Scalar Rep>
-  struct common_quantity;
+  namespace detail {
 
-  template<typename U, typename Rep1, typename Rep2, typename Rep>
-  struct common_quantity<quantity<U, Rep1>, quantity<U, Rep2>, Rep> {
-    using type = quantity<U, Rep>;
-  };
+    template<Quantity Q1, Quantity Q2, Scalar Rep>
+    struct common_quantity_impl;
 
-  template<typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
-    requires same_dim<typename U1::dimension, typename U2::dimension>
-  struct common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
-    using type = quantity<downcast_target<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
-  };
+    template<typename U, typename Rep1, typename Rep2, typename Rep>
+    struct common_quantity_impl<quantity<U, Rep1>, quantity<U, Rep2>, Rep> {
+      using type = quantity<U, Rep>;
+    };
+
+    template<typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
+      requires same_dim<typename U1::dimension, typename U2::dimension>
+    struct common_quantity_impl<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
+      using type = quantity<downcast_target<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>, Rep>;
+    };
+
+  }
 
   template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-  using common_quantity_t = common_quantity<Q1, Q2, Rep>::type;
+  using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
   // treat_as_floating_point
 
@@ -280,7 +284,7 @@ namespace units {
     requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() + rhs.count());
-    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
+    using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
@@ -290,7 +294,7 @@ namespace units {
     requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     using common_rep = decltype(lhs.count() - rhs.count());
-    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
+    using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
@@ -317,7 +321,7 @@ namespace units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Scalar operator*(const quantity<U1, Rep1>& lhs,
                                            const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, dim_invert_t<typename U2::dimension>>
+      requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>>
   {
     using common_rep = decltype(lhs.count() * rhs.count());
     using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -327,11 +331,11 @@ namespace units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity operator*(const quantity<U1, Rep1>& lhs,
                                              const quantity<U2, Rep2>& rhs)
-      requires (!same_dim<typename U1::dimension, dim_invert_t<typename U2::dimension>>) &&
+      requires (!same_dim<typename U1::dimension, dim_invert<typename U2::dimension>>) &&
                (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
                 (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
   {
-    using dim = dimension_multiply_t<typename U1::dimension, typename U2::dimension>;
+    using dim = dimension_multiply<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
     using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
@@ -345,7 +349,7 @@ namespace units {
   {
     Expects(q != std::remove_cvref_t<decltype(q)>(0));
 
-    using dim = dim_invert_t<typename U::dimension>;
+    using dim = dim_invert<typename U::dimension>;
     using common_rep = decltype(v / q.count());
     using ret = quantity<downcast_target<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
     using den = quantity<U, common_rep>;
@@ -373,7 +377,7 @@ namespace units {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
-    using cq = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
+    using cq = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return cq(lhs).count() / cq(rhs).count();
   }
 
@@ -387,7 +391,7 @@ namespace units {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
     using common_rep = decltype(lhs.count() / rhs.count());
-    using dim = dimension_divide_t<typename U1::dimension, typename U2::dimension>;
+    using dim = dimension_divide<typename U1::dimension, typename U2::dimension>;
     using ret = quantity<downcast_target<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
@@ -406,7 +410,7 @@ namespace units {
                                              const quantity<U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() % rhs.count());
-    using ret = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
+    using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
@@ -416,7 +420,7 @@ namespace units {
   [[nodiscard]] constexpr bool operator==(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
     requires same_dim<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
+    using ct = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() == ct(rhs).count();
   }
 
@@ -431,7 +435,7 @@ namespace units {
   [[nodiscard]] constexpr bool operator<(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
     requires same_dim<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity_t<quantity<U1, Rep1>, quantity<U2, Rep2>>;
+    using ct = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return ct(lhs).count() < ct(rhs).count();
   }
 

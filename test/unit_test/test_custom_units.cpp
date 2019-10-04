@@ -72,8 +72,8 @@ namespace {
 
 namespace {
 
-  static_assert(std::is_same_v<dimension_sqrt_t<power_spectral_density>, amplitude_spectral_density>);
-  static_assert(std::is_same_v<dimension_pow_t<amplitude_spectral_density, 2>, power_spectral_density>);
+  static_assert(std::is_same_v<dimension_sqrt<power_spectral_density>, amplitude_spectral_density>);
+  static_assert(std::is_same_v<dimension_pow<amplitude_spectral_density, 2>, power_spectral_density>);
 
   static_assert(std::is_same_v<decltype(pow<2>(quantity<volt_per_sqrt_hertz>(4))), decltype(quantity<sq_volt_per_hertz>(16))>);
   static_assert(std::is_same_v<decltype(sqrt(quantity<sq_volt_per_hertz>(16))), decltype(quantity<volt_per_sqrt_hertz>(4))>);

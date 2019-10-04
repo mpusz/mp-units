@@ -93,10 +93,10 @@ namespace {
   // type_list_sort
 
   template<TypeList List>
-  using exp_sort_t = type_list_sort<List, exp_less>;
+  using exp_sort = type_list_sort<List, exp_less>;
 
-  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d0, 1>>>, dimension<exp<d0, 1>>>);
-  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d0, 1>, exp<d1, -1>>>, dimension<exp<d0, 1>, exp<d1, -1>>>);
-  static_assert(std::is_same_v<exp_sort_t<dimension<exp<d1, 1>, exp<d0, -1>>>, dimension<exp<d0, -1>, exp<d1, 1>>>);
+  static_assert(std::is_same_v<exp_sort<dimension<exp<d0, 1>>>, dimension<exp<d0, 1>>>);
+  static_assert(std::is_same_v<exp_sort<dimension<exp<d0, 1>, exp<d1, -1>>>, dimension<exp<d0, 1>, exp<d1, -1>>>);
+  static_assert(std::is_same_v<exp_sort<dimension<exp<d1, 1>, exp<d0, -1>>>, dimension<exp<d0, -1>, exp<d1, 1>>>);
 
 }  // namespace

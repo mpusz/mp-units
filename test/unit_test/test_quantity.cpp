@@ -263,9 +263,9 @@ namespace {
 
   // common_quantity
 
-  static_assert(std::is_same_v<common_quantity_t<quantity<metre, int>, quantity<kilometre, int>>, quantity<metre, int>>);
-  static_assert(std::is_same_v<common_quantity_t<quantity<kilometre, long long>, quantity<metre, int>>, quantity<metre, long long>>);
-  static_assert(std::is_same_v<common_quantity_t<quantity<kilometre, long long>, quantity<millimetre, double>>, quantity<millimetre, double>>);
+  static_assert(std::is_same_v<common_quantity<quantity<metre, int>, quantity<kilometre, int>>, quantity<metre, int>>);
+  static_assert(std::is_same_v<common_quantity<quantity<kilometre, long long>, quantity<metre, int>>, quantity<metre, long long>>);
+  static_assert(std::is_same_v<common_quantity<quantity<kilometre, long long>, quantity<millimetre, double>>, quantity<millimetre, double>>);
 
   // quantity_cast
 
