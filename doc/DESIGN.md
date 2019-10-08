@@ -33,6 +33,7 @@ static_assert(10km / 5km == 2);
     - strong types
     - compile-time safety
     - `constexpr` all the things
+    - as fast or even faster than when working with fundamental types
 2. The best possible user experience
     - compiler errors
     - debugging
