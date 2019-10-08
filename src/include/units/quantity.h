@@ -47,7 +47,7 @@ namespace units {
   // Scalar
 
   template<typename T>
-  concept Scalar = Number<T> && !Quantity<T>;
+  concept Scalar = (!Quantity<T>) && Number<T>;
 
   template<Unit U, Scalar Rep>
   class quantity;
