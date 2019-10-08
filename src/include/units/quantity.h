@@ -155,11 +155,13 @@ namespace units {
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
   }
+
   template<Unit ToU, typename U, typename Rep>
   [[nodiscard]] constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, Rep>>(q);
   }
+  
   template<Scalar ToRep, typename U, typename Rep>
   [[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
@@ -295,8 +297,7 @@ namespace units {
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-//  template<typename U, typename Rep1, Scalar Rep2>
-  template<typename U, typename Rep1, typename Rep2>
+  template<typename U, typename Rep1, Scalar Rep2>
   [[nodiscard]] constexpr Quantity operator*(const quantity<U, Rep1>& q,
                                              const Rep2& v)
     requires (!Quantity<Rep2>)
@@ -306,8 +307,7 @@ namespace units {
     return ret(ret(q).count() * v);
   }
 
-//  template<Scalar Rep1, typename U, typename Rep2>
-  template<typename Rep1, typename U, typename Rep2>
+  template<Scalar Rep1, typename U, typename Rep2>
   [[nodiscard]] constexpr Quantity operator*(const Rep1& v,
                                              const quantity<U, Rep2>& q)
     requires (!Quantity<Rep1>)
@@ -338,8 +338,7 @@ namespace units {
     return ret(lhs.count() * rhs.count());
   }
 
-//  template<Scalar Rep1, typename U, typename Rep2>
-  template<typename Rep1, typename U, typename Rep2>
+  template<Scalar Rep1, typename U, typename Rep2>
   [[nodiscard]] constexpr Quantity operator/(const Rep1& v,
                                              const quantity<U, Rep2>& q)
     requires (!Quantity<Rep1>)
@@ -353,8 +352,7 @@ namespace units {
     return ret(v / den(q).count());
   }
 
-//  template<typename U, typename Rep1, Scalar Rep2>
-  template<typename U, typename Rep1, typename Rep2>
+  template<typename U, typename Rep1, Scalar Rep2>
   [[nodiscard]] constexpr Quantity operator/(const quantity<U, Rep1>& q,
                                              const Rep2& v)
     requires (!Quantity<Rep2>)
