@@ -6,22 +6,27 @@ AccessModifierOffset: -2
 # AlignAfterOpenBracket: Align
 # AlignConsecutiveAssignments: false
 # AlignConsecutiveDeclarations: false
-# AlignEscapedNewlinesLeft: true
+# AlignConsecutiveMacros: false
+# AlignEscapedNewlines: Left
 # AlignOperands:   true
 # AlignTrailingComments: true
+# AllowAllArgumentsOnNextLine: true
+# AllowAllConstructorInitializersOnNextLine: true
 # AllowAllParametersOfDeclarationOnNextLine: true
-# AllowShortBlocksOnASingleLine: false
+# AllowShortBlocksOnASingleLine: Never
 # AllowShortCaseLabelsOnASingleLine: false
 # AllowShortFunctionsOnASingleLine: All
-# AllowShortIfStatementsOnASingleLine: true
+# AllowShortIfStatementsOnASingleLine: WithoutElse
+# AllowShortLambdasOnASingleLine: All
 # AllowShortLoopsOnASingleLine: true
 # AlwaysBreakAfterDefinitionReturnType: None
 # AlwaysBreakAfterReturnType: None
 # AlwaysBreakBeforeMultilineStrings: true
-# AlwaysBreakTemplateDeclarations: true
+# AlwaysBreakTemplateDeclarations: Yes
 # BinPackArguments: true
 # BinPackParameters: true
-# BraceWrapping:   
+# BraceWrapping:
+#   AfterCaseLabel:  false
 #   AfterClass:      false
 #   AfterControlStatement: false
 #   AfterEnum:       false
@@ -30,17 +35,25 @@ AccessModifierOffset: -2
 #   AfterObjCDeclaration: false
 #   AfterStruct:     false
 #   AfterUnion:      false
+#   AfterExternBlock: false
 #   BeforeCatch:     false
 #   BeforeElse:      false
 #   IndentBraces:    false
+#   SplitEmptyFunction: true
+#   SplitEmptyRecord: true
+#   SplitEmptyNamespace: true
+# BreakAfterJavaFieldAnnotations: false
 # BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Stroustrup
-# BreakBeforeTernaryOperators: true
+# BreakBeforeInheritanceComma: false
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: true
-# BreakAfterJavaFieldAnnotations: false
+BreakInheritanceList: AfterColon
 # BreakStringLiterals: true
 ColumnLimit:     120
 # CommentPragmas:  '^ IWYU pragma:'
+# CompactNamespaces: false
 # ConstructorInitializerAllOnOneLineOrOnePerLine: true
 # ConstructorInitializerIndentWidth: 4
 # ContinuationIndentWidth: 4
@@ -48,7 +61,12 @@ ColumnLimit:     120
 DerivePointerAlignment: false
 # DisableFormat:   false
 # ExperimentalAutoDetectBinPacking: false
-# ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
+# FixNamespaceComments: true
+# ForEachMacros:
+#   - foreach
+#   - Q_FOREACH
+#   - BOOST_FOREACH
+IncludeBlocks:   Merge
 IncludeCategories: 
   - Regex:           '^".*'
     Priority:        1
@@ -60,41 +78,84 @@ IncludeCategories:
     Priority:        4
   - Regex:           '^<.*'
     Priority:        5
-# IncludeIsMainRegex: '([-_](test|unittest))?$'
+# IncludeIsMainRegex: '([-_](test)(_.+)?)?$'
 # IndentCaseLabels: true
+# IndentGotoLabels: true
+# IndentPPDirectives: None
 # IndentWidth:     2
 # IndentWrappedFunctionNames: false
 # JavaScriptQuotes: Leave
 # JavaScriptWrapImports: true
-KeepEmptyLinesAtTheStartOfBlocks: true
+# KeepEmptyLinesAtTheStartOfBlocks: false
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
 # MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
+# ObjCBinPackProtocolList: Never
 # ObjCBlockIndentWidth: 2
 # ObjCSpaceAfterProperty: false
-# ObjCSpaceBeforeProtocolList: false
+# ObjCSpaceBeforeProtocolList: true
+# PenaltyBreakAssignment: 2
 # PenaltyBreakBeforeFirstCallParameter: 1
 # PenaltyBreakComment: 300
 # PenaltyBreakFirstLessLess: 120
 # PenaltyBreakString: 1000
+# PenaltyBreakTemplateDeclaration: 10
 # PenaltyExcessCharacter: 1000000
 # PenaltyReturnTypeOnItsOwnLine: 200
 # PointerAlignment: Left
+# RawStringFormats:
+#   - Language:        Cpp
+#     Delimiters:
+#       - cc
+#       - CC
+#       - cpp
+#       - Cpp
+#       - CPP
+#       - 'c++'
+#       - 'C++'
+#     CanonicalDelimiter: ''
+#     BasedOnStyle:    google
+#   - Language:        TextProto
+#     Delimiters:
+#       - pb
+#       - PB
+#       - proto
+#       - PROTO
+#     EnclosingFunctions:
+#       - EqualsProto
+#       - EquivToProto
+#       - PARSE_PARTIAL_TEXT_PROTO
+#       - PARSE_TEST_PROTO
+#       - PARSE_TEXT_PROTO
+#       - ParseTextOrDie
+#       - ParseTextProtoOrDie
+#     CanonicalDelimiter: ''
+#     BasedOnStyle:    google
 # ReflowComments:  true
 # SortIncludes:    true
+# SortUsingDeclarations: true
 # SpaceAfterCStyleCast: false
+# SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
 # SpaceBeforeAssignmentOperators: true
-SpaceBeforeParens: ControlStatements
+# SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: false
+# SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: Never
+# SpaceBeforeRangeBasedForLoopColon: true
+# SpaceInEmptyBlock: false
 # SpaceInEmptyParentheses: false
 # SpacesBeforeTrailingComments: 2
 # SpacesInAngles:  false
-# SpacesInContainerLiterals: true
 # SpacesInCStyleCastParentheses: false
+# SpacesInContainerLiterals: true
 # SpacesInParentheses: false
 # SpacesInSquareBrackets: false
-Standard:        Cpp11
+Standard: Latest
+# StatementMacros:
+#   - Q_UNUSED
+#   - QT_REQUIRE_VERSION
 # TabWidth:        8
 # UseTab:          Never
-...
+# ...
