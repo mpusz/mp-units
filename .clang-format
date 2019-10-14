@@ -62,10 +62,13 @@ DerivePointerAlignment: false
 # DisableFormat:   false
 # ExperimentalAutoDetectBinPacking: false
 # FixNamespaceComments: true
-# ForEachMacros:
-#   - foreach
-#   - Q_FOREACH
-#   - BOOST_FOREACH
+ForEachMacros:
+  - foreach
+  - Q_FOREACH
+  - BOOST_FOREACH
+  - GIVEN
+  - WHEN
+  - THEN
 IncludeBlocks:   Merge
 IncludeCategories: 
   - Regex:           '^".*'

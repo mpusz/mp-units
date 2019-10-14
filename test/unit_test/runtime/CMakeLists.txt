@@ -20,16 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# unit tests
-add_library(unit_tests
-    test_custom_units.cpp
-    test_dimension.cpp
-    test_quantity.cpp
-    test_ratio.cpp
-    test_type_list.cpp
-    test_units.cpp
+add_executable(unit_tests_runtime
+    catch_main.cpp
+    math_test.cpp
 )
-target_link_libraries(unit_tests
+target_link_libraries(unit_tests_runtime
     PRIVATE
         mp::units
+        CONAN_PKG::Catch2
 )

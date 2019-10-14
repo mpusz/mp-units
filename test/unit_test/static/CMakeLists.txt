@@ -20,6 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(unit_test/runtime)
-add_subdirectory(unit_test/static)
-add_subdirectory(metabench)
+add_library(unit_tests_static
+    custom_unit_test.cpp
+    dimension_test.cpp
+    math_test.cpp
+    quantity_test.cpp
+    ratio_test.cpp
+    type_list_test.cpp
+    unit_test.cpp
+)
+target_link_libraries(unit_tests_static
+    PRIVATE
+        mp::units
+)
