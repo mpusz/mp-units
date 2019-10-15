@@ -83,10 +83,10 @@ namespace units {
       detail::is_dimension<downcast_base_t<T>>;
 
   // exp
-  template<typename Dim, int Num, int Den = 1>
-    requires BaseDimension<Dim> || Dimension<Dim>
+  template<typename BaseOrDim, int Num, int Den = 1>
+    requires BaseDimension<BaseOrDim> || Dimension<BaseOrDim>
   struct exp {
-    using dimension = Dim;
+    using dimension = BaseOrDim;
     static constexpr int num = Num;
     static constexpr int den = Den;
   };
