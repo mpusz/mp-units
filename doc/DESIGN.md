@@ -242,7 +242,7 @@ struct unit : downcast_base<unit<D, R>> {
 All units are created with a `derived_unit` helper:
 
 ```cpp
-template<typename Child, fixed_string Name, typename...>
+template<typename Child, fixed_string Symbol, typename...>
 struct derived_unit;
 ```
 
@@ -259,8 +259,8 @@ to provide downcasting facility (described below).
 - helper to create a base unit of a specified dimension
 
 ```cpp
-template<typename Child, fixed_string Name, Dimension D>
-struct derived_unit<Child, Name, D>;
+template<typename Child, fixed_string Symbol, Dimension D>
+struct derived_unit<Child, Symbol, D>;
 ```
 
 ```cpp
@@ -270,8 +270,8 @@ struct metre : derived_unit<metre, "m", length> {};
 - helper to create other units for a specified dimension
 
 ```cpp
-template<typename Child, fixed_string Name, Dimension D, Ratio R>
-struct derived_unit<Child, Name, D, R>;
+template<typename Child, fixed_string Symbol, Dimension D, Ratio R>
+struct derived_unit<Child, Symbol, D, R>;
 ```
 
 ```cpp
@@ -281,8 +281,8 @@ struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
 - helper to create a unit with a SI prefix
 
 ```cpp
-template<typename Child, fixed_string Name, Unit U>
-struct derived_unit<Child, Name, U>;
+template<typename Child, fixed_string Symbol, Unit U>
+struct derived_unit<Child, Symbol, U>;
 ```
 
 ```cpp
@@ -293,8 +293,8 @@ struct kilometre : derived_unit<kilometre, "km", kilo<metre>> {};
   of units of base dimensions
 
 ```cpp
-template<typename Child, fixed_string Name, Dimension D, Unit U, Unit... Us>
-struct derived_unit<Child, Name, D, U, Us...>;
+template<typename Child, fixed_string Symbol, Dimension D, Unit U, Unit... Us>
+struct derived_unit<Child, Symbol, D, U, Us...>;
 ```
 
 ```cpp
@@ -554,8 +554,8 @@ struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...
 ```
 
 ```cpp
-template<typename Child, fixed_string Name, Dimension D>
-struct derived_unit<Child, Name, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
+template<typename Child, fixed_string Symbol, Dimension D>
+struct derived_unit<Child, Symbol, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
 ```
 
 With such CRTP types the only thing the user has to do to register a new type to the downcasting

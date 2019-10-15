@@ -30,7 +30,7 @@ namespace units {
   template<typename Unit, typename Rep>
   std::ostream& operator<<(std::ostream& os, const quantity<Unit, Rep>& value)
   {
-    return os << value.count() << Unit::name;
+    return os << value.count() << Unit::symbol;
   }
 
 }
