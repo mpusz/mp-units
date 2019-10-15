@@ -23,6 +23,7 @@
 #include "units/math.h"
 #include "print_helpers.h"
 #include "units/dimensions/area.h"
+#include "units/dimensions/volume.h"
 #include <catch2/catch.hpp>
 
 using namespace units;
@@ -34,6 +35,7 @@ TEST_CASE("pow<N>() on quantity changes the value and the dimension accordingly"
   //  CHECK(pow<0>(2m) == 2);
   CHECK(pow<1>(2m) == 2m);
   CHECK(pow<2>(2m) == 4sq_m);
+  CHECK(pow<3>(2m) == 8cub_m);
 }
 
 TEST_CASE("sqrt() on quantity changes the value and the dimension accordingly", "[math][sqrt]")
@@ -62,6 +64,13 @@ SCENARIO("quantities should work with pow<N>()", "[math][pow]")
 
       THEN("both the value and dimension is raised to the exponent 2") {
         REQUIRE(res == 4sq_m);
+      }
+    }
+    WHEN("pow<3>(q) is called") {
+      auto res = pow<3>(q);
+
+      THEN("both the value and dimension is raised to the exponent 3") {
+        REQUIRE(res == 8cub_m);
       }
     }
   }
