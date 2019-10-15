@@ -38,7 +38,7 @@ namespace units {
 
     // K
     constexpr auto operator""K(unsigned long long l) { return quantity<kelvin, std::int64_t>(l); }
-    constexpr auto operator""_K(long double l) { return quantity<kelvin, long double>(l); }   // todo: conflicts with gcc GNU extension
+    constexpr auto operator""_K(long double l) { return quantity<kelvin, long double>(l); }   // TODO: conflicts with gcc GNU extension
 
   }  // namespace literals
 
