@@ -28,7 +28,7 @@
 
 namespace {
 
-  struct base_dim_digital_information { static constexpr const char* value = "digital information"; };
+  struct base_dim_digital_information : units::base_dimension<"digital information", "b"> {};
 
   struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
 
@@ -36,6 +36,7 @@ namespace {
   concept DigitalInformation = units::QuantityOf<T, digital_information>;
 
   using namespace units::hacks;
+
   struct bit : units::derived_unit<bit, decltype("b"_fs), digital_information> {};
   struct byte : units::derived_unit<byte, decltype("B"_fs), digital_information, units::ratio<8>> {};
 

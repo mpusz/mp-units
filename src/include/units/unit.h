@@ -24,7 +24,6 @@
 
 #include <units/dimension.h>
 #include <units/ratio.h>
-#include <units/bits/fixed_string.h>
 #include <ratio>
 
 namespace units {

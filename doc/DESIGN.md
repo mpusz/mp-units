@@ -119,27 +119,39 @@ struct exp {
 
 Both a base dimension and a derived dimension can be provided to `units::exp` class template.
 
-`units::BaseDimension` represents a base dimension and should be implemented as a type with
-a unique compile-time text describing the dimension name:
+`units::base_dimension` represents a base dimension and has assigned a unique compile-time text
+describing the dimension name:
+
+```cpp
+template<typename Name, typename Symbol>
+struct base_dimension {
+  using name = Name;
+  using symbol = Symbol;
+};
+```
+
+`units::BaseDimension` is a concept to match all types derived from `base_dimension` instantiations:
 
 ```cpp
 template<typename T>
 concept BaseDimension = std::is_empty_v<T> &&
-  requires {
-    { T::value } -> std::same_as<const char*>;
-  };
+    requires {
+      typename T::name;
+      typename T::symbol;
+    } &&
+    std::derived_from<T, base_dimension<typename T::name, typename T::symbol>>;
 ```
 
 For example here is a list of SI base dimensions:
 
 ```cpp
-struct base_dim_length { static constexpr const char* value = "length"; };
-struct base_dim_mass { static constexpr const char* value = "mass"; };
-struct base_dim_time { static constexpr const char* value = "time"; };
-struct base_dim_current { static constexpr const char* value = "current"; };
-struct base_dim_temperature { static constexpr const char* value = "temperature"; };
-struct base_dim_substance { static constexpr const char* value = "substance"; };
-struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
+struct base_dim_length : base_dimension<"length", "m"> {};
+struct base_dim_mass : base_dimension<"mass", "kg"> {};
+struct base_dim_time : base_dimension<"time", "s"> {};
+struct base_dim_current : base_dimension<"current", "A"> {};
+struct base_dim_temperature : base_dimension<"temperature", "K"> {};
+struct base_dim_substance : base_dimension<"substance", "mol"> {};
+struct base_dim_luminous_intensity : base_dimension<"luminous intensity", "cd"> {};
 ```
 
 #### `derived_dimension`
@@ -624,7 +636,7 @@ In order to extend the library with custom dimensions the user has to:
 1. Create a new base dimension if the predefined ones are not enough to form a new derived dimension:
 
     ```cpp
-    inline constexpr units::base_dimension base_dim_digital_information{"digital information"};
+    struct base_dim_digital_information : units::base_dimension<"digital information", "b"> {};
     ```
 
 2. Create a new dimension type with the recipe of how to construct it from base dimensions and

@@ -27,10 +27,10 @@ using namespace units;
 
 namespace {
 
-  struct d0 { static constexpr const char* value = "d0"; };
-  struct d1 { static constexpr const char* value = "d1"; };
-  struct d2 { static constexpr const char* value = "d2"; };
-  struct d3 { static constexpr const char* value = "d3"; };
+  struct d0 : base_dimension<"d0", ""> {};
+  struct d1 : base_dimension<"d1", ""> {};
+  struct d2 : base_dimension<"d2", ""> {};
+  struct d3 : base_dimension<"d3", ""> {};
 
   // exp_invert
 

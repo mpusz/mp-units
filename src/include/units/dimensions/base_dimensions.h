@@ -26,12 +26,12 @@
 
 namespace units {
 
-  struct base_dim_length { static constexpr const char* value = "length"; };
-  struct base_dim_mass { static constexpr const char* value = "mass"; };
-  struct base_dim_time { static constexpr const char* value = "time"; };
-  struct base_dim_current { static constexpr const char* value = "current"; };
-  struct base_dim_temperature { static constexpr const char* value = "temperature"; };
-  struct base_dim_substance { static constexpr const char* value = "substance"; };
-  struct base_dim_luminous_intensity { static constexpr const char* value = "luminous intensity"; };
+  struct base_dim_length : base_dimension<"length", "m"> {};
+  struct base_dim_mass : base_dimension<"mass", "kg"> {};
+  struct base_dim_time : base_dimension<"time", "s"> {};
+  struct base_dim_current : base_dimension<"current", "A"> {};
+  struct base_dim_temperature : base_dimension<"temperature", "K"> {};
+  struct base_dim_substance : base_dimension<"substance", "mol"> {};
+  struct base_dim_luminous_intensity : base_dimension<"luminous intensity", "cd"> {};
 
 }  // namespace units

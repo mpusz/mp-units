@@ -24,37 +24,30 @@
 
 #include <units/bits/type_list.h>
 #include <units/bits/downcasting.h>
+#include <units/bits/fixed_string.h>
 #include <units/ratio.h>
 #include <ratio>
 
 namespace units {
 
+  template<basic_fixed_string Name, basic_fixed_string Symbol>
+  struct base_dimension {
+    static constexpr auto name = Name;
+    static constexpr auto symbol = Symbol;
+  };
+
   template<typename T>
   concept BaseDimension = std::is_empty_v<T> &&
       requires {
-        { T::value } -> std::same_as<const char*>;
-      };
-
-  namespace detail {
-
-    template<BaseDimension D1, BaseDimension D2>
-    constexpr bool less()
-    {
-      const char* p1 = D1::value;
-      const char* p2 = D2::value;
-      for(; (*p1 != '\0') && (*p2 != '\0'); ++p1, (void) ++p2) {
-        if(*p1 < *p2) return true;
-        if(*p2 < *p1) return false;
-      }
-      return (*p1 == '\0') && (*p2 != '\0');
-    }
-
-  }
+        T::name;
+        T::symbol;
+      };// &&  // TODO file a bug for this gcc issue
+//      std::derived_from<T, base_dimension<T::name, T::symbol>>;
 
   // base_dimension_less
 
   template<BaseDimension D1, BaseDimension D2>
-  struct base_dimension_less : std::bool_constant<detail::less<D1, D2>()> {
+  struct base_dimension_less : std::bool_constant<D1::name < D2::name> {
   };
 
   // is_exp
