@@ -85,7 +85,7 @@ namespace units {
 
   // treat_as_floating_point
 
-  template<typename Rep>  // todo Conceptify that
+  template<typename Rep>  // TODO Conceptify that
   inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
   // quantity_cast
@@ -442,3 +442,9 @@ namespace units {
   }
 
 }  // namespace units
+
+
+// template<class charT, class traits, class Rep, class Period>
+// basic_ostream<charT, traits>&
+// operator<<(basic_ostream<charT, traits>& os,
+// const duration<Rep, Period>& d);
