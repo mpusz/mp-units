@@ -73,6 +73,11 @@ constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto 
 
 ## Basic Concepts
 
+Below UML diagram shows the most important entities in the library design and how they relate to
+each other:
+
+![UML](units_uml.png)
+
 ### `Dimensions`
 
 `units::dimension` represents a derived dimension and is implemented as a type-list like type that
