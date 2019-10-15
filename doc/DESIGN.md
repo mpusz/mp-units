@@ -242,14 +242,14 @@ struct unit : downcast_base<unit<D, R>> {
 All units are created with a `derived_unit` helper:
 
 ```cpp
-template<typename Child, typename...>
+template<typename Child, fixed_string Name, typename...>
 struct derived_unit;
 ```
 
 For example to define the base unit of `length`:
 
 ```cpp
-struct metre : derived_unit<metre, length> {};
+struct metre : derived_unit<metre, "m", length> {};
 ```
 
 Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
@@ -259,46 +259,46 @@ to provide downcasting facility (described below).
 - helper to create a base unit of a specified dimension
 
 ```cpp
-template<typename Child, Dimension D>
-struct derived_unit<Child, D>;
+template<typename Child, fixed_string Name, Dimension D>
+struct derived_unit<Child, Name, D>;
 ```
 
 ```cpp
-struct metre : derived_unit<metre, length> {};
+struct metre : derived_unit<metre, "m", length> {};
 ```
 
 - helper to create other units for a specified dimension
 
 ```cpp
-template<typename Child, Dimension D, Ratio R>
-struct derived_unit<Child, D, R>;
+template<typename Child, fixed_string Name, Dimension D, Ratio R>
+struct derived_unit<Child, Name, D, R>;
 ```
 
 ```cpp
-struct yard : derived_unit<yard, length, ratio<9'144, 10'000>> {};
+struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
 ```
 
 - helper to create a unit with a SI prefix
 
 ```cpp
-template<typename Child, Unit U>
-struct derived_unit<Child, U>;
+template<typename Child, fixed_string Name, Unit U>
+struct derived_unit<Child, Name, U>;
 ```
 
 ```cpp
-struct kilometre : derived_unit<kilometre, kilo<metre>> {};
+struct kilometre : derived_unit<kilometre, "km", kilo<metre>> {};
 ```
 
 - helper that automatically calculates ratio based on info in desired dimension and provided list
   of units of base dimensions
 
 ```cpp
-template<typename Child, Dimension D, Unit U, Unit... Us>
-struct derived_unit<Child, D, U, Us...>;
+template<typename Child, fixed_string Name, Dimension D, Unit U, Unit... Us>
+struct derived_unit<Child, Name, D, U, Us...>;
 ```
 
 ```cpp
-struct kilometre_per_hour : derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};
+struct kilometre_per_hour : derived_unit<kilometre_per_hour, "km/h", velocity, kilometre, hour> {};
 ```
 
 `units::Unit` is a concept that is satisfied by a type that is empty and publicly
@@ -554,8 +554,8 @@ struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...
 ```
 
 ```cpp
-template<typename Child, Dimension D>
-struct derived_unit<Child, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
+template<typename Child, fixed_string Name, Dimension D>
+struct derived_unit<Child, Name, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
 ```
 
 With such CRTP types the only thing the user has to do to register a new type to the downcasting
@@ -563,7 +563,7 @@ facility is to publicly derive from one of those CRTP types and provide its new 
 the first template parameter of the CRTP type.
 
 ```cpp
-struct metre : derived_unit<metre, length> {};
+struct metre : derived_unit<metre, "m", length> {};
 ```
 
 Above types are used to define base and target of a downcasting operation. To perform the actual
@@ -644,8 +644,8 @@ In order to extend the library with custom dimensions the user has to:
 4. Define units and register them to a downcasting facility:
 
     ```cpp
-    struct bit : units::derived_unit<bit, digital_information> {};
-    struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};
+    struct bit : units::derived_unit<bit, "b", digital_information> {};
+    struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
     ```
 
 5. Provide user-defined literals for the most important units:
