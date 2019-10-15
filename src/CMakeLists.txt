@@ -66,6 +66,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
             -fconcepts
             -Wno-literal-suffix
             -Wno-non-template-friend
+# TODO gcc:92101
+            -Wno-pedantic
     )
 endif()
 add_library(mp::units ALIAS units)

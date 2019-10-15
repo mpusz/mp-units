@@ -24,6 +24,7 @@
 
 #include <units/dimension.h>
 #include <units/ratio.h>
+#include <units/bits/fixed_string.h>
 #include <ratio>
 
 namespace units {
@@ -115,20 +116,54 @@ namespace units {
 
   // derived_unit
 
-  template<typename Child, typename...>
+  //   TODO gcc:92101
+  // Gated by the following gcc bug
+  // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92101
+  // template<typename Child, fixed_string Name, typename...>
+  // struct derived_unit;
+  
+  // template<typename Child, fixed_string Name, Dimension D>
+  // struct derived_unit<Child, Name, D> : downcast_helper<Child, unit<D, ratio<1>>> {
+  //   static constexpr auto name = Name;
+  // };
+
+  // template<typename Child, fixed_string Name, Dimension D, Ratio R>
+  // struct derived_unit<Child, Name, D, R> : downcast_helper<Child, unit<D, R>> {
+  //   static constexpr auto name = Name;
+  // };
+
+  // template<typename Child, fixed_string Name, Unit U>
+  // struct derived_unit<Child, Name, U> : downcast_helper<Child, U> {
+  //   static constexpr auto name = Name;
+  // };
+
+  // template<typename Child, fixed_string Name, Dimension D, Unit U, Unit... Us>
+  // struct derived_unit<Child, Name, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
+  //   static constexpr auto name = Name;
+  // };
+
+  template<typename Child, typename Name, typename...>
   struct derived_unit;
+  
+  template<typename Child, typename Name, Dimension D>
+  struct derived_unit<Child, Name, D> : downcast_helper<Child, unit<D, ratio<1>>> {
+    static constexpr auto name = Name::c_str();
+  };
 
-  template<typename Child, Dimension D>
-  struct derived_unit<Child, D> : downcast_helper<Child, unit<D, ratio<1>>> {};
+  template<typename Child, typename Name, Dimension D, Ratio R>
+  struct derived_unit<Child, Name, D, R> : downcast_helper<Child, unit<D, R>> {
+    static constexpr auto name = Name::c_str();
+  };
 
-  template<typename Child, Dimension D, Ratio R>
-  struct derived_unit<Child, D, R> : downcast_helper<Child, unit<D, R>> {};
+  template<typename Child, typename Name, Unit U>
+  struct derived_unit<Child, Name, U> : downcast_helper<Child, U> {
+    static constexpr auto name = Name::c_str();
+  };
 
-  template<typename Child, Unit U>
-  struct derived_unit<Child, U> : downcast_helper<Child, U> {};
-
-  template<typename Child, Dimension D, Unit U, Unit... Us>
-  struct derived_unit<Child, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {};
+  template<typename Child, typename Name, Dimension D, Unit U, Unit... Us>
+  struct derived_unit<Child, Name, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
+    static constexpr auto name = Name::c_str();
+  };
 
   // SI prefixes
 

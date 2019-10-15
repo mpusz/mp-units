@@ -32,8 +32,8 @@ namespace units {
   template<typename T>
   concept Mass = QuantityOf<T, mass>;
 
-  struct gram : derived_unit<gram, mass, ratio<1, 1000>> {};
-  struct kilogram : derived_unit<kilogram, kilo<gram>> {};
+  struct gram : derived_unit<gram, decltype("g"_fs), mass, ratio<1, 1000>> {};
+  struct kilogram : derived_unit<kilogram, decltype("kg"_fs), kilo<gram>> {};
 
   inline namespace literals {
 

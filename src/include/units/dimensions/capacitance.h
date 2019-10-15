@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Capacitance =  QuantityOf<T, capacitance>;
 
-  struct farad : derived_unit<farad, capacitance, kilogram, metre, second, ampere> {};
+  struct farad : derived_unit<farad, decltype("F"_fs), capacitance, kilogram, metre, second, ampere> {};
 
   inline namespace literals {
 

@@ -35,7 +35,7 @@ namespace units {
   template<typename T>
   concept Voltage =  QuantityOf<T, voltage>;
 
-  struct volt : derived_unit<volt, voltage, kilogram, metre, second, ampere> {};
+  struct volt : derived_unit<volt, decltype("V"_fs), voltage, kilogram, metre, second, ampere> {};
 
   inline namespace literals {
 

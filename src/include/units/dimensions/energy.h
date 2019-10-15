@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Energy =  QuantityOf<T, energy>;
 
-  struct joule : derived_unit<joule, energy, kilogram, metre, second> {};
+  struct joule : derived_unit<joule, decltype("J"_fs), energy, kilogram, metre, second> {};
 
   inline namespace literals {
 

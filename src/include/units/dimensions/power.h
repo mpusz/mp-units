@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Power =  QuantityOf<T, power>;
 
-  struct watt : derived_unit<watt, power, kilogram, metre, second> {};
+  struct watt : derived_unit<watt, decltype("W"_fs), power, kilogram, metre, second> {};
 
   inline namespace literals {
 

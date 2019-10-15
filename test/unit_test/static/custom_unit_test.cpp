@@ -35,8 +35,9 @@ namespace {
   template<typename T>
   concept DigitalInformation = units::QuantityOf<T, digital_information>;
 
-  struct bit : units::derived_unit<bit, digital_information> {};
-  struct byte : units::derived_unit<byte, digital_information, units::ratio<8>> {};
+  using namespace units::hacks;
+  struct bit : units::derived_unit<bit, decltype("b"_fs), digital_information> {};
+  struct byte : units::derived_unit<byte, decltype("B"_fs), digital_information, units::ratio<8>> {};
 
   inline namespace literals {
 
@@ -61,13 +62,13 @@ namespace {
 
   // power spectral density
   struct power_spectral_density : derived_dimension<power_spectral_density, units::exp<voltage, 2>, units::exp<frequency, -1>> {};
-  struct sq_volt_per_hertz : derived_unit<sq_volt_per_hertz, power_spectral_density> {};
+  struct sq_volt_per_hertz : derived_unit<sq_volt_per_hertz, decltype("V^2/Hz"_fs), power_spectral_density> {};
 
   // amplitude spectral density
   struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
   // todo: add support for derived_unit
   //struct volt_per_sq_hertz : derived_unit<volt_per_sq_hertz, amplitude_spectral_density, volt, hertz> {};
-  struct volt_per_sqrt_hertz : derived_unit<volt_per_sqrt_hertz, amplitude_spectral_density> {};
+  struct volt_per_sqrt_hertz : derived_unit<volt_per_sqrt_hertz, decltype("V/Hz^(1/2)"_fs), amplitude_spectral_density> {};
 }
 
 namespace {

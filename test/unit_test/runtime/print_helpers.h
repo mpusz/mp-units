@@ -21,21 +21,16 @@
 // SOFTWARE.
 
 #include "units/dimensions/area.h"
+#include <ostream>
 
 // TODO Remove when a text formatting is implemented
 
 namespace units {
 
-  template<typename Rep>
-  std::ostream& operator<<(std::ostream& os, const quantity<metre, Rep>& value)
+  template<typename Unit, typename Rep>
+  std::ostream& operator<<(std::ostream& os, const quantity<Unit, Rep>& value)
   {
-    return os << value.count() << "m";
-  }
-
-  template<typename Rep>
-  std::ostream& operator<<(std::ostream& os, const quantity<square_metre, Rep>& value)
-  {
-    return os << value.count() << "m^2";
+    return os << value.count() << Unit::name;
   }
 
 }

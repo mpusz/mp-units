@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Pressure =  QuantityOf<T, pressure>;
 
-  struct pascal : derived_unit<pascal, pressure, kilogram, metre, second> {};
+  struct pascal : derived_unit<pascal, decltype("Pa"_fs), pressure, kilogram, metre, second> {};
 
   inline namespace literals {
 

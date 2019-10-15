@@ -31,11 +31,11 @@ namespace units {
   template<typename T>
   concept Volume = QuantityOf<T, volume>;
 
-  struct cubic_millimetre : derived_unit<cubic_millimetre, volume, millimetre> {};
-  struct cubic_centimetre : derived_unit<cubic_centimetre, volume, centimetre> {};
-  struct cubic_metre : derived_unit<cubic_metre, volume, metre> {};
-  struct cubic_kilometre : derived_unit<cubic_kilometre, volume, kilometre, metre> {};
-  struct cubic_foot : derived_unit<cubic_foot, volume, foot> {};
+  struct cubic_millimetre : derived_unit<cubic_millimetre, decltype("mm^3"_fs), volume, millimetre> {};
+  struct cubic_centimetre : derived_unit<cubic_centimetre, decltype("cm^3"_fs), volume, centimetre> {};
+  struct cubic_metre : derived_unit<cubic_metre, decltype("m^3"_fs), volume, metre> {};
+  struct cubic_kilometre : derived_unit<cubic_kilometre, decltype("km^3"_fs), volume, kilometre, metre> {};
+  struct cubic_foot : derived_unit<cubic_foot, decltype("ft^3"_fs), volume, foot> {};
 
   inline namespace literals {
 
@@ -54,6 +54,10 @@ namespace units {
     // cub_km
     constexpr auto operator""cub_km(unsigned long long l) { return quantity<cubic_kilometre, std::int64_t>(l); }
     constexpr auto operator""cub_km(long double l) { return quantity<cubic_kilometre, long double>(l); }
+
+    // cub_ft
+    constexpr auto operator""cub_ft(unsigned long long l) { return quantity<cubic_foot, std::int64_t>(l); }
+    constexpr auto operator""cub_ft(long double l) { return quantity<cubic_foot, long double>(l); }
 
   }  // namespace literals
 

@@ -33,12 +33,16 @@ namespace units {
   concept Length = QuantityOf<T, length>;
 
   // SI units
-  struct metre : derived_unit<metre, length> {};
-  struct millimetre : derived_unit<millimetre, milli<metre>> {};
-  struct centimetre : derived_unit<centimetre, centi<metre>> {};
-  struct kilometre : derived_unit<kilometre, kilo<metre>> {};
+  struct metre : derived_unit<metre, decltype("m"_fs), length> {};
+  struct millimetre : derived_unit<millimetre, decltype("mm"_fs), milli<metre>> {};
+  struct centimetre : derived_unit<centimetre, decltype("cm"_fs), centi<metre>> {};
+  struct kilometre : derived_unit<kilometre, decltype("km"_fs), kilo<metre>> {};
 
   inline namespace literals {
+
+    // m
+    constexpr auto operator""m(unsigned long long l) { return quantity<metre, std::int64_t>(l); }
+    constexpr auto operator""m(long double l) { return quantity<metre, long double>(l); }
 
     // mm
     constexpr auto operator""mm(unsigned long long l) { return quantity<millimetre, std::int64_t>(l); }
@@ -48,10 +52,6 @@ namespace units {
     constexpr auto operator""cm(unsigned long long l) { return quantity<centimetre, std::int64_t>(l); }
     constexpr auto operator""cm(long double l) { return quantity<centimetre, long double>(l); }
 
-    // m
-    constexpr auto operator""m(unsigned long long l) { return quantity<metre, std::int64_t>(l); }
-    constexpr auto operator""m(long double l) { return quantity<metre, long double>(l); }
-
     // km
     constexpr auto operator""km(unsigned long long l) { return quantity<kilometre, std::int64_t>(l); }
     constexpr auto operator""km(long double l) { return quantity<kilometre, long double>(l); }
@@ -59,10 +59,10 @@ namespace units {
   } // namespace literals
 
   // US customary units
-  struct yard : derived_unit<yard, length, ratio<9'144, 10'000>> {};
-  struct foot : derived_unit<foot, length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  struct inch : derived_unit<inch, length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  struct mile : derived_unit<mile, length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
+  struct yard : derived_unit<yard, decltype("yd"_fs), length, ratio<9'144, 10'000>> {};
+  struct foot : derived_unit<foot, decltype("ft"_fs), length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
+  struct inch : derived_unit<inch, decltype("in"_fs), length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct mile : derived_unit<mile, decltype("mi"_fs), length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
 
   inline namespace literals {
 

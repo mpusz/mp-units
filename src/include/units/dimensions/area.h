@@ -31,11 +31,11 @@ namespace units {
   template<typename T>
   concept Area = QuantityOf<T, area>;
 
-  struct square_millimetre : derived_unit<square_millimetre, area, millimetre> {};
-  struct square_centimetre : derived_unit<square_centimetre, area, centimetre> {};
-  struct square_metre : derived_unit<square_metre, area, metre> {};
-  struct square_kilometre : derived_unit<square_kilometre, area, kilometre> {};
-  struct square_foot : derived_unit<square_foot, area, foot> {};
+  struct square_millimetre : derived_unit<square_millimetre, decltype("mm^2"_fs), area, millimetre> {};
+  struct square_centimetre : derived_unit<square_centimetre, decltype("cm^2"_fs), area, centimetre> {};
+  struct square_metre : derived_unit<square_metre, decltype("m^2"_fs), area, metre> {};
+  struct square_kilometre : derived_unit<square_kilometre, decltype("km^2"_fs), area, kilometre> {};
+  struct square_foot : derived_unit<square_foot, decltype("ft^2"_fs), area, foot> {};
 
   inline namespace literals {
 
@@ -54,6 +54,10 @@ namespace units {
     // sq_km
     constexpr auto operator""sq_km(unsigned long long l) { return quantity<square_kilometre, std::int64_t>(l); }
     constexpr auto operator""sq_km(long double l) { return quantity<square_kilometre, long double>(l); }
+
+    // sq_ft
+    constexpr auto operator""sq_ft(unsigned long long l) { return quantity<square_foot, std::int64_t>(l); }
+    constexpr auto operator""sq_ft(long double l) { return quantity<square_foot, long double>(l); }
 
   }  // namespace literals
 

@@ -32,22 +32,22 @@ namespace units {
   template<typename T>
   concept Frequency =  QuantityOf<T, frequency>;
 
-  struct hertz : derived_unit<hertz, frequency, second> {};
-  struct millihertz : derived_unit<millihertz, milli<hertz>> {};
-  struct kilohertz : derived_unit<kilohertz, kilo<hertz>> {};
-  struct megahertz : derived_unit<megahertz, mega<hertz>> {};
-  struct gigahertz : derived_unit<gigahertz, giga<hertz>> {};
-  struct terahertz : derived_unit<terahertz, tera<hertz>> {};
+  struct hertz : derived_unit<hertz, decltype("Hz"_fs), frequency, second> {};
+  struct millihertz : derived_unit<millihertz, decltype("mHz"_fs), milli<hertz>> {};
+  struct kilohertz : derived_unit<kilohertz, decltype("kHz"_fs), kilo<hertz>> {};
+  struct megahertz : derived_unit<megahertz, decltype("MHz"_fs), mega<hertz>> {};
+  struct gigahertz : derived_unit<gigahertz, decltype("GHz"_fs), giga<hertz>> {};
+  struct terahertz : derived_unit<terahertz, decltype("THz"_fs), tera<hertz>> {};
 
   inline namespace literals {
-
-    // mHz
-    constexpr auto operator""mHz(unsigned long long l) { return quantity<millihertz, std::int64_t>(l); }
-    constexpr auto operator""mHz(long double l) { return quantity<millihertz, long double>(l); }
 
     // Hz
     constexpr auto operator""Hz(unsigned long long l) { return quantity<hertz, std::int64_t>(l); }
     constexpr auto operator""Hz(long double l) { return quantity<hertz, long double>(l); }
+
+    // mHz
+    constexpr auto operator""mHz(unsigned long long l) { return quantity<millihertz, std::int64_t>(l); }
+    constexpr auto operator""mHz(long double l) { return quantity<millihertz, long double>(l); }
 
     // kHz
     constexpr auto operator""kHz(unsigned long long l) { return quantity<kilohertz, std::int64_t>(l); }

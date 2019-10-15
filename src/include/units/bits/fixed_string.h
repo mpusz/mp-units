@@ -20,27 +20,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
-
-#include <units/dimensions/base_dimensions.h>
-#include <units/dimensions/time.h>
-#include <units/dimensions/current.h>
+#include <cstdlib>
 
 namespace units {
 
-  struct electric_charge : derived_dimension<electric_charge, exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
+//   TODO gcc:92101
+//   Gated by the following gcc bug
+//   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92101
+//
+//   template<typename CharT, std::size_t N>
+//   struct basic_fixed_string {
+//     CharT data_[N+1] = {};
 
-  template<typename T>
-  concept ElectricCharge =  QuantityOf<T, electric_charge>;
+//     constexpr basic_fixed_string(const CharT (&txt)[N+1]) noexcept
+//     {
+//       for(std::size_t i = 0; i <= N; ++i)
+//         data_[i] = txt[i];
+//     }
+//     // auto operator==(const basic_fixed_string &) = default;
+//     [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
+//   };
 
-  struct coulomb : derived_unit<coulomb, decltype("C"_fs), electric_charge, second, ampere> {};
+//   template<typename CharT, std::size_t N>
+//   basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N-1>;
 
-  inline namespace literals {
+//   template<std::size_t N>
+//   using fixed_string = basic_fixed_string<char, N>;
 
-    // C
-    constexpr auto operator""C(unsigned long long l) { return quantity<coulomb, std::int64_t>(l); }
-    constexpr auto operator""C(long double l) { return quantity<coulomb, long double>(l); }
+  template<typename CharT, CharT... Chars>
+  struct basic_fixed_string {
+    static constexpr CharT txt[] = { Chars..., '\0' };
 
-  }  // namespace literals
+    static constexpr const CharT* c_str() noexcept
+    {
+      return txt;
+    }
+  };
 
-}  // namespace units
+  inline namespace hacks {
+
+    template<typename T, T... chars>
+    constexpr basic_fixed_string<T, chars...> operator""_fs() { return {}; }
+
+  }
+
+}
