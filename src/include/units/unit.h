@@ -119,7 +119,7 @@ namespace units {
   //   TODO gcc:92101
   // Gated by the following gcc bug
   // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92101
-// template<typename Child, fixed_string Symbol, typename...>
+  // template<typename Child, fixed_string Symbol, typename...>
   // struct derived_unit;
   
   // template<typename Child, fixed_string Symbol, Dimension D>
@@ -147,22 +147,22 @@ namespace units {
   
   template<typename Child, typename Symbol, Dimension D>
   struct derived_unit<Child, Symbol, D> : downcast_helper<Child, unit<D, ratio<1>>> {
-    static constexpr auto symbol = Symbol::c_str();
+    using symbol = Symbol;
   };
 
   template<typename Child, typename Symbol, Dimension D, Ratio R>
   struct derived_unit<Child, Symbol, D, R> : downcast_helper<Child, unit<D, R>> {
-    static constexpr auto symbol = Symbol::c_str();
+    using symbol = Symbol;
   };
 
   template<typename Child, typename Symbol, Unit U>
   struct derived_unit<Child, Symbol, U> : downcast_helper<Child, U> {
-    static constexpr auto symbol = Symbol::c_str();
+    using symbol = Symbol;
   };
 
   template<typename Child, typename Symbol, Dimension D, Unit U, Unit... Us>
   struct derived_unit<Child, Symbol, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
-    static constexpr auto symbol = Symbol::c_str();
+    using symbol = Symbol;
   };
 
   // SI prefixes
