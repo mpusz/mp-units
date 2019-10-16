@@ -33,12 +33,32 @@ namespace units {
   concept Power =  QuantityOf<T, power>;
 
   struct watt : derived_unit<watt, decltype("W"_fs), power, kilogram, metre, second> {};
+  struct milliwatt : derived_unit<milliwatt, decltype("mW"_fs), milli<watt>> {};
+  struct kilowatt : derived_unit<kilowatt, decltype("kW"_fs), kilo<watt>> {};
+  struct megawatt : derived_unit<megawatt, decltype("MW"_fs), mega<watt>> {};
+  struct gigawatt : derived_unit<gigawatt, decltype("GW"_fs), giga<watt>> {};
 
   inline namespace literals {
 
     // W
     constexpr auto operator""W(unsigned long long l) { return quantity<watt, std::int64_t>(l); }
     constexpr auto operator""_W(long double l) { return quantity<watt, long double>(l); }
+
+    // mW
+    constexpr auto operator""mW(unsigned long long l) { return quantity<milliwatt, std::int64_t>(l); }
+    constexpr auto operator""mW(long double l) { return quantity<milliwatt, long double>(l); }
+
+    // kW
+    constexpr auto operator""kW(unsigned long long l) { return quantity<kilowatt, std::int64_t>(l); }
+    constexpr auto operator""kW(long double l) { return quantity<kilowatt, long double>(l); }
+
+    // MW
+    constexpr auto operator""MW(unsigned long long l) { return quantity<megawatt, std::int64_t>(l); }
+    constexpr auto operator""MW(long double l) { return quantity<megawatt, long double>(l); }
+
+    // GW
+    constexpr auto operator""GW(unsigned long long l) { return quantity<gigawatt, std::int64_t>(l); }
+    constexpr auto operator""GW(long double l) { return quantity<gigawatt, long double>(l); }
 
   }  // namespace literals
 
