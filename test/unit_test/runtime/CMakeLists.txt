@@ -23,6 +23,7 @@
 add_executable(unit_tests_runtime
     catch_main.cpp
     math_test.cpp
+    text_test.cpp
 )
 target_link_libraries(unit_tests_runtime
     PRIVATE

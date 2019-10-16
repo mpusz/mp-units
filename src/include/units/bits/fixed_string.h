@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <cstdlib>
+#include <ostream>
 
 namespace units {
 
@@ -67,6 +68,12 @@ namespace units {
         if(*first2 < *first1) return false;
       }
       return first1 == last1 && first2 != last2;
+    }
+
+    template<class Traits>
+    friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const basic_fixed_string& txt)
+    {
+      return os << txt.c_str();
     }
   };
 

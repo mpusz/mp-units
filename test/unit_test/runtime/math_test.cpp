@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "print_helpers.h"
 #include "units/dimensions/area.h"
 #include "units/dimensions/volume.h"
 #include <catch2/catch.hpp>

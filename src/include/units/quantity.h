@@ -24,7 +24,9 @@
 
 #include <units/bits/concepts.h>
 #include <units/unit.h>
+#include <units/format.h>
 #include <limits>
+#include <ostream>
 
 namespace units {
 
@@ -275,6 +277,37 @@ namespace units {
       value_ %= q.count();
       return *this;
     }
+
+    template<class CharT, class Traits>
+    friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
+    {
+      os << q.count() << " ";
+      if constexpr(!detail::is_unit<quantity::unit>) {
+        // print user-defined unit
+        os << unit::symbol::c_str();
+      }
+      else {
+        using ratio = quantity::unit::ratio;
+        using dim = quantity::unit::dimension;
+        if constexpr(!detail::is_dimension<dim>) {
+          // print as a prefix or ratio of a coherent unit
+          detail::print_prefix_or_ratio<ratio>(os);
+
+          if constexpr(!detail::is_dimension<dim>) {
+            // print coherent unit symbol defined by the user
+            os << downcast_target<units::unit<dim>>::symbol::c_str();
+          }
+        }
+        else {
+          // print as a ratio of a coherent unit
+          detail::print_ratio<ratio>(os);
+
+          // print coherent unit dimensions and their exponents
+          detail::print_dimensions(os, dim{});
+        }
+      }
+      return os;
+    }
   };
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
@@ -442,9 +475,3 @@ namespace units {
   }
 
 }  // namespace units
-
-
-// template<class charT, class traits, class Rep, class Period>
-// basic_ostream<charT, traits>&
-// operator<<(basic_ostream<charT, traits>& os,
-// const duration<Rep, Period>& d);
