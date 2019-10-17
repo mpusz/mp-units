@@ -26,6 +26,8 @@
 
 namespace units {
 
+#if __GNUC__ < 10
+
   template<typename T>
   concept Number = std::regular<T> &&
       std::totally_ordered<T> &&
@@ -43,5 +45,29 @@ namespace units {
         { T{0} };    // can construct a T from a zero
         // …
   };
+
+#else
+
+  template<typename T>
+  concept Number = std::regular<T> &&
+      std::totally_ordered<T> &&
+      requires(T a, T b) {
+        { a + b } -> std::same_as<T>;
+        { a - b } -> std::same_as<T>;
+        { a * b } -> std::same_as<T>;
+        { a / b } -> std::same_as<T>;
+        { +a } -> std::same_as<T>;
+        { -a } -> std::same_as<T>;
+        { a += b } -> std::same_as<T&>;
+        { a -= b } -> std::same_as<T&>;
+        { a *= b } -> std::same_as<T&>;
+        { a /= b } -> std::same_as<T&>;
+        { T{0} };    // can construct a T from a zero
+        // …
+  };
+
+#endif
+
+  // InstanceOf
 
 }  // namespace units

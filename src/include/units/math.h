@@ -28,7 +28,7 @@
 namespace units {
 
   template<std::size_t N, typename U, typename Rep>
-  inline Quantity pow(const quantity<U, Rep>& q) noexcept
+  inline Quantity AUTO pow(const quantity<U, Rep>& q) noexcept
   {
     using dim = dimension_pow<typename U::dimension, N>;
     using r = ratio_pow<typename U::ratio, N>;
@@ -36,7 +36,7 @@ namespace units {
   }
 
   template<typename U, typename Rep>
-  inline Quantity sqrt(const quantity<U, Rep>& q) noexcept
+  inline Quantity AUTO sqrt(const quantity<U, Rep>& q) noexcept
   {
     using dim = dimension_sqrt<typename U::dimension>;
     using r = ratio_sqrt<typename U::ratio>;

@@ -31,6 +31,12 @@
 #define Expects(cond) assert(cond);
 #endif
 
+#if __GNUC__ > 9
+#define AUTO auto
+#else
+#define AUTO
+#endif
+
 namespace std {
 
   // concepts

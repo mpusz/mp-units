@@ -28,7 +28,7 @@ namespace {
 using namespace units::literals;
 
 template<units::Length D, units::Time T>
-constexpr units::Velocity avg_speed(D d, T t)
+constexpr units::Velocity AUTO avg_speed(D d, T t)
 {
   return d / t;
 }
@@ -36,7 +36,7 @@ constexpr units::Velocity avg_speed(D d, T t)
 template<units::Velocity V, units::Time T>
 void example_1(V v, T t)
 {
-  const units::Length distance = v * t;
+  const units::Length AUTO distance = v * t;
   std::cout << "A car driving " << v.count() << " km/h in a time of " << t.count() << " minutes will pass "
             << units::quantity_cast<units::quantity<units::metre, double>>(distance).count() << " metres.\n";
 }
