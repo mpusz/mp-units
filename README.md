@@ -15,21 +15,80 @@ Here is a small example of possible operations:
 
 ```cpp
 // simple numeric operations
-static_assert(10_km / 2 == 5_km);
+static_assert(10km / 2 == 5km);
 
 // unit conversions
-static_assert(1_h == 3600_s);
-static_assert(1_km + 1_m == 1001_m);
+static_assert(1h == 3600s);
+static_assert(1km + 1m == 1001m);
 
 // dimension conversions
-static_assert(1_km / 1_s == 1000_mps);
-static_assert(2_kmph * 2_h == 4_km);
-static_assert(2_km / 2_kmph == 1_h);
+static_assert(1km / 1s == 1000mps);
+static_assert(2kmph * 2h == 4km);
+static_assert(2km / 2kmph == 1h);
 
-static_assert(1000 / 1_s == 1_kHz);
+static_assert(1000 / 1s == 1kHz);
 
-static_assert(10_km / 5_km == 2);
+static_assert(10km / 5km == 2);
 ```
+
+## Usage Overview
+
+The library framework consists of a few concepts: quantities, units, dimensions and their exponents. From the user's
+point of view the most important is a `quantity`.
+
+Quantity is a concrete amount of a unit for a specified dimension with a specific representation:
+
+```cpp
+units::quantity<units::kilometre, double> d1(123);
+auto d2 = 123km;    // units::quantity<units::kilometre, std::int64_t>
+```
+
+There are C++ concepts provided for each such quantity type:
+
+```cpp
+template<typename T>
+concept Length = QuantityOf<T, length>;
+```
+
+With that we can easily write a function template like this:
+
+```cpp
+constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto t)
+{
+  return d / t;
+}
+```
+
+Concepts usage in the function above guarantee correctness enforced in compile-time and the
+guarantee that no unneeded intermediate conversions will ever be applied no matter which
+units the user will decide to pass to such function template:
+
+```cpp
+using namespace units;
+
+constexpr quantity<kilometre> distance(220);
+constexpr quantity<hour> time(2);
+constexpr Velocity speed = avg_speed(distance, time);
+
+static_assert(std::same_as<std::remove_cvref_t<decltype(speed)>, quantity<kilometre_per_hour>>);
+static_assert(speed.count() == 110);
+```
+
+The units library also tries really hard to printing any quantity in the most user friendly fashion:
+
+```cpp
+std::cout << speed << '\n';
+std::cout << quantity_cast<metre_per_second>(speed) << '\n';
+std::cout << avg_speed(140.mi, 2h) << '\n';
+```
+
+Try it on [Compiler Explorer](https://godbolt.org/z/OVpkT1).
+
+
+## Library design
+
+`mp-units` library design rationale and documentation can be found in [doc/DESIGN.md](doc/DESIGN.md)
+
 
 ## Repository structure
 
@@ -42,6 +101,7 @@ That repository contains the following independent `cmake`-based projects:
 Please note that the projects depend on `cmake` git submodule in the `./cmake/common`
 subdirectory.
 
+
 ## Building, testing, and installation
 
 For a detailed information on project compilation, testing and reuse please refer to
@@ -49,10 +109,6 @@ For a detailed information on project compilation, testing and reuse please refe
 
 NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.  
 
-## Library design
-
-`mp-units` library design rationale and documentation can be found in
-[doc/DESIGN.md](doc/DESIGN.md)
 
 ## Release notes
 

@@ -44,35 +44,6 @@ static_assert(10km / 5km == 2);
 6. Possibility to be standardized as a freestanding part of the C++ Standard Library
 
 
-## Overview
-
-The library framework consists of a few concepts: quantities, units, dimensions and their exponents. From the user's
-point of view the most important is a quantity.
-
-Quantity is a concrete amount of a unit for a specified dimension with a specific representation:
-
-```cpp
-units::quantity<units::kilometre, double> d1(123);
-auto d2 = 123km;    // units::quantity<units::kilometre, std::int64_t>
-```
-
-There are C++ concepts provided for each such quantity type:
-
-```cpp
-template<typename T>
-concept Length = QuantityOf<T, length>;
-```
-
-With that we can easily write a function template like this:
-
-```cpp
-constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto t)
-{
-  return d / t;
-}
-```
-
-
 ## Basic Concepts
 
 Below UML diagram shows the most important entities in the library design and how they relate to
