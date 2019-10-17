@@ -88,13 +88,13 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
     {
       stream << 2s * 2m * 2kg;
-      REQUIRE(stream.str() == "8 m*kg*s");
+      REQUIRE(stream.str() == "8 m⋅kg⋅s");
     }
 
     SECTION("unit::ratio as an SI prefix")
     {
       stream << 4km * 2s;
-      REQUIRE(stream.str() == "8 [1000]m*s");
+      REQUIRE(stream.str() == "8 [1000]m⋅s");
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
@@ -112,25 +112,25 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
       stream << 60.min / 2km;
-      REQUIRE(stream.str() == "30 [3/50]1/m*s");
+      REQUIRE(stream.str() == "30 [3/50]1/m⋅s");
     }
 
     SECTION("exp::num == 1 && exp::den == 1")
     {
       stream << 4m * 2s;
-      REQUIRE(stream.str() == "8 m*s");
+      REQUIRE(stream.str() == "8 m⋅s");
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
     {
       stream << 4m * 2s * 2s;
-      REQUIRE(stream.str() == "16 m*s^2");
+      REQUIRE(stream.str() == "16 m⋅s^2");
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
     {
       stream << 8.s / 2m / 2m;
-      REQUIRE(stream.str() == "2 1/m^2*s");
+      REQUIRE(stream.str() == "2 1/m^2⋅s");
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")

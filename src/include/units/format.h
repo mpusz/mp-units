@@ -70,7 +70,7 @@ namespace units {
           os << (first ? "1/" : "/");
         }
         else {
-          os << (first ? "" : "*");
+          os << (first ? "" : "⋅");
         }
         os << E::dimension::symbol;
         if constexpr(E::den != 1) {
