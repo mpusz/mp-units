@@ -27,13 +27,13 @@
 #include <units/dimensions/pressure.h>
 
 namespace units {
-  
+
   struct energy : derived_dimension<energy, exp<force, 1>, exp<length, 1>> {};
 
   template<typename T>
   concept Energy =  QuantityOf<T, energy>;
 
-  struct joule : derived_unit<joule, decltype("J"_fs), energy, kilogram, metre, second> {};
+  struct joule : coherent_derived_unit<joule, decltype("J"_fs), energy, si_prefix> {};
   struct millijoule : derived_unit<millijoule, decltype("mJ"_fs), milli<joule>> {};
   struct kilojoule : derived_unit<kilojoule, decltype("kJ"_fs), kilo<joule>> {};
   struct megajoule : derived_unit<megajoule, decltype("MJ"_fs), mega<joule>> {};

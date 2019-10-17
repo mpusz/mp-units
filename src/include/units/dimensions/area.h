@@ -31,13 +31,17 @@ namespace units {
   template<typename T>
   concept Area = QuantityOf<T, area>;
 
+  struct square_metre : coherent_derived_unit<square_metre, decltype("m^2"_fs), area> {};
   struct square_millimetre : derived_unit<square_millimetre, decltype("mm^2"_fs), area, millimetre> {};
   struct square_centimetre : derived_unit<square_centimetre, decltype("cm^2"_fs), area, centimetre> {};
-  struct square_metre : derived_unit<square_metre, decltype("m^2"_fs), area, metre> {};
   struct square_kilometre : derived_unit<square_kilometre, decltype("km^2"_fs), area, kilometre> {};
   struct square_foot : derived_unit<square_foot, decltype("ft^2"_fs), area, foot> {};
 
   inline namespace literals {
+
+    // sq_m
+    constexpr auto operator""sq_m(unsigned long long l) { return quantity<square_metre, std::int64_t>(l); }
+    constexpr auto operator""sq_m(long double l) { return quantity<square_metre, long double>(l); }
 
     // sq_mm
     constexpr auto operator""sq_mm(unsigned long long l) { return quantity<square_millimetre, std::int64_t>(l); }
@@ -46,10 +50,6 @@ namespace units {
     // sq_cm
     constexpr auto operator""sq_cm(unsigned long long l) { return quantity<square_centimetre, std::int64_t>(l); }
     constexpr auto operator""sq_cm(long double l) { return quantity<square_centimetre, long double>(l); }
-
-    // sq_m
-    constexpr auto operator""sq_m(unsigned long long l) { return quantity<square_metre, std::int64_t>(l); }
-    constexpr auto operator""sq_m(long double l) { return quantity<square_metre, long double>(l); }
 
     // sq_km
     constexpr auto operator""sq_km(unsigned long long l) { return quantity<square_kilometre, std::int64_t>(l); }

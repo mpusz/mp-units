@@ -28,7 +28,7 @@
 
 namespace units {
 
-  template<Dimension D, Ratio R = ratio<1>>
+  template<Dimension D, Ratio R>
     requires (R::num * R::den > 0)
   struct unit : downcast_base<unit<D, R>> {
     using dimension = D;
@@ -141,14 +141,17 @@ namespace units {
   //   static constexpr auto symbol = Symbol;
   // };
 
+  struct no_prefix;
+
+  template<typename Child, typename Symbol, Dimension D, typename Prefix = no_prefix>
+  struct coherent_derived_unit : downcast_helper<Child, unit<D, ratio<1>>> {
+    using symbol = Symbol;
+    using prefix = Prefix;
+  };
+
   template<typename Child, typename Symbol, typename...>
   struct derived_unit;
   
-  template<typename Child, typename Symbol, Dimension D>
-  struct derived_unit<Child, Symbol, D> : downcast_helper<Child, unit<D, ratio<1>>> {
-    using symbol = Symbol;
-  };
-
   template<typename Child, typename Symbol, Dimension D, Ratio R>
   struct derived_unit<Child, Symbol, D, R> : downcast_helper<Child, unit<D, R>> {
     using symbol = Symbol;
@@ -163,23 +166,5 @@ namespace units {
   struct derived_unit<Child, Symbol, D, U, Us...> : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
     using symbol = Symbol;
   };
-
-  // SI prefixes
-
-  template<Unit U> using atto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::atto::den>>>;
-  template<Unit U> using femto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::femto::den>>>;
-  template<Unit U> using pico = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::pico::den>>>;
-  template<Unit U> using nano = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::nano::den>>>;
-  template<Unit U> using micro = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::micro::den>>>;
-  template<Unit U> using milli = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::milli::den>>>;
-  template<Unit U> using centi = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::centi::den>>>;
-  template<Unit U> using deca = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::deca::num>>>;
-  template<Unit U> using hecto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::hecto::num>>>;
-  template<Unit U> using kilo = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::kilo::num>>>;
-  template<Unit U> using mega = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::mega::num>>>;
-  template<Unit U> using giga = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::giga::num>>>;
-  template<Unit U> using tera = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::tera::num>>>;
-  template<Unit U> using peta = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::peta::num>>>;
-  template<Unit U> using exa = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::exa::num>>>;
 
 }  // namespace units

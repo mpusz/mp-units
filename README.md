@@ -63,6 +63,8 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - Downcasting facility refactored so the user does not have to write the boilerplate code anymore
   - From now on base dimensions should inherit from `base_dimension` class template
   - Added unit symbols definitions to `base_dimension` and `derived_unit`
+  - Added `coherent_derived_unit` helper
+  - Added support for `operator<<` on `quantity`
 
 - 0.3.1 Sep 18, 2019
   - cmcstl2 dependency changed to range-v3 0.9.1

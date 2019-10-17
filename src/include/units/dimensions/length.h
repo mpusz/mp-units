@@ -33,7 +33,7 @@ namespace units {
   concept Length = QuantityOf<T, length>;
 
   // SI units
-  struct metre : derived_unit<metre, decltype("m"_fs), length> {};
+  struct metre : coherent_derived_unit<metre, decltype("m"_fs), length, si_prefix> {};
   struct millimetre : derived_unit<millimetre, decltype("mm"_fs), milli<metre>> {};
   struct centimetre : derived_unit<centimetre, decltype("cm"_fs), centi<metre>> {};
   struct kilometre : derived_unit<kilometre, decltype("km"_fs), kilo<metre>> {};

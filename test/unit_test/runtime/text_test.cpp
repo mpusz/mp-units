@@ -39,23 +39,29 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   {
     SECTION("integral representation")
     {
-      stream << 16sq_m;
-      REQUIRE(stream.str() == "16 m^2");
+      stream << 60W;
+      REQUIRE(stream.str() == "60 W");
     }
 
     SECTION("floating-point representation")
     {
-      stream << 72.5kmph;
-      REQUIRE(stream.str() == "72.5 km/h");
+      stream << 72.5kJ;
+      REQUIRE(stream.str() == "72.5 kJ");
     }
   }
 
   SECTION("quantity with a predefined dimension but unknown unit")
   {
-    SECTION("unit::ratio as an SI prefix")
+    SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
     {
       stream << 4.N * 2cm;
       REQUIRE(stream.str() == "8 cJ");
+    }
+
+    SECTION("unit::ratio for a dimension without a special symbol")
+    {
+      stream << 2.cm * 2m * 2m;
+      REQUIRE(stream.str() == "8 [1/100]m^3");
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")

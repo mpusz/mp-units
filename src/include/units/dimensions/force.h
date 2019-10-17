@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Force =  QuantityOf<T, force>;
 
-  struct newton : derived_unit<newton, decltype("N"_fs), force, kilogram, metre, second> {};
+  struct newton : coherent_derived_unit<newton, decltype("N"_fs), force, si_prefix> {};
 
   inline namespace literals {
 

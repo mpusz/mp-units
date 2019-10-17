@@ -22,6 +22,7 @@
 
 add_executable(unit_tests_runtime
     catch_main.cpp
+    digital_information_test.cpp
     math_test.cpp
     text_test.cpp
 )

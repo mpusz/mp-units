@@ -20,13 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/voltage.h>
-#include <units/dimensions/frequency.h>
-#include <units/math.h>
+#include <units/quantity.h>
+#include <catch2/catch.hpp>
+#include <sstream>
 
-/* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
-
-namespace {
+namespace data {
 
   struct base_dim_digital_information : units::base_dimension<"digital information", "b"> {};
 
@@ -37,47 +35,43 @@ namespace {
 
   using namespace units::hacks;
 
-  struct data_prefix {};
+  struct data_prefix;
 
   struct bit : units::coherent_derived_unit<bit, decltype("b"_fs), digital_information, data_prefix> {};
+  struct kilobit : units::derived_unit<bit, decltype("Kib"_fs), digital_information, units::ratio<1'024>> {};
   struct byte : units::derived_unit<byte, decltype("B"_fs), digital_information, units::ratio<8>> {};
 
   inline namespace literals {
 
     constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
-    constexpr auto operator""_b(long double l) { return units::quantity<bit, long double>(l); }
-
+    constexpr auto operator""_Kib(unsigned long long l) { return units::quantity<kilobit, std::int64_t>(l); }
     constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
-    constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
 
   }
-}
-
-namespace {
-
-  static_assert(1_B == 8_b);
 
 }
 
-namespace {
+template<> inline constexpr std::string_view units::prefix_symbol<data::data_prefix, units::ratio<    1'024>> = "Ki";
+template<> inline constexpr std::string_view units::prefix_symbol<data::data_prefix, units::ratio<1'048'576>> = "Mi";
 
-  using namespace units;
+using namespace data;
 
-  // power spectral density
-  struct power_spectral_density : derived_dimension<power_spectral_density, units::exp<voltage, 2>, units::exp<frequency, -1>> {};
-  struct sq_volt_per_hertz : coherent_derived_unit<sq_volt_per_hertz, decltype("V^2/Hz"_fs), power_spectral_density> {};
+TEST_CASE("operator<< on a custom quantity", "[text][ostream]")
+{
+  std::stringstream stream;
 
-  // amplitude spectral density
-  struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
-  struct volt_per_sqrt_hertz : coherent_derived_unit<volt_per_sqrt_hertz, decltype("V/Hz^(1/2)"_fs), amplitude_spectral_density> {};
-}
+  SECTION("quantity with a predefined unit and prefix")
+  {
+    SECTION("named unit")
+    {
+      stream << 64_B;
+      REQUIRE(stream.str() == "64 B");
+    }
 
-namespace {
-
-  static_assert(std::is_same_v<dimension_sqrt<power_spectral_density>, amplitude_spectral_density>);
-  static_assert(std::is_same_v<dimension_pow<amplitude_spectral_density, 2>, power_spectral_density>);
-
-  static_assert(std::is_same_v<decltype(pow<2>(quantity<volt_per_sqrt_hertz>(4))), decltype(quantity<sq_volt_per_hertz>(16))>);
-  static_assert(std::is_same_v<decltype(sqrt(quantity<sq_volt_per_hertz>(16))), decltype(quantity<volt_per_sqrt_hertz>(4))>);
-
+    SECTION("other unit matching prefix")
+    {
+      stream << 8_Kib * 8_Kib / 2_b;
+      REQUIRE(stream.str() == "32 Mib");
+    }
+  }
 }

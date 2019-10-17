@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Frequency =  QuantityOf<T, frequency>;
 
-  struct hertz : derived_unit<hertz, decltype("Hz"_fs), frequency, second> {};
+  struct hertz : coherent_derived_unit<hertz, decltype("Hz"_fs), frequency, si_prefix> {};
   struct millihertz : derived_unit<millihertz, decltype("mHz"_fs), milli<hertz>> {};
   struct kilohertz : derived_unit<kilohertz, decltype("kHz"_fs), kilo<hertz>> {};
   struct megahertz : derived_unit<megahertz, decltype("MHz"_fs), mega<hertz>> {};

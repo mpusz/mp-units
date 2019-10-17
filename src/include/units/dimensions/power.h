@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Power =  QuantityOf<T, power>;
 
-  struct watt : derived_unit<watt, decltype("W"_fs), power, kilogram, metre, second> {};
+  struct watt : coherent_derived_unit<watt, decltype("W"_fs), power, si_prefix> {};
   struct milliwatt : derived_unit<milliwatt, decltype("mW"_fs), milli<watt>> {};
   struct kilowatt : derived_unit<kilowatt, decltype("kW"_fs), kilo<watt>> {};
   struct megawatt : derived_unit<megawatt, decltype("MW"_fs), mega<watt>> {};

@@ -23,8 +23,7 @@
 #pragma once
 
 #include <units/bits/concepts.h>
-#include <units/unit.h>
-#include <units/format.h>
+#include <units/prefix.h>
 #include <limits>
 #include <ostream>
 
@@ -290,13 +289,10 @@ namespace units {
         using ratio = quantity::unit::ratio;
         using dim = quantity::unit::dimension;
         if constexpr(!detail::is_dimension<dim>) {
-          // print as a prefix or ratio of a coherent unit
-          detail::print_prefix_or_ratio<ratio>(os);
-
-          if constexpr(!detail::is_dimension<dim>) {
-            // print coherent unit symbol defined by the user
-            os << downcast_target<units::unit<dim>>::symbol::c_str();
-          }
+          // print as a prefix or ratio of a coherent unit symbol defined by the user
+          using coherent_unit = downcast_target<units::unit<dim, units::ratio<1>>>;
+          detail::print_prefix_or_ratio<ratio, typename coherent_unit::prefix>(os);
+          os << coherent_unit::symbol::c_str();
         }
         else {
           // print as a ratio of a coherent unit

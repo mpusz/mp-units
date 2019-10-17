@@ -1,5 +1,6 @@
 # `mp-units` - A Units Library for C++
 
+
 ## Summary
 
 `Units` is a compile-time enabled Modern C++ library that provides compile-time dimensional
@@ -70,6 +71,7 @@ constexpr units::Velocity auto avg_speed(units::Length auto d, units::Time auto 
   return d / t;
 }
 ```
+
 
 ## Basic Concepts
 
@@ -256,35 +258,35 @@ struct unit : downcast_base<unit<D, R>> {
 };
 ```
 
-All units are created with a `derived_unit` helper:
+Coherent derived units (units with `ratio<1>`) are created with a `coherent_derived_unit` helper:
+
+```cpp
+template<typename Child, fixed_string Symbol, Dimension D, typename Prefix = no_prefix>
+struct coherent_derived_unit;
+```
+
+The above type exposes public `symbol` and `prefix` member types used to print unit symbol names.
+
+For example to define the base unit of `length`:
+
+```cpp
+struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
+```
+
+Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
+to provide downcasting facility (described below).
+
+All other units are created with a `derived_unit` helper:
 
 ```cpp
 template<typename Child, fixed_string Symbol, typename...>
 struct derived_unit;
 ```
 
-For example to define the base unit of `length`:
+The above type exposes public `symbol` member type used to print unit symbol names.
 
-```cpp
-struct metre : derived_unit<metre, "m", length> {};
-```
-
-Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
-to provide downcasting facility (described below).
-
-`derived_unit` has a few partial useful specializations:
-- helper to create a base unit of a specified dimension
-
-```cpp
-template<typename Child, fixed_string Symbol, Dimension D>
-struct derived_unit<Child, Symbol, D>;
-```
-
-```cpp
-struct metre : derived_unit<metre, "m", length> {};
-```
-
-- helper to create other units for a specified dimension
+`derived_unit` has a few useful partial specializations:
+- helper to create non-coherent units for a specified dimension
 
 ```cpp
 template<typename Child, fixed_string Symbol, Dimension D, Ratio R>
@@ -295,7 +297,7 @@ struct derived_unit<Child, Symbol, D, R>;
 struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
 ```
 
-- helper to create a unit with a SI prefix
+- helper to create a named unit with a SI prefix
 
 ```cpp
 template<typename Child, fixed_string Symbol, Unit U>
@@ -427,6 +429,22 @@ template<Unit ToU, typename U, typename Rep>
 template<Scalar ToRep, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q);
 ```
+
+#### `operator<<`
+
+The library tries its best to print a correct unit of the quantity. This is why it performs a series
+of checks:
+1. If the user predefined a unit with a `coherent_derived_unit` or `derived_unit` class templates,
+  the symbol provided by the user will be used (i.e. `60 W`).
+2. If a quantity has an unknown unit for a dimension predefined by the user with `derived_dimension`,
+  the symbol of a coherent unit of this dimension will be used. Additionally:
+    - if `Prefix` template parameter of a `coherent_derived_unit` is different than `no_prefix` then
+      the prefix symbol (i.e. `8 cJ`) defined by the specialization of `units::prefix_symbol` will be
+      aded wherever possible (`Ratio` matches the prefix ratio),
+    - otherwise, non-standard ratio (i.e. `2 [60]Hz`) will be printed.
+3. If a quantity has an unknown dimension, the symbols of base dimensions will be used to construct
+  a unit symbol (i.e. `2 m/kg^2`). In this case no prefix symbols are added.
+
 
 ## Strong types instead of aliases, and type downcasting facility
 
@@ -658,14 +676,24 @@ In order to extend the library with custom dimensions the user has to:
     concept DigitalInformation = units::QuantityOf<T, digital_information>;
     ```
 
-4. Define units and register them to a downcasting facility:
+4. If non-SI prefixes should be applied to the unit symbol, define a new prefix tag and provide
+   `prefix_symbol` specializations to provide their text representation:
 
     ```cpp
-    struct bit : units::derived_unit<bit, "b", digital_information> {};
+    struct data_prefix;
+
+    template<> inline constexpr std::string_view units::prefix_symbol<data_prefix, units::ratio<    1'024>> = "Ki";
+    template<> inline constexpr std::string_view units::prefix_symbol<data_prefix, units::ratio<1'048'576>> = "Mi";
+    ```
+
+5. Define units and register them to a downcasting facility:
+
+    ```cpp
+    struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
     struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
     ```
 
-5. Provide user-defined literals for the most important units:
+6. Provide user-defined literals for the most important units:
 
     ```cpp
     inline namespace literals {

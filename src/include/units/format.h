@@ -26,6 +26,9 @@
 
 namespace units {
 
+  template<typename Prefix, typename Ratio>
+  inline constexpr std::string_view prefix_symbol = "";
+
   namespace detail {
 
     template<typename Ratio, typename CharT, typename Traits>
@@ -41,31 +44,11 @@ namespace units {
       }
     }
 
-    template<typename Ratio>
-    inline constexpr std::string_view ratio_txt = "";
-
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::atto::den>> = "a";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::femto::den>> = "f";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::pico::den>> = "p";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::nano::den>> = "n";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::micro::den>> = "\u00b5\u0073";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::milli::den>> = "m";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::centi::den>> = "c";
-    template<> inline constexpr std::string_view ratio_txt<ratio<1, std::deci::den>> = "d";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::deca::num>> = "da";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::hecto::num>> = "h";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::kilo::num>> = "k";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::mega::num>> = "M";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::giga::num>> = "G";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::tera::num>> = "T";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::peta::num>> = "P";
-    template<> inline constexpr std::string_view ratio_txt<ratio<std::exa::num>> = "E";
-
-    template<typename Ratio, typename CharT, typename Traits>
+    template<typename Ratio, typename Prefix, typename CharT, typename Traits>
     void print_prefix_or_ratio(std::basic_ostream<CharT, Traits>& os)
     {
       if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        constexpr auto prefix = ratio_txt<Ratio>;
+        constexpr auto prefix = prefix_symbol<Prefix, Ratio>;
 
         if constexpr(prefix != "") {
           // print as a prefixed unit

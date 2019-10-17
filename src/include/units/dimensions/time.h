@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Time = QuantityOf<T, time>;
 
-  struct second : derived_unit<second, decltype("s"_fs), time> {};
+  struct second : coherent_derived_unit<second, decltype("s"_fs), time, si_prefix> {};
   struct nanosecond : derived_unit<nanosecond, decltype("ns"_fs), nano<second>> {};
   struct microsecond : derived_unit<microsecond, decltype("us"_fs), micro<second>> {};
   struct millisecond : derived_unit<millisecond, decltype("ms"_fs), milli<second>> {};
