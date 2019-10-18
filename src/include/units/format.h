@@ -22,12 +22,13 @@
 
 #pragma once
 
-#include <units/quantity.h>
+#include <ostream>
+#include <string_view>
 
 namespace units {
 
-  template<typename Prefix, typename Ratio>
-  inline constexpr std::string_view prefix_symbol = "";
+  template<typename Prefix, Ratio R>
+  inline constexpr std::string_view prefix_symbol;
 
   namespace detail {
 
@@ -44,13 +45,13 @@ namespace units {
       }
     }
 
-    template<typename Ratio, typename Prefix, typename CharT, typename Traits>
+    template<typename Ratio, typename PrefixType, typename CharT, typename Traits>
     void print_prefix_or_ratio(std::basic_ostream<CharT, Traits>& os)
     {
       if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        constexpr auto prefix = prefix_symbol<Prefix, Ratio>;
+        constexpr auto prefix = prefix_symbol<PrefixType, Ratio>;
 
-        if constexpr(prefix != "") {
+        if constexpr(!prefix.empty()) {
           // print as a prefixed unit
           os << prefix;
         }
@@ -77,7 +78,10 @@ namespace units {
           os << "^(" << abs(E::num) << "/" << E::den << ")";
         }
         else if constexpr(abs(E::num) != 1) {
-          os << "^" << abs(E::num);
+          // if constexpr(is_unicode<CharT>)
+          //   os << superscript<abs(E::num)>;
+          // else
+            os << "^" << abs(E::num);
         }
         first = false;
       };

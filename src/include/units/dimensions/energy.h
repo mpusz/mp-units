@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
+#include <units/dimensions/si_prefixes.h>
 #include <units/dimensions/force.h>
 #include <units/dimensions/pressure.h>
 
@@ -33,11 +34,11 @@ namespace units {
   template<typename T>
   concept Energy =  QuantityOf<T, energy>;
 
-  struct joule : coherent_derived_unit<joule, decltype("J"_fs), energy, si_prefix> {};
-  struct millijoule : derived_unit<millijoule, decltype("mJ"_fs), milli<joule>> {};
-  struct kilojoule : derived_unit<kilojoule, decltype("kJ"_fs), kilo<joule>> {};
-  struct megajoule : derived_unit<megajoule, decltype("MJ"_fs), mega<joule>> {};
-  struct gigajoule : derived_unit<gigajoule, decltype("GJ"_fs), giga<joule>> {};
+  struct joule : coherent_derived_unit<joule, "J", energy, si_prefix> {};
+  struct millijoule : prefixed_derived_unit<millijoule, milli, joule> {};
+  struct kilojoule : prefixed_derived_unit<kilojoule, kilo, joule> {};
+  struct megajoule : prefixed_derived_unit<megajoule, mega, joule> {};
+  struct gigajoule : prefixed_derived_unit<gigajoule, giga, joule> {};
 
   inline namespace literals {
 

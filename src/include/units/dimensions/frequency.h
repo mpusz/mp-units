@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
+#include <units/dimensions/si_prefixes.h>
 #include <units/dimensions/time.h>
 
 namespace units {
@@ -32,12 +33,12 @@ namespace units {
   template<typename T>
   concept Frequency =  QuantityOf<T, frequency>;
 
-  struct hertz : coherent_derived_unit<hertz, decltype("Hz"_fs), frequency, si_prefix> {};
-  struct millihertz : derived_unit<millihertz, decltype("mHz"_fs), milli<hertz>> {};
-  struct kilohertz : derived_unit<kilohertz, decltype("kHz"_fs), kilo<hertz>> {};
-  struct megahertz : derived_unit<megahertz, decltype("MHz"_fs), mega<hertz>> {};
-  struct gigahertz : derived_unit<gigahertz, decltype("GHz"_fs), giga<hertz>> {};
-  struct terahertz : derived_unit<terahertz, decltype("THz"_fs), tera<hertz>> {};
+  struct hertz : coherent_derived_unit<hertz, "Hz", frequency, si_prefix> {};
+  struct millihertz : prefixed_derived_unit<millihertz, milli, hertz> {};
+  struct kilohertz : prefixed_derived_unit<kilohertz, kilo, hertz> {};
+  struct megahertz : prefixed_derived_unit<megahertz, mega, hertz> {};
+  struct gigahertz : prefixed_derived_unit<gigahertz, giga, hertz> {};
+  struct terahertz : prefixed_derived_unit<terahertz, tera, hertz> {};
 
   inline namespace literals {
 

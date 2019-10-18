@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Substance = QuantityOf<T, substance>;
 
-  struct mole : coherent_derived_unit<mole, decltype("mol"_fs), substance, si_prefix> {};
+  struct mole : coherent_derived_unit<mole, "mol", substance, si_prefix> {};
 
   inline namespace literals {
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/dimensions/mass.h>
 #include <units/dimensions/acceleration.h>
 
@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Force =  QuantityOf<T, force>;
 
-  struct newton : coherent_derived_unit<newton, decltype("N"_fs), force, si_prefix> {};
+  struct newton : coherent_derived_unit<newton, "N", force, si_prefix> {};
 
   inline namespace literals {
 

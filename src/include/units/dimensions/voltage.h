@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/dimensions/power.h>
 #include <units/dimensions/current.h>
 #include <units/dimensions/energy.h>
@@ -35,7 +35,7 @@ namespace units {
   template<typename T>
   concept Voltage =  QuantityOf<T, voltage>;
 
-  struct volt : coherent_derived_unit<volt, decltype("V"_fs), voltage, si_prefix> {};
+  struct volt : coherent_derived_unit<volt, "V", voltage, si_prefix> {};
 
   inline namespace literals {
 

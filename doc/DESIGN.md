@@ -157,7 +157,7 @@ helper:
 
 ```cpp
 template<typename Child, Exponent... Es>
-struct derived_dimension;
+struct derived_dimension : downcast_helper<Child, typename detail::make_dimension<Es...>::type> {};
 ```
 
 `Child` class template parameter is a part of a CRTP idiom and is used to provide a downcasting facility
@@ -229,68 +229,6 @@ struct unit : downcast_base<unit<D, R>> {
 };
 ```
 
-Coherent derived units (units with `ratio<1>`) are created with a `coherent_derived_unit` helper:
-
-```cpp
-template<typename Child, fixed_string Symbol, Dimension D, typename Prefix = no_prefix>
-struct coherent_derived_unit;
-```
-
-The above type exposes public `symbol` and `prefix` member types used to print unit symbol names.
-
-For example to define the base unit of `length`:
-
-```cpp
-struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
-```
-
-Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
-to provide downcasting facility (described below).
-
-All other units are created with a `derived_unit` helper:
-
-```cpp
-template<typename Child, fixed_string Symbol, typename...>
-struct derived_unit;
-```
-
-The above type exposes public `symbol` member type used to print unit symbol names.
-
-`derived_unit` has a few useful partial specializations:
-- helper to create non-coherent units for a specified dimension
-
-```cpp
-template<typename Child, fixed_string Symbol, Dimension D, Ratio R>
-struct derived_unit<Child, Symbol, D, R>;
-```
-
-```cpp
-struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
-```
-
-- helper to create a named unit with a SI prefix
-
-```cpp
-template<typename Child, fixed_string Symbol, Unit U>
-struct derived_unit<Child, Symbol, U>;
-```
-
-```cpp
-struct kilometre : derived_unit<kilometre, "km", kilo<metre>> {};
-```
-
-- helper that automatically calculates ratio based on info in desired dimension and provided list
-  of units of base dimensions
-
-```cpp
-template<typename Child, fixed_string Symbol, Dimension D, Unit U, Unit... Us>
-struct derived_unit<Child, Symbol, D, U, Us...>;
-```
-
-```cpp
-struct kilometre_per_hour : derived_unit<kilometre_per_hour, "km/h", velocity, kilometre, hour> {};
-```
-
 `units::Unit` is a concept that is satisfied by a type that is empty and publicly
 derived from `units::unit` class template:
 
@@ -300,6 +238,96 @@ concept Unit =
     std::is_empty_v<T> &&
     detail::is_unit<downcast_base_t<T>>;  // exposition only
 ```
+
+Coherent derived units (units with `ratio<1>`) are created with a `coherent_derived_unit` class
+template:
+
+```cpp
+template<typename Child, fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
+struct coherent_derived_unit : downcast_helper<Child, unit<D, ratio<1>>> {
+  static constexpr auto symbol = Symbol;
+  using prefix_type = PrefixType;
+};
+```
+
+The above exposes public `prefix_type` member type and `symbol` used to print unit symbol
+names. `prefix_type` is a tag type used to identify the type of prefixes to be used (i.e. SI,
+data).
+
+For example to define the coherent unit of `length`:
+
+```cpp
+struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
+```
+
+Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
+to provide downcasting facility (described below).
+
+To create the rest of derived units the following class template can be used:
+
+```cpp
+template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
+struct derived_unit : downcast_helper<Child, unit<D, R>> {
+  static constexpr auto symbol = Symbol;
+};
+```
+
+User has to provide a symbol name, dimension, and a ratio relative to a coherent derived unit.
+For example to define `minute`:
+
+```cpp
+struct minute : derived_unit<minute, "min", time, ratio<60>> {};
+```
+
+The `mp-units` library provides also a few helper class templates to simplify the above process.
+
+For example to create a prefixed unit the following may be used:
+
+```cpp
+template<typename Child, Prefix P, Unit U>
+  requires requires { U::symbol; } && std::same_as<typename U::prefix_type, typename P::prefix_type>
+struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension,
+                                                           ratio_multiply<typename P::ratio,
+                                                                          typename U::ratio>>> {
+  static constexpr auto symbol = P::symbol + U::symbol;
+  using prefix_type = P::prefix_type;
+};
+```
+
+where `Prefix` is a concept requiring the instantiation of the following class template:
+
+```cpp
+template<typename PrefixType, Ratio R, basic_fixed_string Symbol>
+struct prefix {
+  using prefix_type = PrefixType;
+  using ratio = R;
+  static constexpr auto symbol = Symbol;
+};
+```
+
+With this to create prefixed units user does not have to specify numeric value of the prefix ratio
+or its symbol and just has to do the following:
+
+```cpp
+struct kilometre : prefixed_derived_unit<kilometre, kilo, metre> {};
+```
+
+For the cases where determining the exact ratio is not trivial another helper can be used:
+
+```cpp
+template<typename Child, basic_fixed_string Symbol, Dimension D, Unit U, Unit... Us>
+struct deduced_derived_unit : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
+  static constexpr auto symbol = Symbol;
+};
+```
+
+This will deduce the ratio based on the ingredient units and their relation defined in the
+dimension:
+
+```cpp
+struct mile_per_hour : deduced_derived_unit<mile_per_hour, "mi/h", velocity, mile, hour> {};
+```
+
 
 ### `Quantities`
 
@@ -415,6 +443,13 @@ of checks:
     - otherwise, non-standard ratio (i.e. `2 [60]Hz`) will be printed.
 3. If a quantity has an unknown dimension, the symbols of base dimensions will be used to construct
   a unit symbol (i.e. `2 m/kg^2`). In this case no prefix symbols are added.
+
+#### Text Formatting
+
+| Specifier | Replacement                                                  |
+|-----------|--------------------------------------------------------------|
+| `%q`      | The quantity’s unit symbol                                   |
+| `%Q`      | The quantity’s numeric value (as if extracted via `.count()` |
 
 
 ## Strong types instead of aliases, and type downcasting facility

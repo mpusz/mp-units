@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Current = QuantityOf<T, current>;
 
-  struct ampere : coherent_derived_unit<ampere, decltype("A"_fs), current, si_prefix> {};
+  struct ampere : coherent_derived_unit<ampere, "A", current, si_prefix> {};
 
   inline namespace literals {
 

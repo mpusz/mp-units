@@ -48,6 +48,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
       stream << 72.5kJ;
       REQUIRE(stream.str() == "72.5 kJ");
     }
+
+    SECTION("unit with a prefix")
+    {
+      stream << 125us;
+      REQUIRE(stream.str() == "125 µs");
+    }
   }
 
   SECTION("quantity with a predefined dimension but unknown unit")
@@ -173,3 +179,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
 
 // Restate operator<< definitions in terms of std::format to make I/O manipulators apply to whole objects
 // rather than their parts
+
+
+// Giving a precision specification
+// in the chrono-format-spec is valid only for std::chrono::duration types where the representation type Rep
+// is a floating-point type. For all other Rep types, a format_error shall be thrown if the chrono-format-spec
+// contains a precision specification.
+
+ // string s = format("{:=>8}", 42ms); // value of s is "====42ms"
+

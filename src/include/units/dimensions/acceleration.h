@@ -31,7 +31,7 @@ namespace units {
   template<typename T>
   concept Acceleration = QuantityOf<T, acceleration>;
 
-  struct metre_per_second_sq : coherent_derived_unit<metre_per_second_sq, decltype("m/s^2"_fs), acceleration> {};
+  struct metre_per_second_sq : coherent_derived_unit<metre_per_second_sq, "m/s^2", acceleration> {};
 
   inline namespace literals {
 

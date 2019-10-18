@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept LuminousIntensity = QuantityOf<T, luminous_intensity>;
 
-  struct candela : coherent_derived_unit<candela, decltype("cd"_fs), luminous_intensity, si_prefix> {};
+  struct candela : coherent_derived_unit<candela, "cd", luminous_intensity, si_prefix> {};
 
   inline namespace literals {
 

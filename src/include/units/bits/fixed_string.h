@@ -35,7 +35,7 @@ namespace units {
         data_[i] = txt[i];
     }
 
-    [[nodiscard]] constexpr bool size() const noexcept { return N; }
+    [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
     [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
 
     // auto operator==(const basic_fixed_string &) = default;
@@ -75,6 +75,20 @@ namespace units {
     {
       return os << txt.c_str();
     }
+
+    template<std::size_t N2>
+    [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
+    {
+      CharT txt[lhs.size() + rhs.size() + 1] = {};
+
+      size_t i = 0;
+      for(; i != lhs.size(); ++i)
+        txt[i] = lhs.c_str()[i];
+      for(size_t j = 0; j != rhs.size(); ++j)
+        txt[i + j] = rhs.c_str()[j];
+
+      return basic_fixed_string<CharT, N + N2>(txt);
+    }
   };
 
   template<typename CharT, std::size_t N>
@@ -82,26 +96,5 @@ namespace units {
 
   template<std::size_t N>
   using fixed_string = basic_fixed_string<char, N>;
-
-  // TODO gcc:92101
-  // hacked version to work with derived_unit
-  // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92101
-
-  template<typename CharT, CharT... Chars>
-  struct basic_fixed_string_hack {
-    static constexpr CharT txt[] = { Chars..., '\0' };
-
-    static constexpr const CharT* c_str() noexcept
-    {
-      return txt;
-    }
-  };
-
-  inline namespace hacks {
-
-    template<typename T, T... chars>
-    constexpr basic_fixed_string_hack<T, chars...> operator""_fs() { return {}; }
-
-  }
 
 }

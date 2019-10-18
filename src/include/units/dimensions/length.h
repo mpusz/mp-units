@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
+#include <units/dimensions/si_prefixes.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -33,10 +34,10 @@ namespace units {
   concept Length = QuantityOf<T, length>;
 
   // SI units
-  struct metre : coherent_derived_unit<metre, decltype("m"_fs), length, si_prefix> {};
-  struct millimetre : derived_unit<millimetre, decltype("mm"_fs), milli<metre>> {};
-  struct centimetre : derived_unit<centimetre, decltype("cm"_fs), centi<metre>> {};
-  struct kilometre : derived_unit<kilometre, decltype("km"_fs), kilo<metre>> {};
+  struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
+  struct millimetre : prefixed_derived_unit<millimetre, milli, metre> {};
+  struct centimetre : prefixed_derived_unit<centimetre, centi, metre> {};
+  struct kilometre : prefixed_derived_unit<kilometre, kilo, metre> {};
 
   inline namespace literals {
 
@@ -59,10 +60,10 @@ namespace units {
   } // namespace literals
 
   // US customary units
-  struct yard : derived_unit<yard, decltype("yd"_fs), length, ratio<9'144, 10'000>> {};
-  struct foot : derived_unit<foot, decltype("ft"_fs), length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  struct inch : derived_unit<inch, decltype("in"_fs), length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  struct mile : derived_unit<mile, decltype("mi"_fs), length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
+  struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
+  struct foot : derived_unit<foot, "ft", length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
+  struct inch : derived_unit<inch, "in", length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct mile : derived_unit<mile, "mi", length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
 
   inline namespace literals {
 

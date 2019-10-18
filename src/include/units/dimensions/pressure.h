@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/dimensions/force.h>
 #include <units/dimensions/area.h>
 
@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Pressure =  QuantityOf<T, pressure>;
 
-  struct pascal : coherent_derived_unit<pascal, decltype("Pa"_fs), pressure, si_prefix> {};
+  struct pascal : coherent_derived_unit<pascal, "Pa", pressure, si_prefix> {};
 
   inline namespace literals {
 

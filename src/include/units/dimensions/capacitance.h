@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/dimensions/electric_charge.h>
 #include <units/dimensions/voltage.h>
 
@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Capacitance =  QuantityOf<T, capacitance>;
 
-  struct farad : coherent_derived_unit<farad, decltype("F"_fs), capacitance, si_prefix> {};
+  struct farad : coherent_derived_unit<farad, "F", capacitance, si_prefix> {};
 
   inline namespace literals {
 

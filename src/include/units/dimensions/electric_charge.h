@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/dimensions/time.h>
 #include <units/dimensions/current.h>
 
@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept ElectricCharge =  QuantityOf<T, electric_charge>;
 
-  struct coulomb : coherent_derived_unit<coulomb, decltype("C"_fs), electric_charge, si_prefix> {};
+  struct coulomb : coherent_derived_unit<coulomb, "C", electric_charge, si_prefix> {};
 
   inline namespace literals {
 
