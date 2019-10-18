@@ -47,16 +47,17 @@ namespace units {
     void print_prefix_or_ratio(std::basic_ostream<CharT, Traits>& os)
     {
       if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        using prefix = downcast_target<detail::prefix_base<PrefixType, Ratio>>;
+        if(!std::same_as<PrefixType, no_prefix>) {
+          using prefix = downcast_target<detail::prefix_base<PrefixType, Ratio>>;
 
-        if constexpr(!std::same_as<prefix, prefix_base<PrefixType, Ratio>>) {
-          // print as a prefixed unit
-          os << prefix::symbol;
+          if constexpr(!std::same_as<prefix, prefix_base<PrefixType, Ratio>>) {
+            // print as a prefixed unit
+            os << prefix::symbol;
+            return;
+          }
         }
-        else {
-          // print as a ratio of the coherent unit
-          print_ratio<Ratio>(os);
-        }
+        // print as a ratio of the coherent unit
+        print_ratio<Ratio>(os);
       }
     }
 
