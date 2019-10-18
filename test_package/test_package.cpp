@@ -33,5 +33,5 @@ constexpr units::Velocity avg_speed(D d, T t)
 
 int main()
 {
-  std::cout << "Average speed = " << avg_speed(240.0km, 2h).count() << " kmph\n";
+  std::cout << "Average speed = " << avg_speed(240.km, 2h) << '\n';
 }
