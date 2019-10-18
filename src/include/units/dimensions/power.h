@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
+#include <units/dimensions/si_prefixes.h>
 #include <units/dimensions/energy.h>
 
 namespace units {
@@ -32,11 +33,11 @@ namespace units {
   template<typename T>
   concept Power =  QuantityOf<T, power>;
 
-  struct watt : coherent_derived_unit<watt, decltype("W"_fs), power, si_prefix> {};
-  struct milliwatt : derived_unit<milliwatt, decltype("mW"_fs), milli<watt>> {};
-  struct kilowatt : derived_unit<kilowatt, decltype("kW"_fs), kilo<watt>> {};
-  struct megawatt : derived_unit<megawatt, decltype("MW"_fs), mega<watt>> {};
-  struct gigawatt : derived_unit<gigawatt, decltype("GW"_fs), giga<watt>> {};
+  struct watt : coherent_derived_unit<watt, "W", power, si_prefix> {};
+  struct milliwatt : prefixed_derived_unit<milliwatt, milli, watt> {};
+  struct kilowatt : prefixed_derived_unit<kilowatt, kilo, watt> {};
+  struct megawatt : prefixed_derived_unit<megawatt, mega, watt> {};
+  struct gigawatt : prefixed_derived_unit<gigawatt, giga, watt> {};
 
   inline namespace literals {
 

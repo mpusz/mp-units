@@ -29,30 +29,31 @@ namespace units {
 
   // prefix tags
   struct si_prefix;
-  
+
   // SI prefixes
 
-  template<Unit U> using atto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::atto::den>>>;
-  template<Unit U> using femto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::femto::den>>>;
-  template<Unit U> using pico = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::pico::den>>>;
-  template<Unit U> using nano = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::nano::den>>>;
-  template<Unit U> using micro = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::micro::den>>>;
-  template<Unit U> using milli = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::milli::den>>>;
-  template<Unit U> using centi = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<1, std::centi::den>>>;
-  template<Unit U> using deca = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::deca::num>>>;
-  template<Unit U> using hecto = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::hecto::num>>>;
-  template<Unit U> using kilo = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::kilo::num>>>;
-  template<Unit U> using mega = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::mega::num>>>;
-  template<Unit U> using giga = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::giga::num>>>;
-  template<Unit U> using tera = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::tera::num>>>;
-  template<Unit U> using peta = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::peta::num>>>;
-  template<Unit U> using exa = unit<typename U::dimension, ratio_multiply<typename U::ratio, ratio<std::exa::num>>>;
+  using atto = prefix<si_prefix, ratio<1, std::atto::den>, "a">;
+  using femto = prefix<si_prefix, ratio<1, std::femto::den>, "f">;
+  using pico = prefix<si_prefix, ratio<1, std::pico::den>, "p">;
+  using nano = prefix<si_prefix, ratio<1, std::nano::den>, "n">;
+  using micro = prefix<si_prefix, ratio<1, std::micro::den>, "µ">;
+  using milli = prefix<si_prefix, ratio<1, std::milli::den>, "m">;
+  using centi = prefix<si_prefix, ratio<1, std::centi::den>, "c">;
+  using deci = prefix<si_prefix, ratio<1, std::deci::den>, "d">;
+  using deca = prefix<si_prefix, ratio<std::deca::num>, "da">;
+  using hecto = prefix<si_prefix, ratio<std::hecto::num>, "h">;
+  using kilo = prefix<si_prefix, ratio<std::kilo::num>, "k">;
+  using mega = prefix<si_prefix, ratio<std::mega::num>, "M">;
+  using giga = prefix<si_prefix, ratio<std::giga::num>, "G">;
+  using tera = prefix<si_prefix, ratio<std::tera::num>, "T">;
+  using peta = prefix<si_prefix, ratio<std::peta::num>, "P">;
+  using exa = prefix<si_prefix, ratio<std::exa::num>, "E">;
 
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::atto::den>> = "a";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::femto::den>> = "f";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::pico::den>> = "p";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::nano::den>> = "n";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::micro::den>> = "\u00b5\u0073";  // µ
+  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::micro::den>> = "µ";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::milli::den>> = "m";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::centi::den>> = "c";
   template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::deci::den>> = "d";

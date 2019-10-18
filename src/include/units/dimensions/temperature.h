@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept ThermodynamicTemperature = QuantityOf<T, temperature>;
 
-  struct kelvin : coherent_derived_unit<kelvin, decltype("K"_fs), temperature> {};
+  struct kelvin : coherent_derived_unit<kelvin, "K", temperature> {};
 
   inline namespace literals {
 

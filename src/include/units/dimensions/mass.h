@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,8 +32,8 @@ namespace units {
   template<typename T>
   concept Mass = QuantityOf<T, mass>;
 
-  struct kilogram : coherent_derived_unit<kilogram, decltype("kg"_fs), mass> {};
-  struct gram : derived_unit<gram, decltype("g"_fs), mass, ratio<1, 1000>> {};
+  struct kilogram : coherent_derived_unit<kilogram, "kg", mass> {};
+  struct gram : derived_unit<gram, "g", mass, ratio<1, 1000>> {};
 
   inline namespace literals {
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/dimensions/base_dimensions.h>
+#include <units/dimensions/si_base_dimensions.h>
+#include <units/dimensions/si_prefixes.h>
 #include <units/quantity.h>
 
 namespace units {
@@ -32,12 +33,12 @@ namespace units {
   template<typename T>
   concept Time = QuantityOf<T, time>;
 
-  struct second : coherent_derived_unit<second, decltype("s"_fs), time, si_prefix> {};
-  struct nanosecond : derived_unit<nanosecond, decltype("ns"_fs), nano<second>> {};
-  struct microsecond : derived_unit<microsecond, decltype("us"_fs), micro<second>> {};
-  struct millisecond : derived_unit<millisecond, decltype("ms"_fs), milli<second>> {};
-  struct minute : derived_unit<minute, decltype("min"_fs), time, ratio<60>> {};
-  struct hour : derived_unit<hour, decltype("h"_fs), time, ratio<3600>> {};
+  struct second : coherent_derived_unit<second, "s", time, si_prefix> {};
+  struct nanosecond : prefixed_derived_unit<nanosecond, nano, second> {};
+  struct microsecond : prefixed_derived_unit<microsecond, micro, second> {};
+  struct millisecond : prefixed_derived_unit<millisecond, milli, second> {};
+  struct minute : derived_unit<minute, "min", time, ratio<60>> {};
+  struct hour : derived_unit<hour, "h", time, ratio<3600>> {};
 
   inline namespace literals {
 

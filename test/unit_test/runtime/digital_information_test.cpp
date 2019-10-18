@@ -33,13 +33,11 @@ namespace data {
   template<typename T>
   concept DigitalInformation = units::QuantityOf<T, digital_information>;
 
-  using namespace units::hacks;
-
   struct data_prefix;
 
-  struct bit : units::coherent_derived_unit<bit, decltype("b"_fs), digital_information, data_prefix> {};
-  struct kilobit : units::derived_unit<bit, decltype("Kib"_fs), digital_information, units::ratio<1'024>> {};
-  struct byte : units::derived_unit<byte, decltype("B"_fs), digital_information, units::ratio<8>> {};
+  struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+  struct kilobit : units::derived_unit<bit, "Kib", digital_information, units::ratio<1'024>> {};
+  struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
 
   inline namespace literals {
 
