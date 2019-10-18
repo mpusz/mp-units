@@ -32,38 +32,21 @@ namespace units {
 
   // SI prefixes
 
-  using atto = prefix<si_prefix, ratio<1, std::atto::den>, "a">;
-  using femto = prefix<si_prefix, ratio<1, std::femto::den>, "f">;
-  using pico = prefix<si_prefix, ratio<1, std::pico::den>, "p">;
-  using nano = prefix<si_prefix, ratio<1, std::nano::den>, "n">;
-  using micro = prefix<si_prefix, ratio<1, std::micro::den>, "µ">;
-  using milli = prefix<si_prefix, ratio<1, std::milli::den>, "m">;
-  using centi = prefix<si_prefix, ratio<1, std::centi::den>, "c">;
-  using deci = prefix<si_prefix, ratio<1, std::deci::den>, "d">;
-  using deca = prefix<si_prefix, ratio<std::deca::num>, "da">;
-  using hecto = prefix<si_prefix, ratio<std::hecto::num>, "h">;
-  using kilo = prefix<si_prefix, ratio<std::kilo::num>, "k">;
-  using mega = prefix<si_prefix, ratio<std::mega::num>, "M">;
-  using giga = prefix<si_prefix, ratio<std::giga::num>, "G">;
-  using tera = prefix<si_prefix, ratio<std::tera::num>, "T">;
-  using peta = prefix<si_prefix, ratio<std::peta::num>, "P">;
-  using exa = prefix<si_prefix, ratio<std::exa::num>, "E">;
-
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::atto::den>> = "a";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::femto::den>> = "f";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::pico::den>> = "p";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::nano::den>> = "n";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::micro::den>> = "µ";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::milli::den>> = "m";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::centi::den>> = "c";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<1, std::deci::den>> = "d";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::deca::num>> = "da";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::hecto::num>> = "h";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::kilo::num>> = "k";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::mega::num>> = "M";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::giga::num>> = "G";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::tera::num>> = "T";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::peta::num>> = "P";
-  template<> inline constexpr std::string_view prefix_symbol<si_prefix, ratio<std::exa::num>> = "E";
+  struct atto : prefix<atto, si_prefix, ratio<1, std::atto::den>, "a"> {};
+  struct femto : prefix<femto, si_prefix, ratio<1, std::femto::den>, "f"> {};
+  struct pico : prefix<pico, si_prefix, ratio<1, std::pico::den>, "p"> {};
+  struct nano : prefix<nano, si_prefix, ratio<1, std::nano::den>, "n"> {};
+  struct micro : prefix<micro, si_prefix, ratio<1, std::micro::den>, "µ"> {};
+  struct milli : prefix<milli, si_prefix, ratio<1, std::milli::den>, "m"> {};
+  struct centi : prefix<centi, si_prefix, ratio<1, std::centi::den>, "c"> {};
+  struct deci : prefix<deci, si_prefix, ratio<1, std::deci::den>, "d"> {};
+  struct deca : prefix<deca, si_prefix, ratio<std::deca::num>, "da"> {};
+  struct hecto : prefix<hecto, si_prefix, ratio<std::hecto::num>, "h"> {};
+  struct kilo : prefix<kilo, si_prefix, ratio<std::kilo::num>, "k"> {};
+  struct mega : prefix<mega, si_prefix, ratio<std::mega::num>, "M"> {};
+  struct giga : prefix<giga, si_prefix, ratio<std::giga::num>, "G"> {};
+  struct tera : prefix<tera, si_prefix, ratio<std::tera::num>, "T"> {};
+  struct peta : prefix<peta, si_prefix, ratio<std::peta::num>, "P"> {};
+  struct exa : prefix<exa, si_prefix, ratio<std::exa::num>, "E"> {};
 
 }

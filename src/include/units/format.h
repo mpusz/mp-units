@@ -22,13 +22,12 @@
 
 #pragma once
 
+#include <units/unit.h>
 #include <ostream>
 #include <string_view>
+#include <fmt/format.h>
 
 namespace units {
-
-  template<typename Prefix, Ratio R>
-  inline constexpr std::string_view prefix_symbol;
 
   namespace detail {
 
@@ -49,11 +48,11 @@ namespace units {
     void print_prefix_or_ratio(std::basic_ostream<CharT, Traits>& os)
     {
       if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        constexpr auto prefix = prefix_symbol<PrefixType, Ratio>;
+        using prefix = downcast_target<detail::prefix_base<PrefixType, Ratio>>;
 
-        if constexpr(!prefix.empty()) {
+        if constexpr(!std::same_as<prefix, prefix_base<PrefixType, Ratio>>) {
           // print as a prefixed unit
-          os << prefix;
+          os << prefix::symbol;
         }
         else {
           // print as a ratio of the coherent unit
@@ -91,3 +90,15 @@ namespace units {
   }
 
 }  // namespace units
+
+// template<Unit U, Scalar Rep, typename CharT>
+// struct fmt::formatter<units::quantity<U, Rep>, CharT> {
+//   template<typename ParseContext>
+//   constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+
+//   template<typename FormatContext>
+//   auto format(const units::quantity<U, Rep>& q, FormatContext& ctx)
+//   {
+//     return format_to(ctx.out(), "{:.1f}, {:.1f}", p.x, p.y);
+//   }
+// }

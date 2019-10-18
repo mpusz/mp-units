@@ -52,10 +52,18 @@ namespace units {
       std::is_empty_v<T> &&
       detail::is_unit<downcast_base_t<T>>;
 
-  template<typename PrefixType, Ratio R, basic_fixed_string Symbol>
-  struct prefix {
-    using prefix_type = PrefixType;
-    using ratio = R;
+  namespace detail {
+
+    template<typename PrefixType, Ratio R>
+    struct prefix_base : downcast_base<prefix_base<PrefixType, R>> {
+      using prefix_type = PrefixType;
+      using ratio = R;
+    };
+
+  }
+
+  template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
+  struct prefix : downcast_helper<Child, detail::prefix_base<PrefixType, R>> {
     static constexpr auto symbol = Symbol;
   };
 

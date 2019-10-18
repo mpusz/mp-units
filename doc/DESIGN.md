@@ -297,10 +297,8 @@ struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension
 where `Prefix` is a concept requiring the instantiation of the following class template:
 
 ```cpp
-template<typename PrefixType, Ratio R, basic_fixed_string Symbol>
-struct prefix {
-  using prefix_type = PrefixType;
-  using ratio = R;
+template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
+struct prefix : downcast_helper<Child, detail::prefix_base<PrefixType, R>> {
   static constexpr auto symbol = Symbol;
 };
 ```
@@ -310,6 +308,14 @@ or its symbol and just has to do the following:
 
 ```cpp
 struct kilometre : prefixed_derived_unit<kilometre, kilo, metre> {};
+```
+
+SI prefixes are predefined in the library and the user may easily predefined his/her own with:
+
+```cpp
+struct data_prefix;
+
+struct kibi : units::prefix<kibi, data_prefix, units::ratio<1'024>, "Ki"> {};
 ```
 
 For the cases where determining the exact ratio is not trivial another helper can be used:
