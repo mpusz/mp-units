@@ -37,16 +37,20 @@ namespace {
 
   struct data_prefix {};
 
+  struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
+
   struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+  struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
+
   struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+  struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
 
   inline namespace literals {
 
     constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
-    constexpr auto operator""_b(long double l) { return units::quantity<bit, long double>(l); }
-
+    constexpr auto operator""_Kib(unsigned long long l) { return units::quantity<kilobit, std::int64_t>(l); }
     constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
-    constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
+    constexpr auto operator""_KiB(unsigned long long l) { return units::quantity<kilobyte, std::int64_t>(l); }
 
   }
 }
@@ -54,6 +58,10 @@ namespace {
 namespace {
 
   static_assert(1_B == 8_b);
+  static_assert(1024_b == 1_Kib);
+  static_assert(1024_B == 1_KiB);
+  static_assert(8 * 1024_b == 1_KiB);
+  static_assert(8 * 1_Kib == 1_KiB);
 
 }
 

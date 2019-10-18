@@ -39,14 +39,16 @@ namespace data {
   struct mebi : units::prefix<mebi, data_prefix, units::ratio<1'048'576>, "Mi"> {};
 
   struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
-  struct kilobit : units::prefixed_derived_unit<bit, kibi, bit> {};
+  struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
   struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+  struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
 
   inline namespace literals {
 
     constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
     constexpr auto operator""_Kib(unsigned long long l) { return units::quantity<kilobit, std::int64_t>(l); }
     constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
+    constexpr auto operator""_KiB(unsigned long long l) { return units::quantity<kilobyte, std::int64_t>(l); }
 
   }
 
@@ -66,16 +68,22 @@ TEST_CASE("operator<< on a custom quantity", "[text][ostream]")
       REQUIRE(stream.str() == "64 B");
     }
 
-    SECTION("prefixed unit")
+    SECTION("prefixed coherent unit")
     {
       stream << 256_Kib;
-      // REQUIRE(stream.str() == "256 Kib");
+      REQUIRE(stream.str() == "256 Kib");
+    }
+
+    SECTION("prefixed non-coherent unit")
+    {
+      stream << 1024_KiB;
+      REQUIRE(stream.str() == "1024 KiB");
     }
 
     SECTION("other unit matching prefix")
     {
       stream << 8_Kib * 8_Kib / 2_b;
-      // REQUIRE(stream.str() == "32 Mib");
+      REQUIRE(stream.str() == "32 Mib");
     }
   }
 }

@@ -285,7 +285,7 @@ For example to create a prefixed unit the following may be used:
 
 ```cpp
 template<typename Child, Prefix P, Unit U>
-  requires requires { U::symbol; } && std::same_as<typename U::prefix_type, typename P::prefix_type>
+  requires requires { U::symbol; }
 struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension,
                                                            ratio_multiply<typename P::ratio,
                                                                           typename U::ratio>>> {

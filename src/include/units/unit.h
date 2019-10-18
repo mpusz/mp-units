@@ -161,7 +161,7 @@ namespace units {
   };
 
   template<typename Child, Prefix P, Unit U>
-    requires requires { U::symbol; } && std::same_as<typename U::prefix_type, typename P::prefix_type>
+    requires requires { U::symbol; }
   struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
     static constexpr auto symbol = P::symbol + U::symbol;
     using prefix_type = P::prefix_type;
