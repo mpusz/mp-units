@@ -25,7 +25,6 @@
 #include <units/unit.h>
 #include <ostream>
 #include <string_view>
-#include <fmt/format.h>
 
 namespace units {
 
