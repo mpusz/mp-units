@@ -23,6 +23,10 @@
 #pragma once
 
 #include <units/quantity.h>
+#include <fmt/format.h>
+#include <unicode/measunit.h>
+#include <unicode/measfmt.h>
+#include <unicode/measure.h>
 
 namespace units {
 

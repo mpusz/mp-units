@@ -25,6 +25,7 @@ add_executable(unit_tests_runtime
     digital_information_test.cpp
     math_test.cpp
     text_test.cpp
+    fmt_test.cpp
 )
 target_link_libraries(unit_tests_runtime
     PRIVATE

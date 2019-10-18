@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/fmt.h>
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/time.h>
 
@@ -66,5 +67,34 @@ namespace units {
     constexpr auto operator""THz(long double l) { return quantity<terahertz, long double>(l); }
 
   }  // namespace literals
+
+
+  namespace details {
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<hertz>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createHertz(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<kilohertz>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createKilohertz(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<megahertz>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createMegahertz(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<gigahertz>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createGigahertz(uc);
+    }
+
+  }  // namespace details
 
 }  // namespace units

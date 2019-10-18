@@ -25,6 +25,7 @@
 #include <units/dimensions/base_dimensions.h>
 #include <units/dimensions/force.h>
 #include <units/dimensions/pressure.h>
+#include <units/bits/fmt.h>
 
 namespace units {
 
@@ -62,5 +63,20 @@ namespace units {
     constexpr auto operator""GJ(long double l) { return quantity<gigajoule, long double>(l); }
 
   }  // namespace literals
+
+  namespace details {
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<joule>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createJoule(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<kilojoule>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createKilojoule(uc);
+    }
+  }  // namespace details
 
 }  // namespace units

@@ -22,10 +22,13 @@
 
 #pragma once
 
+#include <units/bits/fmt.h>
 #include <units/bits/concepts.h>
 #include <units/prefix.h>
 #include <limits>
 #include <ostream>
+#include <unicode/measunit.h>
+
 
 namespace units {
 
@@ -471,3 +474,25 @@ namespace units {
   }
 
 }  // namespace units
+
+namespace fmt {
+  template<typename Qty, typename T>
+  struct formatter<units::quantity<Qty, T>> {
+    template<typename ParseContext>
+    constexpr auto parse(ParseContext& ctx)
+    {
+      return ctx.begin();
+    }
+
+    template<typename FormatContext>
+    auto format(const units::quantity<Qty, T>& sm, FormatContext& ctx)
+    {
+      auto locale = ctx.locale().template get<std::locale>();
+
+      UErrorCode uc;
+      icu::MeasureUnit* unit = units::details::create_icu_unit<Qty>(uc);
+      icu::Measure m(sm.count(), unit, uc);
+      return units::details::format_localized_unit(m, ctx);
+    }
+  };
+}  // namespace fmt

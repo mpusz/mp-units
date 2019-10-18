@@ -43,4 +43,13 @@ namespace units {
 
   }  // namespace literals
 
+
+  namespace details {
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<newton>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createNewton(uc);
+    }
+  }  // namespace details
+
 }  // namespace units

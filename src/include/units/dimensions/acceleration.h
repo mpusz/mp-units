@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/fmt.h>
 #include <units/dimensions/velocity.h>
 
 namespace units {
@@ -40,5 +41,13 @@ namespace units {
     constexpr auto operator""mps_sq(long double l) { return quantity<metre_per_second_sq, long double>(l); }
 
   }  // namespace literals
+
+  namespace details {
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<metre_per_second_sq>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createMeterPerSecondSquared(uc);
+    }
+  }  // namespace details
 
 }  // namespace units

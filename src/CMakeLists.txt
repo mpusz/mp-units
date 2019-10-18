@@ -54,7 +54,10 @@ target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
         CONAN_PKG::range-v3
+        CONAN_PKG::fmt
+        CONAN_PKG::icu
 )
+
 target_include_directories(units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

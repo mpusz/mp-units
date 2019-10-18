@@ -46,7 +46,9 @@ class UnitsConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "range-v3/0.9.1@ericniebler/stable",
-        "Catch2/2.10.0@catchorg/stable"
+        "Catch2/2.10.0@catchorg/stable",
+        "icu/64.2@bincrafters/stable",
+        "fmt/5.3.0@bincrafters/stable"
     )
     scm = {
         "type": "git",

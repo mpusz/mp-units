@@ -20,35 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "units/dimensions/area.h"
+#include "units/dimensions/frequency.h"
+#include "units/dimensions/power.h"
+#include "units/dimensions/velocity.h"
+#include "units/dimensions/volume.h"
+#include "units/math.h"
+#include <catch2/catch.hpp>
+#include <fmt/locale.h>
 
-#include <units/dimensions/base_dimensions.h>
-#include <units/quantity.h>
+using namespace units;
 
-namespace units {
-
-  struct current : derived_dimension<current, exp<base_dim_current, 1>> {};
-
-  template<typename T>
-  concept Current = QuantityOf<T, current>;
-
-  struct ampere : coherent_derived_unit<ampere, decltype("A"_fs), current, si_prefix> {};
-
-  inline namespace literals {
-
-    // A
-    constexpr auto operator""A(unsigned long long l) { return quantity<ampere, std::int64_t>(l); }
-    constexpr auto operator""A(long double l) { return quantity<ampere, long double>(l); }
-
+TEST_CASE("fmt on a quantity", "[text][fmt]")
+{
+  SECTION("quantity with a predefined unit")
+  {
+    std::locale ru_loc("ru_RU.UTF-8");
+    REQUIRE(fmt::format(ru_loc, "{}", 2sq_m) == "2 м²");
+    REQUIRE(fmt::format("{}", 2GHz) == "2 GHz");
   }
-
-
-  namespace details {
-    template<>
-    inline icu::MeasureUnit* create_icu_unit<ampere>(UErrorCode& uc)
-    {
-      return icu::MeasureUnit::createAmpere(uc);
-    }
-  }  // namespace details
-
-}  // namespace units
+}

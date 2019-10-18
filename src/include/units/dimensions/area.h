@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/dimensions/length.h>
+#include <units/bits/fmt.h>
 
 namespace units {
 
@@ -60,5 +61,34 @@ namespace units {
     constexpr auto operator""sq_ft(long double l) { return quantity<square_foot, long double>(l); }
 
   }  // namespace literals
+
+
+  namespace details {
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<square_metre>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createSquareMeter(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<square_centimetre>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createSquareCentimeter(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<square_kilometre>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createSquareKilometer(uc);
+    }
+
+    template<>
+    inline icu::MeasureUnit* create_icu_unit<square_foot>(UErrorCode& uc)
+    {
+      return icu::MeasureUnit::createSquareFoot(uc);
+    }
+
+  }  // namespace details
 
 }  // namespace units
