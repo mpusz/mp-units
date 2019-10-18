@@ -688,21 +688,24 @@ In order to extend the library with custom dimensions the user has to:
     concept DigitalInformation = units::QuantityOf<T, digital_information>;
     ```
 
-4. If non-SI prefixes should be applied to the unit symbol, define a new prefix tag and provide
-   `prefix_symbol` specializations to provide their text representation:
+4. If non-SI prefixes should be applied to the unit symbol, define a new prefix tag and define
+   new prefixes using this tag and provide their ratio and symbol:
 
     ```cpp
     struct data_prefix;
 
-    template<> inline constexpr std::string_view units::prefix_symbol<data_prefix, units::ratio<    1'024>> = "Ki";
-    template<> inline constexpr std::string_view units::prefix_symbol<data_prefix, units::ratio<1'048'576>> = "Mi";
+    struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
+    struct mebi : units::prefix<mebi, data_prefix, units::ratio<1'048'576>, "Mi"> {};
     ```
 
 5. Define units and register them to a downcasting facility:
 
     ```cpp
     struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+    struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
+
     struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+    struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
     ```
 
 6. Provide user-defined literals for the most important units:
