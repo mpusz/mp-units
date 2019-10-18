@@ -65,6 +65,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         INTERFACE
             -Wno-literal-suffix
             -Wno-non-template-friend
+            -Wno-stringop-overflow            
 # TODO gcc:92101
             -Wno-pedantic
     )

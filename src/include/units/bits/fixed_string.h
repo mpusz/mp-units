@@ -27,16 +27,18 @@ namespace units {
 
   template<typename CharT, std::size_t N>
   struct basic_fixed_string {
-    CharT data_[N+1] = {};
+    CharT data_[N + 1] = {};
 
-    constexpr basic_fixed_string(const CharT (&txt)[N+1]) noexcept
+    constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
     {
-      for(std::size_t i = 0; i <= N; ++i)
+      for(std::size_t i = 0; i < N; ++i)
         data_[i] = txt[i];
     }
 
     [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
     [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
+    [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data_[index]; }
+    [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data_[index]; }
 
     // auto operator==(const basic_fixed_string &) = default;
 
@@ -79,15 +81,14 @@ namespace units {
     template<std::size_t N2>
     [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
     {
-      CharT txt[lhs.size() + rhs.size() + 1] = {};
+      CharT txt[N + N2 + 1] = {};
 
-      size_t i = 0;
-      for(; i != lhs.size(); ++i)
-        txt[i] = lhs.c_str()[i];
-      for(size_t j = 0; j != rhs.size(); ++j)
-        txt[i + j] = rhs.c_str()[j];
+      for(size_t i = 0; i != N; ++i)
+         txt[i] = lhs[i];
+      for(size_t i = 0; i != N2; ++i)
+        txt[N + i] = rhs[i];
 
-      return basic_fixed_string<CharT, N + N2>(txt);
+      return units::basic_fixed_string(txt);
     }
   };
 
