@@ -25,6 +25,7 @@
 #include "units/dimensions/power.h"
 #include "units/dimensions/velocity.h"
 #include "units/dimensions/volume.h"
+#include "units/format.h"
 #include "units/math.h"
 #include <catch2/catch.hpp>
 #include <sstream>
@@ -159,23 +160,152 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   }
 }
 
-// SCENARIO("default format '{}' produces the same output as operator<<", "[text][fmt]")
-// {
-//   GIVEN("A quantity q") {
-//     auto q = 2m;
-//     REQUIRE(q.count() == 2);
+TEST_CASE("fmt with default format {} on a quantity", "[text][fmt]")
+{
+  std::stringstream stream;
 
-//     WHEN("format(\"{}\", q) is called") {
-//       std::string fmtstr = format("{}", q);
+  SECTION("quantity with a predefined unit")
+  {
+    SECTION("integral representation")
+    {
+      constexpr auto q = 60W;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
 
-//       THEN("the same output as operator<< is returned") {
-//         std::stringstream stream;
-//         stream << q;
-//         REQUIRE(fmtstr == stream.str());
-//       }
-//     }
-//   }
-// }
+    SECTION("floating-point representation")
+    {
+      constexpr auto q = 72.5kJ;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit with a prefix")
+    {
+      constexpr auto q = 125us;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+  }
+
+  SECTION("quantity with a predefined dimension but unknown unit")
+  {
+    SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
+    {
+      constexpr auto q = 4.N * 2cm;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio for a dimension without a special symbol")
+    {
+      constexpr auto q = 2.cm * 2m * 2m;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
+    {
+      constexpr auto q = 4 * 2min / (2s * 2s);
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
+    {
+      constexpr auto q = 20._J / 2min;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
+    {
+      constexpr auto q = 60.kJ / 2min;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+  }
+
+  SECTION("quantity with an unkown dimension")
+  {
+    SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
+    {
+      constexpr auto q = 2s * 2m * 2kg;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio as an SI prefix")
+    {
+      constexpr auto q = 4km * 2s;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
+    {
+      constexpr auto q = 4kg * 2min / (2s * 2s);
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
+    {
+      constexpr auto q = 20.kg / 2min;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
+    {
+      constexpr auto q = 60.min / 2km;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("exp::num == 1 && exp::den == 1")
+    {
+      constexpr auto q = 4m * 2s;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
+    {
+      constexpr auto q = 4m * 2s * 2s;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
+    {
+      constexpr auto q = 8.s / 2m / 2m;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
+    {
+      constexpr auto q = 8.m / 2kg / 2kg;
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("fractional positive exponent")
+    {
+      auto q = sqrt(9.m);
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("fractional negative exponent")
+    {
+      auto q = sqrt(9 / 1.m);
+      stream << q;
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+  }
+}
 
 // Restate operator<< definitions in terms of std::format to make I/O manipulators apply to whole objects
 // rather than their parts
