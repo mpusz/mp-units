@@ -31,7 +31,7 @@ using namespace units;
 
 TEST_CASE("pow<N>() on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
-  //  CHECK(pow<0>(2m) == 2);
+  CHECK(pow<0>(2m) == 1);
   CHECK(pow<1>(2m) == 2m);
   CHECK(pow<2>(2m) == 4sq_m);
   CHECK(pow<3>(2m) == 8cub_m);

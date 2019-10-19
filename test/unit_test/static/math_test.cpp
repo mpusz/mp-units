@@ -27,6 +27,7 @@ using namespace units;
 
 namespace {
 
+  static_assert(std::is_same_v<decltype(pow<0>(2m)), std::int64_t>);
   static_assert(std::is_same_v<decltype(pow<1>(2m)), decltype(2m)>);
   static_assert(std::is_same_v<decltype(pow<2>(2m)), decltype(4sq_m)>);
   static_assert(std::is_same_v<decltype(sqrt(4sq_m)), decltype(2m)>);

@@ -28,6 +28,13 @@
 namespace units {
 
   template<std::size_t N, typename U, typename Rep>
+    requires N == 0
+  inline Rep AUTO pow(const quantity<U, Rep>&) noexcept
+  {
+    return 1;
+  }
+
+  template<std::size_t N, typename U, typename Rep>
   inline Quantity AUTO pow(const quantity<U, Rep>& q) noexcept
   {
     using dim = dimension_pow<typename U::dimension, N>;
