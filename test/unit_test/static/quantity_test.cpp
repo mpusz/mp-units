@@ -36,7 +36,7 @@ namespace {
     T value_{};
   public:
     my_value() = default;
-    constexpr my_value(T v) : value_{std::move(v)} {}
+    constexpr my_value(T v) : value_(std::move(v)) {}
     constexpr my_value& operator+=(const my_value& other) { value_ += other.value_; return *this; }
     constexpr my_value& operator-=(const my_value& other) { value_ -= other.value_; return *this; }
     constexpr my_value& operator*=(const my_value& other) { value_ *= other.value_; return *this; }
