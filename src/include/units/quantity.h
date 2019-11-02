@@ -94,24 +94,24 @@ namespace units {
 
   namespace detail {
 
-    template<typename To, typename CR, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
+    template<typename To, typename CRatio, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
     struct quantity_cast_impl {
       template<typename Q>
       static constexpr To cast(const Q& q)
       {
         if constexpr(treat_as_floating_point<CRep>) {
           return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
-                                        (static_cast<CRep>(CR::num) / static_cast<CRep>(CR::den))));
+                                        (static_cast<CRep>(CRatio::num) / static_cast<CRep>(CRatio::den))));
         }
         else {
           return To(
-              static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num) / static_cast<CRep>(CR::den)));
+              static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) / static_cast<CRep>(CRatio::den)));
         }
       }
     };
 
-    template<typename To, typename CR, typename CRep>
-    struct quantity_cast_impl<To, CR, CRep, true, true> {
+    template<typename To, typename CRatio, typename CRep>
+    struct quantity_cast_impl<To, CRatio, CRep, true, true> {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
@@ -119,26 +119,26 @@ namespace units {
       }
     };
 
-    template<typename To, typename CR, typename CRep>
-    struct quantity_cast_impl<To, CR, CRep, true, false> {
+    template<typename To, typename CRatio, typename CRep>
+    struct quantity_cast_impl<To, CRatio, CRep, true, false> {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
         if constexpr(treat_as_floating_point<CRep>) {
-          return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (CRep{1} / static_cast<CRep>(CR::den))));
+          return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (CRep{1} / static_cast<CRep>(CRatio::den))));
         }
         else {
-          return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CR::den)));
+          return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio::den)));
         }
       }
     };
 
-    template<typename To, typename CR, typename CRep>
-    struct quantity_cast_impl<To, CR, CRep, false, true> {
+    template<typename To, typename CRatio, typename CRep>
+    struct quantity_cast_impl<To, CRatio, CRep, false, true> {
       template<Quantity Q>
       static constexpr To cast(const Q& q)
       {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CR::num)));
+        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num)));
       }
     };
 
@@ -195,6 +195,7 @@ namespace units {
 
     quantity() = default;
     quantity(const quantity&) = default;
+    quantity(quantity&&) = default;
 
     template<Scalar Rep2>
         requires std::convertible_to<Rep2, rep> &&
@@ -213,7 +214,8 @@ namespace units {
     {
     }
 
-    quantity& operator=(const quantity& other) = default;
+    quantity& operator=(const quantity&) = default;
+    quantity& operator=(quantity&&) = default;
 
     [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
@@ -331,7 +333,7 @@ namespace units {
   {
     using common_rep = decltype(q.count() * v);
     using ret = quantity<U, common_rep>;
-    return ret(ret(q).count() * v);
+    return ret(q.count() * v);
   }
 
   template<Scalar Rep1, typename U, typename Rep2>
@@ -370,9 +372,8 @@ namespace units {
 
     using dim = dim_invert<typename U::dimension>;
     using common_rep = decltype(v / q.count());
-    using den = quantity<U, common_rep>;
-    return ret(v / den(q).count());
     using ret = quantity<downcast<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
+    return ret(v / q.count());
   }
 
   template<typename U, typename Rep1, Scalar Rep2>
@@ -383,7 +384,7 @@ namespace units {
 
     using common_rep = decltype(q.count() / v);
     using ret = quantity<U, common_rep>;
-    return ret(ret(q).count() / v);
+    return ret(q.count() / v);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
@@ -400,7 +401,7 @@ namespace units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires (!same_dim<typename U1::dimension, typename U2::dimension>) &&
-              (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
+               (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
                 (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
@@ -413,14 +414,16 @@ namespace units {
 
   template<typename U, typename Rep1, Scalar Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U, Rep1>& q, const Rep2& v)
+      requires (!treat_as_floating_point<Rep1> && !treat_as_floating_point<Rep2>)
   {
     using common_rep = decltype(q.count() % v);
     using ret = quantity<U, common_rep>;
-    return ret(ret(q).count() % v);
+    return ret(q.count() % v);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+      requires (!treat_as_floating_point<Rep1> && !treat_as_floating_point<Rep2>)
   {
     using common_rep = decltype(lhs.count() % rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -431,8 +434,8 @@ namespace units {
   [[nodiscard]] constexpr bool operator==(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires same_dim<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
-    return ct(lhs).count() == ct(rhs).count();
+    using cq = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
+    return cq(lhs).count() == cq(rhs).count();
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
@@ -446,8 +449,8 @@ namespace units {
   [[nodiscard]] constexpr bool operator<(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires same_dim<typename U1::dimension, typename U2::dimension>
   {
-    using ct = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
-    return ct(lhs).count() < ct(rhs).count();
+    using cq = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
+    return cq(lhs).count() < cq(rhs).count();
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
