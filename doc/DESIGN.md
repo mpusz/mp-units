@@ -132,6 +132,13 @@ struct base_dim_substance : base_dimension<"substance", "mol"> {};
 struct base_dim_luminous_intensity : base_dimension<"luminous intensity", "cd"> {};
 ```
 
+In order to be able to perform computations on arbitrary sets of base dimensions, an important
+property of `units::dimension` is that its base dimensions:
+- are not repeated in a list (each base dimension is provided at most once),
+- are consistently ordered,
+- having zero exponent are elided.
+
+
 #### `derived_dimension`
 
 Above design of dimensions is created with the ease of use for end users in mind. Compile-time
