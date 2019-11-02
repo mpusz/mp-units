@@ -172,9 +172,9 @@ namespace units {
     struct type_list_sort_impl<List<Types...>, Pred> {
       using types = List<Types...>;
       using split = type_list_split_half<List<Types...>>;
-      using left = type_list_sort_impl<typename split::first_list, Pred>::type;
-      using right = type_list_sort_impl<typename split::second_list, Pred>::type;
-      using type = type_list_merge_sorted_impl<left, right, Pred>::type;
+      using sorted_left = type_list_sort_impl<typename split::first_list, Pred>::type;
+      using sorted_right = type_list_sort_impl<typename split::second_list, Pred>::type;
+      using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
     };
 
   }
