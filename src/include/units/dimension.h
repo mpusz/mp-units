@@ -213,9 +213,7 @@ namespace units {
     };
 
     template<Exponent... Es>
-    struct make_dimension {
-      using type = detail::dim_consolidate<type_list_sort<typename detail::extract<Es...>::type, exp_less>>::type;
-    };
+    using make_dimension = dim_consolidate<type_list_sort<typename extract<Es...>::type, exp_less>>::type;
 
   }  // namespace detail
 
@@ -224,22 +222,13 @@ namespace units {
   struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {};
 
   // merge_dimension
-  namespace detail {
-
-    template<Dimension D1, Dimension D2>
-    struct merge_dimension_impl {
-      using type = detail::dim_consolidate<type_list_merge_sorted<D1, D2, exp_less>>::type;
-    };
-
-  }
-
   template<Dimension D1, Dimension D2>
-  using merge_dimension = detail::merge_dimension_impl<D1, D2>::type;
+  using merge_dimension = detail::dim_consolidate<type_list_merge_sorted<D1, D2, exp_less>>::type;
 
   // dimension_multiply
   namespace detail {
 
-    template<Dimension D1, Dimension D2>
+    template<typename D1, typename D2>
     struct dimension_multiply_impl;
 
     template<typename... E1, typename... E2>
@@ -253,7 +242,7 @@ namespace units {
   // dimension_divide
   namespace detail {
 
-    template<Dimension D1, Dimension D2>
+    template<typename D1, typename D2>
     struct dimension_divide_impl;
 
     template<typename... E1, typename... E2>
@@ -269,7 +258,7 @@ namespace units {
   // dimension_sqrt
   namespace detail {
 
-    template<Dimension D>
+    template<typename D>
     struct dimension_sqrt_impl;
 
     template<typename... Es>
@@ -283,7 +272,7 @@ namespace units {
   // dimension_pow
   namespace detail {
 
-    template<Dimension D, std::size_t N>
+    template<typename D, std::size_t N>
     struct dimension_pow_impl;
 
     template<typename... Es, std::size_t N>

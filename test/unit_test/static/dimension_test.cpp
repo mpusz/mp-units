@@ -58,7 +58,7 @@ namespace {
   // make_dimension
 
   template<typename... Ts>
-  using make_dimension = detail::make_dimension<Ts...>::type;
+  using make_dimension = detail::make_dimension<Ts...>;
 
   static_assert(std::is_same_v<make_dimension<exp<d0, 1>>, dimension<exp<d0, 1>>>);
   static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>>, dimension<exp<d0, 1>, exp<d1, 1>>>);
