@@ -151,7 +151,7 @@ namespace units {
     struct dim_invert_impl;
 
     template<typename... Es>
-    struct dim_invert_impl<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_invert<Es>...>>> {};
+    struct dim_invert_impl<dimension<Es...>> : std::type_identity<downcast<dimension<exp_invert<Es>...>>> {};
 
   }
 
@@ -221,7 +221,7 @@ namespace units {
 
   // derived_dimension
   template<typename Child, Exponent... Es>
-  struct derived_dimension : downcast_helper<Child, typename detail::make_dimension<Es...>::type> {};
+  struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {};
 
   // merge_dimension
   namespace detail {
@@ -243,7 +243,7 @@ namespace units {
     struct dimension_multiply_impl;
 
     template<typename... E1, typename... E2>
-    struct dimension_multiply_impl<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_target<merge_dimension<dimension<E1...>, dimension<E2...>>>> {};
+    struct dimension_multiply_impl<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast<merge_dimension<dimension<E1...>, dimension<E2...>>>> {};
 
   }
 
@@ -273,7 +273,7 @@ namespace units {
     struct dimension_sqrt_impl;
 
     template<typename... Es>
-    struct dimension_sqrt_impl<dimension<Es...>> : std::type_identity<downcast_target<dimension<exp_multiply<Es, 1, 2>...>>> {};
+    struct dimension_sqrt_impl<dimension<Es...>> : std::type_identity<downcast<dimension<exp_multiply<Es, 1, 2>...>>> {};
   
   }
 
@@ -287,7 +287,7 @@ namespace units {
     struct dimension_pow_impl;
 
     template<typename... Es, std::size_t N>
-    struct dimension_pow_impl<dimension<Es...>, N> : std::type_identity<downcast_target<dimension<exp_multiply<Es, N, 1>...>>> {};
+    struct dimension_pow_impl<dimension<Es...>, N> : std::type_identity<downcast<dimension<exp_multiply<Es, N, 1>...>>> {};
 
   }
 

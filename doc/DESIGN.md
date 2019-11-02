@@ -157,7 +157,7 @@ helper:
 
 ```cpp
 template<typename Child, Exponent... Es>
-struct derived_dimension : downcast_helper<Child, typename detail::make_dimension<Es...>::type> {};
+struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>::type> {};
 ```
 
 `Child` class template parameter is a part of a CRTP idiom and is used to provide a downcasting facility
@@ -244,7 +244,7 @@ template:
 
 ```cpp
 template<typename Child, fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
-struct coherent_derived_unit : downcast_helper<Child, unit<D, ratio<1>>> {
+struct coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
   static constexpr auto symbol = Symbol;
   using prefix_type = PrefixType;
 };
@@ -267,7 +267,7 @@ To create the rest of derived units the following class template can be used:
 
 ```cpp
 template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
-struct derived_unit : downcast_helper<Child, unit<D, R>> {
+struct derived_unit : downcast_child<Child, unit<D, R>> {
   static constexpr auto symbol = Symbol;
 };
 ```
@@ -286,7 +286,7 @@ For example to create a prefixed unit the following may be used:
 ```cpp
 template<typename Child, Prefix P, Unit U>
   requires requires { U::symbol; }
-struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension,
+struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension,
                                                            ratio_multiply<typename P::ratio,
                                                                           typename U::ratio>>> {
   static constexpr auto symbol = P::symbol + U::symbol;
@@ -298,7 +298,7 @@ where `Prefix` is a concept requiring the instantiation of the following class t
 
 ```cpp
 template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
-struct prefix : downcast_helper<Child, detail::prefix_base<PrefixType, R>> {
+struct prefix : downcast_child<Child, detail::prefix_base<PrefixType, R>> {
   static constexpr auto symbol = Symbol;
 };
 ```
@@ -322,7 +322,7 @@ For the cases where determining the exact ratio is not trivial another helper ca
 
 ```cpp
 template<typename Child, basic_fixed_string Symbol, Dimension D, Unit U, Unit... Us>
-struct deduced_derived_unit : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
+struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
   static constexpr auto symbol = Symbol;
 };
 ```
@@ -541,20 +541,31 @@ and
 
 are not arguably much easier to understand thus provide better user experience.
 
-Downcasting facility provides a type substitution mechanism. It connects a specific primary template
-class specialization with a strong type assigned to it by the user. A simplified mental model of the
-facility may be represented as:
+When dealing with simple types, aliases can be easily replaced with inheritance:
 
-```cpp
-struct metre : unit<dimension<exp<base_dim_length, 1>>, std::ratio<1, 1, 0>>;
-```
+![UML](downcast_1.png)
+
+As a result we get strong types. There are however a few issues with such an approach:
+- generic code getting a child class does not easily know the exact template parameters of
+  the base class
+- generic code after computing the instantiation of the class template does not know if
+  this is a base class in some hierarchy, and in case it is, it does not know how to
+  replace the base class template instantiation with a derived strong type.
+
+Downcasting facility provides such a type substitution mechanism. It connects a specific primary
+template class instantiation with a strong type assigned to it by the user.
+
+Here is the overview of resulting class hierarchy for our example:
+
+![UML](downcast_2.png)
 
 In the above example `metre` is a downcasting target (child class) and a specific `unit` class
-template specialization is a downcasting source (base class). The downcasting facility provides
-1 to 1 tpe substitution mechanism. Only one child class can be created for a specific base class
+template instantiation is a downcasting source (base class). The downcasting facility provides
+1 to 1 type substitution mechanism. Only one child class can be created for a specific base class
 template instantiation.
 
-Downcasting facility is provided through 2 dedicated types, a concept, and a few helper template aliases.
+Downcasting facility is provided through 2 dedicated types, a concept, and a few helper template
+aliases.
 
 ```cpp
 template<typename BaseType>
@@ -568,7 +579,7 @@ struct downcast_base {
 facility with a `base_type` member type, and provides a declaration of downcasting ADL friendly
 (Hidden Friend) entry point member function `downcast_guide`. An important design point is that
 this function does not return any specific type in its declaration. This non-member function
-is going to be defined in a child class template `downcast_helper` and will return a target
+is going to be defined in a child class template `downcast_child` and will return a target
 type of the downcasting operation there.
 
 ```cpp
@@ -585,24 +596,24 @@ facility.
 
 ```cpp
 template<typename Target, Downcastable T>
-struct downcast_helper : T {
-  friend auto downcast_guide(typename downcast_helper::downcast_base) { return Target(); }
+struct downcast_child : T {
+  friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
 };
 ```
 
-`units::downcast_helper` is another CRTP class template that provides the implementation of a
+`units::downcast_child` is another CRTP class template that provides the implementation of a
 non-member friend function of the `downcast_base` class template which defines the target
 type of a downcasting operation. It is used in the following way to define `dimension` and
 `unit` types in the library:
 
 ```cpp
 template<typename Child, Exponent... Es>
-struct derived_dimension : downcast_helper<Child, detail::make_dimension_t<Es...>> {};
+struct derived_dimension : downcast_child<Child, detail::make_dimension_t<Es...>> {};
 ```
 
 ```cpp
 template<typename Child, fixed_string Symbol, Dimension D>
-struct derived_unit<Child, Symbol, D, R> : downcast_helper<Child, unit<D, ratio<1>>> {};
+struct derived_unit<Child, Symbol, D, R> : downcast_child<Child, unit<D, ratio<1>>> {};
 ```
 
 With such CRTP types the only thing the user has to do to register a new type to the downcasting
@@ -618,18 +629,18 @@ downcasting operation a dedicated template alias is provided:
 
 ```cpp
 template<Downcastable T>
-using downcast_target = decltype(detail::downcast_target_impl<T>());
+using downcast = decltype(detail::downcast_target_impl<T>());
 ```
 
-`units::downcast_target` is used to obtain the target type of the downcasting operation registered
-for a given specialization in a base type.
+`units::downcast` is used to obtain the target type of the downcasting operation registered
+for a given instantiation in a base type.
 
 For example to determine a downcasted type of a quantity multiply operation the following can be done:
 
 ```cpp
 using dim = dimension_multiply<typename U1::dimension, typename U2::dimension>;
 using common_rep = decltype(lhs.count() * rhs.count());
-using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+using ret = quantity<downcast<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
 ```
 
 `detail::downcast_target_impl` checks if a downcasting target is registered for the specific base class.

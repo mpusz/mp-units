@@ -41,8 +41,8 @@ namespace units {
       std::derived_from<T, downcast_base<typename T::base_type>>;
 
   template<typename Target, Downcastable T>
-  struct downcast_helper : T {
-    friend auto downcast_guide(typename downcast_helper::downcast_base) { return Target(); }
+  struct downcast_child : T {
+    friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
   };
 
   namespace detail {
@@ -53,7 +53,7 @@ namespace units {
     };
 
     template<typename T>
-    constexpr auto downcast_target_impl()
+    constexpr auto downcast_impl()
     {
       if constexpr(has_downcast<T>)
         return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
@@ -64,7 +64,7 @@ namespace units {
   }
 
   template<Downcastable T>
-  using downcast_target = decltype(detail::downcast_target_impl<T>());
+  using downcast = decltype(detail::downcast_impl<T>());
 
   template<Downcastable T>
   using downcast_base_t = T::base_type;

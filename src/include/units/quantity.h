@@ -76,7 +76,7 @@ namespace units {
         requires same_dim<typename U1::dimension, typename U2::dimension>
     struct common_quantity_impl<quantity<U1, Rep1>, quantity<U2, Rep2>, Rep> {
       using type =
-          quantity<downcast_target<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>,
+          quantity<downcast<unit<typename U1::dimension, common_ratio<typename U1::ratio, typename U2::ratio>>>,
                   Rep>;
     };
 
@@ -291,7 +291,7 @@ namespace units {
         using dim = quantity::unit::dimension;
         if constexpr(!detail::is_dimension<dim>) {
           // print as a prefix or ratio of a coherent unit symbol defined by the user
-          using coherent_unit = downcast_target<units::unit<dim, units::ratio<1>>>;
+          using coherent_unit = downcast<units::unit<dim, units::ratio<1>>>;
           detail::print_prefix_or_ratio<ratio, typename coherent_unit::prefix_type>(os);
           os << coherent_unit::symbol;
         }
@@ -358,7 +358,7 @@ namespace units {
   {
     using dim = dimension_multiply<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<downcast_target<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<downcast<unit<dim, ratio_multiply<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() * rhs.count());
   }
 
@@ -370,9 +370,9 @@ namespace units {
 
     using dim = dim_invert<typename U::dimension>;
     using common_rep = decltype(v / q.count());
-    using ret = quantity<downcast_target<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
     using den = quantity<U, common_rep>;
     return ret(v / den(q).count());
+    using ret = quantity<downcast<unit<dim, ratio<U::ratio::den, U::ratio::num>>>, common_rep>;
   }
 
   template<typename U, typename Rep1, Scalar Rep2>
@@ -407,7 +407,7 @@ namespace units {
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide<typename U1::dimension, typename U2::dimension>;
-    using ret = quantity<downcast_target<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
+    using ret = quantity<downcast<unit<dim, ratio_divide<typename U1::ratio, typename U2::ratio>>>, common_rep>;
     return ret(lhs.count() / rhs.count());
   }
 

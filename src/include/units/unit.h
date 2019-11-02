@@ -63,7 +63,7 @@ namespace units {
   }
 
   template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
-  struct prefix : downcast_helper<Child, detail::prefix_base<PrefixType, R>> {
+  struct prefix : downcast_child<Child, detail::prefix_base<PrefixType, R>> {
     static constexpr auto symbol = Symbol;
   };
 
@@ -150,25 +150,25 @@ namespace units {
   struct no_prefix;
 
   template<typename Child, basic_fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
-  struct coherent_derived_unit : downcast_helper<Child, unit<D, ratio<1>>> {
+  struct coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
     static constexpr auto symbol = Symbol;
     using prefix_type = PrefixType;
   };
 
   template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
-  struct derived_unit : downcast_helper<Child, unit<D, R>> {
+  struct derived_unit : downcast_child<Child, unit<D, R>> {
     static constexpr auto symbol = Symbol;
   };
 
   template<typename Child, Prefix P, Unit U>
     requires requires { U::symbol; }
-  struct prefixed_derived_unit : downcast_helper<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
+  struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
     static constexpr auto symbol = P::symbol + U::symbol;
     using prefix_type = P::prefix_type;
   };
 
   template<typename Child, basic_fixed_string Symbol, Dimension D, Unit U, Unit... Us>
-  struct deduced_derived_unit : downcast_helper<Child, detail::make_derived_unit<D, U, Us...>> {
+  struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
     static constexpr auto symbol = Symbol;
   };
 

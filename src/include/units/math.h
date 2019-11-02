@@ -39,7 +39,7 @@ namespace units {
   {
     using dim = dimension_pow<typename U::dimension, N>;
     using r = ratio_pow<typename U::ratio, N>;
-    return quantity<downcast_target<unit<dim, r>>, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
+    return quantity<downcast<unit<dim, r>>, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
   }
 
   template<typename U, typename Rep>
@@ -47,7 +47,7 @@ namespace units {
   {
     using dim = dimension_sqrt<typename U::dimension>;
     using r = ratio_sqrt<typename U::ratio>;
-    return quantity<downcast_target<unit<dim, r>>, Rep>(static_cast<Rep>(std::sqrt(q.count())));
+    return quantity<downcast<unit<dim, r>>, Rep>(static_cast<Rep>(std::sqrt(q.count())));
   }
 
 }  // namespace units
