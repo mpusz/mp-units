@@ -44,8 +44,8 @@ namespace units {
 
     [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
     {
-      for(size_t i = 0; i != size(lhs.data_); ++i)
-        if(lhs.name_[i] != rhs.data_[i])
+      for(size_t i = 0; i != lhs.size(); ++i)
+        if(lhs.data_[i] != rhs.data_[i])
           return false;
       return true;
     }
