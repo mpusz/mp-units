@@ -771,6 +771,10 @@ In order to extend the library with custom dimensions the user has to:
 9. `k`, `K`, `W`, `F` UDLs conflict with gcc GNU extensions (<https://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Fixed_002dPoint.html>)
     for floating point types.
 
-10. `J` imaginary constants are a GCC extension
+10. `J` UDL conflicts with imaginary constants GCC extension
 
-11. Do we need custom/multiple systems?
+11. `erg` (CGS energy) UDL conflicts with engineering syntax
+
+12. Do we need custom/multiple systems?
+
+13. How "moment of force" is different from "energy"?
