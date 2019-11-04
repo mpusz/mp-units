@@ -90,6 +90,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
         stream << 20.km / 2h;
         REQUIRE(stream.str() == "10 km/h");
       }
+
+      SECTION("surface tension")
+      {
+        stream << 20.N / 2m;
+        REQUIRE(stream.str() == "10 N/m");
+      }
     }
   }
 

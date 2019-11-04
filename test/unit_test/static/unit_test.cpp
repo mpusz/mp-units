@@ -34,6 +34,7 @@
 #include <units/dimensions/power.h>
 #include <units/dimensions/pressure.h>
 #include <units/dimensions/substance.h>
+#include <units/dimensions/surface_tension.h>
 #include <units/dimensions/temperature.h>
 #include <units/dimensions/time.h>
 #include <units/dimensions/velocity.h>
@@ -183,5 +184,10 @@ namespace {
   static_assert(10sq_m * 10m == 100cub_m);
   static_assert(10km * 10km * 10km == 1000cub_km);
   static_assert(1cub_m == 1'000'000cub_cm);
+
+
+  /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
+
+  static_assert(10N / 2m == 5Npm);
 
 }  // namespace
