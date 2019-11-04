@@ -31,6 +31,11 @@ namespace units {
   struct basic_fixed_string {
     CharT data_[N + 1] = {};
 
+    constexpr basic_fixed_string(CharT ch) noexcept
+    {
+      data_[0] = ch;
+    }
+
     constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
     {
       for(std::size_t i = 0; i < N; ++i)
@@ -96,6 +101,9 @@ namespace units {
 
   template<typename CharT, std::size_t N>
   basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N-1>;
+
+  template<typename CharT>
+  basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
 
   template<std::size_t N>
   using fixed_string = basic_fixed_string<char, N>;
