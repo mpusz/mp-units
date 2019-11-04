@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept LuminousIntensity = QuantityOf<T, luminous_intensity>;
 
-  struct candela : coherent_derived_unit<candela, "cd", luminous_intensity, si_prefix> {};
+  struct candela : named_coherent_derived_unit<candela, "cd", luminous_intensity, si_prefix> {};
 
   inline namespace literals {
 

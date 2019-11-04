@@ -32,9 +32,9 @@ namespace units {
   template<typename T>
   concept Velocity = QuantityOf<T, velocity>;
 
-  struct metre_per_second : coherent_derived_unit<metre_per_second, "m/s", velocity> {};
-  struct kilometre_per_hour : deduced_derived_unit<kilometre_per_hour, "km/h", velocity, kilometre, hour> {};
-  struct mile_per_hour : deduced_derived_unit<mile_per_hour, "mi/h", velocity, mile, hour> {};
+  struct metre_per_second : coherent_derived_unit<metre_per_second, velocity> {};
+  struct kilometre_per_hour : deduced_derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};
+  struct mile_per_hour : deduced_derived_unit<mile_per_hour, velocity, mile, hour> {};
 
   inline namespace literals {
 

@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Pressure =  QuantityOf<T, pressure>;
 
-  struct pascal : coherent_derived_unit<pascal, "Pa", pressure, si_prefix> {};
+  struct pascal : named_coherent_derived_unit<pascal, "Pa", pressure, si_prefix> {};
 
   inline namespace literals {
 

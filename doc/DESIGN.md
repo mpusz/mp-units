@@ -246,13 +246,19 @@ concept Unit =
     detail::is_unit<downcast_base_t<T>>;  // exposition only
 ```
 
-Coherent derived units (units with `ratio<1>`) are created with a `coherent_derived_unit` class
-template:
+Coherent derived units (units with `ratio<1>`) are created with a `named_coherent_derived_unit`
+or `coherent_derived_unit` class templates:
 
 ```cpp
-template<typename Child, fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
-struct coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
+template<typename Child, basic_fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
+struct named_coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
   static constexpr auto symbol = Symbol;
+  using prefix_type = PrefixType;
+};
+
+template<typename Child, Dimension D, typename PrefixType = no_prefix>
+struct coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
+  static constexpr auto symbol = /* ... */;
   using prefix_type = PrefixType;
 };
 ```
@@ -264,26 +270,31 @@ data).
 For example to define the coherent unit of `length`:
 
 ```cpp
-struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
+struct metre : named_coherent_derived_unit<metre, "m", length, si_prefix> {};
 ```
 
 Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
 to provide downcasting facility (described below).
 
-To create the rest of derived units the following class template can be used:
+To create the rest of derived units the following class templates can be used:
 
 ```cpp
 template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
-struct derived_unit : downcast_child<Child, unit<D, R>> {
+struct named_derived_unit : downcast_child<Child, unit<D, R>> {
   static constexpr auto symbol = Symbol;
+};
+
+template<typename Child, Dimension D, Ratio R>
+struct derived_unit : downcast_child<Child, unit<D, R>> {
+  static constexpr auto symbol = /* ... */;
 };
 ```
 
-User has to provide a symbol name, dimension, and a ratio relative to a coherent derived unit.
-For example to define `minute`:
+User has to provide a symbol name (in case of a named unit), dimension, and a ratio relative
+to a coherent derived unit. For example to define `minute`:
 
 ```cpp
-struct minute : derived_unit<minute, "min", time, ratio<60>> {};
+struct minute : named_derived_unit<minute, "min", time, ratio<60>> {};
 ```
 
 The `mp-units` library provides also a few helper class templates to simplify the above process.
@@ -329,16 +340,22 @@ For the cases where determining the exact ratio is not trivial another helper ca
 
 ```cpp
 template<typename Child, basic_fixed_string Symbol, Dimension D, Unit U, Unit... Us>
-struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
+struct named_deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
   static constexpr auto symbol = Symbol;
+};
+
+template<typename Child, Dimension D, Unit U, Unit... Us>
+struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
+  static constexpr auto symbol = /* ... */;
 };
 ```
 
 This will deduce the ratio based on the ingredient units and their relation defined in the
-dimension:
+dimension and in case the symbol name is not explicitly provided it with create one based
+on the provided ingredients:
 
 ```cpp
-struct mile_per_hour : deduced_derived_unit<mile_per_hour, "mi/h", velocity, mile, hour> {};
+struct mile_per_hour : deduced_derived_unit<mile_per_hour, velocity, mile, hour> {};
 ```
 
 

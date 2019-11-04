@@ -48,10 +48,6 @@ namespace {
 
   /* ************** BASE DIMENSIONS **************** */
 
-  // time
-
-  static_assert(1h == 3600s);
-
   // length
 
   static_assert(1km == 1000m);
@@ -69,6 +65,33 @@ namespace {
 
   static_assert(5in + 8cm == 207mm);
 
+  static_assert(millimetre::symbol == "mm");
+  static_assert(centimetre::symbol == "cm");
+  static_assert(kilometre::symbol == "km");
+
+  // mass
+
+  static_assert(1kg == 1000g);
+
+  static_assert(kilogram::symbol == "kg");
+
+  // time
+
+  static_assert(1h == 3600s);
+
+  static_assert(nanosecond::symbol == "ns");
+  static_assert(microsecond::symbol == "µs");
+  static_assert(millisecond::symbol == "ms");
+
+  // current
+
+  // temperature
+
+  // substance
+
+  // luminous intensity
+
+
   /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 
   // frequency
@@ -79,6 +102,12 @@ namespace {
   static_assert(1 / 1ms == 1kHz);
   static_assert(3.2GHz == 3'200'000'000Hz);
   static_assert(10Hz * 1min == 600);
+
+  static_assert(millihertz::symbol == "mHz");
+  static_assert(kilohertz::symbol == "kHz");
+  static_assert(megahertz::symbol == "MHz");
+  static_assert(gigahertz::symbol == "GHz");
+  static_assert(terahertz::symbol == "THz");
 
   // force
 
@@ -133,6 +162,10 @@ namespace {
   static_assert(2km / 2kmph == 1h);
   // static_assert(2000m / 2kmph == 1h); // should not compile
   static_assert(quantity_cast<quantity<kilometre, int>>(2000m) / 2kmph == 1h);
+
+//  static_assert(metre_per_second::symbol == basic_fixed_string("m/s"));
+  // static_assert(kilometre_per_hour::symbol == basic_fixed_string("km/h"));
+
 
   // acceleration
 

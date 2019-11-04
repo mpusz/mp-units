@@ -35,7 +35,7 @@ namespace units {
   template<typename T>
   concept Voltage =  QuantityOf<T, voltage>;
 
-  struct volt : coherent_derived_unit<volt, "V", voltage, si_prefix> {};
+  struct volt : named_coherent_derived_unit<volt, "V", voltage, si_prefix> {};
 
   inline namespace literals {
 

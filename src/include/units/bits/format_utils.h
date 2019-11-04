@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/unit.h>
+#include <units/dimension.h>
+#include <units/prefix.h>
 #include <ostream>
 #include <string_view>
 
@@ -61,30 +62,92 @@ namespace units {
       }
     }
 
-    template<typename CharT, typename Traits, typename... Es>
-    void print_dimensions(std::basic_ostream<CharT, Traits>& os, dimension<Es...>)
+
+    template<int Value>
+      requires (0 <= Value) && (Value < 10)
+    inline constexpr basic_fixed_string superscript_number = "\u2070";
+
+//    template<> inline constexpr basic_fixed_string superscript_number<0> = "\u2070";
+    template<> inline constexpr basic_fixed_string superscript_number<1> = "\u00b9";
+    template<> inline constexpr basic_fixed_string superscript_number<2> = "\u00b2";
+    template<> inline constexpr basic_fixed_string superscript_number<3> = "\u00b3";
+    template<> inline constexpr basic_fixed_string superscript_number<4> = "\u2074";
+    template<> inline constexpr basic_fixed_string superscript_number<5> = "\u2075";
+    template<> inline constexpr basic_fixed_string superscript_number<6> = "\u2076";
+    template<> inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
+    template<> inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
+    template<> inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
+
+    template<int Value>
+      requires (Value >= 0)
+    constexpr auto superscript()
     {
-      bool first = true;
-      auto ingr_printer = [&]<typename E>(E) {
-        if constexpr(E::num < 0) {
-          os << (first ? "1/" : "/");
+      if constexpr(Value < 10)
+        return superscript_number<Value>;
+      else
+        return superscript<Value / 10>() + superscript<Value % 10>();
+    }
+
+    template<int Value>
+      requires (Value >= 0)
+    constexpr auto regular()
+    {
+      if constexpr(Value < 10)
+        return basic_fixed_string(static_cast<char>('0' + Value));
+      else
+        return regular<Value / 10>() + regular<Value % 10>();
+    }
+
+
+    template<bool Divide, std::size_t Idx>
+    constexpr auto operator_txt()
+    {
+      if constexpr(Idx == 0) {
+        if constexpr(Divide) {
+          return basic_fixed_string("1/");
         }
         else {
-          os << (first ? "" : "⋅");
+          return basic_fixed_string("");
         }
-        os << E::dimension::symbol;
-        if constexpr(E::den != 1) {
-          os << "^(" << abs(E::num) << "/" << E::den << ")";
+      }
+      else {
+        if constexpr(Divide) {
+          return basic_fixed_string("/");
         }
-        else if constexpr(abs(E::num) != 1) {
-          // if constexpr(is_unicode<CharT>)
-          //   os << superscript<abs(E::num)>;
-          // else
-            os << "^" << abs(E::num);
+        else {
+          return basic_fixed_string("⋅");
         }
-        first = false;
-      };
-      (ingr_printer(Es{}), ...);
+      }
+    }
+
+    template<typename E, std::size_t Idx>
+    constexpr auto exp_txt()
+    {
+      // get calculation operator + symbol
+      const auto txt = operator_txt<E::num < 0, Idx>() + E::dimension::symbol;
+      if constexpr(E::den != 1) {
+        // add root part
+        return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() + basic_fixed_string(")");
+      }
+      else if constexpr(abs(E::num) != 1) {
+        // add exponent part
+        return txt + superscript<abs(E::num)>();
+      }
+      else {
+        return txt;
+      }
+    }
+
+    template<typename... Es, std::size_t... Idxs>
+    constexpr auto symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
+    {
+      return (exp_txt<Es, Idxs>() + ...);
+    }
+
+    template<typename... Es>
+    constexpr auto symbol_text(dimension<Es...> d)
+    {
+      return symbol_text_impl<>(d, std::index_sequence_for<Es...>());
     }
 
   }

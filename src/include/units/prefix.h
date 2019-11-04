@@ -22,24 +22,44 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/quantity.h>
+#include <units/bits/downcasting.h>
+#include <units/bits/fixed_string.h>
+#include <units/ratio.h>
 
 namespace units {
 
-  struct substance : derived_dimension<substance, exp<base_dim_substance, 1>> {};
+  namespace detail {
+
+    template<typename PrefixType, Ratio R>
+    struct prefix_base : downcast_base<prefix_base<PrefixType, R>> {
+      using prefix_type = PrefixType;
+      using ratio = R;
+    };
+
+  }
+
+  template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
+  struct prefix : downcast_child<Child, detail::prefix_base<PrefixType, R>> {
+    static constexpr auto symbol = Symbol;
+  };
+
+
+  // TODO gcc:92150
+  // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92150
+  // namespace detail {
+
+  //   template<typename T>
+  //   inline constexpr bool is_prefix = false;
+
+  //   template<typename PrefixType, Ratio R, basic_fixed_string Symbol>
+  //   inline constexpr bool is_prefix<prefix<PrefixType, R, Symbol>> = true;
+
+  // }  // namespace detail
 
   template<typename T>
-  concept Substance = QuantityOf<T, substance>;
+//  concept Prefix = detail::is_prefix<T>;
+  concept Prefix = true;
 
-  struct mole : named_coherent_derived_unit<mole, "mol", substance, si_prefix> {};
-
-  inline namespace literals {
-
-    // mol
-    constexpr auto operator""mol(unsigned long long l) { return quantity<mole, std::int64_t>(l); }
-    constexpr auto operator""mol(long double l) { return quantity<mole, long double>(l); }
-
-  }  // namespace literals
+  struct no_prefix;
 
 }  // namespace units

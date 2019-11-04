@@ -31,11 +31,11 @@ namespace units {
   template<typename T>
   concept Volume = QuantityOf<T, volume>;
 
-  struct cubic_metre : coherent_derived_unit<cubic_metre, "m^3", volume> {};
-  struct cubic_millimetre : deduced_derived_unit<cubic_millimetre, "mm^3", volume, millimetre> {};
-  struct cubic_centimetre : deduced_derived_unit<cubic_centimetre, "cm^3", volume, centimetre> {};
-  struct cubic_kilometre : deduced_derived_unit<cubic_kilometre, "km^3", volume, kilometre, metre> {};
-  struct cubic_foot : deduced_derived_unit<cubic_foot, "ft^3", volume, foot> {};
+  struct cubic_metre : coherent_derived_unit<cubic_metre, volume> {};
+  struct cubic_millimetre : deduced_derived_unit<cubic_millimetre, volume, millimetre> {};
+  struct cubic_centimetre : deduced_derived_unit<cubic_centimetre, volume, centimetre> {};
+  struct cubic_kilometre : deduced_derived_unit<cubic_kilometre, volume, kilometre, metre> {};
+  struct cubic_foot : deduced_derived_unit<cubic_foot, volume, foot> {};
 
   inline namespace literals {
 

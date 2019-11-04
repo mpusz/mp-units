@@ -25,6 +25,7 @@
 #include <units/quantity.h>
 #include <fmt/format.h>
 
+
 template<typename U, typename Rep, typename CharT>
 struct fmt::formatter<units::quantity<U, Rep>, CharT> {
   template<typename ParseContext>

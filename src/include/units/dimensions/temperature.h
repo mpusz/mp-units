@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept ThermodynamicTemperature = QuantityOf<T, temperature>;
 
-  struct kelvin : coherent_derived_unit<kelvin, "K", temperature> {};
+  struct kelvin : named_coherent_derived_unit<kelvin, "K", temperature> {};
 
   inline namespace literals {
 

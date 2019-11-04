@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Frequency =  QuantityOf<T, frequency>;
 
-  struct hertz : coherent_derived_unit<hertz, "Hz", frequency, si_prefix> {};
+  struct hertz : named_coherent_derived_unit<hertz, "Hz", frequency, si_prefix> {};
   struct millihertz : prefixed_derived_unit<millihertz, milli, hertz> {};
   struct kilohertz : prefixed_derived_unit<kilohertz, kilo, hertz> {};
   struct megahertz : prefixed_derived_unit<megahertz, mega, hertz> {};

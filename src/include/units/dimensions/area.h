@@ -31,11 +31,11 @@ namespace units {
   template<typename T>
   concept Area = QuantityOf<T, area>;
 
-  struct square_metre : coherent_derived_unit<square_metre, "m^2", area> {};
-  struct square_millimetre : deduced_derived_unit<square_millimetre, "mm^2", area, millimetre> {};
-  struct square_centimetre : deduced_derived_unit<square_centimetre, "cm^2", area, centimetre> {};
-  struct square_kilometre : deduced_derived_unit<square_kilometre, "km^2", area, kilometre> {};
-  struct square_foot : deduced_derived_unit<square_foot, "ft^2", area, foot> {};
+  struct square_metre : coherent_derived_unit<square_metre, area> {};
+  struct square_millimetre : deduced_derived_unit<square_millimetre, area, millimetre> {};
+  struct square_centimetre : deduced_derived_unit<square_centimetre, area, centimetre> {};
+  struct square_kilometre : deduced_derived_unit<square_kilometre, area, kilometre> {};
+  struct square_foot : deduced_derived_unit<square_foot, area, foot> {};
 
   inline namespace literals {
 

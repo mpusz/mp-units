@@ -36,7 +36,7 @@ namespace units {
   struct femto : prefix<femto, si_prefix, ratio<1, std::femto::den>, "f"> {};
   struct pico : prefix<pico, si_prefix, ratio<1, std::pico::den>, "p"> {};
   struct nano : prefix<nano, si_prefix, ratio<1, std::nano::den>, "n"> {};
-  struct micro : prefix<micro, si_prefix, ratio<1, std::micro::den>, "µ"> {};
+  struct micro : prefix<micro, si_prefix, ratio<1, std::micro::den>, "\u00b5"> {};
   struct milli : prefix<milli, si_prefix, ratio<1, std::milli::den>, "m"> {};
   struct centi : prefix<centi, si_prefix, ratio<1, std::centi::den>, "c"> {};
   struct deci : prefix<deci, si_prefix, ratio<1, std::deci::den>, "d"> {};

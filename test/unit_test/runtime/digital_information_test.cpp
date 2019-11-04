@@ -38,9 +38,9 @@ namespace data {
   struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
   struct mebi : units::prefix<mebi, data_prefix, units::ratio<1'048'576>, "Mi"> {};
 
-  struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+  struct bit : units::named_coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
   struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
-  struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+  struct byte : units::named_derived_unit<byte, "B", digital_information, units::ratio<8>> {};
   struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
 
   inline namespace literals {

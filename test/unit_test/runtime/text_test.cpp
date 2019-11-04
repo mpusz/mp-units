@@ -46,14 +46,50 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
 
     SECTION("floating-point representation")
     {
-      stream << 72.5kJ;
-      REQUIRE(stream.str() == "72.5 kJ");
+      stream << 1023.5Pa;
+      REQUIRE(stream.str() == "1023.5 Pa");
     }
+  }
 
-    SECTION("unit with a prefix")
+  SECTION("quantity with a predefined unit + prefix")
+  {
+    SECTION("in terms of base units")
     {
       stream << 125us;
       REQUIRE(stream.str() == "125 µs");
+    }
+
+    SECTION("in terms of derived units")
+    {
+      stream << 60kJ;
+      REQUIRE(stream.str() == "60 kJ");
+    }
+  }
+
+  SECTION("quantity with a deduced unit")
+  {
+    SECTION("coherent derived unit")
+    {
+      SECTION("acceleration")
+      {
+        stream << 20.m / 2s / 1s;
+        REQUIRE(stream.str() == "10 m/s²");
+      }
+
+      SECTION("volume")
+      {
+        stream << 2m * 1m * 1m;
+        REQUIRE(stream.str() == "2 m³");
+      }
+    }
+
+    SECTION("deduced derived unit")
+    {
+      SECTION("velocity")
+      {
+        stream << 20.km / 2h;
+        REQUIRE(stream.str() == "10 km/h");
+      }
     }
   }
 
@@ -68,7 +104,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     SECTION("unit::ratio for a dimension without a special symbol")
     {
       stream << 2.cm * 2m * 2m;
-      REQUIRE(stream.str() == "8 [1/100]m^3");
+      REQUIRE(stream.str() == "8 [1/100]m³");
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
@@ -131,19 +167,19 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
     {
       stream << 4m * 2s * 2s;
-      REQUIRE(stream.str() == "16 m⋅s^2");
+      REQUIRE(stream.str() == "16 m⋅s²");
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
     {
       stream << 8.s / 2m / 2m;
-      REQUIRE(stream.str() == "2 1/m^2⋅s");
+      REQUIRE(stream.str() == "2 1/m²⋅s");
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
     {
       stream << 8.m / 2kg / 2kg;
-      REQUIRE(stream.str() == "2 m/kg^2");
+      REQUIRE(stream.str() == "2 m/kg²");
     }
 
     SECTION("fractional positive exponent")

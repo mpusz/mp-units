@@ -34,7 +34,7 @@ namespace units {
   concept Length = QuantityOf<T, length>;
 
   // SI units
-  struct metre : coherent_derived_unit<metre, "m", length, si_prefix> {};
+  struct metre : named_coherent_derived_unit<metre, "m", length, si_prefix> {};
   struct millimetre : prefixed_derived_unit<millimetre, milli, metre> {};
   struct centimetre : prefixed_derived_unit<centimetre, centi, metre> {};
   struct kilometre : prefixed_derived_unit<kilometre, kilo, metre> {};
@@ -60,10 +60,10 @@ namespace units {
   } // namespace literals
 
   // US customary units
-  struct yard : derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
-  struct foot : derived_unit<foot, "ft", length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  struct inch : derived_unit<inch, "in", length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
-  struct mile : derived_unit<mile, "mi", length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
+  struct yard : named_derived_unit<yard, "yd", length, ratio<9'144, 10'000>> {};
+  struct foot : named_derived_unit<foot, "ft", length, ratio_multiply<ratio<1, 3>, yard::ratio>> {};
+  struct inch : named_derived_unit<inch, "in", length, ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct mile : named_derived_unit<mile, "mi", length, ratio_multiply<ratio<1'760>, yard::ratio>> {};
 
   inline namespace literals {
 

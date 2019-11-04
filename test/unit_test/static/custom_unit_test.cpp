@@ -39,10 +39,10 @@ namespace {
 
   struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
 
-  struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+  struct bit : units::named_coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
   struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
 
-  struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+  struct byte : units::named_derived_unit<byte, "B", digital_information, units::ratio<8>> {};
   struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
 
   inline namespace literals {
@@ -71,11 +71,11 @@ namespace {
 
   // power spectral density
   struct power_spectral_density : derived_dimension<power_spectral_density, units::exp<voltage, 2>, units::exp<frequency, -1>> {};
-  struct sq_volt_per_hertz : coherent_derived_unit<sq_volt_per_hertz, "V^2/Hz", power_spectral_density> {};
+  struct sq_volt_per_hertz : coherent_derived_unit<sq_volt_per_hertz, power_spectral_density> {};
 
   // amplitude spectral density
   struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
-  struct volt_per_sqrt_hertz : coherent_derived_unit<volt_per_sqrt_hertz, "V/Hz^(1/2)", amplitude_spectral_density> {};
+  struct volt_per_sqrt_hertz : coherent_derived_unit<volt_per_sqrt_hertz, amplitude_spectral_density> {};
 }
 
 namespace {

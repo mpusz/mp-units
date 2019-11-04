@@ -302,7 +302,7 @@ namespace units {
           detail::print_ratio<ratio>(os);
 
           // print coherent unit dimensions and their exponents
-          detail::print_dimensions(os, dim{});
+          os << detail::symbol_text(dim{});
         }
       }
       return os;
