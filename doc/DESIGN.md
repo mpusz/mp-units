@@ -283,11 +283,6 @@ template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
 struct named_derived_unit : downcast_child<Child, unit<D, R>> {
   static constexpr auto symbol = Symbol;
 };
-
-template<typename Child, Dimension D, Ratio R>
-struct derived_unit : downcast_child<Child, unit<D, R>> {
-  static constexpr auto symbol = /* ... */;
-};
 ```
 
 User has to provide a symbol name (in case of a named unit), dimension, and a ratio relative
@@ -463,8 +458,8 @@ template<Scalar ToRep, typename U, typename Rep>
 
 The library tries its best to print a correct unit of the quantity. This is why it performs a series
 of checks:
-1. If the user predefined a unit with a `coherent_derived_unit` or `derived_unit` class templates,
-  the symbol provided by the user will be used (i.e. `60 W`).
+1. If the user predefined a unit with a `named_XXX_derived_unit` class templates, the symbol provided
+  by the user will be used (i.e. `60 W`).
 2. If a quantity has an unknown unit for a dimension predefined by the user with `derived_dimension`,
   the symbol of a coherent unit of this dimension will be used. Additionally:
     - if `Prefix` template parameter of a `coherent_derived_unit` is different than `no_prefix` then
@@ -645,7 +640,7 @@ facility is to publicly derive from one of those CRTP types and provide its new 
 the first template parameter of the CRTP type.
 
 ```cpp
-struct metre : derived_unit<metre, "m", length> {};
+struct metre : named_derived_unit<metre, "m", length> {};
 ```
 
 Above types are used to define base and target of a downcasting operation. To perform the actual
@@ -736,10 +731,10 @@ In order to extend the library with custom dimensions the user has to:
 5. Define units and register them to a downcasting facility:
 
     ```cpp
-    struct bit : units::coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+    struct bit : units::named_coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
     struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
 
-    struct byte : units::derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+    struct byte : units::named_derived_unit<byte, "B", digital_information, units::ratio<8>> {};
     struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
     ```
 

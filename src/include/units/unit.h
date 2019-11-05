@@ -290,11 +290,6 @@ namespace units {
     static constexpr auto symbol = Symbol;
   };
 
-  template<typename Child, Dimension D, Ratio R>
-  struct derived_unit : downcast_child<Child, unit<D, R>> {
-    static constexpr auto symbol = basic_fixed_string("aaa");
-  };
-
   template<typename Child, Prefix P, Unit U>
     requires requires { U::symbol; }
   struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
