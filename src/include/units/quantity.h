@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/bits/concepts.h>
-#include <units/bits/format_utils.h>
 #include <units/unit.h>
 #include <limits>
 #include <ostream>
@@ -283,29 +282,7 @@ namespace units {
     template<class CharT, class Traits>
     friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
     {
-      os << q.count() << " ";
-      if constexpr(!detail::is_unit<quantity::unit>) {
-        // print user-defined unit
-        os << unit::symbol;
-      }
-      else {
-        using ratio = quantity::unit::ratio;
-        using dim = quantity::unit::dimension;
-        if constexpr(!detail::is_dimension<dim>) {
-          // print as a prefix or ratio of a coherent unit symbol defined by the user
-          using coherent_unit = downcast<units::unit<dim, units::ratio<1>>>;
-          detail::print_prefix_or_ratio<ratio, typename coherent_unit::prefix_type>(os);
-          os << coherent_unit::symbol;
-        }
-        else {
-          // print as a ratio of a coherent unit
-          detail::print_ratio<ratio>(os);
-
-          // print coherent unit dimensions and their exponents
-          os << detail::symbol_text(dim{});
-        }
-      }
-      return os;
+      return os << q.count() << " " << detail::unit_text<quantity::unit>();
     }
   };
 

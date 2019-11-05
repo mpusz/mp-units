@@ -25,15 +25,60 @@
 #include <units/quantity.h>
 #include <fmt/format.h>
 
+// units-format-spec:
+//      fill-and-align[opt] width[opt] precision[opt] units-specs[opt]
+// units-specs:
+//      conversion-spec
+//      units-specs conversion-spec
+//      units-specs literal-char
+// literal-char:
+//      any character other than { or }
+// conversion-spec:
+//      % modifier[opt] type
+// modifier: one of
+//      E O
+// type: one of
+//      q Q %
+
 
 template<typename U, typename Rep, typename CharT>
 struct fmt::formatter<units::quantity<U, Rep>, CharT> {
-  template<typename ParseContext>
-  constexpr auto parse(ParseContext& ctx) { return ctx.begin(); }
+private:
+  fmt::basic_format_specs<CharT> specs;
+  int precision = -1;
+  using arg_ref_type = fmt::internal::arg_ref<CharT>;
+  arg_ref_type width_ref;
+  arg_ref_type precision_ref;
+  mutable basic_string_view<CharT> format_str;
+  using quantity = units::quantity<U, Rep>;
+
+  // auto parse_unit_format() {
+  //   if (s != ctx.end() && *s == 'q') {
+  //     quantity = true;
+  //     return ++s;
+  //   }
+  // }
+
+public:
+  constexpr auto parse(fmt::basic_parse_context<CharT>& ctx)
+  {
+    // [ctx.begin(), ctx.end()) is a range of CharTs containing format-specs,
+    // e.g. in format("{:%Q %q}", ...) it is "%Q %q}" (format string after ':')
+    // auto begin = ctx.begin(), end = ctx.end();
+    // Look at do_parse in fmt/chrono.h and provide replacement for parse_chrono_format.
+    // fill-and-align_opt ...
+    // begin = fmt::internal::parse_align(begin, end, handler);
+    // parse_unit_format();
+    return ctx.end();
+  }
+  // format("{:{}}", 'x', 10)
 
   template<typename FormatContext>
   auto format(const units::quantity<U, Rep>& q, FormatContext& ctx)
   {
-    return format_to(ctx.out(), "{:.1f}", q.count());
+    // ctx.out() - output iterator you write to.
+    // auto s = format("{0:.{1}} {2}", q.count(), precision, unit(q));
+    // return format_to(ctx.out(), "{:{}}", s, width);
+    return format_to(ctx.out(), "{} {}", q.count(), units::detail::unit_text<typename quantity::unit>().c_str());
   }
 };

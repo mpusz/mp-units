@@ -32,7 +32,7 @@
 
 using namespace units;
 
-TEST_CASE("operator<< on a quantity", "[text][ostream]")
+TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
   std::stringstream stream;
 
@@ -40,14 +40,44 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   {
     SECTION("integral representation")
     {
-      stream << 60W;
-      REQUIRE(stream.str() == "60 W");
+      const auto q = 60W;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "60 W");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("floating-point representation")
     {
-      stream << 1023.5Pa;
-      REQUIRE(stream.str() == "1023.5 Pa");
+      const auto q = 1023.5Pa;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "1023.5 Pa");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
   }
 
@@ -55,14 +85,44 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   {
     SECTION("in terms of base units")
     {
-      stream << 125us;
-      REQUIRE(stream.str() == "125 µs");
+      const auto q = 125us;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "125 µs");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("in terms of derived units")
     {
-      stream << 60kJ;
-      REQUIRE(stream.str() == "60 kJ");
+      const auto q = 60kJ;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "60 kJ");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
   }
 
@@ -72,14 +132,44 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     {
       SECTION("acceleration")
       {
-        stream << 20.m / 2s / 1s;
-        REQUIRE(stream.str() == "10 m/s²");
+        const auto q = 20.m / 2s / 1s;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          REQUIRE(stream.str() == "10 m/s²");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          REQUIRE(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
 
       SECTION("volume")
       {
-        stream << 2m * 1m * 1m;
-        REQUIRE(stream.str() == "2 m³");
+        const auto q = 2m * 1m * 1m;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          REQUIRE(stream.str() == "2 m³");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          REQUIRE(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
     }
 
@@ -87,14 +177,44 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
     {
       SECTION("velocity")
       {
-        stream << 20.km / 2h;
-        REQUIRE(stream.str() == "10 km/h");
+        const auto q = 20.km / 2h;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          REQUIRE(stream.str() == "10 km/h");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          REQUIRE(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
 
       SECTION("surface tension")
       {
-        stream << 20.N / 2m;
-        REQUIRE(stream.str() == "10 N/m");
+        const auto q = 20.N / 2m;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          REQUIRE(stream.str() == "10 N/m");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          REQUIRE(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
     }
   }
@@ -103,32 +223,107 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   {
     SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
     {
-      stream << 4.N * 2cm;
-      REQUIRE(stream.str() == "8 cJ");
+      const auto q = 4.N * 2cm;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "8 cJ");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio for a dimension without a special symbol")
     {
-      stream << 2.cm * 2m * 2m;
-      REQUIRE(stream.str() == "8 [1/100]m³");
+      const auto q = 2.cm * 2m * 2m;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "8 [1/100]m³");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
-      stream << 4 * 2min / (2s * 2s);
-      REQUIRE(stream.str() == "2 [60]Hz");
+      const auto q = 4 * 2min / (2s * 2s);
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "2 [60]Hz");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      stream << 20._J / 2min;
-      REQUIRE(stream.str() == "10 [1/60]W");
+      const auto q = 20._J / 2min;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "10 [1/60]W");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      stream << 60.kJ / 2min;
-      REQUIRE(stream.str() == "30 [50/3]W");
+      const auto q = 60.kJ / 2min;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "30 [50/3]W");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
   }
 
@@ -136,215 +331,233 @@ TEST_CASE("operator<< on a quantity", "[text][ostream]")
   {
     SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
     {
-      stream << 2s * 2m * 2kg;
-      REQUIRE(stream.str() == "8 m⋅kg⋅s");
+      const auto q = 2s * 2m * 2kg;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "8 m⋅kg⋅s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio as an SI prefix")
     {
-      stream << 4km * 2s;
-      REQUIRE(stream.str() == "8 [1000]m⋅s");
+      const auto q = 4km * 2s;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "8 [1000]m⋅s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
-      stream << 4kg * 2min / (2s * 2s);
-      REQUIRE(stream.str() == "2 [60]kg/s");
+      const auto q = 4kg * 2min / (2s * 2s);
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "2 [60]kg/s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      stream << 20.kg / 2min;
-      REQUIRE(stream.str() == "10 [1/60]kg/s");
+      const auto q = 20.kg / 2min;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "10 [1/60]kg/s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      stream << 60.min / 2km;
-      REQUIRE(stream.str() == "30 [3/50]1/m⋅s");
+      const auto q = 60.min / 2km;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "30 [3/50]1/m⋅s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("exp::num == 1 && exp::den == 1")
     {
-      stream << 4m * 2s;
-      REQUIRE(stream.str() == "8 m⋅s");
+      const auto q = 4m * 2s;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "8 m⋅s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
     {
-      stream << 4m * 2s * 2s;
-      REQUIRE(stream.str() == "16 m⋅s²");
+      const auto q = 4m * 2s * 2s;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "16 m⋅s²");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
     {
-      stream << 8.s / 2m / 2m;
-      REQUIRE(stream.str() == "2 1/m²⋅s");
+      const auto q = 8.s / 2m / 2m;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "2 1/m²⋅s");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
     {
-      stream << 8.m / 2kg / 2kg;
-      REQUIRE(stream.str() == "2 m/kg²");
+      const auto q = 8.m / 2kg / 2kg;
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "2 m/kg²");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("fractional positive exponent")
     {
-      stream << sqrt(9.m);
-      REQUIRE(stream.str() == "3 m^(1/2)");
+      const auto q = sqrt(9.m);
+      stream << q;
+
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "3 m^(1/2)");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
 
     SECTION("fractional negative exponent")
     {
-      stream << sqrt(9 / 1.m);
-      REQUIRE(stream.str() == "3 1/m^(1/2)");
-    }
-  }
-}
-
-TEST_CASE("fmt with default format {} on a quantity", "[text][fmt]")
-{
-  std::stringstream stream;
-
-  SECTION("quantity with a predefined unit")
-  {
-    SECTION("integral representation")
-    {
-      constexpr auto q = 60W;
+      const auto q = sqrt(9 / 1.m);
       stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
 
-    SECTION("floating-point representation")
-    {
-      constexpr auto q = 72.5kJ;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
+      SECTION("iostream")
+      {
+        REQUIRE(stream.str() == "3 1/m^(1/2)");
+      }
 
-    SECTION("unit with a prefix")
-    {
-      constexpr auto q = 125us;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-  }
+      SECTION("fmt with default format {} on a quantity")
+      {
+        REQUIRE(fmt::format("{}", q) == stream.str());
+      }
 
-  SECTION("quantity with a predefined dimension but unknown unit")
-  {
-    SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
-    {
-      constexpr auto q = 4.N * 2cm;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio for a dimension without a special symbol")
-    {
-      constexpr auto q = 2.cm * 2m * 2m;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
-    {
-      constexpr auto q = 4 * 2min / (2s * 2s);
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
-    {
-      constexpr auto q = 20._J / 2min;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
-    {
-      constexpr auto q = 60.kJ / 2min;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-  }
-
-  SECTION("quantity with an unkown dimension")
-  {
-    SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
-    {
-      constexpr auto q = 2s * 2m * 2kg;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio as an SI prefix")
-    {
-      constexpr auto q = 4km * 2s;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
-    {
-      constexpr auto q = 4kg * 2min / (2s * 2s);
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
-    {
-      constexpr auto q = 20.kg / 2min;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
-    {
-      constexpr auto q = 60.min / 2km;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("exp::num == 1 && exp::den == 1")
-    {
-      constexpr auto q = 4m * 2s;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
-    {
-      constexpr auto q = 4m * 2s * 2s;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
-    {
-      constexpr auto q = 8.s / 2m / 2m;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
-    {
-      constexpr auto q = 8.m / 2kg / 2kg;
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("fractional positive exponent")
-    {
-      auto q = sqrt(9.m);
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
-    }
-
-    SECTION("fractional negative exponent")
-    {
-      auto q = sqrt(9 / 1.m);
-      stream << q;
-      REQUIRE(fmt::format("{}", q) == stream.str());
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      }
     }
   }
 }
@@ -359,4 +572,3 @@ TEST_CASE("fmt with default format {} on a quantity", "[text][fmt]")
 // contains a precision specification.
 
  // string s = format("{:=>8}", 42ms); // value of s is "====42ms"
-
