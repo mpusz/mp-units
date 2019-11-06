@@ -31,6 +31,7 @@
 #include <sstream>
 
 using namespace units;
+using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
@@ -559,6 +560,180 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
+  }
+}
+
+TEST_CASE("format string with only %Q should print quantity value only", "[text][fmt]")
+{
+  SECTION("integral representation")
+  {
+    REQUIRE(fmt::format("{:%Q}", 123kmph) == "123");
+  }
+
+  SECTION("floating-point representation")
+  {
+    SECTION("no precision specification")
+    {
+      REQUIRE(fmt::format("{:%Q}", 221.km / 2h) == "110.5");
+    }
+  }
+}
+
+TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
+{
+  REQUIRE(fmt::format("{:%q}", 123kmph) == "km/h");
+}
+
+TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
+{
+  SECTION("no space")
+  {
+    REQUIRE(fmt::format("{:%Q%q}", 123kmph) == "123km/h");
+  }
+
+  SECTION("separator")
+  {
+    REQUIRE(fmt::format("{:%Q###%q}", 123kmph) == "123###km/h");
+  }
+
+  SECTION("opposite order")
+  {
+    REQUIRE(fmt::format("{:%q %Q}", 123kmph) == "km/h 123");
+  }
+}
+
+TEST_CASE("precision specification", "[text][fmt]")
+{
+  SECTION("default format {} on a quantity") 
+  {
+    SECTION("0")
+    {
+      REQUIRE(fmt::format("{:.0}", 1.2345m) == "1 m");
+    }
+
+    SECTION("1")
+    {
+      REQUIRE(fmt::format("{:.1}", 1.2345m) == "1.2 m");
+    }
+
+    SECTION("2")
+    {
+      REQUIRE(fmt::format("{:.2}", 1.2345m) == "1.23 m");
+    }
+
+    SECTION("3")
+    {
+      REQUIRE(fmt::format("{:.3}", 1.2345m) == "1.235 m");
+    }
+
+    SECTION("4")
+    {
+      REQUIRE(fmt::format("{:.4}", 1.2345m) == "1.2345 m");
+    }
+
+    SECTION("5")
+    {
+      REQUIRE(fmt::format("{:.5}", 1.2345m) == "1.23450 m");
+    }
+
+    SECTION("10")
+    {
+      REQUIRE(fmt::format("{:.10}", 1.2345m) == "1.2345000000 m");
+    }
+  }
+
+  SECTION("full format {:%Q %q} on a quantity") 
+  {
+    SECTION("0")
+    {
+      REQUIRE(fmt::format("{:.0%Q %q}", 1.2345m) == "1 m");
+    }
+
+    SECTION("1")
+    {
+      REQUIRE(fmt::format("{:.1%Q %q}", 1.2345m) == "1.2 m");
+    }
+
+    SECTION("2")
+    {
+      REQUIRE(fmt::format("{:.2%Q %q}", 1.2345m) == "1.23 m");
+    }
+
+    SECTION("3")
+    {
+      REQUIRE(fmt::format("{:.3%Q %q}", 1.2345m) == "1.235 m");
+    }
+
+    SECTION("4")
+    {
+      REQUIRE(fmt::format("{:.4%Q %q}", 1.2345m) == "1.2345 m");
+    }
+
+    SECTION("5")
+    {
+      REQUIRE(fmt::format("{:.5%Q %q}", 1.2345m) == "1.23450 m");
+    }
+
+    SECTION("10")
+    {
+      REQUIRE(fmt::format("{:.10%Q %q}", 1.2345m) == "1.2345000000 m");
+    }
+  }
+
+  SECTION("value only format {:%Q} on a quantity") 
+  {
+    SECTION("0")
+    {
+      REQUIRE(fmt::format("{:.0%Q}", 1.2345m) == "1");
+    }
+
+    SECTION("1")
+    {
+      REQUIRE(fmt::format("{:.1%Q}", 1.2345m) == "1.2");
+    }
+
+    SECTION("2")
+    {
+      REQUIRE(fmt::format("{:.2%Q}", 1.2345m) == "1.23");
+    }
+
+    SECTION("3")
+    {
+      REQUIRE(fmt::format("{:.3%Q}", 1.2345m) == "1.235");
+    }
+
+    SECTION("4")
+    {
+      REQUIRE(fmt::format("{:.4%Q}", 1.2345m) == "1.2345");
+    }
+
+    SECTION("5")
+    {
+      REQUIRE(fmt::format("{:.5%Q}", 1.2345m) == "1.23450");
+    }
+
+    SECTION("10")
+    {
+      REQUIRE(fmt::format("{:.10%Q}", 1.2345m) == "1.2345000000");
+    }
+  }
+}
+
+TEST_CASE("precision specification for integral representation should throw", "[text][fmt][exception]")
+{
+  SECTION("default format {} on a quantity") 
+  {
+    REQUIRE_THROWS_MATCHES(fmt::format("{:.1}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+  }
+
+  SECTION("full format {:%Q %q} on a quantity") 
+  {
+    REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q %q}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+  }
+
+  SECTION("value only format {:%Q} on a quantity") 
+  {
+    REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 }
 
