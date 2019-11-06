@@ -567,14 +567,42 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 {
   SECTION("integral representation")
   {
-    REQUIRE(fmt::format("{:%Q}", 123kmph) == "123");
+    SECTION("positive value")
+    {
+      REQUIRE(fmt::format("{:%Q}", 123kmph) == "123");
+    }
+
+    SECTION("negative value")
+    {
+      REQUIRE(fmt::format("{:%Q}", 5m - 10m) == "-5");
+    }
   }
 
   SECTION("floating-point representation")
   {
-    SECTION("no precision specification")
+    SECTION("positive value")
     {
       REQUIRE(fmt::format("{:%Q}", 221.km / 2h) == "110.5");
+    }
+
+    SECTION("negative value")
+    {
+      REQUIRE(fmt::format("{:%Q}", 3.14m - 10m) == "-6.86");
+    }
+
+    SECTION("nan")
+    {
+      REQUIRE(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
+    }
+
+    SECTION("inf")
+    {
+      REQUIRE(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::infinity())) == "inf");
+    }
+
+    SECTION("-inf")
+    {
+      REQUIRE(fmt::format("{:%Q}", quantity<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
     }
   }
 }
@@ -609,6 +637,11 @@ TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
   SECTION("new line")
   {
     REQUIRE(fmt::format("{:%Q%n%q}", 123kmph) == "123\nkm/h");
+  }
+
+  SECTION("% sign")
+  {
+    REQUIRE(fmt::format("{:%Q%% %q}", 123kmph) == "123% km/h");
   }
 }
 
