@@ -53,12 +53,20 @@ namespace units {
   // UnitRep
   template<typename T>
   concept UnitRep = Scalar<T> &&
-    (treat_as_floating_point<T> == false ||
+    // integral
+    ((treat_as_floating_point<T> == false &&
+      requires(T a, T b) {
+        { a % b } -> T;
+        { a++ } -> T;
+        { ++a } -> T&;
+        { a-- } -> T;
+        { --a } -> T&;
+      }) ||
+     // floating-point
      requires(T&& a) {
-       { ::units::isfinite(std::forward<T>(a)) } -> bool;
-       { ::units::isnan(std::forward<T>(a)) } -> bool;
+       ::units::isfinite(std::forward<T>(a));
+       ::units::isnan(std::forward<T>(a));
      });
-
 
   template<Unit U, UnitRep Rep>
   class quantity;
