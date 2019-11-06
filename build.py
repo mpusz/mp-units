@@ -10,7 +10,7 @@ if __name__ == "__main__":
         # dependencies
         remotes = None,
         build_policy = "outdated",
-        upload_dependencies="all",
+        # upload_dependencies="all",
 
         # build configurations
         archs = ["x86_64"], #  limit to 64-bit only
