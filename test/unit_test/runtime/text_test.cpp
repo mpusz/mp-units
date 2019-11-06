@@ -600,6 +600,16 @@ TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
   {
     REQUIRE(fmt::format("{:%q %Q}", 123kmph) == "km/h 123");
   }
+
+  SECTION("tabulator")
+  {
+    REQUIRE(fmt::format("{:%Q%t%q}", 123kmph) == "123\tkm/h");
+  }
+
+  SECTION("new line")
+  {
+    REQUIRE(fmt::format("{:%Q%n%q}", 123kmph) == "123\nkm/h");
+  }
 }
 
 TEST_CASE("precision specification", "[text][fmt]")
