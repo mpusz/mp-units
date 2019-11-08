@@ -33,12 +33,12 @@ namespace units {
   template<typename T>
   concept Time = QuantityOf<T, time>;
 
-  struct second : named_coherent_derived_unit<second, "s", time, si_prefix> {};
+  struct second : named_coherent_derived_unit<second, time, "s", si_prefix> {};
   struct nanosecond : prefixed_derived_unit<nanosecond, nano, second> {};
   struct microsecond : prefixed_derived_unit<microsecond, micro, second> {};
   struct millisecond : prefixed_derived_unit<millisecond, milli, second> {};
-  struct minute : named_derived_unit<minute, "min", time, ratio<60>> {};
-  struct hour : named_derived_unit<hour, "h", time, ratio<3600>> {};
+  struct minute : named_scaled_derived_unit<minute, time, "min", ratio<60>> {};
+  struct hour : named_scaled_derived_unit<hour, time, "h", ratio<3600>> {};
 
   inline namespace literals {
 

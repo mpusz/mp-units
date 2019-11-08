@@ -31,11 +31,11 @@ namespace cgs {
   using units::gram;
   using units::second;
   struct centimetre_per_second : units::deduced_derived_unit<centimetre_per_second, units::velocity, centimetre, second> {};
-  struct gal : units::named_deduced_derived_unit<gal, "Gal", units::acceleration, centimetre, second> {};
-  struct dyne : units::named_deduced_derived_unit<dyne, "dyn", units::force, centimetre, gram, second> {};
-  struct erg : units::named_deduced_derived_unit<erg, "erg", units::energy, centimetre, gram, second> {};
-  struct ergps : units::named_deduced_derived_unit<ergps, "erg/s", units::power, centimetre, gram, second> {};   // TODO make it work for erg and non-named
-  struct barye : units::named_deduced_derived_unit<barye, "Ba", units::pressure, centimetre, gram, second> {};
+  struct gal : units::named_deduced_derived_unit<gal, units::acceleration, "Gal", units::no_prefix, centimetre, second> {};
+  struct dyne : units::named_deduced_derived_unit<dyne, units::force, "dyn", units::no_prefix, centimetre, gram, second> {};
+  struct erg : units::named_deduced_derived_unit<erg, units::energy, "erg", units::no_prefix, centimetre, gram, second> {};
+  struct ergps : units::named_deduced_derived_unit<ergps, units::power, "erg/s", units::no_prefix, centimetre, gram, second> {};   // TODO make it work for erg and non-named
+  struct barye : units::named_deduced_derived_unit<barye, units::pressure, "Ba", units::no_prefix, centimetre, gram, second> {};
 
 
   inline namespace literals {

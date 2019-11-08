@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept Capacitance =  QuantityOf<T, capacitance>;
 
-  struct farad : named_coherent_derived_unit<farad, "F", capacitance, si_prefix> {};
+  struct farad : named_coherent_derived_unit<farad, capacitance, "F", si_prefix> {};
 
   inline namespace literals {
 

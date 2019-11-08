@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Current = QuantityOf<T, current>;
 
-  struct ampere : named_coherent_derived_unit<ampere, "A", current, si_prefix> {};
+  struct ampere : named_coherent_derived_unit<ampere, current, "A", si_prefix> {};
 
   inline namespace literals {
 

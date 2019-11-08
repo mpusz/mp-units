@@ -35,14 +35,14 @@ namespace {
   template<typename T>
   concept DigitalInformation = units::QuantityOf<T, digital_information>;
 
-  struct data_prefix {};
+  struct data_prefix : units::prefix_type {};
 
   struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
 
-  struct bit : units::named_coherent_derived_unit<bit, "b", digital_information, data_prefix> {};
+  struct bit : units::named_coherent_derived_unit<bit, digital_information, "b", data_prefix> {};
   struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
 
-  struct byte : units::named_derived_unit<byte, "B", digital_information, units::ratio<8>> {};
+  struct byte : units::named_scaled_derived_unit<byte, digital_information, "B", units::ratio<8>, data_prefix> {};
   struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
 
   inline namespace literals {

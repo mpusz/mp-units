@@ -32,7 +32,7 @@ namespace units {
   template<typename T>
   concept Substance = QuantityOf<T, substance>;
 
-  struct mole : named_coherent_derived_unit<mole, "mol", substance, si_prefix> {};
+  struct mole : named_coherent_derived_unit<mole, substance, "mol", si_prefix> {};
 
   inline namespace literals {
 

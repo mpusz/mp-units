@@ -34,7 +34,7 @@ namespace units {
   template<typename T>
   concept Energy =  QuantityOf<T, energy>;
 
-  struct joule : named_coherent_derived_unit<joule, "J", energy, si_prefix> {};
+  struct joule : named_coherent_derived_unit<joule, energy, "J", si_prefix> {};
   struct millijoule : prefixed_derived_unit<millijoule, milli, joule> {};
   struct kilojoule : prefixed_derived_unit<kilojoule, kilo, joule> {};
   struct megajoule : prefixed_derived_unit<megajoule, mega, joule> {};

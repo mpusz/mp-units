@@ -246,62 +246,74 @@ concept Unit =
     detail::is_unit<downcast_base_t<T>>;  // exposition only
 ```
 
+The library provides a bunch of helpers to create the derived unit:
+- `named_coherent_derived_unit<Child, Dim, Symbol, PrefixType>`
+- `coherent_derived_unit<Child, Dim>`
+- `named_scaled_derived_unit<Child, Dim, Symbol, R, PrefixType = no_prefix>`
+- `named_deduced_derived_unit<Child, Dim, Symbol, PrefixType, U, Us...>`
+- `deduced_derived_unit<Child, Dim, U, Us..>`
+- `prefixed_derived_unit<Child, P, U>`
+
 Coherent derived units (units with `ratio<1>`) are created with a `named_coherent_derived_unit`
 or `coherent_derived_unit` class templates:
 
 ```cpp
-template<typename Child, basic_fixed_string Symbol, Dimension D, typename PrefixType = no_prefix>
-struct named_coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
+template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT>
+struct named_coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
   static constexpr auto symbol = Symbol;
-  using prefix_type = PrefixType;
+  using prefix_type = PT;
 };
 
-template<typename Child, Dimension D, typename PrefixType = no_prefix>
-struct coherent_derived_unit : downcast_child<Child, unit<D, ratio<1>>> {
+template<typename Child, Dimension Dim>
+struct coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
   static constexpr auto symbol = /* ... */;
-  using prefix_type = PrefixType;
+  using prefix_type = no_prefix;
 };
 ```
 
 The above exposes public `prefix_type` member type and `symbol` used to print unit symbol
 names. `prefix_type` is a tag type used to identify the type of prefixes to be used (i.e. SI,
-data).
+data) and should satisfy the following concept:
+
+```cpp
+template<typename T>
+concept PrefixType = std::derived_from<T, prefix_type>;
+```
 
 For example to define the coherent unit of `length`:
 
 ```cpp
-struct metre : named_coherent_derived_unit<metre, "m", length, si_prefix> {};
+struct metre : named_coherent_derived_unit<metre, length, "m", si_prefix> {};
 ```
 
 Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
 to provide downcasting facility (described below).
 
-To create the rest of derived units the following class templates can be used:
+To create scaled unit the following template should be used:
 
 ```cpp
-template<typename Child, basic_fixed_string Symbol, Dimension D, Ratio R>
-struct named_derived_unit : downcast_child<Child, unit<D, R>> {
+template<typename Child, Dimension Dim, basic_fixed_string Symbol, Ratio R, PrefixType PT = no_prefix>
+struct named_scaled_derived_unit : downcast_child<Child, unit<Dim, R>> {
   static constexpr auto symbol = Symbol;
+  using prefix_type = PT;
 };
 ```
 
-User has to provide a symbol name (in case of a named unit), dimension, and a ratio relative
-to a coherent derived unit. For example to define `minute`:
+For example to define `minute`:
 
 ```cpp
-struct minute : named_derived_unit<minute, "min", time, ratio<60>> {};
+struct minute : named_scaled_derived_unit<minute, time, "min", ratio<60>> {};
 ```
 
-The `mp-units` library provides also a few helper class templates to simplify the above process.
-
+The `mp-units` library provides also a helper class templates to simplify the above process.
 For example to create a prefixed unit the following may be used:
 
 ```cpp
 template<typename Child, Prefix P, Unit U>
-  requires requires { U::symbol; }
+  requires (!std::same_as<typename U::prefix_type, no_prefix>)
 struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension,
-                                                           ratio_multiply<typename P::ratio,
-                                                                          typename U::ratio>>> {
+                                                          ratio_multiply<typename P::ratio,
+                                                                         typename U::ratio>>> {
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_type = P::prefix_type;
 };
@@ -310,8 +322,8 @@ struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension,
 where `Prefix` is a concept requiring the instantiation of the following class template:
 
 ```cpp
-template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
-struct prefix : downcast_child<Child, detail::prefix_base<PrefixType, R>> {
+template<typename Child, PrefixType PT, Ratio R, basic_fixed_string Symbol>
+struct prefix : downcast_child<Child, detail::prefix_base<PT, R>> {
   static constexpr auto symbol = Symbol;
 };
 ```
@@ -323,25 +335,28 @@ or its symbol and just has to do the following:
 struct kilometre : prefixed_derived_unit<kilometre, kilo, metre> {};
 ```
 
-SI prefixes are predefined in the library and the user may easily predefined his/her own with:
+SI prefixes are predefined in the library and the user may easily provide his/her own with:
 
 ```cpp
-struct data_prefix;
+struct data_prefix : units::prefix_type {};
 
-struct kibi : units::prefix<kibi, data_prefix, units::ratio<1'024>, "Ki"> {};
+struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
+struct mebi : units::prefix<mebi, data_prefix, units::ratio<1'048'576>, "Mi"> {};
 ```
 
 For the cases where determining the exact ratio is not trivial another helper can be used:
 
 ```cpp
-template<typename Child, basic_fixed_string Symbol, Dimension D, Unit U, Unit... Us>
-struct named_deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
+template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
+struct named_deduced_derived_unit : downcast_child<Child, /* magic to get the correct type */> {
   static constexpr auto symbol = Symbol;
+  using prefix_type = PT;
 };
 
-template<typename Child, Dimension D, Unit U, Unit... Us>
-struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<D, U, Us...>> {
-  static constexpr auto symbol = /* ... */;
+template<typename Child, Dimension Dim, Unit U, Unit... Us>
+struct deduced_derived_unit : downcast_child<Child, /* magic to get the correct type */> {
+  static constexpr auto symbol = /* even more magic to get the correct unit symbol */;
+  using prefix_type = no_prefix;
 };
 ```
 
@@ -350,7 +365,7 @@ dimension and in case the symbol name is not explicitly provided it with create 
 on the provided ingredients:
 
 ```cpp
-struct mile_per_hour : deduced_derived_unit<mile_per_hour, velocity, mile, hour> {};
+struct kilometre_per_hour : deduced_derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};
 ```
 
 
@@ -590,7 +605,7 @@ aliases.
 template<typename BaseType>
 struct downcast_base {
   using base_type = BaseType;
-  friend auto downcast_guide(downcast_base);
+  friend auto downcast_guide(downcast_base);  // declaration only (no implementation)
 };
 ```
 

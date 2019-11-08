@@ -28,18 +28,23 @@
 
 namespace units {
 
+  struct prefix_type {};
+
+  template<typename T>
+  concept PrefixType = std::derived_from<T, prefix_type>;
+
   namespace detail {
 
-    template<typename PrefixType, Ratio R>
-    struct prefix_base : downcast_base<prefix_base<PrefixType, R>> {
-      using prefix_type = PrefixType;
+    template<PrefixType PT, Ratio R>
+    struct prefix_base : downcast_base<prefix_base<PT, R>> {
+      using prefix_type = PT;
       using ratio = R;
     };
 
   }
 
-  template<typename Child, typename PrefixType, Ratio R, basic_fixed_string Symbol>
-  struct prefix : downcast_child<Child, detail::prefix_base<PrefixType, R>> {
+  template<typename Child, PrefixType PT, Ratio R, basic_fixed_string Symbol>
+  struct prefix : downcast_child<Child, detail::prefix_base<PT, R>> {
     static constexpr auto symbol = Symbol;
   };
 
@@ -60,6 +65,6 @@ namespace units {
 //  concept Prefix = detail::is_prefix<T>;
   concept Prefix = true;
 
-  struct no_prefix;
+  struct no_prefix : prefix_type {};
 
 }  // namespace units

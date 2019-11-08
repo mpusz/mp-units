@@ -33,7 +33,7 @@ namespace units {
   template<typename T>
   concept ElectricCharge =  QuantityOf<T, electric_charge>;
 
-  struct coulomb : named_coherent_derived_unit<coulomb, "C", electric_charge, si_prefix> {};
+  struct coulomb : named_coherent_derived_unit<coulomb, electric_charge, "C", si_prefix> {};
 
   inline namespace literals {
 

@@ -28,7 +28,7 @@
 namespace units {
 
   // prefix tags
-  struct si_prefix;
+  struct si_prefix : prefix_type {};
 
   // SI prefixes
 
