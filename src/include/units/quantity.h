@@ -236,22 +236,28 @@ namespace units {
     [[nodiscard]] static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
     [[nodiscard]] static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
 
-    [[nodiscard]] constexpr quantity operator+() const { return quantity(*this); }
+    [[nodiscard]] constexpr quantity operator+() const { return *this; }
     [[nodiscard]] constexpr quantity operator-() const { return quantity(-count()); }
 
     constexpr quantity& operator++()
+      // requires requires(rep v) { { ++v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       ++value_;
       return *this;
     }
-    constexpr quantity operator++(int) { return quantity(value_++); }
+    constexpr quantity operator++(int)
+      // requires requires(rep v) { { v++ } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    { return quantity(value_++); }
 
     constexpr quantity& operator--()
+      // requires requires(rep v) { { --v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       --value_;
       return *this;
     }
-    constexpr quantity operator--(int) { return quantity(value_--); }
+    constexpr quantity operator--(int)
+      // requires requires(rep v) { { v-- } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    { return quantity(value_--); }
 
     constexpr quantity& operator+=(const quantity& q)
     {
