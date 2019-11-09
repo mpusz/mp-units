@@ -82,16 +82,37 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
+  SECTION("quantity with a predefined prefixed unit")
+  {
+    const auto q = 125us;
+    stream << q;
+
+    SECTION("iostream")
+    {
+      REQUIRE(stream.str() == "125 µs");
+    }
+
+    SECTION("fmt with default format {} on a quantity")
+    {
+      REQUIRE(fmt::format("{}", q) == stream.str());
+    }
+
+    SECTION("fmt with format {:%Q %q} on a quantity")
+    {
+      REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+    }
+  }
+
   SECTION("quantity with a predefined unit + prefix")
   {
     SECTION("in terms of base units")
     {
-      const auto q = 125us;
+      const quantity<unit<length, ratio<1'000'000>>> q(123);
       stream << q;
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "125 µs");
+        REQUIRE(stream.str() == "123 Mm");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -107,12 +128,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("in terms of derived units")
     {
-      const auto q = 60kJ;
+      const quantity<unit<energy, ratio<1, 100>>> q(60);
       stream << q;
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "60 kJ");
+        REQUIRE(stream.str() == "60 cJ");
       }
 
       SECTION("fmt with default format {} on a quantity")
