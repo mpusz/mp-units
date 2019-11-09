@@ -50,9 +50,9 @@ namespace units {
   template<typename T>
   concept Scalar = (!Quantity<T>) && Number<T>;
 
-  // UnitRep
+  // QuantityRep
   template<typename T>
-  concept UnitRep = Scalar<T> &&
+  concept QuantityRep = Scalar<T> &&
     // integral
     ((treat_as_floating_point<T> == false &&
       requires(T a, T b) {
@@ -68,7 +68,7 @@ namespace units {
        ::units::isnan(std::forward<T>(a));
      });
 
-  template<Unit U, UnitRep Rep>
+  template<Unit U, QuantityRep Rep>
   class quantity;
 
   namespace detail {
@@ -99,7 +99,7 @@ namespace units {
 
   }  // namespace detail
 
-  template<Quantity Q1, Quantity Q2, UnitRep Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+  template<Quantity Q1, Quantity Q2, QuantityRep Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
   using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
   // quantity_cast
@@ -166,7 +166,7 @@ namespace units {
     return cast::cast(q);
   }
 
-  template<Unit ToU, UnitRep ToRep, typename U, typename Rep>
+  template<Unit ToU, QuantityRep ToRep, typename U, typename Rep>
   [[nodiscard]] constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
@@ -178,7 +178,7 @@ namespace units {
     return quantity_cast<quantity<ToU, Rep>>(q);
   }
 
-  template<UnitRep ToRep, typename U, typename Rep>
+  template<QuantityRep ToRep, typename U, typename Rep>
   [[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<U, ToRep>>(q);
@@ -186,7 +186,7 @@ namespace units {
 
   // quantity_values
 
-  template<UnitRep Rep>
+  template<QuantityRep Rep>
   struct quantity_values {
     static constexpr Rep zero() noexcept { return Rep(0); }
     static constexpr Rep one() noexcept { return Rep(1); }
@@ -196,7 +196,7 @@ namespace units {
 
   // quantity
 
-  template<Unit U, UnitRep Rep = double>
+  template<Unit U, QuantityRep Rep = double>
   class quantity {
     Rep value_;
 
@@ -338,7 +338,7 @@ namespace units {
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
-  [[nodiscard]] constexpr UnitRep AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+  [[nodiscard]] constexpr QuantityRep AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>>
   {
     using common_rep = decltype(lhs.count() * rhs.count());
@@ -380,7 +380,7 @@ namespace units {
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
-  [[nodiscard]] constexpr UnitRep AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+  [[nodiscard]] constexpr QuantityRep AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires same_dim<typename U1::dimension, typename U2::dimension>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
