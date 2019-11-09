@@ -157,29 +157,32 @@ namespace units {
   }  // namespace detail
 
   template<Quantity To, typename U, typename Rep>
-  [[nodiscard]] constexpr To quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
       requires same_dim<typename To::dimension, typename U::dimension>
   {
     using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
-    using cast = detail::quantity_cast_impl<To, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
+    using ret_dim = downcast<typename To::unit::dimension>;
+    using ret_unit = downcast<unit<ret_dim, typename To::unit::ratio>>;
+    using ret = quantity<ret_unit, typename To::rep>;
+    using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
     return cast::cast(q);
   }
 
   template<Unit ToU, QuantityRep ToRep, typename U, typename Rep>
-  [[nodiscard]] constexpr quantity<ToU, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
   }
 
   template<Unit ToU, typename U, typename Rep>
-  [[nodiscard]] constexpr quantity<ToU, Rep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<ToU, Rep>>(q);
   }
 
   template<QuantityRep ToRep, typename U, typename Rep>
-  [[nodiscard]] constexpr quantity<U, ToRep> quantity_cast(const quantity<U, Rep>& q)
+  [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
   {
     return quantity_cast<quantity<U, ToRep>>(q);
   }

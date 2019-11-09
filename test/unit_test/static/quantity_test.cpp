@@ -269,6 +269,9 @@ namespace {
 
   // quantity_cast
 
+  static_assert(std::is_same_v<decltype(quantity_cast<unit<length, ratio<1>>>(2km))::unit, metre>);
+  static_assert(std::is_same_v<decltype(quantity_cast<unit<dimension<units::exp<base_dim_length, 1>>, ratio<1>>>(2km))::unit, metre>);
+
   // static_assert(quantity_cast<int>(2km).count() == 2000);  // should not compile
   static_assert(quantity_cast<quantity<metre, int>>(2km).count() == 2000);
   static_assert(quantity_cast<quantity<kilometre, int>>(2000m).count() == 2);
