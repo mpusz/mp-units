@@ -28,7 +28,7 @@
 
 namespace units {
 
-  struct power : derived_dimension<power, exp<energy, 1>, exp<base_dim_time, -1>> {};
+  struct power : derived_dimension<power, exp<energy, 1>, exp<time, -1>> {};
 
   template<typename T>
   concept Power =  QuantityOf<T, power>;

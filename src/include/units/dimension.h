@@ -141,8 +141,12 @@ namespace units {
   struct dimension : downcast_base<dimension<Es...>> {};
 
   // same_dim
-  template<Dimension D1, Dimension D2>
+  template<typename D1, Dimension D2>
+    requires BaseDimension<D1> || Dimension<D1>
   inline constexpr bool same_dim = std::is_same_v<typename D1::base_type, typename D2::base_type>;
+
+  template<BaseDimension D1, Dimension D2>
+  inline constexpr bool same_dim<D1, D2> = std::is_same_v<dimension<units::exp<D1, 1>>, typename D2::base_type>;
 
   // dim_invert
   namespace detail {

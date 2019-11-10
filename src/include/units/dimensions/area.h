@@ -26,7 +26,7 @@
 
 namespace units {
 
-  struct area : derived_dimension<area, exp<base_dim_length, 2>> {};
+  struct area : derived_dimension<area, exp<length, 2>> {};
 
   template<typename T>
   concept Area = QuantityOf<T, area>;

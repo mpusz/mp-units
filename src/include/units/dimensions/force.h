@@ -28,7 +28,7 @@
 
 namespace units {
 
-  struct force : derived_dimension<force, exp<base_dim_mass, 1>, exp<acceleration, 1>> {};
+  struct force : derived_dimension<force, exp<mass, 1>, exp<acceleration, 1>> {};
 
   template<typename T>
   concept Force =  QuantityOf<T, force>;

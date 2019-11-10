@@ -28,7 +28,7 @@
 
 namespace units {
 
-  struct frequency : derived_dimension<frequency, exp<base_dim_time, -1>> {};
+  struct frequency : derived_dimension<frequency, exp<time, -1>> {};
 
   template<typename T>
   concept Frequency =  QuantityOf<T, frequency>;

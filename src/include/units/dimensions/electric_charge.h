@@ -28,7 +28,7 @@
 
 namespace units {
 
-  struct electric_charge : derived_dimension<electric_charge, exp<base_dim_time, 1>, exp<base_dim_current, 1>> {};
+  struct electric_charge : derived_dimension<electric_charge, exp<time, 1>, exp<current, 1>> {};
 
   template<typename T>
   concept ElectricCharge =  QuantityOf<T, electric_charge>;

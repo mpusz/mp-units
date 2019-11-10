@@ -26,7 +26,7 @@
 
 namespace units {
 
-  struct volume : derived_dimension<volume, exp<base_dim_length, 3>> {};
+  struct volume : derived_dimension<volume, exp<length, 3>> {};
 
   template<typename T>
   concept Volume = QuantityOf<T, volume>;

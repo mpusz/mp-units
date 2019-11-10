@@ -53,7 +53,7 @@ namespace units {
       std::is_empty_v<T> &&
       detail::is_unit<downcast_base_t<T>>;
 
-  // make_derived_unit
+  // deduced_derived_unit
 
   namespace detail {
 
@@ -110,7 +110,7 @@ namespace units {
     };
 
     template<Dimension D, Unit... Us>
-    using make_derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
+    using deduced_derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
 
   }
 
@@ -214,11 +214,11 @@ namespace units {
       }
     }
 
-    template<typename E, std::size_t Idx>
+    template<typename E, basic_fixed_string Symbol, std::size_t Idx>
     constexpr auto exp_text()
     {
       // get calculation operator + symbol
-      const auto txt = operator_text<E::num < 0, Idx>() + E::dimension::symbol;
+      const auto txt = operator_text<E::num < 0, Idx>() + Symbol;
       if constexpr(E::den != 1) {
         // add root part
         return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() + basic_fixed_string(")");
@@ -233,15 +233,35 @@ namespace units {
     }
 
     template<typename... Es, std::size_t... Idxs>
-    constexpr auto symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
+    constexpr auto base_symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
     {
-      return (exp_text<Es, Idxs>() + ...);
+      return (exp_text<Es, Es::dimension::symbol, Idxs>() + ...);
     }
 
     template<typename... Es>
-    constexpr auto symbol_text(dimension<Es...> d)
+    constexpr auto base_symbol_text(dimension<Es...> d)
     {
-      return symbol_text_impl<>(d, std::index_sequence_for<Es...>());
+      return base_symbol_text_impl(d, std::index_sequence_for<Es...>());
+    }
+
+    template<typename E, typename U, std::size_t Idx>
+    constexpr auto exp_validate_and_text()
+    {
+      static_assert(same_dim<typename E::dimension, typename U::dimension>);
+      return exp_text<E, U::symbol, Idx>();
+    }
+
+    template<typename... Us, typename... Es, std::size_t... Idxs>
+    constexpr auto deduced_symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
+    {
+      return (exp_validate_and_text<Es, Us, Idxs>() + ...);
+    }
+
+    template<typename... Us, typename... Es>
+    constexpr auto deduced_symbol_text(dimension<Es...> d)
+    {
+      static_assert(sizeof...(Us) == sizeof...(Es), "`deduced_derived_unit<Us...>` should get the same number of exponents as provided to `derived_dimension<>`");
+      return deduced_symbol_text_impl<Us...>(d, std::index_sequence_for<Es...>());
     }
 
     template<typename Unit>
@@ -263,7 +283,7 @@ namespace units {
         }
         else {
           // print as a ratio of a coherent unit + coherent unit dimensions and their exponents
-          return ratio_text<ratio>() + symbol_text(dim{});
+          return ratio_text<ratio>() + base_symbol_text(dim{});
         }
       }
     }
@@ -281,7 +301,7 @@ namespace units {
 
   template<typename Child, Dimension Dim>
   struct coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
-    static constexpr auto symbol = detail::symbol_text(Dim());
+    static constexpr auto symbol = detail::base_symbol_text(Dim());
     using prefix_type = no_prefix;
   };
 
@@ -292,14 +312,14 @@ namespace units {
   };
 
   template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
-  struct named_deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<Dim, U, Us...>> {
+  struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
     static constexpr auto symbol = Symbol;
     using prefix_type = PT;
   };
 
   template<typename Child, Dimension Dim, Unit U, Unit... Us>
-  struct deduced_derived_unit : downcast_child<Child, detail::make_derived_unit<Dim, U, Us...>> {
-    static constexpr auto symbol = basic_fixed_string("bbb");
+  struct deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
+    static constexpr auto symbol = detail::deduced_symbol_text<U, Us...>(Dim());
     using prefix_type = no_prefix;
   };
 

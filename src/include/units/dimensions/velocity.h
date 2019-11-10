@@ -27,7 +27,7 @@
 
 namespace units {
 
-  struct velocity : derived_dimension<velocity, exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+  struct velocity : derived_dimension<velocity, exp<length, 1>, exp<time, -1>> {};
 
   template<typename T>
   concept Velocity = QuantityOf<T, velocity>;
