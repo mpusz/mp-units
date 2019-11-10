@@ -25,6 +25,7 @@
 #include "units/dimensions/power.h"
 #include "units/dimensions/velocity.h"
 #include "units/dimensions/volume.h"
+#include "units/dimensions/surface_tension.h"
 #include "units/format.h"
 #include "units/math.h"
 #include <catch2/catch.hpp>
@@ -220,12 +221,13 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        const auto q = 20.N / 2m;
+        struct newton_per_centimetre : deduced_derived_unit<newton_per_centimetre, surface_tension, newton, centimetre> {};
+        const quantity<newton_per_centimetre> q(123);
         stream << q;
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "10 N/m");
+          REQUIRE(stream.str() == "123 N/cm");
         }
 
         SECTION("fmt with default format {} on a quantity")

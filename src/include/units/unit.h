@@ -66,18 +66,6 @@ namespace units {
       using dimension = E::dimension;
     };
 
-    template<BaseDimension BD, typename... Us>
-    struct get_ratio {
-      using ratio = ::units::ratio<1>;
-    };
-
-    template<BaseDimension BD, typename U, typename... Rest>
-    struct get_ratio<BD, U, Rest...> {
-      using unit_base_dim = get_unit_base_dim<typename U::dimension::base_type>::dimension;
-      using ratio = conditional<std::is_same_v<unit_base_dim, BD>, typename U::ratio,
-                                typename get_ratio<BD, Rest...>::ratio>;
-    };
-
     template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
     struct ratio_op;
 
@@ -102,19 +90,30 @@ namespace units {
       using ratio = ::units::ratio<1>;
     };
 
-    template<typename E, typename... Rest, typename... Us>
-    struct derived_ratio<dimension<E, Rest...>, Us...> {
-      using rest_ratio = derived_ratio<dimension<Rest...>, Us...>::ratio;
-      using e_ratio = get_ratio<typename E::dimension, Us...>::ratio;
-      using ratio = ratio_op<rest_ratio, E::num, E::den, e_ratio>::ratio;
+    template<typename E, typename... ERest, typename U, typename... URest>
+    struct derived_ratio<dimension<E, ERest...>, U, URest...> {
+      static_assert(same_dim<typename E::dimension, typename U::dimension>, "The order and number of units in `deduced_derived_unit<Us...>` should match dimensions provided in a `derived_dimension<>`");
+      static_assert(sizeof...(ERest) == sizeof...(URest), "The number of `deduced_derived_unit<Us...>` units should match the number of exponents provided to `derived_dimension<>`");
+      using rest_ratio = derived_ratio<dimension<ERest...>, URest...>::ratio;
+      using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
     };
 
+    template<typename... Es>
+    constexpr auto exp_count(dimension<Es...>)
+    {
+      return sizeof...(Es);
+    }
+
+    template<typename U>
+    inline constexpr bool is_unit_of_base_dimension = (exp_count(typename U::dimension::base_type()) == 1);
+
+    template<Unit... Us>
+    inline constexpr bool are_units_of_base_dimension = (is_unit_of_base_dimension<Us> && ...);
+
     template<Dimension D, Unit... Us>
-    using deduced_derived_unit = unit<D, typename detail::derived_ratio<typename D::base_type, Us...>::ratio>;
-
-  }
-
-  namespace detail {
+    using deduced_derived_unit =
+      unit<D, typename detail::derived_ratio<std::conditional_t<are_units_of_base_dimension<Us...>,
+                                                                typename D::base_type, typename D::recipe>, Us...>::ratio>;
 
     template<int Value>
       requires (0 <= Value) && (Value < 10)
@@ -247,7 +246,7 @@ namespace units {
     template<typename E, typename U, std::size_t Idx>
     constexpr auto exp_validate_and_text()
     {
-      static_assert(same_dim<typename E::dimension, typename U::dimension>);
+      static_assert(same_dim<typename E::dimension, typename U::dimension>, "The order and number of units in `deduced_derived_unit<Us...>` should match dimensions provided in a `derived_dimension<>`");
       return exp_text<E, U::symbol, Idx>();
     }
 
@@ -260,8 +259,17 @@ namespace units {
     template<typename... Us, typename... Es>
     constexpr auto deduced_symbol_text(dimension<Es...> d)
     {
-      static_assert(sizeof...(Us) == sizeof...(Es), "`deduced_derived_unit<Us...>` should get the same number of exponents as provided to `derived_dimension<>`");
+      static_assert(sizeof...(Es) == sizeof...(Us), "The number of `deduced_derived_unit<Us...>` units should match the number of exponents provided to `derived_dimension<>`");
       return deduced_symbol_text_impl<Us...>(d, std::index_sequence_for<Es...>());
+    }
+
+    template<typename Dim, typename... Us>
+    constexpr auto deduced_symbol_text()
+    {
+      if constexpr(are_units_of_base_dimension<Us...>)
+        return deduced_symbol_text<Us...>(typename Dim::base_type());
+      else
+        return deduced_symbol_text<Us...>(typename Dim::recipe());
     }
 
     template<typename Unit>
@@ -319,7 +327,7 @@ namespace units {
 
   template<typename Child, Dimension Dim, Unit U, Unit... Us>
   struct deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
-    static constexpr auto symbol = detail::deduced_symbol_text<U, Us...>(Dim());
+    static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, Us...>();
     using prefix_type = no_prefix;
   };
 

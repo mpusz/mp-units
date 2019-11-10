@@ -173,7 +173,7 @@ described later in this document.
 So for example to create a `velocity` type we have to do:
 
 ```cpp
-struct velocity : derived_dimension<velocity, exp<base_dim_length, 1>, exp<base_dim_time, -1>> {};
+struct velocity : derived_dimension<velocity, exp<length, 1>, exp<time, -1>> {};
 ```
 
 In order to make `derived_dimension` work as expected it has to provide unique ordering for
@@ -182,8 +182,11 @@ contained base dimensions. Beside providing ordering to base dimensions it also 
 - eliminate two arguments of the same base dimension and with opposite equal exponents
 
 `derived_dimension` is also able to form a dimension type based not only on base dimensions but
-it can take other derived dimensions as well. So for some more complex dimensions user can
-type either:
+it can take other derived dimensions as well. In such a case units defined with a
+`deduced_derived_unit` helper will get symbols of units for those derived dimension rather
+than system base units.
+
+For example to form `pressure` user can provide the following two definitions:
 
 ```cpp
 struct pressure : derived_dimension<pressure, exp<base_dim_mass, 1>, exp<base_dim_length, -1>, exp<base_dim_time, -2>> {};
@@ -196,8 +199,9 @@ struct pressure : derived_dimension<pressure, exp<force, 1>, exp<area, -1>> {};
 ```
 
 In the second case `derived_dimension` will extract all derived dimensions into the list of
-exponents of base dimensions. Thanks to that both cases will result with exactly the same base
-class formed only from the exponents of base units.
+exponents of base dimensions. Thanks to this both cases will result with exactly the same base
+class formed only from the exponents of base units but in the second case the recipe to form
+a derived dimension will be remembered and used for `deduced_derived_unit` usage.
 
 #### `merge_dimension`
 
@@ -361,12 +365,26 @@ struct deduced_derived_unit : downcast_child<Child, /* magic to get the correct 
 ```
 
 This will deduce the ratio based on the ingredient units and their relation defined in the
-dimension and in case the symbol name is not explicitly provided it with create one based
-on the provided ingredients:
+dimension. For example to create a deduced velocity unit a user can do:
 
 ```cpp
 struct kilometre_per_hour : deduced_derived_unit<kilometre_per_hour, velocity, kilometre, hour> {};
 ```
+
+`deduced_derived_unit` has also one more important feature. It is able to synthesize a unit
+symbol:
+- in case all units on the list are the units of base dimension (i.e. above we have a `kilometre`
+  that is a unit of a base dimension `length`, and `hour` a unit of base dimension `time`),
+  the resulting unit symbol will be created using base dimensions (`km/h`).
+- if at least one non-base dimension unit exists in a list than the recipe provided in the
+  `derived_dimension` will be used to create a unit. For example:
+
+  ```cpp
+  struct surface_tension : derived_dimension<surface_tension, exp<force, 1>, exp<length, -1>> {};
+  struct newton_per_centimetre : deduced_derived_unit<newton_per_centimetre, surface_tension, newton, centimetre> {};
+  ```
+
+  will result with a symbol `N/cm` for `newton_per_centimetre`.
 
 
 ### `Quantities`

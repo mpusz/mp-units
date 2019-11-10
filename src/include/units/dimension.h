@@ -223,7 +223,9 @@ namespace units {
 
   // derived_dimension
   template<typename Child, Exponent... Es>
-  struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {};
+  struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {
+    using recipe = dimension<Es...>;
+  };
 
   // merge_dimension
   template<Dimension D1, Dimension D2>

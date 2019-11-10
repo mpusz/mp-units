@@ -34,7 +34,7 @@ namespace units {
   struct cubic_metre : coherent_derived_unit<cubic_metre, volume> {};
   struct cubic_millimetre : deduced_derived_unit<cubic_millimetre, volume, millimetre> {};
   struct cubic_centimetre : deduced_derived_unit<cubic_centimetre, volume, centimetre> {};
-  struct cubic_kilometre : deduced_derived_unit<cubic_kilometre, volume, kilometre, metre> {};
+  struct cubic_kilometre : deduced_derived_unit<cubic_kilometre, volume, kilometre> {};
   struct cubic_foot : deduced_derived_unit<cubic_foot, volume, foot> {};
 
   inline namespace literals {
