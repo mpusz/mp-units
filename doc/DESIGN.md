@@ -183,8 +183,8 @@ contained base dimensions. Beside providing ordering to base dimensions it also 
 
 `derived_dimension` is also able to form a dimension type based not only on base dimensions but
 it can take other derived dimensions as well. In such a case units defined with a
-`deduced_derived_unit` helper will get symbols of units for those derived dimension rather
-than system base units.
+`coherent_derived_unit` and `deduced_derived_unit` helper will get symbols of units for those
+derived dimension (if those are named units) rather than system base units.
 
 For example to form `pressure` user can provide the following two definitions:
 
@@ -264,12 +264,14 @@ or `coherent_derived_unit` class templates:
 ```cpp
 template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT>
 struct named_coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
+  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
 };
 
 template<typename Child, Dimension Dim>
 struct coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
+  static constexpr bool is_named = false;
   static constexpr auto symbol = /* ... */;
   using prefix_type = no_prefix;
 };
@@ -284,7 +286,7 @@ template<typename T>
 concept PrefixType = std::derived_from<T, prefix_type>;
 ```
 
-For example to define the coherent unit of `length`:
+For example to define the named coherent unit of `length`:
 
 ```cpp
 struct metre : named_coherent_derived_unit<metre, length, "m", si_prefix> {};
@@ -293,11 +295,21 @@ struct metre : named_coherent_derived_unit<metre, length, "m", si_prefix> {};
 Again, similarly to `derived_dimension`, the first class template parameter is a CRTP idiom used
 to provide downcasting facility (described below).
 
+`coherent_derived_unit` also provides a synthetized unit symbol. If all coherent units of
+the recipe provided in a `derived_dimension` are named than the recipe is used to built a
+unit symbol. Otherwise, the symbol will be created based on ingredient base units.
+
+```cpp
+struct surface_tension : derived_dimension<surface_tension, exp<force, 1>, exp<length, -1>> {};
+struct newton_per_metre : coherent_derived_unit<newton_per_metre, surface_tension> {};
+```
+
 To create scaled unit the following template should be used:
 
 ```cpp
 template<typename Child, Dimension Dim, basic_fixed_string Symbol, Ratio R, PrefixType PT = no_prefix>
 struct named_scaled_derived_unit : downcast_child<Child, unit<Dim, R>> {
+  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
 };
@@ -318,6 +330,7 @@ template<typename Child, Prefix P, Unit U>
 struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension,
                                                           ratio_multiply<typename P::ratio,
                                                                          typename U::ratio>>> {
+  static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_type = P::prefix_type;
 };
@@ -353,12 +366,15 @@ For the cases where determining the exact ratio is not trivial another helper ca
 ```cpp
 template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
 struct named_deduced_derived_unit : downcast_child<Child, /* magic to get the correct type */> {
+  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
 };
 
 template<typename Child, Dimension Dim, Unit U, Unit... Us>
+  requires U::is_named && (Us::is_named && ... && true)
 struct deduced_derived_unit : downcast_child<Child, /* magic to get the correct type */> {
+  static constexpr bool is_named = false;
   static constexpr auto symbol = /* even more magic to get the correct unit symbol */;
   using prefix_type = no_prefix;
 };

@@ -194,6 +194,27 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
           REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
+
+      SECTION("surface tension")
+      {
+        const auto q = 20.N / 2m;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          REQUIRE(stream.str() == "10 N/m");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          REQUIRE(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        }
+      }
     }
 
     SECTION("deduced derived unit")

@@ -231,16 +231,42 @@ namespace units {
       }
     }
 
+    template<typename Dim>
+    constexpr auto dimension_symbol()
+    {
+      if constexpr(BaseDimension<Dim>)
+        return Dim::symbol;
+      else 
+        // coherent derived unit
+        return downcast<unit<Dim, ratio<1>>>::symbol;
+    }
+
     template<typename... Es, std::size_t... Idxs>
     constexpr auto base_symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
     {
-      return (exp_text<Es, Es::dimension::symbol, Idxs>() + ...);
+      return (exp_text<Es, dimension_symbol<typename Es::dimension>(), Idxs>() + ...);
     }
 
     template<typename... Es>
     constexpr auto base_symbol_text(dimension<Es...> d)
     {
       return base_symbol_text_impl(d, std::index_sequence_for<Es...>());
+    }
+
+    template<typename... Es>
+    constexpr bool all_named(dimension<Es...>)
+    {
+      return (downcast<unit<typename Es::dimension, ratio<1>>>::is_named && ...);
+    }
+
+    template<typename Dim>
+    constexpr auto base_symbol_text()
+    {
+      using recipe = typename Dim::recipe;
+      if constexpr(all_named(recipe()))
+        return base_symbol_text(recipe());
+      else
+        return base_symbol_text(Dim());
     }
 
     template<typename E, typename U, std::size_t Idx>
@@ -303,30 +329,36 @@ namespace units {
 
   template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT>
   struct named_coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
+    static constexpr bool is_named = true;
     static constexpr auto symbol = Symbol;
     using prefix_type = PT;
   };
 
   template<typename Child, Dimension Dim>
   struct coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
-    static constexpr auto symbol = detail::base_symbol_text(Dim());
+    static constexpr bool is_named = false;
+    static constexpr auto symbol = detail::base_symbol_text<Dim>();
     using prefix_type = no_prefix;
   };
 
   template<typename Child, Dimension Dim, basic_fixed_string Symbol, Ratio R, PrefixType PT = no_prefix>
   struct named_scaled_derived_unit : downcast_child<Child, unit<Dim, R>> {
+    static constexpr bool is_named = true;
     static constexpr auto symbol = Symbol;
     using prefix_type = PT;
   };
 
   template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
   struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
+    static constexpr bool is_named = true;
     static constexpr auto symbol = Symbol;
     using prefix_type = PT;
   };
 
   template<typename Child, Dimension Dim, Unit U, Unit... Us>
+    requires U::is_named && (Us::is_named && ... && true)
   struct deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
+    static constexpr bool is_named = false;
     static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, Us...>();
     using prefix_type = no_prefix;
   };
@@ -334,6 +366,7 @@ namespace units {
   template<typename Child, Prefix P, Unit U>
     requires (!std::same_as<typename U::prefix_type, no_prefix>)
   struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
+    static constexpr bool is_named = true;
     static constexpr auto symbol = P::symbol + U::symbol;
     using prefix_type = P::prefix_type;
   };
