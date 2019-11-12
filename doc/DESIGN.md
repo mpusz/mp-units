@@ -526,20 +526,20 @@ formatters interpret the format specification as a `units-format-spec` according
 following syntax:
 
 ```text
-// units-format-spec:
-//      fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
-// units-specs:
-//      conversion-spec
-//      units-specs conversion-spec
-//      units-specs literal-char
-// literal-char:
-//      any character other than { or }
-// conversion-spec:
-//      % modifier[opt] type
-// modifier: one of
-//      E O
-// type: one of
-//      n q Q t %
+units-format-spec:
+     fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
+units-specs:
+     conversion-spec
+     units-specs conversion-spec
+     units-specs literal-char
+literal-char:
+     any character other than { or }
+conversion-spec:
+     % modifier[opt] type
+modifier: one of
+     E O
+type: one of
+     n q Q t %
 ```
 
 The productions `fill-and-align`, `sign`, `width`, and `precision` are described in
