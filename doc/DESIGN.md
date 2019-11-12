@@ -520,10 +520,54 @@ of checks:
 
 #### Text Formatting
 
-| Specifier | Replacement                                                  |
-|-----------|--------------------------------------------------------------|
-| `%q`      | The quantity’s unit symbol                                   |
-| `%Q`      | The quantity’s numeric value (as if extracted via `.count()` |
+`mp-units` supports new C++20 formatting facility (currently provided as a dependency on
+[`fmt`](https://github.com/fmtlib/fmt) library). `parse` member functions of facility
+formatters interpret the format specification as a `units-format-spec` according to the
+following syntax:
+
+```text
+// units-format-spec:
+//      fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
+// units-specs:
+//      conversion-spec
+//      units-specs conversion-spec
+//      units-specs literal-char
+// literal-char:
+//      any character other than { or }
+// conversion-spec:
+//      % modifier[opt] type
+// modifier: one of
+//      E O
+// type: one of
+//      n q Q t %
+```
+
+The productions `fill-and-align`, `sign`, `width`, and `precision` are described in
+[Format string](https://wg21.link/format.string.std) chapter of the C++ standard. Giving a
+`precision` specification in the `units-format-spec` is valid only for `units::quantity` types
+where the representation type `Rep` is a floating point type. For all other `Rep` types, an
+exception of type `format_error` is thrown if the `units-format-spec` contains a precision
+specification.
+
+Each conversion specifier `conversion-spec` is replaced by appropriate characters as described
+in the following table:
+
+| Specifier | Replacement                                                   |
+|:---------:|---------------------------------------------------------------|
+|   `%n`    | A new-line character                                          |
+|   `%q`    | The quantity’s unit symbol                                    |
+|   `%Q`    | The quantity’s numeric value (as if extracted via `.count()`) |
+|   `%t`    | A horizontal-tab character                                    |
+|   `%%`    | A `%` character                                               |
+
+
+If the `units-specs` is omitted, the `quantity` object is formatted as if by streaming it to
+`std::ostringstream os` and copying `os.str()` through the output iterator of the context with
+additional padding and adjustments as specified by the format specifiers.
+
+```cpp
+std::string s = fmt::format("{:=>12}", 120_kmph); // value of s is "====120 km/h"
+```
 
 
 ## Strong types instead of aliases, and type downcasting facility
