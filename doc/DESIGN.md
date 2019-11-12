@@ -547,7 +547,8 @@ The productions `fill-and-align`, `sign`, `width`, and `precision` are described
 `precision` specification in the `units-format-spec` is valid only for `units::quantity` types
 where the representation type `Rep` is a floating point type. For all other `Rep` types, an
 exception of type `format_error` is thrown if the `units-format-spec` contains a precision
-specification.
+specification. An `format_error` is also thrown if `sign` is provided with a `conversion-spec`
+to print quantity unit but not its value.
 
 Each conversion specifier `conversion-spec` is replaced by appropriate characters as described
 in the following table:
@@ -559,7 +560,6 @@ in the following table:
 |   `%Q`    | The quantity’s numeric value (as if extracted via `.count()`) |
 |   `%t`    | A horizontal-tab character                                    |
 |   `%%`    | A `%` character                                               |
-
 
 If the `units-specs` is omitted, the `quantity` object is formatted as if by streaming it to
 `std::ostringstream os` and copying `os.str()` through the output iterator of the context with

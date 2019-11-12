@@ -25,13 +25,14 @@
 #include <units/bits/customization_points.h>
 #include <units/quantity.h>
 #include <fmt/format.h>
+#include <string_view>
 
 namespace units {
 
   namespace detail {
 
     // units-format-spec:
-    //      fill-and-align[opt] width[opt] precision[opt] units-specs[opt]
+    //      fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
     // units-specs:
     //      conversion-spec
     //      units-specs conversion-spec
@@ -94,11 +95,25 @@ namespace units {
     }
 
     template<typename Rep, typename OutputIt>
-    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, int precision)
+    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, fmt::sign_t sign, int precision)
     {
+      std::string sign_text;
+      switch(sign) {
+        case fmt::sign::none:
+          break;
+        case fmt::sign::plus:
+          sign_text = "+";
+          break;
+        case fmt::sign::minus:
+          sign_text = "-";
+          break;
+        case fmt::sign::space:
+          sign_text = " ";
+          break;
+      }
       if(precision >= 0)
-        return format_to(out, "{:.{}f}", val, precision);
-      return format_to(out, treat_as_floating_point<Rep> ? "{:g}" : "{}", val);
+        return format_to(out, "{:" + sign_text + ".{}f}", val, precision);
+      return format_to(out, treat_as_floating_point<Rep> ? "{:" + sign_text + "g}" : "{:" + sign_text + "}", val);
     }
 
     template<typename Unit, typename OutputIt>
@@ -111,10 +126,11 @@ namespace units {
     struct units_formatter {
       OutputIt out;
       Rep val;
+      fmt::sign_t sign;
       int precision;
 
-      explicit units_formatter(OutputIt o, quantity<Unit, Rep> q, int prec):
-        out(o), val(q.count()), precision(prec)
+      explicit units_formatter(OutputIt o, quantity<Unit, Rep> q, fmt::sign_t s, int prec):
+        out(o), val(q.count()), sign(s), precision(prec)
       {
       }
 
@@ -126,7 +142,7 @@ namespace units {
 
       void on_quantity_value()
       {
-        out = format_units_quantity_value(out, val, precision);
+        out = format_units_quantity_value(out, val, sign, precision);
       }
 
       void on_quantity_unit()
@@ -179,27 +195,30 @@ private:
     }
 
     void on_error(const char* msg) { throw fmt::format_error(msg); }
-    void on_fill(CharT fill) { f.specs.fill[0] = fill; }
-    void on_align(align_t align) { f.specs.align = align; }
-    void on_width(unsigned width) { f.specs.width = width; }
-    void on_precision(unsigned precision) { f.precision = precision; }
-    void end_precision() {}
+    constexpr void on_fill(CharT fill) { f.specs.fill[0] = fill; }
+    constexpr void on_plus() { f.specs.sign = fmt::sign::plus; }
+    constexpr void on_minus() { f.specs.sign = fmt::sign::minus; }
+    constexpr void on_space() { f.specs.sign = fmt::sign::space; }
+    constexpr void on_align(align_t align) { f.specs.align = align; }
+    constexpr void on_width(unsigned width) { f.specs.width = width; }
+    constexpr void on_precision(unsigned precision) { f.precision = precision; }
+    constexpr void end_precision() {}
 
     template<typename Id>
-    void on_dynamic_width(Id arg_id)
+    constexpr void on_dynamic_width(Id arg_id)
     {
       f.width_ref = make_arg_ref(arg_id);
     }
 
     template<typename Id>
-    void on_dynamic_precision(Id arg_id)
+    constexpr void on_dynamic_precision(Id arg_id)
     {
       f.precision_ref = make_arg_ref(arg_id);
     }
 
-    void on_text(const CharT*, const CharT*) {}
-    void on_quantity_value() { f.quantity_value = true; }
-    void on_quantity_unit() { f.quantity_unit = true; }
+    constexpr void on_text(const CharT*, const CharT*) {}
+    constexpr void on_quantity_value() { f.quantity_value = true; }
+    constexpr void on_quantity_unit() { f.quantity_unit = true; }
   };
 
   struct parse_range {
@@ -218,6 +237,24 @@ private:
 
     // parse alignment
     begin = fmt::internal::parse_align(begin, end, handler);
+    if(begin == end)
+      return {begin, begin};
+
+    // parse sign
+    switch(static_cast<char>(*begin)) {
+    case '+':
+      handler.on_plus();
+      ++begin;
+      break;
+    case '-':
+      handler.on_minus();
+      ++begin;
+      break;
+    case ' ':
+      handler.on_space();
+      ++begin;
+      break;
+    }
     if(begin == end)
       return {begin, begin};
 
@@ -240,6 +277,9 @@ private:
     if(specs.align == fmt::align_t::none && (!quantity_unit || quantity_value))
       // quantity values should behave like numbers (by default aligned to right)
       specs.align = fmt::align_t::right;
+
+    if((quantity_unit && !quantity_value) && (specs.sign == fmt::sign::plus || specs.sign == fmt::sign::minus))
+      handler.on_error("sign not allowed for a quantity unit");
 
     return {begin, end};
   }
@@ -268,13 +308,13 @@ public:
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separeted with 1 space
-      out = units::detail::format_units_quantity_value(out, q.count(), precision);
+      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision);
       *out++ = CharT(' ');
       units::detail::format_units_quantity_unit<Unit>(out);
     }
     else {
       // user provided format
-      units::detail::units_formatter f(out, q, precision);
+      units::detail::units_formatter f(out, q, specs.sign, precision);
       parse_units_format(begin, end, f);
     }
 

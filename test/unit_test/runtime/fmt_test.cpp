@@ -755,25 +755,25 @@ TEST_CASE("sign specification", "[text][fmt]")
 
   SECTION("full format {:%Q %q} on a quantity") 
   {
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", 1m) == "1 m,+1 m,1 m, 1 m");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", -1m) == "-1 m,-1 m,-1 m,-1 m");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", inf) == "inf m,+inf m,inf m, inf m");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", nan) == "nan m,+nan m,nan m, nan m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", 1m) == "1m,+1m,1m, 1m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", -1m) == "-1m,-1m,-1m,-1m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", inf) == "infm,+infm,infm, infm");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", nan) == "nanm,+nanm,nanm, nanm");
   }
 
   SECTION("value only format {:%Q} on a quantity") 
   {
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", 1m) == "1 m,+1 m,1 m, 1 m");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", -1m) == "-1 m,-1 m,-1 m,-1 m");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", inf) == "inf m,+inf m,inf m, inf m");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", nan) == "nan m,+nan m,nan m, nan m");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", 1m) == "1,+1,1, 1");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", -1m) == "-1,-1,-1,-1");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", inf) == "inf,+inf,inf, inf");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", nan) == "nan,+nan,nan, nan");
   }
 }
 
 TEST_CASE("sign specification for unit only", "[text][fmt][exception]")
 {
-  CHECK_THROWS_MATCHES(fmt::format("{:+%q}", 1m), fmt::format_error, Message("sign not allowed for quantity unit"));
-  CHECK_THROWS_MATCHES(fmt::format("{:-%q}", 1m), fmt::format_error, Message("sign not allowed for quantity unit"));
+  CHECK_THROWS_MATCHES(fmt::format("{:+%q}", 1m), fmt::format_error, Message("sign not allowed for a quantity unit"));
+  CHECK_THROWS_MATCHES(fmt::format("{:-%q}", 1m), fmt::format_error, Message("sign not allowed for a quantity unit"));
 }
 
 
