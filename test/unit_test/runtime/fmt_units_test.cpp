@@ -35,80 +35,80 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {
   SECTION("time")
   {
-    REQUIRE(fmt::format("{}", 1ns) == "1 ns");
-    REQUIRE(fmt::format("{}", 1us) == "1 µs");
-    REQUIRE(fmt::format("{}", 1ms) == "1 ms");
+    CHECK(fmt::format("{}", 1ns) == "1 ns");
+    CHECK(fmt::format("{}", 1us) == "1 µs");
+    CHECK(fmt::format("{}", 1ms) == "1 ms");
   }
 
   SECTION("length")
   {
-    REQUIRE(fmt::format("{}", 1mm) == "1 mm");
-    REQUIRE(fmt::format("{}", 1cm) == "1 cm");
-    REQUIRE(fmt::format("{}", 1km) == "1 km");
+    CHECK(fmt::format("{}", 1mm) == "1 mm");
+    CHECK(fmt::format("{}", 1cm) == "1 cm");
+    CHECK(fmt::format("{}", 1km) == "1 km");
   }
 
   SECTION("mass")
   {
-    REQUIRE(fmt::format("{}", 1kg) == "1 kg");
+    CHECK(fmt::format("{}", 1kg) == "1 kg");
   }
 
   SECTION("area")
   {
-    REQUIRE(fmt::format("{}", 1sq_m) == "1 m²");
-    REQUIRE(fmt::format("{}", 1sq_mm) == "1 mm²");
-    REQUIRE(fmt::format("{}", 1sq_cm) == "1 cm²");
-    REQUIRE(fmt::format("{}", 1sq_km) == "1 km²");
-    REQUIRE(fmt::format("{}", 1sq_ft) == "1 ft²");
+    CHECK(fmt::format("{}", 1sq_m) == "1 m²");
+    CHECK(fmt::format("{}", 1sq_mm) == "1 mm²");
+    CHECK(fmt::format("{}", 1sq_cm) == "1 cm²");
+    CHECK(fmt::format("{}", 1sq_km) == "1 km²");
+    CHECK(fmt::format("{}", 1sq_ft) == "1 ft²");
   }
 
   SECTION("volume")
   {
-    REQUIRE(fmt::format("{}", 1cub_m) == "1 m³");
-    REQUIRE(fmt::format("{}", 1cub_mm) == "1 mm³");
-    REQUIRE(fmt::format("{}", 1cub_cm) == "1 cm³");
-    REQUIRE(fmt::format("{}", 1cub_km) == "1 km³");
-    REQUIRE(fmt::format("{}", 1cub_ft) == "1 ft³");
+    CHECK(fmt::format("{}", 1cub_m) == "1 m³");
+    CHECK(fmt::format("{}", 1cub_mm) == "1 mm³");
+    CHECK(fmt::format("{}", 1cub_cm) == "1 cm³");
+    CHECK(fmt::format("{}", 1cub_km) == "1 km³");
+    CHECK(fmt::format("{}", 1cub_ft) == "1 ft³");
   }
 
   SECTION("frequency")
   {
-    REQUIRE(fmt::format("{}", 1mHz) == "1 mHz");
-    REQUIRE(fmt::format("{}", 1kHz) == "1 kHz");
-    REQUIRE(fmt::format("{}", 1MHz) == "1 MHz");
-    REQUIRE(fmt::format("{}", 1GHz) == "1 GHz");
-    REQUIRE(fmt::format("{}", 1THz) == "1 THz");
+    CHECK(fmt::format("{}", 1mHz) == "1 mHz");
+    CHECK(fmt::format("{}", 1kHz) == "1 kHz");
+    CHECK(fmt::format("{}", 1MHz) == "1 MHz");
+    CHECK(fmt::format("{}", 1GHz) == "1 GHz");
+    CHECK(fmt::format("{}", 1THz) == "1 THz");
   }
 
   SECTION("velocity")
   {
-    REQUIRE(fmt::format("{}", 1mps) == "1 m/s");
-    REQUIRE(fmt::format("{}", 1kmph) == "1 km/h");
-    REQUIRE(fmt::format("{}", 1mph) == "1 mi/h");
+    CHECK(fmt::format("{}", 1mps) == "1 m/s");
+    CHECK(fmt::format("{}", 1kmph) == "1 km/h");
+    CHECK(fmt::format("{}", 1mph) == "1 mi/h");
   }
 
   SECTION("acceleration")
   {
-    REQUIRE(fmt::format("{}", 1mps_sq) == "1 m/s²");
+    CHECK(fmt::format("{}", 1mps_sq) == "1 m/s²");
   }
 
   SECTION("energy")
   {
-    REQUIRE(fmt::format("{}", 1mJ) == "1 mJ");
-    REQUIRE(fmt::format("{}", 1kJ) == "1 kJ");
-    REQUIRE(fmt::format("{}", 1MJ) == "1 MJ");
-    REQUIRE(fmt::format("{}", 1GJ) == "1 GJ");
+    CHECK(fmt::format("{}", 1mJ) == "1 mJ");
+    CHECK(fmt::format("{}", 1kJ) == "1 kJ");
+    CHECK(fmt::format("{}", 1MJ) == "1 MJ");
+    CHECK(fmt::format("{}", 1GJ) == "1 GJ");
   }
 
   SECTION("power")
   {
-    REQUIRE(fmt::format("{}", 1mW) == "1 mW");
-    REQUIRE(fmt::format("{}", 1kW) == "1 kW");
-    REQUIRE(fmt::format("{}", 1MW) == "1 MW");
-    REQUIRE(fmt::format("{}", 1GW) == "1 GW");
+    CHECK(fmt::format("{}", 1mW) == "1 mW");
+    CHECK(fmt::format("{}", 1kW) == "1 kW");
+    CHECK(fmt::format("{}", 1MW) == "1 MW");
+    CHECK(fmt::format("{}", 1GW) == "1 GW");
   }
 
   SECTION("surface tension")
   {
-    REQUIRE(fmt::format("{}", 1Npm) == "1 N/m");
+    CHECK(fmt::format("{}", 1Npm) == "1 N/m");
   }
 }

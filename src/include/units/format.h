@@ -93,13 +93,6 @@ namespace units {
       return ptr;
     }
 
-    struct units_format_checker {
-      template<typename CharT>
-      void on_text(const CharT*, const CharT*) {}
-      void on_quantity_value() {}
-      void on_quantity_unit() {}
-    };
-
     template<typename Rep, typename OutputIt>
     inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, int precision)
     {
@@ -155,6 +148,8 @@ private:
 
   fmt::basic_format_specs<CharT> specs;
   int precision = -1;
+  bool quantity_value = false;
+  bool quantity_unit = false;
   arg_ref_type width_ref;
   arg_ref_type precision_ref;
   fmt::basic_string_view<CharT> format_str;
@@ -201,6 +196,10 @@ private:
     {
       f.precision_ref = make_arg_ref(arg_id);
     }
+
+    void on_text(const CharT*, const CharT*) {}
+    void on_quantity_value() { f.quantity_value = true; }
+    void on_quantity_unit() { f.quantity_unit = true; }
   };
 
   struct parse_range {
@@ -236,7 +235,11 @@ private:
     }
 
     // parse units-specific specification
-    end = parse_units_format(begin, end, units::detail::units_format_checker());
+    end = units::detail::parse_units_format(begin, end, handler);
+
+    if(specs.align == fmt::align_t::none && (!quantity_unit || quantity_value))
+      // quantity values should behave like numbers (by default aligned to right)
+      specs.align = fmt::align_t::right;
 
     return {begin, end};
   }

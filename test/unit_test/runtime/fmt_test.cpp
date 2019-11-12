@@ -47,17 +47,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "60 W");
+        CHECK(stream.str() == "60 W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -68,17 +68,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "1023.5 Pa");
+        CHECK(stream.str() == "1023.5 Pa");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
   }
@@ -90,17 +90,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("iostream")
     {
-      REQUIRE(stream.str() == "125 µs");
+      CHECK(stream.str() == "125 µs");
     }
 
     SECTION("fmt with default format {} on a quantity")
     {
-      REQUIRE(fmt::format("{}", q) == stream.str());
+      CHECK(fmt::format("{}", q) == stream.str());
     }
 
     SECTION("fmt with format {:%Q %q} on a quantity")
     {
-      REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+      CHECK(fmt::format("{:%Q %q}", q) == stream.str());
     }
   }
 
@@ -113,17 +113,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "123 Mm");
+        CHECK(stream.str() == "123 Mm");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -134,17 +134,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "60 cJ");
+        CHECK(stream.str() == "60 cJ");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
   }
@@ -160,17 +160,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "10 m/s²");
+          CHECK(stream.str() == "10 m/s²");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          REQUIRE(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == stream.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
 
@@ -181,17 +181,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "2 m³");
+          CHECK(stream.str() == "2 m³");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          REQUIRE(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == stream.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
 
@@ -202,17 +202,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "10 N/m");
+          CHECK(stream.str() == "10 N/m");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          REQUIRE(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == stream.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
     }
@@ -226,17 +226,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "10 km/h");
+          CHECK(stream.str() == "10 km/h");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          REQUIRE(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == stream.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
 
@@ -248,17 +248,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          REQUIRE(stream.str() == "123 N/cm");
+          CHECK(stream.str() == "123 N/cm");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          REQUIRE(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == stream.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
         }
       }
     }
@@ -273,17 +273,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "8 cJ");
+        CHECK(stream.str() == "8 cJ");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -294,17 +294,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "8 [1/100]m³");
+        CHECK(stream.str() == "8 [1/100]m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -315,17 +315,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "2 [60]Hz");
+        CHECK(stream.str() == "2 [60]Hz");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -336,17 +336,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "10 [1/60]W");
+        CHECK(stream.str() == "10 [1/60]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -357,17 +357,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "30 [50/3]W");
+        CHECK(stream.str() == "30 [50/3]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
   }
@@ -381,17 +381,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "8 m⋅kg⋅s");
+        CHECK(stream.str() == "8 m⋅kg⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -402,17 +402,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "8 [1000]m⋅s");
+        CHECK(stream.str() == "8 [1000]m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -423,17 +423,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "2 [60]kg/s");
+        CHECK(stream.str() == "2 [60]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -444,17 +444,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "10 [1/60]kg/s");
+        CHECK(stream.str() == "10 [1/60]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -465,17 +465,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "30 [3/50]1/m⋅s");
+        CHECK(stream.str() == "30 [3/50]1/m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -486,17 +486,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "8 m⋅s");
+        CHECK(stream.str() == "8 m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -507,17 +507,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "16 m⋅s²");
+        CHECK(stream.str() == "16 m⋅s²");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -528,17 +528,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "2 1/m²⋅s");
+        CHECK(stream.str() == "2 1/m²⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -549,17 +549,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "2 m/kg²");
+        CHECK(stream.str() == "2 m/kg²");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -570,17 +570,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "3 m^(1/2)");
+        CHECK(stream.str() == "3 m^(1/2)");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
 
@@ -591,17 +591,17 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        REQUIRE(stream.str() == "3 1/m^(1/2)");
+        CHECK(stream.str() == "3 1/m^(1/2)");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        REQUIRE(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == stream.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        REQUIRE(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
   }
@@ -613,12 +613,12 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
   {
     SECTION("positive value")
     {
-      REQUIRE(fmt::format("{:%Q}", 123kmph) == "123");
+      CHECK(fmt::format("{:%Q}", 123kmph) == "123");
     }
 
     SECTION("negative value")
     {
-      REQUIRE(fmt::format("{:%Q}", 5m - 10m) == "-5");
+      CHECK(fmt::format("{:%Q}", 5m - 10m) == "-5");
     }
   }
 
@@ -626,183 +626,190 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
   {
     SECTION("positive value")
     {
-      REQUIRE(fmt::format("{:%Q}", 221.km / 2h) == "110.5");
+      CHECK(fmt::format("{:%Q}", 221.km / 2h) == "110.5");
     }
 
     SECTION("negative value")
     {
-      REQUIRE(fmt::format("{:%Q}", 3.14m - 10m) == "-6.86");
+      CHECK(fmt::format("{:%Q}", 3.14m - 10m) == "-6.86");
     }
 
     SECTION("nan")
     {
-      REQUIRE(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
+      CHECK(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
     }
 
     SECTION("inf")
     {
-      REQUIRE(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::infinity())) == "inf");
+      CHECK(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::infinity())) == "inf");
     }
 
     SECTION("-inf")
     {
-      REQUIRE(fmt::format("{:%Q}", quantity<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
+      CHECK(fmt::format("{:%Q}", quantity<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
     }
   }
 }
 
 TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
 {
-  REQUIRE(fmt::format("{:%q}", 123kmph) == "km/h");
+  CHECK(fmt::format("{:%q}", 123kmph) == "km/h");
 }
 
 TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
 {
   SECTION("no space")
   {
-    REQUIRE(fmt::format("{:%Q%q}", 123kmph) == "123km/h");
+    CHECK(fmt::format("{:%Q%q}", 123kmph) == "123km/h");
   }
 
   SECTION("separator")
   {
-    REQUIRE(fmt::format("{:%Q###%q}", 123kmph) == "123###km/h");
+    CHECK(fmt::format("{:%Q###%q}", 123kmph) == "123###km/h");
   }
 
   SECTION("opposite order")
   {
-    REQUIRE(fmt::format("{:%q %Q}", 123kmph) == "km/h 123");
+    CHECK(fmt::format("{:%q %Q}", 123kmph) == "km/h 123");
   }
 
   SECTION("tabulator")
   {
-    REQUIRE(fmt::format("{:%Q%t%q}", 123kmph) == "123\tkm/h");
+    CHECK(fmt::format("{:%Q%t%q}", 123kmph) == "123\tkm/h");
   }
 
   SECTION("new line")
   {
-    REQUIRE(fmt::format("{:%Q%n%q}", 123kmph) == "123\nkm/h");
+    CHECK(fmt::format("{:%Q%n%q}", 123kmph) == "123\nkm/h");
   }
 
   SECTION("% sign")
   {
-    REQUIRE(fmt::format("{:%Q%% %q}", 123kmph) == "123% km/h");
+    CHECK(fmt::format("{:%Q%% %q}", 123kmph) == "123% km/h");
   }
 }
+
+TEST_CASE("fill and align specification", "[text][fmt]")
+{
+  SECTION("default format {} on a quantity") 
+  {
+    CHECK(fmt::format("|{:0}|", 123m) == "|123 m|");
+    CHECK(fmt::format("|{:10}|", 123m) == "|     123 m|");
+    CHECK(fmt::format("|{:<10}|", 123m) == "|123 m     |");
+    CHECK(fmt::format("|{:>10}|", 123m) == "|     123 m|");
+    CHECK(fmt::format("|{:^10}|", 123m) == "|  123 m   |");
+    CHECK(fmt::format("|{:*<10}|", 123m) == "|123 m*****|");
+    CHECK(fmt::format("|{:*>10}|", 123m) == "|*****123 m|");
+    CHECK(fmt::format("|{:*^10}|", 123m) == "|**123 m***|");
+  }
+
+  SECTION("full format {:%Q %q} on a quantity")
+  {
+    CHECK(fmt::format("|{:0%Q%q}|", 123m) == "|123m|");
+    CHECK(fmt::format("|{:10%Q%q}|", 123m) == "|      123m|");
+    CHECK(fmt::format("|{:<10%Q%q}|", 123m) == "|123m      |");
+    CHECK(fmt::format("|{:>10%Q%q}|", 123m) == "|      123m|");
+    CHECK(fmt::format("|{:^10%Q%q}|", 123m) == "|   123m   |");
+    CHECK(fmt::format("|{:*<10%Q%q}|", 123m) == "|123m******|");
+    CHECK(fmt::format("|{:*>10%Q%q}|", 123m) == "|******123m|");
+    CHECK(fmt::format("|{:*^10%Q%q}|", 123m) == "|***123m***|");
+  }
+  
+  SECTION("value only format {:%Q} on a quantity") 
+  {
+    CHECK(fmt::format("|{:0%Q}|", 123m) == "|123|");
+    CHECK(fmt::format("|{:10%Q}|", 123m) == "|       123|");
+    CHECK(fmt::format("|{:<10%Q}|", 123m) == "|123       |");
+    CHECK(fmt::format("|{:>10%Q}|", 123m) == "|       123|");
+    CHECK(fmt::format("|{:^10%Q}|", 123m) == "|   123    |");
+    CHECK(fmt::format("|{:*<10%Q}|", 123m) == "|123*******|");
+    CHECK(fmt::format("|{:*>10%Q}|", 123m) == "|*******123|");
+    CHECK(fmt::format("|{:*^10%Q}|", 123m) == "|***123****|");
+  }
+
+  SECTION("symbol only format {:%q} on a quantity") 
+  {
+    CHECK(fmt::format("|{:0%q}|", 123m) == "|m|");
+    CHECK(fmt::format("|{:10%q}|", 123m) == "|m         |");
+    CHECK(fmt::format("|{:<10%q}|", 123m) == "|m         |");
+    CHECK(fmt::format("|{:>10%q}|", 123m) == "|         m|");
+    CHECK(fmt::format("|{:^10%q}|", 123m) == "|    m     |");
+    CHECK(fmt::format("|{:*<10%q}|", 123m) == "|m*********|");
+    CHECK(fmt::format("|{:*>10%q}|", 123m) == "|*********m|");
+    CHECK(fmt::format("|{:*^10%q}|", 123m) == "|****m*****|");
+  }
+}
+
+TEST_CASE("sign specification", "[text][fmt]")
+{
+  quantity<metre> inf(std::numeric_limits<double>::infinity());
+  quantity<metre> nan(std::numeric_limits<double>::quiet_NaN());
+
+  SECTION("default format {} on a quantity") 
+  {
+    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", 1m) == "1 m,+1 m,1 m, 1 m");
+    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", -1m) == "-1 m,-1 m,-1 m,-1 m");
+    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", inf) == "inf m,+inf m,inf m, inf m");
+    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", nan) == "nan m,+nan m,nan m, nan m");
+  }
+
+  SECTION("full format {:%Q %q} on a quantity") 
+  {
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", 1m) == "1 m,+1 m,1 m, 1 m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", -1m) == "-1 m,-1 m,-1 m,-1 m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", inf) == "inf m,+inf m,inf m, inf m");
+    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", nan) == "nan m,+nan m,nan m, nan m");
+  }
+
+  SECTION("value only format {:%Q} on a quantity") 
+  {
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", 1m) == "1 m,+1 m,1 m, 1 m");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", -1m) == "-1 m,-1 m,-1 m,-1 m");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", inf) == "inf m,+inf m,inf m, inf m");
+    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", nan) == "nan m,+nan m,nan m, nan m");
+  }
+}
+
+TEST_CASE("sign specification for unit only", "[text][fmt][exception]")
+{
+  CHECK_THROWS_MATCHES(fmt::format("{:+%q}", 1m), fmt::format_error, Message("sign not allowed for quantity unit"));
+  CHECK_THROWS_MATCHES(fmt::format("{:-%q}", 1m), fmt::format_error, Message("sign not allowed for quantity unit"));
+}
+
 
 TEST_CASE("precision specification", "[text][fmt]")
 {
   SECTION("default format {} on a quantity") 
   {
-    SECTION("0")
-    {
-      REQUIRE(fmt::format("{:.0}", 1.2345m) == "1 m");
-    }
-
-    SECTION("1")
-    {
-      REQUIRE(fmt::format("{:.1}", 1.2345m) == "1.2 m");
-    }
-
-    SECTION("2")
-    {
-      REQUIRE(fmt::format("{:.2}", 1.2345m) == "1.23 m");
-    }
-
-    SECTION("3")
-    {
-      REQUIRE(fmt::format("{:.3}", 1.2345m) == "1.235 m");
-    }
-
-    SECTION("4")
-    {
-      REQUIRE(fmt::format("{:.4}", 1.2345m) == "1.2345 m");
-    }
-
-    SECTION("5")
-    {
-      REQUIRE(fmt::format("{:.5}", 1.2345m) == "1.23450 m");
-    }
-
-    SECTION("10")
-    {
-      REQUIRE(fmt::format("{:.10}", 1.2345m) == "1.2345000000 m");
-    }
+    CHECK(fmt::format("{:.1}", 1.2345m) == "1.2 m");
+    CHECK(fmt::format("{:.0}", 1.2345m) == "1 m");
+    CHECK(fmt::format("{:.2}", 1.2345m) == "1.23 m");
+    CHECK(fmt::format("{:.3}", 1.2345m) == "1.235 m");
+    CHECK(fmt::format("{:.4}", 1.2345m) == "1.2345 m");
+    CHECK(fmt::format("{:.5}", 1.2345m) == "1.23450 m");
+    CHECK(fmt::format("{:.10}", 1.2345m) == "1.2345000000 m");
   }
 
   SECTION("full format {:%Q %q} on a quantity") 
   {
-    SECTION("0")
-    {
-      REQUIRE(fmt::format("{:.0%Q %q}", 1.2345m) == "1 m");
-    }
-
-    SECTION("1")
-    {
-      REQUIRE(fmt::format("{:.1%Q %q}", 1.2345m) == "1.2 m");
-    }
-
-    SECTION("2")
-    {
-      REQUIRE(fmt::format("{:.2%Q %q}", 1.2345m) == "1.23 m");
-    }
-
-    SECTION("3")
-    {
-      REQUIRE(fmt::format("{:.3%Q %q}", 1.2345m) == "1.235 m");
-    }
-
-    SECTION("4")
-    {
-      REQUIRE(fmt::format("{:.4%Q %q}", 1.2345m) == "1.2345 m");
-    }
-
-    SECTION("5")
-    {
-      REQUIRE(fmt::format("{:.5%Q %q}", 1.2345m) == "1.23450 m");
-    }
-
-    SECTION("10")
-    {
-      REQUIRE(fmt::format("{:.10%Q %q}", 1.2345m) == "1.2345000000 m");
-    }
+    CHECK(fmt::format("{:.0%Q %q}", 1.2345m) == "1 m");
+    CHECK(fmt::format("{:.1%Q %q}", 1.2345m) == "1.2 m");
+    CHECK(fmt::format("{:.2%Q %q}", 1.2345m) == "1.23 m");
+    CHECK(fmt::format("{:.3%Q %q}", 1.2345m) == "1.235 m");
+    CHECK(fmt::format("{:.4%Q %q}", 1.2345m) == "1.2345 m");
+    CHECK(fmt::format("{:.5%Q %q}", 1.2345m) == "1.23450 m");
+    CHECK(fmt::format("{:.10%Q %q}", 1.2345m) == "1.2345000000 m");
   }
 
   SECTION("value only format {:%Q} on a quantity") 
   {
-    SECTION("0")
-    {
-      REQUIRE(fmt::format("{:.0%Q}", 1.2345m) == "1");
-    }
-
-    SECTION("1")
-    {
-      REQUIRE(fmt::format("{:.1%Q}", 1.2345m) == "1.2");
-    }
-
-    SECTION("2")
-    {
-      REQUIRE(fmt::format("{:.2%Q}", 1.2345m) == "1.23");
-    }
-
-    SECTION("3")
-    {
-      REQUIRE(fmt::format("{:.3%Q}", 1.2345m) == "1.235");
-    }
-
-    SECTION("4")
-    {
-      REQUIRE(fmt::format("{:.4%Q}", 1.2345m) == "1.2345");
-    }
-
-    SECTION("5")
-    {
-      REQUIRE(fmt::format("{:.5%Q}", 1.2345m) == "1.23450");
-    }
-
-    SECTION("10")
-    {
-      REQUIRE(fmt::format("{:.10%Q}", 1.2345m) == "1.2345000000");
-    }
+    CHECK(fmt::format("{:.0%Q}", 1.2345m) == "1");
+    CHECK(fmt::format("{:.1%Q}", 1.2345m) == "1.2");
+    CHECK(fmt::format("{:.2%Q}", 1.2345m) == "1.23");
+    CHECK(fmt::format("{:.3%Q}", 1.2345m) == "1.235");
+    CHECK(fmt::format("{:.4%Q}", 1.2345m) == "1.2345");
+    CHECK(fmt::format("{:.5%Q}", 1.2345m) == "1.23450");
+    CHECK(fmt::format("{:.10%Q}", 1.2345m) == "1.2345000000");
   }
 }
 
