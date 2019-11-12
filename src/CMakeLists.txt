@@ -80,10 +80,11 @@ endif()
 add_library(mp::units ALIAS units)
 
 # installation info
-install(TARGETS units EXPORT ${CMAKE_PROJECT_NAME}Targets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
+install(TARGETS units
+    EXPORT ${CMAKE_PROJECT_NAME}Targets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}  # TODO Remove when CMAKE 3.14
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}  # TODO Remove when CMAKE 3.14
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}  # TODO Remove when CMAKE 3.14
     INCLUDES DESTINATION include
 )
 install(DIRECTORY include/units
