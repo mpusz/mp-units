@@ -63,7 +63,7 @@ namespace std {
   };
 
   template<class BOp, class T, class U>
-  using two_sided_identity_t = decltype(two_sided_identity{}(declval<BOp&>(), declval<T>(), declval<U>()));
+  using two_sided_identity_t = decltype(two_sided_identity<BOp&, T, U>());
 
   template<class BOp, class T, class U = T>
   struct left_zero {};
@@ -100,13 +100,13 @@ namespace std {
   };
 
   template<class BOp, class T, class U = T>
-  using two_sided_zero_t = decltype(two_sided_zero{}(declval<BOp&>(), declval<T>(), declval<U>()));
+  using two_sided_zero_t = decltype(two_sided_zero<BOp&, T, U>());
 
   template<class BOp>
   struct inverse_traits {};
 
   template<class BOp>
-  using inverse_operation_t = typename inverse_traits::type;
+  using inverse_operation_t = typename inverse_traits<BOp>::type;
 
   template<class BOp, class T, class U>
   concept commutative_operation =
@@ -138,9 +138,9 @@ namespace std {
   template<class BOp, class T, class U>
   concept quasigroup = magma<BOp, T, U> &&
     requires {
-      typename inverse_operation_t<BOp, T, U>;
-      typename inverse_operation_t<inverse_operation_t<BOp, T, U>, T, U>;
-      requires same_as<BOp, inverse_operation_t<inverse_operation_t<BOp, T, U>, T, U>>;
+      typename inverse_operation_t<BOp>;
+      typename inverse_operation_t<inverse_operation_t<BOp>>;
+      requires same_as<BOp, inverse_operation_t<inverse_operation_t<BOp>>>;
     };
 
   template<class BOp, class T, class U>
@@ -173,8 +173,8 @@ namespace std {
 
       template<class T, class U>
       concept summable_with = // exposition only
-        default_initializable<remove_reference_t<T>> &&
-        default_initializable<remove_reference_t<U>> &&
+        default_constructible<remove_reference_t<T>> &&
+        default_constructible<remove_reference_t<U>> &&
         common_reference_with<T, U> &&
         requires(T&& t, U&& u) {
           { std::forward<T>(t) + std::forward<T>(t) } -> common_with<T>;
@@ -277,15 +277,15 @@ namespace std {
 
       template<class T, class U>
       concept divisible_with = // exposition only
-        multiplicable_with <T, U> &&
-        subtractible_with <T, U> &&
+        multiplicable_with<T, U> &&
+        differenceable_with<T, U> &&
         requires(T&& t, U&& u) {
           { std::forward<T>(t) / std::forward<T>(t) } -> common_with<T>;
           { std::forward<U>(u) / std::forward<U>(u) } -> common_with<U>;
           { std::forward<T>(t) / std::forward<U>(u) } -> common_with<T>;
           { std::forward<U>(u) / std::forward<T>(t) } -> common_with<U>;
           requires same_as<decltype(std::forward<T>(t) / std::forward<U>(u)),
-          decltype(std::forward<U>(u) / std::forward<T>(t))>;;
+          decltype(std::forward<U>(u) / std::forward<T>(t))>;
         };
 
     }
@@ -322,20 +322,19 @@ namespace std {
 
   template<class T, class U>
     requires magma<ranges::plus, T, U>
-  struct left_identity<ranges::plus> {
+  struct left_identity<ranges::plus, T, U> {
     constexpr common_type_t<T, U> operator()() const { return T{}; }
   };
 
   template<class T, class U>
     requires magma<ranges::plus, T, U>
-  struct right_identity<ranges::plus> {
+  struct right_identity<ranges::plus, T, U> {
     constexpr common_type_t<T, U> operator()() const { return U{}; }
   };
 
   template<>
   struct inverse_traits<ranges::plus> {
-    using type = minus;
-
+    using type = ranges::minus;
     constexpr type operator()() const noexcept { return type{}; }
   };
 
@@ -348,53 +347,53 @@ namespace std {
   struct inverse_traits<ranges::minus> {
     using type = ranges::plus;
     constexpr type operator()() const noexcept { return type{}; }
-  }
+  };
 
   template<class T, class U>
-    requires magma<times, T, U>
-  struct left_identity<times> {
+    requires magma<ranges::times, T, U>
+  struct left_identity<ranges::times, T, U> {
     constexpr common_type_t<T, U> operator()() const { return T{1}; }
   };
 
   template<class T, class U>
-    requires magma<times, T, U>
-  struct right_identity<times> {
+    requires magma<ranges::times, T, U>
+  struct right_identity<ranges::times, T, U> {
     constexpr common_type_t<T, U> operator()() const { return U{1}; }
   };
 
   template<class T, class U>
-    requires magma<times, T, U>
-  struct left_zero<times> {
+    requires magma<ranges::times, T, U>
+  struct left_zero<ranges::times, T, U> {
     constexpr common_type_t<T, U> operator()() const { return T{}; }
   };
 
   template<class T, class U>
-    requires magma<times, T, U>
-  struct right_zero<times> {
+    requires magma<ranges::times, T, U>
+  struct right_zero<ranges::times, T, U> {
     constexpr common_type_t<T, U> operator()() const { return U{}; }
   };
 
   template<>
-  struct inverse_traits<times> {
-    using type = divided_by;
+  struct inverse_traits<ranges::times> {
+    using type = ranges::divided_by;
     constexpr type operator()() const noexcept { return type{}; }
   };
 
   template<class T, class U>
-    requires magma<divided_by, T, U>
-  struct right_identity<divided_by> {
+    requires magma<ranges::divided_by, T, U>
+  struct right_identity<ranges::divided_by, T, U> {
     constexpr common_type_t<T, U> operator()() const { return U{1}; }
   };
 
   template<>
-  struct inverse_traits<divided_by> {
-    using type = times;
+  struct inverse_traits<ranges::divided_by> {
+    using type = ranges::times;
     constexpr type operator()() const noexcept { return type{}; }
   };
 
   template<class T, class U>
-    requires magma<modulus, T, U>
-  struct left_zero<modulus> {
+    requires magma<ranges::modulus, T, U>
+  struct left_zero<ranges::modulus, T, U> {
     constexpr common_type_t<T, U> operator()() const { return T{}; }
   };
 
