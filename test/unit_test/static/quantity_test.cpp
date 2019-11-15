@@ -37,12 +37,26 @@ namespace {
   public:
     my_value() = default;
     constexpr my_value(T v) : value_(std::move(v)) {}
-    constexpr my_value& operator+=(const my_value& other) { value_ += other.value_; return *this; }
-    constexpr my_value& operator-=(const my_value& other) { value_ -= other.value_; return *this; }
-    constexpr my_value& operator*=(const my_value& other) { value_ *= other.value_; return *this; }
-    constexpr my_value& operator/=(const my_value& other) { value_ /= other.value_; return *this; }
+    [[nodiscard]] constexpr my_value operator-() const { return my_value(-value_); }
+
+    [[nodiscard]] friend constexpr my_value operator+(my_value lhs, my_value rhs) { return my_value(lhs.value_ + rhs.value_); }
+    [[nodiscard]] friend constexpr my_value operator-(my_value lhs, my_value rhs) { return my_value(lhs.value_ - rhs.value_); }
+    [[nodiscard]] friend constexpr my_value operator*(my_value lhs, my_value rhs) { return my_value(lhs.value_ * rhs.value_); }
+    [[nodiscard]] friend constexpr my_value operator/(my_value lhs, my_value rhs) { return my_value(lhs.value_ / rhs.value_); }
+
+    [[nodiscard]] friend constexpr bool operator==(my_value lhs, my_value rhs) { return lhs.value_ == rhs.value_; }
+    [[nodiscard]] friend constexpr bool operator!=(my_value lhs, my_value rhs) { return !(lhs == rhs); }
+    [[nodiscard]] friend constexpr bool operator<(my_value lhs, my_value rhs) { return lhs.value_ < rhs.value_; }
+    [[nodiscard]] friend constexpr bool operator>(my_value lhs, my_value rhs) { return rhs < lhs; }
+    [[nodiscard]] friend constexpr bool operator<=(my_value lhs, my_value rhs) { return !(rhs < lhs); }
+    [[nodiscard]] friend constexpr bool operator>=(my_value lhs, my_value rhs) { return !(lhs < rhs); }
+
     constexpr operator const T&() const & { return value_; }
   };
+
+  static_assert(units::Scalar<my_value<float>>);
+  static_assert(std::convertible_to<my_value<float>, float>);
+  static_assert(std::convertible_to<float, my_value<float>>);
 
 }  // namespace
 
@@ -96,6 +110,9 @@ namespace {
 
   // constructors
 
+  using my_int = my_value<int>;
+  using my_double = my_value<double>;
+
   static_assert(quantity<metre, int>().count() == 0);
   constexpr quantity<metre, int> km{1000};
   static_assert(km.count() == 1000);
@@ -103,7 +120,7 @@ namespace {
 
   static_assert(quantity<metre, int>(1).count() == 1);
   static_assert(quantity<metre, int>(my_value(1)).count() == 1);
-  static_assert(quantity<metre, my_value<int>>(1).count() == 1);
+  static_assert(quantity<metre, my_int>(1).count() == my_int{1});
   //  static_assert(quantity<metre, int>(1.0).count() == 1);   // should not compile
   //  static_assert(quantity<metre, int>(my_value(1.0)).count() == 1); // should not compile
   //  static_assert(quantity<metre, my_value>(1.0).count() == 1);   // should not compile
@@ -112,24 +129,24 @@ namespace {
   static_assert(quantity<metre, double>(1).count() == 1.0);
   static_assert(quantity<metre, double>(my_value(1)).count() == 1.0);
   static_assert(quantity<metre, double>(3.14).count() == 3.14);
-  static_assert(quantity<metre, my_value<double>>(1.0).count() == 1.0);
-  static_assert(quantity<metre, my_value<double>>(1).count() == 1.0);
-  static_assert(quantity<metre, my_value<double>>(3.14).count() == 3.14);
+  static_assert(quantity<metre, my_double>(1.0).count() == my_double{1.0});
+  static_assert(quantity<metre, my_double>(1).count() == my_double{1.0});
+  static_assert(quantity<metre, my_double>(3.14).count() == my_double{3.14});
 
   static_assert(quantity<metre, int>(km).count() == 1000);
   //  static_assert(quantity<metre, int>(quantity<metre, double>(3.14)).count() == 3);   // should not compile
-  static_assert(quantity<metre, int>(quantity_cast<quantity<metre, my_value<int>>>(3.14m)).count() == 3);
-  //  static_assert(quantity<metre, int>(quantity<metre, my_value<double>>(1000.0)).count() == 1000);   // should not compile
+  static_assert(quantity<metre, int>(quantity_cast<quantity<metre, my_int>>(3.14m)).count() == 3);
+  //  static_assert(quantity<metre, int>(quantity<metre, my_double>(1000.0)).count() == 1000);   // should not compile
   //  static_assert(quantity<metre, my_value>(1000.0m).count() == 1000);   // should not compile
   static_assert(quantity<metre, double>(1000.0m).count() == 1000.0);
-  static_assert(quantity<metre, double>(quantity<metre, my_value<double>>(1000.0)).count() == 1000.0);
-  static_assert(quantity<metre, my_value<double>>(1000.0m).count() == 1000.0);
+  static_assert(quantity<metre, double>(quantity<metre, my_double>(1000.0)).count() == 1000.0);
+  static_assert(quantity<metre, my_double>(1000.0m).count() == my_double{1000.0});
   static_assert(quantity<metre, double>(km).count() == 1000.0);
-  static_assert(quantity<metre, my_value<double>>(km).count() == 1000.0);
+  static_assert(quantity<metre, my_double>(km).count() == my_double{1000.0});
   static_assert(quantity<metre, int>(1km).count() == 1000);
   //  static_assert(quantity<metre, int>(1_s).count() == 1);   // should not compile
   //  static_assert(quantity<kilometre, int>(1010m).count() == 1);   // should not compile
-  static_assert(quantity<kilometre, int>(quantity_cast<quantity<kilometre, my_value<int>>>(1010m)).count() == 1);
+  static_assert(quantity<kilometre, int>(quantity_cast<quantity<kilometre, my_int>>(1010m)).count() == 1);
 
   // assignment operator
 
@@ -146,12 +163,12 @@ namespace {
   static_assert(quantity<metre, double>::zero().count() == 0.0);
   static_assert(quantity<metre, double>::min().count() == std::numeric_limits<double>::lowest());
   static_assert(quantity<metre, double>::max().count() == std::numeric_limits<double>::max());
-  static_assert(quantity<metre, my_value<int>>::zero().count() == 0);
-  static_assert(quantity<metre, my_value<int>>::min().count() == std::numeric_limits<int>::lowest());
-  static_assert(quantity<metre, my_value<int>>::max().count() == std::numeric_limits<int>::max());
-  static_assert(quantity<metre, my_value<double>>::zero().count() == 0.0);
-  static_assert(quantity<metre, my_value<double>>::min().count() == std::numeric_limits<double>::lowest());
-  static_assert(quantity<metre, my_value<double>>::max().count() == std::numeric_limits<double>::max());
+  static_assert(quantity<metre, my_int>::zero().count() == my_int{0});
+  static_assert(quantity<metre, my_int>::min().count() == my_int{std::numeric_limits<int>::lowest()});
+  static_assert(quantity<metre, my_int>::max().count() == my_int{std::numeric_limits<int>::max()});
+  static_assert(quantity<metre, my_double>::zero().count() == my_double{0.0});
+  static_assert(quantity<metre, my_double>::min().count() == my_double{std::numeric_limits<double>::lowest()});
+  static_assert(quantity<metre, my_double>::max().count() == my_double{std::numeric_limits<double>::max()});
 
   // unary member operators
 

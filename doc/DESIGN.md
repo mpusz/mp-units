@@ -413,8 +413,26 @@ template<Unit U, Scalar Rep = double>
 class quantity;
 ```
 
-`units::Quantity` is a concept that is satisfied by a type that is an instantiation of `units::quantity`
-class template:
+where `Scalar` is the following concept:
+
+```cpp
+template<typename T, typename U = T>
+concept basic-arithmetic = // exposition only
+  std::magma<std::ranges::plus, T, U> &&
+  std::magma<std::ranges::minus, T, U> &&
+  std::magma<std::ranges::times, T, U> &&
+  std::magma<std::ranges::divided_by, T, U>;
+
+template<typename T>
+concept Scalar =
+  (!Quantity<T>) &&
+  std::regular<T> &&
+  std::totally_ordered<T> &&
+  basic-arithmetic<T>;
+```
+
+`units::Quantity` is a concept that is satisfied by a type that is an instantiation of
+`units::quantity` class template:
 
 ```cpp
 template<typename T>

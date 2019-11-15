@@ -117,14 +117,14 @@ namespace std {
 
   template<class BOp, class T, class U>
   concept magma =
-    std::common_with<T, U> &&
-    std::regular_invocable<BOp, T, T> &&
-    std::regular_invocable<BOp, U, U> &&
-    std::regular_invocable<BOp, T, U> &&
-    std::regular_invocable<BOp, U, T> &&
-    std::common_with<std::invoke_result_t<BOp&, T, U>, T> &&
-    std::common_with<std::invoke_result_t<BOp&, T, U>, U> &&
-    std::same_as<std::invoke_result_t<BOp&, T, U>, std::invoke_result_t<BOp&, U, T>>;
+    common_with<T, U> &&
+    regular_invocable<BOp, T, T> &&
+    regular_invocable<BOp, U, U> &&
+    regular_invocable<BOp, T, U> &&
+    regular_invocable<BOp, U, T> &&
+    common_with<invoke_result_t<BOp&, T, U>, T> &&
+    common_with<invoke_result_t<BOp&, T, U>, U> &&
+    same_as<invoke_result_t<BOp&, T, U>, invoke_result_t<BOp&, U, T>>;
 
   template<class BOp, class T, class U>
   concept semigroup = magma<BOp, T, U>;
@@ -166,7 +166,6 @@ namespace std {
     };
 
 
-
   namespace ranges {
 
     namespace detail {
@@ -200,7 +199,7 @@ namespace std {
 
       template<class T>
       concept negatable = // exposition only
-        summable_with <T, T> &&
+        summable_with<T, T> &&
         totally_ordered<T> &&
         requires(T&& t) {
           { -std::forward<T>(t) } -> common_with<T>;
@@ -231,7 +230,7 @@ namespace std {
           { std::forward<T>(t) - std::forward<U>(u) } -> common_with<T>;
           { std::forward<U>(u) - std::forward<T>(t) } -> common_with<U>;
           requires same_as<decltype(std::forward<T>(t) - std::forward<U>(u)),
-          decltype(std::forward<U>(u) - std::forward<T>(t))>;
+                           decltype(std::forward<U>(u) - std::forward<T>(t))>;
         };
 
     }
@@ -249,10 +248,10 @@ namespace std {
 
       template<class T, class U>
       concept multiplicable_with = // exposition only
-        detail::summable_with <T, U> &&
+        detail::summable_with<T, U> &&
         constructible_from<remove_cvref_t<T>, int> && // specifically T{0} and T{1}
         constructible_from<remove_cvref_t<U>, int> && // specifically U{0} and U{1}
-        constructible_from<remove_cvref_t<common_type<T, U>>, int> &&
+//        constructible_from<remove_cvref_t<common_type<T, U>>, int> &&   // TODO uncomment this when the problem is resolved
         common_reference_with<T, U> &&
         requires(T&& t, U&& u) {
           { std::forward<T>(t) * std::forward<T>(t) } -> common_with<T>;
@@ -260,7 +259,7 @@ namespace std {
           { std::forward<T>(t) * std::forward<U>(u) } -> common_with<T>;
           { std::forward<U>(u) * std::forward<T>(t) } -> common_with<U>;
           requires same_as<decltype(std::forward<T>(t) * std::forward<U>(u)),
-          decltype(std::forward<U>(u) * std::forward<T>(t))>;
+                           decltype(std::forward<U>(u) * std::forward<T>(t))>;
         };
   
     }
@@ -285,7 +284,7 @@ namespace std {
           { std::forward<T>(t) / std::forward<U>(u) } -> common_with<T>;
           { std::forward<U>(u) / std::forward<T>(t) } -> common_with<U>;
           requires same_as<decltype(std::forward<T>(t) / std::forward<U>(u)),
-          decltype(std::forward<U>(u) / std::forward<T>(t))>;
+                           decltype(std::forward<U>(u) / std::forward<T>(t))>;
         };
 
     }
@@ -300,14 +299,14 @@ namespace std {
 
       template<class T, class Q>
       concept modulo_with = // exposition only
-        divisible_with <T, Q> &&
+        divisible_with<T, Q> &&
         requires(T&& t, Q&& q) {
           { std::forward<T>(t) % std::forward<T>(t) } -> common_with<T>;
           { std::forward<Q>(q) % std::forward<Q>(q) } -> common_with<Q>;
           { std::forward<T>(t) % std::forward<Q>(q) } -> common_with<T>;
           { std::forward<Q>(q) % std::forward<T>(t) } -> common_with<Q>;
           requires same_as<decltype(std::forward<T>(t) % std::forward<Q>(q)),
-          decltype(std::forward<Q>(q) % std::forward<T>(t))>;
+                           decltype(std::forward<Q>(q) % std::forward<T>(t))>;
         };
 
     }

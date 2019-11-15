@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/bits/concepts.h>
-#include <units/bits/customization_points.h>
 #include <units/unit.h>
 #include <limits>
 #include <ostream>
@@ -48,27 +47,13 @@ namespace units {
 
   // Scalar
   template<typename T>
-  concept Scalar = (!Quantity<T>) && Number<T>;
+  concept Scalar =
+    (!Quantity<T>) &&
+    std::regular<T> &&
+    std::totally_ordered<T> &&
+    detail::basic_arithmetic<T>;
 
-  // QuantityRep
-  template<typename T>
-  concept QuantityRep = Scalar<T> &&
-    // integral
-    ((treat_as_floating_point<T> == false &&
-      requires(T a, T b) {
-        { a % b } -> T;
-        { a++ } -> T;
-        { ++a } -> T&;
-        { a-- } -> T;
-        { --a } -> T&;
-      }) ||
-     // floating-point
-     requires(T&& a) {
-       ::units::isfinite(std::forward<T>(a));
-       ::units::isnan(std::forward<T>(a));
-     });
-
-  template<Unit U, QuantityRep Rep>
+  template<Unit U, Scalar Rep>
   class quantity;
 
   namespace detail {
@@ -99,7 +84,7 @@ namespace units {
 
   }  // namespace detail
 
-  template<Quantity Q1, Quantity Q2, QuantityRep Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+  template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
   using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
   // quantity_cast
@@ -158,7 +143,8 @@ namespace units {
 
   template<Quantity To, typename U, typename Rep>
   [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
-      requires same_dim<typename To::dimension, typename U::dimension>
+      requires same_dim<typename To::dimension, typename U::dimension> &&
+               detail::basic_arithmetic<std::common_type_t<typename To::rep, Rep, intmax_t>>
   {
     using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
     using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
@@ -169,27 +155,31 @@ namespace units {
     return cast::cast(q);
   }
 
-  template<Unit ToU, QuantityRep ToRep, typename U, typename Rep>
+  template<Unit ToU, Scalar ToRep, typename U, typename Rep>
   [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
+      requires same_dim<typename ToU::dimension, typename U::dimension> &&
+               detail::basic_arithmetic<std::common_type_t<ToRep, Rep, intmax_t>>
   {
     return quantity_cast<quantity<ToU, ToRep>>(q);
   }
 
   template<Unit ToU, typename U, typename Rep>
   [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
+      requires same_dim<typename ToU::dimension, typename U::dimension>
   {
     return quantity_cast<quantity<ToU, Rep>>(q);
   }
 
-  template<QuantityRep ToRep, typename U, typename Rep>
+  template<Scalar ToRep, typename U, typename Rep>
   [[nodiscard]] constexpr auto quantity_cast(const quantity<U, Rep>& q)
+      requires detail::basic_arithmetic<std::common_type_t<ToRep, Rep, intmax_t>>
   {
     return quantity_cast<quantity<U, ToRep>>(q);
   }
 
   // quantity_values
 
-  template<QuantityRep Rep>
+  template<Scalar Rep>
   struct quantity_values {
     static constexpr Rep zero() noexcept { return Rep(0); }
     static constexpr Rep one() noexcept { return Rep(1); }
@@ -197,9 +187,10 @@ namespace units {
     static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
   };
 
+
   // quantity
 
-  template<Unit U, QuantityRep Rep = double>
+  template<Unit U, Scalar Rep = double>
   class quantity {
     Rep value_;
 
@@ -213,18 +204,15 @@ namespace units {
     quantity(quantity&&) = default;
 
     template<Scalar Value>
-        requires std::convertible_to<Value, rep> &&
-                (treat_as_floating_point<rep> || (!treat_as_floating_point<Value>))
+      requires detail::safe_convertible<Value, rep>
     constexpr explicit quantity(const Value& r): value_{static_cast<rep>(r)}
     {
     }
 
     template<Quantity Q2>
-        requires same_dim<dimension, typename Q2::dimension> &&
-                std::convertible_to<typename Q2::rep, rep> &&
-                (treat_as_floating_point<rep> ||
-                  (std::ratio_divide<typename Q2::unit::ratio, typename unit::ratio>::den == 1 &&
-                  !treat_as_floating_point<typename Q2::rep>))
+      requires same_dim<dimension, typename Q2::dimension> &&
+               detail::safe_convertible<typename Q2::rep, rep> &&
+               detail::safe_divisible<rep, typename Q2::unit, unit>
     constexpr quantity(const Q2& q): value_{quantity_cast<quantity>(q).count()}
     {
     }
@@ -234,68 +222,130 @@ namespace units {
 
     [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
-    [[nodiscard]] static constexpr quantity zero() noexcept { return quantity(quantity_values<Rep>::zero()); }
-    [[nodiscard]] static constexpr quantity one() noexcept { return quantity(quantity_values<Rep>::one()); }
-    [[nodiscard]] static constexpr quantity min() noexcept { return quantity(quantity_values<Rep>::min()); }
-    [[nodiscard]] static constexpr quantity max() noexcept { return quantity(quantity_values<Rep>::max()); }
+    template<typename T = Rep>
+    [[nodiscard]] static constexpr quantity zero() noexcept 
+      requires requires { quantity_values<T>::zero(); }
+      // requires requires { quantity_values<Rep>::zero(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    {
+      return quantity(quantity_values<Rep>::zero());
+    }
+
+    template<typename T = Rep>
+    [[nodiscard]] static constexpr quantity one() noexcept
+      requires requires { quantity_values<T>::one(); }
+//      requires requires { quantity_values<Rep>::one(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    {
+      return quantity(quantity_values<Rep>::one());
+    }
+
+    template<typename T = Rep>
+    [[nodiscard]] static constexpr quantity min() noexcept
+      requires requires { quantity_values<T>::min(); }
+//      requires requires { quantity_values<Rep>::min(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    {
+      return quantity(quantity_values<Rep>::min());
+    }
+
+    template<typename T = Rep>
+    [[nodiscard]] static constexpr quantity max() noexcept
+      requires requires { quantity_values<T>::max(); }
+//      requires requires { quantity_values<Rep>::max(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    {
+      return quantity(quantity_values<Rep>::max());
+    }
 
     [[nodiscard]] constexpr quantity operator+() const { return *this; }
-    [[nodiscard]] constexpr quantity operator-() const { return quantity(-count()); }
 
+    template<typename T = Rep>
+    [[nodiscard]] constexpr quantity operator-() const
+//      requires std::magma<std::ranges::negate, T, T>
+//      requires std::magma<std::ranges::negate, rep, rep>  // TODO gated by gcc-9 (fixed in gcc-10)
+    { 
+      return quantity(-count());
+    }
+
+    template<typename T = Rep>
     constexpr quantity& operator++()
-      // requires requires(rep v) { { ++v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+      requires requires(T v) { { ++v } -> SAME_AS(T&); }
+//      requires requires(rep v) { { ++v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       ++value_;
       return *this;
     }
+
+    template<typename T = Rep>
+      requires requires(T v) { { v++ } -> SAME_AS(T); }
     constexpr quantity operator++(int)
       // requires requires(rep v) { { v++ } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     { return quantity(value_++); }
 
+    template<typename T = Rep>
+     requires requires(T v) { { --v } -> SAME_AS(T&); }
     constexpr quantity& operator--()
       // requires requires(rep v) { { --v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       --value_;
       return *this;
     }
+
+    template<typename T = Rep>
+      requires requires(T v) { { v-- } -> SAME_AS(T); }
     constexpr quantity operator--(int)
       // requires requires(rep v) { { v-- } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     { return quantity(value_--); }
 
+    template<typename T = Rep>
+      requires requires(T v1, T v2) { { v1 += v2 } -> SAME_AS(T&); }
     constexpr quantity& operator+=(const quantity& q)
+      // requires requires(rep v1, rep v2) { { v1 += v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ += q.count();
       return *this;
     }
 
+    template<typename T = Rep>
+      requires requires(T v1, T v2) { { v1 -= v2 } -> SAME_AS(T&); }
     constexpr quantity& operator-=(const quantity& q)
+      // requires requires(rep v1, rep v2) { { v1 -= v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ -= q.count();
       return *this;
     }
 
+    template<typename T = Rep>
+      requires requires(T v1, T v2) { { v1 *= v2 } -> SAME_AS(T&); }
     constexpr quantity& operator*=(const rep& rhs)
+      // requires requires(rep v1, rep v2) { { v1 *= v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ *= rhs;
       return *this;
     }
 
+    template<typename T = Rep>
+      requires requires(T v1, T v2) { { v1 /= v2 } -> SAME_AS(T&); }
     constexpr quantity& operator/=(const rep& rhs)
+      // requires requires(rep v1, rep v2) { { v1 /= v2 } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ /= rhs;
       return *this;
     }
 
-    template<Scalar Value>
+    template<Scalar Value, typename T = Rep>
     constexpr quantity& operator%=(const Value& rhs)
-        requires (!treat_as_floating_point<rep> && !treat_as_floating_point<Value>)
+      requires (!treat_as_floating_point<rep>) && 
+               (!treat_as_floating_point<Value>) &&
+               requires(T v1, Value v2) { { v1 %= v2 } -> SAME_AS(T&); }
+              //  requires(rep v1, Value v2) { { v1 %= v2 } -> SAME_AS(rep&); }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ %= rhs;
       return *this;
     }
 
+    template<typename T = Rep>
     constexpr quantity& operator%=(const quantity& q)
-        requires (!treat_as_floating_point<rep>)
+      requires (!treat_as_floating_point<rep>) &&
+                requires(T v1, T v2) { { v1 %= v2 } -> SAME_AS(T&); }
+              // requires(rep v1, rep v2) { { v1 %= v2 } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
     {
       value_ %= q.count();
       return *this;
@@ -310,7 +360,7 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator+(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> && detail::basic_arithmetic<Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() + rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -319,30 +369,32 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator-(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> && detail::basic_arithmetic<Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() - rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-  template<typename U, typename Rep1, Scalar Value>
-  [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<U, Rep1>& q, const Value& v)
+  template<typename U, typename Rep, Scalar Value>
+  [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<U, Rep>& q, const Value& v)
+    requires detail::basic_arithmetic<Rep, Value>
   {
     using common_rep = decltype(q.count() * v);
     using ret = quantity<U, common_rep>;
     return ret(q.count() * v);
   }
 
-  template<Scalar Value, typename U, typename Rep2>
-  [[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<U, Rep2>& q)
+  template<Scalar Value, typename U, typename Rep>
+  [[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<U, Rep>& q)
+    requires detail::basic_arithmetic<Value, Rep>
   {
     return q * v;
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
-  [[nodiscard]] constexpr QuantityRep AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>>
+  [[nodiscard]] constexpr Scalar AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+      requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>> && detail::basic_arithmetic<Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() * rhs.count());
     using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -353,7 +405,8 @@ namespace units {
   [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires (!same_dim<typename U1::dimension, dim_invert<typename U2::dimension>>) &&
               (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
-                (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1))
+                (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)) &&
+              detail::basic_arithmetic<Rep1, Rep2>
   {
     using dim = dimension_multiply<typename U1::dimension, typename U2::dimension>;
     using common_rep = decltype(lhs.count() * rhs.count());
@@ -363,6 +416,7 @@ namespace units {
 
   template<Scalar Value, typename U, typename Rep>
   [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<U, Rep>& q)
+    requires detail::basic_arithmetic<Value, Rep>
   {
     Expects(q != std::remove_cvref_t<decltype(q)>(0));
 
@@ -374,6 +428,7 @@ namespace units {
 
   template<typename U, typename Rep, Scalar Value>
   [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<U, Rep>& q, const Value& v)
+    requires detail::basic_arithmetic<Rep, Value>
   {
     Expects(v != Value{0});
 
@@ -383,8 +438,8 @@ namespace units {
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
-  [[nodiscard]] constexpr QuantityRep AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+  [[nodiscard]] constexpr Scalar AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
+    requires same_dim<typename U1::dimension, typename U2::dimension>  && detail::basic_arithmetic<Rep1, Rep2>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
@@ -397,7 +452,8 @@ namespace units {
   [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires (!same_dim<typename U1::dimension, typename U2::dimension>) &&
                (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
-                (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
+                (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1)) &&
+               detail::basic_arithmetic<Rep1, Rep2>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 
@@ -409,7 +465,8 @@ namespace units {
 
   template<typename U, typename Rep, Scalar Value>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U, Rep>& q, const Value& v)
-      requires (!treat_as_floating_point<Rep> && !treat_as_floating_point<Value>)
+      requires (!treat_as_floating_point<Rep>) && (!treat_as_floating_point<Value>) &&
+               detail::basic_arithmetic<Rep, Value> && std::magma<std::ranges::modulus, Rep, Value>
   {
     using common_rep = decltype(q.count() % v);
     using ret = quantity<U, common_rep>;
@@ -418,7 +475,8 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires (!treat_as_floating_point<Rep1> && !treat_as_floating_point<Rep2>)
+      requires (!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::magma<std::ranges::modulus, Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() % rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -427,7 +485,8 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator==(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension>  &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::equality_comparable_with<Rep1, Rep2>
   {
     using cq = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return cq(lhs).count() == cq(rhs).count();
@@ -435,14 +494,16 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator!=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::equality_comparable_with<Rep1, Rep2>
   {
     return !(lhs == rhs);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator<(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::totally_ordered_with<Rep1, Rep2>
   {
     using cq = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>>;
     return cq(lhs).count() < cq(rhs).count();
@@ -450,21 +511,24 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator<=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::totally_ordered_with<Rep1, Rep2>
   {
     return !(rhs < lhs);
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator>(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::totally_ordered_with<Rep1, Rep2>
   {
     return rhs < lhs;
   }
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr bool operator>=(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2> && std::totally_ordered_with<Rep1, Rep2>
   {
     return !(lhs < rhs);
   }

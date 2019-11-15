@@ -23,6 +23,7 @@
 #pragma once
 
 #include <concepts/concepts.hpp>
+#include <functional>
 
 #ifdef NDEBUG
 #define Expects(cond) (void)(cond);
@@ -33,17 +34,34 @@
 
 #if __GNUC__ > 9
 #define AUTO auto
+#define SAME_AS(T) std::same_as<T>
 #else
 #define AUTO
+#define SAME_AS(T) T
 #endif
 
 namespace std {
 
   // concepts
-  using concepts::same_as;
-  using concepts::derived_from;
-  using concepts::regular;
-  using concepts::totally_ordered;
+  using concepts::common_with;
+  using concepts::common_reference_with;
+  using concepts::constructible_from;
   using concepts::convertible_to;
+  using concepts::default_constructible;
+  using concepts::derived_from;
+  using concepts::equality_comparable_with;
+  using concepts::regular;
+  using concepts::same_as;
+  using concepts::totally_ordered;
+  using concepts::totally_ordered_with;
+
+  template<class F, class... Args>
+  concept invocable =
+  requires(F&& f, Args&&... args) {
+    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
+  };
+
+  template<class F, class... Args>
+  concept regular_invocable = invocable<F, Args...>;
 
 }
