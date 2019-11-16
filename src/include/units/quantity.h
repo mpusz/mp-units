@@ -205,7 +205,7 @@ namespace units {
 
     template<Scalar Value>
       requires detail::safe_convertible<Value, rep>
-    constexpr explicit quantity(const Value& r): value_{static_cast<rep>(r)}
+    constexpr explicit quantity(const Value& v): value_{static_cast<rep>(v)}
     {
     }
 
@@ -369,7 +369,8 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator-(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, typename U2::dimension> && detail::basic_arithmetic<Rep1, Rep2>
+      requires same_dim<typename U1::dimension, typename U2::dimension> &&
+               detail::basic_arithmetic<Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() - rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
@@ -394,7 +395,8 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Scalar AUTO operator*(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-      requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>> && detail::basic_arithmetic<Rep1, Rep2>
+      requires same_dim<typename U1::dimension, dim_invert<typename U2::dimension>> &&
+               detail::basic_arithmetic<Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() * rhs.count());
     using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -439,7 +441,8 @@ namespace units {
 
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Scalar AUTO operator/(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
-    requires same_dim<typename U1::dimension, typename U2::dimension>  && detail::basic_arithmetic<Rep1, Rep2>
+    requires same_dim<typename U1::dimension, typename U2::dimension>  &&
+             detail::basic_arithmetic<Rep1, Rep2>
   {
     Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
 

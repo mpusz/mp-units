@@ -265,7 +265,7 @@ namespace std {
     }
 
     struct times {
-      template<class T, detail::multiplicable_with <T> U>
+      template<class T, detail::multiplicable_with<T> U>
       constexpr decltype(auto) operator()(T&& t, U&& u) const
       { return std::forward<T>(t) * std::forward<U>(u); }
 
@@ -290,7 +290,7 @@ namespace std {
     }
 
     struct divided_by {
-      template<class T, detail::divisible_with <T> U>
+      template<class T, detail::divisible_with<T> U>
       constexpr decltype(auto) operator()(T&& t, U&& u) const
       { return std::forward<T>(t) / std::forward<U>(u); }
     };
@@ -312,7 +312,7 @@ namespace std {
     }
 
     struct modulus {
-      template<class T, detail::modulo_with <T> U>
+      template<class T, detail::modulo_with<T> U>
       constexpr decltype(auto) operator()(T&& t, U&& u) const
       { return std::forward<T>(t) % std::forward<U>(u); }
     };

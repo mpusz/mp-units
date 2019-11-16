@@ -32,7 +32,7 @@ namespace units {
   namespace detail {
 
     template<typename T, typename U = T>
-    concept basic_arithmetic = // exposition only 
+    concept basic_arithmetic = // exposition only
       std::magma<std::ranges::plus, T, U> &&
       std::magma<std::ranges::minus, T, U> &&
       std::magma<std::ranges::times, T, U> &&

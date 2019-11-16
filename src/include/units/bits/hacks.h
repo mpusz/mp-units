@@ -43,8 +43,8 @@
 namespace std {
 
   // concepts
-  using concepts::common_with;
   using concepts::common_reference_with;
+  using concepts::common_with;
   using concepts::constructible_from;
   using concepts::convertible_to;
   using concepts::default_constructible;
