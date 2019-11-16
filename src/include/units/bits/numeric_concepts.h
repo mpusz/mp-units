@@ -251,7 +251,7 @@ namespace std {
         detail::summable_with<T, U> &&
         constructible_from<remove_cvref_t<T>, int> && // specifically T{0} and T{1}
         constructible_from<remove_cvref_t<U>, int> && // specifically U{0} and U{1}
-//        constructible_from<remove_cvref_t<common_type<T, U>>, int> &&   // TODO uncomment this when the problem is resolved
+        constructible_from<remove_cvref_t<common_type_t<T, U>>, int> &&
         common_reference_with<T, U> &&
         requires(T&& t, U&& u) {
           { std::forward<T>(t) * std::forward<T>(t) } -> common_with<T>;
