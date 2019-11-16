@@ -413,24 +413,6 @@ template<Unit U, Scalar Rep = double>
 class quantity;
 ```
 
-where `Scalar` is the following concept:
-
-```cpp
-template<typename T, typename U = T>
-concept basic-arithmetic = // exposition only
-  std::magma<std::ranges::plus, T, U> &&
-  std::magma<std::ranges::minus, T, U> &&
-  std::magma<std::ranges::times, T, U> &&
-  std::magma<std::ranges::divided_by, T, U>;
-
-template<typename T>
-concept Scalar =
-  (!Quantity<T>) &&
-  std::regular<T> &&
-  std::totally_ordered<T> &&
-  basic-arithmetic<T>;
-```
-
 `units::Quantity` is a concept that is satisfied by a type that is an instantiation of
 `units::quantity` class template:
 
@@ -860,3 +842,69 @@ In order to extend the library with custom dimensions the user has to:
       constexpr auto operator""_B(long double l) { return units::quantity<byte, long double>(l); }
     }
     ```
+
+## Adding custom representations
+
+In theory `quantity` can take any arithmetic-like type as a `Rep` template parameter. In
+practice some interface is forced by numeric concepts.
+
+To provide basic library functionality the type should satisfy the following concept:
+
+```cpp
+template<typename T, typename U = T>
+concept basic-arithmetic = // exposition only
+  std::magma<std::ranges::plus, T, U> &&
+  std::magma<std::ranges::minus, T, U> &&
+  std::magma<std::ranges::times, T, U> &&
+  std::magma<std::ranges::divided_by, T, U>;
+
+template<typename T>
+concept Scalar =
+  (!Quantity<T>) &&
+  std::regular<T> &&
+  std::totally_ordered<T> &&
+  basic-arithmetic<T>;
+```
+
+The above implies that the `Rep` type should provide at least:
+- default constructor, destructor, copy-constructor, and copy-assignment operator
+- `operator==(Rep, Rep)`, `operator!=(Rep, Rep)`
+- `operator<(Rep, Rep)`, `operator>(Rep, Rep)`, `operator<=(Rep, Rep)`, `operator>=(Rep, Rep)`
+- `operator-(Rep)`
+- `operator+(Rep, Rep)`, `operator-(Rep, Rep)`, `operator*(Rep, Rep)`, `operator*(Rep, Rep)`
+
+Above also requires that the `Rep` should be implicitly convertible from integral types (i.e. `int`) so a proper implicit converting constructor should be provided.
+
+Moreover, in most cases to observe expected behavior `Rep` will have to be registered as a
+floating-point representation type by specializing `units::treat_as_floating_point` type
+trait:
+
+```cpp
+template<typename Rep>
+inline constexpr bool treat_as_floating_point;
+```
+
+An example of such a type can be found in [measurement example](../example/measurement.cpp).
+
+However, as written above this will enable only a basic functionality of the library. In case
+additional `quantity` operations are needed the user may opt-in to any of them by providing
+the equivalent operation for `Rep` type. Here is an additional list of opt-in operations:
+- `operator++()`
+- `operator++(int)`
+- `operator--()`
+- `operator--(int)`
+- `operator+=(Rep)`
+- `operator-=(Rep)`
+- `operator*=(Rep)`
+- `operator/=(Rep)`
+- `operator%=(Rep)`
+- `operator%=(Rep)`
+- `operator%(Rep, Rep)`
+
+`quantity` also has 4 static  functions `zero()`, `one()`, `min()`, and `max()` which can
+be enabled by providing a specialization of `quantity_values` type trait for `Rep` type:
+
+```cpp
+template<Scalar Rep>
+struct quantity_values;
+```
