@@ -61,8 +61,8 @@ namespace units {
 
   // US customary units
   struct yard : named_scaled_derived_unit<yard, length, "yd", ratio<9'144, 10'000>> {};
-  struct foot : named_scaled_derived_unit<foot, length, "ft", ratio_multiply<ratio<1, 3>, yard::ratio>> {};
-  struct inch : named_scaled_derived_unit<inch, length, "in", ratio_multiply<ratio<1, 12>, foot::ratio>> {};
+  struct foot : named_scaled_derived_unit<foot, length, "ft", ratio_divide<yard::ratio, ratio<3>>> {};
+  struct inch : named_scaled_derived_unit<inch, length, "in", ratio_divide<foot::ratio, ratio<12>>> {};
   struct mile : named_scaled_derived_unit<mile, length, "mi", ratio_multiply<ratio<1'760>, yard::ratio>> {};
 
   inline namespace literals {
