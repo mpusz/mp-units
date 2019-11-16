@@ -379,7 +379,7 @@ namespace units {
 
   template<typename U, typename Rep, Scalar Value>
   [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<U, Rep>& q, const Value& v)
-    requires detail::basic_arithmetic<Rep, Value>
+    requires std::magma<std::ranges::times, Rep, Value>
   {
     using common_rep = decltype(q.count() * v);
     using ret = quantity<U, common_rep>;
@@ -388,7 +388,7 @@ namespace units {
 
   template<Scalar Value, typename U, typename Rep>
   [[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<U, Rep>& q)
-    requires detail::basic_arithmetic<Value, Rep>
+    requires std::magma<std::ranges::times, Value, Rep>
   {
     return q * v;
   }
@@ -418,7 +418,7 @@ namespace units {
 
   template<Scalar Value, typename U, typename Rep>
   [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<U, Rep>& q)
-    requires detail::basic_arithmetic<Value, Rep>
+    requires std::magma<std::ranges::divided_by, Value, Rep>
   {
     Expects(q != std::remove_cvref_t<decltype(q)>(0));
 
@@ -430,7 +430,7 @@ namespace units {
 
   template<typename U, typename Rep, Scalar Value>
   [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<U, Rep>& q, const Value& v)
-    requires detail::basic_arithmetic<Rep, Value>
+    requires std::magma<std::ranges::divided_by, Rep, Value>
   {
     Expects(v != Value{0});
 
@@ -469,7 +469,7 @@ namespace units {
   template<typename U, typename Rep, Scalar Value>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U, Rep>& q, const Value& v)
       requires (!treat_as_floating_point<Rep>) && (!treat_as_floating_point<Value>) &&
-               detail::basic_arithmetic<Rep, Value> && std::magma<std::ranges::modulus, Rep, Value>
+               std::magma<std::ranges::modulus, Rep, Value>
   {
     using common_rep = decltype(q.count() % v);
     using ret = quantity<U, common_rep>;
@@ -479,7 +479,7 @@ namespace units {
   template<typename U1, typename Rep1, typename U2, typename Rep2>
   [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<U1, Rep1>& lhs, const quantity<U2, Rep2>& rhs)
       requires (!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
-               detail::basic_arithmetic<Rep1, Rep2> && std::magma<std::ranges::modulus, Rep1, Rep2>
+               std::magma<std::ranges::modulus, Rep1, Rep2>
   {
     using common_rep = decltype(lhs.count() % rhs.count());
     using ret = common_quantity<quantity<U1, Rep1>, quantity<U2, Rep2>, common_rep>;
