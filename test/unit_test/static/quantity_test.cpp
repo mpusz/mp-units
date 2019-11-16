@@ -54,10 +54,6 @@ namespace {
     constexpr operator const T&() const & { return value_; }
   };
 
-  static_assert(units::Scalar<my_value<float>>);
-  static_assert(std::convertible_to<my_value<float>, float>);
-  static_assert(std::convertible_to<float, my_value<float>>);
-
 }  // namespace
 
 namespace units {
@@ -91,6 +87,10 @@ namespace std {
 }  // namespace std
 
 namespace {
+
+  static_assert(units::Scalar<my_value<float>>);
+  static_assert(std::convertible_to<my_value<float>, float>);
+  static_assert(std::convertible_to<float, my_value<float>>);
 
   using namespace units;
 
