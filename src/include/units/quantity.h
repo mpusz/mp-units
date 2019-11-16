@@ -258,8 +258,8 @@ namespace units {
 
     template<typename T = Rep>
     [[nodiscard]] constexpr quantity operator-() const
-//      requires std::magma<std::ranges::negate, T, T>
-//      requires std::magma<std::ranges::negate, rep, rep>  // TODO gated by gcc-9 (fixed in gcc-10)
+      requires std::regular_invocable<std::ranges::negate, T>
+//      requires std::regular_invocable<std::ranges::negate, rep>  // TODO gated by gcc-9 (fixed in gcc-10)
     { 
       return quantity(-count());
     }
