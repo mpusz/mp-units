@@ -26,3 +26,9 @@ target_link_libraries(example
     PRIVATE
         mp::units
 )
+
+add_executable(measurement measurement.cpp)
+target_link_libraries(measurement
+    PRIVATE
+        mp::units
+)
