@@ -112,7 +112,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
 
 ## Release notes
 
-- 0.4.0 ???
+- 0.4.0 Nov 17, 2019
   - Support for derived dimensions in `exp` added
   - Added `pow()` and `sqrt()` operations on quantities
   - `units` removed from a `std::experimental` namespace
