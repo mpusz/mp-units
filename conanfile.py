@@ -21,9 +21,10 @@
 # SOFTWARE.
 
 from conans import ConanFile, CMake, tools
-from conans.tools import load
+from conans.tools import load, Version
 from conans.errors import ConanInvalidConfiguration
 import re
+import os
 
 
 def get_version():
@@ -43,39 +44,39 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     exports = ["LICENSE.md"]
+    exports = ["*"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "range-v3/0.9.1@ericniebler/stable",
         "Catch2/2.10.0@catchorg/stable",
         "fmt/6.0.0"
     )
-    scm = {
-        "type": "git",
-        "url": "auto",
-        "revision": "auto",
-        "submodule": "recursive"
-    }
     generators = "cmake"
+
+    @property
+    def _run_tests(self):
+        return tools.get_env("CONAN_RUN_TESTS", False)
 
     def configure(self):
         if self.settings.compiler != "gcc":
             raise ConanInvalidConfiguration("Library works only with gcc")
-        if int(self.settings.compiler.version.value) < 9:
+        if Version(self.settings.compiler.version) < "9":
             raise ConanInvalidConfiguration("Library requires at least gcc-9")
-        if self.settings.compiler.cppstd not in ["20", "gnu20"]:
+        if self.settings.compiler.cppstd not in [None, "20", "gnu20"]:
             raise ConanInvalidConfiguration("Library requires at least C++20 support")
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        if tools.get_env("CONAN_RUN_TESTS", False):
-            cmake.configure()
-        else:
-            cmake.configure(source_dir="%s/src" % self.source_folder)
+        cmake.definitions["BUILD_TESTS"] = self._run_tests
+        cmake.definitions["BUILD_EXAMPLES"] = self._run_tests
+        cmake.configure()
         return cmake
 
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
+        if self._run_tests:
+            self.run(os.path.join("bin", "unit_tests_runtime"), run_environment=True)
 
     def package(self):
         self.copy(pattern="*license*", dst="licenses", excludes="cmake/common/*", ignore_case=True, keep_path=False)
