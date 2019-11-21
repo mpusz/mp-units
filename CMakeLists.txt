@@ -23,10 +23,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(units)
 
-# project options
-option(BUILD_TESTS "Build utils tests" ON)
-option(BUILD_EXAMPLES "Build utils examples" ON)
-
 # set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -43,11 +39,7 @@ include(common/cmake/compile_flags)
 add_subdirectory(src)
 
 # add unit tests
-if (BUILD_TESTS)
-    add_subdirectory(test)
-endif()
+add_subdirectory(test)
 
 # add usage example
-if (BUILD_EXAMPLES)
-    add_subdirectory(example)
-endif()
+add_subdirectory(example)

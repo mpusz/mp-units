@@ -44,7 +44,7 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     exports = ["LICENSE.md"]
-    exports = ["*"]
+    exports_sources = ["src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "range-v3/0.9.1@ericniebler/stable",
@@ -62,14 +62,15 @@ class UnitsConan(ConanFile):
             raise ConanInvalidConfiguration("Library works only with gcc")
         if Version(self.settings.compiler.version) < "9":
             raise ConanInvalidConfiguration("Library requires at least gcc-9")
-        if self.settings.compiler.cppstd not in [None, "20", "gnu20"]:
+        if self.settings.compiler.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library requires at least C++20 support")
 
-    def _configure_cmake(self):
+    def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
-        cmake.definitions["BUILD_TESTS"] = self._run_tests
-        cmake.definitions["BUILD_EXAMPLES"] = self._run_tests
-        cmake.configure()
+        if self._run_tests:
+            cmake.configure()
+        else:
+            cmake.configure(source_folder="src", build_folder="src")
         return cmake
 
     def build(self):
@@ -79,7 +80,7 @@ class UnitsConan(ConanFile):
             self.run(os.path.join("bin", "unit_tests_runtime"), run_environment=True)
 
     def package(self):
-        self.copy(pattern="*license*", dst="licenses", excludes="cmake/common/*", ignore_case=True, keep_path=False)
+        self.copy(pattern="LICENSE.md", dst="licenses")
         cmake = self._configure_cmake()
         cmake.install()
 
