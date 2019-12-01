@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(unit_test/runtime)
+#add_subdirectory(unit_test/runtime)
 add_subdirectory(unit_test/static)
-add_subdirectory(metabench)
+#add_subdirectory(metabench)

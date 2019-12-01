@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.8)
 #cmake_policy(SET CMP0076 NEW)
 
 project(units
-    VERSION 0.4.0
+    VERSION 0.5.0
     LANGUAGES CXX
 )
 

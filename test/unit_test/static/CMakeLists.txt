@@ -21,13 +21,16 @@
 # SOFTWARE.
 
 add_library(unit_tests_static
-    cgs_test.cpp
-    custom_unit_test.cpp
-    dimension_test.cpp
-    math_test.cpp
-    quantity_test.cpp
+#    cgs_test.cpp
+#    custom_unit_test.cpp
+#    dimension_test.cpp
+#    fixed_string_test.cpp
+#    math_test.cpp
+#    new_design.cpp
+#    quantity_test.cpp
     ratio_test.cpp
-    type_list_test.cpp
+#    si_test.cpp
+#    type_list_test.cpp
     unit_test.cpp
 )
 target_link_libraries(unit_tests_static

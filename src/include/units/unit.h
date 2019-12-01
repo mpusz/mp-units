@@ -22,353 +22,185 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/bits/downcasting.h>
+#include <units/bits/fixed_string.h>
+#include <units/bits/type_traits.h>
+#include <units/bits/unit_concept.h>
+#include <units/derived_dimension.h>
 #include <units/prefix.h>
 #include <units/ratio.h>
-#include <ratio>
 
 namespace units {
 
-  template<Dimension D, Ratio R>
-    requires (R::num * R::den > 0)
-  struct unit : downcast_base<unit<D, R>> {
-    using dimension = D;
-    using ratio = R;
-  };
+namespace detail {
 
-  // is_unit
+template<typename U, Ratio R>
+struct reference_unit : downcast_base<reference_unit<U, R>> {
+  using reference = U;
+  using ratio = R;
+};
 
-  namespace detail {
+}  // namespace detail
 
-    template<typename T>
-    inline constexpr bool is_unit = false;
+namespace detail {
 
-    template<typename D, typename R>
-    inline constexpr bool is_unit<unit<D, R>> = true;
+// same_reference_units
+template<DerivedDimension D, Unit... Us>
+inline constexpr bool same_reference_units = false;
 
-  }
+template<typename... Es, Unit... Us>
+inline constexpr bool same_reference_units<derived_dimension<Es...>, Us...> =
+    (std::same_as<typename Es::dimension::coherent_unit::reference, typename Us::reference> && ...);
 
-  template<typename T>
-  concept Unit =
-      std::is_empty_v<T> &&
-      detail::is_unit<downcast_base_t<T>>;
+// deduced_unit
+template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+struct ratio_op;
 
-  // deduced_derived_unit
+template<typename Result, int UnitExpDen, typename UnitRatio>
+struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
+  using ratio = Result;
+};
 
-  namespace detail {
+template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+struct ratio_op {
+  using calc_ratio =
+      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>, ratio_divide<Result, UnitRatio>>;
+  static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
+  using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
+};
 
-    template<typename D>
-    struct get_unit_base_dim;
+template<DerivedDimension D, Unit... Us>
+struct derived_ratio;
 
-    template<typename E, typename... Rest>
-    struct get_unit_base_dim<dimension<E, Rest...>> {
-      static_assert(sizeof...(Rest) == 0, "Base unit expected");
-      using dimension = E::dimension;
-    };
+template<Unit... Us>
+struct derived_ratio<derived_dimension<>, Us...> {
+  using ratio = ::units::ratio<1>;
+};
 
-    template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-    struct ratio_op;
+template<typename E, typename... ERest, Unit U, Unit... URest>
+struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
+  using rest_ratio = derived_ratio<derived_dimension<ERest...>, URest...>::ratio;
+  using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
+};
 
-    template<typename Result, int UnitExpDen, typename UnitRatio>
-    struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
-      using ratio = Result;
-    };
+template<DerivedDimension D, Unit... Us>
+using deduced_unit =
+    reference_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
 
-    template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-    struct ratio_op {
-      using calc_ratio = conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>,
-                                     ratio_divide<Result, UnitRatio>>;
-      static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
-      using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
-    };
+}  // namespace detail
 
-    template<typename D, typename... Us>
-    struct derived_ratio;
+/**
+ * @brief A starting point for a new hierarchy of units
+ *
+ * A unit is an entity defined and adopted by convention, with which any other quantity of
+ * the same kind can be compared to express the ratio of the second quantity to the first
+ * one as a number.
+ *
+ * Coherent unit is a unit that, for a given system of quantities and for a chosen set of
+ * base units, is a product of powers of base units with no other proportionality factor
+ * than one.
+ *
+ * This class allows definition of a new unnamed (in most cases coherent) derived unit of
+ * a specific derived dimension and it should be passed in this dimension's definition.
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ */
+template<typename Child>
+struct unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>>> {
+  static constexpr bool is_named = false;
+  using prefix_type = no_prefix;
+};
 
-    template<typename... Us>
-    struct derived_ratio<dimension<>, Us...> {
-      using ratio = ::units::ratio<1>;
-    };
+/**
+ * @brief A named unit
+ *
+ * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
+ * A named unit may be used by other units defined with the prefix of the same type, unless
+ * no_prefix is provided for PT template parameter (in such a case it is impossible to define
+ * a prefix unit based on this one).
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ * @tparam Symbol a short text representation of the unit
+ * @tparam PT no_prefix or a type of prefix family
+ */
+template<typename Child, basic_fixed_string Symbol, PrefixType PT>
+struct named_unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>>> {
+  static constexpr bool is_named = true;
+  static constexpr auto symbol = Symbol;
+  using prefix_type = PT;
+};
 
-    template<typename E, typename... ERest, typename U, typename... URest>
-    struct derived_ratio<dimension<E, ERest...>, U, URest...> {
-      static_assert(same_dim<typename E::dimension, typename U::dimension>, "The order and number of units in `deduced_derived_unit<Us...>` should match dimensions provided in a `derived_dimension<>`");
-      static_assert(sizeof...(ERest) == sizeof...(URest), "The number of `deduced_derived_unit<Us...>` units should match the number of exponents provided to `derived_dimension<>`");
-      using rest_ratio = derived_ratio<dimension<ERest...>, URest...>::ratio;
-      using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
-    };
+/**
+ * @brief A scaled unit
+ *
+ * Defines a new named unit that is a scaled version of another unit. Such unit can be used by
+ * other units defined with the prefix of the same type, unless no_prefix is provided for PT
+ * template parameter (in such a case it is impossible to define a prefix unit based on this
+ * one).
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ * @tparam Symbol a short text representation of the unit
+ * @tparam PT no_prefix or a type of prefix family
+ * @tparam R a scale to apply to U
+ * @tparam U a reference unit to scale
+ */
+template<typename Child, basic_fixed_string Symbol, PrefixType PT, Ratio R, Unit U>
+struct scaled_unit : downcast_child<Child, detail::reference_unit<typename U::reference, ratio_multiply<R, typename U::ratio>>> {
+  static constexpr bool is_named = true;
+  static constexpr auto symbol = Symbol;
+  using prefix_type = PT;
+};
 
-    template<typename... Es>
-    constexpr auto exp_count(dimension<Es...>)
-    {
-      return sizeof...(Es);
-    }
+/**
+ * @brief A prefixed unit
+ *
+ * Defines a new unit that is a scaled version of another unit by the provided prefix. It is
+ * only possible to create such a unit if the given prefix type matches the one defined in a
+ * reference unit.
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ * @tparam P prefix to be appied to the reference unit
+ * @tparam U reference unit
+ */
+template<typename Child, Prefix P, Unit U>
+  requires std::same_as<typename P::prefix_type, typename U::prefix_type>
+// TODO replace with the below code when gcc will stop to crash on it ;-)
+// struct prefixed_unit : scaled_unit<Child, P::symbol + U::symbol, typename P::prefix_type,
+//                                    ratio_multiply<typename P::ratio, typename U::ratio>,
+//                                    typename U::reference> {};
+struct prefixed_unit :
+    downcast_child<Child, detail::reference_unit<typename U::reference, ratio_multiply<typename P::ratio, typename U::ratio>>> {
+  static constexpr bool is_named = true;
+  static constexpr auto symbol = P::symbol + U::symbol;
+  using prefix_type = P::prefix_type;
+};
 
-    template<typename U>
-    inline constexpr bool is_unit_of_base_dimension = (exp_count(typename U::dimension::base_type()) == 1);
+/**
+ * @brief A unit with a deduced ratio and symbol
+ *
+ * Defines a new unit with a deduced ratio and symbol based on the recipe from the provided
+ * derived dimension. The number and order of provided units should match the recipe of
+ * dimension.
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ * @tparam Dim a derived dimension recipe to use for deduction
+ * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
+ * @tparam URest the units for the rest of dimensions from the recipe
+ */
+template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
+  requires detail::same_reference_units<typename Dim::recipe, U, URest...> &&
+           (U::is_named && (URest::is_named && ... && true))
+struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
+  static constexpr bool is_named = false;
+  static constexpr auto symbol = basic_fixed_string{""};  // detail::deduced_symbol_text<Dim, U, Us...>();
+  using prefix_type = no_prefix;
+};
 
-    template<Unit... Us>
-    inline constexpr bool are_units_of_base_dimension = (is_unit_of_base_dimension<Us> && ...);
-
-    template<Dimension D, Unit... Us>
-    using deduced_derived_unit =
-      unit<D, typename detail::derived_ratio<std::conditional_t<are_units_of_base_dimension<Us...>,
-                                                                typename D::base_type, typename D::recipe>, Us...>::ratio>;
-
-    template<int Value>
-      requires (0 <= Value) && (Value < 10)
-    inline constexpr basic_fixed_string superscript_number = "\u2070";
-
-//    template<> inline constexpr basic_fixed_string superscript_number<0> = "\u2070";
-    template<> inline constexpr basic_fixed_string superscript_number<1> = "\u00b9";
-    template<> inline constexpr basic_fixed_string superscript_number<2> = "\u00b2";
-    template<> inline constexpr basic_fixed_string superscript_number<3> = "\u00b3";
-    template<> inline constexpr basic_fixed_string superscript_number<4> = "\u2074";
-    template<> inline constexpr basic_fixed_string superscript_number<5> = "\u2075";
-    template<> inline constexpr basic_fixed_string superscript_number<6> = "\u2076";
-    template<> inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
-    template<> inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
-    template<> inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
-
-    template<int Value>
-      requires (Value >= 0)
-    constexpr auto superscript()
-    {
-      if constexpr(Value < 10)
-        return superscript_number<Value>;
-      else
-        return superscript<Value / 10>() + superscript<Value % 10>();
-    }
-
-    template<int Value>
-      requires (Value >= 0)
-    constexpr auto regular()
-    {
-      if constexpr(Value < 10)
-        return basic_fixed_string(static_cast<char>('0' + Value));
-      else
-        return regular<Value / 10>() + regular<Value % 10>();
-    }
-
-
-    template<typename Ratio>
-    constexpr auto ratio_text()
-    {
-      if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        auto txt = basic_fixed_string("[") + regular<Ratio::num>();
-        if constexpr(Ratio::den == 1) {
-          return txt + basic_fixed_string("]");
-        }
-        else {
-          return txt + basic_fixed_string("/") + regular<Ratio::den>() + basic_fixed_string("]");
-        }
-      }
-      else {
-        return basic_fixed_string("");
-      }
-    }
-
-    template<typename Ratio, typename PrefixType>
-    constexpr auto prefix_or_ratio_text()
-    {
-      if constexpr(Ratio::num != 1 || Ratio::den != 1) {
-        if constexpr (!std::same_as<PrefixType, no_prefix>) {
-          using prefix = downcast<detail::prefix_base<PrefixType, Ratio>>;
-
-          if constexpr(!std::same_as<prefix, prefix_base<PrefixType, Ratio>>) {
-            // print as a prefixed unit
-            return prefix::symbol;
-          }
-          else {
-            // print as a ratio of the coherent unit
-            return ratio_text<Ratio>();
-          }
-        }
-        else {
-          // print as a ratio of the coherent unit
-          return ratio_text<Ratio>();
-        }
-      }
-    }
-
-
-    template<bool Divide, std::size_t Idx>
-    constexpr auto operator_text()
-    {
-      if constexpr(Idx == 0) {
-        if constexpr(Divide) {
-          return basic_fixed_string("1/");
-        }
-        else {
-          return basic_fixed_string("");
-        }
-      }
-      else {
-        if constexpr(Divide) {
-          return basic_fixed_string("/");
-        }
-        else {
-          return basic_fixed_string("⋅");
-        }
-      }
-    }
-
-    template<typename E, basic_fixed_string Symbol, std::size_t Idx>
-    constexpr auto exp_text()
-    {
-      // get calculation operator + symbol
-      const auto txt = operator_text<E::num < 0, Idx>() + Symbol;
-      if constexpr(E::den != 1) {
-        // add root part
-        return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() + basic_fixed_string(")");
-      }
-      else if constexpr(abs(E::num) != 1) {
-        // add exponent part
-        return txt + superscript<abs(E::num)>();
-      }
-      else {
-        return txt;
-      }
-    }
-
-    template<typename Dim>
-    constexpr auto dimension_symbol()
-    {
-      if constexpr(BaseDimension<Dim>)
-        return Dim::symbol;
-      else 
-        // coherent derived unit
-        return downcast<unit<Dim, ratio<1>>>::symbol;
-    }
-
-    template<typename... Es, std::size_t... Idxs>
-    constexpr auto base_symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
-    {
-      return (exp_text<Es, dimension_symbol<typename Es::dimension>(), Idxs>() + ...);
-    }
-
-    template<typename... Es>
-    constexpr auto base_symbol_text(dimension<Es...> d)
-    {
-      return base_symbol_text_impl(d, std::index_sequence_for<Es...>());
-    }
-
-    template<typename... Es>
-    constexpr bool all_named(dimension<Es...>)
-    {
-      return (downcast<unit<typename Es::dimension, ratio<1>>>::is_named && ...);
-    }
-
-    template<typename Dim>
-    constexpr auto base_symbol_text()
-    {
-      using recipe = typename Dim::recipe;
-      if constexpr(all_named(recipe()))
-        return base_symbol_text(recipe());
-      else
-        return base_symbol_text(Dim());
-    }
-
-    template<typename E, typename U, std::size_t Idx>
-    constexpr auto exp_validate_and_text()
-    {
-      static_assert(same_dim<typename E::dimension, typename U::dimension>, "The order and number of units in `deduced_derived_unit<Us...>` should match dimensions provided in a `derived_dimension<>`");
-      return exp_text<E, U::symbol, Idx>();
-    }
-
-    template<typename... Us, typename... Es, std::size_t... Idxs>
-    constexpr auto deduced_symbol_text_impl(dimension<Es...>, std::index_sequence<Idxs...>)
-    {
-      return (exp_validate_and_text<Es, Us, Idxs>() + ...);
-    }
-
-    template<typename... Us, typename... Es>
-    constexpr auto deduced_symbol_text(dimension<Es...> d)
-    {
-      static_assert(sizeof...(Es) == sizeof...(Us), "The number of `deduced_derived_unit<Us...>` units should match the number of exponents provided to `derived_dimension<>`");
-      return deduced_symbol_text_impl<Us...>(d, std::index_sequence_for<Es...>());
-    }
-
-    template<typename Dim, typename... Us>
-    constexpr auto deduced_symbol_text()
-    {
-      if constexpr(are_units_of_base_dimension<Us...>)
-        return deduced_symbol_text<Us...>(typename Dim::base_type());
-      else
-        return deduced_symbol_text<Us...>(typename Dim::recipe());
-    }
-
-    template<typename Unit>
-    constexpr auto unit_text()
-    {
-      if constexpr(!is_unit<Unit>) {
-        // Unit is a downcasted derived unit child class already so just print defined symbol immediately 
-        return Unit::symbol;
-      }
-      else {
-        // we are dealing with a non-user-defined unit here
-        using ratio = Unit::ratio;
-        using dim = Unit::dimension;
-        if constexpr(!is_dimension<dim>) {
-          // downcasted user-defined dimension
-          // print as a prefix or ratio of a coherent unit symbol defined by the user
-          using coherent_unit = downcast<units::unit<dim, units::ratio<1>>>;
-          return prefix_or_ratio_text<ratio, typename coherent_unit::prefix_type>() + coherent_unit::symbol;
-        }
-        else {
-          // print as a ratio of a coherent unit + coherent unit dimensions and their exponents
-          return ratio_text<ratio>() + base_symbol_text(dim{});
-        }
-      }
-    }
-
-  } // namespace detail
-
-
-  // derived_unit
-
-  template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT>
-  struct named_coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
-    static constexpr bool is_named = true;
-    static constexpr auto symbol = Symbol;
-    using prefix_type = PT;
-  };
-
-  template<typename Child, Dimension Dim>
-  struct coherent_derived_unit : downcast_child<Child, unit<Dim, ratio<1>>> {
-    static constexpr bool is_named = false;
-    static constexpr auto symbol = detail::base_symbol_text<Dim>();
-    using prefix_type = no_prefix;
-  };
-
-  template<typename Child, Dimension Dim, basic_fixed_string Symbol, Ratio R, PrefixType PT = no_prefix>
-  struct named_scaled_derived_unit : downcast_child<Child, unit<Dim, R>> {
-    static constexpr bool is_named = true;
-    static constexpr auto symbol = Symbol;
-    using prefix_type = PT;
-  };
-
-  template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
-  struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
-    static constexpr bool is_named = true;
-    static constexpr auto symbol = Symbol;
-    using prefix_type = PT;
-  };
-
-  template<typename Child, Dimension Dim, Unit U, Unit... Us>
-    requires U::is_named && (Us::is_named && ... && true)
-  struct deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
-    static constexpr bool is_named = false;
-    static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, Us...>();
-    using prefix_type = no_prefix;
-  };
-
-  template<typename Child, Prefix P, Unit U>
-    requires (!std::same_as<typename U::prefix_type, no_prefix>)
-  struct prefixed_derived_unit : downcast_child<Child, unit<typename U::dimension, ratio_multiply<typename P::ratio, typename U::ratio>>> {
-    static constexpr bool is_named = true;
-    static constexpr auto symbol = P::symbol + U::symbol;
-    using prefix_type = P::prefix_type;
-  };
+// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
+// struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
+//   static constexpr bool is_named = true;
+//   static constexpr auto symbol = Symbol;
+//   using prefix_type = PT;
+// };
 
 }  // namespace units

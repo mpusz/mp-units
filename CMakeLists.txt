@@ -42,4 +42,4 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 # add usage example
-add_subdirectory(example)
+#add_subdirectory(example)
