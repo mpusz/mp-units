@@ -24,7 +24,6 @@
 
 #include <units/bits/fixed_string.h>
 #include <units/bits/unit_concept.h>
-#include <units/unit.h>
 #include <type_traits>
 
 namespace units {
@@ -46,7 +45,7 @@ namespace units {
  */
 template<basic_fixed_string Name, Unit U>
 struct base_dimension {
-  using base_type = base_dimension;
+  using base_type_workaround = base_dimension; // TODO Replace with is_derived_from_instantiation when fixed
   static constexpr auto name = Name;
   using coherent_unit = U;
 };
@@ -63,7 +62,7 @@ inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
 }  // namespace detail
 
 template<typename T>
-concept BaseDimension = detail::is_base_dimension<typename T::base_type>;
+concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;
 
 // base_dimension_less
 // TODO Remove the below when https://bugs.llvm.org/show_bug.cgi?id=32208 is fixed

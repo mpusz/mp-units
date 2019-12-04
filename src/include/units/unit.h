@@ -42,6 +42,13 @@ struct reference_unit : downcast_base<reference_unit<U, R>> {
 
 }  // namespace detail
 
+// UnitOf
+template<typename U, typename D>
+concept UnitOf =
+  Unit<U> &&
+  Dimension<D> &&
+  std::same_as<typename U::reference, typename D::coherent_unit::reference>;
+
 namespace detail {
 
 // same_reference_units
@@ -49,8 +56,7 @@ template<DerivedDimension D, Unit... Us>
 inline constexpr bool same_reference_units = false;
 
 template<typename... Es, Unit... Us>
-inline constexpr bool same_reference_units<derived_dimension<Es...>, Us...> =
-    (std::same_as<typename Es::dimension::coherent_unit::reference, typename Us::reference> && ...);
+inline constexpr bool same_reference_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // deduced_unit
 template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>

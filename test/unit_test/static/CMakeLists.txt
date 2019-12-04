@@ -27,7 +27,7 @@ add_library(unit_tests_static
 #    fixed_string_test.cpp
 #    math_test.cpp
 #    new_design.cpp
-#    quantity_test.cpp
+    quantity_test.cpp
     ratio_test.cpp
 #    si_test.cpp
     type_list_test.cpp

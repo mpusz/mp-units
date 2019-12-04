@@ -277,10 +277,14 @@ struct dim_invert_impl<derived_dimension<Es...>> {
   using type = downcast<derived_dimension<exp_invert<Es>...>>;
 };
 
+template<DerivedDimension D>
+struct dim_invert_impl<D> : dim_invert_impl<downcast_base_t<D>> {
+};
+
 }  // namespace detail
 
 template<Dimension D>
-using dim_invert = detail::dim_invert_impl<downcast_base_t<D>>::type;
+using dim_invert = detail::dim_invert_impl<D>::type;
 
 // dimension_multiply
 namespace detail {
@@ -377,7 +381,7 @@ struct dimension_pow_impl;
 
 template<BaseDimension D, std::size_t N>
 struct dimension_pow_impl<D, N> {
-  using type = derived_dimension<exp<D, N>>;
+  using type = downcast<derived_dimension<exp<D, N>>>;
 };
 
 template<BaseDimension D, std::size_t N>
@@ -387,7 +391,7 @@ struct dimension_pow_impl<exp<D, 1, N>, N> {
 
 template<DerivedDimension D, std::size_t N>
 struct dimension_pow_impl<D, N> {
-  using type = dimension_pow_impl<typename D::base_type, N>;
+  using type = dimension_pow_impl<downcast_base<D>, N>;
 };
 
 template<typename... Es, std::size_t N>

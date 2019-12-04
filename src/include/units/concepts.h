@@ -24,7 +24,7 @@
 
 #include <units/bits/hacks.h>
 #include <units/bits/numeric_concepts.h>
-#include <units/bits/customization_points.h>
+#include <units/customization_points.h>
 #include <units/ratio.h>
 
 namespace units {
