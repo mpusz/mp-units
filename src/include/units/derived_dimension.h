@@ -246,15 +246,39 @@ struct derived_dimension<Child, U, E, ERest...> : downcast_child<Child, typename
   using coherent_unit = U;
 };
 
+// unknown_unit
+struct unknown_unit {};
+
+namespace detail {
+
+template<typename T>
+concept PredefinedDimension = Dimension<T> && requires { typename T::coherent_unit; };
+
+template<Dimension D, Ratio R>
+auto unit_for_dimension_impl()
+{
+  if constexpr(PredefinedDimension<D>) {
+    return downcast<scaled_unit<typename D::coherent_unit::reference, R>>{};
+  }
+  else {
+    return scaled_unit<unknown_unit, R>{};
+  }
+}
+
+template<Dimension D, Ratio R>
+using unit_for_dimension = decltype(unit_for_dimension_impl<D, R>());
+
+}
+
 // same_dim
 template<Dimension D1, Dimension D2>
-inline constexpr bool same_dim;
+inline constexpr bool same_dim = false;
 
 template<BaseDimension D1, BaseDimension D2>
 inline constexpr bool same_dim<D1, D2> = std::is_same_v<D1, D2>;
 
 template<DerivedDimension D1, DerivedDimension D2>
-inline constexpr bool same_dim<D1, D2> = std::is_same_v<typename D1::base_type, typename D2::base_type>;
+inline constexpr bool same_dim<D1, D2> = std::is_same_v<typename D1::downcast_base_type, typename D2::downcast_base_type>;
 
 // dim_invert
 namespace detail {
@@ -321,7 +345,7 @@ struct dimension_multiply_impl<D1, D2> {
 
 template<BaseDimension D1, DerivedDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast<merge_dimension<derived_dimension<exp<D1, 1>>, typename D2::base_type>>;
+  using type = downcast<merge_dimension<derived_dimension<exp<D1, 1>>, typename D2::downcast_base_type>>;
 };
 
 template<DerivedDimension D1, BaseDimension D2>
@@ -331,7 +355,7 @@ struct dimension_multiply_impl<D1, D2> {
 
 template<DerivedDimension D1, DerivedDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast<merge_dimension<typename D1::base_type, typename D2::base_type>>;
+  using type = downcast<merge_dimension<typename D1::downcast_base_type, typename D2::downcast_base_type>>;
 };
 
 }  // namespace detail
@@ -360,7 +384,7 @@ struct dimension_sqrt_impl<derived_dimension<exp<D, 2>>> {
 
 template<DerivedDimension D>
 struct dimension_sqrt_impl<D> {
-  using type = dimension_sqrt_impl<typename D::base_type>;
+  using type = dimension_sqrt_impl<typename D::downcast_base_type>;
 };
 
 template<typename... Es>
@@ -371,7 +395,7 @@ struct dimension_sqrt_impl<derived_dimension<Es...>> {
 }  // namespace detail
 
 template<Dimension D>
-using dimension_sqrt = detail::dimension_sqrt_impl<typename D::base_type>::type;
+using dimension_sqrt = detail::dimension_sqrt_impl<typename D::downcast_base_type>::type;
 
 // dimension_pow
 namespace detail {

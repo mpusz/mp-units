@@ -109,10 +109,10 @@ using namespace units::si;
 
 // class invariants
 
-// constexpr quantity<dim_length, metre, int> q(1);  // should not compile
-// constexpr quantity<length, metre, quantity<metre, int>> error(0m);  // should trigger a static_assert
-// constexpr quantity<int, int, double> error(0);  // should trigger a static_assert
-// constexpr quantity<length, unit<length, std::ratio<-1, 1>>, int> error(0);  // should trigger a static_assert
+// constexpr quantity<si::dim_length, second, int> error(0);  // should not compile (unit of a different dimension)
+// constexpr quantity<si::dim_length, metre, quantity<si::dim_length, metre, int>> error(0);  // should not compile (quantity used as Rep)
+// constexpr quantity<metre, si::dim_length, double> error(0);  // should not compile (reordered arguments)
+// constexpr quantity<si::dim_length, scaled_unit<metre, ratio<-1, 1>>, int> error(0);  // should not compile (negative unit ratio)
 
 // member types
 
@@ -134,9 +134,9 @@ static_assert(length<metre, int>(km).count() == km.count());
 static_assert(length<metre, int>(1).count() == 1);
 static_assert(length<metre, int>(my_value(1)).count() == 1);
 static_assert(length<metre, my_int>(1).count() == my_int{1});
-//  static_assert(length<metre, int>(1.0).count() == 1);   // should not compile
-//  static_assert(length<metre, int>(my_value(1.0)).count() == 1); // should not compile
-//  static_assert(length<metre, my_value>(1.0).count() == 1);   // should not compile
+// static_assert(length<metre, int>(1.0).count() == 1);   // should not compile (truncating conversion)
+// static_assert(length<metre, int>(my_value(1.0)).count() == 1); // should not compile (truncating conversion)
+// static_assert(length<metre, my_int>(1.0).count() == my_int{1});   // should not compile (truncating conversion)
 static_assert(length<metre, double>(1.0).count() == 1.0);
 static_assert(length<metre, double>(my_value(1.0)).count() == 1.0);
 static_assert(length<metre, double>(1).count() == 1.0);
@@ -147,27 +147,23 @@ static_assert(length<metre, my_double>(1).count() == my_double{1.0});
 static_assert(length<metre, my_double>(3.14).count() == my_double{3.14});
 
 static_assert(length<metre, int>(km).count() == 1000);
-//  static_assert(length<metre, int>(length<metre, double>(3.14)).count() == 3);   // should not compile
+// static_assert(length<metre, int>(length<metre, double>(3.14)).count() == 3);   // should not compile (truncating conversion)
 static_assert(length<metre, int>(quantity_cast<length<metre, my_int>>(3.14m)).count() == 3);
-//  static_assert(length<metre, int>(length<metre, my_double>(1000.0)).count() == 1000);   // should not compile
-//  static_assert(length<metre, my_value>(1000.0m).count() == 1000);   // should not compile
+// static_assert(length<metre, int>(length<metre, my_double>(1000.0)).count() == 1000);   // should not compile (truncating conversion)
+// static_assert(length<metre, my_int>(1000.0m).count() == my_int{1000});   // should not compile (truncating conversion)
 static_assert(length<metre, double>(1000.0m).count() == 1000.0);
 static_assert(length<metre, double>(length<metre, my_double>(1000.0)).count() == 1000.0);
 static_assert(length<metre, my_double>(1000.0m).count() == my_double{1000.0});
 static_assert(length<metre, double>(km).count() == 1000.0);
 static_assert(length<metre, my_double>(km).count() == my_double{1000.0});
 static_assert(length<metre, int>(1km).count() == 1000);
-//  static_assert(length<metre, int>(1_s).count() == 1);   // should not compile
-//  static_assert(length<kilometre, int>(1010m).count() == 1);   // should not compile
+// static_assert(length<metre, int>(1s).count() == 1);   // should not compile (different dimensions)
+//static_assert(length<kilometre, int>(1010m).count() == 1);   // should not compile (truncating conversion)
 static_assert(length<kilometre, int>(quantity_cast<length<kilometre, my_int>>(1010m)).count() == 1);
 
 // assignment operator
 
-static_assert([]() {
-  length<metre, int> l1(1), l2(2);
-  return l2 = l1;
-}()
-                  .count() == 1);
+static_assert([]() { length<metre, int> l1(1), l2(2); return l2 = l1; }().count() == 1);
 
 // static member functions
 
@@ -218,13 +214,13 @@ static_assert((1m *= 2).count() == 2);
 static_assert((2m /= 2).count() == 1);
 static_assert((7m %= 2).count() == 1);
 static_assert((7m %= 2m).count() == 1);
-//  static_assert((7.m %= 2.).count() == 1);  // should not compile
-//  static_assert((7.m %= 2).count() == 1);  // should not compile
-//  static_assert((7m %= 2.).count() == 1);  // should not compile
+//  static_assert((7.m %= 2.).count() == 1);  // should not compile (operation not allowed for floating-point types)
+//  static_assert((7.m %= 2).count() == 1);  // should not compile (operation not allowed for floating-point types)
+//  static_assert((7m %= 2.).count() == 1);  // should not compile (operation not allowed for floating-point types)
 static_assert((7m %= 2m).count() == 1);
-//  static_assert((7.m %= 2.m).count() == 1);  // should not compile
-//  static_assert((7.m %= 2m).count() == 1);  // should not compile
-//  static_assert((7m %= 2.m).count() == 1);  // should not compile
+//  static_assert((7.m %= 2.m).count() == 1);  // should not compile (operation not allowed for floating-point types)
+//  static_assert((7.m %= 2m).count() == 1);  // should not compile (operation not allowed for floating-point types)
+//  static_assert((7m %= 2.m).count() == 1);  // should not compile (operation not allowed for floating-point types)
 
 // non-member arithmetic operators
 
@@ -239,13 +235,27 @@ static_assert(std::is_same_v<decltype(length<metre, int>() * 1.0), length<metre,
 static_assert(std::is_same_v<decltype(1.0 * length<metre, int>()), length<metre, double>>);
 static_assert(
     std::is_same_v<decltype(velocity<metre_per_second, int>() * si::time<second, int>()), length<metre, int>>);
+static_assert(
+    std::is_same_v<decltype(velocity<metre_per_second, int>() * si::time<hour, int>()), length<scaled_unit<metre, ratio<3600>>, int>>);
+// TODO uncomment below when fixed in gcc
+// static_assert(std::is_same_v<decltype(length<metre>() * si::time<minute>()),
+//                              quantity<derived_dimension<exp<dim_length, 1>, exp<dim_time, 1>>, scaled_unit<unknown_unit, ratio<60>>>>);
 static_assert(std::is_same_v<decltype(1 / si::time<second, int>()), frequency<hertz, int>>);
+static_assert(std::is_same_v<decltype(1 / si::time<minute, int>()), frequency<scaled_unit<hertz, ratio<1, 60>>, int>>);
 static_assert(std::is_same_v<decltype(1 / frequency<hertz, int>()), si::time<second, int>>);
+// TODO uncomment below when fixed in gcc
+// static_assert(std::is_same_v<decltype(1 / length<kilometre>()),
+//                              quantity<derived_dimension<exp<dim_length, -1>>, scaled_unit<unknown_unit, ratio<1, 1000>>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / 1.0), length<metre, double>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / length<metre, double>()), double>);
 static_assert(std::is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), double>);
 static_assert(
     std::is_same_v<decltype(length<metre, int>() / si::time<second, int>()), velocity<metre_per_second, int>>);
+static_assert(
+    std::is_same_v<decltype(length<metre>() / si::time<minute>()), velocity<scaled_unit<metre_per_second, ratio<1, 60>>>>);
+// TODO uncomment below when fixed in gcc
+// static_assert(std::is_same_v<decltype(si::time<minute>() / length<metre>()),
+//                              quantity<derived_dimension<exp<dim_length, -1>, exp<dim_time, 1>>, scaled_unit<unknown_unit, ratio<60>>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
 
@@ -307,15 +317,18 @@ static_assert(std::is_same_v<common_quantity<length<kilometre, long long>, lengt
 
 // quantity_cast
 
-static_assert(std::is_same_v<decltype(quantity_cast<detail::reference_unit<metre, ratio<1>>>(2km))::unit, metre>);
+static_assert(std::is_same_v<decltype(quantity_cast<scaled_unit<metre, ratio<1>>>(2km))::unit, metre>);
 
-// static_assert(quantity_cast<int>(2km).count() == 2000);  // should not compile
 static_assert(quantity_cast<length<metre, int>>(2km).count() == 2000);
 static_assert(quantity_cast<length<kilometre, int>>(2000m).count() == 2);
+static_assert(quantity_cast<length<metre, int>>(1.23m).count() == 1);
+static_assert(quantity_cast<metre>(2km).count() == 2000);
+static_assert(quantity_cast<kilometre>(2000m).count() == 2);
+static_assert(quantity_cast<int>(1.23m).count() == 1);
 
 // time
 
-//  static_assert(1s == 1m);  // should not compile
+// static_assert(1s == 1m);  // should not compile (different dimensions)
 static_assert(1h == 3600s);
 
 // length

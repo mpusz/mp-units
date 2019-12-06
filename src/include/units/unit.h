@@ -32,31 +32,35 @@
 
 namespace units {
 
-namespace detail {
-
-template<typename U, Ratio R>
-struct reference_unit : downcast_base<reference_unit<U, R>> {
+// scaled_unit
+template<typename U, UnitRatio R>
+struct scaled_unit : downcast_base<scaled_unit<U, R>> {
   using reference = U;
   using ratio = R;
 };
 
-}  // namespace detail
-
 // UnitOf
+namespace detail {
+
+template<typename U, typename D>
+concept SameReference = std::same_as<typename U::reference, typename D::coherent_unit::reference>;
+
+}
+
 template<typename U, typename D>
 concept UnitOf =
   Unit<U> &&
   Dimension<D> &&
-  std::same_as<typename U::reference, typename D::coherent_unit::reference>;
+  (std::same_as<typename U::reference, unknown_unit> || detail::SameReference<U, D>);
 
 namespace detail {
 
-// same_reference_units
+// same_scaled_units
 template<DerivedDimension D, Unit... Us>
-inline constexpr bool same_reference_units = false;
+inline constexpr bool same_scaled_units = false;
 
 template<typename... Es, Unit... Us>
-inline constexpr bool same_reference_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+inline constexpr bool same_scaled_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // deduced_unit
 template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
@@ -91,7 +95,7 @@ struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
 
 template<DerivedDimension D, Unit... Us>
 using deduced_unit =
-    reference_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
+    scaled_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
 
 }  // namespace detail
 
@@ -112,7 +116,7 @@ using deduced_unit =
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>>> {
+struct unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
   static constexpr bool is_named = false;
   using prefix_type = no_prefix;
 };
@@ -130,7 +134,7 @@ struct unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>>> {
  * @tparam PT no_prefix or a type of prefix family
  */
 template<typename Child, basic_fixed_string Symbol, PrefixType PT>
-struct named_unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>>> {
+struct named_unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
@@ -150,8 +154,8 @@ struct named_unit : downcast_child<Child, detail::reference_unit<Child, ratio<1>
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_fixed_string Symbol, PrefixType PT, Ratio R, Unit U>
-struct scaled_unit : downcast_child<Child, detail::reference_unit<typename U::reference, ratio_multiply<R, typename U::ratio>>> {
+template<typename Child, basic_fixed_string Symbol, PrefixType PT, UnitRatio R, Unit U>
+struct named_scaled_unit : downcast_child<Child, scaled_unit<typename U::reference, ratio_multiply<R, typename U::ratio>>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
@@ -171,11 +175,11 @@ struct scaled_unit : downcast_child<Child, detail::reference_unit<typename U::re
 template<typename Child, Prefix P, Unit U>
   requires std::same_as<typename P::prefix_type, typename U::prefix_type>
 // TODO replace with the below code when gcc will stop to crash on it ;-)
-// struct prefixed_unit : scaled_unit<Child, P::symbol + U::symbol, typename P::prefix_type,
+// struct prefixed_unit : named_scaled_unit<Child, P::symbol + U::symbol, typename P::prefix_type,
 //                                    ratio_multiply<typename P::ratio, typename U::ratio>,
 //                                    typename U::reference> {};
 struct prefixed_unit :
-    downcast_child<Child, detail::reference_unit<typename U::reference, ratio_multiply<typename P::ratio, typename U::ratio>>> {
+    downcast_child<Child, scaled_unit<typename U::reference, ratio_multiply<typename P::ratio, typename U::ratio>>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_type = P::prefix_type;
@@ -194,7 +198,7 @@ struct prefixed_unit :
  * @tparam URest the units for the rest of dimensions from the recipe
  */
 template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
-  requires detail::same_reference_units<typename Dim::recipe, U, URest...> &&
+  requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
            (U::is_named && (URest::is_named && ... && true))
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;

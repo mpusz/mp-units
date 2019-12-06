@@ -74,7 +74,7 @@ struct common_quantity_impl<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
 template<typename D, typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
   using type = quantity<
-      D, downcast<detail::reference_unit<typename U1::reference, common_ratio<typename U1::ratio, typename U2::ratio>>>,
+      D, downcast<scaled_unit<typename U1::reference, common_ratio<typename U1::ratio, typename U2::ratio>>>,
       Rep>;
 };
 
@@ -154,7 +154,7 @@ template<Quantity To, typename D, typename U, typename Rep>
 {
   using c_ratio = ratio_divide<typename U::ratio, typename To::unit::ratio>;
   using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
-  using ret_unit = downcast<detail::reference_unit<typename U::reference, typename To::unit::ratio>>;
+  using ret_unit = downcast<scaled_unit<typename U::reference, typename To::unit::ratio>>;
   using ret = quantity<D, ret_unit, typename To::rep>;
   using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
   return cast::cast(q);
@@ -410,7 +410,7 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    return os;  // << q.count() << " " << detail::unit_text<quantity::unit>();
+    return os << q.count(); // << " " << detail::unit_text<quantity::unit>(); TODO add support
   }
 };
 
@@ -466,7 +466,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 {
   using dim = dimension_multiply<D1, D2>;
   using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
-  using unit = downcast<detail::reference_unit<typename dim::coherent_unit::reference, ratio>>;
+  using unit = detail::unit_for_dimension<dim, ratio>;
   using common_rep = decltype(lhs.count() * rhs.count());
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() * rhs.count());
@@ -480,7 +480,7 @@ template<typename D, Scalar Value, typename U, typename Rep>
 
   using dim = dim_invert<D>;
   using ratio = ratio<U::ratio::den, U::ratio::num>;
-  using unit = downcast<detail::reference_unit<typename dim::coherent_unit::reference, ratio>>;
+  using unit = detail::unit_for_dimension<dim, ratio>;
   using common_rep = decltype(v / q.count());
   using ret = quantity<dim, unit, common_rep>;
   return ret(v / q.count());
@@ -518,8 +518,8 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using dim = dimension_divide<D1, D2>;
-  using unit = downcast<detail::reference_unit<typename dim::coherent_unit::reference,
-                                               ratio_divide<typename U1::ratio, typename U2::ratio>>>;
+  using ratio = ratio_divide<typename U1::ratio, typename U2::ratio>;
+  using unit = detail::unit_for_dimension<dim, ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
 }

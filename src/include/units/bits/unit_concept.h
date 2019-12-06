@@ -27,15 +27,14 @@
 
 namespace units {
 
-namespace detail {
+template<typename R>
+concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
 
-template<typename U, Ratio R>
-struct reference_unit;
-
-}  // namespace detail
+template<typename U, UnitRatio R>
+struct scaled_unit;
 
 // Unit
 template<typename T>
-concept Unit = is_derived_from_instantiation<T, detail::reference_unit>;
+concept Unit = is_derived_from_instantiation<T, scaled_unit>;
 
 }  // namespace units

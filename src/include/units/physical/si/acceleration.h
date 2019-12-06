@@ -22,23 +22,23 @@
 
 #pragma once
 
-#include <units/dimensions/velocity.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/velocity.h>
 
-namespace units {
+namespace units::si {
 
-  struct acceleration : derived_dimension<acceleration, exp<velocity, 1>, exp<time, -1>> {};
+struct metre_per_second_sq : unit<metre_per_second_sq> {};
+struct dim_acceleration : physical::dim_acceleration<dim_acceleration, metre_per_second_sq, dim_length, dim_time> {};
 
-  template<typename T>
-  concept Acceleration = QuantityOf<T, acceleration>;
+template<Unit U, Scalar Rep = double>
+using acceleration = quantity<dim_acceleration, U, Rep>;
 
-  struct metre_per_second_sq : coherent_derived_unit<metre_per_second_sq, acceleration> {};
+inline namespace literals {
 
-  inline namespace literals {
+// mps_sq
+constexpr auto operator""mps_sq(unsigned long long l) { return acceleration<metre_per_second_sq, std::int64_t>(l); }
+constexpr auto operator""mps_sq(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
 
-    // mps_sq
-    constexpr auto operator""mps_sq(unsigned long long l) { return quantity<metre_per_second_sq, std::int64_t>(l); }
-    constexpr auto operator""mps_sq(long double l) { return quantity<metre_per_second_sq, long double>(l); }
+}  // namespace literals
 
-  }  // namespace literals
-
-}  // namespace units
+}  // namespace units::si

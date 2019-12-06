@@ -29,16 +29,16 @@ namespace units {
 
   template<typename BaseType>
   struct downcast_base {
-    using base_type = BaseType;
+    using downcast_base_type = BaseType;
     friend auto downcast_guide(downcast_base);
   };
 
   template<typename T>
   concept Downcastable =
       requires {
-        typename T::base_type;
+        typename T::downcast_base_type;
       } &&
-      std::derived_from<T, downcast_base<typename T::base_type>>;
+      std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
   template<typename Target, Downcastable T>
   struct downcast_child : T {
@@ -67,6 +67,6 @@ namespace units {
   using downcast = decltype(detail::downcast_impl<T>());
 
   template<Downcastable T>
-  using downcast_base_t = T::base_type;
+  using downcast_base_t = T::downcast_base_type;
 
 }  // namespace units

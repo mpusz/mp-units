@@ -20,12 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/velocity.h>
+#include <units/physical/si/velocity.h>
 #include <iostream>
 
 namespace {
-
-using namespace units::literals;
 
 template<units::Length D, units::Time T>
 constexpr units::Velocity AUTO avg_speed(D d, T t)
@@ -33,30 +31,32 @@ constexpr units::Velocity AUTO avg_speed(D d, T t)
   return d / t;
 }
 
-template<units::Velocity V, units::Time T>
-void example_1(V v, T t)
+void example()
 {
-  const units::Length AUTO distance = v * t;
-  std::cout << "A car driving " << v << " in a time of " << t << " will pass "
-            << units::quantity_cast<units::quantity<units::metre, double>>(distance) << ".\n";
+  using namespace units::si::literals;
+
+  units::Length AUTO d1 = 123m;
+  units::Time AUTO t1 = 10s;
+  units::Velocity AUTO v1 = avg_speed(d1, t1);
+
+  auto temp1 = v1 * 50m;  // produces intermediate unknown dimension with 'unknown_unit' as its 'coherent_unit'
+  units::Velocity AUTO v2 = temp1 / 100m; // back to known dimensions again
+  units::Length AUTO d2 = v2 * 60s;
+
+  std::cout << "d1 = " << d1 << '\n';
+  std::cout << "t1 = " << t1 << '\n';
+  std::cout << "v1 = " << v1 << '\n';
+  std::cout << "temp1 = " << temp1 << '\n';
+  std::cout << "v2 = " << v2 << '\n';
+  std::cout << "d2 = " << d2 << '\n';
 }
 
-void example_2(double distance_v, double duration_v)
-{
-  units::quantity<units::kilometre> distance(distance_v);
-  units::quantity<units::hour> duration(duration_v);
-  const auto kmph = quantity_cast<units::kilometre_per_hour>(avg_speed(distance, duration));
-  std::cout << "Average speed of a car that makes " << distance << " in "
-            << duration << " is " << kmph << ".\n";
-}
-
-}
+} // namespace
 
 int main()
 {
   try {
-    example_1(60kmph, 10.0min);
-    example_2(220, 2);
+    example();
   }
   catch (const std::exception& ex) {
     std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';

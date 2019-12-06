@@ -20,15 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# example app
-add_executable(example example.cpp)
-target_link_libraries(example
-    PRIVATE
-        mp::units
-)
+function(add_example target)
+    add_executable(${target} ${target}.cpp)
+    target_link_libraries(${target} PRIVATE mp::units)
+endfunction()
 
-add_executable(measurement measurement.cpp)
-target_link_libraries(measurement
-    PRIVATE
-        mp::units
-)
+add_example(avg_velocity)
+add_example(measurement)
+add_example(unknown_dimension)

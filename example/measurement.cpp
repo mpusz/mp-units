@@ -20,14 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/acceleration.h>
+#include <units/physical/si/acceleration.h>
 #include <iostream>
 
 namespace {
 
-  template<typename T, template<typename> typename Trait>
-  concept Satisfies = Trait<T>::value;
-  
   // root sum of squares
   template<typename T>
   T rss(const T& v1, const T& v2)
@@ -118,24 +115,38 @@ namespace {
     value_type uncertainty_{};
   };
 
-  template<units::Unit U>
-  using m_quantity = units::quantity<U, measurement<double>>;
-
 }  // namespace
 
 template<typename T>
 inline constexpr bool units::treat_as_floating_point<measurement<T>> = std::is_floating_point_v<T>;
 
+namespace {
+
+void example()
+{
+  using namespace units;
+
+  const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
+  const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));
+
+  const Velocity AUTO v1 = a * t;
+  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';
+
+  si::length<si::metre, measurement<double>> length(measurement(123., 1.));
+  std::cout << "10 * " << length << " = " << 10 * length << '\n';
+}
+
+} // namespace
 
 int main()
 {
-  const auto a = m_quantity<units::metre_per_second_sq>(measurement(9.8, 0.1));
-  const auto t = m_quantity<units::second>(measurement(1.2, 0.1));
-
-  units::Velocity AUTO v1 = a * t;
-  m_quantity<units::kilometre_per_hour> v2(v1);
-  std::cout << a << " * " << t << " = " << v1 << " = " << v2 << '\n';
-
-  m_quantity<units::metre> length(measurement(123., 1.));
-  std::cout << "10 * " << length << " = " << 10 * length << '\n';
+  try {
+    example();
+  }
+  catch (const std::exception& ex) {
+    std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
+  }
+  catch (...) {
+    std::cerr << "Unhandled unknown exception caught\n";
+  }
 }

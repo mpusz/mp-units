@@ -29,18 +29,18 @@ namespace units {
 
   template<typename BaseType>
   struct downcast_base {
-    using base_type = BaseType;
+    using downcast_base_type = BaseType;
   };
 
   template<typename T>
   concept Downcastable =
       requires {
-        typename T::base_type;
+        typename T::downcast_base_type;
       } &&
-      std::derived_from<T, downcast_base<typename T::base_type>>;
+      std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
   template<Downcastable T>
-  using downcast_base_t = T::base_type;
+  using downcast_base_t = T::downcast_base_type;
 
   template<Downcastable T>
   struct downcast_traits : std::type_identity<T> {};

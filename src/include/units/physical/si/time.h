@@ -31,8 +31,8 @@ struct second : named_unit<second, "s", prefix> {};
 struct nanosecond : prefixed_unit<nanosecond, nano, second> {};
 struct microsecond : prefixed_unit<microsecond, micro, second> {};
 struct millisecond : prefixed_unit<millisecond, milli, second> {};
-struct minute : scaled_unit<minute, "min", no_prefix, ratio<60>, second> {};
-struct hour : scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
+struct minute : named_scaled_unit<minute, "min", no_prefix, ratio<60>, second> {};
+struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
 
 struct dim_time : physical::dim_time<second> {};
 

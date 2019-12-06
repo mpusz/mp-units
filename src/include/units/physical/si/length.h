@@ -58,10 +58,10 @@ constexpr auto operator"" km(long double l) { return length<kilometre, long doub
 }  // namespace literals
 
 // US customary units
-struct yard : scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, metre> {};
-struct foot : scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
-struct inch : scaled_unit<inch, "in", no_prefix, ratio<1, 12>, foot> {};
-struct mile : scaled_unit<mile, "mi", no_prefix, ratio<1'760>, yard> {};
+struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, metre> {};
+struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
+struct inch : named_scaled_unit<inch, "in", no_prefix, ratio<1, 12>, foot> {};
+struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio<1'760>, yard> {};
 
 inline namespace literals {
 
