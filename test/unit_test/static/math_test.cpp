@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/dimensions/area.h"
+#include "units/physical/si/area.h"
 #include "units/math.h"
 
-using namespace units;
-
 namespace {
+
+  using namespace units::si::literals;
 
   static_assert(std::is_same_v<decltype(pow<0>(2m)), std::int64_t>);
   static_assert(std::is_same_v<decltype(pow<1>(2m)), decltype(2m)>);

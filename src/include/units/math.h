@@ -38,16 +38,18 @@ namespace units {
   inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
   {
     using dim = dimension_pow<D, N>;
-    using r = ratio_pow<typename U::ratio, N>;
-    return quantity<dim, downcast<scaled_unit<typename dim::coherent_unit::reference, r>>, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
+    using ratio = ratio_pow<typename U::ratio, N>;
+    using unit = detail::unit_for_dimension<dim, ratio>;
+    return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
   }
 
   template<typename D, typename U, typename Rep>
   inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
   {
-    using dim = dimension_sqrt<typename U::dimension>;
-    using r = ratio_sqrt<typename U::ratio>;
-    return quantity<dim, downcast<scaled_unit<typename dim::coherent_unit::reference, r>>, Rep>(static_cast<Rep>(std::sqrt(q.count())));
+    using dim = dimension_sqrt<D>;
+    using ratio = ratio_sqrt<typename U::ratio>;
+    using unit = detail::unit_for_dimension<dim, ratio>;
+    return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
   }
 
 }  // namespace units
