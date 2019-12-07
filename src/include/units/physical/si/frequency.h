@@ -24,6 +24,7 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/time.h>
+#include <units/quantity.h>
 
 namespace units::si {
 

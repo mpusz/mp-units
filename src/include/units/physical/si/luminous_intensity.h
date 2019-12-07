@@ -22,24 +22,25 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/dimensions/force.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/prefixes.h>
+#include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct surface_tension : derived_dimension<surface_tension, exp<force, 1>, exp<length, -1>> {};
+struct candela : named_unit<candela, "cd", prefix> {};
 
-  template<typename T>
-  concept SurfaceTension = QuantityOf<T, surface_tension>;
+struct dim_luminous_intensity : physical::dim_luminous_intensity<candela> {};
 
-  struct newton_per_metre : coherent_derived_unit<newton_per_metre, surface_tension> {};
+template<Unit U, Scalar Rep = double>
+using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // Nm
-    constexpr auto operator""Npm(unsigned long long l) { return quantity<newton_per_metre, std::int64_t>(l); }
-    constexpr auto operator""Npm(long double l) { return quantity<newton_per_metre, long double>(l); }
+// cd
+constexpr auto operator""cd(unsigned long long l) { return luminous_intensity<candela, std::int64_t>(l); }
+constexpr auto operator""cd(long double l) { return luminous_intensity<candela, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

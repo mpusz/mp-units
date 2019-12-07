@@ -22,25 +22,27 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/dimensions/mass.h>
-#include <units/dimensions/acceleration.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/current.h>
+#include <units/physical/si/power.h>
+#include <units/physical/si/prefixes.h>
+#include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct force : derived_dimension<force, exp<mass, 1>, exp<acceleration, 1>> {};
+struct volt : named_unit<volt, "V", prefix> {};
 
-  template<typename T>
-  concept Force =  QuantityOf<T, force>;
+struct dim_voltage : physical::dim_voltage<dim_voltage, volt, dim_power, dim_current> {};
 
-  struct newton : named_coherent_derived_unit<newton, force, "N", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using voltage = quantity<dim_voltage, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // N
-    constexpr auto operator""N(unsigned long long l) { return quantity<newton, std::int64_t>(l); }
-    constexpr auto operator""N(long double l) { return quantity<newton, long double>(l); }
+// V
+constexpr auto operator""V(unsigned long long l) { return voltage<volt, std::int64_t>(l); }
+constexpr auto operator""V(long double l) { return voltage<volt, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

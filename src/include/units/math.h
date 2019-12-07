@@ -39,7 +39,7 @@ namespace units {
   {
     using dim = dimension_pow<D, N>;
     using ratio = ratio_pow<typename U::ratio, N>;
-    using unit = detail::unit_for_dimension<dim, ratio>;
+    using unit = downcast_unit<dim, ratio>;
     return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
   }
 
@@ -48,7 +48,7 @@ namespace units {
   {
     using dim = dimension_sqrt<D>;
     using ratio = ratio_sqrt<typename U::ratio>;
-    using unit = detail::unit_for_dimension<dim, ratio>;
+    using unit = downcast_unit<dim, ratio>;
     return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
   }
 

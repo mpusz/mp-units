@@ -104,6 +104,13 @@ struct dim_area : derived_dimension<Child, U, exp<L, 2>> {};
 template<typename T>
 concept Area = QuantityOf<T, dim_area>;
 
+// volume
+template<typename Child, Unit U, DimensionOf<dim_length> L>
+struct dim_volume : derived_dimension<Child, U, exp<L, 3>> {};
+
+template<typename T>
+concept Volume = QuantityOf<T, dim_volume>;
+
 // velocity
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
 struct dim_velocity : derived_dimension<Child, U, exp<L, 1>, exp<T, -1>> {};
@@ -138,6 +145,34 @@ struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
 
 template<typename T>
 concept Power = QuantityOf<T, dim_power>;
+
+// voltage
+template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_current> C>
+struct dim_voltage : derived_dimension<Child, U, exp<P, 1>, exp<C, -1>> {};
+
+template<typename T>
+concept Voltage = QuantityOf<T, dim_voltage>;
+
+// electric charge
+template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_current> C>
+struct dim_electric_charge : derived_dimension<Child, U, exp<T, 1>, exp<C, 1>> {};
+
+template<typename T>
+concept ElectricCharge = QuantityOf<T, dim_electric_charge>;
+
+// capacitance
+template<typename Child, Unit U, DimensionOf<dim_electric_charge> C, DimensionOf<dim_voltage> V>
+struct dim_capacitance : derived_dimension<Child, U, exp<C, 1>, exp<V, -1>> {};
+
+template<typename T>
+concept Capacitance = QuantityOf<T, dim_capacitance>;
+
+// surface tension
+template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
+struct dim_surface_tension : derived_dimension<Child, U, exp<F, 1>, exp<L, -1>> {};
+
+template<typename T>
+concept SurfaceTension = QuantityOf<T, dim_surface_tension>;
 
 // pressure
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_area> A>

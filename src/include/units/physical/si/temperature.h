@@ -22,24 +22,24 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
+#include <units/physical/dimensions.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct current : derived_dimension<current, exp<base_dim_current, 1>> {};
+struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
-  template<typename T>
-  concept Current = QuantityOf<T, current>;
+struct dim_temperature : physical::dim_temperature<kelvin> {};
 
-  struct ampere : named_coherent_derived_unit<ampere, current, "A", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using temperature = quantity<dim_temperature, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // A
-    constexpr auto operator""A(unsigned long long l) { return quantity<ampere, std::int64_t>(l); }
-    constexpr auto operator""A(long double l) { return quantity<ampere, long double>(l); }
+// K
+constexpr auto operator""K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
+constexpr auto operator""_K(long double l) { return temperature<kelvin, long double>(l); }   // TODO: conflicts with gcc GNU extension
 
-  }
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

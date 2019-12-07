@@ -32,86 +32,35 @@
 
 namespace units {
 
-// scaled_unit
+/**
+ * @brief A common point for a hierarchy of units
+ *
+ * A unit is an entity defined and adopted by convention, with which any other quantity of
+ * the same kind can be compared to express the ratio of the second quantity to the first
+ * one as a number.
+ * 
+ * All units of the same dimension can be convereted between each other. To allow this all of
+ * them are expressed as different ratios of the same one proprietary chosen reference unit
+ * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
+ * terms of gram, ...)
+ *
+ * @tparam U a unit to use as a reference for this dimension
+ * @tparam R a ratio of a reference unit
+ */
 template<typename U, UnitRatio R>
 struct scaled_unit : downcast_base<scaled_unit<U, R>> {
   using reference = U;
   using ratio = R;
 };
 
-// UnitOf
-namespace detail {
-
-template<typename U, typename D>
-concept SameReference = std::same_as<typename U::reference, typename D::coherent_unit::reference>;
-
-}
-
-template<typename U, typename D>
-concept UnitOf =
-  Unit<U> &&
-  Dimension<D> &&
-  (std::same_as<typename U::reference, unknown_unit> || detail::SameReference<U, D>);
-
-namespace detail {
-
-// same_scaled_units
-template<DerivedDimension D, Unit... Us>
-inline constexpr bool same_scaled_units = false;
-
-template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
-
-// deduced_unit
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-struct ratio_op;
-
-template<typename Result, int UnitExpDen, typename UnitRatio>
-struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
-  using ratio = Result;
-};
-
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-struct ratio_op {
-  using calc_ratio =
-      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>, ratio_divide<Result, UnitRatio>>;
-  static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
-  using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
-};
-
-template<DerivedDimension D, Unit... Us>
-struct derived_ratio;
-
-template<Unit... Us>
-struct derived_ratio<derived_dimension<>, Us...> {
-  using ratio = ::units::ratio<1>;
-};
-
-template<typename E, typename... ERest, Unit U, Unit... URest>
-struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
-  using rest_ratio = derived_ratio<derived_dimension<ERest...>, URest...>::ratio;
-  using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
-};
-
-template<DerivedDimension D, Unit... Us>
-using deduced_unit =
-    scaled_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
-
-}  // namespace detail
+template<Dimension D, UnitRatio R>
+using downcast_unit = downcast<scaled_unit<typename D::coherent_unit::reference, R>>;
 
 /**
  * @brief A starting point for a new hierarchy of units
  *
- * A unit is an entity defined and adopted by convention, with which any other quantity of
- * the same kind can be compared to express the ratio of the second quantity to the first
- * one as a number.
- *
- * Coherent unit is a unit that, for a given system of quantities and for a chosen set of
- * base units, is a product of powers of base units with no other proportionality factor
- * than one.
- *
- * This class allows definition of a new unnamed (in most cases coherent) derived unit of
- * a specific derived dimension and it should be passed in this dimension's definition.
+ * Defines a new unnamed (in most cases coherent) derived unit of a specific derived dimension
+ * and it should be passed in this dimension's definition.
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
@@ -120,6 +69,13 @@ struct unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
   static constexpr bool is_named = false;
   using prefix_type = no_prefix;
 };
+
+/**
+ * @brief Unknown unit
+ * 
+ * Used as a reference unit of an unknown dimension.
+ */
+struct unknown_unit : unit<unknown_unit> {};
 
 /**
  * @brief A named unit
@@ -185,6 +141,59 @@ struct prefixed_unit :
   using prefix_type = P::prefix_type;
 };
 
+// UnitOf
+template<typename U, typename D>
+concept UnitOf =
+  Unit<U> &&
+  Dimension<D> &&
+  std::same_as<typename U::reference, typename D::coherent_unit::reference>;
+
+namespace detail {
+
+// same_scaled_units
+template<DerivedDimension D, Unit... Us>
+inline constexpr bool same_scaled_units = false;
+
+template<typename... Es, Unit... Us>
+inline constexpr bool same_scaled_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+
+// deduced_unit
+template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+struct ratio_op;
+
+template<typename Result, int UnitExpDen, typename UnitRatio>
+struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
+  using ratio = Result;
+};
+
+template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+struct ratio_op {
+  using calc_ratio =
+      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>, ratio_divide<Result, UnitRatio>>;
+  static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
+  using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
+};
+
+template<DerivedDimension D, Unit... Us>
+struct derived_ratio;
+
+template<Unit... Us>
+struct derived_ratio<derived_dimension<>, Us...> {
+  using ratio = ::units::ratio<1>;
+};
+
+template<typename E, typename... ERest, Unit U, Unit... URest>
+struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
+  using rest_ratio = derived_ratio<derived_dimension<ERest...>, URest...>::ratio;
+  using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
+};
+
+template<DerivedDimension D, Unit... Us>
+using deduced_unit =
+    scaled_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
+
+}  // namespace detail
+
 /**
  * @brief A unit with a deduced ratio and symbol
  *
@@ -202,7 +211,7 @@ template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
            (U::is_named && (URest::is_named && ... && true))
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
-  static constexpr auto symbol = basic_fixed_string{""};  // detail::deduced_symbol_text<Dim, U, Us...>();
+  static constexpr auto symbol = basic_fixed_string{""};  // detail::deduced_symbol_text<Dim, U, Us...>(); // TODO implement this
   using prefix_type = no_prefix;
 };
 

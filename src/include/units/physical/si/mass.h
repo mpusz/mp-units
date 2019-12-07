@@ -22,25 +22,29 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/dimensions/electric_charge.h>
-#include <units/dimensions/voltage.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/prefixes.h>
 
-namespace units {
+namespace units::si {
 
-  struct capacitance : derived_dimension<capacitance, exp<electric_charge, 1>, exp<voltage, -1>> {};
+struct gram : named_unit<gram, "g", prefix> {};
+struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
 
-  template<typename T>
-  concept Capacitance =  QuantityOf<T, capacitance>;
+struct dim_mass : physical::dim_mass<kilogram> {};
 
-  struct farad : named_coherent_derived_unit<farad, capacitance, "F", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using mass = quantity<dim_mass, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // F
-    constexpr auto operator""F(unsigned long long l) { return quantity<farad, std::int64_t>(l); }
-    constexpr auto operator""_F(long double l) { return quantity<farad, long double>(l); }
+  // g
+  constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+  constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
 
-  }  // namespace literals
+  // kg
+  constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
+  constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
 
-}  // namespace units
+}  // namespace literals
+
+}  // namespace units::si

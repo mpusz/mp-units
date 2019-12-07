@@ -22,25 +22,26 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/dimensions/force.h>
-#include <units/dimensions/area.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/current.h>
+#include <units/physical/si/time.h>
+#include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct pressure : derived_dimension<pressure, exp<force, 1>, exp<area, -1>> {};
+struct coulomb : named_unit<coulomb, "C", prefix> {};
 
-  template<typename T>
-  concept Pressure =  QuantityOf<T, pressure>;
+struct dim_electric_charge : physical::dim_electric_charge<dim_electric_charge, coulomb, dim_time, dim_current> {};
 
-  struct pascal : named_coherent_derived_unit<pascal, pressure, "Pa", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using electric_charge = quantity<dim_electric_charge, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // Pa
-    constexpr auto operator""Pa(unsigned long long l) { return quantity<pascal, std::int64_t>(l); }
-    constexpr auto operator""Pa(long double l) { return quantity<pascal, long double>(l); }
+// C
+constexpr auto operator""C(unsigned long long l) { return electric_charge<coulomb, std::int64_t>(l); }
+constexpr auto operator""C(long double l) { return electric_charge<coulomb, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

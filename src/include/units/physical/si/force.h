@@ -22,29 +22,27 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/acceleration.h>
+#include <units/physical/si/mass.h>
+#include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct mass : derived_dimension<mass, exp<base_dim_mass, 1>> {};
+struct newton : named_unit<newton, "N", prefix> {};
 
-  template<typename T>
-  concept Mass = QuantityOf<T, mass>;
+struct dim_force : physical::dim_force<dim_force, newton, dim_mass, dim_acceleration> {};
 
-  struct gram : named_scaled_derived_unit<gram, mass, "g", ratio<1, 1000>, si_prefix> {};
-  struct kilogram : prefixed_derived_unit<kilogram, kilo, gram> {};
+template<Unit U, Scalar Rep = double>
+using force = quantity<dim_force, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // g
-    constexpr auto operator""g(unsigned long long l) { return quantity<gram, std::int64_t>(l); }
-    constexpr auto operator""g(long double l) { return quantity<gram, long double>(l); }
+// N
+constexpr auto operator""N(unsigned long long l) { return force<newton, std::int64_t>(l); }
+constexpr auto operator""N(long double l) { return force<newton, long double>(l); }
 
-    // kg
-    constexpr auto operator""kg(unsigned long long l) { return quantity<kilogram, std::int64_t>(l); }
-    constexpr auto operator""kg(long double l) { return quantity<kilogram, long double>(l); }
+}  // namespace literals
 
-  }  // namespace literals
-
-}  // namespace units
+}  // namespace units::si

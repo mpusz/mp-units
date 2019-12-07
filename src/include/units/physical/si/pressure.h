@@ -22,24 +22,27 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/area.h>
+#include <units/physical/si/force.h>
+#include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct luminous_intensity : derived_dimension<luminous_intensity, exp<base_dim_luminous_intensity, 1>> {};
+struct pascal : named_unit<pascal, "Pa", prefix> {};
 
-  template<typename T>
-  concept LuminousIntensity = QuantityOf<T, luminous_intensity>;
+struct dim_pressure : physical::dim_pressure<dim_pressure, pascal, dim_force, dim_area> {};
 
-  struct candela : named_coherent_derived_unit<candela, luminous_intensity, "cd", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using pressure = quantity<dim_pressure, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // cd
-    constexpr auto operator""cd(unsigned long long l) { return quantity<candela, std::int64_t>(l); }
-    constexpr auto operator""cd(long double l) { return quantity<candela, long double>(l); }
+// Pa
+constexpr auto operator""Pa(unsigned long long l) { return pressure<pascal, std::int64_t>(l); }
+constexpr auto operator""Pa(long double l) { return pressure<pascal, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

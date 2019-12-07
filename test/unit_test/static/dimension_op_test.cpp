@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/derived_dimension.h"
+#include "units/dimension_op.h"
 #include "units/unit.h"
 #include <utility>
 
@@ -63,9 +63,9 @@ static_assert(std::is_same_v<extract<exp<dim2, -2>, exp<d0, 1>, exp<d1, 2>>,
 
 // dim_invert
 static_assert(std::is_same_v<dim_invert<derived_dimension<exp<d0, -1>>>, d0>);
-static_assert(std::is_same_v<dim_invert<derived_dimension<exp<d0, -2>>>, derived_dimension<exp<d0, 2>>>);
+static_assert(std::is_same_v<dim_invert<derived_dimension<exp<d0, -2>>>, unknown_dimension<exp<d0, 2>>>);
 static_assert(
-    std::is_same_v<dim_invert<derived_dimension<exp<d0, 2>, exp<d1, -1>>>, derived_dimension<exp<d0, -2>, exp<d1, 1>>>);
+    std::is_same_v<dim_invert<derived_dimension<exp<d0, 2>, exp<d1, -1>>>, unknown_dimension<exp<d0, -2>, exp<d1, 1>>>);
 
 // make_dimension
 
@@ -94,33 +94,33 @@ static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>,
 // dimension_multiply
 
 static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d1, 1>>>,
-                             derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
+                             unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(
-    std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, d1>, derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
+    std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, d1>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(
-    std::is_same_v<dimension_multiply<d0, derived_dimension<exp<d1, 1>>>, derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
-static_assert(std::is_same_v<dimension_multiply<d0, d1>, derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
+    std::is_same_v<dimension_multiply<d0, derived_dimension<exp<d1, 1>>>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
+static_assert(std::is_same_v<dimension_multiply<d0, d1>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(std::is_same_v<
               dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d3, 1>>>,
-              derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>, exp<d3, 1>>>);
+              unknown_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>, exp<d3, 1>>>);
 static_assert(std::is_same_v<
               dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d1, 1>>>,
-              derived_dimension<exp<d0, 1>, exp<d1, 2>, exp<d2, 1>>>);
+              unknown_dimension<exp<d0, 1>, exp<d1, 2>, exp<d2, 1>>>);
 static_assert(std::is_same_v<
               dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d1, -1>>>,
-              derived_dimension<exp<d0, 1>, exp<d2, 1>>>);
+              unknown_dimension<exp<d0, 1>, exp<d2, 1>>>);
 static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, -1>>>,
-                             derived_dimension<>>);
-static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 2>>, derived_dimension<exp<d0, -1>>>, d0>);
+                             unknown_dimension<>>);
+static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 2>>, unknown_dimension<exp<d0, -1>>>, d0>);
 
 // dimension_divide
 
 static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d1, 1>>>,
-                             derived_dimension<exp<d0, 1>, exp<d1, -1>>>);
+                             unknown_dimension<exp<d0, 1>, exp<d1, -1>>>);
 static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>,
-                             derived_dimension<>>);
+                             unknown_dimension<>>);
 static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>,
-                             derived_dimension<>>);
-static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 2>>, derived_dimension<exp<d0, 1>>>, d0>);
+                             unknown_dimension<>>);
+static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 2>>, unknown_dimension<exp<d0, 1>>>, d0>);
 
 }  // namespace

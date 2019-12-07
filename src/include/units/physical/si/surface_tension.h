@@ -22,24 +22,25 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/force.h>
 #include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct substance : derived_dimension<substance, exp<base_dim_substance, 1>> {};
+struct newton_per_metre : unit<newton_per_metre> {};
 
-  template<typename T>
-  concept Substance = QuantityOf<T, substance>;
+struct dim_surface_tension : physical::dim_surface_tension<dim_surface_tension, newton_per_metre, dim_force, dim_length> {};
 
-  struct mole : named_coherent_derived_unit<mole, substance, "mol", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using surface_tension = quantity<dim_surface_tension, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // mol
-    constexpr auto operator""mol(unsigned long long l) { return quantity<mole, std::int64_t>(l); }
-    constexpr auto operator""mol(long double l) { return quantity<mole, long double>(l); }
+  // Nm
+  constexpr auto operator""Npm(unsigned long long l) { return surface_tension<newton_per_metre, std::int64_t>(l); }
+  constexpr auto operator""Npm(long double l) { return surface_tension<newton_per_metre, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

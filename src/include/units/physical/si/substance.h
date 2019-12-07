@@ -22,25 +22,25 @@
 
 #pragma once
 
-#include <units/dimensions/si_base_dimensions.h>
-#include <units/dimensions/time.h>
-#include <units/dimensions/current.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/prefixes.h>
+#include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct electric_charge : derived_dimension<electric_charge, exp<time, 1>, exp<current, 1>> {};
+struct mole : named_unit<metre, "mol", prefix> {};
 
-  template<typename T>
-  concept ElectricCharge =  QuantityOf<T, electric_charge>;
+struct dim_substance : physical::dim_substance<mole> {};
 
-  struct coulomb : named_coherent_derived_unit<coulomb, electric_charge, "C", si_prefix> {};
+template<Unit U, Scalar Rep = double>
+using substance = quantity<dim_substance, U, Rep>;
 
-  inline namespace literals {
+inline namespace literals {
 
-    // C
-    constexpr auto operator""C(unsigned long long l) { return quantity<coulomb, std::int64_t>(l); }
-    constexpr auto operator""C(long double l) { return quantity<coulomb, long double>(l); }
+// mol
+constexpr auto operator"" mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
+constexpr auto operator"" mol(long double l) { return substance<mole, long double>(l); }
 
-  }  // namespace literals
+}  // namespace literals
 
-}  // namespace units
+}  // namespace units::si

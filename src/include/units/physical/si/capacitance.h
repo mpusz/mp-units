@@ -22,16 +22,27 @@
 
 #pragma once
 
-#include <units/dimension.h>
+#include <units/physical/dimensions.h>
+#include <units/physical/si/electric_charge.h>
+#include <units/physical/si/voltage.h>
+#include <units/physical/si/prefixes.h>
+#include <units/quantity.h>
 
-namespace units {
+namespace units::si {
 
-  struct base_dim_length : base_dimension<"length", "m"> {};
-  struct base_dim_mass : base_dimension<"mass", "kg"> {};
-  struct base_dim_time : base_dimension<"time", "s"> {};
-  struct base_dim_current : base_dimension<"current", "A"> {};
-  struct base_dim_temperature : base_dimension<"temperature", "K"> {};
-  struct base_dim_substance : base_dimension<"substance", "mol"> {};
-  struct base_dim_luminous_intensity : base_dimension<"luminous intensity", "cd"> {};
+struct farad : named_unit<farad, "F", prefix> {};
 
-}  // namespace units
+struct dim_capacitance : physical::dim_capacitance<dim_capacitance, farad, dim_electric_charge, dim_voltage> {};
+
+template<Unit U, Scalar Rep = double>
+using capacitance = quantity<dim_capacitance, U, Rep>;
+
+inline namespace literals {
+
+// F
+constexpr auto operator""F(unsigned long long l) { return capacitance<farad, std::int64_t>(l); }
+constexpr auto operator""_F(long double l) { return capacitance<farad, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si
