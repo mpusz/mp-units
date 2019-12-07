@@ -29,7 +29,7 @@
 
 namespace units {
 
-inline namespace physical {
+namespace physical {
 
 template<typename Dim, template<typename...> typename DimTemplate>
 concept DimensionOf = (Dimension<Dim> || BaseDimension<Dim>) && is_derived_from_instantiation<Dim, DimTemplate>;
@@ -39,148 +39,128 @@ concept QuantityOf = Quantity<Q> && is_derived_from_instantiation<typename Q::di
 
 // ------------------------ base dimensions -----------------------------
 
-// length
 template<Unit U>
 struct dim_length : base_dimension<"length", U> {};
 
-template<typename T>
-concept Length = QuantityOf<T, dim_length>;
-
-// mass
 template<Unit U>
 struct dim_mass : base_dimension<"mass", U> {};
 
-template<typename T>
-concept Mass = QuantityOf<T, dim_mass>;
-
-// time
 template<Unit U>
 struct dim_time : base_dimension<"time", U> {};
 
-template<typename T>
-concept Time = QuantityOf<T, dim_time>;
-
-// current
 template<Unit U>
 struct dim_current : base_dimension<"current", U> {};
 
-template<typename T>
-concept Current = QuantityOf<T, dim_current>;
-
-// temperature
 template<Unit U>
 struct dim_temperature : base_dimension<"temperature", U> {};
 
-template<typename T>
-concept Temperature = QuantityOf<T, dim_temperature>;
-
-// substance
 template<Unit U>
 struct dim_substance : base_dimension<"substance", U> {};
 
-template<typename T>
-concept Substance = QuantityOf<T, dim_substance>;
-
-// luminous intensity
 template<Unit U>
 struct dim_luminous_intensity : base_dimension<"luminous intensity", U> {};
 
-template<typename T>
-concept LuminousIntensity = QuantityOf<T, dim_luminous_intensity>;
-
 // ------------------------ derived dimensions -----------------------------
 
-// frequency
 template<typename Child, Unit U, DimensionOf<dim_time> T>
 struct dim_frequency : derived_dimension<Child, U, exp<T, -1>> {};
 
-template<typename T>
-concept Frequency = QuantityOf<T, dim_frequency>;
-
-// area
 template<typename Child, Unit U, DimensionOf<dim_length> L>
 struct dim_area : derived_dimension<Child, U, exp<L, 2>> {};
 
-template<typename T>
-concept Area = QuantityOf<T, dim_area>;
-
-// volume
 template<typename Child, Unit U, DimensionOf<dim_length> L>
 struct dim_volume : derived_dimension<Child, U, exp<L, 3>> {};
 
-template<typename T>
-concept Volume = QuantityOf<T, dim_volume>;
-
-// velocity
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
 struct dim_velocity : derived_dimension<Child, U, exp<L, 1>, exp<T, -1>> {};
 
-template<typename T>
-concept Velocity = QuantityOf<T, dim_velocity>;
-
-// acceleration
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
 struct dim_acceleration : derived_dimension<Child, U, exp<L, 1>, exp<T, -2>> {};
 
-template<typename T>
-concept Acceleration = QuantityOf<T, dim_acceleration>;
-
-// force
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_acceleration> A>
 struct dim_force : derived_dimension<Child, U, exp<M, 1>, exp<A, 1>> {};
 
-template<typename T>
-concept Force = QuantityOf<T, dim_force>;
-
-// energy
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
 struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
 
-template<typename T>
-concept Energy = QuantityOf<T, dim_energy>;
-
-// power
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_time> T>
 struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
 
-template<typename T>
-concept Power = QuantityOf<T, dim_power>;
-
-// voltage
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_current> C>
 struct dim_voltage : derived_dimension<Child, U, exp<P, 1>, exp<C, -1>> {};
 
-template<typename T>
-concept Voltage = QuantityOf<T, dim_voltage>;
-
-// electric charge
 template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_current> C>
 struct dim_electric_charge : derived_dimension<Child, U, exp<T, 1>, exp<C, 1>> {};
 
-template<typename T>
-concept ElectricCharge = QuantityOf<T, dim_electric_charge>;
-
-// capacitance
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> C, DimensionOf<dim_voltage> V>
 struct dim_capacitance : derived_dimension<Child, U, exp<C, 1>, exp<V, -1>> {};
 
-template<typename T>
-concept Capacitance = QuantityOf<T, dim_capacitance>;
-
-// surface tension
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
 struct dim_surface_tension : derived_dimension<Child, U, exp<F, 1>, exp<L, -1>> {};
 
-template<typename T>
-concept SurfaceTension = QuantityOf<T, dim_surface_tension>;
-
-// pressure
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_area> A>
 struct dim_pressure : derived_dimension<Child, U, exp<F, 1>, exp<A, -1>> {};
 
-template<typename T>
-concept Pressure = QuantityOf<T, dim_pressure>;
-
 }  // namespace physical
+
+template<typename T>
+concept Length = physical::QuantityOf<T, physical::dim_length>;
+
+template<typename T>
+concept Mass = physical::QuantityOf<T, physical::dim_mass>;
+
+template<typename T>
+concept Time = physical::QuantityOf<T, physical::dim_time>;
+
+template<typename T>
+concept Current = physical::QuantityOf<T, physical::dim_current>;
+
+template<typename T>
+concept Temperature = physical::QuantityOf<T, physical::dim_temperature>;
+
+template<typename T>
+concept Substance = physical::QuantityOf<T, physical::dim_substance>;
+
+template<typename T>
+concept LuminousIntensity = physical::QuantityOf<T, physical::dim_luminous_intensity>;
+
+template<typename T>
+concept Frequency = physical::QuantityOf<T, physical::dim_frequency>;
+
+template<typename T>
+concept Area = physical::QuantityOf<T, physical::dim_area>;
+
+template<typename T>
+concept Volume = physical::QuantityOf<T, physical::dim_volume>;
+
+template<typename T>
+concept Velocity = physical::QuantityOf<T, physical::dim_velocity>;
+
+template<typename T>
+concept Acceleration = physical::QuantityOf<T, physical::dim_acceleration>;
+
+template<typename T>
+concept Force = physical::QuantityOf<T, physical::dim_force>;
+
+template<typename T>
+concept Energy = physical::QuantityOf<T, physical::dim_energy>;
+
+template<typename T>
+concept Power = physical::QuantityOf<T, physical::dim_power>;
+
+template<typename T>
+concept Voltage = physical::QuantityOf<T, physical::dim_voltage>;
+
+template<typename T>
+concept ElectricCharge = physical::QuantityOf<T, physical::dim_electric_charge>;
+
+template<typename T>
+concept Capacitance = physical::QuantityOf<T, physical::dim_capacitance>;
+
+template<typename T>
+concept SurfaceTension = physical::QuantityOf<T, physical::dim_surface_tension>;
+
+template<typename T>
+concept Pressure = physical::QuantityOf<T, physical::dim_pressure>;
 
 }  // namespace units

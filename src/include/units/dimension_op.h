@@ -199,7 +199,7 @@ struct dimension_pow_impl<derived_dimension<exp<D, 1, N>>, N> {
 
 template<DerivedDimension D, std::size_t N>
 struct dimension_pow_impl<D, N> {
-  using type = dimension_pow_impl<downcast_base<D>, N>;
+  using type = dimension_pow_impl<downcast_base_t<D>, N>::type;
 };
 
 template<typename... Es, std::size_t N>

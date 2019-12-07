@@ -20,70 +20,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/voltage.h>
-#include <units/dimensions/frequency.h>
+#include <units/physical/si/voltage.h>
+#include <units/physical/si/frequency.h>
 #include <units/math.h>
 
-/* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
-
 namespace {
 
-  struct base_dim_digital_information : units::base_dimension<"digital information", "b"> {};
+using namespace units;
+using namespace units::si;
 
-  struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
+// power spectral density
+struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
+struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exp<dim_voltage, 2>, units::exp<dim_frequency, -1>> {};
 
-  template<typename T>
-  concept DigitalInformation = units::QuantityOf<T, digital_information>;
+template<Unit U, Scalar Rep = double>
+using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
-  struct data_prefix : units::prefix_type {};
+// amplitude spectral density
+struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
+struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exp<dim_voltage, 1>, units::exp<dim_frequency, -1, 2>> {};
 
-  struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
-
-  struct bit : units::named_coherent_derived_unit<bit, digital_information, "b", data_prefix> {};
-  struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
-
-  struct byte : units::named_scaled_derived_unit<byte, digital_information, "B", units::ratio<8>, data_prefix> {};
-  struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
-
-  inline namespace literals {
-
-    constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
-    constexpr auto operator""_Kib(unsigned long long l) { return units::quantity<kilobit, std::int64_t>(l); }
-    constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
-    constexpr auto operator""_KiB(unsigned long long l) { return units::quantity<kilobyte, std::int64_t>(l); }
-
-  }
-}
-
-namespace {
-
-  static_assert(1_B == 8_b);
-  static_assert(1024_b == 1_Kib);
-  static_assert(1024_B == 1_KiB);
-  static_assert(8 * 1024_b == 1_KiB);
-  static_assert(8 * 1_Kib == 1_KiB);
+template<Unit U, Scalar Rep = double>
+using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, Rep>;
 
 }
 
 namespace {
 
-  using namespace units;
+static_assert(std::is_same_v<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
+static_assert(std::is_same_v<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);
 
-  // power spectral density
-  struct power_spectral_density : derived_dimension<power_spectral_density, units::exp<voltage, 2>, units::exp<frequency, -1>> {};
-  struct sq_volt_per_hertz : coherent_derived_unit<sq_volt_per_hertz, power_spectral_density> {};
-
-  // amplitude spectral density
-  struct amplitude_spectral_density : derived_dimension<amplitude_spectral_density, units::exp<voltage, 1>, units::exp<frequency, -1, 2>> {};
-  struct volt_per_sqrt_hertz : coherent_derived_unit<volt_per_sqrt_hertz, amplitude_spectral_density> {};
-}
-
-namespace {
-
-  static_assert(std::is_same_v<dimension_sqrt<power_spectral_density>, amplitude_spectral_density>);
-  static_assert(std::is_same_v<dimension_pow<amplitude_spectral_density, 2>, power_spectral_density>);
-
-  static_assert(std::is_same_v<decltype(pow<2>(quantity<volt_per_sqrt_hertz>(4))), decltype(quantity<sq_volt_per_hertz>(16))>);
-  static_assert(std::is_same_v<decltype(sqrt(quantity<sq_volt_per_hertz>(16))), decltype(quantity<volt_per_sqrt_hertz>(4))>);
+static_assert(std::is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
+static_assert(std::is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
 
 }

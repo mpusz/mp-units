@@ -22,7 +22,8 @@
 
 add_library(unit_tests_static
 #    cgs_test.cpp
-#    custom_unit_test.cpp
+    custom_unit_test.cpp
+    data_test.cpp
     dimension_op_test.cpp
 #    fixed_string_test.cpp
     math_test.cpp
