@@ -260,7 +260,7 @@ public:
   constexpr explicit quantity(const Value& v) : value_{static_cast<rep>(v)} {}
 
   template<Quantity Q2>
-    requires same_dim<dimension, typename Q2::dimension> &&
+    requires same_dim<D, typename Q2::dimension> &&
              detail::safe_convertible<typename Q2::rep, rep> &&
              detail::safe_divisible<rep, typename Q2::unit, unit>
   constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()} {}
