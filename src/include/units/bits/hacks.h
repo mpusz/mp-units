@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <concepts/concepts.hpp>
 #include <functional>
 
 #ifdef NDEBUG
@@ -32,15 +31,23 @@
 #define Expects(cond) assert(cond);
 #endif
 
-#if __GNUC__ > 9
-#define AUTO auto
-#define SAME_AS(T) std::same_as<T>
-#else
+#if __GNUC__ < 10
+
+#include <concepts/concepts.hpp>
 #define AUTO
 #define SAME_AS(T) T
+
+#else
+
+#include <concepts>
+#define AUTO auto
+#define SAME_AS(T) std::same_as<T>
+
 #endif
 
 namespace std {
+
+#if __GNUC__ < 10
 
   // concepts
   using concepts::common_reference_with;
@@ -64,4 +71,11 @@ namespace std {
   template<class F, class... Args>
   concept regular_invocable = invocable<F, Args...>;
 
-}
+#else
+
+template<class T>
+concept default_constructible = constructible_from<T>;
+
+#endif
+
+} // namespace std

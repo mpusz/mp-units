@@ -47,9 +47,10 @@ class UnitsConan(ConanFile):
     exports_sources = ["src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "range-v3/0.9.1@ericniebler/stable",
-        "Catch2/2.10.0@catchorg/stable",
         "fmt/6.0.0"
+    )
+    build_requires = (
+        "Catch2/2.10.0@catchorg/stable"
     )
     generators = "cmake"
 
@@ -72,6 +73,10 @@ class UnitsConan(ConanFile):
         else:
             cmake.configure(source_folder="src", build_folder="src")
         return cmake
+
+    def requirements(self):
+        if Version(self.settings.compiler.version) < "10":
+            self.requires("range-v3/0.10.0@ericniebler/stable")
 
     def build(self):
         cmake = self._configure_cmake()

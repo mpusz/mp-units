@@ -53,7 +53,6 @@ add_library(units INTERFACE)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
-        CONAN_PKG::range-v3
         CONAN_PKG::fmt
 )
 target_include_directories(units
@@ -71,6 +70,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
             -Wno-pedantic
     )
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
+        target_link_libraries(units
+            INTERFACE
+                CONAN_PKG::range-v3
+        )
+
         target_compile_options(units
             INTERFACE
                 -fconcepts

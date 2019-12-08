@@ -28,8 +28,8 @@
 namespace units {
 
   template<std::size_t N, typename D, typename U, typename Rep>
-    requires N == 0
-  inline Rep AUTO pow(const quantity<D, U, Rep>&) noexcept
+    requires (N == 0)
+  inline Rep pow(const quantity<D, U, Rep>&) noexcept
   {
     return 1;
   }

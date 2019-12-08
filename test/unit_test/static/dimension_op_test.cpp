@@ -111,7 +111,7 @@ static_assert(std::is_same_v<
               unknown_dimension<exp<d0, 1>, exp<d2, 1>>>);
 static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, -1>>>,
                              unknown_dimension<>>);
-static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 2>>, unknown_dimension<exp<d0, -1>>>, d0>);
+static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 2>>, derived_dimension<exp<d0, -1>>>, d0>);
 
 // dimension_divide
 
