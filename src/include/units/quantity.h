@@ -164,19 +164,17 @@ template<Quantity To, typename D, typename U, typename Rep>
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
  * 
- * This cast gets both the target unit and representation to cast to. For example:
+ * This cast gets only the target dimension to cast to. For example:
  * 
- * auto q1 = units::quantity_cast<units::second, int>(1ms);
+ * auto q1 = units::quantity_cast<units::si::acceleration>(200Gal);
  * 
- * @tparam ToU a unit type to use for a target quantity
- * @tparam ToRep a representation type to use for a target quantity
+ * @tparam ToD a dimension type to use for a target quantity
  */
-template<Unit ToU, Scalar ToRep, typename D, typename U, typename Rep>
+template<Dimension ToD, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires UnitOf<ToU, D> &&
-           detail::basic_arithmetic<std::common_type_t<ToRep, Rep, intmax_t>>
+  requires same_dim<ToD, D>
 {
-  return quantity_cast<quantity<D, ToU, ToRep>>(q);
+  return quantity_cast<quantity<ToD, U, Rep>>(q);
 }
 
 /**
@@ -187,7 +185,7 @@ template<Unit ToU, Scalar ToRep, typename D, typename U, typename Rep>
  * 
  * This cast gets only the target unit to cast to. For example:
  * 
- * auto q1 = units::quantity_cast<units::second>(1ms);
+ * auto q1 = units::quantity_cast<units::si::second>(1ms);
  * 
  * @tparam ToU a unit type to use for a target quantity
  */
