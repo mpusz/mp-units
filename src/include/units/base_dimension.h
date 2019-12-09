@@ -31,14 +31,18 @@ namespace units {
 /**
  * @brief A dimension of a base quantity
  *
- * Measurement unit that is adopted by convention for a base quantity (a quantity that can not be expressed in terms of
- * the other quantities within that subset) in a specific system of units.
+ * Base quantity is a quantity in a conventionally chosen subset of a given system of quantities, where no quantity
+ * in the subset can be expressed in terms of the other quantities within that subset. They are referred to as
+ * being mutually independent since a base quantity cannot be expressed as a product of powers of the other base
+ * quantities.
+ * 
+ * Base unit is a measurement unit that is adopted by convention for a base quantity in a specific system of units.
  *
  * Pair of Name and Unit template parameter forms an unique identifier of the base dimension. The same identifiers can
- * be multiplied and divided which will result with an adjustment of its factor in an Exponent (in case of zero the
- * dimension will be simplified and removed from further analysis of current expresion). In case the Name is the same
- * but the Unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but is possible to force
- * it with a quantity_cast.
+ * be multiplied and divided which will result with an adjustment of its factor in an Exponent od a DerivedDimension
+ * (in case of zero the dimension will be simplified and removed from further analysis of current expresion). In case
+ * the Name is the same but the Unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but
+ * is possible to force it with a quantity_cast.
  *
  * @tparam Name an unique identifier of the base dimension used to provide dimensional analysis support
  * @tparam U a base unit to be used for this base dimension
@@ -47,7 +51,7 @@ template<basic_fixed_string Name, Unit U>
 struct base_dimension {
   using base_type_workaround = base_dimension; // TODO Replace with is_derived_from_instantiation when fixed
   static constexpr auto name = Name;
-  using coherent_unit = U;
+  using base_unit = U;
 };
 
 // BaseDimension

@@ -23,29 +23,23 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/si/prefixes.h>
+#include <units/physical/cgs/velocity.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::cgs {
 
-struct gram : named_unit<gram, "g", prefix> {};
-struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
-
-struct dim_mass : physical::dim_mass<kilogram> {};
+struct gal : named_unit<gal, "Gal", si::prefix> {};
+struct dim_acceleration : physical::dim_acceleration<dim_acceleration, gal, dim_length, dim_time> {};
 
 template<Unit U, Scalar Rep = double>
-using mass = quantity<dim_mass, U, Rep>;
+using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {
 
-  // g
-  constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-  constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
-
-  // kg
-  constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-  constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+// Gal
+constexpr auto operator""Gal(unsigned long long l) { return acceleration<gal, std::int64_t>(l); }
+constexpr auto operator""Gal(long double l) { return acceleration<gal, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::cgs

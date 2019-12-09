@@ -54,7 +54,10 @@ struct scaled_unit : downcast_base<scaled_unit<U, R>> {
 };
 
 template<Dimension D, UnitRatio R>
-using downcast_unit = downcast<scaled_unit<typename D::coherent_unit::reference, R>>;
+using downcast_unit = downcast<scaled_unit<typename dimension_unit<D>::reference, R>>;
+
+template<Unit U1, Unit U2>
+struct same_unit_reference : std::is_same<typename U1::reference, typename U2::reference> {};
 
 /**
  * @brief A starting point for a new hierarchy of units
@@ -146,7 +149,7 @@ template<typename U, typename D>
 concept UnitOf =
   Unit<U> &&
   Dimension<D> &&
-  std::same_as<typename U::reference, typename D::coherent_unit::reference>;
+  std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
 namespace detail {
 

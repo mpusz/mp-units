@@ -27,6 +27,40 @@
 
 namespace units {
 
+// equivalent_dim
+namespace detail {
+
+template<Dimension D1, Dimension D2>
+struct equivalent_dim_impl : std::false_type {};
+
+template<BaseDimension D1, BaseDimension D2>
+struct equivalent_base_dim : std::conjunction<std::bool_constant<D1::name == D2::name>,
+                                        same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {};
+
+template<BaseDimension D1, BaseDimension D2>
+struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_base_dim<D1, D2>> {};
+
+template<Exponent E1, Exponent E2>
+struct equivalent_exp : std::false_type {};
+
+template<BaseDimension Dim1, int Num, int Den, BaseDimension Dim2>
+struct equivalent_exp<exp<Dim1, Num, Den>, exp<Dim2, Num, Den>> : equivalent_dim_impl<Dim1, Dim2> {};
+
+template<DerivedDimension D1, DerivedDimension D2>
+struct equivalent_derived_dim : std::false_type {};
+
+template<typename... Es1, typename... Es2>
+  requires (sizeof...(Es1) == sizeof...(Es2))
+struct equivalent_derived_dim<derived_dimension<Es1...>, derived_dimension<Es2...>> : std::conjunction<equivalent_exp<Es1, Es2>...> {};
+
+template<DerivedDimension D1, DerivedDimension D2>
+struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {};
+
+} // namespace detail
+
+template<Dimension D1, Dimension D2>
+inline constexpr bool equivalent_dim = detail::equivalent_dim_impl<D1, D2>::value;
+
 /**
  * @brief Unknown dimension
  * 
@@ -43,21 +77,34 @@ struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, scaled_un
 
 namespace detail {
 
-template<Dimension D>
-struct downcast_dimension_impl {
+template<DerivedDimension D>
+struct check_unknown {
   using type = D;
 };
 
-// downcast did not find user predefined type
+// downcast did not find a user predefined type
 template<typename... Es>
-struct downcast_dimension_impl<derived_dimension<Es...>> {
+struct check_unknown<derived_dimension<Es...>> {
   using type = unknown_dimension<Es...>;
+};
+
+template<Dimension D>
+struct downcast_dimension_impl;
+
+template<BaseDimension D>
+struct downcast_dimension_impl<D> {
+  using type = D;
+};
+
+template<DerivedDimension D>
+struct downcast_dimension_impl<D> {
+  using type = check_unknown<downcast<D>>::type;
 };
 
 } // namespace detail
 
 template<Dimension D>
-using downcast_dimension = detail::downcast_dimension_impl<downcast<D>>::type;
+using downcast_dimension = detail::downcast_dimension_impl<D>::type;
 
 // dim_invert
 namespace detail {

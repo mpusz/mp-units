@@ -77,7 +77,7 @@ struct derived_dimension<> : downcast_base<derived_dimension<>> {};
  * @tparam ERest zero or more following exponents of a derived dimension
  */
 template<Exponent E, Exponent... ERest>
-struct derived_dimension<E, ERest...> : downcast_base<derived_dimension<E, ERest...>> {};
+struct derived_dimension<E, ERest...> : downcast_base<derived_dimension<E, ERest...>> {};  // TODO rename to 'dimension'?
 
 // DerivedDimension
 template<typename T>
@@ -220,6 +220,35 @@ struct extract<exp<derived_dimension<Es...>, Num, Den>, ERest...> {
 template<Exponent... Es>
 using make_dimension = dim_consolidate<type_list_sort<typename extract<Es...>::type, exp_less>>::type;
 
+template<Exponent E>
+  requires (E::den == 1 || E::den == 2) // TODO provide support for any den
+struct exp_ratio {
+  using base_ratio = E::dimension::base_unit::ratio;
+  using positive_ratio = conditional<E::num * E::den < 0, ratio<base_ratio::den, base_ratio::num>, base_ratio>;
+  static constexpr std::int64_t N = E::num * E::den < 0 ? -E::num : E::num;
+  using pow = ratio_pow<positive_ratio, N>;
+  using type = conditional<E::den == 2, ratio_sqrt<pow>, pow>;
+};
+
+template<DerivedDimension D>
+struct base_units_ratio_impl;
+
+template<typename E, typename... Es>
+struct base_units_ratio_impl<derived_dimension<E, Es...>> {
+  using type = ratio_multiply<typename exp_ratio<E>::type, typename base_units_ratio_impl<derived_dimension<Es...>>::type>;
+};
+
+template<typename E>
+struct base_units_ratio_impl<derived_dimension<E>> {
+  using type = exp_ratio<E>::type;
+};
+
+/**
+ * @brief Calculates the common ratio of all the references of base units in the derived dimension
+ */
+template<DerivedDimension D>
+using base_units_ratio = base_units_ratio_impl<D>::type;
+
 }  // namespace detail
 
 /**
@@ -247,16 +276,27 @@ template<typename Child, Unit U, Exponent E, Exponent... ERest>
 struct derived_dimension<Child, U, E, ERest...> : downcast_child<Child, typename detail::make_dimension<E, ERest...>> {
   using recipe = derived_dimension<E, ERest...>;
   using coherent_unit = U;
+  using base_units_ratio = detail::base_units_ratio<typename downcast_child<Child, typename detail::make_dimension<E, ERest...>>::downcast_base_type>;
 };
 
-// same_dim
-template<Dimension D1, Dimension D2>
-inline constexpr bool same_dim = false;
+namespace detail {
 
-template<BaseDimension D1, BaseDimension D2>
-inline constexpr bool same_dim<D1, D2> = std::is_same_v<D1, D2>;
+template<Dimension D>
+struct dimension_unit_impl;
 
-template<DerivedDimension D1, DerivedDimension D2>
-inline constexpr bool same_dim<D1, D2> = std::is_same_v<typename D1::downcast_base_type, typename D2::downcast_base_type>;
+template<BaseDimension D>
+struct dimension_unit_impl<D> {
+  using type = D::base_unit;
+};
+
+template<DerivedDimension D>
+struct dimension_unit_impl<D> {
+  using type = D::coherent_unit;
+};
+
+}
+
+template<Dimension D>
+using dimension_unit = detail::dimension_unit_impl<D>::type;
 
 }  // namespace units

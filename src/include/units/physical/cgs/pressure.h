@@ -23,29 +23,26 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
+#include <units/physical/cgs/area.h>
+#include <units/physical/cgs/force.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::cgs {
 
-struct gram : named_unit<gram, "g", prefix> {};
-struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
+struct barye : named_unit<barye, "Ba", si::prefix> {};
 
-struct dim_mass : physical::dim_mass<kilogram> {};
+struct dim_pressure : physical::dim_pressure<dim_pressure, barye, dim_force, dim_area> {};
 
 template<Unit U, Scalar Rep = double>
-using mass = quantity<dim_mass, U, Rep>;
+using pressure = quantity<dim_pressure, U, Rep>;
 
 inline namespace literals {
 
-  // g
-  constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-  constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
-
-  // kg
-  constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-  constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+// Ba
+constexpr auto operator""Ba(unsigned long long l) { return pressure<barye, std::int64_t>(l); }
+constexpr auto operator""Ba(long double l) { return pressure<barye, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::cgs

@@ -23,29 +23,25 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
+#include <units/physical/cgs/energy.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::cgs {
 
-struct gram : named_unit<gram, "g", prefix> {};
-struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
+struct erg_per_second : unit<erg_per_second> {};
 
-struct dim_mass : physical::dim_mass<kilogram> {};
+struct dim_power : physical::dim_power<dim_power, erg_per_second, dim_energy, dim_time> {};
 
 template<Unit U, Scalar Rep = double>
-using mass = quantity<dim_mass, U, Rep>;
+using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {
 
-  // g
-  constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-  constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
-
-  // kg
-  constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-  constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+// ergps
+constexpr auto operator""_ergps(unsigned long long l) { return power<erg_per_second, std::int64_t>(l); }
+constexpr auto operator""_ergps(long double l) { return power<erg_per_second, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::cgs

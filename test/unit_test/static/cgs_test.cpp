@@ -20,56 +20,87 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/acceleration.h>
-#include <units/dimensions/power.h>
-#include <units/dimensions/pressure.h>
-#include <units/math.h>
 
-namespace cgs {
-
-  using units::centimetre;
-  using units::gram;
-  using units::second;
-  struct centimetre_per_second : units::deduced_derived_unit<centimetre_per_second, units::velocity, centimetre, second> {};
-  struct gal : units::named_deduced_derived_unit<gal, units::acceleration, "Gal", units::no_prefix, centimetre, second> {};
-  struct dyne : units::named_deduced_derived_unit<dyne, units::force, "dyn", units::no_prefix, centimetre, gram, second> {};
-  struct erg : units::named_deduced_derived_unit<erg, units::energy, "erg", units::no_prefix, centimetre, gram, second> {};
-  struct ergps : units::named_deduced_derived_unit<ergps, units::power, "erg/s", units::no_prefix, centimetre, gram, second> {};   // TODO make it work for erg and non-named
-  struct barye : units::named_deduced_derived_unit<barye, units::pressure, "Ba", units::no_prefix, centimetre, gram, second> {};
-
-
-  inline namespace literals {
-
-    using namespace units::literals;
-
-    constexpr auto operator""cmps(unsigned long long l) { return units::quantity<centimetre_per_second, std::int64_t>(l); }
-    constexpr auto operator""cmps(long double l) { return units::quantity<centimetre_per_second, long double>(l); }
-    constexpr auto operator""Gal(unsigned long long l) { return units::quantity<gal, std::int64_t>(l); }
-    constexpr auto operator""Gal(long double l) { return units::quantity<gal, long double>(l); }
-    constexpr auto operator""dyn(unsigned long long l) { return units::quantity<dyne, std::int64_t>(l); }
-    constexpr auto operator""dyn(long double l) { return units::quantity<dyne, long double>(l); }
-    constexpr auto operator""_erg(unsigned long long l) { return units::quantity<erg, std::int64_t>(l); }
-    constexpr auto operator""_erg(long double l) { return units::quantity<erg, long double>(l); }
-    constexpr auto operator""_ergps(unsigned long long l) { return units::quantity<ergps, std::int64_t>(l); }
-    constexpr auto operator""_ergps(long double l) { return units::quantity<ergps, long double>(l); }
-    constexpr auto operator""Ba(unsigned long long l) { return units::quantity<barye, std::int64_t>(l); }
-    constexpr auto operator""Ba(long double l) { return units::quantity<barye, long double>(l); }
-
-  }  // namespace literals
-
-}
+#include <units/physical/cgs/acceleration.h>
+#include <units/physical/cgs/energy.h>
+#include <units/physical/cgs/force.h>
+#include <units/physical/cgs/length.h>
+#include <units/physical/cgs/mass.h>
+#include <units/physical/cgs/power.h>
+#include <units/physical/cgs/pressure.h>
+#include <units/physical/cgs/time.h>
+#include <units/physical/cgs/velocity.h>
+#include <units/physical/si/acceleration.h>
+#include <units/physical/si/energy.h>
+#include <units/physical/si/force.h>
+#include <units/physical/si/length.h>
+#include <units/physical/si/mass.h>
+#include <units/physical/si/power.h>
+#include <units/physical/si/pressure.h>
+#include <units/physical/si/time.h>
+#include <units/physical/si/velocity.h>
 
 namespace {
 
-  using namespace cgs::literals;
+using namespace units;
 
-  static_assert(100cm == 1m);
-  static_assert(1'000g == 1kg);
-  static_assert(100cmps == 1mps);
-  static_assert(100Gal == 1mps_sq);
-  static_assert(100'000dyn == 1N);
-  static_assert(10'000'000_erg == 1_J);
-  static_assert(10'000'000_ergps == 1W);
-  static_assert(10Ba == 1Pa);
+static_assert(cgs::length<cgs::centimetre>(100) == si::length<si::metre>(1));
+static_assert(cgs::mass<cgs::gram>(1'000) == si::mass<si::kilogram>(1));
+static_assert(cgs::time<cgs::second>(1) == si::time<si::second>(1));
+static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == si::velocity<si::metre_per_second>(1));
+static_assert(cgs::acceleration<cgs::gal>(100) == si::acceleration<si::metre_per_second_sq>(1));
+static_assert(cgs::force<cgs::dyne>(100'000) == si::force<si::newton>(1));
+static_assert(cgs::energy<cgs::erg>(10'000'000) == si::energy<si::joule>(1));
+static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == si::power<si::watt>(1));
+static_assert(cgs::pressure<cgs::barye>(10) == si::pressure<si::pascal>(1));
+
+namespace si_test {
+
+using namespace units::si::literals;
+
+static_assert(cgs::length<cgs::centimetre>(100) == 1m);
+static_assert(cgs::mass<cgs::gram>(1'000) == 1kg);
+static_assert(cgs::time<cgs::second>(1) == 1s);
+static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1mps);
+static_assert(cgs::acceleration<cgs::gal>(100) == 1mps_sq);
+static_assert(cgs::force<cgs::dyne>(100'000) == 1N);
+static_assert(cgs::energy<cgs::erg>(10'000'000) == 1_J);
+static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == 1W);
+static_assert(cgs::pressure<cgs::barye>(10) == 1Pa);
+
+}
+
+namespace cgs_test {
+
+using namespace units::cgs::literals;
+
+static_assert(100cm == si::length<si::metre>(1));
+static_assert(1'000g == si::mass<si::kilogram>(1));
+static_assert(1s == si::time<si::second>(1));
+static_assert(100cmps == si::velocity<si::metre_per_second>(1));
+static_assert(100Gal == si::acceleration<si::metre_per_second_sq>(1));
+static_assert(100'000dyn == si::force<si::newton>(1));
+static_assert(10'000'000_erg == si::energy<si::joule>(1));
+static_assert(10'000'000_ergps == si::power<si::watt>(1));
+static_assert(10Ba == si::pressure<si::pascal>(1));
+
+}
+
+namespace both_test {
+
+using namespace units::si::literals;
+using namespace units::cgs::literals;
+
+static_assert(100cm == 1m);
+static_assert(1'000g == 1kg);
+static_assert(1s == 1s);
+static_assert(100cmps == 1mps);
+static_assert(100Gal == 1mps_sq);
+static_assert(100'000dyn == 1N);
+static_assert(10'000'000_erg == 1_J);
+static_assert(10'000'000_ergps == 1W);
+static_assert(10Ba == quantity_cast<double>(1Pa));
+
+}
 
 }
