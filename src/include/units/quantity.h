@@ -24,10 +24,13 @@
 
 #include <units/bits/concepts.h>
 #include <units/bits/dimension_op.h>
+#include <units/bits/unit_op.h>
 #include <units/bits/unit_text.h>
+
 #if __GNUC__ >= 10
 #include <compare>
 #endif
+
 #include <limits>
 #include <ostream>
 
@@ -603,13 +606,11 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
   requires (!equivalent_dim<D1, dim_invert<D2>>) &&  // TODO equivalent_derived_dim?
            (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
-            (std::ratio_multiply<typename U1::ratio, typename U2::ratio>::den == 1)) &&
+            detail::unit_ratio_multiply<D1, U1, D2, U2>::den == 1) &&
            detail::basic_arithmetic<Rep1, Rep2>
 {
   using dim = dimension_multiply<D1, D2>;
-  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
-  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_multiply<ratio_multiply<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
+  using ratio = ratio_multiply<detail::unit_ratio_multiply<D1, U1, D2, U2>, typename dimension_unit<dim>::ratio>;  ;
   using unit = downcast_unit<dim, ratio>;
   using common_rep = decltype(lhs.count() * rhs.count());
   using ret = quantity<dim, unit, common_rep>;
@@ -656,15 +657,13 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
   requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>) &&  // TODO equivalent_derived_dim?
            (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
-            (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
+            detail::unit_ratio_divide<D1, U1, D2, U2>::den == 1)
 {
   Expects(rhs.count() != 0);
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using dim = dimension_divide<D1, D2>;
-  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
-  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_multiply<ratio_divide<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
+  using ratio = ratio_multiply<detail::unit_ratio_divide<D1, U1, D2, U2>, typename dimension_unit<dim>::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
