@@ -29,10 +29,11 @@ namespace units::data {
 
 struct prefix : prefix_type {};
 
-struct kibi : units::prefix<kibi, prefix, "Ki", ratio<                1'024>> {};
-struct mebi : units::prefix<mebi, prefix, "Mi", ratio<            1'048'576>> {};
-struct gibi : units::prefix<gibi, prefix, "Gi", ratio<        1'073'741'824>> {};
-struct tebi : units::prefix<tebi, prefix, "Ti", ratio<    1'099'511'627'776>> {};
-struct pebi : units::prefix<pebi, prefix, "Pi", ratio<1'125'899'906'842'624>> {};
+struct kibi : units::prefix<kibi, prefix, "Ki", ratio<                    1'024>> {};
+struct mebi : units::prefix<mebi, prefix, "Mi", ratio<                1'048'576>> {};
+struct gibi : units::prefix<gibi, prefix, "Gi", ratio<            1'073'741'824>> {};
+struct tebi : units::prefix<tebi, prefix, "Ti", ratio<        1'099'511'627'776>> {};
+struct pebi : units::prefix<pebi, prefix, "Pi", ratio<    1'125'899'906'842'624>> {};
+struct exbi : units::prefix<exbi, prefix, "Ei", ratio<1'152'921'504'606'846'976>> {};
 
 }  // namespace units::si
