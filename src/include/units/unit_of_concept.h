@@ -52,6 +52,5 @@ concept UnitOf =
   Unit<U> &&
   Dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
-  // same_unit_reference<typename U, typename dimension_unit<D>> // TODO check if this works
 
 }  // namespace units
