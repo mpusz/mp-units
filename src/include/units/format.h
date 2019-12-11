@@ -159,7 +159,7 @@ template<typename Dimension, typename Unit, typename Rep, typename CharT>
 struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
-  using iterator = fmt::basic_parse_context<CharT>::iterator;
+  using iterator = fmt::basic_format_parse_context<CharT>::iterator;
   using arg_ref_type = fmt::internal::arg_ref<CharT>;
 
   fmt::basic_format_specs<CharT> specs;
@@ -172,7 +172,7 @@ private:
 
   struct spec_handler {
     formatter& f;
-    fmt::basic_parse_context<CharT>& context;
+    fmt::basic_format_parse_context<CharT>& context;
     fmt::basic_string_view<CharT> format_str;
 
     template<typename Id>
@@ -185,8 +185,7 @@ private:
     constexpr arg_ref_type make_arg_ref(fmt::basic_string_view<CharT> arg_id)
     {
       context.check_arg_id(arg_id);
-      const auto str_val = fmt::internal::string_view_metadata(format_str, arg_id);
-      return arg_ref_type(str_val);
+      return arg_ref_type(arg_id);
     }
 
     constexpr arg_ref_type make_arg_ref(fmt::internal::auto_id)
@@ -226,7 +225,7 @@ private:
     iterator end;
   };
 
-  constexpr parse_range do_parse(fmt::basic_parse_context<CharT>& ctx)
+  constexpr parse_range do_parse(fmt::basic_format_parse_context<CharT>& ctx)
   {
     auto begin = ctx.begin(), end = ctx.end();
     if(begin == end || *begin == '}')
@@ -285,7 +284,7 @@ private:
   }
 
 public:
-  constexpr auto parse(fmt::basic_parse_context<CharT>& ctx)
+  constexpr auto parse(fmt::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
     format_str = fmt::basic_string_view<CharT>(&*range.begin, fmt::internal::to_unsigned(range.end - range.begin));
@@ -302,8 +301,8 @@ public:
     auto out = std::back_inserter(buf);
 
     // process dynamic width and precision
-    fmt::internal::handle_dynamic_spec<fmt::internal::width_checker>(specs.width, width_ref, ctx, format_str.begin());
-    fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(precision, precision_ref, ctx, format_str.begin());
+    fmt::internal::handle_dynamic_spec<fmt::internal::width_checker>(specs.width, width_ref, ctx);
+    fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(precision, precision_ref, ctx);
 
     // deal with quantity content
     if(begin == end || *begin == '}') {

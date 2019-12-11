@@ -47,10 +47,10 @@ class UnitsConan(ConanFile):
     exports_sources = ["src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "fmt/6.0.0"
+        "fmt/6.1.0"
     )
     build_requires = (
-        "Catch2/2.10.0@catchorg/stable"
+        "Catch2/2.11.0@catchorg/stable"
     )
     generators = "cmake"
 
