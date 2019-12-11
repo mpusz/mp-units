@@ -12,6 +12,7 @@ your source tree and use it as regular header files.
 NOTE: Until C++20 arrives the library has some 3rd party dependencies that provide
 experimental C++20 features. The list of dependncies include:
 - `range-v3@ericniebler`
+- `fmt@_`
 
 All of them are easily obtained with `conan`.
 
@@ -19,6 +20,18 @@ All of them are easily obtained with `conan`.
 
 To use `units` as a `cmake` imported library via `cmake` configuration files the following
 steps may be done:
+- clone the repository with its submodules:
+
+  ```shell
+  git clone --recurse-submodules https://github.com/mpusz/units.git
+  ```
+  
+  or in case it is already cloned without submodules initialize, fetch, and checkout them with:
+  
+  ```shell
+  git submodule update --init
+  ```
+
 - add the following remotes to your local `conan` instance
 
   ```shell
@@ -50,7 +63,7 @@ steps may be done:
 
   ```shell
   cd build
-  conan install .. -pr <your_conan_profile> -s cppstd=20 -b=outdated -u
+  conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
   ```
 
 
@@ -60,8 +73,9 @@ In case you would like to build all the code in that repository (with unit tests
 you should use the `CMakeLists.txt` from the parent directory.
 
 ```shell
-mkdir build && cd build
-conan install .. <your_profile_and_settings> -s cppstd=20
+git clone --recurse-submodules https://github.com/mpusz/units.git
+mkdir units/build && cd units/build
+conan install .. <your_profile_and_settings> -s compiler.cppstd=20
 cmake .. <your_cmake_configuration>
 cmake --build .
 ```
