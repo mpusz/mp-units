@@ -66,8 +66,6 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
             -Wno-literal-suffix
             -Wno-non-template-friend
             -Wno-stringop-overflow            
-# TODO gcc:92101
-            -Wno-pedantic
     )
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
         target_link_libraries(units

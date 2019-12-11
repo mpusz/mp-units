@@ -96,8 +96,7 @@ class UnitsConan(ConanFile):
                 "-fconcepts",
                 "-Wno-literal-suffix",
                 "-Wno-non-template-friend",
-                "-Wno-stringop-overflow",
-                "-Wno-pedantic"
+                "-Wno-stringop-overflow"
             ]
 
     def package_id(self):
