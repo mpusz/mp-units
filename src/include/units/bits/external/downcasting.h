@@ -22,19 +22,51 @@
 
 #pragma once
 
-#include <units/bits/type_traits.h>
-#include <units/ratio.h>
+#include <units/bits/external/hacks.h>
+#include <type_traits>
 
 namespace units {
 
-template<typename R>
-concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
+  template<typename BaseType>
+  struct downcast_base {
+    using downcast_base_type = BaseType;
+    friend auto downcast_guide(downcast_base);
+  };
 
-template<typename U, UnitRatio R>
-struct scaled_unit;
+  template<typename T>
+  concept Downcastable =
+      requires {
+        typename T::downcast_base_type;
+      } &&
+      std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
-// Unit
-template<typename T>
-concept Unit = is_derived_from_instantiation<T, scaled_unit>;
+  template<typename Target, Downcastable T>
+  struct downcast_child : T {
+    friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
+  };
+
+  namespace detail {
+
+    template<typename T>
+    concept has_downcast = requires {
+        downcast_guide(std::declval<downcast_base<T>>());
+    };
+
+    template<typename T>
+    constexpr auto downcast_impl()
+    {
+      if constexpr(has_downcast<T>)
+        return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
+      else
+        return T();
+    }
+
+  }
+
+  template<Downcastable T>
+  using downcast = decltype(detail::downcast_impl<T>());
+
+  template<Downcastable T>
+  using downcast_base_t = T::downcast_base_type;
 
 }  // namespace units

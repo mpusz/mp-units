@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/customization_points.h>
+#include <units/customization_points.h>
 #include <units/quantity.h>
 #include <fmt/format.h>
 #include <string_view>
@@ -116,20 +116,20 @@ namespace units {
       return format_to(out, treat_as_floating_point<Rep> ? "{:" + sign_text + "g}" : "{:" + sign_text + "}", val);
     }
 
-    template<typename Unit, typename OutputIt>
+    template<typename Dimension, typename Unit, typename OutputIt>
     inline static OutputIt format_units_quantity_unit(OutputIt out)
     {
-      return format_to(out, "{}", unit_text<Unit>().c_str());
+      return format_to(out, "{}", unit_text<Dimension, Unit>().c_str());
     }
 
-    template<typename OutputIt, typename Unit, typename Rep>
+    template<typename OutputIt, typename Dimension, typename Unit, typename Rep>
     struct units_formatter {
       OutputIt out;
       Rep val;
       fmt::sign_t sign;
       int precision;
 
-      explicit units_formatter(OutputIt o, quantity<Unit, Rep> q, fmt::sign_t s, int prec):
+      explicit units_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, fmt::sign_t s, int prec):
         out(o), val(q.count()), sign(s), precision(prec)
       {
       }
@@ -147,7 +147,7 @@ namespace units {
 
       void on_quantity_unit()
       {
-        out = format_units_quantity_unit<Unit>(out);
+        out = format_units_quantity_unit<Dimension, Unit>(out);
       }
     };
 
@@ -155,10 +155,10 @@ namespace units {
 
 }  // namespace units
 
-template<typename Unit, typename Rep, typename CharT>
-struct fmt::formatter<units::quantity<Unit, Rep>, CharT> {
+template<typename Dimension, typename Unit, typename Rep, typename CharT>
+struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
-  using quantity = units::quantity<Unit, Rep>;
+  using quantity = units::quantity<Dimension, Unit, Rep>;
   using iterator = fmt::basic_parse_context<CharT>::iterator;
   using arg_ref_type = fmt::internal::arg_ref<CharT>;
 
@@ -293,7 +293,7 @@ public:
   }
 
   template<typename FormatContext>
-  auto format(const units::quantity<Unit, Rep>& q, FormatContext& ctx)
+  auto format(const units::quantity<Dimension, Unit, Rep>& q, FormatContext& ctx)
   {
     auto begin = format_str.begin(), end = format_str.end();
 
@@ -310,7 +310,7 @@ public:
       // default format should print value followed by the unit separeted with 1 space
       out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision);
       *out++ = CharT(' ');
-      units::detail::format_units_quantity_unit<Unit>(out);
+      units::detail::format_units_quantity_unit<Dimension, Unit>(out);
     }
     else {
       // user provided format

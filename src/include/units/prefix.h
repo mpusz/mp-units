@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/bits/downcasting.h>
-#include <units/bits/fixed_string.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/fixed_string.h>
 #include <units/ratio.h>
 
 namespace units {

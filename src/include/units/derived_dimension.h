@@ -23,9 +23,9 @@
 #pragma once
 
 #include <units/base_dimension.h>
-#include <units/bits/downcasting.h>
-#include <units/bits/fixed_string.h>
-#include <units/bits/type_list.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/fixed_string.h>
+#include <units/bits/external/type_list.h>
 #include <units/ratio.h>
 #include <ratio>
 
@@ -264,7 +264,7 @@ using base_units_ratio = base_units_ratio_impl<D>::type;
  * The implementation is responsible for unpacking all of the dimensions into a list containing only base dimensions
  * and their factors and putting them to the other (private) units::derived_dimension class template partial
  * specialization.
- *  
+ * 
  * @note User should always use only this partial specialization to create derived dimensions.
  * 
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
@@ -278,25 +278,5 @@ struct derived_dimension<Child, U, E, ERest...> : downcast_child<Child, typename
   using coherent_unit = U;
   using base_units_ratio = detail::base_units_ratio<typename downcast_child<Child, typename detail::make_dimension<E, ERest...>>::downcast_base_type>;
 };
-
-namespace detail {
-
-template<Dimension D>
-struct dimension_unit_impl;
-
-template<BaseDimension D>
-struct dimension_unit_impl<D> {
-  using type = D::base_unit;
-};
-
-template<DerivedDimension D>
-struct dimension_unit_impl<D> {
-  using type = D::coherent_unit;
-};
-
-}
-
-template<Dimension D>
-using dimension_unit = detail::dimension_unit_impl<D>::type;
 
 }  // namespace units

@@ -21,73 +21,35 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "units/dimensions/area.h"
-#include "units/dimensions/volume.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/volume.h"
 #include <catch2/catch.hpp>
 
 using namespace units;
+using namespace units::si;
 
 // classical
 
-TEST_CASE("pow<N>() on quantity changes the value and the dimension accordingly", "[math][pow]")
+TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
-  CHECK(pow<0>(2m) == 1);
-  CHECK(pow<1>(2m) == 2m);
-  CHECK(pow<2>(2m) == 4sq_m);
-  CHECK(pow<3>(2m) == 8cub_m);
+  SECTION ("'pow<0>(q)' returns '1'") {
+    CHECK(pow<0>(2m) == 1);
+  }
+
+  SECTION ("'pow<1>(q)' returns 'q'") {
+    CHECK(pow<1>(2m) == 2m);
+  }
+
+  SECTION ("'pow<2>(q)' squares both the value and a dimension") {
+    CHECK(pow<2>(2m) == 4sq_m);
+  }
+
+  SECTION ("'pow<3>(q)' cubes both the value and a dimension") {
+    CHECK(pow<3>(2m) == 8cub_m);
+  }
 }
 
-TEST_CASE("sqrt() on quantity changes the value and the dimension accordingly", "[math][sqrt]")
+TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly", "[math][sqrt]")
 {
   REQUIRE(sqrt(4sq_m) == 2m);
-}
-
-// BDD style
-
-SCENARIO("quantities should work with pow<N>()", "[math][pow]")
-{
-  GIVEN("A quantity q") {
-    auto q = 2m;
-
-    REQUIRE(q.count() == 2);
-
-    WHEN("pow<1>(q) is called") {
-      auto res = pow<1>(q);
-
-      THEN("the same quantity is received") {
-        REQUIRE(res == q);
-      }
-    }
-    WHEN("pow<2>(q) is called") {
-      auto res = pow<2>(q);
-
-      THEN("both the value and dimension is raised to the exponent 2") {
-        REQUIRE(res == 4sq_m);
-      }
-    }
-    WHEN("pow<3>(q) is called") {
-      auto res = pow<3>(q);
-
-      THEN("both the value and dimension is raised to the exponent 3") {
-        REQUIRE(res == 8cub_m);
-      }
-    }
-  }
-}
-
-SCENARIO("quantities should work with sqrt()", "[math][sqrt]")
-{
-  GIVEN("A quantity q") {
-    auto q = 4sq_m;
-
-    REQUIRE(q.count() == 4);
-
-    WHEN("sqrt(q) is called") {
-      auto res = sqrt(q);
-
-      THEN("both the value and dimension are square rooted") {
-        REQUIRE(res == 2m);
-      }
-    }
-  }
 }

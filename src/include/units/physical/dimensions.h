@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/base_dimension.h>
-#include <units/bits/type_traits.h>
+#include <units/bits/external/type_traits.h>
 #include <units/quantity.h>
 #include <units/unit.h>
 

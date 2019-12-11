@@ -22,51 +22,36 @@
 
 #pragma once
 
-#include <units/bits/hacks.h>
-#include <type_traits>
+#include <units/derived_dimension.h>
 
 namespace units {
 
-  template<typename BaseType>
-  struct downcast_base {
-    using downcast_base_type = BaseType;
-    friend auto downcast_guide(downcast_base);
-  };
+namespace detail {
 
-  template<typename T>
-  concept Downcastable =
-      requires {
-        typename T::downcast_base_type;
-      } &&
-      std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
+template<Dimension D>
+struct dimension_unit_impl;
 
-  template<typename Target, Downcastable T>
-  struct downcast_child : T {
-    friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
-  };
+template<BaseDimension D>
+struct dimension_unit_impl<D> {
+  using type = D::base_unit;
+};
 
-  namespace detail {
+template<DerivedDimension D>
+struct dimension_unit_impl<D> {
+  using type = D::coherent_unit;
+};
 
-    template<typename T>
-    concept has_downcast = requires {
-        downcast_guide(std::declval<downcast_base<T>>());
-    };
+} // namespace detail
 
-    template<typename T>
-    constexpr auto downcast_impl()
-    {
-      if constexpr(has_downcast<T>)
-        return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
-      else
-        return T();
-    }
+template<Dimension D>
+using dimension_unit = detail::dimension_unit_impl<D>::type;
 
-  }
-
-  template<Downcastable T>
-  using downcast = decltype(detail::downcast_impl<T>());
-
-  template<Downcastable T>
-  using downcast_base_t = T::downcast_base_type;
+// UnitOf
+template<typename U, typename D>
+concept UnitOf =
+  Unit<U> &&
+  Dimension<D> &&
+  std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
+  // same_unit_reference<typename U, typename dimension_unit<D>> // TODO check if this works
 
 }  // namespace units

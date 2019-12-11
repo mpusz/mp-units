@@ -20,40 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/data/information.h>
-#include <catch2/catch.hpp>
-#include <sstream>
+#pragma once
 
-using namespace units::data;
+#include <units/bits/external/hacks.h>
+#include <units/bits/external/numeric_concepts.h>
+#include <units/customization_points.h>
+#include <units/ratio.h>
 
-TEST_CASE("operator<< on a data quantity", "[text][ostream]")
-{
-  std::stringstream stream;
+namespace units {
 
-  SECTION("quantity with a predefined unit and prefix")
-  {
-    SECTION("named unit")
-    {
-      stream << 64B;
-      REQUIRE(stream.str() == "64 B");
-    }
+  namespace detail {
 
-    SECTION("prefixed coherent unit")
-    {
-      stream << 256Kib;
-      REQUIRE(stream.str() == "256 Kib");
-    }
+    template<typename T, typename U = T>
+    concept basic_arithmetic = // exposition only
+      std::magma<std::ranges::plus, T, U> &&
+      std::magma<std::ranges::minus, T, U> &&
+      std::magma<std::ranges::times, T, U> &&
+      std::magma<std::ranges::divided_by, T, U>;
 
-    SECTION("prefixed non-coherent unit")
-    {
-      stream << 1024KiB;
-      REQUIRE(stream.str() == "1024 KiB");
-    }
+    template<typename From, typename To>
+    concept safe_convertible = // exposition only
+      std::convertible_to<From, To> &&
+      (treat_as_floating_point<To> || (!treat_as_floating_point<From>));
 
-    SECTION("other unit matching prefix")
-    {
-      stream << 8Kib * 8Kib / 2b;
-      REQUIRE(stream.str() == "32 Mib");
-    }
+    template<typename Rep, typename unit_from, typename unit_to>
+    concept safe_divisible = // exposition only
+      treat_as_floating_point<Rep> ||
+      ratio_divide<typename unit_from::ratio, typename unit_to::ratio>::den == 1;
+
   }
-}
+
+}  // namespace units

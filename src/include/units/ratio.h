@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/hacks.h>
+#include <units/bits/external/hacks.h>
 #include <type_traits>
 #include <numeric>
 #include <cstdint>

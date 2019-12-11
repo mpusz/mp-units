@@ -22,32 +22,20 @@
 
 #pragma once
 
-#include <units/bits/hacks.h>
-#include <units/bits/numeric_concepts.h>
-#include <units/customization_points.h>
+#include <units/bits/external/type_traits.h>
 #include <units/ratio.h>
 
 namespace units {
 
-  namespace detail {
+// UnitRatio
+template<typename R>
+concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
 
-    template<typename T, typename U = T>
-    concept basic_arithmetic = // exposition only
-      std::magma<std::ranges::plus, T, U> &&
-      std::magma<std::ranges::minus, T, U> &&
-      std::magma<std::ranges::times, T, U> &&
-      std::magma<std::ranges::divided_by, T, U>;
+template<typename U, UnitRatio R>
+struct scaled_unit;
 
-    template<typename From, typename To>
-    concept safe_convertible = // exposition only
-      std::convertible_to<From, To> &&
-      (treat_as_floating_point<To> || (!treat_as_floating_point<From>));
-
-    template<typename Rep, typename unit_from, typename unit_to>
-    concept safe_divisible = // exposition only
-      treat_as_floating_point<Rep> ||
-      ratio_divide<typename unit_from::ratio, typename unit_to::ratio>::den == 1;
-
-  }
+// Unit
+template<typename T>
+concept Unit = is_derived_from_instantiation<T, scaled_unit>;
 
 }  // namespace units

@@ -53,6 +53,6 @@ static_assert(std::is_same_v<downcast<scaled_unit<metre_per_second, ratio_divide
 
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");
-static_assert(kilometre_per_hour::symbol == "");
+static_assert(kilometre_per_hour::symbol == "km/h");
 
 }  // namespace

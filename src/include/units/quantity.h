@@ -22,8 +22,9 @@
 
 #pragma once
 
-#include <units/concepts.h>
-#include <units/dimension_op.h>
+#include <units/bits/concepts.h>
+#include <units/bits/dimension_op.h>
+#include <units/bits/unit_text.h>
 #include <limits>
 #include <ostream>
 
@@ -441,7 +442,7 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    return os << q.count(); // << " " << detail::unit_text<quantity::unit>(); TODO add support
+    return os << q.count() << " " << detail::unit_text<quantity::dimension, quantity::unit>();
   }
 };
 

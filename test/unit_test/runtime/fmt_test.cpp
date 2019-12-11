@@ -20,18 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/dimensions/area.h"
-#include "units/dimensions/frequency.h"
-#include "units/dimensions/power.h"
-#include "units/dimensions/velocity.h"
-#include "units/dimensions/volume.h"
-#include "units/dimensions/surface_tension.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/frequency.h"
+#include "units/physical/si/power.h"
+#include "units/physical/si/pressure.h"
+#include "units/physical/si/velocity.h"
+#include "units/physical/si/volume.h"
+#include "units/physical/si/surface_tension.h"
 #include "units/format.h"
 #include "units/math.h"
 #include <catch2/catch.hpp>
 #include <sstream>
 
 using namespace units;
+using namespace units::si;
 using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
@@ -108,7 +110,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("in terms of base units")
     {
-      const quantity<unit<length, ratio<1'000'000>>> q(123);
+      const length<scaled_unit<metre, ratio<1'000'000>>> q(123);
       stream << q;
 
       SECTION("iostream")
@@ -129,7 +131,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("in terms of derived units")
     {
-      const quantity<unit<energy, ratio<1, 100>>> q(60);
+      const energy<scaled_unit<joule, ratio<1, 100>>> q(60);
       stream << q;
 
       SECTION("iostream")
@@ -242,8 +244,8 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        struct newton_per_centimetre : deduced_derived_unit<newton_per_centimetre, surface_tension, newton, centimetre> {};
-        const quantity<newton_per_centimetre> q(123);
+        struct newton_per_centimetre : deduced_unit<newton_per_centimetre, dim_surface_tension, newton, centimetre> {};
+        const surface_tension<newton_per_centimetre> q(123);
         stream << q;
 
         SECTION("iostream")
@@ -636,17 +638,17 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 
     SECTION("nan")
     {
-      CHECK(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
+      CHECK(fmt::format("{:%Q}", length<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
     }
 
     SECTION("inf")
     {
-      CHECK(fmt::format("{:%Q}", quantity<metre>(std::numeric_limits<double>::infinity())) == "inf");
+      CHECK(fmt::format("{:%Q}", length<metre>(std::numeric_limits<double>::infinity())) == "inf");
     }
 
     SECTION("-inf")
     {
-      CHECK(fmt::format("{:%Q}", quantity<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
+      CHECK(fmt::format("{:%Q}", length<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
     }
   }
 }
@@ -742,8 +744,8 @@ TEST_CASE("fill and align specification", "[text][fmt]")
 
 TEST_CASE("sign specification", "[text][fmt]")
 {
-  quantity<metre> inf(std::numeric_limits<double>::infinity());
-  quantity<metre> nan(std::numeric_limits<double>::quiet_NaN());
+  length<metre> inf(std::numeric_limits<double>::infinity());
+  length<metre> nan(std::numeric_limits<double>::quiet_NaN());
 
   SECTION("default format {} on a quantity") 
   {

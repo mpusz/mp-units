@@ -200,7 +200,7 @@ struct dimension_sqrt_impl;
 
 template<BaseDimension D>
 struct dimension_sqrt_impl<D> {
-  using type = derived_dimension<exp<D, 1, 2>>;
+  using type = downcast_dimension<derived_dimension<exp<D, 1, 2>>>;
 };
 
 template<BaseDimension D>
@@ -210,7 +210,7 @@ struct dimension_sqrt_impl<derived_dimension<exp<D, 2>>> {
 
 template<DerivedDimension D>
 struct dimension_sqrt_impl<D> {
-  using type = dimension_sqrt_impl<typename D::downcast_base_type>;
+  using type = dimension_sqrt_impl<typename D::downcast_base_type>::type;
 };
 
 template<typename... Es>
@@ -221,7 +221,7 @@ struct dimension_sqrt_impl<derived_dimension<Es...>> {
 }  // namespace detail
 
 template<Dimension D>
-using dimension_sqrt = detail::dimension_sqrt_impl<typename D::downcast_base_type>::type;
+using dimension_sqrt = detail::dimension_sqrt_impl<D>::type;
 
 // dimension_pow
 namespace detail {

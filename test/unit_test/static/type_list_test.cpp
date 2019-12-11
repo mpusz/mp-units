@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/bits/type_list.h"
+#include "units/bits/external/type_list.h"
 #include "units/derived_dimension.h"
 #include "units/unit.h"
 #include <utility>

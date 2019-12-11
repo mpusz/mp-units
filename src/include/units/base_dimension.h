@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/bits/fixed_string.h>
-#include <units/bits/unit_concept.h>
+#include <units/bits/external/fixed_string.h>
+#include <units/unit_concept.h>
 #include <type_traits>
 
 namespace units {

@@ -22,10 +22,13 @@
 
 #pragma once
 
-#include <units/bits/downcasting.h>
-#include <units/bits/fixed_string.h>
-#include <units/bits/type_traits.h>
-#include <units/bits/unit_concept.h>
+#include <units/bits/deduced_symbol_text.h>
+#include <units/bits/deduced_unit.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/fixed_string.h>
+#include <units/bits/external/text_tools.h>
+#include <units/bits/external/type_traits.h>
+#include <units/unit_of_concept.h>
 #include <units/derived_dimension.h>
 #include <units/prefix.h>
 #include <units/ratio.h>
@@ -60,7 +63,7 @@ template<Unit U1, Unit U2>
 struct same_unit_reference : std::is_same<typename U1::reference, typename U2::reference> {};
 
 /**
- * @brief A starting point for a new hierarchy of units
+ * @brief An unnamed unit
  *
  * Defines a new unnamed (in most cases coherent) derived unit of a specific derived dimension
  * and it should be passed in this dimension's definition.
@@ -76,7 +79,7 @@ struct unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
 /**
  * @brief Unknown unit
  * 
- * Used as a reference unit of an unknown dimension.
+ * Used as a coherent unit of an unknown dimension.
  */
 struct unknown_unit : unit<unknown_unit> {};
 
@@ -144,65 +147,13 @@ struct prefixed_unit :
   using prefix_type = P::prefix_type;
 };
 
-// UnitOf
-template<typename U, typename D>
-concept UnitOf =
-  Unit<U> &&
-  Dimension<D> &&
-  std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
-
-namespace detail {
-
-// same_scaled_units
-template<DerivedDimension D, Unit... Us>
-inline constexpr bool same_scaled_units = false;
-
-template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
-
-// deduced_unit
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-struct ratio_op;
-
-template<typename Result, int UnitExpDen, typename UnitRatio>
-struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
-  using ratio = Result;
-};
-
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
-struct ratio_op {
-  using calc_ratio =
-      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>, ratio_divide<Result, UnitRatio>>;
-  static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
-  using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
-};
-
-template<DerivedDimension D, Unit... Us>
-struct derived_ratio;
-
-template<Unit... Us>
-struct derived_ratio<derived_dimension<>, Us...> {
-  using ratio = ::units::ratio<1>;
-};
-
-template<typename E, typename... ERest, Unit U, Unit... URest>
-struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
-  using rest_ratio = derived_ratio<derived_dimension<ERest...>, URest...>::ratio;
-  using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
-};
-
-template<DerivedDimension D, Unit... Us>
-using deduced_unit =
-    scaled_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
-
-}  // namespace detail
-
 /**
  * @brief A unit with a deduced ratio and symbol
  *
  * Defines a new unit with a deduced ratio and symbol based on the recipe from the provided
- * derived dimension. The number and order of provided units should match the recipe of
- * dimension.
+ * derived dimension. The number and order of provided units should match the recipe of the
+ * derived dimension. All of the units provided should also be a named ones so it is possible
+ * to create a deduced symbol text.
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Dim a derived dimension recipe to use for deduction
@@ -214,7 +165,7 @@ template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
            (U::is_named && (URest::is_named && ... && true))
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
-  static constexpr auto symbol = basic_fixed_string{""};  // detail::deduced_symbol_text<Dim, U, Us...>(); // TODO implement this
+  static constexpr auto symbol = detail::deduced_symbol_text<typename Dim::recipe, U, URest...>();
   using prefix_type = no_prefix;
 };
 

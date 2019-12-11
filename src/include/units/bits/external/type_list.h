@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/type_traits.h>
+#include <units/bits/external/type_traits.h>
 
 namespace units {
 

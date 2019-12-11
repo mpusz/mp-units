@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/hacks.h>
+#include <units/bits/external/hacks.h>
 
 // P1813 - A Concept Design for the Numeric Algorithms
 
