@@ -25,6 +25,9 @@
 #include <units/bits/concepts.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/unit_text.h>
+#if __GNUC__ >= 10
+#include <compare>
+#endif
 #include <limits>
 #include <ostream>
 
@@ -479,6 +482,31 @@ public:
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
+#if __GNUC__ >= 10
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::totally_ordered_with<Rep, Rep2>
+  {
+    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
+    return cq(lhs).count() <=> cq(rhs).count();
+  }
+
+  // TODO op== not needed (gcc bug)
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr auto operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::equality_comparable_with<Rep, Rep2>
+  {
+    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
+    return cq(lhs).count() == cq(rhs).count();
+  }
+
+#else
+
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
@@ -534,6 +562,8 @@ public:
   {
     return !(lhs < rhs);
   }
+
+#endif
 
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
