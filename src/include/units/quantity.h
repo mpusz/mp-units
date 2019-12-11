@@ -609,7 +609,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using dim = dimension_multiply<D1, D2>;
   using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
   using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_multiply<ratio1, ratio2>;
+  using ratio = ratio_multiply<ratio_multiply<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using common_rep = decltype(lhs.count() * rhs.count());
   using ret = quantity<dim, unit, common_rep>;
@@ -664,7 +664,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using dim = dimension_divide<D1, D2>;
   using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
   using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_divide<ratio1, ratio2>;
+  using ratio = ratio_multiply<ratio_divide<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
