@@ -57,11 +57,20 @@ struct base_dimension {
 // BaseDimension
 namespace detail {
 
+#if __GNUC__ == 9 && __GNUC_MINOR__ < 2
+
+template<typename T>
+inline constexpr bool is_base_dimension = true;
+
+#else
+
 template<typename T>
 inline constexpr bool is_base_dimension = false;
 
 template<basic_fixed_string Name, typename... Params>
 inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
+
+#endif
 
 }  // namespace detail
 
