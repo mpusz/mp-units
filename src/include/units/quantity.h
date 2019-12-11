@@ -439,6 +439,102 @@ public:
     return *this;
   }
 
+  template<typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr Quantity AUTO operator+(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+    requires detail::basic_arithmetic<Rep, Rep2>
+  {
+    using common_rep = decltype(lhs.count() + rhs.count());
+    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
+    return ret(ret(lhs).count() + ret(rhs).count());
+  }
+
+  template<typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr Quantity AUTO operator-(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+    requires detail::basic_arithmetic<Rep, Rep2>
+  {
+    using common_rep = decltype(lhs.count() - rhs.count());
+    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
+    return ret(ret(lhs).count() - ret(rhs).count());
+  }
+
+  template<Scalar Value>
+  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& q, const Value& v)
+    requires (!treat_as_floating_point<Rep>) &&
+            (!treat_as_floating_point<Value>) &&
+            std::magma<std::ranges::modulus, Rep, Value>
+  {
+    using common_rep = decltype(q.count() % v);
+    using ret = quantity<D, U, common_rep>;
+    return ret(q.count() % v);
+  }
+
+  template<typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+    requires (!treat_as_floating_point<Rep>) &&
+            (!treat_as_floating_point<Rep2>) &&
+            std::magma<std::ranges::modulus, Rep, Rep2>
+  {
+    using common_rep = decltype(lhs.count() % rhs.count());
+    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
+    return ret(ret(lhs).count() % ret(rhs).count());
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::equality_comparable_with<Rep, Rep2>
+  {
+    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
+    return cq(lhs).count() == cq(rhs).count();
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator!=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::equality_comparable_with<Rep, Rep2>
+  {
+    return !(lhs == rhs);
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator<(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::totally_ordered_with<Rep, Rep2>
+  {
+    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
+    return cq(lhs).count() < cq(rhs).count();
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator<=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::totally_ordered_with<Rep, Rep2>
+  {
+    return !(rhs < lhs);
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::totally_ordered_with<Rep, Rep2>
+  {
+    return rhs < lhs;
+  }
+
+  template<typename D2, typename U2, typename Rep2>
+  [[nodiscard]] friend constexpr bool operator>=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+    requires equivalent_dim<D, D2> &&
+            detail::basic_arithmetic<Rep, Rep2> &&
+            std::totally_ordered_with<Rep, Rep2>
+  {
+    return !(lhs < rhs);
+  }
+
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
@@ -446,23 +542,7 @@ public:
   }
 };
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr Quantity AUTO operator+(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2>
-{
-  using common_rep = decltype(lhs.count() + rhs.count());
-  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
-  return ret(ret(lhs).count() + ret(rhs).count());
-}
-
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr Quantity AUTO operator-(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2>
-{
-  using common_rep = decltype(lhs.count() - rhs.count());
-  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
-  return ret(ret(lhs).count() - ret(rhs).count());
-}
+// TODO make hidden friends when moved to gcc-10
 
 template<typename D, typename U, typename Rep, Scalar Value>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Value& v)
@@ -510,7 +590,7 @@ template<typename D, Scalar Value, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<D, U, Rep>& q)
   requires std::magma<std::ranges::divided_by, Value, Rep>
 {
-  Expects(q != std::remove_cvref_t<decltype(q)>(0));
+  Expects(q.count() != 0);
 
   using dim = dim_invert<D>;
   using ratio = ratio<U::ratio::den, U::ratio::num>;
@@ -535,7 +615,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 [[nodiscard]] constexpr Scalar AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
   requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, D2>
 {
-  Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
+  Expects(rhs.count() != 0);
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using cq = common_quantity<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, common_rep>;
@@ -548,7 +628,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
            (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
             (ratio_divide<typename U1::ratio, typename U2::ratio>::den == 1))
 {
-  Expects(rhs != std::remove_cvref_t<decltype(rhs)>(0));
+  Expects(rhs.count() != 0);
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using dim = dimension_divide<D1, D2>;
@@ -558,84 +638,6 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using unit = downcast_unit<dim, ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
-}
-
-template<typename D, typename U, typename Rep, Scalar Value>
-[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U, Rep>& q, const Value& v)
-  requires (!treat_as_floating_point<Rep>) &&
-           (!treat_as_floating_point<Value>) &&
-           std::magma<std::ranges::modulus, Rep, Value>
-{
-  using common_rep = decltype(q.count() % v);
-  using ret = quantity<D, U, common_rep>;
-  return ret(q.count() % v);
-}
-
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
-  requires (!treat_as_floating_point<Rep1>) &&
-           (!treat_as_floating_point<Rep2>) &&
-           std::magma<std::ranges::modulus, Rep1, Rep2>
-{
-  using common_rep = decltype(lhs.count() % rhs.count());
-  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
-  return ret(ret(lhs).count() % ret(rhs).count());
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator==(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::equality_comparable_with<Rep1, Rep2>
-{
-  using cq = common_quantity<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>>;
-  return cq(lhs).count() == cq(rhs).count();
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator!=(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::equality_comparable_with<Rep1, Rep2>
-{
-  return !(lhs == rhs);
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator<(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::totally_ordered_with<Rep1, Rep2>
-{
-  using cq = common_quantity<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>>;
-  return cq(lhs).count() < cq(rhs).count();
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator<=(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::totally_ordered_with<Rep1, Rep2>
-{
-  return !(rhs < lhs);
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator>(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::totally_ordered_with<Rep1, Rep2>
-{
-  return rhs < lhs;
-}
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr bool operator>=(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, D2> &&
-           detail::basic_arithmetic<Rep1, Rep2> &&
-           std::totally_ordered_with<Rep1, Rep2>
-{
-  return !(lhs < rhs);
 }
 
 }  // namespace units
