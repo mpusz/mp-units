@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/physical/si/velocity.h>
+#include <units/physical/cgs/velocity.h>
 #include <iostream>
 
 namespace {
@@ -54,7 +55,7 @@ constexpr units::Velocity AUTO avg_speed(units::Length AUTO d, units::Time AUTO 
 template<units::Length D, units::Time T, units::Velocity V>
 void print_result(D distance, T duration, V velocity)
 {
-  const auto result_in_kmph = units::quantity_cast<units::si::kilometre_per_hour>(velocity);
+  const auto result_in_kmph = units::quantity_cast<units::si::velocity<units::si::kilometre_per_hour>>(velocity);
   std::cout << "Average speed of a car that makes " << distance << " in "
             << duration << " is " << result_in_kmph << ".\n";
 }
@@ -62,10 +63,10 @@ void print_result(D distance, T duration, V velocity)
 void example()
 {
   using namespace units;
-  using namespace units::si::literals;
 
   // SI (int)
   {
+    using namespace units::si::literals;
     constexpr Length AUTO distance = 220km;        // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -73,15 +74,13 @@ void example()
 
     print_result(distance, duration, fixed_int_si_avg_speed(distance, duration));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
-
-    // the framework will not allow a division (and multiplication) of different dimensions
-    // with two integral representation (at least one of them have to ba floating-point one)
-    print_result(distance, duration, si_avg_speed(quantity_cast<double>(distance), duration));
-    print_result(distance, duration, avg_speed(quantity_cast<double>(distance), duration));
+    print_result(distance, duration, si_avg_speed(distance, duration));
+    print_result(distance, duration, avg_speed(distance, duration));
   }
 
   // SI (double)
   {
+    using namespace units::si::literals;
     constexpr Length AUTO distance = 220.km;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2); // constructed from a value
 
@@ -97,6 +96,7 @@ void example()
 
   // Customary Units (int)
   {
+    using namespace units::si::literals;
     constexpr Length AUTO distance = 140mi;        // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -106,15 +106,13 @@ void example()
     // (explicit cast needed)
     print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<si::metre>(distance), duration));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
-
-    // the framework will not allow a division (and multiplication) of different dimensions
-    // with two integral representation (at least one of them have to ba floating-point one)
-    print_result(distance, duration, si_avg_speed(quantity_cast<double>(distance), duration));
-    print_result(distance, duration, avg_speed(quantity_cast<double>(distance), duration));
+    print_result(distance, duration, si_avg_speed(distance, duration));
+    print_result(distance, duration, avg_speed(distance, duration));
   }
 
   // Customary Units (double)
   {
+    using namespace units::si::literals;
     constexpr Length AUTO distance = 140.mi;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2); // constructed from a value
 
@@ -129,6 +127,47 @@ void example()
     print_result(distance, duration, si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
   }
+
+  // CGS (int)
+  {
+    using namespace units::cgs::literals;
+    constexpr Length AUTO distance = 22'000'000cm;      // constructed from a UDL
+    constexpr cgs::time<si::hour, int> duration(2); // constructed from a value
+
+    std::cout << "\nCGS units with 'int' as representation\n";
+
+    // it is not possible to make a lossless conversion of centimeters to meters on an integral type
+    // (explicit cast needed)
+    print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<si::metre>(distance), duration));
+    print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
+
+    // not possible to convert both a dimension and a unit with implicit cast
+    print_result(distance, duration, si_avg_speed(quantity_cast<si::dim_length>(distance), duration));
+
+    print_result(distance, duration, avg_speed(distance, duration));
+  }
+
+  // CGS (double)
+  {
+    using namespace units::cgs::literals;
+    constexpr Length AUTO distance = 22'000'000.cm; // constructed from a UDL
+    constexpr cgs::time<si::hour> duration(2);  // constructed from a value
+
+    std::cout << "\nCGS units with 'double' as representation\n";
+
+    // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
+    // it is not possible to make a lossless conversion of centimeters to meters on an integral type
+    // (explicit cast needed)
+    print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<si::length<si::metre, int>>(distance), quantity_cast<int>(duration)));
+
+    print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
+
+    // not possible to convert both a dimension and a unit with implicit cast
+    print_result(distance, duration, si_avg_speed(quantity_cast<si::dim_length>(distance), duration));
+
+    print_result(distance, duration, avg_speed(distance, duration));
+  }
+
 }
 
 } // namespace

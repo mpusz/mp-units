@@ -24,7 +24,6 @@
 
 #include <units/bits/concepts.h>
 #include <units/bits/dimension_op.h>
-#include <units/bits/unit_op.h>
 #include <units/bits/unit_text.h>
 
 #if __GNUC__ >= 10
@@ -182,8 +181,7 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
  * 
  * This cast gets the target quantity type to cast to. For example:
  * 
- * using seconds = units::time<units::si::second, double>;
- * auto q1 = units::quantity_cast<seconds>(1ms);
+ * auto q1 = units::quantity_cast<units::si::time<units::si::second>>(1ms);
  * 
  * @tparam To a target quantity type to cast to
  */
@@ -194,8 +192,8 @@ template<Quantity To, typename D, typename U, typename Rep>
 {
   using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
   using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
-  using ret_unit = downcast_unit<D, typename To::unit::ratio>;
-  using ret = quantity<D, ret_unit, typename To::rep>;
+  using ret_unit = downcast_unit<typename To::dimension, typename To::unit::ratio>;
+  using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
   using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
   return cast::cast(q);
 }
@@ -595,7 +593,7 @@ template<Scalar Value, typename D, typename U, typename Rep>
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Scalar AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires equivalent_dim<D1, dim_invert<D2>> && detail::basic_arithmetic<Rep1, Rep2>
+  requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, dim_invert<D2>>
 {
   using common_rep = decltype(lhs.count() * rhs.count());
   using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -604,13 +602,12 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires (!equivalent_dim<D1, dim_invert<D2>>) &&  // TODO equivalent_derived_dim?
-           (treat_as_floating_point<decltype(lhs.count() * rhs.count())> ||
-            detail::unit_ratio_multiply<D1, U1, D2, U2>::den == 1) &&
-           detail::basic_arithmetic<Rep1, Rep2>
+  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)  // TODO equivalent_derived_dim?
 {
   using dim = dimension_multiply<D1, D2>;
-  using ratio = ratio_multiply<detail::unit_ratio_multiply<D1, U1, D2, U2>, typename dimension_unit<dim>::ratio>;  ;
+  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
+  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
+  using ratio = ratio_multiply<ratio_multiply<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using common_rep = decltype(lhs.count() * rhs.count());
   using ret = quantity<dim, unit, common_rep>;
@@ -655,15 +652,15 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>) &&  // TODO equivalent_derived_dim?
-           (treat_as_floating_point<decltype(lhs.count() / rhs.count())> ||
-            detail::unit_ratio_divide<D1, U1, D2, U2>::den == 1)
+  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)  // TODO equivalent_derived_dim?
 {
   Expects(rhs.count() != 0);
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using dim = dimension_divide<D1, D2>;
-  using ratio = ratio_multiply<detail::unit_ratio_divide<D1, U1, D2, U2>, typename dimension_unit<dim>::ratio>;
+  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
+  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
+  using ratio = ratio_multiply<ratio_divide<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
