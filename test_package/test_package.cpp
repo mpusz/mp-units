@@ -20,18 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/velocity.h>
+#include <units/physical/si/velocity.h>
 #include <iostream>
 
-using namespace units::literals;
-
-template<units::Length D, units::Time T>
-constexpr units::Velocity avg_speed(D d, T t)
+constexpr units::Velocity AUTO avg_speed(units::Length AUTO d, units::Time AUTO t)
 {
   return d / t;
 }
 
 int main()
 {
+  using namespace units::si::literals;
   std::cout << "Average speed = " << avg_speed(240.km, 2h) << '\n';
 }
