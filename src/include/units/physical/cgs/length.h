@@ -37,7 +37,9 @@ using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {
 
-using si::literals::operator"" cm;
+// cm
+constexpr auto operator"" cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
+constexpr auto operator"" cm(long double l) { return length<centimetre, long double>(l); }
 
 }
 

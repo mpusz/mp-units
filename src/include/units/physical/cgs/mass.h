@@ -37,7 +37,9 @@ using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {
 
-using si::literals::operator"" g;
+// g
+constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
 
 }
 

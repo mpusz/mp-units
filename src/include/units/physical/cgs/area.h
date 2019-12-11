@@ -36,4 +36,12 @@ struct dim_area : physical::dim_area<dim_area, square_centimetre, dim_length> {}
 template<Unit U, Scalar Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
+inline namespace literals {
+
+// sq_cm
+constexpr auto operator"" sq_cm(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
+constexpr auto operator"" sq_cm(long double l) { return area<square_centimetre, long double>(l); }
+
+}
+
 }  // namespace units::cgs

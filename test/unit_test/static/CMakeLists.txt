@@ -30,6 +30,7 @@ add_library(unit_tests_static
     quantity_test.cpp
     ratio_test.cpp
     si_test.cpp
+    si_cgs_test.cpp
     type_list_test.cpp
     unit_test.cpp
 )

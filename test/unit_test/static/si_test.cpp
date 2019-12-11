@@ -123,11 +123,13 @@ static_assert(2 / 1Hz == 2s);
 // force
 static_assert(10kg * 10mps_sq == 100N);
 static_assert(100N / 1mps_sq == 100kg);
-static_assert(100.N / 1kg == 100mps_sq);
+static_assert(100N / 1kg == 100mps_sq);
 
 // pressure
 
 static_assert(10N / 10sq_m == 1Pa);
+static_assert(10N / 1Pa == 10sq_m);
+static_assert(1Pa * 10sq_m == 10N);
 
 // energy
 
@@ -223,7 +225,8 @@ static_assert(detail::unit_text<dim_acceleration, metre_per_second_sq>() == "m/s
 
 // area
 
-static_assert(1m * 1m == 1sq_m);
+static_assert(10m * 10m == 100sq_m);
+static_assert(100sq_m / 10m == 10m);
 static_assert(10km * 10km == 100sq_km);
 static_assert(1sq_m == 10'000sq_cm);
 

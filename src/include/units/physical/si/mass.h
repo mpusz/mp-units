@@ -38,13 +38,13 @@ using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {
 
-  // g
-  constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-  constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
+// g
+constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
 
-  // kg
-  constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-  constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+// kg
+constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
+constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
 
 }  // namespace literals
 

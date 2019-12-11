@@ -30,77 +30,74 @@
 #include <units/physical/cgs/pressure.h>
 #include <units/physical/cgs/time.h>
 #include <units/physical/cgs/velocity.h>
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/velocity.h>
 
 namespace {
 
 using namespace units;
+using namespace units::cgs;
 
-static_assert(cgs::length<cgs::centimetre>(100) == si::length<si::metre>(1));
-static_assert(cgs::mass<cgs::gram>(1'000) == si::mass<si::kilogram>(1));
-static_assert(cgs::time<cgs::second>(1) == si::time<si::second>(1));
-static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == si::velocity<si::metre_per_second>(1));
-static_assert(cgs::acceleration<cgs::gal>(100) == si::acceleration<si::metre_per_second_sq>(1));
-static_assert(cgs::force<cgs::dyne>(100'000) == si::force<si::newton>(1));
-static_assert(cgs::energy<cgs::erg>(10'000'000) == si::energy<si::joule>(1));
-static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == si::power<si::watt>(1));
-static_assert(cgs::pressure<cgs::barye>(10) == si::pressure<si::pascal>(1));
+/* ************** BASE DIMENSIONS **************** */
 
-namespace si_test {
+// length
 
-using namespace units::si::literals;
+static_assert(centimetre::symbol == "cm");
 
-static_assert(cgs::length<cgs::centimetre>(100) == 1m);
-static_assert(cgs::mass<cgs::gram>(1'000) == 1kg);
-static_assert(cgs::time<cgs::second>(1) == 1s);
-static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1mps);
-static_assert(cgs::acceleration<cgs::gal>(100) == 1mps_sq);
-static_assert(cgs::force<cgs::dyne>(100'000) == 1N);
-static_assert(cgs::energy<cgs::erg>(10'000'000) == 1_J);
-static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == 1W);
-static_assert(cgs::pressure<cgs::barye>(10) == 1Pa);
+// mass
 
-}
+// time
 
-namespace cgs_test {
+/* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
-using namespace units::cgs::literals;
+// velocity
 
-static_assert(100cm == si::length<si::metre>(1));
-static_assert(1'000g == si::mass<si::kilogram>(1));
-static_assert(1s == si::time<si::second>(1));
-static_assert(100cmps == si::velocity<si::metre_per_second>(1));
-static_assert(100Gal == si::acceleration<si::metre_per_second_sq>(1));
-static_assert(100'000dyn == si::force<si::newton>(1));
-static_assert(10'000'000_erg == si::energy<si::joule>(1));
-static_assert(10'000'000_ergps == si::power<si::watt>(1));
-static_assert(10Ba == si::pressure<si::pascal>(1));
+static_assert(10cm / 5s == 2cmps);
+static_assert(10cm / 2cmps == 5s);
+static_assert(10cm == 2cmps * 5s);
 
-}
+static_assert(detail::unit_text<dim_velocity, centimetre_per_second>() == "cm/s");
 
-namespace both_test {
+// area
+static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
 
-using namespace units::si::literals;
-using namespace units::cgs::literals;
+static_assert(1cm * 1cm == 1sq_cm);
+static_assert(100sq_cm / 10cm == 10cm);
 
-static_assert(100cm == 1m);
-static_assert(1'000g == 1kg);
-static_assert(1s == 1s);
-static_assert(100cmps == 1mps);
-static_assert(100Gal == 1mps_sq);
-static_assert(100'000dyn == 1N);
-static_assert(10'000'000_erg == 1_J);
-static_assert(10'000'000_ergps == 1W);
-static_assert(10Ba == quantity_cast<double>(1Pa));
+static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
 
-}
+/* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
+
+// acceleration
+
+static_assert(10cmps / 10s == 1Gal);
+static_assert(10cmps / 1Gal == 10s);
+static_assert(1Gal * 10s == 10cmps);
+
+// force
+
+static_assert(10g * 10Gal == 100dyn);
+static_assert(100dyn / 10g == 10Gal);
+static_assert(100dyn / 10Gal == 10g);
+
+// pressure
+
+static_assert(10dyn / 10sq_cm == 1Ba);
+static_assert(10dyn / 1Ba == 10sq_cm);
+static_assert(1Ba * 10sq_cm == 10dyn);
+
+// energy
+
+static_assert(10dyn * 10cm == 100_erg);
+static_assert(100_erg / 10cm == 10dyn);
+static_assert(100_erg / 10dyn == 10cm);
+
+/* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
+
+// power
+
+static_assert(10_erg / 10s == 1_ergps);
+static_assert(1_ergps * 10s == 10_erg);
+static_assert(10_erg / 1_ergps == 10s);
+
+static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 
 }
