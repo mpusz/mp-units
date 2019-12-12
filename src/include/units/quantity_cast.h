@@ -144,7 +144,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires equivalent_dim<ToD, D>
 {
-  return quantity_cast<quantity<ToD, U, Rep>>(q);
+  return quantity_cast<quantity<ToD, dimension_unit<ToD>, Rep>>(q);
 }
 
 /**
