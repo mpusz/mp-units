@@ -22,255 +22,32 @@
 
 #pragma once
 
-#include <units/bits/concepts.h>
+#include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/unit_text.h>
+#include <units/quantity_cast.h>
 
 #if __GNUC__ >= 10
 #include <compare>
 #endif
 
-#include <limits>
 #include <ostream>
 
 namespace units {
 
-// Quantity
 namespace detail {
 
-template<typename T>
-inline constexpr bool is_quantity = false;
+template<typename From, typename To>
+concept safe_convertible = // exposition only
+    std::convertible_to<From, To> &&
+    (treat_as_floating_point<To> || (!treat_as_floating_point<From>));
 
-// partial specialization below after the first quantity forward declaration
+template<typename Rep, typename UnitFrom, typename UnitTo>
+concept safe_divisible = // exposition only
+    treat_as_floating_point<Rep> ||
+    ratio_divide<typename UnitFrom::ratio, typename UnitTo::ratio>::den == 1;
 
-}  // namespace detail
-
-template<typename T>
-concept Quantity = detail::is_quantity<T>;
-
-// QuantityOf
-template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
-
-// Scalar
-template<typename T>
-concept Scalar = (!Quantity<T>) && std::regular<T> && std::totally_ordered<T> && detail::basic_arithmetic<T>;
-
-template<Dimension D, UnitOf<D> U, Scalar Rep>
-class quantity;
-
-namespace detail {
-
-template<typename D, typename U, typename Rep>
-inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
-
-}  // namespace detail
-
-// common_quantity
-namespace detail {
-
-template<typename Q1, typename Q2, typename Rep>
-struct common_quantity_impl;
-
-template<typename D, typename U, typename Rep1, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
-  using type = quantity<D, U, Rep>;
-};
-
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-  using type = quantity<D, downcast_unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>, Rep>;
-};
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
-  requires same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value
-struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
-  using type = quantity<D1, downcast_unit<D1, common_ratio<typename U1::ratio, typename U2::ratio>>, Rep>;
-};
-
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
-  using ratio1 = ratio_multiply<typename D1::base_units_ratio, typename U1::ratio>;
-  using ratio2 = ratio_multiply<typename D2::base_units_ratio, typename U2::ratio>;
-  using type = quantity<D1, downcast_unit<D1, common_ratio<ratio1, ratio2>>, Rep>;
-};
-
-}  // namespace detail
-
-template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-  requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
-using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
-
-// quantity_cast
-namespace detail {
-
-template<typename To, typename CRatio, typename CRep, bool NumIsOne = false, bool DenIsOne = false>
-struct quantity_cast_impl {
-  template<typename Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
-                                     (static_cast<CRep>(CRatio::num) / static_cast<CRep>(CRatio::den))));
-    } else {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) /
-                                     static_cast<CRep>(CRatio::den)));
-    }
-  }
-};
-
-template<typename To, typename CRatio, typename CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<To::rep>(q.count()));
-  }
-};
-
-template<typename To, typename CRatio, typename CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (CRep{1} / static_cast<CRep>(CRatio::den))));
-    } else {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio::den)));
-    }
-  }
-};
-
-template<typename To, typename CRatio, typename CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num)));
-  }
-};
-
-template<Dimension FromD, Unit FromU, Dimension ToD, Unit ToU>
-struct cast_ratio;
-
-template<BaseDimension FromD, Unit FromU, BaseDimension ToD, Unit ToU>
-struct cast_ratio<FromD, FromU, ToD, ToU> {
-  using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
-};
-
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
-  requires same_unit_reference<FromU, ToU>::value
-struct cast_ratio<FromD, FromU, ToD, ToU> {
-  using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
-};
-
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
-struct cast_ratio<FromD, FromU, ToD, ToU> {
-  using from_ratio = ratio_multiply<typename FromD::base_units_ratio, typename FromU::ratio>;
-  using to_ratio = ratio_multiply<typename ToD::base_units_ratio, typename ToU::ratio>;
-  using type = ratio_divide<from_ratio, to_ratio>;
-};
-
-}  // namespace detail
-
-/**
- * @brief Explcit cast of a quantity
- * 
- * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
- * This cast gets the target quantity type to cast to. For example:
- * 
- * auto q1 = units::quantity_cast<units::si::time<units::si::second>>(1ms);
- * 
- * @tparam To a target quantity type to cast to
- */
-template<Quantity To, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires QuantityOf<To, D> &&
-           detail::basic_arithmetic<std::common_type_t<typename To::rep, Rep, intmax_t>>
-{
-  using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
-  using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
-  using ret_unit = downcast_unit<typename To::dimension, typename To::unit::ratio>;
-  using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
-  using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
-  return cast::cast(q);
-}
-
-/**
- * @brief Explcit cast of a quantity
- * 
- * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
- * This cast gets only the target dimension to cast to. For example:
- * 
- * auto q1 = units::quantity_cast<units::si::acceleration>(200Gal);
- * 
- * @tparam ToD a dimension type to use for a target quantity
- */
-template<Dimension ToD, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires equivalent_dim<ToD, D>
-{
-  return quantity_cast<quantity<ToD, U, Rep>>(q);
-}
-
-/**
- * @brief Explcit cast of a quantity
- * 
- * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
- * This cast gets only the target unit to cast to. For example:
- * 
- * auto q1 = units::quantity_cast<units::si::second>(1ms);
- * 
- * @tparam ToU a unit type to use for a target quantity
- */
-template<Unit ToU, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires UnitOf<ToU, D>
-{
-  return quantity_cast<quantity<D, ToU, Rep>>(q);
-}
-
-/**
- * @brief Explcit cast of a quantity
- * 
- * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
- * This cast gets only representation to cast to. For example:
- * 
- * auto q1 = units::quantity_cast<int>(1ms);
- * 
- * @tparam ToRep a representation type to use for a target quantity
- */
-template<Scalar ToRep, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires detail::basic_arithmetic<std::common_type_t<ToRep, Rep, intmax_t>>
-{
-  return quantity_cast<quantity<D, U, ToRep>>(q);
-}
-
-/**
- * @brief A type trait that defines zero, one, min, and max for a representation type
- * 
- * The zero, one, min, and max member functions in units::quantity forward their work to
- * these methods. This type can be specialized if the representation Rep requires a specific
- * implementation to return these quantity objects.
- * 
- * @tparam Rep a representation type for which a type trait is defined
- */
-template<Scalar Rep>
-struct quantity_values {
-  static constexpr Rep zero() noexcept { return Rep(0); }
-  static constexpr Rep one() noexcept { return Rep(1); }
-  static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
-  static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
-};
+} // namespace detail
 
 /**
  * @brief A quantity
@@ -443,46 +220,6 @@ public:
     return *this;
   }
 
-  template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator+(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
-    requires detail::basic_arithmetic<Rep, Rep2>
-  {
-    using common_rep = decltype(lhs.count() + rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() + ret(rhs).count());
-  }
-
-  template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator-(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
-    requires detail::basic_arithmetic<Rep, Rep2>
-  {
-    using common_rep = decltype(lhs.count() - rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() - ret(rhs).count());
-  }
-
-  template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& q, const Value& v)
-    requires (!treat_as_floating_point<Rep>) &&
-            (!treat_as_floating_point<Value>) &&
-            std::magma<std::ranges::modulus, Rep, Value>
-  {
-    using common_rep = decltype(q.count() % v);
-    using ret = quantity<D, U, common_rep>;
-    return ret(q.count() % v);
-  }
-
-  template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
-    requires (!treat_as_floating_point<Rep>) &&
-            (!treat_as_floating_point<Rep2>) &&
-            std::magma<std::ranges::modulus, Rep, Rep2>
-  {
-    using common_rep = decltype(lhs.count() % rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() % ret(rhs).count());
-  }
-
 #if __GNUC__ >= 10
 
   template<typename D2, typename U2, typename Rep2>
@@ -573,7 +310,23 @@ public:
   }
 };
 
-// TODO make hidden friends when moved to gcc-10
+template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
+[[nodiscard]] constexpr Quantity AUTO operator+(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  requires detail::basic_arithmetic<Rep1, Rep2>
+{
+  using common_rep = decltype(lhs.count() + rhs.count());
+  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+  return ret(ret(lhs).count() + ret(rhs).count());
+}
+
+template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
+[[nodiscard]] constexpr Quantity AUTO operator-(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  requires detail::basic_arithmetic<Rep1, Rep2>
+{
+  using common_rep = decltype(lhs.count() - rhs.count());
+  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+  return ret(ret(lhs).count() - ret(rhs).count());
+}
 
 template<typename D, typename U, typename Rep, Scalar Value>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Value& v)
@@ -614,7 +367,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   return ret(lhs.count() * rhs.count());
 }
 
-template<typename D, Scalar Value, typename U, typename Rep>
+template<Scalar Value, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<D, U, Rep>& q)
   requires std::magma<std::ranges::divided_by, Value, Rep>
 {
@@ -665,5 +418,34 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
 }
+
+template<typename D, typename U, typename Rep, Scalar Value>
+[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U, Rep>& q, const Value& v)
+  requires (!treat_as_floating_point<Rep>) &&
+           (!treat_as_floating_point<Value>) &&
+           std::magma<std::ranges::modulus, Rep, Value>
+{
+  using common_rep = decltype(q.count() % v);
+  using ret = quantity<D, U, common_rep>;
+  return ret(q.count() % v);
+}
+
+template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
+[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
+  requires (!treat_as_floating_point<Rep1>) &&
+           (!treat_as_floating_point<Rep2>) &&
+           std::magma<std::ranges::modulus, Rep1, Rep2>
+{
+  using common_rep = decltype(lhs.count() % rhs.count());
+  using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
+  return ret(ret(lhs).count() % ret(rhs).count());
+}
+
+namespace detail {
+
+template<typename D, typename U, typename Rep>
+inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
+
+}  // namespace detail
 
 }  // namespace units

@@ -35,9 +35,6 @@ namespace units {
  */
 struct prefix_type {};
 
-template<typename T>
-concept PrefixType = std::derived_from<T, prefix_type>;
-
 /**
  * @brief No prefix possible for the unit
  * 
@@ -72,25 +69,9 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
  * @tparam R factor to be used to scale a unit
  */
 template<typename Child, PrefixType PT, basic_fixed_string Symbol, Ratio R>
-  requires(!std::same_as<PT, no_prefix>)
+  requires (!std::same_as<PT, no_prefix>)
 struct prefix : downcast_child<Child, detail::prefix_base<PT, ratio<R::num, R::den>>> {
   static constexpr auto symbol = Symbol;
 };
-
-// TODO gcc:92150
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92150
-// namespace detail {
-
-//   template<typename T>
-//   inline constexpr bool is_prefix = false;
-
-//   template<typename PrefixType, Ratio R, basic_fixed_string Symbol>
-//   inline constexpr bool is_prefix<prefix<PrefixType, R, Symbol>> = true;
-
-// }  // namespace detail
-
-template<typename T>
-//  concept Prefix = detail::is_prefix<T>;
-concept Prefix = true;
 
 }  // namespace units

@@ -22,94 +22,120 @@
 
 #pragma once
 
+#include <limits>
 #include <type_traits>
-#include <cmath>
 
 namespace units {
 
-  // treat_as_floating_point
+/**
+ * @brief Specifies if a value of a type should be treated as a floating-point value
+ * 
+ * This type trait should be specialized for a custom representation type to specify
+ * that values fo this type should be treated by the library as a floating-point ones
+ * which will enable implicit conversions between quantities.
+ * 
+ * @tparam Rep a representation type for which a type trait is defined
+ */
+template<typename Rep>
+inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
-  template<typename Rep>  // TODO Conceptify that
-  inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
+/**
+ * @brief A type trait that defines zero, one, min, and max for a representation type
+ * 
+ * The zero, one, min, and max member functions in units::quantity forward their work to
+ * these methods. This type can be specialized if the representation Rep requires a specific
+ * implementation to return these quantity objects.
+ * 
+ * @tparam Rep a representation type for which a type trait is defined
+ */
+template<typename Rep>
+struct quantity_values {
+  static constexpr Rep zero() noexcept { return Rep(0); }
+  static constexpr Rep one() noexcept { return Rep(1); }
+  static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
+  static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
+};
 
-  // // isnan
-  // namespace isnan_impl {
 
-  //   // non-ADL lookup block
-  //   void isnan(); // undefined
 
-  //   template<typename>
-  //   inline constexpr bool has_customization = false;
+// // isnan
+// namespace isnan_impl {
 
-  //   template<typename T>
-  //     requires requires(const T& t) {
-  //       { isnan(t) } -> bool;
-  //     }
-  //   inline constexpr bool has_customization<T> = true;
+//   // non-ADL lookup block
+//   void isnan(); // undefined
 
-  //   struct fn {
-  //     template<typename T>
-  //     constexpr bool operator()(const T&) const
-  //     {
-  //       return false;
-  //     }
+//   template<typename>
+//   inline constexpr bool has_customization = false;
 
-  //     template<typename T>
-  //       requires treat_as_floating_point<T>
-  //     constexpr bool operator()(const T& value) const
-  //     {
-  //       return std::isnan(value);
-  //     }
+//   template<typename T>
+//     requires requires(const T& t) {
+//       { isnan(t) } -> bool;
+//     }
+//   inline constexpr bool has_customization<T> = true;
 
-  //     template<typename T>
-  //       requires treat_as_floating_point<T> && has_customization<T>
-  //     constexpr bool operator()(const T& value) const
-  //     {
-  //       return isnan(value);  // uses ADL
-  //     }
-  //   };
-  // }
+//   struct fn {
+//     template<typename T>
+//     constexpr bool operator()(const T&) const
+//     {
+//       return false;
+//     }
 
-  // inline constexpr isnan_impl::fn isnan{};
+//     template<typename T>
+//       requires treat_as_floating_point<T>
+//     constexpr bool operator()(const T& value) const
+//     {
+//       return std::isnan(value);
+//     }
 
-  // // isfinite
-  // namespace isfinite_impl {
+//     template<typename T>
+//       requires treat_as_floating_point<T> && has_customization<T>
+//     constexpr bool operator()(const T& value) const
+//     {
+//       return isnan(value);  // uses ADL
+//     }
+//   };
+// }
 
-  //   // non-ADL lookup block
-  //   void isfinite(); // undefined
+// inline constexpr isnan_impl::fn isnan{};
 
-  //   template<typename>
-  //   inline constexpr bool has_customization = false;
+// // isfinite
+// namespace isfinite_impl {
 
-  //   template<typename T>
-  //     requires requires(const T& t) {
-  //       { isfinite(t) } -> bool;
-  //     }
-  //   inline constexpr bool has_customization<T> = true;
+//   // non-ADL lookup block
+//   void isfinite(); // undefined
 
-  //   struct fn {
-  //     template<typename T>
-  //     constexpr bool operator()(const T&) const
-  //     {
-  //       return true;
-  //     }
+//   template<typename>
+//   inline constexpr bool has_customization = false;
 
-  //     template<typename T>
-  //       requires treat_as_floating_point<T>
-  //     constexpr bool operator()(const T& value) const
-  //     {
-  //       return std::isfinite(value);
-  //     }
+//   template<typename T>
+//     requires requires(const T& t) {
+//       { isfinite(t) } -> bool;
+//     }
+//   inline constexpr bool has_customization<T> = true;
 
-  //     template<typename T>
-  //       requires treat_as_floating_point<T> && has_customization<T>
-  //     constexpr bool operator()(const T& value) const
-  //     {
-  //       return isfinite(value);  // uses ADL
-  //     }
-  //   };
-  // }
+//   struct fn {
+//     template<typename T>
+//     constexpr bool operator()(const T&) const
+//     {
+//       return true;
+//     }
 
-  // inline constexpr isfinite_impl::fn isfinite{};
+//     template<typename T>
+//       requires treat_as_floating_point<T>
+//     constexpr bool operator()(const T& value) const
+//     {
+//       return std::isfinite(value);
+//     }
 
-}
+//     template<typename T>
+//       requires treat_as_floating_point<T> && has_customization<T>
+//     constexpr bool operator()(const T& value) const
+//     {
+//       return isfinite(value);  // uses ADL
+//     }
+//   };
+// }
+
+// inline constexpr isfinite_impl::fn isfinite{};
+
+} // namespace units

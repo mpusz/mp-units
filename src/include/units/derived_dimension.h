@@ -31,19 +31,6 @@
 
 namespace units {
 
-// Exponent
-namespace detail {
-
-template<typename T>
-inline constexpr bool is_exp = false;
-
-// partial specialization for an exp type provided below
-
-}  // namespace detail
-
-template<typename T>
-concept Exponent = detail::is_exp<T>;
-
 /**
  * @brief A derived dimension
  * 
@@ -78,14 +65,6 @@ struct derived_dimension<> : downcast_base<derived_dimension<>> {};
  */
 template<Exponent E, Exponent... ERest>
 struct derived_dimension<E, ERest...> : downcast_base<derived_dimension<E, ERest...>> {};  // TODO rename to 'dimension'?
-
-// DerivedDimension
-template<typename T>
-concept DerivedDimension = std::is_empty_v<T> && is_instantiation<downcast_base_t<T>, derived_dimension>;
-
-// Dimension
-template<typename T>
-concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
 /**
  * @brief A power of factor corresponding to the dimension of a quantity

@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/unit_of_concept.h>
 #include <units/derived_dimension.h>
 
 namespace units::detail {

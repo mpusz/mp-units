@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
+#include <units/concepts.h>
 #include <cstdint>
 #include <numeric>
 #include <type_traits>
@@ -51,20 +52,12 @@ struct ratio {
   using type = ratio<num, den>;
 };
 
-// is_ratio
-
 namespace detail {
-
-template<typename T>
-inline constexpr bool is_ratio = false;
 
 template<intmax_t Num, intmax_t Den>
 inline constexpr bool is_ratio<ratio<Num, Den>> = true;
 
 }  // namespace detail
-
-template<typename T>
-concept Ratio = detail::is_ratio<T>;
 
 
 // ratio_add

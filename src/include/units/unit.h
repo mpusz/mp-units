@@ -28,7 +28,6 @@
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/text_tools.h>
 #include <units/bits/external/type_traits.h>
-#include <units/unit_of_concept.h>
 #include <units/derived_dimension.h>
 #include <units/prefix.h>
 #include <units/ratio.h>

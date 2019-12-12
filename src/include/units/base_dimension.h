@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/bits/external/fixed_string.h>
-#include <units/unit_concept.h>
+#include <units/concepts.h>
 #include <type_traits>
 
 namespace units {
@@ -53,29 +53,6 @@ struct base_dimension {
   static constexpr auto name = Name;
   using base_unit = U;
 };
-
-// BaseDimension
-namespace detail {
-
-#if __GNUC__ == 9 && __GNUC_MINOR__ < 2
-
-template<typename T>
-inline constexpr bool is_base_dimension = true;
-
-#else
-
-template<typename T>
-inline constexpr bool is_base_dimension = false;
-
-template<basic_fixed_string Name, typename... Params>
-inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
-
-#endif
-
-}  // namespace detail
-
-template<typename T>
-concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;
 
 // base_dimension_less
 // TODO Remove the below when https://bugs.llvm.org/show_bug.cgi?id=32208 is fixed

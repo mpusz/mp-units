@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/physical/si/acceleration.h>
+#include <cmath>
 #include <iostream>
 
 namespace {
