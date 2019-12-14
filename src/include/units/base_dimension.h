@@ -48,6 +48,7 @@ namespace units {
  * @tparam U a base unit to be used for this base dimension
  */
 template<basic_fixed_string Name, Unit U>
+  requires U::is_named
 struct base_dimension {
   using base_type_workaround = base_dimension; // TODO Replace with is_derived_from_instantiation when fixed
   static constexpr auto name = Name;
@@ -58,7 +59,8 @@ struct base_dimension {
 // TODO Remove the below when https://bugs.llvm.org/show_bug.cgi?id=32208 is fixed
 // clang-format off
 template<BaseDimension D1, BaseDimension D2>
-struct base_dimension_less : std::bool_constant<D1::name < D2::name> {};
+struct base_dimension_less : std::bool_constant<
+    D1::name < D2::name || (D1::name == D2::name && D1::base_unit::symbol < D1::base_unit::symbol)> {};
 // clang-format on
 
 }  // namespace units

@@ -90,6 +90,7 @@ concept Unit = is_derived_from_instantiation<T, scaled_unit>;
 
 // BaseDimension
 template<basic_fixed_string Name, Unit U>
+  requires U::is_named
 struct base_dimension;
 
 namespace detail {
