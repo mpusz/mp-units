@@ -66,6 +66,6 @@ struct derived_ratio<exp_list<E, ERest...>, U, URest...> {
 
 template<DerivedDimension D, Unit... Us>
 using deduced_unit =
-    scaled_unit<typename D::coherent_unit::reference, typename detail::derived_ratio<typename D::recipe, Us...>::ratio>;
+    scaled_unit<typename detail::derived_ratio<typename D::recipe, Us...>::ratio, typename D::coherent_unit::reference>;
 
 }  // namespace units::detail

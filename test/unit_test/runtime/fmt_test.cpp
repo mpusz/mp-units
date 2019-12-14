@@ -110,7 +110,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("in terms of base units")
     {
-      const length<scaled_unit<metre, ratio<1'000'000>>> q(123);
+      const length<scaled_unit<ratio<1'000'000>, metre>> q(123);
       stream << q;
 
       SECTION("iostream")
@@ -131,7 +131,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("in terms of derived units")
     {
-      const energy<scaled_unit<joule, ratio<1, 100>>> q(60);
+      const energy<scaled_unit<ratio<1, 100>, joule>> q(60);
       stream << q;
 
       SECTION("iostream")

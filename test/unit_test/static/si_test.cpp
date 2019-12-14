@@ -191,7 +191,7 @@ static_assert(10V * 1F == 10C);
 
 // velocity
 
-static_assert(std::is_same_v<decltype(1km / 1s), velocity<scaled_unit<metre_per_second, ratio<1000>>, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1km / 1s), velocity<scaled_unit<ratio<1000>, metre_per_second>, std::int64_t>>);
 
 static_assert(10m / 5s == 2mps);
 static_assert(10 / 5s * 1m == 2mps);

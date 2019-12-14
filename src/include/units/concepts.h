@@ -82,7 +82,7 @@ template<typename R>
 concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
 
 // Unit
-template<typename U, UnitRatio R>
+template<UnitRatio R, typename U>
 struct scaled_unit;
 
 template<typename T>

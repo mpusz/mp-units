@@ -71,8 +71,8 @@ inline constexpr bool equivalent_dim = detail::equivalent_dim_impl<D1, D2>::valu
  * @tparam Es zero or more exponents of a derived dimension
  */
 template<Exponent... Es>
-struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, scaled_unit<unknown_unit, ratio<1>>, Es...> {
-  using coherent_unit = scaled_unit<unknown_unit, ratio<1>>;
+struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, scaled_unit<ratio<1>, unknown_unit>, Es...> {
+  using coherent_unit = scaled_unit<ratio<1>, unknown_unit>;
 };
 
 namespace detail {

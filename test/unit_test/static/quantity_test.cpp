@@ -112,7 +112,7 @@ using namespace units::si;
 // constexpr quantity<si::dim_length, second, int> error(0);  // should not compile (unit of a different dimension)
 // constexpr quantity<si::dim_length, metre, quantity<si::dim_length, metre, int>> error(0);  // should not compile (quantity used as Rep)
 // constexpr quantity<metre, si::dim_length, double> error(0);  // should not compile (reordered arguments)
-// constexpr quantity<si::dim_length, scaled_unit<metre, ratio<-1, 1>>, int> error(0);  // should not compile (negative unit ratio)
+// constexpr quantity<si::dim_length, scaled_unit<ratio<-1, 1>, metre>, int> error(0);  // should not compile (negative unit ratio)
 
 // member types
 
@@ -236,23 +236,23 @@ static_assert(std::is_same_v<decltype(1.0 * length<metre, int>()), length<metre,
 static_assert(
     std::is_same_v<decltype(velocity<metre_per_second, int>() * si::time<second, int>()), length<metre, int>>);
 static_assert(
-    std::is_same_v<decltype(velocity<metre_per_second, int>() * si::time<hour, int>()), length<scaled_unit<metre, ratio<3600>>, int>>);
+    std::is_same_v<decltype(velocity<metre_per_second, int>() * si::time<hour, int>()), length<scaled_unit<ratio<3600>, metre>, int>>);
 static_assert(std::is_same_v<decltype(length<metre>() * si::time<minute>()),
-                             quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<unknown_unit, ratio<60>>>>);
+                             quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<ratio<60>, unknown_unit>>>);
 static_assert(std::is_same_v<decltype(1 / si::time<second, int>()), frequency<hertz, int>>);
-static_assert(std::is_same_v<decltype(1 / si::time<minute, int>()), frequency<scaled_unit<hertz, ratio<1, 60>>, int>>);
+static_assert(std::is_same_v<decltype(1 / si::time<minute, int>()), frequency<scaled_unit<ratio<1, 60>, hertz>, int>>);
 static_assert(std::is_same_v<decltype(1 / frequency<hertz, int>()), si::time<second, int>>);
 static_assert(std::is_same_v<decltype(1 / length<kilometre>()),
-                             quantity<unknown_dimension<units::exp<dim_length, -1>>, scaled_unit<unknown_unit, ratio<1, 1000>>>>);
+                             quantity<unknown_dimension<units::exp<dim_length, -1>>, scaled_unit<ratio<1, 1000>, unknown_unit>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / 1.0), length<metre, double>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / length<metre, double>()), double>);
 static_assert(std::is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), double>);
 static_assert(
     std::is_same_v<decltype(length<metre, int>() / si::time<second, int>()), velocity<metre_per_second, int>>);
 static_assert(
-    std::is_same_v<decltype(length<metre>() / si::time<minute>()), velocity<scaled_unit<metre_per_second, ratio<1, 60>>>>);
+    std::is_same_v<decltype(length<metre>() / si::time<minute>()), velocity<scaled_unit<ratio<1, 60>, metre_per_second>>>);
 static_assert(std::is_same_v<decltype(si::time<minute>() / length<metre>()),
-                             quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<unknown_unit, ratio<60>>>>);
+                             quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<ratio<60>, unknown_unit>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
 
@@ -316,7 +316,7 @@ static_assert(std::is_same_v<common_quantity<length<kilometre, long long>, lengt
 
 // quantity_cast
 
-static_assert(std::is_same_v<decltype(quantity_cast<scaled_unit<metre, ratio<1>>>(2km))::unit, metre>);
+static_assert(std::is_same_v<decltype(quantity_cast<scaled_unit<ratio<1>, metre>>(2km))::unit, metre>);
 
 static_assert(quantity_cast<length<metre, int>>(2km).count() == 2000);
 static_assert(quantity_cast<length<kilometre, int>>(2000m).count() == 2);

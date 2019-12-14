@@ -49,14 +49,14 @@ namespace units {
  * @tparam U a unit to use as a reference for this dimension
  * @tparam R a ratio of a reference unit
  */
-template<typename U, UnitRatio R>
-struct scaled_unit : downcast_base<scaled_unit<U, R>> {
-  using reference = U;
+template<UnitRatio R, typename U>
+struct scaled_unit : downcast_base<scaled_unit<R, U>> {
   using ratio = R;
+  using reference = U;
 };
 
 template<Dimension D, UnitRatio R>
-using downcast_unit = downcast<scaled_unit<typename dimension_unit<D>::reference, R>>;
+using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
 
 template<Unit U1, Unit U2>
 struct same_unit_reference : std::is_same<typename U1::reference, typename U2::reference> {};
@@ -70,7 +70,7 @@ struct same_unit_reference : std::is_same<typename U1::reference, typename U2::r
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
+struct unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = false;
   using prefix_type = no_prefix;
 };
@@ -95,7 +95,7 @@ struct unknown_unit : unit<unknown_unit> {};
  * @tparam PT no_prefix or a type of prefix family
  */
 template<typename Child, basic_fixed_string Symbol, PrefixType PT>
-struct named_unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
+struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
@@ -116,7 +116,7 @@ struct named_unit : downcast_child<Child, scaled_unit<Child, ratio<1>>> {
  * @tparam U a reference unit to scale
  */
 template<typename Child, basic_fixed_string Symbol, PrefixType PT, UnitRatio R, Unit U>
-struct named_scaled_unit : downcast_child<Child, scaled_unit<typename U::reference, ratio_multiply<R, typename U::ratio>>> {
+struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_type = PT;
@@ -140,7 +140,7 @@ template<typename Child, Prefix P, Unit U>
 //                                    ratio_multiply<typename P::ratio, typename U::ratio>,
 //                                    typename U::reference> {};
 struct prefixed_unit :
-    downcast_child<Child, scaled_unit<typename U::reference, ratio_multiply<typename P::ratio, typename U::ratio>>> {
+    downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_type = P::prefix_type;
