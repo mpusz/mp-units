@@ -126,12 +126,16 @@ template<typename T>
 concept Exponent = detail::is_exp<T>;
 
 // DerivedDimension
+namespace detail {
+
 template<Exponent E, Exponent... ERest>
   requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
 struct derived_dimension_base;
 
+} // namespace detail
+
 template<typename T>
-concept DerivedDimension = is_instantiation<downcast_base_t<T>, derived_dimension_base>;
+concept DerivedDimension = is_instantiation<downcast_base_t<T>, detail::derived_dimension_base>;
 
 // Dimension
 template<typename T>
