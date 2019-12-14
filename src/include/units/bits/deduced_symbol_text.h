@@ -68,7 +68,7 @@ constexpr auto exp_text()
 }
 
 template<typename... Us, typename... Es, std::size_t... Idxs>
-constexpr auto deduced_symbol_text(derived_dimension<Es...>, std::index_sequence<Idxs...>)
+constexpr auto deduced_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>)
 {
   return (exp_text<Es, Us::symbol, Idxs>() + ...);
 }
@@ -76,7 +76,7 @@ constexpr auto deduced_symbol_text(derived_dimension<Es...>, std::index_sequence
 template<DerivedDimension Dim, Unit... Us>
 constexpr auto deduced_symbol_text()
 {
-  return deduced_symbol_text<Us...>(Dim(), std::index_sequence_for<Us...>());
+  return deduced_symbol_text<Us...>(typename Dim::recipe(), std::index_sequence_for<Us...>());
 }
 
 }  // namespace units::detail

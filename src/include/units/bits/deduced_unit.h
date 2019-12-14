@@ -27,11 +27,11 @@
 namespace units::detail {
 
 // same_scaled_units
-template<DerivedDimension D, Unit... Us>
+template<typename ExpList, Unit... Us>
 inline constexpr bool same_scaled_units = false;
 
 template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<derived_dimension<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+inline constexpr bool same_scaled_units<exp_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // deduced_unit
 template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
@@ -50,17 +50,17 @@ struct ratio_op {
   using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
 };
 
-template<DerivedDimension D, Unit... Us>
+template<typename ExpList, Unit... Us>
 struct derived_ratio;
 
 template<Unit... Us>
-struct derived_ratio<derived_dimension<>, Us...> {
+struct derived_ratio<exp_list<>, Us...> {
   using ratio = ::units::ratio<1>;
 };
 
 template<typename E, typename... ERest, Unit U, Unit... URest>
-struct derived_ratio<derived_dimension<E, ERest...>, U, URest...> {
-  using rest_ratio = derived_ratio<derived_dimension<ERest...>, URest...>::ratio;
+struct derived_ratio<exp_list<E, ERest...>, U, URest...> {
+  using rest_ratio = derived_ratio<exp_list<ERest...>, URest...>::ratio;
   using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
 };
 

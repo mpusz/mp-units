@@ -28,13 +28,13 @@ using namespace units;
 
 namespace {
 
-struct u0 : unit<u0> {};
+struct u0 : named_unit<u0, "u0", no_prefix> {};
 struct d0 : base_dimension<"d0", u0> {};
-struct u1 : unit<u1> {};
+struct u1 : named_unit<u1, "u1", no_prefix> {};
 struct d1 : base_dimension<"d1", u1> {};
-struct u2 : unit<u2> {};
+struct u2 : named_unit<u2, "u2", no_prefix> {};
 struct d2 : base_dimension<"d2", u2> {};
-struct u3 : unit<u3> {};
+struct u3 : named_unit<u3, "u3", no_prefix> {};
 struct d3 : base_dimension<"d3", u3> {};
 
 // exp_invert
@@ -50,77 +50,67 @@ struct typeinfo;
 template<typename... Ts>
 using extract = detail::extract<Ts...>::type;
 
-static_assert(std::is_same_v<extract<>, derived_dimension<>>);
-static_assert(std::is_same_v<extract<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>);
-static_assert(std::is_same_v<extract<exp<d0, 1>, exp<d1, 2>>, derived_dimension<exp<d0, 1>, exp<d1, 2>>>);
-using dim0 = derived_dimension<>;
-using dim1 = derived_dimension<exp<d0, 1>>;
-using dim2 = derived_dimension<exp<d0, 1>, exp<d1, 2>>;
-static_assert(std::is_same_v<extract<exp<dim0, 2>, exp<d0, 1>>, derived_dimension<exp<d0, 1>>>);
-static_assert(std::is_same_v<extract<exp<dim1, 2>, exp<d0, 1>>, derived_dimension<exp<d0, 2>, exp<d0, 1>>>);
+static_assert(std::is_same_v<extract<>, exp_list<>>);
+static_assert(std::is_same_v<extract<exp<d0, 1>>, exp_list<exp<d0, 1>>>);
+static_assert(std::is_same_v<extract<exp<d0, 1>, exp<d1, 2>>, exp_list<exp<d0, 1>, exp<d1, 2>>>);
+using dim1 = derived_dimension_base<exp<d0, 1>>;
+using dim2 = derived_dimension_base<exp<d0, 1>, exp<d1, 2>>;
+static_assert(std::is_same_v<extract<exp<dim1, 2>, exp<d0, 1>>, exp_list<exp<d0, 2>, exp<d0, 1>>>);
 static_assert(std::is_same_v<extract<exp<dim2, -2>, exp<d0, 1>, exp<d1, 2>>,
-                             derived_dimension<exp<d0, -2>, exp<d1, -4>, exp<d0, 1>, exp<d1, 2>>>);
+                             exp_list<exp<d0, -2>, exp<d1, -4>, exp<d0, 1>, exp<d1, 2>>>);
 
 // dim_invert
-static_assert(std::is_same_v<dim_invert<derived_dimension<exp<d0, -1>>>, d0>);
-static_assert(std::is_same_v<dim_invert<derived_dimension<exp<d0, -2>>>, unknown_dimension<exp<d0, 2>>>);
+static_assert(std::is_same_v<dim_invert<derived_dimension_base<exp<d0, -1>>>, d0>);
+static_assert(std::is_same_v<dim_invert<derived_dimension_base<exp<d0, -2>>>, unknown_dimension<exp<d0, 2>>>);
 static_assert(
-    std::is_same_v<dim_invert<derived_dimension<exp<d0, 2>, exp<d1, -1>>>, unknown_dimension<exp<d0, -2>, exp<d1, 1>>>);
+    std::is_same_v<dim_invert<derived_dimension_base<exp<d0, 2>, exp<d1, -1>>>, unknown_dimension<exp<d0, -2>, exp<d1, 1>>>);
 
 // make_dimension
 
 template<typename... Ts>
 using make_dimension = detail::make_dimension<Ts...>;
 
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>>, derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d0, 1>>, derived_dimension<exp<d0, 1>, exp<d1, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d1, 1>>, derived_dimension<exp<d1, 2>>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d1, -1>>, derived_dimension<>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d1, 1, 2>>, derived_dimension<exp<d1, 3, 2>>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 1, 2>, exp<d1, 1, 2>>, derived_dimension<exp<d1, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d1, 2>, exp<d1, 1, 2>>, derived_dimension<exp<d1, 5, 2>>>);
+static_assert(std::is_same_v<make_dimension<exp<d0, 1>>, derived_dimension_base<exp<d0, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>>, derived_dimension_base<exp<d0, 1>, exp<d1, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d0, 1>>, derived_dimension_base<exp<d0, 1>, exp<d1, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d1, 1>>, derived_dimension_base<exp<d1, 2>>>);
+static_assert(std::is_same_v<make_dimension<exp<d1, 1>, exp<d1, 1, 2>>, derived_dimension_base<exp<d1, 3, 2>>>);
+static_assert(std::is_same_v<make_dimension<exp<d1, 1, 2>, exp<d1, 1, 2>>, derived_dimension_base<exp<d1, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d1, 2>, exp<d1, 1, 2>>, derived_dimension_base<exp<d1, 5, 2>>>);
 
 static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d0, 1>, exp<d1, 1>>,
-                             derived_dimension<exp<d0, 2>, exp<d1, 2>>>);
+                             derived_dimension_base<exp<d0, 2>, exp<d1, 2>>>);
 static_assert(std::is_same_v<make_dimension<exp<d0, -1>, exp<d1, -1>, exp<d0, -1>, exp<d1, -1>>,
-                             derived_dimension<exp<d0, -2>, exp<d1, -2>>>);
+                             derived_dimension_base<exp<d0, -2>, exp<d1, -2>>>);
 
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d1, -1>>, derived_dimension<exp<d0, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d0, -1>, exp<d1, 1>>, derived_dimension<exp<d1, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>>, derived_dimension<exp<d1, 1>>>);
-static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>, exp<d1, -1>>, derived_dimension<>>);
+static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d1, -1>>, derived_dimension_base<exp<d0, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d0, -1>, exp<d1, 1>>, derived_dimension_base<exp<d1, 1>>>);
+static_assert(std::is_same_v<make_dimension<exp<d0, 1>, exp<d1, 1>, exp<d0, -1>>, derived_dimension_base<exp<d1, 1>>>);
 
 // dimension_multiply
 
-static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d1, 1>>>,
+static_assert(std::is_same_v<dimension_multiply<derived_dimension_base<exp<d0, 1>>, derived_dimension_base<exp<d1, 1>>>,
                              unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(
-    std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, d1>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
+    std::is_same_v<dimension_multiply<derived_dimension_base<exp<d0, 1>>, d1>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(
-    std::is_same_v<dimension_multiply<d0, derived_dimension<exp<d1, 1>>>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
+    std::is_same_v<dimension_multiply<d0, derived_dimension_base<exp<d1, 1>>>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(std::is_same_v<dimension_multiply<d0, d1>, unknown_dimension<exp<d0, 1>, exp<d1, 1>>>);
 static_assert(std::is_same_v<
-              dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d3, 1>>>,
+              dimension_multiply<derived_dimension_base<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension_base<exp<d3, 1>>>,
               unknown_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>, exp<d3, 1>>>);
 static_assert(std::is_same_v<
-              dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d1, 1>>>,
+              dimension_multiply<derived_dimension_base<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension_base<exp<d1, 1>>>,
               unknown_dimension<exp<d0, 1>, exp<d1, 2>, exp<d2, 1>>>);
 static_assert(std::is_same_v<
-              dimension_multiply<derived_dimension<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension<exp<d1, -1>>>,
+              dimension_multiply<derived_dimension_base<exp<d0, 1>, exp<d1, 1>, exp<d2, 1>>, derived_dimension_base<exp<d1, -1>>>,
               unknown_dimension<exp<d0, 1>, exp<d2, 1>>>);
-static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, -1>>>,
-                             unknown_dimension<>>);
-static_assert(std::is_same_v<dimension_multiply<derived_dimension<exp<d0, 2>>, derived_dimension<exp<d0, -1>>>, d0>);
+static_assert(std::is_same_v<dimension_multiply<derived_dimension_base<exp<d0, 2>>, derived_dimension_base<exp<d0, -1>>>, d0>);
 
 // dimension_divide
 
-static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d1, 1>>>,
+static_assert(std::is_same_v<dimension_divide<derived_dimension_base<exp<d0, 1>>, derived_dimension_base<exp<d1, 1>>>,
                              unknown_dimension<exp<d0, 1>, exp<d1, -1>>>);
-static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>,
-                             unknown_dimension<>>);
-static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 1>>, derived_dimension<exp<d0, 1>>>,
-                             unknown_dimension<>>);
-static_assert(std::is_same_v<dimension_divide<derived_dimension<exp<d0, 2>>, unknown_dimension<exp<d0, 1>>>, d0>);
+static_assert(std::is_same_v<dimension_divide<derived_dimension_base<exp<d0, 2>>, unknown_dimension<exp<d0, 1>>>, d0>);
 
 }  // namespace

@@ -51,7 +51,7 @@ struct equivalent_derived_dim : std::false_type {};
 
 template<typename... Es1, typename... Es2>
   requires (sizeof...(Es1) == sizeof...(Es2))
-struct equivalent_derived_dim<derived_dimension<Es1...>, derived_dimension<Es2...>> : std::conjunction<equivalent_exp<Es1, Es2>...> {};
+struct equivalent_derived_dim<derived_dimension_base<Es1...>, derived_dimension_base<Es2...>> : std::conjunction<equivalent_exp<Es1, Es2>...> {};
 
 template<DerivedDimension D1, DerivedDimension D2>
 struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {};
@@ -84,7 +84,7 @@ struct check_unknown {
 
 // downcast did not find a user predefined type
 template<typename... Es>
-struct check_unknown<derived_dimension<Es...>> {
+struct check_unknown<derived_dimension_base<Es...>> {
   using type = unknown_dimension<Es...>;
 };
 
@@ -114,17 +114,17 @@ struct dim_invert_impl;
 
 template<BaseDimension D>
 struct dim_invert_impl<D> {
-  using type = downcast_dimension<derived_dimension<exp<D, -1>>>;
+  using type = downcast_dimension<derived_dimension_base<exp<D, -1>>>;
 };
 
 template<BaseDimension D>
-struct dim_invert_impl<derived_dimension<exp<D, -1>>> {
+struct dim_invert_impl<derived_dimension_base<exp<D, -1>>> {
   using type = D;
 };
 
 template<typename... Es>
-struct dim_invert_impl<derived_dimension<Es...>> {
-  using type = downcast_dimension<derived_dimension<exp_invert<Es>...>>;
+struct dim_invert_impl<derived_dimension_base<Es...>> {
+  using type = downcast_dimension<derived_dimension_base<exp_invert<Es>...>>;
 };
 
 template<DerivedDimension D>
@@ -139,18 +139,21 @@ using dim_invert = detail::dim_invert_impl<D>::type;
 // dimension_multiply
 namespace detail {
 
-template<Dimension D>
-struct dim_unpack {
-  using type = D;
+template<typename T>
+struct to_dimension;
+
+template<Exponent... Es>
+struct to_dimension<exp_list<Es...>> {
+  using type = derived_dimension_base<Es...>;
 };
 
 template<BaseDimension D>
-struct dim_unpack<derived_dimension<exp<D, 1>>> {
+struct to_dimension<exp_list<exp<D, 1>>> {
   using type = D;
 };
 
 /**
- * @brief Merges 2 sorted derived dimensions into one units::derived_dimension
+ * @brief Merges 2 sorted derived dimensions into one units::derived_dimension_base
  * 
  * A result of a dimensional calculation may result with many exponents of the same base dimension orginated
  * from different parts of the equation. As the exponents lists of both operands it is enough to merge them
@@ -159,19 +162,19 @@ struct dim_unpack<derived_dimension<exp<D, 1>>> {
  * dimension itself.
  */
 template<Dimension D1, Dimension D2>
-using merge_dimension = dim_unpack<typename dim_consolidate<type_list_merge_sorted<D1, D2, exp_less>>::type>::type;
+using merge_dimension = to_dimension<typename dim_consolidate<type_list_merge_sorted<typename D1::exponents, typename D2::exponents, exp_less>>::type>::type;
 
 template<Dimension D1, Dimension D2>
 struct dimension_multiply_impl;
 
 template<BaseDimension D1, BaseDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast_dimension<merge_dimension<derived_dimension<exp<D1, 1>>, derived_dimension<exp<D2, 1>>>>;
+  using type = downcast_dimension<merge_dimension<derived_dimension_base<exp<D1, 1>>, derived_dimension_base<exp<D2, 1>>>>;
 };
 
 template<BaseDimension D1, DerivedDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast_dimension<merge_dimension<derived_dimension<exp<D1, 1>>, typename D2::downcast_base_type>>;
+  using type = downcast_dimension<merge_dimension<derived_dimension_base<exp<D1, 1>>, typename D2::downcast_base_type>>;
 };
 
 template<DerivedDimension D1, BaseDimension D2>
@@ -200,11 +203,11 @@ struct dimension_sqrt_impl;
 
 template<BaseDimension D>
 struct dimension_sqrt_impl<D> {
-  using type = downcast_dimension<derived_dimension<exp<D, 1, 2>>>;
+  using type = downcast_dimension<derived_dimension_base<exp<D, 1, 2>>>;
 };
 
 template<BaseDimension D>
-struct dimension_sqrt_impl<derived_dimension<exp<D, 2>>> {
+struct dimension_sqrt_impl<derived_dimension_base<exp<D, 2>>> {
   using type = D;
 };
 
@@ -214,8 +217,8 @@ struct dimension_sqrt_impl<D> {
 };
 
 template<typename... Es>
-struct dimension_sqrt_impl<derived_dimension<Es...>> {
-  using type = downcast_dimension<derived_dimension<exp_multiply<Es, 1, 2>...>>;
+struct dimension_sqrt_impl<derived_dimension_base<Es...>> {
+  using type = downcast_dimension<derived_dimension_base<exp_multiply<Es, 1, 2>...>>;
 };
 
 }  // namespace detail
@@ -231,7 +234,7 @@ struct dimension_pow_impl;
 
 template<BaseDimension D, std::size_t N>
 struct dimension_pow_impl<D, N> {
-  using type = downcast_dimension<derived_dimension<exp<D, N>>>;
+  using type = downcast_dimension<derived_dimension_base<exp<D, N>>>;
 };
 
 template<BaseDimension D>
@@ -240,7 +243,7 @@ struct dimension_pow_impl<D, 1> {
 };
 
 template<BaseDimension D, std::size_t N>
-struct dimension_pow_impl<derived_dimension<exp<D, 1, N>>, N> {
+struct dimension_pow_impl<derived_dimension_base<exp<D, 1, N>>, N> {
   using type = D;
 };
 
@@ -250,8 +253,8 @@ struct dimension_pow_impl<D, N> {
 };
 
 template<typename... Es, std::size_t N>
-struct dimension_pow_impl<derived_dimension<Es...>, N> {
-  using type = downcast_dimension<derived_dimension<exp_multiply<Es, N, 1>...>>;
+struct dimension_pow_impl<derived_dimension_base<Es...>, N> {
+  using type = downcast_dimension<derived_dimension_base<exp_multiply<Es, N, 1>...>>;
 }; 
 
 }  // namespace detail

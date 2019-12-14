@@ -112,7 +112,7 @@ inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
 }  // namespace detail
 
 template<typename T>
-concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;  // TODO Replace with is_derived_from_instantiation when fixed
+concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;
 
 // Exponent
 namespace detail {
@@ -126,11 +126,12 @@ template<typename T>
 concept Exponent = detail::is_exp<T>;
 
 // DerivedDimension
-template<typename...>
-struct derived_dimension;
+template<Exponent E, Exponent... ERest>
+  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
+struct derived_dimension_base;
 
 template<typename T>
-concept DerivedDimension = std::is_empty_v<T> && is_instantiation<downcast_base_t<T>, derived_dimension>;
+concept DerivedDimension = is_instantiation<downcast_base_t<T>, derived_dimension_base>;
 
 // Dimension
 template<typename T>

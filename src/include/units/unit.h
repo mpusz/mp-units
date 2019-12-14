@@ -164,7 +164,7 @@ template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
            (U::is_named && (URest::is_named && ... && true))
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
-  static constexpr auto symbol = detail::deduced_symbol_text<typename Dim::recipe, U, URest...>();
+  static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
   using prefix_type = no_prefix;
 };
 

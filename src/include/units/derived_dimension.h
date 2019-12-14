@@ -32,41 +32,6 @@
 namespace units {
 
 /**
- * @brief A derived dimension
- * 
- * There are 2 partial specializations of this primary class template. One of them is used by the library engine
- * and another one is the interface for the user to define a derived dimension.
- */
-template<typename...>
-struct derived_dimension;
-
-/**
- * @brief Dimensionless quantity
- */
-template<>
-struct derived_dimension<> : downcast_base<derived_dimension<>> {};
-
-/**
- * @brief A dimension of a derived quantity
- *
- * Expression of the dependence of a quantity on the base quantities (and their base dimensions) of a system of
- * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
- * A power of a factor is the factor raised to an exponent.
- * 
- * A derived dimension can be formed from multiple exponents (i.e. velocity is represented as "exp<L, 1>, exp<T, -1>").
- * It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
- * "exp<T, -1>").
- * 
- * @note This partial class template specialization is used by the library engine and should not be directly instantiated
- * by the user (see the other partial specialization).
- * 
- * @tparam E a first exponent of a derived dimension
- * @tparam ERest zero or more following exponents of a derived dimension
- */
-template<Exponent E, Exponent... ERest>
-struct derived_dimension<E, ERest...> : downcast_base<derived_dimension<E, ERest...>> {};  // TODO rename to 'dimension'?
-
-/**
  * @brief A power of factor corresponding to the dimension of a quantity
  *
  * @tparam Dim component dimension of a derived quantity
@@ -119,6 +84,31 @@ struct exp_multiply_impl {
 template<Exponent E, int Num, int Den>
 using exp_multiply = detail::exp_multiply_impl<E, Num, Den>::type;
 
+template<Exponent... Es>
+struct exp_list {};
+
+/**
+ * @brief A dimension of a derived quantity
+ *
+ * Expression of the dependence of a quantity on the base quantities (and their base dimensions) of a system of
+ * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
+ * A power of a factor is the factor raised to an exponent.
+ * 
+ * A derived dimension can be formed from multiple exponents (i.e. velocity is represented as "exp<L, 1>, exp<T, -1>").
+ * It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
+ * "exp<T, -1>").
+ * 
+ * @note This class template is used by the library engine and should not be directly instantiated by the user.
+ * 
+ * @tparam E a first exponent of a derived dimension
+ * @tparam ERest zero or more following exponents of a derived dimension
+ */
+template<Exponent E, Exponent... ERest>
+  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
+struct derived_dimension_base : downcast_base<derived_dimension_base<E, ERest...>> {
+  using exponents = exp_list<E, ERest...>;
+};
+
 // make_dimension
 namespace detail {
 
@@ -130,32 +120,32 @@ namespace detail {
  * 
  * @tparam D derived dimension to consolidate
  */
-template<DerivedDimension D>
+template<typename ExpList>
 struct dim_consolidate;
 
 template<>
-struct dim_consolidate<derived_dimension<>> {
-  using type = derived_dimension<>;
+struct dim_consolidate<exp_list<>> {
+  using type = exp_list<>;
 };
 
 template<typename E>
-struct dim_consolidate<derived_dimension<E>> {
-  using type = derived_dimension<E>;
+struct dim_consolidate<exp_list<E>> {
+  using type = exp_list<E>;
 };
 
 template<typename E1, typename... ERest>
-struct dim_consolidate<derived_dimension<E1, ERest...>> {
-  using type = type_list_push_front<typename dim_consolidate<derived_dimension<ERest...>>::type, E1>;
+struct dim_consolidate<exp_list<E1, ERest...>> {
+  using type = type_list_push_front<typename dim_consolidate<exp_list<ERest...>>::type, E1>;
 };
 
 template<BaseDimension Dim, int Num1, int Den1, int Num2, int Den2, typename... ERest>
-struct dim_consolidate<derived_dimension<exp<Dim, Num1, Den1>, exp<Dim, Num2, Den2>, ERest...>> {
+struct dim_consolidate<exp_list<exp<Dim, Num1, Den1>, exp<Dim, Num2, Den2>, ERest...>> {
   // TODO: provide custom implementation for ratio_add
   using r1 = std::ratio<Num1, Den1>;
   using r2 = std::ratio<Num2, Den2>;
   using r = std::ratio_add<r1, r2>;
-  using type = conditional<r::num == 0, typename dim_consolidate<derived_dimension<ERest...>>::type,
-                           typename dim_consolidate<derived_dimension<exp<Dim, r::num, r::den>, ERest...>>::type>;
+  using type = conditional<r::num == 0, typename dim_consolidate<exp_list<ERest...>>::type,
+                           typename dim_consolidate<exp_list<exp<Dim, r::num, r::den>, ERest...>>::type>;
 };
 
 /**
@@ -168,7 +158,7 @@ struct extract;
 
 template<>
 struct extract<> {
-  using type = derived_dimension<>;
+  using type = exp_list<>;
 };
 
 template<BaseDimension Dim, int Num, int Den, Exponent... ERest>
@@ -182,12 +172,21 @@ struct extract<exp<Dim, Num, Den>, ERest...> {
 };
 
 template<Exponent... Es, int Num, int Den, Exponent... ERest>
-struct extract<exp<derived_dimension<Es...>, Num, Den>, ERest...> {
+struct extract<exp<derived_dimension_base<Es...>, Num, Den>, ERest...> {
   using type = type_list_push_front<typename extract<ERest...>::type, exp_multiply<Es, Num, Den>...>;
 };
 
+template<typename T>
+struct to_derived_dimension_base;
+
+template<Exponent... Es>
+struct to_derived_dimension_base<exp_list<Es...>> {
+  using type = derived_dimension_base<Es...>;
+};
+
+
 /**
- * @brief Converts user provided derived dimension specification into a valid units::derived_dimension definition
+ * @brief Converts user provided derived dimension specification into a valid units::derived_dimension_base definition
  * 
  * User provided definition of a derived dimension may contain the same base dimension repeated more than once on the
  * list possibly hidden in other derived units provided by the user. The process here should:
@@ -197,7 +196,7 @@ struct extract<exp<derived_dimension<Es...>, Num, Den>, ERest...> {
  *    this base dimension.
  */
 template<Exponent... Es>
-using make_dimension = dim_consolidate<type_list_sort<typename extract<Es...>::type, exp_less>>::type;
+using make_dimension = to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename extract<Es...>::type, exp_less>>::type>::type;
 
 template<Exponent E>
   requires (E::den == 1 || E::den == 2) // TODO provide support for any den
@@ -209,31 +208,31 @@ struct exp_ratio {
   using type = conditional<E::den == 2, ratio_sqrt<pow>, pow>;
 };
 
-template<DerivedDimension D>
+template<typename ExpList>
 struct base_units_ratio_impl;
 
 template<typename E, typename... Es>
-struct base_units_ratio_impl<derived_dimension<E, Es...>> {
-  using type = ratio_multiply<typename exp_ratio<E>::type, typename base_units_ratio_impl<derived_dimension<Es...>>::type>;
+struct base_units_ratio_impl<exp_list<E, Es...>> {
+  using type = ratio_multiply<typename exp_ratio<E>::type, typename base_units_ratio_impl<exp_list<Es...>>::type>;
 };
 
 template<typename E>
-struct base_units_ratio_impl<derived_dimension<E>> {
+struct base_units_ratio_impl<exp_list<E>> {
   using type = exp_ratio<E>::type;
 };
 
 /**
  * @brief Calculates the common ratio of all the references of base units in the derived dimension
  */
-template<DerivedDimension D>
-using base_units_ratio = base_units_ratio_impl<D>::type;
+template<typename D>
+using base_units_ratio = base_units_ratio_impl<typename D::exponents>::type;
 
 }  // namespace detail
 
 /**
  * @brief The list of exponents of dimensions (both base and derived) provided by the user
  * 
- * This is the primary interface to create derived dimensions. Exponents list can contain powers of factors of both
+ * This is the user's interface to create derived dimensions. Exponents list can contain powers of factors of both
  * base and derived dimensions. This is called a "recipe" of the dimension and among others is used to print
  * unnamed coherent units of this dimension.
  * 
@@ -241,21 +240,18 @@ using base_units_ratio = base_units_ratio_impl<D>::type;
  * of powers of base units with no other proportionality factor than one.
  *
  * The implementation is responsible for unpacking all of the dimensions into a list containing only base dimensions
- * and their factors and putting them to the other (private) units::derived_dimension class template partial
- * specialization.
- * 
- * @note User should always use only this partial specialization to create derived dimensions.
+ * and their factors and putting them to derived_dimension_base class template.
  * 
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam E The list of exponents of ingredient dimensions
- * @tparam ERest The list of exponents of ingredient dimensions
+ * @tparam U a coherent unit of a derived dimension
+ * @tparam E the list of exponents of ingredient dimensions
+ * @tparam ERest the list of exponents of ingredient dimensions
  */
 template<typename Child, Unit U, Exponent E, Exponent... ERest>
-  requires (!Exponent<Child>)
-struct derived_dimension<Child, U, E, ERest...> : downcast_child<Child, typename detail::make_dimension<E, ERest...>> {
-  using recipe = derived_dimension<E, ERest...>;
+struct derived_dimension : downcast_child<Child, typename detail::make_dimension<E, ERest...>> {
+  using recipe = exp_list<E, ERest...>;
   using coherent_unit = U;
-  using base_units_ratio = detail::base_units_ratio<typename downcast_child<Child, typename detail::make_dimension<E, ERest...>>::downcast_base_type>;
+  using base_units_ratio = detail::base_units_ratio<derived_dimension>;
 };
 
 }  // namespace units

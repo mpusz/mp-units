@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/bits/deduced_symbol_text.h>
 #include <units/derived_dimension.h>
 
 namespace units::detail {
@@ -73,19 +72,19 @@ constexpr auto prefix_or_ratio_text()
 }
 
 template<typename... Es, std::size_t... Idxs>
-constexpr auto derived_dimension_unit_text(derived_dimension<Es...>, std::index_sequence<Idxs...>)
+constexpr auto derived_dimension_unit_text(exp_list<Es...>, std::index_sequence<Idxs...>)
 {
   return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, Idxs>() + ...);
 }
 
 template<typename... Es>
-constexpr auto derived_dimension_unit_text(derived_dimension<Es...> d)
+constexpr auto derived_dimension_unit_text(exp_list<Es...> list)
 {
-  return derived_dimension_unit_text(d, std::index_sequence_for<Es...>());
+  return derived_dimension_unit_text(list, std::index_sequence_for<Es...>());
 }
 
 template<typename... Es>
-constexpr bool all_named(derived_dimension<Es...>)
+constexpr bool all_named(exp_list<Es...>)
 {
   return (dimension_unit<typename Es::dimension>::is_named && ...);
 }
@@ -97,7 +96,7 @@ constexpr auto derived_dimension_unit_text()
   if constexpr(all_named(recipe()))
     return derived_dimension_unit_text(recipe());
   else
-    return derived_dimension_unit_text(Dim());
+    return derived_dimension_unit_text(typename Dim::exponents());
 }
 
 // TODO Inline below concept when switched to gcc-10
