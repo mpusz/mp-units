@@ -38,20 +38,20 @@ namespace units {
  * 
  * Base unit is a measurement unit that is adopted by convention for a base quantity in a specific system of units.
  *
- * Pair of Name and Unit template parameter forms an unique identifier of the base dimension. The same identifiers can
- * be multiplied and divided which will result with an adjustment of its factor in an Exponent od a DerivedDimension
+ * Pair of Symbol and Unit template parameters form an unique identifier of the base dimension. The same identifiers can
+ * be multiplied and divided which will result with an adjustment of its factor in an Exponent of a DerivedDimension
  * (in case of zero the dimension will be simplified and removed from further analysis of current expresion). In case
- * the Name is the same but the Unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but
+ * the Symbol is the same but the Unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but
  * is possible to force it with a quantity_cast.
  *
- * @tparam Name an unique identifier of the base dimension used to provide dimensional analysis support
+ * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  * @tparam U a base unit to be used for this base dimension
  */
-template<basic_fixed_string Name, Unit U>
+template<basic_fixed_string Symbol, Unit U>
   requires U::is_named
 struct base_dimension {
   using base_type_workaround = base_dimension; // TODO Replace with is_derived_from_instantiation when fixed
-  static constexpr auto name = Name;
+  static constexpr auto symbol = Symbol;
   using base_unit = U;
 };
 
@@ -60,7 +60,7 @@ struct base_dimension {
 // clang-format off
 template<BaseDimension D1, BaseDimension D2>
 struct base_dimension_less : std::bool_constant<
-    D1::name < D2::name || (D1::name == D2::name && D1::base_unit::symbol < D1::base_unit::symbol)> {};
+    D1::symbol < D2::symbol || (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {};
 // clang-format on
 
 }  // namespace units

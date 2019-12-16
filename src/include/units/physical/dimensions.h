@@ -40,25 +40,25 @@ concept QuantityOf = Quantity<Q> && is_derived_from_instantiation<typename Q::di
 // ------------------------ base dimensions -----------------------------
 
 template<Unit U>
-struct dim_length : base_dimension<"length", U> {};
+struct dim_length : base_dimension<"L", U> {};
 
 template<Unit U>
-struct dim_mass : base_dimension<"mass", U> {};
+struct dim_mass : base_dimension<"M", U> {};
 
 template<Unit U>
-struct dim_time : base_dimension<"time", U> {};
+struct dim_time : base_dimension<"T", U> {};
 
 template<Unit U>
-struct dim_current : base_dimension<"current", U> {};
+struct dim_electric_current : base_dimension<"I", U> {};
 
 template<Unit U>
-struct dim_temperature : base_dimension<"temperature", U> {};
+struct dim_thermodynamic_temperature : base_dimension<"Θ", U> {};
 
 template<Unit U>
-struct dim_substance : base_dimension<"substance", U> {};
+struct dim_substance : base_dimension<"N", U> {};
 
 template<Unit U>
-struct dim_luminous_intensity : base_dimension<"luminous intensity", U> {};
+struct dim_luminous_intensity : base_dimension<"J", U> {};
 
 // ------------------------ derived dimensions -----------------------------
 
@@ -86,10 +86,10 @@ struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_time> T>
 struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
 
-template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_current> C>
+template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_electric_current> C>
 struct dim_voltage : derived_dimension<Child, U, exp<P, 1>, exp<C, -1>> {};
 
-template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_current> C>
+template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_electric_current> C>
 struct dim_electric_charge : derived_dimension<Child, U, exp<T, 1>, exp<C, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> C, DimensionOf<dim_voltage> V>
@@ -113,10 +113,10 @@ template<typename T>
 concept Time = physical::QuantityOf<T, physical::dim_time>;
 
 template<typename T>
-concept Current = physical::QuantityOf<T, physical::dim_current>;
+concept Current = physical::QuantityOf<T, physical::dim_electric_current>;
 
 template<typename T>
-concept Temperature = physical::QuantityOf<T, physical::dim_temperature>;
+concept Temperature = physical::QuantityOf<T, physical::dim_thermodynamic_temperature>;
 
 template<typename T>
 concept Substance = physical::QuantityOf<T, physical::dim_substance>;

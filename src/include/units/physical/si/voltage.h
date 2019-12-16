@@ -32,7 +32,7 @@ namespace units::si {
 
 struct volt : named_unit<volt, "V", prefix> {};
 
-struct dim_voltage : physical::dim_voltage<dim_voltage, volt, dim_power, dim_current> {};
+struct dim_voltage : physical::dim_voltage<dim_voltage, volt, dim_power, dim_electric_current> {};
 
 template<Unit U, Scalar Rep = double>
 using voltage = quantity<dim_voltage, U, Rep>;

@@ -34,7 +34,7 @@ template<Dimension D1, Dimension D2>
 struct equivalent_dim_impl : std::false_type {};
 
 template<BaseDimension D1, BaseDimension D2>
-struct equivalent_base_dim : std::conjunction<std::bool_constant<D1::name == D2::name>,
+struct equivalent_base_dim : std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
                                         same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {};
 
 template<BaseDimension D1, BaseDimension D2>

@@ -29,10 +29,10 @@ namespace units::si {
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
-struct dim_temperature : physical::dim_temperature<kelvin> {};
+struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<kelvin> {};
 
 template<Unit U, Scalar Rep = double>
-using temperature = quantity<dim_temperature, U, Rep>;
+using temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
 inline namespace literals {
 

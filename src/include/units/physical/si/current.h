@@ -30,10 +30,10 @@ namespace units::si {
 
 struct ampere : named_unit<ampere, "m", prefix> {};
 
-struct dim_current : physical::dim_current<ampere> {};
+struct dim_electric_current : physical::dim_electric_current<ampere> {};
 
 template<Unit U, Scalar Rep = double>
-using current = quantity<dim_current, U, Rep>;
+using current = quantity<dim_electric_current, U, Rep>;
 
 inline namespace literals {
 
