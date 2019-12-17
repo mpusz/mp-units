@@ -59,10 +59,12 @@ class UnitsConan(ConanFile):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
     def configure(self):
-        if self.settings.compiler != "gcc":
-            raise ConanInvalidConfiguration("Library works only with gcc")
-        if Version(self.settings.compiler.version) < "9":
-            raise ConanInvalidConfiguration("Library requires at least gcc-9")
+        if self.settings.compiler != "gcc": # and self.settings.compiler != "clang":
+            raise ConanInvalidConfiguration("Library works only with gcc") # and clang")
+        if self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "9":
+            raise ConanInvalidConfiguration("Library requires at least g++-9")
+        if self.settings.compiler == "clang" and Version(self.settings.compiler.version) < "11":
+            raise ConanInvalidConfiguration("Library requires at least clang++-11")
         if self.settings.compiler.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library requires at least C++20 support")
 
@@ -75,7 +77,7 @@ class UnitsConan(ConanFile):
         return cmake
 
     def requirements(self):
-        if Version(self.settings.compiler.version) < "10":
+        if self.settings.compiler == "clang" or Version(self.settings.compiler.version) < "10":
             self.requires("range-v3/0.10.0@ericniebler/stable")
 
     def build(self):

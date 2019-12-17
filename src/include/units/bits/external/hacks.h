@@ -24,6 +24,13 @@
 
 #include <functional>
 
+#if __clang__
+#define COMP_CLANG __clang_major__
+#elif __GNUC__
+#define COMP_GCC __GNUC__
+#define COMP_GCC_MINOR __GNUC_MINOR__
+#endif
+
 #ifdef NDEBUG
 #define Expects(cond) (void)(cond);
 #else
@@ -31,23 +38,36 @@
 #define Expects(cond) assert(cond);
 #endif
 
-#if __GNUC__ < 10
+#if COMP_GCC >= 10 || COMP_CLANG >= 11
 
-#include <concepts/concepts.hpp>
-#define AUTO
-#define SAME_AS(T) T
+#include <concepts>
 
 #else
 
-#include <concepts>
+#include <concepts/concepts.hpp>
+
+#endif
+
+#if COMP_GCC >= 10 || COMP_CLANG >= 11
+
 #define AUTO auto
 #define SAME_AS(T) std::same_as<T>
+
+#else
+
+#define AUTO
+#define SAME_AS(T) T
 
 #endif
 
 namespace std {
 
-#if __GNUC__ < 10
+#if COMP_GCC >= 10
+
+  template<class T>
+  concept default_constructible = constructible_from<T>;
+
+#else
 
   // concepts
   using concepts::common_reference_with;
@@ -70,11 +90,6 @@ namespace std {
 
   template<class F, class... Args>
   concept regular_invocable = invocable<F, Args...>;
-
-#else
-
-template<class T>
-concept default_constructible = constructible_from<T>;
 
 #endif
 

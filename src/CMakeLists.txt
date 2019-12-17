@@ -60,12 +60,18 @@ target_include_directories(units
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(units
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_link_libraries(units
         INTERFACE
-            -Wno-literal-suffix
-            -Wno-non-template-friend
+            CONAN_PKG::range-v3
     )
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(units
+    INTERFACE
+        -Wno-literal-suffix
+        -Wno-non-template-friend
+    )
+
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
         target_compile_options(units
             INTERFACE
@@ -77,6 +83,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         )
     endif()
 endif()
+
 add_library(mp::units ALIAS units)
 
 # installation info
