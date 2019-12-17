@@ -10,11 +10,15 @@ As `units` is a header-only library you can simply copy `src/include` directory 
 your source tree and use it as regular header files.
 
 NOTE: Until C++20 arrives the library has some 3rd party dependencies that provide
-experimental C++20 features. The list of dependncies include:
-- `range-v3@ericniebler`
+experimental C++20 features. The list of dependencies include:
+- `range-v3@ericniebler` (only for gcc-9, gcc-10 uses gcc's concepts implementation)
 - `fmt@_`
 
-All of them are easily obtained with `conan`.
+All of them are easily to obtain with `conan`.
+
+NOTE: In case a full library's repository is to be compiled (instead of just copying
+`src/include` headers), additionally, the library's unit tests depend on
+`Catch2@catchorg` conan package.
 
 ### cmake + conan
 
