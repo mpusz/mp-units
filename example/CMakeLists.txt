@@ -26,5 +26,6 @@ function(add_example target)
 endfunction()
 
 add_example(avg_velocity)
+add_example(hello_units)
 add_example(measurement)
 add_example(unknown_dimension)
