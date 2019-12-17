@@ -27,13 +27,13 @@ AccessModifierOffset: -2
 # BinPackParameters: true
 BraceWrapping:
 #   AfterCaseLabel:  false
-#   AfterClass:      false
+  AfterClass:      false
 #   AfterControlStatement: false
 #   AfterEnum:       false
   AfterFunction:   true
 #   AfterNamespace:  false
 #   AfterObjCDeclaration: false
-#   AfterStruct:     false
+  AfterStruct:     false
 #   AfterUnion:      false
 #   AfterExternBlock: false
 #   BeforeCatch:     false
@@ -66,6 +66,7 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+  - SECTION
   - GIVEN
   - WHEN
   - THEN
