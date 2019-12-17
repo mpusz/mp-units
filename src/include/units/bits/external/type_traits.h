@@ -67,7 +67,7 @@ template<template<typename...> typename Type>
 struct is_derived_from_instantiation_impl {
   template<typename... Params>
   static constexpr std::true_type check_base(const Type<Params...>&);
-  static constexpr std::true_type check_base(...);
+  static constexpr std::false_type check_base(...);
 };
 
 }  // namespace detail
