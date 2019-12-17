@@ -81,7 +81,7 @@ public:
 #if __GNUC__ >= 10
 
   [[nodiscard]] friend constexpr auto operator<=>(const measurement& lhs, const measurement& rhs) = default;
-  [[nodiscard]] friend constexpr bool operator==(const measurement& lhs, const measurement& rhs) = default;
+  [[nodiscard]] friend constexpr bool operator==(const measurement& lhs, const measurement& rhs) = default; // TODO op== not needed (gcc bug)
 
 #else
 

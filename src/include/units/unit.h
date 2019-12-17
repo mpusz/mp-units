@@ -135,10 +135,6 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
  */
 template<typename Child, Prefix P, Unit U>
   requires std::same_as<typename P::prefix_type, typename U::prefix_type>
-// TODO replace with the below code when gcc will stop to crash on it ;-)
-// struct prefixed_unit : named_scaled_unit<Child, P::symbol + U::symbol, typename P::prefix_type,
-//                                    ratio_multiply<typename P::ratio, typename U::ratio>,
-//                                    typename U::reference> {};
 struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;

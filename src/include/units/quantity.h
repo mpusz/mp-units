@@ -220,6 +220,8 @@ public:
     return *this;
   }
 
+  // Hidden Friends
+  // Below friend functions are to be found via argument-dependent lookup only
 #if __GNUC__ >= 10
 
   template<typename D2, typename U2, typename Rep2>
@@ -355,7 +357,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)  // TODO equivalent_derived_dim?
+  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)
 {
   using dim = dimension_multiply<D1, D2>;
   using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
@@ -405,7 +407,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)  // TODO equivalent_derived_dim?
+  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)
 {
   Expects(rhs.count() != 0);
 

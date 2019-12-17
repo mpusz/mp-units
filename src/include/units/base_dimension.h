@@ -50,7 +50,7 @@ namespace units {
 template<basic_fixed_string Symbol, Unit U>
   requires U::is_named
 struct base_dimension {
-  using base_type_workaround = base_dimension; // TODO Replace with is_derived_from_instantiation when fixed
+  using base_type_workaround = base_dimension; // TODO Replace with is_base_dimension when fixed
   static constexpr auto symbol = Symbol;
   using base_unit = U;
 };
