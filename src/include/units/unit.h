@@ -139,7 +139,7 @@ struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
-  using prefix_type = P::prefix_type;
+  using prefix_type = no_prefix;
 };
 
 /**
