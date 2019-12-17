@@ -26,7 +26,7 @@
 
 using namespace units;
 
-constexpr Velocity AUTO avg_speed(Length auto d, Time auto t)
+constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
   return d / t;
 }
