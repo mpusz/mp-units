@@ -68,10 +68,11 @@ inline constexpr bool equivalent_dim = detail::equivalent_dim_impl<D1, D2>::valu
  * dimension. In such a case an `unknown_dimension` is created with a coherent unit of `unknown_unit`
  * and ratio<1>.
  * 
- * @tparam Es zero or more exponents of a derived dimension
+ * @tparam E the list of exponents of ingredient dimensions
+ * @tparam ERest the list of exponents of ingredient dimensions
  */
-template<Exponent... Es>
-struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, scaled_unit<ratio<1>, unknown_unit>, Es...> {
+template<Exponent E, Exponent... ERest>
+struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>, scaled_unit<ratio<1>, unknown_unit>, E, ERest...> {
   using coherent_unit = scaled_unit<ratio<1>, unknown_unit>;
 };
 
