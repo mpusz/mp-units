@@ -20,56 +20,84 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/acceleration.h>
-#include <units/dimensions/power.h>
-#include <units/dimensions/pressure.h>
-#include <units/math.h>
 
-namespace cgs {
-
-  using units::centimetre;
-  using units::gram;
-  using units::second;
-  struct centimetre_per_second : units::deduced_derived_unit<centimetre_per_second, units::velocity, centimetre, second> {};
-  struct gal : units::named_deduced_derived_unit<gal, units::acceleration, "Gal", units::no_prefix, centimetre, second> {};
-  struct dyne : units::named_deduced_derived_unit<dyne, units::force, "dyn", units::no_prefix, centimetre, gram, second> {};
-  struct erg : units::named_deduced_derived_unit<erg, units::energy, "erg", units::no_prefix, centimetre, gram, second> {};
-  struct ergps : units::named_deduced_derived_unit<ergps, units::power, "erg/s", units::no_prefix, centimetre, gram, second> {};   // TODO make it work for erg and non-named
-  struct barye : units::named_deduced_derived_unit<barye, units::pressure, "Ba", units::no_prefix, centimetre, gram, second> {};
-
-
-  inline namespace literals {
-
-    using namespace units::literals;
-
-    constexpr auto operator""cmps(unsigned long long l) { return units::quantity<centimetre_per_second, std::int64_t>(l); }
-    constexpr auto operator""cmps(long double l) { return units::quantity<centimetre_per_second, long double>(l); }
-    constexpr auto operator""Gal(unsigned long long l) { return units::quantity<gal, std::int64_t>(l); }
-    constexpr auto operator""Gal(long double l) { return units::quantity<gal, long double>(l); }
-    constexpr auto operator""dyn(unsigned long long l) { return units::quantity<dyne, std::int64_t>(l); }
-    constexpr auto operator""dyn(long double l) { return units::quantity<dyne, long double>(l); }
-    constexpr auto operator""_erg(unsigned long long l) { return units::quantity<erg, std::int64_t>(l); }
-    constexpr auto operator""_erg(long double l) { return units::quantity<erg, long double>(l); }
-    constexpr auto operator""_ergps(unsigned long long l) { return units::quantity<ergps, std::int64_t>(l); }
-    constexpr auto operator""_ergps(long double l) { return units::quantity<ergps, long double>(l); }
-    constexpr auto operator""Ba(unsigned long long l) { return units::quantity<barye, std::int64_t>(l); }
-    constexpr auto operator""Ba(long double l) { return units::quantity<barye, long double>(l); }
-
-  }  // namespace literals
-
-}
+#include <units/physical/cgs/acceleration.h>
+#include <units/physical/cgs/energy.h>
+#include <units/physical/cgs/force.h>
+#include <units/physical/cgs/length.h>
+#include <units/physical/cgs/mass.h>
+#include <units/physical/cgs/power.h>
+#include <units/physical/cgs/pressure.h>
+#include <units/physical/cgs/time.h>
+#include <units/physical/cgs/velocity.h>
 
 namespace {
 
-  using namespace cgs::literals;
+using namespace units;
+using namespace units::cgs;
 
-  static_assert(100cm == 1m);
-  static_assert(1'000g == 1kg);
-  static_assert(100cmps == 1mps);
-  static_assert(100Gal == 1mps_sq);
-  static_assert(100'000dyn == 1N);
-  static_assert(10'000'000_erg == 1_J);
-  static_assert(10'000'000_ergps == 1W);
-  static_assert(10Ba == 1Pa);
+/* ************** BASE DIMENSIONS **************** */
+
+// length
+
+static_assert(centimetre::symbol == "cm");
+
+// mass
+
+// time
+
+/* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
+
+// velocity
+
+static_assert(10cm / 5s == 2cmps);
+static_assert(10cm / 2cmps == 5s);
+static_assert(10cm == 2cmps * 5s);
+
+static_assert(detail::unit_text<dim_velocity, centimetre_per_second>() == "cm/s");
+
+// area
+static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
+
+static_assert(1cm * 1cm == 1sq_cm);
+static_assert(100sq_cm / 10cm == 10cm);
+
+static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
+
+/* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
+
+// acceleration
+
+static_assert(10cmps / 10s == 1Gal);
+static_assert(10cmps / 1Gal == 10s);
+static_assert(1Gal * 10s == 10cmps);
+
+// force
+
+static_assert(10g * 10Gal == 100dyn);
+static_assert(100dyn / 10g == 10Gal);
+static_assert(100dyn / 10Gal == 10g);
+
+// pressure
+
+static_assert(10dyn / 10sq_cm == 1Ba);
+static_assert(10dyn / 1Ba == 10sq_cm);
+static_assert(1Ba * 10sq_cm == 10dyn);
+
+// energy
+
+static_assert(10dyn * 10cm == 100_erg);
+static_assert(100_erg / 10cm == 10dyn);
+static_assert(100_erg / 10dyn == 10cm);
+
+/* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
+
+// power
+
+static_assert(10_erg / 10s == 1_ergps);
+static_assert(1_ergps * 10s == 10_erg);
+static_assert(10_erg / 1_ergps == 10s);
+
+static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 
 }

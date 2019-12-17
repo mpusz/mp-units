@@ -22,4 +22,4 @@
 
 add_subdirectory(unit_test/runtime)
 add_subdirectory(unit_test/static)
-add_subdirectory(metabench)
+#add_subdirectory(metabench)

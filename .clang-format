@@ -25,15 +25,15 @@ AccessModifierOffset: -2
 # AlwaysBreakTemplateDeclarations: Yes
 # BinPackArguments: true
 # BinPackParameters: true
-# BraceWrapping:
+BraceWrapping:
 #   AfterCaseLabel:  false
-#   AfterClass:      false
+  AfterClass:      false
 #   AfterControlStatement: false
 #   AfterEnum:       false
-#   AfterFunction:   false
+  AfterFunction:   true
 #   AfterNamespace:  false
 #   AfterObjCDeclaration: false
-#   AfterStruct:     false
+  AfterStruct:     false
 #   AfterUnion:      false
 #   AfterExternBlock: false
 #   BeforeCatch:     false
@@ -44,9 +44,9 @@ AccessModifierOffset: -2
 #   SplitEmptyNamespace: true
 # BreakAfterJavaFieldAnnotations: false
 # BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Stroustrup
+BreakBeforeBraces: Custom
 # BreakBeforeInheritanceComma: false
-BreakBeforeTernaryOperators: false
+# BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: true
 BreakInheritanceList: AfterColon
@@ -66,6 +66,7 @@ ForEachMacros:
   - foreach
   - Q_FOREACH
   - BOOST_FOREACH
+  - SECTION
   - GIVEN
   - WHEN
   - THEN
@@ -93,7 +94,7 @@ IncludeCategories:
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
 # MaxEmptyLinesToKeep: 1
-NamespaceIndentation: All
+# NamespaceIndentation: None
 # ObjCBinPackProtocolList: Never
 # ObjCBlockIndentWidth: 2
 # ObjCSpaceAfterProperty: false
@@ -143,9 +144,9 @@ NamespaceIndentation: All
 SpaceAfterTemplateKeyword: false
 # SpaceBeforeAssignmentOperators: true
 # SpaceBeforeCpp11BracedList: false
-SpaceBeforeCtorInitializerColon: false
+# SpaceBeforeCtorInitializerColon: true
 # SpaceBeforeInheritanceColon: true
-SpaceBeforeParens: Never
+# SpaceBeforeParens: ControlStatements
 # SpaceBeforeRangeBasedForLoopColon: true
 # SpaceInEmptyBlock: false
 # SpaceInEmptyParentheses: false

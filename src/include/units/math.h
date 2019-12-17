@@ -27,27 +27,29 @@
 
 namespace units {
 
-  template<std::size_t N, typename U, typename Rep>
-    requires N == 0
-  inline Rep AUTO pow(const quantity<U, Rep>&) noexcept
+  template<std::size_t N, typename D, typename U, typename Rep>
+    requires (N == 0)
+  inline Rep pow(const quantity<D, U, Rep>&) noexcept
   {
     return 1;
   }
 
-  template<std::size_t N, typename U, typename Rep>
-  inline Quantity AUTO pow(const quantity<U, Rep>& q) noexcept
+  template<std::size_t N, typename D, typename U, typename Rep>
+  inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
   {
-    using dim = dimension_pow<typename U::dimension, N>;
-    using r = ratio_pow<typename U::ratio, N>;
-    return quantity<downcast<unit<dim, r>>, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
+    using dim = dimension_pow<D, N>;
+    using ratio = ratio_pow<typename U::ratio, N>;
+    using unit = downcast_unit<dim, ratio>;
+    return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
   }
 
-  template<typename U, typename Rep>
-  inline Quantity AUTO sqrt(const quantity<U, Rep>& q) noexcept
+  template<typename D, typename U, typename Rep>
+  inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
   {
-    using dim = dimension_sqrt<typename U::dimension>;
-    using r = ratio_sqrt<typename U::ratio>;
-    return quantity<downcast<unit<dim, r>>, Rep>(static_cast<Rep>(std::sqrt(q.count())));
+    using dim = dimension_sqrt<D>;
+    using ratio = ratio_sqrt<typename U::ratio>;
+    using unit = downcast_unit<dim, ratio>;
+    return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
   }
 
 }  // namespace units

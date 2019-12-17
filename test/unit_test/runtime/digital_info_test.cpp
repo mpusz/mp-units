@@ -20,43 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/quantity.h>
+#include <units/data/information.h>
 #include <catch2/catch.hpp>
 #include <sstream>
 
-namespace data {
+using namespace units::data;
 
-  struct base_dim_digital_information : units::base_dimension<"digital information", "b"> {};
-
-  struct digital_information : units::derived_dimension<digital_information, units::exp<base_dim_digital_information, 1>> {};
-
-  template<typename T>
-  concept DigitalInformation = units::QuantityOf<T, digital_information>;
-
-  struct data_prefix : units::prefix_type {};
-
-  struct kibi : units::prefix<kibi, data_prefix, units::ratio<    1'024>, "Ki"> {};
-  struct mebi : units::prefix<mebi, data_prefix, units::ratio<1'048'576>, "Mi"> {};
-
-  struct bit : units::named_coherent_derived_unit<bit, digital_information, "b", data_prefix> {};
-  struct kilobit : units::prefixed_derived_unit<kilobit, kibi, bit> {};
-  struct byte : units::named_scaled_derived_unit<byte, digital_information, "B", units::ratio<8>, data_prefix> {};
-  struct kilobyte : units::prefixed_derived_unit<kilobyte, kibi, byte> {};
-
-  inline namespace literals {
-
-    constexpr auto operator""_b(unsigned long long l) { return units::quantity<bit, std::int64_t>(l); }
-    constexpr auto operator""_Kib(unsigned long long l) { return units::quantity<kilobit, std::int64_t>(l); }
-    constexpr auto operator""_B(unsigned long long l) { return units::quantity<byte, std::int64_t>(l); }
-    constexpr auto operator""_KiB(unsigned long long l) { return units::quantity<kilobyte, std::int64_t>(l); }
-
-  }
-
-}
-
-using namespace data;
-
-TEST_CASE("operator<< on a custom quantity", "[text][ostream]")
+TEST_CASE("operator<< on a data quantity", "[text][ostream]")
 {
   std::stringstream stream;
 
@@ -64,25 +34,25 @@ TEST_CASE("operator<< on a custom quantity", "[text][ostream]")
   {
     SECTION("named unit")
     {
-      stream << 64_B;
+      stream << 64B;
       REQUIRE(stream.str() == "64 B");
     }
 
     SECTION("prefixed coherent unit")
     {
-      stream << 256_Kib;
+      stream << 256Kib;
       REQUIRE(stream.str() == "256 Kib");
     }
 
     SECTION("prefixed non-coherent unit")
     {
-      stream << 1024_KiB;
+      stream << 1024KiB;
       REQUIRE(stream.str() == "1024 KiB");
     }
 
     SECTION("other unit matching prefix")
     {
-      stream << 8_Kib * 8_Kib / 2_b;
+      stream << 8Kib * 8Kib / 2b;
       REQUIRE(stream.str() == "32 Mib");
     }
   }

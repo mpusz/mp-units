@@ -20,122 +20,142 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/acceleration.h>
+#include <units/physical/si/acceleration.h>
+#include <cmath>
 #include <iostream>
 
 namespace {
 
-  template<typename T, template<typename> typename Trait>
-  concept Satisfies = Trait<T>::value;
-  
-  // root sum of squares
-  template<typename T>
-  T rss(const T& v1, const T& v2)
+// root sum of squares
+template<typename T>
+T rss(const T& v1, const T& v2)
+{
+  return std::sqrt(std::pow(v1, 2) + std::pow(v2, 2));
+}
+
+template<class T>
+class measurement {
+public:
+  using value_type = T;
+
+  measurement() = default;
+
+  constexpr /* explicit */ measurement(const value_type& val, const value_type& err = {}) :
+      // cannot be explicit as `magma` concept requires implicit conversions :-(
+      value_(val),
+      uncertainty_(std::abs(err))
   {
-    return std::sqrt(std::pow(v1, 2) + std::pow(v2, 2));
   }
 
-  template<class T>
-  class measurement {
-  public:
-    using value_type = T;
+  constexpr const value_type& value() const { return value_; }
+  constexpr const value_type& uncertainty() const { return uncertainty_; }
 
-    measurement() = default;
+  constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
+  constexpr value_type lower_bound() const { return value() - uncertainty(); }
+  constexpr value_type upper_bound() const { return value() + uncertainty(); }
 
-    constexpr /* explicit */ measurement(const value_type& val, const value_type& err = {}):   // cannot be explicit as `magma` concept requires implicit conversions :-(
-        value_(val), uncertainty_(std::abs(err))
-    {
-    }
+  [[nodiscard]] constexpr measurement operator-() const { return measurement(-value(), uncertainty()); }
 
-    constexpr const value_type& value() const { return value_; }
-    constexpr const value_type& uncertainty() const { return uncertainty_; }
+  [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
+  {
+    return measurement(lhs.value() + rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+  }
 
-    constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
-    constexpr value_type lower_bound() const { return value() - uncertainty(); }
-    constexpr value_type upper_bound() const { return value() + uncertainty(); }
+  [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
+  {
+    return measurement(lhs.value() - rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+  }
 
-    [[nodiscard]] constexpr measurement operator-() const { return measurement(-value(), uncertainty()); }
+  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
+  {
+    const auto val = lhs.value() * rhs.value();
+    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+  }
 
-    [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
-    {
-      return measurement(lhs.value() + rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
-    }
+  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
+  {
+    const auto val = lhs.value() / rhs.value();
+    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+  }
 
-    [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
-    {
-      return measurement(lhs.value() - rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
-    }
+#if __GNUC__ >= 10
 
-    [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
-    {
-      const auto val = lhs.value() * rhs.value();
-      return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-    }
+  [[nodiscard]] friend constexpr auto operator<=>(const measurement& lhs, const measurement& rhs) = default;
+  [[nodiscard]] friend constexpr bool operator==(const measurement& lhs, const measurement& rhs) = default;
 
-    [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
-    {
-      const auto val = lhs.value() / rhs.value();
-      return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-    }
+#else
 
-    [[nodiscard]] friend constexpr bool operator==(const measurement& lhs, const measurement& rhs)
-    {
-      return lhs.value()  == rhs.value() && lhs.uncertainty() == rhs.uncertainty();
-    }
+  [[nodiscard]] friend constexpr bool operator==(const measurement& lhs, const measurement& rhs)
+  {
+    return lhs.value() == rhs.value() && lhs.uncertainty() == rhs.uncertainty();
+  }
 
-    [[nodiscard]] friend constexpr bool operator!=(const measurement& lhs, const measurement& rhs)
-    {
-      return !(lhs == rhs);
-    }
+  [[nodiscard]] friend constexpr bool operator!=(const measurement& lhs, const measurement& rhs)
+  {
+    return !(lhs == rhs);
+  }
 
-    [[nodiscard]] friend constexpr bool operator<(const measurement& lhs, const measurement& rhs)
-    {
-      return lhs.value() == rhs.value() ? lhs.uncertainty() < rhs.uncertainty() : lhs.value() < rhs.value();
-    }
+  [[nodiscard]] friend constexpr bool operator<(const measurement& lhs, const measurement& rhs)
+  {
+    return lhs.value() == rhs.value() ? lhs.uncertainty() < rhs.uncertainty() : lhs.value() < rhs.value();
+  }
 
-    [[nodiscard]] friend constexpr bool operator>(const measurement& lhs, const measurement& rhs)
-    {
-      return rhs < lhs;
-    }
+  [[nodiscard]] friend constexpr bool operator>(const measurement& lhs, const measurement& rhs) { return rhs < lhs; }
 
-    [[nodiscard]] friend constexpr bool operator<=(const measurement& lhs, const measurement& rhs)
-    {
-      return !(rhs < lhs);
-    }
+  [[nodiscard]] friend constexpr bool operator<=(const measurement& lhs, const measurement& rhs)
+  {
+    return !(rhs < lhs);
+  }
 
-    [[nodiscard]] friend constexpr bool operator>=(const measurement& lhs, const measurement& rhs)
-    {
-      return !(lhs < rhs);
-    }
+  [[nodiscard]] friend constexpr bool operator>=(const measurement& lhs, const measurement& rhs)
+  {
+    return !(lhs < rhs);
+  }
 
-    friend std::ostream& operator<<(std::ostream& os, const measurement& v)
-    {
-      return os << v.value() << " ± " << v.uncertainty();
-    }
+#endif
 
-  private:
-    value_type value_{};
-    value_type uncertainty_{};
-  };
+  friend std::ostream& operator<<(std::ostream& os, const measurement& v)
+  {
+    return os << v.value() << " ± " << v.uncertainty();
+  }
 
-  template<units::Unit U>
-  using m_quantity = units::quantity<U, measurement<double>>;
+private:
+  value_type value_{};
+  value_type uncertainty_{};
+};
+
+static_assert(units::Scalar<measurement<double>>);
 
 }  // namespace
 
 template<typename T>
 inline constexpr bool units::treat_as_floating_point<measurement<T>> = std::is_floating_point_v<T>;
 
+namespace {
+
+void example()
+{
+  using namespace units;
+
+  const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
+  const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));
+
+  const Velocity AUTO v1 = a * t;
+  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';
+
+  si::length<si::metre, measurement<double>> length(measurement(123., 1.));
+  std::cout << "10 * " << length << " = " << 10 * length << '\n';
+}
+
+}  // namespace
 
 int main()
 {
-  const auto a = m_quantity<units::metre_per_second_sq>(measurement(9.8, 0.1));
-  const auto t = m_quantity<units::second>(measurement(1.2, 0.1));
-
-  units::Velocity AUTO v1 = a * t;
-  m_quantity<units::kilometre_per_hour> v2(v1);
-  std::cout << a << " * " << t << " = " << v1 << " = " << v2 << '\n';
-
-  m_quantity<units::metre> length(measurement(123., 1.));
-  std::cout << "10 * " << length << " = " << 10 * length << '\n';
+  try {
+    example();
+  } catch (const std::exception& ex) {
+    std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
+  } catch (...) {
+    std::cerr << "Unhandled unknown exception caught\n";
+  }
 }

@@ -20,174 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/dimensions/acceleration.h>
-#include <units/dimensions/area.h>
-#include <units/dimensions/capacitance.h>
-#include <units/dimensions/current.h>
-#include <units/dimensions/electric_charge.h>
-#include <units/dimensions/energy.h>
-#include <units/dimensions/force.h>
-#include <units/dimensions/frequency.h>
-#include <units/dimensions/length.h>
-#include <units/dimensions/luminous_intensity.h>
-#include <units/dimensions/mass.h>
-#include <units/dimensions/power.h>
-#include <units/dimensions/pressure.h>
-#include <units/dimensions/substance.h>
-#include <units/dimensions/surface_tension.h>
-#include <units/dimensions/temperature.h>
-#include <units/dimensions/time.h>
-#include <units/dimensions/velocity.h>
-#include <units/dimensions/voltage.h>
-#include <units/dimensions/volume.h>
-
-#include <utility>
+#include "units/unit.h"
+#include "units/physical/si/prefixes.h"
 
 namespace {
 
-  using namespace units;
+using namespace units;
 
-  /* ************** BASE DIMENSIONS **************** */
+struct metre : named_unit<metre, "m", si::prefix> {};
+struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
+struct kilometre : prefixed_unit<kilometre, si::kilo, metre> {};
+struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, metre> {};
+struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
+struct dim_length : base_dimension<"length", metre> {};
 
-  // length
+struct second : named_unit<second, "s", si::prefix> {};
+struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
+struct dim_time : base_dimension<"time", second> {};
 
-  static_assert(1km == 1000m);
-  static_assert(1m == 100cm);
-  static_assert(1m == 1000mm);
-  static_assert(1km + 1m == 1001m);
-  static_assert(10km / 5km == 2);
-  static_assert(100mm / 5cm == 2);
-  static_assert(10km / 2 == 5km);
+struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+// struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
 
-  static_assert(1yd == 0.9144m);
-  static_assert(1yd == 3ft);
-  static_assert(1ft == 12in);
-  static_assert(1mi == 1760yd);
+struct metre_per_second : unit<metre_per_second> {};
+struct dim_velocity : derived_dimension<dim_velocity, metre_per_second, exp<dim_length, 1>, exp<dim_time, -1>> {};
+struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
 
-  static_assert(5in + 8cm == 207mm);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio<1>, metre>>, metre>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio<1, 100>, metre>>, centimetre>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio<yard::ratio::num, yard::ratio::den>, metre>>, yard>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio_multiply<typename yard::ratio, ratio<1, 3>>, metre>>, foot>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio_divide<typename kilometre::ratio, typename hour::ratio>, metre_per_second>>, kilometre_per_hour>);
 
-  static_assert(millimetre::symbol == "mm");
-  static_assert(centimetre::symbol == "cm");
-  static_assert(kilometre::symbol == "km");
-
-  // mass
-
-  static_assert(1kg == 1000g);
-
-  static_assert(kilogram::symbol == "kg");
-
-  // time
-
-  static_assert(1h == 3600s);
-
-  static_assert(nanosecond::symbol == "ns");
-  static_assert(microsecond::symbol == "µs");
-  static_assert(millisecond::symbol == "ms");
-
-  // current
-
-  // temperature
-
-  // substance
-
-  // luminous intensity
-
-
-  /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
-
-  // frequency
-
-  static_assert(2 / 1s == 2Hz);
-  static_assert(120 / 1min == 2Hz);
-  static_assert(1000 / 1s == 1kHz);
-  static_assert(1 / 1ms == 1kHz);
-  static_assert(3.2GHz == 3'200'000'000Hz);
-  static_assert(10Hz * 1min == 600);
-
-  static_assert(millihertz::symbol == "mHz");
-  static_assert(kilohertz::symbol == "kHz");
-  static_assert(megahertz::symbol == "MHz");
-  static_assert(gigahertz::symbol == "GHz");
-  static_assert(terahertz::symbol == "THz");
-
-  // force
-
-  static_assert(10kg * 10mps_sq == 100N);
-
-  // pressure
-
-  static_assert(10N / 10sq_m == 1Pa);
-
-  // energy
-
-  static_assert(10N * 10m == 100_J);
-  static_assert(10Pa * 10cub_m == 100_J);
-
-  // power
-
-  static_assert(10_J / 10s == 1W);
-
-  // electric charge
-
-  static_assert(10A * 10s == 100C);
-
-  // voltage
-
-  static_assert(10W / 10A == 1V);
-  static_assert(10_J / 10C == 1V);
-
-  // capacitance
-
-  static_assert(10C / 10V == 1F);
-
-  /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
-
-  // velocity
-
-  static_assert(std::is_same_v<decltype(1km / 1s), quantity<unit<velocity, ratio<1000, 1>>, std::int64_t>>);
-
-  static_assert(10m / 5s == 2mps);
-  static_assert(10 / 5s * 1m == 2mps);
-  static_assert(1km / 1s == 1000mps);
-  // static_assert(1km / 1h == 1kmph);  // should not compile
-  static_assert(1.0km / 1h == 1kmph);
-  static_assert(1000.0m / 3600.0s == 1kmph);
-
-  static_assert(10.0mi / 2h == 5mph);
-
-  static_assert(2kmph * 2h == 4km);
-  // static_assert(2kmph * 15min == 500m); // should not compile
-  static_assert(2kmph * 15.0min == 500m);
-  static_assert(2.0kmph * 15min == 500m);
-
-  static_assert(2km / 2kmph == 1h);
-  // static_assert(2000m / 2kmph == 1h); // should not compile
-  static_assert(quantity_cast<quantity<kilometre, int>>(2000m) / 2kmph == 1h);
-
-//  static_assert(metre_per_second::symbol == basic_fixed_string("m/s"));
-  // static_assert(kilometre_per_hour::symbol == basic_fixed_string("km/h"));
-
-
-  // acceleration
-
-  static_assert(10mps / 10s == 1mps_sq);
-
-  // area
-
-  static_assert(1m * 1m == 1sq_m);
-  static_assert(10km * 10km == 100sq_km);
-  static_assert(1sq_m == 10'000sq_cm);
-
-  // volume
-
-  static_assert(1m * 1m * 1m == 1cub_m);
-  static_assert(10sq_m * 10m == 100cub_m);
-  static_assert(10km * 10km * 10km == 1000cub_km);
-  static_assert(1cub_m == 1'000'000cub_cm);
-
-
-  /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
-
-  static_assert(10N / 2m == 5Npm);
+static_assert(centimetre::symbol == "cm");
+static_assert(kilometre::symbol == "km");
+static_assert(kilometre_per_hour::symbol == "km/h");
 
 }  // namespace

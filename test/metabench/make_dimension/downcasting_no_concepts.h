@@ -29,11 +29,11 @@ namespace units {
 
   template<typename BaseType>
   struct downcast_base {
-    using base_type = BaseType;
+    using downcast_base_type = BaseType;
   };
 
   template<typename T>
-  using downcast_base_t = T::base_type;
+  using downcast_base_t = T::downcast_base_type;
 
   template<typename T>
   struct downcast_traits : std::type_identity<T> {};

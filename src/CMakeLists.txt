@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.8)
 #cmake_policy(SET CMP0076 NEW)
 
 project(units
-    VERSION 0.4.0
+    VERSION 0.5.0
     LANGUAGES CXX
 )
 
@@ -53,7 +53,6 @@ add_library(units INTERFACE)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
-        CONAN_PKG::range-v3
         CONAN_PKG::fmt
 )
 target_include_directories(units
@@ -67,10 +66,13 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
             -Wno-literal-suffix
             -Wno-non-template-friend
             -Wno-stringop-overflow            
-# TODO gcc:92101
-            -Wno-pedantic
     )
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
+        target_link_libraries(units
+            INTERFACE
+                CONAN_PKG::range-v3
+        )
+
         target_compile_options(units
             INTERFACE
                 -fconcepts

@@ -39,18 +39,18 @@ steps may be done:
   ```
 
 - add `units` as a dependency to your `conan` file. For example to use testing version of
-  `0.4.0` of `mp-units` add:
+  `0.5.0` of `mp-units` add:
   - `conanfile.txt`
   
     ```text
     [requires]
-    mp-units/0.4.0@mpusz/testing
+    mp-units/0.5.0@mpusz/testing
     ```
 
   - `conanfile.py`
 
     ```python
-    requires = "mp-units/0.4.0@mpusz/testing"
+    requires = "mp-units/0.5.0@mpusz/testing"
     ```
 
 - link your `cmake` target with units
@@ -93,5 +93,5 @@ conan create . <username>/<channel> -s cppstd=20 -b=outdated <your_profile_and_s
 ## Upload package to conan server
 
 ```shell
-conan upload -r <remote-name> --all mp-units/0.4.0@<user>/<channel>
+conan upload -r <remote-name> --all mp-units/0.5.0@<user>/<channel>
 ```

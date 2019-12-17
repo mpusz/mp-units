@@ -20,16 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/dimensions/area.h"
-#include "units/dimensions/frequency.h"
-#include "units/dimensions/power.h"
-#include "units/dimensions/velocity.h"
-#include "units/dimensions/volume.h"
-#include "units/dimensions/surface_tension.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/frequency.h"
+#include "units/physical/si/power.h"
+#include "units/physical/si/velocity.h"
+#include "units/physical/si/volume.h"
+#include "units/physical/si/surface_tension.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
-using namespace units;
+using namespace units::si;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {

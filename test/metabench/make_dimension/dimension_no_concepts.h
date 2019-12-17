@@ -102,7 +102,7 @@ namespace units {
   struct dim_invert<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exp_invert_t<Es>...>>> {};
 
   template<typename D>
-  using dim_invert_t = dim_invert<typename D::base_type>::type;
+  using dim_invert_t = dim_invert<typename D::downcast_base_type>::type;
 
 
   // make_dimension
@@ -167,7 +167,7 @@ namespace units {
   struct dimension_multiply<dimension<E1...>, dimension<E2...>> : std::type_identity<downcast_traits_t<merge_dimension_t<dimension<E1...>, dimension<E2...>>>> {};
 
   template<typename D1, typename D2>
-  using dimension_multiply_t = dimension_multiply<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_multiply_t = dimension_multiply<typename D1::downcast_base_type, typename D2::downcast_base_type>::type;
 
   // dimension_divide
 
@@ -180,6 +180,6 @@ namespace units {
   };
 
   template<typename D1, typename D2>
-  using dimension_divide_t = dimension_divide<typename D1::base_type, typename D2::base_type>::type;
+  using dimension_divide_t = dimension_divide<typename D1::downcast_base_type, typename D2::downcast_base_type>::type;
 
 }  // namespace units

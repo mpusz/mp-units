@@ -23,10 +23,14 @@
 add_library(unit_tests_static
     cgs_test.cpp
     custom_unit_test.cpp
-    dimension_test.cpp
+    data_test.cpp
+    dimension_op_test.cpp
+#    fixed_string_test.cpp
     math_test.cpp
     quantity_test.cpp
     ratio_test.cpp
+    si_test.cpp
+    si_cgs_test.cpp
     type_list_test.cpp
     unit_test.cpp
 )
