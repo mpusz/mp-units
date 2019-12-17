@@ -33,6 +33,7 @@ add_library(unit_tests_static
     si_cgs_test.cpp
     type_list_test.cpp
     unit_test.cpp
+    us_test.cpp
 )
 target_link_libraries(unit_tests_static
     PRIVATE

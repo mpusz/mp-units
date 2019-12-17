@@ -34,7 +34,6 @@ struct dim_area : physical::dim_area<dim_area, square_metre, dim_length> {};
 struct square_millimetre : deduced_unit<square_millimetre, dim_area, millimetre> {};
 struct square_centimetre : deduced_unit<square_centimetre, dim_area, centimetre> {};
 struct square_kilometre : deduced_unit<square_kilometre, dim_area, kilometre> {};
-struct square_foot : deduced_unit<square_foot, dim_area, foot> {};
 
 template<Unit U, Scalar Rep = double>
 using area = quantity<dim_area, U, Rep>;
@@ -56,10 +55,6 @@ constexpr auto operator"" sq_cm(long double l) { return area<square_centimetre, 
 // sq_km
 constexpr auto operator"" sq_km(unsigned long long l) { return area<square_kilometre, std::int64_t>(l); }
 constexpr auto operator"" sq_km(long double l) { return area<square_kilometre, long double>(l); }
-
-// sq_ft
-constexpr auto operator"" sq_ft(unsigned long long l) { return area<square_foot, std::int64_t>(l); }
-constexpr auto operator"" sq_ft(long double l) { return area<square_foot, long double>(l); }
 
 }  // namespace literals
 

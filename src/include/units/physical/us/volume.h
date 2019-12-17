@@ -20,28 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/velocity.h>
-#include <units/physical/us/velocity.h>
-#include <units/format.h>
-#include <iostream>
+#pragma once
 
-using namespace units;
+#include <units/physical/si/volume.h>
+#include <units/physical/us/length.h>
 
-constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
-{
-  return d / t;
-}
+namespace units::us {
 
-int main()
-{
-  using namespace si::literals;
-  Velocity AUTO v1 = avg_speed(220km, 2h);
-  Velocity AUTO v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
-  Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);
-  Velocity AUTO v4 = quantity_cast<int>(v3);
+struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, foot> {};
 
-  std::cout << v1 << '\n';                             // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
-}
+inline namespace literals {
+
+// cub_ft
+constexpr auto operator""cub_ft(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
+constexpr auto operator""cub_ft(long double l) { return si::volume<cubic_foot, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::us

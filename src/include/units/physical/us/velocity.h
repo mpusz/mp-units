@@ -20,28 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#pragma once
+
 #include <units/physical/si/velocity.h>
-#include <units/physical/us/velocity.h>
-#include <units/format.h>
-#include <iostream>
+#include <units/physical/us/length.h>
 
-using namespace units;
+namespace units::us {
 
-constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
-{
-  return d / t;
-}
+struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, mile, si::hour> {};
 
-int main()
-{
-  using namespace si::literals;
-  Velocity AUTO v1 = avg_speed(220km, 2h);
-  Velocity AUTO v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
-  Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);
-  Velocity AUTO v4 = quantity_cast<int>(v3);
+inline namespace literals {
 
-  std::cout << v1 << '\n';                             // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
-}
+// mph
+constexpr auto operator"" mph(unsigned long long l) { return si::velocity<mile_per_hour, std::int64_t>(l); }
+constexpr auto operator"" mph(long double l) { return si::velocity<mile_per_hour, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::us

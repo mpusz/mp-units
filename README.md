@@ -9,6 +9,7 @@
 
 ```cpp
 #include <units/physical/si/velocity.h>
+#include <units/physical/us/velocity.h>
 #include <units/format.h>
 #include <iostream>
 
@@ -23,7 +24,7 @@ int main()
 {
   using namespace si::literals;
   Velocity auto v1 = avg_speed(220km, 2h);
-  Velocity auto v2 = avg_speed(si::length<si::mile>(140), si::time<si::hour>(2));
+  Velocity auto v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
   Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);
   Velocity auto v4 = quantity_cast<int>(v3);
 
@@ -152,6 +153,7 @@ fashion:
 int main()
 {
   using namespace si::literals;
+  using namespace us::literals;
   Velocity auto v1 = avg_speed(220km, 2h);
   Velocity auto v2 = avg_speed(140mi, 2h);
 

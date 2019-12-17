@@ -26,10 +26,14 @@
 #include "units/physical/si/velocity.h"
 #include "units/physical/si/volume.h"
 #include "units/physical/si/surface_tension.h"
+#include "units/physical/us/area.h"
+#include "units/physical/us/velocity.h"
+#include "units/physical/us/volume.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
 using namespace units::si;
+using namespace units::us;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {

@@ -59,13 +59,6 @@ static_assert(10km / 5km == 2);
 static_assert(100mm / 5cm == 2);
 static_assert(10km / 2 == 5km);
 
-static_assert(1yd == 0.9144m);
-static_assert(1yd == 3ft);
-static_assert(1ft == 12in);
-static_assert(1mi == 1760yd);
-
-static_assert(5in + 8cm == 207mm);
-
 static_assert(millimetre::symbol == "mm");
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");
@@ -200,8 +193,6 @@ static_assert(1km / 1s == 1000mps);
 static_assert(1.0km / 1h == 1kmph);
 static_assert(1000.0m / 3600.0s == 1kmph);
 
-static_assert(10.0mi / 2h == 5mph);
-
 static_assert(2kmph * 2h == 4km);
 // static_assert(2kmph * 15min == 500m); // should not compile
 static_assert(2kmph * 15.0min == 500m);
@@ -213,7 +204,6 @@ static_assert(quantity_cast<kilometre>(2000m) / 2kmph == 1h);
 
 static_assert(detail::unit_text<dim_velocity, metre_per_second>() == "m/s");
 static_assert(kilometre_per_hour::symbol == "km/h");
-static_assert(mile_per_hour::symbol == "mi/h");
 
 // acceleration
 

@@ -22,31 +22,33 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
 #include <units/physical/si/length.h>
-#include <units/physical/si/time.h>
-#include <units/quantity.h>
 
-namespace units::si {
+namespace units::us {
 
-struct metre_per_second : unit<metre_per_second> {};
-struct dim_velocity : physical::dim_velocity<dim_velocity, metre_per_second, dim_length, dim_time> {};
-
-struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
-
-template<Unit U, Scalar Rep = double>
-using velocity = quantity<dim_velocity, U, Rep>;
+struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, si::metre> {};
+struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
+struct inch : named_scaled_unit<inch, "in", no_prefix, ratio<1, 12>, foot> {};
+struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio<1'760>, yard> {};
 
 inline namespace literals {
 
-// mps
-constexpr auto operator"" mps(unsigned long long l) { return velocity<metre_per_second, std::int64_t>(l); }
-constexpr auto operator"" mps(long double l) { return velocity<metre_per_second, long double>(l); }
+// yd
+constexpr auto operator"" yd(unsigned long long l) { return si::length<yard, std::int64_t>(l); }
+constexpr auto operator"" yd(long double l) { return si::length<yard, long double>(l); }
 
-// kmph
-constexpr auto operator"" kmph(unsigned long long l) { return velocity<kilometre_per_hour, std::int64_t>(l); }
-constexpr auto operator"" kmph(long double l) { return velocity<kilometre_per_hour, long double>(l); }
+// ft
+constexpr auto operator"" ft(unsigned long long l) { return si::length<foot, std::int64_t>(l); }
+constexpr auto operator"" ft(long double l) { return si::length<foot, long double>(l); }
+
+// in
+constexpr auto operator"" in(unsigned long long l) { return si::length<inch, std::int64_t>(l); }
+constexpr auto operator"" in(long double l) { return si::length<inch, long double>(l); }
+
+// mi
+constexpr auto operator"" mi(unsigned long long l) { return si::length<mile, std::int64_t>(l); }
+constexpr auto operator"" mi(long double l) { return si::length<mile, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::us

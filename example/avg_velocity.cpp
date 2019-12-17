@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/velocity.h>
 #include <units/physical/cgs/velocity.h>
+#include <units/physical/si/velocity.h>
+#include <units/physical/us/velocity.h>
 #include <iostream>
 
 namespace {
@@ -96,7 +97,7 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::si::literals;
+    using namespace units::us::literals;
     constexpr Length AUTO distance = 140mi;        // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -112,7 +113,7 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::si::literals;
+    using namespace units::us::literals;
     constexpr Length AUTO distance = 140.mi;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2); // constructed from a value
 

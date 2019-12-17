@@ -20,28 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/physical/si/area.h>
+#include <units/physical/si/length.h>
 #include <units/physical/si/velocity.h>
+#include <units/physical/si/volume.h>
+#include <units/physical/us/area.h>
+#include <units/physical/us/length.h>
 #include <units/physical/us/velocity.h>
-#include <units/format.h>
-#include <iostream>
+#include <units/physical/us/volume.h>
+#include <utility>
+
+namespace {
 
 using namespace units;
+using namespace units::si;
+using namespace units::us;
 
-constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
-{
-  return d / t;
-}
+/* ************** BASE DIMENSIONS **************** */
 
-int main()
-{
-  using namespace si::literals;
-  Velocity AUTO v1 = avg_speed(220km, 2h);
-  Velocity AUTO v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
-  Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);
-  Velocity AUTO v4 = quantity_cast<int>(v3);
+// length
 
-  std::cout << v1 << '\n';                             // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
-}
+static_assert(1yd == 0.9144m);
+static_assert(1yd == 3ft);
+static_assert(1ft == 12in);
+static_assert(1mi == 1760yd);
+
+static_assert(5in + 8cm == 207mm);
+
+
+/* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
+
+// velocity
+
+static_assert(10.0mi / 2h == 5mph);
+
+static_assert(mile_per_hour::symbol == "mi/h");
+
+}  // namespace
