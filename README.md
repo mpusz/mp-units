@@ -8,6 +8,11 @@
 ## TL;DR
 
 ```cpp
+#include <units/physical/si/velocity.h>
+#include <iostream>
+
+using namespace units;
+
 constexpr Velocity auto avg_speed(Length auto d, Time auto t)
 {
   return d / t;
