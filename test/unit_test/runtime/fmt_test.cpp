@@ -837,6 +837,57 @@ TEST_CASE("precision specification for integral representation should throw", "[
 // rather than their parts
 
 
+TEST_CASE("quantity_cast", "[text][ostream]")
+{
+  std::stringstream stream;
+
+  SECTION("int to double representation")
+  {
+    const auto q = 121km / 2h;
+
+    SECTION("original")
+    {
+      stream << q;
+      CHECK(stream.str() == "60 km/h");
+    }
+
+    SECTION("int")
+    {
+      stream << quantity_cast<int>(q);
+      CHECK(stream.str() == "60 km/h");
+    }
+
+    SECTION("double")
+    {
+      stream << quantity_cast<double>(q);
+      CHECK(stream.str() == "60 km/h");
+    }
+  }
+
+  SECTION("double to int representation")
+  {
+    const auto q = 121.km / 2h;
+
+    SECTION("original")
+    {
+      stream << q;
+      CHECK(stream.str() == "60.5 km/h");
+    }
+
+    SECTION("int")
+    {
+      stream << quantity_cast<int>(q);
+      CHECK(stream.str() == "60 km/h");
+    }
+
+    SECTION("double")
+    {
+      stream << quantity_cast<double>(q);
+      CHECK(stream.str() == "60.5 km/h");
+    }
+  }
+}
+
 // Giving a precision specification
 // in the chrono-format-spec is valid only for std::chrono::duration types where the representation type Rep
 // is a floating-point type. For all other Rep types, a format_error shall be thrown if the chrono-format-spec
