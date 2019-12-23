@@ -157,7 +157,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("acceleration")
       {
-        const auto q = 20.m / 2s / 1s;
+        const auto q = 20m / 2s / 1s;
         stream << q;
 
         SECTION("iostream")
@@ -199,7 +199,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        const auto q = 20.N / 2m;
+        const auto q = 20N / 2m;
         stream << q;
 
         SECTION("iostream")
@@ -223,7 +223,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("velocity")
       {
-        const auto q = 20.km / 2h;
+        const auto q = 20km / 2h;
         stream << q;
 
         SECTION("iostream")
@@ -270,7 +270,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
     {
-      const auto q = 4.N * 2cm;
+      const auto q = 4N * 2cm;
       stream << q;
 
       SECTION("iostream")
@@ -291,7 +291,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio for a dimension without a special symbol")
     {
-      const auto q = 2.cm * 2m * 2m;
+      const auto q = 2cm * 2m * 2m;
       stream << q;
 
       SECTION("iostream")
@@ -333,7 +333,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      const auto q = 20._J / 2min;
+      const auto q = 20_J / 2min;
       stream << q;
 
       SECTION("iostream")
@@ -354,7 +354,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      const auto q = 60.kJ / 2min;
+      const auto q = 60kJ / 2min;
       stream << q;
 
       SECTION("iostream")
@@ -441,7 +441,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      const auto q = 20.kg / 2min;
+      const auto q = 20kg / 2min;
       stream << q;
 
       SECTION("iostream")
@@ -462,7 +462,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      const auto q = 60.min / 2km;
+      const auto q = 60min / 2km;
       stream << q;
 
       SECTION("iostream")
@@ -525,7 +525,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
     {
-      const auto q = 8.s / 2m / 2m;
+      const auto q = 8s / 2m / 2m;
       stream << q;
 
       SECTION("iostream")
@@ -546,7 +546,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
     {
-      const auto q = 8.m / 2kg / 2kg;
+      const auto q = 8m / 2kg / 2kg;
       stream << q;
 
       SECTION("iostream")
@@ -567,7 +567,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("fractional positive exponent")
     {
-      const auto q = sqrt(9.m);
+      const auto q = sqrt(9m);
       stream << q;
 
       SECTION("iostream")
@@ -588,7 +588,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("fractional negative exponent")
     {
-      const auto q = sqrt(9 / 1.m);
+      const auto q = sqrt(9 / 1m);
       stream << q;
 
       SECTION("iostream")
