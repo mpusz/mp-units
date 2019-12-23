@@ -27,85 +27,123 @@
 
 namespace units {
 
-  template<typename CharT, std::size_t N>
-  struct basic_fixed_string {
-    CharT data_[N + 1] = {};
+template<typename CharT, std::size_t N>
+struct basic_fixed_string {
+  CharT data_[N + 1] = {};
 
-    constexpr basic_fixed_string(CharT ch) noexcept
-    {
-      data_[0] = ch;
-    }
+  constexpr basic_fixed_string(CharT ch) noexcept { data_[0] = ch; }
 
-    constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
-    {
-      for(std::size_t i = 0; i < N; ++i)
-        data_[i] = txt[i];
-    }
+  constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
+  {
+    for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
+  }
 
-    [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
-    [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
-    [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data_[index]; }
-    [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data_[index]; }
+  [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
+  [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
+  [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data_[index]; }
+  [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data_[index]; }
 
-    // auto operator==(const basic_fixed_string &) = default;
+  template<std::size_t N2>
+  [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
+      const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
+  {
+    CharT txt[N + N2 + 1] = {};
 
-    [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
-    {
-      for(size_t i = 0; i != lhs.size(); ++i)
-        if(lhs.data_[i] != rhs.data_[i])
-          return false;
-      return true;
-    }
+    for (size_t i = 0; i != N; ++i) txt[i] = lhs[i];
+    for (size_t i = 0; i != N2; ++i) txt[N + i] = rhs[i];
 
-    template<typename CharT2, std::size_t N2>
-    [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT2, N2>&) noexcept
-    {
-      return false;
-    }
+    return units::basic_fixed_string<CharT, N + N2>(txt);
+  }
 
-    template<typename CharT2, std::size_t N2>
-    [[nodiscard]] constexpr friend bool operator<(const basic_fixed_string& lhs, const basic_fixed_string<CharT2, N2>& rhs) noexcept
-    {
-      using std::begin, std::end;
-      auto first1 = begin(lhs.data_);
-      auto first2 = begin(rhs.data_);
-      const auto last1 = std::prev(end(lhs.data_));  // do not waste time for '\0'
-      const auto last2 = std::prev(end(rhs.data_));
+#if __GNUC__ >= 10
 
-      for(; (first1 != last1) && (first2 != last2); ++first1, (void)++first2 ) {
-        if(*first1 < *first2) return true;
-        if(*first2 < *first1) return false;
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs)
+  {
+    for (size_t i = 0; i != lhs.size(); ++i)
+      if (lhs[i] != rhs[i]) return false;
+    return true;
+  }
+
+  [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&, const basic_fixed_string&) = default;
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT2, N2>&)
+  {
+    return false;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  // TODO gcc-10 error: a template cannot be defaulted
+  // [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&,
+  //                                                const basic_fixed_string<CharT2, N2>&) = default;
+  [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&, const basic_fixed_string<CharT2, N2>&)
+  {
+    return true;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
+                                                  const basic_fixed_string<CharT2, N2>& rhs)
+  {
+    size_t min_size = std::min(lhs.size(), rhs.size());
+    for (size_t i = 0; i != min_size; ++i) {
+      if (auto const cmp = lhs[i] <=> rhs[i]; cmp != 0) {
+        return cmp;
       }
-      return first1 == last1 && first2 != last2;
     }
+    return lhs.size() <=> rhs.size();
+  }
 
-    template<class Traits>
-    friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const basic_fixed_string& txt)
-    {
-      return os << txt.c_str();
+#else
+
+  [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
+  {
+    for (size_t i = 0; i != lhs.size(); ++i)
+      if (lhs.data_[i] != rhs.data_[i]) return false;
+    return true;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string&,
+                                                 const basic_fixed_string<CharT2, N2>&) noexcept
+  {
+    return false;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator<(const basic_fixed_string& lhs,
+                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
+  {
+    using std::begin, std::end;
+    auto first1 = begin(lhs.data_);
+    auto first2 = begin(rhs.data_);
+    const auto last1 = std::prev(end(lhs.data_));  // do not waste time for '\0'
+    const auto last2 = std::prev(end(rhs.data_));
+
+    for (; (first1 != last1) && (first2 != last2); ++first1, (void)++first2) {
+      if (*first1 < *first2) return true;
+      if (*first2 < *first1) return false;
     }
+    return first1 == last1 && first2 != last2;
+  }
 
-    template<std::size_t N2>
-    [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
-    {
-      CharT txt[N + N2 + 1] = {};
+#endif
 
-      for(size_t i = 0; i != N; ++i)
-         txt[i] = lhs[i];
-      for(size_t i = 0; i != N2; ++i)
-        txt[N + i] = rhs[i];
+  template<class Traits>
+  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                       const basic_fixed_string& txt)
+  {
+    return os << txt.c_str();
+  }
+};
 
-      return units::basic_fixed_string(txt);
-    }
-  };
+template<typename CharT, std::size_t N>
+basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
 
-  template<typename CharT, std::size_t N>
-  basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N-1>;
+template<typename CharT>
+basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
 
-  template<typename CharT>
-  basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
+template<std::size_t N>
+using fixed_string = basic_fixed_string<char, N>;
 
-  template<std::size_t N>
-  using fixed_string = basic_fixed_string<char, N>;
-
-}
+}  // namespace units
