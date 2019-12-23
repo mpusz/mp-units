@@ -93,11 +93,13 @@ class UnitsConan(ConanFile):
         self.cpp_info.includedirs = ['include']
         if self.settings.compiler == "gcc":
             self.cpp_info.cxxflags = [
-                "-fconcepts",
                 "-Wno-literal-suffix",
                 "-Wno-non-template-friend",
-                "-Wno-stringop-overflow"
             ]
+            if Version(self.settings.compiler.version) < "10":
+                self.cpp_info.cxxflags.extend([
+                    "-fconcepts"
+                ])
 
     def package_id(self):
         self.info.settings.clear()

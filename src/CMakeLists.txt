@@ -65,17 +65,15 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         INTERFACE
             -Wno-literal-suffix
             -Wno-non-template-friend
-            -Wno-stringop-overflow            
     )
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
-        target_link_libraries(units
-            INTERFACE
-                CONAN_PKG::range-v3
-        )
-
         target_compile_options(units
             INTERFACE
                 -fconcepts
+        )
+        target_link_libraries(units
+            INTERFACE
+                CONAN_PKG::range-v3
         )
     endif()
 endif()
