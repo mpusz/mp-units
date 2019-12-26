@@ -33,7 +33,8 @@ struct nanosecond : prefixed_unit<nanosecond, nano, second> {};
 struct microsecond : prefixed_unit<microsecond, micro, second> {};
 struct millisecond : prefixed_unit<millisecond, milli, second> {};
 struct minute : named_scaled_unit<minute, "min", no_prefix, ratio<60>, second> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
+struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<60>, minute> {};
+struct day : named_scaled_unit<hour, "d", no_prefix, ratio<24>, hour> {};
 
 struct dim_time : physical::dim_time<second> {};
 
@@ -65,6 +66,10 @@ constexpr auto operator""min(long double l) { return time<minute, long double>(l
 // h
 constexpr auto operator""h(unsigned long long l) { return time<hour, std::int64_t>(l); }
 constexpr auto operator""h(long double l) { return time<hour, long double>(l); }
+
+// d
+constexpr auto operator""_d(unsigned long long l) { return time<day, std::int64_t>(l); }
+constexpr auto operator""_d(long double l) { return time<day, long double>(l); }
 
 }  // namespace literals
 

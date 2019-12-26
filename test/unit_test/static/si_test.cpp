@@ -75,7 +75,10 @@ static_assert(1us == 1000ns);
 static_assert(1ms == 1000us);
 static_assert(1s == 1000ms);
 static_assert(1min == 60s);
+static_assert(1h == 60min);
 static_assert(1h == 3600s);
+static_assert(1_d == 24h);
+static_assert(1_d == 86'400s);
 
 static_assert(nanosecond::symbol == "ns");
 static_assert(microsecond::symbol == "µs");
