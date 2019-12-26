@@ -103,11 +103,23 @@ struct basic_fixed_string {
     return true;
   }
 
+  [[nodiscard]] constexpr friend bool operator!=(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
+  {
+    return !(lhs == rhs);
+  }
+
   template<typename CharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string&,
                                                  const basic_fixed_string<CharT2, N2>&) noexcept
   {
     return false;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator!=(const basic_fixed_string&,
+                                                 const basic_fixed_string<CharT2, N2>&) noexcept
+  {
+    return true;
   }
 
   template<typename CharT2, std::size_t N2>
@@ -125,6 +137,27 @@ struct basic_fixed_string {
       if (*first2 < *first1) return false;
     }
     return first1 == last1 && first2 != last2;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator>(const basic_fixed_string& lhs,
+                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
+  {
+    return rhs < lhs;
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator<=(const basic_fixed_string& lhs,
+                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
+  {
+    return !(rhs < lhs);
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] constexpr friend bool operator>=(const basic_fixed_string& lhs,
+                                                 const basic_fixed_string<CharT2, N2>& rhs) noexcept
+  {
+    return !(lhs < rhs);
   }
 
 #endif
