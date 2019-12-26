@@ -35,6 +35,9 @@ struct cubic_millimetre : deduced_unit<cubic_millimetre, dim_volume, millimetre>
 struct cubic_centimetre : deduced_unit<cubic_centimetre, dim_volume, centimetre> {};
 struct cubic_kilometre : deduced_unit<cubic_kilometre, dim_volume, kilometre> {};
 
+struct litre : deduced_unit<litre, dim_volume, decimetre> {};
+
+
 template<Unit U, Scalar Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
@@ -55,6 +58,10 @@ constexpr auto operator""cub_m(long double l) { return volume<cubic_metre, long 
 // cub_km
 constexpr auto operator""cub_km(unsigned long long l) { return volume<cubic_kilometre, std::int64_t>(l); }
 constexpr auto operator""cub_km(long double l) { return volume<cubic_kilometre, long double>(l); }
+
+// l
+constexpr auto operator""_l(unsigned long long l) { return volume<litre, std::int64_t>(l); }
+constexpr auto operator""_l(long double l) { return volume<litre, long double>(l); }
 
 }  // namespace literals
 

@@ -53,6 +53,7 @@ using namespace units::si;
 
 static_assert(1km == 1000m);
 static_assert(1m == 100cm);
+static_assert(1m == 10dm);
 static_assert(1m == 1000mm);
 static_assert(1km + 1m == 1001m);
 static_assert(10km / 5km == 2);
@@ -61,6 +62,7 @@ static_assert(10km / 2 == 5km);
 
 static_assert(millimetre::symbol == "mm");
 static_assert(centimetre::symbol == "cm");
+static_assert(decimetre::symbol == "dm");
 static_assert(kilometre::symbol == "km");
 
 // mass
@@ -231,6 +233,8 @@ static_assert(1m * 1m * 1m == 1cub_m);
 static_assert(10sq_m * 10m == 100cub_m);
 static_assert(10km * 10km * 10km == 1000cub_km);
 static_assert(1cub_m == 1'000'000cub_cm);
+static_assert(1dm * 1dm * 1dm == 1_l);
+static_assert(1000_l == 1cub_m);
 
 static_assert(detail::unit_text<dim_volume, cubic_metre>() == "m³");
 

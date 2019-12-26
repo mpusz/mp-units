@@ -31,6 +31,7 @@ namespace units::si {
 struct metre : named_unit<metre, "m", prefix> {};
 struct millimetre : prefixed_unit<millimetre, milli, metre> {};
 struct centimetre : prefixed_unit<centimetre, centi, metre> {};
+struct decimetre : prefixed_unit<decimetre, deci, metre> {};
 struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 
 struct dim_length : physical::dim_length<metre> {};
@@ -51,6 +52,10 @@ constexpr auto operator"" mm(long double l) { return length<millimetre, long dou
 // cm
 constexpr auto operator"" cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
 constexpr auto operator"" cm(long double l) { return length<centimetre, long double>(l); }
+
+// dm
+constexpr auto operator"" dm(unsigned long long l) { return length<decimetre, std::int64_t>(l); }
+constexpr auto operator"" dm(long double l) { return length<decimetre, long double>(l); }
 
 // km
 constexpr auto operator"" km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
