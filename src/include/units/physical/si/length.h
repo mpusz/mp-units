@@ -34,6 +34,8 @@ struct centimetre : prefixed_unit<centimetre, centi, metre> {};
 struct decimetre : prefixed_unit<decimetre, deci, metre> {};
 struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 
+struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio<149'597'870'700>, metre> {};
+
 struct dim_length : physical::dim_length<metre> {};
 
 template<Unit U, Scalar Rep = double>
@@ -60,6 +62,10 @@ constexpr auto operator"" dm(long double l) { return length<decimetre, long doub
 // km
 constexpr auto operator"" km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
 constexpr auto operator"" km(long double l) { return length<kilometre, long double>(l); }
+
+// au
+constexpr auto operator"" au(unsigned long long l) { return length<astronomical_unit, std::int64_t>(l); }
+constexpr auto operator"" au(long double l) { return length<astronomical_unit, long double>(l); }
 
 }  // namespace literals
 

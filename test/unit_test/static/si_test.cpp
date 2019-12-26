@@ -55,6 +55,7 @@ static_assert(1km == 1000m);
 static_assert(1m == 100cm);
 static_assert(1m == 10dm);
 static_assert(1m == 1000mm);
+static_assert(1au == 149'597'870'700m);
 static_assert(1km + 1m == 1001m);
 static_assert(10km / 5km == 2);
 static_assert(100mm / 5cm == 2);
