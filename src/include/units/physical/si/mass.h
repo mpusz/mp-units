@@ -30,6 +30,7 @@ namespace units::si {
 
 struct gram : named_unit<gram, "g", prefix> {};
 struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
+struct tonne : named_scaled_unit<tonne, "t", prefix, ratio<1'0000>, kilogram> {};
 
 struct dim_mass : physical::dim_mass<kilogram> {};
 
@@ -45,6 +46,10 @@ constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
 // kg
 constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
 constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+
+// t
+constexpr auto operator""t(unsigned long long l) { return mass<tonne, std::int64_t>(l); }
+constexpr auto operator""t(long double l) { return mass<tonne, long double>(l); }
 
 }  // namespace literals
 

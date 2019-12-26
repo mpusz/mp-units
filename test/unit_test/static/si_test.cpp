@@ -70,6 +70,7 @@ static_assert(kilometre::symbol == "km");
 // mass
 
 static_assert(1kg == 1000g);
+static_assert(1t == 1000kg);
 
 static_assert(kilogram::symbol == "kg");
 
