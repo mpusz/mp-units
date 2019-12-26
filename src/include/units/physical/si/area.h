@@ -35,6 +35,8 @@ struct square_millimetre : deduced_unit<square_millimetre, dim_area, millimetre>
 struct square_centimetre : deduced_unit<square_centimetre, dim_area, centimetre> {};
 struct square_kilometre : deduced_unit<square_kilometre, dim_area, kilometre> {};
 
+struct hectare : deduced_unit<hectare, dim_area, hectometre> {};
+
 template<Unit U, Scalar Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
@@ -55,6 +57,10 @@ constexpr auto operator"" sq_cm(long double l) { return area<square_centimetre, 
 // sq_km
 constexpr auto operator"" sq_km(unsigned long long l) { return area<square_kilometre, std::int64_t>(l); }
 constexpr auto operator"" sq_km(long double l) { return area<square_kilometre, long double>(l); }
+
+// ha
+constexpr auto operator"" ha(unsigned long long l) { return area<hectare, std::int64_t>(l); }
+constexpr auto operator"" ha(long double l) { return area<hectare, long double>(l); }
 
 }  // namespace literals
 

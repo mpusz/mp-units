@@ -55,6 +55,7 @@ static_assert(1km == 1000m);
 static_assert(1m == 100cm);
 static_assert(1m == 10dm);
 static_assert(1m == 1000mm);
+static_assert(1hm == 100m);
 static_assert(1au == 149'597'870'700m);
 static_assert(1km + 1m == 1001m);
 static_assert(10km / 5km == 2);
@@ -225,6 +226,7 @@ static_assert(10m * 10m == 100sq_m);
 static_assert(100sq_m / 10m == 10m);
 static_assert(10km * 10km == 100sq_km);
 static_assert(1sq_m == 10'000sq_cm);
+static_assert(1ha == 10'000sq_m);
 
 static_assert(detail::unit_text<dim_area, square_metre>() == "m²");
 

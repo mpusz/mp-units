@@ -32,6 +32,7 @@ struct metre : named_unit<metre, "m", prefix> {};
 struct millimetre : prefixed_unit<millimetre, milli, metre> {};
 struct centimetre : prefixed_unit<centimetre, centi, metre> {};
 struct decimetre : prefixed_unit<decimetre, deci, metre> {};
+struct hectometre : prefixed_unit<hectometre, hecto, metre> {};
 struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 
 struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio<149'597'870'700>, metre> {};
@@ -58,6 +59,10 @@ constexpr auto operator"" cm(long double l) { return length<centimetre, long dou
 // dm
 constexpr auto operator"" dm(unsigned long long l) { return length<decimetre, std::int64_t>(l); }
 constexpr auto operator"" dm(long double l) { return length<decimetre, long double>(l); }
+
+// hm
+constexpr auto operator"" hm(unsigned long long l) { return length<hectometre, std::int64_t>(l); }
+constexpr auto operator"" hm(long double l) { return length<hectometre, long double>(l); }
 
 // km
 constexpr auto operator"" km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
