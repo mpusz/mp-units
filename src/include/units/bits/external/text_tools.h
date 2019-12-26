@@ -41,21 +41,25 @@ template<> inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
 template<> inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
 template<> inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
 
+inline constexpr basic_fixed_string superscript_minus = "\u207b";
+
 template<int Value>
-  requires (Value >= 0)
 constexpr auto superscript()
 {
-  if constexpr(Value < 10)
+  if constexpr(Value < 0)
+    return superscript_minus + superscript<-Value>();
+  else if constexpr(Value < 10)
     return superscript_number<Value>;
   else
     return superscript<Value / 10>() + superscript<Value % 10>();
 }
 
 template<int Value>
-  requires (Value >= 0)
 constexpr auto regular()
 {
-  if constexpr(Value < 10)
+  if constexpr(Value < 0)
+    return basic_fixed_string("-") + superscript<-Value>();
+  else if constexpr(Value < 10)
     return basic_fixed_string(static_cast<char>('0' + Value));
   else
     return regular<Value / 10>() + regular<Value % 10>();

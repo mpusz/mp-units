@@ -28,11 +28,11 @@
 
 namespace units::detail {
 
-template<bool Divide, std::size_t Idx>
+template<bool Divide, std::size_t NegativeExpCount, std::size_t Idx>
 constexpr auto operator_text()
 {
   if constexpr(Idx == 0) {
-    if constexpr(Divide) {
+    if constexpr(Divide && NegativeExpCount == 1) {
       return basic_fixed_string("1/");
     }
     else {
@@ -40,7 +40,7 @@ constexpr auto operator_text()
     }
   }
   else {
-    if constexpr(Divide) {
+    if constexpr(Divide && NegativeExpCount == 1) {
       return basic_fixed_string("/");
     }
     else {
@@ -49,28 +49,40 @@ constexpr auto operator_text()
   }
 }
 
-template<typename E, basic_fixed_string Symbol, std::size_t Idx>
+template<typename E, basic_fixed_string Symbol, std::size_t NegativeExpCount, std::size_t Idx>
 constexpr auto exp_text()
 {
   // get calculation operator + symbol
-  const auto txt = operator_text<E::num < 0, Idx>() + Symbol;
+  const auto txt = operator_text<E::num < 0, NegativeExpCount, Idx>() + Symbol;
   if constexpr(E::den != 1) {
     // add root part
     return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() + basic_fixed_string(")");
   }
-  else if constexpr(abs(E::num) != 1) {
+  else if constexpr(E::num != 1) {
     // add exponent part
-    return txt + superscript<abs(E::num)>();
+    if constexpr(NegativeExpCount > 1) {  // no '/' sign here (only negative exponents)
+      return txt + superscript<E::num>();
+    }
+    else if constexpr(E::num != -1) {  // -1 is replaced with '/' sign here
+      return txt + superscript<abs(E::num)>();
+    }
+    else {
+      return txt;
+    }
   }
   else {
     return txt;
   }
 }
 
+template<typename... Es>
+inline constexpr int negative_exp_count = ((Es::num < 0 ? 1 : 0) + ...);
+
 template<typename... Us, typename... Es, std::size_t... Idxs>
 constexpr auto deduced_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>)
 {
-  return (exp_text<Es, Us::symbol, Idxs>() + ...);
+  constexpr auto neg_exp = negative_exp_count<Es...>;
+  return (exp_text<Es, Us::symbol, neg_exp, Idxs>() + ...);
 }
 
 template<DerivedDimension Dim, Unit... Us>

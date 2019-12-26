@@ -74,7 +74,8 @@ constexpr auto prefix_or_ratio_text()
 template<typename... Es, std::size_t... Idxs>
 constexpr auto derived_dimension_unit_text(exp_list<Es...>, std::index_sequence<Idxs...>)
 {
-  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, Idxs>() + ...);
+  constexpr auto neg_exp = negative_exp_count<Es...>;
+  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, neg_exp, Idxs>() + ...);
 }
 
 template<typename... Es>
