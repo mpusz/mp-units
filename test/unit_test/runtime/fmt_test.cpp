@@ -110,7 +110,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("in terms of base units")
     {
-      const length<scaled_unit<ratio<1'000'000>, metre>> q(123);
+      const length<scaled_unit<ratio<1, 1, 6>, metre>> q(123);
       stream << q;
 
       SECTION("iostream")
@@ -131,7 +131,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("in terms of derived units")
     {
-      const energy<scaled_unit<ratio<1, 100>, joule>> q(60);
+      const energy<scaled_unit<ratio<1, 1, -2>, joule>> q(60);
       stream << q;
 
       SECTION("iostream")
@@ -296,7 +296,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1/100]m³");
+        CHECK(stream.str() == "8 [1 x 10⁻²]m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -317,7 +317,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [60]Hz");
+        CHECK(stream.str() == "2 [6 x 10¹]Hz");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -338,7 +338,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/60]W");
+        CHECK(stream.str() == "10 [1/6 x 10⁻¹]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -359,7 +359,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [50/3]W");
+        CHECK(stream.str() == "30 [1/6 x 10²]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -404,7 +404,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1000]m⋅s");
+        CHECK(stream.str() == "8 [1 x 10³]m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -425,7 +425,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [60]kg/s");
+        CHECK(stream.str() == "2 [6 x 10¹]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -446,7 +446,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/60]kg/s");
+        CHECK(stream.str() == "10 [1/6 x 10⁻¹]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -467,7 +467,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [3/50]1/m⋅s");
+        CHECK(stream.str() == "30 [6 x 10⁻²]1/m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -693,7 +693,7 @@ TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
 
 TEST_CASE("fill and align specification", "[text][fmt]")
 {
-  SECTION("default format {} on a quantity") 
+  SECTION("default format {} on a quantity")
   {
     CHECK(fmt::format("|{:0}|", 123m) == "|123 m|");
     CHECK(fmt::format("|{:10}|", 123m) == "|     123 m|");
@@ -716,8 +716,8 @@ TEST_CASE("fill and align specification", "[text][fmt]")
     CHECK(fmt::format("|{:*>10%Q%q}|", 123m) == "|******123m|");
     CHECK(fmt::format("|{:*^10%Q%q}|", 123m) == "|***123m***|");
   }
-  
-  SECTION("value only format {:%Q} on a quantity") 
+
+  SECTION("value only format {:%Q} on a quantity")
   {
     CHECK(fmt::format("|{:0%Q}|", 123m) == "|123|");
     CHECK(fmt::format("|{:10%Q}|", 123m) == "|       123|");
@@ -729,7 +729,7 @@ TEST_CASE("fill and align specification", "[text][fmt]")
     CHECK(fmt::format("|{:*^10%Q}|", 123m) == "|***123****|");
   }
 
-  SECTION("symbol only format {:%q} on a quantity") 
+  SECTION("symbol only format {:%q} on a quantity")
   {
     CHECK(fmt::format("|{:0%q}|", 123m) == "|m|");
     CHECK(fmt::format("|{:10%q}|", 123m) == "|m         |");
@@ -747,7 +747,7 @@ TEST_CASE("sign specification", "[text][fmt]")
   length<metre> inf(std::numeric_limits<double>::infinity());
   length<metre> nan(std::numeric_limits<double>::quiet_NaN());
 
-  SECTION("default format {} on a quantity") 
+  SECTION("default format {} on a quantity")
   {
     CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", 1m) == "1 m,+1 m,1 m, 1 m");
     CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", -1m) == "-1 m,-1 m,-1 m,-1 m");
@@ -755,7 +755,7 @@ TEST_CASE("sign specification", "[text][fmt]")
     CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", nan) == "nan m,+nan m,nan m, nan m");
   }
 
-  SECTION("full format {:%Q %q} on a quantity") 
+  SECTION("full format {:%Q %q} on a quantity")
   {
     CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", 1m) == "1m,+1m,1m, 1m");
     CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", -1m) == "-1m,-1m,-1m,-1m");
@@ -763,7 +763,7 @@ TEST_CASE("sign specification", "[text][fmt]")
     CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", nan) == "nanm,+nanm,nanm, nanm");
   }
 
-  SECTION("value only format {:%Q} on a quantity") 
+  SECTION("value only format {:%Q} on a quantity")
   {
     CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", 1m) == "1,+1,1, 1");
     CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", -1m) == "-1,-1,-1,-1");
@@ -781,7 +781,7 @@ TEST_CASE("sign specification for unit only", "[text][fmt][exception]")
 
 TEST_CASE("precision specification", "[text][fmt]")
 {
-  SECTION("default format {} on a quantity") 
+  SECTION("default format {} on a quantity")
   {
     CHECK(fmt::format("{:.1}", 1.2345m) == "1.2 m");
     CHECK(fmt::format("{:.0}", 1.2345m) == "1 m");
@@ -792,7 +792,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:.10}", 1.2345m) == "1.2345000000 m");
   }
 
-  SECTION("full format {:%Q %q} on a quantity") 
+  SECTION("full format {:%Q %q} on a quantity")
   {
     CHECK(fmt::format("{:.0%Q %q}", 1.2345m) == "1 m");
     CHECK(fmt::format("{:.1%Q %q}", 1.2345m) == "1.2 m");
@@ -803,7 +803,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:.10%Q %q}", 1.2345m) == "1.2345000000 m");
   }
 
-  SECTION("value only format {:%Q} on a quantity") 
+  SECTION("value only format {:%Q} on a quantity")
   {
     CHECK(fmt::format("{:.0%Q}", 1.2345m) == "1");
     CHECK(fmt::format("{:.1%Q}", 1.2345m) == "1.2");
@@ -817,17 +817,17 @@ TEST_CASE("precision specification", "[text][fmt]")
 
 TEST_CASE("precision specification for integral representation should throw", "[text][fmt][exception]")
 {
-  SECTION("default format {} on a quantity") 
+  SECTION("default format {} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(fmt::format("{:.1}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 
-  SECTION("full format {:%Q %q} on a quantity") 
+  SECTION("full format {:%Q %q} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q %q}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 
-  SECTION("value only format {:%Q} on a quantity") 
+  SECTION("value only format {:%Q} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q}", 1m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }

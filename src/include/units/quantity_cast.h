@@ -24,6 +24,7 @@
 
 #include <units/concepts.h>
 #include <units/bits/dimension_op.h>
+#include <cmath>
 
 namespace units {
 
@@ -41,10 +42,15 @@ struct quantity_cast_impl {
   {
     if constexpr (treat_as_floating_point<CRep>) {
       return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
-                                     (static_cast<CRep>(CRatio::num) / static_cast<CRep>(CRatio::den))));
+                                     static_cast<CRep>(std::pow(10, CRatio::exp)) *
+                                     (static_cast<CRep>(CRatio::num) /
+                                      static_cast<CRep>(CRatio::den))));
     } else {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) /
-                                     static_cast<CRep>(CRatio::den)));
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
+                                     static_cast<CRep>(CRatio::num) *
+                                     static_cast<CRep>(CRatio::exp > 0 ? std::pow(10, CRatio::exp) : 1) /
+                                     (static_cast<CRep>(CRatio::den) *
+                                      static_cast<CRep>(CRatio::exp < 0 ? std::pow(10, -CRatio::exp) : 1))));
     }
   }
 };
@@ -54,7 +60,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(q.count()));
+    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp))));
   }
 };
 
@@ -64,9 +70,9 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * (CRep{1} / static_cast<CRep>(CRatio::den))));
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp)) * (CRep{1} / static_cast<CRep>(CRatio::den))));
     } else {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio::den)));
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp)) / static_cast<CRep>(CRatio::den)));
     }
   }
 };
@@ -76,7 +82,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num)));
+    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) * static_cast<CRep>(std::pow(10, CRatio::exp))));
   }
 };
 
@@ -105,14 +111,14 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
 
 /**
  * @brief Explcit cast of a quantity
- * 
+ *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
+ *
  * This cast gets the target quantity type to cast to. For example:
- * 
+ *
  * auto q1 = units::quantity_cast<units::si::time<units::si::second>>(1ms);
- * 
+ *
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, typename D, typename U, typename Rep>
@@ -124,20 +130,20 @@ template<Quantity To, typename D, typename U, typename Rep>
   using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
   using ret_unit = downcast_unit<typename To::dimension, typename To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
-  using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1>;
+  using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1 && c_ratio::exp == 0, c_ratio::den == 1 && c_ratio::exp == 0>;
   return cast::cast(q);
 }
 
 /**
  * @brief Explcit cast of a quantity
- * 
+ *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
+ *
  * This cast gets only the target dimension to cast to. For example:
- * 
+ *
  * auto q1 = units::quantity_cast<units::si::acceleration>(200Gal);
- * 
+ *
  * @tparam ToD a dimension type to use for a target quantity
  */
 template<Dimension ToD, typename D, typename U, typename Rep>
@@ -149,14 +155,14 @@ template<Dimension ToD, typename D, typename U, typename Rep>
 
 /**
  * @brief Explcit cast of a quantity
- * 
+ *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
+ *
  * This cast gets only the target unit to cast to. For example:
- * 
+ *
  * auto q1 = units::quantity_cast<units::si::second>(1ms);
- * 
+ *
  * @tparam ToU a unit type to use for a target quantity
  */
 template<Unit ToU, typename D, typename U, typename Rep>
@@ -168,14 +174,14 @@ template<Unit ToU, typename D, typename U, typename Rep>
 
 /**
  * @brief Explcit cast of a quantity
- * 
+ *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
- * 
+ *
  * This cast gets only representation to cast to. For example:
- * 
+ *
  * auto q1 = units::quantity_cast<int>(1ms);
- * 
+ *
  * @tparam ToRep a representation type to use for a target quantity
  */
 template<Scalar ToRep, typename D, typename U, typename Rep>

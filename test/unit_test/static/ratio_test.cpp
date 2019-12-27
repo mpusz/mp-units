@@ -27,9 +27,15 @@
   using namespace units;
 
   template<Ratio R1, Ratio R2>
-  inline constexpr bool same = R1::num == R2::num && R1::den == R2::den;
+  inline constexpr bool same = R1::num == R2::num && R1::den == R2::den && R1::exp == R2::exp;
 
   static_assert(same<ratio<2, 4>, ratio<1, 2>>);
+
+  // basic exponents tests
+  // note use of ::type is required because template params are changed while stamping out template
+  static_assert(std::is_same_v<ratio<2, 40, 1>::type, ratio<1, 20, 1>::type>);
+  static_assert(std::is_same_v<ratio<20, 4, -1>::type, ratio<10, 2, -1>::type>);
+  static_assert(std::is_same_v<ratio<200, 5>::type, ratio<20'000, 50, -1>::type>);
 
   static_assert(std::is_same_v<ratio_multiply<ratio<1>, ratio<3, 8>>, ratio<3, 8>>);
   static_assert(std::is_same_v<ratio_multiply<ratio<3, 8>, ratio<1>>, ratio<3, 8>>);
@@ -38,10 +44,18 @@
   static_assert(std::is_same_v<ratio_multiply<ratio<1, 8>, ratio<2>>, ratio<1, 4>>);
   static_assert(std::is_same_v<ratio_multiply<ratio<1, 2>, ratio<8>>, ratio<4>>);
 
+  // multiply with exponents
+  static_assert(std::is_same_v<ratio_multiply<ratio<1, 8, 2>, ratio<2, 1, 4>>, ratio<1, 4, 6>>);
+  static_assert(std::is_same_v<ratio_multiply<ratio<1, 2, -4>, ratio<8, 1, 3>>, ratio<4, 1, -1>>);
+
   static_assert(std::is_same_v<ratio_divide<ratio<4>, ratio<2>>, ratio<2>>);
   static_assert(std::is_same_v<ratio_divide<ratio<2>, ratio<8>>, ratio<1, 4>>);
   static_assert(std::is_same_v<ratio_divide<ratio<1, 8>, ratio<2>>, ratio<1, 16>>);
   static_assert(std::is_same_v<ratio_divide<ratio<6>, ratio<3>>, ratio<2>>);
+
+  // divide with exponents
+  static_assert(std::is_same_v<ratio_divide<ratio<1, 8, -6>, ratio<2, 1, -8>>, ratio<1, 16, 2>>);
+  static_assert(std::is_same_v<ratio_divide<ratio<6, 1, 4>, ratio<3>>, ratio<2, 1, 4>>);
 
   static_assert(std::is_same_v<ratio_pow<ratio<2>, 0>, ratio<1>>);
   static_assert(std::is_same_v<ratio_pow<ratio<2>, 1>, ratio<2>>);
@@ -52,17 +66,33 @@
   static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 2>, ratio<1, 4>>);
   static_assert(std::is_same_v<ratio_pow<ratio<1, 2>, 3>, ratio<1, 8>>);
 
+  // pow with exponents
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2, 3>, 2>, ratio<1, 4, 6>>);
+  static_assert(std::is_same_v<ratio_pow<ratio<1, 2, -6>, 3>, ratio<1, 8, -18>>);
+
   static_assert(std::is_same_v<ratio_sqrt<ratio<9>>, ratio<3>>);
   static_assert(std::is_same_v<ratio_sqrt<ratio<4>>, ratio<2>>);
   static_assert(std::is_same_v<ratio_sqrt<ratio<1>>, ratio<1>>);
   static_assert(std::is_same_v<ratio_sqrt<ratio<0>>, ratio<0>>);
   static_assert(std::is_same_v<ratio_sqrt<ratio<1, 4>>, ratio<1, 2>>);
 
-  // common_ratio
+  // // sqrt with exponents: TODO not working yet. Also not sure the non exponent version is accurate.
+  // static_assert(std::is_same_v<ratio_sqrt<ratio<9, 1, 2>>, ratio<3, 1, 1>>);
+  // static_assert(std::is_same_v<ratio_sqrt<ratio<4>>, ratio<2>>);
 
-  static_assert(std::is_same_v<common_ratio<ratio<1>, ratio<1000>>, ratio<1>>);
-  static_assert(std::is_same_v<common_ratio<ratio<1000>, ratio<1>>, ratio<1>>);
-  static_assert(std::is_same_v<common_ratio<ratio<1>, ratio<1, 1000>>, ratio<1, 1000>>);
-  static_assert(std::is_same_v<common_ratio<ratio<1, 1000>, ratio<1>>, ratio<1, 1000>>);
+  // common_ratio
+  // note use of ::type is required because template params are changed while stamping out template
+  static_assert(std::is_same_v<common_ratio<ratio<1>::type, ratio<1000>>, ratio<1>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<1000>, ratio<1>>::type, ratio<1>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<1>, ratio<1, 1000>>::type, ratio<1, 1000>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<1, 1000>, ratio<1>>::type, ratio<1, 1000>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<100, 1>, ratio<10, 1>>::type, ratio<10, 1>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<100, 1>, ratio<1, 10>>::type, ratio<1, 10>::type>);
+
+  // common ratio with exponents
+  static_assert(std::is_same_v<common_ratio<ratio<1>, ratio<1, 1, 3>>::type, ratio<1>::type>);
+  static_assert(std::is_same_v<common_ratio<ratio<10, 1, -1>, ratio<1, 1, -3>>::type, ratio<1, 1, -3>::type>);
+
+
 
   }  // namespace

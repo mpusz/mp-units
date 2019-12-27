@@ -32,7 +32,7 @@ template<Exponent E>
   requires (E::den == 1 || E::den == 2) // TODO provide support for any den
 struct exp_ratio {
   using base_ratio = E::dimension::base_unit::ratio;
-  using positive_ratio = conditional<E::num * E::den < 0, ratio<base_ratio::den, base_ratio::num>, base_ratio>;
+  using positive_ratio = conditional<E::num * E::den < 0, ratio<base_ratio::den, base_ratio::num, -base_ratio::exp>, base_ratio>;
   static constexpr std::int64_t N = E::num * E::den < 0 ? -E::num : E::num;
   using pow = ratio_pow<positive_ratio, N>;
   using type = conditional<E::den == 2, ratio_sqrt<pow>, pow>;

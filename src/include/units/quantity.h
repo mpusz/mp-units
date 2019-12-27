@@ -32,6 +32,7 @@
 #endif
 
 #include <ostream>
+#include <iostream>
 
 namespace units {
 
@@ -51,10 +52,10 @@ concept safe_divisible = // exposition only
 
 /**
  * @brief A quantity
- * 
+ *
  * Property of a phenomenon, body, or substance, where the property has a magnitude that can be
  * expressed by means of a number and a measurement unit.
- * 
+ *
  * @tparam D a dimension of the quantity (can be either a BaseDimension or a DerivedDimension)
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
@@ -352,7 +353,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 {
   using common_rep = decltype(lhs.count() * rhs.count());
   using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
-  return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) / common_rep(ratio::den);
+  return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) * std::pow(10, common_rep(ratio::exp)) / common_rep(ratio::den);
 }
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
@@ -376,7 +377,7 @@ template<Scalar Value, typename D, typename U, typename Rep>
   Expects(q.count() != 0);
 
   using dim = dim_invert<D>;
-  using ratio = ratio<U::ratio::den, U::ratio::num>;
+  using ratio = ratio<U::ratio::den, U::ratio::num, -U::ratio::exp>;
   using unit = downcast_unit<dim, ratio>;
   using common_rep = decltype(v / q.count());
   using ret = quantity<dim, unit, common_rep>;

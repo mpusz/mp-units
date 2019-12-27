@@ -30,12 +30,12 @@ using namespace units;
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
 struct kilometre : prefixed_unit<kilometre, si::kilo, metre> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, metre> {};
+struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 1, -4>, metre> {};
 struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
 struct dim_length : base_dimension<"length", metre> {};
 
 struct second : named_unit<second, "s", si::prefix> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
+struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<36, 1, 2>, second> {};
 struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
@@ -46,8 +46,8 @@ struct dim_velocity : derived_dimension<dim_velocity, metre_per_second, exp<dim_
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
 
 static_assert(std::is_same_v<downcast<scaled_unit<ratio<1>, metre>>, metre>);
-static_assert(std::is_same_v<downcast<scaled_unit<ratio<1, 100>, metre>>, centimetre>);
-static_assert(std::is_same_v<downcast<scaled_unit<ratio<yard::ratio::num, yard::ratio::den>, metre>>, yard>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio<1, 1, -2>, metre>>, centimetre>);
+static_assert(std::is_same_v<downcast<scaled_unit<ratio<yard::ratio::num, yard::ratio::den, yard::ratio::exp>, metre>>, yard>);
 static_assert(std::is_same_v<downcast<scaled_unit<ratio_multiply<typename yard::ratio, ratio<1, 3>>, metre>>, foot>);
 static_assert(std::is_same_v<downcast<scaled_unit<ratio_divide<typename kilometre::ratio, typename hour::ratio>, metre_per_second>>, kilometre_per_hour>);
 
