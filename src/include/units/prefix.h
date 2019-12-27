@@ -30,14 +30,14 @@ namespace units {
 
 /**
  * @brief The base for all prefix types
- * 
+ *
  * Every prefix type should inherit from this type to satisfy PrefixType concept.
  */
 struct prefix_type {};
 
 /**
  * @brief No prefix possible for the unit
- * 
+ *
  * This is a special prefix type tag specifying that the unit can not be scaled with any kind
  * of the prefix.
  */
@@ -55,14 +55,14 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
 
 /**
  * @brief A prefix used to scale units
- * 
+ *
  * Data from a prefix class is used in two cases:
  * - when defining a prefixed_unit its ratio is used to scale the reference unit and its
  *   symbol is used to prepend to the symbol of referenced unit
  * - when printing the symbol of a scaled unit that was not predefined by the user but its
  *   factor matches ratio of a prefix from the specified prefix family, its symbol will be
  *   prepended to the symbol of the unit
- * 
+ *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam PT a type of prefix family
  * @tparam Symbol a text representation of the prefix
@@ -70,7 +70,7 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
  */
 template<typename Child, PrefixType PT, basic_fixed_string Symbol, Ratio R>
   requires (!std::same_as<PT, no_prefix>)
-struct prefix : downcast_child<Child, detail::prefix_base<PT, ratio<R::num, R::den>>> {
+struct prefix : downcast_child<Child, detail::prefix_base<PT, ratio<R::num, R::den, R::exp>>> {
   static constexpr auto symbol = Symbol;
 };
 

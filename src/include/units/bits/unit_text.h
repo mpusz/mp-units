@@ -29,13 +29,19 @@ namespace units::detail {
 template<typename Ratio>
 constexpr auto ratio_text()
 {
-  if constexpr(Ratio::num != 1 || Ratio::den != 1) {
+  if constexpr(Ratio::num != 1 || Ratio::den != 1 || Ratio::exp != 0) {
     auto txt = basic_fixed_string("[") + regular<Ratio::num>();
-    if constexpr(Ratio::den == 1) {
+    if constexpr(Ratio::den == 1 && Ratio::exp == 0) {
       return txt + basic_fixed_string("]");
     }
+    else if constexpr (Ratio::den == 1) {
+      return txt + basic_fixed_string(" x 10") + superscript<Ratio::exp>() +
+          basic_fixed_string("]");
+    }
     else {
-      return txt + basic_fixed_string("/") + regular<Ratio::den>() + basic_fixed_string("]");
+      return txt + basic_fixed_string("/") + regular<Ratio::den>() +
+          basic_fixed_string(" x 10") + superscript<Ratio::exp>() +
+          basic_fixed_string("]");
     }
   }
   else {
@@ -46,7 +52,7 @@ constexpr auto ratio_text()
 template<typename Ratio, typename PrefixType>
 constexpr auto prefix_or_ratio_text()
 {
-  if constexpr(Ratio::num == 1 && Ratio::den == 1) {
+  if constexpr(Ratio::num == 1 && Ratio::den == 1 && Ratio::exp == 0) {
     // no ratio/prefix
     return basic_fixed_string("");
   }

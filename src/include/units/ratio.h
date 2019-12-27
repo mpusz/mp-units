@@ -27,6 +27,8 @@
 #include <cstdint>
 #include <numeric>
 #include <type_traits>
+#include <tuple>
+#include <algorithm>
 
 namespace units {
 
@@ -38,24 +40,45 @@ template<typename T>
   return v < 0 ? -v : v;
 }
 
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t>  normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp) {
+  std::intmax_t gcd = std::gcd(num, den);
+  num = num * (den < 0 ? -1 : 1) / gcd;
+  den = detail::abs(den) / gcd;
+
+  while (num % 10 == 0) {
+    num /= 10;
+    ++exp;
+  }
+  while (den % 10 == 0) {
+    den /= 10;
+    --exp;
+  }
+  return std::make_tuple(num, den, exp);
+}
+
 }  // namespace detail
 
-template<std::intmax_t Num, std::intmax_t Den = 1>
+template<std::intmax_t Num, std::intmax_t Den = 1, std::intmax_t Exp = 0>
   requires(Den != 0)
 struct ratio {
   static_assert(-INTMAX_MAX <= Num, "numerator too negative");
   static_assert(-INTMAX_MAX <= Den, "denominator too negative");
 
-  static constexpr std::intmax_t num = Num * (Den < 0 ? -1 : 1) / std::gcd(Num, Den);
-  static constexpr std::intmax_t den = detail::abs(Den) / std::gcd(Num, Den);
+ private:
+  static constexpr auto norm = detail::normalize(Num, Den, Exp);
 
-  using type = ratio<num, den>;
+ public:
+  static constexpr std::intmax_t num = std::get<0>(norm);
+  static constexpr std::intmax_t den = std::get<1>(norm);
+  static constexpr std::intmax_t exp = std::get<2>(norm);
+
+  using type = ratio<num, den, exp>;
 };
 
 namespace detail {
 
-template<intmax_t Num, intmax_t Den>
-inline constexpr bool is_ratio<ratio<Num, Den>> = true;
+template<intmax_t Num, intmax_t Den, intmax_t Exp>
+inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
 
 }  // namespace detail
 
@@ -97,10 +120,19 @@ private:
   static constexpr std::intmax_t gcd1 = std::gcd(R1::num, R2::den);
   static constexpr std::intmax_t gcd2 = std::gcd(R2::num, R1::den);
 
+  static constexpr auto norm = detail::normalize(safe_multiply(R1::num / gcd1, R2::num / gcd2),
+                                                 safe_multiply(R1::den / gcd2, R2::den / gcd1),
+                                                 R1::exp + R2::exp);
+
+  static constexpr std::intmax_t norm_num = std::get<0>(norm);
+  static constexpr std::intmax_t norm_den = std::get<1>(norm);
+  static constexpr std::intmax_t norm_exp = std::get<2>(norm);
+
 public:
-  using type = ratio<safe_multiply(R1::num / gcd1, R2::num / gcd2), safe_multiply(R1::den / gcd2, R2::den / gcd1)>;
+  using type = ratio<norm_num, norm_den, norm_exp>;
   static constexpr std::intmax_t num = type::num;
   static constexpr std::intmax_t den = type::den;
+  static constexpr std::intmax_t exp = type::exp;
 };
 
 }  // namespace detail
@@ -115,9 +147,10 @@ namespace detail {
 template<typename R1, typename R2>
 struct ratio_divide_impl {
   static_assert(R2::num != 0, "division by 0");
-  using type = ratio_multiply<R1, ratio<R2::den, R2::num>>;
+  using type = ratio_multiply<R1, ratio<R2::den, R2::num, -R2::exp>>;
   static constexpr std::intmax_t num = type::num;
   static constexpr std::intmax_t den = type::den;
+  static constexpr std::intmax_t exp = type::exp;
 };
 
 }  // namespace detail
@@ -168,6 +201,7 @@ static constexpr std::intmax_t sqrt_impl(std::intmax_t v) { return sqrt_impl(v, 
 
 template<typename R>
 struct ratio_sqrt_impl {
+  // TODO  this is broken..need /2 logic on EXP
   using type = ratio<detail::sqrt_impl(R::num), detail::sqrt_impl(R::den)>;
 };
 
@@ -190,7 +224,7 @@ template<typename R1, typename R2>
 struct common_ratio_impl {
   static constexpr std::intmax_t gcd_num = std::gcd(R1::num, R2::num);
   static constexpr std::intmax_t gcd_den = std::gcd(R1::den, R2::den);
-  using type = ratio<gcd_num, (R1::den / gcd_den) * R2::den>;
+  using type = ratio<gcd_num, (R1::den / gcd_den) * R2::den, std::min(R1::exp, R2::exp)>;
 };
 
 }  // namespace detail
