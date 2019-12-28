@@ -32,6 +32,8 @@ struct gram : named_unit<gram, "g", prefix> {};
 struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
 struct tonne : named_scaled_unit<tonne, "t", prefix, ratio<1'000>, kilogram> {};
 
+struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio<16'605'390'666'050, 10'000'000'000'000, -27>, kilogram> {};
+
 struct dim_mass : physical::dim_mass<kilogram> {};
 
 template<Unit U, Scalar Rep = double>
@@ -50,6 +52,10 @@ constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(
 // t
 constexpr auto operator""t(unsigned long long l) { return mass<tonne, std::int64_t>(l); }
 constexpr auto operator""t(long double l) { return mass<tonne, long double>(l); }
+
+// Da
+constexpr auto operator""Da(unsigned long long l) { return mass<dalton, std::int64_t>(l); }
+constexpr auto operator""Da(long double l) { return mass<dalton, long double>(l); }
 
 }  // namespace literals
 
