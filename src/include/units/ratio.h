@@ -40,7 +40,8 @@ template<typename T>
   return v < 0 ? -v : v;
 }
 
-constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t>  normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp) {
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t>  normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp)
+{
   std::intmax_t gcd = std::gcd(num, den);
   num = num * (den < 0 ? -1 : 1) / gcd;
   den = detail::abs(den) / gcd;

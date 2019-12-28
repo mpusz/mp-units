@@ -74,7 +74,16 @@ struct scaled_unit : downcast_base<scaled_unit<R, U>> {
 };
 ```
 
-The above type is a framework's private type and the user should never instantiate it directly.
+where:
+
+```cpp
+template<typename R>
+concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
+```
+
+and `Ratio` is satisfied by any instantiation of `units::ratio<Num, Den, Exp>`.
+
+The `scaled_unit` type is a framework's private type and the user should never instantiate it directly.
 The public user interface to create units consists of:
 
 ![Units UML](units.png)
@@ -143,8 +152,8 @@ namespace units::si {
 
 // prefixes
 struct prefix : prefix_type {};
-struct centi : units::prefix<kilo, prefix, "c", ratio<1, 100>> {};
-struct kilo : units::prefix<kilo, prefix, "k", ratio<1'000>> {};
+struct centi : units::prefix<centi, prefix, "c", ratio<1, 1, -2>> {};
+struct kilo : units::prefix<kilo, prefix, "k", ratio<1, 1, 3>> {};
 
 // length
 struct metre : named_unit<metre, "m", prefix> {};

@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/prefix.h>
-#include <ratio>
 
 namespace units::data {
 
