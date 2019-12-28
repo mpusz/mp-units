@@ -47,12 +47,12 @@ using bitrate = quantity<dim_bitrate, U, Rep>;
 inline namespace literals {
 
 // bits
-constexpr auto operator""_bps(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
-constexpr auto operator""_Kibps(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
-constexpr auto operator""_Mibps(unsigned long long l) { return bitrate<mebibit_per_second, std::int64_t>(l); }
-constexpr auto operator""_Gibps(unsigned long long l) { return bitrate<gibibit_per_second, std::int64_t>(l); }
-constexpr auto operator""_Tibps(unsigned long long l) { return bitrate<tebibit_per_second, std::int64_t>(l); }
-constexpr auto operator""_Pibps(unsigned long long l) { return bitrate<pebibit_per_second, std::int64_t>(l); }
+constexpr auto operator""bps(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
+constexpr auto operator""Kibps(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
+constexpr auto operator""Mibps(unsigned long long l) { return bitrate<mebibit_per_second, std::int64_t>(l); }
+constexpr auto operator""Gibps(unsigned long long l) { return bitrate<gibibit_per_second, std::int64_t>(l); }
+constexpr auto operator""Tibps(unsigned long long l) { return bitrate<tebibit_per_second, std::int64_t>(l); }
+constexpr auto operator""sPibps(unsigned long long l) { return bitrate<pebibit_per_second, std::int64_t>(l); }
 
 }  // namespace literals
 
