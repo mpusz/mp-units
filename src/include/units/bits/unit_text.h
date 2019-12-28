@@ -35,12 +35,12 @@ constexpr auto ratio_text()
       return txt + basic_fixed_string("]");
     }
     else if constexpr (Ratio::den == 1) {
-      return txt + basic_fixed_string(" x 10") + superscript<Ratio::exp>() +
+      return txt + basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
           basic_fixed_string("]");
     }
     else {
       return txt + basic_fixed_string("/") + regular<Ratio::den>() +
-          basic_fixed_string(" x 10") + superscript<Ratio::exp>() +
+          basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
           basic_fixed_string("]");
     }
   }

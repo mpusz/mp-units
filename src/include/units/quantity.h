@@ -1,3 +1,4 @@
+
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -32,7 +33,6 @@
 #endif
 
 #include <ostream>
-#include <iostream>
 
 namespace units {
 
