@@ -296,7 +296,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1 x 10⁻²]m³");
+        CHECK(stream.str() == "8 [1 \u00D7 10⁻²]m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -317,7 +317,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 x 10¹]Hz");
+        CHECK(stream.str() == "2 [6 \u00D7 10¹]Hz");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -338,7 +338,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 x 10⁻¹]W");
+        CHECK(stream.str() == "10 [1/6 \u00D7 10⁻¹]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -359,7 +359,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [1/6 x 10²]W");
+        CHECK(stream.str() == "30 [1/6 \u00D7 10²]W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -404,7 +404,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1 x 10³]m⋅s");
+        CHECK(stream.str() == "8 [1 \u00D7 10³]m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -425,7 +425,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 x 10¹]kg/s");
+        CHECK(stream.str() == "2 [6 \u00D7 10¹]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -446,7 +446,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 x 10⁻¹]kg/s");
+        CHECK(stream.str() == "10 [1/6 \u00D7 10⁻¹]kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -467,7 +467,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [6 x 10⁻²]1/m⋅s");
+        CHECK(stream.str() == "30 [6 \u00D7 10⁻²]1/m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
