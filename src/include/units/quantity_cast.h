@@ -24,9 +24,39 @@
 
 #include <units/concepts.h>
 #include <units/bits/dimension_op.h>
-#include <cmath>
 
 namespace units {
+
+constexpr std::intmax_t ipow10(std::intmax_t exp) {
+  // how to assert here?
+  // static_assert(exp >= 0, "Use fpow10() for negative exponents");
+  if (exp == 0) return 1;
+  std::intmax_t result = 1;
+  while (exp > 0) {
+    result *= 10;
+    --exp;
+  }
+  return result;
+}
+
+
+constexpr long double fpow10(std::intmax_t exp) {
+  if (exp == 0) return 1.0L;
+  long double result = 1.0L;
+  if (exp < 0) {
+    while (exp < 0) {
+      result /= 10.0L;
+      ++exp;
+    }
+  } else {
+    while (exp > 0) {
+      result *= 10.0L;
+      --exp;
+    }
+  }
+  return result;
+}
+
 
 // QuantityOf
 template<typename T, typename Dim>
@@ -42,15 +72,15 @@ struct quantity_cast_impl {
   {
     if constexpr (treat_as_floating_point<CRep>) {
       return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
-                                     static_cast<CRep>(std::pow(10, CRatio::exp)) *
+                                     static_cast<CRep>(fpow10(CRatio::exp)) *
                                      (static_cast<CRep>(CRatio::num) /
                                       static_cast<CRep>(CRatio::den))));
     } else {
       return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
                                      static_cast<CRep>(CRatio::num) *
-                                     static_cast<CRep>(CRatio::exp > 0 ? std::pow(10, CRatio::exp) : 1) /
+                                     static_cast<CRep>(CRatio::exp > 0 ? ipow10(CRatio::exp) : 1) /
                                      (static_cast<CRep>(CRatio::den) *
-                                      static_cast<CRep>(CRatio::exp < 0 ? std::pow(10, -CRatio::exp) : 1))));
+                                      static_cast<CRep>(CRatio::exp < 0 ? ipow10(-CRatio::exp) : 1))));
     }
   }
 };
@@ -60,7 +90,11 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp))));
+    if constexpr (treat_as_floating_point<CRep>) {
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10(CRatio::exp))));
+    } else {
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio::exp))));
+    }
   }
 };
 
@@ -70,9 +104,9 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp)) * (CRep{1} / static_cast<CRep>(CRatio::den))));
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10(CRatio::exp)) * (CRep{1} / static_cast<CRep>(CRatio::den))));
     } else {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(std::pow(10, CRatio::exp)) / static_cast<CRep>(CRatio::den)));
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio::exp)) / static_cast<CRep>(CRatio::den)));
     }
   }
 };
@@ -82,7 +116,11 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) * static_cast<CRep>(std::pow(10, CRatio::exp))));
+    if constexpr (treat_as_floating_point<CRep>) {
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) * static_cast<CRep>(fpow10(CRatio::exp))));
+    } else {
+      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num) * static_cast<CRep>(ipow10(CRatio::exp))));
+    }
   }
 };
 
