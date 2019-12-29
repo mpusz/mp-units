@@ -298,7 +298,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1 × 10⁻²]m³");
+        CHECK(stream.str() == "8 × 10⁻² m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -319,7 +319,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 × 10¹]Hz");
+        CHECK(stream.str() == "2 [6 × 10¹] Hz");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -340,7 +340,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 × 10⁻¹]W");
+        CHECK(stream.str() == "10 [1/6 × 10⁻¹] W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -361,7 +361,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [1/6 × 10²]W");
+        CHECK(stream.str() == "30 [1/6 × 10²] W");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -430,7 +430,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 [1 × 10³]m⋅s");
+        CHECK(stream.str() == "8 × 10³ m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -451,7 +451,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 × 10¹]kg/s");
+        CHECK(stream.str() == "2 [6 × 10¹] kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -472,7 +472,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 × 10⁻¹]kg/s");
+        CHECK(stream.str() == "10 [1/6 × 10⁻¹] kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -493,7 +493,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "8 [1 × 10⁵]cm⋅g⋅s");
+          CHECK(stream.str() == "8 × 10⁵ cm⋅g⋅s");
         }
 
         SECTION("fmt with default format {} on a quantity")
@@ -514,7 +514,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [6 × 10⁻²]1/m⋅s");
+        CHECK(stream.str() == "30 [6 × 10⁻²] 1/m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -934,10 +934,3 @@ TEST_CASE("quantity_cast", "[text][ostream]")
     }
   }
 }
-
-// Giving a precision specification
-// in the chrono-format-spec is valid only for std::chrono::duration types where the representation type Rep
-// is a floating-point type. For all other Rep types, a format_error shall be thrown if the chrono-format-spec
-// contains a precision specification.
-
- // string s = format("{:=>8}", 42ms); // value of s is "====42ms"
