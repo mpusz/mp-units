@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "units/physical/cgs/length.h"
+#include "units/physical/cgs/mass.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/power.h"
@@ -378,22 +380,46 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
     {
-      const auto q = 2s * 2m * 2kg;
-      stream << q;
-
-      SECTION("iostream")
+      SECTION("SI base units")
       {
-        CHECK(stream.str() == "8 m⋅kg⋅s");
+        const auto q = 2s * 2m * 2kg;
+        stream << q;
+
+        SECTION("iostream")
+        {
+          CHECK(stream.str() == "8 m⋅kg⋅s");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          CHECK(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
 
-      SECTION("fmt with default format {} on a quantity")
+      SECTION("CGS base units")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
-      }
+        const auto q = 2s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
+        stream << q;
 
-      SECTION("fmt with format {:%Q %q} on a quantity")
-      {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        SECTION("iostream")
+        {
+          CHECK(stream.str() == "8 cm⋅g⋅s");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          CHECK(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        }
       }
     }
 
@@ -459,6 +485,27 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         CHECK(fmt::format("{:%Q %q}", q) == stream.str());
       }
     }
+
+      SECTION("CGS base units")
+      {
+        const auto q = 2s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
+        stream << q;
+
+        SECTION("iostream")
+        {
+          CHECK(stream.str() == "8 [1 × 10⁵]cm⋅g⋅s");
+        }
+
+        SECTION("fmt with default format {} on a quantity")
+        {
+          CHECK(fmt::format("{}", q) == stream.str());
+        }
+
+        SECTION("fmt with format {:%Q %q} on a quantity")
+        {
+          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        }
+      }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
