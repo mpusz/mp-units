@@ -83,6 +83,9 @@ struct dim_force : derived_dimension<Child, U, exp<M, 1>, exp<A, 1>> {};
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
 struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_length> L>
+struct dim_density : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
+
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_time> T>
 struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
 
