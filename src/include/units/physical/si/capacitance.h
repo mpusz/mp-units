@@ -32,6 +32,11 @@ namespace units::si {
 
 struct farad : named_unit<farad, "F", prefix> {};
 
+struct millifarad : prefixed_unit<millifarad, milli, farad> {};
+struct microfarad : prefixed_unit<microfarad, micro, farad> {};
+struct nanofarad : prefixed_unit<nanofarad, nano, farad> {};
+struct picofarad : prefixed_unit<picofarad, pico, farad> {};
+
 struct dim_capacitance : physical::dim_capacitance<dim_capacitance, farad, dim_electric_charge, dim_voltage> {};
 
 template<Unit U, Scalar Rep = double>
@@ -42,6 +47,18 @@ inline namespace literals {
 // F
 constexpr auto operator""F(unsigned long long l) { return capacitance<farad, std::int64_t>(l); }
 constexpr auto operator""_F(long double l) { return capacitance<farad, long double>(l); }
+
+constexpr auto operator""mF(unsigned long long l) { return capacitance<millifarad, std::int64_t>(l); }
+constexpr auto operator""mF(long double l) { return capacitance<millifarad, long double>(l); }
+
+constexpr auto operator""uF(unsigned long long l) { return capacitance<microfarad, std::int64_t>(l); }
+constexpr auto operator""uF(long double l) { return capacitance<microfarad, long double>(l); }
+
+constexpr auto operator""nF(unsigned long long l) { return capacitance<nanofarad, std::int64_t>(l); }
+constexpr auto operator""nF(long double l) { return capacitance<nanofarad, long double>(l); }
+
+constexpr auto operator""pF(unsigned long long l) { return capacitance<picofarad, std::int64_t>(l); }
+constexpr auto operator""pF(long double l) { return capacitance<picofarad, long double>(l); }
 
 }  // namespace literals
 
