@@ -98,8 +98,8 @@ constexpr auto operator"" km(long double l) { return length<kilometre, long doub
 constexpr auto operator"" au(unsigned long long l) { return length<astronomical_unit, std::int64_t>(l); }
 constexpr auto operator"" au(long double l) { return length<astronomical_unit, long double>(l); }
 
-constexpr auto operator"" in(unsigned long long l) { return length<inch, std::int64_t>(l); }
-constexpr auto operator"" in(long double l) { return length<inch, long double>(l); }
+constexpr auto operator"" q_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
+constexpr auto operator"" q_in(long double l) { return length<inch, long double>(l); }
 
 constexpr auto operator"" q_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
 constexpr auto operator"" q_ft(long double l) { return length<foot, long double>(l); }
@@ -107,8 +107,8 @@ constexpr auto operator"" q_ft(long double l) { return length<foot, long double>
 constexpr auto operator"" ft_us(unsigned long long l) { return length<foot_us, std::int64_t>(l); }
 constexpr auto operator"" ft_us(long double l) { return length<foot_us, long double>(l); }
 
-constexpr auto operator"" yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
-constexpr auto operator"" yd(long double l) { return length<yard, long double>(l); }
+constexpr auto operator"" q_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
+constexpr auto operator"" q_yd(long double l) { return length<yard, long double>(l); }
 
 constexpr auto operator"" fathom(unsigned long long l) { return length<fathom, std::int64_t>(l); }
 constexpr auto operator"" fathom(long double l) { return length<fathom, long double>(l); }
@@ -129,8 +129,8 @@ constexpr auto operator"" mil(long double l) { return length<mil, long double>(l
 constexpr auto operator"" ly(unsigned long long l) { return length<light_year, std::int64_t>(l); }
 constexpr auto operator"" ly(long double l) { return length<light_year, long double>(l); }
 
-constexpr auto operator"" mi(unsigned long long l) { return length<mile, std::int64_t>(l); }
-constexpr auto operator"" mi(long double l) { return length<mile, long double>(l); }
+constexpr auto operator"" q_mi(unsigned long long l) { return length<mile, std::int64_t>(l); }
+constexpr auto operator"" q_mi(long double l) { return length<mile, long double>(l); }
 
 constexpr auto operator"" pc(unsigned long long l) { return length<parsec, std::int64_t>(l); }
 constexpr auto operator"" pc(long double l) { return length<parsec, long double>(l); }

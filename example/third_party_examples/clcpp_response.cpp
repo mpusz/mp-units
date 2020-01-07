@@ -79,7 +79,7 @@ void simple_quantities()
     typedef time::s time;
 
     distance constexpr km = 1.0km;
-    distance constexpr miles = 1mi;
+    distance constexpr miles = 1q_mi;
 
     time constexpr sec = 1s;
     time constexpr min = 1min;
@@ -100,7 +100,7 @@ void quantities_with_typed_units()
 
     length::km km = 1km;
 
-    length::mi miles = 1mi;
+    length::mi miles = 1q_mi;
 
     std::cout.precision(6);
 
