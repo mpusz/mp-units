@@ -37,27 +37,27 @@ struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 struct femtometre : prefixed_unit<femtometre,femto,metre> {};
 
 struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio<149'597'870'700>, metre> {};
-struct inch : named_scaled_unit<inch,"in",no_prefix,ratio<127,50,-2>, metre> {};
-struct foot : named_scaled_unit<foot,"ft",no_prefix,ratio<381,125,-1>, metre> {};
+struct inch : named_scaled_unit<inch,"in(imp)",no_prefix,ratio<127,50,-2>, metre> {};
+struct foot : named_scaled_unit<foot,"ft(imp)",no_prefix,ratio<381,125,-1>, metre> {};
 struct foot_us : named_scaled_unit<foot,"ft(us)",no_prefix,ratio<1524003,500000,-1>, metre> {};
-struct yard : named_scaled_unit<yard,"yd",no_prefix,ratio<1143,125,-1>, metre> {};
-struct fathom : named_scaled_unit<fathom,"fathom",no_prefix,ratio<1143,625>, metre> {};
+struct yard : named_scaled_unit<yard,"yd(imp)",no_prefix,ratio<1143,125,-1>, metre> {};
+struct fathom : named_scaled_unit<fathom,"fathom(imp)",no_prefix,ratio<1143,625>, metre> {};
 struct fathom_us : named_scaled_unit<fathom_us,"fathom(us)",no_prefix,ratio<457201,250000>,metre> {};
-struct chain : named_scaled_unit<chain,"ch",no_prefix,ratio<502921,250000,1>, metre> {};
+struct chain : named_scaled_unit<chain,"ch(us)",no_prefix,ratio<502921,250000,1>, metre> {};
 
 //struct thou : named_scaled_unit<thou,"thou",no_prefix,ratio<127,50,-5>,metre> {};
 struct mil : named_scaled_unit<mil,"mil",no_prefix,ratio<127,50,-5>,metre> {};
 
-struct light_year : named_scaled_unit<light_year,"ly",no_prefix,ratio<946073,100000,15>,metre> {};
-struct mile : named_scaled_unit<mile,"mi",no_prefix,ratio<25146,15625,3>,metre> {};
-struct nautical_mile : named_scaled_unit<nautical_mile,"mi_naut",no_prefix, ratio<463,250,3>,metre> {};
-struct parsec : named_scaled_unit<parsec,"pc",no_prefix,ratio<1542839,500000,16>,metre> {};
+struct light_year : named_scaled_unit<light_year,"ly(iau)",no_prefix,ratio<946073,100000,15>,metre> {};
+struct mile : named_scaled_unit<mile,"mi(imp)",no_prefix,ratio<25146,15625,3>,metre> {};
+struct nautical_mile : named_scaled_unit<nautical_mile,"mi(naut)",no_prefix, ratio<463,250,3>,metre> {};
+struct parsec : named_scaled_unit<parsec,"pc(iau)",no_prefix,ratio<1542839,500000,16>,metre> {};
 struct pica_comp : named_scaled_unit<pica_comp,"pica(comp)",no_prefix,ratio<4233333,1000000,-3>,metre> {};
 struct pica_prn : named_scaled_unit<pica_prn,"pica(prn)",no_prefix,ratio<2108759,500000,-3>,metre> {};
 struct point_comp : named_scaled_unit<point_comp,"point(comp)",no_prefix,ratio<1763889,500000,-4>,metre> {};
 struct point_prn  : named_scaled_unit<point_prn,"point(prn)", no_prefix, ratio<1757299,500000,-4>,metre> {};
-struct rod : named_scaled_unit<rod,"rd",no_prefix, ratio<502921,100000>,metre> {};
-struct angstrom : named_scaled_unit<angstrom,"angstrom",no_prefix,ratio<1,1,-10>,metre> {};
+struct rod : named_scaled_unit<rod,"rd(us)",no_prefix, ratio<502921,100000>,metre> {};
+struct angstrom : named_scaled_unit<angstrom,"angstrom(nru)",no_prefix,ratio<1,1,-10>,metre> {};
 
 struct dim_length : physical::dim_length<metre> {};
 
