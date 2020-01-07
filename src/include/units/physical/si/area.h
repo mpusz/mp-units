@@ -33,6 +33,7 @@ struct dim_area : physical::dim_area<dim_area, square_metre, dim_length> {};
 
 struct square_millimetre : deduced_unit<square_millimetre, dim_area, millimetre> {};
 struct square_centimetre : deduced_unit<square_centimetre, dim_area, centimetre> {};
+struct square_femtometre : deduced_unit<square_femtometre, dim_area, femtometre> {};
 struct square_kilometre : deduced_unit<square_kilometre, dim_area, kilometre> {};
 
 struct hectare : deduced_unit<hectare, dim_area, hectometre> {};
@@ -49,6 +50,10 @@ constexpr auto operator"" sq_m(long double l) { return area<square_metre, long d
 // sq_mm
 constexpr auto operator"" sq_mm(unsigned long long l) { return area<square_millimetre, std::int64_t>(l); }
 constexpr auto operator"" sq_mm(long double l) { return area<square_millimetre, long double>(l); }
+
+// sq_fm
+constexpr auto operator"" sq_fm(unsigned long long l) { return area<square_femtometre, std::int64_t>(l); }
+constexpr auto operator"" sq_fm(long double l) { return area<square_femtometre, long double>(l); }
 
 // sq_cm
 constexpr auto operator"" sq_cm(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
