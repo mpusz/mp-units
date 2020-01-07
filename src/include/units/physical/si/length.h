@@ -101,8 +101,8 @@ constexpr auto operator"" au(long double l) { return length<astronomical_unit, l
 constexpr auto operator"" in(unsigned long long l) { return length<inch, std::int64_t>(l); }
 constexpr auto operator"" in(long double l) { return length<inch, long double>(l); }
 
-constexpr auto operator"" ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
-constexpr auto operator"" ft(long double l) { return length<foot, long double>(l); }
+constexpr auto operator"" q_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft(long double l) { return length<foot, long double>(l); }
 
 constexpr auto operator"" ft_us(unsigned long long l) { return length<foot_us, std::int64_t>(l); }
 constexpr auto operator"" ft_us(long double l) { return length<foot_us, long double>(l); }
