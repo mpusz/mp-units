@@ -24,40 +24,36 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/current.h>
-#include <units/physical/si/power.h>
+#include <units/physical/si/resistance.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
 namespace units::si {
 
-struct volt : named_unit<volt, "V", prefix> {};
-struct millivolt : prefixed_unit<millivolt, milli, volt> {};
-struct microvolt : prefixed_unit<microvolt, micro, volt> {};
-struct nanovolt : prefixed_unit<nanovolt, nano, volt> {};
-struct picovolt : prefixed_unit<picovolt, pico, volt> {};
+struct ohm : named_unit<ohm, "R", prefix> {};
+struct milli_ohm : prefixed_unit<milli_ohm, milli, ohm> {};
+struct kilo_ohm : prefixed_unit<kilo_ohm, kilo, ohm> {};
+struct mega_ohm : prefixed_unit<mega_ohm, mega, ohm> {};
 
-struct dim_voltage : physical::dim_voltage<dim_voltage, volt, dim_power, dim_electric_current> {};
+struct dim_resistance : physical::dim_resistance<dim_resistance, ohm, dim_voltage, dim_electric_current> {};
 
 template<Unit U, Scalar Rep = double>
-using voltage = quantity<dim_voltage, U, Rep>;
+using resistance = quantity<dim_resistance, U, Rep>;
 
 inline namespace literals {
 
 // V
-constexpr auto operator""V(unsigned long long l) { return voltage<volt, std::int64_t>(l); }
-constexpr auto operator""V(long double l) { return voltage<volt, long double>(l); }
+constexpr auto operator""R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
+constexpr auto operator""R(long double l) { return resistance<ohm, long double>(l); }
 
-constexpr auto operator""mV(unsigned long long l) { return voltage<millivolt, std::int64_t>(l); }
-constexpr auto operator""mV(long double l) { return voltage<millivolt, long double>(l); }
+constexpr auto operator""mR(unsigned long long l) { return resistance<milli_ohm, std::int64_t>(l); }
+constexpr auto operator""mR(long double l) { return resistance<milli_ohm, long double>(l); }
 
-constexpr auto operator""uV(unsigned long long l) { return voltage<microvolt, std::int64_t>(l); }
-constexpr auto operator""uV(long double l) { return voltage<microvolt, long double>(l); }
+constexpr auto operator""kR(unsigned long long l) { return resistance<kilo_ohm, std::int64_t>(l); }
+constexpr auto operator""kR(long double l) { return resistance<kilo_ohm, long double>(l); }
 
-constexpr auto operator""nV(unsigned long long l) { return voltage<nanovolt, std::int64_t>(l); }
-constexpr auto operator""nV(long double l) { return voltage<nanovolt, long double>(l); }
-
-constexpr auto operator""pV(unsigned long long l) { return voltage<picovolt, std::int64_t>(l); }
-constexpr auto operator""pV(long double l) { return voltage<picovolt, long double>(l); }
+constexpr auto operator""MR(unsigned long long l) { return resistance<mega_ohm, std::int64_t>(l); }
+constexpr auto operator""MR(long double l) { return resistance<mega_ohm, long double>(l); }
 
 }  // namespace literals
 
