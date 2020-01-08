@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2003-2017 Andy Little.
+ Copyright (c) 2003-2020 Andy Little.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,46 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-// See QUAN_ROOT/quan_matters/index.html for documentation.
 
 #include <units/physical/si/length.h>
-#include <units/physical/si/time.h>
-
 
 /*
     get conversion factor from one dimensionally-equivalent 
-    type to another
-    N.B only works with dimenionally equivalent types
-    with arithmetci value_types
+    quantity type to another
 */
+
+namespace {
+
+  
+   template < 
+      units::Quantity Target,
+      units::Quantity Source
+   >
+   requires units::equivalent_dim<typename Source::dimension,typename Target::dimension>
+   constexpr inline
+   std::common_type_t<
+      typename Target::rep,
+      typename Source::rep
+   >
+   conversion_factor()
+   {
+      // get quantities looking like inputs but with Q::rep that doesnt have narrowing conversion
+      typedef std::common_type_t<
+         typename Target::rep,
+         typename Source::rep
+      > rep;
+      typedef units::quantity<typename Source::dimension,typename Source::unit,rep> source;
+      typedef units::quantity<typename Target::dimension,typename Target::unit,rep> target;
+      return target{source{1}}.count();
+   }
+
+   auto units_str( units::Quantity const & q)
+   {
+       typedef std::remove_cvref_t<decltype(q)> qtype;
+       return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
+   }
+
+}
 
 namespace {
 
@@ -36,42 +64,23 @@ namespace {
        using mm = units::si::length<units::si::millimetre,double>;
    }
 
-    template <
-        typename Target,
-        typename Source
-    >
-    inline constexpr
-    typename quan::where_<
-       quan::meta::dimensionally_equivalent<Target,Source>,
-       typename std::common_type<
-           typename Target::value_type,
-           typename Source::value_type
-       >::type
-    >::type
-    conversion_factor()
-    {
-       return Target{Source{1}}.count();
-    }
-
 }
 
+#include <iostream>
+
+using namespace units::si::literals;
 int main()
 {
-    length::m constexpr plankA = 2.0m;
-    length::mm constexpr plankB = 1000.0mm;
+   length::m constexpr plankA = 2.0m;
+   length::mm constexpr plankB = 1000.0mm;
 
-    std::cout << "ratio  plankA / plankB = " << plankA / plankB << '\n'; 
+   std::cout << "ratio  plankA / plankB = " << plankA / plankB << '\n'; 
 
-    std::cout << "conversion factor to convert from vS in " << units_str(plankA) ;
-    std::cout << " to vT in " << units_str(plankB) << " : vT = vS * ";
-    std::cout << quan::conversion_factor<
-        quan::length::mm,quan::length::m
-    >() << '\n';
+   std::cout << "conversion factor to convert from vS in " << units_str(plankA) ;
+   std::cout << " to vT in " << units_str(plankB) << " : vT = vS * ";
+   std::cout << conversion_factor<length::mm,length::m >() << '\n';
 
-    // can be evaluated at compile time
-    static_assert(quan::conversion_factor<
-        quan::length::mm,quan::length::m
-    >() == 1000,"error");
+   // can be evaluated at compile time
+   static_assert(conversion_factor<length::mm,length::m>() == 1000,"error");
 
-   // auto x = quan::conversion_factor<quan::length::m,quan::time::s>(); // error as not dimensionally equivalent
 }

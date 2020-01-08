@@ -20,27 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.8)
-project(units)
+function(add_example target)
+    add_executable(${target} ${target}.cpp)
+    target_link_libraries(${target} PRIVATE mp::units)
+endfunction()
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+add_example(box_example)
+add_example(capacitor_time_curve)
+add_example(clcpp_response)
+add_example(conversion_factor)
 
-# include common tools and workarounds
-include(common/cmake/tools)
-
-# use Conan configuration if available
-conan_init(cmake)
-
-# compilation options and flags used in a project development process
-include(common/cmake/compile_flags)
-
-# add project code
-add_subdirectory(src)
-
-# add unit tests
-add_subdirectory(test)
-
-# add usage example
-add_subdirectory(example)
-add_subdirectory(example/third_party_examples)
