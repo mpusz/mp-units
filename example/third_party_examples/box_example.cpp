@@ -18,7 +18,6 @@ namespace{
    
    namespace acceleration{
       using m_per_s2 = units::si::acceleration<units::si::metre_per_second_sq,double>;
-      
       constexpr m_per_s2 g{9.80665};
    }
 
@@ -49,19 +48,20 @@ struct Box{
     force::N filled_weight()const
     {
         volume::m3 const volume
-         = length * width * height;
-        mass::kg const mass = this->contents.density * volume;
+           = length * width * height;
+        mass::kg const mass = contents.density * volume;
         return mass * acceleration::g;
     }
+
     length::m fill_level(mass::kg const & measured_mass)const
     {
-        return this->height
-         * (measured_mass * acceleration::g) / filled_weight();
+       return height
+          * (measured_mass * acceleration::g) / filled_weight();
     }
 
     volume::m3 spare_capacity(mass::kg const & measured_mass)const
     {
-      return (height - fill_level(measured_mass)) * width * length;
+       return (height - fill_level(measured_mass)) * width * length;
     }
 
     struct contents{
@@ -72,7 +72,7 @@ struct Box{
     void set_contents_density(density::kg_per_m3 const & density_in)
     {
         assert( density_in > air_density );
-        this->contents.density = density_in;
+        contents.density = density_in;
     }
 
     static constexpr density::kg_per_m3 air_density{1.225};
@@ -87,7 +87,6 @@ struct Box{
 using namespace units::si::literals;
 int main()
 {
-   
    auto box = Box{1000.0mm, 500.0mm, 200.0mm};
    box.set_contents_density(1000.0kg_per_m3);
 
