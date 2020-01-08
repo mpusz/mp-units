@@ -1,6 +1,6 @@
 
 /*
- Copyright (c) 2003-2019 Andy Little.
+ Copyright (c) 2003-2020 Andy Little.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 
 namespace {
    namespace voltage {
-
        using V = units::si::voltage<units::si::volt,double>;
        using mV = units::si::voltage<units::si::millivolt,double>;
        using uV = units::si::voltage<units::si::microvolt,double>;
