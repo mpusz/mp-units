@@ -29,11 +29,21 @@
 
 namespace {
    namespace voltage {
-       using V = units::si::voltage<units::si::volt,double>;
-       using mV = units::si::voltage<units::si::millivolt,double>;
-       using uV = units::si::voltage<units::si::microvolt,double>;
-       using nV = units::si::voltage<units::si::nanovolt,double>;
-       using pV = units::si::voltage<units::si::picovolt,double>;
+
+       template <typename Rep = double>
+       using V = units::si::voltage<units::si::volt,Rep>;
+
+       template <typename Rep = double>
+       using mV = units::si::voltage<units::si::millivolt,Rep>;
+
+       template <typename Rep = double>
+       using uV = units::si::voltage<units::si::microvolt,Rep>;
+
+       template <typename Rep = double>
+       using nV = units::si::voltage<units::si::nanovolt,Rep>;
+
+       template <typename Rep = double>
+       using pV = units::si::voltage<units::si::picovolt,Rep>;
    }
 }
 
@@ -57,10 +67,10 @@ int main()
         std::cout << "at " << t << " voltage is " ;
 
         if     ( Vt >= 1V )    std::cout << Vt ;
-        else if( Vt >= 1mV )   std::cout << voltage::mV{Vt};
-        else if( Vt >= 1uV )   std::cout << voltage::uV{Vt};
-        else if( Vt >= 1nV )   std::cout << voltage::nV{Vt};
-        else                   std::cout << voltage::pV{Vt};
+        else if( Vt >= 1mV )   std::cout << voltage::mV<>{Vt};
+        else if( Vt >= 1uV )   std::cout << voltage::uV<>{Vt};
+        else if( Vt >= 1nV )   std::cout << voltage::nV<>{Vt};
+        else                   std::cout << voltage::pV<>{Vt};
         std::cout << "\n";
     }
 }
