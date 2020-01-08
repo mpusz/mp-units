@@ -48,9 +48,9 @@ struct Box{
 
     force::N filled_weight()const
     {
-        volume::m3 volume
+        volume::m3 const volume
          = length * width * height;
-        mass::kg mass = this->contents.density * volume;
+        mass::kg const mass = this->contents.density * volume;
         return mass * acceleration::g;
     }
     length::m fill_level(mass::kg const & measured_mass)const
@@ -65,15 +65,17 @@ struct Box{
     }
 
     struct contents{
-        contents():density{1.225}/*air density*/{}
+        contents():density{air_density}{}
         density::kg_per_m3 density;
     }contents;
 
     void set_contents_density(density::kg_per_m3 const & density_in)
     {
-        assert( density_in > density::kg_per_m3{1.225} );
+        assert( density_in > air_density );
         this->contents.density = density_in;
     }
+
+    static constexpr density::kg_per_m3 air_density{1.225};
 
     length::m length;
     length::m width;
