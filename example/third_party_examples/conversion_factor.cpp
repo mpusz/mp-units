@@ -16,11 +16,10 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-
 #include <units/physical/si/length.h>
 
 /*
-    get conversion factor from one dimensionally-equivalent 
+    get conversion factor from one dimensionally equivalent 
     quantity type to another
 */
 
@@ -36,7 +35,7 @@ namespace {
       typename Target::rep,
       typename Source::rep
    >
-   conversion_factor()
+   conversion_factor(Target , Source)
    {
       // get quantities looking like inputs but with Q::rep that doesnt have narrowing conversion
       typedef std::common_type_t<
@@ -48,21 +47,24 @@ namespace {
       return target{source{1}}.count();
    }
 
+   // get at the units text of the quantity, without its numeric value
    auto inline constexpr units_str( units::Quantity const & q)
    {
-       typedef std::remove_cvref_t<decltype(q)> qtype;
-       return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
+      typedef std::remove_cvref_t<decltype(q)> qtype;
+      return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
    }
-
 }
 
 namespace {
 
     namespace length{
-       using m = units::si::length<units::si::metre,double>;
-       using mm = units::si::length<units::si::millimetre,double>;
-   }
 
+       template <typename Rep = double>
+       using m = units::si::length<units::si::metre,Rep>;
+
+       template <typename Rep = double>
+       using mm = units::si::length<units::si::millimetre,Rep>;
+   }
 }
 
 #include <iostream>
@@ -70,16 +72,20 @@ namespace {
 using namespace units::si::literals;
 int main()
 {
-   length::m constexpr plankA = 2.0m;
-   length::mm constexpr plankB = 1000.0mm;
+   std::cout << "conversion factor in mpusz/units...\n\n";
 
-   std::cout << "ratio  plankA / plankB = " << plankA / plankB << '\n'; 
+   length::m<> constexpr lengthA = 2.0m;
+   length::mm<> constexpr lengthB = lengthA;
 
-   std::cout << "conversion factor to convert from vS in " << units_str(plankA) ;
-   std::cout << " to vT in " << units_str(plankB) << " : vT = vS * ";
-   std::cout << conversion_factor<length::mm,length::m >() << '\n';
+   std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"
+   "represent the same length in different units.\n\n";
 
-   // can be evaluated at compile time
-   static_assert(conversion_factor<length::mm,length::m>() == 1000,"error");
+   std::cout << "therefore ratio lengthA / lengthB == " << lengthA / lengthB << "\n\n"; 
 
+   std::cout << "conversion factor from "
+       "lengthA::unit of " << units_str(lengthA) 
+       << " to lengthB::unit of " << units_str(lengthB) << " :\n\n"
+      "lengthB.count( " << lengthB.count() << " ) == "
+      "lengthA.count( " << lengthA.count() << " ) * "
+      "conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
 }
