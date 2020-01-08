@@ -26,7 +26,6 @@
 
 namespace {
 
-  
    template < 
       units::Quantity Target,
       units::Quantity Source
@@ -49,7 +48,7 @@ namespace {
       return target{source{1}}.count();
    }
 
-   auto units_str( units::Quantity const & q)
+   auto inline constexpr units_str( units::Quantity const & q)
    {
        typedef std::remove_cvref_t<decltype(q)> qtype;
        return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
