@@ -77,7 +77,7 @@ using namespace units::si::literals;
 void simple_quantities()
 {
     
-    typedef length::km distance;
+    typedef length::m<> distance;
     typedef time::s time;
 
     distance constexpr km = 1.0km;
