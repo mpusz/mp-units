@@ -12,74 +12,90 @@
 namespace{
 
    namespace length{
-       using m = units::si::length<units::si::metre,double>;
-       using mm = units::si::length<units::si::millimetre,double>;
+
+       template <typename Rep = double>
+       using m = units::si::length<units::si::metre,Rep>;
+
+       template <typename Rep = double>
+       using mm = units::si::length<units::si::millimetre,Rep>;
    }
    
    namespace acceleration{
-      using m_per_s2 = units::si::acceleration<units::si::metre_per_second_sq,double>;
-      constexpr m_per_s2 g{9.80665};
+
+      template <typename Rep = double>
+      using m_per_s2 = units::si::acceleration<units::si::metre_per_second_sq,Rep>;
+
+      template <typename Rep = double>
+      constexpr m_per_s2<> g{static_cast<Rep>(9.80665)};
    }
 
    namespace force{
-       using N = units::si::force<units::si::newton,double>;
+
+       template <typename Rep = double>
+       using N = units::si::force<units::si::newton,Rep>;
    }
 
    namespace mass {
-      using kg = units::si::mass<units::si::kilogram,double>;
+
+      template <typename Rep = double>
+      using kg = units::si::mass<units::si::kilogram,Rep>;
    }
 
    namespace density {
-      using kg_per_m3 = units::si::density<units::si::kilogram_per_metre_cub,double>;
+
+      template <typename Rep = double>
+      using kg_per_m3 = units::si::density<units::si::kilogram_per_metre_cub,Rep>;
    }
 
    namespace volume {
-      using m3 = units::si::volume<units::si::cubic_metre,double>;
+
+      template <typename Rep = double>
+      using m3 = units::si::volume<units::si::cubic_metre,Rep>;
    }
 }
 
 struct Box{
 
-    Box(length::m const& l,
-        length::m const& w,
-        length::m const& h
+    Box(length::m<> const& l,
+        length::m<> const& w,
+        length::m<> const& h
     ): length{l},width{w},height{h}{}
 
-    force::N filled_weight()const
+    force::N<> filled_weight()const
     {
-        volume::m3 const volume
+        volume::m3<> const volume
            = length * width * height;
-        mass::kg const mass = contents.density * volume;
-        return mass * acceleration::g;
+        mass::kg<> const mass = contents.density * volume;
+        return mass * acceleration::g<>;
     }
 
-    length::m fill_level(mass::kg const & measured_mass)const
+    length::m<> fill_level(mass::kg<> const & measured_mass)const
     {
        return height
-          * (measured_mass * acceleration::g) / filled_weight();
+          * (measured_mass * acceleration::g<>) / filled_weight();
     }
 
-    volume::m3 spare_capacity(mass::kg const & measured_mass)const
+    volume::m3<> spare_capacity(mass::kg<> const & measured_mass)const
     {
        return (height - fill_level(measured_mass)) * width * length;
     }
 
     struct contents{
         contents():density{air_density}{}
-        density::kg_per_m3 density;
+        density::kg_per_m3<> density;
     }contents;
 
-    void set_contents_density(density::kg_per_m3 const & density_in)
+    void set_contents_density(density::kg_per_m3<> const & density_in)
     {
         assert( density_in > air_density );
         contents.density = density_in;
     }
 
-    static constexpr density::kg_per_m3 air_density{1.225};
+    static constexpr density::kg_per_m3<> air_density{1.225};
 
-    length::m length;
-    length::m width;
-    length::m height;
+    length::m<> length;
+    length::m<> width;
+    length::m<> height;
 };
 
 #include <iostream>
