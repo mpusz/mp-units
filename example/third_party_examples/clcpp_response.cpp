@@ -17,6 +17,8 @@
 */
 
 #include <units/physical/si/length.h>
+#include <units/physical/us/length.h>
+
 #include <units/physical/si/area.h>
 #include <units/physical/si/volume.h>
 #include <units/physical/si/time.h>
@@ -32,12 +34,12 @@ namespace {
        using fm = units::si::length<units::si::femtometre,ValueType>;
        using km = units::si::length<units::si::kilometre,double>;
        using AU = units::si::length<units::si::astronomical_unit,double>;
-       using in = units::si::length<units::si::inch,double>;
+       using in = units::si::length<units::us::inch,double>;
        using angstrom  = units::si::length<units::si::angstrom,double>;
        using ch = units::si::length<units::si::chain,double>;
        using fathom = units::si::length<units::si::fathom,double>;
        using fathom_us = units::si::length<units::si::fathom_us,double>;
-       using ft = units::si::length<units::si::foot,double>;
+       using ft = units::si::length<units::us::foot,double>;
        using ft_us = units::si::length<units::si::foot_us,double>;
        using ly = units::si::length<units::si::light_year,double>;
        using mi = units::si::length<units::si::mile,double>;
@@ -48,7 +50,7 @@ namespace {
        using point_comp = units::si::length<units::si::point_comp,double>;
        using point_prn = units::si::length<units::si::point_prn,double>;
        using rd = units::si::length<units::si::rod,double>;
-       using yd = units::si::length<units::si::yard,double>;
+       using yd = units::si::length<units::us::yard,double>;
 
    }
 

@@ -37,15 +37,19 @@ struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 struct femtometre : prefixed_unit<femtometre,femto,metre> {};
 
 struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio<149'597'870'700>, metre> {};
+#if 0
 struct inch : named_scaled_unit<inch,"in(imp)",no_prefix,ratio<127,50,-2>, metre> {};
 struct foot : named_scaled_unit<foot,"ft(imp)",no_prefix,ratio<381,125,-1>, metre> {};
-struct foot_us : named_scaled_unit<foot,"ft(us)",no_prefix,ratio<1524003,500000,-1>, metre> {};
 struct yard : named_scaled_unit<yard,"yd(imp)",no_prefix,ratio<1143,125,-1>, metre> {};
+#endif
+struct foot_us : named_scaled_unit<foot_us,"ft(us)",no_prefix,ratio<1524003,500000,-1>, metre> {};
 struct fathom : named_scaled_unit<fathom,"fathom(imp)",no_prefix,ratio<1143,625>, metre> {};
 struct fathom_us : named_scaled_unit<fathom_us,"fathom(us)",no_prefix,ratio<457201,250000>,metre> {};
 struct chain : named_scaled_unit<chain,"ch(us)",no_prefix,ratio<502921,250000,1>, metre> {};
 
-//struct thou : named_scaled_unit<thou,"thou",no_prefix,ratio<127,50,-5>,metre> {};
+#if 0
+struct thou : named_scaled_unit<thou,"thou",no_prefix,ratio<127,50,-5>,metre> {};
+#endif
 struct mil : named_scaled_unit<mil,"mil",no_prefix,ratio<127,50,-5>,metre> {};
 
 struct light_year : named_scaled_unit<light_year,"ly(iau)",no_prefix,ratio<946073,100000,15>,metre> {};
@@ -97,18 +101,18 @@ constexpr auto operator"" km(long double l) { return length<kilometre, long doub
 // au
 constexpr auto operator"" au(unsigned long long l) { return length<astronomical_unit, std::int64_t>(l); }
 constexpr auto operator"" au(long double l) { return length<astronomical_unit, long double>(l); }
-
+#if 0
 constexpr auto operator"" q_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
 constexpr auto operator"" q_in(long double l) { return length<inch, long double>(l); }
 
 constexpr auto operator"" q_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
 constexpr auto operator"" q_ft(long double l) { return length<foot, long double>(l); }
 
-constexpr auto operator"" ft_us(unsigned long long l) { return length<foot_us, std::int64_t>(l); }
-constexpr auto operator"" ft_us(long double l) { return length<foot_us, long double>(l); }
-
 constexpr auto operator"" q_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
 constexpr auto operator"" q_yd(long double l) { return length<yard, long double>(l); }
+#endif
+constexpr auto operator"" ft_us(unsigned long long l) { return length<foot_us, std::int64_t>(l); }
+constexpr auto operator"" ft_us(long double l) { return length<foot_us, long double>(l); }
 
 constexpr auto operator"" fathom(unsigned long long l) { return length<fathom, std::int64_t>(l); }
 constexpr auto operator"" fathom(long double l) { return length<fathom, long double>(l); }
