@@ -49,7 +49,7 @@ struct Box{
     force::N filled_weight()const
     {
         volume::m3 volume
-         = this->length * this->width * this->height;
+         = length * width * height;
         mass::kg mass = this->contents.density * volume;
         return mass * acceleration::g;
     }
@@ -63,6 +63,7 @@ struct Box{
     {
       return (height - fill_level(measured_mass)) * width * length;
     }
+
     struct contents{
         contents():density{1.225}/*air density*/{}
         density::kg_per_m3 density;
@@ -74,10 +75,9 @@ struct Box{
         this->contents.density = density_in;
     }
 
-    length::m const length;
-    length::m const width;
-    length::m const height;
-
+    length::m length;
+    length::m width;
+    length::m height;
 };
 
 #include <iostream>
@@ -87,7 +87,7 @@ int main()
 {
    
    auto box = Box{1000.0mm, 500.0mm, 200.0mm};
-   box.set_contents_density(1000.0kgpm_cub);
+   box.set_contents_density(1000.0kg_per_m3);
 
    auto fill_time = 200.0s;      // time since starting fill
    auto measured_mass = 20.0kg;  // measured mass at fill_time
