@@ -23,8 +23,8 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-//#include <units/physical/si/area.h>
-//#include <units/physical/si/force.h>
+#include <units/physical/si/mass.h>
+#include <units/physical/si/length.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
@@ -33,16 +33,14 @@ namespace units::si {
 struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
 
 struct dim_density : physical::dim_density<dim_density, kilogram_per_metre_cub,dim_mass, dim_length> {};
-//template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_length> L>
-//struct dim_density : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
 
 template<Unit U, Scalar Rep = double>
 using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator""kgpm_cub(unsigned long long l) { return density<kilogram_per_metre_cub, std::int64_t>(l); }
-constexpr auto operator""kgpm_cub(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
+constexpr auto operator"" kg_per_m3(unsigned long long l) { return density<kilogram_per_metre_cub, std::int64_t>(l); }
+constexpr auto operator"" kg_per_m3(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 
