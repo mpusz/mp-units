@@ -41,15 +41,15 @@ TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingl
   }
 
   SECTION ("'pow<2>(q)' squares both the value and a dimension") {
-    CHECK(pow<2>(2m) == 4sq_m);
+    CHECK(pow<2>(2m) == 4m2);
   }
 
   SECTION ("'pow<3>(q)' cubes both the value and a dimension") {
-    CHECK(pow<3>(2m) == 8cub_m);
+    CHECK(pow<3>(2m) == 8m3);
   }
 }
 
 TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly", "[math][sqrt]")
 {
-  REQUIRE(sqrt(4sq_m) == 2m);
+  REQUIRE(sqrt(4m2) == 2m);
 }

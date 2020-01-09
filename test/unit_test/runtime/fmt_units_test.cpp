@@ -58,20 +58,20 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("area")
   {
-    CHECK(fmt::format("{}", 1sq_m) == "1 m²");
-    CHECK(fmt::format("{}", 1sq_mm) == "1 mm²");
-    CHECK(fmt::format("{}", 1sq_cm) == "1 cm²");
-    CHECK(fmt::format("{}", 1sq_km) == "1 km²");
-    CHECK(fmt::format("{}", 1sq_ft) == "1 ft²");
+    CHECK(fmt::format("{}", 1m2) == "1 m²");
+    CHECK(fmt::format("{}", 1mm2) == "1 mm²");
+    CHECK(fmt::format("{}", 1cm2) == "1 cm²");
+    CHECK(fmt::format("{}", 1km2) == "1 km²");
+    CHECK(fmt::format("{}", 1ft2) == "1 ft²");
   }
 
   SECTION("volume")
   {
-    CHECK(fmt::format("{}", 1cub_m) == "1 m³");
-    CHECK(fmt::format("{}", 1cub_mm) == "1 mm³");
-    CHECK(fmt::format("{}", 1cub_cm) == "1 cm³");
-    CHECK(fmt::format("{}", 1cub_km) == "1 km³");
-    CHECK(fmt::format("{}", 1cub_ft) == "1 ft³");
+    CHECK(fmt::format("{}", 1m3) == "1 m³");
+    CHECK(fmt::format("{}", 1mm3) == "1 mm³");
+    CHECK(fmt::format("{}", 1cm3) == "1 cm³");
+    CHECK(fmt::format("{}", 1km3) == "1 km³");
+    CHECK(fmt::format("{}", 1ft3) == "1 ft³");
   }
 
   SECTION("frequency")
@@ -92,7 +92,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("acceleration")
   {
-    CHECK(fmt::format("{}", 1mps_sq) == "1 m/s²");
+    CHECK(fmt::format("{}", 1mps2) == "1 m/s²");
   }
 
   SECTION("energy")

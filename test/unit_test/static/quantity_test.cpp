@@ -270,7 +270,7 @@ static_assert((7m % 2).count() == 1);
 static_assert((7m % 2m).count() == 1);
 static_assert((7km % 2000m).count() == 1000);
 
-static_assert((10sq_km * 10sq_km) / 50sq_km == 2sq_km);
+static_assert((10km2 * 10km2) / 50km2 == 2km2);
 
 // comparators
 
@@ -346,6 +346,6 @@ static_assert(1km / 1s == 1000mps);
 static_assert(2kmph * 2h == 4km);
 static_assert(2km / 2kmph == 1h);
 
-static_assert(std::is_same_v<decltype(pow<2>(2m)), decltype(4sq_m)>);
+static_assert(std::is_same_v<decltype(pow<2>(2m)), decltype(4m2)>);
 
 }  // namespace

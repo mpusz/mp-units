@@ -65,7 +65,7 @@ static_assert(cgs::length<cgs::centimetre>(100) == 1m);
 static_assert(cgs::mass<cgs::gram>(1'000) == 1kg);
 static_assert(cgs::time<cgs::second>(1) == 1s);
 static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1mps);
-static_assert(cgs::acceleration<cgs::gal>(100) == 1mps_sq);
+static_assert(cgs::acceleration<cgs::gal>(100) == 1mps2);
 static_assert(cgs::force<cgs::dyne>(100'000) == 1N);
 static_assert(cgs::energy<cgs::erg>(10'000'000) == 1_J);
 static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == 1W);
@@ -98,7 +98,7 @@ using namespace units::cgs::literals;
 // static_assert(1'000g == 1kg); // ambiguous
 static_assert(1s == 1s);
 static_assert(100cmps == 1mps);
-static_assert(100Gal == 1mps_sq);
+static_assert(100Gal == 1mps2);
 static_assert(100'000dyn == 1N);
 static_assert(10'000'000_erg == 1_J);
 static_assert(10'000'000_ergps == 1W);
@@ -131,7 +131,7 @@ static_assert(quantity_cast<cgs::length<cgs::centimetre>>(si::length<si::metre>(
 // static_assert(200cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // should not compile (unknown dimension)
 
 static_assert(quantity_cast<si::dim_length>(200cm) * si::length<si::metre>(2) == si::area<si::square_metre>(4));
-static_assert(200cm * quantity_cast<cgs::dim_length>(si::length<si::metre>(2)) == 40'000sq_cm);
+static_assert(200cm * quantity_cast<cgs::dim_length>(si::length<si::metre>(2)) == 40'000cm2);
 
 // TODO Add support for quantity_cast on an unknown_dimension?
 // static_assert(quantity_cast<si::area<si::square_metre>>(200cm * si::length<si::metre>(2)) == si::area<si::square_metre>(4));

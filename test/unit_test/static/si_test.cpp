@@ -122,15 +122,15 @@ static_assert(10Hz * 1min == 600);
 static_assert(2 / 1Hz == 2s);
 
 // force
-static_assert(10kg * 10mps_sq == 100N);
-static_assert(100N / 1mps_sq == 100kg);
-static_assert(100N / 1kg == 100mps_sq);
+static_assert(10kg * 10mps2 == 100N);
+static_assert(100N / 1mps2 == 100kg);
+static_assert(100N / 1kg == 100mps2);
 
 // pressure
 
-static_assert(10N / 10sq_m == 1Pa);
-static_assert(10N / 1Pa == 10sq_m);
-static_assert(1Pa * 10sq_m == 10N);
+static_assert(10N / 10m2 == 1Pa);
+static_assert(10N / 1Pa == 10m2);
+static_assert(1Pa * 10m2 == 10N);
 
 // energy
 
@@ -147,9 +147,9 @@ static_assert(gigajoule::symbol == "GJ");
 static_assert(10N * 10m == 100_J);
 static_assert(100_J / 10m == 10N);
 static_assert(100_J / 10N == 10m);
-static_assert(10Pa * 10cub_m == 100_J);
-static_assert(100_J / 10Pa == 10cub_m);
-static_assert(100_J / 10cub_m == 10Pa);
+static_assert(10Pa * 10m3 == 100_J);
+static_assert(100_J / 10Pa == 10m3);
+static_assert(100_J / 10m3 == 10Pa);
 
 // power
 
@@ -215,30 +215,30 @@ static_assert(kilometre_per_hour::symbol == "km/h");
 
 // acceleration
 
-static_assert(10mps / 10s == 1mps_sq);
-static_assert(10mps / 1mps_sq == 10s);
-static_assert(1mps_sq * 10s == 10mps);
+static_assert(10mps / 10s == 1mps2);
+static_assert(10mps / 1mps2 == 10s);
+static_assert(1mps2 * 10s == 10mps);
 
 static_assert(detail::unit_text<dim_acceleration, metre_per_second_sq>() == "m/s²");
 
 // area
 
-static_assert(10m * 10m == 100sq_m);
-static_assert(100sq_m / 10m == 10m);
-static_assert(10km * 10km == 100sq_km);
-static_assert(1sq_m == 10'000sq_cm);
-static_assert(1ha == 10'000sq_m);
+static_assert(10m * 10m == 100m2);
+static_assert(100m2 / 10m == 10m);
+static_assert(10km * 10km == 100km2);
+static_assert(1m2 == 10'000cm2);
+static_assert(1ha == 10'000m2);
 
 static_assert(detail::unit_text<dim_area, square_metre>() == "m²");
 
 // volume
 
-static_assert(1m * 1m * 1m == 1cub_m);
-static_assert(10sq_m * 10m == 100cub_m);
-static_assert(10km * 10km * 10km == 1000cub_km);
-static_assert(1cub_m == 1'000'000cub_cm);
+static_assert(1m * 1m * 1m == 1m3);
+static_assert(10m2 * 10m == 100m3);
+static_assert(10km * 10km * 10km == 1000km3);
+static_assert(1m3 == 1'000'000cm3);
 static_assert(1dm * 1dm * 1dm == 1_l);
-static_assert(1000_l == 1cub_m);
+static_assert(1000_l == 1m3);
 
 static_assert(detail::unit_text<dim_volume, cubic_metre>() == "m³");
 

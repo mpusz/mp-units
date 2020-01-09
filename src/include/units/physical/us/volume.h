@@ -31,9 +31,9 @@ struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, foot> {};
 
 inline namespace literals {
 
-// cub_ft
-constexpr auto operator""cub_ft(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
-constexpr auto operator""cub_ft(long double l) { return si::volume<cubic_foot, long double>(l); }
+// ft3
+constexpr auto operator""ft3(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
+constexpr auto operator""ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
 
 }  // namespace literals
 

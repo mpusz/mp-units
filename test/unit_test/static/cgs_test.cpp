@@ -59,8 +59,8 @@ static_assert(detail::unit_text<dim_velocity, centimetre_per_second>() == "cm/s"
 // area
 static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
 
-static_assert(1cm * 1cm == 1sq_cm);
-static_assert(100sq_cm / 10cm == 10cm);
+static_assert(1cm * 1cm == 1cm2);
+static_assert(100cm2 / 10cm == 10cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
 
@@ -80,9 +80,9 @@ static_assert(100dyn / 10Gal == 10g);
 
 // pressure
 
-static_assert(10dyn / 10sq_cm == 1Ba);
-static_assert(10dyn / 1Ba == 10sq_cm);
-static_assert(1Ba * 10sq_cm == 10dyn);
+static_assert(10dyn / 10cm2 == 1Ba);
+static_assert(10dyn / 1Ba == 10cm2);
+static_assert(1Ba * 10cm2 == 10dyn);
 
 // energy
 

@@ -42,21 +42,21 @@ using area = quantity<dim_area, U, Rep>;
 
 inline namespace literals {
 
-// sq_m
-constexpr auto operator"" sq_m(unsigned long long l) { return area<square_metre, std::int64_t>(l); }
-constexpr auto operator"" sq_m(long double l) { return area<square_metre, long double>(l); }
+// m2
+constexpr auto operator"" m2(unsigned long long l) { return area<square_metre, std::int64_t>(l); }
+constexpr auto operator"" m2(long double l) { return area<square_metre, long double>(l); }
 
-// sq_mm
-constexpr auto operator"" sq_mm(unsigned long long l) { return area<square_millimetre, std::int64_t>(l); }
-constexpr auto operator"" sq_mm(long double l) { return area<square_millimetre, long double>(l); }
+// mm2
+constexpr auto operator"" mm2(unsigned long long l) { return area<square_millimetre, std::int64_t>(l); }
+constexpr auto operator"" mm2(long double l) { return area<square_millimetre, long double>(l); }
 
-// sq_cm
-constexpr auto operator"" sq_cm(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
-constexpr auto operator"" sq_cm(long double l) { return area<square_centimetre, long double>(l); }
+// cm2
+constexpr auto operator"" cm2(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
+constexpr auto operator"" cm2(long double l) { return area<square_centimetre, long double>(l); }
 
-// sq_km
-constexpr auto operator"" sq_km(unsigned long long l) { return area<square_kilometre, std::int64_t>(l); }
-constexpr auto operator"" sq_km(long double l) { return area<square_kilometre, long double>(l); }
+// km2
+constexpr auto operator"" km2(unsigned long long l) { return area<square_kilometre, std::int64_t>(l); }
+constexpr auto operator"" km2(long double l) { return area<square_kilometre, long double>(l); }
 
 // ha
 constexpr auto operator"" ha(unsigned long long l) { return area<hectare, std::int64_t>(l); }

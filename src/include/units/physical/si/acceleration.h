@@ -36,9 +36,9 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {
 
-// mps_sq
-constexpr auto operator""mps_sq(unsigned long long l) { return acceleration<metre_per_second_sq, std::int64_t>(l); }
-constexpr auto operator""mps_sq(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
+// mps2
+constexpr auto operator""mps2(unsigned long long l) { return acceleration<metre_per_second_sq, std::int64_t>(l); }
+constexpr auto operator""mps2(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
 
 }  // namespace literals
 

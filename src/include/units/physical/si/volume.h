@@ -43,21 +43,21 @@ using volume = quantity<dim_volume, U, Rep>;
 
 inline namespace literals {
 
-// cub_mm
-constexpr auto operator""cub_mm(unsigned long long l) { return volume<cubic_millimetre, std::int64_t>(l); }
-constexpr auto operator""cub_mm(long double l) { return volume<cubic_millimetre, long double>(l); }
+// mm3
+constexpr auto operator""mm3(unsigned long long l) { return volume<cubic_millimetre, std::int64_t>(l); }
+constexpr auto operator""mm3(long double l) { return volume<cubic_millimetre, long double>(l); }
 
-// cub_cm
-constexpr auto operator""cub_cm(unsigned long long l) { return volume<cubic_centimetre, std::int64_t>(l); }
-constexpr auto operator""cub_cm(long double l) { return volume<cubic_centimetre, long double>(l); }
+// cm3
+constexpr auto operator""cm3(unsigned long long l) { return volume<cubic_centimetre, std::int64_t>(l); }
+constexpr auto operator""cm3(long double l) { return volume<cubic_centimetre, long double>(l); }
 
-// cub_m
-constexpr auto operator""cub_m(unsigned long long l) { return volume<cubic_metre, std::int64_t>(l); }
-constexpr auto operator""cub_m(long double l) { return volume<cubic_metre, long double>(l); }
+// m3
+constexpr auto operator""m3(unsigned long long l) { return volume<cubic_metre, std::int64_t>(l); }
+constexpr auto operator""m3(long double l) { return volume<cubic_metre, long double>(l); }
 
-// cub_km
-constexpr auto operator""cub_km(unsigned long long l) { return volume<cubic_kilometre, std::int64_t>(l); }
-constexpr auto operator""cub_km(long double l) { return volume<cubic_kilometre, long double>(l); }
+// km3
+constexpr auto operator""km3(unsigned long long l) { return volume<cubic_kilometre, std::int64_t>(l); }
+constexpr auto operator""km3(long double l) { return volume<cubic_kilometre, long double>(l); }
 
 // l
 constexpr auto operator""_l(unsigned long long l) { return volume<litre, std::int64_t>(l); }

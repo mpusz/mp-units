@@ -31,9 +31,9 @@ struct square_foot : deduced_unit<square_foot, si::dim_area, foot> {};
 
 inline namespace literals {
 
-// sq_ft
-constexpr auto operator"" sq_ft(unsigned long long l) { return si::area<square_foot, std::int64_t>(l); }
-constexpr auto operator"" sq_ft(long double l) { return si::area<square_foot, long double>(l); }
+// ft2
+constexpr auto operator"" ft2(unsigned long long l) { return si::area<square_foot, std::int64_t>(l); }
+constexpr auto operator"" ft2(long double l) { return si::area<square_foot, long double>(l); }
 
 }  // namespace literals
 
