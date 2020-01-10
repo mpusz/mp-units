@@ -23,10 +23,10 @@ namespace{
    namespace acceleration{
 
       template <typename Rep = double>
-      using m_per_s2 = units::si::acceleration<units::si::metre_per_second_sq,Rep>;
+      using mps2 = units::si::acceleration<units::si::metre_per_second_sq,Rep>;
 
       template <typename Rep = double>
-      constexpr m_per_s2<> g{static_cast<Rep>(9.80665)};
+      constexpr mps2<> g{static_cast<Rep>(9.80665)};
    }
 
    namespace force{
@@ -44,7 +44,7 @@ namespace{
    namespace density {
 
       template <typename Rep = double>
-      using kg_per_m3 = units::si::density<units::si::kilogram_per_metre_cub,Rep>;
+      using kgpm3 = units::si::density<units::si::kilogram_per_metre_cub,Rep>;
    }
 
    namespace volume {
@@ -82,16 +82,16 @@ struct Box{
 
     struct contents{
         contents():density{air_density}{}
-        density::kg_per_m3<> density;
+        density::kgpm3<> density;
     }contents;
 
-    void set_contents_density(density::kg_per_m3<> const & density_in)
+    void set_contents_density(density::kgpm3<> const & density_in)
     {
         assert( density_in > air_density );
         contents.density = density_in;
     }
 
-    static constexpr density::kg_per_m3<> air_density{1.225};
+    static constexpr density::kgpm3<> air_density{1.225};
 
     length::m<> length;
     length::m<> width;
@@ -104,7 +104,7 @@ using namespace units::si::literals;
 int main()
 {
    auto box = Box{1000.0mm, 500.0mm, 200.0mm};
-   box.set_contents_density(1000.0kg_per_m3);
+   box.set_contents_density(1000.0kgpm3);
 
    auto fill_time = 200.0s;      // time since starting fill
    auto measured_mass = 20.0kg;  // measured mass at fill_time
