@@ -36,7 +36,7 @@ int main()
 {
   using namespace si::literals;
   Velocity AUTO v1 = avg_speed(220km, 2h);
-  Velocity AUTO v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
+  Velocity AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
   Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);
   Velocity AUTO v4 = quantity_cast<int>(v3);
 

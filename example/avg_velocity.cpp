@@ -97,7 +97,7 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::us::literals;
+    using namespace units::international::literals;
     constexpr Length AUTO distance = 140mi;        // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -113,7 +113,7 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::us::literals;
+    using namespace units::international::literals;
     constexpr Length AUTO distance = 140.mi;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2); // constructed from a value
 

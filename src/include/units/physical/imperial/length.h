@@ -22,19 +22,22 @@
 
 #pragma once
 
-#include <units/physical/si/volume.h>
-#include <units/physical/international/length.h>
+#include <units/physical/si/length.h>
 
-namespace units::us {
+namespace units::imperial {
 
-struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
+struct chain : named_scaled_unit<chain,"ch",no_prefix,ratio<502921,250000,1>, si::metre> {};
+struct rod : named_scaled_unit<rod,"rd",no_prefix, ratio<502921,100000>,si::metre> {};
 
 inline namespace literals {
 
-// ft3
-constexpr auto operator""ft3(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
-constexpr auto operator""ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
+constexpr auto operator"" ch(unsigned long long l) { return si::length<chain, std::int64_t>(l); }
+constexpr auto operator"" ch(long double l) { return si::length<chain, long double>(l); }
+
+constexpr auto operator"" rd(unsigned long long l) { return si::length<rod, std::int64_t>(l); }
+constexpr auto operator"" rd(long double l) { return si::length<rod, long double>(l); }
+
 
 }  // namespace literals
 
-}  // namespace units::us
+}  // namespace units::si

@@ -22,6 +22,7 @@
 
 #include <units/physical/si/area.h>
 #include <units/physical/si/length.h>
+#include <units/physical/international/length.h>
 #include <units/physical/si/velocity.h>
 #include <units/physical/si/volume.h>
 #include <units/physical/us/area.h>
@@ -35,6 +36,7 @@ namespace {
 using namespace units;
 using namespace units::si;
 using namespace units::us;
+using namespace units::international;
 
 /* ************** BASE DIMENSIONS **************** */
 
