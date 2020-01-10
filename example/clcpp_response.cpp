@@ -122,7 +122,6 @@ namespace {
 #include <iostream>
 
 using namespace units::si::literals;
-//using namespace units::si;
 using namespace units::international;
 
 void simple_quantities()
