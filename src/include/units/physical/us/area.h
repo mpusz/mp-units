@@ -23,11 +23,11 @@
 #pragma once
 
 #include <units/physical/si/area.h>
-#include <units/physical/us/length.h>
+#include <units/physical/international/length.h>
 
 namespace units::us {
 
-struct square_foot : deduced_unit<square_foot, si::dim_area, foot> {};
+struct square_foot : deduced_unit<square_foot, si::dim_area, international::foot> {};
 
 inline namespace literals {
 

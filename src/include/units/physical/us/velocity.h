@@ -23,11 +23,11 @@
 #pragma once
 
 #include <units/physical/si/velocity.h>
-#include <units/physical/us/length.h>
+#include <units/physical/international/length.h>
 
 namespace units::us {
 
-struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, mile, si::hour> {};
+struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, international::mile, si::hour> {};
 
 inline namespace literals {
 

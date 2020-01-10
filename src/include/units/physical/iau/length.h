@@ -1,3 +1,4 @@
+
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -22,19 +23,25 @@
 
 #pragma once
 
-#include <units/physical/si/volume.h>
-#include <units/physical/international/length.h>
+#include <units/physical/si/length.h>
 
-namespace units::us {
+namespace units::iau {
 
-struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
+struct light_year : named_scaled_unit<light_year,"ly(iau)",no_prefix,ratio<946073,100000,15>,si::metre> {};
+struct parsec : named_scaled_unit<parsec,"pc(iau)",no_prefix,ratio<1542839,500000,16>,si::metre> {};
+struct angstrom : named_scaled_unit<angstrom,"angstrom(iau)",no_prefix,ratio<1,1,-10>,si::metre> {};
 
 inline namespace literals {
 
-// ft3
-constexpr auto operator""ft3(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
-constexpr auto operator""ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
+constexpr auto operator"" ly(unsigned long long l) { return si::length<light_year, std::int64_t>(l); }
+constexpr auto operator"" ly(long double l) { return si::length<light_year, long double>(l); }
+
+constexpr auto operator"" pc(unsigned long long l) { return si::length<parsec, std::int64_t>(l); }
+constexpr auto operator"" pc(long double l) { return si::length<parsec, long double>(l); }
+
+constexpr auto operator"" angstrom(unsigned long long l) { return si::length<angstrom, std::int64_t>(l); }
+constexpr auto operator"" angstrom(long double l) { return si::length<angstrom, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::us
+}  // namespace units::iau

@@ -17,7 +17,11 @@
 */
 
 #include <units/physical/si/length.h>
+#include <units/physical/international/length.h>
 #include <units/physical/us/length.h>
+#include <units/physical/iau/length.h>
+#include <units/physical/typographic/length.h>
+#include <units/physical/imperial/length.h>
 #include <units/physical/si/area.h>
 #include <units/physical/si/volume.h>
 #include <units/physical/si/time.h>
@@ -41,55 +45,55 @@ namespace {
       using AU = units::si::length<units::si::astronomical_unit,Rep>;
 
       template <typename Rep = double>
-      using in = units::si::length<units::us::inch,Rep>;
+      using in = units::si::length<units::international::inch,Rep>;
 
       template <typename Rep = double>
-      using angstrom  = units::si::length<units::si::angstrom,Rep>;
+      using angstrom  = units::si::length<units::iau::angstrom,Rep>;
 
       template <typename Rep = double>
-      using ch = units::si::length<units::si::chain,Rep>;
+      using ch = units::si::length<units::imperial::chain,Rep>;
 
       template <typename Rep = double>
-      using fathom = units::si::length<units::si::fathom,Rep>;
+      using fathom = units::si::length<units::international::fathom,Rep>;
+#if 1
+      template <typename Rep = double>
+      using fathom_us = units::si::length<units::us::fathom,Rep>;
+#endif
+      template <typename Rep = double>
+      using ft = units::si::length<units::international::foot,Rep>;
+#if 1
+      template <typename Rep = double>
+      using ft_us = units::si::length<units::us::foot,Rep>;
+#endif
+      template <typename Rep = double>
+      using ly = units::si::length<units::iau::light_year,Rep>;
 
       template <typename Rep = double>
-      using fathom_us = units::si::length<units::si::fathom_us,Rep>;
+      using mi = units::si::length<units::international::mile,Rep>;
 
       template <typename Rep = double>
-      using ft = units::si::length<units::us::foot,Rep>;
+      using mi_naut = units::si::length<units::international::nautical_mile,Rep>;
 
       template <typename Rep = double>
-      using ft_us = units::si::length<units::si::foot_us,Rep>;
+      using pc = units::si::length<units::iau::parsec,Rep>;
 
       template <typename Rep = double>
-      using ly = units::si::length<units::si::light_year,Rep>;
+      using pica_comp = units::si::length<units::typographic::pica_comp,Rep>;
 
       template <typename Rep = double>
-      using mi = units::si::length<units::si::mile,Rep>;
+      using pica_prn = units::si::length<units::typographic::pica_prn,Rep>;
 
       template <typename Rep = double>
-      using mi_naut = units::si::length<units::si::nautical_mile,Rep>;
+      using point_comp = units::si::length<units::typographic::point_comp,Rep>;
 
       template <typename Rep = double>
-      using pc = units::si::length<units::si::parsec,Rep>;
+      using point_prn = units::si::length<units::typographic::point_prn,Rep>;
 
       template <typename Rep = double>
-      using pica_comp = units::si::length<units::si::pica_comp,Rep>;
+      using rd = units::si::length<units::imperial::rod,Rep>;
 
       template <typename Rep = double>
-      using pica_prn = units::si::length<units::si::pica_prn,Rep>;
-
-      template <typename Rep = double>
-      using point_comp = units::si::length<units::si::point_comp,Rep>;
-
-      template <typename Rep = double>
-      using point_prn = units::si::length<units::si::point_prn,Rep>;
-
-      template <typename Rep = double>
-      using rd = units::si::length<units::si::rod,Rep>;
-
-      template <typename Rep = double>
-      using yd = units::si::length<units::us::yard,Rep>;
+      using yd = units::si::length<units::international::yard,Rep>;
 
    }
 
@@ -118,13 +122,15 @@ namespace {
 #include <iostream>
 
 using namespace units::si::literals;
+//using namespace units::si;
+using namespace units::international;
 
 void simple_quantities()
 {
     using distance = length::m<>;
     using time = time::s<>;
     distance constexpr km = 1.0km;
-    distance constexpr miles = 1q_mi;
+    distance constexpr miles = 1.0mi;
 
     time constexpr sec = 1s;
     time constexpr min = 1min;
@@ -143,7 +149,7 @@ void quantities_with_typed_units()
 {
     length::km<> constexpr km = 1km;
 
-    length::mi<> constexpr miles = 1q_mi;
+    length::mi<> constexpr miles = 1.0mi;
 
     std::cout.precision(6);
 
@@ -168,9 +174,13 @@ void quantities_with_typed_units()
     std::cout << " = " << length::angstrom<>(meter) << '\n'; 
     std::cout << " = " << length::ch<>(meter) << '\n'; 
     std::cout << " = " << length::fathom<>(meter) << '\n'; 
+#if 1
     std::cout << " = " << length::fathom_us<>(meter) << '\n';
+#endif
     std::cout << " = " << length::ft<>(meter) << '\n'; 
-    std::cout << " = " << length::ft_us<>(meter) << '\n';  
+#if 1
+    std::cout << " = " << length::ft_us<>(meter) << '\n'; 
+#endif 
     std::cout << " = " << length::in<>(meter) << '\n'; 
     std::cout << " = " << length::ly<>(meter) << '\n';  
     std::cout << " = " << length::mi<>(meter) << '\n'; 
