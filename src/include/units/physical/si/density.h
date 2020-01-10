@@ -39,8 +39,8 @@ using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator"" kg_per_m3(unsigned long long l) { return density<kilogram_per_metre_cub, std::int64_t>(l); }
-constexpr auto operator"" kg_per_m3(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
+constexpr auto operator"" kgpm3(unsigned long long l) { return density<kilogram_per_metre_cub, std::int64_t>(l); }
+constexpr auto operator"" kgpm3(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 
