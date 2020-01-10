@@ -24,10 +24,11 @@
 
 #include <units/physical/si/volume.h>
 #include <units/physical/international/length.h>
+#include <units/physical/us/length.h>
 
 namespace units::us {
 
-struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
+struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, us::foot> {};
 
 inline namespace literals {
 
