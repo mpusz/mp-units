@@ -55,16 +55,16 @@ namespace {
 
       template <typename Rep = double>
       using fathom = units::si::length<units::international::fathom,Rep>;
-#if 1
+
       template <typename Rep = double>
       using fathom_us = units::si::length<units::us::fathom,Rep>;
-#endif
+
       template <typename Rep = double>
       using ft = units::si::length<units::international::foot,Rep>;
-#if 1
+
       template <typename Rep = double>
       using ft_us = units::si::length<units::us::foot,Rep>;
-#endif
+
       template <typename Rep = double>
       using ly = units::si::length<units::iau::light_year,Rep>;
 
@@ -174,13 +174,9 @@ void quantities_with_typed_units()
     std::cout << " = " << length::angstrom<>(meter) << '\n'; 
     std::cout << " = " << length::ch<>(meter) << '\n'; 
     std::cout << " = " << length::fathom<>(meter) << '\n'; 
-#if 1
     std::cout << " = " << length::fathom_us<>(meter) << '\n';
-#endif
     std::cout << " = " << length::ft<>(meter) << '\n'; 
-#if 1
     std::cout << " = " << length::ft_us<>(meter) << '\n'; 
-#endif 
     std::cout << " = " << length::in<>(meter) << '\n'; 
     std::cout << " = " << length::ly<>(meter) << '\n';  
     std::cout << " = " << length::mi<>(meter) << '\n'; 
