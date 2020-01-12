@@ -27,9 +27,9 @@
 
 namespace units::iau {
 
-struct light_year : named_scaled_unit<light_year,"ly(iau)",no_prefix,ratio<946073,100000,15>,si::metre> {};
-struct parsec : named_scaled_unit<parsec,"pc(iau)",no_prefix,ratio<1542839,500000,16>,si::metre> {};
-struct angstrom : named_scaled_unit<angstrom,"angstrom(iau)",no_prefix,ratio<1,1,-10>,si::metre> {};
+struct light_year : named_scaled_unit<light_year,"ly",no_prefix,ratio<946073,100000,15>,si::metre> {};
+struct parsec : named_scaled_unit<parsec,"pc",no_prefix,ratio<1542839,500000,16>,si::metre> {};
+struct angstrom : named_scaled_unit<angstrom,"angstrom",no_prefix,ratio<1,1,-10>,si::metre> {};
 
 inline namespace literals {
 

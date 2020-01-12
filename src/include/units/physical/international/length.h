@@ -35,7 +35,6 @@ namespace units::international {
 //https://en.wikipedia.org/wiki/International_yard_and_pound
 struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 1'000,-1>, si::metre> {};
 
-
 //international foot
 //https://en.wikipedia.org/wiki/Foot_(unit)#International_foot
 struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<3'048,1'000,-1>, si::metre> {};
@@ -55,10 +54,9 @@ struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio<25'146,15'625,3>, s
 //https://en.wikipedia.org/wiki/Mile#Nautical_mile
 struct nautical_mile : named_scaled_unit<nautical_mile,"mi(naut)",no_prefix, ratio<463,250,3>,si::metre> {};
 
-#if 0
+//TODO thou
 //https://en.wikipedia.org/wiki/Thousandth_of_an_inch
-struct thou : named_scaled_unit<thou,"thou",no_prefix,ratio<127,50,-5>,si::metre> {};
-#endif
+//struct thou : named_scaled_unit<thou,"thou",no_prefix,ratio<127,50,-5>,si::metre> {};
 // different name for thou
 //https://en.wikipedia.org/wiki/Thousandth_of_an_inch
 struct mil : named_scaled_unit<mil,"mil",no_prefix,ratio<127,50,-5>,si::metre> {};
@@ -89,11 +87,10 @@ constexpr auto operator"" mi(long double l) { return si::length<mile, long doubl
 constexpr auto operator"" naut_mi(unsigned long long l) { return si::length<nautical_mile, std::int64_t>(l); }
 constexpr auto operator"" naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
 
-#if 0
-// thou
-constexpr auto operator"" thou(unsigned long long l) { return si::length<thou, std::int64_t>(l); }
-constexpr auto operator"" thou(long double l) { return si::length<thou, long double>(l); }
-#endif
+//TODO thou
+//constexpr auto operator"" thou(unsigned long long l) { return si::length<thou, std::int64_t>(l); }
+//constexpr auto operator"" thou(long double l) { return si::length<thou, long double>(l); }
+
 // mil
 constexpr auto operator"" mil(unsigned long long l) { return si::length<mil, std::int64_t>(l); }
 constexpr auto operator"" mil(long double l) { return si::length<mil, long double>(l); }

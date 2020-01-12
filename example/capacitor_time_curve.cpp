@@ -56,13 +56,13 @@ int main()
     std::cout.setf(std::ios_base::fixed,std::ios_base::floatfield);
     std::cout.precision(3);
 
-    auto constexpr C = 0.47uF;
-    auto constexpr V0 = 5.0V;
-    auto constexpr R = 4.7kR;
+    constexpr auto  C = 0.47uF;
+    constexpr auto  V0 = 5.0V;
+    constexpr auto  R = 4.7kR;
 
     for ( auto t = 0ms ; t <= 50ms; ++t  ){
 
-        auto const Vt = V0 * std::exp(-t / (R * C));
+        const auto  Vt = V0 * std::exp(-t / (R * C));
 
         std::cout << "at " << t << " voltage is " ;
 

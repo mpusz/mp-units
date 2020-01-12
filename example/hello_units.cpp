@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <units/physical/si/velocity.h>
-#include <units/physical/us/velocity.h>
+#include <units/physical/international/velocity.h>
 #include <units/format.h>
 #include <iostream>
 

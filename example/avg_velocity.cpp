@@ -22,7 +22,7 @@
 
 #include <units/physical/cgs/velocity.h>
 #include <units/physical/si/velocity.h>
-#include <units/physical/us/velocity.h>
+#include <units/physical/international/velocity.h>
 #include <iostream>
 
 namespace {

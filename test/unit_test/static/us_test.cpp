@@ -25,10 +25,10 @@
 #include <units/physical/international/length.h>
 #include <units/physical/si/velocity.h>
 #include <units/physical/si/volume.h>
-#include <units/physical/us/area.h>
+#include <units/physical/international/area.h>
 #include <units/physical/us/length.h>
-#include <units/physical/us/velocity.h>
-#include <units/physical/us/volume.h>
+#include <units/physical/international/velocity.h>
+#include <units/physical/international/volume.h>
 #include <utility>
 
 namespace {
