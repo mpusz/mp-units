@@ -128,12 +128,13 @@ void simple_quantities()
 {
     using distance = length::m<>;
     using time = time::s<>;
-    distance constexpr km = 1.0km;
-    distance constexpr miles = 1.0mi;
 
-    time constexpr sec = 1s;
-    time constexpr min = 1min;
-    time constexpr hr = 1h;
+    constexpr distance  km = 1.0km;
+    constexpr  distance miles = 1.0mi;
+
+    constexpr time  sec = 1s;
+    constexpr time  min = 1min;
+    constexpr time  hr = 1h;
 
     std::cout << "A physical quantities library can choose the simple\n";
     std::cout << "option to provide output using a single type for each base unit:\n\n"; 
@@ -146,15 +147,14 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-    length::km<> constexpr km = 1km;
-
-    length::mi<> constexpr miles = 1.0mi;
+    constexpr length::km<>  km = 1km;
+    constexpr length::mi<>  miles = 1.0mi;
 
     std::cout.precision(6);
 
-    time::s<> constexpr  sec = 1s;
-    time::min<> constexpr min = 1min;
-    time::h<> constexpr  hr  = 1h;
+    constexpr time::s<>  sec = 1s;
+    constexpr time::min<>  min = 1min;
+    constexpr time::h<>   hr  = 1h;
 
     std::cout << "A more flexible option is to provide separate types for each unit,\n\n"; 
     std::cout << km << '\n';
@@ -163,7 +163,7 @@ void quantities_with_typed_units()
     std::cout << min << '\n';
     std::cout << hr  << "\n\n";
 
-    length::m<> constexpr meter = 1m;
+    constexpr length::m<>  meter = 1m;
     std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
     " for consistency and repeatability across applications:\n\n";
 

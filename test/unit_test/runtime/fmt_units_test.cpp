@@ -26,14 +26,26 @@
 #include "units/physical/si/velocity.h"
 #include "units/physical/si/volume.h"
 #include "units/physical/si/surface_tension.h"
-#include "units/physical/us/area.h"
-#include "units/physical/us/velocity.h"
-#include "units/physical/us/volume.h"
+#include "units/physical/us/length.h"
+#include "units/physical/imperial/length.h"
+#include "units/physical/international/length.h"
+#include "units/physical/international/area.h"
+#include "units/physical/international/volume.h"
+#include "units/physical/international/velocity.h"
+#include "units/physical/iau/length.h"
+#include "units/physical/typographic/length.h"
+#include "units/physical/si/density.h"
+#include "units/physical/si/resistance.h"
+#include "units/physical/si/voltage.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
 using namespace units::si;
+using namespace units::international;
 using namespace units::us;
+using namespace units::iau;
+using namespace units::imperial;
+using namespace units::typographic;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {
@@ -49,6 +61,27 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1mm) == "1 mm");
     CHECK(fmt::format("{}", 1cm) == "1 cm");
     CHECK(fmt::format("{}", 1km) == "1 km");
+    CHECK(fmt::format("{}", 1ft) == "1 ft");
+    CHECK(fmt::format("{}", 1ft_us) == "1 ft(us)");
+    CHECK(fmt::format("{}", 1yd) == "1 yd");
+    CHECK(fmt::format("{}", 1in) == "1 in");
+    CHECK(fmt::format("{}", 1fathom) == "1 fathom");
+    CHECK(fmt::format("{}", 1fathom_us) == "1 fathom(us)");
+    CHECK(fmt::format("{}", 1mi) == "1 mi");
+    CHECK(fmt::format("{}", 1mi_us) == "1 mi(us)");
+    CHECK(fmt::format("{}", 1naut_mi) == "1 mi(naut)");
+    CHECK(fmt::format("{}", 1ch) == "1 ch");
+    CHECK(fmt::format("{}", 1rd) == "1 rd");
+    CHECK(fmt::format("{}", 1mil) == "1 mil");
+    CHECK(fmt::format("{}", 1pc) == "1 pc");
+    CHECK(fmt::format("{}", 1ly) == "1 ly");
+    CHECK(fmt::format("{}", 1pc) == "1 pc");
+    CHECK(fmt::format("{}", 1angstrom) == "1 angstrom");
+    CHECK(fmt::format("{}", 1au) == "1 au");
+    CHECK(fmt::format("{}", 1pica_comp) == "1 pica(comp)");
+    CHECK(fmt::format("{}", 1pica_prn) == "1 pica(prn)");
+    CHECK(fmt::format("{}", 1point_comp) == "1 point(comp)");
+    CHECK(fmt::format("{}", 1point_prn) == "1 point(prn)");
   }
 
   SECTION("mass")
@@ -63,6 +96,28 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1cm2) == "1 cm²");
     CHECK(fmt::format("{}", 1km2) == "1 km²");
     CHECK(fmt::format("{}", 1ft2) == "1 ft²");
+  }
+
+  SECTION("density")
+  {
+      CHECK(fmt::format("{}", 1kgpm3) == "1 kg/m³");
+  }
+
+  SECTION("resistance")
+  {
+      CHECK(fmt::format("{}", 1_R) == "1 Ω");
+      CHECK(fmt::format("{}", 1kR) == "1 kΩ");
+      CHECK(fmt::format("{}", 1mR) == "1 mΩ");
+      CHECK(fmt::format("{}", 1MR) == "1 MΩ");
+  }
+
+  SECTION("voltage")
+  {
+     CHECK(fmt::format("{}", 1V) == "1 V");
+     CHECK(fmt::format("{}", 1mV) == "1 mV");
+     CHECK(fmt::format("{}", 1uV) == "1 µV");
+     CHECK(fmt::format("{}", 1nV) == "1 nV");
+     CHECK(fmt::format("{}", 1pV) == "1 pV");
   }
 
   SECTION("volume")

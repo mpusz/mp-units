@@ -26,7 +26,6 @@
 
 namespace units::us {
 
-#if 1
 //https://en.wikipedia.org/wiki/Foot_(unit)#US_survey_foot
 //https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
 //struct foot : named_scaled_unit<foot,"ft(us)",no_prefix,ratio<3'048,1'000,-1>, si::metre> {};
@@ -39,7 +38,7 @@ struct fathom : named_scaled_unit<fathom,"fathom(us)",no_prefix,ratio<6,1>,us::f
 
 //https://en.wikipedia.org/wiki/Mile#U.S._survey_mile
 //https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
-struct mile : named_scaled_unit<mile,"mile(us)",no_prefix,ratio<5280,1000,3>,us::foot> {};
+struct mile : named_scaled_unit<mile,"mi(us)",no_prefix,ratio<5280,1000,3>,us::foot> {};
 
 inline namespace literals {
 
@@ -56,5 +55,5 @@ constexpr auto operator"" mi_us(unsigned long long l) { return si::length<units:
 constexpr auto operator"" mi_us(long double l) { return si::length<units::us::mile, long double>(l); }
 
 }  // namespace literals
-#endif
+
 }  // namespace units::us

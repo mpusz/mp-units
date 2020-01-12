@@ -22,19 +22,19 @@
 
 #pragma once
 
-#include <units/physical/si/volume.h>
+#include <units/physical/si/area.h>
 #include <units/physical/international/length.h>
 
-namespace units::us {
+namespace units::international {
 
-struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
+struct square_foot : deduced_unit<square_foot, si::dim_area, international::foot> {};
 
 inline namespace literals {
 
-// ft3
-constexpr auto operator""ft3(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
-constexpr auto operator""ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
+// ft2
+constexpr auto operator"" ft2(unsigned long long l) { return si::area<square_foot, std::int64_t>(l); }
+constexpr auto operator"" ft2(long double l) { return si::area<square_foot, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::us
+}  // namespace units::international

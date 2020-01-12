@@ -48,7 +48,7 @@ namespace {
    }
 
    // get at the units text of the quantity, without its numeric value
-   auto inline constexpr units_str( units::Quantity const & q)
+   auto inline constexpr units_str( const units::Quantity & q)
    {
       typedef std::remove_cvref_t<decltype(q)> qtype;
       return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
@@ -74,8 +74,8 @@ int main()
 {
    std::cout << "conversion factor in mpusz/units...\n\n";
 
-   length::m<> constexpr lengthA = 2.0m;
-   length::mm<> constexpr lengthB = lengthA;
+   constexpr length::m<>  lengthA = 2.0m;
+   constexpr length::mm<>  lengthB = lengthA;
 
    std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"
    "represent the same length in different units.\n\n";

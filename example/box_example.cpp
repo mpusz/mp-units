@@ -56,26 +56,26 @@ namespace{
 
 struct Box{
 
-    Box(length::m<> const& l,
-        length::m<> const& w,
-        length::m<> const& h
+    Box(const length::m<> & l,
+        const length::m<> & w,
+        const length::m<> & h
     ): length{l},width{w},height{h}{}
 
     force::N<> filled_weight()const
     {
-        volume::m3<> const volume
+        const volume::m3<>  volume
            = length * width * height;
-        mass::kg<> const mass = contents.density * volume;
+        const mass::kg<>  mass = contents.density * volume;
         return mass * acceleration::g<>;
     }
 
-    length::m<> fill_level(mass::kg<> const & measured_mass)const
+    length::m<> fill_level(const mass::kg<> & measured_mass)const
     {
        return height
           * (measured_mass * acceleration::g<>) / filled_weight();
     }
 
-    volume::m3<> spare_capacity(mass::kg<> const & measured_mass)const
+    volume::m3<> spare_capacity(const  mass::kg<> & measured_mass)const
     {
        return (height - fill_level(measured_mass)) * width * length;
     }
@@ -85,7 +85,7 @@ struct Box{
         density::kgpm3<> density;
     }contents;
 
-    void set_contents_density(density::kgpm3<> const & density_in)
+    void set_contents_density(const density::kgpm3<>  & density_in)
     {
         assert( density_in > air_density );
         contents.density = density_in;

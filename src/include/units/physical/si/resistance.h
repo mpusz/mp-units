@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct ohm : named_unit<ohm, "R", prefix> {};
+struct ohm : named_unit<ohm, "Ω", prefix> {};
 struct milliohm : prefixed_unit<milliohm, milli, ohm> {};
 struct kiloohm : prefixed_unit<kiloohm, kilo, ohm> {};
 struct megaohm : prefixed_unit<megaohm, mega, ohm> {};
@@ -43,7 +43,7 @@ using resistance = quantity<dim_resistance, U, Rep>;
 inline namespace literals {
 
 //R
-constexpr auto operator""R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
+constexpr auto operator""_R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
 constexpr auto operator""_R(long double l) { return resistance<ohm, long double>(l); }
 
 //mR
