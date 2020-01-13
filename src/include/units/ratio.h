@@ -228,6 +228,12 @@ struct common_ratio_impl {
   using type = ratio<gcd_num, (R1::den / gcd_den) * R2::den, std::min(R1::exp, R2::exp)>;
 };
 
+// we will later assume that Ratio<N,D> part >=1 and Ratio<N,D> part < 10
+template <typename Ratio>
+struct nearest_si_ratio{
+    typedef ratio<1,1, Ratio::exp> type;
+};
+
 }  // namespace detail
 
 template<Ratio R1, Ratio R2>
