@@ -10,8 +10,7 @@
 
 ```cpp
 #include <units/physical/si/velocity.h>
-#include <units/physical/us/velocity.h>
-#include <units/format.h>
+#include <units/physical/international/velocity.h>
 #include <iostream>
 
 using namespace units;
@@ -25,18 +24,18 @@ int main()
 {
   using namespace si::literals;
   Velocity auto v1 = avg_speed(220km, 2h);
-  Velocity auto v2 = avg_speed(si::length<us::mile>(140), si::time<si::hour>(2));
+  Velocity auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
   Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);
   Velocity auto v4 = quantity_cast<int>(v3);
 
-  std::cout << v1 << '\n';                             // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
+  std::cout << v1 << '\n';    // 110 km/h
+  std::cout << v2 << '\n';    // 70 mi/h
+  std::cout << v3 << '\n';    // 31.2928 m/s
+  std::cout << v4 << '\n';    // 31 m/s
 }
 ```
 
-Try it on [Compiler Explorer](https://godbolt.org/z/7pqFV7).
+Try it on [Compiler Explorer](https://godbolt.org/z/eMhDQ9).
 
 
 ## Summary
@@ -154,7 +153,7 @@ fashion:
 int main()
 {
   using namespace si::literals;
-  using namespace us::literals;
+  using namespace international::literals;
   Velocity auto v1 = avg_speed(220km, 2h);
   Velocity auto v2 = avg_speed(140mi, 2h);
 
