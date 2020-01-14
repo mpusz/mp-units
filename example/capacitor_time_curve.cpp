@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2003-2020 Andy Little.
 
@@ -23,54 +22,59 @@
 
 #include <units/physical/si/capacitance.h>
 #include <units/physical/si/resistance.h>
-#include <units/physical/si/voltage.h>
 #include <units/physical/si/time.h>
+#include <units/physical/si/voltage.h>
 #include <cmath>
-
-namespace {
-   namespace voltage {
-
-       template <typename Rep = double>
-       using V = units::si::voltage<units::si::volt,Rep>;
-
-       template <typename Rep = double>
-       using mV = units::si::voltage<units::si::millivolt,Rep>;
-
-       template <typename Rep = double>
-       using uV = units::si::voltage<units::si::microvolt,Rep>;
-
-       template <typename Rep = double>
-       using nV = units::si::voltage<units::si::nanovolt,Rep>;
-
-       template <typename Rep = double>
-       using pV = units::si::voltage<units::si::picovolt,Rep>;
-   }
-}
-
 #include <iostream>
 
+namespace {
+namespace voltage {
+
+template<typename Rep = double>
+using V = units::si::voltage<units::si::volt, Rep>;
+
+template<typename Rep = double>
+using mV = units::si::voltage<units::si::millivolt, Rep>;
+
+template<typename Rep = double>
+using uV = units::si::voltage<units::si::microvolt, Rep>;
+
+template<typename Rep = double>
+using nV = units::si::voltage<units::si::nanovolt, Rep>;
+
+template<typename Rep = double>
+using pV = units::si::voltage<units::si::picovolt, Rep>;
+
+}  // namespace voltage
+}  // namespace
+
 using namespace units::si::literals;
+
 int main()
 {
-    std::cout << "mpusz/units capacitor time curve example...\n";
-    std::cout.setf(std::ios_base::fixed,std::ios_base::floatfield);
-    std::cout.precision(3);
+  std::cout << "mpusz/units capacitor time curve example...\n";
+  std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
+  std::cout.precision(3);
 
-    constexpr auto  C = 0.47uF;
-    constexpr auto  V0 = 5.0V;
-    constexpr auto  R = 4.7kR;
+  constexpr auto C = 0.47uF;
+  constexpr auto V0 = 5.0V;
+  constexpr auto R = 4.7kR;
 
-    for ( auto t = 0ms ; t <= 50ms; ++t  ){
+  for (auto t = 0ms; t <= 50ms; ++t) {
+    const auto Vt = V0 * std::exp(-t / (R * C));
 
-        const auto  Vt = V0 * std::exp(-t / (R * C));
+    std::cout << "at " << t << " voltage is ";
 
-        std::cout << "at " << t << " voltage is " ;
-
-        if     ( Vt >= 1V )    std::cout << Vt ;
-        else if( Vt >= 1mV )   std::cout << voltage::mV<>{Vt};
-        else if( Vt >= 1uV )   std::cout << voltage::uV<>{Vt};
-        else if( Vt >= 1nV )   std::cout << voltage::nV<>{Vt};
-        else                   std::cout << voltage::pV<>{Vt};
-        std::cout << "\n";
-    }
+    if (Vt >= 1V)
+      std::cout << Vt;
+    else if (Vt >= 1mV)
+      std::cout << voltage::mV<>{Vt};
+    else if (Vt >= 1uV)
+      std::cout << voltage::uV<>{Vt};
+    else if (Vt >= 1nV)
+      std::cout << voltage::nV<>{Vt};
+    else
+      std::cout << voltage::pV<>{Vt};
+    std::cout << "\n";
+  }
 }

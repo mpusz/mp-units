@@ -1,4 +1,3 @@
-
 /*
  Copyright (c) 2003-2020 Andy Little.
 
@@ -17,75 +16,64 @@
 */
 
 #include <units/physical/si/length.h>
+#include <iostream>
 
 /*
-    get conversion factor from one dimensionally equivalent 
-    quantity type to another
+  get conversion factor from one dimensionally equivalent
+  quantity type to another
 */
 
 namespace {
 
-   template < 
-      units::Quantity Target,
-      units::Quantity Source
-   >
-   requires units::equivalent_dim<typename Source::dimension,typename Target::dimension>
-   constexpr inline
-   std::common_type_t<
-      typename Target::rep,
-      typename Source::rep
-   >
-   conversion_factor(Target , Source)
-   {
-      // get quantities looking like inputs but with Q::rep that doesnt have narrowing conversion
-      typedef std::common_type_t<
-         typename Target::rep,
-         typename Source::rep
-      > rep;
-      typedef units::quantity<typename Source::dimension,typename Source::unit,rep> source;
-      typedef units::quantity<typename Target::dimension,typename Target::unit,rep> target;
-      return target{source{1}}.count();
-   }
-
-   // get at the units text of the quantity, without its numeric value
-   auto inline constexpr units_str( const units::Quantity & q)
-   {
-      typedef std::remove_cvref_t<decltype(q)> qtype;
-      return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
-   }
+template<units::Quantity Target, units::Quantity Source>
+  requires units::equivalent_dim<typename Source::dimension, typename Target::dimension>
+constexpr inline std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
+{
+  // get quantities looking like inputs but with Q::rep that doesn't have narrowing conversion
+  typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
+  typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
+  typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
+  return target{source{1}}.count();
 }
+
+// get at the units text of the quantity, without its numeric value
+auto inline constexpr units_str(const units::Quantity& q)
+{
+  typedef std::remove_cvref_t<decltype(q)> qtype;
+  return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
+}
+
+}  // namespace
 
 namespace {
 
-    namespace length{
+namespace length {
 
-       template <typename Rep = double>
-       using m = units::si::length<units::si::metre,Rep>;
+template<typename Rep = double>
+using m = units::si::length<units::si::metre, Rep>;
 
-       template <typename Rep = double>
-       using mm = units::si::length<units::si::millimetre,Rep>;
-   }
-}
+template<typename Rep = double>
+using mm = units::si::length<units::si::millimetre, Rep>;
 
-#include <iostream>
+}  // namespace length
+}  // namespace
 
 using namespace units::si::literals;
+
 int main()
 {
-   std::cout << "conversion factor in mpusz/units...\n\n";
+  std::cout << "conversion factor in mpusz/units...\n\n";
 
-   constexpr length::m<>  lengthA = 2.0m;
-   constexpr length::mm<>  lengthB = lengthA;
+  constexpr length::m<> lengthA = 2.0m;
+  constexpr length::mm<> lengthB = lengthA;
 
-   std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"
-   "represent the same length in different units.\n\n";
+  std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"
+            << "represent the same length in different units.\n\n";
 
-   std::cout << "therefore ratio lengthA / lengthB == " << lengthA / lengthB << "\n\n"; 
+  std::cout << "therefore ratio lengthA / lengthB == " << lengthA / lengthB << "\n\n";
 
-   std::cout << "conversion factor from "
-       "lengthA::unit of " << units_str(lengthA) 
-       << " to lengthB::unit of " << units_str(lengthB) << " :\n\n"
-      "lengthB.count( " << lengthB.count() << " ) == "
-      "lengthA.count( " << lengthA.count() << " ) * "
-      "conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
+  std::cout << "conversion factor from lengthA::unit of "
+            << units_str(lengthA) << " to lengthB::unit of " << units_str(lengthB) << " :\n\n"
+            << "lengthB.count( " << lengthB.count() << " ) == lengthA.count( " << lengthA.count()
+            << " ) * conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
 }
