@@ -34,7 +34,7 @@ struct centimetre : prefixed_unit<centimetre, centi, metre> {};
 struct decimetre : prefixed_unit<decimetre, deci, metre> {};
 struct hectometre : prefixed_unit<hectometre, hecto, metre> {};
 struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
-struct femtometre : prefixed_unit<femtometre,femto,metre> {};
+struct femtometre : prefixed_unit<femtometre, femto, metre> {};
 
 struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio<149'597'870'700>, metre> {};
 

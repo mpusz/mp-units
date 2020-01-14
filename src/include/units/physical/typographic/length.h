@@ -27,26 +27,27 @@
 
 namespace units::typographic {
 
-struct pica_comp : named_scaled_unit<pica_comp,"pica(comp)",no_prefix,ratio<4233333,1000000,-3>,si::metre> {};
-struct pica_prn : named_scaled_unit<pica_prn,"pica(prn)",no_prefix,ratio<2108759,500000,-3>,si::metre> {};
-struct point_comp : named_scaled_unit<point_comp,"point(comp)",no_prefix,ratio<1763889,500000,-4>,si::metre> {};
-struct point_prn  : named_scaled_unit<point_prn,"point(prn)", no_prefix, ratio<1757299,500000,-4>,si::metre> {};
+// TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors and provide hyperlinks to definitions
+struct pica_comp : named_scaled_unit<pica_comp, "pica(comp)", no_prefix, ratio<4233333, 1000000, -3>, si::metre> {};
+struct pica_prn : named_scaled_unit<pica_prn, "pica(prn)", no_prefix, ratio<2108759, 500000, -3>, si::metre> {};
+struct point_comp : named_scaled_unit<point_comp, "point(comp)", no_prefix, ratio<1763889, 500000, -4>, si::metre> {};
+struct point_prn : named_scaled_unit<point_prn, "point(prn)", no_prefix, ratio<1757299, 500000, -4>, si::metre> {};
 
 inline namespace literals {
 
-  // pica comp
+// pica comp
 constexpr auto operator"" pica_comp(unsigned long long l) { return si::length<pica_comp, std::int64_t>(l); }
 constexpr auto operator"" pica_comp(long double l) { return si::length<pica_comp, long double>(l); }
 
-  // pica prn
+// pica prn
 constexpr auto operator"" pica_prn(unsigned long long l) { return si::length<pica_prn, std::int64_t>(l); }
 constexpr auto operator"" pica_prn(long double l) { return si::length<pica_prn, long double>(l); }
 
-  // point comp
+// point comp
 constexpr auto operator"" point_comp(unsigned long long l) { return si::length<point_comp, std::int64_t>(l); }
 constexpr auto operator"" point_comp(long double l) { return si::length<point_comp, long double>(l); }
 
-  // point prn
+// point prn
 constexpr auto operator"" point_prn(unsigned long long l) { return si::length<point_prn, std::int64_t>(l); }
 constexpr auto operator"" point_prn(long double l) { return si::length<point_prn, long double>(l); }
 

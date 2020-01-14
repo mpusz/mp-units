@@ -32,7 +32,7 @@ namespace units::si {
 
 struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
 
-struct dim_density : physical::dim_density<dim_density, kilogram_per_metre_cub,dim_mass, dim_length> {};
+struct dim_density : physical::dim_density<dim_density, kilogram_per_metre_cub, dim_mass, dim_length> {};
 
 template<Unit U, Scalar Rep = double>
 using density = quantity<dim_density, U, Rep>;

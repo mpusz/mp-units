@@ -22,12 +22,15 @@
 
 #pragma once
 
-#include <units/physical/si/length.h>
+#include <units/physical/international/length.h>
 
 namespace units::imperial {
 
-struct chain : named_scaled_unit<chain,"ch",no_prefix,ratio<502921,250000,1>, si::metre> {};
-struct rod : named_scaled_unit<rod,"rd",no_prefix, ratio<502921,100000>,si::metre> {};
+// https://en.wikipedia.org/wiki/Chain_(unit)
+struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio<22, 1>, international::yard> {};
+
+// https://en.wikipedia.org/wiki/Rod_(unit)
+struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio<1, 4>, chain> {};
 
 inline namespace literals {
 
@@ -37,7 +40,6 @@ constexpr auto operator"" ch(long double l) { return si::length<chain, long doub
 constexpr auto operator"" rd(unsigned long long l) { return si::length<rod, std::int64_t>(l); }
 constexpr auto operator"" rd(long double l) { return si::length<rod, long double>(l); }
 
-
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::imperial

@@ -27,9 +27,14 @@
 
 namespace units::iau {
 
-struct light_year : named_scaled_unit<light_year,"ly",no_prefix,ratio<946073,100000,15>,si::metre> {};
-struct parsec : named_scaled_unit<parsec,"pc",no_prefix,ratio<1542839,500000,16>,si::metre> {};
-struct angstrom : named_scaled_unit<angstrom,"angstrom",no_prefix,ratio<1,1,-10>,si::metre> {};
+// https://en.wikipedia.org/wiki/Light-year
+struct light_year : named_scaled_unit<light_year, "ly", no_prefix, ratio<9460730472580800>, si::metre> {};
+
+// https://en.wikipedia.org/wiki/Parsec
+struct parsec : named_scaled_unit<parsec, "pc", si::prefix, ratio<30'856'775'814'913'673>, si::metre> {};
+
+// https://en.wikipedia.org/wiki/Angstrom
+struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio<1, 1, -10>, si::metre> {};
 
 inline namespace literals {
 
