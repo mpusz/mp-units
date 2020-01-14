@@ -72,7 +72,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1naut_mi) == "1 mi(naut)");
     CHECK(fmt::format("{}", 1ch) == "1 ch");
     CHECK(fmt::format("{}", 1rd) == "1 rd");
-    CHECK(fmt::format("{}", 1mil) == "1 mil");
+    CHECK(fmt::format("{}", 1thou) == "1 thou");
     CHECK(fmt::format("{}", 1pc) == "1 pc");
     CHECK(fmt::format("{}", 1ly) == "1 ly");
     CHECK(fmt::format("{}", 1pc) == "1 pc");
