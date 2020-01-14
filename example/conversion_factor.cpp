@@ -27,7 +27,7 @@ namespace {
 
 template<units::Quantity Target, units::Quantity Source>
   requires units::equivalent_dim<typename Source::dimension, typename Target::dimension>
-constexpr inline std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
+inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
 {
   // get quantities looking like inputs but with Q::rep that doesn't have narrowing conversion
   typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
@@ -37,7 +37,7 @@ constexpr inline std::common_type_t<typename Target::rep, typename Source::rep> 
 }
 
 // get at the units text of the quantity, without its numeric value
-auto inline constexpr units_str(const units::Quantity& q)
+inline auto constexpr units_str(const units::Quantity AUTO& q)
 {
   typedef std::remove_cvref_t<decltype(q)> qtype;
   return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
