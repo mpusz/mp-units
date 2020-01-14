@@ -18,6 +18,7 @@
 
 
 #include <units/physical/us/length.h>
+#include <units/physical/iau/length.h>
 #include <iostream>
 #include <cmath>
 
@@ -52,6 +53,8 @@ int main()
     auto xxxx = xxx * x;
 
     std::cout << xxxx << '\n';
+
+
 
     //#################################################
     // uncomment to show compile fail issue
@@ -105,6 +108,23 @@ int main()
 
    // etc ....
    // see also https://github.com/kwikius/quan-trunk/blob/master/quan_matters/examples/high_power_quantities.cpp#L37
+
+   // Try other units
+
+    auto constexpr z = units::si::length<units::iau::parsec,double>{1};
+
+   //#############################################################
+   // see existing useage example here
+   // https://github.com/kwikius/quan-trunk/blob/master/quan_matters/examples/gravity.cpp#L78
+
+   // auto zz = z * z;  // compile fail due to integer overflow
+
+   //##############################################################
+
+    // OK
+    auto constexpr z1 = qq_multiply(z,z);
+
+    std::cout << "z1 = " << z1 << '\n';
 }
 
 
