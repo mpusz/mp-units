@@ -42,15 +42,15 @@ using resistance = quantity<dim_resistance, U, Rep>;
 
 inline namespace literals {
 
-//R
+// R
 constexpr auto operator""_R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
 constexpr auto operator""_R(long double l) { return resistance<ohm, long double>(l); }
 
-//mR
+// mR
 constexpr auto operator""mR(unsigned long long l) { return resistance<milliohm, std::int64_t>(l); }
 constexpr auto operator""mR(long double l) { return resistance<milliohm, long double>(l); }
 
-//kR
+// kR
 constexpr auto operator""kR(unsigned long long l) { return resistance<kiloohm, std::int64_t>(l); }
 constexpr auto operator""kR(long double l) { return resistance<kiloohm, long double>(l); }
 

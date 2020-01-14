@@ -92,8 +92,8 @@ struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_electric_current> C>
 struct dim_voltage : derived_dimension<Child, U, exp<P, 1>, exp<C, -1>> {};
 
-template <typename Child,Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_electric_current> C>
-struct dim_resistance : derived_dimension<Child,U, exp<V, 1>, exp<C , -1>> {};
+template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_electric_current> C>
+struct dim_resistance : derived_dimension<Child,U, exp<V, 1>, exp<C, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_electric_current> C>
 struct dim_electric_charge : derived_dimension<Child, U, exp<T, 1>, exp<C, 1>> {};
