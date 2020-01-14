@@ -54,7 +54,7 @@ constexpr auto superscript()
     return superscript<Value / 10>() + superscript<Value % 10>();
 }
 
-template<int Value>
+template<intmax_t Value>
 constexpr auto regular()
 {
   if constexpr(Value < 0)
