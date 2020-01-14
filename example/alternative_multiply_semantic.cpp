@@ -21,16 +21,41 @@
 #include <iostream>
 #include <cmath>
 
+// functions to calc higher powers
+template <int N,typename Q>
+  requires N == 1
+auto constexpr qq_to_power( Q const & q)
+{
+   return q;
+}
+
+template <int N,typename Q>
+  requires N == 0
+auto constexpr qq_to_power( Q const & q)
+{
+   return 1;
+}
+
+template <int N,typename Q>
+  requires N > 1
+auto constexpr qq_to_power( Q const & q)
+{
+   return qq_multiply(qq_to_power<N-1>(q), q);
+}
+
 int main()
 {
     auto x = units::si::length<units::us::foot,double>{1};
 
     auto xx = x * x ;
+    auto xxx = xx * x;
+    auto xxxx = xxx * x;
+
+    std::cout << xxxx << '\n';
 
     //#################################################
     // uncomment to show compile fail issue
-
-    // auto xxx = x * x * x ; compile fail : integer overflow
+   // auto xxxxx = xxxx * x;
 
     //##################################################
 
@@ -73,6 +98,10 @@ int main()
     //x^8
     auto x8 = qq_multiply(x,x7);
     std::cout << x8 <<'\n';
+
+    auto xN = qq_to_power<101>(x);
+
+    std::cout << xN <<'\n';
 
    // etc ....
    // see also https://github.com/kwikius/quan-trunk/blob/master/quan_matters/examples/high_power_quantities.cpp#L37
