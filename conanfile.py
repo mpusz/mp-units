@@ -104,6 +104,4 @@ class UnitsConan(ConanFile):
                 ])
 
     def package_id(self):
-        self.info.settings.clear()
-        self.info.settings.compiler = self.settings.compiler
-        self.info.settings.compiler.version = self.settings.compiler.version
+        self.info.header_only()
