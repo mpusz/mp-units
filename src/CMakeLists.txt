@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.8)
-#cmake_policy(SET CMP0076 NEW)
 
 project(units
     VERSION 0.5.0
@@ -32,7 +31,7 @@ project(units
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
 # include common tools and workarounds
-include(common/cmake/tools)
+include(common/cmake/scripts)
 
 # library definition
 add_library(units INTERFACE)
@@ -83,25 +82,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         )
     endif()
 endif()
-
 add_library(mp::units ALIAS units)
 
 # installation info
-install(TARGETS units
-    EXPORT ${CMAKE_PROJECT_NAME}Targets
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}  # TODO Remove when CMAKE 3.14
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}  # TODO Remove when CMAKE 3.14
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}  # TODO Remove when CMAKE 3.14
-    INCLUDES DESTINATION include
-)
+install_targets(units)
 install(DIRECTORY include/units
-    DESTINATION include
-    COMPONENT Devel
-)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/units
     DESTINATION include
     COMPONENT Devel
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/cmake/simple_package-config.cmake.in mp SameMajorVersion)
+configure_and_install(../cmake/common/cmake/simple-config.cmake.in mp SameMajorVersion)

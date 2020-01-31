@@ -43,7 +43,7 @@ struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equi
 template<Exponent E1, Exponent E2>
 struct equivalent_exp : std::false_type {};
 
-template<BaseDimension Dim1, int Num, int Den, BaseDimension Dim2>
+template<BaseDimension Dim1, std::intmax_t Num, std::intmax_t Den, BaseDimension Dim2>
 struct equivalent_exp<exp<Dim1, Num, Den>, exp<Dim2, Num, Den>> : equivalent_dim_impl<Dim1, Dim2> {};
 
 template<DerivedDimension D1, DerivedDimension D2>
@@ -230,10 +230,10 @@ using dimension_sqrt = detail::dimension_sqrt_impl<D>::type;
 // dimension_pow
 namespace detail {
 
-template<Dimension D, std::size_t N>
+template<Dimension D, std::intmax_t N>
 struct dimension_pow_impl;
 
-template<BaseDimension D, std::size_t N>
+template<BaseDimension D, std::intmax_t N>
 struct dimension_pow_impl<D, N> {
   using type = downcast_dimension<derived_dimension_base<exp<D, N>>>;
 };
@@ -243,24 +243,24 @@ struct dimension_pow_impl<D, 1> {
   using type = D;
 };
 
-template<BaseDimension D, std::size_t N>
+template<BaseDimension D, std::intmax_t N>
 struct dimension_pow_impl<derived_dimension_base<exp<D, 1, N>>, N> {
   using type = D;
 };
 
-template<DerivedDimension D, std::size_t N>
+template<DerivedDimension D, std::intmax_t N>
 struct dimension_pow_impl<D, N> {
   using type = dimension_pow_impl<downcast_base_t<D>, N>::type;
 };
 
-template<typename... Es, std::size_t N>
+template<typename... Es, std::intmax_t N>
 struct dimension_pow_impl<derived_dimension_base<Es...>, N> {
   using type = downcast_dimension<derived_dimension_base<exp_multiply<Es, N, 1>...>>;
 }; 
 
 }  // namespace detail
 
-template<Dimension D, std::size_t N>
+template<Dimension D, std::intmax_t N>
 using dimension_pow = detail::dimension_pow_impl<D, N>::type;
 
 }  // namespace units

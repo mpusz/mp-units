@@ -41,17 +41,17 @@ struct dim_unpack<> {
   using type = exp_list<>;
 };
 
-template<BaseDimension Dim, int Num, int Den, Exponent... ERest>
+template<BaseDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
 struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
   using type = type_list_push_front<typename dim_unpack<ERest...>::type, exp<Dim, Num, Den>>;
 };
 
-template<DerivedDimension Dim, int Num, int Den, Exponent... ERest>
+template<DerivedDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
 struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
   using type = dim_unpack<exp<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
 };
 
-template<Exponent... Es, int Num, int Den, Exponent... ERest>
+template<Exponent... Es, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
 struct dim_unpack<exp<derived_dimension_base<Es...>, Num, Den>, ERest...> {
   using type = type_list_push_front<typename dim_unpack<ERest...>::type, exp_multiply<Es, Num, Den>...>;
 };

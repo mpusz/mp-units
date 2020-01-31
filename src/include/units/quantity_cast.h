@@ -27,7 +27,8 @@
 
 namespace units {
 
-constexpr std::intmax_t ipow10(std::intmax_t exp) {
+constexpr std::intmax_t ipow10(std::intmax_t exp)
+{
   // how to assert here?
   // static_assert(exp >= 0, "Use fpow10() for negative exponents");
   if (exp == 0) return 1;
@@ -40,7 +41,8 @@ constexpr std::intmax_t ipow10(std::intmax_t exp) {
 }
 
 
-constexpr long double fpow10(std::intmax_t exp) {
+constexpr long double fpow10(std::intmax_t exp)
+{
   if (exp == 0) return 1.0L;
   long double result = 1.0L;
   if (exp < 0) {

@@ -62,7 +62,7 @@ namespace units {
 
   // exp
 
-  template<const base_dimension& BaseDimension, int Num, int Den = 1>
+  template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den = 1>
   struct exp {
     static constexpr const base_dimension& dimension = BaseDimension;
     static constexpr int num = Num;
@@ -74,7 +74,7 @@ namespace units {
     template<typename T>
     inline constexpr bool is_exp = false;
 
-    template<const base_dimension& BaseDimension, int Num, int Den>
+    template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den>
     inline constexpr bool is_exp<exp<BaseDimension, Num, Den>> = true;
   }  // namespace detail
 
@@ -92,7 +92,7 @@ namespace units {
   template<Exponent E>
   struct exp_invert;
 
-  template<const base_dimension& BaseDimension, int Num, int Den>
+  template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den>
   struct exp_invert<exp<BaseDimension, Num, Den>> {
     using type = exp<BaseDimension, -Num, Den>;
   };
@@ -160,7 +160,7 @@ namespace units {
       using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
-    template<const base_dimension& D, int Num1, int Den1, int Num2, int Den2, typename... ERest>
+    template<const base_dimension& D, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
     struct dim_consolidate<dimension<exp<D, Num1, Den1>, exp<D, Num2, Den2>, ERest...>> {
       using r1 = std::ratio<Num1, Den1>;
       using r2 = std::ratio<Num2, Den2>;

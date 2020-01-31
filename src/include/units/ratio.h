@@ -40,7 +40,7 @@ template<typename T>
   return v < 0 ? -v : v;
 }
 
-constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t>  normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp)
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t> normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp)
 {
   std::intmax_t gcd = std::gcd(num, den);
   num = num * (den < 0 ? -1 : 1) / gcd;
@@ -100,12 +100,12 @@ namespace detail {
 
 static constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
 {
-  constexpr std::uintmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
+  constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
 
-  const std::uintmax_t a0 = detail::abs(lhs) % c;
-  const std::uintmax_t a1 = detail::abs(lhs) / c;
-  const std::uintmax_t b0 = detail::abs(rhs) % c;
-  const std::uintmax_t b1 = detail::abs(rhs) / c;
+  const std::intmax_t a0 = detail::abs(lhs) % c;
+  const std::intmax_t a1 = detail::abs(lhs) / c;
+  const std::intmax_t b0 = detail::abs(rhs) % c;
+  const std::intmax_t b1 = detail::abs(rhs) / c;
 
   Expects(a1 == 0 || b1 == 0);                               // overflow in multiplication
   Expects(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
@@ -163,7 +163,7 @@ using ratio_divide = detail::ratio_divide_impl<R1, R2>::type;
 
 namespace detail {
 
-template<typename R, std::size_t N>
+template<typename R, std::intmax_t N>
 struct ratio_pow_impl {
   using type = ratio_multiply<typename ratio_pow_impl<R, N - 1>::type, R>;
 };
@@ -180,7 +180,7 @@ struct ratio_pow_impl<R, 0> {
 
 }  // namespace detail
 
-template<Ratio R, std::size_t N>
+template<Ratio R, std::intmax_t N>
 using ratio_pow = detail::ratio_pow_impl<R, N>::type;
 
 // ratio_sqrt

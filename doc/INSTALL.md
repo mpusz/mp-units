@@ -73,15 +73,17 @@ steps may be done:
 
 ## Full build and unit testing
 
-In case you would like to build all the code in that repository (with unit tests and examples)
-you should use the `CMakeLists.txt` from the parent directory.
+In case you would like to build all the code in this repository (with unit tests and examples)
+you should use the `CMakeLists.txt` from the parent directory and run Conan with
+`CONAN_RUN_TESTS=True`.
 
 ```shell
 git clone --recurse-submodules https://github.com/mpusz/units.git
 mkdir units/build && cd units/build
-conan install .. <your_profile_and_settings> -s compiler.cppstd=20
-cmake .. <your_cmake_configuration>
+conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
+cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
+ctest -VV
 ```
 
 
@@ -90,7 +92,7 @@ cmake --build .
 To create a `conan` package and test `cmake` installation and `conan` packaging run:  
 
 ```shell
-conan create . <username>/<channel> -s cppstd=20 -b=outdated <your_profile_and_settings>
+conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
 ```
 
 

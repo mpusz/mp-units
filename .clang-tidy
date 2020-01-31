@@ -1,0 +1,23 @@
+---
+Checks: '
+    *,
+    -llvm-header-guard,
+    -llvm-include-order,
+    -bugprone-branch-clone,
+    -bugprone-reserved-identifier,
+    -modernize-use-trailing-return-type,
+    -fuchsia-default-arguments-calls,
+    -fuchsia-overloaded-operator,
+    -fuchsia-statically-constructed-objects,
+    -fuchsia-trailing-return,
+    -*-special-member-functions,
+    -cppcoreguidelines-owning-memory,
+    -cert-err58-cpp,
+    -cert-dcl37-c,
+    -cert-dcl51-cpp
+'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: false
+FormatStyle: file
+...

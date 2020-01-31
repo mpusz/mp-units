@@ -52,7 +52,7 @@ BreakConstructorInitializersBeforeComma: true
 BreakInheritanceList: AfterColon
 # BreakStringLiterals: true
 ColumnLimit:     120
-# CommentPragmas:  '^ IWYU pragma:'
+CommentPragmas:  '^ NOLINT'
 # CompactNamespaces: false
 # ConstructorInitializerAllOnOneLineOrOnePerLine: true
 # ConstructorInitializerIndentWidth: 4

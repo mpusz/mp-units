@@ -27,19 +27,24 @@ project(units)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # include common tools and workarounds
-include(common/cmake/tools)
+include(common/cmake/scripts)
 
 # use Conan configuration if available
 conan_init(cmake)
 
-# compilation options and flags used in a project development process
-include(common/cmake/compile_flags)
+# enable static analysis
+#enable_clang_tidy()
+#enable_iwyu()
+
+# set restrictive compilation warnings
+set_warnings(TREAT_AS_ERRORS)
 
 # add project code
 add_subdirectory(src)
 
-# add unit tests
-add_subdirectory(test)
-
 # add usage example
 add_subdirectory(example)
+
+# add unit tests
+enable_testing()
+add_subdirectory(test)

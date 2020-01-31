@@ -199,8 +199,8 @@ private:
     constexpr void on_minus() { f.specs.sign = fmt::sign::minus; }
     constexpr void on_space() { f.specs.sign = fmt::sign::space; }
     constexpr void on_align(align_t align) { f.specs.align = align; }
-    constexpr void on_width(unsigned width) { f.specs.width = width; }
-    constexpr void on_precision(unsigned precision) { f.precision = precision; }
+    constexpr void on_width(int width) { f.specs.width = width; }
+    constexpr void on_precision(int precision) { f.precision = precision; }
     constexpr void end_precision() {}
 
     template<typename Id>
