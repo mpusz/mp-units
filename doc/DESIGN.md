@@ -237,9 +237,9 @@ struct dim_luminous_intensity : base_dimension<"J", candela> {};
 }
 ```
 
-All other physical dimensions are derived from those.
+All other derived quantities of SI are composed from those.
 
-There are two reasons why `base_dimension` gets a unit as its template parameter. First, the
+There are two reasons why a `base_dimension` gets a unit as its template parameter. First, the
 base unit is needed for the text output of unnamed derived units. Second, there is more than
 one system of physical units. For example CGS definitions look as follows:
 
@@ -293,11 +293,11 @@ Exponents are implemented with `exp` class template that provides an information
 dimension and its (possibly fractional) exponent in a derived dimension.
 
 ```cpp
-template<Dimension Dim, int Num, int Den = 1>
+template<Dimension Dim, std::intmax_t Num, std::intmax_t Den = 1>
 struct exp {
   using dimension = Dim;
-  static constexpr int num = Num;
-  static constexpr int den = Den;
+  static constexpr std::intmax_t num = Num;
+  static constexpr std::intmax_t den = Den;
 };
 ```
 
