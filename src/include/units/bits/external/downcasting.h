@@ -27,46 +27,47 @@
 
 namespace units {
 
-  template<typename BaseType>
-  struct downcast_base {
-    using downcast_base_type = BaseType;
-    friend auto downcast_guide(downcast_base);
+template<typename BaseType>
+struct downcast_base {
+  using downcast_base_type = BaseType;
+  friend auto downcast_guide(downcast_base);
+};
+
+template<typename T>
+concept Downcastable =
+  requires {
+    typename T::downcast_base_type;
+  } &&
+  std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
+
+template<typename Target, Downcastable T>
+struct downcast_child : T {
+  friend auto downcast_guide(typename downcast_child::downcast_base /* base */) { return Target(); }
+};
+
+namespace detail {
+
+template<typename T>
+concept has_downcast =
+  requires {
+    downcast_guide(std::declval<downcast_base<T>>());
   };
 
-  template<typename T>
-  concept Downcastable =
-      requires {
-        typename T::downcast_base_type;
-      } &&
-      std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
+template<typename T>
+constexpr auto downcast_impl()
+{
+  if constexpr (has_downcast<T>)
+    return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
+  else
+    return T();
+}
 
-  template<typename Target, Downcastable T>
-  struct downcast_child : T {
-    friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
-  };
+}  // namespace detail
 
-  namespace detail {
+template<Downcastable T>
+using downcast = decltype(detail::downcast_impl<T>());
 
-    template<typename T>
-    concept has_downcast = requires {
-        downcast_guide(std::declval<downcast_base<T>>());
-    };
-
-    template<typename T>
-    constexpr auto downcast_impl()
-    {
-      if constexpr(has_downcast<T>)
-        return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
-      else
-        return T();
-    }
-
-  }
-
-  template<Downcastable T>
-  using downcast = decltype(detail::downcast_impl<T>());
-
-  template<Downcastable T>
-  using downcast_base_t = T::downcast_base_type;
+template<Downcastable T>
+using downcast_base_t = T::downcast_base_type;
 
 }  // namespace units
