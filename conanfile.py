@@ -86,7 +86,6 @@ class UnitsConan(ConanFile):
     def build_requirements(self):
         if self._run_tests:
             self.build_requires("Catch2/2.11.0@catchorg/stable")
-            self.build_requires("linear_algebra/0.0.1@public-conan/testing")
 
     def build(self):
         cmake = self._configure_cmake()
