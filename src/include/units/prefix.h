@@ -70,7 +70,7 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
  */
 template<typename Child, PrefixType PT, basic_fixed_string Symbol, Ratio R>
   requires (!std::same_as<PT, no_prefix>)
-struct prefix : downcast_child<Child, detail::prefix_base<PT, ratio<R::num, R::den, R::exp>>> {
+struct prefix : downcast_child<Child, detail::prefix_base<PT, R>> {
   static constexpr auto symbol = Symbol;
 };
 
