@@ -62,11 +62,11 @@ constexpr auto prefix_or_ratio_text()
     return basic_fixed_string("");
   }
   else {
-    if constexpr (!std::same_as<PrefixType, no_prefix>) {
+    if constexpr (!std::is_same_v<PrefixType, no_prefix>) {
       // try to form a prefix
       using prefix = downcast<detail::prefix_base<PrefixType, Ratio>>;
 
-      if constexpr(!std::same_as<prefix, prefix_base<PrefixType, Ratio>>) {
+      if constexpr(!std::is_same_v<prefix, prefix_base<PrefixType, Ratio>>) {
         // print as a prefixed unit
         return prefix::symbol;
       }
