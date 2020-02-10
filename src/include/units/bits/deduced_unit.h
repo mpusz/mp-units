@@ -61,7 +61,8 @@ struct derived_ratio<exp_list<>, Us...> {
 template<typename E, typename... ERest, Unit U, Unit... URest>
 struct derived_ratio<exp_list<E, ERest...>, U, URest...> {
   using rest_ratio = derived_ratio<exp_list<ERest...>, URest...>::ratio;
-  using ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
+  using unit_ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
+  using ratio = ratio_divide<unit_ratio, typename dimension_unit<typename E::dimension>::ratio>;
 };
 
 template<DerivedDimension D, Unit... Us>

@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/physical/si/mass.h>
 #include <units/physical/si/voltage.h>
+#include <units/physical/si/time.h>
 #include <units/physical/si/frequency.h>
 #include <units/math.h>
 
@@ -52,5 +54,15 @@ static_assert(std::is_same_v<dimension_pow<dim_amplitude_spectral_density, 2>, d
 
 static_assert(std::is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
 static_assert(std::is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
+
+}
+
+namespace {
+
+struct kilogram_per_second : unit<kilogram_per_second> {};
+struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exp<si::dim_mass, 1>, units::exp<si::dim_time, -1>> {};
+struct kilogram_per_hour : deduced_unit<kilogram_per_hour, dim_mass_rate, si::kilogram, si::hour> {};
+constexpr auto a = 1kg / 1h;
+static_assert(std::is_same_v<decltype(a)::unit, kilogram_per_hour>);
 
 }

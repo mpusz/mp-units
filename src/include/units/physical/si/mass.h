@@ -28,8 +28,8 @@
 
 namespace units::si {
 
-struct kilogram : named_unit<kilogram, "kg", no_prefix> {};
-struct gram : named_scaled_unit<gram, "g", prefix, ratio<1, 1'000>, kilogram> {};
+struct gram : named_unit<gram, "g", prefix> {};
+struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
 struct tonne : named_scaled_unit<tonne, "t", prefix, ratio<1'000>, kilogram> {};
 
 struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio<16'605'390'666'050, 10'000'000'000'000, -27>, kilogram> {};
