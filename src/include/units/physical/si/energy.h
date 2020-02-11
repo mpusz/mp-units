@@ -35,7 +35,7 @@ struct kilojoule : prefixed_unit<kilojoule, kilo, joule> {};
 struct megajoule : prefixed_unit<megajoule, mega, joule> {};
 struct gigajoule : prefixed_unit<gigajoule, giga, joule> {};
 
-struct electronvolt : named_scaled_unit<electronvolt, "eV", no_prefix, ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
+struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
 
 struct dim_energy : physical::dim_energy<dim_energy, joule, dim_force, dim_length> {};
 
