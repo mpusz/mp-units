@@ -202,8 +202,8 @@ static constexpr std::intmax_t sqrt_impl(std::intmax_t v) { return sqrt_impl(v, 
 
 template<typename R>
 struct ratio_sqrt_impl {
-  // TODO  this is broken..need /2 logic on EXP
-  using type = ratio<detail::sqrt_impl(R::num), detail::sqrt_impl(R::den)>;
+  // TODO(#58)  Provide sqrt on exp
+  using type = ratio<detail::sqrt_impl(R::num), detail::sqrt_impl(R::den) /* , exp */>;
 };
 
 template<std::intmax_t Den>
