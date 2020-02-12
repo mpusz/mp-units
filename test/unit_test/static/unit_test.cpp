@@ -42,7 +42,7 @@ struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 // struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
 
 struct metre_per_second : unit<metre_per_second> {};
-struct dim_velocity : derived_dimension<dim_velocity, metre_per_second, exp<dim_length, 1>, exp<dim_time, -1>> {};
+struct dim_velocity : derived_dimension<dim_velocity, metre_per_second, units::exp<dim_length, 1>, units::exp<dim_time, -1>> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
 
 static_assert(std::is_same_v<downcast<scaled_unit<ratio<1>, metre>>, metre>);
