@@ -36,6 +36,7 @@ struct megajoule : prefixed_unit<megajoule, mega, joule> {};
 struct gigajoule : prefixed_unit<gigajoule, giga, joule> {};
 
 struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
+struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {};
 
 struct dim_energy : physical::dim_energy<dim_energy, joule, dim_force, dim_length> {};
 
@@ -67,6 +68,10 @@ constexpr auto operator""GJ(long double l) { return energy<gigajoule, long doubl
 // eV
 constexpr auto operator""eV(unsigned long long l) { return energy<electronvolt, std::int64_t>(l); }
 constexpr auto operator""eV(long double l) { return energy<electronvolt, long double>(l); }
+
+// GeV
+constexpr auto operator""GeV(unsigned long long l) { return energy<gigaelectronvolt, std::int64_t>(l); }
+constexpr auto operator""GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
 
 }  // namespace literals
 
