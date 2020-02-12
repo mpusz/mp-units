@@ -235,7 +235,6 @@ public:
     return cq(lhs).count() <=> cq(rhs).count();
   }
 
-  // TODO op== not needed (gcc bug)
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr auto operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&

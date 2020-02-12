@@ -31,6 +31,9 @@ template<typename CharT, std::size_t N>
 struct basic_fixed_string {
   CharT data_[N + 1] = {};
 
+  using iterator = CharT*;
+  using const_iterator = const CharT*;
+
   constexpr basic_fixed_string(CharT ch) noexcept { data_[0] = ch; }
 
   constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
@@ -42,6 +45,11 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data_[index]; }
   [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data_[index]; }
+
+  [[nodiscard]] constexpr iterator begin() noexcept { return std::begin(data_); }
+  [[nodiscard]] constexpr const_iterator begin() const noexcept { return std::begin(data_); }
+  [[nodiscard]] constexpr iterator end() noexcept { return std::end(data_); }
+  [[nodiscard]] constexpr const_iterator end() const noexcept { return std::end(data_); }
 
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
@@ -57,41 +65,18 @@ struct basic_fixed_string {
 
 #if __GNUC__ >= 10
 
-  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs)
-  {
-    for (size_t i = 0; i != lhs.size(); ++i)
-      if (lhs[i] != rhs[i]) return false;
-    return true;
-  }
-
-  [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&, const basic_fixed_string&) = default;
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT2, N2>&)
-  {
-    return false;
-  }
-
-  template<typename CharT2, std::size_t N2>
-  // TODO gcc-10 error: a template cannot be defaulted
-  // [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&,
-  //                                                const basic_fixed_string<CharT2, N2>&) = default;
-  [[nodiscard]] friend constexpr bool operator!=(const basic_fixed_string&, const basic_fixed_string<CharT2, N2>&)
-  {
-    return true;
-  }
-
   template<typename CharT2, std::size_t N2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
                                                   const basic_fixed_string<CharT2, N2>& rhs)
   {
-    size_t min_size = std::min(lhs.size(), rhs.size());
-    for (size_t i = 0; i != min_size; ++i) {
-      if (auto const cmp = lhs[i] <=> rhs[i]; cmp != 0) {
-        return cmp;
-      }
-    }
-    return lhs.size() <=> rhs.size();
+    return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  }
+
+  template<typename CharT2, std::size_t N2>
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs,
+                                                 const basic_fixed_string<CharT2, N2>& rhs)
+  {
+    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
 
 #else
