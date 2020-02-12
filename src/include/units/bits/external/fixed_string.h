@@ -76,7 +76,7 @@ struct basic_fixed_string {
   [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs,
                                                  const basic_fixed_string<CharT2, N2>& rhs)
   {
-    return lhs.size() == rhs.size() && std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
 #else
