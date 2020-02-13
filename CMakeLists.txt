@@ -42,9 +42,9 @@ set_warnings(TREAT_AS_ERRORS)
 # add project code
 add_subdirectory(src)
 
-# add usage example
-add_subdirectory(example)
-
 # add unit tests
 enable_testing()
 add_subdirectory(test)
+
+# add usage example
+add_subdirectory(example)
