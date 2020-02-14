@@ -180,8 +180,24 @@ inline constexpr bool is_quantity = false;
 template<typename T>
 concept Quantity = detail::is_quantity<T>;
 
+
+// WrappedQuantity
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_wrapped_quantity = false;
+
+template<typename T>
+  requires requires { typename T::value_type; }
+inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
+
+}  // namespace detail
+
+template<typename T>
+concept WrappedQuantity = detail::is_wrapped_quantity<T>;
+
 // Scalar
 template<typename T>
-concept Scalar = (!Quantity<T>) && std::regular<T> && std::totally_ordered<T> && detail::basic_arithmetic<T>;
+concept Scalar = (!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>; // && std::totally_ordered<T>;// && detail::basic_arithmetic<T>;
 
 }  // namespace units

@@ -881,10 +881,15 @@ concept basic-arithmetic = // exposition only
 template<typename T>
 concept Scalar =
   (!Quantity<T>) &&
+  (!WrappedQuantity<T>) &&
   std::regular<T> &&
   std::totally_ordered<T> &&
   basic-arithmetic<T>;
 ```
+
+Where `WrappedQuantity` is a concept that applies `Quantity<typename T::value_type>` recursively
+on all nested types to check if `T` is not actually a wrapped quantity type (i.e. a vector or
+matrix of quantities).
 
 The above implies that the `Rep` type should provide at least:
 - default constructor, destructor, copy-constructor, and copy-assignment operator
@@ -893,7 +898,8 @@ The above implies that the `Rep` type should provide at least:
 - `operator-(Rep)`
 - `operator+(Rep, Rep)`, `operator-(Rep, Rep)`, `operator*(Rep, Rep)`, `operator*(Rep, Rep)`
 
-Above also requires that the `Rep` should be implicitly convertible from integral types (i.e. `int`) so a proper implicit converting constructor should be provided.
+Above also requires that the `Rep` should be implicitly convertible from integral types
+(i.e. `int`) so a proper implicit converting constructor should be provided.
 
 Moreover, in most cases to observe expected behavior `Rep` will have to be registered as a
 floating-point representation type by specializing `units::treat_as_floating_point` type
