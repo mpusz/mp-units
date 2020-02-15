@@ -36,7 +36,7 @@ namespace {
   static_assert(std::is_same_v<decltype(pow<2>(2km)), decltype(4km2)>);
   static_assert(std::is_same_v<decltype(pow<2>(2ft)), decltype(4ft2)>);
   static_assert(std::is_same_v<decltype(sqrt(4m2)), decltype(2m)>);
-  // static_assert(std::is_same_v<decltype(sqrt(4km2)), decltype(2km)>);
-  // static_assert(std::is_same_v<decltype(sqrt(4ft2)), decltype(2ft)>);
+  static_assert(std::is_same_v<decltype(sqrt(4km2)), decltype(2km)>);
+  static_assert(std::is_same_v<decltype(sqrt(4ft2)), decltype(2ft)>);
 
 }  // namespace
