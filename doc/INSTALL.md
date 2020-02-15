@@ -46,7 +46,7 @@ steps may be done:
   `0.5.0` of `mp-units` add:
   - `conanfile.txt`
   
-    ```text
+    ```ini
     [requires]
     mp-units/0.5.0@mpusz/testing
     ```
@@ -59,14 +59,14 @@ steps may be done:
 
 - import `conan` dependencies to top level `CMakeLists.txt` file
 
-  ```text
+  ```cmake
   include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   conan_basic_setup(TARGETS)
   ```
 
 - link your `cmake` target with units
 
-  ```text
+  ```cmake
   target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE CONAN_PKG::mp-units)
   ```
 
