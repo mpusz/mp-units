@@ -8,6 +8,8 @@
 
 ## TL;DR
 
+This library is the subject of this ISO C++ proposal: [P1935R2](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1935r2.html). It is explained in this [CppCon 2019 talk](https://youtu.be/0YW6yxkdhlU) (slightly dated see below). We are working towards potentially having it standardised for C++23 and are actively looking for parties interested in field trialling the library. 
+
 ```cpp
 #include <units/physical/si/velocity.h>
 #include <units/physical/international/velocity.h>
