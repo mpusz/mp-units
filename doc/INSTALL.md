@@ -6,7 +6,7 @@ There are a few different ways of installing/reusing `units` in your project.
 
 ### Conan quick intro
 
-In case you are note familiar with `conan`, to install it just do:
+In case you are not familiar with `conan`, to install it just do:
 
 ```shell
 pip3 install -U conan
@@ -116,9 +116,9 @@ you should use the `CMakeLists.txt` from the parent directory and run Conan with
 `CONAN_RUN_TESTS=True`.
 
 ```shell
-conan remote add linear_algebra https://api.bintray.com/conan/twonington/public-conan
 git clone --recurse-submodules https://github.com/mpusz/units.git
 mkdir units/build && cd units/build
+conan remote add linear_algebra https://api.bintray.com/conan/twonington/public-conan
 conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
