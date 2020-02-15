@@ -57,6 +57,13 @@ steps may be done:
     requires = "mp-units/0.5.0@mpusz/testing"
     ```
 
+- import `conan` dependencies to top level `CMakeLists.txt` file
+
+  ```text
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+  conan_basic_setup(TARGETS)
+  ```
+
 - link your `cmake` target with units
 
   ```text
