@@ -200,10 +200,23 @@ constexpr std::intmax_t sqrt_impl(std::intmax_t v, std::intmax_t l, std::intmax_
 
 static constexpr std::intmax_t sqrt_impl(std::intmax_t v) { return sqrt_impl(v, 1, v); }
 
+template<Ratio R>
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t>  make_exp_even()
+{
+  if constexpr (R::exp % 2 == 0)
+    return {R::num, R::den, R::exp}; // already even (incl zero)
+
+  // safely make exp even, so it can be divided by 2 for square root
+  if constexpr (R::exp > 0)
+    return {R::num * 10, R::den, R::exp - 1};
+  else
+    return {R::num, R::den * 10, R::exp + 1};
+}
+
 template<typename R>
 struct ratio_sqrt_impl {
-  // TODO(#58)  Provide sqrt on exp
-  using type = ratio<detail::sqrt_impl(R::num), detail::sqrt_impl(R::den) /* , exp */>;
+  constexpr static auto even = detail::make_exp_even<R>();
+  using type = ratio<detail::sqrt_impl(std::get<0>(even)), detail::sqrt_impl(std::get<1>(even)), std::get<2>(even) / 2>;
 };
 
 template<std::intmax_t Den>
