@@ -30,10 +30,10 @@ namespace units::detail {
 
 /**
  * @brief Consolidates contiguous ranges of exponents of the same dimension
- * 
+ *
  * If there is more than one exponent with the same dimension they are aggregated into one exponent by adding
  * their exponents. If this accumulation will result with 0, such a dimension is removed from the list.
- * 
+ *
  * @tparam D derived dimension to consolidate
  */
 template<typename ExpList>
@@ -56,7 +56,7 @@ struct dim_consolidate<exp_list<E1, ERest...>> {
 
 template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
 struct dim_consolidate<exp_list<exp<Dim, Num1, Den1>, exp<Dim, Num2, Den2>, ERest...>> {
-  // TODO: provide custom implementation for ratio_add
+  // TODO: we have ration_add now, but dim_consolidate etc, now need to cope with our new ratio
   using r1 = std::ratio<Num1, Den1>;
   using r2 = std::ratio<Num2, Den2>;
   using r = std::ratio_add<r1, r2>;

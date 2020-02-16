@@ -35,13 +35,11 @@ namespace units {
 namespace detail {
 
 template<typename T>
-[[nodiscard]] constexpr T abs(T v) noexcept
-{
+[[nodiscard]] constexpr T abs(T v) noexcept {
   return v < 0 ? -v : v;
 }
 
-constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t> normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp)
-{
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t> normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp) {
   std::intmax_t gcd = std::gcd(num, den);
   num = num * (den < 0 ? -1 : 1) / gcd;
   den = detail::abs(den) / gcd;
@@ -81,13 +79,47 @@ namespace detail {
 template<intmax_t Num, intmax_t Den, intmax_t Exp>
 inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
 
-}  // namespace detail
+template<Ratio R1, Ratio R2>
+constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t> ratio_add_detail() {
+  std::intmax_t num1 = R1::num;
+  std::intmax_t num2 = R2::num;
+
+  // align exponents
+  std::intmax_t new_exp = R1::exp;
+  if constexpr (R1::exp > R2::exp) {
+    new_exp = R1::exp;
+    while (new_exp > R2::exp) {
+      num1 *= 10;
+      --new_exp;
+    }
+  } else if constexpr (R1::exp < R2::exp) {
+    new_exp = R2::exp;
+    while (R1::exp < new_exp) {
+      num2 *= 10;
+      --new_exp;
+    }
+  }
+
+  // common denominator
+  std::intmax_t lcm_den = std::lcm(R1::den, R2::den);
+  num1 = num1 * (lcm_den / R1::den);
+  num2 = num2 * (lcm_den / R2::den);
+
+  return std::make_tuple(num1 + num2, lcm_den, new_exp);
+}
+
+
+template<Ratio R1, Ratio R2>
+struct ratio_add_impl {
+  static constexpr auto detail = ratio_add_detail<R1, R2>();
+  using type = ratio<std::get<0>(detail), std::get<1>(detail), std::get<2>(detail)>;
+};
+}// namespace detail
 
 
 // ratio_add
-// TODO implement ratio_add
-// template<Ratio R1, Ratio R2>
-// using ratio_add = detail::ratio_add_impl<R1, R2>::type;
+template<Ratio R1, Ratio R2>
+using ratio_add = detail::ratio_add_impl<R1, R2>::type;
 
 // ratio_subtract
 // TODO implement ratio_subtract
