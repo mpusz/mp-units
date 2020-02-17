@@ -44,20 +44,20 @@ using voltage = quantity<dim_voltage, U, Rep>;
 inline namespace literals {
 
 // V
-constexpr auto operator""V(unsigned long long l) { return voltage<volt, std::int64_t>(l); }
-constexpr auto operator""V(long double l) { return voltage<volt, long double>(l); }
+constexpr auto operator"" q_V(unsigned long long l) { return voltage<volt, std::int64_t>(l); }
+constexpr auto operator"" q_V(long double l) { return voltage<volt, long double>(l); }
 
-constexpr auto operator""mV(unsigned long long l) { return voltage<millivolt, std::int64_t>(l); }
-constexpr auto operator""mV(long double l) { return voltage<millivolt, long double>(l); }
+constexpr auto operator"" q_mV(unsigned long long l) { return voltage<millivolt, std::int64_t>(l); }
+constexpr auto operator"" q_mV(long double l) { return voltage<millivolt, long double>(l); }
 
-constexpr auto operator""uV(unsigned long long l) { return voltage<microvolt, std::int64_t>(l); }
-constexpr auto operator""uV(long double l) { return voltage<microvolt, long double>(l); }
+constexpr auto operator"" q_uV(unsigned long long l) { return voltage<microvolt, std::int64_t>(l); }
+constexpr auto operator"" q_uV(long double l) { return voltage<microvolt, long double>(l); }
 
-constexpr auto operator""nV(unsigned long long l) { return voltage<nanovolt, std::int64_t>(l); }
-constexpr auto operator""nV(long double l) { return voltage<nanovolt, long double>(l); }
+constexpr auto operator"" q_nV(unsigned long long l) { return voltage<nanovolt, std::int64_t>(l); }
+constexpr auto operator"" q_nV(long double l) { return voltage<nanovolt, long double>(l); }
 
-constexpr auto operator""pV(unsigned long long l) { return voltage<picovolt, std::int64_t>(l); }
-constexpr auto operator""pV(long double l) { return voltage<picovolt, long double>(l); }
+constexpr auto operator"" q_pV(unsigned long long l) { return voltage<picovolt, std::int64_t>(l); }
+constexpr auto operator"" q_pV(long double l) { return voltage<picovolt, long double>(l); }
 
 }  // namespace literals
 

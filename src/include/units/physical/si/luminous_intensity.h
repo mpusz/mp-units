@@ -38,8 +38,8 @@ using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 inline namespace literals {
 
 // cd
-constexpr auto operator""cd(unsigned long long l) { return luminous_intensity<candela, std::int64_t>(l); }
-constexpr auto operator""cd(long double l) { return luminous_intensity<candela, long double>(l); }
+constexpr auto operator"" q_cd(unsigned long long l) { return luminous_intensity<candela, std::int64_t>(l); }
+constexpr auto operator"" q_cd(long double l) { return luminous_intensity<candela, long double>(l); }
 
 }  // namespace literals
 

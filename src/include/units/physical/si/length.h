@@ -46,36 +46,36 @@ using length = quantity<dim_length, U, Rep>;
 inline namespace literals {
 
 // m
-constexpr auto operator"" m(unsigned long long l) { return length<metre, std::int64_t>(l); }
-constexpr auto operator"" m(long double l) { return length<metre, long double>(l); }
+constexpr auto operator"" q_m(unsigned long long l) { return length<metre, std::int64_t>(l); }
+constexpr auto operator"" q_m(long double l) { return length<metre, long double>(l); }
 
 // fm
-constexpr auto operator"" fm(unsigned long long l) { return length<femtometre, std::int64_t>(l); }
-constexpr auto operator"" fm(long double l) { return length<femtometre, long double>(l); }
+constexpr auto operator"" q_fm(unsigned long long l) { return length<femtometre, std::int64_t>(l); }
+constexpr auto operator"" q_fm(long double l) { return length<femtometre, long double>(l); }
 
 // mm
-constexpr auto operator"" mm(unsigned long long l) { return length<millimetre, std::int64_t>(l); }
-constexpr auto operator"" mm(long double l) { return length<millimetre, long double>(l); }
+constexpr auto operator"" q_mm(unsigned long long l) { return length<millimetre, std::int64_t>(l); }
+constexpr auto operator"" q_mm(long double l) { return length<millimetre, long double>(l); }
 
 // cm
-constexpr auto operator"" cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
-constexpr auto operator"" cm(long double l) { return length<centimetre, long double>(l); }
+constexpr auto operator"" q_cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
+constexpr auto operator"" q_cm(long double l) { return length<centimetre, long double>(l); }
 
 // dm
-constexpr auto operator"" dm(unsigned long long l) { return length<decimetre, std::int64_t>(l); }
-constexpr auto operator"" dm(long double l) { return length<decimetre, long double>(l); }
+constexpr auto operator"" q_dm(unsigned long long l) { return length<decimetre, std::int64_t>(l); }
+constexpr auto operator"" q_dm(long double l) { return length<decimetre, long double>(l); }
 
 // hm
-constexpr auto operator"" hm(unsigned long long l) { return length<hectometre, std::int64_t>(l); }
-constexpr auto operator"" hm(long double l) { return length<hectometre, long double>(l); }
+constexpr auto operator"" q_hm(unsigned long long l) { return length<hectometre, std::int64_t>(l); }
+constexpr auto operator"" q_hm(long double l) { return length<hectometre, long double>(l); }
 
 // km
-constexpr auto operator"" km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
-constexpr auto operator"" km(long double l) { return length<kilometre, long double>(l); }
+constexpr auto operator"" q_km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
+constexpr auto operator"" q_km(long double l) { return length<kilometre, long double>(l); }
 
 // au
-constexpr auto operator"" au(unsigned long long l) { return length<astronomical_unit, std::int64_t>(l); }
-constexpr auto operator"" au(long double l) { return length<astronomical_unit, long double>(l); }
+constexpr auto operator"" q_au(unsigned long long l) { return length<astronomical_unit, std::int64_t>(l); }
+constexpr auto operator"" q_au(long double l) { return length<astronomical_unit, long double>(l); }
 
 }  // namespace literals
 

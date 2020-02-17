@@ -45,20 +45,20 @@ using capacitance = quantity<dim_capacitance, U, Rep>;
 inline namespace literals {
 
 // F
-constexpr auto operator""F(unsigned long long l) { return capacitance<farad, std::int64_t>(l); }
-constexpr auto operator""_F(long double l) { return capacitance<farad, long double>(l); }
+constexpr auto operator"" q_F(unsigned long long l) { return capacitance<farad, std::int64_t>(l); }
+constexpr auto operator"" q_F(long double l) { return capacitance<farad, long double>(l); }
 
-constexpr auto operator""mF(unsigned long long l) { return capacitance<millifarad, std::int64_t>(l); }
-constexpr auto operator""mF(long double l) { return capacitance<millifarad, long double>(l); }
+constexpr auto operator"" q_mF(unsigned long long l) { return capacitance<millifarad, std::int64_t>(l); }
+constexpr auto operator"" q_mF(long double l) { return capacitance<millifarad, long double>(l); }
 
-constexpr auto operator""uF(unsigned long long l) { return capacitance<microfarad, std::int64_t>(l); }
-constexpr auto operator""uF(long double l) { return capacitance<microfarad, long double>(l); }
+constexpr auto operator"" q_uF(unsigned long long l) { return capacitance<microfarad, std::int64_t>(l); }
+constexpr auto operator"" q_uF(long double l) { return capacitance<microfarad, long double>(l); }
 
-constexpr auto operator""nF(unsigned long long l) { return capacitance<nanofarad, std::int64_t>(l); }
-constexpr auto operator""nF(long double l) { return capacitance<nanofarad, long double>(l); }
+constexpr auto operator"" q_nF(unsigned long long l) { return capacitance<nanofarad, std::int64_t>(l); }
+constexpr auto operator"" q_nF(long double l) { return capacitance<nanofarad, long double>(l); }
 
-constexpr auto operator""pF(unsigned long long l) { return capacitance<picofarad, std::int64_t>(l); }
-constexpr auto operator""pF(long double l) { return capacitance<picofarad, long double>(l); }
+constexpr auto operator"" q_pF(unsigned long long l) { return capacitance<picofarad, std::int64_t>(l); }
+constexpr auto operator"" q_pF(long double l) { return capacitance<picofarad, long double>(l); }
 
 }  // namespace literals
 

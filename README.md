@@ -25,7 +25,7 @@ constexpr Velocity auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace si::literals;
-  Velocity auto v1 = avg_speed(220km, 2h);
+  Velocity auto v1 = avg_speed(220q_km, 2q_h);
   Velocity auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
   Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);
   Velocity auto v4 = quantity_cast<int>(v3);
@@ -50,20 +50,20 @@ Here is a small example of possible operations:
 
 ```cpp
 // simple numeric operations
-static_assert(10km / 2 == 5km);
+static_assert(10q_km / 2 == 5q_km);
 
 // unit conversions
-static_assert(1h == 3600s);
-static_assert(1km + 1m == 1001m);
+static_assert(1q_h == 3600q_s);
+static_assert(1q_km + 1q_m == 1001q_m);
 
 // dimension conversions
-static_assert(1km / 1s == 1000mps);
-static_assert(2kmph * 2h == 4km);
-static_assert(2km / 2kmph == 1h);
+static_assert(1q_km / 1q_s == 1000q_mps);
+static_assert(2q_kmph * 2q_h == 4q_km);
+static_assert(2q_km / 2q_kmph == 1q_h);
 
-static_assert(1000 / 1s == 1kHz);
+static_assert(1000 / 1q_s == 1q_kHz);
 
-static_assert(10km / 5km == 2);
+static_assert(10q_km / 5q_km == 2);
 ```
 
 
@@ -90,7 +90,7 @@ Thanks to them the same code can be as simple as:
 
 ```cpp
 using namespace units::si::literals;
-auto d = 123km;    // units::length<units::si::kilometre, std::int64_t>
+auto d = 123q_km;    // units::length<units::si::kilometre, std::int64_t>
 ```
 
 For brevity, the next examples will assume:
@@ -105,8 +105,8 @@ Let's assume that the user wants to write the following code:
 int main()
 {
   using namespace si::literals;
-  auto v1 = avg_speed(220km, 2h);
-  auto v2 = avg_speed(140mi, 2h);
+  auto v1 = avg_speed(220q_km, 2q_h);
+  auto v2 = avg_speed(140q_mi, 2q_h);
   // ...
 }
 ```
@@ -156,8 +156,8 @@ int main()
 {
   using namespace si::literals;
   using namespace international::literals;
-  Velocity auto v1 = avg_speed(220km, 2h);
-  Velocity auto v2 = avg_speed(140mi, 2h);
+  Velocity auto v1 = avg_speed(220q_km, 2q_h);
+  Velocity auto v2 = avg_speed(140q_mi, 2q_h);
 
   std::cout << v1 << '\n';                                          // 110 km/h
   std::cout << quantity_cast<si::metre_per_second>(speed) << '\n';  // 30.5556 m/s

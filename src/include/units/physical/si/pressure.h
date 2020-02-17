@@ -40,8 +40,8 @@ using pressure = quantity<dim_pressure, U, Rep>;
 inline namespace literals {
 
 // Pa
-constexpr auto operator""Pa(unsigned long long l) { return pressure<pascal, std::int64_t>(l); }
-constexpr auto operator""Pa(long double l) { return pressure<pascal, long double>(l); }
+constexpr auto operator"" q_Pa(unsigned long long l) { return pressure<pascal, std::int64_t>(l); }
+constexpr auto operator"" q_Pa(long double l) { return pressure<pascal, long double>(l); }
 
 }  // namespace literals
 

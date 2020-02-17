@@ -44,24 +44,24 @@ using volume = quantity<dim_volume, U, Rep>;
 inline namespace literals {
 
 // mm3
-constexpr auto operator""mm3(unsigned long long l) { return volume<cubic_millimetre, std::int64_t>(l); }
-constexpr auto operator""mm3(long double l) { return volume<cubic_millimetre, long double>(l); }
+constexpr auto operator"" q_mm3(unsigned long long l) { return volume<cubic_millimetre, std::int64_t>(l); }
+constexpr auto operator"" q_mm3(long double l) { return volume<cubic_millimetre, long double>(l); }
 
 // cm3
-constexpr auto operator""cm3(unsigned long long l) { return volume<cubic_centimetre, std::int64_t>(l); }
-constexpr auto operator""cm3(long double l) { return volume<cubic_centimetre, long double>(l); }
+constexpr auto operator"" q_cm3(unsigned long long l) { return volume<cubic_centimetre, std::int64_t>(l); }
+constexpr auto operator"" q_cm3(long double l) { return volume<cubic_centimetre, long double>(l); }
 
 // m3
-constexpr auto operator""m3(unsigned long long l) { return volume<cubic_metre, std::int64_t>(l); }
-constexpr auto operator""m3(long double l) { return volume<cubic_metre, long double>(l); }
+constexpr auto operator"" q_m3(unsigned long long l) { return volume<cubic_metre, std::int64_t>(l); }
+constexpr auto operator"" q_m3(long double l) { return volume<cubic_metre, long double>(l); }
 
 // km3
-constexpr auto operator""km3(unsigned long long l) { return volume<cubic_kilometre, std::int64_t>(l); }
-constexpr auto operator""km3(long double l) { return volume<cubic_kilometre, long double>(l); }
+constexpr auto operator"" q_km3(unsigned long long l) { return volume<cubic_kilometre, std::int64_t>(l); }
+constexpr auto operator"" q_km3(long double l) { return volume<cubic_kilometre, long double>(l); }
 
 // l
-constexpr auto operator""_l(unsigned long long l) { return volume<litre, std::int64_t>(l); }
-constexpr auto operator""_l(long double l) { return volume<litre, long double>(l); }
+constexpr auto operator"" q_l(unsigned long long l) { return volume<litre, std::int64_t>(l); }
+constexpr auto operator"" q_l(long double l) { return volume<litre, long double>(l); }
 
 }  // namespace literals
 

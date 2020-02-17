@@ -157,7 +157,7 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
  *
  * This cast gets the target quantity type to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::si::time<units::si::second>>(1ms);
+ * auto q1 = units::quantity_cast<units::si::time<units::si::second>>(1q_ms);
  *
  * @tparam To a target quantity type to cast to
  */
@@ -182,7 +182,7 @@ template<Quantity To, typename D, typename U, typename Rep>
  *
  * This cast gets only the target dimension to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::si::acceleration>(200Gal);
+ * auto q1 = units::quantity_cast<units::si::acceleration>(200q_Gal);
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
@@ -201,7 +201,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * This cast gets only the target unit to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::si::second>(1ms);
+ * auto q1 = units::quantity_cast<units::si::second>(1q_ms);
  *
  * @tparam ToU a unit type to use for a target quantity
  */
@@ -220,7 +220,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * This cast gets only representation to cast to. For example:
  *
- * auto q1 = units::quantity_cast<int>(1ms);
+ * auto q1 = units::quantity_cast<int>(1q_ms);
  *
  * @tparam ToRep a representation type to use for a target quantity
  */

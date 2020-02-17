@@ -37,8 +37,8 @@ using temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 inline namespace literals {
 
 // K
-constexpr auto operator""K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
-constexpr auto operator""_K(long double l) { return temperature<kelvin, long double>(l); }   // TODO: conflicts with gcc GNU extension
+constexpr auto operator"" q_K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
+constexpr auto operator"" q_K(long double l) { return temperature<kelvin, long double>(l); }   // TODO: conflicts with gcc GNU extension
 
 }  // namespace literals
 

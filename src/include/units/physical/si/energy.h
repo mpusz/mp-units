@@ -46,32 +46,32 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // J
-constexpr auto operator""_J(unsigned long long l) { return energy<joule, std::int64_t>(l); }
-constexpr auto operator""_J(long double l) { return energy<joule, long double>(l); }
+constexpr auto operator"" q_J(unsigned long long l) { return energy<joule, std::int64_t>(l); }
+constexpr auto operator"" q_J(long double l) { return energy<joule, long double>(l); }
 
 // mJ
-constexpr auto operator""mJ(unsigned long long l) { return energy<millijoule, std::int64_t>(l); }
-constexpr auto operator""mJ(long double l) { return energy<millijoule, long double>(l); }
+constexpr auto operator"" q_mJ(unsigned long long l) { return energy<millijoule, std::int64_t>(l); }
+constexpr auto operator"" q_mJ(long double l) { return energy<millijoule, long double>(l); }
 
 // kJ
-constexpr auto operator""kJ(unsigned long long l) { return energy<kilojoule, std::int64_t>(l); }
-constexpr auto operator""kJ(long double l) { return energy<kilojoule, long double>(l); }
+constexpr auto operator"" q_kJ(unsigned long long l) { return energy<kilojoule, std::int64_t>(l); }
+constexpr auto operator"" q_kJ(long double l) { return energy<kilojoule, long double>(l); }
 
 // MJ
-constexpr auto operator""MJ(unsigned long long l) { return energy<megajoule, std::int64_t>(l); }
-constexpr auto operator""MJ(long double l) { return energy<megajoule, long double>(l); }
+constexpr auto operator"" q_MJ(unsigned long long l) { return energy<megajoule, std::int64_t>(l); }
+constexpr auto operator"" q_MJ(long double l) { return energy<megajoule, long double>(l); }
 
 // GJ
-constexpr auto operator""GJ(unsigned long long l) { return energy<gigajoule, std::int64_t>(l); }
-constexpr auto operator""GJ(long double l) { return energy<gigajoule, long double>(l); }
+constexpr auto operator"" q_GJ(unsigned long long l) { return energy<gigajoule, std::int64_t>(l); }
+constexpr auto operator"" q_GJ(long double l) { return energy<gigajoule, long double>(l); }
 
 // eV
-constexpr auto operator""eV(unsigned long long l) { return energy<electronvolt, std::int64_t>(l); }
-constexpr auto operator""eV(long double l) { return energy<electronvolt, long double>(l); }
+constexpr auto operator"" q_eV(unsigned long long l) { return energy<electronvolt, std::int64_t>(l); }
+constexpr auto operator"" q_eV(long double l) { return energy<electronvolt, long double>(l); }
 
 // GeV
-constexpr auto operator""GeV(unsigned long long l) { return energy<gigaelectronvolt, std::int64_t>(l); }
-constexpr auto operator""GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
+constexpr auto operator"" q_GeV(unsigned long long l) { return energy<gigaelectronvolt, std::int64_t>(l); }
+constexpr auto operator"" q_GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
 
 }  // namespace literals
 

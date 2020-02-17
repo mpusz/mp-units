@@ -38,8 +38,8 @@ using length = quantity<dim_length, U, Rep>;
 inline namespace literals {
 
 // cm
-constexpr auto operator"" cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
-constexpr auto operator"" cm(long double l) { return length<centimetre, long double>(l); }
+constexpr auto operator"" q_cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
+constexpr auto operator"" q_cm(long double l) { return length<centimetre, long double>(l); }
 
 }
 

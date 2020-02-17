@@ -61,36 +61,36 @@ using mil = thou;
 inline namespace literals {
 
 // yd
-constexpr auto operator"" yd(unsigned long long l) { return si::length<yard, std::int64_t>(l); }
-constexpr auto operator"" yd(long double l) { return si::length<yard, long double>(l); }
+constexpr auto operator"" q_yd(unsigned long long l) { return si::length<yard, std::int64_t>(l); }
+constexpr auto operator"" q_yd(long double l) { return si::length<yard, long double>(l); }
 
 // ft
-constexpr auto operator"" ft(unsigned long long l) { return si::length<foot, std::int64_t>(l); }
-constexpr auto operator"" ft(long double l) { return si::length<foot, long double>(l); }
+constexpr auto operator"" q_ft(unsigned long long l) { return si::length<foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft(long double l) { return si::length<foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" fathom(unsigned long long l) { return si::length<fathom, std::int64_t>(l); }
-constexpr auto operator"" fathom(long double l) { return si::length<fathom, long double>(l); }
+constexpr auto operator"" q_fathom(unsigned long long l) { return si::length<fathom, std::int64_t>(l); }
+constexpr auto operator"" q_fathom(long double l) { return si::length<fathom, long double>(l); }
 
 // in
-constexpr auto operator"" in(unsigned long long l) { return si::length<inch, std::int64_t>(l); }
-constexpr auto operator"" in(long double l) { return si::length<inch, long double>(l); }
+constexpr auto operator"" q_in(unsigned long long l) { return si::length<inch, std::int64_t>(l); }
+constexpr auto operator"" q_in(long double l) { return si::length<inch, long double>(l); }
 
 // mi
-constexpr auto operator"" mi(unsigned long long l) { return si::length<mile, std::int64_t>(l); }
-constexpr auto operator"" mi(long double l) { return si::length<mile, long double>(l); }
+constexpr auto operator"" q_mi(unsigned long long l) { return si::length<mile, std::int64_t>(l); }
+constexpr auto operator"" q_mi(long double l) { return si::length<mile, long double>(l); }
 
 // mi_naut
-constexpr auto operator"" naut_mi(unsigned long long l) { return si::length<nautical_mile, std::int64_t>(l); }
-constexpr auto operator"" naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
+constexpr auto operator"" q_naut_mi(unsigned long long l) { return si::length<nautical_mile, std::int64_t>(l); }
+constexpr auto operator"" q_naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
 
 // thou
-constexpr auto operator"" thou(unsigned long long l) { return si::length<thou, std::int64_t>(l); }
-constexpr auto operator"" thou(long double l) { return si::length<thou, long double>(l); }
+constexpr auto operator"" q_thou(unsigned long long l) { return si::length<thou, std::int64_t>(l); }
+constexpr auto operator"" q_thou(long double l) { return si::length<thou, long double>(l); }
 
 // mil
-constexpr auto operator"" mil(unsigned long long l) { return si::length<mil, std::int64_t>(l); }
-constexpr auto operator"" mil(long double l) { return si::length<mil, long double>(l); }
+constexpr auto operator"" q_mil(unsigned long long l) { return si::length<mil, std::int64_t>(l); }
+constexpr auto operator"" q_mil(long double l) { return si::length<mil, long double>(l); }
 
 }  // namespace literals
 

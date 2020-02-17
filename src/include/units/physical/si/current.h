@@ -38,8 +38,8 @@ using current = quantity<dim_electric_current, U, Rep>;
 inline namespace literals {
 
 // A
-constexpr auto operator""A(unsigned long long l) { return current<ampere, std::int64_t>(l); }
-constexpr auto operator""A(long double l) { return current<ampere, long double>(l); }
+constexpr auto operator"" q_A(unsigned long long l) { return current<ampere, std::int64_t>(l); }
+constexpr auto operator"" q_A(long double l) { return current<ampere, long double>(l); }
 
 } // namespace literals
 

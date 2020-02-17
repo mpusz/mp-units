@@ -33,23 +33,23 @@ using namespace units::si;
 TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
   SECTION ("'pow<0>(q)' returns '1'") {
-    CHECK(pow<0>(2m) == 1);
+    CHECK(pow<0>(2q_m) == 1);
   }
 
   SECTION ("'pow<1>(q)' returns 'q'") {
-    CHECK(pow<1>(2m) == 2m);
+    CHECK(pow<1>(2q_m) == 2q_m);
   }
 
   SECTION ("'pow<2>(q)' squares both the value and a dimension") {
-    CHECK(pow<2>(2m) == 4m2);
+    CHECK(pow<2>(2q_m) == 4q_m2);
   }
 
   SECTION ("'pow<3>(q)' cubes both the value and a dimension") {
-    CHECK(pow<3>(2m) == 8m3);
+    CHECK(pow<3>(2q_m) == 8q_m3);
   }
 }
 
 TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly", "[math][sqrt]")
 {
-  REQUIRE(sqrt(4m2) == 2m);
+  REQUIRE(sqrt(4q_m2) == 2q_m);
 }

@@ -35,7 +35,7 @@ using si::time;
 
 inline namespace literals {
 
-using si::literals::operator"" s;
+using si::literals::operator"" q_s;
 
 }
 

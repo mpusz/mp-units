@@ -51,16 +51,16 @@ using namespace units::si;
 
 // length
 
-static_assert(1km == 1000m);
-static_assert(1m == 100cm);
-static_assert(1m == 10dm);
-static_assert(1m == 1000mm);
-static_assert(1hm == 100m);
-static_assert(1au == 149'597'870'700m);
-static_assert(1km + 1m == 1001m);
-static_assert(10km / 5km == 2);
-static_assert(100mm / 5cm == 2);
-static_assert(10km / 2 == 5km);
+static_assert(1q_km == 1000q_m);
+static_assert(1q_m == 100q_cm);
+static_assert(1q_m == 10q_dm);
+static_assert(1q_m == 1000q_mm);
+static_assert(1q_hm == 100q_m);
+static_assert(1q_au == 149'597'870'700q_m);
+static_assert(1q_km + 1q_m == 1001q_m);
+static_assert(10q_km / 5q_km == 2);
+static_assert(100q_mm / 5q_cm == 2);
+static_assert(10q_km / 2 == 5q_km);
 
 static_assert(millimetre::symbol == "mm");
 static_assert(centimetre::symbol == "cm");
@@ -69,21 +69,21 @@ static_assert(kilometre::symbol == "km");
 
 // mass
 
-static_assert(1kg == 1000g);
-static_assert(1t == 1000kg);
+static_assert(1q_kg == 1000q_g);
+static_assert(1q_t == 1000q_kg);
 
 static_assert(kilogram::symbol == "kg");
 
 // time
 
-static_assert(1us == 1000ns);
-static_assert(1ms == 1000us);
-static_assert(1s == 1000ms);
-static_assert(1min == 60s);
-static_assert(1h == 60min);
-static_assert(1h == 3600s);
-static_assert(1_d == 24h);
-static_assert(1_d == 86'400s);
+static_assert(1q_us == 1000q_ns);
+static_assert(1q_ms == 1000q_us);
+static_assert(1q_s == 1000q_ms);
+static_assert(1q_min == 60q_s);
+static_assert(1q_h == 60q_min);
+static_assert(1q_h == 3600q_s);
+static_assert(1q_d == 24q_h);
+static_assert(1q_d == 86'400q_s);
 
 static_assert(nanosecond::symbol == "ns");
 static_assert(microsecond::symbol == "µs");
@@ -101,11 +101,11 @@ static_assert(millisecond::symbol == "ms");
 
 // frequency
 
-static_assert(1000mHz == 1Hz);
-static_assert(1000Hz == 1kHz);
-static_assert(1000kHz == 1MHz);
-static_assert(1000MHz == 1GHz);
-static_assert(1000GHz == 1THz);
+static_assert(1000q_mHz == 1q_Hz);
+static_assert(1000q_Hz == 1q_kHz);
+static_assert(1000q_kHz == 1q_MHz);
+static_assert(1000q_MHz == 1q_GHz);
+static_assert(1000q_GHz == 1q_THz);
 
 static_assert(millihertz::symbol == "mHz");
 static_assert(kilohertz::symbol == "kHz");
@@ -113,140 +113,140 @@ static_assert(megahertz::symbol == "MHz");
 static_assert(gigahertz::symbol == "GHz");
 static_assert(terahertz::symbol == "THz");
 
-static_assert(2 / 1s == 2Hz);
-static_assert(120 / 1min == 2Hz);
-static_assert(1000 / 1s == 1kHz);
-static_assert(1 / 1ms == 1kHz);
-static_assert(3.2GHz == 3'200'000'000Hz);
-static_assert(10Hz * 1min == 600);
-static_assert(2 / 1Hz == 2s);
+static_assert(2 / 1q_s == 2q_Hz);
+static_assert(120 / 1q_min == 2q_Hz);
+static_assert(1000 / 1q_s == 1q_kHz);
+static_assert(1 / 1q_ms == 1q_kHz);
+static_assert(3.2q_GHz == 3'200'000'000q_Hz);
+static_assert(10q_Hz * 1q_min == 600);
+static_assert(2 / 1q_Hz == 2q_s);
 
 // force
-static_assert(10kg * 10mps2 == 100N);
-static_assert(100N / 1mps2 == 100kg);
-static_assert(100N / 1kg == 100mps2);
+static_assert(10q_kg * 10q_mps2 == 100q_N);
+static_assert(100q_N / 1q_mps2 == 100q_kg);
+static_assert(100q_N / 1q_kg == 100q_mps2);
 
 // pressure
 
-static_assert(10N / 10m2 == 1Pa);
-static_assert(10N / 1Pa == 10m2);
-static_assert(1Pa * 10m2 == 10N);
+static_assert(10q_N / 10q_m2 == 1q_Pa);
+static_assert(10q_N / 1q_Pa == 10q_m2);
+static_assert(1q_Pa * 10q_m2 == 10q_N);
 
 // energy
 
-static_assert(1000mJ == 1_J);
-static_assert(1000_J == 1kJ);
-static_assert(1000kJ == 1MJ);
-static_assert(1000MJ == 1GJ);
+static_assert(1000q_mJ == 1q_J);
+static_assert(1000q_J == 1q_kJ);
+static_assert(1000q_kJ == 1q_MJ);
+static_assert(1000q_MJ == 1q_GJ);
 
 static_assert(millijoule::symbol == "mJ");
 static_assert(kilojoule::symbol == "kJ");
 static_assert(megajoule::symbol == "MJ");
 static_assert(gigajoule::symbol == "GJ");
 
-static_assert(10N * 10m == 100_J);
-static_assert(100_J / 10m == 10N);
-static_assert(100_J / 10N == 10m);
-static_assert(10Pa * 10m3 == 100_J);
-static_assert(100_J / 10Pa == 10m3);
-static_assert(100_J / 10m3 == 10Pa);
+static_assert(10q_N * 10q_m == 100q_J);
+static_assert(100q_J / 10q_m == 10q_N);
+static_assert(100q_J / 10q_N == 10q_m);
+static_assert(10q_Pa * 10q_m3 == 100q_J);
+static_assert(100q_J / 10q_Pa == 10q_m3);
+static_assert(100q_J / 10q_m3 == 10q_Pa);
 
 // power
 
-static_assert(1000mW == 1W);
-static_assert(1000W == 1kW);
-static_assert(1000kW == 1MW);
-static_assert(1000MW == 1GW);
+static_assert(1000q_mW == 1q_W);
+static_assert(1000q_W == 1q_kW);
+static_assert(1000q_kW == 1q_MW);
+static_assert(1000q_MW == 1q_GW);
 
 static_assert(milliwatt::symbol == "mW");
 static_assert(kilowatt::symbol == "kW");
 static_assert(megawatt::symbol == "MW");
 static_assert(gigawatt::symbol == "GW");
 
-static_assert(10_J / 10s == 1W);
-static_assert(1W * 10s == 10_J);
-static_assert(10_J / 1W == 10s);
+static_assert(10q_J / 10q_s == 1q_W);
+static_assert(1q_W * 10q_s == 10q_J);
+static_assert(10q_J / 1q_W == 10q_s);
 
 // electric charge
 
-static_assert(10A * 10s == 100C);
-static_assert(100C / 10A == 10s);
-static_assert(100C / 10s == 10A);
+static_assert(10q_A * 10q_s == 100q_C);
+static_assert(100q_C / 10q_A == 10q_s);
+static_assert(100q_C / 10q_s == 10q_A);
 
 // voltage
 
-static_assert(10W / 10A == 1V);
-static_assert(10W / 1V == 10A);
-static_assert(1V * 10A == 10W);
-static_assert(10_J / 10C == 1V);
-static_assert(10_J / 1V == 10C);
-static_assert(10C * 1V == 10_J);
+static_assert(10q_W / 10q_A == 1q_V);
+static_assert(10q_W / 1q_V == 10q_A);
+static_assert(1q_V * 10q_A == 10q_W);
+static_assert(10q_J / 10q_C == 1q_V);
+static_assert(10q_J / 1q_V == 10q_C);
+static_assert(10q_C * 1q_V == 10q_J);
 
 // capacitance
 
-static_assert(10C / 10V == 1F);
-static_assert(10C / 1F == 10V);
-static_assert(10V * 1F == 10C);
+static_assert(10q_C / 10q_V == 1q_F);
+static_assert(10q_C / 1q_F == 10q_V);
+static_assert(10q_V * 1q_F == 10q_C);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
 // velocity
 
-static_assert(std::is_same_v<decltype(1km / 1s), velocity<scaled_unit<ratio<1, 1, 3>, metre_per_second>, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1q_km / 1q_s), velocity<scaled_unit<ratio<1, 1, 3>, metre_per_second>, std::int64_t>>);
 
-static_assert(10m / 5s == 2mps);
-static_assert(10 / 5s * 1m == 2mps);
-static_assert(1km / 1s == 1000mps);
-// static_assert(1km / 1h == 1kmph);  // should not compile
-static_assert(1.0km / 1h == 1kmph);
-static_assert(1000.0m / 3600.0s == 1kmph);
+static_assert(10q_m / 5q_s == 2q_mps);
+static_assert(10 / 5q_s * 1q_m == 2q_mps);
+static_assert(1q_km / 1q_s == 1000q_mps);
+// static_assert(1q_km / 1q_h == 1q_kmph);  // should not compile
+static_assert(1.0q_km / 1q_h == 1q_kmph);
+static_assert(1000.0q_m / 3600.0q_s == 1q_kmph);
 
-static_assert(2kmph * 2h == 4km);
-// static_assert(2kmph * 15min == 500m); // should not compile
-static_assert(2kmph * 15.0min == 500m);
-static_assert(2.0kmph * 15min == 500m);
+static_assert(2q_kmph * 2q_h == 4q_km);
+// static_assert(2q_kmph * 15q_min == 500q_m); // should not compile
+static_assert(2q_kmph * 15.0q_min == 500q_m);
+static_assert(2.0q_kmph * 15q_min == 500q_m);
 
-static_assert(2km / 2kmph == 1h);
-// static_assert(2000m / 2kmph == 1h); // should not compile
-static_assert(quantity_cast<kilometre>(2000m) / 2kmph == 1h);
+static_assert(2q_km / 2q_kmph == 1q_h);
+// static_assert(2000q_m / 2q_kmph == 1q_h); // should not compile
+static_assert(quantity_cast<kilometre>(2000q_m) / 2q_kmph == 1q_h);
 
 static_assert(detail::unit_text<dim_velocity, metre_per_second>() == "m/s");
 static_assert(kilometre_per_hour::symbol == "km/h");
 
 // acceleration
 
-static_assert(10mps / 10s == 1mps2);
-static_assert(10mps / 1mps2 == 10s);
-static_assert(1mps2 * 10s == 10mps);
+static_assert(10q_mps / 10q_s == 1q_mps2);
+static_assert(10q_mps / 1q_mps2 == 10q_s);
+static_assert(1q_mps2 * 10q_s == 10q_mps);
 
 static_assert(detail::unit_text<dim_acceleration, metre_per_second_sq>() == "m/s²");
 
 // area
 
-static_assert(10m * 10m == 100m2);
-static_assert(100m2 / 10m == 10m);
-static_assert(10km * 10km == 100km2);
-static_assert(1m2 == 10'000cm2);
-static_assert(1ha == 10'000m2);
+static_assert(10q_m * 10q_m == 100q_m2);
+static_assert(100q_m2 / 10q_m == 10q_m);
+static_assert(10q_km * 10q_km == 100q_km2);
+static_assert(1q_m2 == 10'000q_cm2);
+static_assert(1q_ha == 10'000q_m2);
 
 static_assert(detail::unit_text<dim_area, square_metre>() == "m²");
 
 // volume
 
-static_assert(1m * 1m * 1m == 1m3);
-static_assert(10m2 * 10m == 100m3);
-static_assert(10km * 10km * 10km == 1000km3);
-static_assert(1m3 == 1'000'000cm3);
-static_assert(1dm * 1dm * 1dm == 1_l);
-static_assert(1000_l == 1m3);
+static_assert(1q_m * 1q_m * 1q_m == 1q_m3);
+static_assert(10q_m2 * 10q_m == 100q_m3);
+static_assert(10q_km * 10q_km * 10q_km == 1000q_km3);
+static_assert(1q_m3 == 1'000'000q_cm3);
+static_assert(1q_dm * 1q_dm * 1q_dm == 1q_l);
+static_assert(1000q_l == 1q_m3);
 
 static_assert(detail::unit_text<dim_volume, cubic_metre>() == "m³");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
-static_assert(10N / 2m == 5Npm);
-static_assert(10N / 5Npm == 2m);
-static_assert(2m * 5Npm == 10N);
+static_assert(10q_N / 2q_m == 5q_Npm);
+static_assert(10q_N / 5q_Npm == 2q_m);
+static_assert(2q_m * 5q_Npm == 10q_N);
 
 static_assert(detail::unit_text<dim_surface_tension, newton_per_metre>() == "N/m");
 

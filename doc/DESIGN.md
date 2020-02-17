@@ -11,20 +11,20 @@ Here is a small example of possible operations:
 
 ```cpp
 // simple numeric operations
-static_assert(10km / 2 == 5km);
+static_assert(10q_km / 2 == 5q_km);
 
 // unit conversions
-static_assert(1h == 3600s);
-static_assert(1km + 1m == 1001m);
+static_assert(1q_h == 3600q_s);
+static_assert(1q_km + 1q_m == 1001q_m);
 
 // dimension conversions
-static_assert(1km / 1s == 1000mps);
-static_assert(2kmph * 2h == 4km);
-static_assert(2km / 2kmph == 1h);
+static_assert(1q_km / 1q_s == 1000q_mps);
+static_assert(2q_kmph * 2q_h == 4q_km);
+static_assert(2q_km / 2q_kmph == 1q_h);
 
-static_assert(1000 / 1s == 1kHz);
+static_assert(1000 / 1q_s == 1q_kHz);
 
-static_assert(10km / 5km == 2);
+static_assert(10q_km / 5q_km == 2);
 ```
 
 
@@ -458,12 +458,12 @@ has an associated UDL. For example:
 namespace si::inline literals {
 
 // m
-constexpr auto operator"" m(unsigned long long l) { return length<metre, std::int64_t>(l); }
-constexpr auto operator"" m(long double l) { return length<metre, long double>(l); }
+constexpr auto operator"" q_m(unsigned long long l) { return length<metre, std::int64_t>(l); }
+constexpr auto operator"" q_m(long double l) { return length<metre, long double>(l); }
 
 // km
-constexpr auto operator"" km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
-constexpr auto operator"" km(long double l) { return length<kilometre, long double>(l); }
+constexpr auto operator"" q_km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
+constexpr auto operator"" q_km(long double l) { return length<kilometre, long double>(l); }
 
 }
 ```
@@ -574,7 +574,7 @@ If the `units-specs` is omitted, the `quantity` object is formatted as if by str
 additional padding and adjustments as specified by the format specifiers.
 
 ```cpp
-std::string s = fmt::format("{:=>12}", 120_kmph); // value of s is "====120 km/h"
+std::string s = fmt::format("{:=>12}", 120q_kmph); // value of s is "====120 km/h"
 ```
 
 
@@ -732,14 +732,14 @@ predefined by the user in the downcasting facility. A typical example of such a 
 temporary results of calculations:
 
 ```cpp
-units::Length auto d1 = 123m;
-units::Time auto t1 = 10s;
+units::Length auto d1 = 123q_m;
+units::Time auto t1 = 10q_s;
 units::Velocity auto v1 = avg_speed(d1, t1);
 
-auto temp1 = v1 * 50m;  // intermediate unknown dimension
+auto temp1 = v1 * 50q_m;  // intermediate unknown dimension
 
-units::Velocity auto v2 = temp1 / 100m; // back to known dimensions again
-units::Length auto d2 = v2 * 60s;
+units::Velocity auto v2 = temp1 / 100q_m; // back to known dimensions again
+units::Length auto d2 = v2 * 60q_s;
 ```
 
 To provide support to form an unknown derived dimension that could be than be converted to a
@@ -825,12 +825,12 @@ adds support for digital information quantities. In summary it adds:
     namespace units::data::inline literals {
 
     // bits
-    constexpr auto operator""b(unsigned long long l) { return information<bit, std::int64_t>(l); }
-    constexpr auto operator""Kib(unsigned long long l) { return information<kibibit, std::int64_t>(l); }
+    constexpr auto operator"" q_b(unsigned long long l) { return information<bit, std::int64_t>(l); }
+    constexpr auto operator"" q_Kib(unsigned long long l) { return information<kibibit, std::int64_t>(l); }
 
     // bytes
-    constexpr auto operator""B(unsigned long long l) { return information<byte, std::int64_t>(l); }
-    constexpr auto operator""KiB(unsigned long long l) { return information<kibibyte, std::int64_t>(l); }
+    constexpr auto operator"" q_B(unsigned long long l) { return information<byte, std::int64_t>(l); }
+    constexpr auto operator"" q_KiB(unsigned long long l) { return information<kibibyte, std::int64_t>(l); }
 
     }
     ```
@@ -854,8 +854,8 @@ adds support for digital information quantities. In summary it adds:
     inline namespace literals {
 
     // bits
-    constexpr auto operator""_bps(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
-    constexpr auto operator""_Kibps(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
+    constexpr auto operator"" q_bps(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
+    constexpr auto operator"" q_Kibps(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
 
     }
 

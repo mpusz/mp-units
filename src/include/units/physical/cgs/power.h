@@ -39,8 +39,8 @@ using power = quantity<dim_power, U, Rep>;
 inline namespace literals {
 
 // ergps
-constexpr auto operator""_ergps(unsigned long long l) { return power<erg_per_second, std::int64_t>(l); }
-constexpr auto operator""_ergps(long double l) { return power<erg_per_second, long double>(l); }
+constexpr auto operator"" q_ergps(unsigned long long l) { return power<erg_per_second, std::int64_t>(l); }
+constexpr auto operator"" q_ergps(long double l) { return power<erg_per_second, long double>(l); }
 
 }  // namespace literals
 
