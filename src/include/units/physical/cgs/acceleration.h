@@ -37,8 +37,8 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 inline namespace literals {
 
 // Gal
-constexpr auto operator""Gal(unsigned long long l) { return acceleration<gal, std::int64_t>(l); }
-constexpr auto operator""Gal(long double l) { return acceleration<gal, long double>(l); }
+constexpr auto operator"" q_Gal(unsigned long long l) { return acceleration<gal, std::int64_t>(l); }
+constexpr auto operator"" q_Gal(long double l) { return acceleration<gal, long double>(l); }
 
 }  // namespace literals
 

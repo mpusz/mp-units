@@ -42,20 +42,20 @@ using mass = quantity<dim_mass, U, Rep>;
 inline namespace literals {
 
 // g
-constexpr auto operator""g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-constexpr auto operator""g(long double l) { return mass<gram, long double>(l); }
+constexpr auto operator"" q_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+constexpr auto operator"" q_g(long double l) { return mass<gram, long double>(l); }
 
 // kg
-constexpr auto operator""kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
-constexpr auto operator""kg(long double l) { return mass<kilogram, long double>(l); }
+constexpr auto operator"" q_kg(unsigned long long l) { return mass<kilogram, std::int64_t>(l); }
+constexpr auto operator"" q_kg(long double l) { return mass<kilogram, long double>(l); }
 
 // t
-constexpr auto operator""t(unsigned long long l) { return mass<tonne, std::int64_t>(l); }
-constexpr auto operator""t(long double l) { return mass<tonne, long double>(l); }
+constexpr auto operator"" q_t(unsigned long long l) { return mass<tonne, std::int64_t>(l); }
+constexpr auto operator"" q_t(long double l) { return mass<tonne, long double>(l); }
 
 // Da
-constexpr auto operator""Da(unsigned long long l) { return mass<dalton, std::int64_t>(l); }
-constexpr auto operator""Da(long double l) { return mass<dalton, long double>(l); }
+constexpr auto operator"" q_Da(unsigned long long l) { return mass<dalton, std::int64_t>(l); }
+constexpr auto operator"" q_Da(long double l) { return mass<dalton, long double>(l); }
 
 }  // namespace literals
 

@@ -39,8 +39,8 @@ using area = quantity<dim_area, U, Rep>;
 inline namespace literals {
 
 // cm2
-constexpr auto operator"" cm2(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
-constexpr auto operator"" cm2(long double l) { return area<square_centimetre, long double>(l); }
+constexpr auto operator"" q_cm2(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
+constexpr auto operator"" q_cm2(long double l) { return area<square_centimetre, long double>(l); }
 
 }
 

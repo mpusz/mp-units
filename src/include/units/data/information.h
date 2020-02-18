@@ -54,20 +54,20 @@ using information = quantity<dim_information, U, Rep>;
 inline namespace literals {
 
 // bits
-constexpr auto operator""b(unsigned long long l) { return information<bit, std::int64_t>(l); }
-constexpr auto operator""Kib(unsigned long long l) { return information<kibibit, std::int64_t>(l); }
-constexpr auto operator""Mib(unsigned long long l) { return information<mebibit, std::int64_t>(l); }
-constexpr auto operator""Gib(unsigned long long l) { return information<gibibit, std::int64_t>(l); }
-constexpr auto operator""Tib(unsigned long long l) { return information<tebibit, std::int64_t>(l); }
-constexpr auto operator""Pib(unsigned long long l) { return information<pebibit, std::int64_t>(l); }
+constexpr auto operator"" q_b(unsigned long long l) { return information<bit, std::int64_t>(l); }
+constexpr auto operator"" q_Kib(unsigned long long l) { return information<kibibit, std::int64_t>(l); }
+constexpr auto operator"" q_Mib(unsigned long long l) { return information<mebibit, std::int64_t>(l); }
+constexpr auto operator"" q_Gib(unsigned long long l) { return information<gibibit, std::int64_t>(l); }
+constexpr auto operator"" q_Tib(unsigned long long l) { return information<tebibit, std::int64_t>(l); }
+constexpr auto operator"" q_Pib(unsigned long long l) { return information<pebibit, std::int64_t>(l); }
 
 // bytes
-constexpr auto operator""B(unsigned long long l) { return information<byte, std::int64_t>(l); }
-constexpr auto operator""KiB(unsigned long long l) { return information<kibibyte, std::int64_t>(l); }
-constexpr auto operator""MiB(unsigned long long l) { return information<mebibyte, std::int64_t>(l); }
-constexpr auto operator""GiB(unsigned long long l) { return information<gibibyte, std::int64_t>(l); }
-constexpr auto operator""TiB(unsigned long long l) { return information<tebibyte, std::int64_t>(l); }
-constexpr auto operator""PiB(unsigned long long l) { return information<pebibyte, std::int64_t>(l); }
+constexpr auto operator"" q_B(unsigned long long l) { return information<byte, std::int64_t>(l); }
+constexpr auto operator"" q_KiB(unsigned long long l) { return information<kibibyte, std::int64_t>(l); }
+constexpr auto operator"" q_MiB(unsigned long long l) { return information<mebibyte, std::int64_t>(l); }
+constexpr auto operator"" q_GiB(unsigned long long l) { return information<gibibyte, std::int64_t>(l); }
+constexpr auto operator"" q_TiB(unsigned long long l) { return information<tebibyte, std::int64_t>(l); }
+constexpr auto operator"" q_PiB(unsigned long long l) { return information<pebibyte, std::int64_t>(l); }
 
 }  // namespace literals
 

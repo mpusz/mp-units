@@ -44,32 +44,32 @@ using time = quantity<dim_time, U, Rep>;
 inline namespace literals {
 
 // ns
-constexpr auto operator""ns(unsigned long long l) { return time<nanosecond, std::int64_t>(l); }
-constexpr auto operator""ns(long double l) { return time<nanosecond, long double>(l); }
+constexpr auto operator"" q_ns(unsigned long long l) { return time<nanosecond, std::int64_t>(l); }
+constexpr auto operator"" q_ns(long double l) { return time<nanosecond, long double>(l); }
 
 // us
-constexpr auto operator""us(unsigned long long l) { return time<microsecond, std::int64_t>(l); }
-constexpr auto operator""us(long double l) { return time<microsecond, long double>(l); }
+constexpr auto operator"" q_us(unsigned long long l) { return time<microsecond, std::int64_t>(l); }
+constexpr auto operator"" q_us(long double l) { return time<microsecond, long double>(l); }
 
 // ms
-constexpr auto operator""ms(unsigned long long l) { return time<millisecond, std::int64_t>(l); }
-constexpr auto operator""ms(long double l) { return time<millisecond, long double>(l); }
+constexpr auto operator"" q_ms(unsigned long long l) { return time<millisecond, std::int64_t>(l); }
+constexpr auto operator"" q_ms(long double l) { return time<millisecond, long double>(l); }
 
 // s
-constexpr auto operator""s(unsigned long long l) { return time<second, std::int64_t>(l); }
-constexpr auto operator""s(long double l) { return time<second, long double>(l); }
+constexpr auto operator"" q_s(unsigned long long l) { return time<second, std::int64_t>(l); }
+constexpr auto operator"" q_s(long double l) { return time<second, long double>(l); }
 
 // min
-constexpr auto operator""min(unsigned long long l) { return time<minute, std::int64_t>(l); }
-constexpr auto operator""min(long double l) { return time<minute, long double>(l); }
+constexpr auto operator"" q_min(unsigned long long l) { return time<minute, std::int64_t>(l); }
+constexpr auto operator"" q_min(long double l) { return time<minute, long double>(l); }
 
 // h
-constexpr auto operator""h(unsigned long long l) { return time<hour, std::int64_t>(l); }
-constexpr auto operator""h(long double l) { return time<hour, long double>(l); }
+constexpr auto operator"" q_h(unsigned long long l) { return time<hour, std::int64_t>(l); }
+constexpr auto operator"" q_h(long double l) { return time<hour, long double>(l); }
 
 // d
-constexpr auto operator""_d(unsigned long long l) { return time<day, std::int64_t>(l); }
-constexpr auto operator""_d(long double l) { return time<day, long double>(l); }
+constexpr auto operator"" q_d(unsigned long long l) { return time<day, std::int64_t>(l); }
+constexpr auto operator"" q_d(long double l) { return time<day, long double>(l); }
 
 }  // namespace literals
 

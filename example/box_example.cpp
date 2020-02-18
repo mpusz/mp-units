@@ -101,11 +101,11 @@ struct Box {
 using namespace units::si::literals;
 int main()
 {
-  auto box = Box{1000.0mm, 500.0mm, 200.0mm};
-  box.set_contents_density(1000.0kgpm3);
+  auto box = Box{1000.0q_mm, 500.0q_mm, 200.0q_mm};
+  box.set_contents_density(1000.0q_kgpm3);
 
-  auto fill_time = 200.0s;      // time since starting fill
-  auto measured_mass = 20.0kg;  // measured mass at fill_time
+  auto fill_time = 200.0q_s;      // time since starting fill
+  auto measured_mass = 20.0q_kg;  // measured mass at fill_time
 
   std::cout << "mpusz/units box example...\n";
   std::cout << "fill height at " << fill_time << " = " << box.fill_level(measured_mass) << " ("

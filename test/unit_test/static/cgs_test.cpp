@@ -50,17 +50,17 @@ static_assert(centimetre::symbol == "cm");
 
 // velocity
 
-static_assert(10cm / 5s == 2cmps);
-static_assert(10cm / 2cmps == 5s);
-static_assert(10cm == 2cmps * 5s);
+static_assert(10q_cm / 5q_s == 2q_cmps);
+static_assert(10q_cm / 2q_cmps == 5q_s);
+static_assert(10q_cm == 2q_cmps * 5q_s);
 
 static_assert(detail::unit_text<dim_velocity, centimetre_per_second>() == "cm/s");
 
 // area
 static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
 
-static_assert(1cm * 1cm == 1cm2);
-static_assert(100cm2 / 10cm == 10cm);
+static_assert(1q_cm * 1q_cm == 1q_cm2);
+static_assert(100q_cm2 / 10q_cm == 10q_cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
 
@@ -68,35 +68,35 @@ static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
 
 // acceleration
 
-static_assert(10cmps / 10s == 1Gal);
-static_assert(10cmps / 1Gal == 10s);
-static_assert(1Gal * 10s == 10cmps);
+static_assert(10q_cmps / 10q_s == 1q_Gal);
+static_assert(10q_cmps / 1q_Gal == 10q_s);
+static_assert(1q_Gal * 10q_s == 10q_cmps);
 
 // force
 
-static_assert(10g * 10Gal == 100dyn);
-static_assert(100dyn / 10g == 10Gal);
-static_assert(100dyn / 10Gal == 10g);
+static_assert(10q_g * 10q_Gal == 100q_dyn);
+static_assert(100q_dyn / 10q_g == 10q_Gal);
+static_assert(100q_dyn / 10q_Gal == 10q_g);
 
 // pressure
 
-static_assert(10dyn / 10cm2 == 1Ba);
-static_assert(10dyn / 1Ba == 10cm2);
-static_assert(1Ba * 10cm2 == 10dyn);
+static_assert(10q_dyn / 10q_cm2 == 1q_Ba);
+static_assert(10q_dyn / 1q_Ba == 10q_cm2);
+static_assert(1q_Ba * 10q_cm2 == 10q_dyn);
 
 // energy
 
-static_assert(10dyn * 10cm == 100_erg);
-static_assert(100_erg / 10cm == 10dyn);
-static_assert(100_erg / 10dyn == 10cm);
+static_assert(10q_dyn * 10q_cm == 100q_erg);
+static_assert(100q_erg / 10q_cm == 10q_dyn);
+static_assert(100q_erg / 10q_dyn == 10q_cm);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
 // power
 
-static_assert(10_erg / 10s == 1_ergps);
-static_assert(1_ergps * 10s == 10_erg);
-static_assert(10_erg / 1_ergps == 10s);
+static_assert(10q_erg / 10q_s == 1q_ergps);
+static_assert(1q_ergps * 10q_s == 10q_erg);
+static_assert(10q_erg / 1q_ergps == 10q_s);
 
 static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 

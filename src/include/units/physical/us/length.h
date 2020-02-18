@@ -40,16 +40,16 @@ struct mile : named_scaled_unit<mile, "mi(us)", no_prefix, ratio<5280>, us::foot
 inline namespace literals {
 
 // ft
-constexpr auto operator"" ft_us(unsigned long long l) { return si::length<units::us::foot, std::int64_t>(l); }
-constexpr auto operator"" ft_us(long double l) { return si::length<units::us::foot, long double>(l); }
+constexpr auto operator"" q_ft_us(unsigned long long l) { return si::length<units::us::foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft_us(long double l) { return si::length<units::us::foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" fathom_us(unsigned long long l) { return si::length<units::us::fathom, std::int64_t>(l); }
-constexpr auto operator"" fathom_us(long double l) { return si::length<units::us::fathom, long double>(l); }
+constexpr auto operator"" q_fathom_us(unsigned long long l) { return si::length<units::us::fathom, std::int64_t>(l); }
+constexpr auto operator"" q_fathom_us(long double l) { return si::length<units::us::fathom, long double>(l); }
 
 // ft
-constexpr auto operator"" mi_us(unsigned long long l) { return si::length<units::us::mile, std::int64_t>(l); }
-constexpr auto operator"" mi_us(long double l) { return si::length<units::us::mile, long double>(l); }
+constexpr auto operator"" q_mi_us(unsigned long long l) { return si::length<units::us::mile, std::int64_t>(l); }
+constexpr auto operator"" q_mi_us(long double l) { return si::length<units::us::mile, long double>(l); }
 
 }  // namespace literals
 

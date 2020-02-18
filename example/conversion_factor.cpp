@@ -64,7 +64,7 @@ int main()
 {
   std::cout << "conversion factor in mpusz/units...\n\n";
 
-  constexpr length::m<> lengthA = 2.0m;
+  constexpr length::m<> lengthA = 2.0q_m;
   constexpr length::mm<> lengthB = lengthA;
 
   std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"

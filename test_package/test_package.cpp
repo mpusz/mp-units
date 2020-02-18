@@ -31,5 +31,5 @@ constexpr units::Velocity AUTO avg_speed(units::Length AUTO d, units::Time AUTO 
 int main()
 {
   using namespace units::si::literals;
-  std::cout << "Average speed = " << avg_speed(240.km, 2h) << '\n';
+  std::cout << "Average speed = " << avg_speed(240.q_km, 2q_h) << '\n';
 }

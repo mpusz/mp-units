@@ -38,8 +38,8 @@ using surface_tension = quantity<dim_surface_tension, U, Rep>;
 inline namespace literals {
 
   // Nm
-  constexpr auto operator""Npm(unsigned long long l) { return surface_tension<newton_per_metre, std::int64_t>(l); }
-  constexpr auto operator""Npm(long double l) { return surface_tension<newton_per_metre, long double>(l); }
+  constexpr auto operator"" q_Npm(unsigned long long l) { return surface_tension<newton_per_metre, std::int64_t>(l); }
+  constexpr auto operator"" q_Npm(long double l) { return surface_tension<newton_per_metre, long double>(l); }
 
 }  // namespace literals
 

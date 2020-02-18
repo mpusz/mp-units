@@ -4,6 +4,37 @@
 
 There are a few different ways of installing/reusing `units` in your project.
 
+### Conan quick intro
+
+In case you are not familiar with `conan`, to install it just do:
+
+```shell
+pip3 install -U conan
+```
+
+After that you might need to add a custom profile in `~/.conan/profile` for your
+developnment environment. An example profile can look as follows:
+
+```text
+[settings]
+os=Linux
+os_build=Linux
+arch=x86_64
+arch_build=x86_64
+compiler=gcc
+compiler.version=9
+compiler.cppstd=20
+compiler.libcxx=libstdc++11
+build_type=Release
+
+[options]
+[build_requires]
+
+[env]
+CC=/usr/bin/gcc-9
+CXX=/usr/bin/g++-9
+```
+
 ### Copy
 
 As `units` is a header-only library you can simply copy `src/include` directory to
@@ -18,7 +49,7 @@ All of them are easily to obtain with `conan`.
 
 NOTE: In case a full library's repository is to be compiled (instead of just copying
 `src/include` headers), additionally, the library's unit tests depend on
-`Catch2@catchorg` conan package.
+`Catch2@catchorg` and `linear_algebra@public-conan` conan packages.
 
 ### cmake + conan
 
@@ -87,6 +118,7 @@ you should use the `CMakeLists.txt` from the parent directory and run Conan with
 ```shell
 git clone --recurse-submodules https://github.com/mpusz/units.git
 mkdir units/build && cd units/build
+conan remote add linear_algebra https://api.bintray.com/conan/twonington/public-conan
 conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .

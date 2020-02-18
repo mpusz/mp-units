@@ -40,8 +40,8 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // N
-constexpr auto operator""N(unsigned long long l) { return force<newton, std::int64_t>(l); }
-constexpr auto operator""N(long double l) { return force<newton, long double>(l); }
+constexpr auto operator"" q_N(unsigned long long l) { return force<newton, std::int64_t>(l); }
+constexpr auto operator"" q_N(long double l) { return force<newton, long double>(l); }
 
 }  // namespace literals
 

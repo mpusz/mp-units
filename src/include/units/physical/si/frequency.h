@@ -43,28 +43,28 @@ using frequency = quantity<dim_frequency, U, Rep>;
 inline namespace literals {
 
 // Hz
-constexpr auto operator"" Hz(unsigned long long l) { return frequency<hertz, std::int64_t>(l); }
-constexpr auto operator"" Hz(long double l) { return frequency<hertz, long double>(l); }
+constexpr auto operator"" q_Hz(unsigned long long l) { return frequency<hertz, std::int64_t>(l); }
+constexpr auto operator"" q_Hz(long double l) { return frequency<hertz, long double>(l); }
 
 // mHz
-constexpr auto operator"" mHz(unsigned long long l) { return frequency<millihertz, std::int64_t>(l); }
-constexpr auto operator"" mHz(long double l) { return frequency<millihertz, long double>(l); }
+constexpr auto operator"" q_mHz(unsigned long long l) { return frequency<millihertz, std::int64_t>(l); }
+constexpr auto operator"" q_mHz(long double l) { return frequency<millihertz, long double>(l); }
 
 // kHz
-constexpr auto operator"" kHz(unsigned long long l) { return frequency<kilohertz, std::int64_t>(l); }
-constexpr auto operator"" kHz(long double l) { return frequency<kilohertz, long double>(l); }
+constexpr auto operator"" q_kHz(unsigned long long l) { return frequency<kilohertz, std::int64_t>(l); }
+constexpr auto operator"" q_kHz(long double l) { return frequency<kilohertz, long double>(l); }
 
 // MHz
-constexpr auto operator"" MHz(unsigned long long l) { return frequency<megahertz, std::int64_t>(l); }
-constexpr auto operator"" MHz(long double l) { return frequency<megahertz, long double>(l); }
+constexpr auto operator"" q_MHz(unsigned long long l) { return frequency<megahertz, std::int64_t>(l); }
+constexpr auto operator"" q_MHz(long double l) { return frequency<megahertz, long double>(l); }
 
 // GHz
-constexpr auto operator"" GHz(unsigned long long l) { return frequency<gigahertz, std::int64_t>(l); }
-constexpr auto operator"" GHz(long double l) { return frequency<gigahertz, long double>(l); }
+constexpr auto operator"" q_GHz(unsigned long long l) { return frequency<gigahertz, std::int64_t>(l); }
+constexpr auto operator"" q_GHz(long double l) { return frequency<gigahertz, long double>(l); }
 
 // THz
-constexpr auto operator"" THz(unsigned long long l) { return frequency<terahertz, std::int64_t>(l); }
-constexpr auto operator"" THz(long double l) { return frequency<terahertz, long double>(l); }
+constexpr auto operator"" q_THz(unsigned long long l) { return frequency<terahertz, std::int64_t>(l); }
+constexpr auto operator"" q_THz(long double l) { return frequency<terahertz, long double>(l); }
 
 }  // namespace literals
 

@@ -43,20 +43,20 @@ using resistance = quantity<dim_resistance, U, Rep>;
 inline namespace literals {
 
 // R
-constexpr auto operator""_R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
-constexpr auto operator""_R(long double l) { return resistance<ohm, long double>(l); }
+constexpr auto operator"" q_R(unsigned long long l) { return resistance<ohm, std::int64_t>(l); }
+constexpr auto operator"" q_R(long double l) { return resistance<ohm, long double>(l); }
 
 // mR
-constexpr auto operator""mR(unsigned long long l) { return resistance<milliohm, std::int64_t>(l); }
-constexpr auto operator""mR(long double l) { return resistance<milliohm, long double>(l); }
+constexpr auto operator"" q_mR(unsigned long long l) { return resistance<milliohm, std::int64_t>(l); }
+constexpr auto operator"" q_mR(long double l) { return resistance<milliohm, long double>(l); }
 
 // kR
-constexpr auto operator""kR(unsigned long long l) { return resistance<kiloohm, std::int64_t>(l); }
-constexpr auto operator""kR(long double l) { return resistance<kiloohm, long double>(l); }
+constexpr auto operator"" q_kR(unsigned long long l) { return resistance<kiloohm, std::int64_t>(l); }
+constexpr auto operator"" q_kR(long double l) { return resistance<kiloohm, long double>(l); }
 
 // MR
-constexpr auto operator""MR(unsigned long long l) { return resistance<megaohm, std::int64_t>(l); }
-constexpr auto operator""MR(long double l) { return resistance<megaohm, long double>(l); }
+constexpr auto operator"" q_MR(unsigned long long l) { return resistance<megaohm, std::int64_t>(l); }
+constexpr auto operator"" q_MR(long double l) { return resistance<megaohm, long double>(l); }
 
 }  // namespace literals
 
