@@ -102,10 +102,9 @@ constexpr std::tuple<std::intmax_t, std::intmax_t, std::intmax_t> ratio_add_deta
 
   // common denominator
   std::intmax_t lcm_den = std::lcm(R1::den, R2::den);
-  num1 = (num1 * lcm_den) / R1::den;
-  num2 = (num2 * lcm_den) / R2::den;
+  num1 = num1 * (lcm_den / R1::den);
+  num2 = num2 * (lcm_den / R2::den);
 
-  // and add
   return std::make_tuple(num1 + num2, lcm_den, new_exp);
 }
 
