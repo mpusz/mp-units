@@ -204,6 +204,7 @@ NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.
   - Added official data information system support
   - Repository file tree cleanup
   - `ratio` refactored to contain `Exp` template parameter
+  - `q_` prefix applied to all the UDLs
 
 - 0.4.0 Nov 17, 2019
   - Support for derived dimensions in `exp` added
