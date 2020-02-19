@@ -37,7 +37,7 @@ int main()
 }
 ```
 
-Try it on [Compiler Explorer](https://godbolt.org/z/eMhDQ9).
+Try it on [Compiler Explorer](https://godbolt.org/z/_Yx6D7).
 
 
 ## Summary
