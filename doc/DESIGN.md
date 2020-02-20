@@ -78,7 +78,7 @@ where:
 
 ```cpp
 template<typename R>
-concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
+concept UnitRatio = Ratio<R> && R::num > 0 && R::den > 0; // double negatives not allowed
 ```
 
 and `Ratio` is satisfied by any instantiation of `units::ratio<Num, Den, Exp>`.

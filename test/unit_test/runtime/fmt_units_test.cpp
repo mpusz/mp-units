@@ -175,4 +175,10 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_in + 1q_yd) == "37 in");
   }
+
+  SECTION("incoherent units with powers")
+  {
+    CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
+    CHECK(fmt::format("{}", 1q_au * 1q_au) == "1 [2237952291797391849 × 10⁴] m²");
+  }
 }
