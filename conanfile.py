@@ -92,7 +92,7 @@ class UnitsConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.build()
         if self._run_tests:
-            self.run("ctest -VV -C %s" % cmake.build_type, run_environment=True)
+            cmake.test()
 
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
