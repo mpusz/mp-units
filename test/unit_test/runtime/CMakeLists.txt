@@ -36,6 +36,5 @@ target_link_libraries(unit_tests_runtime
         CONAN_PKG::Catch2
 )
 
-include(CTest)
 include(lib/cmake/Catch2/Catch)
 catch_discover_tests(unit_tests_runtime)
