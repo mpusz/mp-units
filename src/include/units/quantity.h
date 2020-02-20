@@ -46,7 +46,7 @@ concept safe_convertible = // exposition only
 template<typename Rep, typename UnitFrom, typename UnitTo>
 concept safe_divisible = // exposition only
     treat_as_floating_point<Rep> ||
-    ratio_divide<typename UnitFrom::ratio, typename UnitTo::ratio>::den == 1;
+    ratio_divide<typename UnitFrom::ratio, typename UnitTo::ratio>::is_integral();
 
 } // namespace detail
 

@@ -80,17 +80,16 @@
   static_assert(std::is_same_v<ratio_sqrt<ratio<9, 1, 2>>, ratio<3, 1, 1>>);
   static_assert(std::is_same_v<ratio_sqrt<ratio<4>>, ratio<2>>);
 
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<1, 2, 0>, units::ratio<1, 3, 0>>, units::ratio<5, 6, 0>>);
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<1, 2, 1>, units::ratio<1, 3, 1>>, units::ratio<5, 6, 1>>);
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, 2>, units::ratio<2, 7, 2>>, units::ratio<37, 56, 2>>);
+  // unused
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<1, 2, 0>, units::ratio<1, 3, 0>>, units::ratio<5, 6, 0>>);
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<1, 2, 1>, units::ratio<1, 3, 1>>, units::ratio<5, 6, 1>>);
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, 2>, units::ratio<2, 7, 2>>, units::ratio<37, 56, 2>>);
 
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, 2>, units::ratio<2, 7, 1>>, units::ratio<226, 56, 1>>);
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<2, 7, 1>, units::ratio<3, 8, 2>>, units::ratio<226, 56, 1>>);
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, 2>, units::ratio<2, 7, 1>>, units::ratio<226, 56, 1>>);
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<2, 7, 1>, units::ratio<3, 8, 2>>, units::ratio<226, 56, 1>>);
 
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, -2>, units::ratio<2, 7, -1>>, units::ratio<181, 56, -2>>);
-  static_assert(std::is_same_v<units::ratio_add<units::ratio<2, 7, -1>, units::ratio<3, 8, -2>>, units::ratio<181, 56, -2>>);
-
-
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<3, 8, -2>, units::ratio<2, 7, -1>>, units::ratio<181, 56, -2>>);
+  // static_assert(std::is_same_v<units::ratio_add<units::ratio<2, 7, -1>, units::ratio<3, 8, -2>>, units::ratio<181, 56, -2>>);
 
 
   // common_ratio
