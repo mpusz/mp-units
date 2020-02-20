@@ -79,7 +79,7 @@ concept Ratio = detail::is_ratio<T>;
 
 // UnitRatio
 template<typename R>
-concept UnitRatio = Ratio<R> && (R::num * R::den > 0);
+concept UnitRatio = Ratio<R> && R::num > 0 && R::den > 0; // double negatives not allowed
 
 // Unit
 template<UnitRatio R, typename U>
