@@ -60,7 +60,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_mm) == "1 mm");
     CHECK(fmt::format("{}", 1q_cm) == "1 cm");
-    CHECK(fmt::format("{}", 1q_km) == "1.q_km");
+    CHECK(fmt::format("{}", 1q_km) == "1 km");
     CHECK(fmt::format("{}", 1q_ft) == "1 ft");
     CHECK(fmt::format("{}", 1q_ft_us) == "1 ft(us)");
     CHECK(fmt::format("{}", 1q_yd) == "1 yd");
@@ -94,7 +94,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_m2) == "1 m²");
     CHECK(fmt::format("{}", 1q_mm2) == "1 mm²");
     CHECK(fmt::format("{}", 1q_cm2) == "1 cm²");
-    CHECK(fmt::format("{}", 1q_km2) == "1.q_km²");
+    CHECK(fmt::format("{}", 1q_km2) == "1 km²");
     CHECK(fmt::format("{}", 1q_ft2) == "1 ft²");
   }
 
@@ -125,7 +125,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_m3) == "1 m³");
     CHECK(fmt::format("{}", 1q_mm3) == "1 mm³");
     CHECK(fmt::format("{}", 1q_cm3) == "1 cm³");
-    CHECK(fmt::format("{}", 1q_km3) == "1.q_km³");
+    CHECK(fmt::format("{}", 1q_km3) == "1 km³");
     CHECK(fmt::format("{}", 1q_ft3) == "1 ft³");
   }
 
@@ -141,7 +141,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("velocity")
   {
     CHECK(fmt::format("{}", 1q_mps) == "1 m/s");
-    CHECK(fmt::format("{}", 1q_kmph) == "1.q_km/h");
+    CHECK(fmt::format("{}", 1q_kmph) == "1 km/h");
     CHECK(fmt::format("{}", 1q_mph) == "1 mi/h");
   }
 
