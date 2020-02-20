@@ -170,4 +170,9 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_Npm) == "1 N/m");
   }
+
+  SECTION("addition with common ratio")
+  {
+    CHECK(fmt::format("{}", 1q_in + 1q_yd) == "37 in");
+  }
 }
