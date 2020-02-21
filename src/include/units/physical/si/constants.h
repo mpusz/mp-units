@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/constant.h>
 #include <units/physical/si/electric_charge.h>
 #include <units/physical/si/frequency.h>
 #include <units/physical/si/energy.h>
@@ -33,13 +32,13 @@
 
 namespace units::si {
 
-inline constexpr auto planck_constant = constant<ratio<662607015, 1, -42>, exp<dim_energy, 1>, exp<dim_time, 1>>;
-inline constexpr auto elementary_charge = constant<ratio<1602176634, 1, -51>, exp<dim_electric_charge, 1>>;
-inline constexpr auto boltzmann_constant =
-    constant<ratio<1380649, 1, -29>, exp<dim_energy, 1>, exp<dim_thermodynamic_temperature, -1>>;
-inline constexpr auto avogadro_constant = constant<ratio<602214076, 1, 15>, exp<dim_substance, -1>>;
-inline constexpr auto speed_of_light = constant<ratio<299792458, 1, 15>, exp<dim_velocity, 1>>;
-inline constexpr auto hyperfine_structure_transition_frequency = constant<ratio<9192631770>, exp<dim_frequency, 1>>;
-// inline constexpr auto luminous_efficacy = constant<ratio<683>, exp<luminous_flux, 1>, exp<power, -1>>;
+inline constexpr auto planck_constant = 6.62607015e-34q_J * 1q_s;
+inline constexpr auto reduced_planck_constant = 6.582119569e-10q_GeV * 1q_s;
+inline constexpr auto elementary_charge = 1.602176634e-19q_C;
+inline constexpr auto boltzmann_constant = 1.380649e-23q_J / 1q_K;
+inline constexpr auto avogadro_constant = 6.02214076e23 / 1q_mol;
+inline constexpr auto speed_of_light = 299792458q_mps;
+inline constexpr auto hyperfine_structure_transition_frequency = 9192631770q_Hz;
+// inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
 
 }  // namespace units::si
