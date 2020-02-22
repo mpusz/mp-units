@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include "units/bits/deduced_symbol_text.h"
+#include "units/bits/external/text_tools.h"
+#include "units/prefix.h"
 #include <units/derived_dimension.h>
 
 namespace units::detail {
