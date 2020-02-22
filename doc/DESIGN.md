@@ -377,7 +377,7 @@ struct dim_power : derived_dimension<dim_power, watt,
 If as a result of dimensional computation the library framework will generate a derived
 dimension that was not predefined by the user than the instance of
 `unknown_dimension<Exponent...>`. The coherent unit of such an unknown dimension is
-`scaled_unit<ratio<1>, unknown_unit>`.
+`scaled_unit<ratio<1>, unknown_coherent_unit>`.
 
 
 ## `Quantity`
@@ -747,13 +747,13 @@ known one with a correct unit, and also to improve the user experience and clear
 it is an unknown dimension the library framework will provide an instance of:
 
 ```cpp
-struct unknown_unit : unit<unknown_unit> {};
+struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
 
 template<Exponent E, Exponent... ERest>
 struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>,
-                                             scaled_unit<ratio<1>, unknown_unit>,
+                                             scaled_unit<ratio<1>, unknown_coherent_unit>,
                                              E, ERest...> {
-  using coherent_unit = scaled_unit<ratio<1>, unknown_unit>;
+  using coherent_unit = scaled_unit<ratio<1>, unknown_coherent_unit>;
 };
 ```
 
@@ -761,7 +761,7 @@ with this the error log or a debugger breakpoint involving a `temp1` type will i
 
 ```text
 units::quantity<units::unknown_dimension<units::exp<units::si::dim_length, 2, 1>,
-units::exp<units::si::dim_time, -1, 1> >, units::unknown_unit, long int>
+units::exp<units::si::dim_time, -1, 1> >, units::unknown_coherent_unit, long int>
 ```
 
 

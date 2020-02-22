@@ -39,7 +39,7 @@ void example()
   units::Time AUTO t1 = 10q_s;
   units::Velocity AUTO v1 = avg_speed(d1, t1);
 
-  auto temp1 = v1 * 50q_m;  // produces intermediate unknown dimension with 'unknown_unit' as its 'coherent_unit'
+  auto temp1 = v1 * 50q_m;  // produces intermediate unknown dimension with 'unknown_coherent_unit' as its 'coherent_unit'
   units::Velocity AUTO v2 = temp1 / 100q_m; // back to known dimensions again
   units::Length AUTO d2 = v2 * 60q_s;
 

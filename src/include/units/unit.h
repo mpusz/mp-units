@@ -80,7 +80,7 @@ struct unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
  * 
  * Used as a coherent unit of an unknown dimension.
  */
-struct unknown_unit : unit<unknown_unit> {};
+struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
 
 /**
  * @brief A named unit

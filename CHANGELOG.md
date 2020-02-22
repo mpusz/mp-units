@@ -3,7 +3,7 @@
 - 0.5.0 ???
   - Major refactoring and rewrite of the library
   - Units are now independent from dimensions
-  - Dimensions are now depended on units (base or coherent units are provided in a class template)
+  - Dimensions now depend on units (base or coherent units are provided in a class template)
   - Quantity gets a Dimension template parameter again (as unit does not provide information about
     its dimension anymore)
   - Added official CGS system support
@@ -12,6 +12,7 @@
   - `ratio` refactored to contain `Exp` template parameter
   - SI fundamental constants added
   - `q_` prefix applied to all the UDLs
+  - `unknown_unit` renamed to `unknown_coherent_unit`
   - ...
 
 - 0.4.0 Nov 17, 2019
