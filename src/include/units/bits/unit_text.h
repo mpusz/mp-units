@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "units/bits/deduced_symbol_text.h"
-#include "units/bits/external/text_tools.h"
-#include "units/prefix.h"
+#include <units/bits/deduced_symbol_text.h>
+#include <units/bits/external/text_tools.h>
+#include <units/prefix.h>
 #include <units/derived_dimension.h>
 
 namespace units::detail {
@@ -47,9 +47,15 @@ constexpr auto ratio_text()
       }
     }
     else {
-      return txt + basic_fixed_string("/") + regular<Ratio::den>() +
-          basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
-          basic_fixed_string("] ");
+      if constexpr(Ratio::exp == 0) {
+        return txt + basic_fixed_string("/") + regular<Ratio::den>() +
+            basic_fixed_string("] ");
+      }
+      else {
+        return txt + basic_fixed_string("/") + regular<Ratio::den>() +
+            basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
+            basic_fixed_string("] ");
+      }
     }
   }
   else {
