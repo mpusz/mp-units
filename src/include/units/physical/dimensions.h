@@ -80,6 +80,9 @@ struct dim_acceleration : derived_dimension<Child, U, exp<L, 1>, exp<T, -2>> {};
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_acceleration> A>
 struct dim_force : derived_dimension<Child, U, exp<M, 1>, exp<A, 1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_velocity> V>
+struct dim_momentum : derived_dimension<Child, U, exp<M, 1>, exp<V, 1>> {};
+
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
 struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
 
@@ -147,6 +150,9 @@ concept Acceleration = physical::QuantityOf<T, physical::dim_acceleration>;
 
 template<typename T>
 concept Force = physical::QuantityOf<T, physical::dim_force>;
+
+template<typename T>
+concept Momentum = physical::QuantityOf<T, physical::dim_momentum>;
 
 template<typename T>
 concept Energy = physical::QuantityOf<T, physical::dim_energy>;
