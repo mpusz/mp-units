@@ -24,13 +24,13 @@
 
 #include <units/concepts.h>
 #include <units/bits/dimension_op.h>
+#include <cassert>
 
 namespace units {
 
 constexpr std::intmax_t ipow10(std::intmax_t exp)
 {
-  // how to assert here?
-  // static_assert(exp >= 0, "Use fpow10() for negative exponents");
+  assert(exp >= 0);
   if (exp == 0) return 1;
   std::intmax_t result = 1;
   while (exp > 0) {
