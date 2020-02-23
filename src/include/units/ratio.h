@@ -205,18 +205,27 @@ using ratio_pow = detail::ratio_pow_impl<R, N>::type;
 
 namespace detail {
 
-constexpr std::intmax_t sqrt_impl(std::intmax_t v, std::intmax_t l, std::intmax_t r)
+// sqrt_impl avoids overflow and recursion
+// from http://www.codecodex.com/wiki/Calculate_an_integer_square_root#C.2B.2B
+// if v >= place this will fail  (so we can't quite use the last bit)
+static constexpr std::intmax_t sqrt_impl(std::intmax_t v)
 {
-  if (l == r) return r;
+  // place = 0x4000 0000 for 32bit
+  // place = 0x4000 0000 0000 0000 for 64bit
+  std::intmax_t place = static_cast<std::intmax_t>(1) << (sizeof(std::intmax_t) * 8 - 2);
+  while (place > v) place /= 4;  // optimized by complier as place >>= 2
 
-  const auto mid = (r + l) / 2;
-  if (mid * mid >= v)
-    return sqrt_impl(v, l, mid);
-  else
-    return sqrt_impl(v, mid + 1, r);
+  std::intmax_t root = 0;
+  while (place) {
+    if (v >= root + place) {
+      v -= root + place;
+      root += place * 2;
+    }
+    root /= 2;
+    place /= 4;
+  }
+  return root;
 }
-
-static constexpr std::intmax_t sqrt_impl(std::intmax_t v) { return sqrt_impl(v, 1, v); }
 
 template<Ratio R>
 constexpr auto make_exp_even()
