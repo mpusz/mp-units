@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/physical/natural/constants.h>
 #include <units/physical/si/energy.h>
 #include <units/physical/si/momentum.h>
 #include <units/physical/si/velocity.h>
@@ -36,7 +37,7 @@ Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
   return sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c)));
 }
 
-void example()
+void si_example()
 {
   using namespace si;
 
@@ -58,12 +59,29 @@ void example()
             << "E_GeV = " << quantity_cast<gigaelectronvolt>(E_si) << "\n";
 }
 
+void natural_example()
+{
+  using namespace natural;
+
+  const momentum<gigaelectronvolt> p(4);
+  const mass<gigaelectronvolt> m(3);
+  const Velocity AUTO c = speed_of_light;
+  const Energy AUTO E = total_energy(p, m, c);
+
+  std::cout << "\nNatural units:\n"
+            << "p = " << p << "\n"
+            << "m = " << m << "\n"
+            << "c = " << c << "\n"
+            << "E = " << E << "\n";
+}
+
 } // namespace
 
 int main()
 {
   try {
-    example();
+    si_example();
+    natural_example();
   }
   catch (const std::exception& ex) {
     std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
