@@ -26,179 +26,180 @@
 
 namespace units {
 
-  namespace detail {
+namespace detail {
 
-    template<typename T>
-    inline constexpr bool is_type_list = false;
+template<typename T>
+inline constexpr bool is_type_list = false;
 
-    template<template<typename...> typename T, typename... Types>
-    inline constexpr bool is_type_list<T<Types...>> = true;
+template<template<typename...> typename T, typename... Types>
+inline constexpr bool is_type_list<T<Types...>> = true;
 
-  }  // namespace detail
+}  // namespace detail
 
-  template<typename T>
-  concept TypeList = detail::is_type_list<T>;
+template<typename T>
+concept TypeList = detail::is_type_list<T>;
 
-  // push_front
+// push_front
 
-  namespace detail {
+namespace detail {
 
-    template<typename List, typename... Types>
-    struct type_list_push_front_impl;
+template<typename List, typename... Types>
+struct type_list_push_front_impl;
 
-    template<template<typename...> typename List, typename... OldTypes, typename... NewTypes>
-    struct type_list_push_front_impl<List<OldTypes...>, NewTypes...> {
-      using type = List<NewTypes..., OldTypes...>;
-    };
+template<template<typename...> typename List, typename... OldTypes, typename... NewTypes>
+struct type_list_push_front_impl<List<OldTypes...>, NewTypes...> {
+  using type = List<NewTypes..., OldTypes...>;
+};
 
-  }
+}  // namespace detail
 
-  template<TypeList List, typename... Types>
-  using type_list_push_front = detail::type_list_push_front_impl<List, Types...>::type;
+template<TypeList List, typename... Types>
+using type_list_push_front = detail::type_list_push_front_impl<List, Types...>::type;
 
-  // push_back
+// push_back
 
-  namespace detail {
+namespace detail {
 
-    template<typename List, typename... Types>
-    struct type_list_push_back_impl;
+template<typename List, typename... Types>
+struct type_list_push_back_impl;
 
-    template<template<typename...> typename List, typename... OldTypes, typename... NewTypes>
-    struct type_list_push_back_impl<List<OldTypes...>, NewTypes...> {
-      using type = List<OldTypes..., NewTypes...>;
-    };
+template<template<typename...> typename List, typename... OldTypes, typename... NewTypes>
+struct type_list_push_back_impl<List<OldTypes...>, NewTypes...> {
+  using type = List<OldTypes..., NewTypes...>;
+};
 
-  }
+}  // namespace detail
 
-  template<TypeList List, typename... Types>
-  using type_list_push_back = detail::type_list_push_back_impl<List, Types...>::type;
+template<TypeList List, typename... Types>
+using type_list_push_back = detail::type_list_push_back_impl<List, Types...>::type;
 
-  // join
+// join
 
-  namespace detail {
+namespace detail {
 
-    template<typename List, typename... Rest>
-    struct type_list_join_impl {
-      using type = List;
-    };
+template<typename List, typename... Rest>
+struct type_list_join_impl {
+  using type = List;
+};
 
-    template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
-    struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
-      using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
-    };
+template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
+struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
+  using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
+};
 
-  }
+}  // namespace detail
 
-  template<TypeList... Lists>
-  using type_list_join = detail::type_list_join_impl<Lists...>::type;
+template<TypeList... Lists>
+using type_list_join = detail::type_list_join_impl<Lists...>::type;
 
-  // split
+// split
 
-  namespace detail {
+namespace detail {
 
-    template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename... Types>
-    struct split_impl;
+template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename... Types>
+struct split_impl;
 
-    template<template<typename...> typename List, std::size_t Idx, std::size_t N>
-    struct split_impl<List, Idx, N> {
-      using first_list = List<>;
-      using second_list = List<>;
-    };
+template<template<typename...> typename List, std::size_t Idx, std::size_t N>
+struct split_impl<List, Idx, N> {
+  using first_list = List<>;
+  using second_list = List<>;
+};
 
-    template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename T, typename... Rest>
-    struct split_impl<List, Idx, N, T, Rest...> : split_impl<List, Idx + 1, N, Rest...> {
-      using base = split_impl<List, Idx + 1, N, Rest...>;
-      using first_list = conditional<Idx < N,
-                                     typename type_list_push_front_impl<typename base::first_list, T>::type,
-                                     typename base::first_list>;
-      using second_list = conditional<Idx < N,
-                                      typename base::second_list,
-                                      typename type_list_push_front_impl<typename base::second_list, T>::type>;
-    };
+template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename T, typename... Rest>
+struct split_impl<List, Idx, N, T, Rest...> : split_impl<List, Idx + 1, N, Rest...> {
+  using base = split_impl<List, Idx + 1, N, Rest...>;
+  using first_list = conditional<Idx < N,
+                                  typename type_list_push_front_impl<typename base::first_list, T>::type,
+                                  typename base::first_list>;
+  using second_list = conditional<Idx < N,
+                                  typename base::second_list,
+                                  typename type_list_push_front_impl<typename base::second_list, T>::type>;
+};
 
-  }  // namespace detail
+}  // namespace detail
 
-  template<TypeList List, std::size_t N>
-  struct type_list_split;
+template<TypeList List, std::size_t N>
+struct type_list_split;
 
-  template<template<typename...> typename List, std::size_t N, typename... Types>
-  struct type_list_split<List<Types...>, N> {
-    static_assert(N <= sizeof...(Types), "Invalid index provided");
-    using split = detail::split_impl<List, 0, N, Types...>;
-    using first_list = split::first_list;
-    using second_list = split::second_list;
-  };
+template<template<typename...> typename List, std::size_t N, typename... Types>
+struct type_list_split<List<Types...>, N> {
+  static_assert(N <= sizeof...(Types), "Invalid index provided");
+  using split = detail::split_impl<List, 0, N, Types...>;
+  using first_list = split::first_list;
+  using second_list = split::second_list;
+};
 
-  // split_half
+// split_half
 
-  template<TypeList List>
-  struct type_list_split_half;
+template<TypeList List>
+struct type_list_split_half;
 
-  template<template<typename...> typename List, typename... Types>
-  struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {
-  };
+template<template<typename...> typename List, typename... Types>
+struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {
+};
 
-  // merge_sorted
+// merge_sorted
 
-  namespace detail {
+namespace detail {
 
-    template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
-    struct type_list_merge_sorted_impl;
+template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
+struct type_list_merge_sorted_impl;
 
-    template<template<typename...> typename List, typename... Lhs, template<typename, typename> typename Pred>
-    struct type_list_merge_sorted_impl<List<Lhs...>, List<>, Pred> {
-      using type = List<Lhs...>;
-    };
+template<template<typename...> typename List, typename... Lhs, template<typename, typename> typename Pred>
+struct type_list_merge_sorted_impl<List<Lhs...>, List<>, Pred> {
+  using type = List<Lhs...>;
+};
 
-    template<template<typename...> typename List, typename... Rhs, template<typename, typename> typename Pred>
-    struct type_list_merge_sorted_impl<List<>, List<Rhs...>, Pred> {
-      using type = List<Rhs...>;
-    };
+template<template<typename...> typename List, typename... Rhs, template<typename, typename> typename Pred>
+struct type_list_merge_sorted_impl<List<>, List<Rhs...>, Pred> {
+  using type = List<Rhs...>;
+};
 
-    template<template<typename...> typename List, typename Lhs1, typename... LhsRest, typename Rhs1, typename... RhsRest,
-             template<typename, typename> typename Pred>
-    struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
-      using type = conditional<
-          Pred<Lhs1, Rhs1>::value,
-          typename type_list_push_front_impl<typename type_list_merge_sorted_impl<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>::type, Lhs1>::type,
-          typename type_list_push_front_impl<typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type>;
-    };
+template<template<typename...> typename List, typename Lhs1, typename... LhsRest, typename Rhs1, typename... RhsRest,
+         template<typename, typename> typename Pred>
+struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
+  using type = conditional<
+      Pred<Lhs1, Rhs1>::value,
+      typename type_list_push_front_impl<
+          typename type_list_merge_sorted_impl<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>::type, Lhs1>::type,
+      typename type_list_push_front_impl<
+          typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type>;
+};
 
-  }
+}  // namespace detail
 
-  template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
-  using type_list_merge_sorted = detail::type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
+template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
+using type_list_merge_sorted = detail::type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
 
+// sort
 
-  // sort
+namespace detail {
 
-  namespace detail {
+template<typename List, template<typename, typename> typename Pred>
+struct type_list_sort_impl;
 
-    template<typename List, template<typename, typename> typename Pred>
-    struct type_list_sort_impl;
+template<template<typename...> typename List, template<typename, typename> typename Pred>
+struct type_list_sort_impl<List<>, Pred> {
+  using type = List<>;
+};
 
-    template<template<typename...> typename List, template<typename, typename> typename Pred>
-    struct type_list_sort_impl<List<>, Pred> {
-      using type = List<>;
-    };
+template<template<typename...> typename List, typename T, template<typename, typename> typename Pred>
+struct type_list_sort_impl<List<T>, Pred> {
+  using type = List<T>;
+};
 
-    template<template<typename...> typename List, typename T, template<typename, typename> typename Pred>
-    struct type_list_sort_impl<List<T>, Pred> {
-      using type = List<T>;
-    };
+template<template<typename...> typename List, typename... Types, template<typename, typename> typename Pred>
+struct type_list_sort_impl<List<Types...>, Pred> {
+  using types = List<Types...>;
+  using split = type_list_split_half<List<Types...>>;
+  using sorted_left = type_list_sort_impl<typename split::first_list, Pred>::type;
+  using sorted_right = type_list_sort_impl<typename split::second_list, Pred>::type;
+  using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
+};
 
-    template<template<typename...> typename List, typename... Types, template<typename, typename> typename Pred>
-    struct type_list_sort_impl<List<Types...>, Pred> {
-      using types = List<Types...>;
-      using split = type_list_split_half<List<Types...>>;
-      using sorted_left = type_list_sort_impl<typename split::first_list, Pred>::type;
-      using sorted_right = type_list_sort_impl<typename split::second_list, Pred>::type;
-      using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
-    };
+}  // namespace detail
 
-  }
-
-  template<TypeList List, template<typename, typename> typename Pred>
-  using type_list_sort = detail::type_list_sort_impl<List, Pred>::type;
+template<TypeList List, template<typename, typename> typename Pred>
+using type_list_sort = detail::type_list_sort_impl<List, Pred>::type;
 
 }  // namespace units
