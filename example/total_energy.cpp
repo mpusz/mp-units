@@ -40,38 +40,47 @@ Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
 void si_example()
 {
   using namespace si;
+  using GeV = gigaelectronvolt;
+
+  constexpr Velocity AUTO c = speed_of_light;
+
+  std::cout << "\n*** SI units (c = " << c << ") ***\n";
 
   const Momentum AUTO p = 4.q_GeV / speed_of_light;
-  const momentum<kilogram_metre_per_second> p_si = p;
   const Mass AUTO m = 3.q_GeV / pow<2>(speed_of_light);
-  const mass<kilogram> m_si = m;
-  const Velocity AUTO c = speed_of_light;
   const Energy AUTO E = total_energy(p, m, c);
+
+  std::cout << "[in GeV]\n"
+            << "p = " << p << "\n"
+            << "m = " << m << "\n"
+            << "E = " << E << "\n";
+
+  const momentum<kilogram_metre_per_second> p_si = p;
+  const mass<kilogram> m_si = m;
   const energy<joule> E_si = total_energy(p_si, m_si, c);
 
-  std::cout << "p = " << p << "\n"
-            << "p_si = " << p_si << "\n"
-            << "m = " << m << "\n"
-            << "m_si = " << m_si << "\n"
-            << "c = " << c << "\n"
-            << "E = " << E << "\n"
-            << "E_si = " << E_si << "\n"
-            << "E_GeV = " << quantity_cast<gigaelectronvolt>(E_si) << "\n";
+  std::cout << "\n[in SI units]\n"
+            << "p = " << p_si << "\n"
+            << "m = " << m_si << "\n"
+            << "E = " << E_si << "\n";
+
+  std::cout << "\n[converted from SI units back to GeV]\n"
+            << "E = " << quantity_cast<GeV>(E_si) << "\n";
 }
 
 void natural_example()
 {
   using namespace natural;
+  using GeV = gigaelectronvolt;
 
-  const momentum<gigaelectronvolt> p(4);
-  const mass<gigaelectronvolt> m(3);
-  const Velocity AUTO c = speed_of_light;
+  constexpr Velocity AUTO c = speed_of_light;
+  const momentum<GeV> p(4);
+  const mass<GeV> m(3);
   const Energy AUTO E = total_energy(p, m, c);
 
-  std::cout << "\nNatural units:\n"
+  std::cout << "\n*** Natural units (c = " << c << ") ***\n"
             << "p = " << p << "\n"
             << "m = " << m << "\n"
-            << "c = " << c << "\n"
             << "E = " << E << "\n";
 }
 
