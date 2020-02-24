@@ -21,7 +21,9 @@
 // SOFTWARE.
 
 #include "units/physical/si/area.h"
+#include "units/physical/si/constants.h"
 #include "units/physical/si/frequency.h"
+#include "units/physical/si/momentum.h"
 #include "units/physical/si/power.h"
 #include "units/physical/si/velocity.h"
 #include "units/physical/si/volume.h"
@@ -105,10 +107,10 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("resistance")
   {
-      CHECK(fmt::format("{}", 1q_R) == "1 Ω");
-      CHECK(fmt::format("{}", 1q_kR) == "1 kΩ");
-      CHECK(fmt::format("{}", 1q_mR) == "1 mΩ");
-      CHECK(fmt::format("{}", 1q_MR) == "1 MΩ");
+    CHECK(fmt::format("{}", 1q_R) == "1 Ω");
+    CHECK(fmt::format("{}", 1q_kR) == "1 kΩ");
+    CHECK(fmt::format("{}", 1q_mR) == "1 mΩ");
+    CHECK(fmt::format("{}", 1q_MR) == "1 MΩ");
   }
 
   SECTION("voltage")
@@ -148,6 +150,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("acceleration")
   {
     CHECK(fmt::format("{}", 1q_mps2) == "1 m/s²");
+  }
+
+  SECTION("momentum")
+  {
+    CHECK(fmt::format("{}", 1q_kgmps) == "1 kg⋅m/s");
   }
 
   SECTION("energy")

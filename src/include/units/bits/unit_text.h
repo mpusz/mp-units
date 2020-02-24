@@ -104,20 +104,33 @@ constexpr auto derived_dimension_unit_text(exp_list<Es...> list)
   return derived_dimension_unit_text(list, std::index_sequence_for<Es...>());
 }
 
-template<typename... Es>
-constexpr bool all_named(exp_list<Es...>)
+template<Exponent... Es>
+constexpr auto exp_list_with_named_units(exp_list<Es...>);
+
+template<Exponent Exp>
+constexpr auto exp_list_with_named_units(Exp)
 {
-  return (dimension_unit<typename Es::dimension>::is_named && ...);
+  using dim = Exp::dimension;
+  if constexpr(dimension_unit<dim>::is_named) {
+    return exp_list<Exp>();
+  }
+  else {
+    using recipe = dim::recipe;
+    return exp_list_with_named_units(recipe());
+  }
+}
+
+template<Exponent... Es>
+constexpr auto exp_list_with_named_units(exp_list<Es...>)
+{
+  return type_list_join<decltype(exp_list_with_named_units(Es()))...>();
 }
 
 template<Dimension Dim>
 constexpr auto derived_dimension_unit_text()
 {
-  using recipe = typename Dim::recipe;
-  if constexpr(all_named(recipe()))
-    return derived_dimension_unit_text(recipe());
-  else
-    return derived_dimension_unit_text(typename Dim::exponents());
+  using recipe = Dim::recipe;
+  return derived_dimension_unit_text(exp_list_with_named_units(recipe()));
 }
 
 // TODO Inline below concept when switched to gcc-10
