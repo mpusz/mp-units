@@ -116,12 +116,6 @@ namespace units {
       return format_to(out, treat_as_floating_point<Rep> ? "{:" + sign_text + "g}" : "{:" + sign_text + "}", val);
     }
 
-    template<typename Dimension, typename Unit, typename OutputIt>
-    inline static OutputIt format_units_quantity_unit(OutputIt out)
-    {
-      return format_to(out, "{}", unit_text<Dimension, Unit>().c_str());
-    }
-
     template<typename OutputIt, typename Dimension, typename Unit, typename Rep>
     struct units_formatter {
       OutputIt out;
@@ -147,7 +141,7 @@ namespace units {
 
       void on_quantity_unit()
       {
-        out = format_units_quantity_unit<Dimension, Unit>(out);
+        format_to(out, "{}", unit_text<Dimension, Unit>().c_str());
       }
     };
 
@@ -306,10 +300,13 @@ public:
 
     // deal with quantity content
     if(begin == end || *begin == '}') {
-      // default format should print value followed by the unit separeted with 1 space
+      // default format should print value followed by the unit separated with 1 space
       out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision);
-      *out++ = CharT(' ');
-      units::detail::format_units_quantity_unit<Dimension, Unit>(out);
+      constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
+      if(symbol.size()) {
+        *out++ = CharT(' ');
+        format_to(out, "{}", symbol.c_str());
+      }
     }
     else {
       // user provided format
