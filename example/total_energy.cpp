@@ -31,7 +31,7 @@ namespace {
 
 using namespace units;
 
-Energy auto total_energy(Momentum auto p, Mass auto m, Velocity auto c)
+Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
 {
   return sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c)));
 }
@@ -40,12 +40,12 @@ void example()
 {
   using namespace si;
 
-  const Momentum auto p = 4.q_GeV / speed_of_light;
+  const Momentum AUTO p = 4.q_GeV / speed_of_light;
   const momentum<kilogram_metre_per_second> p_si = p;
-  const Mass auto m = 3.q_GeV / pow<2>(speed_of_light);
+  const Mass AUTO m = 3.q_GeV / pow<2>(speed_of_light);
   const mass<kilogram> m_si = m;
-  const Velocity auto c = speed_of_light;
-  const Energy auto E = total_energy(p, m, c);
+  const Velocity AUTO c = speed_of_light;
+  const Energy AUTO E = total_energy(p, m, c);
   const energy<joule> E_si = total_energy(p_si, m_si, c);
 
   std::cout << "p = " << p << "\n"
