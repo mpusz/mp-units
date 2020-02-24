@@ -145,12 +145,14 @@ constexpr auto unit_text()
     return U::symbol;
   }
   else {
-    // print as a prefix or ratio of a reference unit
-    auto prefix_txt = prefix_or_ratio_text<typename U::ratio, typename U::reference::prefix_type>();
+    // print as a prefix or ratio of a coherent unit
+    using coherent_unit = dimension_unit<Dim>;
+    using ratio = ratio_divide<typename U::ratio, typename coherent_unit::ratio>;
+    auto prefix_txt = prefix_or_ratio_text<ratio, typename U::reference::prefix_type>();
 
-    if constexpr(has_symbol<typename U::reference>) {
-      // use predefined reference unit symbol
-      return prefix_txt + U::reference::symbol;
+    if constexpr(has_symbol<coherent_unit>) {
+      // use predefined coherent unit symbol
+      return prefix_txt + coherent_unit::symbol;
     }
     else {
       // use derived dimension ingredients to create a unit symbol

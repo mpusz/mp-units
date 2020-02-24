@@ -188,4 +188,9 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
     CHECK(fmt::format("{}", 1q_au * 1q_au) == "1 [2237952291797391849 × 10⁴] m²");
   }
+
+  SECTION("unknown scaled unit with reference different than the dimension's coherent unit")
+  {
+    CHECK(fmt::format("{}", mass<units::scaled_unit<units::ratio<2, 3>, gram>>(1)) == "1 [2/3 × 10⁻³] kg");
+  }
 }
