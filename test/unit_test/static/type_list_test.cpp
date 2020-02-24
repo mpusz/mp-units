@@ -44,6 +44,15 @@ static_assert(std::is_same_v<type_list_push_back<type_list<>, int>, type_list<in
 static_assert(std::is_same_v<type_list_push_back<type_list<>, int, long, double>, type_list<int, long, double>>);
 static_assert(std::is_same_v<type_list_push_back<type_list<double>, int, long>, type_list<double, int, long>>);
 
+static_assert(std::is_same_v<type_list_join<type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>, type_list<>>, type_list<>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<>, type_list<>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<int>, type_list<>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<>, type_list<>, type_list<int>>, type_list<int>>);
+static_assert(std::is_same_v<type_list_join<type_list<int>, type_list<float>, type_list<bool>>, type_list<int, float, bool>>);
+static_assert(std::is_same_v<type_list_join<type_list<int, short>, type_list<float, double>, type_list<bool>>, type_list<int, short, float, double, bool>>);
+
 // type_list_split
 
 static_assert(std::is_same_v<type_list_split<type_list<int>, 0>::first_list, type_list<>>);

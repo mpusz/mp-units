@@ -73,6 +73,25 @@ namespace units {
   template<TypeList List, typename... Types>
   using type_list_push_back = detail::type_list_push_back_impl<List, Types...>::type;
 
+  // join
+
+  namespace detail {
+
+    template<typename List, typename... Rest>
+    struct type_list_join_impl {
+      using type = List;
+    };
+
+    template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
+    struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
+      using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
+    };
+
+  }
+
+  template<TypeList... Lists>
+  using type_list_join = detail::type_list_join_impl<Lists...>::type;
+
   // split
 
   namespace detail {
