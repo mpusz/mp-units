@@ -56,11 +56,10 @@ struct base_dimension {
 };
 
 // base_dimension_less
-// TODO Remove the below when https://bugs.llvm.org/show_bug.cgi?id=32208 is fixed
-// clang-format off
 template<BaseDimension D1, BaseDimension D2>
-struct base_dimension_less : std::bool_constant<
-    D1::symbol < D2::symbol || (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {};
-// clang-format on
+struct base_dimension_less :
+    std::bool_constant<(D1::symbol < D2::symbol) ||
+                       (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {
+};
 
 }  // namespace units
