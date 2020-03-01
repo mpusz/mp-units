@@ -27,115 +27,23 @@
 #include <iostream>
 
 namespace {
-namespace length {
 
-template<typename Rep = double>
-using m = units::si::length<units::si::metre, Rep>;
-
-template<typename Rep = double>
-using mm = units::si::length<units::si::millimetre, Rep>;
-
-template<typename Rep = double>
-using fm = units::si::length<units::si::femtometre, Rep>;
-
-template<typename Rep = double>
-using km = units::si::length<units::si::kilometre, Rep>;
-
-template<typename Rep = double>
-using AU = units::si::length<units::si::astronomical_unit, Rep>;
-
-template<typename Rep = double>
-using in = units::si::length<units::international::inch, Rep>;
-
-template<typename Rep = double>
-using angstrom = units::si::length<units::iau::angstrom, Rep>;
-
-template<typename Rep = double>
-using ch = units::si::length<units::imperial::chain, Rep>;
-
-template<typename Rep = double>
-using fathom = units::si::length<units::international::fathom, Rep>;
-
-template<typename Rep = double>
-using fathom_us = units::si::length<units::us::fathom, Rep>;
-
-template<typename Rep = double>
-using ft = units::si::length<units::international::foot, Rep>;
-
-template<typename Rep = double>
-using ft_us = units::si::length<units::us::foot, Rep>;
-
-template<typename Rep = double>
-using ly = units::si::length<units::iau::light_year, Rep>;
-
-template<typename Rep = double>
-using mi = units::si::length<units::international::mile, Rep>;
-
-template<typename Rep = double>
-using mi_naut = units::si::length<units::international::nautical_mile, Rep>;
-
-template<typename Rep = double>
-using pc = units::si::length<units::iau::parsec, Rep>;
-
-template<typename Rep = double>
-using pica_comp = units::si::length<units::typographic::pica_comp, Rep>;
-
-template<typename Rep = double>
-using pica_prn = units::si::length<units::typographic::pica_prn, Rep>;
-
-template<typename Rep = double>
-using point_comp = units::si::length<units::typographic::point_comp, Rep>;
-
-template<typename Rep = double>
-using point_prn = units::si::length<units::typographic::point_prn, Rep>;
-
-template<typename Rep = double>
-using rd = units::si::length<units::imperial::rod, Rep>;
-
-template<typename Rep = double>
-using yd = units::si::length<units::international::yard, Rep>;
-
-}  // namespace length
-
-namespace time {
-
-template<typename Rep = double>
-using s = units::si::time<units::si::second, Rep>;
-
-template<typename Rep = double>
-using min = units::si::time<units::si::minute, Rep>;
-
-template<typename Rep = double>
-using h = units::si::time<units::si::hour, Rep>;
-
-}  // namespace time
-
-namespace area {
-
-template<typename Rep = double>
-using m2 = units::si::area<units::si::square_metre, Rep>;
-
-template<typename Rep = double>
-using fm2 = units::si::area<units::si::square_femtometre, Rep>;
-
-}  // namespace area
-}  // namespace
-
-
-using namespace units::si::literals;
-using namespace units::international;
+using namespace units;
 
 void simple_quantities()
 {
-  using distance = length::m<>;
-  using time = time::s<>;
+  using namespace units::si;
+  using namespace units::international;
+
+  using distance = length<metre>;
+  using duration = si::time<second>;
 
   constexpr distance km = 1.0q_km;
   constexpr distance miles = 1.0q_mi;
 
-  constexpr time sec = 1q_s;
-  constexpr time min = 1q_min;
-  constexpr time hr = 1q_h;
+  constexpr duration sec = 1q_s;
+  constexpr duration min = 1q_min;
+  constexpr duration hr = 1q_h;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -148,14 +56,17 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-  constexpr length::km<> km = 1.0q_km;
-  constexpr length::mi<> miles = 1.0q_mi;
+  using namespace units::si;
+  using namespace units::international;
+
+  constexpr length<kilometre> km = 1.0q_km;
+  constexpr length<mile> miles = 1.0q_mi;
 
   std::cout.precision(6);
 
-  constexpr time::s<> sec = 1q_s;
-  constexpr time::min<> min = 1q_min;
-  constexpr time::h<> hr = 1q_h;
+  constexpr si::time<second> sec = 1q_s;
+  constexpr si::time<minute> min = 1q_min;
+  constexpr si::time<hour> hr = 1q_h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
@@ -164,42 +75,44 @@ void quantities_with_typed_units()
   std::cout << min << '\n';
   std::cout << hr << "\n\n";
 
-  constexpr length::m<> meter = 1q_m;
+  constexpr length<metre> meter = 1q_m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
   std::cout << meter << '\n';
 
-  std::cout << " = " << length::AU<>(meter) << '\n';
-  std::cout << " = " << length::angstrom<>(meter) << '\n';
-  std::cout << " = " << length::ch<>(meter) << '\n';
-  std::cout << " = " << length::fathom<>(meter) << '\n';
-  std::cout << " = " << length::fathom_us<>(meter) << '\n';
-  std::cout << " = " << length::ft<>(meter) << '\n';
-  std::cout << " = " << length::ft_us<>(meter) << '\n';
-  std::cout << " = " << length::in<>(meter) << '\n';
-  std::cout << " = " << length::ly<>(meter) << '\n';
-  std::cout << " = " << length::mi<>(meter) << '\n';
-  std::cout << " = " << length::mi_naut<>(meter) << '\n';
-  std::cout << " = " << length::pc<>(meter) << '\n';
-  std::cout << " = " << length::pica_comp<>(meter) << '\n';
-  std::cout << " = " << length::pica_prn<>(meter) << '\n';
-  std::cout << " = " << length::point_comp<>(meter) << '\n';
-  std::cout << " = " << length::point_prn<>(meter) << '\n';
-  std::cout << " = " << length::rd<>(meter) << '\n';
-  std::cout << " = " << length::yd<>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::astronomical_unit>(meter) << '\n';
+  std::cout << " = " << quantity_cast<iau::angstrom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<imperial::chain>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::fathom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<us::fathom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::foot>(meter) << '\n';
+  std::cout << " = " << quantity_cast<us::foot>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::inch>(meter) << '\n';
+  std::cout << " = " << quantity_cast<iau::light_year>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::mile>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::nautical_mile>(meter) << '\n';
+  std::cout << " = " << quantity_cast<iau::parsec>(meter) << '\n';
+  std::cout << " = " << quantity_cast<typographic::pica_comp>(meter) << '\n';
+  std::cout << " = " << quantity_cast<typographic::pica_prn>(meter) << '\n';
+  std::cout << " = " << quantity_cast<typographic::point_comp>(meter) << '\n';
+  std::cout << " = " << quantity_cast<typographic::point_prn>(meter) << '\n';
+  std::cout << " = " << quantity_cast<imperial::rod>(meter) << '\n';
+  std::cout << " = " << quantity_cast<international::yard>(meter) << '\n';
 }
 
 void calcs_comparison()
 {
+  using namespace units::si;
+
   std::cout.precision(20);
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  length::fm<float> L1A = 2q_fm;
-  length::fm<float> L2A = 3q_fm;
-  length::fm<float> LrA = L1A + L2A;
+  Length AUTO L1A = 2.q_fm;
+  Length AUTO L2A = 3.q_fm;
+  Length AUTO LrA = L1A + L2A;
 
   std::cout << L1A << " + " << L2A << " = " << LrA << "\n\n";
 
@@ -207,28 +120,30 @@ void calcs_comparison()
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  length::m<float> L1B = L1A;
-  length::m<float> L2B = L2A;
-  length::m<float> LrB = L1B + L2B;
+  length<metre> L1B = L1A;
+  length<metre> L2B = L2A;
+  length<metre> LrB = L1B + L2B;
 
   std::cout << L1B << " + " << L2B << " = " << LrB << "\n\n";
 
   std::cout << "In multiplication and division:\n\n";
 
-  area::fm2<float> ArA = L1A * L2A;
+  Area AUTO ArA = L1A * L2A;
   std::cout << L1A << " * " << L2A << " = " << ArA << "\n\n";
 
   std::cout << "similar problems arise\n\n";
 
-  area::m2<float> ArB = L1B * L2B;
+  Area AUTO ArB = L1B * L2B;
   std::cout << L1B << " * " << L2B << "\n = " << ArB << '\n';
 }
+
+}  // namespace
 
 int main()
 {
   std::cout << "This demo was originally posted on com.lang.c++.moderated in 2006\n";
   std::cout << "http://compgroups.net/comp.lang.c++.moderated/dimensional-analysis-units/51712\n";
-  std::cout << "Here converted to use mpusz/units library.\n\n";
+  std::cout << "Here converted to use mp-units library.\n\n";
 
   simple_quantities();
   quantities_with_typed_units();

@@ -16,7 +16,6 @@
 */
 
 #include <units/physical/si/length.h>
-#include <units/format.h>
 #include <iostream>
 
 /*
@@ -37,23 +36,44 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
   return target{source{1}}.count();
 }
 
+// get at the units text of the quantity, without its numeric value
+inline auto constexpr units_str(const units::Quantity AUTO& q)
+{
+  typedef std::remove_cvref_t<decltype(q)> qtype;
+  return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
+}
+
 }  // namespace
+
+namespace {
+
+namespace length {
+
+template<typename Rep = double>
+using m = units::si::length<units::si::metre, Rep>;
+
+template<typename Rep = double>
+using mm = units::si::length<units::si::millimetre, Rep>;
+
+}  // namespace length
+}  // namespace
+
+using namespace units::si::literals;
 
 int main()
 {
-  using namespace units::si;
+  std::cout << "conversion factor in mpusz/units...\n\n";
 
-  std::cout << "conversion factor in mp-units...\n\n";
+  constexpr length::m<> lengthA = 2.0q_m;
+  constexpr length::mm<> lengthB = lengthA;
 
-  constexpr length<metre> lengthA = 2.0q_m;
-  constexpr length<millimetre> lengthB = lengthA;
-
-  std::cout << fmt::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
+  std::cout << "lengthA( " << lengthA << " ) and lengthB( " << lengthB << " )\n"
             << "represent the same length in different units.\n\n";
 
-  std::cout << fmt::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
+  std::cout << "therefore ratio lengthA / lengthB == " << lengthA / lengthB << "\n\n";
 
-  std::cout << fmt::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n", lengthA, lengthB)
-            << fmt::format("lengthB.count( {} ) == lengthA.count( {} ) * conversion_factor( {} )\n",
-                           lengthB.count(), lengthA.count(), conversion_factor(lengthB, lengthA));
+  std::cout << "conversion factor from lengthA::unit of "
+            << units_str(lengthA) << " to lengthB::unit of " << units_str(lengthB) << " :\n\n"
+            << "lengthB.count( " << lengthB.count() << " ) == lengthA.count( " << lengthA.count()
+            << " ) * conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
 }

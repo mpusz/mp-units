@@ -21,19 +21,11 @@
 # SOFTWARE.
 
 function(add_example target)
-    add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE mp::units)
+    add_executable(${target}_alt ${target}.cpp)
+    target_link_libraries(${target}_alt PRIVATE mp::units)
 endfunction()
 
-add_example(avg_velocity)
-add_example(hello_units)
-add_example(measurement)
-add_example(total_energy)
-add_example(unknown_dimension)
 add_example(box_example)
 add_example(capacitor_time_curve)
 add_example(clcpp_response)
 add_example(conversion_factor)
-add_example(kalman_filter-alpha_beta_filter_example2)
-
-add_subdirectory(alternative_namespaces)

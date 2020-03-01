@@ -27,12 +27,32 @@
 #include <cmath>
 #include <iostream>
 
+namespace {
+namespace voltage {
+
+template<typename Rep = double>
+using V = units::si::voltage<units::si::volt, Rep>;
+
+template<typename Rep = double>
+using mV = units::si::voltage<units::si::millivolt, Rep>;
+
+template<typename Rep = double>
+using uV = units::si::voltage<units::si::microvolt, Rep>;
+
+template<typename Rep = double>
+using nV = units::si::voltage<units::si::nanovolt, Rep>;
+
+template<typename Rep = double>
+using pV = units::si::voltage<units::si::picovolt, Rep>;
+
+}  // namespace voltage
+}  // namespace
+
+using namespace units::si::literals;
+
 int main()
 {
-  using namespace units;
-  using namespace units::si;
-
-  std::cout << "mp-units capacitor time curve example...\n";
+  std::cout << "mpusz/units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
@@ -41,20 +61,20 @@ int main()
   constexpr auto R = 4.7q_kR;
 
   for (auto t = 0q_ms; t <= 50q_ms; ++t) {
-    const Voltage auto Vt = V0 * std::exp(-t / (R * C));
+    const auto Vt = V0 * std::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
     if (Vt >= 1q_V)
       std::cout << Vt;
     else if (Vt >= 1q_mV)
-      std::cout << quantity_cast<millivolt>(Vt);
+      std::cout << voltage::mV<>{Vt};
     else if (Vt >= 1q_uV)
-      std::cout << quantity_cast<microvolt>(Vt);
+      std::cout << voltage::uV<>{Vt};
     else if (Vt >= 1q_nV)
-      std::cout << quantity_cast<nanovolt>(Vt);
+      std::cout << voltage::nV<>{Vt};
     else
-      std::cout << quantity_cast<picovolt>(Vt);
+      std::cout << voltage::pV<>{Vt};
     std::cout << "\n";
   }
 }
