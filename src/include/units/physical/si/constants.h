@@ -41,4 +41,6 @@ inline constexpr auto speed_of_light = 299792458q_mps;
 inline constexpr auto hyperfine_structure_transition_frequency = 9192631770q_Hz;
 // inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
 
+inline constexpr auto standard_gravity = 9.80665q_mps2;
+
 }  // namespace units::si
