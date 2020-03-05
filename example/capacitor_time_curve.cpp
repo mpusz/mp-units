@@ -41,7 +41,7 @@ int main()
   constexpr auto R = 4.7q_kR;
 
   for (auto t = 0q_ms; t <= 50q_ms; ++t) {
-    const Voltage auto Vt = V0 * std::exp(-t / (R * C));
+    const Voltage AUTO Vt = V0 * std::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
