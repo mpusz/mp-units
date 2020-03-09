@@ -8,7 +8,7 @@ if __name__ == "__main__":
         stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
 
         # dependencies
-        remotes = None,
+        remotes = "https://api.bintray.com/conan/bincrafters/public-conan, https://api.bintray.com/conan/twonington/public-conan",
         build_policy = "outdated",
         upload_dependencies="all",
 
