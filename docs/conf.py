@@ -109,6 +109,16 @@ html_css_files = [
 
 # -- Breathe configuration ---------------------------------------------------
 
+def configureDoxyfile(input_dir, output_dir):
+    with open('Doxyfile.in', 'r') as file:
+        filedata = file.read()
+ 
+    filedata = filedata.replace('@DOXYGEN_INPUT_DIR@', input_dir)
+    filedata = filedata.replace('@DOXYGEN_OUTPUT_DIR@', output_dir)
+ 
+    with open('Doxyfile', 'w') as file:
+        file.write(filedata)
+
 # Check if we're running on Read the Docs' servers
 read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
 
@@ -134,13 +144,3 @@ breathe_domain_by_extension = {"h" : "cpp"}
 # take :members:, :private-members: and :undoc-members: options. By default,
 # this is set to an empty list, which means no members are displayed.
 breathe_default_members = ('members', )
-
-def configureDoxyfile(input_dir, output_dir):
-    with open('Doxyfile.in', 'r') as file:
-        filedata = file.read()
- 
-    filedata = filedata.replace('@DOXYGEN_INPUT_DIR@', input_dir)
-    filedata = filedata.replace('@DOXYGEN_OUTPUT_DIR@', output_dir)
- 
-    with open('Doxyfile', 'w') as file:
-        file.write(filedata)
