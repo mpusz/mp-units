@@ -134,7 +134,7 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
  * @tparam U reference unit
  */
 template<typename Child, Prefix P, Unit U>
-  requires std::same_as<typename P::prefix_type, typename U::prefix_type>
+  requires U::is_named && std::same_as<typename P::prefix_type, typename U::prefix_type>
 struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
