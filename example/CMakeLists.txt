@@ -25,7 +25,7 @@ function(add_example target)
     target_link_libraries(${target} PRIVATE mp::units)
 endfunction()
 
-add_example(avg_velocity)
+add_example(avg_speed)
 add_example(hello_units)
 add_example(measurement)
 add_example(total_energy)
