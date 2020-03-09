@@ -43,7 +43,7 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     exports = ["LICENSE.md"]
-    exports_sources = ["src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
+    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "fmt/6.1.0"
