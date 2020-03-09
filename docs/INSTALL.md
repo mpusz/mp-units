@@ -1,5 +1,20 @@
 # Installation Guide
 
+## Repository structure
+
+This repository contains three independent `cmake`-based projects:
+1. `./src`
+    - header-only project containing whole `mp-units` library
+2. `.`
+    - project used as an entry point for library development (it wraps `./src` project
+    together with usage examples and tests)
+
+3. `./test_package` - library installation and Conan package verification
+
+NOTE: Please note that this repository depends on a git submodule in the `./cmake/common`
+subdirectory.
+
+
 ## Installation and Reuse
 
 There are a few different ways of installing/reusing `units` in your project.

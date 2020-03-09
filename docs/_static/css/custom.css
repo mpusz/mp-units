@@ -1,0 +1,20 @@
+@import 'theme.css';
+
+a.reference.internal + code.sig-name.descname {
+  padding-left: 4px;
+}
+
+.breatheparameterlist li tt + p {
+  display: inline;
+}
+.breatheenumvalues li tt + p {
+  display: inline;
+}
+
+.rst-content .admonition-try-it-on-compiler-explorer {
+  background-color: #e2f6d5;
+}
+
+.rst-content .admonition-try-it-on-compiler-explorer > .admonition-title {
+  background-color: #66c52a;
+}

@@ -63,7 +63,7 @@ class UnitsConan(ConanFile):
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
         if self._run_tests:
-            # developer's mode (unit tests, examples, restrictive compilation warnings, ...)
+            # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
             cmake.configure()
         else:
             # consumer's mode (library sources only)
@@ -87,6 +87,8 @@ class UnitsConan(ConanFile):
     def build_requirements(self):
         if self._run_tests:
             self.build_requires("Catch2/2.11.0@catchorg/stable")
+            # TODO update doxygen to the latest version when available
+            self.build_requires("doxygen_installer/1.8.17@bincrafters/stable")
 
     def build(self):
         cmake = self._configure_cmake()

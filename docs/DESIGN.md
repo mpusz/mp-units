@@ -961,3 +961,5 @@ struct quantity_values;
     with the same unit (i.e. `GeV`). Also if someone will decide to implement a systems where
     SI quantities of the same kind are expressed as different dimensions (i.e. height, width,
     and depth) all of them will just be measured in meters.
+
+3. Why do we spell `metre` instead of `meter`?

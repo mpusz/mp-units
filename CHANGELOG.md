@@ -1,6 +1,6 @@
 # Release notes
 
-- 0.5.0 ???
+- 0.5.0 WIP
   - Major refactoring and rewrite of the library
   - Units are now independent from dimensions
   - Dimensions now depend on units (base or coherent units are provided in a class template)
@@ -9,11 +9,16 @@
   - Added official CGS system support
   - Added official data information system support
   - Repository file tree cleanup
-  - `ratio` refactored to contain `Exp` template parameter
+  - `ratio` refactored to contain `Exp` template parameter (thanks a lot @oschonrock!)
   - SI fundamental constants added
-  - `q_` prefix applied to all the UDLs
+  - `q_` prefix applied to all the UDLs (thanks @kwikius)
   - `unknown_unit` renamed to `unknown_coherent_unit`
+  - Project documentation extended and switched to Sphinx
+  - A few more usage examples added
   - ...
+
+  Many thanks to GitHub users @oschonrock and @kwikius for their support in drafting
+  a new library design.
 
 - 0.4.0 Nov 17, 2019
   - Support for derived dimensions in `exp` added

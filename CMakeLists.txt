@@ -48,3 +48,6 @@ add_subdirectory(test)
 
 # add usage example
 add_subdirectory(example)
+
+# generate project documentation
+add_subdirectory(docs)

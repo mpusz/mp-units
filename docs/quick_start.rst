@@ -1,0 +1,62 @@
+Quick Start
+===========
+
+Here is a small example of possible operations::
+
+    // simple numeric operations
+    static_assert(10q_km / 2 == 5q_km);
+
+    // unit conversions
+    static_assert(1q_h == 3600q_s);
+    static_assert(1q_km + 1q_m == 1001q_m);
+
+    // dimension conversions
+    static_assert(2q_m * 3q_m == 6q_m2);
+    static_assert(10q_km / 5q_km == 2);
+    static_assert(1000 / 1q_s == 1q_kHz);
+    static_assert(1q_km / 1q_s == 1000q_mps);
+    static_assert(2q_kmph * 2q_h == 4q_km);
+    static_assert(2q_km / 2q_kmph == 1q_h);
+
+.. admonition:: Try it on Compiler Explorer
+
+    `Example #1 <https://godbolt.org/z/BZjWbD>`_
+
+This library requires some C++20 features (concepts, classes as
+:abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
+but still easy to use interface where all unit conversions and dimensional analysis can be
+performed without sacrificing on accuracy. Please see the below example for a quick preview
+of basic library features::
+
+    #include <units/physical/si/velocity.h>
+    #include <units/physical/international/velocity.h>
+    #include <iostream>
+
+    using namespace units;
+
+    constexpr Velocity auto avg_speed(Length auto d, Time auto t)
+    {
+      return d / t;
+    }
+
+    int main()
+    {
+      using namespace si::literals;
+      Velocity auto v1 = avg_speed(220q_km, 2q_h);
+      Velocity auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+      Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);
+      Velocity auto v4 = quantity_cast<int>(v3);
+
+      std::cout << v1 << '\n';    // 110 km/h
+      std::cout << v2 << '\n';    // 70 mi/h
+      std::cout << v3 << '\n';    // 31.2928 m/s
+      std::cout << v4 << '\n';    // 31 m/s
+    }
+
+.. admonition:: Try it on Compiler Explorer
+
+    `Example #2 <https://godbolt.org/z/_Yx6D7>`_
+
+.. seealso::
+
+    You can find more code examples in the :ref:`Examples` chapter.
