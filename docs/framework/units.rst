@@ -196,10 +196,7 @@ reference ("kilohours" does not have much sense, right?). The `ratio` type
 used in the definition is really similar to ``std::ratio`` but it takes
 the third additional argument that defines the exponent of the ratio.
 Thanks to it we can address nearly infinite scaling factors between units
-and define units like:
-
-.. code-block::
-    :force:
+and define units like::
 
     struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix,
                                             ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
@@ -248,10 +245,7 @@ complete list of all the :term:`SI` prefixes supported by the library::
     }
 
 Alternative hierarchy of prefixes is the one used in data information
-domain:
-
-.. code-block::
-    :force:
+domain::
 
     namespace data {
 

@@ -5,4 +5,3 @@ avg_speed
   :caption: avg_speed.cpp
   :start-at: #include
   :linenos:
-  :force:
