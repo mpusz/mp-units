@@ -83,11 +83,20 @@ cpp_index_common_prefix = ['units::']
 
 # -- Options for HTML output -------------------------------------------------
 
+# A list of paths that contain custom themes, either as subdirectories or as
+# zip files. Relative paths are taken as relative to the configuration directory.
+
+html_theme_path = ["_themes", ]
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
-html_theme_path = ["_themes", ]
+# A dictionary of options that influence the look and feel of the selected theme.
+# These are theme-specific.
+html_theme_options = {
+    'github_url': 'https://github.com/mpusz/units'
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
