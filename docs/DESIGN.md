@@ -18,9 +18,9 @@ static_assert(1q_h == 3600q_s);
 static_assert(1q_km + 1q_m == 1001q_m);
 
 // dimension conversions
-static_assert(1q_km / 1q_s == 1000q_mps);
-static_assert(2q_kmph * 2q_h == 4q_km);
-static_assert(2q_km / 2q_kmph == 1q_h);
+static_assert(1q_km / 1q_s == 1000q_m_per_s);
+static_assert(2q_km_per_h * 2q_h == 4q_km);
+static_assert(2q_km / 2q_km_per_h == 1q_h);
 
 static_assert(1000 / 1q_s == 1q_kHz);
 
@@ -574,7 +574,7 @@ If the `units-specs` is omitted, the `quantity` object is formatted as if by str
 additional padding and adjustments as specified by the format specifiers.
 
 ```cpp
-std::string s = fmt::format("{:=>12}", 120q_kmph); // value of s is "====120 km/h"
+std::string s = fmt::format("{:=>12}", 120q_km_per_h); // value of s is "====120 km/h"
 ```
 
 

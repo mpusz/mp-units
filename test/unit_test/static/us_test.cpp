@@ -54,7 +54,7 @@ static_assert(5q_in + 8q_cm == 207q_mm);
 
 // velocity
 
-static_assert(10.0q_mi / 2q_h == 5q_mph);
+static_assert(10.0q_mi / 2q_h == 5q_mi_per_h);
 
 static_assert(mile_per_hour::symbol == "mi/h");
 

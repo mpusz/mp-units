@@ -102,7 +102,7 @@ using namespace units::si::literals;
 int main()
 {
   auto box = Box{1000.0q_mm, 500.0q_mm, 200.0q_mm};
-  box.set_contents_density(1000.0q_kgpm3);
+  box.set_contents_density(1000.0q_kg_per_m3);
 
   auto fill_time = 200.0q_s;      // time since starting fill
   auto measured_mass = 20.0q_kg;  // measured mass at fill_time

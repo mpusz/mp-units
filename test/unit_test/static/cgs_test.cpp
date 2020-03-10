@@ -50,9 +50,9 @@ static_assert(centimetre::symbol == "cm");
 
 // velocity
 
-static_assert(10q_cm / 5q_s == 2q_cmps);
-static_assert(10q_cm / 2q_cmps == 5q_s);
-static_assert(10q_cm == 2q_cmps * 5q_s);
+static_assert(10q_cm / 5q_s == 2q_cm_per_s);
+static_assert(10q_cm / 2q_cm_per_s == 5q_s);
+static_assert(10q_cm == 2q_cm_per_s * 5q_s);
 
 static_assert(detail::unit_text<dim_velocity, centimetre_per_second>() == "cm/s");
 
@@ -68,9 +68,9 @@ static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
 
 // acceleration
 
-static_assert(10q_cmps / 10q_s == 1q_Gal);
-static_assert(10q_cmps / 1q_Gal == 10q_s);
-static_assert(1q_Gal * 10q_s == 10q_cmps);
+static_assert(10q_cm_per_s / 10q_s == 1q_Gal);
+static_assert(10q_cm_per_s / 1q_Gal == 10q_s);
+static_assert(1q_Gal * 10q_s == 10q_cm_per_s);
 
 // force
 
@@ -94,9 +94,9 @@ static_assert(100q_erg / 10q_dyn == 10q_cm);
 
 // power
 
-static_assert(10q_erg / 10q_s == 1q_ergps);
-static_assert(1q_ergps * 10q_s == 10q_erg);
-static_assert(10q_erg / 1q_ergps == 10q_s);
+static_assert(10q_erg / 10q_s == 1q_erg_per_s);
+static_assert(1q_erg_per_s * 10q_s == 10q_erg);
+static_assert(10q_erg / 1q_erg_per_s == 10q_s);
 
 static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 

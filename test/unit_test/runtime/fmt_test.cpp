@@ -662,7 +662,7 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
   {
     SECTION("positive value")
     {
-      CHECK(fmt::format("{:%Q}", 123q_kmph) == "123");
+      CHECK(fmt::format("{:%Q}", 123q_km_per_h) == "123");
     }
 
     SECTION("negative value")
@@ -702,39 +702,39 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 
 TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
 {
-  CHECK(fmt::format("{:%q}", 123q_kmph) == "km/h");
+  CHECK(fmt::format("{:%q}", 123q_km_per_h) == "km/h");
 }
 
 TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
 {
   SECTION("no space")
   {
-    CHECK(fmt::format("{:%Q%q}", 123q_kmph) == "123km/h");
+    CHECK(fmt::format("{:%Q%q}", 123q_km_per_h) == "123km/h");
   }
 
   SECTION("separator")
   {
-    CHECK(fmt::format("{:%Q###%q}", 123q_kmph) == "123###km/h");
+    CHECK(fmt::format("{:%Q###%q}", 123q_km_per_h) == "123###km/h");
   }
 
   SECTION("opposite order")
   {
-    CHECK(fmt::format("{:%q %Q}", 123q_kmph) == "km/h 123");
+    CHECK(fmt::format("{:%q %Q}", 123q_km_per_h) == "km/h 123");
   }
 
   SECTION("tabulator")
   {
-    CHECK(fmt::format("{:%Q%t%q}", 123q_kmph) == "123\tkm/h");
+    CHECK(fmt::format("{:%Q%t%q}", 123q_km_per_h) == "123\tkm/h");
   }
 
   SECTION("new line")
   {
-    CHECK(fmt::format("{:%Q%n%q}", 123q_kmph) == "123\nkm/h");
+    CHECK(fmt::format("{:%Q%n%q}", 123q_km_per_h) == "123\nkm/h");
   }
 
   SECTION("% sign")
   {
-    CHECK(fmt::format("{:%Q%% %q}", 123q_kmph) == "123% km/h");
+    CHECK(fmt::format("{:%Q%% %q}", 123q_km_per_h) == "123% km/h");
   }
 }
 

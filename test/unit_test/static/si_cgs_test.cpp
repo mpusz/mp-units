@@ -64,8 +64,8 @@ using namespace units::si::literals;
 static_assert(cgs::length<cgs::centimetre>(100) == 1q_m);
 static_assert(cgs::mass<cgs::gram>(1'000) == 1q_kg);
 static_assert(cgs::time<cgs::second>(1) == 1q_s);
-static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1q_mps);
-static_assert(cgs::acceleration<cgs::gal>(100) == 1q_mps2);
+static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1q_m_per_s);
+static_assert(cgs::acceleration<cgs::gal>(100) == 1q_m_per_s2);
 static_assert(cgs::force<cgs::dyne>(100'000) == 1q_N);
 static_assert(cgs::energy<cgs::erg>(10'000'000) == 1q_J);
 static_assert(cgs::power<cgs::erg_per_second>(10'000'000) == 1q_W);
@@ -80,11 +80,11 @@ using namespace units::cgs::literals;
 static_assert(100q_cm == si::length<si::metre>(1));
 static_assert(1'000q_g == si::mass<si::kilogram>(1));
 static_assert(1q_s == si::time<si::second>(1));
-static_assert(100q_cmps == si::velocity<si::metre_per_second>(1));
+static_assert(100q_cm_per_s == si::velocity<si::metre_per_second>(1));
 static_assert(100q_Gal == si::acceleration<si::metre_per_second_sq>(1));
 static_assert(100'000q_dyn == si::force<si::newton>(1));
 static_assert(10'000'000q_erg == si::energy<si::joule>(1));
-static_assert(10'000'000q_ergps == si::power<si::watt>(1));
+static_assert(10'000'000q_erg_per_s == si::power<si::watt>(1));
 static_assert(10q_Ba == si::pressure<si::pascal>(1));
 
 }
@@ -97,11 +97,11 @@ using namespace units::cgs::literals;
 // static_assert(100q_cm == 1q_m);   // ambiguous
 // static_assert(1'000q_g == 1q_kg); // ambiguous
 static_assert(1q_s == 1q_s);
-static_assert(100q_cmps == 1q_mps);
-static_assert(100q_Gal == 1q_mps2);
+static_assert(100q_cm_per_s == 1q_m_per_s);
+static_assert(100q_Gal == 1q_m_per_s2);
 static_assert(100'000q_dyn == 1q_N);
 static_assert(10'000'000q_erg == 1q_J);
-static_assert(10'000'000q_ergps == 1q_W);
+static_assert(10'000'000q_erg_per_s == 1q_W);
 static_assert(10q_Ba == quantity_cast<double>(1q_Pa));
 
 }

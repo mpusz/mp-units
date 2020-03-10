@@ -340,11 +340,11 @@ static_assert(10q_km / 2 == 5q_km);
 
 // velocity
 
-static_assert(10q_m / 5q_s == 2q_mps);
-static_assert(10 / 5q_s * 1q_m == 2q_mps);
-static_assert(1q_km / 1q_s == 1000q_mps);
-static_assert(2q_kmph * 2q_h == 4q_km);
-static_assert(2q_km / 2q_kmph == 1q_h);
+static_assert(10q_m / 5q_s == 2q_m_per_s);
+static_assert(10 / 5q_s * 1q_m == 2q_m_per_s);
+static_assert(1q_km / 1q_s == 1000q_m_per_s);
+static_assert(2q_km_per_h * 2q_h == 4q_km);
+static_assert(2q_km / 2q_km_per_h == 1q_h);
 
 static_assert(std::is_same_v<decltype(pow<2>(2q_m)), decltype(4q_m2)>);
 

@@ -37,10 +37,10 @@ inline constexpr auto reduced_planck_constant = 6.582119569e-10q_GeV * 1q_s;
 inline constexpr auto elementary_charge = 1.602176634e-19q_C;
 inline constexpr auto boltzmann_constant = 1.380649e-23q_J / 1q_K;
 inline constexpr auto avogadro_constant = 6.02214076e23 / 1q_mol;
-inline constexpr auto speed_of_light = 299792458q_mps;
+inline constexpr auto speed_of_light = 299792458q_m_per_s;
 inline constexpr auto hyperfine_structure_transition_frequency = 9192631770q_Hz;
 // inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
 
-inline constexpr auto standard_gravity = 9.80665q_mps2;
+inline constexpr auto standard_gravity = 9.80665q_m_per_s2;
 
 }  // namespace units::si

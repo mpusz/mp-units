@@ -65,7 +65,7 @@ int main()
   if(track.size() > 0) { 
     // We need an initial estimate of track[0] as there is no previous state to get a prediction from
     track[0].range.estimated_current_state = 30'000q_m;
-    track[0].speed.estimated_current_state = 40.0q_mps;
+    track[0].speed.estimated_current_state = 40.0q_m_per_s;
   }
 
   for (auto n = 0U; n < num_measurements; ++n) {

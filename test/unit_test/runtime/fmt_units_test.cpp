@@ -102,7 +102,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("density")
   {
-      CHECK(fmt::format("{}", 1q_kgpm3) == "1 kg/m³");
+      CHECK(fmt::format("{}", 1q_kg_per_m3) == "1 kg/m³");
   }
 
   SECTION("resistance")
@@ -142,19 +142,19 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("velocity")
   {
-    CHECK(fmt::format("{}", 1q_mps) == "1 m/s");
-    CHECK(fmt::format("{}", 1q_kmph) == "1 km/h");
-    CHECK(fmt::format("{}", 1q_mph) == "1 mi/h");
+    CHECK(fmt::format("{}", 1q_m_per_s) == "1 m/s");
+    CHECK(fmt::format("{}", 1q_km_per_h) == "1 km/h");
+    CHECK(fmt::format("{}", 1q_mi_per_h) == "1 mi/h");
   }
 
   SECTION("acceleration")
   {
-    CHECK(fmt::format("{}", 1q_mps2) == "1 m/s²");
+    CHECK(fmt::format("{}", 1q_m_per_s2) == "1 m/s²");
   }
 
   SECTION("momentum")
   {
-    CHECK(fmt::format("{}", 1q_kgmps) == "1 kg⋅m/s");
+    CHECK(fmt::format("{}", 1q_kg_m_per_s) == "1 kg⋅m/s");
   }
 
   SECTION("energy")
@@ -175,7 +175,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("surface tension")
   {
-    CHECK(fmt::format("{}", 1q_Npm) == "1 N/m");
+    CHECK(fmt::format("{}", 1q_N_per_m) == "1 N/m");
   }
 
   SECTION("addition with common ratio")

@@ -25,7 +25,7 @@ inline constexpr auto g = si::standard_gravity;
 }  // namespace
 
 struct Box {
-  static constexpr auto air_density = 1.225q_kgpm3;
+  static constexpr auto air_density = 1.225q_kg_per_m3;
 
   si::length<m> length;
   si::length<m> width;
@@ -66,7 +66,7 @@ struct Box {
 int main()
 {
   auto box = Box(1000.0q_mm, 500.0q_mm, 200.0q_mm);
-  box.set_contents_density(1000.0q_kgpm3);
+  box.set_contents_density(1000.0q_kg_per_m3);
 
   const auto fill_time = 200.0q_s;      // time since starting fill
   const auto measured_mass = 20.0q_kg;  // measured mass at fill_time

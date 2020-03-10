@@ -40,12 +40,12 @@ using velocity = quantity<dim_velocity, U, Rep>;
 inline namespace literals {
 
 // mps
-constexpr auto operator"" q_mps(unsigned long long l) { return velocity<metre_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_mps(long double l) { return velocity<metre_per_second, long double>(l); }
+constexpr auto operator"" q_m_per_s(unsigned long long l) { return velocity<metre_per_second, std::int64_t>(l); }
+constexpr auto operator"" q_m_per_s(long double l) { return velocity<metre_per_second, long double>(l); }
 
 // kmph
-constexpr auto operator"" q_kmph(unsigned long long l) { return velocity<kilometre_per_hour, std::int64_t>(l); }
-constexpr auto operator"" q_kmph(long double l) { return velocity<kilometre_per_hour, long double>(l); }
+constexpr auto operator"" q_km_per_h(unsigned long long l) { return velocity<kilometre_per_hour, std::int64_t>(l); }
+constexpr auto operator"" q_km_per_h(long double l) { return velocity<kilometre_per_hour, long double>(l); }
 
 }  // namespace literals
 
