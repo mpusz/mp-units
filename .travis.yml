@@ -29,12 +29,12 @@ script:
     # Prepare documentation for deployment
     if [ -n "$DEPLOY_DOCS" ]; then
       rm -rf gh-pages
-      sudo -E docker run --name docker_deploy $CONAN_DOCKER_IMAGE /bin/sh -c "conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz"
-      sudo -E docker exec docker_deploy /bin/sh -c "conan search -r conan-mpusz mp-units --raw | tail -n1 | xargs -I % conan install % -g deploy -s compiler.version=$CONAN_GCC_VERSIONS -s compiler.cppstd=20"
+      sudo -E docker run --name docker_deploy --rm -dt $CONAN_DOCKER_IMAGE bash
+      sudo -E docker exec docker_deploy conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
+      sudo -E docker exec docker_deploy sh -c "conan search -r conan-mpusz mp-units --raw | tail -n1 | xargs -I % conan install % -g deploy -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -b missing"
       sudo -E docker cp docker_deploy:/home/conan/mp-units/share/doc/units/sphinx gh-pages
+      sudo -E docker stop docker_deploy
     fi
-
-before_deploy:
 
 deploy:
   provider: pages
