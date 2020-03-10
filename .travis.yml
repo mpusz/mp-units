@@ -1,22 +1,22 @@
 env:
-   global:
-     - CONAN_RUN_TESTS: 1
-     - CONAN_DOCKER_32_IMAGES: 1
+  global:
+    - CONAN_RUN_TESTS: 1
+    - CONAN_DOCKER_32_IMAGES: 1
 
 linux: &linux
-   os: linux
-   dist: xenial
-   language: python
-   python: "3.7"
-   services:
-     - docker
+  os: linux
+  dist: xenial
+  language: python
+  python: "3.7"
+  services:
+    - docker
 osx: &osx
-   os: osx
-   language: generic
+  os: osx
+  language: generic
 matrix:
-   include:
-     - <<: *linux
-       env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
+  include:
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9 DEPLOY_DOCS=TRUE
 
 install:
   - chmod +x .travis/install.sh
@@ -25,17 +25,19 @@ install:
 script:
   - chmod +x .travis/run.sh
   - ./.travis/run.sh
+  - |
+    # Prepare documentation for deployment
+    if [ -n "$DEPLOY_DOCS" ]; then
+      ./.travis/deploy.sh
+    fi
 
 before_deploy:
-  - conan search mp-units --raw
-  - conan search mp-units --raw 2>@1 | tail -n1 | xargs -I % conan info % --paths --package-filter mp-units*
-  - cp -r `conan search mp-units --raw 2>@1 | tail -n1 | xargs -I % conan info % --paths --package-filter mp-units* | sed -n 's/    package_folder: //p'`/share/doc/units/sphinx .
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   keep_history: true
-  local_dir: sphinx
+  local_dir: gh-pages
   on:
     branch: master
