@@ -2,9 +2,21 @@
 [![Travis CI](https://img.shields.io/travis/com/mpusz/units/master.svg?label=Travis%20CI)](https://travis-ci.com/mpusz/units)
 [![Conan stable](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg?version=0.4.0%3Astable)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/0.4.0%3Astable/link)
 [![Conan testing](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
-
+[](https://mp-units.readthedocs.io/en/latest/?badge=latest)
 
 # `mp-units` - A Units Library for C++
+
+**The mp-units library is the subject of this ISO C++ paper: [P1935](https://wg21.link/p1935).
+It is explained in this [CppCon 2019 talk](https://youtu.be/0YW6yxkdhlU) (slightly dated now).
+We are working towards potentially having it standardized for C++23 and are actively looking
+for parties interested in field trialing the library.**
+
+
+## Documentation
+
+An extensive project documentation including installation instructions and user's
+guide can be found on [mp-units GitHub Pages](https://mpusz.github.io/units).
+
 
 ## TL;DR
 
@@ -66,28 +78,3 @@ int main()
 ```
 
 _Try it on the [Compiler Explorer](https://godbolt.org/z/_Yx6D7)._
-
-**The mp-units library is the subject of this ISO C++ paper: [P1935](https://wg21.link/p1935).
-It is explained in this [CppCon 2019 talk](https://youtu.be/0YW6yxkdhlU) (slightly dated now).
-We are working towards potentially having it standardized for C++23 and are actively looking
-for parties interested in field trialing the library.**
-
-
-## Downloading, Building, Testing, and Installation
-
-For a detailed information on project compilation, testing and reuse please refer to
-[doc/INSTALL.md](doc/INSTALL.md).
-
-NOTE: This library as of now compiles correctly only with gcc-9.1 and newer.  
-
-
-## User Guide
-
-A detailed `mp-units` library design rationale and documentation can be found in
-[doc/DESIGN.md](doc/DESIGN.md)
-
-
-## Library Design
-
-A detailed `mp-units` library design rationale and documentation can be found in
-[doc/DESIGN.md](doc/DESIGN.md)
