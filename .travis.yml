@@ -26,11 +26,16 @@ script:
   - chmod +x .travis/run.sh
   - ./.travis/run.sh
 
+before_deploy:
+  - conan search mp-units --raw
+  - conan search mp-units --raw 2>@1 | tail -n1 | xargs -I % conan info % --paths --package-filter mp-units*
+  - cp -r `conan search mp-units --raw 2>@1 | tail -n1 | xargs -I % conan info % --paths --package-filter mp-units* | sed -n 's/    package_folder: //p'`/share/doc/units/sphinx .
+
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   keep_history: true
-  local_dir: docs/sphinx
+  local_dir: sphinx
   on:
     branch: master
