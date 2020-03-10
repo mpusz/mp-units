@@ -178,8 +178,8 @@ factor/ratio equals one. However quantities of each dimension can also use
 other units of measurement to describe their magnitude (numerical value).
 
 
-Scaled Units
-^^^^^^^^^^^^
+Named Scaled Units
+^^^^^^^^^^^^^^^^^^
 
 We are used to use minutes, hours, or days to measure quantities of time.
 Those units are the scaled versions of a time dimension's base unit,
