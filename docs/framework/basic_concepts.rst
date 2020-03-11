@@ -6,7 +6,7 @@ Basic Concepts
 The most important concepts in the library are `Unit`, `Dimension`, and
 `Quantity`:
 
-.. image:: /_static/img/design.png
+.. image:: /_static/img/concepts.png
     :align: center
 
 .. 
