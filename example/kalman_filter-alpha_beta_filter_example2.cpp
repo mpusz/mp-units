@@ -4,7 +4,7 @@
 #include <units/physical/si/velocity.h>
 #include <iomanip>
 #include <iostream>
-#include <vector>
+#include <array>
 
 /*
    kalman filter tutorial
@@ -54,19 +54,16 @@ int main()
   std::cout << "\n\n1d aircraft α-β filter example2 from https://www.kalmanfilter.net/alphabeta.html#ex2";
   std::cout << "\n\n";
 
-  std::vector<length<metre>> measurements{0.0q_m,  // N.B measurement[0] is unknown and unused
+  constexpr auto measurements = std::array{0.0q_m,  // N.B measurement[0] is unknown and unused
                                           30110.0q_m, 30265.0q_m, 30740.0q_m, 30750.0q_m, 31135.0q_m,
                                           31015.0q_m, 31180.0q_m, 31610.0q_m, 31960.0q_m, 31865.0q_m};
 
-  const auto num_measurements = measurements.size();
+  constexpr auto num_measurements = measurements.size();
 
-  std::vector<state> track(num_measurements);
-
-  if(track.size() > 0) { 
-    // We need an initial estimate of track[0] as there is no previous state to get a prediction from
-    track[0].range.estimated_current_state = 30'000q_m;
-    track[0].speed.estimated_current_state = 40.0q_m_per_s;
-  }
+  std::array<state,num_measurements> track;
+  // We need an initial estimate of track[0] as there is no previous state to get a prediction from
+  track[0].range.estimated_current_state = 30'000q_m;
+  track[0].speed.estimated_current_state = 40.0q_m_per_s;
 
   for (auto n = 0U; n < num_measurements; ++n) {
     if (n > 0) {
