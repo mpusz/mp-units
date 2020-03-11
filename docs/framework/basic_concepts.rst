@@ -9,6 +9,23 @@ The most important concepts in the library are `Unit`, `Dimension`, and
 .. image:: /_static/img/design.png
     :align: center
 
+.. 
+    http://www.nomnoml.com
+
+    [<abstract>Dimension|
+    [base_dimension<Symbol, Unit>]<-[exp<Dimension, Num, Den>]
+    [derived_dimension<Child, Unit, Exponent...>]<-[exp<Dimension, Num, Den>]
+    [exp<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
+    ]
+
+    [<abstract>Quantity|
+    [quantity<Dimension, Unit, Rep>]
+    ]
+
+    [<abstract>Unit]<-[Dimension]
+    [Dimension]<-[Quantity]
+    [Unit]<-[Quantity]
+
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and
 often a few scaled versions of it.
