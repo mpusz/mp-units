@@ -8,8 +8,7 @@ Systems
 SI
 --
 
-.. 
-   doxygennamespace:: units::si
+.. doxygennamespace:: units::si
     :members:
     :undoc-members:
     :outline:
