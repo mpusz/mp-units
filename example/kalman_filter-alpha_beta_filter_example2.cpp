@@ -2,7 +2,6 @@
 #include <units/physical/si/length.h>
 #include <units/physical/si/time.h>
 #include <units/physical/si/velocity.h>
-#include <iomanip>
 #include <iostream>
 #include <array>
 
