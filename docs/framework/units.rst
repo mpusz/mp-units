@@ -308,6 +308,47 @@ provided in the template parameter list after the derived dimension parameter,
 the library calculates the final ratio for this unit.
 
 
+Class hierarchy
+---------------
+
+All of the above class templates to produce unit types inherit from some instance
+of a `scaled_unit` class template:
+
+.. image:: /_static/img/units.png
+    :align: center
+
+.. 
+    http://www.nomnoml.com
+
+    #direction: right
+
+    [scaled_unit<Ratio, Unit>]<:-[unit<Child>]
+    [scaled_unit<Ratio, Unit>]<:-[named_unit<Child, Symbol, PrefixType>]
+    [scaled_unit<Ratio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixType, Ratio, Unit>]
+    [scaled_unit<Ratio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
+    [scaled_unit<Ratio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
+
+`scaled_unit` is a class template used exclusively by the library's framework
+and user should not instantiate it by him/her-self. However the user can sometimes
+observe this type in case an unit/dimension conversion expression will end up with an
+unknown/undefined unit type like in the below example::
+
+    using namespace si::literals;
+
+    Length auto l = 100q_km_per_h * 10q_s;
+
+The type of ``l`` above will be
+:expr:`si::length<scaled_unit<ratio<1, 36, 1>, si::metre>, long double>`. This is caused
+by the fact that the library does not define a unit of a length quantity that has the
+ratio ``10/36`` of a `si::metre`. If such a unit was predefined we would see its concrete
+type here instead.
+
+.. seealso::
+
+    To learn more about unknown units please refer to
+    :ref:`Working with Unknown Units and Dimensions` chapter.
+
+
 .. rubric:: Citations:
 
 .. [P0847] `"Deducing this" <https://wg21.link/P0847>`_, Programming Language C++ proposal
