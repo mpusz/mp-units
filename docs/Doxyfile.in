@@ -84,3 +84,10 @@ WARN_IF_UNDOCUMENTED   = YES
 # The default value is: NO.
 
 WARN_AS_ERROR          = NO
+
+# The QUIET tag can be used to turn on/off the messages that are generated to
+# standard output by doxygen. If QUIET is set to YES this implies that the
+# messages are off.
+# The default value is: NO.
+
+QUIET                  = YES

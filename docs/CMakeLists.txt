@@ -43,7 +43,7 @@ add_custom_command(OUTPUT "${DOXYGEN_INDEX_FILE}"
                    DEPENDS ${UNITS_PUBLIC_HEADERS}
                    COMMAND "${DOXYGEN_EXECUTABLE}" "${DOXYFILE_OUT}"
                    MAIN_DEPENDENCY "${DOXYFILE_OUT}" "${DOXYFILE_IN}"
-                   COMMENT "Generating docs:"
+                   COMMENT "Generating doxygen XML metadata"
                    VERBATIM)
  
 # Nice named target so we can run the job easily
