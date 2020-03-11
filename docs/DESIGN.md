@@ -854,8 +854,8 @@ adds support for digital information quantities. In summary it adds:
     inline namespace literals {
 
     // bits
-    constexpr auto operator"" q_bps(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
-    constexpr auto operator"" q_Kibps(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
+    constexpr auto operator"" q_b_per_s(unsigned long long l) { return bitrate<bit_per_second, std::int64_t>(l); }
+    constexpr auto operator"" q_Kib_per_s(unsigned long long l) { return bitrate<kibibit_per_second, std::int64_t>(l); }
 
     }
 
