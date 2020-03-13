@@ -54,6 +54,10 @@ This library assumes that most of the dependencies will be provided by the
 dependencies by other means some modifications to library's CMake files will be needed.
 The rest of the dependencies are provided by :command:`python3-pip`.
 
+.. seealso::
+
+  A full list of dependencies can be found in `Repository structure and dependencies`_.
+
 Conan quick intro
 ^^^^^^^^^^^^^^^^^
 
