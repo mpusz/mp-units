@@ -29,6 +29,7 @@
 #include "units/physical/si/velocity.h"
 #include "units/physical/si/volume.h"
 #include "units/physical/si/surface_tension.h"
+#include "units/physical/si/resistance.h"
 #include "units/format.h"
 #include "units/math.h"
 #include <catch2/catch.hpp>
@@ -703,6 +704,16 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
 {
   CHECK(fmt::format("{:%q}", 123q_km_per_h) == "km/h");
+}
+
+TEST_CASE("format string with only %q should print Unicode quantity unit symbol only", "[text][fmt]")
+{
+  CHECK(fmt::format("{:%Q%q}", 123q_kR) == "123kΩ");
+}
+
+TEST_CASE("format string with only %a should print ASCII quantity unit symbol only", "[text][fmt]")
+{
+  CHECK(fmt::format("{:%Q%a}", 123q_kR) == "123kohm");
 }
 
 TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")

@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct newton : named_unit<newton, "N", prefix> {};
+struct newton : named_unit<newton, "N", "N", prefix> {};
 
 struct dim_force : physical::dim_force<dim_force, newton, dim_mass, dim_acceleration> {};
 

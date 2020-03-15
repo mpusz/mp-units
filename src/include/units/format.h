@@ -29,6 +29,13 @@
 
 namespace units {
 
+  enum class QuantityUnitEncoding
+    {
+      NONE,
+      UNICODE,
+      ASCII
+    };
+
   namespace detail {
 
     // units-format-spec:
@@ -83,6 +90,9 @@ namespace units {
           break;
         case 'q':
           handler.on_quantity_unit();
+          break;
+        case 'a':
+          handler.on_quantity_unit_ascii();
           break;
         default:
           throw fmt::format_error("invalid format");
@@ -143,6 +153,11 @@ namespace units {
       {
         format_to(out, "{}", unit_text<Dimension, Unit>().c_str());
       }
+
+      void on_quantity_unit_ascii()
+      {
+        format_to(out, "{}", unit_text_ascii<Dimension, Unit>().c_str());
+      }
     };
 
   }  // namespace detail
@@ -159,7 +174,7 @@ private:
   fmt::basic_format_specs<CharT> specs;
   int precision = -1;
   bool quantity_value = false;
-  bool quantity_unit = false;
+  units::QuantityUnitEncoding quantity_unit = units::QuantityUnitEncoding::NONE;
   arg_ref_type width_ref;
   arg_ref_type precision_ref;
   fmt::basic_string_view<CharT> format_str;
@@ -211,7 +226,8 @@ private:
 
     constexpr void on_text(const CharT*, const CharT*) {}
     constexpr void on_quantity_value() { f.quantity_value = true; }
-    constexpr void on_quantity_unit() { f.quantity_unit = true; }
+    constexpr void on_quantity_unit() { f.quantity_unit = units::QuantityUnitEncoding::UNICODE; }
+    constexpr void on_quantity_unit_ascii() { f.quantity_unit = units::QuantityUnitEncoding::ASCII; }
   };
 
   struct parse_range {
@@ -267,11 +283,11 @@ private:
     // parse units-specific specification
     end = units::detail::parse_units_format(begin, end, handler);
 
-    if(specs.align == fmt::align_t::none && (!quantity_unit || quantity_value))
+    if(specs.align == fmt::align_t::none && (quantity_unit == units::QuantityUnitEncoding::NONE || quantity_value))
       // quantity values should behave like numbers (by default aligned to right)
       specs.align = fmt::align_t::right;
 
-    if((quantity_unit && !quantity_value) && (specs.sign == fmt::sign::plus || specs.sign == fmt::sign::minus))
+    if((quantity_unit != units::QuantityUnitEncoding::NONE && !quantity_value) && (specs.sign == fmt::sign::plus || specs.sign == fmt::sign::minus))
       handler.on_error("sign not allowed for a quantity unit");
 
     return {begin, end};

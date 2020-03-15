@@ -156,13 +156,13 @@ struct centi : units::prefix<centi, prefix, "c", ratio<1, 1, -2>> {};
 struct kilo : units::prefix<kilo, prefix, "k", ratio<1, 1, 3>> {};
 
 // length
-struct metre : named_unit<metre, "m", prefix> {};
+struct metre : named_unit<metre, "m", "m", prefix> {};
 struct centimetre : prefixed_unit<centimetre, centi, metre> {};
 struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 
 // time
-struct second : named_unit<second, "s", prefix> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
+struct second : named_unit<second, "s", "s", prefix> {};
+struct hour : named_scaled_unit<hour, "h", "h", no_prefix, ratio<3600>, second> {};
 
 // velocity
 struct metre_per_second : unit<metre_per_second> {};
@@ -173,8 +173,8 @@ struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilom
 namespace units::us {
 
 // length
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, si::metre> {};
-struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio<1'760>, yard> {};
+struct yard : named_scaled_unit<yard, "yd", "yd", no_prefix, ratio<9'144, 10'000>, si::metre> {};
+struct mile : named_scaled_unit<mile, "mi", "mi", no_prefix, ratio<1'760>, yard> {};
 
 // velocity
 struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, mile, si::hour> {};
@@ -794,10 +794,10 @@ adds support for digital information quantities. In summary it adds:
     ```cpp
     namespace units::data {
 
-    struct bit : named_unit<bit, "b", prefix> {};
+    struct bit : named_unit<bit, "b", "b", prefix> {};
     struct kibibit : prefixed_unit<kibibit, kibi, bit> {};
 
-    struct byte : named_scaled_unit<byte, "B", prefix, ratio<8>, bit> {};
+    struct byte : named_scaled_unit<byte, "B", "B", prefix, ratio<8>, bit> {};
     struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
 
     }

@@ -28,13 +28,13 @@ using namespace units;
 
 namespace {
 
-struct u0 : named_unit<u0, "u0", no_prefix> {};
+struct u0 : named_unit<u0, "u0", "u0", no_prefix> {};
 struct d0 : base_dimension<"d0", u0> {};
-struct u1 : named_unit<u1, "u1", no_prefix> {};
+struct u1 : named_unit<u1, "u1", "u1", no_prefix> {};
 struct d1 : base_dimension<"d1", u1> {};
-struct u2 : named_unit<u2, "u2", no_prefix> {};
+struct u2 : named_unit<u2, "u2", "u2", no_prefix> {};
 struct d2 : base_dimension<"d2", u2> {};
-struct u3 : named_unit<u3, "u3", no_prefix> {};
+struct u3 : named_unit<u3, "u3", "u3", no_prefix> {};
 struct d3 : base_dimension<"d3", u3> {};
 
 // exp_invert

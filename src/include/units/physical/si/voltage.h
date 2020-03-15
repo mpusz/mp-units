@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct volt : named_unit<volt, "V", prefix> {};
+struct volt : named_unit<volt, "V", "V", prefix> {};
 struct millivolt : prefixed_unit<millivolt, milli, volt> {};
 struct microvolt : prefixed_unit<microvolt, micro, volt> {};
 struct nanovolt : prefixed_unit<nanovolt, nano, volt> {};

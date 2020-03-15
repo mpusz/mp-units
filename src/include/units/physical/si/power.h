@@ -29,7 +29,7 @@
 
 namespace units::si {
 
-struct watt : named_unit<watt, "W", prefix> {};
+struct watt : named_unit<watt, "W", "W", prefix> {};
 struct milliwatt : prefixed_unit<milliwatt, milli, watt> {};
 struct kilowatt : prefixed_unit<kilowatt, kilo, watt> {};
 struct megawatt : prefixed_unit<megawatt, mega, watt> {};

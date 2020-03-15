@@ -85,10 +85,23 @@ constexpr auto deduced_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>
   return (exp_text<Es, Us::symbol, neg_exp, Idxs>() + ...);
 }
 
+template<typename... Us, typename... Es, std::size_t... Idxs>
+constexpr auto deduced_ascii_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>)
+{
+  constexpr auto neg_exp = negative_exp_count<Es...>;
+  return (exp_text<Es, Us::ascii_symbol, neg_exp, Idxs>() + ...);
+}
+
 template<DerivedDimension Dim, Unit... Us>
 constexpr auto deduced_symbol_text()
 {
   return deduced_symbol_text<Us...>(typename Dim::recipe(), std::index_sequence_for<Us...>());
+}
+
+template<DerivedDimension Dim, Unit... Us>
+constexpr auto deduced_ascii_symbol_text()
+{
+  return deduced_ascii_symbol_text<Us...>(typename Dim::recipe(), std::index_sequence_for<Us...>());
 }
 
 }  // namespace units::detail

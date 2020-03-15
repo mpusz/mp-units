@@ -28,7 +28,7 @@
 
 namespace units::si {
 
-struct candela : named_unit<candela, "cd", prefix> {};
+struct candela : named_unit<candela, "cd", "cd", prefix> {};
 
 struct dim_luminous_intensity : physical::dim_luminous_intensity<candela> {};
 

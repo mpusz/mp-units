@@ -37,7 +37,7 @@ where `si::metre` is defined as::
 
     namespace si {
 
-    struct metre : named_unit<metre, "m", prefix> {};
+    struct metre : named_unit<metre, "m", "m", prefix> {};
 
     }
 
@@ -99,7 +99,7 @@ always have to be a named unit)::
 
     namespace si {
 
-    struct newton : named_unit<newton, "N", prefix> {};
+    struct newton : named_unit<newton, "N", "N", prefix> {};
 
     }
 

@@ -94,10 +94,11 @@ struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
  * @tparam Symbol a short text representation of the unit
  * @tparam PT no_prefix or a type of prefix family
  */
-template<typename Child, basic_fixed_string Symbol, PrefixType PT>
+template<typename Child, basic_fixed_string Symbol, basic_fixed_string ASCIISymbol, PrefixType PT>
 struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
+  static constexpr auto ascii_symbol = ASCIISymbol;
   using prefix_type = PT;
 };
 
@@ -115,10 +116,11 @@ struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_fixed_string Symbol, PrefixType PT, UnitRatio R, Unit U>
+template<typename Child, basic_fixed_string Symbol, basic_fixed_string ASCIISymbol, PrefixType PT, UnitRatio R, Unit U>
 struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
+  static constexpr auto ascii_symbol = ASCIISymbol;
   using prefix_type = PT;
 };
 
@@ -139,6 +141,7 @@ struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
+  static constexpr auto ascii_symbol = P::symbol + U::ascii_symbol;
   using prefix_type = no_prefix;
 };
 
@@ -161,6 +164,7 @@ template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
   static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
+  static constexpr auto ascii_symbol = detail::deduced_ascii_symbol_text<Dim, U, URest...>();
   using prefix_type = no_prefix;
 };
 

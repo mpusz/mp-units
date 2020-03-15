@@ -29,14 +29,14 @@
 
 namespace units::data {
 
-struct bit : named_unit<bit, "b", prefix> {};
+struct bit : named_unit<bit, "b", "b", prefix> {};
 struct kibibit : prefixed_unit<kibibit, kibi, bit> {};
 struct mebibit : prefixed_unit<mebibit, mebi, bit> {};
 struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
 struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
 struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
 
-struct byte : named_scaled_unit<byte, "B", prefix, ratio<8>, bit> {};
+struct byte : named_scaled_unit<byte, "B", "B", prefix, ratio<8>, bit> {};
 struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
 struct mebibyte : prefixed_unit<mebibyte, mebi, byte> {};
 struct gibibyte : prefixed_unit<gibibyte, gibi, byte> {};

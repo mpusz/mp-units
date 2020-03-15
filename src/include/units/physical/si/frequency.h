@@ -28,7 +28,7 @@
 
 namespace units::si {
 
-struct hertz : named_unit<hertz, "Hz", prefix> {};
+struct hertz : named_unit<hertz, "Hz", "Hz", prefix> {};
 struct millihertz : prefixed_unit<millihertz, milli, hertz> {};
 struct kilohertz : prefixed_unit<kilohertz, kilo, hertz> {};
 struct megahertz : prefixed_unit<megahertz, mega, hertz> {};

@@ -29,7 +29,7 @@
 
 namespace units::cgs {
 
-struct erg : named_unit<erg, "erg", si::prefix> {};
+struct erg : named_unit<erg, "erg", "erg", si::prefix> {};
 
 struct dim_energy : physical::dim_energy<dim_energy, erg, dim_force, dim_length> {};
 

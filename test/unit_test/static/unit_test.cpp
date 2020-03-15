@@ -27,18 +27,18 @@ namespace {
 
 using namespace units;
 
-struct metre : named_unit<metre, "m", si::prefix> {};
+struct metre : named_unit<metre, "m", "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
 struct kilometre : prefixed_unit<kilometre, si::kilo, metre> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 1, -4>, metre> {};
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<1, 3>, yard> {};
+struct yard : named_scaled_unit<yard, "yd", "yd", no_prefix, ratio<9'144, 1, -4>, metre> {};
+struct foot : named_scaled_unit<foot, "ft", "ft", no_prefix, ratio<1, 3>, yard> {};
 struct dim_length : base_dimension<"length", metre> {};
 
-struct second : named_unit<second, "s", si::prefix> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<36, 1, 2>, second> {};
+struct second : named_unit<second, "s", "s", si::prefix> {};
+struct hour : named_scaled_unit<hour, "h", "h", no_prefix, ratio<36, 1, 2>, second> {};
 struct dim_time : base_dimension<"time", second> {};
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K", "K", no_prefix> {};
 // struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
 
 struct metre_per_second : unit<metre_per_second> {};

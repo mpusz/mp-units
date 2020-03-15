@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct farad : named_unit<farad, "F", prefix> {};
+struct farad : named_unit<farad, "F", "F", prefix> {};
 
 struct millifarad : prefixed_unit<millifarad, milli, farad> {};
 struct microfarad : prefixed_unit<microfarad, micro, farad> {};

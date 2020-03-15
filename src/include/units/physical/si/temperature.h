@@ -27,7 +27,7 @@
 
 namespace units::si {
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K", "K", no_prefix> {};
 
 struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<kelvin> {};
 

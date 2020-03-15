@@ -30,7 +30,7 @@
 
 namespace units::cgs {
 
-struct barye : named_unit<barye, "Ba", si::prefix> {};
+struct barye : named_unit<barye, "Ba", "Ba", si::prefix> {};
 
 struct dim_pressure : physical::dim_pressure<dim_pressure, barye, dim_force, dim_area> {};
 

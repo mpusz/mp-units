@@ -29,7 +29,7 @@
 
 namespace units::si {
 
-struct coulomb : named_unit<coulomb, "C", prefix> {};
+struct coulomb : named_unit<coulomb, "C", "C", prefix> {};
 
 struct dim_electric_charge : physical::dim_electric_charge<dim_electric_charge, coulomb, dim_time, dim_electric_current> {};
 

@@ -138,14 +138,9 @@ template<typename T>
 concept has_symbol = requires{ T::symbol; };
 
 template<Dimension Dim, Unit U>
-constexpr auto unit_text()
+constexpr auto unit_text_prefix_or_ratio()
 {
-  if constexpr(has_symbol<U>) {
-    // already has a symbol so print it
-    return U::symbol;
-  }
-  else {
-    // print as a prefix or ratio of a coherent unit
+  // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
     using ratio = ratio_divide<typename U::ratio, typename coherent_unit::ratio>;
     auto prefix_txt = prefix_or_ratio_text<ratio, typename U::reference::prefix_type>();
@@ -158,6 +153,29 @@ constexpr auto unit_text()
       // use derived dimension ingredients to create a unit symbol
       return prefix_txt + derived_dimension_unit_text<Dim>();
     }
+}
+
+template<Dimension Dim, Unit U>
+constexpr auto unit_text()
+{
+  if constexpr(has_symbol<U>) {
+    // already has a symbol so print it
+    return U::symbol;
+  }
+  else {
+    return unit_text_prefix_or_ratio<Dim, U>();
+  }
+}
+
+template<Dimension Dim, Unit U>
+constexpr auto unit_text_ascii()
+{
+  if constexpr(has_symbol<U>) {
+    // already has a symbol so print it
+    return U::ascii_symbol;
+  }
+  else {
+    return unit_text_prefix_or_ratio<Dim, U>();
   }
 }
 

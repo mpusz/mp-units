@@ -30,7 +30,7 @@
 
 namespace units::cgs {
 
-struct dyne : named_unit<dyne, "dyn", si::prefix> {};
+struct dyne : named_unit<dyne, "dyn", "dyn", si::prefix> {};
 
 struct dim_force : physical::dim_force<dim_force, dyne, dim_mass, dim_acceleration> {};
 

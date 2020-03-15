@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct pascal : named_unit<pascal, "Pa", prefix> {};
+struct pascal : named_unit<pascal, "Pa", "Pa", prefix> {};
 
 struct dim_pressure : physical::dim_pressure<dim_pressure, pascal, dim_force, dim_area> {};
 

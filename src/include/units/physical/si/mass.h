@@ -28,11 +28,11 @@
 
 namespace units::si {
 
-struct gram : named_unit<gram, "g", prefix> {};
+struct gram : named_unit<gram, "g", "g", prefix> {};
 struct kilogram : prefixed_unit<kilogram, kilo, gram> {};
-struct tonne : named_scaled_unit<tonne, "t", prefix, ratio<1'000>, kilogram> {};
+struct tonne : named_scaled_unit<tonne, "t", "t", prefix, ratio<1'000>, kilogram> {};
 
-struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio<16'605'390'666'050, 10'000'000'000'000, -27>, kilogram> {};
+struct dalton : named_scaled_unit<dalton, "Da", "Da", no_prefix, ratio<16'605'390'666'050, 10'000'000'000'000, -27>, kilogram> {};
 
 struct dim_mass : physical::dim_mass<kilogram> {};
 
