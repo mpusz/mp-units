@@ -41,8 +41,8 @@ namespace units {
     //      any character other than { or }
     // conversion-spec:
     //      % modifier[opt] type
-    // modifier: one of
-    //      E O
+    // modifier:
+    //      A
     // type: one of
     //      n q Q t %
 

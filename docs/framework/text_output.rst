@@ -33,6 +33,7 @@ Formatting the output
 ---------------------
 
 Grammar:
+^^^^^^^^
 
 .. productionlist::
     units-format-spec: fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
@@ -41,5 +42,5 @@ Grammar:
                : units-specs literal-char
     literal-char: any character other than '{' or '}'
     conversion-spec: '%' modifier[opt] type
-    modifier: one of 'E', 'O'
+    modifier: 'A'
     type: one of 'n', 'q', 'Q', 't', '%'
