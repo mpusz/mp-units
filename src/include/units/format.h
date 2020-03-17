@@ -32,7 +32,7 @@ namespace units {
   namespace detail {
 
     // units-format-spec:
-    //      fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
+    //      fill-and-align[opt] sign[opt] width[opt] precision[opt] type[opt] units-specs[opt]
     // units-specs:
     //      conversion-spec
     //      units-specs conversion-spec
@@ -40,10 +40,10 @@ namespace units {
     // literal-char:
     //      any character other than { or }
     // conversion-spec:
-    //      % modifier[opt] type
+    //      % modifier[opt] units-type
     // modifier:
     //      A
-    // type: one of
+    // units-type: one of
     //      n q Q t %
 
     template<typename CharT, typename Handler>
@@ -95,7 +95,7 @@ namespace units {
     }
 
     template<typename Rep, typename OutputIt>
-    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, fmt::sign_t sign, int precision)
+    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, fmt::sign_t sign, int precision, char type)
     {
       std::string sign_text;
       switch(sign) {
@@ -111,9 +111,20 @@ namespace units {
           sign_text = " ";
           break;
       }
-      if(precision >= 0)
-        return format_to(out, "{:" + sign_text + ".{}f}", val, precision);
-      return format_to(out, treat_as_floating_point<Rep> ? "{:" + sign_text + "g}" : "{:" + sign_text + "}", val);
+      if(precision >= 0) {
+        if (type == '\0') type = 'f';
+        return format_to(out, "{:" + sign_text + ".{}" + type + "}", val, precision);
+      }
+      if constexpr (treat_as_floating_point<Rep>) {
+        if (type == '\0') type = 'g';
+        return format_to(out, "{:" + sign_text + type + "}", val);
+      }
+      else {
+        if (type == '\0') {
+          return format_to(out, "{:" + sign_text + "}", val);
+        }
+        return format_to(out, "{:" + sign_text + type + "}", val);
+      }
     }
 
     template<typename OutputIt, typename Dimension, typename Unit, typename Rep>
@@ -122,9 +133,10 @@ namespace units {
       Rep val;
       fmt::sign_t sign;
       int precision;
+      char type;
 
-      explicit units_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, fmt::sign_t s, int prec):
-        out(o), val(q.count()), sign(s), precision(prec)
+      explicit units_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, fmt::sign_t s, int prec, char tp):
+        out(o), val(q.count()), sign(s), precision(prec), type(tp)
       {
       }
 
@@ -136,7 +148,7 @@ namespace units {
 
       void on_quantity_value()
       {
-        out = format_units_quantity_value(out, val, sign, precision);
+        out = format_units_quantity_value(out, val, sign, precision, type);
       }
 
       void on_quantity_unit()
@@ -158,6 +170,7 @@ private:
 
   fmt::basic_format_specs<CharT> specs;
   int precision = -1;
+  char type = '\0';
   bool quantity_value = false;
   bool quantity_unit = false;
   arg_ref_type width_ref;
@@ -195,6 +208,13 @@ private:
     constexpr void on_align(align_t align) { f.specs.align = align; }
     constexpr void on_width(int width) { f.specs.width = width; }
     constexpr void on_precision(int precision) { f.precision = precision; }
+    constexpr void on_type(char type)
+    {
+        constexpr auto good_types = std::string_view{"aAbBcdeEfFgGopsxX"};
+        if (good_types.find(type) != std::string_view::npos) {
+            f.type = type;
+        }
+    }
     constexpr void end_precision() {}
 
     template<typename Id>
@@ -264,6 +284,10 @@ private:
         handler.on_error("precision not allowed for integral quantity representation");
     }
 
+    if(*begin != '}' && *begin != '%') {
+        handler.on_type(*begin++);
+    }
+
     // parse units-specific specification
     end = units::detail::parse_units_format(begin, end, handler);
 
@@ -301,7 +325,7 @@ public:
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision);
+      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision, type);
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.size()) {
         *out++ = CharT(' ');
@@ -310,7 +334,7 @@ public:
     }
     else {
       // user provided format
-      units::detail::units_formatter f(out, q, specs.sign, precision);
+      units::detail::units_formatter f(out, q, specs.sign, precision, type);
       parse_units_format(begin, end, f);
     }
 
