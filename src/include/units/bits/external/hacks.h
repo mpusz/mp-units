@@ -38,7 +38,7 @@
 #define Expects(cond) assert(cond);
 #endif
 
-#if COMP_GCC >= 10 || COMP_CLANG >= 11
+#if COMP_GCC >= 10
 
 #include <concepts>
 
