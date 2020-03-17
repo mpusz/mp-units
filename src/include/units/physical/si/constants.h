@@ -23,24 +23,44 @@
 #pragma once
 
 #include <units/physical/si/electric_charge.h>
-#include <units/physical/si/frequency.h>
 #include <units/physical/si/energy.h>
+#include <units/physical/si/frequency.h>
 #include <units/physical/si/power.h>
 #include <units/physical/si/substance.h>
-#include <units/physical/si/velocity.h>
 #include <units/physical/si/temperature.h>
+#include <units/physical/si/velocity.h>
 
 namespace units::si {
 
-inline constexpr auto planck_constant = 6.62607015e-34q_J * 1q_s;
-inline constexpr auto reduced_planck_constant = 6.582119569e-10q_GeV * 1q_s;
-inline constexpr auto elementary_charge = 1.602176634e-19q_C;
-inline constexpr auto boltzmann_constant = 1.380649e-23q_J / 1q_K;
-inline constexpr auto avogadro_constant = 6.02214076e23 / 1q_mol;
-inline constexpr auto speed_of_light = 299792458q_m_per_s;
-inline constexpr auto hyperfine_structure_transition_frequency = 9192631770q_Hz;
+namespace si2019 {
+
+template<Scalar Rep = double>
+inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
+
+template<Scalar Rep = double>
+inline constexpr auto reduced_planck_constant = energy<gigaelectronvolt, Rep>(6.582119569e-10) * time<second, Rep>(1);
+
+template<Scalar Rep = double>
+inline constexpr auto elementary_charge = electric_charge<coulomb, Rep>(1.602176634e-19);
+
+template<Scalar Rep = double>
+inline constexpr auto boltzmann_constant = energy<joule, Rep>(1.380649e-23) / temperature<kelvin, Rep>(1);
+
+template<Scalar Rep = double>
+inline constexpr auto avogadro_constant = Rep(6.02214076e23) / substance<mole, Rep>(1);
+
+template<Scalar Rep = double>
+inline constexpr auto speed_of_light = velocity<metre_per_second, Rep>(299792458);
+
+template<Scalar Rep = double>
+inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9192631770);
+
+// template<Scalar Rep = double>
 // inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
 
-inline constexpr auto standard_gravity = 9.80665q_m_per_s2;
+template<Scalar Rep = double>
+inline constexpr auto standard_gravity = acceleration<metre_per_second_sq, Rep>(9.80665);
+
+}  // namespace si2019
 
 }  // namespace units::si

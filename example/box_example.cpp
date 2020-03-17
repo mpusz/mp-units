@@ -20,7 +20,7 @@ using N = si::newton;
 using m3 = si::cubic_metre;
 using kgpm3 = si::kilogram_per_metre_cub;
 
-inline constexpr auto g = si::standard_gravity;
+inline constexpr auto g = si::si2019::standard_gravity<>;
 
 }  // namespace
 

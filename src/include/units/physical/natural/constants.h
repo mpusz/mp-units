@@ -26,6 +26,7 @@
 
 namespace units::natural {
 
-inline constexpr auto speed_of_light = velocity<unitless>(1);
+template<Scalar Rep = double>
+inline constexpr auto speed_of_light = velocity<unitless, Rep>(1);
 
 }  // namespace units::natural

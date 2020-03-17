@@ -42,12 +42,12 @@ void si_example()
   using namespace si;
   using GeV = gigaelectronvolt;
 
-  constexpr Velocity AUTO c = speed_of_light;
+  constexpr Velocity AUTO c = si2019::speed_of_light<>;
 
   std::cout << "\n*** SI units (c = " << c << ") ***\n";
 
-  const Momentum AUTO p = 4.q_GeV / speed_of_light;
-  const Mass AUTO m = 3.q_GeV / pow<2>(speed_of_light);
+  const Momentum AUTO p = 4.q_GeV / c;
+  const Mass AUTO m = 3.q_GeV / pow<2>(c);
   const Energy AUTO E = total_energy(p, m, c);
 
   std::cout << "[in GeV]\n"
@@ -73,7 +73,7 @@ void natural_example()
   using namespace natural;
   using GeV = gigaelectronvolt;
 
-  constexpr Velocity AUTO c = speed_of_light;
+  constexpr Velocity AUTO c = speed_of_light<>;
   const momentum<GeV> p(4);
   const mass<GeV> m(3);
   const Energy AUTO E = total_energy(p, m, c);
