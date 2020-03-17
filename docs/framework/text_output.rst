@@ -32,15 +32,28 @@ of an unknown ``auto`` type before passing it to the text output::
 Formatting the output
 ---------------------
 
-Grammar:
-^^^^^^^^
+Grammar
+^^^^^^^
 
 .. productionlist::
-    units-format-spec: fill-and-align[opt] sign[opt] width[opt] precision[opt] type[opt] units-specs[opt]
+    units-format-spec: [fill-and-align] [sign] [width] [precision] [type] [units-specs]
     units-specs: conversion-spec
                : units-specs conversion-spec
                : units-specs literal-char
     literal-char: any character other than '{' or '}'
-    conversion-spec: '%' modifier[opt] units-type
+    conversion-spec: '%' [modifier] units-type
     modifier: 'A'
     units-type: one of 'n', 'q', 'Q', 't', '%'
+
+
+Default formatting
+^^^^^^^^^^^^^^^^^^
+
+To format `quantity` values the formatting facility uses :token:`units-format-spec`.
+In case it is left empty the default formatting of ``{:%Q %q}`` is applied. The same
+default formatting is also applied to output streams. This is why the following lines
+produce the same output::
+
+    std::cout << "Distance: " << 123q_km << "\n";
+    fmt::print("Distance: {}\n", 123q_km);
+    fmt::print("Distance: {:%Q %q}\n", 123q_km);
