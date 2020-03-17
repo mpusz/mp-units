@@ -14,5 +14,6 @@ Framework
     framework/quantities
     framework/dimensions
     framework/units
+    framework/constants
     framework/conversions_and_casting
     framework/text_output
