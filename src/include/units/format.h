@@ -169,8 +169,6 @@ private:
   using arg_ref_type = fmt::internal::arg_ref<CharT>;
 
   fmt::basic_format_specs<CharT> specs;
-  int precision = -1;
-  char type = '\0';
   bool quantity_value = false;
   bool quantity_unit = false;
   arg_ref_type width_ref;
@@ -207,12 +205,12 @@ private:
     constexpr void on_space() { f.specs.sign = fmt::sign::space; }
     constexpr void on_align(align_t align) { f.specs.align = align; }
     constexpr void on_width(int width) { f.specs.width = width; }
-    constexpr void on_precision(int precision) { f.precision = precision; }
+    constexpr void on_precision(int precision) { f.specs.precision = precision; }
     constexpr void on_type(char type)
     {
         constexpr auto good_types = std::string_view{"aAbBcdeEfFgGopsxX"};
         if (good_types.find(type) != std::string_view::npos) {
-            f.type = type;
+            f.specs.type = type;
         }
     }
     constexpr void end_precision() {}
@@ -320,12 +318,12 @@ public:
 
     // process dynamic width and precision
     fmt::internal::handle_dynamic_spec<fmt::internal::width_checker>(specs.width, width_ref, ctx);
-    fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(precision, precision_ref, ctx);
+    fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(specs.precision, precision_ref, ctx);
 
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, precision, type);
+      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, specs.precision, specs.type);
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.size()) {
         *out++ = CharT(' ');
@@ -334,7 +332,7 @@ public:
     }
     else {
       // user provided format
-      units::detail::units_formatter f(out, q, specs.sign, precision, type);
+      units::detail::units_formatter f(out, q, specs.sign, specs.precision, specs.type);
       parse_units_format(begin, end, f);
     }
 
