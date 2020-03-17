@@ -32,7 +32,7 @@ namespace units {
   namespace detail {
 
     // units-format-spec:
-    //      fill-and-align[opt] sign[opt] width[opt] precision[opt] type[opt] units-specs[opt]
+    //      fill-and-align[opt] sign[opt] #[opt] width[opt] precision[opt] type[opt] units-specs[opt]
     // units-specs:
     //      conversion-spec
     //      units-specs conversion-spec
@@ -94,11 +94,11 @@ namespace units {
       return ptr;
     }
 
-    template<typename Rep, typename OutputIt>
-    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, fmt::sign_t sign, int precision, char type)
+    template<typename Rep, typename OutputIt, typename CharT>
+    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, fmt::basic_format_specs<CharT> const & specs)
     {
       std::string sign_text;
-      switch(sign) {
+      switch(specs.sign) {
         case fmt::sign::none:
           break;
         case fmt::sign::plus:
@@ -111,44 +111,45 @@ namespace units {
           sign_text = " ";
           break;
       }
-      if(precision >= 0) {
-        if (type == '\0') type = 'f';
-        return format_to(out, "{:" + sign_text + ".{}" + type + "}", val, precision);
+      if (specs.alt) {
+          sign_text.push_back('#');
+      }
+      if(specs.precision >= 0) {
+        auto type = specs.type == '\0' ? 'f' : specs.type;
+        return format_to(out, "{:" + sign_text + ".{}" + type + "}", val, specs.precision);
       }
       if constexpr (treat_as_floating_point<Rep>) {
-        if (type == '\0') type = 'g';
+        auto type = specs.type == '\0' ? 'g' : specs.type;
         return format_to(out, "{:" + sign_text + type + "}", val);
       }
       else {
-        if (type == '\0') {
+        if (specs.type == '\0') {
           return format_to(out, "{:" + sign_text + "}", val);
         }
-        return format_to(out, "{:" + sign_text + type + "}", val);
+        return format_to(out, "{:" + sign_text + specs.type + "}", val);
       }
     }
 
-    template<typename OutputIt, typename Dimension, typename Unit, typename Rep>
+    template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename CharT>
     struct units_formatter {
       OutputIt out;
       Rep val;
-      fmt::sign_t sign;
-      int precision;
-      char type;
+      fmt::basic_format_specs<CharT> const & specs;
 
-      explicit units_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, fmt::sign_t s, int prec, char tp):
-        out(o), val(q.count()), sign(s), precision(prec), type(tp)
+      explicit units_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, fmt::basic_format_specs<CharT> const & spcs):
+        out(o), val(q.count()), specs(spcs)
       {
       }
 
-      template<typename CharT>
-      void on_text(const CharT* begin, const CharT* end)
+      template<typename CharT2>
+      void on_text(const CharT2* begin, const CharT2* end)
       {
         std::copy(begin, end, out);
       }
 
       void on_quantity_value()
       {
-        out = format_units_quantity_value(out, val, sign, precision, type);
+        out = format_units_quantity_value(out, val, specs);
       }
 
       void on_quantity_unit()
@@ -203,12 +204,13 @@ private:
     constexpr void on_plus() { f.specs.sign = fmt::sign::plus; }
     constexpr void on_minus() { f.specs.sign = fmt::sign::minus; }
     constexpr void on_space() { f.specs.sign = fmt::sign::space; }
+    constexpr void on_hash()  { f.specs.alt  = true; }
     constexpr void on_align(align_t align) { f.specs.align = align; }
     constexpr void on_width(int width) { f.specs.width = width; }
     constexpr void on_precision(int precision) { f.specs.precision = precision; }
     constexpr void on_type(char type)
     {
-        constexpr auto good_types = std::string_view{"aAbBcdeEfFgGopsxX"};
+        constexpr auto good_types = std::string_view{"aAbBdeEfFgGoxX"};
         if (good_types.find(type) != std::string_view::npos) {
             f.specs.type = type;
         }
@@ -269,6 +271,11 @@ private:
     if(begin == end)
       return {begin, begin};
 
+    if (*begin == '#') {
+        handler.on_hash();
+        if (++begin == end) return {begin, begin};
+    }
+
     // parse width
     begin = fmt::internal::parse_width(begin, end, handler);
     if(begin == end)
@@ -323,7 +330,7 @@ public:
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      out = units::detail::format_units_quantity_value(out, q.count(), specs.sign, specs.precision, specs.type);
+      out = units::detail::format_units_quantity_value(out, q.count(), specs);
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.size()) {
         *out++ = CharT(' ');
@@ -332,7 +339,7 @@ public:
     }
     else {
       // user provided format
-      units::detail::units_formatter f(out, q, specs.sign, specs.precision, specs.type);
+      units::detail::units_formatter f(out, q, specs);
       parse_units_format(begin, end, f);
     }
 
