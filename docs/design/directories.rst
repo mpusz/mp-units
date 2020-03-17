@@ -45,4 +45,9 @@ Library Directories Structure
 
 - *./units/data*
 
-  - Provides data information dimensions (i.e. `data::bitrate`).
+  - Provides data information system and its dimensions (i.e. `data::bitrate`).
+
+.. seealso::
+
+  More information on provided :term:`systems of units <system of units>` can be
+  found in :ref:`Systems` chapter.
