@@ -36,11 +36,11 @@ Grammar:
 ^^^^^^^^
 
 .. productionlist::
-    units-format-spec: fill-and-align[opt] sign[opt] width[opt] precision[opt] units-specs[opt]
+    units-format-spec: fill-and-align[opt] sign[opt] width[opt] precision[opt] type[opt] units-specs[opt]
     units-specs: conversion-spec
                : units-specs conversion-spec
                : units-specs literal-char
     literal-char: any character other than '{' or '}'
-    conversion-spec: '%' modifier[opt] type
+    conversion-spec: '%' modifier[opt] units-type
     modifier: 'A'
-    type: one of 'n', 'q', 'Q', 't', '%'
+    units-type: one of 'n', 'q', 'Q', 't', '%'
