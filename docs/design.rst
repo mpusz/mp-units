@@ -10,6 +10,7 @@ Design
 .. toctree::
     :maxdepth: 2
 
+    design/directories
     design/quantity
 
 The Downcasting Facility
