@@ -36,14 +36,18 @@ Grammar
 ^^^^^^^
 
 .. productionlist::
-    units-format-spec: [fill-and-align] [sign] [width] [precision] [type] [units-specs]
+    units-format-spec: [fill-and-align] [width] [units-specs]
     units-specs: conversion-spec
                : units-specs conversion-spec
                : units-specs literal-char
     literal-char: any character other than '{' or '}'
-    conversion-spec: '%' [modifier] units-type
-    modifier: 'A'
-    units-type: one of 'n', 'q', 'Q', 't', '%'
+    conversion-spec: '%' units-type
+    units-type: [units-rep-modifier] 'Q'
+              : [units-unit-modifier] 'q'
+              : one of 'n', 't', '%'
+    units-rep-modifier: [sign] [#] [precision] [units-rep-type]
+    units-rep-type: one of 'a', 'A', 'b', 'B', 'd', 'e', 'E', 'f', 'F', 'g', 'G', 'o', 'x', 'X'
+    units-unit-modifier: 'A'
 
 
 Default formatting
