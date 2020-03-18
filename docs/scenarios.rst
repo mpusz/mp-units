@@ -12,4 +12,5 @@ Scenarios
 
     scenarios/unknown_units_and_dimensions
     scenarios/legacy_interfaces
+    scenarios/custom_representation_types
     scenarios/extensions
