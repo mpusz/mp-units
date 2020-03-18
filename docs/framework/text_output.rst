@@ -44,11 +44,22 @@ Grammar
     conversion-spec: '%' units-type
     units-type: [units-rep-modifier] 'Q'
               : [units-unit-modifier] 'q'
-              : one of 'n', 't', '%'
+              : one of "nt%"
     units-rep-modifier: [sign] [#] [precision] [units-rep-type]
-    units-rep-type: one of 'a', 'A', 'b', 'B', 'd', 'e', 'E', 'f', 'F', 'g', 'G', 'o', 'x', 'X'
+    units-rep-type: one of "aAbBdeEfFgGoxX"
     units-unit-modifier: 'A'
 
+In the above grammar:
+
+- ``fill-and-align``, ``width``, ``sign``, ``#``, and ``precision`` tokens and
+  individual tokens of :token:`units-rep-type` are defined in the
+  `format.string.std <https://wg21.link/format.string.std>`_ chapter of the C++
+  standard specification,
+- tokens ``Q``, ``q``, ``n``, ``t``, and ``%`` of :token:`units-type` are described
+  in the `time.format <https://wg21.link/time.format>`_ chapter of the C++ standard
+  specification,
+- ``A`` token of :token:`units-unit-modifier` forces ASCII-only output (instead of the
+  default Unicode symbols defined by the :term:`SI` specification).
 
 Default formatting
 ^^^^^^^^^^^^^^^^^^
