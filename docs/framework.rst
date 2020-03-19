@@ -3,7 +3,7 @@ Framework
 
 .. note::
 
-    For brevity all the code examples in this documentation will assume::
+    For brevity all the code examples in this chapter will assume::
 
         using namespace units;
 
