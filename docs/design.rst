@@ -3,7 +3,7 @@ Design
 
 .. note::
 
-    For brevity all the code examples in this chapter will assume::
+    For brevity all the code examples in this chapter assume::
 
         using namespace units;
 
