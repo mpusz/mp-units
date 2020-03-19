@@ -25,7 +25,7 @@
 
 #include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
-#include <units/bits/unit_text.h>
+#include <units/bits/to_string.h>
 #include <units/quantity_cast.h>
 
 #if __GNUC__ >= 10
@@ -62,7 +62,7 @@ concept safe_divisible = // exposition only
  */
 template<Dimension D, UnitOf<D> U, Scalar Rep = double>
 class quantity {
-  Rep value_;
+  Rep value_{};
 
 public:
   using dimension = D;
@@ -308,12 +308,7 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    constexpr auto symbol = detail::unit_text<quantity::dimension, quantity::unit>();
-    os << q.count();
-    if (symbol.size()) {
-      os << " " << symbol;
-    }
-    return  os; 
+    return os << detail::to_string<CharT, Traits>(q); 
   }
 };
 

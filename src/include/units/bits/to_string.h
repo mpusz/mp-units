@@ -26,6 +26,7 @@
 #include <units/bits/external/text_tools.h>
 #include <units/prefix.h>
 #include <units/derived_dimension.h>
+#include <sstream>
 
 namespace units::detail {
 
@@ -159,6 +160,18 @@ constexpr auto unit_text()
       return prefix_txt + derived_dimension_unit_text<Dim>();
     }
   }
+}
+
+template<typename CharT, class Traits, Quantity Q>
+std::basic_string<CharT> to_string(const Q& q)
+{
+  std::basic_ostringstream<CharT, Traits> s;
+  s << q.count();
+  constexpr auto symbol = unit_text<typename Q::dimension, typename Q::unit>();
+  if constexpr (symbol.size()) {
+    s << " " << symbol;
+  }
+  return s.str();
 }
 
 }  // namespace units::detail

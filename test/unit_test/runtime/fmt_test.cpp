@@ -32,6 +32,7 @@
 #include "units/format.h"
 #include "units/math.h"
 #include <catch2/catch.hpp>
+#include <iomanip>
 #include <sstream>
 
 using namespace units;
@@ -40,49 +41,49 @@ using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
-  std::stringstream stream;
+  std::ostringstream os;
 
   SECTION("quantity with a predefined unit")
   {
     SECTION("integral representation")
     {
       const auto q = 60q_W;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "60 W");
+        CHECK(os.str() == "60 W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("floating-point representation")
     {
       const auto q = 1023.5q_Pa;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "1023.5 Pa");
+        CHECK(os.str() == "1023.5 Pa");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
   }
@@ -90,21 +91,21 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   SECTION("quantity with a predefined prefixed unit")
   {
     const auto q = 125q_us;
-    stream << q;
+    os << q;
 
     SECTION("iostream")
     {
-      CHECK(stream.str() == "125 µs");
+      CHECK(os.str() == "125 µs");
     }
 
     SECTION("fmt with default format {} on a quantity")
     {
-      CHECK(fmt::format("{}", q) == stream.str());
+      CHECK(fmt::format("{}", q) == os.str());
     }
 
     SECTION("fmt with format {:%Q %q} on a quantity")
     {
-      CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+      CHECK(fmt::format("{:%Q %q}", q) == os.str());
     }
   }
 
@@ -113,42 +114,42 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     SECTION("in terms of base units")
     {
       const length<scaled_unit<ratio<1, 1, 6>, metre>> q(123);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "123 Mm");
+        CHECK(os.str() == "123 Mm");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("in terms of derived units")
     {
       const energy<scaled_unit<ratio<1, 1, -2>, joule>> q(60);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "60 cJ");
+        CHECK(os.str() == "60 cJ");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
   }
@@ -160,63 +161,63 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       SECTION("acceleration")
       {
         const auto q = 20q_m / 2q_s / 1q_s;
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "10 m/s²");
+          CHECK(os.str() == "10 m/s²");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
 
       SECTION("volume")
       {
         const auto q = 2q_m * 1q_m * 1q_m;
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "2 m³");
+          CHECK(os.str() == "2 m³");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
 
       SECTION("surface tension")
       {
         const auto q = 20q_N / 2q_m;
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "10 N/m");
+          CHECK(os.str() == "10 N/m");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
     }
@@ -226,21 +227,21 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       SECTION("velocity")
       {
         const auto q = 20q_km / 2q_h;
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "10 km/h");
+          CHECK(os.str() == "10 km/h");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
 
@@ -248,21 +249,21 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       {
         struct newton_per_centimetre : deduced_unit<newton_per_centimetre, dim_surface_tension, newton, centimetre> {};
         const surface_tension<newton_per_centimetre> q(123);
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "123 N/cm");
+          CHECK(os.str() == "123 N/cm");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
     }
@@ -273,105 +274,105 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
     {
       const auto q = 4q_N * 2q_cm;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 cJ");
+        CHECK(os.str() == "8 cJ");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio for a dimension without a special symbol")
     {
       const auto q = 2q_cm * 2q_m * 2q_m;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 × 10⁻² m³");
+        CHECK(os.str() == "8 × 10⁻² m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
       const auto q = 4 * 2q_min / (2q_s * 2q_s);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 × 10¹] Hz");
+        CHECK(os.str() == "2 [6 × 10¹] Hz");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
       const auto q = 20q_J / 2q_min;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 × 10⁻¹] W");
+        CHECK(os.str() == "10 [1/6 × 10⁻¹] W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
       const auto q = 60q_kJ / 2q_min;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [1/6 × 10²] W");
+        CHECK(os.str() == "30 [1/6 × 10²] W");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
   }
@@ -383,42 +384,42 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       SECTION("SI base units")
       {
         const auto q = 2q_s * 2q_m * 2q_kg;
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "8 m⋅kg⋅s");
+          CHECK(os.str() == "8 m⋅kg⋅s");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
 
       SECTION("CGS base units")
       {
         const auto q = 2q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "8 cm⋅g⋅s");
+          CHECK(os.str() == "8 cm⋅g⋅s");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
     }
@@ -426,231 +427,231 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     SECTION("unit::ratio as an SI prefix")
     {
       const auto q = 4q_km * 2q_s;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 × 10³ m⋅s");
+        CHECK(os.str() == "8 × 10³ m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
       const auto q = 4q_kg * 2q_min / (2q_s * 2q_s);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 [6 × 10¹] kg/s");
+        CHECK(os.str() == "2 [6 × 10¹] kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
       const auto q = 20q_kg / 2q_min;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "10 [1/6 × 10⁻¹] kg/s");
+        CHECK(os.str() == "10 [1/6 × 10⁻¹] kg/s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
       SECTION("CGS base units")
       {
         const auto q = 2q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
-        stream << q;
+        os << q;
 
         SECTION("iostream")
         {
-          CHECK(stream.str() == "8 × 10⁵ cm⋅g⋅s");
+          CHECK(os.str() == "8 × 10⁵ cm⋅g⋅s");
         }
 
         SECTION("fmt with default format {} on a quantity")
         {
-          CHECK(fmt::format("{}", q) == stream.str());
+          CHECK(fmt::format("{}", q) == os.str());
         }
 
         SECTION("fmt with format {:%Q %q} on a quantity")
         {
-          CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+          CHECK(fmt::format("{:%Q %q}", q) == os.str());
         }
       }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
       const auto q = 60q_min / 2q_km;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "30 [6 × 10⁻²] 1/m⋅s");
+        CHECK(os.str() == "30 [6 × 10⁻²] 1/m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("exp::num == 1 && exp::den == 1")
     {
       const auto q = 4q_m * 2q_s;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "8 m⋅s");
+        CHECK(os.str() == "8 m⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
     {
       const auto q = 4q_m * 2q_s * 2q_s;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "16 m⋅s²");
+        CHECK(os.str() == "16 m⋅s²");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
     {
       const auto q = 8q_s / 2q_m / 2q_m;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 1/m²⋅s");
+        CHECK(os.str() == "2 1/m²⋅s");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
     {
       const auto q = 8q_m / 2q_kg / 2q_kg;
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "2 m/kg²");
+        CHECK(os.str() == "2 m/kg²");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("fractional positive exponent")
     {
       const auto q = sqrt(9q_m);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "3 m^(1/2)");
+        CHECK(os.str() == "3 m^(1/2)");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
 
     SECTION("fractional negative exponent")
     {
       const auto q = sqrt(9 / 1q_m);
-      stream << q;
+      os << q;
 
       SECTION("iostream")
       {
-        CHECK(stream.str() == "3 1/m^(1/2)");
+        CHECK(os.str() == "3 1/m^(1/2)");
       }
 
       SECTION("fmt with default format {} on a quantity")
       {
-        CHECK(fmt::format("{}", q) == stream.str());
+        CHECK(fmt::format("{}", q) == os.str());
       }
 
       SECTION("fmt with format {:%Q %q} on a quantity")
       {
-        CHECK(fmt::format("{:%Q %q}", q) == stream.str());
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
       }
     }
   }
@@ -738,8 +739,49 @@ TEST_CASE("%q an %Q can be put anywhere in a format string", "[text][fmt]")
   }
 }
 
-TEST_CASE("fill and align specification", "[text][fmt]")
+TEST_CASE("fill and align specification", "[text][fmt][ostream]")
 {
+  SECTION("ostream")
+  {
+    std::ostringstream os;
+
+    SECTION("width = 10")
+    {
+      os << "|" << std::setw(10) << 123q_m << "|";
+      CHECK(os.str() == "|     123 m|");
+    }
+
+    SECTION("width = 10, align = right")
+    {
+      os << "|" << std::setw(10) << std::right << 123q_m << "|";
+      CHECK(os.str() == "|     123 m|");
+    }
+
+    SECTION("width = 10, align = left")
+    {
+      os << "|" << std::setw(10) << std::left << 123q_m << "|";
+      CHECK(os.str() == "|123 m     |");
+    }
+
+    SECTION("width = 10, fill = *")
+    {
+      os << "|" << std::setw(10) << std::setfill('*') << 123q_m << "|";
+      CHECK(os.str() == "|*****123 m|");
+    }
+
+    SECTION("width = 10, fill = *, align = right")
+    {
+      os << "|" << std::setw(10) << std::setfill('*') << std::right << 123q_m << "|";
+      CHECK(os.str() == "|*****123 m|");
+    }
+
+    SECTION("width = 10, fill = *, align = left")
+    {
+      os << "|" << std::setw(10) << std::setfill('*') << std::left << 123q_m << "|";
+      CHECK(os.str() == "|123 m*****|");
+    }
+  }
+
   SECTION("default format {} on a quantity")
   {
     CHECK(fmt::format("|{:0}|", 123q_m) == "|123 m|");
@@ -993,13 +1035,10 @@ TEST_CASE("different base types with the # specifier")
     CHECK(fmt::format("{:#X%Q}", 42q_m) == "0X2A");
   }
 }
-// Restate operator<< definitions in terms of std::format to make I/O manipulators apply to whole objects
-// rather than their parts
-
 
 TEST_CASE("quantity_cast", "[text][ostream]")
 {
-  std::stringstream stream;
+  std::ostringstream os;
 
   SECTION("int to double representation")
   {
@@ -1007,20 +1046,20 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("original")
     {
-      stream << q;
-      CHECK(stream.str() == "60 km/h");
+      os << q;
+      CHECK(os.str() == "60 km/h");
     }
 
     SECTION("int")
     {
-      stream << quantity_cast<int>(q);
-      CHECK(stream.str() == "60 km/h");
+      os << quantity_cast<int>(q);
+      CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      stream << quantity_cast<double>(q);
-      CHECK(stream.str() == "60 km/h");
+      os << quantity_cast<double>(q);
+      CHECK(os.str() == "60 km/h");
     }
   }
 
@@ -1030,20 +1069,20 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("original")
     {
-      stream << q;
-      CHECK(stream.str() == "60.5 km/h");
+      os << q;
+      CHECK(os.str() == "60.5 km/h");
     }
 
     SECTION("int")
     {
-      stream << quantity_cast<int>(q);
-      CHECK(stream.str() == "60 km/h");
+      os << quantity_cast<int>(q);
+      CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      stream << quantity_cast<double>(q);
-      CHECK(stream.str() == "60.5 km/h");
+      os << quantity_cast<double>(q);
+      CHECK(os.str() == "60.5 km/h");
     }
   }
 }
