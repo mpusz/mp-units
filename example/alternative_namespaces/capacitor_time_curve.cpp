@@ -23,31 +23,11 @@
 #include <units/physical/si/capacitance.h>
 #include <units/physical/si/resistance.h>
 #include <units/physical/si/time.h>
-#include <units/physical/si/voltage.h>
+#include "./voltage.h"
 #include <cmath>
 #include <iostream>
 
-namespace {
-namespace voltage {
-
-template<typename Rep = double>
-using V = units::si::voltage<units::si::volt, Rep>;
-
-template<typename Rep = double>
-using mV = units::si::voltage<units::si::millivolt, Rep>;
-
-template<typename Rep = double>
-using uV = units::si::voltage<units::si::microvolt, Rep>;
-
-template<typename Rep = double>
-using nV = units::si::voltage<units::si::nanovolt, Rep>;
-
-template<typename Rep = double>
-using pV = units::si::voltage<units::si::picovolt, Rep>;
-
-}  // namespace voltage
-}  // namespace
-
+using namespace units::experimental;
 using namespace units::si::literals;
 
 int main()

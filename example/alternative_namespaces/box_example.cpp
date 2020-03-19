@@ -11,7 +11,6 @@
 
 using namespace units::experimental;
 
-
 struct Box {
 
   static constexpr auto air_density = density::kg_per_m3<>{1.225};
