@@ -26,7 +26,7 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     quick_start
     usage
     framework
-    scenarios
+    use_cases
     design
     examples
     faq
