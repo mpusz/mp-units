@@ -15,7 +15,9 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/physical/si/length.h>
+
+#include "./units_str.h"
+#include "./length.h"
 #include <iostream>
 
 /*
@@ -36,29 +38,10 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
   return target{source{1}}.count();
 }
 
-// get at the units text of the quantity, without its numeric value
-inline auto constexpr units_str(const units::Quantity AUTO& q)
-{
-  typedef std::remove_cvref_t<decltype(q)> qtype;
-  return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
-}
-
-}  // namespace
-
-namespace {
-
-namespace length {
-
-template<typename Rep = double>
-using m = units::si::length<units::si::metre, Rep>;
-
-template<typename Rep = double>
-using mm = units::si::length<units::si::millimetre, Rep>;
-
-}  // namespace length
 }  // namespace
 
 using namespace units::si::literals;
+using namespace units::experimental;
 
 int main()
 {
