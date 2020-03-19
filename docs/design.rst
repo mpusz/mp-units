@@ -1,5 +1,5 @@
-Design
-======
+Design Deep Dive
+================
 
 .. note::
 

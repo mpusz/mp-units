@@ -1,5 +1,5 @@
-Framework
-=========
+Framework Basics
+================
 
 .. note::
 
