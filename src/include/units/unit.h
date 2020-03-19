@@ -72,7 +72,7 @@ struct same_unit_reference : std::is_same<typename U1::reference, typename U2::r
 template<typename Child>
 struct unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = false;
-  using prefix_type = no_prefix;
+  using prefix_family = no_prefix;
 };
 
 /**
@@ -94,11 +94,11 @@ struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
  * @tparam Symbol a short text representation of the unit
  * @tparam PT no_prefix or a type of prefix family
  */
-template<typename Child, basic_fixed_string Symbol, PrefixType PT>
+template<typename Child, basic_fixed_string Symbol, PrefixFamily PT>
 struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_type = PT;
+  using prefix_family = PT;
 };
 
 /**
@@ -115,11 +115,11 @@ struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_fixed_string Symbol, PrefixType PT, UnitRatio R, Unit U>
+template<typename Child, basic_fixed_string Symbol, PrefixFamily PT, UnitRatio R, Unit U>
 struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_type = PT;
+  using prefix_family = PT;
 };
 
 /**
@@ -134,12 +134,12 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
  * @tparam U reference unit
  */
 template<typename Child, Prefix P, Unit U>
-  requires U::is_named && std::same_as<typename P::prefix_type, typename U::prefix_type>
+  requires U::is_named && std::same_as<typename P::prefix_family, typename U::prefix_family>
 struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
-  using prefix_type = no_prefix;
+  using prefix_family = no_prefix;
 };
 
 /**
@@ -161,14 +161,14 @@ template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
   static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
-  using prefix_type = no_prefix;
+  using prefix_family = no_prefix;
 };
 
-// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixType PT, Unit U, Unit... Us>
+// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixFamily PT, Unit U, Unit... Us>
 // struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
 //   static constexpr bool is_named = true;
 //   static constexpr auto symbol = Symbol;
-//   using prefix_type = PT;
+//   using prefix_family = PT;
 // };
 
 }  // namespace units

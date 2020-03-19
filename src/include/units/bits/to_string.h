@@ -64,7 +64,7 @@ constexpr auto ratio_text()
   }
 }
 
-template<typename Ratio, typename PrefixType>
+template<typename Ratio, typename PrefixFamily>
 constexpr auto prefix_or_ratio_text()
 {
   if constexpr(Ratio::num == 1 && Ratio::den == 1 && Ratio::exp == 0) {
@@ -72,11 +72,11 @@ constexpr auto prefix_or_ratio_text()
     return basic_fixed_string("");
   }
   else {
-    if constexpr (!std::is_same_v<PrefixType, no_prefix>) {
+    if constexpr (!std::is_same_v<PrefixFamily, no_prefix>) {
       // try to form a prefix
-      using prefix = downcast<detail::prefix_base<PrefixType, Ratio>>;
+      using prefix = downcast<detail::prefix_base<PrefixFamily, Ratio>>;
 
-      if constexpr(!std::is_same_v<prefix, prefix_base<PrefixType, Ratio>>) {
+      if constexpr(!std::is_same_v<prefix, prefix_base<PrefixFamily, Ratio>>) {
         // print as a prefixed unit
         return prefix::symbol;
       }
@@ -149,7 +149,7 @@ constexpr auto unit_text()
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
     using ratio = ratio_divide<typename U::ratio, typename coherent_unit::ratio>;
-    auto prefix_txt = prefix_or_ratio_text<ratio, typename U::reference::prefix_type>();
+    auto prefix_txt = prefix_or_ratio_text<ratio, typename U::reference::prefix_family>();
 
     if constexpr(has_symbol<coherent_unit>) {
       // use predefined coherent unit symbol

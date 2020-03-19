@@ -97,12 +97,12 @@ All below class templates indirectly derive from a `scaled_unit` class template 
   - Defines a named, in most cases base or coherent unit that is then passed to a dimension's
     definition.
   - A named unit may be used by other units defined with the prefix of the same type, unless
-    `no_prefix` is provided for `PrefixType` template parameter (in such a case it is impossible
+    `no_prefix` is provided for `PrefixFamily` template parameter (in such a case it is impossible
     to define a prefixed unit based on this one).
 - `named_scaled_unit`
   - Defines a new named unit that is a scaled version of another unit.
   - Such unit can be used by other units defined with the prefix of the same type, unless
-    `no_prefix` is provided for `PrefixType` template parameter (in such a case it is impossible
+    `no_prefix` is provided for `PrefixFamily` template parameter (in such a case it is impossible
     to define a prefixed unit based on this one).
 - `prefixed_unit`
   - Defines a new unit that is a scaled version of another unit by the provided prefix.
@@ -115,26 +115,26 @@ All below class templates indirectly derive from a `scaled_unit` class template 
   - All of the units provided should also be a named ones so it is possible to create a deduced
     symbol text.
 
-Some of the above types depend on `PrefixType` and `no_prefix`. `PrefixType` is a concept that
+Some of the above types depend on `PrefixFamily` and `no_prefix`. `PrefixFamily` is a concept that
 is defined as:
 
 ```cpp
 template<typename T>
-concept PrefixType = std::derived_from<T, prefix_type>;
+concept PrefixFamily = std::derived_from<T, prefix_family>;
 ```
 
-where `prefix_type` is just an empty tag type used to identify the beginning of prefix types
+where `prefix_family` is just an empty tag type used to identify the beginning of prefix types
 hierarchy and `no_prefix` is one of its children:
 
 ```cpp
-struct prefix_type {};
-struct no_prefix : prefix_type {};
+struct prefix_family {};
+struct no_prefix : prefix_family {};
 ```
 
 Concrete prefix derives from a `prefix` class template:
 
 ```cpp
-template<typename Child, PrefixType PT, basic_fixed_string Symbol, Ratio R>
+template<typename Child, PrefixFamily PT, basic_fixed_string Symbol, Ratio R>
   requires (!std::same_as<PT, no_prefix>)
 struct prefix;
 ```
@@ -151,7 +151,7 @@ Coming back to units, here are a few examples of unit definitions:
 namespace units::si {
 
 // prefixes
-struct prefix : prefix_type {};
+struct prefix : prefix_family {};
 struct centi : units::prefix<centi, prefix, "c", ratio<1, 1, -2>> {};
 struct kilo : units::prefix<kilo, prefix, "k", ratio<1, 1, 3>> {};
 
@@ -508,7 +508,7 @@ a series of checks:
   dimension:
   - prefix:
     - if ratio of the scaled unit is `1`, than no prefix is being printed,
-    - otherwise, if `PrefixType` template parameter of a reference unit is different than
+    - otherwise, if `PrefixFamily` template parameter of a reference unit is different than
       `no_prefix`, and if the ratio of scaled unit matches the ratio of a prefix of a specified
       type, than the symbol of this prefix will be used,
     - otherwise, non-standard ratio (i.e. `2 [60]Hz`) will be printed.
@@ -781,7 +781,7 @@ adds support for digital information quantities. In summary it adds:
     ```cpp
     namespace units::data {
 
-    struct prefix : prefix_type {};
+    struct prefix : prefix_family {};
 
     struct kibi : units::prefix<kibi, prefix, "Ki", ratio<    1'024>> {};
     struct mebi : units::prefix<mebi, prefix, "Mi", ratio<1'048'576>> {};

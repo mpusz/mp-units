@@ -219,7 +219,7 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     namespace si {
 
-    struct prefix : prefix_type {};
+    struct prefix : prefix_family {};
 
     struct yocto  : units::prefix<yocto,  prefix, "y",  ratio<1, 1, -24>> {};
     struct zepto  : units::prefix<zepto,  prefix, "z",  ratio<1, 1, -21>> {};
@@ -249,7 +249,7 @@ domain::
 
     namespace data {
 
-    struct prefix : prefix_type {};
+    struct prefix : prefix_family {};
 
     struct kibi : units::prefix<kibi, prefix, "Ki", ratio<                    1'024>> {};
     struct mebi : units::prefix<mebi, prefix, "Mi", ratio<                1'048'576>> {};
@@ -322,11 +322,11 @@ of a `scaled_unit` class template:
 
     #direction: right
 
-    [scaled_unit<Ratio, Unit>]<:-[unit<Child>]
-    [scaled_unit<Ratio, Unit>]<:-[named_unit<Child, Symbol, PrefixType>]
-    [scaled_unit<Ratio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixType, Ratio, Unit>]
-    [scaled_unit<Ratio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
-    [scaled_unit<Ratio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[unit<Child>]
+    [scaled_unit<UnitRatio, Unit>]<:-[named_unit<Child, Symbol, PrefixFamily>]
+    [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
+    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
+    [scaled_unit<UnitRatio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
 
 `scaled_unit` is a class template used exclusively by the library's framework
 and user should not instantiate it by him/her-self. However the user can sometimes

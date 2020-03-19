@@ -26,7 +26,7 @@
 
 namespace units::si {
 
-struct prefix : prefix_type {};
+struct prefix : prefix_family {};
 
 // clang-format off
 struct yocto  : units::prefix<yocto,  prefix, "y",      ratio<1, 1, -24>> {};

@@ -5,58 +5,69 @@ Concepts
 
 .. note::
 
-  All names defined in this chapter reside in the :any:`units` namespace unless specified otherwise.
+    All names defined in this chapter reside in the :any:`units` namespace unless
+    specified otherwise.
 
-.. concept:: template<typename T> PrefixType
+.. concept:: template<typename T> PrefixFamily
 
-  Satisfied by all types derived from :class:`prefix_type`.
+    A concept matching a prefix family. Satisfied by all types derived from :class:`prefix_family`.
 
 .. concept:: template<typename T> Prefix
 
-  Satisfied by all instantiations of :class:`prefix`.
+    A concept matching a symbol prefix. Satisfied by all instantiations of :class:`prefix`.
 
 .. concept:: template<typename T> Ratio
 
-  Satisfied by all instantiations of :class:`ratio`.
+    A concept matching a ratio. Satisfied by all instantiations of :class:`ratio`.
 
 .. concept:: template<typename R> UnitRatio
 
-  Satisfied by all types that satisfy :expr:`Ratio<R>` and for which :expr:`R::num > 0` and :expr:`R::den > 0`.
+    A concept matching unit's ratio. Satisfied by all types that satisfy :expr:`Ratio<R>` and
+    for which :expr:`R::num > 0` and :expr:`R::den > 0`.
 
 .. concept:: template<typename T> BaseDimension
 
-  Satisfied by all dimension types derived from instantiation of :class:`base_dimension`.
+    A concept matching all base dimensions in the library. Satisfied by all dimension types
+    derived from the instantiation of :class:`base_dimension`.
 
 .. concept:: template<typename T> Exponent
 
-  Satisfied by all instantiations of :class:`exp`.
+    A concept matching dimension's exponents. Satisfied by all instantiations of :class:`exp`.
 
 .. concept:: template<typename T> DerivedDimension
 
-  Satisfied by all dimension types derived from instantiation of :class:`detail::derived_dimension_base`.
+    A concept matching all derived dimensions in the library. Satisfied by all dimension
+    types derived from the instantiation of :class:`detail::derived_dimension_base`.
 
 .. concept:: template<typename T> Dimension
 
-  Satisfied by all dimension types for which either :expr:`BaseDimension<T>` or :expr:`DerivedDimension<T>` is ``true``.
+    A concept matching all dimensions in the library. Satisfied by all dimension types for
+    which either :expr:`BaseDimension<T>` or :expr:`DerivedDimension<T>` is ``true``.
 
 .. concept:: template<typename T> Unit
 
-  Satisfied by all unit types derived from instantiation of :class:`scaled_unit`.
+    A concept matching all unit types in the library. Satisfied by all unit types derived
+    from the instantiation of :class:`scaled_unit`.
 
 .. concept:: template<typename U, typename D> UnitOf
 
-  Satisfied by all unit types that satisfy :expr:`Unit<U>`, :expr:`Dimension<D>`, and for which
-  :expr:`U::reference` and :expr:`dimension_unit<D>::reference` denote the same unit type.
+    A concept matching only units of a specified dimension. Satisfied by all unit types that
+    satisfy :expr:`Unit<U>`, :expr:`Dimension<D>`, and for which :expr:`U::reference` and
+    :expr:`dimension_unit<D>::reference` denote the same unit type.
+
+    :tparam U: Type to verify against concept constraints.
+    :tparam D: Dimension type to use for verification.
 
 .. concept:: template<typename T> Quantity
 
-  Satisfied by all instantiations of :class:`quantity`.
+    A concept matching all quantities in the library. Satisfied by all instantiations of :class:`quantity`.
 
 .. concept:: template<typename T> WrappedQuantity
 
-  Satisfied by all wrapper types that satisfy :expr:`Quantity<typename T::value_type>` recursively
-  (i.e. :expr:`std::optional<si::length<si::metre>>`).
+    A concept matching types that wrap quantity objects. Satisfied by all wrapper types that
+    satisfy :expr:`Quantity<typename T::value_type>` recursively
+    (i.e. :expr:`std::optional<si::length<si::metre>>`).
 
 .. concept:: template<typename T> Scalar
 
-  Satisfied by types that satisfy :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
+    A concept matching non-Quantity types. Satisfied by types that satisfy :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.

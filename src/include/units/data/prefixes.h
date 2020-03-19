@@ -26,7 +26,7 @@
 
 namespace units::data {
 
-struct prefix : prefix_type {};
+struct prefix : prefix_family {};
 
 struct kibi : units::prefix<kibi, prefix, "Ki", ratio<                    1'024>> {};
 struct mebi : units::prefix<mebi, prefix, "Mi", ratio<                1'048'576>> {};
