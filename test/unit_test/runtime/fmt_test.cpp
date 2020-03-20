@@ -836,51 +836,33 @@ TEST_CASE("sign specification", "[text][fmt]")
   length<metre> inf(std::numeric_limits<double>::infinity());
   length<metre> nan(std::numeric_limits<double>::quiet_NaN());
 
-  SECTION("default format {} on a quantity")
-  {
-    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", 1q_m) == "1 m,+1 m,1 m, 1 m");
-    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", -1q_m) == "-1 m,-1 m,-1 m,-1 m");
-    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", inf) == "inf m,+inf m,inf m, inf m");
-    CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", nan) == "nan m,+nan m,nan m, nan m");
-  }
+  /* SECTION("default format {} on a quantity") */
+  /* { */
+  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", 1q_m) == "1 m,+1 m,1 m, 1 m"); */
+  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", -1q_m) == "-1 m,-1 m,-1 m,-1 m"); */
+  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", inf) == "inf m,+inf m,inf m, inf m"); */
+  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", nan) == "nan m,+nan m,nan m, nan m"); */
+  /* } */
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", 1q_m) == "1m,+1m,1m, 1m");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", -1q_m) == "-1m,-1m,-1m,-1m");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", inf) == "infm,+infm,infm, infm");
-    CHECK(fmt::format("{0:%Q%q},{0:+%Q%q},{0:-%Q%q},{0: %Q%q}", nan) == "nanm,+nanm,nanm, nanm");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1q_m) == "1m,+1m,1m, 1m");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", -1q_m) == "-1m,-1m,-1m,-1m");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", inf) == "infm,+infm,infm, infm");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", nan) == "nanm,+nanm,nanm, nanm");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", 1q_m) == "1,+1,1, 1");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", -1q_m) == "-1,-1,-1,-1");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", inf) == "inf,+inf,inf, inf");
-    CHECK(fmt::format("{0:%Q},{0:+%Q},{0:-%Q},{0: %Q}", nan) == "nan,+nan,nan, nan");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", 1q_m) == "1,+1,1, 1");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", -1q_m) == "-1,-1,-1,-1");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", inf) == "inf,+inf,inf, inf");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", nan) == "nan,+nan,nan, nan");
   }
 }
-
-TEST_CASE("sign specification for unit only", "[text][fmt][exception]")
-{
-  CHECK_THROWS_MATCHES(fmt::format("{:+%q}", 1q_m), fmt::format_error, Message("sign not allowed for a quantity unit"));
-  CHECK_THROWS_MATCHES(fmt::format("{:-%q}", 1q_m), fmt::format_error, Message("sign not allowed for a quantity unit"));
-}
-
 
 TEST_CASE("precision specification", "[text][fmt]")
 {
-  SECTION("default format {} on a quantity")
-  {
-    CHECK(fmt::format("{:.1}", 1.2345q_m) == "1.2 m");
-    CHECK(fmt::format("{:.0}", 1.2345q_m) == "1 m");
-    CHECK(fmt::format("{:.2}", 1.2345q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3}", 1.2345q_m) == "1.235 m");
-    CHECK(fmt::format("{:.4}", 1.2345q_m) == "1.2345 m");
-    CHECK(fmt::format("{:.5}", 1.2345q_m) == "1.23450 m");
-    CHECK(fmt::format("{:.10}", 1.2345q_m) == "1.2345000000 m");
-  }
-
   SECTION("full format {:%Q %q} on a quantity")
   {
     CHECK(fmt::format("{:%.0Q %q}", 1.2345q_m) == "1 m");
@@ -889,7 +871,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.235 m");
     CHECK(fmt::format("{:%.4Q %q}", 1.2345q_m) == "1.2345 m");
     CHECK(fmt::format("{:%.5Q %q}", 1.2345q_m) == "1.23450 m");
-    CHECK(fmt::format("{:.10%Q %q}", 1.2345q_m) == "1.2345000000 m");
+    CHECK(fmt::format("{:%.10Q %q}", 1.2345q_m) == "1.2345000000 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
@@ -906,11 +888,6 @@ TEST_CASE("precision specification", "[text][fmt]")
 
 TEST_CASE("precision specification for integral representation should throw", "[text][fmt][exception]")
 {
-  SECTION("default format {} on a quantity")
-  {
-    REQUIRE_THROWS_MATCHES(fmt::format("{:.1}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
-  }
-
   SECTION("full format {:%Q %q} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q %q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
