@@ -836,14 +836,6 @@ TEST_CASE("sign specification", "[text][fmt]")
   length<metre> inf(std::numeric_limits<double>::infinity());
   length<metre> nan(std::numeric_limits<double>::quiet_NaN());
 
-  /* SECTION("default format {} on a quantity") */
-  /* { */
-  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", 1q_m) == "1 m,+1 m,1 m, 1 m"); */
-  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", -1q_m) == "-1 m,-1 m,-1 m,-1 m"); */
-  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", inf) == "inf m,+inf m,inf m, inf m"); */
-  /*   CHECK(fmt::format("{0:},{0:+},{0:-},{0: }", nan) == "nan m,+nan m,nan m, nan m"); */
-  /* } */
-
   SECTION("full format {:%Q %q} on a quantity")
   {
     CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1q_m) == "1m,+1m,1m, 1m");
