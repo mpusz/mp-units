@@ -883,24 +883,24 @@ TEST_CASE("precision specification", "[text][fmt]")
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:.0%Q %q}", 1.2345q_m) == "1 m");
-    CHECK(fmt::format("{:.1%Q %q}", 1.2345q_m) == "1.2 m");
-    CHECK(fmt::format("{:.2%Q %q}", 1.2345q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3%Q %q}", 1.2345q_m) == "1.235 m");
-    CHECK(fmt::format("{:.4%Q %q}", 1.2345q_m) == "1.2345 m");
-    CHECK(fmt::format("{:.5%Q %q}", 1.2345q_m) == "1.23450 m");
+    CHECK(fmt::format("{:%.0Q %q}", 1.2345q_m) == "1 m");
+    CHECK(fmt::format("{:%.1Q %q}", 1.2345q_m) == "1.2 m");
+    CHECK(fmt::format("{:%.2Q %q}", 1.2345q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.235 m");
+    CHECK(fmt::format("{:%.4Q %q}", 1.2345q_m) == "1.2345 m");
+    CHECK(fmt::format("{:%.5Q %q}", 1.2345q_m) == "1.23450 m");
     CHECK(fmt::format("{:.10%Q %q}", 1.2345q_m) == "1.2345000000 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:.0%Q}", 1.2345q_m) == "1");
-    CHECK(fmt::format("{:.1%Q}", 1.2345q_m) == "1.2");
-    CHECK(fmt::format("{:.2%Q}", 1.2345q_m) == "1.23");
-    CHECK(fmt::format("{:.3%Q}", 1.2345q_m) == "1.235");
-    CHECK(fmt::format("{:.4%Q}", 1.2345q_m) == "1.2345");
-    CHECK(fmt::format("{:.5%Q}", 1.2345q_m) == "1.23450");
-    CHECK(fmt::format("{:.10%Q}", 1.2345q_m) == "1.2345000000");
+    CHECK(fmt::format("{:%.0Q}", 1.2345q_m) == "1");
+    CHECK(fmt::format("{:%.1Q}", 1.2345q_m) == "1.2");
+    CHECK(fmt::format("{:%.2Q}", 1.2345q_m) == "1.23");
+    CHECK(fmt::format("{:%.3Q}", 1.2345q_m) == "1.235");
+    CHECK(fmt::format("{:%.4Q}", 1.2345q_m) == "1.2345");
+    CHECK(fmt::format("{:%.5Q}", 1.2345q_m) == "1.23450");
+    CHECK(fmt::format("{:%.10Q}", 1.2345q_m) == "1.2345000000");
   }
 }
 
@@ -913,126 +913,90 @@ TEST_CASE("precision specification for integral representation should throw", "[
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q %q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q %q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(fmt::format("{:.1%Q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 }
 
 TEST_CASE("type specification", "[text][fmt]")
 {
-  SECTION("default format {} on a quantity")
-  {
-    CHECK(fmt::format("{:b}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:B}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:d}", 42q_m) == "42 m");
-    CHECK(fmt::format("{:o}", 42q_m) == "52 m");
-    CHECK(fmt::format("{:x}", 42q_m) == "2a m");
-    CHECK(fmt::format("{:X}", 42q_m) == "2A m");
-
-    CHECK(fmt::format("{:a}",   1.2345678q_m) == "0x9.e065152d8eae841p-3 m");
-    CHECK(fmt::format("{:.3a}", 1.2345678q_m) == "0x9.e06p-3 m");
-    CHECK(fmt::format("{:A}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3 m");
-    CHECK(fmt::format("{:.3A}", 1.2345678q_m) == "0X9.E06P-3 m");
-    CHECK(fmt::format("{:e}",   1.2345678q_m) == "1.234568e+00 m");
-    CHECK(fmt::format("{:.3e}", 1.2345678q_m) == "1.235e+00 m");
-    CHECK(fmt::format("{:E}",   1.2345678q_m) == "1.234568E+00 m");
-    CHECK(fmt::format("{:.3E}", 1.2345678q_m) == "1.235E+00 m");
-    CHECK(fmt::format("{:g}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:g}",   1.2345678e8q_m) == "1.23457e+08 m");
-    CHECK(fmt::format("{:.3g}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3g}", 1.2345678e8q_m) == "1.23e+08 m");
-    CHECK(fmt::format("{:G}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:G}",   1.2345678e8q_m) == "1.23457E+08 m");
-    CHECK(fmt::format("{:.3G}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3G}", 1.2345678e8q_m) == "1.23E+08 m");
-  }
-
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:b%Q %q}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:B%Q %q}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:d%Q %q}", 42q_m) == "42 m");
-    CHECK(fmt::format("{:o%Q %q}", 42q_m) == "52 m");
-    CHECK(fmt::format("{:x%Q %q}", 42q_m) == "2a m");
-    CHECK(fmt::format("{:X%Q %q}", 42q_m) == "2A m");
+    CHECK(fmt::format("{:%bQ %q}", 42q_m) == "101010 m");
+    CHECK(fmt::format("{:%BQ %q}", 42q_m) == "101010 m");
+    CHECK(fmt::format("{:%dQ %q}", 42q_m) == "42 m");
+    CHECK(fmt::format("{:%oQ %q}", 42q_m) == "52 m");
+    CHECK(fmt::format("{:%xQ %q}", 42q_m) == "2a m");
+    CHECK(fmt::format("{:%XQ %q}", 42q_m) == "2A m");
 
-    CHECK(fmt::format("{:a%Q %q}",   1.2345678q_m) == "0x9.e065152d8eae841p-3 m");
-    CHECK(fmt::format("{:.3a%Q %q}", 1.2345678q_m) == "0x9.e06p-3 m");
-    CHECK(fmt::format("{:A%Q %q}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3 m");
-    CHECK(fmt::format("{:.3A%Q %q}", 1.2345678q_m) == "0X9.E06P-3 m");
-    CHECK(fmt::format("{:e%Q %q}",   1.2345678q_m) == "1.234568e+00 m");
-    CHECK(fmt::format("{:.3e%Q %q}", 1.2345678q_m) == "1.235e+00 m");
-    CHECK(fmt::format("{:E%Q %q}",   1.2345678q_m) == "1.234568E+00 m");
-    CHECK(fmt::format("{:.3E%Q %q}", 1.2345678q_m) == "1.235E+00 m");
-    CHECK(fmt::format("{:g%Q %q}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:g%Q %q}",   1.2345678e8q_m) == "1.23457e+08 m");
-    CHECK(fmt::format("{:.3g%Q %q}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3g%Q %q}", 1.2345678e8q_m) == "1.23e+08 m");
-    CHECK(fmt::format("{:G%Q %q}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:G%Q %q}",   1.2345678e8q_m) == "1.23457E+08 m");
-    CHECK(fmt::format("{:.3G%Q %q}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:.3G%Q %q}", 1.2345678e8q_m) == "1.23E+08 m");
+    CHECK(fmt::format("{:%aQ %q}",   1.2345678q_m) == "0x9.e065152d8eae841p-3 m");
+    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678q_m) == "0x9.e06p-3 m");
+    CHECK(fmt::format("{:%AQ %q}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3 m");
+    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678q_m) == "0X9.E06P-3 m");
+    CHECK(fmt::format("{:%eQ %q}",   1.2345678q_m) == "1.234568e+00 m");
+    CHECK(fmt::format("{:%.3eQ %q}", 1.2345678q_m) == "1.235e+00 m");
+    CHECK(fmt::format("{:%EQ %q}",   1.2345678q_m) == "1.234568E+00 m");
+    CHECK(fmt::format("{:%.3EQ %q}", 1.2345678q_m) == "1.235E+00 m");
+    CHECK(fmt::format("{:%gQ %q}",   1.2345678q_m) == "1.23457 m");
+    CHECK(fmt::format("{:%gQ %q}",   1.2345678e8q_m) == "1.23457e+08 m");
+    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678e8q_m) == "1.23e+08 m");
+    CHECK(fmt::format("{:%GQ %q}",   1.2345678q_m) == "1.23457 m");
+    CHECK(fmt::format("{:%GQ %q}",   1.2345678e8q_m) == "1.23457E+08 m");
+    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678e8q_m) == "1.23E+08 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:b%Q}", 42q_m) == "101010");
-    CHECK(fmt::format("{:B%Q}", 42q_m) == "101010");
-    CHECK(fmt::format("{:d%Q}", 42q_m) == "42");
-    CHECK(fmt::format("{:o%Q}", 42q_m) == "52");
-    CHECK(fmt::format("{:x%Q}", 42q_m) == "2a");
-    CHECK(fmt::format("{:X%Q}", 42q_m) == "2A");
+    CHECK(fmt::format("{:%bQ}", 42q_m) == "101010");
+    CHECK(fmt::format("{:%BQ}", 42q_m) == "101010");
+    CHECK(fmt::format("{:%dQ}", 42q_m) == "42");
+    CHECK(fmt::format("{:%oQ}", 42q_m) == "52");
+    CHECK(fmt::format("{:%xQ}", 42q_m) == "2a");
+    CHECK(fmt::format("{:%XQ}", 42q_m) == "2A");
 
-    CHECK(fmt::format("{:a%Q}",   1.2345678q_m) == "0x9.e065152d8eae841p-3");
-    CHECK(fmt::format("{:.3a%Q}", 1.2345678q_m) == "0x9.e06p-3");
-    CHECK(fmt::format("{:A%Q}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3");
-    CHECK(fmt::format("{:.3A%Q}", 1.2345678q_m) == "0X9.E06P-3");
-    CHECK(fmt::format("{:e%Q}",   1.2345678q_m) == "1.234568e+00");
-    CHECK(fmt::format("{:.3e%Q}", 1.2345678q_m) == "1.235e+00");
-    CHECK(fmt::format("{:E%Q}",   1.2345678q_m) == "1.234568E+00");
-    CHECK(fmt::format("{:.3E%Q}", 1.2345678q_m) == "1.235E+00");
-    CHECK(fmt::format("{:g%Q}",   1.2345678q_m) == "1.23457");
-    CHECK(fmt::format("{:g%Q}",   1.2345678e8q_m) == "1.23457e+08");
-    CHECK(fmt::format("{:.3g%Q}", 1.2345678q_m) == "1.23");
-    CHECK(fmt::format("{:.3g%Q}", 1.2345678e8q_m) == "1.23e+08");
-    CHECK(fmt::format("{:G%Q}",   1.2345678q_m) == "1.23457");
-    CHECK(fmt::format("{:G%Q}",   1.2345678e8q_m) == "1.23457E+08");
-    CHECK(fmt::format("{:.3G%Q}", 1.2345678q_m) == "1.23");
-    CHECK(fmt::format("{:.3G%Q}", 1.2345678e8q_m) == "1.23E+08");
+    CHECK(fmt::format("{:%aQ}",   1.2345678q_m) == "0x9.e065152d8eae841p-3");
+    CHECK(fmt::format("{:%.3aQ}", 1.2345678q_m) == "0x9.e06p-3");
+    CHECK(fmt::format("{:%AQ}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3");
+    CHECK(fmt::format("{:%.3AQ}", 1.2345678q_m) == "0X9.E06P-3");
+    CHECK(fmt::format("{:%eQ}",   1.2345678q_m) == "1.234568e+00");
+    CHECK(fmt::format("{:%.3eQ}", 1.2345678q_m) == "1.235e+00");
+    CHECK(fmt::format("{:%EQ}",   1.2345678q_m) == "1.234568E+00");
+    CHECK(fmt::format("{:%.3EQ}", 1.2345678q_m) == "1.235E+00");
+    CHECK(fmt::format("{:%gQ}",   1.2345678q_m) == "1.23457");
+    CHECK(fmt::format("{:%gQ}",   1.2345678e8q_m) == "1.23457e+08");
+    CHECK(fmt::format("{:%.3gQ}", 1.2345678q_m) == "1.23");
+    CHECK(fmt::format("{:%.3gQ}", 1.2345678e8q_m) == "1.23e+08");
+    CHECK(fmt::format("{:%GQ}",   1.2345678q_m) == "1.23457");
+    CHECK(fmt::format("{:%GQ}",   1.2345678e8q_m) == "1.23457E+08");
+    CHECK(fmt::format("{:%.3GQ}", 1.2345678q_m) == "1.23");
+    CHECK(fmt::format("{:%.3GQ}", 1.2345678e8q_m) == "1.23E+08");
   }
 }
 
 TEST_CASE("different base types with the # specifier")
 {
-  SECTION("default format {} on a quantity")
-  {
-    CHECK(fmt::format("{:#b}", 42q_m) == "0b101010 m");
-    CHECK(fmt::format("{:#B}", 42q_m) == "0B101010 m");
-    CHECK(fmt::format("{:#o}", 42q_m) == "052 m");
-    CHECK(fmt::format("{:#x}", 42q_m) == "0x2a m");
-    CHECK(fmt::format("{:#X}", 42q_m) == "0X2A m");
-  }
-
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:#b%Q %q}", 42q_m) == "0b101010 m");
-    CHECK(fmt::format("{:#B%Q %q}", 42q_m) == "0B101010 m");
-    CHECK(fmt::format("{:#o%Q %q}", 42q_m) == "052 m");
-    CHECK(fmt::format("{:#x%Q %q}", 42q_m) == "0x2a m");
-    CHECK(fmt::format("{:#X%Q %q}", 42q_m) == "0X2A m");
+    CHECK(fmt::format("{:%#bQ %q}", 42q_m) == "0b101010 m");
+    CHECK(fmt::format("{:%#BQ %q}", 42q_m) == "0B101010 m");
+    CHECK(fmt::format("{:%#oQ %q}", 42q_m) == "052 m");
+    CHECK(fmt::format("{:%#xQ %q}", 42q_m) == "0x2a m");
+    CHECK(fmt::format("{:%#XQ %q}", 42q_m) == "0X2A m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:#b%Q}", 42q_m) == "0b101010");
-    CHECK(fmt::format("{:#B%Q}", 42q_m) == "0B101010");
-    CHECK(fmt::format("{:#o%Q}", 42q_m) == "052");
-    CHECK(fmt::format("{:#x%Q}", 42q_m) == "0x2a");
-    CHECK(fmt::format("{:#X%Q}", 42q_m) == "0X2A");
+    CHECK(fmt::format("{:%#bQ}", 42q_m) == "0b101010");
+    CHECK(fmt::format("{:%#BQ}", 42q_m) == "0B101010");
+    CHECK(fmt::format("{:%#oQ}", 42q_m) == "052");
+    CHECK(fmt::format("{:%#xQ}", 42q_m) == "0x2a");
+    CHECK(fmt::format("{:%#XQ}", 42q_m) == "0X2A");
   }
 }
 
