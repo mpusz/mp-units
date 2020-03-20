@@ -298,14 +298,21 @@ private:
     constexpr void on_precision(int precision) { f.rep_specs.precision = precision; } // rep
     constexpr void on_type(char type)                                     // rep
     {
-      constexpr auto good_types = std::string_view{"aAbBdeEfFgGoxX"};
-      if (good_types.find(type) != std::string_view::npos) {
+      constexpr auto valid_types = std::string_view{"aAbBdeEfFgGoxX"};
+      if (valid_types.find(type) != std::string_view::npos) {
         f.rep_specs.type = type;
       } else {
-        on_error("invalid type specifier");
+        on_error("invalid quantity type specifier");
       }
     }
-    constexpr void on_modifier(char mod) { f.unit_specs.modifier = mod; } // unit
+    constexpr void on_modifier(char mod) {
+      constexpr auto valid_modifiers = std::string_view{"A"};
+      if (valid_modifiers.find(mod) != std::string_view::npos) {
+        f.unit_specs.modifier = mod;
+      } else {
+        on_error("invalid unit modifier specified");
+      }
+    } // unit
     constexpr void end_precision() {}
 
     template<typename Id>
