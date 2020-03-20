@@ -51,8 +51,8 @@ namespace units {
     struct global_format_specs
     {
         CharT fill  = '\0';
-        fmt::align_t align = fmt::align_t::right; // quantity values should behave like numbers (by default aligned to right)
-        int width   = -1;
+        fmt::align_t align = fmt::align_t::none;
+        int width   = 0;
     };
 
     // Holds specs about the representation (%[specs]Q)
@@ -106,7 +106,7 @@ namespace units {
           handler.on_error("precision not allowed for integral quantity representation");
       }
 
-      if(*begin != '}' && *begin != '%') {
+      if(begin != end && *begin != '}' && *begin != '%') {
           handler.on_type(*begin++);
       }
       return begin;
@@ -167,7 +167,7 @@ namespace units {
     }
 
     // build the 'representation' as requested in the format string, applying only units-rep-modifiers
-    template<typename Rep, typename OutputIt, typename CharT>
+    template<typename CharT, typename Rep, typename OutputIt>
     inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, const rep_format_specs& rep_specs)
     {
       fmt::basic_memory_buffer<CharT> buffer;
@@ -230,7 +230,7 @@ namespace units {
 
       void on_quantity_value([[maybe_unused]] const CharT*, [[maybe_unused]] const CharT*)
       {
-        out = format_units_quantity_value(out, val, global_specs, rep_specs);
+        out = format_units_quantity_value<CharT>(out, val, rep_specs);
       }
 
       void on_quantity_unit([[maybe_unused]] const CharT)
@@ -364,8 +364,9 @@ private:
     // parse units-specific specification
     end = units::detail::parse_units_format(begin, end, handler);
 
-    if((quantity_unit && !quantity_value) && (rep_specs.sign == fmt::sign::plus || rep_specs.sign == fmt::sign::minus))
-      handler.on_error("sign not allowed for a quantity unit");
+    if(global_specs.align == fmt::align_t::none && (!quantity_unit || quantity_value))
+      // quantity values should behave like numbers (by default aligned to right)
+      global_specs.align = fmt::align_t::right;
 
     return {begin, end};
   }
@@ -383,56 +384,63 @@ public:
   {
     auto begin = format_str.begin(), end = format_str.end();
 
-    // TODO Avoid extra copying if width is not specified
-    fmt::basic_memory_buffer<CharT> buf;
-    auto out = std::back_inserter(buf);
-
     // process dynamic width and precision
     fmt::internal::handle_dynamic_spec<fmt::internal::width_checker>(global_specs.width, width_ref, ctx);
     fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(rep_specs.precision, precision_ref, ctx);
 
+    // In `global_format_buffer` we will create a global format string
+    //  e.g. "{:*^10%.1Q_%q}, 1.23q_m" => "{:*^10}"
+    fmt::basic_memory_buffer<CharT> global_format_buffer;
+    auto to_gfb = std::back_inserter(global_format_buffer);
+    format_to(to_gfb, "{{:");
+    if (auto fill = global_specs.fill; fill != '\0') {
+        format_to(to_gfb, "{}", fill);
+    }
+    if (auto align = global_specs.align; align != fmt::align_t::none) {
+        switch (align) {
+        case fmt::align_t::left:
+            format_to(to_gfb, "<");
+            break;
+        case fmt::align_t::right:
+            format_to(to_gfb, ">");
+            break;
+        case fmt::align_t::center:
+            format_to(to_gfb, "^");
+            break;
+        default:
+            break;
+        }
+    }
+    if (auto width = global_specs.width; width >= 1) {
+      format_to(to_gfb, "{}", width);
+    }
+    format_to(to_gfb, "}}");
+
+    // In `quantity_buffer` we will have the representation and the unit formatted according to their
+    //  specification, ignoring global specifiers
+    //  e.g. "{:*^10%.1Q_%q}, 1.23q_m" => "1.2_m"
+    // TODO Avoid extra copying if width is not specified
+    fmt::basic_memory_buffer<CharT> quantity_buffer;
+    auto to_quantity_buffer = std::back_inserter(quantity_buffer);
+
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      out = units::detail::format_units_quantity_value(out, q.count(), global_specs, rep_specs);
+      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs);
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.size()) {
-        *out++ = CharT(' ');
-        format_to(out, "{}", symbol.c_str());
+        *to_quantity_buffer++ = CharT(' ');
+        format_to(to_quantity_buffer, "{}", symbol.c_str());
       }
-      return format_to(ctx.out(), fmt::to_string(buf));
     }
     else {
       // user provided format
-      units::detail::units_formatter f(out, q, global_specs, rep_specs, unit_specs);
+      units::detail::units_formatter f(to_quantity_buffer, q, global_specs, rep_specs, unit_specs);
       parse_units_format(begin, end, f);
 
-      fmt::basic_memory_buffer<CharT> outer;
-      auto to_outer = std::back_inserter(outer);
-      format_to(to_outer, "{{:");
-      if (auto fill = global_specs.fill; fill != '\0') {
-          format_to(to_outer, "{}", fill);
-      }
-      if (auto align = global_specs.align; align != fmt::align_t::none) {
-          switch (align) {
-          case fmt::align_t::left:
-              format_to(to_outer, "<");
-              break;
-          case fmt::align_t::right:
-              format_to(to_outer, ">");
-              break;
-          case fmt::align_t::center:
-              format_to(to_outer, "^");
-              break;
-          default:
-              break;
-          }
-      }
-      if (auto width = global_specs.width; width >= 0) {
-        format_to(to_outer, "{}", width);
-      }
-      format_to(to_outer, "}}");
-      return format_to(ctx.out(), fmt::to_string(outer), fmt::to_string(buf));
     }
+    // Format the `quantity buffer` using specs from `global_format_buffer`
+    // In the example, equivalent to fmt::format("{:*^10}", "1.2_m")
+    return format_to(ctx.out(), fmt::to_string(global_format_buffer), fmt::to_string(quantity_buffer));
   }
 };
