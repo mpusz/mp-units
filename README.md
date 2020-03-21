@@ -43,7 +43,7 @@ static_assert(2q_km_per_h * 2q_h == 4q_km);
 static_assert(2q_km / 2q_km_per_h == 1q_h);
 ```
 
-_Try it on the [Compiler Explorer](???)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/_Yx6D7)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
