@@ -456,9 +456,9 @@ public:
       // default format should print value followed by the unit separated with 1 space
       to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs);
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
-      if(symbol.size()) {
+      if(symbol.standard().size()) {
         *to_quantity_buffer++ = CharT(' ');
-        format_to(to_quantity_buffer, "{}", symbol.c_str());
+        format_to(to_quantity_buffer, "{}", symbol.standard().c_str());
       }
     }
     else {

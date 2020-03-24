@@ -56,7 +56,7 @@ int main()
   std::cout << "therefore ratio lengthA / lengthB == " << lengthA / lengthB << "\n\n";
 
   std::cout << "conversion factor from lengthA::unit of "
-            << units_str(lengthA) << " to lengthB::unit of " << units_str(lengthB) << " :\n\n"
+            << units_str(lengthA).standard() << " to lengthB::unit of " << units_str(lengthB).standard() << " :\n\n"
             << "lengthB.count( " << lengthB.count() << " ) == lengthA.count( " << lengthA.count()
             << " ) * conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
 }

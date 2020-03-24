@@ -21,9 +21,6 @@ struct basic_symbol_text {
   [[nodiscard]] constexpr auto& ascii() { return ascii_; }
   [[nodiscard]] constexpr const auto& ascii() const { return ascii_; }
 
-  [[nodiscard]] constexpr std::size_t size() const noexcept { return standard_.size(); }
-  [[nodiscard]] constexpr const StandardCharT* c_str() const noexcept { return standard_.c_str(); }
-
   template<std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, ASCIICharT, N + N2, M + M2> operator+(
       const basic_symbol_text& lhs, const basic_symbol_text<StandardCharT, ASCIICharT, N2, M2>& rhs) noexcept
@@ -66,13 +63,6 @@ struct basic_symbol_text {
                                                  const StandardCharT2 (&rhs)[N2 + 1]) noexcept
   {
     return false;
-  }
-
-  template<class Traits>
-  friend std::basic_ostream<StandardCharT, Traits>& operator<<(std::basic_ostream<StandardCharT, Traits>& os,
-                                                               const basic_symbol_text& symbol)
-  {
-    return os << symbol.standard_.c_str();
   }
 };
 
