@@ -168,8 +168,8 @@ std::basic_string<CharT> to_string(const Q& q)
   std::basic_ostringstream<CharT, Traits> s;
   s << q.count();
   constexpr auto symbol = unit_text<typename Q::dimension, typename Q::unit>();
-  if constexpr (symbol.size()) {
-    s << " " << symbol;
+  if constexpr (symbol.standard().size()) {
+    s << " " << symbol.standard();
   }
   return s.str();
 }
