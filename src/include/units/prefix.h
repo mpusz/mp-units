@@ -23,8 +23,8 @@
 #pragma once
 
 #include <units/bits/external/downcasting.h>
-#include <units/bits/external/fixed_string.h>
 #include <units/ratio.h>
+#include <units/symbol_text.h>
 
 namespace units {
 
@@ -68,7 +68,7 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
  * @tparam Symbol a text representation of the prefix
  * @tparam R factor to be used to scale a unit
  */
-template<typename Child, PrefixFamily PT, basic_fixed_string Symbol, Ratio R>
+template<typename Child, PrefixFamily PT, basic_symbol_text Symbol, Ratio R>
   requires (!std::same_as<PT, no_prefix>)
 struct prefix : downcast_child<Child, detail::prefix_base<PT, R>> {
   static constexpr auto symbol = Symbol;

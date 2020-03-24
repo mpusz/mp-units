@@ -131,6 +131,13 @@ namespace units {
         if(ptr == end)
           throw fmt::format_error("invalid format");
         c = *ptr++;
+        switch(c)
+        {
+          case 'A':
+            handler.on_quantity_unit_ascii_only();
+            c = *ptr++;
+            break;
+        }
         switch(c) {
         // units-type
         case '%':
@@ -212,13 +219,14 @@ namespace units {
       global_format_specs<CharT> const & global_specs;
       rep_format_specs const & rep_specs;
       unit_format_specs const & unit_specs;
+      bool ascii_only;
 
       explicit units_formatter(
         OutputIt o, quantity<Dimension, Unit, Rep> q,
         global_format_specs<CharT> const & gspecs,
         rep_format_specs const & rspecs, unit_format_specs const & uspecs
       ):
-        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs)
+        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), ascii_only(false)
       {
       }
 
@@ -235,12 +243,19 @@ namespace units {
 
       void on_quantity_unit([[maybe_unused]] const CharT)
       {
-        if (unit_specs.modifier != '\0') {
+        if (unit_specs.modifier != '\0' && unit_specs.modifier != 'A') {
           throw fmt::format_error(
             fmt::format("Unit modifier '{}' is not implemented", unit_specs.modifier)
           ); // TODO
         }
-        format_to(out, "{}", unit_text<Dimension, Unit>().c_str());
+        auto txt = unit_text<Dimension, Unit>();
+        auto txt_c_str = ascii_only ? txt.ascii().c_str() : txt.standard().c_str();
+        format_to(out, "{}", txt_c_str);
+      }
+
+      void on_quantity_unit_ascii_only()
+      {
+        ascii_only = true;
       }
     };
 
@@ -260,6 +275,7 @@ private:
   units::detail::unit_format_specs unit_specs;
   bool quantity_value = false;
   bool quantity_unit = false;
+  bool quantity_unit_ascii_only = false;
   arg_ref_type width_ref;
   arg_ref_type precision_ref;
   fmt::basic_string_view<CharT> format_str;
@@ -341,6 +357,11 @@ private:
         f.unit_specs.modifier = mod;
       }
       f.quantity_unit = true;
+    }
+
+    constexpr void on_quantity_unit_ascii_only()
+    {
+      f.quantity_unit_ascii_only = true;
     }
   };
 
