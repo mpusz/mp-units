@@ -25,6 +25,7 @@
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/text_tools.h>
 #include <units/derived_dimension.h>
+#include <units/symbol_text.h>
 
 namespace units::detail {
 
@@ -49,7 +50,7 @@ constexpr auto operator_text()
   }
 }
 
-template<typename E, basic_fixed_string Symbol, std::size_t NegativeExpCount, std::size_t Idx>
+template<typename E, basic_symbol_text Symbol, std::size_t NegativeExpCount, std::size_t Idx>
 constexpr auto exp_text()
 {
   // get calculation operator + symbol

@@ -30,7 +30,7 @@
 
 namespace units::si {
 
-struct ohm : named_unit<ohm, "Ω", prefix> {};
+struct ohm : named_unit<ohm, {"Ω", "ohm"}, prefix> {};
 struct milliohm : prefixed_unit<milliohm, milli, ohm> {};
 struct kiloohm : prefixed_unit<kiloohm, kilo, ohm> {};
 struct megaohm : prefixed_unit<megaohm, mega, ohm> {};
