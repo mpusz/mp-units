@@ -90,6 +90,6 @@ once and leave the rest intact:
 
 .. seealso::
 
-    It is possible to extend above "integral" vs "floating-point" logic for conversions
-    and casting rules to custom representation types. For more information please refer
-    to the :ref:`Customization points` chapter.
+    For more information on conversion and casting and on how to extend the above "integral"
+    vs "floating-point" logic please refer to the :ref:`Using Custom Representation Types`
+    chapter.
