@@ -58,13 +58,20 @@ using namespace std::experimental::math;
 using namespace units;
 using namespace si::literals;
 
+template<typename Rep = double>
+using vector = fs_vector<Rep, 3>;
+
+template<typename Rep = double>
+using matrix = fs_matrix<Rep, 3, 3>;
+
+
 void vector_of_quantity_add()
 {
   std::cout << "\nvector_of_quantity_add:\n";
 
-  fs_vector<si::length<si::metre>, 3> v = { 1q_m, 2q_m, 3q_m };
-  fs_vector<si::length<si::metre>, 3> u = { 3q_m, 2q_m, 1q_m };
-  fs_vector<si::length<si::kilometre>, 3> t = { 3q_km, 2q_km, 1q_km };
+  vector<si::length<si::metre>> v = { 1q_m, 2q_m, 3q_m };
+  vector<si::length<si::metre>> u = { 3q_m, 2q_m, 1q_m };
+  vector<si::length<si::kilometre>> t = { 3q_km, 2q_km, 1q_km };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -72,15 +79,15 @@ void vector_of_quantity_add()
 
   std::cout << "v + u = " << v + u << "\n";
   std::cout << "v + t = " << v + t << "\n";
-  std::cout << "fs_vector<si::length<si::metre>, 3>(t) = " << fs_vector<si::length<si::metre>, 3>(t) << "\n";
+  std::cout << "vector<si::length<si::metre>>(t) = " << vector<si::length<si::metre>>(t) << "\n";
 }
 
 void vector_of_quantity_multiply_same()
 {
   std::cout << "\nvector_of_quantity_multiply_same:\n";
 
-  fs_vector<si::length<si::metre>, 3> v = { 1q_m, 2q_m, 3q_m };
-  fs_vector<si::length<si::metre>, 3> u = { 3q_m, 2q_m, 1q_m };
+  vector<si::length<si::metre>> v = { 1q_m, 2q_m, 3q_m };
+  vector<si::length<si::metre>> u = { 3q_m, 2q_m, 1q_m };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -93,8 +100,8 @@ void vector_of_quantity_multiply_different()
 {
   std::cout << "\nvector_of_quantity_multiply_different:\n";
 
-  fs_vector<si::force<si::newton>, 3> v = { 1q_N, 2q_N, 3q_N };
-  fs_vector<si::length<si::metre>, 3> u = { 3q_m, 2q_m, 1q_m };
+  vector<si::force<si::newton>> v = { 1q_N, 2q_N, 3q_N };
+  vector<si::length<si::metre>> u = { 3q_m, 2q_m, 1q_m };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -108,7 +115,7 @@ void vector_of_quantity_divide_by_scalar()
 {
   std::cout << "\nvector_of_quantity_divide_by_scalar:\n";
 
-  fs_vector<si::length<si::metre>, 3> v = { 4q_m, 8q_m, 12q_m };
+  vector<si::length<si::metre>> v = { 4q_m, 8q_m, 12q_m };
 
   std::cout << "v = " << v << "\n";
 
@@ -129,9 +136,9 @@ void matrix_of_quantity_add()
 {
   std::cout << "\nmatrix_of_quantity_add:\n";
 
-  fs_matrix<si::length<si::metre>, 3, 3> v = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
-  fs_matrix<si::length<si::metre>, 3, 3> u = {{ 3q_m, 2q_m, 1q_m }, { 3q_m, 2q_m, 1q_m }, { 3q_m, 2q_m, 1q_m }};
-  fs_matrix<si::length<si::millimetre>, 3, 3> t = {{ 3q_mm, 2q_mm, 1q_mm }, { 3q_mm, 2q_mm, 1q_mm }, { 3q_mm, 2q_mm, 1q_mm }};
+  matrix<si::length<si::metre>> v = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
+  matrix<si::length<si::metre>> u = {{ 3q_m, 2q_m, 1q_m }, { 3q_m, 2q_m, 1q_m }, { 3q_m, 2q_m, 1q_m }};
+  matrix<si::length<si::millimetre>> t = {{ 3q_mm, 2q_mm, 1q_mm }, { 3q_mm, 2q_mm, 1q_mm }, { 3q_mm, 2q_mm, 1q_mm }};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -141,15 +148,15 @@ void matrix_of_quantity_add()
   std::cout << "v + t =\n" << v + t << "\n";
 
   // TODO Uncomment when fixed in the LA lib
-  // std::cout << "fs_matrix<si::length<si::millimetre>, 3, 3>(v) =\n" << fs_matrix<si::length<si::millimetre>, 3, 3>(v) << "\n";
+  // std::cout << "matrix<si::length<si::millimetre>>(v) =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
 }
 
 void matrix_of_quantity_multiply_same()
 {
   std::cout << "\nmatrix_of_quantity_multiply_same:\n";
   
-  fs_matrix<si::length<si::metre>, 3, 3> v = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
-  fs_vector<si::length<si::metre>, 3> u = { 3q_m, 2q_m, 1q_m };
+  matrix<si::length<si::metre>> v = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
+  vector<si::length<si::metre>> u = { 3q_m, 2q_m, 1q_m };
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -162,8 +169,8 @@ void matrix_of_quantity_multiply_different()
 {
   std::cout << "\nmatrix_of_quantity_multiply_different:\n";
 
-  fs_vector<si::force<si::newton>, 3> v = { 1q_N, 2q_N, 3q_N };
-  fs_matrix<si::length<si::metre>, 3, 3> u = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
+  vector<si::force<si::newton>> v = { 1q_N, 2q_N, 3q_N };
+  matrix<si::length<si::metre>> u = {{ 1q_m, 2q_m, 3q_m }, { 4q_m, 5q_m, 6q_m }, { 7q_m, 8q_m, 9q_m }};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -177,7 +184,7 @@ void matrix_of_quantity_divide_by_scalar()
 {
   std::cout << "\nmatrix_of_quantity_divide_by_scalar:\n";
 
-  fs_matrix<si::length<si::metre>, 3, 3> v = {{ 2q_m, 4q_m, 6q_m }, { 4q_m, 6q_m, 8q_m }, { 8q_m, 4q_m, 2q_m }};
+  matrix<si::length<si::metre>> v = {{ 2q_m, 4q_m, 6q_m }, { 4q_m, 6q_m, 8q_m }, { 8q_m, 4q_m, 2q_m }};
 
   std::cout << "v =\n" << v << "\n";
 
@@ -194,10 +201,84 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
+template<Unit U = si::metre, Scalar Rep = double>
+using length_v = si::length<U, vector<Rep>>;
+
+template<Unit U = si::newton, Scalar Rep = double>
+using force_v = si::force<U, vector<Rep>>;
+
+void quantity_of_vector_add()
+{
+  std::cout << "\nquantity_of_vector_add:\n";
+
+  length_v<> v(vector<>{ 1, 2, 3 });
+  length_v<> u(vector<>{ 3, 2, 1 });
+  length_v<si::kilometre> t(vector<>{ 3, 2, 1 });
+
+  std::cout << "v = " << v << "\n";
+  std::cout << "u = " << u << "\n";
+  std::cout << "t = " << t << "\n";
+
+  std::cout << "v + u = " << v + u << "\n";
+  std::cout << "v + t = " << v + t << "\n";
+  std::cout << "quantity_cast<si::metre>(t) = " << quantity_cast<si::metre>(t) << "\n";
+}
+
+void quantity_of_vector_multiply_same()
+{
+  std::cout << "\nquantity_of_vector_multiply_same:\n";
+
+  length_v<> v(vector<>{ 1, 2, 3 });
+  length_v<> u(vector<>{ 3, 2, 1 });
+
+  std::cout << "v = " << v << "\n";
+  std::cout << "u = " << u << "\n";
+
+  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "2q_m * v = " << 2q_m * v << "\n";
+}
+
+void quantity_of_vector_multiply_different()
+{
+  std::cout << "\nquantity_of_vector_multiply_different:\n";
+
+  force_v<> v(vector<>{ 1, 2, 3 });
+  length_v<> u(vector<>{ 3, 2, 1 });
+
+  std::cout << "v = " << v << "\n";
+  std::cout << "u = " << u << "\n";
+
+  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "2q_N * u = " << 2q_N * u << "\n";
+  std::cout << "2 * u = " << 2 * u << "\n";
+}
+
+void quantity_of_vector_divide_by_scalar()
+{
+  std::cout << "\nquantity_of_vector_divide_by_scalar:\n";
+
+  length_v<> v(vector<>{ 4, 8, 12 });
+
+  std::cout << "v = " << v << "\n";
+
+  // TODO Uncomment when bug in the LA is fixed
+  // std::cout << "v / 2q_s = " << v / 2q_s << "\n";
+  // std::cout << "v / 2 = " << v / 2 << "\n";
+}
+
+void quantity_of_vector_tests()
+{
+  quantity_of_vector_add();
+  quantity_of_vector_multiply_same();
+  quantity_of_vector_multiply_different();
+  quantity_of_vector_divide_by_scalar();
+}
+
 }
 
 int main()
 {
   vector_of_quantity_tests();
   matrix_of_quantity_tests();
+  quantity_of_vector_tests();
 }
