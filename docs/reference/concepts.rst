@@ -70,4 +70,11 @@ Concepts
 
 .. concept:: template<typename T> Scalar
 
-    A concept matching non-Quantity types. Satisfied by types that satisfy :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
+    A concept matching non-Quantity types. Satisfied by types that match
+    :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>` and satisfy one of the
+    following:
+
+    - if type :expr:`T` is constructible from ``std::int64_t`` (which is the type that stores
+      the elements of `ratio`), :expr:`T * T` and :expr:`T / T` must be valid,
+    - otherwise, :expr:`T * std::int64_t`, :expr:`std::int64_t * T`, and :expr:`T / std::int64_t`
+      must be valid.

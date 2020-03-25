@@ -248,6 +248,29 @@ template<typename T>
 concept WrappedQuantity = detail::is_wrapped_quantity<T>;
 
 // Scalar
+
+namespace detail {
+
+template<typename T>
+concept constructible_from_integral =
+  // construction from an integral type
+  std::constructible_from<T, std::int64_t> && 
+  // unit scaling
+  std::regular_invocable<std::multiplies<>, T, T> &&
+  std::regular_invocable<std::divides<>, T, T>;
+
+template<typename T>
+concept not_constructible_from_integral =
+  // not construction from an integral type
+  (!std::constructible_from<T, std::int64_t>) && 
+
+  // scaling by the value from ratio
+  std::regular_invocable<std::multiplies<>, T, std::int64_t> &&
+  std::regular_invocable<std::multiplies<>, std::int64_t, T>; // &&
+  // std::regular_invocable<std::divides<>, T, std::int64_t>;  // TODO Uncomment when a bug in LA is fixed
+
+}  // namesapce detail
+
 /**
  * @brief A concept matching non-Quantity types.
  * 
@@ -258,10 +281,6 @@ concept Scalar =
   (!Quantity<T>) &&
   (!WrappedQuantity<T>) &&
   std::regular<T> &&
-  // construction from an integral type
-  std::constructible_from<T, std::int64_t> &&
-  // unit scaling
-  std::regular_invocable<std::multiplies<>, T, T> &&
-  std::regular_invocable<std::divides<>, T, T>;
+  (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
 
 }  // namespace units
