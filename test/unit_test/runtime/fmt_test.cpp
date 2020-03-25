@@ -722,6 +722,16 @@ TEST_CASE("format string with %Aq for unit with no ASCII quantity unit symbol sh
   CHECK(fmt::format("{:%Aq}", 123q_km_per_h) == "km/h");
 }
 
+TEST_CASE("format string with only %q for unit with ASCII quantity unit prefix symbol should print Unicode quantity unit prefix symbol only", "[text][fmt]")
+{
+  CHECK(fmt::format("{:%Q%q}", 123q_uV) == "123\u00b5V");
+}
+
+TEST_CASE("format string with %Aq for unit with ASCII quantity unit prefix symbol should print ASCII quantity unit prefix symbol only", "[text][fmt]")
+{
+  CHECK(fmt::format("{:%Q%Aq}", 123q_uV) == "123uV");
+}
+
 TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
 {
   SECTION("no space")
