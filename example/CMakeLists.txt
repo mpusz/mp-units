@@ -36,4 +36,8 @@ add_example(clcpp_response)
 add_example(conversion_factor)
 add_example(kalman_filter-alpha_beta_filter_example2)
 
+conan_check_testing(linear_algebra)
+add_example(linear_algebra)
+target_link_libraries(linear_algebra PRIVATE CONAN_PKG::linear_algebra)
+
 add_subdirectory(alternative_namespaces)

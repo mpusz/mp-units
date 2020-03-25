@@ -15,6 +15,7 @@
   - `unknown_unit` renamed to `unknown_coherent_unit`
   - Project documentation extended and switched to Sphinx
   - A few more usage examples added
+  - Linear algebra from `std::experimental::math` support added
   - ...
 
   Many thanks to GitHub users @oschonrock and @kwikius for their support in drafting
