@@ -230,11 +230,11 @@ static_assert(length<metre, impl_expl<double>>(length<metre, int>(1)).count() ==
 // unit conversions
 
 static_assert(length<metre, impl<int>>(length<kilometre, impl<int>>(1)).count() == impl<int>(1000));
-static_assert(length<metre, expl<int>>(length<kilometre, expl<int>>(expl(1))).count() == expl<int>(1000));
+static_assert(length<metre, expl<int>>(length<kilometre, expl<int>>(expl<int>(1))).count() == expl<int>(1000));
 static_assert(length<metre, impl_impl<int>>(length<kilometre, impl_impl<int>>(1)).count() == impl_impl<int>(1000));
 static_assert(length<metre, impl_expl<int>>(length<kilometre, impl_expl<int>>(1)).count() == impl_expl<int>(1000));
-static_assert(length<metre, expl_impl<int>>(length<kilometre, expl_impl<int>>(expl_impl(1))).count() == expl_impl<int>(1000));
-static_assert(length<metre, expl_expl<int>>(length<kilometre, expl_expl<int>>(expl_expl(1))).count() == expl_expl<int>(1000));
+static_assert(length<metre, expl_impl<int>>(length<kilometre, expl_impl<int>>(expl_impl<int>(1))).count() == expl_impl<int>(1000));
+static_assert(length<metre, expl_expl<int>>(length<kilometre, expl_expl<int>>(expl_expl<int>(1))).count() == expl_expl<int>(1000));
 
 // static_assert(length<kilometre, impl<int>>(length<metre, impl<int>>(2000)).count() == impl<int>(2));  // should not compile (truncating conversion)
 static_assert(length<kilometre, impl<int>>(quantity_cast<kilometre>(length<metre, impl<int>>(2000))).count() == impl<int>(2));
@@ -252,15 +252,15 @@ static_assert(length<kilometre, expl_expl<int>>(quantity_cast<kilometre>(length<
 // static_assert(velocity<metre_per_second, impl<int>>(velocity<kilometre_per_hour, impl<int>>(72)).count() == impl<int>(20));  // should not compile (truncating conversion)
 static_assert(velocity<metre_per_second, impl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, impl<int>>(72))).count() == impl<int>(20));
 // static_assert(velocity<metre_per_second, expl<int>>(velocity<kilometre_per_hour, expl<int>>(expl(72))).count() == expl<int>(20));  // should not compile (truncating conversion)
-static_assert(velocity<metre_per_second, expl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl<int>>(expl(72)))).count() == expl<int>(20));
+static_assert(velocity<metre_per_second, expl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl<int>>(expl<int>(72)))).count() == expl<int>(20));
 // static_assert(velocity<metre_per_second, impl_impl<int>>(velocity<kilometre_per_hour, impl_impl<int>>(72)).count() == impl_impl<int>(20));  // should not compile (truncating conversion)
 static_assert(velocity<metre_per_second, impl_impl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, impl_impl<int>>(72))).count() == impl_impl<int>(20));
 // static_assert(velocity<metre_per_second, impl_expl<int>>(velocity<kilometre_per_hour, impl_expl<int>>(72)).count() == impl_expl<int>(20));  // should not compile (truncating conversion)
 static_assert(velocity<metre_per_second, impl_expl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, impl_expl<int>>(72))).count() == impl_expl<int>(20));
 // static_assert(velocity<metre_per_second, expl_impl<int>>(velocity<kilometre_per_hour, expl_impl<int>>(expl_impl(72))).count() == expl_impl<int>(20));  // should not compile (truncating conversion)
-static_assert(velocity<metre_per_second, expl_impl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl_impl<int>>(expl_impl(72)))).count() == expl_impl<int>(20));
+static_assert(velocity<metre_per_second, expl_impl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl_impl<int>>(expl_impl<int>(72)))).count() == expl_impl<int>(20));
 // static_assert(velocity<metre_per_second, expl_expl<int>>(velocity<kilometre_per_hour, expl_expl<int>>(expl_expl(72))).count() == expl_expl<int>(20));  // should not compile (truncating conversion)
-static_assert(velocity<metre_per_second, expl_expl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl_expl<int>>(expl_expl(72)))).count() == expl_expl<int>(20));
+static_assert(velocity<metre_per_second, expl_expl<int>>(quantity_cast<metre_per_second>(velocity<kilometre_per_hour, expl_expl<int>>(expl_expl<int>(72)))).count() == expl_expl<int>(20));
 
 // static_assert(velocity<kilometre_per_hour, impl<int>>(velocity<metre_per_second, impl<int>>(20)).count() == impl<int>(72));  // should not compile (truncating conversion)
 static_assert(velocity<kilometre_per_hour, impl<int>>(quantity_cast<kilometre_per_hour>(velocity<metre_per_second, impl<int>>(20))).count() == impl<int>(72));
