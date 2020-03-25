@@ -40,8 +40,7 @@ public:
 
   measurement() = default;
 
-  constexpr /* explicit */ measurement(const value_type& val, const value_type& err = {}) :
-      // cannot be explicit as `magma` concept requires implicit conversions :-(
+  constexpr explicit measurement(const value_type& val, const value_type& err = {}) :
       value_(val),
       uncertainty_(std::abs(err))
   {
@@ -72,10 +71,34 @@ public:
     return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
   }
 
+  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
+  {
+    const auto val = lhs.value() * value;
+    return measurement(val, val * lhs.relative_uncertainty());
+  }
+
+  [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
+  {
+    const auto val = rhs.value() * value;
+    return measurement(val, val * rhs.relative_uncertainty());
+  }
+
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() / rhs.value();
     return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+  }
+
+  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
+  {
+    const auto val = lhs.value() / value;
+    return measurement(val, val * lhs.relative_uncertainty());
+  }
+
+  [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
+  {
+    const auto val = value / rhs.value();
+    return measurement(val, val * rhs.relative_uncertainty());
   }
 
 #if __GNUC__ >= 10
