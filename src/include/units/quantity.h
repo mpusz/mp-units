@@ -228,8 +228,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::totally_ordered_with<Rep, Rep2>
+             std::totally_ordered_with<Rep, Rep2>
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() <=> cq(rhs).count();
@@ -238,8 +237,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr auto operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::equality_comparable_with<Rep, Rep2>
+             std::equality_comparable_with<Rep, Rep2>
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() == cq(rhs).count();
@@ -250,8 +248,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::equality_comparable_with<Rep, Rep2>
+             std::equality_comparable_with<Rep, Rep2>
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() == cq(rhs).count();
@@ -260,8 +257,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator!=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::equality_comparable_with<Rep, Rep2>
+             std::equality_comparable_with<Rep, Rep2>
   {
     return !(lhs == rhs);
   }
@@ -269,8 +265,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator<(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::totally_ordered_with<Rep, Rep2>
+             std::totally_ordered_with<Rep, Rep2>
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() < cq(rhs).count();
@@ -279,8 +274,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator<=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::totally_ordered_with<Rep, Rep2>
+             std::totally_ordered_with<Rep, Rep2>
   {
     return !(rhs < lhs);
   }
@@ -288,8 +282,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::totally_ordered_with<Rep, Rep2>
+             std::totally_ordered_with<Rep, Rep2>
   {
     return rhs < lhs;
   }
@@ -297,8 +290,7 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr bool operator>=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-            detail::basic_arithmetic<Rep, Rep2> &&
-            std::totally_ordered_with<Rep, Rep2>
+             std::totally_ordered_with<Rep, Rep2>
   {
     return !(lhs < rhs);
   }
@@ -314,7 +306,7 @@ public:
 
 template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator+(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2>
+  requires std::regular_invocable<std::plus<>, Rep1, Rep2>
 {
   using common_rep = decltype(lhs.count() + rhs.count());
   using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
@@ -323,7 +315,7 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 
 template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator-(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2>
+  requires std::regular_invocable<std::minus<>, Rep1, Rep2>
 {
   using common_rep = decltype(lhs.count() - rhs.count());
   using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;
@@ -332,7 +324,7 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 
 template<typename D, typename U, typename Rep, Scalar Value>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Value& v)
-  requires std::magma<std::ranges::times, Rep, Value>
+  requires std::regular_invocable<std::multiplies<>, Rep, Value>
 {
   using common_rep = decltype(q.count() * v);
   using ret = quantity<D, U, common_rep>;
@@ -341,14 +333,15 @@ template<typename D, typename U, typename Rep, Scalar Value>
 
 template<Scalar Value, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<D, U, Rep>& q)
-  requires std::magma<std::ranges::times, Value, Rep>
+  requires std::regular_invocable<std::multiplies<>, Value, Rep>
 {
   return q * v;
 }
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Scalar AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, dim_invert<D2>>
+  requires std::regular_invocable<std::multiplies<>, Rep1, Rep2> &&
+           equivalent_dim<D1, dim_invert<D2>>
 {
   using common_rep = decltype(lhs.count() * rhs.count());
   using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
@@ -361,7 +354,8 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)
+  requires std::regular_invocable<std::multiplies<>, Rep1, Rep2> &&
+           (!equivalent_dim<D1, dim_invert<D2>>)
 {
   using dim = dimension_multiply<D1, D2>;
   using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
@@ -375,7 +369,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<Scalar Value, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<D, U, Rep>& q)
-  requires std::magma<std::ranges::divided_by, Value, Rep>
+  requires std::regular_invocable<std::divides<>, Value, Rep>
 {
   Expects(q.count() != 0);
 
@@ -389,7 +383,7 @@ template<Scalar Value, typename D, typename U, typename Rep>
 
 template<typename D, typename U, typename Rep, Scalar Value>
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D, U, Rep>& q, const Value& v)
-  requires std::magma<std::ranges::divided_by, Rep, Value>
+  requires std::regular_invocable<std::divides<>, Rep, Value>
 {
   Expects(v != Value{0});
 
@@ -400,7 +394,8 @@ template<typename D, typename U, typename Rep, Scalar Value>
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Scalar AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, D2>
+  requires std::regular_invocable<std::divides<>, Rep1, Rep2> &&
+           equivalent_dim<D1, D2>
 {
   Expects(rhs.count() != 0);
 
@@ -411,7 +406,8 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
-  requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)
+  requires std::regular_invocable<std::divides<>, Rep1, Rep2> &&
+           (!equivalent_dim<D1, D2>)
 {
   Expects(rhs.count() != 0);
 
@@ -429,7 +425,7 @@ template<typename D, typename U, typename Rep, Scalar Value>
 [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U, Rep>& q, const Value& v)
   requires (!treat_as_floating_point<Rep>) &&
            (!treat_as_floating_point<Value>) &&
-           std::magma<std::ranges::modulus, Rep, Value>
+           std::regular_invocable<std::modulus<>, Rep, Value>
 {
   using common_rep = decltype(q.count() % v);
   using ret = quantity<D, U, common_rep>;
@@ -440,7 +436,7 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 [[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U1, Rep1>& lhs, const quantity<D, U2, Rep2>& rhs)
   requires (!treat_as_floating_point<Rep1>) &&
            (!treat_as_floating_point<Rep2>) &&
-           std::magma<std::ranges::modulus, Rep1, Rep2>
+           std::regular_invocable<std::modulus<>, Rep1, Rep2>
 {
   using common_rep = decltype(lhs.count() % rhs.count());
   using ret = common_quantity<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, common_rep>;

@@ -163,11 +163,10 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
  */
 template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires QuantityOf<To, D> &&
-           detail::basic_arithmetic<std::common_type_t<typename To::rep, Rep, intmax_t>>
+  requires QuantityOf<To, D>
 {
   using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
-  using c_rep = std::common_type_t<typename To::rep, Rep, intmax_t>;
+  using c_rep = std::common_type_t<typename To::rep, Rep>;
   using ret_unit = downcast_unit<typename To::dimension, typename To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
   using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1 && c_ratio::exp == 0, c_ratio::den == 1 && c_ratio::exp == 0>;
@@ -226,7 +225,6 @@ template<Unit ToU, typename D, typename U, typename Rep>
  */
 template<Scalar ToRep, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires detail::basic_arithmetic<std::common_type_t<ToRep, Rep, intmax_t>>
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);
 }

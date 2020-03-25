@@ -3,6 +3,38 @@
 Using Custom Representation Types
 =================================
 
+A custom representation type can be provided as the last `quantity` class template parameter.
+With this a user is able to change how a quantity's value is being represented and provide
+its own custom logic for it (i.e. use a complex number or a measurement class that will handle
+not only a value but also a measurement error).
+
+
+A `Scalar` concept
+------------------
+
+To support a minimum set of `quantity` operations all custom representation types have to
+satisfy at least the `Scalar` concept. Which means that they:
+
+- cannot be quantities or be wrappers over the `quantity` type
+  (i.e. ``std::optional<si::length<si::metre>>``),
+- have to be regular types (e.g. they have to provide equality operators)
+- must be constructible from a fundamental integral type (to 
+
+With the above we will be able to construct quantities, convert between the units of the same
+dimension and compare them for equality. To provide additional `quantity` operations the
+custom representation type have to satisfy more requirements.
+
+
+Additional requirements
+-----------------------
+
+.. important::
+
+    The requirements described in the chapter are optional in a meaning that if someone does
+    not plan to use a specific quantity's operation his/her custom representation type can
+    ignore (not implement/satisfy) the requirements for it.
+
+
 Construction of Quantities with Custom Representation Types
 -----------------------------------------------------------
 
@@ -49,7 +81,10 @@ from a regular quantity value::
 Conversions of Quantities with Custom Representation Types
 ----------------------------------------------------------
 
-Again let's assume two types but this time let's scope on converting operators rather
+In case we want to mix quantities of our Custom Representation Type with the quantities using
+fundamental arithmetic types as their representation we have to provide conversion operators.
+
+Again let's assume two types but this time let's scope on conversion operators rather
 than on constructors:
 
 .. code-block::
@@ -89,14 +124,21 @@ representation types with::
     si::length<si::metre, int> d3(quantity_cast<int>(d_expl));  // OK
 
 
+Tricky cases
+------------
+
+
+
 Customization points
 --------------------
 
+treat_as_floating_point
 
+quantity_value
 
 
 
 .. seealso::
 
-    For more examples of custom representation types usage please refer to
-    :ref:`Linear Algebra of Quantities` chapter and :ref:`measurement` example.
+    For more examples of custom representation types usage please refer to :ref:`measurement`
+    example.

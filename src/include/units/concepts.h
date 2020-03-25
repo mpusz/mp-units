@@ -31,17 +31,6 @@
 
 namespace units {
 
-namespace detail {
-
-template<typename T, typename U = T>
-concept basic_arithmetic = // exposition only
-    std::magma<std::ranges::plus, T, U> &&
-    std::magma<std::ranges::minus, T, U> &&
-    std::magma<std::ranges::times, T, U> &&
-    std::magma<std::ranges::divided_by, T, U>;
-
-} // namespace detail
-
 // PrefixFamily
 struct prefix_family;
 
@@ -265,6 +254,14 @@ concept WrappedQuantity = detail::is_wrapped_quantity<T>;
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept Scalar = (!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>; // TODO: && std::totally_ordered<T>;// && detail::basic_arithmetic<T>;
+concept Scalar =
+  (!Quantity<T>) &&
+  (!WrappedQuantity<T>) &&
+  std::regular<T> &&
+  // construction from an integral type
+  std::constructible_from<T, std::int64_t> &&
+  // unit scaling
+  std::regular_invocable<std::multiplies<>, T, T> &&
+  std::regular_invocable<std::divides<>, T, T>;
 
 }  // namespace units
