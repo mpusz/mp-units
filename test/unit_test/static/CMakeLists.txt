@@ -27,6 +27,7 @@ add_library(unit_tests_static
     dimension_op_test.cpp
     dimensions_concepts_test.cpp
     fixed_string_test.cpp
+    fixed_symbol_test.cpp
     math_test.cpp
     quantity_test.cpp
     ratio_test.cpp
