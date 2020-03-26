@@ -48,10 +48,10 @@ template<Scalar Rep = double>
 inline constexpr auto avogadro_constant = Rep(6.02214076e23) / substance<mole, Rep>(1);
 
 template<Scalar Rep = double>
-inline constexpr auto speed_of_light = velocity<metre_per_second, Rep>(299792458);
+inline constexpr auto speed_of_light = velocity<metre_per_second, Rep>(299'792'458);
 
 template<Scalar Rep = double>
-inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9192631770);
+inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9'192'631'770);
 
 // template<Scalar Rep = double>
 // inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
