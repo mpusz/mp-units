@@ -79,7 +79,7 @@ void vector_of_quantity_add()
 
   std::cout << "v + u = " << v + u << "\n";
   std::cout << "v + t = " << v + t << "\n";
-  std::cout << "vector<si::length<si::metre>>(t) = " << vector<si::length<si::metre>>(t) << "\n";
+  std::cout << "t[m]  = " << vector<si::length<si::metre>>(t) << "\n";
 }
 
 void vector_of_quantity_multiply_same()
@@ -92,7 +92,7 @@ void vector_of_quantity_multiply_same()
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
-  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "v * u    = " << v * u << "\n";
   std::cout << "2q_m * v = " << 2q_m * v << "\n";
 }
 
@@ -106,9 +106,9 @@ void vector_of_quantity_multiply_different()
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
-  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "v * u    = " << v * u << "\n";
   std::cout << "2q_N * u = " << 2q_N * u << "\n";
-  std::cout << "2 * u = " << 2 * u << "\n";
+  std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
 void vector_of_quantity_divide_by_scalar()
@@ -148,7 +148,7 @@ void matrix_of_quantity_add()
   std::cout << "v + t =\n" << v + t << "\n";
 
   // TODO Uncomment when fixed in the LA lib
-  // std::cout << "matrix<si::length<si::millimetre>>(v) =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
+  // std::cout << "v[mm] =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
 }
 
 void matrix_of_quantity_multiply_same()
@@ -221,7 +221,7 @@ void quantity_of_vector_add()
 
   std::cout << "v + u = " << v + u << "\n";
   std::cout << "v + t = " << v + t << "\n";
-  std::cout << "quantity_cast<si::metre>(t) = " << quantity_cast<si::metre>(t) << "\n";
+  std::cout << "t[m]  = " << quantity_cast<si::metre>(t) << "\n";
 }
 
 void quantity_of_vector_multiply_same()
@@ -234,7 +234,7 @@ void quantity_of_vector_multiply_same()
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
-  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "v * u    = " << v * u << "\n";
   std::cout << "2q_m * v = " << 2q_m * v << "\n";
 }
 
@@ -248,9 +248,9 @@ void quantity_of_vector_multiply_different()
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
-  std::cout << "v * u = " << v * u << "\n";
+  std::cout << "v * u    = " << v * u << "\n";
   std::cout << "2q_N * u = " << 2q_N * u << "\n";
-  std::cout << "2 * u = " << 2 * u << "\n";
+  std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
 void quantity_of_vector_divide_by_scalar()
@@ -293,7 +293,7 @@ void quantity_of_vector_tests()
 //   std::cout << "v + t =\n" << v + t << "\n";
 
 //   // TODO Uncomment when fixed in the LA lib
-//   // std::cout << "matrix<si::length<si::millimetre>>(v) =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
+//   // std::cout << "v[mm] =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
 // }
 
 // void quantity_of_matrix_multiply_same()

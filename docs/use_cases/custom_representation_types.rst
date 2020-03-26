@@ -301,4 +301,4 @@ representation types with::
 .. seealso::
 
     For more examples of custom representation types usage please refer to the
-    :ref:`Linear Algebra of Quantities` chapter and :ref:`measurement` example.
+    :ref:`Linear Algebra vs. Quantities` chapter and the :ref:`measurement` example.
