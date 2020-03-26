@@ -14,7 +14,7 @@ struct basic_symbol_text {
   constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) {}
   constexpr basic_symbol_text(const StandardCharT (&s)[N + 1]) noexcept: standard_(s), ascii_(s) {}
   constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s) noexcept: standard_(s), ascii_(s) {}
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const char (&a)[M + 1]) noexcept: standard_(s), ascii_(a) {}
+  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const StandardCharT (&a)[M + 1]) noexcept: standard_(s), ascii_(a) {}
   constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) {}
 
   [[nodiscard]] constexpr auto& standard() { return standard_; }
@@ -352,17 +352,16 @@ struct basic_symbol_text {
 
 };
 
-template<typename StandardCharT>
-basic_symbol_text(StandardCharT) -> basic_symbol_text<StandardCharT, 1, 1>;
+basic_symbol_text(char) -> basic_symbol_text<char, 1, 1>;
 
 template<typename StandardCharT>
 basic_symbol_text(StandardCharT, char) -> basic_symbol_text<StandardCharT, 1, 1>;
 
-template<typename StandardCharT, std::size_t N>
-basic_symbol_text(const StandardCharT (&)[N]) -> basic_symbol_text<StandardCharT, N - 1, N - 1>;
+template<std::size_t N>
+basic_symbol_text(const char (&)[N]) -> basic_symbol_text<char, N - 1, N - 1>;
 
-template<typename StandardCharT, std::size_t N>
-basic_symbol_text(const basic_fixed_string<StandardCharT, N>&) -> basic_symbol_text<StandardCharT, N, N>;
+template<std::size_t N>
+basic_symbol_text(const basic_fixed_string<char, N>&) -> basic_symbol_text<char, N, N>;
 
 template<typename StandardCharT, std::size_t N, std::size_t M>
 basic_symbol_text(const StandardCharT (&)[N], const char (&)[M]) -> basic_symbol_text<StandardCharT, N - 1, M - 1>;
