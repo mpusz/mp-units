@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/bits/external/fixed_string.h>
+#include <units/symbol_text.h>
 
 namespace units::detail {
 
@@ -41,26 +42,34 @@ template<> inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
 template<> inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
 template<> inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
 
-inline constexpr basic_fixed_string superscript_minus = "\u207b";
+inline constexpr basic_symbol_text superscript_minus("\u207b", "-");
+
+inline constexpr basic_symbol_text superscript_prefix("", "^");
+
+template<std::intmax_t Value>
+constexpr auto superscript_helper()
+{
+  if constexpr(Value < 0)
+    return superscript_minus + superscript_helper<-Value>();
+  else if constexpr(Value < 10)
+    return basic_symbol_text(superscript_number<Value>, basic_fixed_string(static_cast<char>('0' + Value)));
+  else
+    return superscript_helper<Value / 10>() + superscript_helper<Value % 10>();
+}
 
 template<std::intmax_t Value>
 constexpr auto superscript()
 {
-  if constexpr(Value < 0)
-    return superscript_minus + superscript<-Value>();
-  else if constexpr(Value < 10)
-    return superscript_number<Value>;
-  else
-    return superscript<Value / 10>() + superscript<Value % 10>();
+  return superscript_prefix + superscript_helper<Value>();
 }
 
 template<std::intmax_t Value>
 constexpr auto regular()
 {
   if constexpr (Value < 0)
-    return basic_fixed_string("-") + superscript<-Value>();
+    return basic_fixed_string("-") + superscript_helper<-Value>();
   else if constexpr (Value < 10)
-    return basic_fixed_string(static_cast<char>('0' + Value));
+    return basic_symbol_text(static_cast<char>('0' + Value));
   else
     return regular<Value / 10>() + regular<Value % 10>();
 }

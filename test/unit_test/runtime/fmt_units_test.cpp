@@ -56,6 +56,8 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_ns) == "1 ns");
     CHECK(fmt::format("{}", 1q_us) == "1 µs");
     CHECK(fmt::format("{}", 1q_ms) == "1 ms");
+
+    CHECK(fmt::format("{:%Q %Aq}", 1q_us) == "1 us");
   }
 
   SECTION("length")
@@ -98,11 +100,18 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_cm2) == "1 cm²");
     CHECK(fmt::format("{}", 1q_km2) == "1 km²");
     CHECK(fmt::format("{}", 1q_ft2) == "1 ft²");
+
+    CHECK(fmt::format("{:%Q %Aq}", 1q_m2) == "1 m^2");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_mm2) == "1 mm^2");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_cm2) == "1 cm^2");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_km2) == "1 km^2");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_ft2) == "1 ft^2");
   }
 
   SECTION("density")
   {
       CHECK(fmt::format("{}", 1q_kg_per_m3) == "1 kg/m³");
+      CHECK(fmt::format("{:%Q %Aq}", 1q_kg_per_m3) == "1 kg/m^3");
   }
 
   SECTION("resistance")
@@ -111,6 +120,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_kR) == "1 kΩ");
     CHECK(fmt::format("{}", 1q_mR) == "1 mΩ");
     CHECK(fmt::format("{}", 1q_MR) == "1 MΩ");
+
+    CHECK(fmt::format("{:%Q %Aq}", 1q_R) == "1 ohm");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_kR) == "1 kohm");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_mR) == "1 mohm");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_MR) == "1 Mohm");
   }
 
   SECTION("voltage")
@@ -120,6 +134,8 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
      CHECK(fmt::format("{}", 1q_uV) == "1 µV");
      CHECK(fmt::format("{}", 1q_nV) == "1 nV");
      CHECK(fmt::format("{}", 1q_pV) == "1 pV");
+
+     CHECK(fmt::format("{:%Q %Aq}", 1q_uV) == "1 uV");
   }
 
   SECTION("volume")
@@ -129,6 +145,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_cm3) == "1 cm³");
     CHECK(fmt::format("{}", 1q_km3) == "1 km³");
     CHECK(fmt::format("{}", 1q_ft3) == "1 ft³");
+
+    CHECK(fmt::format("{:%Q %Aq}", 1q_m3) == "1 m^3");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_mm3) == "1 mm^3");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_cm3) == "1 cm^3");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_km3) == "1 km^3");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_ft3) == "1 ft^3");
   }
 
   SECTION("frequency")
@@ -150,11 +172,13 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("acceleration")
   {
     CHECK(fmt::format("{}", 1q_m_per_s2) == "1 m/s²");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_m_per_s2) == "1 m/s^2");
   }
 
   SECTION("momentum")
   {
     CHECK(fmt::format("{}", 1q_kg_m_per_s) == "1 kg⋅m/s");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_kg_m_per_s) == "1 kg.m/s");
   }
 
   SECTION("energy")
@@ -187,10 +211,14 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
     CHECK(fmt::format("{}", 1q_au * 1q_au) == "1 [2237952291797391849 × 10⁴] m²");
+
+    CHECK(fmt::format("{:%Q %Aq}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 x 10^9] m^3");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_au * 1q_au) == "1 [2237952291797391849 x 10^4] m^2");
   }
 
   SECTION("unknown scaled unit with reference different than the dimension's coherent unit")
   {
     CHECK(fmt::format("{}", mass<units::scaled_unit<units::ratio<2, 3>, gram>>(1)) == "1 [2/3 × 10⁻³] kg");
+    CHECK(fmt::format("{:%Q %Aq}", mass<units::scaled_unit<units::ratio<2, 3>, gram>>(1)) == "1 [2/3 x 10^-3] kg");
   }
 }
