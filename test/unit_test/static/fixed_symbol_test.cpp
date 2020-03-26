@@ -42,10 +42,8 @@ static_assert(sym6.standard() == "bc");
 static_assert(sym6.ascii() == "de");
 
 static_assert(sym6 == basic_symbol_text("bc", "de"));
-static_assert(sym6 != basic_symbol_text("bc", "bc"));
-static_assert(sym6 != basic_symbol_text("de", "de"));
+static_assert(sym6 != basic_symbol_text("fg", "hi"));
 static_assert(sym6 != basic_symbol_text("bcd", "ef"));
-static_assert(sym6 != basic_symbol_text("bc", "def"));
 
 static_assert(sym6 == basic_fixed_string("bc"));
 static_assert(sym6 != basic_fixed_string("de"));
