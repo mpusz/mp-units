@@ -27,7 +27,6 @@
 #include <units/bits/external/hacks.h>
 #include <units/bits/external/numeric_concepts.h>
 #include <units/bits/external/type_traits.h>
-#include <units/customization_points.h>
 
 namespace units {
 

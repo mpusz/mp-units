@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/concepts.h>
 #include <limits>
 #include <type_traits>
 
@@ -36,7 +37,7 @@ namespace units {
  * 
  * @tparam Rep a representation type for which a type trait is defined
  */
-template<typename Rep>
+template<Scalar Rep>
 inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
 /**
@@ -48,7 +49,7 @@ inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
  * 
  * @tparam Rep a representation type for which a type trait is defined
  */
-template<typename Rep>
+template<Scalar Rep>
 struct quantity_values {
   static constexpr Rep zero() noexcept { return Rep(0); }
   static constexpr Rep one() noexcept { return Rep(1); }

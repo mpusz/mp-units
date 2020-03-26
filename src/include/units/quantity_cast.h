@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/concepts.h>
+#include <units/customization_points.h>
 #include <units/bits/dimension_op.h>
 #include <cassert>
 
