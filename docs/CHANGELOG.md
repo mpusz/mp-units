@@ -1,6 +1,6 @@
 # Release notes
 
-- 0.5.0 WIP
+- **0.5.0 WIP**
   - Major refactoring and rewrite of the library
   - Units are now independent from dimensions
   - Dimensions now depend on units (base or coherent units are provided in a class template)
@@ -21,7 +21,7 @@
   Many thanks to GitHub users @oschonrock and @kwikius for their support in drafting
   a new library design.
 
-- 0.4.0 Nov 17, 2019
+- **0.4.0 Nov 17, 2019**
   - Support for derived dimensions in `exp` added
   - Added `pow()` and `sqrt()` operations on quantities
   - `units` removed from a `std::experimental` namespace
@@ -33,10 +33,10 @@
   - Derived unit factory helpers refactored
   - Refactored the way prefixed units are defined
 
-- 0.3.1 Sep 18, 2019
+- **0.3.1 Sep 18, 2019**
   - cmcstl2 dependency changed to range-v3 0.9.1
 
-- 0.3.0 Sep 16, 2019 (CppCon 2019 design)
+- **0.3.0 Sep 16, 2019 (CppCon 2019 design)**
   - The design as described on CppCon 2019 talk (<https://youtu.be/0YW6yxkdhlU>)
   - Applied the feedback from the Cologne evening session
     - `upcasting_traits` renamed to `downcasting_traits`
@@ -56,12 +56,12 @@
   - `QuantityOf` concept introduced
   - `quantity_cast<U, Rep>()` support added
 
-- 0.2.0 July 18, 2019 (C++Now 2019 design)
+- **0.2.0 July 18, 2019 (C++Now 2019 design)**
   - The design as described on C++Now 2019 talk (<https://youtu.be/wKchCktZPHU>)
   - Added C++20 features supported by gcc-9.1 (`std::remove_cvref_t`, down with typename, `std::type_identity`)
   - Compile-time performance optimizations (`type_list`, `common_ratio`, `ratio`, `conditional_t`)
 
-- 0.1.0 May 18, 2019
+- **0.1.0 May 18, 2019**
   - Initial library release
   - Begin semantic versioning
   - The last version to work with gcc-8
