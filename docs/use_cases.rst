@@ -15,3 +15,4 @@ Use Cases
     use_cases/custom_representation_types
     use_cases/linear_algebra
     use_cases/extensions
+    use_cases/natural_units
