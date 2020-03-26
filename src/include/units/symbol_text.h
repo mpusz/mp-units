@@ -10,12 +10,21 @@ struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr basic_symbol_text(StandardCharT s) noexcept: standard_(s), ascii_(s) {}
-  constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) {}
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1]) noexcept: standard_(s), ascii_(s) {}
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s) noexcept: standard_(s), ascii_(s) {}
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const StandardCharT (&a)[M + 1]) noexcept: standard_(s), ascii_(a) {}
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) {}
+  constexpr void validate_ascii_char(char c) noexcept { assert((c & 0x80) == 0); }
+
+  template<std::size_t P>
+  constexpr void validate_ascii_string(const char (&s)[P + 1]) noexcept
+  {
+    for (size_t i = 0; i < P; ++i)
+      validate_ascii_char(s[i]);
+  }
+
+  constexpr basic_symbol_text(StandardCharT s) noexcept: standard_(s), ascii_(s) { validate_ascii_char(s); }
+  constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) { validate_ascii_char(a); }
+  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1]) noexcept: standard_(s), ascii_(s) { validate_ascii_string<N>(s); }
+  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s) noexcept: standard_(s), ascii_(s) { validate_ascii_string<N>(s.data_); }
+  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const char (&a)[M + 1]) noexcept: standard_(s), ascii_(a) { validate_ascii_string<M>(a); }
+  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) { validate_ascii_string<M>(a.data_); }
 
   [[nodiscard]] constexpr auto& standard() { return standard_; }
   [[nodiscard]] constexpr const auto& standard() const { return standard_; }

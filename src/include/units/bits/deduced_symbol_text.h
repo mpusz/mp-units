@@ -45,7 +45,7 @@ constexpr auto operator_text()
       return basic_fixed_string("/");
     }
     else {
-      return basic_fixed_string("⋅");
+      return basic_symbol_text("⋅", ".");
     }
   }
 }

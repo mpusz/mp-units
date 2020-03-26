@@ -30,11 +30,13 @@
 
 namespace units::detail {
 
+inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
+
 template<typename Ratio>
 constexpr auto ratio_text()
 {
   if constexpr(Ratio::num == 1 && Ratio::den == 1 && Ratio::exp != 0) {
-    return basic_fixed_string("\u00D7 10") + superscript<Ratio::exp>() + basic_fixed_string(" ");
+    return base_multiplier + superscript<Ratio::exp>() + basic_fixed_string(" ");
   }
   else if constexpr(Ratio::num != 1 || Ratio::den != 1 || Ratio::exp != 0) {
     auto txt = basic_fixed_string("[") + regular<Ratio::num>();
@@ -43,7 +45,7 @@ constexpr auto ratio_text()
         return txt + basic_fixed_string("] ");
       }
       else {
-        return txt + basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
+        return txt + " " + base_multiplier + superscript<Ratio::exp>() +
             basic_fixed_string("] ");
       }
     }
@@ -54,7 +56,7 @@ constexpr auto ratio_text()
       }
       else {
         return txt + basic_fixed_string("/") + regular<Ratio::den>() +
-            basic_fixed_string(" \u00D7 10") + superscript<Ratio::exp>() +
+            " " + base_multiplier + superscript<Ratio::exp>() +
             basic_fixed_string("] ");
       }
     }
