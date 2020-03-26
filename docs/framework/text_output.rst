@@ -1,12 +1,12 @@
 .. namespace:: units
 
-Text output
+Text Output
 ===========
 
 Beside providing dimensional analysis and units conversions, the library
 also tries really hard to print any quantity in the most user friendly way.
 
-Output streams
+Output Streams
 --------------
 
 The easiest way to print a quantity is to provide its object to the output
@@ -31,7 +31,7 @@ by a space and then the symbol of a :term:`unit` associated with this quantity.
         std::cout << quantity_cast<si::metre_per_second>(v1) << '\n';    // 30.5556 m/s
 
 
-Stream output formatting
+Stream Output Formatting
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Only a basic formatting can be applied for output streams. It includes control
@@ -92,7 +92,7 @@ code lines produce the same output::
     fmt::print("Distance: {:%Q %q}\n", 123q_km);
 
 
-Quantity value, symbol, or both?
+Quantity Value, Symbol, or Both?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The user can easily decide to either print a whole quantity (value and symbol) or
@@ -103,7 +103,7 @@ only its parts. Also a different quantity formatting might be applied::
     fmt::print("{:%Q%q}", 123q_km);  // 123km
 
 
-Controlling width, fill, and alignment
+Controlling Width, Fill, and Alignment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To control width, fill, and alignment the C++ standard grammar tokens ``fill-and-align``
@@ -120,7 +120,7 @@ text::
     fmt::print("|{:*^10}|", 123q_m);  // |**123 m***|
 
 
-ASCII-only quantity symbols
+ASCII-only Quantity Symbols
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Unit symbols of some quantities are specified to use Unicode signs by the :term:`SI`
@@ -137,7 +137,7 @@ In such a case the unit symbol can be forced to be printed using ASCII-only char
     fmt::print("{:%Q %Aq}", 9.8q_m_per_s2);  // 9.8 m/s^2
 
 
-Controlling on how the quantity value is being printed
+Controlling on How the Quantity Value Is Being Printed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``sign`` token allows us to specify on how the value's sign is being printed::
@@ -198,7 +198,7 @@ For floating-point values the :token:`units-rep-type` token works as follows::
     fmt::print("{:%.3GQ %q}", 1.2345678e8q_m);    // 1.23E+08 m
 
 
-Special signs
+Special Signs
 ^^^^^^^^^^^^^
 
 Beside adding any list of regular characters as a separator between the value and the

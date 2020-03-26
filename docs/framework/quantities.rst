@@ -59,7 +59,7 @@ language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
 ``q_`` prefix was consistently applied to all the UDLs.
 
 
-Dimension-specific concepts
+Dimension-specific Concepts
 ---------------------------
 
 In case the user does not care about the specific unit and representation but
@@ -130,7 +130,7 @@ units like CGS.
     kinds of interfaces supported by the library.
 
 
-Working with constrained deduced quantity types
+Working With Constrained Deduced Quantity Types
 -----------------------------------------------
 
 It is important to note that when we assign a result from the function to an

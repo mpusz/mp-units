@@ -15,7 +15,7 @@ The library tries to follow the above principle and at the same time is also con
 with conversions of ``std::chrono::duration``.
 
 
-No conversions
+No Conversions
 --------------
 
 No conversions (either implicit or explicit) are available across quantities of

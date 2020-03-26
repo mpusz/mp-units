@@ -6,7 +6,7 @@ Usage
     As this library targets C++23 and extensively uses C++20 features as of now it compiles correctly
     only with gcc-9.1 and newer.
 
-Repository structure and dependencies
+Repository Structure and Dependencies
 -------------------------------------
 
 This repository contains three independent CMake-based projects:
@@ -58,7 +58,7 @@ The rest of the dependencies are provided by :command:`python3-pip`.
 
   A full list of dependencies can be found in `Repository structure and dependencies`_.
 
-Conan quick intro
+Conan Quick Intro
 ^^^^^^^^^^^^^^^^^
 
 In case you are not familiar with Conan, to install it (or upgrade) just do:
@@ -114,10 +114,10 @@ Add the following remotes to your local Conan instance:
     in **mp-units** repository.
 
 
-Build options
+Build Options
 -------------
 
-Environment variables
+Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. envvar:: CONAN_RUN_TESTS
@@ -194,7 +194,7 @@ To use **mp-units** as a CMake imported library the following steps may be perfo
 6. Configure your CMake project as usual.
 
 
-Full **mp-units** build, unit testing, and documentation generation
+Full **mp-units** Build, Unit Testing, and Documentation Generation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In case you would like to build all the source code (with unit tests and examples) and documentation
@@ -229,7 +229,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 The above will create a Conan package and run tests provided in *./test_package* directory.
 
 
-Uploading **mp-units** package to the Conan server
+Uploading **mp-units** Package to the Conan Server
 --------------------------------------------------
 
 .. code-block:: shell

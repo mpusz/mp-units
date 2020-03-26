@@ -308,7 +308,7 @@ provided in the template parameter list after the derived dimension parameter,
 the library calculates the final ratio for this unit.
 
 
-Class hierarchy
+Class Hierarchy
 ---------------
 
 All of the above class templates to produce unit types inherit from some instance

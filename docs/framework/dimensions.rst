@@ -62,7 +62,7 @@ dimension, than we will end up with just a scalar type:
     Scalar auto v2 = dur1 * fr1;     // 50
 
 
-Base dimensions
+Base Dimensions
 ---------------
 
 The quantities of base dimensions are called
@@ -88,7 +88,7 @@ obtain those back easily with::
     static_assert(std::is_same_v<si::dim_length::base_unit, si::metre>);
 
 
-Derived dimensions
+Derived Dimensions
 ------------------
 
 The quantities of derived dimensions are called

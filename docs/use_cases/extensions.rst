@@ -1,6 +1,6 @@
 .. namespace:: units
 
-Extending the library
+Extending the Library
 =====================
 
 Custom Units
