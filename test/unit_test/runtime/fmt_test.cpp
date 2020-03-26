@@ -389,7 +389,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          CHECK(os.str() == "8 m⋅kg⋅s");
+          CHECK(os.str() == "8 m ⋅ kg ⋅ s");
         }
 
         SECTION("fmt with default format {} on a quantity")
@@ -410,7 +410,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          CHECK(os.str() == "8 cm⋅g⋅s");
+          CHECK(os.str() == "8 cm ⋅ g ⋅ s");
         }
 
         SECTION("fmt with default format {} on a quantity")
@@ -432,7 +432,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "8 × 10³ m⋅s");
+        CHECK(os.str() == "8 × 10³ m ⋅ s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -495,7 +495,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
         SECTION("iostream")
         {
-          CHECK(os.str() == "8 × 10⁵ cm⋅g⋅s");
+          CHECK(os.str() == "8 × 10⁵ cm ⋅ g ⋅ s");
         }
 
         SECTION("fmt with default format {} on a quantity")
@@ -516,7 +516,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "30 [6 × 10⁻²] 1/m⋅s");
+        CHECK(os.str() == "30 [6 × 10⁻²] 1/m ⋅ s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -537,7 +537,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "8 m⋅s");
+        CHECK(os.str() == "8 m ⋅ s");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -558,7 +558,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "16 m⋅s²");
+        CHECK(os.str() == "16 m ⋅ s²");
       }
 
       SECTION("fmt with default format {} on a quantity")
@@ -579,7 +579,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "2 1/m²⋅s");
+        CHECK(os.str() == "2 1/m² ⋅ s");
       }
 
       SECTION("fmt with default format {} on a quantity")

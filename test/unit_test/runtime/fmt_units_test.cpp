@@ -177,8 +177,8 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("momentum")
   {
-    CHECK(fmt::format("{}", 1q_kg_m_per_s) == "1 kg⋅m/s");
-    CHECK(fmt::format("{:%Q %Aq}", 1q_kg_m_per_s) == "1 kg.m/s");
+    CHECK(fmt::format("{}", 1q_kg_m_per_s) == "1 kg ⋅ m/s");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_kg_m_per_s) == "1 kg m/s");
   }
 
   SECTION("energy")
