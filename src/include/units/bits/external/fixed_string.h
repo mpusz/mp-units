@@ -60,7 +60,7 @@ struct basic_fixed_string {
     for (size_t i = 0; i != N; ++i) txt[i] = lhs[i];
     for (size_t i = 0; i != N2; ++i) txt[N + i] = rhs[i];
 
-    return units::basic_fixed_string<CharT, N + N2>(txt);
+    return basic_fixed_string<CharT, N + N2>(txt);
   }
 
 #if __GNUC__ >= 10
