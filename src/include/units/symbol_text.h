@@ -10,7 +10,7 @@ struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr void validate_ascii_char(char c) noexcept { assert((c & 0x80) == 0); }
+  constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { assert((c & 0x80) == 0); }
 
   template<std::size_t P>
   constexpr void validate_ascii_string(const char (&s)[P + 1]) noexcept
