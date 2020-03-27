@@ -86,7 +86,7 @@ static_assert(1q_d == 24q_h);
 static_assert(1q_d == 86'400q_s);
 
 static_assert(nanosecond::symbol == "ns");
-static_assert(microsecond::symbol == "µs");
+static_assert(microsecond::symbol == basic_symbol_text("µs", "us"));
 static_assert(millisecond::symbol == "ms");
 
 // current
@@ -219,7 +219,7 @@ static_assert(10q_m_per_s / 10q_s == 1q_m_per_s2);
 static_assert(10q_m_per_s / 1q_m_per_s2 == 10q_s);
 static_assert(1q_m_per_s2 * 10q_s == 10q_m_per_s);
 
-static_assert(detail::unit_text<dim_acceleration, metre_per_second_sq>() == "m/s²");
+static_assert(detail::unit_text<dim_acceleration, metre_per_second_sq>() == basic_symbol_text("m/s²", "m/s^2"));
 
 // area
 
@@ -229,7 +229,7 @@ static_assert(10q_km * 10q_km == 100q_km2);
 static_assert(1q_m2 == 10'000q_cm2);
 static_assert(1q_ha == 10'000q_m2);
 
-static_assert(detail::unit_text<dim_area, square_metre>() == "m²");
+static_assert(detail::unit_text<dim_area, square_metre>() == basic_symbol_text("m²", "m^2"));
 
 // volume
 
@@ -240,7 +240,7 @@ static_assert(1q_m3 == 1'000'000q_cm3);
 static_assert(1q_dm * 1q_dm * 1q_dm == 1q_l);
 static_assert(1000q_l == 1q_m3);
 
-static_assert(detail::unit_text<dim_volume, cubic_metre>() == "m³");
+static_assert(detail::unit_text<dim_volume, cubic_metre>() == basic_symbol_text("m³", "m^3"));
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 

@@ -62,7 +62,7 @@ static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_
 static_assert(1q_cm * 1q_cm == 1q_cm2);
 static_assert(100q_cm2 / 10q_cm == 10q_cm);
 
-static_assert(detail::unit_text<dim_area, square_centimetre>() == "cm²");
+static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_text("cm²", "cm^2"));
 
 /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 

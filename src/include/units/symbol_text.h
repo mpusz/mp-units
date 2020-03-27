@@ -1,30 +1,36 @@
 #pragma once
 
-#include <assert.h>
 #include <units/bits/external/fixed_string.h>
+#include <units/bits/external/hacks.h>
 
 namespace units {
+
+namespace detail {
+
+constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { Expects((c & 0x80) == 0); }
+
+template<std::size_t P>
+constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[P + 1]) noexcept
+{
+#ifndef NDEBUG
+  for (size_t i = 0; i < P; ++i)
+    validate_ascii_char(s[i]);
+#endif
+}
+
+}
 
 template<typename StandardCharT, std::size_t N, std::size_t M>
 struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { assert((c & 0x80) == 0); }
-
-  template<std::size_t P>
-  constexpr void validate_ascii_string(const char (&s)[P + 1]) noexcept
-  {
-    for (size_t i = 0; i < P; ++i)
-      validate_ascii_char(s[i]);
-  }
-
-  constexpr basic_symbol_text(StandardCharT s) noexcept: standard_(s), ascii_(s) { validate_ascii_char(s); }
-  constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) { validate_ascii_char(a); }
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1]) noexcept: standard_(s), ascii_(s) { validate_ascii_string<N>(s); }
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s) noexcept: standard_(s), ascii_(s) { validate_ascii_string<N>(s.data_); }
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const char (&a)[M + 1]) noexcept: standard_(s), ascii_(a) { validate_ascii_string<M>(a); }
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) { validate_ascii_string<M>(a.data_); }
+  constexpr basic_symbol_text(StandardCharT s) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_char(s); }
+  constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_char(a); }
+  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1]) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_string<N>(s); }
+  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_string<N>(s.data_); }
+  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const char (&a)[M + 1]) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_string<M>(a); }
+  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_string<M>(a.data_); }
 
   [[nodiscard]] constexpr auto& standard() { return standard_; }
   [[nodiscard]] constexpr const auto& standard() const { return standard_; }
@@ -83,73 +89,28 @@ struct basic_symbol_text {
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs)
+                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    auto comparison = std::lexicographical_compare_three_way(lhs.standard_.begin(), lhs.standard_.end(), rhs.standard_.begin(), rhs.standard_.end());
-    assert(std::lexicographical_compare_three_way(lhs.ascii_.begin(), lhs.ascii_.end(), rhs.ascii_.begin(), rhs.ascii_.end()) == comparison);
-    return comparison;
-  }
-
-  template<typename StandardCharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const basic_fixed_string<StandardCharT2, N2>& rhs)
-  {
-    return std::lexicographical_compare_three_way(lhs.standard_.begin(), lhs.standard_.end(), rhs.begin(), rhs.end());
-  }
-
-  template<typename StandardCharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const StandardCharT2 (&rhs)[N2])
-  {
-    return lhs <=> basic_fixed_string<StandardCharT2, N2 - 1>(rhs);
-  }
-
-  template<typename StandardCharT2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  StandardCharT2 rhs)
-  {
-    return lhs <=> basic_fixed_string<StandardCharT2, 1>(rhs);
+    if (const auto cmp = lhs.standard_ <=> rhs.standard_; cmp != 0) return cmp;
+    return lhs.ascii_ <=> rhs.ascii_;
   }
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const basic_symbol_text<StandardCharT2, N2, M2>& rhs)
+                                                 const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = std::equal(lhs.standard_.begin(), lhs.standard_.end(), rhs.standard_.begin(), rhs.standard_.end());
-    assert(std::equal(lhs.ascii_.begin(), lhs.ascii_.end(), rhs.ascii_.begin(), rhs.ascii_.end()) == comparison);
-    return comparison;
-  }
-
-  template<typename StandardCharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const basic_fixed_string<StandardCharT2, N2>& rhs)
-  {
-    return std::equal(lhs.standard_.begin(), lhs.standard_.end(), rhs.begin(), rhs.end());
-  }
-
-  template<typename StandardCharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const StandardCharT2 (&rhs)[N2])
-  {
-    return lhs == basic_fixed_string<StandardCharT2, N2 - 1>(rhs);
-  }
-
-  template<typename StandardCharT2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 StandardCharT2 rhs)
-  {
-    return lhs == basic_fixed_string<StandardCharT2, 1>(rhs);
+    return lhs.standard_ == rhs.standard_ && lhs.ascii_ == rhs.ascii_;
   }
 
 #else
+
+  // I did not update the below operators with comparing ASCII as this code is going to be deleted soon anyway...
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend bool operator==(const basic_symbol_text& lhs,
                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = (lhs.standard_ == rhs.standard_);
-    assert((lhs.ascii_ == rhs.ascii_) == comparison);
-    return comparison;
+    return lhs.standard_ == rhs.standard_;
   }
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
@@ -241,9 +202,7 @@ struct basic_symbol_text {
   [[nodiscard]] constexpr friend bool operator<(const basic_symbol_text& lhs,
                                                 const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = lhs.standard_ < rhs.standard_;
-    assert((lhs.ascii_ < rhs.ascii_) == comparison);
-    return comparison;
+     return lhs.standard_ < rhs.standard_;
   }
 
   template<typename StandardCharT2, std::size_t N2>
@@ -271,90 +230,84 @@ struct basic_symbol_text {
   [[nodiscard]] constexpr friend bool operator>(const basic_symbol_text& lhs,
                                                 const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = lhs.standard_ > rhs.standard_;
-    assert((lhs.ascii_ > rhs.ascii_) == comparison);
-    return comparison;
+    return rhs < lhs;
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator>(const basic_symbol_text& lhs,
         const basic_fixed_string<StandardCharT2, N2>& rhs) noexcept
   {
-    return lhs.standard_ > rhs;
+    return rhs < lhs;
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator>(const basic_symbol_text& lhs,
         const StandardCharT2 (&rhs)[N2]) noexcept
   {
-    return lhs.standard_ > basic_fixed_string(rhs);
+    return rhs < lhs;
   }
 
   template<typename StandardCharT2>
   [[nodiscard]] constexpr friend bool operator>(const basic_symbol_text& lhs,
                                                 StandardCharT2 rhs) noexcept
   {
-    return lhs.standard_ > basic_fixed_string(rhs);
+    return rhs < lhs;
   }
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend bool operator<=(const basic_symbol_text& lhs,
                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = lhs.standard_ <= rhs.standard_;
-    assert((lhs.ascii_ <= rhs.ascii_) == comparison);
-    return comparison;
+    return !(rhs < lhs);
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator<=(const basic_symbol_text& lhs,
                                                  const basic_fixed_string<StandardCharT2, N2>& rhs) noexcept
   {
-    return lhs.standard_ <= rhs;
+    return !(rhs < lhs);
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator<=(const basic_symbol_text& lhs,
                                                  const StandardCharT2 (&rhs)[N2]) noexcept
   {
-    return lhs.standard_ <= basic_fixed_string(rhs);
+    return !(rhs < lhs);
   }
 
   template<typename StandardCharT2>
   [[nodiscard]] constexpr friend bool operator<=(const basic_symbol_text& lhs,
                                                  StandardCharT2 rhs) noexcept
   {
-    return lhs.standard_ <= basic_fixed_string(rhs);
+    return !(rhs < lhs);
   }
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend bool operator>=(const basic_symbol_text& lhs,
                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
   {
-    bool comparison = lhs.standard_ >= rhs.standard_;
-    assert((lhs.ascii_ >= rhs.ascii_) == comparison);
-    return comparison;
+    return !(lhs < rhs);
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator>=(const basic_symbol_text& lhs,
                                                  const basic_fixed_string<StandardCharT2, N2>& rhs) noexcept
   {
-    return lhs.standard_ >= rhs;
+    return !(lhs < rhs);
   }
 
   template<typename StandardCharT2, std::size_t N2>
   [[nodiscard]] constexpr friend bool operator>=(const basic_symbol_text& lhs,
                                                  const StandardCharT2 (&rhs)[N2]) noexcept
   {
-    return lhs.standard_ >= basic_fixed_string(rhs);
+    return !(lhs < rhs);
   }
 
   template<typename StandardCharT2>
   [[nodiscard]] constexpr friend bool operator>=(const basic_symbol_text& lhs,
                                                  StandardCharT2 rhs) noexcept
   {
-    return lhs.standard_ >= basic_fixed_string(rhs);
+    return !(lhs < rhs);
   }
 
 #endif
