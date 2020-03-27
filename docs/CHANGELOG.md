@@ -9,17 +9,20 @@
   - Added official CGS system support
   - Added official data information system support
   - Repository file tree cleanup
-  - `ratio` refactored to contain `Exp` template parameter (thanks a lot @oschonrock!)
+  - `ratio` refactored to contain `Exp` template parameter (thanks a lot [@oschonrock](https://github.com/oschonrock)!)
   - SI fundamental constants added
-  - `q_` prefix applied to all the UDLs (thanks @kwikius)
+  - `q_` prefix applied to all the UDLs (thanks [@kwikius](https://github.com/kwikius))
   - `unknown_unit` renamed to `unknown_coherent_unit`
-  - Project documentation extended and switched to Sphinx
+  - Project documentation greatly extended and switched to Sphinx
   - A few more usage examples added
+  - ASCII-only output support added (thanks [@yasamoka](https://github.com/yasamoka))
+  - Representation values formatting extended (thanks [@rbrugo](https://github.com/rbrugo))
+  - Output streams formatting support added
   - Linear algebra from `std::experimental::math` support added
   - ...
 
-  Many thanks to GitHub users @oschonrock and @kwikius for their support in drafting
-  a new library design.
+  Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock) and
+  [@kwikius](https://github.com/kwikius) for their support in drafting a new library design.
 
 - **0.4.0 Nov 17, 2019**
   - Support for derived dimensions in `exp` added
