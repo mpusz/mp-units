@@ -122,15 +122,15 @@ will result in a different unnamed unit symbol:
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exp<si::dim_mass, 1>,
                                             exp<si::dim_length, 1>,
-                                            exp<si::dim_time, -1>> {};    // kg⋅m/s
+                                            exp<si::dim_time, -1>> {};    // kg ⋅ m/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exp<si::dim_length, 1>,
                                             exp<si::dim_mass, 1>,
-                                            exp<si::dim_time, -1>> {};    // m⋅kg/s
+                                            exp<si::dim_time, -1>> {};    // m ⋅ kg/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exp<si::dim_time, -1>,
                                             exp<si::dim_length, 1>,
-                                            exp<si::dim_mass, 1>> {};     // 1/s⋅m⋅kg
+                                            exp<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
 
 where ``kilogram_metre_per_second`` is defined as::
 
@@ -144,7 +144,7 @@ However, the easiest way to define momentum is just to use the
 
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exp<si::dim_mass, 1>,
-                                            exp<si::dim_velocity, 1>> {}; // kg⋅m/s
+                                            exp<si::dim_velocity, 1>> {}; // kg ⋅ m/s
 
 In such a case the library will do its magic and will automatically
 unpack a provided derived dimension to its base dimensions in order to
