@@ -25,7 +25,6 @@
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
-#include <units/bits/external/numeric_concepts.h>
 #include <units/bits/external/type_traits.h>
 
 namespace units {
