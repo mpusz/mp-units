@@ -110,6 +110,9 @@ struct dim_surface_tension : derived_dimension<Child, U, exp<F, 1>, exp<L, -1>> 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_area> A>
 struct dim_pressure : derived_dimension<Child, U, exp<F, 1>, exp<A, -1>> {};
 
+template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_time> T, DimensionOf<dim_length> L>
+struct dim_magnetic_induction : derived_dimension<Child, U, exp<V, 1>, exp<T, 1>, exp<L, -2>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -174,5 +177,8 @@ concept SurfaceTension = physical::QuantityOf<T, physical::dim_surface_tension>;
 
 template<typename T>
 concept Pressure = physical::QuantityOf<T, physical::dim_pressure>;
+
+template<typename T>
+concept MagneticInduction = physical::QuantityOf<T, physical::dim_magnetic_induction>;
 
 }  // namespace units
