@@ -131,13 +131,7 @@ namespace units {
         if(ptr == end)
           throw fmt::format_error("invalid format");
         c = *ptr++;
-        switch(c)
-        {
-          case 'A':
-            handler.on_quantity_unit_ascii_only();
-            c = *ptr++;
-            break;
-        }
+
         switch(c) {
         // units-type
         case '%':
@@ -154,15 +148,15 @@ namespace units {
           break;
         }
         default:
-          constexpr auto Qq = std::string_view{"Qq"};
-          auto const new_end = std::find_first_of(begin, end, Qq.begin(), Qq.end());
+          constexpr auto units_types = std::string_view{"Qq"};
+          auto const new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
           if (new_end == end) {
             throw fmt::format_error("invalid format");
           }
           if (*new_end == 'Q') {
-            handler.on_quantity_value(begin, new_end);
+            handler.on_quantity_value(begin, new_end); // Edit `on_quantity_value` to add rep modifiers
           } else {
-            handler.on_quantity_unit(*begin);
+            handler.on_quantity_unit(*begin);          // Edit `on_quantity_unit` to add an unit modifier
           }
           ptr = new_end + 1;
         }
@@ -219,14 +213,13 @@ namespace units {
       global_format_specs<CharT> const & global_specs;
       rep_format_specs const & rep_specs;
       unit_format_specs const & unit_specs;
-      bool ascii_only;
 
       explicit units_formatter(
         OutputIt o, quantity<Dimension, Unit, Rep> q,
         global_format_specs<CharT> const & gspecs,
         rep_format_specs const & rspecs, unit_format_specs const & uspecs
       ):
-        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), ascii_only(false)
+        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs)
       {
       }
 
@@ -243,19 +236,9 @@ namespace units {
 
       void on_quantity_unit([[maybe_unused]] const CharT)
       {
-        if (unit_specs.modifier != '\0' && unit_specs.modifier != 'A') {
-          throw fmt::format_error(
-            fmt::format("Unit modifier '{}' is not implemented", unit_specs.modifier)
-          ); // TODO
-        }
         auto txt = unit_text<Dimension, Unit>();
-        auto txt_c_str = ascii_only ? txt.ascii().c_str() : txt.standard().c_str();
+        auto txt_c_str = unit_specs.modifier == 'A' ? txt.ascii().c_str() : txt.standard().c_str();
         format_to(out, "{}", txt_c_str);
-      }
-
-      void on_quantity_unit_ascii_only()
-      {
-        ascii_only = true;
       }
     };
 
@@ -314,8 +297,8 @@ private:
     constexpr void on_precision(int precision) { f.rep_specs.precision = precision; } // rep
     constexpr void on_type(char type)                                     // rep
     {
-      constexpr auto valid_types = std::string_view{"aAbBdeEfFgGoxX"};
-      if (valid_types.find(type) != std::string_view::npos) {
+      constexpr auto valid_rep_types = std::string_view{"aAbBdeEfFgGoxX"};
+      if (valid_rep_types.find(type) != std::string_view::npos) {
         f.rep_specs.type = type;
       } else {
         on_error("invalid quantity type specifier");
@@ -359,10 +342,6 @@ private:
       f.quantity_unit = true;
     }
 
-    constexpr void on_quantity_unit_ascii_only()
-    {
-      f.quantity_unit_ascii_only = true;
-    }
   };
 
   struct parse_range {
