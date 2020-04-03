@@ -42,6 +42,33 @@
 // units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
 // units-unit-modifier ::=  'A'
 
+// Guide for editing
+//
+// If you want to add a new `units-type` terminal character (e.g. 'Q', 'q'):
+// -   If needed, write a new `specs` class (e.g. `global_format_specs`)
+// -   Add the new symbol in the `units_types` variable in the `parse_units_format` function
+// -   Add a new case in the `if` following the format_error in `parse_units_format` function;
+//     this should invoke `handler.on_[...]`
+// -   Edit `fmt::formatter`:
+//     - Add a new field for the flag/specs
+//     - Add to the `fmt::formatter::spec_handler` a `on_[...]` function that set the flag/specs if needed
+// -   Edit `units_formatter`:
+//     - Add a new field for the flag/specs
+//     - write a `on_[...]` function that writes to the `out` iterator the correct output
+// 
+// If you want to add a new `units-rep-type`:
+// -   Add the new symbol in the `valid_rep_types` variable (which is in the
+//         fmt::formatter::spec_handler::on_type member function)
+//     NB: currently this function forward the modifier to the value that must be formatted;
+//         if the symbol has no meaning for fmt::formatter<Rep>, this behavior should be disabled manually
+//         (as is done for '\0')
+// -   Implement the effect of the new flag in `format_units_quantity_value`
+// 
+// If you want to add a new `units-unit-modifier`:
+// -   Add the new symbol in the `valid_modifiers` variable (which is in the
+//         fmt::formatter::spec_handler::on_modifier member function)
+// -   Implement the effect of the new flag in the `units_formatter::on_quantity_unit` member function
+
 namespace units {
 
   namespace detail {
