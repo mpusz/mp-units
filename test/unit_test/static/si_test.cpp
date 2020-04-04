@@ -40,6 +40,7 @@
 #include <units/physical/si/velocity.h>
 #include <units/physical/si/voltage.h>
 #include <units/physical/si/volume.h>
+#include <units/physical/si/magnetic_induction.h>
 #include <utility>
 
 namespace {
@@ -187,6 +188,17 @@ static_assert(10q_C * 1q_V == 10q_J);
 static_assert(10q_C / 10q_V == 1q_F);
 static_assert(10q_C / 1q_F == 10q_V);
 static_assert(10q_V * 1q_F == 10q_C);
+
+// magnetic induction
+
+static_assert(1q_T == 1q_V * 1q_s / (1q_m * 1q_m));
+static_assert(10q_T / 1q_s == 10q_V / (1q_m * 1q_m));
+static_assert(10q_T * (1q_m * 1q_m) == 10q_s * 1q_V);
+static_assert(10q_N / (1q_A * 1q_m) == 10q_T);
+
+static_assert(millitesla::symbol == "mT");
+static_assert(microtesla::symbol == basic_symbol_text("µT", "uT"));
+static_assert(nanotesla::symbol == "nT");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 

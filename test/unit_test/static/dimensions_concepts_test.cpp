@@ -41,6 +41,7 @@
 #include <units/physical/si/velocity.h>
 #include <units/physical/si/voltage.h>
 #include <units/physical/si/volume.h>
+#include <units/physical/si/magnetic_induction.h>
 
 namespace {
 
@@ -105,5 +106,8 @@ static_assert(!SurfaceTension<si::time<si::second>>);
 
 static_assert(Pressure<si::pressure<si::pascal>>);
 static_assert(!Pressure<si::time<si::second>>);
+
+static_assert(MagneticInduction<si::magnetic_induction<si::tesla>>);
+static_assert(!MagneticInduction<si::time<si::second>>);
 
 }
