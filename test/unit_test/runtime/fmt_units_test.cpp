@@ -39,6 +39,7 @@
 #include "units/physical/si/density.h"
 #include "units/physical/si/resistance.h"
 #include "units/physical/si/voltage.h"
+#include "units/physical/si/magnetic_induction.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -200,6 +201,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("surface tension")
   {
     CHECK(fmt::format("{}", 1q_N_per_m) == "1 N/m");
+  }
+
+  SECTION("magnetic induction")
+  {
+    CHECK(fmt::format("{}", 1q_T) == "1 T");
   }
 
   SECTION("addition with common ratio")
