@@ -47,21 +47,29 @@ using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 
 inline namespace literals {
 
-// F
+// T
 constexpr auto operator"" q_T(unsigned long long l) { return magnetic_induction<tesla, std::int64_t>(l); }
 constexpr auto operator"" q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
 
+// mT
 constexpr auto operator"" q_mT(unsigned long long l) { return magnetic_induction<millitesla, std::int64_t>(l); }
 constexpr auto operator"" q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
 
+// µT
 constexpr auto operator"" q_uT(unsigned long long l) { return magnetic_induction<microtesla, std::int64_t>(l); }
 constexpr auto operator"" q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
 
+// nT
 constexpr auto operator"" q_nT(unsigned long long l) { return magnetic_induction<nanotesla, std::int64_t>(l); }
 constexpr auto operator"" q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
 
+//pT
 constexpr auto operator"" q_pT(unsigned long long l) { return magnetic_induction<picotesla, std::int64_t>(l); }
 constexpr auto operator"" q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
+
+// G
+constexpr auto operator"" q_G(unsigned long long l) { return magnetic_induction<gauss, std::int64_t>(l); }
+constexpr auto operator"" q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
 
 }  // namespace literals
 
