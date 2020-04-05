@@ -67,7 +67,7 @@ class UnitsConan(ConanFile):
             cmake.configure()
         else:
             # consumer's mode (library sources only)
-            cmake.configure(source_folder=folder, build_folder=folder)
+            cmake.configure(source_folder=folder)
         return cmake
 
     def configure(self):
@@ -95,7 +95,7 @@ class UnitsConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.build()
         if self._run_tests:
-            cmake.test()
+            cmake.test(output_on_failure=True)
 
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")

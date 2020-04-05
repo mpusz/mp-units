@@ -33,6 +33,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 # include common tools and workarounds
 include(common/cmake/scripts)
 
+# use Conan configuration if available
+conan_init(cmake)
+
 # library definition
 add_library(units INTERFACE)
 #target_sources(units INTERFACE
