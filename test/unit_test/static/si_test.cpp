@@ -41,6 +41,7 @@
 #include <units/physical/si/voltage.h>
 #include <units/physical/si/volume.h>
 #include <units/physical/si/magnetic_induction.h>
+#include <units/physical/si/magnetic_flux.h>
 #include <utility>
 
 namespace {
@@ -199,6 +200,18 @@ static_assert(10q_N / (1q_A * 1q_m) == 10q_T);
 static_assert(millitesla::symbol == "mT");
 static_assert(microtesla::symbol == basic_symbol_text("µT", "uT"));
 static_assert(nanotesla::symbol == "nT");
+static_assert(picotesla::symbol == "pT");
+
+// magnetic flux
+
+static_assert(1q_Wb == 1q_T * 1q_m2);
+static_assert(1q_J == 1q_Wb * 1q_A);
+static_assert(1q_N * 1q_s == 1q_Wb * 1q_C / 1q_m);
+
+static_assert(milliweber::symbol == "mWb");
+static_assert(microweber::symbol == basic_symbol_text("µWb", "uWb"));
+static_assert(nanoweber::symbol == "nWb");
+static_assert(picoweber::symbol == "pWb");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
