@@ -40,6 +40,7 @@
 #include "units/physical/si/resistance.h"
 #include "units/physical/si/voltage.h"
 #include "units/physical/si/magnetic_induction.h"
+#include "units/physical/si/magnetic_flux.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -206,6 +207,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("magnetic induction")
   {
     CHECK(fmt::format("{}", 1q_T) == "1 T");
+  }
+
+  SECTION("magnetic flux")
+  {
+    CHECK(fmt::format("{}", 1q_Wb) == "1 Wb");
   }
 
   SECTION("addition with common ratio")
