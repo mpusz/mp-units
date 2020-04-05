@@ -42,6 +42,7 @@
 #include <units/physical/si/volume.h>
 #include <units/physical/si/magnetic_induction.h>
 #include <units/physical/si/magnetic_flux.h>
+#include <units/physical/si/inductance.h>
 #include <utility>
 
 namespace {
@@ -212,6 +213,17 @@ static_assert(milliweber::symbol == "mWb");
 static_assert(microweber::symbol == basic_symbol_text("µWb", "uWb"));
 static_assert(nanoweber::symbol == "nWb");
 static_assert(picoweber::symbol == "pWb");
+
+// inductance
+
+static_assert(1q_H == 1q_Wb / 1q_A);
+static_assert(1q_V == 1q_H * 1q_A / 1q_s);
+static_assert(1q_J == 1q_H * 1q_A * 1q_A);
+
+static_assert(millihenry::symbol == "mH");
+static_assert(microhenry::symbol == basic_symbol_text("µH", "uH"));
+static_assert(nanohenry::symbol == "nH");
+static_assert(picohenry::symbol == "pH");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
