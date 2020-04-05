@@ -42,6 +42,7 @@
 #include "units/physical/si/magnetic_induction.h"
 #include "units/physical/si/magnetic_flux.h"
 #include "units/physical/si/inductance.h"
+#include "units/physical/si/conductance.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -220,6 +221,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_H) == "1 H");
     CHECK(fmt::format("{}", 1q_mH) == "1 mH");
+  }
+
+  SECTION("conductance")
+  {
+    CHECK(fmt::format("{}", 1q_S) == "1 S");
+    CHECK(fmt::format("{}", 1q_nS) == "1 nS");
   }
 
   SECTION("addition with common ratio")
