@@ -43,6 +43,7 @@
 #include <units/physical/si/magnetic_induction.h>
 #include <units/physical/si/magnetic_flux.h>
 #include <units/physical/si/inductance.h>
+#include <units/physical/si/conductance.h>
 #include <utility>
 
 namespace {
@@ -224,6 +225,16 @@ static_assert(millihenry::symbol == "mH");
 static_assert(microhenry::symbol == basic_symbol_text("µH", "uH"));
 static_assert(nanohenry::symbol == "nH");
 static_assert(picohenry::symbol == "pH");
+
+// conductance
+
+static_assert(1q_S * 1q_R == 1);
+static_assert(1q_S == 1q_A / 1q_V);
+static_assert(1q_W == 1q_A * 1q_A / 1q_S);
+
+static_assert(millisiemens::symbol == "mS");
+static_assert(microsiemens::symbol == basic_symbol_text("µS", "uS"));
+static_assert(nanosiemens::symbol == "nS");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 

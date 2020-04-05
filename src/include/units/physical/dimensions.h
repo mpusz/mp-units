@@ -119,6 +119,9 @@ struct dim_magnetic_flux : derived_dimension<Child, U, exp<B, 1>, exp<A, 1>> {};
 template<typename Child, Unit U, DimensionOf<dim_magnetic_flux> F, DimensionOf<dim_electric_current> I>
 struct dim_inductance : derived_dimension<Child, U, exp<F, 1>, exp<I, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_resistance> R>
+struct dim_conductance : derived_dimension<Child, U, exp<R, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -192,5 +195,8 @@ concept MagneticFlux = physical::QuantityOf<T, physical::dim_magnetic_flux>;
 
 template <typename T>
 concept Inductance = physical::QuantityOf<T, physical::dim_inductance>;
+
+template <typename T>
+concept Conductance = physical::QuantityOf<T, physical::dim_inductance>;
 
 }  // namespace units
