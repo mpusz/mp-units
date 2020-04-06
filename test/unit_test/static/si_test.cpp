@@ -44,6 +44,7 @@
 #include <units/physical/si/magnetic_flux.h>
 #include <units/physical/si/inductance.h>
 #include <units/physical/si/conductance.h>
+#include <units/physical/si/catalytic_activity.h>
 #include <utility>
 
 namespace {
@@ -235,6 +236,11 @@ static_assert(1q_W == 1q_A * 1q_A / 1q_S);
 static_assert(millisiemens::symbol == "mS");
 static_assert(microsiemens::symbol == basic_symbol_text("µS", "uS"));
 static_assert(nanosiemens::symbol == "nS");
+
+// catalytic activity
+
+static_assert(1q_kat == 1q_mol / 1q_s);
+static_assert(1'000'000q_U == 1q_mol / 1q_min);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 

@@ -43,6 +43,7 @@
 #include "units/physical/si/magnetic_flux.h"
 #include "units/physical/si/inductance.h"
 #include "units/physical/si/conductance.h"
+#include "units/physical/si/catalytic_activity.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -227,6 +228,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_S) == "1 S");
     CHECK(fmt::format("{}", 1q_nS) == "1 nS");
+  }
+
+  SECTION("catalytic activity")
+  {
+    CHECK(fmt::format("{}", 1q_kat) == "1 kat");
+    CHECK(fmt::format("{}", 1q_U) == "1 U");
   }
 
   SECTION("addition with common ratio")
