@@ -45,6 +45,7 @@
 #include <units/physical/si/inductance.h>
 #include <units/physical/si/conductance.h>
 #include <units/physical/si/catalytic_activity.h>
+#include <units/physical/si/absorbed_dose.h>
 #include <utility>
 
 namespace {
@@ -241,6 +242,18 @@ static_assert(nanosiemens::symbol == "nS");
 
 static_assert(1q_kat == 1q_mol / 1q_s);
 static_assert(1'000'000q_U == 1q_mol / 1q_min);
+
+static_assert(katal::symbol == "kat");
+static_assert(enzyme_unit::symbol == "U");
+
+// absorbed dose
+
+static_assert(1q_Gy == 1q_J / 1q_kg);
+static_assert(9.q_W * 3q_s / 60q_kg == 450q_mGy);
+
+static_assert(gray::symbol == "Gy");
+static_assert(milligray::symbol == "mGy");
+static_assert(kilogray::symbol == "kGy");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
