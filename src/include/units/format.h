@@ -42,6 +42,33 @@
 // units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
 // units-unit-modifier ::=  'A'
 
+// Guide for editing
+//
+// If you want to add a new `units-type` terminal character (e.g. 'Q', 'q'):
+// -   If needed, write a new `specs` class (e.g. `global_format_specs`)
+// -   Add the new symbol in the `units_types` variable in the `parse_units_format` function
+// -   Add a new case in the `if` following the format_error in `parse_units_format` function;
+//     this should invoke `handler.on_[...]`
+// -   Edit `fmt::formatter`:
+//     - Add a new field for the flag/specs
+//     - Add to the `fmt::formatter::spec_handler` a `on_[...]` function that set the flag/specs if needed
+// -   Edit `units_formatter`:
+//     - Add a new field for the flag/specs
+//     - write a `on_[...]` function that writes to the `out` iterator the correct output
+// 
+// If you want to add a new `units-rep-type`:
+// -   Add the new symbol in the `valid_rep_types` variable (which is in the
+//         fmt::formatter::spec_handler::on_type member function)
+//     NB: currently this function forward the modifier to the value that must be formatted;
+//         if the symbol has no meaning for fmt::formatter<Rep>, this behavior should be disabled manually
+//         (as is done for '\0')
+// -   Implement the effect of the new flag in `format_units_quantity_value`
+// 
+// If you want to add a new `units-unit-modifier`:
+// -   Add the new symbol in the `valid_modifiers` variable (which is in the
+//         fmt::formatter::spec_handler::on_modifier member function)
+// -   Implement the effect of the new flag in the `units_formatter::on_quantity_unit` member function
+
 namespace units {
 
   namespace detail {
@@ -131,13 +158,7 @@ namespace units {
         if(ptr == end)
           throw fmt::format_error("invalid format");
         c = *ptr++;
-        switch(c)
-        {
-          case 'A':
-            handler.on_quantity_unit_ascii_only();
-            c = *ptr++;
-            break;
-        }
+
         switch(c) {
         // units-type
         case '%':
@@ -154,15 +175,15 @@ namespace units {
           break;
         }
         default:
-          constexpr auto Qq = std::string_view{"Qq"};
-          auto const new_end = std::find_first_of(begin, end, Qq.begin(), Qq.end());
+          constexpr auto units_types = std::string_view{"Qq"};
+          auto const new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
           if (new_end == end) {
             throw fmt::format_error("invalid format");
           }
           if (*new_end == 'Q') {
-            handler.on_quantity_value(begin, new_end);
+            handler.on_quantity_value(begin, new_end); // Edit `on_quantity_value` to add rep modifiers
           } else {
-            handler.on_quantity_unit(*begin);
+            handler.on_quantity_unit(*begin);          // Edit `on_quantity_unit` to add an unit modifier
           }
           ptr = new_end + 1;
         }
@@ -219,14 +240,13 @@ namespace units {
       global_format_specs<CharT> const & global_specs;
       rep_format_specs const & rep_specs;
       unit_format_specs const & unit_specs;
-      bool ascii_only;
 
       explicit units_formatter(
         OutputIt o, quantity<Dimension, Unit, Rep> q,
         global_format_specs<CharT> const & gspecs,
         rep_format_specs const & rspecs, unit_format_specs const & uspecs
       ):
-        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), ascii_only(false)
+        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs)
       {
       }
 
@@ -243,19 +263,9 @@ namespace units {
 
       void on_quantity_unit([[maybe_unused]] const CharT)
       {
-        if (unit_specs.modifier != '\0' && unit_specs.modifier != 'A') {
-          throw fmt::format_error(
-            fmt::format("Unit modifier '{}' is not implemented", unit_specs.modifier)
-          ); // TODO
-        }
         auto txt = unit_text<Dimension, Unit>();
-        auto txt_c_str = ascii_only ? txt.ascii().c_str() : txt.standard().c_str();
+        auto txt_c_str = unit_specs.modifier == 'A' ? txt.ascii().c_str() : txt.standard().c_str();
         format_to(out, "{}", txt_c_str);
-      }
-
-      void on_quantity_unit_ascii_only()
-      {
-        ascii_only = true;
       }
     };
 
@@ -314,8 +324,8 @@ private:
     constexpr void on_precision(int precision) { f.rep_specs.precision = precision; } // rep
     constexpr void on_type(char type)                                     // rep
     {
-      constexpr auto valid_types = std::string_view{"aAbBdeEfFgGoxX"};
-      if (valid_types.find(type) != std::string_view::npos) {
+      constexpr auto valid_rep_types = std::string_view{"aAbBdeEfFgGoxX"};
+      if (valid_rep_types.find(type) != std::string_view::npos) {
         f.rep_specs.type = type;
       } else {
         on_error("invalid quantity type specifier");
@@ -359,10 +369,6 @@ private:
       f.quantity_unit = true;
     }
 
-    constexpr void on_quantity_unit_ascii_only()
-    {
-      f.quantity_unit_ascii_only = true;
-    }
   };
 
   struct parse_range {
