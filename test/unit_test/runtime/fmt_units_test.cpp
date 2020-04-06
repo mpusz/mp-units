@@ -44,6 +44,7 @@
 #include "units/physical/si/inductance.h"
 #include "units/physical/si/conductance.h"
 #include "units/physical/si/catalytic_activity.h"
+#include "units/physical/si/absorbed_dose.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -234,6 +235,13 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   {
     CHECK(fmt::format("{}", 1q_kat) == "1 kat");
     CHECK(fmt::format("{}", 1q_U) == "1 U");
+  }
+
+  SECTION("absorbed dose")
+  {
+    CHECK(fmt::format("{}", 1q_Gy) == "1 Gy");
+    CHECK(fmt::format("{}", 1q_kGy) == "1 kGy");
+    CHECK(fmt::format("{}", 1q_mGy) == "1 mGy");
   }
 
   SECTION("addition with common ratio")

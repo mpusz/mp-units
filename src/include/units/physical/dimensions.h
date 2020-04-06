@@ -128,6 +128,9 @@ struct dim_conductance : derived_dimension<Child, U, exp<R, -1>> {};
 template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_substance> M>
 struct dim_catalytic_activity : derived_dimension<Child, U, exp<T, -1>, exp<M, 1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_mass> M>
+struct dim_absorbed_dose : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -210,5 +213,8 @@ concept Conductance = physical::QuantityOf<T, physical::dim_inductance>;
 
 template<typename T>
 concept CatalyticActivity = physical::QuantityOf<T, physical::dim_catalytic_activity>;
+
+template<typename T>
+concept AbsorbedDose = physical::QuantityOf<T, physical::dim_absorbed_dose>;
 
 }  // namespace units
