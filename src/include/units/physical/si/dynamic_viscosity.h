@@ -22,26 +22,26 @@
 
 #pragma once
 
-#include "si/absorbed_dose.h"
-#include "si/area.h"
-#include "si/capacitance.h"
-#include "si/catalytic_activity.h"
-#include "si/concentration.h"
-#include "si/conductance.h"
-#include "si/constants.h"
-#include "si/current_density.h"
-#include "si/density.h"
-#include "si/dynamic_viscosity.h"
-#include "si/frequency.h"
-#include "si/inductance.h"
-#include "si/luminance.h"
-#include "si/magnetic_flux.h"
-#include "si/magnetic_induction.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/pressure.h"
-#include "si/resistance.h"
-#include "si/surface_tension.h"
-#include "si/velocity.h"
-#include "si/voltage.h"
-#include "si/volume.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/time.h>
+#include <units/physical/si/pressure.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct pascal_second : unit<pascal_second> {};
+struct dim_dynamic_viscosity : physical::dim_dynamic_viscosity<dim_dynamic_viscosity, pascal_second, dim_pressure, dim_time> {};
+
+template<Unit U, Scalar Rep = double>
+using dynamic_viscosity = quantity<dim_dynamic_viscosity, U, Rep>;
+
+inline namespace literals {
+
+// Pa·s
+constexpr auto operator"" q_Pa_s(unsigned long long l) { return dynamic_viscosity<pascal_second, std::int64_t>(l); }
+constexpr auto operator"" q_Pa_s(long double l) { return dynamic_viscosity<pascal_second, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si
+
