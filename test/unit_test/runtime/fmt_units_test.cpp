@@ -20,14 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/area.h"
-#include "units/physical/si/constants.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/momentum.h"
-#include "units/physical/si/power.h"
-#include "units/physical/si/velocity.h"
-#include "units/physical/si/volume.h"
-#include "units/physical/si/surface_tension.h"
+#include "units/physical/si.h"
 #include "units/physical/us/length.h"
 #include "units/physical/imperial/length.h"
 #include "units/physical/international/length.h"
@@ -36,15 +29,6 @@
 #include "units/physical/international/velocity.h"
 #include "units/physical/iau/length.h"
 #include "units/physical/typographic/length.h"
-#include "units/physical/si/density.h"
-#include "units/physical/si/resistance.h"
-#include "units/physical/si/voltage.h"
-#include "units/physical/si/magnetic_induction.h"
-#include "units/physical/si/magnetic_flux.h"
-#include "units/physical/si/inductance.h"
-#include "units/physical/si/conductance.h"
-#include "units/physical/si/catalytic_activity.h"
-#include "units/physical/si/absorbed_dose.h"
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
@@ -247,6 +231,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("addition with common ratio")
   {
     CHECK(fmt::format("{}", 1q_in + 1q_yd) == "37 in");
+  }
+
+  SECTION("current density")
+  {
+    CHECK(fmt::format("{}", 1q_A_per_m2) == "1 A/m²");
+    CHECK(fmt::format("{:%q %AQ}", 1q_A_per_m2) == "1 A/m^2");
   }
 
   SECTION("incoherent units with powers")

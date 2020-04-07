@@ -20,32 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/capacitance.h>
-#include <units/physical/si/current.h>
-#include <units/physical/si/electric_charge.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/frequency.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/luminous_intensity.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/substance.h>
-#include <units/physical/si/surface_tension.h>
-#include <units/physical/si/temperature.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/velocity.h>
-#include <units/physical/si/voltage.h>
-#include <units/physical/si/volume.h>
-#include <units/physical/si/magnetic_induction.h>
-#include <units/physical/si/magnetic_flux.h>
-#include <units/physical/si/inductance.h>
-#include <units/physical/si/conductance.h>
-#include <units/physical/si/catalytic_activity.h>
-#include <units/physical/si/absorbed_dose.h>
+#include <units/physical/si.h>
 #include <utility>
 
 namespace {
@@ -316,5 +291,14 @@ static_assert(10q_N / 5q_N_per_m == 2q_m);
 static_assert(2q_m * 5q_N_per_m == 10q_N);
 
 static_assert(detail::unit_text<dim_surface_tension, newton_per_metre>() == "N/m");
+
+// current density
+
+static_assert(12q_A_per_m2 == 60q_A / 5q_m2);
+static_assert(1q_A_per_m2 == 1q_S * 1q_V / 1q_m2);
+
+/* #warning FIX THIS */
+/* static_assert(detail::unit_text<dim_current_density, ampere_per_metre_sq>() == basic_symbol_text("A · m²", "A/m^2")); */
+
 
 }  // namespace
