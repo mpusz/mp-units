@@ -140,6 +140,9 @@ struct dim_concentration : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {}
 template<typename Child, Unit U, DimensionOf<dim_luminous_intensity> I, DimensionOf<dim_length> L>
 struct dim_luminance : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_pressure> P, DimensionOf<dim_time> T>
+struct dim_dynamic_viscosity : derived_dimension<Child, U, exp<P, 1>, exp<T, 1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -234,5 +237,8 @@ concept Concentration = physical::QuantityOf<T, physical::dim_concentration>;
 
 template<typename T>
 concept Luminance = physical::QuantityOf<T, physical::dim_luminance>;
+
+template<typename T>
+concept DynamicViscosity = physical::QuantityOf<T, physical::dim_dynamic_viscosity>;
 
 }  // namespace units

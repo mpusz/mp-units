@@ -309,4 +309,9 @@ static_assert(detail::unit_text<dim_concentration, ampere_per_metre_sq>() == bas
 static_assert(1q_cd_per_m2 == 1q_cd / 1q_m2);
 static_assert(detail::unit_text<dim_luminance, candela_per_metre_sq>() == basic_symbol_text("cd/m²", "cd/m^2"));
 
+// dynamic viscosity
+
+static_assert(1q_Pa_s == 1q_N * 1q_s / 1q_m2);
+static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa ⋅ s", "Pa s"));
+
 }  // namespace

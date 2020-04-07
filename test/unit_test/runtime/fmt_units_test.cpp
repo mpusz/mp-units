@@ -251,6 +251,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{:%Q %Aq}", 1q_cd_per_m2) == "1 cd/m^2");
   }
 
+  SECTION("dynamic viscosity")
+  {
+    CHECK(fmt::format("{}", 1q_Pa_s) == "1 Pa ⋅ s");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_Pa_s) == "1 Pa s");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
