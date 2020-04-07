@@ -131,8 +131,8 @@ struct dim_catalytic_activity : derived_dimension<Child, U, exp<T, -1>, exp<M, 1
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_mass> M>
 struct dim_absorbed_dose : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
 
-template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_area> A>
-struct dim_current_density : derived_dimension<Child, U, exp<I, 1>, exp<A, -1>> {};
+template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_length> L>
+struct dim_current_density : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
 
 }  // namespace physical
 

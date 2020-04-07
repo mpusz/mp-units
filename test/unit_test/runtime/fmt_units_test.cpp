@@ -236,7 +236,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("current density")
   {
     CHECK(fmt::format("{}", 1q_A_per_m2) == "1 A/m²");
-    CHECK(fmt::format("{:%q %AQ}", 1q_A_per_m2) == "1 A/m^2");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_A_per_m2) == "1 A/m^2");
   }
 
   SECTION("incoherent units with powers")
