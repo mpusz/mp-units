@@ -304,4 +304,9 @@ static_assert(detail::unit_text<dim_current_density, ampere_per_metre_sq>() == b
 static_assert(1q_mol_per_m3 == 1q_kg_per_m3 * 1q_mol / 1q_kg);
 static_assert(detail::unit_text<dim_concentration, ampere_per_metre_sq>() == basic_symbol_text("mol/m³", "mol/m^2"));
 
+// luminance
+
+static_assert(1q_cd_per_m2 == 1q_cd / 1q_m2);
+static_assert(detail::unit_text<dim_luminance, candela_per_metre_sq>() == basic_symbol_text("cd/m²", "cd/m^2"));
+
 }  // namespace

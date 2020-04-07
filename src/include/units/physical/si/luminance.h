@@ -22,25 +22,26 @@
 
 #pragma once
 
-#include "si/absorbed_dose.h"
-#include "si/area.h"
-#include "si/capacitance.h"
-#include "si/catalytic_activity.h"
-#include "si/concentration.h"
-#include "si/conductance.h"
-#include "si/constants.h"
-#include "si/current_density.h"
-#include "si/density.h"
-#include "si/frequency.h"
-#include "si/inductance.h"
-#include "si/luminance.h"
-#include "si/magnetic_flux.h"
-#include "si/magnetic_induction.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/pressure.h"
-#include "si/resistance.h"
-#include "si/surface_tension.h"
-#include "si/velocity.h"
-#include "si/voltage.h"
-#include "si/volume.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/length.h>
+#include <units/physical/si/luminous_intensity.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct candela_per_metre_sq : unit<candela_per_metre_sq> {};
+struct dim_luminance : physical::dim_luminance<dim_luminance, candela_per_metre_sq, dim_luminous_intensity, dim_length> {};
+
+template<Unit U, Scalar Rep = double>
+using luminance = quantity<dim_luminance, U, Rep>;
+
+inline namespace literals {
+
+// cd/m²
+constexpr auto operator"" q_cd_per_m2(unsigned long long l) { return luminance<candela_per_metre_sq, std::int64_t>(l); }
+constexpr auto operator"" q_cd_per_m2(long double l) { return luminance<candela_per_metre_sq, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si
+
