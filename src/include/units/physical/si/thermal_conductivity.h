@@ -22,28 +22,26 @@
 
 #pragma once
 
-#include "si/absorbed_dose.h"
-#include "si/area.h"
-#include "si/capacitance.h"
-#include "si/catalytic_activity.h"
-#include "si/concentration.h"
-#include "si/conductance.h"
-#include "si/constants.h"
-#include "si/current_density.h"
-#include "si/density.h"
-#include "si/dynamic_viscosity.h"
-#include "si/frequency.h"
-#include "si/heat_capacity.h"
-#include "si/inductance.h"
-#include "si/luminance.h"
-#include "si/magnetic_flux.h"
-#include "si/magnetic_induction.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/pressure.h"
-#include "si/resistance.h"
-#include "si/surface_tension.h"
-#include "si/thermal_conductivity.h"
-#include "si/velocity.h"
-#include "si/voltage.h"
-#include "si/volume.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/power.h>
+#include <units/physical/si/temperature.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct watt_per_metre_kelvin : unit<watt_per_metre_kelvin> {};
+
+struct dim_thermal_conductivity : physical::dim_thermal_conductivity<dim_thermal_conductivity, watt_per_metre_kelvin, dim_power, dim_length, dim_thermodynamic_temperature> {};
+
+template<Unit U, Scalar Rep = double>
+using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
+
+inline namespace literals {
+
+// J/K
+constexpr auto operator"" q_W_per_m_K(unsigned long long l) { return thermal_conductivity<watt_per_metre_kelvin, std::int64_t>(l); }
+constexpr auto operator"" q_W_per_m_K(long double l) { return thermal_conductivity<watt_per_metre_kelvin, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si

@@ -322,4 +322,9 @@ static_assert(1q_J_per_K * 1q_K == 1q_s * 1q_N * 1q_m_per_s);
 static_assert(detail::unit_text<dim_heat_capacity, joule_per_kelvin>() == "J/K");
 static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() == basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J kg^-1 K^-1"));
 
+// thermal conductivity
+
+static_assert(20q_W_per_m_K * 10q_m * 300q_K == 60'000q_W);
+static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() == basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
+
 }  // namespace
