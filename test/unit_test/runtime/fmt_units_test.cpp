@@ -274,6 +274,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{:%Q %Aq}", 1q_W_per_m_K) == "1 W m^-1 K^-1");
   }
 
+  SECTION("electric field strength")
+  {
+    CHECK(fmt::format("{}", 1q_V_per_m) == "1 V/m");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");

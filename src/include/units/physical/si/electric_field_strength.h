@@ -22,29 +22,24 @@
 
 #pragma once
 
-#include "si/absorbed_dose.h"
-#include "si/area.h"
-#include "si/capacitance.h"
-#include "si/catalytic_activity.h"
-#include "si/concentration.h"
-#include "si/conductance.h"
-#include "si/constants.h"
-#include "si/current_density.h"
-#include "si/density.h"
-#include "si/dynamic_viscosity.h"
-#include "si/electric_field_strength.h"
-#include "si/frequency.h"
-#include "si/heat_capacity.h"
-#include "si/inductance.h"
-#include "si/luminance.h"
-#include "si/magnetic_flux.h"
-#include "si/magnetic_induction.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/pressure.h"
-#include "si/resistance.h"
-#include "si/surface_tension.h"
-#include "si/thermal_conductivity.h"
-#include "si/velocity.h"
-#include "si/voltage.h"
-#include "si/volume.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/voltage.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct volt_per_metre : unit<volt_per_metre> {};
+struct dim_electric_field_strength : physical::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
+
+template<Unit U, Scalar Rep = double>
+using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
+
+inline namespace literals {
+
+// V/m
+constexpr auto operator"" q_V_per_m(unsigned long long l) { return electric_field_strength<volt_per_metre, std::int64_t>(l); }
+constexpr auto operator"" q_V_per_m(long double l) { return electric_field_strength<volt_per_metre, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si

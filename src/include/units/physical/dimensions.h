@@ -152,6 +152,12 @@ struct dim_specific_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_length> L, DimensionOf<dim_thermodynamic_temperature> T>
 struct dim_thermal_conductivity : derived_dimension<Child, U, exp<P, 1>, exp<L, -1>, exp<T, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_length> L>
+struct dim_energy_density : derived_dimension<Child, U, exp<E, 1>, exp<L, -3>> {};
+
+template<typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_length> L>
+struct dim_electric_field_strength : derived_dimension<Child, U, exp<V, 1>, exp<L, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -198,6 +204,9 @@ concept Momentum = physical::QuantityOf<T, physical::dim_momentum>;
 
 template<typename T>
 concept Energy = physical::QuantityOf<T, physical::dim_energy>;
+
+template<typename T>
+concept Density = physical::QuantityOf<T, physical::dim_density>;
 
 template<typename T>
 concept Power = physical::QuantityOf<T, physical::dim_power>;
@@ -258,5 +267,11 @@ concept SpecificHeatCapacity = physical::QuantityOf<T, physical::dim_specific_he
 
 template<typename T>
 concept ThermalConductivity = physical::QuantityOf<T, physical::dim_thermal_conductivity>;
+
+// template<typename T>
+// concept EnergyDensity = physical::QuantityOf<T, physical::dim_energy_density>;
+
+template<typename T>
+concept ElectricFieldStrength = physical::QuantityOf<T, physical::dim_electric_field_strength>;
 
 }  // namespace units
