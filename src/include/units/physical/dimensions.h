@@ -134,6 +134,9 @@ struct dim_absorbed_dose : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {}
 template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_length> L>
 struct dim_current_density : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_substance> M, DimensionOf<dim_length> L>
+struct dim_concentration : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -222,5 +225,8 @@ concept AbsorbedDose = physical::QuantityOf<T, physical::dim_absorbed_dose>;
 
 template<typename T>
 concept CurrentDensity = physical::QuantityOf<T, physical::dim_current_density>;
+
+template<typename T>
+concept Concentration = physical::QuantityOf<T, physical::dim_concentration>;
 
 }  // namespace units
