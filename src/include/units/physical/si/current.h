@@ -28,7 +28,7 @@
 
 namespace units::si {
 
-struct ampere : named_unit<ampere, "m", prefix> {};
+struct ampere : named_unit<ampere, "A", prefix> {};
 
 struct dim_electric_current : physical::dim_electric_current<ampere> {};
 
