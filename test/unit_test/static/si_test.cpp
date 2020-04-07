@@ -297,8 +297,11 @@ static_assert(detail::unit_text<dim_surface_tension, newton_per_metre>() == "N/m
 static_assert(12q_A_per_m2 == 60q_A / 5q_m2);
 static_assert(1q_A_per_m2 == 1q_S * 1q_V / 1q_m2);
 
-/* #warning FIX THIS */
-/* static_assert(detail::unit_text<dim_current_density, ampere_per_metre_sq>() == basic_symbol_text("A · m²", "A/m^2")); */
+static_assert(detail::unit_text<dim_current_density, ampere_per_metre_sq>() == basic_symbol_text("A/m²", "A/m^2"));
 
+// concentration
+
+static_assert(1q_mol_per_m3 == 1q_kg_per_m3 * 1q_mol / 1q_kg);
+static_assert(detail::unit_text<dim_concentration, ampere_per_metre_sq>() == basic_symbol_text("mol/m³", "mol/m^2"));
 
 }  // namespace

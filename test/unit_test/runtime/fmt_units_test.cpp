@@ -239,6 +239,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{:%Q %Aq}", 1q_A_per_m2) == "1 A/m^2");
   }
 
+  SECTION("concentration")
+  {
+    CHECK(fmt::format("{}", 1q_mol_per_m3) == "1 mol/m³");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_mol_per_m3) == "1 mol/m^3");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");

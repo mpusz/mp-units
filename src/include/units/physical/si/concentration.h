@@ -22,24 +22,26 @@
 
 #pragma once
 
-#include "si/absorbed_dose.h"
-#include "si/area.h"
-#include "si/capacitance.h"
-#include "si/catalytic_activity.h"
-#include "si/concentration.h"
-#include "si/conductance.h"
-#include "si/constants.h"
-#include "si/current_density.h"
-#include "si/density.h"
-#include "si/frequency.h"
-#include "si/inductance.h"
-#include "si/magnetic_flux.h"
-#include "si/magnetic_induction.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/pressure.h"
-#include "si/resistance.h"
-#include "si/surface_tension.h"
-#include "si/velocity.h"
-#include "si/voltage.h"
-#include "si/volume.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/length.h>
+#include <units/physical/si/substance.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct mol_per_metre_cub : unit<mol_per_metre_cub> {};
+struct dim_concentration : physical::dim_concentration<dim_concentration, mol_per_metre_cub, dim_substance, dim_length> {};
+
+template<Unit U, Scalar Rep = double>
+using concentration = quantity<dim_concentration, U, Rep>;
+
+inline namespace literals {
+
+// mol/m³
+constexpr auto operator"" q_mol_per_m3(unsigned long long l) { return concentration<mol_per_metre_cub, std::int64_t>(l); }
+constexpr auto operator"" q_mol_per_m3(long double l) { return concentration<mol_per_metre_cub, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si
+
