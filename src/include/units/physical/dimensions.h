@@ -143,6 +143,12 @@ struct dim_luminance : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
 template<typename Child, Unit U, DimensionOf<dim_pressure> P, DimensionOf<dim_time> T>
 struct dim_dynamic_viscosity : derived_dimension<Child, U, exp<P, 1>, exp<T, 1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_thermodynamic_temperature> T>
+struct dim_heat_capacity : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
+
+template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_mass> M>
+struct dim_specific_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -240,5 +246,11 @@ concept Luminance = physical::QuantityOf<T, physical::dim_luminance>;
 
 template<typename T>
 concept DynamicViscosity = physical::QuantityOf<T, physical::dim_dynamic_viscosity>;
+
+template<typename T>
+concept HeatCapacity = physical::QuantityOf<T, physical::dim_heat_capacity>;
+
+template<typename T>
+concept SpecificHeatCapacity = physical::QuantityOf<T, physical::dim_specific_heat_capacity>;
 
 }  // namespace units

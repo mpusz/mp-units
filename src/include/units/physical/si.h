@@ -33,6 +33,7 @@
 #include "si/density.h"
 #include "si/dynamic_viscosity.h"
 #include "si/frequency.h"
+#include "si/heat_capacity.h"
 #include "si/inductance.h"
 #include "si/luminance.h"
 #include "si/magnetic_flux.h"
