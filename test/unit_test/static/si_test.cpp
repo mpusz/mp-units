@@ -314,4 +314,12 @@ static_assert(detail::unit_text<dim_luminance, candela_per_metre_sq>() == basic_
 static_assert(1q_Pa_s == 1q_N * 1q_s / 1q_m2);
 static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa ⋅ s", "Pa s"));
 
+// [specific] heath capacity
+
+static_assert(1q_J_per_K == 1q_J_per_kg_K * 1q_kg);
+static_assert(1q_J_per_K * 1q_K == 1q_s * 1q_N * 1q_m_per_s);
+
+static_assert(detail::unit_text<dim_heat_capacity, joule_per_kelvin>() == "J/K");
+static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() == basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J kg^-1 K^-1"));
+
 }  // namespace

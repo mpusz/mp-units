@@ -257,6 +257,17 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{:%Q %Aq}", 1q_Pa_s) == "1 Pa s");
   }
 
+  SECTION("heat capacity")
+  {
+    CHECK(fmt::format("{}", 1q_J_per_K) == "1 J/K");
+  }
+
+  SECTION("specific heat capacity")
+  {
+    CHECK(fmt::format("{}", 1q_J_per_kg_K) == "1 J ⋅ K⁻¹ ⋅ kg⁻¹");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_J_per_kg_K) == "1 J K^-1 kg^-1");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
