@@ -327,4 +327,11 @@ static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_k
 static_assert(20q_W_per_m_K * 10q_m * 300q_K == 60'000q_W);
 static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() == basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
 
+// electric field strength
+
+static_assert(100q_N/20q_C == 5q_V_per_m);
+static_assert(1q_C * 10q_V_per_m * 3q_m == 30q_J);
+
+static_assert(detail::unit_text<dim_electric_field_strength, volt_per_metre>() == "V/m");
+
 }  // namespace
