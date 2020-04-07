@@ -131,6 +131,9 @@ struct dim_catalytic_activity : derived_dimension<Child, U, exp<T, -1>, exp<M, 1
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_mass> M>
 struct dim_absorbed_dose : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_area> A>
+struct dim_current_density : derived_dimension<Child, U, exp<I, 1>, exp<A, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -216,5 +219,8 @@ concept CatalyticActivity = physical::QuantityOf<T, physical::dim_catalytic_acti
 
 template<typename T>
 concept AbsorbedDose = physical::QuantityOf<T, physical::dim_absorbed_dose>;
+
+template<typename T>
+concept CurrentDensity = physical::QuantityOf<T, physical::dim_current_density>;
 
 }  // namespace units

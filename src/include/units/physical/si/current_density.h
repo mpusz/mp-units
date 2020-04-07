@@ -22,23 +22,26 @@
 
 #pragma once
 
-#include "si/area.h"
-#include "si/constants.h"
-#include "si/frequency.h"
-#include "si/momentum.h"
-#include "si/power.h"
-#include "si/velocity.h"
-#include "si/volume.h"
-#include "si/surface_tension.h"
-#include "si/pressure.h"
-#include "si/density.h"
-#include "si/resistance.h"
-#include "si/voltage.h"
-#include "si/capacitance.h"
-#include "si/magnetic_induction.h"
-#include "si/magnetic_flux.h"
-#include "si/inductance.h"
-#include "si/conductance.h"
-#include "si/catalytic_activity.h"
-#include "si/absorbed_dose.h"
-#include "si/current_density.h"
+#include <units/physical/dimensions.h>
+#include <units/physical/si/current.h>
+#include <units/physical/si/area.h>
+#include <units/physical/si/prefixes.h>
+#include <units/quantity.h>
+
+namespace units::si {
+
+struct ampere_per_metre_sq : unit<ampere_per_metre_sq> {};
+
+struct dim_current_density : physical::dim_current_density<dim_current_density, ampere_per_metre_sq, dim_electric_current, dim_area> {};
+
+template<Unit U, Scalar Rep = double>
+using current_density = quantity<dim_current_density, U, Rep>;
+
+inline namespace literals {
+
+constexpr auto operator"" q_A_per_m2(unsigned long long l) { return current_density<ampere_per_metre_sq, std::int64_t>(l); }
+constexpr auto operator"" q_A_per_m2(long double l) { return current_density<ampere_per_metre_sq, long double>(l); }
+
+}  // namespace literals
+
+}  // namespace units::si
