@@ -41,6 +41,7 @@
 #include "si/magnetic_flux.h"
 #include "si/magnetic_induction.h"
 #include "si/momentum.h"
+#include "si/permeability.h"
 #include "si/permittivity.h"
 #include "si/power.h"
 #include "si/pressure.h"
