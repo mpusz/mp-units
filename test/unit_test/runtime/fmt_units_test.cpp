@@ -292,6 +292,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_F_per_m) == "1 F/m");
   }
 
+  SECTION("permeability")
+  {
+    CHECK(fmt::format("{}", 1q_H_per_m) == "1 H/m");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");

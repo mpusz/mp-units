@@ -354,4 +354,11 @@ static_assert(1q_C_per_m3 / 1q_F_per_m * 1q_m == 1q_V_per_m);
 
 static_assert(detail::unit_text<dim_permittivity, farad_per_metre>() == "F/m");
 
+// permeability
+
+static_assert(1q_H_per_m * 1q_A / 1q_m == 1q_T);
+static_assert(1q_H_per_m * 1q_A * 1q_A == 1q_N);
+
+static_assert(detail::unit_text<dim_permeability, henry_per_metre>() == "H/m");
+
 }  // namespace
