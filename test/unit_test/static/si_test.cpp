@@ -334,4 +334,16 @@ static_assert(1q_C * 10q_V_per_m * 3q_m == 30q_J);
 
 static_assert(detail::unit_text<dim_electric_field_strength, volt_per_metre>() == "V/m");
 
+// [surface] charge density
+
+static_assert(20.q_C / 40q_m3 == 0.5q_C_per_m3);
+static_assert(10.q_C / 20q_m2 == 0.5q_C_per_m2);
+static_assert(20.q_C_per_m3 == 10.q_C_per_m2 / 0.5q_m);
+static_assert(1q_C / 1q_m / 1q_m == 1q_C / 1q_m2);
+static_assert(1q_C_per_m2 == 1q_C_per_m3 * 1q_m);
+static_assert(1q_V_per_m * 10q_C_per_m3 * 1q_m3 == 10q_N);
+
+static_assert(detail::unit_text<dim_charge_density, coulomb_per_metre_cub>() == basic_symbol_text("C/m³", "C/m^3"));
+static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() == basic_symbol_text("C/m²", "C/m^2"));
+
 }  // namespace

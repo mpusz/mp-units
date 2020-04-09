@@ -26,6 +26,7 @@
 #include "si/area.h"
 #include "si/capacitance.h"
 #include "si/catalytic_activity.h"
+#include "si/charge_density.h"
 #include "si/concentration.h"
 #include "si/conductance.h"
 #include "si/constants.h"
