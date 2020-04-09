@@ -346,4 +346,12 @@ static_assert(1q_V_per_m * 10q_C_per_m3 * 1q_m3 == 10q_N);
 static_assert(detail::unit_text<dim_charge_density, coulomb_per_metre_cub>() == basic_symbol_text("C/m³", "C/m^3"));
 static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() == basic_symbol_text("C/m²", "C/m^2"));
 
+// permittivity
+
+static_assert(1q_F_per_m == 1q_F / 1q_m);
+static_assert(1/(1q_F_per_m) * 1q_C * 1q_C / 1q_m2 == 1q_N);
+static_assert(1q_C_per_m3 / 1q_F_per_m * 1q_m == 1q_V_per_m);
+
+static_assert(detail::unit_text<dim_permittivity, farad_per_metre>() == "F/m");
+
 }  // namespace
