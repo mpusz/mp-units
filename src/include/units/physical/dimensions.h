@@ -170,6 +170,9 @@ struct dim_permittivity : derived_dimension<Child, U, exp<C, 1>, exp<L, -1>> {};
 template<typename Child, Unit U, DimensionOf<dim_inductance> H, DimensionOf<dim_length> L>
 struct dim_permeability : derived_dimension<Child, U, exp<H, 1>, exp<L, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_substance> M>
+struct dim_molar_energy : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
+
 }  // namespace physical
 
 template<typename T>
@@ -297,5 +300,8 @@ concept Permittivity = physical::QuantityOf<T, physical::dim_permittivity>;
 
 template<typename T>
 concept Permeability = physical::QuantityOf<T, physical::dim_permeability>;
+
+template<typename T>
+concept MolarEnergy = physical::QuantityOf<T, physical::dim_molar_energy>;
 
 }  // namespace units
