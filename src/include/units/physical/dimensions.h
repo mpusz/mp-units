@@ -164,6 +164,8 @@ struct dim_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -3>> {
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
 struct dim_surface_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -2>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_capacitance> C, DimensionOf<dim_length> L>
+struct dim_permittivity : derived_dimension<Child, U, exp<C, 1>, exp<L, -1>> {};
 
 }  // namespace physical
 
@@ -286,5 +288,8 @@ concept ChargeDensity = physical::QuantityOf<T, physical::dim_charge_density>;
 
 template<typename T>
 concept SurfaceChargeDensity = physical::QuantityOf<T, physical::dim_surface_charge_density>;
+
+template<typename T>
+concept Permittivity = physical::QuantityOf<T, physical::dim_permittivity>;
 
 }  // namespace units
