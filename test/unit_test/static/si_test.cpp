@@ -361,4 +361,10 @@ static_assert(1q_H_per_m * 1q_A * 1q_A == 1q_N);
 
 static_assert(detail::unit_text<dim_permeability, henry_per_metre>() == "H/m");
 
+// molar energy
+
+static_assert(1q_J_per_mol * 1q_mol_per_m3 * 1q_m3 == 1q_N * 1q_m);
+
+static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
+
 }  // namespace

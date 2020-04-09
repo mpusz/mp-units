@@ -297,6 +297,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_H_per_m) == "1 H/m");
   }
 
+  SECTION("molar energy")
+  {
+    CHECK(fmt::format("{}", 1q_J_per_mol) == "1 J/mol");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");

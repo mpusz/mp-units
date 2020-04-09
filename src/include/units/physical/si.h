@@ -40,6 +40,7 @@
 #include "si/luminance.h"
 #include "si/magnetic_flux.h"
 #include "si/magnetic_induction.h"
+#include "si/molar_energy.h"
 #include "si/momentum.h"
 #include "si/permeability.h"
 #include "si/permittivity.h"
