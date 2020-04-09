@@ -26,21 +26,27 @@
 #include <units/physical/si/temperature.h>
 #include <units/physical/si/energy.h>
 #include <units/physical/si/mass.h>
+#include <units/physical/si/substance.h>
 #include <units/quantity.h>
 
 namespace units::si {
 
 struct joule_per_kelvin : unit<joule_per_kelvin> {};
 struct joule_per_kilogram_kelvin : unit<joule_per_kilogram_kelvin> {};
+struct joule_per_mole_kelvin : unit<joule_per_mole_kelvin> {};
 
 struct dim_heat_capacity : physical::dim_heat_capacity<dim_heat_capacity, joule_per_kelvin, dim_energy, dim_thermodynamic_temperature> {};
 struct dim_specific_heat_capacity : physical::dim_specific_heat_capacity<dim_specific_heat_capacity, joule_per_kilogram_kelvin, dim_heat_capacity, dim_mass> {};
+struct dim_molar_heat_capacity : physical::dim_molar_heat_capacity<dim_molar_heat_capacity, joule_per_mole_kelvin, dim_heat_capacity, dim_substance> {};
 
 template<Unit U, Scalar Rep = double>
 using heat_capacity = quantity<dim_heat_capacity, U, Rep>;
 
 template<Unit U, Scalar Rep = double>
 using specific_heat_capacity = quantity<dim_specific_heat_capacity, U, Rep>;
+
+template<Unit U, Scalar Rep = double>
+using molar_heat_capacity = quantity<dim_molar_heat_capacity, U, Rep>;
 
 inline namespace literals {
 
@@ -51,6 +57,10 @@ constexpr auto operator"" q_J_per_K(long double l) { return heat_capacity<joule_
 // J/(kg·K)
 constexpr auto operator"" q_J_per_kg_K(unsigned long long l) { return specific_heat_capacity<joule_per_kilogram_kelvin, std::int64_t>(l); }
 constexpr auto operator"" q_J_per_kg_K(long double l) { return specific_heat_capacity<joule_per_kilogram_kelvin, long double>(l); }
+
+// J/(mol·K)
+constexpr auto operator"" q_J_per_mol_K(unsigned long long l) { return molar_heat_capacity<joule_per_mole_kelvin, std::int64_t>(l); }
+constexpr auto operator"" q_J_per_mol_K(long double l) { return molar_heat_capacity<joule_per_mole_kelvin, long double>(l); }
 
 }  // namespace literals
 

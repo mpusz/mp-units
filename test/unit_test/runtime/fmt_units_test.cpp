@@ -268,6 +268,12 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{:%Q %Aq}", 1q_J_per_kg_K) == "1 J K^-1 kg^-1");
   }
 
+  SECTION("molar heath capacity")
+  {
+    CHECK(fmt::format("{}", 1q_J_per_mol_K) == "1 J ⋅ K⁻¹ ⋅ mol⁻¹");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_J_per_mol_K) == "1 J K^-1 mol^-1");
+  }
+
   SECTION("thermal conductivity")
   {
     CHECK(fmt::format("{}", 1q_W_per_m_K) == "1 W ⋅ m⁻¹ ⋅ K⁻¹");

@@ -149,6 +149,9 @@ struct dim_heat_capacity : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {}
 template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_mass> M>
 struct dim_specific_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_substance> M>
+struct dim_molar_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -1>> {};
+
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_length> L, DimensionOf<dim_thermodynamic_temperature> T>
 struct dim_thermal_conductivity : derived_dimension<Child, U, exp<P, 1>, exp<L, -1>, exp<T, -1>> {};
 
@@ -279,6 +282,9 @@ concept HeatCapacity = physical::QuantityOf<T, physical::dim_heat_capacity>;
 
 template<typename T>
 concept SpecificHeatCapacity = physical::QuantityOf<T, physical::dim_specific_heat_capacity>;
+
+template<typename T>
+concept MolarHeatCapacity = physical::QuantityOf<T, physical::dim_molar_heat_capacity>;
 
 template<typename T>
 concept ThermalConductivity = physical::QuantityOf<T, physical::dim_thermal_conductivity>;
