@@ -279,6 +279,14 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_V_per_m) == "1 V/m");
   }
 
+  SECTION("charge density")
+  {
+    CHECK(fmt::format("{}", 1q_C_per_m3) == "1 C/m³");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_C_per_m3) == "1 C/m^3");
+    CHECK(fmt::format("{}", 1q_C_per_m2) == "1 C/m²");
+    CHECK(fmt::format("{:%Q %Aq}", 1q_C_per_m2) == "1 C/m^2");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1q_mi * 1q_mi * 1q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");

@@ -158,6 +158,13 @@ struct dim_energy_density : derived_dimension<Child, U, exp<E, 1>, exp<L, -3>> {
 template<typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_length> L>
 struct dim_electric_field_strength : derived_dimension<Child, U, exp<V, 1>, exp<L, -1>> {};
 
+template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
+struct dim_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -3>> {};
+
+template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
+struct dim_surface_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -2>> {};
+
+
 }  // namespace physical
 
 template<typename T>
@@ -273,5 +280,11 @@ concept ThermalConductivity = physical::QuantityOf<T, physical::dim_thermal_cond
 
 template<typename T>
 concept ElectricFieldStrength = physical::QuantityOf<T, physical::dim_electric_field_strength>;
+
+template<typename T>
+concept ChargeDensity = physical::QuantityOf<T, physical::dim_charge_density>;
+
+template<typename T>
+concept SurfaceChargeDensity = physical::QuantityOf<T, physical::dim_surface_charge_density>;
 
 }  // namespace units
