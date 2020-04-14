@@ -11,7 +11,7 @@ if __name__ == "__main__":
         remotes = "https://api.bintray.com/conan/bincrafters/public-conan, https://api.bintray.com/conan/twonington/public-conan",
         build_policy = "outdated",
         upload_dependencies="all",
-        pip_install=["sphinx==2.4.4", "recommonmark", "breathe"],
+        pip_install=["sphinx", "recommonmark", "breathe"],
 
         # build configurations
         archs = ["x86_64"], #  limit to 64-bit only
