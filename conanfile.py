@@ -71,7 +71,7 @@ class UnitsConan(ConanFile):
 
     def configure(self):
         #check if either gcc or clang compiler
-        if self.settings.compiler != ("gcc") && self.settings.compiler != ("clang")
+        if self.settings.compiler != ("gcc") || self.settings.compiler != ("clang")
             #if self.settings.compiler != "gcc": # and self.settings.compiler != "clang":
             raise ConanInvalidConfiguration("Library works only with gcc or clang") # and clang")
         if self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "9":
