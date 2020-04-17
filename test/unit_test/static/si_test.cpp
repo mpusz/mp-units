@@ -274,6 +274,8 @@ static_assert(10q_km * 10q_km == 100q_km2);
 static_assert(1q_m2 == 10'000q_cm2);
 static_assert(1q_ha == 10'000q_m2);
 
+static_assert(hectare::symbol == "ha");
+
 static_assert(detail::unit_text<dim_area, square_metre>() == basic_symbol_text("m²", "m^2"));
 
 // volume
