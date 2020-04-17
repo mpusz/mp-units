@@ -52,7 +52,7 @@ struct square_exametre : deduced_unit<square_exametre, dim_area, exametre> {};
 struct square_zettametre : deduced_unit<square_zettametre, dim_area, zettametre> {};
 struct square_yottametre : deduced_unit<square_yottametre, dim_area, yottametre> {};
 
-using hectare = square_hectometre;
+struct hectare : alias_unit<square_hectometre, "ha"> {};
 
 template<Unit U, Scalar Rep = double>
 using area = quantity<dim_area, U, Rep>;
