@@ -300,7 +300,8 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("iostream")
       {
-        CHECK(os.str() == "8 × 10⁻² m³");
+        //CHECK(os.str() == "8 × 10⁻² m³");
+        CHECK(os.str() == "8 dal");
       }
 
       SECTION("fmt with default format {} on a quantity")

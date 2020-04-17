@@ -74,6 +74,7 @@ template<typename Child>
 struct unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = false;
   using prefix_family = no_prefix;
+  using base_prefix_family = no_prefix;
 };
 
 /**
@@ -100,6 +101,7 @@ struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PT;
+  using base_prefix_family = PT;
 };
 
 /**
@@ -121,6 +123,7 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PT;
+  using base_prefix_family = PT;
 };
 
 /**
@@ -141,6 +144,7 @@ struct prefixed_unit :
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_family = no_prefix;
+  using base_prefix_family = U::base_prefix_family;
 };
 
 /**
@@ -163,6 +167,7 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
   static constexpr bool is_named = false;
   static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
   using prefix_family = no_prefix;
+  using base_prefix_family = U::base_prefix_family;
 };
 
 // template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixFamily PT, Unit U, Unit... Us>
@@ -171,5 +176,21 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
 //   static constexpr auto symbol = Symbol;
 //   using prefix_family = PT;
 // };
+
+template<Unit U, basic_symbol_text Symbol>
+struct alias_unit : U {
+  static constexpr bool is_named = true;
+  static constexpr auto symbol = Symbol;
+  using prefix_family = U::base_prefix_family;
+  using base_prefix_family = U::base_prefix_family;
+};
+
+template<Unit U, Prefix P, Unit AU>
+struct prefixed_alias_unit : U {
+  static constexpr bool is_named = true;
+  static constexpr auto symbol = P::symbol + AU::symbol;
+  using prefix_family = no_prefix;
+  using base_prefix_family = AU::base_prefix_family;
+};
 
 }  // namespace units
