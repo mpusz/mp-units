@@ -29,11 +29,22 @@
 namespace units::si {
 
 struct hertz : named_unit<hertz, "Hz", prefix> {};
+struct yoctohertz : prefixed_unit<yoctohertz, yocto, hertz> {};
+struct zeptohertz : prefixed_unit<zeptohertz, zepto, hertz> {};
+struct attohertz : prefixed_unit<attohertz, atto, hertz> {};
+struct femtohertz : prefixed_unit<femtohertz, femto, hertz> {};
+struct picohertz : prefixed_unit<picohertz, pico, hertz> {};
+struct nanohertz : prefixed_unit<nanohertz, nano, hertz> {};
+struct microhertz : prefixed_unit<microhertz, micro, hertz> {};
 struct millihertz : prefixed_unit<millihertz, milli, hertz> {};
 struct kilohertz : prefixed_unit<kilohertz, kilo, hertz> {};
 struct megahertz : prefixed_unit<megahertz, mega, hertz> {};
 struct gigahertz : prefixed_unit<gigahertz, giga, hertz> {};
 struct terahertz : prefixed_unit<terahertz, tera, hertz> {};
+struct petahertz : prefixed_unit<petahertz, peta, hertz> {};
+struct exahertz : prefixed_unit<exahertz, exa, hertz> {};
+struct zettahertz : prefixed_unit<zettahertz, zetta, hertz> {};
+struct yottahertz : prefixed_unit<yottahertz, yotta, hertz> {};
 
 struct dim_frequency : physical::dim_frequency<dim_frequency, hertz, dim_time> {};
 
@@ -45,6 +56,34 @@ inline namespace literals {
 // Hz
 constexpr auto operator"" q_Hz(unsigned long long l) { return frequency<hertz, std::int64_t>(l); }
 constexpr auto operator"" q_Hz(long double l) { return frequency<hertz, long double>(l); }
+
+// yHz
+constexpr auto operator"" q_yHz(unsigned long long l) { return frequency<yoctohertz, std::int64_t>(l); }
+constexpr auto operator"" q_yHz(long double l) { return frequency<yoctohertz, long double>(l); }
+
+// zHz
+constexpr auto operator"" q_zHz(unsigned long long l) { return frequency<zeptohertz, std::int64_t>(l); }
+constexpr auto operator"" q_zHz(long double l) { return frequency<zeptohertz, long double>(l); }
+
+// aHz
+constexpr auto operator"" q_aHz(unsigned long long l) { return frequency<attohertz, std::int64_t>(l); }
+constexpr auto operator"" q_aHz(long double l) { return frequency<attohertz, long double>(l); }
+
+// fHz
+constexpr auto operator"" q_fHz(unsigned long long l) { return frequency<femtohertz, std::int64_t>(l); }
+constexpr auto operator"" q_fHz(long double l) { return frequency<femtohertz, long double>(l); }
+
+// pHz
+constexpr auto operator"" q_pHz(unsigned long long l) { return frequency<picohertz, std::int64_t>(l); }
+constexpr auto operator"" q_pHz(long double l) { return frequency<picohertz, long double>(l); }
+
+// nHz
+constexpr auto operator"" q_nHz(unsigned long long l) { return frequency<nanohertz, std::int64_t>(l); }
+constexpr auto operator"" q_nHz(long double l) { return frequency<nanohertz, long double>(l); }
+
+// uHz
+constexpr auto operator"" q_uHz(unsigned long long l) { return frequency<microhertz, std::int64_t>(l); }
+constexpr auto operator"" q_uHz(long double l) { return frequency<microhertz, long double>(l); }
 
 // mHz
 constexpr auto operator"" q_mHz(unsigned long long l) { return frequency<millihertz, std::int64_t>(l); }
@@ -65,6 +104,22 @@ constexpr auto operator"" q_GHz(long double l) { return frequency<gigahertz, lon
 // THz
 constexpr auto operator"" q_THz(unsigned long long l) { return frequency<terahertz, std::int64_t>(l); }
 constexpr auto operator"" q_THz(long double l) { return frequency<terahertz, long double>(l); }
+
+// PHz
+constexpr auto operator"" q_PHz(unsigned long long l) { return frequency<petahertz, std::int64_t>(l); }
+constexpr auto operator"" q_PHz(long double l) { return frequency<petahertz, long double>(l); }
+
+// EHz
+constexpr auto operator"" q_EHz(unsigned long long l) { return frequency<exahertz, std::int64_t>(l); }
+constexpr auto operator"" q_EHz(long double l) { return frequency<exahertz, long double>(l); }
+
+// ZHz
+constexpr auto operator"" q_ZHz(unsigned long long l) { return frequency<zettahertz, std::int64_t>(l); }
+constexpr auto operator"" q_ZHz(long double l) { return frequency<zettahertz, long double>(l); }
+
+// YHz
+constexpr auto operator"" q_YHz(unsigned long long l) { return frequency<yottahertz, std::int64_t>(l); }
+constexpr auto operator"" q_YHz(long double l) { return frequency<yottahertz, long double>(l); }
 
 }  // namespace literals
 

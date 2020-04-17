@@ -30,10 +30,22 @@
 namespace units::si {
 
 struct joule : named_unit<joule, "J", prefix> {};
+struct yoctojoule : prefixed_unit<yoctojoule, yocto, joule> {};
+struct zeptojoule : prefixed_unit<zeptojoule, zepto, joule> {};
+struct attojoule : prefixed_unit<attojoule, atto, joule> {};
+struct femtojoule : prefixed_unit<femtojoule, femto, joule> {};
+struct picojoule : prefixed_unit<picojoule, pico, joule> {};
+struct nanojoule : prefixed_unit<nanojoule, nano, joule> {};
+struct microjoule : prefixed_unit<microjoule, micro, joule> {};
 struct millijoule : prefixed_unit<millijoule, milli, joule> {};
 struct kilojoule : prefixed_unit<kilojoule, kilo, joule> {};
 struct megajoule : prefixed_unit<megajoule, mega, joule> {};
 struct gigajoule : prefixed_unit<gigajoule, giga, joule> {};
+struct terajoule : prefixed_unit<terajoule, tera, joule> {};
+struct petajoule : prefixed_unit<petajoule, peta, joule> {};
+struct exajoule : prefixed_unit<exajoule, exa, joule> {};
+struct zettajoule : prefixed_unit<zettajoule, zetta, joule> {};
+struct yottajoule : prefixed_unit<yottajoule, yotta, joule> {};
 
 struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {};
@@ -48,6 +60,34 @@ inline namespace literals {
 // J
 constexpr auto operator"" q_J(unsigned long long l) { return energy<joule, std::int64_t>(l); }
 constexpr auto operator"" q_J(long double l) { return energy<joule, long double>(l); }
+
+// yJ
+constexpr auto operator"" q_yJ(unsigned long long l) { return energy<yoctojoule, std::int64_t>(l); }
+constexpr auto operator"" q_yJ(long double l) { return energy<yoctojoule, long double>(l); }
+
+// zJ
+constexpr auto operator"" q_zJ(unsigned long long l) { return energy<zeptojoule, std::int64_t>(l); }
+constexpr auto operator"" q_zJ(long double l) { return energy<zeptojoule, long double>(l); }
+
+// aJ
+constexpr auto operator"" q_aJ(unsigned long long l) { return energy<attojoule, std::int64_t>(l); }
+constexpr auto operator"" q_aJ(long double l) { return energy<attojoule, long double>(l); }
+
+// fJ
+constexpr auto operator"" q_fJ(unsigned long long l) { return energy<femtojoule, std::int64_t>(l); }
+constexpr auto operator"" q_fJ(long double l) { return energy<femtojoule, long double>(l); }
+
+// pJ
+constexpr auto operator"" q_pJ(unsigned long long l) { return energy<picojoule, std::int64_t>(l); }
+constexpr auto operator"" q_pJ(long double l) { return energy<picojoule, long double>(l); }
+
+// nJ
+constexpr auto operator"" q_nJ(unsigned long long l) { return energy<nanojoule, std::int64_t>(l); }
+constexpr auto operator"" q_nJ(long double l) { return energy<nanojoule, long double>(l); }
+
+// uJ
+constexpr auto operator"" q_uJ(unsigned long long l) { return energy<microjoule, std::int64_t>(l); }
+constexpr auto operator"" q_uJ(long double l) { return energy<microjoule, long double>(l); }
 
 // mJ
 constexpr auto operator"" q_mJ(unsigned long long l) { return energy<millijoule, std::int64_t>(l); }
@@ -64,6 +104,26 @@ constexpr auto operator"" q_MJ(long double l) { return energy<megajoule, long do
 // GJ
 constexpr auto operator"" q_GJ(unsigned long long l) { return energy<gigajoule, std::int64_t>(l); }
 constexpr auto operator"" q_GJ(long double l) { return energy<gigajoule, long double>(l); }
+
+// TJ
+constexpr auto operator"" q_TJ(unsigned long long l) { return energy<terajoule, std::int64_t>(l); }
+constexpr auto operator"" q_TJ(long double l) { return energy<terajoule, long double>(l); }
+
+// PJ
+constexpr auto operator"" q_PJ(unsigned long long l) { return energy<petajoule, std::int64_t>(l); }
+constexpr auto operator"" q_PJ(long double l) { return energy<petajoule, long double>(l); }
+
+// EJ
+constexpr auto operator"" q_EJ(unsigned long long l) { return energy<exajoule, std::int64_t>(l); }
+constexpr auto operator"" q_EJ(long double l) { return energy<exajoule, long double>(l); }
+
+// ZJ
+constexpr auto operator"" q_ZJ(unsigned long long l) { return energy<zettajoule, std::int64_t>(l); }
+constexpr auto operator"" q_ZJ(long double l) { return energy<zettajoule, long double>(l); }
+
+// YJ
+constexpr auto operator"" q_YJ(unsigned long long l) { return energy<yottajoule, std::int64_t>(l); }
+constexpr auto operator"" q_YJ(long double l) { return energy<yottajoule, long double>(l); }
 
 // eV
 constexpr auto operator"" q_eV(unsigned long long l) { return energy<electronvolt, std::int64_t>(l); }

@@ -29,6 +29,11 @@
 namespace units::si {
 
 struct second : named_unit<second, "s", prefix> {};
+struct yoctosecond : prefixed_unit<yoctosecond, yocto, second> {};
+struct zeptosecond : prefixed_unit<zeptosecond, zepto, second> {};
+struct attosecond : prefixed_unit<attosecond, atto, second> {};
+struct femtosecond : prefixed_unit<femtosecond, femto, second> {};
+struct picosecond : prefixed_unit<picosecond, pico, second> {};
 struct nanosecond : prefixed_unit<nanosecond, nano, second> {};
 struct microsecond : prefixed_unit<microsecond, micro, second> {};
 struct millisecond : prefixed_unit<millisecond, milli, second> {};
@@ -42,6 +47,26 @@ template<Unit U, Scalar Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
 inline namespace literals {
+
+// ys
+constexpr auto operator"" q_ys(unsigned long long l) { return time<yoctosecond, std::int64_t>(l); }
+constexpr auto operator"" q_ys(long double l) { return time<yoctosecond, long double>(l); }
+
+// zs
+constexpr auto operator"" q_zs(unsigned long long l) { return time<zeptosecond, std::int64_t>(l); }
+constexpr auto operator"" q_zs(long double l) { return time<zeptosecond, long double>(l); }
+
+// as
+constexpr auto operator"" q_as(unsigned long long l) { return time<attosecond, std::int64_t>(l); }
+constexpr auto operator"" q_as(long double l) { return time<attosecond, long double>(l); }
+
+// fs
+constexpr auto operator"" q_fs(unsigned long long l) { return time<femtosecond, std::int64_t>(l); }
+constexpr auto operator"" q_fs(long double l) { return time<femtosecond, long double>(l); }
+
+// ps
+constexpr auto operator"" q_ps(unsigned long long l) { return time<picosecond, std::int64_t>(l); }
+constexpr auto operator"" q_ps(long double l) { return time<picosecond, long double>(l); }
 
 // ns
 constexpr auto operator"" q_ns(unsigned long long l) { return time<nanosecond, std::int64_t>(l); }

@@ -52,8 +52,11 @@ static_assert(kilometre::symbol == "km");
 
 static_assert(1q_kg == 1000q_g);
 static_assert(1q_t == 1000q_kg);
+static_assert(1q_kt == 1000000q_kg);
 
 static_assert(kilogram::symbol == "kg");
+static_assert(tonne::symbol == "t");
+static_assert(kilotonne::symbol == "kt");
 
 // time
 
@@ -281,6 +284,10 @@ static_assert(10q_km * 10q_km * 10q_km == 1000q_km3);
 static_assert(1q_m3 == 1'000'000q_cm3);
 static_assert(1q_dm * 1q_dm * 1q_dm == 1q_l);
 static_assert(1000q_l == 1q_m3);
+static_assert(1q_kl == 1q_m3);
+
+static_assert(litre::symbol == "l");
+static_assert(kilolitre::symbol == "kl");
 
 static_assert(detail::unit_text<dim_volume, cubic_metre>() == basic_symbol_text("m³", "m^3"));
 
