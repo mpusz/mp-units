@@ -22,34 +22,53 @@
 
 #pragma once
 
+#include <units/concepts.h>
 #include <units/quantity.h>
 #include <cmath>
+#include <limits>
 
 namespace units {
 
-  template<std::intmax_t N, typename D, typename U, typename Rep>
-    requires (N == 0)
-  inline Rep pow(const quantity<D, U, Rep>&) noexcept
-  {
-    return 1;
-  }
+template<std::intmax_t N, typename D, typename U, typename Rep>
+requires(N == 0) inline Rep pow(const quantity<D, U, Rep>&) noexcept
+{
+  return 1;
+}
 
-  template<std::intmax_t N, typename D, typename U, typename Rep>
-  inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
-  {
-    using dim = dimension_pow<D, N>;
-    using ratio = ratio_pow<typename U::ratio, N>;
-    using unit = downcast_unit<dim, ratio>;
-    return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
-  }
+template<std::intmax_t N, typename D, typename U, typename Rep>
+inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
+{
+  using dim = dimension_pow<D, N>;
+  using ratio = ratio_pow<typename U::ratio, N>;
+  using unit = downcast_unit<dim, ratio>;
+  return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
+}
 
-  template<typename D, typename U, typename Rep>
-  inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
-  {
-    using dim = dimension_sqrt<D>;
-    using ratio = ratio_sqrt<typename U::ratio>;
-    using unit = downcast_unit<dim, ratio>;
-    return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
-  }
+template<typename D, typename U, typename Rep>
+inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
+{
+  using dim = dimension_sqrt<D>;
+  using ratio = ratio_sqrt<typename U::ratio>;
+  using unit = downcast_unit<dim, ratio>;
+  return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
+}
+
+template<typename D, typename U, typename Rep>
+constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
+{
+  return quantity<D, U, Rep>(std::abs(q.count()));
+}
+
+template<typename D, typename U, typename Rep>
+constexpr Quantity AUTO fabs(const quantity<D, U, Rep>& q) noexcept
+{
+  return quantity<D, U, Rep>(std::fabs(q.count()));
+}
+
+template<Quantity Q>
+constexpr Quantity AUTO epsilon() noexcept
+{
+  return Q(std::numeric_limits<typename Q::rep>::epsilon());
+}
 
 }  // namespace units

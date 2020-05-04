@@ -53,3 +53,35 @@ TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly"
 {
   REQUIRE(sqrt(4q_m2) == 2q_m);
 }
+
+TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
+{
+  SECTION ("'abs()' on a negative quantity returns the abs") {
+    REQUIRE(abs(-1q_m) == 1q_m);
+  }
+
+  SECTION ("'abs()' on a positive quantity returns the abs") {
+    REQUIRE(abs(1q_m) == 1q_m);
+  }
+
+  SECTION ("'fabs()' on a negative quantity returns the abs") {
+    REQUIRE(fabs(-1.q_m) == 1.q_m);
+  }
+
+  SECTION ("'fabs()' on a positive quantity returns the abs") {
+    REQUIRE(fabs(1.q_m) == 1.q_m);
+  }
+}
+
+TEST_CASE("numeric_limits functions", "[limits]")
+{
+  SECTION ("'epsilon' works as expected using default floating type") {
+    REQUIRE(epsilon<decltype(1.q_m)>().count() == std::numeric_limits<decltype(1.q_m)::rep>::epsilon());
+  }
+  SECTION ("'epsilon' works as expected using integers") {
+    REQUIRE(epsilon<decltype(1q_m)>().count() == std::numeric_limits<decltype(1q_m)::rep>::epsilon());
+  }
+  SECTION ("'epsilon' works as expected using mixed Rep types") {
+    REQUIRE(epsilon<decltype(1q_m)>().count() != std::numeric_limits<decltype(1.q_m)::rep>::epsilon());
+  }
+}
