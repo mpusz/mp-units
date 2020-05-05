@@ -2,7 +2,6 @@
 [![Travis CI](https://img.shields.io/travis/com/mpusz/units/master.svg?label=Travis%20CI)](https://travis-ci.com/mpusz/units)
 [![Conan stable](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg?version=0.4.0%3Astable)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/0.4.0%3Astable/link)
 [![Conan testing](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
-[](https://mp-units.readthedocs.io/en/latest/?badge=latest)
 
 # `mp-units` - A Units Library for C++
 
