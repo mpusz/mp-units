@@ -77,9 +77,9 @@ namespace units {
     template <typename CharT>
     struct global_format_specs
     {
-      CharT fill  = '\0';
+      fmt::internal::fill_t<CharT> fill = fmt::internal::fill_t<CharT>::make();
       fmt::align_t align = fmt::align_t::none;
-      int width   = 0;
+      int width = 0;
     };
 
     // Holds specs about the representation (%[specs]Q)
@@ -314,9 +314,9 @@ private:
     }
 
     void on_error(const char* msg) { throw fmt::format_error(msg); }
-    constexpr void on_fill(CharT fill)     { f.global_specs.fill = fill; }    // global
-    constexpr void on_align(align_t align) { f.global_specs.align = align; }  // global
-    constexpr void on_width(int width)     { f.global_specs.width = width; }  // global
+    constexpr void on_fill(basic_string_view<CharT> fill) { f.global_specs.fill = fill; }    // global
+    constexpr void on_align(align_t align)                { f.global_specs.align = align; }  // global
+    constexpr void on_width(int width)                    { f.global_specs.width = width; }  // global
     constexpr void on_plus()  { f.rep_specs.sign = fmt::sign::plus; }     // rep
     constexpr void on_minus() { f.rep_specs.sign = fmt::sign::minus; }    // rep
     constexpr void on_space() { f.rep_specs.sign = fmt::sign::space; }    // rep
@@ -427,8 +427,8 @@ public:
     fmt::basic_memory_buffer<CharT> global_format_buffer;
     auto to_gfb = std::back_inserter(global_format_buffer);
     format_to(to_gfb, "{{:");
-    if (auto fill = global_specs.fill; fill != '\0') {
-      format_to(to_gfb, "{}", fill);
+    if (global_specs.fill.size() != 1 || global_specs.fill[0] != ' ') {
+      format_to(to_gfb, "{}", global_specs.fill.data());
     }
     if (auto align = global_specs.align; align != fmt::align_t::none) {
       switch (align) {
