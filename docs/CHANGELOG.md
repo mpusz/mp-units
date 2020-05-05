@@ -19,6 +19,7 @@
   - Representation values formatting extended (thanks [@rbrugo](https://github.com/rbrugo))
   - Output streams formatting support added
   - Linear algebra from `std::experimental::math` support added
+  - Named SI units and their dimensions added (thanks [@rbrugo](https://github.com/rbrugo)
   - ...
 
   Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock) and
