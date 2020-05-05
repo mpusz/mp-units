@@ -29,7 +29,7 @@
 
 namespace units::si {
 
-struct siemens : named_unit<siemens, {"S", "siemens"}, prefix> {};
+struct siemens : named_unit<siemens, "S", prefix> {};
 struct millisiemens : prefixed_unit<millisiemens, milli, siemens> {};
 struct microsiemens : prefixed_unit<microsiemens, micro, siemens> {};
 struct nanosiemens : prefixed_unit<nanosiemens, nano, siemens> {};
