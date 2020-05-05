@@ -488,26 +488,26 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-      SECTION("CGS base units")
+    SECTION("CGS base units")
+    {
+      const auto q = 2q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
+      os << q;
+
+      SECTION("iostream")
       {
-        const auto q = 2q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
-        os << q;
-
-        SECTION("iostream")
-        {
-          CHECK(os.str() == "8 × 10⁵ cm ⋅ g ⋅ s");
-        }
-
-        SECTION("fmt with default format {} on a quantity")
-        {
-          CHECK(fmt::format("{}", q) == os.str());
-        }
-
-        SECTION("fmt with format {:%Q %q} on a quantity")
-        {
-          CHECK(fmt::format("{:%Q %q}", q) == os.str());
-        }
+        CHECK(os.str() == "8 × 10⁵ cm ⋅ g ⋅ s");
       }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        CHECK(fmt::format("{}", q) == os.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
+      }
+    }
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
@@ -704,32 +704,41 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 
 TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
 {
-  CHECK(fmt::format("{:%q}", 123q_km_per_h) == "km/h");
-}
+  SECTION("standard format for a unit without Unicode symbols")
+  {
+    CHECK(fmt::format("{:%q}", 123q_km_per_h) == "km/h");
+  }
 
-TEST_CASE("format string with only %q for unit with ASCII quantity unit symbol should print Unicode quantity unit symbol only", "[text][fmt]")
-{
-  CHECK(fmt::format("{:%Q%q}", 123q_kR) == "123kΩ");
-}
+  SECTION("ASCII format for a unit without Unicode symbols")
+  {
+    CHECK(fmt::format("{:%Aq}", 123q_km_per_h) == "km/h");
+  }
 
-TEST_CASE("format string with %Aq for unit with ASCII quantity unit symbol should print ASCII quantity unit symbol only", "[text][fmt]")
-{
-  CHECK(fmt::format("{:%Q%Aq}", 123q_kR) == "123kohm");
-}
+  SECTION("standard format for a unit with Unicode symbols")
+  {
+    SECTION("Unicode signs in a unit symbol")
+    {
+      CHECK(fmt::format("{:%q}", 123q_kR) == "kΩ");
+    }
 
-TEST_CASE("format string with %Aq for unit with no ASCII quantity unit symbol should print Unicode quantity unit symbol only", "[text][fmt]")
-{
-  CHECK(fmt::format("{:%Aq}", 123q_km_per_h) == "km/h");
-}
+    SECTION("Unicode signs in a unit symbol prefix")
+    {
+      CHECK(fmt::format("{:%q}", 123q_uV) == "µV");
+    }
+  }
 
-TEST_CASE("format string with only %q for unit with ASCII quantity unit prefix symbol should print Unicode quantity unit prefix symbol only", "[text][fmt]")
-{
-  CHECK(fmt::format("{:%Q%q}", 123q_uV) == "123\u00b5V");
-}
+  SECTION("ASCII format for a unit with Unicode symbols")
+  {
+    SECTION("Unicode signs in a unit symbol")
+    {
+      CHECK(fmt::format("{:%Aq}", 123q_kR) == "kohm");
+    }
 
-TEST_CASE("format string with %Aq for unit with ASCII quantity unit prefix symbol should print ASCII quantity unit prefix symbol only", "[text][fmt]")
-{
-  CHECK(fmt::format("{:%Q%Aq}", 123q_uV) == "123uV");
+    SECTION("Unicode signs in a unit symbol prefix")
+    {
+      CHECK(fmt::format("{:%Aq}", 123q_uV) == "uV");
+    }
+  }
 }
 
 TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
