@@ -30,13 +30,16 @@
 namespace units {
 
 template<std::intmax_t N, typename D, typename U, typename Rep>
-requires(N == 0) inline Rep pow(const quantity<D, U, Rep>&) noexcept
+  requires(N == 0)
+inline Rep pow(const quantity<D, U, Rep>&) noexcept
 {
   return 1;
 }
 
 template<std::intmax_t N, typename D, typename U, typename Rep>
+  requires(N != 0)
 inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
+  requires requires { std::pow(q.count(), N); }
 {
   using dim = dimension_pow<D, N>;
   using ratio = ratio_pow<typename U::ratio, N>;
@@ -46,6 +49,7 @@ inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
 
 template<typename D, typename U, typename Rep>
 inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
+  requires requires { std::sqrt(q.count()); }
 {
   using dim = dimension_sqrt<D>;
   using ratio = ratio_sqrt<typename U::ratio>;
@@ -55,11 +59,13 @@ inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
 
 template<typename D, typename U, typename Rep>
 constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
+  requires requires { std::abs(q.count()); }
 {
   return quantity<D, U, Rep>(std::abs(q.count()));
 }
 
 template<Quantity Q>
+  requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
 constexpr Quantity AUTO epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
