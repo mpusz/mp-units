@@ -63,6 +63,16 @@ using make_dimension = to_derived_dimension_base<typename dim_consolidate<type_l
  * The implementation is responsible for unpacking all of the dimensions into a list containing only base dimensions
  * and their factors and putting them to derived_dimension_base class template.
  * 
+ * Sometimes units of equivalent quantities in different systems of units do not share the same reference so they
+ * cannot be easily converted to each other. An example can be a pressure for which a coherent unit in SI is pascal
+ * and in CGS barye. Those two units are not directly related with each other with some ratio. As they both are
+ * coherent units of their dimensions, the ratio between them is directly determined by the ratios of base units
+ * defined in base dimensions end their exponents in the derived dimension recipe. To provide interoperability of
+ * such quantities of different systems base_units_ratio is being used. The result of the division of two
+ * base_units_ratio of two quantities of equivalent dimensions in two different systems gives a ratio between their
+ * coherent units. Alternatively, the user would always have to directly define a barye in terms of pascal or vice
+ * versa.
+ * 
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam U a coherent unit of a derived dimension
  * @tparam E the list of exponents of ingredient dimensions
