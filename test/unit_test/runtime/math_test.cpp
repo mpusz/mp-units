@@ -56,20 +56,30 @@ TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly"
 
 TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
 {
-  SECTION ("'abs()' on a negative quantity returns the abs") {
-    REQUIRE(abs(-1q_m) == 1q_m);
+  SECTION ("'abs()' on a negative quantity returns the abs")
+  {
+    SECTION ("integral representation")
+    {
+      REQUIRE(abs(-1q_m) == 1q_m);
+    }
+
+    SECTION ("floating-point representation")
+    {
+      REQUIRE(abs(-1.q_m) == 1q_m);
+    }
   }
 
-  SECTION ("'abs()' on a positive quantity returns the abs") {
-    REQUIRE(abs(1q_m) == 1q_m);
-  }
+  SECTION ("'abs()' on a positive quantity returns the abs")
+  {
+    SECTION ("integral representation")
+    {
+      REQUIRE(abs(1q_m) == 1q_m);
+    }
 
-  SECTION ("'fabs()' on a negative quantity returns the abs") {
-    REQUIRE(fabs(-1.q_m) == 1.q_m);
-  }
-
-  SECTION ("'fabs()' on a positive quantity returns the abs") {
-    REQUIRE(fabs(1.q_m) == 1.q_m);
+    SECTION ("floating-point representation")
+    {
+      REQUIRE(abs(1.q_m) == 1q_m);
+    }
   }
 }
 
