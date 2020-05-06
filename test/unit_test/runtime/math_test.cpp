@@ -54,7 +54,7 @@ TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly"
   REQUIRE(sqrt(4q_m2) == 2q_m);
 }
 
-TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
+TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs]")
 {
   SECTION ("'abs()' on a negative quantity returns the abs") {
     REQUIRE(abs(-1q_m) == 1q_m);
@@ -62,14 +62,6 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
 
   SECTION ("'abs()' on a positive quantity returns the abs") {
     REQUIRE(abs(1q_m) == 1q_m);
-  }
-
-  SECTION ("'fabs()' on a negative quantity returns the abs") {
-    REQUIRE(fabs(-1.q_m) == 1.q_m);
-  }
-
-  SECTION ("'fabs()' on a positive quantity returns the abs") {
-    REQUIRE(fabs(1.q_m) == 1.q_m);
   }
 }
 

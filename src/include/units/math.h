@@ -59,12 +59,6 @@ constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
   return quantity<D, U, Rep>(std::abs(q.count()));
 }
 
-template<typename D, typename U, typename Rep>
-constexpr Quantity AUTO fabs(const quantity<D, U, Rep>& q) noexcept
-{
-  return quantity<D, U, Rep>(std::fabs(q.count()));
-}
-
 template<Quantity Q>
 constexpr Quantity AUTO epsilon() noexcept
 {
