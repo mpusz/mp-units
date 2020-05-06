@@ -199,14 +199,14 @@ Full **mp-units** Build, Unit Testing, and Documentation Generation
 
 In case you would like to build all the source code (with unit tests and examples) and documentation
 in **mp-units** repository, you should use the *CMakeLists.txt* from the top-level directory,
-obtain Python dependencies, and run Conan with :envvar:`CONAN_RUN_TESTS` = ``True``:
+obtain Python dependencies, and run Conan with :envvar:`mp-units:CONAN_RUN_TESTS` = ``True``:
 
 .. code-block:: shell
 
     git clone --recurse-submodules https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     mkdir build && cd build
-    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
+    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
     cmake .. -DCMAKE_BUILD_TYPE=Release
     cmake --build .
     ctest
@@ -224,7 +224,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
     git clone --recurse-submodules https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e CONAN_RUN_TESTS=True -b outdated
+    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
 
 The above will create a Conan package and run tests provided in *./test_package* directory.
 

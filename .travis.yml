@@ -1,6 +1,6 @@
 env:
   global:
-    - CONAN_RUN_TESTS: 1
+    - mp-units:CONAN_RUN_TESTS: 1
     - CONAN_DOCKER_32_IMAGES: 1
 
 linux: &linux

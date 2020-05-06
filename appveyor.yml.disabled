@@ -1,7 +1,7 @@
 build: false
 
 environment:
-  CONAN_RUN_TESTS: 1
+  mp-units:CONAN_RUN_TESTS: 1
   PYTHON: "C:\\Python37"
 
   matrix:
