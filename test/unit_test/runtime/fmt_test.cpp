@@ -295,13 +295,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio for a dimension without a special symbol")
     {
-      const auto q = 2q_cm * 2q_m * 2q_m;
+      const auto q = 2q_um * 2q_cm * 2q_cm;
       os << q;
 
       SECTION("iostream")
       {
-        //CHECK(os.str() == "8 × 10⁻² m³");
-        CHECK(os.str() == "8 dal");
+        CHECK(os.str() == "8 × 10⁻¹⁰ m³");
       }
 
       SECTION("fmt with default format {} on a quantity")
