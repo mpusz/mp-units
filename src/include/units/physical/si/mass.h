@@ -50,7 +50,7 @@ struct exagram : prefixed_unit<exagram, exa, gram> {};
 struct zettagram : prefixed_unit<zettagram, zetta, gram> {};
 struct yottagram : prefixed_unit<yottagram, yotta, gram> {};
 
-struct tonne : alias_unit<megagram, "t"> {};
+struct tonne : alias_unit<megagram, "t", prefix> {};
 struct yoctotonne : prefixed_alias_unit<attogram, yocto, tonne> {};
 struct zeptotonne : prefixed_alias_unit<femtogram, zepto, tonne> {};
 struct attotonne : prefixed_alias_unit<picogram, atto, tonne> {};
