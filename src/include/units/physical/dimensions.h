@@ -254,7 +254,7 @@ template<typename T>
 concept Inductance = physical::QuantityOf<T, physical::dim_inductance>;
 
 template<typename T>
-concept Conductance = physical::QuantityOf<T, physical::dim_inductance>;
+concept Conductance = physical::QuantityOf<T, physical::dim_conductance>;
 
 // template<typename T>
 // concept Radioactivity = physical::QuantityOf<T, physical::dim_radioactivity>;
