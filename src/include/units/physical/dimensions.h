@@ -122,6 +122,7 @@ struct dim_inductance : derived_dimension<Child, U, exp<F, 1>, exp<I, -1>> {};
 template<typename Child, Unit U, DimensionOf<dim_resistance> R>
 struct dim_conductance : derived_dimension<Child, U, exp<R, -1>> {};
 
+// TODO Add when downcasting issue is solved
 // template<typename Child, Unit U, DimensionOf<dim_time> T>
 // struct dim_radioactivity : derived_dimension<Child, U, exp<T, -1>> {};
 
@@ -155,8 +156,9 @@ struct dim_molar_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_length> L, DimensionOf<dim_thermodynamic_temperature> T>
 struct dim_thermal_conductivity : derived_dimension<Child, U, exp<P, 1>, exp<L, -1>, exp<T, -1>> {};
 
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_length> L>
-struct dim_energy_density : derived_dimension<Child, U, exp<E, 1>, exp<L, -3>> {};
+// TODO Add when downcasting issue is solved
+// template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_length> L>
+// struct dim_energy_density : derived_dimension<Child, U, exp<E, 1>, exp<L, -3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_length> L>
 struct dim_electric_field_strength : derived_dimension<Child, U, exp<V, 1>, exp<L, -1>> {};
@@ -256,6 +258,7 @@ concept Inductance = physical::QuantityOf<T, physical::dim_inductance>;
 template<typename T>
 concept Conductance = physical::QuantityOf<T, physical::dim_conductance>;
 
+// TODO Add when downcasting issue is solved
 // template<typename T>
 // concept Radioactivity = physical::QuantityOf<T, physical::dim_radioactivity>;
 
@@ -289,6 +292,7 @@ concept MolarHeatCapacity = physical::QuantityOf<T, physical::dim_molar_heat_cap
 template<typename T>
 concept ThermalConductivity = physical::QuantityOf<T, physical::dim_thermal_conductivity>;
 
+// TODO Add when downcasting issue is solved
 // template<typename T>
 // concept EnergyDensity = physical::QuantityOf<T, physical::dim_energy_density>;
 

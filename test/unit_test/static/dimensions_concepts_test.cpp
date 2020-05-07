@@ -21,27 +21,7 @@
 // SOFTWARE.
 
 
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/capacitance.h>
-#include <units/physical/si/current.h>
-#include <units/physical/si/electric_charge.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/frequency.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/luminous_intensity.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/substance.h>
-#include <units/physical/si/surface_tension.h>
-#include <units/physical/si/temperature.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/velocity.h>
-#include <units/physical/si/voltage.h>
-#include <units/physical/si/volume.h>
-#include <units/physical/si/magnetic_induction.h>
+#include <units/physical/si.h>
 
 namespace {
 
@@ -109,5 +89,70 @@ static_assert(!Pressure<si::time<si::second>>);
 
 static_assert(MagneticInduction<si::magnetic_induction<si::tesla>>);
 static_assert(!MagneticInduction<si::time<si::second>>);
+
+static_assert(MagneticFlux<si::magnetic_flux<si::weber>>);
+static_assert(!MagneticFlux<si::time<si::second>>);
+
+static_assert(Inductance<si::inductance<si::henry>>);
+static_assert(!Inductance<si::time<si::second>>);
+
+static_assert(Conductance<si::conductance<si::siemens>>);
+static_assert(!Conductance<si::time<si::second>>);
+
+// TODO Add when downcasting issue is solved
+// static_assert(Radioactivity<si::radioactivity<si::siemens>>);
+// static_assert(!Radioactivity<si::time<si::second>>);
+
+static_assert(CatalyticActivity<si::catalytic_activity<si::katal>>);
+static_assert(!CatalyticActivity<si::time<si::second>>);
+
+static_assert(AbsorbedDose<si::absorbed_dose<si::gray>>);
+static_assert(!AbsorbedDose<si::time<si::second>>);
+
+static_assert(CurrentDensity<si::current_density<si::ampere_per_metre_sq>>);
+static_assert(!CurrentDensity<si::time<si::second>>);
+
+static_assert(Concentration<si::concentration<si::mol_per_metre_cub>>);
+static_assert(!Concentration<si::time<si::second>>);
+
+static_assert(Luminance<si::luminance<si::candela_per_metre_sq>>);
+static_assert(!Luminance<si::time<si::second>>);
+
+static_assert(DynamicViscosity<si::dynamic_viscosity<si::pascal_second>>);
+static_assert(!DynamicViscosity<si::time<si::second>>);
+
+static_assert(HeatCapacity<si::heat_capacity<si::joule_per_kelvin>>);
+static_assert(!HeatCapacity<si::time<si::second>>);
+
+static_assert(SpecificHeatCapacity<si::specific_heat_capacity<si::joule_per_kilogram_kelvin>>);
+static_assert(!SpecificHeatCapacity<si::time<si::second>>);
+
+static_assert(MolarHeatCapacity<si::molar_heat_capacity<si::joule_per_mole_kelvin>>);
+static_assert(!MolarHeatCapacity<si::time<si::second>>);
+
+static_assert(ThermalConductivity<si::thermal_conductivity<si::watt_per_metre_kelvin>>);
+static_assert(!ThermalConductivity<si::time<si::second>>);
+
+// TODO Add when downcasting issue is solved
+// static_assert(EnergyDensity<si::energy_density<si::joule_per_metre_cub>>);
+// static_assert(!EnergyDensity<si::time<si::second>>);
+
+static_assert(ElectricFieldStrength<si::electric_field_strength<si::volt_per_metre>>);
+static_assert(!ElectricFieldStrength<si::time<si::second>>);
+
+static_assert(ChargeDensity<si::charge_density<si::coulomb_per_metre_cub>>);
+static_assert(!ChargeDensity<si::time<si::second>>);
+
+static_assert(SurfaceChargeDensity<si::surface_charge_density<si::coulomb_per_metre_sq>>);
+static_assert(!SurfaceChargeDensity<si::time<si::second>>);
+
+static_assert(Permittivity<si::permittivity<si::farad_per_metre>>);
+static_assert(!Permittivity<si::time<si::second>>);
+
+static_assert(Permeability<si::permeability<si::henry_per_metre>>);
+static_assert(!Permeability<si::time<si::second>>);
+
+static_assert(MolarEnergy<si::molar_energy<si::joule_per_mole>>);
+static_assert(!MolarEnergy<si::time<si::second>>);
 
 }
