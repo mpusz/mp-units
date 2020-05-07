@@ -21,6 +21,7 @@
   - Linear algebra from `std::experimental::math` support added
   - Named SI units and their dimensions added (thanks [@rbrugo](https://github.com/rbrugo)
   - libfmt updated to 6.2.0
+  - Added absolute functions and epsilon to math.h (thanks [@mikeford3](https://github.com/mikeford3))
   - ...
 
   Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock) and
