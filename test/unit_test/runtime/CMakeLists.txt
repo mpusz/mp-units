@@ -33,7 +33,7 @@ add_executable(unit_tests_runtime
 target_link_libraries(unit_tests_runtime
     PRIVATE
         mp::units
-        $<IF:$<TARGET_EXISTS:CONAN_PKG::Catch2>, CONAN_PKG::Catch2, Catch2::Catch2>
+        $<IF:$<TARGET_EXISTS:CONAN_PKG::Catch2>,CONAN_PKG::Catch2,Catch2::Catch2>
 )
 
 include(lib/cmake/Catch2/Catch)
