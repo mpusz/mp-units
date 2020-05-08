@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct volt : named_unit<volt, "V", prefix> {};
 struct yoctovolt : prefixed_unit<yoctovolt, yocto, volt> {};
@@ -145,4 +145,4 @@ constexpr auto operator"" q_YV(long double l) { return voltage<yottavolt, long d
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

@@ -25,7 +25,7 @@
 #include <units/physical/si/volume.h>
 #include <units/physical/international/length.h>
 
-namespace units::international {
+namespace units::physical::international {
 
 struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
 
@@ -37,4 +37,4 @@ constexpr auto operator"" q_ft3(long double l) { return si::volume<cubic_foot, l
 
 }  // namespace literals
 
-}  // namespace units::international
+}  // namespace units::physical::international

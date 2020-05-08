@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct ampere : named_unit<ampere, "A", prefix> {};
 struct yoctoampere : prefixed_unit<yoctoampere, yocto, ampere> {};
@@ -143,4 +143,4 @@ constexpr auto operator"" q_YA(long double l) { return current<yottaampere, long
 
 } // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

@@ -25,7 +25,7 @@
 
 #include <units/physical/si/length.h>
 
-namespace units::typographic {
+namespace units::physical::typographic {
 
 // TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors and provide hyperlinks to definitions
 struct pica_comp : named_scaled_unit<pica_comp, "pica(comp)", no_prefix, ratio<4233333, 1000000, -3>, si::metre> {};
@@ -53,4 +53,4 @@ constexpr auto operator"" q_point_prn(long double l) { return si::length<point_p
 
 }  // namespace literals
 
-}  // namespace units::typographic
+}  // namespace units::physical::typographic

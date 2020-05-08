@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct gram : named_unit<gram, "g", prefix> {};
 struct yoctogram : prefixed_unit<yoctogram, yocto, gram> {};
@@ -255,4 +255,4 @@ constexpr auto operator"" q_Da(long double l) { return mass<dalton, long double>
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

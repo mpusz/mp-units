@@ -10,7 +10,7 @@ namespace experimental{
 namespace mass {
 
 template<typename Rep = double>
-using kg = units::si::mass<units::si::kilogram, Rep>;
+using kg = units::physical::si::mass<units::physical::si::kilogram, Rep>;
 
 }
 

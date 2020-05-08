@@ -32,12 +32,12 @@
 #include "units/format.h"
 #include <catch2/catch.hpp>
 
-using namespace units::si;
-using namespace units::international;
-using namespace units::us;
-using namespace units::iau;
-using namespace units::imperial;
-using namespace units::typographic;
+using namespace units::physical::si;
+using namespace units::physical::international;
+using namespace units::physical::us;
+using namespace units::physical::iau;
+using namespace units::physical::imperial;
+using namespace units::physical::typographic;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {

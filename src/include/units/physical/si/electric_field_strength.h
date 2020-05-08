@@ -26,7 +26,7 @@
 #include <units/physical/si/voltage.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct volt_per_metre : unit<volt_per_metre> {};
 struct dim_electric_field_strength : physical::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
@@ -42,4 +42,4 @@ constexpr auto operator"" q_V_per_m(long double l) { return electric_field_stren
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

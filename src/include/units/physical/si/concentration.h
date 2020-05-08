@@ -27,7 +27,7 @@
 #include <units/physical/si/substance.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct mol_per_metre_cub : unit<mol_per_metre_cub> {};
 struct dim_concentration : physical::dim_concentration<dim_concentration, mol_per_metre_cub, dim_substance, dim_length> {};
@@ -43,5 +43,5 @@ constexpr auto operator"" q_mol_per_m3(long double l) { return concentration<mol
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

@@ -26,7 +26,7 @@
 #include <units/physical/si/length.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct square_metre : unit<square_metre> {};
 struct dim_area : physical::dim_area<dim_area, square_metre, dim_length> {};
@@ -149,4 +149,4 @@ constexpr auto operator"" q_ha(long double l) { return area<hectare, long double
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

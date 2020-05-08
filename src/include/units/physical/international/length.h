@@ -25,7 +25,7 @@
 
 #include <units/physical/si/length.h>
 
-namespace units::international {
+namespace units::physical::international {
 
 // international yard
 // https://en.wikipedia.org/wiki/International_yard_and_pound
@@ -94,4 +94,4 @@ constexpr auto operator"" q_mil(long double l) { return si::length<mil, long dou
 
 }  // namespace literals
 
-}  // namespace units::international
+}  // namespace units::physical::international

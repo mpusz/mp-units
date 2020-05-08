@@ -37,7 +37,8 @@
 #include <sstream>
 
 using namespace units;
-using namespace units::si;
+using namespace units::physical;
+using namespace units::physical::si;
 using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
@@ -290,7 +291,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        struct newton_per_centimetre : deduced_unit<newton_per_centimetre, dim_surface_tension, newton, centimetre> {};
+        struct newton_per_centimetre : deduced_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
         const surface_tension<newton_per_centimetre> q(123);
         os << q;
 

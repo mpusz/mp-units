@@ -30,13 +30,13 @@
 namespace units::data {
 
 struct bit_per_second : unit<bit_per_second> {};
-struct dim_bitrate : derived_dimension<dim_bitrate, bit_per_second, exp<dim_information, 1>, exp<si::dim_time, -1>> {};
+struct dim_bitrate : derived_dimension<dim_bitrate, bit_per_second, exp<dim_information, 1>, exp<physical::si::dim_time, -1>> {};
 
-struct kibibit_per_second : deduced_unit<kibibit_per_second, dim_bitrate, kibibit, si::second> {};
-struct mebibit_per_second : deduced_unit<mebibit_per_second, dim_bitrate, mebibit, si::second> {};
-struct gibibit_per_second : deduced_unit<gibibit_per_second, dim_bitrate, gibibit, si::second> {};
-struct tebibit_per_second : deduced_unit<tebibit_per_second, dim_bitrate, tebibit, si::second> {};
-struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibit, si::second> {};
+struct kibibit_per_second : deduced_unit<kibibit_per_second, dim_bitrate, kibibit, physical::si::second> {};
+struct mebibit_per_second : deduced_unit<mebibit_per_second, dim_bitrate, mebibit, physical::si::second> {};
+struct gibibit_per_second : deduced_unit<gibibit_per_second, dim_bitrate, gibibit, physical::si::second> {};
+struct tebibit_per_second : deduced_unit<tebibit_per_second, dim_bitrate, tebibit, physical::si::second> {};
+struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibit, physical::si::second> {};
 
 template<typename T>
 concept Bitrate = QuantityOf<T, dim_bitrate>;

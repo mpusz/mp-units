@@ -26,7 +26,7 @@
 #include <units/physical/si/length.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 using si::centimetre;
 
@@ -43,4 +43,4 @@ constexpr auto operator"" q_cm(long double l) { return length<centimetre, long d
 
 }
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

@@ -26,7 +26,7 @@
 #include <units/physical/si/length.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct cubic_metre : unit<cubic_metre> {};
 struct dim_volume : physical::dim_volume<dim_volume, cubic_metre, dim_length> {};
@@ -249,4 +249,4 @@ constexpr auto operator"" q_Yl(long double l) { return volume<yottalitre, long d
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

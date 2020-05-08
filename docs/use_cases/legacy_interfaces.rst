@@ -21,7 +21,7 @@ pass it to the library's output:
     #include "legacy.h"
     #include <units/physical/si/velocity.h>
 
-    using namespace units;
+    using namespace units::physical;
 
     constexpr Velocity auto avg_speed(Length auto d, Time auto t)
     {

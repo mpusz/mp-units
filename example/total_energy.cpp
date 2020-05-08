@@ -30,7 +30,7 @@
 
 namespace {
 
-using namespace units;
+using namespace units::physical;
 
 Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
 {
@@ -39,7 +39,7 @@ Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
 
 void si_example()
 {
-  using namespace si;
+  using namespace units::physical::si;
   using GeV = gigaelectronvolt;
 
   constexpr Velocity AUTO c = si2019::speed_of_light<>;
@@ -70,7 +70,7 @@ void si_example()
 
 void natural_example()
 {
-  using namespace natural;
+  using namespace units::physical::natural;
   using GeV = gigaelectronvolt;
 
   constexpr Velocity AUTO c = speed_of_light<>;

@@ -30,7 +30,7 @@
 #include <units/physical/si/temperature.h>
 #include <units/physical/si/velocity.h>
 
-namespace units::si::si2019 {
+namespace units::physical::si::si2019 {
 
 template<Scalar Rep = double>
 inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
@@ -59,4 +59,4 @@ inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz
 template<Scalar Rep = double>
 inline constexpr auto standard_gravity = acceleration<metre_per_second_sq, Rep>(9.80665);
 
-}  // namespace units::si::si2019
+}  // namespace units::physical::si::si2019

@@ -11,8 +11,8 @@
 
 namespace {
 
-using namespace units;
-using namespace units::si::literals;
+using namespace units::physical;
+using namespace units::physical::si::literals;
 
 using m = si::metre;
 using kg = si::kilogram;

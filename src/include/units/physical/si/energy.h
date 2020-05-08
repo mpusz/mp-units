@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct joule : named_unit<joule, "J", prefix> {};
 struct yoctojoule : prefixed_unit<yoctojoule, yocto, joule> {};
@@ -135,4 +135,4 @@ constexpr auto operator"" q_GeV(long double l) { return energy<gigaelectronvolt,
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

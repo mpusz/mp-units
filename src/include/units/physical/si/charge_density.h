@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct coulomb_per_metre_cub : unit<coulomb_per_metre_cub> {};
 struct coulomb_per_metre_sq : unit<coulomb_per_metre_sq> {};
@@ -54,4 +54,4 @@ constexpr auto operator"" q_C_per_m2(long double l) { return surface_charge_dens
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

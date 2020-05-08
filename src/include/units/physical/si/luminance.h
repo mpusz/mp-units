@@ -27,7 +27,7 @@
 #include <units/physical/si/luminous_intensity.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct candela_per_metre_sq : unit<candela_per_metre_sq> {};
 struct dim_luminance : physical::dim_luminance<dim_luminance, candela_per_metre_sq, dim_luminous_intensity, dim_length> {};
@@ -43,5 +43,5 @@ constexpr auto operator"" q_cd_per_m2(long double l) { return luminance<candela_
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

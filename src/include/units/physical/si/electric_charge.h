@@ -27,7 +27,7 @@
 #include <units/physical/si/time.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct coulomb : named_unit<coulomb, "C", prefix> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_C(long double l) { return electric_charge<coulomb, l
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

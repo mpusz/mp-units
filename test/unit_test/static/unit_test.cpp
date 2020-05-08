@@ -26,6 +26,7 @@
 namespace {
 
 using namespace units;
+using namespace units::physical;
 
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};

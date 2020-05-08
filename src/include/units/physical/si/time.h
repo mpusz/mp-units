@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct second : named_unit<second, "s", prefix> {};
 struct yoctosecond : prefixed_unit<yoctosecond, yocto, second> {};
@@ -98,4 +98,4 @@ constexpr auto operator"" q_d(long double l) { return time<day, long double>(l);
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

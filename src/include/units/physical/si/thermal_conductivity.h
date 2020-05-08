@@ -27,7 +27,7 @@
 #include <units/physical/si/temperature.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct watt_per_metre_kelvin : unit<watt_per_metre_kelvin> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_W_per_m_K(long double l) { return thermal_conductivi
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

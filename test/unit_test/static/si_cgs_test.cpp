@@ -44,7 +44,7 @@
 
 namespace {
 
-using namespace units;
+using namespace units::physical;
 
 static_assert(cgs::length<cgs::centimetre>(100) == si::length<si::metre>(1));
 static_assert(cgs::mass<cgs::gram>(1'000) == si::mass<si::kilogram>(1));
@@ -59,7 +59,7 @@ static_assert(cgs::pressure<cgs::barye>(10) == si::pressure<si::pascal>(1));
 
 namespace si_test {
 
-using namespace units::si::literals;
+using namespace units::physical::si::literals;
 
 static_assert(cgs::length<cgs::centimetre>(100) == 1q_m);
 static_assert(cgs::mass<cgs::gram>(1'000) == 1q_kg);
@@ -75,7 +75,7 @@ static_assert(cgs::pressure<cgs::barye>(10) == 1q_Pa);
 
 namespace cgs_test {
 
-using namespace units::cgs::literals;
+using namespace units::physical::cgs::literals;
 
 static_assert(100q_cm == si::length<si::metre>(1));
 static_assert(1'000q_g == si::mass<si::kilogram>(1));
@@ -91,8 +91,8 @@ static_assert(10q_Ba == si::pressure<si::pascal>(1));
 
 namespace both_test {
 
-using namespace units::si::literals;
-using namespace units::cgs::literals;
+using namespace units::physical::si::literals;
+using namespace units::physical::cgs::literals;
 
 // static_assert(100q_cm == 1q_m);   // ambiguous
 // static_assert(1'000q_g == 1q_kg); // ambiguous

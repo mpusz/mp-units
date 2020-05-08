@@ -165,7 +165,7 @@ struct quantity_values<impl<T>> {
 
 namespace {
 
-using namespace units::si;
+using namespace units::physical::si;
 
 // constructors
 

@@ -26,7 +26,7 @@
 #include <units/physical/cgs/velocity.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct gal : named_unit<gal, "Gal", si::prefix> {};
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, gal, dim_length, dim_time> {};
@@ -42,4 +42,4 @@ constexpr auto operator"" q_Gal(long double l) { return acceleration<gal, long d
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

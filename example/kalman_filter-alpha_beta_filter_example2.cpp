@@ -20,7 +20,7 @@ struct state_variable {
   Q predicted_next_state;
 };
 
-using namespace units::si;
+using namespace units::physical::si;
 
 constexpr auto radar_transmit_interval = 5.0q_s;
 constexpr double kalman_range_gain = 0.2;

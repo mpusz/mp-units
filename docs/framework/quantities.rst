@@ -47,7 +47,7 @@ values the library provides :abbr:`UDL (User Defined Literal)` s for each
 :term:`unit` of every :term:`dimension`. Thanks to them the same code can
 be as simple as::
 
-    using namespace si::literals;
+    using namespace units::physical::si::literals;
     constexpr auto d1 = 123q_km;    // si::length<si::kilometre, std::int64_t>
     constexpr auto d2 = 123.q_km;   // si::length<si::kilometre, long double>
 
@@ -66,7 +66,7 @@ In case the user does not care about the specific unit and representation but
 requires quantity of a concrete dimension than dimension-specific concepts can
 be used::
 
-    using namespace si::literals;
+    using namespace units::physical::si::literals;
     constexpr Length auto d = 123q_km;  // si::length<si::kilometre, std::int64_t>
 
 .. note::
@@ -80,8 +80,8 @@ assume that the user wants to implement an ``avg_speed`` function that will
 be calculating the average speed based on provided distance and duration
 quantities. The usage of such a function can look as follows::
 
-    using namespace si::literals;
-    using namespace international::literals;
+    using namespace units::physical::si::literals;
+    using namespace units::physical::international::literals;
     constexpr Velocity auto v1 = avg_speed(220q_km, 2q_h);
     constexpr Velocity auto v2 = avg_speed(140q_mi, 2q_h);
 

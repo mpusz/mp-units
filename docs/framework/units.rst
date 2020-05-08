@@ -161,8 +161,8 @@ of ``N/m``):
     :emphasize-lines: 2
 
     struct dim_surface_tension : derived_dimension<dim_surface_tension, newton_per_metre,
-                                                    exp<si::dim_force, 1>,
-                                                    exp<si::dim_length, -1>> {}; // N/m
+                                                   exp<si::dim_force, 1>,
+                                                   exp<si::dim_length, -1>> {}; // N/m
 
 If we defined the above in terms of base units we would end up with
 a ``kg/s²`` derived unit symbol.
@@ -361,7 +361,7 @@ and user should not instantiate it by him/her-self. However the user can sometim
 observe this type in case an unit/dimension conversion expression will end up with an
 unknown/undefined unit type like in the below example::
 
-    using namespace si::literals;
+    using namespace units::physical::si::literals;
 
     Length auto l = 100q_km_per_h * 10q_s;
 

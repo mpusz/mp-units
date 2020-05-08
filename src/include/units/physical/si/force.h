@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct newton : named_unit<newton, "N", prefix> {};
 struct yoctonewton : prefixed_unit<yoctonewton, yocto, newton> {};
@@ -145,4 +145,4 @@ constexpr auto operator"" q_YN(long double l) { return force<yottanewton, long d
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

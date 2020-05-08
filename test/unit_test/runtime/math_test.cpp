@@ -26,7 +26,7 @@
 #include <catch2/catch.hpp>
 
 using namespace units;
-using namespace units::si;
+using namespace units::physical::si;
 
 // classical
 

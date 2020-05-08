@@ -26,7 +26,7 @@
 #include <units/physical/si/velocity.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct metre_per_second_sq : unit<metre_per_second_sq> {};
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, metre_per_second_sq, dim_length, dim_time> {};
@@ -42,4 +42,4 @@ constexpr auto operator"" q_m_per_s2(long double l) { return acceleration<metre_
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

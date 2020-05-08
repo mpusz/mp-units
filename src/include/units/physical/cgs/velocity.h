@@ -27,7 +27,7 @@
 #include <units/physical/cgs/time.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct centimetre_per_second : unit<centimetre_per_second> {};
 struct dim_velocity : physical::dim_velocity<dim_velocity, centimetre_per_second, dim_length, dim_time> {};
@@ -43,4 +43,4 @@ constexpr auto operator"" q_cm_per_s(long double l) { return velocity<centimetre
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

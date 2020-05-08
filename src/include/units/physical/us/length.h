@@ -24,7 +24,7 @@
 
 #include <units/physical/si/length.h>
 
-namespace units::us {
+namespace units::physical::us {
 
 // https://en.wikipedia.org/wiki/Foot_(unit)#US_survey_foot
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
@@ -40,17 +40,17 @@ struct mile : named_scaled_unit<mile, "mi(us)", no_prefix, ratio<5280>, us::foot
 inline namespace literals {
 
 // ft
-constexpr auto operator"" q_ft_us(unsigned long long l) { return si::length<units::us::foot, std::int64_t>(l); }
-constexpr auto operator"" q_ft_us(long double l) { return si::length<units::us::foot, long double>(l); }
+constexpr auto operator"" q_ft_us(unsigned long long l) { return si::length<units::physical::us::foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft_us(long double l) { return si::length<units::physical::us::foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" q_fathom_us(unsigned long long l) { return si::length<units::us::fathom, std::int64_t>(l); }
-constexpr auto operator"" q_fathom_us(long double l) { return si::length<units::us::fathom, long double>(l); }
+constexpr auto operator"" q_fathom_us(unsigned long long l) { return si::length<units::physical::us::fathom, std::int64_t>(l); }
+constexpr auto operator"" q_fathom_us(long double l) { return si::length<units::physical::us::fathom, long double>(l); }
 
 // ft
-constexpr auto operator"" q_mi_us(unsigned long long l) { return si::length<units::us::mile, std::int64_t>(l); }
-constexpr auto operator"" q_mi_us(long double l) { return si::length<units::us::mile, long double>(l); }
+constexpr auto operator"" q_mi_us(unsigned long long l) { return si::length<units::physical::us::mile, std::int64_t>(l); }
+constexpr auto operator"" q_mi_us(long double l) { return si::length<units::physical::us::mile, long double>(l); }
 
 }  // namespace literals
 
-}  // namespace units::us
+}  // namespace units::physical::us

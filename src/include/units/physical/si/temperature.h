@@ -25,7 +25,7 @@
 #include <units/physical/dimensions.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
@@ -42,4 +42,4 @@ constexpr auto operator"" q_K(long double l) { return temperature<kelvin, long d
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

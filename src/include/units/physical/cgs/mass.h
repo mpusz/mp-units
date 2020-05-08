@@ -26,7 +26,7 @@
 #include <units/physical/si/mass.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 using si::gram;
 
@@ -43,4 +43,4 @@ constexpr auto operator"" q_g(long double l) { return mass<gram, long double>(l)
 
 }
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct barye : named_unit<barye, "Ba", si::prefix> {};
 
@@ -45,4 +45,4 @@ constexpr auto operator"" q_Ba(long double l) { return pressure<barye, long doub
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

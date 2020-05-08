@@ -33,11 +33,11 @@ using namespace units;
 
 void simple_quantities()
 {
-  using namespace units::si;
-  using namespace units::international;
+  using namespace units::physical::si;
+  using namespace units::physical::international;
 
   using distance = length<metre>;
-  using duration = si::time<second>;
+  using duration = physical::si::time<second>;
 
   constexpr distance km = 1.0q_km;
   constexpr distance miles = 1.0q_mi;
@@ -57,8 +57,9 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-  using namespace units::si;
-  using namespace units::international;
+  using namespace units::physical;
+  using namespace units::physical::si;
+  using namespace units::physical::international;
 
   constexpr length<kilometre> km = 1.0q_km;
   constexpr length<mile> miles = 1.0q_mi;
@@ -104,7 +105,7 @@ void quantities_with_typed_units()
 
 void calcs_comparison()
 {
-  using namespace units::si;
+  using namespace units::physical::si;
 
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"

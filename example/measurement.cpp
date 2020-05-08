@@ -157,7 +157,7 @@ namespace {
 
 void example()
 {
-  using namespace units;
+  using namespace units::physical;
 
   const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
   const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));

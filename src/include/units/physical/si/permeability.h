@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct henry_per_metre : unit<henry_per_metre> {};
 
@@ -44,5 +44,5 @@ constexpr auto operator"" q_H_per_m(long double l) { return permeability<henry_p
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

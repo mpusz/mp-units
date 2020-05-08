@@ -27,7 +27,7 @@
 #include <units/physical/si/current.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct henry : named_unit<henry, "H", prefix> {};
 
@@ -125,4 +125,4 @@ constexpr auto operator"" q_YH(long double l) { return inductance<yottahenry, lo
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

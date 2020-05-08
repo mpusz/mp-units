@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct dyne : named_unit<dyne, "dyn", si::prefix> {};
 
@@ -45,4 +45,4 @@ constexpr auto operator"" q_dyn(long double l) { return force<dyne, long double>
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

@@ -24,7 +24,7 @@
 
 #include <units/physical/international/length.h>
 
-namespace units::imperial {
+namespace units::physical::imperial {
 
 // https://en.wikipedia.org/wiki/Chain_(unit)
 struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio<22, 1>, international::yard> {};
@@ -42,4 +42,4 @@ constexpr auto operator"" q_rd(long double l) { return si::length<rod, long doub
 
 }  // namespace literals
 
-}  // namespace units::imperial
+}  // namespace units::physical::imperial

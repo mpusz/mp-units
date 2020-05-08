@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct gray : named_unit<gray, "Gy", prefix> {};
 struct yoctogray : prefixed_unit<yoctogray, yocto, gray> {};
@@ -145,4 +145,4 @@ constexpr auto operator"" q_YGy(long double l) { return absorbed_dose<yottagray,
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

@@ -25,7 +25,7 @@
 #include <units/format.h>
 #include <iostream>
 
-using namespace units;
+using namespace units::physical;
 
 constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
@@ -34,7 +34,7 @@ constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
 
 int main()
 {
-  using namespace si::literals;
+  using namespace units::physical::si::literals;
   Velocity AUTO v1 = avg_speed(220q_km, 2q_h);
   Velocity AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
   Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);

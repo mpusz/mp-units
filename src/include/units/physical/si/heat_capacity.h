@@ -29,7 +29,7 @@
 #include <units/physical/si/substance.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct joule_per_kelvin : unit<joule_per_kelvin> {};
 struct joule_per_kilogram_kelvin : unit<joule_per_kilogram_kelvin> {};
@@ -64,5 +64,5 @@ constexpr auto operator"" q_J_per_mol_K(long double l) { return molar_heat_capac
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

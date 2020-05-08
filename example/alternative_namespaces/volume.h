@@ -10,7 +10,7 @@ namespace experimental{
 namespace volume {
 
 template<typename Rep = double>
-using m3 = units::si::volume<units::si::cubic_metre, Rep>;
+using m3 = units::physical::si::volume<units::physical::si::cubic_metre, Rep>;
 
 }
 

@@ -7,15 +7,15 @@
 namespace q_time {
 
 template<typename Rep = double>
-using s = units::si::time<units::si::second, Rep>;
+using s = units::physical::si::time<units::physical::si::second, Rep>;
 
 template<typename Rep = double>
-using ms = units::si::time<units::si::millisecond, Rep>;
+using ms = units::physical::si::time<units::physical::si::millisecond, Rep>;
 
 template<typename Rep = double>
-using min = units::si::time<units::si::minute, Rep>;
+using min = units::physical::si::time<units::physical::si::minute, Rep>;
 
 template<typename Rep = double>
-using h = units::si::time<units::si::hour, Rep>;
+using h = units::physical::si::time<units::physical::si::hour, Rep>;
 
 }  // namespace time

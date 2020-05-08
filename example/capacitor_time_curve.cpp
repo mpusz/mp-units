@@ -29,8 +29,8 @@
 
 int main()
 {
-  using namespace units;
-  using namespace units::si;
+  using namespace units::physical;
+  using namespace units::physical::si;
 
   std::cout << "mp-units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);

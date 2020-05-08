@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct siemens : named_unit<siemens, "S", prefix> {};
 struct yoctosiemens : prefixed_unit<yoctosiemens, yocto, siemens> {};
@@ -124,5 +124,5 @@ constexpr auto operator"" q_YS(long double l) { return conductance<yottasiemens,
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

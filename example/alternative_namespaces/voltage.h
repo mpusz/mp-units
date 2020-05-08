@@ -10,19 +10,19 @@ namespace experimental{
 namespace voltage {
 
 template<typename Rep = double>
-using V = units::si::voltage<units::si::volt, Rep>;
+using V = units::physical::si::voltage<units::physical::si::volt, Rep>;
 
 template<typename Rep = double>
-using mV = units::si::voltage<units::si::millivolt, Rep>;
+using mV = units::physical::si::voltage<units::physical::si::millivolt, Rep>;
 
 template<typename Rep = double>
-using uV = units::si::voltage<units::si::microvolt, Rep>;
+using uV = units::physical::si::voltage<units::physical::si::microvolt, Rep>;
 
 template<typename Rep = double>
-using nV = units::si::voltage<units::si::nanovolt, Rep>;
+using nV = units::physical::si::voltage<units::physical::si::nanovolt, Rep>;
 
 template<typename Rep = double>
-using pV = units::si::voltage<units::si::picovolt, Rep>;
+using pV = units::physical::si::voltage<units::physical::si::picovolt, Rep>;
 
 }  // namespace voltage
 

@@ -35,4 +35,4 @@ struct tebi : units::prefix<tebi, prefix, "Ti", ratio<        1'099'511'627'776>
 struct pebi : units::prefix<pebi, prefix, "Pi", ratio<    1'125'899'906'842'624>> {};
 struct exbi : units::prefix<exbi, prefix, "Ei", ratio<1'152'921'504'606'846'976>> {};
 
-}  // namespace units::si
+}  // namespace units::data

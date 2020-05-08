@@ -27,7 +27,7 @@
 #include <units/physical/si/area.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 using si::square_centimetre;
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_cm2(long double l) { return area<square_centimetre, 
 
 }
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

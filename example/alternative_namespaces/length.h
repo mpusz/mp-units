@@ -15,70 +15,70 @@ namespace experimental{
 namespace length {
 
 template<typename Rep = double>
-using m = units::si::length<units::si::metre, Rep>;
+using m = units::physical::si::length<units::physical::si::metre, Rep>;
 
 template<typename Rep = double>
-using mm = units::si::length<units::si::millimetre, Rep>;
+using mm = units::physical::si::length<units::physical::si::millimetre, Rep>;
 
 template<typename Rep = double>
-using fm = units::si::length<units::si::femtometre, Rep>;
+using fm = units::physical::si::length<units::physical::si::femtometre, Rep>;
 
 template<typename Rep = double>
-using km = units::si::length<units::si::kilometre, Rep>;
+using km = units::physical::si::length<units::physical::si::kilometre, Rep>;
 
 template<typename Rep = double>
-using AU = units::si::length<units::si::astronomical_unit, Rep>;
+using AU = units::physical::si::length<units::physical::si::astronomical_unit, Rep>;
 
 template<typename Rep = double>
-using in = units::si::length<units::international::inch, Rep>;
+using in = units::physical::si::length<units::physical::international::inch, Rep>;
 
 template<typename Rep = double>
-using angstrom = units::si::length<units::iau::angstrom, Rep>;
+using angstrom = units::physical::si::length<units::physical::iau::angstrom, Rep>;
 
 template<typename Rep = double>
-using ch = units::si::length<units::imperial::chain, Rep>;
+using ch = units::physical::si::length<units::physical::imperial::chain, Rep>;
 
 template<typename Rep = double>
-using fathom = units::si::length<units::international::fathom, Rep>;
+using fathom = units::physical::si::length<units::physical::international::fathom, Rep>;
 
 template<typename Rep = double>
-using fathom_us = units::si::length<units::us::fathom, Rep>;
+using fathom_us = units::physical::si::length<units::physical::us::fathom, Rep>;
 
 template<typename Rep = double>
-using ft = units::si::length<units::international::foot, Rep>;
+using ft = units::physical::si::length<units::physical::international::foot, Rep>;
 
 template<typename Rep = double>
-using ft_us = units::si::length<units::us::foot, Rep>;
+using ft_us = units::physical::si::length<units::physical::us::foot, Rep>;
 
 template<typename Rep = double>
-using ly = units::si::length<units::iau::light_year, Rep>;
+using ly = units::physical::si::length<units::physical::iau::light_year, Rep>;
 
 template<typename Rep = double>
-using mi = units::si::length<units::international::mile, Rep>;
+using mi = units::physical::si::length<units::physical::international::mile, Rep>;
 
 template<typename Rep = double>
-using mi_naut = units::si::length<units::international::nautical_mile, Rep>;
+using mi_naut = units::physical::si::length<units::physical::international::nautical_mile, Rep>;
 
 template<typename Rep = double>
-using pc = units::si::length<units::iau::parsec, Rep>;
+using pc = units::physical::si::length<units::physical::iau::parsec, Rep>;
 
 template<typename Rep = double>
-using pica_comp = units::si::length<units::typographic::pica_comp, Rep>;
+using pica_comp = units::physical::si::length<units::physical::typographic::pica_comp, Rep>;
 
 template<typename Rep = double>
-using pica_prn = units::si::length<units::typographic::pica_prn, Rep>;
+using pica_prn = units::physical::si::length<units::physical::typographic::pica_prn, Rep>;
 
 template<typename Rep = double>
-using point_comp = units::si::length<units::typographic::point_comp, Rep>;
+using point_comp = units::physical::si::length<units::physical::typographic::point_comp, Rep>;
 
 template<typename Rep = double>
-using point_prn = units::si::length<units::typographic::point_prn, Rep>;
+using point_prn = units::physical::si::length<units::physical::typographic::point_prn, Rep>;
 
 template<typename Rep = double>
-using rd = units::si::length<units::imperial::rod, Rep>;
+using rd = units::physical::si::length<units::physical::imperial::rod, Rep>;
 
 template<typename Rep = double>
-using yd = units::si::length<units::international::yard, Rep>;
+using yd = units::physical::si::length<units::physical::international::yard, Rep>;
 
 
 }  // namespace length

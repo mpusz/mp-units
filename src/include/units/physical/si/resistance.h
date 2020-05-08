@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct ohm : named_unit<ohm, {"Ω", "ohm"}, prefix> {};
 struct yoctoohm : prefixed_unit<yoctoohm, yocto, ohm> {};
@@ -125,4 +125,4 @@ constexpr auto operator"" q_YR(long double l) { return resistance<yottaohm, long
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

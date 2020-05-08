@@ -9,7 +9,7 @@ namespace experimental{
 namespace force {
 
 template<typename Rep = double>
-using N = units::si::force<units::si::newton, Rep>;
+using N = units::physical::si::force<units::physical::si::newton, Rep>;
 
 }
 

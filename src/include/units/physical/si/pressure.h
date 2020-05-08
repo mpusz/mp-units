@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct pascal : named_unit<pascal, "Pa", prefix> {};
 struct yoctopascal : prefixed_unit<yoctopascal, yocto, pascal> {};
@@ -145,4 +145,4 @@ constexpr auto operator"" q_YPa(long double l) { return pressure<yottapascal, lo
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

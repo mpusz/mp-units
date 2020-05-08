@@ -26,7 +26,7 @@
 #include <units/physical/si/time.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 using si::second;
 
@@ -39,4 +39,4 @@ using si::literals::operator"" q_s;
 
 }
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

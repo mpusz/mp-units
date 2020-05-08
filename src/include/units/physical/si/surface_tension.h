@@ -26,7 +26,7 @@
 #include <units/physical/si/force.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct newton_per_metre : unit<newton_per_metre> {};
 
@@ -43,4 +43,4 @@ inline namespace literals {
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

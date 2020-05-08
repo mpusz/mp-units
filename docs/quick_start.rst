@@ -32,7 +32,7 @@ of basic library features::
     #include <units/physical/international/velocity.h>
     #include <iostream>
 
-    using namespace units;
+    using namespace units::physical;
 
     constexpr Velocity auto avg_speed(Length auto d, Time auto t)
     {
@@ -41,7 +41,7 @@ of basic library features::
 
     int main()
     {
-      using namespace si::literals;
+      using namespace units::physical::si::literals;
       Velocity auto v1 = avg_speed(220q_km, 2q_h);
       Velocity auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
       Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);

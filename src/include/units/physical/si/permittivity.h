@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct farad_per_metre : unit<farad_per_metre> {};
 
@@ -44,5 +44,5 @@ constexpr auto operator"" q_F_per_m(long double l) { return permittivity<farad_p
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

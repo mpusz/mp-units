@@ -25,7 +25,7 @@
 #include <units/physical/si/area.h>
 #include <units/physical/international/length.h>
 
-namespace units::international {
+namespace units::physical::international {
 
 struct square_foot : deduced_unit<square_foot, si::dim_area, international::foot> {};
 
@@ -37,4 +37,4 @@ constexpr auto operator"" q_ft2(long double l) { return si::area<square_foot, lo
 
 }  // namespace literals
 
-}  // namespace units::international
+}  // namespace units::physical::international

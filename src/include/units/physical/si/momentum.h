@@ -27,7 +27,7 @@
 #include <units/physical/si/velocity.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
 struct dim_momentum : physical::dim_momentum<dim_momentum, kilogram_metre_per_second, dim_mass, dim_velocity> {};
@@ -43,4 +43,4 @@ constexpr auto operator"" q_kg_m_per_s(long double l) { return momentum<kilogram
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

@@ -34,7 +34,7 @@
 namespace {
 
 using namespace units;
-using namespace units::cgs;
+using namespace units::physical::cgs;
 
 /* ************** BASE DIMENSIONS **************** */
 

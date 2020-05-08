@@ -27,47 +27,47 @@
 
 namespace {
 
-constexpr units::si::velocity<units::si::metre_per_second, int>
-fixed_int_si_avg_speed(units::si::length<units::si::metre, int> d,
-                       units::si::time<units::si::second, int> t)
+using namespace units::physical;
+
+constexpr si::velocity<si::metre_per_second, int>
+fixed_int_si_avg_speed(si::length<si::metre, int> d,
+                       si::time<si::second, int> t)
 {
   return d / t;
 }
 
-constexpr units::si::velocity<units::si::metre_per_second>
-fixed_double_si_avg_speed(units::si::length<units::si::metre> d,
-                          units::si::time<units::si::second> t)
+constexpr si::velocity<si::metre_per_second>
+fixed_double_si_avg_speed(si::length<si::metre> d,
+                          si::time<si::second> t)
 {
   return d / t;
 }
 
 template<typename U1, typename R1, typename U2, typename R2>
-constexpr units::Velocity AUTO si_avg_speed(units::si::length<U1, R1> d,
-                                            units::si::time<U2, R2> t)
+constexpr Velocity AUTO si_avg_speed(si::length<U1, R1> d,
+                                     si::time<U2, R2> t)
 {
   return d / t;
 }
 
-constexpr units::Velocity AUTO avg_speed(units::Length AUTO d, units::Time AUTO t)
+constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
   return d / t;
 }
 
-template<units::Length D, units::Time T, units::Velocity V>
+template<Length D, Time T, Velocity V>
 void print_result(D distance, T duration, V velocity)
 {
-  const auto result_in_kmph = units::quantity_cast<units::si::velocity<units::si::kilometre_per_hour>>(velocity);
+  const auto result_in_kmph = units::quantity_cast<si::velocity<si::kilometre_per_hour>>(velocity);
   std::cout << "Average speed of a car that makes " << distance << " in "
             << duration << " is " << result_in_kmph << ".\n";
 }
 
 void example()
 {
-  using namespace units;
-
   // SI (int)
   {
-    using namespace units::si::literals;
+    using namespace units::physical::si::literals;
     constexpr Length AUTO distance = 220q_km;      // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -81,7 +81,7 @@ void example()
 
   // SI (double)
   {
-    using namespace units::si::literals;
+    using namespace units::physical::si::literals;
     constexpr Length AUTO distance = 220.q_km;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2);   // constructed from a value
 
@@ -97,7 +97,7 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::international::literals;
+    using namespace units::physical::international::literals;
     constexpr Length AUTO distance = 140q_mi;      // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -113,7 +113,7 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::international::literals;
+    using namespace units::physical::international::literals;
     constexpr Length AUTO distance = 140q_mi; // constructed from a UDL
     constexpr si::time<si::hour> duration(2); // constructed from a value
 
@@ -131,7 +131,7 @@ void example()
 
   // CGS (int)
   {
-    using namespace units::cgs::literals;
+    using namespace units::physical::cgs::literals;
     constexpr Length AUTO distance = 22'000'000q_cm;  // constructed from a UDL
     constexpr cgs::time<si::hour, int> duration(2);   // constructed from a value
 
@@ -150,7 +150,7 @@ void example()
 
   // CGS (double)
   {
-    using namespace units::cgs::literals;
+    using namespace units::physical::cgs::literals;
     constexpr Length AUTO distance = 22'000'000q_cm; // constructed from a UDL
     constexpr cgs::time<si::hour> duration(2);       // constructed from a value
 

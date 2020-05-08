@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct joule_per_mole : unit<joule_per_mole> {};
 
@@ -45,4 +45,4 @@ constexpr auto operator"" q_J_per_mol(long double l) { return molar_energy<joule
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

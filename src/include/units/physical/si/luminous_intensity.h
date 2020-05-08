@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct candela : named_unit<candela, "cd", prefix> {};
 struct yoctocandela : prefixed_unit<yoctocandela, yocto, candela> {};
@@ -143,4 +143,4 @@ constexpr auto operator"" q_Ycd(long double l) { return luminous_intensity<yotta
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

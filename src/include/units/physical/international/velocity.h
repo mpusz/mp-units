@@ -25,7 +25,7 @@
 #include <units/physical/si/velocity.h>
 #include <units/physical/international/length.h>
 
-namespace units::international {
+namespace units::physical::international {
 
 struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, international::mile, si::hour> {};
 
@@ -37,4 +37,4 @@ constexpr auto operator"" q_mi_per_h(long double l) { return si::velocity<mile_p
 
 }  // namespace literals
 
-}  // namespace units::international
+}  // namespace units::physical::international

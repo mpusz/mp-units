@@ -26,7 +26,7 @@
 #include <units/physical/si/time.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct hertz : named_unit<hertz, "Hz", prefix> {};
 struct yoctohertz : prefixed_unit<yoctohertz, yocto, hertz> {};
@@ -123,4 +123,4 @@ constexpr auto operator"" q_YHz(long double l) { return frequency<yottahertz, lo
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

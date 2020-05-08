@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct erg : named_unit<erg, "erg", si::prefix> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_erg(long double l) { return energy<erg, long double>
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

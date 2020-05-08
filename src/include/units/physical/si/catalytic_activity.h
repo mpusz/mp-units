@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct katal : named_unit<katal, "kat", prefix> {};
 struct yoctokatal : prefixed_unit<yoctokatal, yocto, katal> {};
@@ -151,5 +151,5 @@ constexpr auto operator"" q_U(long double l) { return catalytic_activity<enzyme_
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

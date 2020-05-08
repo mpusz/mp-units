@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct mole : named_unit<metre, "mol", prefix> {};
 
@@ -43,4 +43,4 @@ constexpr auto operator"" q_mol(long double l) { return substance<mole, long dou
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

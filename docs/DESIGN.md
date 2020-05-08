@@ -148,7 +148,7 @@ in the design documentation.
 Coming back to units, here are a few examples of unit definitions:
 
 ```cpp
-namespace units::si {
+namespace units::physical::si {
 
 // prefixes
 struct prefix : prefix_family {};
@@ -170,7 +170,7 @@ struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilom
 
 }
 
-namespace units::us {
+namespace units::physical::us {
 
 // length
 struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, si::metre> {};
@@ -224,7 +224,7 @@ These identifiers provide total ordering of exponents of base dimensions in a de
 The SI physical units system defines 7 base dimensions:
 
 ```cpp
-namespace units::si {
+namespace units::physical::si {
 
 struct dim_length : base_dimension<"L", metre> {};
 struct dim_mass : base_dimension<"M", kilogram> {};
@@ -244,7 +244,7 @@ base unit is needed for the text output of unnamed derived units. Second, there 
 one system of physical units. For example CGS definitions look as follows:
 
 ```cpp
-namespace units::cgs {
+namespace units::physical::cgs {
 
 using si::centimetre;
 using si::gram;
@@ -354,7 +354,7 @@ directly define a barye in terms of pascal or vice versa.
 Below are a few examples of derived dimension definitions:
 
 ```cpp
-namespace units::si {
+namespace units::physical::si {
 
 struct dim_velocity : derived_dimension<dim_velocity, metre_per_second,
                                         exp<dim_length, 1>, exp<dim_time, -1>> {};
@@ -448,8 +448,8 @@ Beside adding new elements a few other changes where applied compared to the `st
 
 To simplify writing efficient generic code quantities of each dimension have associated:
 1. Concept (i.e. `units::Length`) that matches a length dimension of any physical systems.
-2. Per-system quantity alias (i.e. `units::si::length<Unit, Rep>` for
-  `units::quantity<units::si::dim_length, Unit, Rep>`).
+2. Per-system quantity alias (i.e. `units::physical::si::length<Unit, Rep>` for
+  `units::quantity<units::physical::si::dim_length, Unit, Rep>`).
 
 Also, to help instantiate quantities with compile-time known values every unit in the library
 has an associated UDL. For example:
@@ -603,9 +603,9 @@ user. If we will get a compilation error message containing `dim_capacitance` in
 the compiler will print the following type instead of the alias:
 
 ```text
-units::detail::derived_dimension_base<units::exp<units::si::dim_electric_current, 2, 1>,
-units::exp<units::si::dim_length, -2, 1>, units::exp<units::si::dim_mass, -1, 1>,
-units::exp<units::si::dim_time, 4, 1> >
+units::detail::derived_dimension_base<units::exp<units::physical::si::dim_electric_current, 2, 1>,
+units::exp<units::physical::si::dim_length, -2, 1>, units::exp<units::physical::si::dim_mass, -1, 1>,
+units::exp<units::physical::si::dim_time, 4, 1> >
 ```
 
 You can notice that even this long syntax was carefully selected to provide quite good user
@@ -760,8 +760,8 @@ struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>,
 with this the error log or a debugger breakpoint involving a `temp1` type will include:
 
 ```text
-units::quantity<units::unknown_dimension<units::exp<units::si::dim_length, 2, 1>,
-units::exp<units::si::dim_time, -1, 1> >, units::unknown_coherent_unit, long int>
+units::quantity<units::unknown_dimension<units::exp<units::physical::si::dim_length, 2, 1>,
+units::exp<units::physical::si::dim_time, -1, 1> >, units::unknown_coherent_unit, long int>
 ```
 
 

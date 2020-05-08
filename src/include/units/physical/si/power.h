@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct watt : named_unit<watt, "W", prefix> {};
 struct yoctowatt : prefixed_unit<yoctowatt, yocto, watt> {};
@@ -124,4 +124,4 @@ constexpr auto operator"" q_YW(long double l) { return power<yottawatt, long dou
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

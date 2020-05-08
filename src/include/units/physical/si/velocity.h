@@ -27,7 +27,7 @@
 #include <units/physical/si/time.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct metre_per_second : unit<metre_per_second> {};
 struct dim_velocity : physical::dim_velocity<dim_velocity, metre_per_second, dim_length, dim_time> {};
@@ -49,4 +49,4 @@ constexpr auto operator"" q_km_per_h(long double l) { return velocity<kilometre_
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

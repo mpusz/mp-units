@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct farad : named_unit<farad, "F", prefix> {};
 struct yoctofarad : prefixed_unit<yoctofarad, yocto, farad> {};
@@ -145,4 +145,4 @@ constexpr auto operator"" q_YF(long double l) { return capacitance<yottafarad, l
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

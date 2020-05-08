@@ -27,7 +27,7 @@
 #include <units/physical/si/pressure.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct pascal_second : unit<pascal_second> {};
 struct dim_dynamic_viscosity : physical::dim_dynamic_viscosity<dim_dynamic_viscosity, pascal_second, dim_pressure, dim_time> {};
@@ -43,5 +43,5 @@ constexpr auto operator"" q_Pa_s(long double l) { return dynamic_viscosity<pasca
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
 

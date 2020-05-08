@@ -27,7 +27,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::cgs {
+namespace units::physical::cgs {
 
 struct erg_per_second : unit<erg_per_second> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_erg_per_s(long double l) { return power<erg_per_seco
 
 }  // namespace literals
 
-}  // namespace units::cgs
+}  // namespace units::physical::cgs

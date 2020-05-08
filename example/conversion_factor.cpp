@@ -41,7 +41,7 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
 
 int main()
 {
-  using namespace units::si;
+  using namespace units::physical::si;
 
   std::cout << "conversion factor in mp-units...\n\n";
 

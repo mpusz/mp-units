@@ -25,7 +25,7 @@
 #include <units/unit.h>
 #include <units/physical/si/prefixes.h>
 
-namespace units::natural {
+namespace units::physical::natural {
 
 struct unitless : named_unit<unitless, "", no_prefix> {};
 struct electronvolt : named_unit<electronvolt, "eV", si::prefix> {};
@@ -38,4 +38,4 @@ struct square_gigaelectronvolt : named_unit<square_gigaelectronvolt, {"GeV²", "
 // natural units as an isolated island with ev = 1 which simplifies all
 // the maths a lot?
 
-}  // namespace units::natural
+}  // namespace units::physical::natural

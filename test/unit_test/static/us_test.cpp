@@ -34,9 +34,9 @@
 namespace {
 
 using namespace units;
-using namespace units::si;
-using namespace units::us;
-using namespace units::international;
+using namespace units::physical::si;
+using namespace units::physical::us;
+using namespace units::physical::international;
 
 /* ************** BASE DIMENSIONS **************** */
 

@@ -55,8 +55,8 @@ std::ostream& operator<<(std::ostream& os, const std::experimental::math::matrix
 
 
 using namespace std::experimental::math;
-using namespace units;
-using namespace si::literals;
+using namespace units::physical;
+using namespace units::physical::si::literals;
 
 template<typename Rep = double>
 using vector = fs_vector<Rep, 3>;
@@ -201,10 +201,10 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
-template<Unit U = si::metre, Scalar Rep = double>
+template<units::Unit U = si::metre, units::Scalar Rep = double>
 using length_v = si::length<U, vector<Rep>>;
 
-template<Unit U = si::newton, Scalar Rep = double>
+template<units::Unit U = si::newton, units::Scalar Rep = double>
 using force_v = si::force<U, vector<Rep>>;
 
 void quantity_of_vector_add()

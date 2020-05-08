@@ -25,7 +25,7 @@
 
 #include <units/physical/si/length.h>
 
-namespace units::iau {
+namespace units::physical::iau {
 
 // https://en.wikipedia.org/wiki/Light-year
 struct light_year : named_scaled_unit<light_year, "ly", no_prefix, ratio<9460730472580800>, si::metre> {};
@@ -49,4 +49,4 @@ constexpr auto operator"" q_angstrom(long double l) { return si::length<angstrom
 
 }  // namespace literals
 
-}  // namespace units::iau
+}  // namespace units::physical::iau

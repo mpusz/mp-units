@@ -29,7 +29,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct tesla : named_unit<tesla, "T", prefix> {};
 

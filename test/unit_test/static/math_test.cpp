@@ -27,8 +27,8 @@
 
 namespace {
 
-  using namespace units::si::literals;
-  using namespace units::international::literals;
+  using namespace units::physical::si::literals;
+  using namespace units::physical::international::literals;
 
   static_assert(std::is_same_v<decltype(pow<0>(2q_m)), std::int64_t>);
   static_assert(std::is_same_v<decltype(pow<1>(2q_m)), decltype(2q_m)>);

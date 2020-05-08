@@ -25,7 +25,7 @@
 
 namespace {
 
-using namespace units;
+using namespace units::physical;
 
 static_assert(Length<si::length<si::metre>>);
 static_assert(!Length<si::time<si::second>>);

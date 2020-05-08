@@ -26,7 +26,7 @@
 namespace {
 
 using namespace units;
-using namespace units::si;
+using namespace units::physical::si;
 
 /* ************** BASE DIMENSIONS **************** */
 

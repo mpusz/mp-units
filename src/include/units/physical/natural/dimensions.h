@@ -26,7 +26,7 @@
 #include <units/physical/natural/units.h>
 #include <units/quantity.h>
 
-namespace units::natural {
+namespace units::physical::natural {
 
 struct dim_length : physical::dim_length<inverted_gigaelectronvolt> {};
 template<Unit U, Scalar Rep = double>
@@ -63,4 +63,4 @@ using energy = quantity<dim_force, U, Rep>;
 // Typical UDLs will not work here as the same units are reused by many quantities.
 // Should we define some strange ones (i.e. q_mass_GeV)?
 
-}  // namespace units::natural
+}  // namespace units::physical::natural

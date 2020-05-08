@@ -26,7 +26,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct metre : named_unit<metre, "m", prefix> {};
 struct yoctometre : prefixed_unit<yoctometre, yocto, metre> {};
@@ -149,4 +149,4 @@ constexpr auto operator"" q_au(long double l) { return length<astronomical_unit,
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_kg_per_m3(long double l) { return density<kilogram_p
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

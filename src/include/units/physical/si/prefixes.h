@@ -24,7 +24,7 @@
 
 #include <units/prefix.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct prefix : prefix_family {};
 
@@ -51,4 +51,4 @@ struct zetta  : units::prefix<zetta,  prefix, "Z",             ratio<1, 1,  21>>
 struct yotta  : units::prefix<yotta,  prefix, "Y",             ratio<1, 1,  24>> {};
 // clang-format on
 
-}  // namespace units::si
+}  // namespace units::physical::si

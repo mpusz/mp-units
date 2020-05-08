@@ -27,7 +27,7 @@
 #include <units/physical/si/area.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct weber : named_unit<weber, "Wb", prefix> {};
 
@@ -125,4 +125,4 @@ constexpr auto operator"" q_YWb(long double l) { return magnetic_flux<yottaweber
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si

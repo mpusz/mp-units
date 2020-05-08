@@ -28,7 +28,7 @@
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
-namespace units::si {
+namespace units::physical::si {
 
 struct ampere_per_metre_sq : unit<ampere_per_metre_sq> {};
 
@@ -44,4 +44,4 @@ constexpr auto operator"" q_A_per_m2(long double l) { return current_density<amp
 
 }  // namespace literals
 
-}  // namespace units::si
+}  // namespace units::physical::si
