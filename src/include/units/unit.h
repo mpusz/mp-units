@@ -183,7 +183,7 @@ template<Unit U, Prefix P, Unit AU>
 struct prefixed_alias_unit : U {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + AU::symbol;
-  using prefix_family = AU::prefix_family;
+  using prefix_family = no_prefix;
 };
 
 }  // namespace units
