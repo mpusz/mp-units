@@ -19,13 +19,3 @@ File
 
 .. 
    doxygenfile:: si/length.h
-
-Group
------
-
-.. 
-   doxygengroup:: si_length
-    :content-only:
-    :members:
-    :undoc-members:
-    :outline:
