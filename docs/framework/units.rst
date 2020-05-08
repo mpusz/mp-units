@@ -308,6 +308,32 @@ provided in the template parameter list after the derived dimension parameter,
 the library calculates the final ratio for this unit.
 
 
+Aliased Units
+-------------
+
+In order to make our life easier people tend to assign alternative/aliased names
+to some popular units. As an example we often use "tonne" instead of "megagram",
+"litre" instead of "cubic decimetre", or "hectare" instead of "square hectometre".
+
+This library provides facilities to define aliased names to already defined units
+with `alias_unit` class template::
+
+    namespace si {
+
+    struct litre : alias_unit<cubic_decimetre, "l", prefix> {};
+
+    }
+
+Also, it is possible to add prefixes to such aliased units with `prefixed_alias_unit`
+class template::
+
+    namespace si {
+
+    struct millilitre : prefixed_alias_unit<cubic_centimetre, milli, litre> {};
+
+    }
+
+
 Class Hierarchy
 ---------------
 
@@ -327,6 +353,8 @@ of a `scaled_unit` class template:
     [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
+    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
 
 `scaled_unit` is a class template used exclusively by the library's framework
 and user should not instantiate it by him/her-self. However the user can sometimes

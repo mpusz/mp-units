@@ -172,6 +172,19 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
 //   using prefix_family = PT;
 // };
 
+/**
+ * @brief An aliased named unit
+ *
+ * Defines a named alias for another unit. It is useful to assign alternative names and symbols
+ * to the already predefined units (i.e. "tonne" for "megagram").
+ * An alias unit may be used by other units defined with the prefix of the same type, unless
+ * no_prefix is provided for PT template parameter (in such a case it is impossible to define
+ * a prefix unit based on this one).
+ *
+ * @tparam U Unit for which an alias is defined
+ * @tparam Symbol a short text representation of the unit
+ * @tparam PT no_prefix or a type of prefix family
+ */
 template<Unit U, basic_symbol_text Symbol, PrefixFamily PT>
 struct alias_unit : U {
   static constexpr bool is_named = true;
@@ -179,6 +192,17 @@ struct alias_unit : U {
   using prefix_family = PT;
 };
 
+/**
+ * @brief A prefixed alias unit
+ *
+ * Defines a new unit that is an alias for a scaled version of another unit by the provided
+ * prefix. It is only possible to create such a unit if the given prefix type matches the one
+ * defined in a reference unit.
+ *
+ * @tparam U Unit for which an alias is defined
+ * @tparam P prefix to be appied to the reference unit
+ * @tparam AU reference alias unit
+ */
 // TODO gcc bug: 95015
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
 // template<Unit U, Prefix P, AliasUnit AU>
