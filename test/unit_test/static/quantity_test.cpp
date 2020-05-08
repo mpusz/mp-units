@@ -24,6 +24,7 @@
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/velocity.h"
+#include "units/physical/si/volume.h"
 #include <chrono>
 #include <utility>
 
@@ -201,6 +202,13 @@ static_assert(1001q_m > 1q_km);
 static_assert(999q_m < 1q_km);
 static_assert(1000q_m >= 1q_km);
 static_assert(1000q_m <= 1q_km);
+
+// alias units
+
+static_assert(2q_l + 2q_ml == 2002q_ml);
+static_assert(2q_l + 2q_ml == 2002q_cm3);
+static_assert(2q_l + 2q_cm3 == 2002q_ml);
+static_assert(2q_dm3 + 2q_cm3 == 2002q_ml);
 
 // is_quantity
 

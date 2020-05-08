@@ -155,6 +155,48 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
+  SECTION("quantity with an alias unit")
+  {
+    const auto q = 2q_l;
+    os << q;
+
+    SECTION("iostream")
+    {
+      CHECK(os.str() == "2 l");
+    }
+
+    SECTION("fmt with default format {} on a quantity")
+    {
+      CHECK(fmt::format("{}", q) == os.str());
+    }
+
+    SECTION("fmt with format {:%Q %q} on a quantity")
+    {
+      CHECK(fmt::format("{:%Q %q}", q) == os.str());
+    }
+  }
+
+  SECTION("quantity with a prefixed alias unit")
+  {
+    const auto q = 2q_ml;
+    os << q;
+
+    SECTION("iostream")
+    {
+      CHECK(os.str() == "2 ml");
+    }
+
+    SECTION("fmt with default format {} on a quantity")
+    {
+      CHECK(fmt::format("{}", q) == os.str());
+    }
+
+    SECTION("fmt with format {:%Q %q} on a quantity")
+    {
+      CHECK(fmt::format("{:%Q %q}", q) == os.str());
+    }
+  }
+
   SECTION("quantity with a deduced unit")
   {
     SECTION("coherent derived unit")
