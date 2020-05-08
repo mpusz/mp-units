@@ -30,6 +30,14 @@
 
 namespace units {
 
+template<Dimension D, UnitOf<D> U, Scalar Rep>
+class quantity;
+
+template<Dimension D, UnitOf<D> U, Scalar Rep>
+class quantity_point;
+
+namespace detail {
+
 constexpr std::intmax_t ipow10(std::intmax_t exp)
 {
   assert(exp >= 0);
@@ -61,10 +69,22 @@ constexpr Rep fpow10(std::intmax_t exp)
   return result;
 }
 
+template<typename D, typename U, typename Rep>
+constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
+{
+  if constexpr(BaseDimension<D>) {
+    return U::ratio;
+  }
+  else {
+    return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
+  }
+}
+
+} // namespace detail
 
 // QuantityOf
 template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
+concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent<typename T::dimension, Dim>;
 
 // quantity_cast
 namespace detail {
@@ -290,17 +310,10 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   }
 };
 
-template<Dimension FromD, Unit FromU, Dimension ToD, Unit ToU>
-constexpr ratio cast_ratio()
+template<typename Q1, typename Q2>
+constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 {
-  if constexpr(BaseDimension<FromD> || same_unit_reference<FromU, ToU>::value) {
-    return FromU::ratio / ToU::ratio;
-  }
-  else {
-    const ratio from_ratio = FromD::base_units_ratio * FromU::ratio;
-    const ratio to_ratio = ToD::base_units_ratio * ToU::ratio;
-    return from_ratio / to_ratio;
-  }
+  return quantity_ratio(from) / quantity_ratio(to);
 }
 
 }  // namespace detail
@@ -321,7 +334,7 @@ template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires QuantityOf<To, D>
 {
-  using c_ratio = std::integral_constant<ratio, detail::cast_ratio<D, U, typename To::dimension, typename To::unit>()>;
+  using c_ratio = std::integral_constant<ratio, detail::cast_ratio(quantity<D, U, Rep>(), To())>;
   using c_rep = std::common_type_t<typename To::rep, Rep>;
   using ret_unit = downcast_unit<typename To::dimension, To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
@@ -343,7 +356,7 @@ template<Quantity To, typename D, typename U, typename Rep>
  */
 template<Dimension ToD, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires equivalent_dim<ToD, D>
+  requires equivalent<ToD, D>
 {
   return quantity_cast<quantity<ToD, dimension_unit<ToD>, Rep>>(q);
 }

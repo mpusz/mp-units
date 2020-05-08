@@ -49,6 +49,12 @@ class UnitsConan(ConanFile):
         "fmt/7.0.3",
         "ms-gsl/3.1.0"
     )
+    options = {
+        "downcast": ["off", "on", "auto"]
+    }
+    default_options = {
+        "downcast": "auto"
+    }
     # scm = {
     #     "type": "git",
     #     "url": "auto",
@@ -63,6 +69,13 @@ class UnitsConan(ConanFile):
 
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
+        if self.options.downcast_dispatch_mode == "off":
+            cmake.definitions["UNITS_DOWNCAST"] = 0
+        elif self.options.downcast_dispatch_mode == "on":
+            cmake.definitions["UNITS_DOWNCAST"] = 1
+        elif self.options.downcast_dispatch_mode == "auto":
+            cmake.definitions["UNITS_DOWNCAST"] = 2
+
         if self._run_tests:
             # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
             cmake.configure()

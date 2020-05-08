@@ -23,12 +23,12 @@ a few additional member types and functions::
     };
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-      requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, dim_invert<D2>>
+      requires detail::basic_arithmetic<Rep1, Rep2> && equivalent<D1, dim_invert<D2>>
     [[nodiscard]] constexpr Scalar auto operator*(const quantity<D1, U1, Rep1>& lhs,
                                                   const quantity<D2, U2, Rep2>& rhs);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-      requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)
+      requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent<D1, dim_invert<D2>>)
     [[nodiscard]] constexpr Quantity auto operator*(const quantity<D1, U1, Rep1>& lhs,
                                                     const quantity<D2, U2, Rep2>& rhs);
 
@@ -38,17 +38,17 @@ a few additional member types and functions::
                                                     const quantity<D, U, Rep>& q);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-      requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, D2>
+      requires detail::basic_arithmetic<Rep1, Rep2> && equivalent<D1, D2>
     [[nodiscard]] constexpr Scalar auto operator/(const quantity<D1, U1, Rep1>& lhs,
                                                   const quantity<D2, U2, Rep2>& rhs);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-      requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)
+      requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent<D1, D2>)
     [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs,
                                                     const quantity<D2, U2, Rep2>& rhs);
 
 Additional functions provide the support for operations that result in a
-different dimension type than those of their arguments. ``equivalent_dim``
+different dimension type than those of their arguments. ``equivalent``
 constraint requires two dimensions to be either the same or have convertible
 units of base dimension (with the same reference unit).
 

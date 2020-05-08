@@ -106,6 +106,7 @@ static_assert(10q_Hz * 1q_min == 600);
 static_assert(2 / 1q_Hz == 2q_s);
 
 // force
+
 static_assert(10q_kg * 10q_m_per_s2 == 100q_N);
 static_assert(100q_N / 1q_m_per_s2 == 100q_kg);
 static_assert(100q_N / 1q_kg == 100q_m_per_s2);
@@ -236,8 +237,6 @@ static_assert(kilogray::symbol == "kGy");
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
 // speed
-
-static_assert(is_same_v<decltype(1q_km / 1q_s), speed<scaled_unit<ratio(1, 1, 3), metre_per_second>, std::int64_t>>);
 
 static_assert(10q_m / 5q_s == 2q_m_per_s);
 static_assert(10 / 5q_s * 1q_m == 2q_m_per_s);
