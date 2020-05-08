@@ -267,7 +267,7 @@ concept not_constructible_from_integral =
   std::regular_invocable<std::multiplies<>, std::int64_t, T>; // &&
   // std::regular_invocable<std::divides<>, T, std::int64_t>;  // TODO Uncomment when a bug in LA is fixed
 
-}  // namesapce detail
+}  // namespace detail
 
 /**
  * @brief A concept matching non-Quantity types.
