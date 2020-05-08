@@ -331,7 +331,8 @@ html_theme = 'sphinx_rtd_theme'
 # A dictionary of options that influence the look and feel of the selected theme.
 # These are theme-specific.
 html_theme_options = {
-    'github_url': 'https://github.com/mpusz/units'
+    # WARNING: unsupported theme option 'github_url' given
+    # 'github_url': 'https://github.com/mpusz/units'
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
