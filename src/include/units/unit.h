@@ -179,7 +179,12 @@ struct alias_unit : U {
   using prefix_family = PT;
 };
 
+// TODO gcc bug: 95015
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
+// template<Unit U, Prefix P, AliasUnit AU>
+//   requires (!AliasUnit<U>) && std::same_as<typename P::prefix_family, typename AU::prefix_family>
 template<Unit U, Prefix P, Unit AU>
+  requires std::same_as<typename P::prefix_family, typename AU::prefix_family>
 struct prefixed_alias_unit : U {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + AU::symbol;
