@@ -22,6 +22,8 @@
   - Named SI units and their dimensions added (thanks [@rbrugo](https://github.com/rbrugo)
   - libfmt updated to 6.2.0
   - Added absolute functions and epsilon to math.h (thanks [@mikeford3](https://github.com/mikeford3))
+  - Added a lot of prefixes to named units and introduced `alias_unit` (thanks [@yasamoka](https://github.com/yasamoka))
+  - Linking with Conan targets only when they exists ([#98](https://github.com/mpusz/units/issues/98))
   - ...
 
   Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock) and
