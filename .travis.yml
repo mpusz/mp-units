@@ -16,7 +16,9 @@ osx: &osx
 matrix:
   include:
     - <<: *linux
-      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9 DEPLOY_DOCS=TRUE
+      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9 DEPLOY_DOCS=FALSE
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=10 CONAN_DOCKER_IMAGE=conanio/gcc10 DEPLOY_DOCS=TRUE
 
 install:
   - chmod +x .travis/install.sh
