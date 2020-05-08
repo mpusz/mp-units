@@ -26,7 +26,7 @@ function(add_metabench_test target name erb_path range)
     target_compile_features(${target} PUBLIC cxx_std_20)
     target_link_libraries(${target}
         PUBLIC
-            CONAN_PKG::range-v3
+            $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>, CONAN_PKG::range-v3, range-v3::range-v3>
     )
     target_compile_options(${target}
         PUBLIC

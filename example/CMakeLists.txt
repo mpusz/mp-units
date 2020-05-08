@@ -38,6 +38,9 @@ add_example(kalman_filter-alpha_beta_filter_example2)
 
 conan_check_testing(linear_algebra)
 add_example(linear_algebra)
-target_link_libraries(linear_algebra PRIVATE CONAN_PKG::linear_algebra)
+target_link_libraries(linear_algebra
+    PRIVATE
+        $<IF:$<TARGET_EXISTS:CONAN_PKG::linear_algebra>, CONAN_PKG::linear_algebra, linear_algebra::linear_algebra>
+)
 
 add_subdirectory(alternative_namespaces)
