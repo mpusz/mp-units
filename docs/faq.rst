@@ -76,3 +76,22 @@ to obey the rules and be consistent with ISO specifications.
     physical quantities and units of measurement, formulas involving them, and their
     corresponding units, in scientific and educational documents for worldwide use.
     Read more on `Wikipedia <ISO/IEC 80000 https://en.wikipedia.org/wiki/ISO/IEC_80000>`_.
+
+Compilation Errors
+------------------
+
+error: reference to ‘time’ is ambiguous
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Unfortunately, if `using-directives <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_
+(i.e. :expr:`using namespace units::physical::si`) are being used, `units::physical::si::time` will
+collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In such a case the library's
+`time` function needs to be prefixed with at least one (or all) namespace names.
+
+error: template argument 1 is invalid
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Again, usage of :expr:`using namespace units`
+`using-directive <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_ may result in
+the collision between `units::exp` class template and C `exp <https://en.cppreference.com/w/c/numeric/math/exp>`_
+function. In such a case the library's `exp` class template needs to be prefixed with `units` namespace name.
