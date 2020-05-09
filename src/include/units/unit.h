@@ -88,39 +88,39 @@ struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
  *
  * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
  * A named unit may be used by other units defined with the prefix of the same type, unless
- * no_prefix is provided for PT template parameter (in such a case it is impossible to define
+ * no_prefix is provided for PF template parameter (in such a case it is impossible to define
  * a prefix unit based on this one).
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
- * @tparam PT no_prefix or a type of prefix family
+ * @tparam PF no_prefix or a type of prefix family
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PT>
+template<typename Child, basic_symbol_text Symbol, PrefixFamily PF>
 struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PT;
+  using prefix_family = PF;
 };
 
 /**
  * @brief A scaled unit
  *
  * Defines a new named unit that is a scaled version of another unit. Such unit can be used by
- * other units defined with the prefix of the same type, unless no_prefix is provided for PT
+ * other units defined with the prefix of the same type, unless no_prefix is provided for PF
  * template parameter (in such a case it is impossible to define a prefix unit based on this
  * one).
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
- * @tparam PT no_prefix or a type of prefix family
+ * @tparam PF no_prefix or a type of prefix family
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PT, UnitRatio R, Unit U>
+template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, UnitRatio R, Unit U>
 struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PT;
+  using prefix_family = PF;
 };
 
 /**
@@ -165,11 +165,11 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
   using prefix_family = no_prefix;
 };
 
-// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixFamily PT, Unit U, Unit... Us>
+// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixFamily PF, Unit U, Unit... Us>
 // struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
 //   static constexpr bool is_named = true;
 //   static constexpr auto symbol = Symbol;
-//   using prefix_family = PT;
+//   using prefix_family = PF;
 // };
 
 /**
@@ -178,18 +178,18 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
  * Defines a named alias for another unit. It is useful to assign alternative names and symbols
  * to the already predefined units (i.e. "tonne" for "megagram").
  * An alias unit may be used by other units defined with the prefix of the same type, unless
- * no_prefix is provided for PT template parameter (in such a case it is impossible to define
+ * no_prefix is provided for PF template parameter (in such a case it is impossible to define
  * a prefix unit based on this one).
  *
  * @tparam U Unit for which an alias is defined
  * @tparam Symbol a short text representation of the unit
- * @tparam PT no_prefix or a type of prefix family
+ * @tparam PF no_prefix or a type of prefix family
  */
-template<Unit U, basic_symbol_text Symbol, PrefixFamily PT>
+template<Unit U, basic_symbol_text Symbol, PrefixFamily PF>
 struct alias_unit : U {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PT;
+  using prefix_family = PF;
 };
 
 /**

@@ -134,8 +134,8 @@ struct no_prefix : prefix_family {};
 Concrete prefix derives from a `prefix` class template:
 
 ```cpp
-template<typename Child, PrefixFamily PT, basic_fixed_string Symbol, Ratio R>
-  requires (!std::same_as<PT, no_prefix>)
+template<typename Child, PrefixFamily PF, basic_fixed_string Symbol, Ratio R>
+  requires (!std::same_as<PF, no_prefix>)
 struct prefix;
 ```
 

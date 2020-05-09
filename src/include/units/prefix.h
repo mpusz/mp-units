@@ -45,9 +45,9 @@ struct no_prefix : prefix_family {};
 
 namespace detail {
 
-template<PrefixFamily PT, Ratio R>
-struct prefix_base : downcast_base<prefix_base<PT, R>> {
-  using prefix_family = PT;
+template<PrefixFamily PF, Ratio R>
+struct prefix_base : downcast_base<prefix_base<PF, R>> {
+  using prefix_family = PF;
   using ratio = R;
 };
 
@@ -64,13 +64,13 @@ struct prefix_base : downcast_base<prefix_base<PT, R>> {
  *   prepended to the symbol of the unit
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam PT a type of prefix family
+ * @tparam PF a type of prefix family
  * @tparam Symbol a text representation of the prefix
  * @tparam R factor to be used to scale a unit
  */
-template<typename Child, PrefixFamily PT, basic_symbol_text Symbol, Ratio R>
-  requires (!std::same_as<PT, no_prefix>)
-struct prefix : downcast_child<Child, detail::prefix_base<PT, R>> {
+template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, Ratio R>
+  requires (!std::same_as<PF, no_prefix>)
+struct prefix : downcast_child<Child, detail::prefix_base<PF, R>> {
   static constexpr auto symbol = Symbol;
 };
 
