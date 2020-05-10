@@ -39,6 +39,6 @@ add_executable(${PROJECT_NAME}_conan test_package.cpp)
 target_link_libraries(${PROJECT_NAME}_conan PRIVATE CONAN_PKG::mp-units)
 
 # test cmake-generated target
-find_package(units CONFIG REQUIRED)
+find_package(mp-units CONFIG REQUIRED)
 add_executable(${PROJECT_NAME}_cmake test_package.cpp)
 target_link_libraries(${PROJECT_NAME}_cmake PRIVATE mp::units)

@@ -23,7 +23,9 @@
 #include <units/physical/si/speed.h>
 #include <iostream>
 
-constexpr units::Speed AUTO avg_speed(units::Length AUTO d, units::Time AUTO t)
+using namespace units::physical;
+
+constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
   return d / t;
 }
