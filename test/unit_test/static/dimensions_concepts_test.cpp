@@ -57,8 +57,8 @@ static_assert(!Area<si::time<si::second>>);
 static_assert(Volume<si::volume<si::cubic_metre>>);
 static_assert(!Volume<si::time<si::second>>);
 
-static_assert(Velocity<si::velocity<si::metre_per_second>>);
-static_assert(!Velocity<si::time<si::second>>);
+static_assert(Speed<si::speed<si::metre_per_second>>);
+static_assert(!Speed<si::time<si::second>>);
 
 static_assert(Acceleration<si::acceleration<si::metre_per_second_sq>>);
 static_assert(!Acceleration<si::time<si::second>>);

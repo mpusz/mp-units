@@ -23,11 +23,11 @@
 #include <units/physical/si/area.h>
 #include <units/physical/si/length.h>
 #include <units/physical/international/length.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <units/physical/si/volume.h>
 #include <units/physical/international/area.h>
 #include <units/physical/us/length.h>
-#include <units/physical/international/velocity.h>
+#include <units/physical/international/speed.h>
 #include <units/physical/international/volume.h>
 #include <utility>
 
@@ -52,7 +52,7 @@ static_assert(5q_in + 8q_cm == 207q_mm);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
-// velocity
+// speed
 
 static_assert(10.0q_mi / 2q_h == 5q_mi_per_h);
 

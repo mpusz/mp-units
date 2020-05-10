@@ -136,7 +136,7 @@ ISO 80000 [1]_ definitions
       - A power of a `base unit` is the `base unit` raised to an exponent.
       - Coherence can be determined only with respect to a particular `system of quantities`
         and a given set of `base units <base unit>`. That is, if the metre and the second are
-        base units, the metre per second is the coherent derived unit of velocity.
+        base units, the metre per second is the coherent derived unit of speed.
 
     system of units
       - Set of `base units <base unit>` and `derived units <derived unit>`, together with

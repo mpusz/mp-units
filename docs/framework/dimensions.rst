@@ -5,7 +5,7 @@ Dimensions
 
 In the previous chapter we briefly introduced the notion of a physical
 :term:`dimension`. Now it is time to learn much more about this subject.
-Length, time, velocity, area, energy are only a few examples of physical
+Length, time, speed, area, energy are only a few examples of physical
 dimensions.
 
 Operations
@@ -45,7 +45,7 @@ probably will always end up in a quantity of a yet another dimension:
     Length auto dist2 = 3q_m;
     Time auto dur1 = 2q_s;
     Area auto res1 = dist1 * dist2;     // 6 m²
-    Velocity auto res2 = dist1 / dur1;  // 1 m/s
+    Speed auto res2 = dist1 / dur1;     // 1 m/s
     Frequency auto res3 = 10 / dur1;    // 5 Hz
 
 However, please note that there is an exception from the above rule.
@@ -96,12 +96,12 @@ The quantities of derived dimensions are called
 quantities. This means that they are created by multiplying or dividing
 quantities of other dimensions.
 
-Looking at the previous code snippets the area, velocity, or frequency are
+Looking at the previous code snippets the area, speed, or frequency are
 the examples of such quantities. Each derived quantity can be represented
 as a unique list of exponents of base quantities. For example:
 
 - an area is a length base quantity raised to the exponent ``2``
-- a velocity is formed from the length base quantity with exponent ``1``
+- a speed is formed from the length base quantity with exponent ``1``
   and time base quantity with exponent ``-1``.
 
 The above dimensions can be defined in the library with the

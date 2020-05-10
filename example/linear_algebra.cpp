@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <units/physical/si/force.h>
 #include <units/physical/si/energy.h>
 #include <units/format.h>

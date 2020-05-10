@@ -49,6 +49,6 @@
 #include "si/resistance.h"
 #include "si/surface_tension.h"
 #include "si/thermal_conductivity.h"
-#include "si/velocity.h"
+#include "si/speed.h"
 #include "si/voltage.h"
 #include "si/volume.h"

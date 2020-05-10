@@ -30,7 +30,7 @@
 #include <units/physical/cgs/power.h>
 #include <units/physical/cgs/pressure.h>
 #include <units/physical/cgs/time.h>
-#include <units/physical/cgs/velocity.h>
+#include <units/physical/cgs/speed.h>
 #include <units/physical/si/acceleration.h>
 #include <units/physical/si/area.h>
 #include <units/physical/si/energy.h>
@@ -40,7 +40,7 @@
 #include <units/physical/si/power.h>
 #include <units/physical/si/pressure.h>
 #include <units/physical/si/time.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 
 namespace {
 
@@ -49,7 +49,7 @@ using namespace units::physical;
 static_assert(cgs::length<cgs::centimetre>(100) == si::length<si::metre>(1));
 static_assert(cgs::mass<cgs::gram>(1'000) == si::mass<si::kilogram>(1));
 static_assert(cgs::time<cgs::second>(1) == si::time<si::second>(1));
-static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == si::velocity<si::metre_per_second>(1));
+static_assert(cgs::speed<cgs::centimetre_per_second>(100) == si::speed<si::metre_per_second>(1));
 static_assert(cgs::area<cgs::square_centimetre>(10000) == si::area<si::square_metre>(1));
 static_assert(cgs::acceleration<cgs::gal>(100) == si::acceleration<si::metre_per_second_sq>(1));
 static_assert(cgs::force<cgs::dyne>(100'000) == si::force<si::newton>(1));
@@ -64,7 +64,7 @@ using namespace units::physical::si::literals;
 static_assert(cgs::length<cgs::centimetre>(100) == 1q_m);
 static_assert(cgs::mass<cgs::gram>(1'000) == 1q_kg);
 static_assert(cgs::time<cgs::second>(1) == 1q_s);
-static_assert(cgs::velocity<cgs::centimetre_per_second>(100) == 1q_m_per_s);
+static_assert(cgs::speed<cgs::centimetre_per_second>(100) == 1q_m_per_s);
 static_assert(cgs::acceleration<cgs::gal>(100) == 1q_m_per_s2);
 static_assert(cgs::force<cgs::dyne>(100'000) == 1q_N);
 static_assert(cgs::energy<cgs::erg>(10'000'000) == 1q_J);
@@ -80,7 +80,7 @@ using namespace units::physical::cgs::literals;
 static_assert(100q_cm == si::length<si::metre>(1));
 static_assert(1'000q_g == si::mass<si::kilogram>(1));
 static_assert(1q_s == si::time<si::second>(1));
-static_assert(100q_cm_per_s == si::velocity<si::metre_per_second>(1));
+static_assert(100q_cm_per_s == si::speed<si::metre_per_second>(1));
 static_assert(100q_Gal == si::acceleration<si::metre_per_second_sq>(1));
 static_assert(100'000q_dyn == si::force<si::newton>(1));
 static_assert(10'000'000q_erg == si::energy<si::joule>(1));

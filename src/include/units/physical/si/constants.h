@@ -28,7 +28,7 @@
 #include <units/physical/si/power.h>
 #include <units/physical/si/substance.h>
 #include <units/physical/si/temperature.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 
 namespace units::physical::si::si2019 {
 
@@ -48,7 +48,7 @@ template<Scalar Rep = double>
 inline constexpr auto avogadro_constant = Rep(6.02214076e23) / substance<mole, Rep>(1);
 
 template<Scalar Rep = double>
-inline constexpr auto speed_of_light = velocity<metre_per_second, Rep>(299'792'458);
+inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
 
 template<Scalar Rep = double>
 inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9'192'631'770);

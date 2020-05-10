@@ -29,7 +29,7 @@
 #include <units/physical/cgs/power.h>
 #include <units/physical/cgs/pressure.h>
 #include <units/physical/cgs/time.h>
-#include <units/physical/cgs/velocity.h>
+#include <units/physical/cgs/speed.h>
 
 namespace {
 
@@ -48,7 +48,7 @@ static_assert(centimetre::symbol == "cm");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
-// velocity
+// speed
 
 static_assert(10q_cm / 5q_s == 2q_cm_per_s);
 static_assert(10q_cm / 2q_cm_per_s == 5q_s);

@@ -207,7 +207,7 @@ template<typename T>
 concept Volume = QuantityOf<T, dim_volume>;
 
 template<typename T>
-concept Velocity = QuantityOf<T, dim_velocity>;
+concept Speed = QuantityOf<T, dim_velocity>;
 
 template<typename T>
 concept Acceleration = QuantityOf<T, dim_acceleration>;

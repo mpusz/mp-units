@@ -162,7 +162,7 @@ void example()
   const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
   const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));
 
-  const Velocity AUTO v1 = a * t;
+  const Speed AUTO v1 = a * t;
   std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';
 
   si::length<si::metre, measurement<double>> length(measurement(123., 1.));

@@ -23,7 +23,7 @@
 #include "units/math.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
-#include "units/physical/si/velocity.h"
+#include "units/physical/si/speed.h"
 #include "units/physical/si/volume.h"
 #include <chrono>
 #include <utility>
@@ -135,9 +135,9 @@ static_assert(
 static_assert(std::is_same_v<decltype(length<metre, int>() * 1.0), length<metre, double>>);
 static_assert(std::is_same_v<decltype(1.0 * length<metre, int>()), length<metre, double>>);
 static_assert(
-    std::is_same_v<decltype(velocity<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
+    std::is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
 static_assert(
-    std::is_same_v<decltype(velocity<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio<36, 1, 2>, metre>, int>>);
+    std::is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio<36, 1, 2>, metre>, int>>);
 static_assert(std::is_same_v<decltype(length<metre>() * physical::si::time<minute>()),
               quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<ratio<6, 1, 1>, unknown_coherent_unit>>>);
 static_assert(std::is_same_v<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
@@ -149,9 +149,9 @@ static_assert(std::is_same_v<decltype(length<metre, int>() / 1.0), length<metre,
 static_assert(std::is_same_v<decltype(length<metre, int>() / length<metre, double>()), double>);
 static_assert(std::is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), double>);
 static_assert(
-    std::is_same_v<decltype(length<metre, int>() / physical::si::time<second, int>()), velocity<metre_per_second, int>>);
+    std::is_same_v<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
 static_assert(
-    std::is_same_v<decltype(length<metre>() / physical::si::time<minute>()), velocity<scaled_unit<ratio<1, 6, -1>, metre_per_second>>>);
+    std::is_same_v<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio<1, 6, -1>, metre_per_second>>>);
 static_assert(std::is_same_v<decltype(physical::si::time<minute>() / length<metre>()),
               quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<ratio<6 ,1 , 1>, unknown_coherent_unit>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
@@ -245,7 +245,7 @@ static_assert(1q_km + 1q_m == 1001q_m);
 static_assert(10q_km / 5q_km == 2);
 static_assert(10q_km / 2 == 5q_km);
 
-// velocity
+// speed
 
 static_assert(10q_m / 5q_s == 2q_m_per_s);
 static_assert(10 / 5q_s * 1q_m == 2q_m_per_s);

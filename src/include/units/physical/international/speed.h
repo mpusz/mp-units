@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <units/physical/international/length.h>
 
 namespace units::physical::international {
@@ -32,8 +32,8 @@ struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, internation
 inline namespace literals {
 
 // mph
-constexpr auto operator"" q_mi_per_h(unsigned long long l) { return si::velocity<mile_per_hour, std::int64_t>(l); }
-constexpr auto operator"" q_mi_per_h(long double l) { return si::velocity<mile_per_hour, long double>(l); }
+constexpr auto operator"" q_mi_per_h(unsigned long long l) { return si::speed<mile_per_hour, std::int64_t>(l); }
+constexpr auto operator"" q_mi_per_h(long double l) { return si::speed<mile_per_hour, long double>(l); }
 
 }  // namespace literals
 

@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <iostream>
 
-constexpr units::Velocity AUTO avg_speed(units::Length AUTO d, units::Time AUTO t)
+constexpr units::Speed AUTO avg_speed(units::Length AUTO d, units::Time AUTO t)
 {
   return d / t;
 }

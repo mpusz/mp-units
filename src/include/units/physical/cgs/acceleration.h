@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/cgs/velocity.h>
+#include <units/physical/cgs/speed.h>
 #include <units/quantity.h>
 
 namespace units::physical::cgs {

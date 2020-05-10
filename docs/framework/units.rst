@@ -137,7 +137,7 @@ where ``kilogram_metre_per_second`` is defined as::
     struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
 
 However, the easiest way to define momentum is just to use the
-`si::velocity` derived dimension in the recipe:
+`si::speed` derived dimension in the recipe:
 
 .. code-block::
     :emphasize-lines: 3

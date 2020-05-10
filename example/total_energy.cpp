@@ -23,7 +23,7 @@
 #include <units/physical/natural/constants.h>
 #include <units/physical/si/energy.h>
 #include <units/physical/si/momentum.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <units/physical/si/constants.h>
 #include <units/math.h>
 #include <iostream>
@@ -32,7 +32,7 @@ namespace {
 
 using namespace units::physical;
 
-Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Velocity AUTO c)
+Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Speed AUTO c)
 {
   return sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c)));
 }
@@ -42,7 +42,7 @@ void si_example()
   using namespace units::physical::si;
   using GeV = gigaelectronvolt;
 
-  constexpr Velocity AUTO c = si2019::speed_of_light<>;
+  constexpr Speed AUTO c = si2019::speed_of_light<>;
 
   std::cout << "\n*** SI units (c = " << c << ") ***\n";
 
@@ -73,7 +73,7 @@ void natural_example()
   using namespace units::physical::natural;
   using GeV = gigaelectronvolt;
 
-  constexpr Velocity AUTO c = speed_of_light<>;
+  constexpr Speed AUTO c = speed_of_light<>;
   const momentum<GeV> p(4);
   const mass<GeV> m(3);
   const Energy AUTO E = total_energy(p, m, c);

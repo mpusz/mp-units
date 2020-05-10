@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/velocity.h>
-#include <units/physical/international/velocity.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/international/speed.h>
 #include <units/format.h>
 #include <iostream>
 
 using namespace units::physical;
 
-constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
+constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
   return d / t;
 }
@@ -35,10 +35,10 @@ constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
 int main()
 {
   using namespace units::physical::si::literals;
-  Velocity AUTO v1 = avg_speed(220q_km, 2q_h);
-  Velocity AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
-  Velocity AUTO v3 = quantity_cast<si::metre_per_second>(v2);
-  Velocity AUTO v4 = quantity_cast<int>(v3);
+  Speed AUTO v1 = avg_speed(220q_km, 2q_h);
+  Speed AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+  Speed AUTO v3 = quantity_cast<si::metre_per_second>(v2);
+  Speed AUTO v4 = quantity_cast<int>(v3);
 
   std::cout << v1 << '\n';                             // 110 km/h
   std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h

@@ -35,7 +35,7 @@ namespace units::detail {
  * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  * A power of a factor is the factor raised to an exponent.
  * 
- * A derived dimension can be formed from multiple exponents (i.e. velocity is represented as "exp<L, 1>, exp<T, -1>").
+ * A derived dimension can be formed from multiple exponents (i.e. speed is represented as "exp<L, 1>, exp<T, -1>").
  * It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
  * "exp<T, -1>").
  * 

@@ -14,8 +14,8 @@ stream::
 
     using namespace units::physical::si::literals;
     using namespace units::physical::international::literals;
-    constexpr Velocity auto v1 = avg_speed(220.q_km, 2q_h);
-    constexpr Velocity auto v2 = avg_speed(140.q_mi, 2q_h);
+    constexpr Speed auto v1 = avg_speed(220.q_km, 2q_h);
+    constexpr Speed auto v2 = avg_speed(140.q_mi, 2q_h);
     std::cout << v1 << '\n';  // 110 km/h
     std::cout << v2 << '\n';  // 70 mi/h
 

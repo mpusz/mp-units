@@ -26,7 +26,7 @@
 #include "units/physical/international/length.h"
 #include "units/physical/international/area.h"
 #include "units/physical/international/volume.h"
-#include "units/physical/international/velocity.h"
+#include "units/physical/international/speed.h"
 #include "units/physical/iau/length.h"
 #include "units/physical/typographic/length.h"
 #include "units/format.h"
@@ -152,7 +152,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1q_THz) == "1 THz");
   }
 
-  SECTION("velocity")
+  SECTION("speed")
   {
     CHECK(fmt::format("{}", 1q_m_per_s) == "1 m/s");
     CHECK(fmt::format("{}", 1q_km_per_h) == "1 km/h");

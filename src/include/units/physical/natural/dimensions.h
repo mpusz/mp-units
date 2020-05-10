@@ -42,7 +42,7 @@ using mass = quantity<dim_mass, U, Rep>;
 
 struct dim_velocity : physical::dim_velocity<dim_velocity, unitless, dim_length, dim_time> {};
 template<Unit U, Scalar Rep = double>
-using velocity = quantity<dim_velocity, U, Rep>;
+using speed = quantity<dim_velocity, U, Rep>;
 
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, gigaelectronvolt, dim_length, dim_time> {};
 template<Unit U, Scalar Rep = double>

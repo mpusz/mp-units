@@ -20,23 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/cgs/velocity.h>
-#include <units/physical/si/velocity.h>
-#include <units/physical/international/velocity.h>
+#include <units/physical/cgs/speed.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/international/speed.h>
 #include <iostream>
 
 namespace {
 
 using namespace units::physical;
 
-constexpr si::velocity<si::metre_per_second, int>
+constexpr si::speed<si::metre_per_second, int>
 fixed_int_si_avg_speed(si::length<si::metre, int> d,
                        si::time<si::second, int> t)
 {
   return d / t;
 }
 
-constexpr si::velocity<si::metre_per_second>
+constexpr si::speed<si::metre_per_second>
 fixed_double_si_avg_speed(si::length<si::metre> d,
                           si::time<si::second> t)
 {
@@ -44,21 +44,21 @@ fixed_double_si_avg_speed(si::length<si::metre> d,
 }
 
 template<typename U1, typename R1, typename U2, typename R2>
-constexpr Velocity AUTO si_avg_speed(si::length<U1, R1> d,
+constexpr Speed AUTO si_avg_speed(si::length<U1, R1> d,
                                      si::time<U2, R2> t)
 {
   return d / t;
 }
 
-constexpr Velocity AUTO avg_speed(Length AUTO d, Time AUTO t)
+constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
 {
   return d / t;
 }
 
-template<Length D, Time T, Velocity V>
-void print_result(D distance, T duration, V velocity)
+template<Length D, Time T, Speed V>
+void print_result(D distance, T duration, V speed)
 {
-  const auto result_in_kmph = units::quantity_cast<si::velocity<si::kilometre_per_hour>>(velocity);
+  const auto result_in_kmph = units::quantity_cast<si::speed<si::kilometre_per_hour>>(speed);
   std::cout << "Average speed of a car that makes " << distance << " in "
             << duration << " is " << result_in_kmph << ".\n";
 }

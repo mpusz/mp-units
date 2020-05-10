@@ -33,13 +33,13 @@ struct centimetre_per_second : unit<centimetre_per_second> {};
 struct dim_velocity : physical::dim_velocity<dim_velocity, centimetre_per_second, dim_length, dim_time> {};
 
 template<Unit U, Scalar Rep = double>
-using velocity = quantity<dim_velocity, U, Rep>;
+using speed = quantity<dim_velocity, U, Rep>;
 
 inline namespace literals {
 
 // cmps
-constexpr auto operator"" q_cm_per_s(unsigned long long l) { return velocity<centimetre_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_cm_per_s(long double l) { return velocity<centimetre_per_second, long double>(l); }
+constexpr auto operator"" q_cm_per_s(unsigned long long l) { return speed<centimetre_per_second, std::int64_t>(l); }
+constexpr auto operator"" q_cm_per_s(long double l) { return speed<centimetre_per_second, long double>(l); }
 
 }  // namespace literals
 

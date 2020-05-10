@@ -26,7 +26,7 @@
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/power.h"
 #include "units/physical/si/pressure.h"
-#include "units/physical/si/velocity.h"
+#include "units/physical/si/speed.h"
 #include "units/physical/si/volume.h"
 #include "units/physical/si/surface_tension.h"
 #include "units/physical/si/resistance.h"
@@ -268,7 +268,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("deduced derived unit")
     {
-      SECTION("velocity")
+      SECTION("speed")
       {
         const auto q = 20q_km / 2q_h;
         os << q;

@@ -50,7 +50,7 @@ add_library(units INTERFACE)
 #    include/units/si/frequency.h
 #    include/units/si/length.h
 #    include/units/si/time.h
-#    include/units/si/velocity.h
+#    include/units/si/speed.h
 #)
 target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units

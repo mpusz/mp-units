@@ -19,18 +19,18 @@ pass it to the library's output:
 .. code-block::
 
     #include "legacy.h"
-    #include <units/physical/si/velocity.h>
+    #include <units/physical/si/speed.h>
 
     using namespace units::physical;
 
-    constexpr Velocity auto avg_speed(Length auto d, Time auto t)
+    constexpr Speed auto avg_speed(Length auto d, Time auto t)
     {
       return d / t;
     }
 
     void print_eta(Length auto d, Time auto t)
     {
-      Velocity auto v = avg_speed(d, t);
+      Speed auto v = avg_speed(d, t);
       legacy::print_eta(quantity_cast<si::metre_per_second>(v).count());
     }
 

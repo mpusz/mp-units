@@ -50,13 +50,13 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#include <units/physical/si/velocity.h>
-#include <units/physical/international/velocity.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/international/speed.h>
 #include <iostream>
 
 using namespace units::physical;
 
-constexpr Velocity auto avg_speed(Length auto d, Time auto t)
+constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
   return d / t;
 }
@@ -64,10 +64,10 @@ constexpr Velocity auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace units::physical::si::literals;
-  Velocity auto v1 = avg_speed(220q_km, 2q_h);
-  Velocity auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
-  Velocity auto v3 = quantity_cast<si::metre_per_second>(v2);
-  Velocity auto v4 = quantity_cast<int>(v3);
+  Speed auto v1 = avg_speed(220q_km, 2q_h);
+  Speed auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+  Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
+  Speed auto v4 = quantity_cast<int>(v3);
 
   std::cout << v1 << '\n';    // 110 km/h
   std::cout << v2 << '\n';    // 70 mi/h

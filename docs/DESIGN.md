@@ -164,7 +164,7 @@ struct kilometre : prefixed_unit<kilometre, kilo, metre> {};
 struct second : named_unit<second, "s", prefix> {};
 struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<3600>, second> {};
 
-// velocity
+// speed
 struct metre_per_second : unit<metre_per_second> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
 
@@ -176,7 +176,7 @@ namespace units::physical::us {
 struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<9'144, 10'000>, si::metre> {};
 struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio<1'760>, yard> {};
 
-// velocity
+// speed
 struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, mile, si::hour> {};
 
 }
@@ -285,7 +285,7 @@ struct derived_dimension_base;
 }
 ```
 
-A derived dimension can be formed from multiple exponents (i.e. velocity is represented as
+A derived dimension can be formed from multiple exponents (i.e. speed is represented as
 `exp<L, 1>, exp<T, -1>`). It is also possible to form a derived dimension with only one exponent
 (i.e. frequency is represented as just `exp<T, -1>`).
 
@@ -734,11 +734,11 @@ temporary results of calculations:
 ```cpp
 units::Length auto d1 = 123q_m;
 units::Time auto t1 = 10q_s;
-units::Velocity auto v1 = avg_speed(d1, t1);
+units::Speed auto v1 = avg_speed(d1, t1);
 
 auto temp1 = v1 * 50q_m;  // intermediate unknown dimension
 
-units::Velocity auto v2 = temp1 / 100q_m; // back to known dimensions again
+units::Speed auto v2 = temp1 / 100q_m; // back to known dimensions again
 units::Length auto d2 = v2 * 60q_s;
 ```
 

@@ -82,14 +82,14 @@ quantities. The usage of such a function can look as follows::
 
     using namespace units::physical::si::literals;
     using namespace units::physical::international::literals;
-    constexpr Velocity auto v1 = avg_speed(220q_km, 2q_h);
-    constexpr Velocity auto v2 = avg_speed(140q_mi, 2q_h);
+    constexpr Speed auto v1 = avg_speed(220q_km, 2q_h);
+    constexpr Speed auto v2 = avg_speed(140q_mi, 2q_h);
 
 In this and all other physical units libraries such a function can be
 implemented as::
 
-    constexpr si::velocity<si::metre_per_second> avg_speed(si::length<si::metre> d,
-                                                           si::time<si::second> t)
+    constexpr si::speed<si::metre_per_second> avg_speed(si::length<si::metre> d,
+                                                        si::time<si::second> t)
     {
       return d / t;
     }
@@ -114,7 +114,7 @@ are returning a physical quantity of a correct dimension. For this
 dimension-specific concepts come handy again and with usage of C++20 generic
 functions our function can look as simple as::
 
-    constexpr Velocity auto avg_speed(Length auto d, Time auto t)
+    constexpr Speed auto avg_speed(Length auto d, Time auto t)
     {
       return d / t;
     }
@@ -141,7 +141,7 @@ but often we would like to know a specific type too. We have two options here:
 
 - query the actual dimension, unit, and representation types::
 
-    constexpr Velocity auto v = avg_speed(220q_km, 2q_h);
+    constexpr Speed auto v = avg_speed(220q_km, 2q_h);
     using quantity_type = decltype(v);
     using dimension_type = quantity_type::dimension;
     using unit_type = quantity_type::unit;
@@ -149,9 +149,9 @@ but often we would like to know a specific type too. We have two options here:
 
 - convert or cast to a desired quantity type::
 
-    constexpr Velocity auto v1 = avg_speed(220.q_km, 2q_h);
-    constexpr si::velocity<si::metre_per_second> v2 = v1;
-    constexpr Velocity auto v3 = quantity_cast<si::velocity<si::metre_per_second>(v1);
+    constexpr Speed auto v1 = avg_speed(220.q_km, 2q_h);
+    constexpr si::speed<si::metre_per_second> v2 = v1;
+    constexpr Speed auto v3 = quantity_cast<si::speed<si::metre_per_second>(v1);
 
 .. seealso::
 

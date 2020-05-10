@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "units/physical/si/area.h"
-#include "units/physical/si/velocity.h"
+#include "units/physical/si/speed.h"
 #include "units/physical/international/area.h"
 #include "units/math.h"
 

@@ -24,7 +24,7 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/mass.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <units/quantity.h>
 
 namespace units::physical::si {

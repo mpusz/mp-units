@@ -1,7 +1,7 @@
 #include <units/format.h>
 #include <units/physical/si/length.h>
 #include <units/physical/si/time.h>
-#include <units/physical/si/velocity.h>
+#include <units/physical/si/speed.h>
 #include <iostream>
 #include <array>
 
@@ -12,25 +12,24 @@
 
 namespace {
 
-using namespace units;
-
-template<Quantity Q>
+template<units::Quantity Q>
 struct state_variable {
   Q estimated_current_state;
   Q predicted_next_state;
 };
 
-using namespace units::physical::si;
+using namespace units::physical;
+using namespace units::physical::si::literals;
 
 constexpr auto radar_transmit_interval = 5.0q_s;
 constexpr double kalman_range_gain = 0.2;
 constexpr double kalman_speed_gain = 0.1;
 
 struct state {
-  state_variable<length<metre>> range;
-  state_variable<velocity<metre_per_second>> speed;
+  state_variable<si::length<si::metre>> range;
+  state_variable<si::speed<si::metre_per_second>> speed;
 
-  constexpr void estimate(const state& previous_state, const length<metre>& measurement)
+  constexpr void estimate(const state& previous_state, const si::length<si::metre>& measurement)
   {
     auto const innovation = measurement - previous_state.range.predicted_next_state;
     range.estimated_current_state = previous_state.range.predicted_next_state + kalman_range_gain * innovation;
