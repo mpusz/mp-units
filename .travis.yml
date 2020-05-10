@@ -15,9 +15,9 @@ osx: &osx
 matrix:
   include:
     - <<: *linux
-      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9 DEPLOY_DOCS=FALSE
+      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9 DEPLOY_DOCS=ON
     - <<: *linux
-      env: CONAN_GCC_VERSIONS=10 CONAN_DOCKER_IMAGE=conanio/gcc10 DEPLOY_DOCS=TRUE
+      env: CONAN_GCC_VERSIONS=10 CONAN_DOCKER_IMAGE=conanio/gcc10 DEPLOY_DOCS=OFF
 
 install:
   - chmod +x .travis/install.sh
@@ -33,7 +33,7 @@ script:
       sudo -E docker run --name docker_deploy --rm -dt $CONAN_DOCKER_IMAGE bash
       sudo -E docker exec docker_deploy conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
       sudo -E docker exec docker_deploy sh -c "conan search -r conan-mpusz mp-units --raw | tail -n1 | xargs -I % conan install % -g deploy -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -b missing"
-      sudo -E docker cp docker_deploy:/home/conan/mp-units/share/doc/units/sphinx gh-pages
+      sudo -E docker cp docker_deploy:/home/conan/mp-units/share/doc/mp-units/sphinx gh-pages
       sudo -E docker stop docker_deploy
     fi
 
