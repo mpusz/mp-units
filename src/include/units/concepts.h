@@ -196,7 +196,7 @@ using dimension_unit = detail::dimension_unit_impl<D>::type;
  * @brief A concept matching only units of a specified dimension.
  * 
  * Satisfied by all unit types that satisfy `Unit<U>`, `Dimension<D>`, and for which
- * `U::reference` and `dimension_unit<D>::reference` denote the same unit type.
+ * `U::reference` and @c dimension_unit<D>::reference denote the same unit type.
  * 
  * @tparam U Type to verify.
  * @tparam D Dimension type to use for verification.
