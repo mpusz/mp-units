@@ -1,15 +1,19 @@
-.. note::
-
-  All names defined in this chapter reside in the :any:`units` namespace unless specified otherwise.
-
 Functions
 =========
 
-.. doxygenfunction:: quantity_cast
+Casting and Converions
+----------------------
+
+.. doxygenfunction:: units::quantity_cast
 
 
+Math
+----
 
-Metafunctions
-=============
+.. doxygenfunction:: units::pow
 
-.. doxygentypedef:: dimension_unit
+.. doxygenfunction:: units::sqrt
+
+.. doxygenfunction:: units::abs
+
+.. doxygenfunction:: units::epsilon

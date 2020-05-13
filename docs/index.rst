@@ -38,6 +38,8 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     reference/concepts
     reference/types
     reference/functions
+    reference/metafunctions
+    reference/customization_points
     reference/systems
 
 .. toctree::
