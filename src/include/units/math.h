@@ -29,13 +29,15 @@
 
 namespace units {
 
-template<std::intmax_t N, typename D, typename U, typename Rep>
-  requires(N == 0)
-inline Rep pow(const quantity<D, U, Rep>&) noexcept
-{
-  return 1;
-}
-
+/**
+ * @brief Computes the value of a quantity raised to the power `N`
+ * 
+ * Both the quantity value and its dimension are the base of the operation.
+ * 
+ * @tparam N Exponent
+ * @param q Quantity being the base of the operation
+ * @return Quantity The result of computation 
+ */
 template<std::intmax_t N, typename D, typename U, typename Rep>
   requires(N != 0)
 inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
@@ -47,6 +49,26 @@ inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
   return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
 }
 
+/**
+ * @brief OVerload that always returns 1 for N == 0
+ * 
+ * @return Rep A scalar value of @c 1. 
+ */
+template<std::intmax_t N, typename D, typename U, typename Rep>
+  requires(N == 0)
+inline Rep pow(const quantity<D, U, Rep>&) noexcept
+{
+  return 1;
+}
+
+/**
+ * @brief Computes the square root of a quantity
+ * 
+ * Both the quantity value and its dimension are the base of the operation.
+ * 
+ * @param q Quantity being the base of the operation
+ * @return Quantity The result of computation 
+ */
 template<typename D, typename U, typename Rep>
 inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
   requires requires { std::sqrt(q.count()); }
@@ -57,6 +79,12 @@ inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
   return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
 }
 
+/**
+ * @brief Computes the absolute value of a quantity
+ * 
+ * @param q Quantity being the base of the operation
+ * @return Quantity The absolute value of a provided quantity
+ */
 template<typename D, typename U, typename Rep>
 constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
   requires requires { std::abs(q.count()); }
@@ -64,6 +92,14 @@ constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
   return quantity<D, U, Rep>(std::abs(q.count()));
 }
 
+/**
+ * @brief Returns the epsilon of the quantity
+ * 
+ * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
+ * 
+ * @tparam Q Quantity type being the base of the operation
+ * @return Quantity The epsilon value for quantity's representation type
+ */
 template<Quantity Q>
   requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
 constexpr Quantity AUTO epsilon() noexcept

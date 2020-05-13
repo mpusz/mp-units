@@ -18,8 +18,20 @@ constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[P + 1]) no
 #endif
 }
 
-}
+}  // namespace detail
 
+
+/**
+ * @brief A symbol text representation
+ * 
+ * This class template is responsible for definition and handling of a symbol text
+ * representation. In the libary it is used to define symbols of units and prefixes.
+ * Each symbol can have two versions: Unicode and ASCI-only.
+ * 
+ * @tparam StandardCharT Character type to be used for a Unicode representation
+ * @tparam N The size of a Unicode symbol
+ * @tparam M The size of the ASCII-only symbol
+ */
 template<typename StandardCharT, std::size_t N, std::size_t M>
 struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;

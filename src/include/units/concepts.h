@@ -189,6 +189,14 @@ struct dimension_unit_impl<D> {
 
 } // namespace detail
 
+/**
+ * @brief Returns a 'default' unit of the dimension
+ * 
+ * Depending on the dimension type it returns a base unit (for base dimensions)
+ * or a coherent unit (in case of derived dimensions).
+ * 
+ * @tparam D Dimension type to get the unit from.
+ */
 template<Dimension D>
 using dimension_unit = detail::dimension_unit_impl<D>::type;
 

@@ -33,6 +33,16 @@
 
 namespace units {
 
+/**
+ * @brief Provides compile-time rational arithmetic support.
+ * 
+ * This class is really similar to @c std::ratio but gets an additional `Exp`
+ * template parameter.
+ * 
+ * @tparam Num Numerator
+ * @tparam Den Denominator (default @c 1)
+ * @tparam Exp Exponent (default @c 0)
+ */
 template<std::intmax_t Num, std::intmax_t Den = 1, std::intmax_t Exp = 0>
   requires(Den != 0)
 struct ratio {

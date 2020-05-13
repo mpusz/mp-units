@@ -27,6 +27,12 @@
 
 namespace units {
 
+/**
+ * @brief A compile-time fixed string
+ * 
+ * @tparam CharT Character type to be used by the string
+ * @tparam N The size of the string
+ */
 template<typename CharT, std::size_t N>
 struct basic_fixed_string {
   CharT data_[N + 1] = {};
