@@ -22,7 +22,7 @@ Library Directories Structure
 - *./units*
 
   - The main directory of the library.
-  - Contains headers files that define a public interface of the library framework
+  - Contains headers files that define a public interface of the library framework.
 
 - *./units/bits*
 
@@ -38,7 +38,7 @@ Library Directories Structure
 
 - *./units/physical*
 
-  - Contains the definition of physical units dimensions
+  - Contains the definition of physical units dimensions.
   - Its subfolders provide the definitions of various
     :term:`systems of units <system of units>` with :term:`SI` being the most popular
     one.
