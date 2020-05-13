@@ -9,9 +9,9 @@ Use Cases
         using namespace units::physical;
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
-    use_cases/unknown_units_and_dimensions
+    use_cases/unknown_dimensions
     use_cases/legacy_interfaces
     use_cases/custom_representation_types
     use_cases/linear_algebra

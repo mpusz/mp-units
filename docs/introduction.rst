@@ -45,3 +45,27 @@ Approach
 5. No external dependencies
 6. Possibility to be standardized as a freestanding part of the C++ Standard
    Library
+
+
+With the User's Experience in Mind
+----------------------------------
+
+Most of the important design decisions in the library are dictated by the requirement of
+providing the best user experience as possible. Other C++ physical units libraries are
+"famous" for their huge error messages (one line of the error log often do not fit on one
+slide). The ultimate goal of **mp-units** is to improve this and make compile-time errors
+and debugging as easy and user-friendly as possible.
+
+To achieve this goal several techniques are applied:
+
+- usage of C++20 concepts,
+- using strong types for framework entities (instead of type aliases),
+- limiting the number of template arguments to the bare minimum,
+- :ref:`The Downcasting Facility`.
+
+.. important::
+
+    In many generic C++ libraries compile-time errors do not happen often. It is hard to
+    break ``std::string`` or ``std::vector`` in a way it won't compile with a huge error
+    log. Physical Units libraries are different. **Generation of compile-time errors
+    is the main reason to create such a library.**

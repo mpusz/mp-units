@@ -8,3 +8,4 @@ Examples
     examples/avg_speed
     examples/measurement
     examples/linear_algebra
+    examples/box_example
