@@ -29,8 +29,9 @@
   - Velocity renamed to speed
   - ...
 
-  Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock) and
-  [@kwikius](https://github.com/kwikius) for their support in drafting a new library design.
+  Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock),
+  [@kwikius](https://github.com/kwikius), and [@i-ky](https://github.com/i-ky) for their support
+  in drafting a new library design.
 
 - **0.4.0 Nov 17, 2019**
   - Support for derived dimensions in `exp` added
