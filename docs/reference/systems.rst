@@ -1,21 +1,12 @@
-.. note::
-
-  All names defined in this chapter reside in the :any:`units` namespace unless specified otherwise.
-
 Systems
 =======
 
-SI
---
+.. toctree::
+    :maxdepth: 2
 
-.. doxygennamespace:: units::physical::si
-    :members:
-    :undoc-members:
-    :outline:
+    systems/physical
 
-
-File
-----
-
-.. 
-   doxygenfile:: si/length.h
+.. toctree::
+    :maxdepth: 1
+    
+    systems/data
