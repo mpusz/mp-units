@@ -35,6 +35,7 @@ add_example(capacitor_time_curve)
 add_example(clcpp_response)
 add_example(conversion_factor)
 add_example(kalman_filter-alpha_beta_filter_example2)
+add_example(experimental_angle)
 
 conan_check_testing(linear_algebra)
 add_example(linear_algebra)
