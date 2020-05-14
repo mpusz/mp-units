@@ -58,6 +58,9 @@ struct dim_substance : base_dimension<"N", U> {};
 template<Unit U>
 struct dim_luminous_intensity : base_dimension<"J", U> {};
 
+template<Unit U>
+struct dim_angle : base_dimension<"A", U> {};
+
 // ------------------------ derived dimensions -----------------------------
 
 template<typename Child, Unit U, DimensionOf<dim_time> T>
@@ -83,6 +86,9 @@ struct dim_momentum : derived_dimension<Child, U, exp<M, 1>, exp<V, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
 struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
+
+template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_angle> A>
+struct dim_torque : derived_dimension<Child, U, exp<E, 1>, exp<A, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_length> L>
 struct dim_density : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
@@ -197,6 +203,9 @@ concept Substance = QuantityOf<T, dim_substance>;
 template<typename T>
 concept LuminousIntensity = QuantityOf<T, dim_luminous_intensity>;
 
+template <typename T>
+concept Angle = QuantityOf<T, dim_angle>;
+
 template<typename T>
 concept Frequency = QuantityOf<T, dim_frequency>;
 
@@ -220,6 +229,9 @@ concept Momentum = QuantityOf<T, dim_momentum>;
 
 template<typename T>
 concept Energy = QuantityOf<T, dim_energy>;
+
+template<typename T>
+concept Torque = QuantityOf<T, dim_torque>;
 
 template<typename T>
 concept Density = QuantityOf<T, dim_density>;
