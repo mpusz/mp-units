@@ -33,7 +33,7 @@ template<class ET, class OT>
 std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
 {
   os << "|";
-  for (auto i = 0;  i < v.size();  ++i) {
+  for (auto i = 0U;  i < v.size();  ++i) {
     os << fmt::format(" {:>9}", v(i));
   }
   os << " |";
@@ -43,12 +43,12 @@ std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
 template<class ET, class OT>
 std::ostream& operator<<(std::ostream& os, const std::math::matrix<ET, OT>& v)
 {
-  for (auto i = 0;  i < v.rows();  ++i) {
+  for (auto i = 0U;  i < v.rows();  ++i) {
     os << "|";
-    for (auto j = 0;  j < v.columns();  ++j) {
+    for (auto j = 0U;  j < v.columns();  ++j) {
       os << fmt::format(" {:>9}", v(i, j));
     }
-    os << (i != v.rows() - 1 ? " |\n" : " |");
+    os << (i != v.rows() - 1U ? " |\n" : " |");
   }
   return os;
 }
