@@ -1,11 +1,12 @@
 # Release notes
 
-- **0.5.0 WIP**
+- **0.5.0 May 14, 2020**
   - Major refactoring and rewrite of the library
   - Units are now independent from dimensions
   - Dimensions now depend on units (base or coherent units are provided in a class template)
   - Quantity gets a Dimension template parameter again (as unit does not provide information about
     its dimension anymore)
+  - Spaceship operator support added
   - Added official CGS system support
   - Added official data information system support
   - Repository file tree cleanup
