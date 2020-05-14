@@ -255,7 +255,7 @@ static_assert(2q_km / 2q_km_per_h == 1q_h);
 // static_assert(2000q_m / 2q_km_per_h == 1q_h); // should not compile
 static_assert(quantity_cast<kilometre>(2000q_m) / 2q_km_per_h == 1q_h);
 
-static_assert(detail::unit_text<dim_velocity, metre_per_second>() == "m/s");
+static_assert(detail::unit_text<dim_speed, metre_per_second>() == "m/s");
 static_assert(kilometre_per_hour::symbol == "km/h");
 
 // acceleration

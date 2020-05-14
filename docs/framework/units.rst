@@ -144,7 +144,7 @@ However, the easiest way to define momentum is just to use the
 
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exp<si::dim_mass, 1>,
-                                            exp<si::dim_velocity, 1>> {}; // kg ⋅ m/s
+                                            exp<si::dim_speed, 1>> {}; // kg ⋅ m/s
 
 In such a case the library will do its magic and will automatically
 unpack a provided derived dimension to its base dimensions in order to
@@ -296,7 +296,7 @@ does not exist at all. With it `si::kilometre_per_hour` can be defined as::
 
     namespace si {
 
-    struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
+    struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
     }
 

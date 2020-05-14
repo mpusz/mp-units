@@ -70,7 +70,7 @@ template<typename Child, Unit U, DimensionOf<dim_length> L>
 struct dim_volume : derived_dimension<Child, U, exp<L, 3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
-struct dim_velocity : derived_dimension<Child, U, exp<L, 1>, exp<T, -1>> {};
+struct dim_speed : derived_dimension<Child, U, exp<L, 1>, exp<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
 struct dim_acceleration : derived_dimension<Child, U, exp<L, 1>, exp<T, -2>> {};
@@ -78,7 +78,7 @@ struct dim_acceleration : derived_dimension<Child, U, exp<L, 1>, exp<T, -2>> {};
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_acceleration> A>
 struct dim_force : derived_dimension<Child, U, exp<M, 1>, exp<A, 1>> {};
 
-template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_velocity> V>
+template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_speed> V>
 struct dim_momentum : derived_dimension<Child, U, exp<M, 1>, exp<V, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
@@ -207,7 +207,7 @@ template<typename T>
 concept Volume = QuantityOf<T, dim_volume>;
 
 template<typename T>
-concept Speed = QuantityOf<T, dim_velocity>;
+concept Speed = QuantityOf<T, dim_speed>;
 
 template<typename T>
 concept Acceleration = QuantityOf<T, dim_acceleration>;

@@ -30,12 +30,12 @@
 namespace units::physical::si {
 
 struct metre_per_second : unit<metre_per_second> {};
-struct dim_velocity : physical::dim_velocity<dim_velocity, metre_per_second, dim_length, dim_time> {};
+struct dim_speed : physical::dim_speed<dim_speed, metre_per_second, dim_length, dim_time> {};
 
-struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_velocity, kilometre, hour> {};
+struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
 template<Unit U, Scalar Rep = double>
-using speed = quantity<dim_velocity, U, Rep>;
+using speed = quantity<dim_speed, U, Rep>;
 
 inline namespace literals {
 

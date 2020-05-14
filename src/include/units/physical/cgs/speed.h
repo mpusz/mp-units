@@ -30,10 +30,10 @@
 namespace units::physical::cgs {
 
 struct centimetre_per_second : unit<centimetre_per_second> {};
-struct dim_velocity : physical::dim_velocity<dim_velocity, centimetre_per_second, dim_length, dim_time> {};
+struct dim_speed : physical::dim_speed<dim_speed, centimetre_per_second, dim_length, dim_time> {};
 
 template<Unit U, Scalar Rep = double>
-using speed = quantity<dim_velocity, U, Rep>;
+using speed = quantity<dim_speed, U, Rep>;
 
 inline namespace literals {
 

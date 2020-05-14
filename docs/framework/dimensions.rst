@@ -109,10 +109,10 @@ The above dimensions can be defined in the library with the
 
     namespace si {
 
-    struct dim_area     : derived_dimension<dim_area, square_metre,
-                                            exp<dim_length, 2>> {};
-    struct dim_velocity : derived_dimension<dim_velocity, metre_per_second,
-                                            exp<dim_length, 1>, exp<dim_time, -1>> {};
+    struct dim_area  : derived_dimension<dim_area, square_metre,
+                                         exp<dim_length, 2>> {};
+    struct dim_speed : derived_dimension<dim_speed, metre_per_second,
+                                         exp<dim_length, 1>, exp<dim_time, -1>> {};
 
     }
 
@@ -141,10 +141,10 @@ matter. Even if we define the above as:
 
     namespace si {
 
-    struct dim_area     : derived_dimension<dim_area, square_metre,
-                                            exp<dim_length, 1>, exp<dim_length, 1>> {};
-    struct dim_velocity : derived_dimension<dim_velocity, metre_per_second,
-                                            exp<dim_time, -1>, exp<dim_length, 1>> {};
+    struct dim_area  : derived_dimension<dim_area, square_metre,
+                                         exp<dim_length, 1>, exp<dim_length, 1>> {};
+    struct dim_speed : derived_dimension<dim_speed, metre_per_second,
+                                         exp<dim_time, -1>, exp<dim_length, 1>> {};
 
     }
 
@@ -170,7 +170,7 @@ In order to obtain the base/coherent unit of any dimension type a
 `dimension_unit` helper was introduced::
 
     static_assert(std::is_same_v<dimension_unit<si::dim_length>, si::metre>);
-    static_assert(std::is_same_v<dimension_unit<si::dim_velocity>, si::metre_per_second>);
+    static_assert(std::is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);
 
 
 .. rubric:: Citations:

@@ -40,9 +40,9 @@ struct dim_mass : physical::dim_mass<gigaelectronvolt> {};
 template<Unit U, Scalar Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-struct dim_velocity : physical::dim_velocity<dim_velocity, unitless, dim_length, dim_time> {};
+struct dim_speed : physical::dim_speed<dim_speed, unitless, dim_length, dim_time> {};
 template<Unit U, Scalar Rep = double>
-using speed = quantity<dim_velocity, U, Rep>;
+using speed = quantity<dim_speed, U, Rep>;
 
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, gigaelectronvolt, dim_length, dim_time> {};
 template<Unit U, Scalar Rep = double>
@@ -52,7 +52,7 @@ struct dim_force : physical::dim_force<dim_force, square_gigaelectronvolt, dim_m
 template<Unit U, Scalar Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
-struct dim_momentum : physical::dim_momentum<dim_momentum, gigaelectronvolt, dim_mass, dim_velocity> {};
+struct dim_momentum : physical::dim_momentum<dim_momentum, gigaelectronvolt, dim_mass, dim_speed> {};
 template<Unit U, Scalar Rep = double>
 using momentum = quantity<dim_momentum, U, Rep>;
 

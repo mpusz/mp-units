@@ -27,7 +27,7 @@ will determine its type. The same applies to the resulting unit. For example:
     using namespace units::physical::si;
 
     constexpr auto result = 144q_km / 2q_h;
-    static_assert(std::is_same_v<decltype(result)::dimension, dim_velocity>);
+    static_assert(std::is_same_v<decltype(result)::dimension, dim_speed>);
     static_assert(std::is_same_v<decltype(result)::unit, kilometre_per_hour>);
 
 However, if the resulting dimension is not predefined by the user the library framework

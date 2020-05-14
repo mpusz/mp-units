@@ -27,7 +27,7 @@
 
 namespace units::physical::international {
 
-struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_velocity, international::mile, si::hour> {};
+struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_speed, international::mile, si::hour> {};
 
 inline namespace literals {
 
