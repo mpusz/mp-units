@@ -1,6 +1,6 @@
 # Release notes
 
-- **0.5.0 May 14, 2020**
+- **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
   - Units are now independent from dimensions
   - Dimensions now depend on units (base or coherent units are provided in a class template)
@@ -28,7 +28,6 @@
   - All physical dimensions and units put into `physical` namespace
   - CMake improvements
   - Velocity renamed to speed
-  - ...
 
   Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock),
   [@kwikius](https://github.com/kwikius), and [@i-ky](https://github.com/i-ky) for their support
