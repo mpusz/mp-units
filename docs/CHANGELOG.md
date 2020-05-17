@@ -1,7 +1,7 @@
 # Release notes
 
 - **0.6.0 WIP**
-
+  - linear_algebra updated to 0.7.0/testing
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library

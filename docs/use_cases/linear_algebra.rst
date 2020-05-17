@@ -14,7 +14,7 @@ enough to be used with other Linear Algebra libraries existing on the market.
     or `Conan <https://bintray.com/twonington/public-conan/linear_algebra%3Apublic-conan>`_.
     Also, to simplify the examples all of them assume::
 
-        using namespace std::experimental::math;
+        using namespace std::math;
 
 
 Linear Algebra of Quantities

@@ -89,7 +89,7 @@ class UnitsConan(ConanFile):
             self.build_requires("Catch2/2.11.0@catchorg/stable")
             # TODO update doxygen to the latest version when available
             self.build_requires("doxygen_installer/1.8.17@bincrafters/stable")
-            self.build_requires("linear_algebra/0.6.0@public-conan/stable")
+            self.build_requires("linear_algebra/0.7.0@public-conan/testing")
 
     def build(self):
         cmake = self._configure_cmake()
