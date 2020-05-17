@@ -162,13 +162,13 @@ To use **mp-units** as a CMake imported library the following steps may be perfo
    project's top-level directory and add **mp-units** as a dependency to your Conan configuration
    file.
 
-  - for example to use **mp-units** testing/prerelease version ``0.5.0`` in case of *conanfile.txt*
+  - for example to use **mp-units** testing/prerelease version ``0.6.0`` in case of *conanfile.txt*
     it is enough for it to just contain the following lines:
 
     .. code-block:: ini
 
         [requires]
-        mp-units/0.5.0@mpusz/testing
+        mp-units/0.6.0@mpusz/testing
 
 3. Import Conan dependencies definitions to the beginning of your top-level *CMakeLists.txt*
    file in your project:
@@ -234,4 +234,4 @@ Uploading **mp-units** Package to the Conan Server
 
 .. code-block:: shell
 
-    conan upload -r <remote-name> --all mp-units/0.5.0@<user>/<channel>
+    conan upload -r <remote-name> --all mp-units/0.6.0@<user>/<channel>
