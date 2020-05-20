@@ -274,77 +274,77 @@ void quantity_of_vector_tests()
   quantity_of_vector_divide_by_scalar();
 }
 
-// template<Unit U = si::metre, Scalar Rep = double>
-// using length_m = si::length<U, matrix<Rep>>;
+template<units::Unit U = si::metre, units::Scalar Rep = double>
+using length_m = si::length<U, matrix<Rep>>;
 
-// void quantity_of_matrix_add()
-// {
-//   std::cout << "\nquantity_of_matrix_add:\n";
+void quantity_of_matrix_add()
+{
+  std::cout << "\nquantity_of_matrix_add:\n";
 
-//   length_m v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
-//   length_m u(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
-//   length_m<si::kilometre> t(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
+  length_m<> v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
+  length_m<> u(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
+  length_m<si::kilometre> t(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
 
-//   std::cout << "v =\n" << v << "\n";
-//   std::cout << "u =\n" << u << "\n";
-//   std::cout << "t =\n" << t << "\n";
+  std::cout << "v =\n" << v << "\n";
+  std::cout << "u =\n" << u << "\n";
+  std::cout << "t =\n" << t << "\n";
 
-//   std::cout << "v + u =\n" << v + u << "\n";
-//   std::cout << "v + t =\n" << v + t << "\n";
+  std::cout << "v + u =\n" << v + u << "\n";
+  std::cout << "v + t =\n" << v + t << "\n";
 
-//   // TODO Uncomment when fixed in the LA lib
-//   // std::cout << "v[mm] =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
-// }
+  // TODO Uncomment when fixed in the LA lib
+  // std::cout << "v[mm] =\n" << matrix<si::length<si::millimetre>>(v) << "\n";
+}
 
-// void quantity_of_matrix_multiply_same()
-// {
-//   std::cout << "\nquantity_of_matrix_multiply_same:\n";
+void quantity_of_matrix_multiply_same()
+{
+  std::cout << "\nquantity_of_matrix_multiply_same:\n";
   
-//   length_m v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
-//   length_v u(vector<>{ 3, 2, 1 });
+  length_m<> v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
+  length_v<> u(vector<>{ 3, 2, 1 });
 
-//   std::cout << "v =\n" << v << "\n";
-//   std::cout << "u =\n" << u << "\n";
+  std::cout << "v =\n" << v << "\n";
+  std::cout << "u =\n" << u << "\n";
 
-//   std::cout << "v * u =\n" << v * u << "\n";
-//   std::cout << "2q_m * u =\n" << 2q_m * u << "\n";
-// }
+  std::cout << "v * u =\n" << v * u << "\n";
+  std::cout << "2q_m * u =\n" << 2q_m * u << "\n";
+}
 
-// void quantity_of_matrix_multiply_different()
-// {
-//   std::cout << "\nquantity_of_matrix_multiply_different:\n";
+void quantity_of_matrix_multiply_different()
+{
+  std::cout << "\nquantity_of_matrix_multiply_different:\n";
 
-//   force_v v(vector<>{ 1, 2, 3 });
-//   length_m u(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
+  force_v<> v(vector<>{ 1, 2, 3 });
+  length_m<> u(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
 
-//   std::cout << "v =\n" << v << "\n";
-//   std::cout << "u =\n" << u << "\n";
+  std::cout << "v =\n" << v << "\n";
+  std::cout << "u =\n" << u << "\n";
 
-//   std::cout << "v * u =\n" << v * u << "\n";
-//   std::cout << "2q_N * u =\n" << 2q_N * u << "\n";
-//   std::cout << "2 * u =\n" << 2 * u << "\n";
-// }
+  std::cout << "v * u =\n" << v * u << "\n";
+  std::cout << "2q_N * u =\n" << 2q_N * u << "\n";
+  std::cout << "2 * u =\n" << 2 * u << "\n";
+}
 
-// void quantity_of_matrix_divide_by_scalar()
-// {
-//   std::cout << "\nquantity_of_matrix_divide_by_scalar:\n";
+void quantity_of_matrix_divide_by_scalar()
+{
+  std::cout << "\nquantity_of_matrix_divide_by_scalar:\n";
 
-//   length_m v(matrix<>{{ 2, 4, 6 }, { 4, 6, 8 }, { 8, 4, 2 }});
+  length_m<> v(matrix<>{{ 2, 4, 6 }, { 4, 6, 8 }, { 8, 4, 2 }});
 
-//   std::cout << "v =\n" << v << "\n";
+  std::cout << "v =\n" << v << "\n";
 
-//   // TODO Uncomment when bug in the LA is fixed
-//   // std::cout << "v / 2q_s =\n" << v / 2q_s << "\n";
-//   // std::cout << "v / 2 =\n" << v / 2 << "\n";
-// }
+  // TODO Uncomment when bug in the LA is fixed
+  // std::cout << "v / 2q_s =\n" << v / 2q_s << "\n";
+  // std::cout << "v / 2 =\n" << v / 2 << "\n";
+}
 
-// void quantity_of_matrix_tests()
-// {
-//   quantity_of_matrix_add();
-//   quantity_of_matrix_multiply_same();
-//   quantity_of_matrix_multiply_different();
-//   quantity_of_matrix_divide_by_scalar();
-// }
+void quantity_of_matrix_tests()
+{
+  quantity_of_matrix_add();
+  quantity_of_matrix_multiply_same();
+  quantity_of_matrix_multiply_different();
+  quantity_of_matrix_divide_by_scalar();
+}
 
 }
 
@@ -353,5 +353,5 @@ int main()
   vector_of_quantity_tests();
   matrix_of_quantity_tests();
   quantity_of_vector_tests();
-  // quantity_of_matrix_tests();
+  quantity_of_matrix_tests();
 }
