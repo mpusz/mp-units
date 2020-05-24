@@ -1,453 +1,463 @@
+// The MIT License (MIT)
+//
+// Copyright (c) 2018 Mateusz Pusz
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #pragma once
 
 #include <random>
 #include <functional>
+#include <units/concepts.h>
 
 namespace units {
 
-template<typename Quantity>
-struct uniform_int_distribution : public std::uniform_int_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::uniform_int_distribution<Rep>;
-    
-    uniform_int_distribution() : Base() {}
-    uniform_int_distribution(Quantity a, Quantity b) : Base(a.count(), b.count()) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity a() const { return Quantity(Base::a()); }
-    Quantity b() const { return Quantity(Base::b()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct uniform_real_distribution : public std::uniform_real_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::uniform_real_distribution<Rep>;
-    
-    uniform_real_distribution() : Base() {}
-    uniform_real_distribution(Quantity a, Quantity b) : Base(a.count(), b.count()) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity a() const { return Quantity(Base::a()); }
-    Quantity b() const { return Quantity(Base::b()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct binomial_distribution : public std::binomial_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::binomial_distribution<Rep>;
-    
-    binomial_distribution() : Base() {}
-    binomial_distribution(Quantity t, double p) : Base(t.count(), p) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity t() const { return Quantity(Base::t()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct negative_binomial_distribution : public std::negative_binomial_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::negative_binomial_distribution<Rep>;
-    
-    negative_binomial_distribution() : Base() {}
-    negative_binomial_distribution(Quantity k, double p) : Base(k.count(), p) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity k() const { return Quantity(Base::k()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct geometric_distribution : public std::geometric_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::geometric_distribution<Rep>;
-    
-    geometric_distribution() : Base() {}
-    geometric_distribution(double p) : Base(p) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct poisson_distribution : public std::poisson_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::poisson_distribution<Rep>;
-    
-    poisson_distribution() : Base() {}
-    poisson_distribution(double p) : Base(p) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct exponential_distribution : public std::exponential_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::exponential_distribution<Rep>;
-    
-    exponential_distribution() : Base() {}
-    exponential_distribution(Rep lambda) : Base(lambda) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct gamma_distribution : public std::gamma_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::gamma_distribution<Rep>;
-    
-    gamma_distribution() : Base() {}
-    gamma_distribution(Rep alpha, Rep beta) : Base(alpha, beta) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct weibull_distribution : public std::weibull_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::weibull_distribution<Rep>;
-    
-    weibull_distribution() : Base() {}
-    weibull_distribution(Rep a, Rep b) : Base(a, b) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct extreme_value_distribution : public std::extreme_value_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::extreme_value_distribution<Rep>;
-    
-    extreme_value_distribution() : Base() {}
-    extreme_value_distribution(Quantity a, Rep b) : Base(a.count(), b) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-
-    Quantity a() const { return Quantity(Base::a()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct normal_distribution : public std::normal_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::normal_distribution<Rep>;
-    
-    normal_distribution() : Base() {}
-    normal_distribution(Quantity mean, Quantity stddev) : Base(mean.count(), stddev.count()) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity mean() const { return Quantity(Base::mean()); }
-    Quantity stddev() const { return Quantity(Base::stddev()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct lognormal_distribution : public std::lognormal_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::lognormal_distribution<Rep>;
-    
-    lognormal_distribution() : Base() {}
-    lognormal_distribution(Quantity m, Quantity s) : Base(m.count(), s.count()) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity m() const { return Quantity(Base::m()); }
-    Quantity s() const { return Quantity(Base::s()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct chi_squared_distribution : public std::chi_squared_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::chi_squared_distribution<Rep>;
-    
-    chi_squared_distribution() : Base() {}
-    chi_squared_distribution(Rep n) : Base(n) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct cauchy_distribution : public std::cauchy_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::cauchy_distribution<Rep>;
-    
-    cauchy_distribution() : Base() {}
-    cauchy_distribution(Quantity a, Quantity b) : Base(a.count(), b.count()) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity a() const { return Quantity(Base::a()); }
-    Quantity b() const { return Quantity(Base::b()); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct fisher_f_distribution : public std::fisher_f_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::fisher_f_distribution<Rep>;
-    
-    fisher_f_distribution() : Base() {}
-    fisher_f_distribution(Rep m, Rep n) : Base(m, n) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct student_t_distribution : public std::student_t_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::student_t_distribution<Rep>;
-    
-    student_t_distribution() : Base() {}
-    student_t_distribution(Rep n) : Base(n) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-struct discrete_distribution : public std::discrete_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::discrete_distribution<Rep>;
-    
-    discrete_distribution() : Base() {}
-    
-    template <typename InputIt>
-    discrete_distribution(InputIt first, InputIt last) : Base(first, last) {}
-
-    discrete_distribution(std::initializer_list<double> weights) : Base(weights) {}
-
-    template <typename UnaryOperation>
-    discrete_distribution(std::size_t count, double xmin, double xmax, UnaryOperation unary_op) :
-        Base(count, xmin, xmax, unary_op) {}
-    
-    template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
-    
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
-};
-
-template<typename Quantity>
-class piecewise_constant_distribution : public std::piecewise_constant_distribution<typename Quantity::rep>
-{
-    using Rep = Quantity::rep;
-    using Base = std::piecewise_constant_distribution<Rep>;
-
-    template <typename InputIt>
-    inline static std::vector<Rep> i_qty_to_rep(InputIt first, InputIt last)
+namespace detail {
+    template <Quantity Q, typename InputIt>
+    static std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
     {
-        std::vector<Rep> intervals_rep;
+        std::vector<typename Q::rep> intervals_rep;
         intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
         for (auto itr = first; itr != last; ++itr) { intervals_rep.push_back(itr->count()); }
         return intervals_rep;
     }
     
-    inline static std::vector<Rep> bl_qty_to_rep(std::initializer_list<Quantity>& bl)
+    template <Quantity Q>
+    static std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
     {
-        std::vector<Rep> bl_rep;
+        std::vector<typename Q::rep> bl_rep;
         bl_rep.reserve(bl.size());
-        for (const Quantity& qty : bl) { bl_rep.push_back(qty.count()); }
+        for (const Q& qty : bl) { bl_rep.push_back(qty.count()); }
         return bl_rep;
     }
 
-    template <typename UnaryOperation>
-    inline static std::vector<Rep> fw_bl(std::initializer_list<Quantity>& bl, UnaryOperation fw)
+    template <Quantity Q, typename UnaryOperation>
+    inline static std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& bl, UnaryOperation fw)
     {
-        std::vector<Rep> w_bl;
+        using rep = Q::rep;
+        std::vector<rep> w_bl;
         w_bl.reserve(bl.size());
-        for (const Quantity& qty : bl) { w_bl.push_back(fw(qty)); }   
-        std::vector<Rep> weights;
+        for (const Q& qty : bl) { w_bl.push_back(fw(qty)); }   
+        std::vector<rep> weights;
         weights.reserve(bl.size());
         for (size_t i = 0; i < bl.size() - 1; ++i) { weights.push_back(w_bl[i] + w_bl[i + 1]); }
         weights.push_back(0);
         return weights;
     }
+
+    template <Quantity Q, typename UnaryOperation>
+    static std::vector<typename Q::rep> fw_bl_pwl(std::initializer_list<Q>& bl, UnaryOperation fw)
+    {
+        std::vector<typename Q::rep> weights;
+        weights.reserve(bl.size());
+        for (const Q& qty : bl) { weights.push_back(fw(qty)); }   
+        return weights;
+    }
+} // namespace detail
+
+template<Quantity Q>
+struct uniform_int_distribution : public std::uniform_int_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::uniform_int_distribution<rep>;
+    
+    explicit uniform_int_distribution() : base() {}
+    uniform_int_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q a() const { return Q(base::a()); }
+    Q b() const { return Q(base::b()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct uniform_real_distribution : public std::uniform_real_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::uniform_real_distribution<rep>;
+    
+    explicit uniform_real_distribution() : base() {}
+    uniform_real_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q a() const { return Q(base::a()); }
+    Q b() const { return Q(base::b()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct binomial_distribution : public std::binomial_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::binomial_distribution<rep>;
+    
+    explicit binomial_distribution() : base() {}
+    binomial_distribution(const Q& t, double p) : base(t.count(), p) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q t() const { return Q(base::t()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct negative_binomial_distribution : public std::negative_binomial_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::negative_binomial_distribution<rep>;
+    
+    explicit negative_binomial_distribution() : base() {}
+    negative_binomial_distribution(const Q& k, double p) : base(k.count(), p) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q k() const { return Q(base::k()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct geometric_distribution : public std::geometric_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::geometric_distribution<rep>;
+    
+    explicit geometric_distribution() : base() {}
+    geometric_distribution(double p) : base(p) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::poisson_distribution<rep>;
+    
+    explicit poisson_distribution() : base() {}
+    explicit poisson_distribution(double p) : base(p) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct exponential_distribution : public std::exponential_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::exponential_distribution<rep>;
+    
+    explicit exponential_distribution() : base() {}
+    explicit exponential_distribution(rep lambda) : base(lambda) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::gamma_distribution<rep>;
+    
+    explicit gamma_distribution() : base() {}
+    gamma_distribution(rep alpha, rep beta) : base(alpha, beta) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::weibull_distribution<rep>;
+    
+    explicit weibull_distribution() : base() {}
+    weibull_distribution(rep a, rep b) : base(a, b) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct extreme_value_distribution : public std::extreme_value_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::extreme_value_distribution<rep>;
+    
+    explicit extreme_value_distribution() : base() {}
+    extreme_value_distribution(const Q& a, rep b) : base(a.count(), b) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+
+    Q a() const { return Q(base::a()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct normal_distribution : public std::normal_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::normal_distribution<rep>;
+    
+    explicit normal_distribution() : base() {}
+    normal_distribution(const Q& mean, const Q& stddev) : base(mean.count(), stddev.count()) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q mean() const { return Q(base::mean()); }
+    Q stddev() const { return Q(base::stddev()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct lognormal_distribution : public std::lognormal_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::lognormal_distribution<rep>;
+    
+    explicit lognormal_distribution() : base() {}
+    lognormal_distribution(const Q& m, const Q& s) : base(m.count(), s.count()) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q m() const { return Q(base::m()); }
+    Q s() const { return Q(base::s()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct chi_squared_distribution : public std::chi_squared_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::chi_squared_distribution<rep>;
+    
+    explicit chi_squared_distribution() : base() {}
+    explicit chi_squared_distribution(rep n) : base(n) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::cauchy_distribution<rep>;
+    
+    explicit cauchy_distribution() : base() {}
+    cauchy_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q a() const { return Q(base::a()); }
+    Q b() const { return Q(base::b()); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::fisher_f_distribution<rep>;
+    
+    explicit fisher_f_distribution() : base() {}
+    fisher_f_distribution(rep m, rep n) : base(m, n) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct student_t_distribution : public std::student_t_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::student_t_distribution<rep>;
+    
+    explicit student_t_distribution() : base() {}
+    explicit student_t_distribution(rep n) : base(n) {}
+    
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+struct discrete_distribution : public std::discrete_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::discrete_distribution<rep>;
+    
+    explicit discrete_distribution() : base() {}
     
     template <typename InputIt>
-    piecewise_constant_distribution(const std::vector<Rep>& i, InputIt first_w) :
-        Base(i.cbegin(), i.cend(), first_w) {}
+    discrete_distribution(InputIt first, InputIt last) : base(first, last) {}
+
+    discrete_distribution(std::initializer_list<double> weights) : base(weights) {}
+
+    template <typename UnaryOperation>
+    discrete_distribution(std::size_t count, double xmin, double xmax, UnaryOperation unary_op) :
+        base(count, xmin, xmax, unary_op) {}
     
-    piecewise_constant_distribution(const std::vector<Rep>& bl, const std::vector<Rep>& weights) :
-        Base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
+    template<typename Generator>
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
+    
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
+};
+
+template<Quantity Q>
+class piecewise_constant_distribution : public std::piecewise_constant_distribution<typename Q::rep>
+{
+    using rep = Q::rep;
+    using base = std::piecewise_constant_distribution<rep>;
+    
+    template <typename InputIt>
+    piecewise_constant_distribution(const std::vector<rep>& i, InputIt first_w) :
+        base(i.cbegin(), i.cend(), first_w) {}
+    
+    piecewise_constant_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights) :
+        base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
 
 public:
-    piecewise_constant_distribution() : Base() {}
+    explicit piecewise_constant_distribution() : base() {}
     
     template <typename InputIt1, typename InputIt2>
     piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w) :
-        piecewise_constant_distribution(i_qty_to_rep(first_i, last_i), first_w) {}
+        piecewise_constant_distribution(detail::i_qty_to_rep<Q>(first_i, last_i), first_w) {}
 
     template <typename UnaryOperation>
-    piecewise_constant_distribution(std::initializer_list<Quantity> bl, UnaryOperation fw) :
-        piecewise_constant_distribution(bl_qty_to_rep(bl), fw_bl(bl, fw)) {}
+    piecewise_constant_distribution(std::initializer_list<Q> bl, UnaryOperation fw) :
+        piecewise_constant_distribution(detail::bl_qty_to_rep(bl), detail::fw_bl_pwc(bl, fw)) {}
 
     template <typename UnaryOperation>
-    piecewise_constant_distribution(std::size_t nw, Quantity xmin, Quantity xmax, UnaryOperation fw) :
-        Base(nw, xmin.count(), xmax.count(), [fw](Rep val) { return fw(Quantity(val)); }) {}
+    piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw) :
+        base(nw, xmin.count(), xmax.count(), [fw](rep val) { return fw(Q(val)); }) {}
     
     template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
 
-    std::vector<Quantity> intervals() const
+    std::vector<Q> intervals() const
     {
-        std::vector<Rep> intervals_rep = Base::intervals();
-        std::vector<Quantity> intervals_qty;
+        std::vector<rep> intervals_rep = base::intervals();
+        std::vector<Q> intervals_qty;
         intervals_qty.reserve(intervals_rep.size());
-        for (const Rep& val : intervals_rep) { intervals_qty.push_back(Quantity(val)); }
+        for (const rep& val : intervals_rep) { intervals_qty.push_back(Q(val)); }
         return intervals_qty;
     }
     
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
 };
 
-template<typename Quantity>
-class piecewise_linear_distribution : public std::piecewise_linear_distribution<typename Quantity::rep>
+template<Quantity Q>
+class piecewise_linear_distribution : public std::piecewise_linear_distribution<typename Q::rep>
 {
-    using Rep = Quantity::rep;
-    using Base = std::piecewise_linear_distribution<Rep>;
-
-    template <typename InputIt>
-    inline static std::vector<Rep> i_qty_to_rep(InputIt first, InputIt last)
-    {
-        std::vector<Rep> intervals_rep;
-        intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
-        for (auto itr = first; itr != last; ++itr) { intervals_rep.push_back(itr->count()); }
-        return intervals_rep;
-    }
-    
-    inline static std::vector<Rep> bl_qty_to_rep(std::initializer_list<Quantity>& bl)
-    {
-        std::vector<Rep> bl_rep;
-        bl_rep.reserve(bl.size());
-        for (const Quantity& qty : bl) { bl_rep.push_back(qty.count()); }
-        return bl_rep;
-    }
-
-    template <typename UnaryOperation>
-    inline static std::vector<Rep> fw_bl(std::initializer_list<Quantity>& bl, UnaryOperation fw)
-    {
-        std::vector<Rep> weights;
-        weights.reserve(bl.size());
-        for (const Quantity& qty : bl) { weights.push_back(fw(qty)); }   
-        return weights;
-    }
+    using rep = Q::rep;
+    using base = std::piecewise_linear_distribution<rep>;
     
     template <typename InputIt>
-    piecewise_linear_distribution(const std::vector<Rep>& i, InputIt first_w) :
-        Base(i.cbegin(), i.cend(), first_w) {}
+    piecewise_linear_distribution(const std::vector<rep>& i, InputIt first_w) :
+        base(i.cbegin(), i.cend(), first_w) {}
     
-    piecewise_linear_distribution(const std::vector<Rep>& bl, const std::vector<Rep>& weights) :
-        Base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
+    piecewise_linear_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights) :
+        base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
 
 public:
-    piecewise_linear_distribution() : Base() {}
+    explicit piecewise_linear_distribution() : base() {}
     
     template <typename InputIt1, typename InputIt2>
     piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w) :
-        piecewise_linear_distribution(i_qty_to_rep(first_i, last_i), first_w) {}
+        piecewise_linear_distribution(detail::i_qty_to_rep<Q>(first_i, last_i), first_w) {}
 
     template <typename UnaryOperation>
-    piecewise_linear_distribution(std::initializer_list<Quantity> bl, UnaryOperation fw) :
-        piecewise_linear_distribution(bl_qty_to_rep(bl), fw_bl(bl, fw)) {}
+    piecewise_linear_distribution(std::initializer_list<Q> bl, UnaryOperation fw) :
+        piecewise_linear_distribution(detail::bl_qty_to_rep(bl), detail::fw_bl_pwl(bl, fw)) {}
 
     template <typename UnaryOperation>
-    piecewise_linear_distribution(std::size_t nw, Quantity xmin, Quantity xmax, UnaryOperation fw) :
-        Base(nw, xmin.count(), xmax.count(), [fw](Rep val) { return fw(Quantity(val)); }) {}
+    piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw) :
+        base(nw, xmin.count(), xmax.count(), [fw](rep val) { return fw(Q(val)); }) {}
     
     template<typename Generator>
-    Quantity operator()(Generator& g) { return Quantity(Base::operator()(g)); }
+    Q operator()(Generator& g) { return Q(base::operator()(g)); }
 
-    std::vector<Quantity> intervals() const
+    std::vector<Q> intervals() const
     {
-        std::vector<Rep> intervals_rep = Base::intervals();
-        std::vector<Quantity> intervals_qty;
+        std::vector<rep> intervals_rep = base::intervals();
+        std::vector<Q> intervals_qty;
         intervals_qty.reserve(intervals_rep.size());
-        for (const Rep& val : intervals_rep) { intervals_qty.push_back(Quantity(val)); }
+        for (const rep& val : intervals_rep) { intervals_qty.push_back(Q(val)); }
         return intervals_qty;
     }
     
-    Quantity min() const { return Quantity(Base::min()); }
-    Quantity max() const { return Quantity(Base::max()); }
+    Q min() const { return Q(base::min()); }
+    Q max() const { return Q(base::max()); }
 };
 
 } // namespace units
