@@ -24,6 +24,7 @@
 
 #include <random>
 #include <functional>
+#include <concepts>
 #include <units/concepts.h>
 
 namespace units {
@@ -72,6 +73,7 @@ namespace detail {
 } // namespace detail
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct uniform_int_distribution : public std::uniform_int_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -91,6 +93,7 @@ struct uniform_int_distribution : public std::uniform_int_distribution<typename 
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct uniform_real_distribution : public std::uniform_real_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -110,6 +113,7 @@ struct uniform_real_distribution : public std::uniform_real_distribution<typenam
 };
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct binomial_distribution : public std::binomial_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -128,6 +132,7 @@ struct binomial_distribution : public std::binomial_distribution<typename Q::rep
 };
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct negative_binomial_distribution : public std::negative_binomial_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -146,6 +151,7 @@ struct negative_binomial_distribution : public std::negative_binomial_distributi
 };
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct geometric_distribution : public std::geometric_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -162,6 +168,7 @@ struct geometric_distribution : public std::geometric_distribution<typename Q::r
 };
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -178,13 +185,14 @@ struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct exponential_distribution : public std::exponential_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::exponential_distribution<rep>;
     
     explicit exponential_distribution() : base() {}
-    explicit exponential_distribution(rep lambda) : base(lambda) {}
+    explicit exponential_distribution(const rep& lambda) : base(lambda) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -194,13 +202,14 @@ struct exponential_distribution : public std::exponential_distribution<typename 
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::gamma_distribution<rep>;
     
     explicit gamma_distribution() : base() {}
-    gamma_distribution(rep alpha, rep beta) : base(alpha, beta) {}
+    gamma_distribution(const rep& alpha, const rep& beta) : base(alpha, beta) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -210,13 +219,14 @@ struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::weibull_distribution<rep>;
     
     explicit weibull_distribution() : base() {}
-    weibull_distribution(rep a, rep b) : base(a, b) {}
+    weibull_distribution(const rep& a, const rep& b) : base(a, b) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -226,13 +236,14 @@ struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct extreme_value_distribution : public std::extreme_value_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::extreme_value_distribution<rep>;
     
     explicit extreme_value_distribution() : base() {}
-    extreme_value_distribution(const Q& a, rep b) : base(a.count(), b) {}
+    extreme_value_distribution(const Q& a, const rep& b) : base(a.count(), b) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -244,6 +255,7 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct normal_distribution : public std::normal_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -263,6 +275,7 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep>
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct lognormal_distribution : public std::lognormal_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -282,13 +295,14 @@ struct lognormal_distribution : public std::lognormal_distribution<typename Q::r
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct chi_squared_distribution : public std::chi_squared_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::chi_squared_distribution<rep>;
     
     explicit chi_squared_distribution() : base() {}
-    explicit chi_squared_distribution(rep n) : base(n) {}
+    explicit chi_squared_distribution(const rep& n) : base(n) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -298,6 +312,7 @@ struct chi_squared_distribution : public std::chi_squared_distribution<typename 
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -317,13 +332,14 @@ struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::fisher_f_distribution<rep>;
     
     explicit fisher_f_distribution() : base() {}
-    fisher_f_distribution(rep m, rep n) : base(m, n) {}
+    fisher_f_distribution(const rep& m, const rep& n) : base(m, n) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -333,13 +349,14 @@ struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 struct student_t_distribution : public std::student_t_distribution<typename Q::rep>
 {
     using rep = Q::rep;
     using base = std::student_t_distribution<rep>;
     
     explicit student_t_distribution() : base() {}
-    explicit student_t_distribution(rep n) : base(n) {}
+    explicit student_t_distribution(const rep& n) : base(n) {}
     
     template<typename Generator>
     Q operator()(Generator& g) { return Q(base::operator()(g)); }
@@ -349,6 +366,7 @@ struct student_t_distribution : public std::student_t_distribution<typename Q::r
 };
 
 template<Quantity Q>
+    requires std::integral<typename Q::rep>
 struct discrete_distribution : public std::discrete_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -373,6 +391,7 @@ struct discrete_distribution : public std::discrete_distribution<typename Q::rep
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 class piecewise_constant_distribution : public std::piecewise_constant_distribution<typename Q::rep>
 {
     using rep = Q::rep;
@@ -417,6 +436,7 @@ public:
 };
 
 template<Quantity Q>
+    requires std::floating_point<typename Q::rep>
 class piecewise_linear_distribution : public std::piecewise_linear_distribution<typename Q::rep>
 {
     using rep = Q::rep;
