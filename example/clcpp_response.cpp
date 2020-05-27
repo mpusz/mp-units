@@ -15,7 +15,6 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-
 #include <units/physical/iau/length.h>
 #include <units/physical/imperial/length.h>
 #include <units/physical/international/length.h>
