@@ -23,33 +23,20 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/international/length.h>
-#include <units/physical/international/time.h>
+#include <units/physical/si/time.h>
 #include <units/quantity.h>
 
 namespace units::physical::international {
 
-struct foot_per_second : unit<foot_per_second> {};
+using si::second;
 
-struct dim_speed : physical::dim_speed<dim_speed, foot_per_second, dim_length, dim_time> {};
-
-template<Unit U, Scalar Rep = double>
-using speed = quantity<dim_speed, U, Rep>;
-
-struct mile_per_hour : deduced_unit<mile_per_hour, dim_speed, international::mile, si::hour> {};
-
+using si::dim_time;
+using si::time;
 
 inline namespace literals {
 
-// mph
-constexpr auto operator"" q_mi_per_h(unsigned long long l) { return speed<mile_per_hour, std::int64_t>(l); }
-constexpr auto operator"" q_mi_per_h(long double l) { return speed<mile_per_hour, long double>(l); }
+using si::literals::operator"" q_s;
 
-// fps
-constexpr auto operator"" q_ft_per_s(unsigned long long l) { return speed<foot_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
-
-
-}  // namespace literals
+}
 
 }  // namespace units::physical::international

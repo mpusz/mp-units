@@ -24,8 +24,9 @@
 #include "./area.h"
 #include "./units_str.h"
 
+
 using namespace units::physical::si::literals;
-using namespace units::physical::international;
+using namespace units::physical::international::literals;
 using namespace units::experimental;
 
 void simple_quantities()

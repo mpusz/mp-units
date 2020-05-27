@@ -15,6 +15,7 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
+
 #include <units/physical/iau/length.h>
 #include <units/physical/imperial/length.h>
 #include <units/physical/international/length.h>
@@ -35,6 +36,7 @@ void simple_quantities()
 {
   using namespace units::physical::si;
   using namespace units::physical::international;
+  using units::physical::si::length;
 
   using distance = length<metre>;
   using duration = physical::si::time<second>;
@@ -60,6 +62,7 @@ void quantities_with_typed_units()
   using namespace units::physical;
   using namespace units::physical::si;
   using namespace units::physical::international;
+  using units::physical::si::length;
 
   constexpr length<kilometre> km = 1.0q_km;
   constexpr length<mile> miles = 1.0q_mi;

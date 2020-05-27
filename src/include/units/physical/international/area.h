@@ -22,18 +22,23 @@
 
 #pragma once
 
-#include <units/physical/si/area.h>
 #include <units/physical/international/length.h>
 
 namespace units::physical::international {
 
-struct square_foot : deduced_unit<square_foot, si::dim_area, international::foot> {};
+struct square_foot : unit<square_foot> {};
+
+struct dim_area : physical::dim_area<dim_area, square_foot, dim_length> {};
+
+template<Unit U, Scalar Rep = double>
+using area = quantity<dim_area, U, Rep>;
+
 
 inline namespace literals {
 
 // ft2
-constexpr auto operator"" q_ft2(unsigned long long l) { return si::area<square_foot, std::int64_t>(l); }
-constexpr auto operator"" q_ft2(long double l) { return si::area<square_foot, long double>(l); }
+constexpr auto operator"" q_ft2(unsigned long long l) { return area<square_foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft2(long double l) { return area<square_foot, long double>(l); }
 
 }  // namespace literals
 

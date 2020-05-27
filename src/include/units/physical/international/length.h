@@ -58,39 +58,45 @@ struct thou : named_scaled_unit<thou, "thou", no_prefix, ratio<1, 1000>, inch> {
 // https://en.wikipedia.org/wiki/Thousandth_of_an_inch
 using mil = thou;
 
+struct dim_length : physical::dim_length<foot> {};
+
+template<Unit U, Scalar Rep = double>
+using length = quantity<dim_length, U, Rep>;
+
+
 inline namespace literals {
 
 // yd
-constexpr auto operator"" q_yd(unsigned long long l) { return si::length<yard, std::int64_t>(l); }
-constexpr auto operator"" q_yd(long double l) { return si::length<yard, long double>(l); }
+constexpr auto operator"" q_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
+constexpr auto operator"" q_yd(long double l) { return length<yard, long double>(l); }
 
 // ft
-constexpr auto operator"" q_ft(unsigned long long l) { return si::length<foot, std::int64_t>(l); }
-constexpr auto operator"" q_ft(long double l) { return si::length<foot, long double>(l); }
+constexpr auto operator"" q_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft(long double l) { return length<foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" q_fathom(unsigned long long l) { return si::length<fathom, std::int64_t>(l); }
-constexpr auto operator"" q_fathom(long double l) { return si::length<fathom, long double>(l); }
+constexpr auto operator"" q_fathom(unsigned long long l) { return length<fathom, std::int64_t>(l); }
+constexpr auto operator"" q_fathom(long double l) { return length<fathom, long double>(l); }
 
 // in
-constexpr auto operator"" q_in(unsigned long long l) { return si::length<inch, std::int64_t>(l); }
-constexpr auto operator"" q_in(long double l) { return si::length<inch, long double>(l); }
+constexpr auto operator"" q_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
+constexpr auto operator"" q_in(long double l) { return length<inch, long double>(l); }
 
 // mi
-constexpr auto operator"" q_mi(unsigned long long l) { return si::length<mile, std::int64_t>(l); }
-constexpr auto operator"" q_mi(long double l) { return si::length<mile, long double>(l); }
+constexpr auto operator"" q_mi(unsigned long long l) { return length<mile, std::int64_t>(l); }
+constexpr auto operator"" q_mi(long double l) { return length<mile, long double>(l); }
 
 // mi_naut
-constexpr auto operator"" q_naut_mi(unsigned long long l) { return si::length<nautical_mile, std::int64_t>(l); }
-constexpr auto operator"" q_naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
+constexpr auto operator"" q_naut_mi(unsigned long long l) { return length<nautical_mile, std::int64_t>(l); }
+constexpr auto operator"" q_naut_mi(long double l) { return length<nautical_mile, long double>(l); }
 
 // thou
-constexpr auto operator"" q_thou(unsigned long long l) { return si::length<thou, std::int64_t>(l); }
-constexpr auto operator"" q_thou(long double l) { return si::length<thou, long double>(l); }
+constexpr auto operator"" q_thou(unsigned long long l) { return length<thou, std::int64_t>(l); }
+constexpr auto operator"" q_thou(long double l) { return length<thou, long double>(l); }
 
 // mil
-constexpr auto operator"" q_mil(unsigned long long l) { return si::length<mil, std::int64_t>(l); }
-constexpr auto operator"" q_mil(long double l) { return si::length<mil, long double>(l); }
+constexpr auto operator"" q_mil(unsigned long long l) { return length<mil, std::int64_t>(l); }
+constexpr auto operator"" q_mil(long double l) { return length<mil, long double>(l); }
 
 }  // namespace literals
 

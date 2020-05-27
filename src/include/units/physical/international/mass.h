@@ -23,33 +23,25 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/international/length.h>
-#include <units/physical/international/time.h>
+#include <units/physical/si/mass.h>
 #include <units/quantity.h>
 
-namespace units::physical::international {
+namespace units::physical::cgs {
 
-struct foot_per_second : unit<foot_per_second> {};
+struct pound : named_scaled_unit<pound, "lb", no_prefix, ratio<456'359'237, 1'000'000'000>, si::kilogram> {};
 
-struct dim_speed : physical::dim_speed<dim_speed, foot_per_second, dim_length, dim_time> {};
+
+struct dim_mass : physical::dim_mass<pound> {};
 
 template<Unit U, Scalar Rep = double>
-using speed = quantity<dim_speed, U, Rep>;
-
-struct mile_per_hour : deduced_unit<mile_per_hour, dim_speed, international::mile, si::hour> {};
-
+using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {
 
-// mph
-constexpr auto operator"" q_mi_per_h(unsigned long long l) { return speed<mile_per_hour, std::int64_t>(l); }
-constexpr auto operator"" q_mi_per_h(long double l) { return speed<mile_per_hour, long double>(l); }
+// g
+constexpr auto operator"" q_lb(unsigned long long l) { return mass<pound, std::int64_t>(l); }
+constexpr auto operator"" q_lb(long double l) { return mass<pound, long double>(l); }
 
-// fps
-constexpr auto operator"" q_ft_per_s(unsigned long long l) { return speed<foot_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
+}
 
-
-}  // namespace literals
-
-}  // namespace units::physical::international
+}  // namespace units::physical::cgs
