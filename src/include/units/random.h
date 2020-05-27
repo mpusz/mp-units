@@ -79,7 +79,7 @@ struct uniform_int_distribution : public std::uniform_int_distribution<typename 
     using rep = Q::rep;
     using base = std::uniform_int_distribution<rep>;
     
-    explicit uniform_int_distribution() : base() {}
+    uniform_int_distribution() : base() {}
     uniform_int_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
     
     template<typename Generator>
@@ -99,7 +99,7 @@ struct uniform_real_distribution : public std::uniform_real_distribution<typenam
     using rep = Q::rep;
     using base = std::uniform_real_distribution<rep>;
     
-    explicit uniform_real_distribution() : base() {}
+    uniform_real_distribution() : base() {}
     uniform_real_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
     
     template<typename Generator>
@@ -119,7 +119,7 @@ struct binomial_distribution : public std::binomial_distribution<typename Q::rep
     using rep = Q::rep;
     using base = std::binomial_distribution<rep>;
     
-    explicit binomial_distribution() : base() {}
+    binomial_distribution() : base() {}
     binomial_distribution(const Q& t, double p) : base(t.count(), p) {}
     
     template<typename Generator>
@@ -138,7 +138,7 @@ struct negative_binomial_distribution : public std::negative_binomial_distributi
     using rep = Q::rep;
     using base = std::negative_binomial_distribution<rep>;
     
-    explicit negative_binomial_distribution() : base() {}
+    negative_binomial_distribution() : base() {}
     negative_binomial_distribution(const Q& k, double p) : base(k.count(), p) {}
     
     template<typename Generator>
@@ -157,7 +157,7 @@ struct geometric_distribution : public std::geometric_distribution<typename Q::r
     using rep = Q::rep;
     using base = std::geometric_distribution<rep>;
     
-    explicit geometric_distribution() : base() {}
+    geometric_distribution() : base() {}
     geometric_distribution(double p) : base(p) {}
     
     template<typename Generator>
@@ -174,7 +174,7 @@ struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
     using rep = Q::rep;
     using base = std::poisson_distribution<rep>;
     
-    explicit poisson_distribution() : base() {}
+    poisson_distribution() : base() {}
     explicit poisson_distribution(double p) : base(p) {}
     
     template<typename Generator>
@@ -191,7 +191,7 @@ struct exponential_distribution : public std::exponential_distribution<typename 
     using rep = Q::rep;
     using base = std::exponential_distribution<rep>;
     
-    explicit exponential_distribution() : base() {}
+    exponential_distribution() : base() {}
     explicit exponential_distribution(const rep& lambda) : base(lambda) {}
     
     template<typename Generator>
@@ -208,7 +208,7 @@ struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
     using rep = Q::rep;
     using base = std::gamma_distribution<rep>;
     
-    explicit gamma_distribution() : base() {}
+    gamma_distribution() : base() {}
     gamma_distribution(const rep& alpha, const rep& beta) : base(alpha, beta) {}
     
     template<typename Generator>
@@ -225,7 +225,7 @@ struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
     using rep = Q::rep;
     using base = std::weibull_distribution<rep>;
     
-    explicit weibull_distribution() : base() {}
+    weibull_distribution() : base() {}
     weibull_distribution(const rep& a, const rep& b) : base(a, b) {}
     
     template<typename Generator>
@@ -242,7 +242,7 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
     using rep = Q::rep;
     using base = std::extreme_value_distribution<rep>;
     
-    explicit extreme_value_distribution() : base() {}
+    extreme_value_distribution() : base() {}
     extreme_value_distribution(const Q& a, const rep& b) : base(a.count(), b) {}
     
     template<typename Generator>
@@ -261,7 +261,7 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep>
     using rep = Q::rep;
     using base = std::normal_distribution<rep>;
     
-    explicit normal_distribution() : base() {}
+    normal_distribution() : base() {}
     normal_distribution(const Q& mean, const Q& stddev) : base(mean.count(), stddev.count()) {}
     
     template<typename Generator>
@@ -281,7 +281,7 @@ struct lognormal_distribution : public std::lognormal_distribution<typename Q::r
     using rep = Q::rep;
     using base = std::lognormal_distribution<rep>;
     
-    explicit lognormal_distribution() : base() {}
+    lognormal_distribution() : base() {}
     lognormal_distribution(const Q& m, const Q& s) : base(m.count(), s.count()) {}
     
     template<typename Generator>
@@ -301,7 +301,7 @@ struct chi_squared_distribution : public std::chi_squared_distribution<typename 
     using rep = Q::rep;
     using base = std::chi_squared_distribution<rep>;
     
-    explicit chi_squared_distribution() : base() {}
+    chi_squared_distribution() : base() {}
     explicit chi_squared_distribution(const rep& n) : base(n) {}
     
     template<typename Generator>
@@ -318,7 +318,7 @@ struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
     using rep = Q::rep;
     using base = std::cauchy_distribution<rep>;
     
-    explicit cauchy_distribution() : base() {}
+    cauchy_distribution() : base() {}
     cauchy_distribution(const Q& a, const Q& b) : base(a.count(), b.count()) {}
     
     template<typename Generator>
@@ -338,7 +338,7 @@ struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep
     using rep = Q::rep;
     using base = std::fisher_f_distribution<rep>;
     
-    explicit fisher_f_distribution() : base() {}
+    fisher_f_distribution() : base() {}
     fisher_f_distribution(const rep& m, const rep& n) : base(m, n) {}
     
     template<typename Generator>
@@ -355,7 +355,7 @@ struct student_t_distribution : public std::student_t_distribution<typename Q::r
     using rep = Q::rep;
     using base = std::student_t_distribution<rep>;
     
-    explicit student_t_distribution() : base() {}
+    student_t_distribution() : base() {}
     explicit student_t_distribution(const rep& n) : base(n) {}
     
     template<typename Generator>
@@ -372,7 +372,7 @@ struct discrete_distribution : public std::discrete_distribution<typename Q::rep
     using rep = Q::rep;
     using base = std::discrete_distribution<rep>;
     
-    explicit discrete_distribution() : base() {}
+    discrete_distribution() : base() {}
     
     template <typename InputIt>
     discrete_distribution(InputIt first, InputIt last) : base(first, last) {}
@@ -405,7 +405,7 @@ class piecewise_constant_distribution : public std::piecewise_constant_distribut
         base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
 
 public:
-    explicit piecewise_constant_distribution() : base() {}
+    piecewise_constant_distribution() : base() {}
     
     template <typename InputIt1, typename InputIt2>
     piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w) :
@@ -450,7 +450,7 @@ class piecewise_linear_distribution : public std::piecewise_linear_distribution<
         base(bl.cbegin(), bl.cend(), weights.cbegin()) {}
 
 public:
-    explicit piecewise_linear_distribution() : base() {}
+    piecewise_linear_distribution() : base() {}
     
     template <typename InputIt1, typename InputIt2>
     piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w) :
