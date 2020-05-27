@@ -171,6 +171,9 @@ concept DerivedDimension = is_instantiation<downcast_base_t<T>, detail::derived_
 template<typename T>
 concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
+template <typename T> struct get_dimension;
+template <typename T> struct get_unit;
+
 // UnitOf
 namespace detail {
 

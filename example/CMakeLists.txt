@@ -35,6 +35,7 @@ add_example(foot_pound_second)
 add_example(glide_computer)
 add_example(hello_units)
 add_example(kalman_filter-alpha_beta_filter_example2)
+add_example(chrono_duration_compat)
 
 conan_check_testing(linear_algebra)
 add_example(linear_algebra)
