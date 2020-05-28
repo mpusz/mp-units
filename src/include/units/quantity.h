@@ -32,6 +32,7 @@
 #include <compare>
 #endif
 
+#include <type_traits>
 #include <ostream>
 
 namespace units {
@@ -48,9 +49,10 @@ concept safe_divisible = // exposition only
     treat_as_floating_point<Rep> ||
     ratio_divide<typename UnitFrom::ratio, typename UnitTo::ratio>::is_integral();
 
+struct quantity_friend_operations;
 //  constrain operators to mpusz::units::quantity only
 template<typename T>
-concept ll_quantity_concept = detail::is_quantity<T>;
+concept ll_quantity_concept = std::is_base_of_v<quantity_friend_operations,T>;
 
 // base class for quantity
 // no increase in size of derived object , see https://en.cppreference.com/w/cpp/language/ebo
