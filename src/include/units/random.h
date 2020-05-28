@@ -24,7 +24,6 @@
 
 #include <random>
 #include <functional>
-#include <concepts>
 #include <units/concepts.h>
 
 namespace units {

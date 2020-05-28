@@ -77,10 +77,16 @@ namespace std {
   using concepts::default_constructible;
   using concepts::derived_from;
   using concepts::equality_comparable_with;
+  // using concepts::floating_point;
+  using concepts::integral;
   using concepts::regular;
   using concepts::same_as;
   using concepts::totally_ordered;
   using concepts::totally_ordered_with;
+
+  // missing in Range-v3
+  template<class T>
+  concept floating_point = std::is_floating_point_v<T>;
 
   template<class F, class... Args>
   concept invocable =
