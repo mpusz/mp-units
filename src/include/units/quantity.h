@@ -443,7 +443,7 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
 
 namespace detail {
 
-template<typename D, typename U, typename Rep>
+template<Dimension D, UnitOf<D> U, Scalar Rep>
 inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
 
 }  // namespace detail
