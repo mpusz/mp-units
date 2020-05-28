@@ -25,6 +25,7 @@
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/speed.h"
 #include "units/physical/si/volume.h"
+#include "units/physical/us/length.h"
 #include <chrono>
 #include <utility>
 
@@ -221,6 +222,15 @@ static_assert(
     std::is_same_v<common_quantity<length<kilometre, long long>, length<metre, int>>, length<metre, long long>>);
 static_assert(std::is_same_v<common_quantity<length<kilometre, long long>, length<millimetre, double>>,
                              length<millimetre, double>>);
+
+// common_type
+
+using namespace units::physical::us::literals;
+
+static_assert(std::equality_comparable<decltype(1q_m)>);
+static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_cm)>);
+static_assert(0q_m == 0q_ft_us);
+static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_ft_us)>);
 
 // quantity_cast
 

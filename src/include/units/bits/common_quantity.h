@@ -64,3 +64,13 @@ template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::
 using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 }  // namespace units
+
+namespace std {
+
+template<units::Quantity Q1, units::Quantity Q2>
+  requires units::equivalent_dim<typename Q1::dimension, typename Q2::dimension>
+struct common_type<Q1, Q2> {
+  using type = units::common_quantity<Q1, Q2>;
+};
+
+}
