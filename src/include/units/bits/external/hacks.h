@@ -76,6 +76,7 @@ namespace std {
   using concepts::convertible_to;
   using concepts::default_constructible;
   using concepts::derived_from;
+  using concepts::equality_comparable;
   using concepts::equality_comparable_with;
   // using concepts::floating_point;
   using concepts::integral;

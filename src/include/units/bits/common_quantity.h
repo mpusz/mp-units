@@ -65,7 +65,15 @@ using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 }  // namespace units
 
+#if COMP_GCC >= 10
+
 namespace std {
+
+#else
+
+namespace concepts {
+
+#endif
 
 template<units::Quantity Q1, units::Quantity Q2>
   requires units::equivalent_dim<typename Q1::dimension, typename Q2::dimension>
