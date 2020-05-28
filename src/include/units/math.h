@@ -38,15 +38,16 @@ namespace units {
  * @param q Quantity being the base of the operation
  * @return Quantity The result of computation 
  */
-template<std::intmax_t N, typename D, typename U, typename Rep>
+template<std::intmax_t N, Quantity Q>
   requires(N != 0)
-inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
+inline Quantity AUTO pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
-  using dim = dimension_pow<D, N>;
-  using ratio = ratio_pow<typename U::ratio, N>;
+  using dim = dimension_pow<typename Q::dimension, N>;
+  using ratio = ratio_pow<typename Q::unit::ratio, N>;
   using unit = downcast_unit<dim, ratio>;
-  return quantity<dim, unit, Rep>(static_cast<Rep>(std::pow(q.count(), N)));
+  using rep = Q::rep;
+  return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
 }
 
 /**
@@ -54,9 +55,9 @@ inline Quantity AUTO pow(const quantity<D, U, Rep>& q) noexcept
  * 
  * @return Rep A scalar value of @c 1. 
  */
-template<std::intmax_t N, typename D, typename U, typename Rep>
+template<std::intmax_t N, Quantity Q>
   requires(N == 0)
-inline Rep pow(const quantity<D, U, Rep>&) noexcept
+inline Q::rep pow(const Q&) noexcept
 {
   return 1;
 }
@@ -69,14 +70,15 @@ inline Rep pow(const quantity<D, U, Rep>&) noexcept
  * @param q Quantity being the base of the operation
  * @return Quantity The result of computation 
  */
-template<typename D, typename U, typename Rep>
-inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
+template<Quantity Q>
+inline Quantity AUTO sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
-  using dim = dimension_sqrt<D>;
-  using ratio = ratio_sqrt<typename U::ratio>;
+  using dim = dimension_sqrt<typename Q::dimension>;
+  using ratio = ratio_sqrt<typename Q::unit::ratio>;
   using unit = downcast_unit<dim, ratio>;
-  return quantity<dim, unit, Rep>(static_cast<Rep>(std::sqrt(q.count())));
+  using rep = Q::rep;
+  return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));
 }
 
 /**
@@ -85,11 +87,11 @@ inline Quantity AUTO sqrt(const quantity<D, U, Rep>& q) noexcept
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
-template<typename D, typename U, typename Rep>
-constexpr Quantity AUTO abs(const quantity<D, U, Rep>& q) noexcept
+template<Quantity Q>
+constexpr Quantity AUTO abs(const Q& q) noexcept
   requires requires { std::abs(q.count()); }
 {
-  return quantity<D, U, Rep>(std::abs(q.count()));
+  return Q(std::abs(q.count()));
 }
 
 /**
