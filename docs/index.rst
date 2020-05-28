@@ -32,15 +32,13 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     faq
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :caption: Reference:
 
-    reference/concepts
-    reference/types
-    reference/functions
-    reference/metafunctions
-    reference/customization_points
+    reference/core
     reference/systems
+    reference/math
+    reference/random
 
 .. note::
 

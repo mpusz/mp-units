@@ -1,14 +1,5 @@
-Functions
-=========
-
-Casting and Converions
-----------------------
-
-.. doxygenfunction:: units::quantity_cast
-
-
 Math
-----
+====
 
 .. doxygenfunction:: units::pow
 
