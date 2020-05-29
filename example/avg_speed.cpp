@@ -114,8 +114,8 @@ void example()
   // Customary Units (double)
   {
     using namespace units::physical::international::literals;
-    constexpr Length AUTO distance = 140q_mi; // constructed from a UDL
-    constexpr si::time<si::hour> duration(2); // constructed from a value
+    constexpr Length AUTO distance = 140.q_mi; // constructed from a UDL
+    constexpr si::time<si::hour> duration(2);  // constructed from a value
 
     std::cout << "\nUS Customary Units with 'double' as representation\n";
 
@@ -151,8 +151,8 @@ void example()
   // CGS (double)
   {
     using namespace units::physical::cgs::literals;
-    constexpr Length AUTO distance = 22'000'000q_cm; // constructed from a UDL
-    constexpr cgs::time<si::hour> duration(2);       // constructed from a value
+    constexpr Length AUTO distance = 22'000'000.q_cm; // constructed from a UDL
+    constexpr cgs::time<si::hour> duration(2);        // constructed from a value
 
     std::cout << "\nCGS units with 'double' as representation\n";
 

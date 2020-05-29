@@ -36,11 +36,11 @@ conan_init(cmake)
 #enable_clang_tidy()
 #enable_iwyu()
 
-# set restrictive compilation warnings
-set_warnings(TREAT_AS_ERRORS)
-
 # add project code
 add_subdirectory(src)
+
+# set restrictive compilation warnings
+set_warnings(units)
 
 # add unit tests
 enable_testing()

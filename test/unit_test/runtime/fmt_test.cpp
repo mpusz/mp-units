@@ -448,7 +448,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("CGS base units")
       {
-        const auto q = 2q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
+        const auto q = 2.q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
         os << q;
 
         SECTION("iostream")
@@ -533,7 +533,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("CGS base units")
     {
-      const auto q = 2q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
+      const auto q = 2.q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
       os << q;
 
       SECTION("iostream")

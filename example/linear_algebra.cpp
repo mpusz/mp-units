@@ -93,7 +93,7 @@ void vector_of_quantity_multiply_same()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2q_m * v = " << 2q_m * v << "\n";
+  std::cout << "2q_m * v = " << 2.q_m * v << "\n";
 }
 
 void vector_of_quantity_multiply_different()
@@ -107,7 +107,7 @@ void vector_of_quantity_multiply_different()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2q_N * u = " << 2q_N * u << "\n";
+  std::cout << "2q_N * u = " << 2.q_N * u << "\n";
   std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
@@ -162,7 +162,7 @@ void matrix_of_quantity_multiply_same()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2q_m * u =\n" << 2q_m * u << "\n";
+  std::cout << "2q_m * u =\n" << 2.q_m * u << "\n";
 }
 
 void matrix_of_quantity_multiply_different()
@@ -176,7 +176,7 @@ void matrix_of_quantity_multiply_different()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2q_N * u =\n" << 2q_N * u << "\n";
+  std::cout << "2q_N * u =\n" << 2.q_N * u << "\n";
   std::cout << "2 * u =\n" << 2 * u << "\n";
 }
 
@@ -235,7 +235,7 @@ void quantity_of_vector_multiply_same()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2q_m * v = " << 2q_m * v << "\n";
+  std::cout << "2q_m * v = " << 2.q_m * v << "\n";
 }
 
 void quantity_of_vector_multiply_different()
@@ -249,7 +249,7 @@ void quantity_of_vector_multiply_different()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2q_N * u = " << 2q_N * u << "\n";
+  std::cout << "2q_N * u = " << 2.q_N * u << "\n";
   std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
@@ -307,7 +307,7 @@ void quantity_of_matrix_multiply_same()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2q_m * u =\n" << 2q_m * u << "\n";
+  std::cout << "2q_m * u =\n" << 2.q_m * u << "\n";
 }
 
 void quantity_of_matrix_multiply_different()
@@ -321,7 +321,7 @@ void quantity_of_matrix_multiply_different()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2q_N * u =\n" << 2q_N * u << "\n";
+  std::cout << "2q_N * u =\n" << 2.q_N * u << "\n";
   std::cout << "2 * u =\n" << 2 * u << "\n";
 }
 

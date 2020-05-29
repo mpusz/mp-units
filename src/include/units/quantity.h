@@ -346,9 +346,9 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using common_rep = decltype(lhs.count() * rhs.count());
   using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
     if constexpr (treat_as_floating_point<common_rep>) {
-      return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) * fpow10(ratio::exp) / common_rep(ratio::den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(ratio::num * fpow10(ratio::exp)) / static_cast<common_rep>(ratio::den);
     } else {
-      return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) * ipow10(ratio::exp) / common_rep(ratio::den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(ratio::num * ipow10(ratio::exp)) / static_cast<common_rep>(ratio::den);
     }
 }
 
