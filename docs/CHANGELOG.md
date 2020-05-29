@@ -2,6 +2,7 @@
 
 - **0.6.0 WIP**
   - linear_algebra updated to 0.7.0/testing
+  - libfmt updated to 6.2.1
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
