@@ -29,6 +29,8 @@
 namespace units::physical::fps {
 
 using si::second;
+using si::minute;
+using si::hour;
 
 using si::dim_time;
 using si::time;

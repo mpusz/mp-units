@@ -35,11 +35,24 @@ struct dim_speed : physical::dim_speed<dim_speed, foot_per_second, dim_length, d
 template<Unit U, Scalar Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
+struct mile_per_hour : deduced_unit<mile_per_hour, dim_speed, mile, hour>{};
+
+struct nautical_mile_per_hour : deduced_unit<nautical_mile_per_hour, dim_speed, nautical_mile, hour>{};
+
+struct knot : alias_unit<nautical_mile_per_hour, "knot", si::prefix> {};
+
+
 inline namespace literals {
 
-// cmps
 constexpr auto operator"" q_ft_per_s(unsigned long long l) { return speed<foot_per_second, std::int64_t>(l); }
 constexpr auto operator"" q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
+
+constexpr auto operator"" q_mph(unsigned long long l) { return speed<mile_per_hour, std::int64_t>(l); }
+constexpr auto operator"" q_mph(long double l) { return speed<mile_per_hour, long double>(l); }
+
+constexpr auto operator"" q_knot(unsigned long long l) { return speed<knot, std::int64_t>(l); }
+constexpr auto operator"" q_knot(long double l) { return speed<knot, long double>(l); }
+
 
 }  // namespace literals
 
