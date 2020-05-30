@@ -31,6 +31,16 @@ namespace units::physical::fps {
 // https://en.wikipedia.org/wiki/Foot_(unit)
 struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<3'048, 1'000, -1>, si::metre> {};
 
+struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<3, 1>, foot> {};
+
+struct inch : named_scaled_unit<inch, "in", no_prefix, ratio<1, 12>, foot> {};
+
+struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio<5'280>, foot> {};
+
+struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio<2000>, yard> {};
+
+
+
 struct dim_length : physical::dim_length<foot> {};
 
 template<Unit U, Scalar Rep = double>
@@ -38,9 +48,22 @@ using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {
 
+constexpr auto operator"" q_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
+constexpr auto operator"" q_in(long double l) { return length<inch, long double>(l); }
+
 // ft
 constexpr auto operator"" q_ft(unsigned long long l) { return length<foot, std::int64_t>(l); }
 constexpr auto operator"" q_ft(long double l) { return length<foot, long double>(l); }
+
+constexpr auto operator"" q_yd(unsigned long long l) { return length<yard, std::int64_t>(l); }
+constexpr auto operator"" q_yd(long double l) { return length<yard, long double>(l); }
+
+constexpr auto operator"" q_mile(unsigned long long l) { return length<mile, std::int64_t>(l); }
+constexpr auto operator"" q_mile(long double l) { return length<mile, long double>(l); }
+
+constexpr auto operator"" q_naut_mi(unsigned long long l) { return length<nautical_mile, std::int64_t>(l); }
+constexpr auto operator"" q_naut_mi(long double l) { return length<nautical_mile, long double>(l); }
+
 
 }
 

@@ -35,6 +35,8 @@ struct dim_power : physical::dim_power<dim_power, foot_poundal_per_second, dim_e
 
 struct foot_pound_force_per_second : deduced_unit<foot_pound_force_per_second, dim_power, foot_pound_force, second> {};
 
+struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio<550>, foot_pound_force_per_second> {};
+
 template<Unit U, Scalar Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
@@ -48,6 +50,10 @@ constexpr auto operator"" q_ft_pdl_per_s(long double l) { return power<foot_poun
 // foot pound force per second
 constexpr auto operator"" q_ft_lbf_per_s(unsigned long long l) { return power<foot_pound_force_per_second, std::int64_t>(l); }
 constexpr auto operator"" q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
+
+
+constexpr auto operator"" q_hp(unsigned long long l) { return power<horse_power, std::int64_t>(l); }
+constexpr auto operator"" q_hp(long double l) { return power<horse_power, long double>(l); }
 
 }  // namespace literals
 
