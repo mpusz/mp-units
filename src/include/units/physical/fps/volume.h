@@ -23,31 +23,28 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/fps/energy.h>
-#include <units/physical/si/prefixes.h>
+#include <units/physical/fps/length.h>
 #include <units/quantity.h>
 
 namespace units::physical::fps {
 
-struct foot_poundal_per_second : unit<foot_poundal_per_second> {};
+struct cubic_foot : unit<cubic_foot> {};
+struct dim_volume : physical::dim_volume<dim_volume, cubic_foot, dim_length> {};
 
-struct dim_power : physical::dim_power<dim_power, foot_poundal_per_second, dim_energy, dim_time> {};
-
-struct foot_pound_force_per_second : deduced_unit<foot_pound_force_per_second, dim_power, foot_pound_force, second> {};
+struct cubic_yard : deduced_unit<cubic_yard, dim_volume, yard> {};
 
 template<Unit U, Scalar Rep = double>
-using power = quantity<dim_power, U, Rep>;
+using volume = quantity<dim_volume, U, Rep>;
 
 inline namespace literals {
 
-// foot pound force per second
-constexpr auto operator"" q_ft_pdl_per_s(unsigned long long l) { return power<foot_poundal_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
+// ft3
+constexpr auto operator"" q_ft3(unsigned long long l) { return volume<cubic_foot, std::int64_t>(l); }
+constexpr auto operator"" q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
 
-
-// foot pound force per second
-constexpr auto operator"" q_ft_lbf_per_s(unsigned long long l) { return power<foot_pound_force_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
+// yard3
+constexpr auto operator"" q_yd3(unsigned long long l) { return volume<cubic_yard, std::int64_t>(l); }
+constexpr auto operator"" q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
 

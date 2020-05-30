@@ -23,31 +23,23 @@
 #pragma once
 
 #include <units/physical/dimensions.h>
-#include <units/physical/fps/energy.h>
-#include <units/physical/si/prefixes.h>
+#include <units/physical/fps/mass.h>
+#include <units/physical/fps/length.h>
 #include <units/quantity.h>
 
 namespace units::physical::fps {
 
-struct foot_poundal_per_second : unit<foot_poundal_per_second> {};
+struct pound_per_foot_cub : unit<pound_per_foot_cub> {};
 
-struct dim_power : physical::dim_power<dim_power, foot_poundal_per_second, dim_energy, dim_time> {};
-
-struct foot_pound_force_per_second : deduced_unit<foot_pound_force_per_second, dim_power, foot_pound_force, second> {};
+struct dim_density : physical::dim_density<dim_density, pound_per_foot_cub, dim_mass, dim_length> {};
 
 template<Unit U, Scalar Rep = double>
-using power = quantity<dim_power, U, Rep>;
+using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {
 
-// foot pound force per second
-constexpr auto operator"" q_ft_pdl_per_s(unsigned long long l) { return power<foot_poundal_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
-
-
-// foot pound force per second
-constexpr auto operator"" q_ft_lbf_per_s(unsigned long long l) { return power<foot_pound_force_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
+constexpr auto operator"" q_lb_per_ft3(unsigned long long l) { return density<pound_per_foot_cub, std::int64_t>(l); }
+constexpr auto operator"" q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
 
 }  // namespace literals
 
