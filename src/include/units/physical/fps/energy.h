@@ -32,13 +32,16 @@ namespace units::physical::fps {
 // https://en.wikipedia.org/wiki/Foot-poundal
 struct foot_poundal : unit<foot_poundal> {};
 
-// https://en.wikipedia.org/wiki/Foot-pound_(energy)
-struct foot_pound_force : named_scaled_unit<foot_poundal, "lbf", no_prefix, ratio<32'174'049, 1'000'000>, foot_poundal> {};
-
 struct dim_energy : physical::dim_energy<dim_energy, foot_poundal, dim_force, dim_length> {};
+
+// https://en.wikipedia.org/wiki/Foot-pound_(energy)
+struct foot_pound_force : named_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+
+
 
 template<Unit U, Scalar Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
+
 
 inline namespace literals {
 
