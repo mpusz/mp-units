@@ -30,6 +30,7 @@ add_library(unit_tests_static
     fixed_string_test.cpp
     fps_test.cpp
     math_test.cpp
+    quantity_point_test.cpp
     quantity_test.cpp
     ratio_test.cpp
     si_test.cpp
