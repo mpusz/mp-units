@@ -39,7 +39,7 @@ using pressure = quantity<dim_pressure, U, Rep>;
 
 struct pound_force_per_foot_sq : named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio<32'174'049, 1'000'000>, poundal_per_foot_sq> {};
 
-// struct pound_force_per_foot_sq : named_deduced_unit<pound_force_per_foot_sq, dim_pressure, pound_force, square_ft> {};
+// struct pound_force_per_foot_sq : noble_deduced_unit<pound_force_per_foot_sq, dim_pressure, pound_force, square_ft> {};
 
 struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi", si::prefix, ratio<1, 144>, pound_force_per_foot_sq> {};
 

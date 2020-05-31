@@ -35,7 +35,7 @@ struct foot_poundal : unit<foot_poundal> {};
 struct dim_energy : physical::dim_energy<dim_energy, foot_poundal, dim_force, dim_length> {};
 
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
-struct foot_pound_force : named_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
 
 
 
