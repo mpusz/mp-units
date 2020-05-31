@@ -322,18 +322,18 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
   return ret(ret(lhs).count() - ret(rhs).count());
 }
 
-template<typename D, typename U, typename Rep, Scalar Value>
+template<typename D, typename U, typename Rep, DimensionlessQuantity Value>
 [[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Value& v)
-  requires std::regular_invocable<std::multiplies<>, Rep, Value> && std::is_arithmetic_v<Value>
+  requires std::regular_invocable<std::multiplies<>, Rep, Value> 
 {
   using common_rep = decltype(q.count() * v);
   using ret = quantity<D, U, common_rep>;
   return ret(q.count() * v);
 }
 
-template<Scalar Value, typename D, typename U, typename Rep>
+template<DimensionlessQuantity Value, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<D, U, Rep>& q)
-  requires std::regular_invocable<std::multiplies<>, Value, Rep> && std::is_arithmetic_v<Value>
+  requires std::regular_invocable<std::multiplies<>, Value, Rep>
 {
   return q * v;
 }

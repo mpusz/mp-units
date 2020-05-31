@@ -289,4 +289,21 @@ concept Scalar =
   std::regular<T> &&
   (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
 
+ template <typename T> 
+ concept Arithmetic = std::is_arithmetic_v<T>;
+
+namespace detail{
+
+  template <typename T>
+  inline constexpr bool is_dimensionless_quantity = false;
+
+  //The built in arithmetic types are dimensionless
+  template <Arithmetic T>
+  inline constexpr bool is_dimensionless_quantity<T> = true;
+}
+
+template <typename T>
+concept DimensionlessQuantity = detail::is_dimensionless_quantity<T>;
+
+
 }  // namespace units
