@@ -199,7 +199,7 @@ public:
 #endif
 };
 
-template<Dimension D, UnitOf<D> U, Scalar Rep>
+template<typename D, typename U, typename Rep>
 quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
 
 [[nodiscard]] constexpr QuantityPoint AUTO operator+(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
