@@ -95,13 +95,6 @@ static_assert(quantity_point<dim_length, metre, double>::max().relative().count(
 
 // unary member operators
 
-static_assert([km=km]() mutable { return ++km; }().relative().count() == 1001);
-static_assert([km=km]() mutable { return --km; }().relative().count() == 999);
-static_assert([km=km]() mutable { return km++; }().relative().count() == 1000);
-static_assert([km=km]() mutable { return km--; }().relative().count() == 1000);
-
-// binary member operators
-
 static_assert([](auto v) {
   auto vv = v++;
   return std::pair(v, vv);
