@@ -202,33 +202,25 @@ public:
 template<Dimension D, UnitOf<D> U, Scalar Rep>
 quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const quantity_point<D, U1, Rep1>& lhs,
-                                                     const quantity<D, U2, Rep2>& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
   requires requires { lhs.relative() + rhs; }
 {
   return quantity_point(lhs.relative() + rhs);
 }
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const quantity<D, U1, Rep1>& lhs,
-                                                     const quantity_point<D, U2, Rep2>& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const Quantity AUTO& lhs, const QuantityPoint AUTO& rhs)
   requires requires { rhs + lhs; }
 {
   return rhs + lhs;
 }
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr QuantityPoint AUTO operator-(const quantity_point<D, U1, Rep1>& lhs,
-                                                     const quantity<D, U2, Rep2>& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator-(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
   requires requires { lhs.relative() - rhs; }
 {
   return quantity_point(lhs.relative() - rhs);
 }
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
-[[nodiscard]] constexpr Quantity AUTO operator-(const quantity_point<D, U1, Rep1>& lhs,
-                                                const quantity_point<D, U2, Rep2>& rhs)
+[[nodiscard]] constexpr Quantity AUTO operator-(const QuantityPoint AUTO& lhs, const QuantityPoint AUTO& rhs)
   requires requires { lhs.relative() - rhs.relative(); }
 {
   return lhs.relative() - rhs.relative();
