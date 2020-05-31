@@ -233,8 +233,10 @@ static_assert(quantity_point_cast<int>(quantity_point(1.23q_m)).relative().count
 
 // time
 
+#if __GNUC__ >= 10
 static_assert(!std::equality_comparable_with<quantity_point<dim_time, second, int>,
                                              quantity_point<dim_length, metre, int>>);  // different dimensions
+#endif
 static_assert(quantity_point{1q_h} == quantity_point{3600q_s});
 
 // length
