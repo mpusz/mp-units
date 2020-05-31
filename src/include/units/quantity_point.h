@@ -46,7 +46,7 @@ public:
   using rep = typename quantity_type::rep;
 
 private:
-  quantity_type q_{quantity_type::zero()};
+  quantity_type q_{};
 
 public:
   quantity_point() = default;
