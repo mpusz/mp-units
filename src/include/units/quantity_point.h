@@ -138,66 +138,60 @@ public:
   // Below friend functions are to be found via argument-dependent lookup only
 #if __GNUC__ >= 10
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires requires { lhs.q_ <=> rhs.relative(); }
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
+    requires std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
   {
     return lhs.q_ <=> rhs.relative();
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr auto operator==(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires requires { lhs.q_ == rhs.relative(); }
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr auto operator==(const quantity_point& lhs, const QP& rhs)
+    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
   {
     return lhs.q_ == rhs.relative();
   }
 
 #else
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::equality_comparable_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
+    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
   {
     return lhs.q_ == rhs.relative();
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator!=(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::equality_comparable_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator!=(const quantity_point& lhs, const QP& rhs)
+    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
   {
     return !(lhs == rhs);
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator<(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator<(const quantity_point& lhs, const QP& rhs)
+    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
   {
     return lhs.q_ < rhs.relative();
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator<=(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator<=(const quantity_point& lhs, const QP& rhs)
+    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
   {
     return !(rhs < lhs);
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator>(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator>(const quantity_point& lhs, const QP& rhs)
+    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
   {
     return rhs < lhs;
   }
 
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator>=(const quantity_point& lhs, const quantity_point<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
+  template<QuantityPoint QP>
+  [[nodiscard]] friend constexpr bool operator>=(const quantity_point& lhs, const QP& rhs)
+    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
   {
     return !(lhs < rhs);
   }
