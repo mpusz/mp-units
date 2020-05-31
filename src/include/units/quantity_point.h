@@ -220,7 +220,8 @@ quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
   return quantity_point(lhs.relative() - rhs);
 }
 
-[[nodiscard]] constexpr Quantity AUTO operator-(const QuantityPoint AUTO& lhs, const QuantityPoint AUTO& rhs)
+template<QuantityPoint QP1, QuantityPoint QP2>
+[[nodiscard]] constexpr Quantity AUTO operator-(const QP1& lhs, const QP2& rhs)
   requires requires { lhs.relative() - rhs.relative(); }
 {
   return lhs.relative() - rhs.relative();
