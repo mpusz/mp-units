@@ -25,6 +25,7 @@
 #include <units/concepts.h>
 #include <units/customization_points.h>
 #include <units/bits/dimension_op.h>
+#include <units/bits/external/type_traits.h>
 #include <cassert>
 
 namespace units {
@@ -390,6 +391,33 @@ template<Scalar ToRep, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);
+}
+
+/**
+ * @brief Explcit cast of a quantity point
+ *
+ * Implicit conversions between quantity points of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets the target quantity point type to cast to or anything that works for quantity_cast. For example:
+ *
+ * auto q1 = units::quantity_point_cast<decltype(quantity_point{0q_s})>(quantity_point{1q_ms});
+ * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1q_ms});
+ * auto q1 = units::quantity_point_cast<units::physical::si::acceleration>(quantity_point{200q_Gal});
+ * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1q_ms});
+ * auto q1 = units::quantity_point_cast<int>(quantity_point{1q_ms});
+ *
+ * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
+ */
+template<typename CastSpec, typename D, typename U, typename Rep>
+  requires is_instantiation<CastSpec, quantity_point> ||
+           requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& qp)
+{
+  if constexpr (is_instantiation<CastSpec, quantity_point>)
+    return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
+  else
+    return quantity_point(quantity_cast<CastSpec>(qp.relative()));
 }
 
 }  // namespace units

@@ -221,6 +221,9 @@ namespace detail {
 template<typename T>
 inline constexpr bool is_quantity = false;
 
+template<typename T>
+inline constexpr bool is_quantity_point = false;
+
 }  // namespace detail
 
 /**
@@ -230,6 +233,14 @@ inline constexpr bool is_quantity = false;
  */
 template<typename T>
 concept Quantity = detail::is_quantity<T>;
+
+/**
+ * @brief A concept matching all quantity points in the library.
+ *
+ * Satisfied by all instantiations of :class:`quantity_point`.
+ */
+template<typename T>
+concept QuantityPoint = detail::is_quantity_point<T>;
 
 
 // WrappedQuantity
