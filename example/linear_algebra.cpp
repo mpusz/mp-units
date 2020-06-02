@@ -266,7 +266,6 @@ void quantity_of_vector_divide_by_scalar()
   // std::cout << "v / 2 = " << v / 2 << "\n";
 }
 
-#if 0
 void vector_of_double_multiply_quantity()
 {
    std::cout << "\nvector_of_double_multiply_quantity:\n";
@@ -278,7 +277,6 @@ void vector_of_double_multiply_quantity()
 
    std::cout << "q * v = " << vv << '\n';
 }
-#endif
 
 void quantity_of_vector_tests()
 {
@@ -286,7 +284,7 @@ void quantity_of_vector_tests()
   quantity_of_vector_multiply_same();
   quantity_of_vector_multiply_different();
   quantity_of_vector_divide_by_scalar();
- // vector_of_double_multiply_quantity();
+  vector_of_double_multiply_quantity();
 }
 
 template<units::Unit U = si::metre, units::Scalar Rep = double>
