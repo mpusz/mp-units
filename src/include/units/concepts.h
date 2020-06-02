@@ -294,8 +294,7 @@ concept Scalar =
 
 namespace detail{
 
-//#if __GNUC__ >= 10
-#if 0
+#if __GNUC__ >= 10
 
   // by default identify DimensionlessQuantity structurally but
   // allow customisation, since there are some cases which
