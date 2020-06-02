@@ -132,6 +132,23 @@ void vector_of_quantity_tests()
   vector_of_quantity_divide_by_scalar();
 }
 
+void vector_of_double_multiply_quantity()
+{
+   std::cout << "\nvector_of_double_multiply_quantity:\n";
+   vector<double> v{1.0,2.0,3.0};
+
+   si::length<si::metre> q{10};
+
+   auto vv = q * v ;
+
+   std::cout << "q * v = " << vv << '\n';
+}
+
+void vector_of_double_tests()
+{
+  vector_of_double_multiply_quantity();
+}
+
 void matrix_of_quantity_add()
 {
   std::cout << "\nmatrix_of_quantity_add:\n";
@@ -201,11 +218,13 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
+/*
 template<units::Unit U = si::metre, units::Scalar Rep = double>
 using length_v = si::length<U, vector<Rep>>;
 
 template<units::Unit U = si::newton, units::Scalar Rep = double>
 using force_v = si::force<U, vector<Rep>>;
+
 
 void quantity_of_vector_add()
 {
@@ -267,17 +286,7 @@ void quantity_of_vector_divide_by_scalar()
   // std::cout << "v / 2 = " << v / 2 << "\n";
 }
 
-void vector_of_double_multiply_quantity()
-{
-   std::cout << "\nvector_of_double_multiply_quantity:\n";
-   vector<double> v{1.0,2.0,3.0};
 
-   si::length<si::metre> q{10};
-
-   auto vv = q * v ;
-
-   std::cout << "q * v = " << vv << '\n';
-}
 
 void quantity_of_vector_tests()
 {
@@ -285,8 +294,9 @@ void quantity_of_vector_tests()
   quantity_of_vector_multiply_same();
   quantity_of_vector_multiply_different();
   quantity_of_vector_divide_by_scalar();
-  vector_of_double_multiply_quantity();
 }
+
+
 
 template<units::Unit U = si::metre, units::Scalar Rep = double>
 using length_m = si::length<U, matrix<Rep>>;
@@ -360,12 +370,15 @@ void quantity_of_matrix_tests()
   quantity_of_matrix_divide_by_scalar();
 }
 
+*/
+
 }
 
 int main()
 {
   vector_of_quantity_tests();
   matrix_of_quantity_tests();
-  quantity_of_vector_tests();
-  quantity_of_matrix_tests();
+  vector_of_double_tests();
+ // quantity_of_vector_tests();
+ // quantity_of_matrix_tests();
 }
