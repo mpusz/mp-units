@@ -211,7 +211,8 @@ void quantity_of_vector_add()
 {
   std::cout << "\nquantity_of_vector_add:\n";
 
-  length_v<> v(vector<>{ 1.0, 2.0, 3.0 });
+  vector<> vrep { 1.0, 2.0, 3.0 };
+  length_v<> v(vrep);
   length_v<> u(vector<>{ 3.0, 2.0, 1.0 });
   length_v<si::kilometre> t(vector<>{ 3.0, 2.0, 1.0 });
 
