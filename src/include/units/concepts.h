@@ -294,16 +294,30 @@ concept Scalar =
 
 namespace detail{
 
-  template <typename T>
-  inline constexpr bool is_dimensionless_quantity = false;
+#if __GNUC__ >= 10
 
-  //The built in arithmetic types are dimensionless
+  // by default identify DimensionlessQuantity structurally but
+  // allow customisation, since there are some cases which
+  // dont conform to this definition.
+  template <typename T>
+  inline constexpr bool is_dimensionless_quantity = requires(T a, T b) {
+    { a * b } -> std::same_as<T>;
+  };
+#else
+  // structural version blows up in gcc9
+  // by default exclude everything
+  template <typename T>
+  inline constexpr bool is_dimensionless_quantity =  false;
+
+  // customise dimensionless by hand
+  // The built in arithmetic types are dimensionless
   template <Arithmetic T>
   inline constexpr bool is_dimensionless_quantity<T> = true;
+#endif
+
 }
 
 template <typename T>
 concept DimensionlessQuantity = detail::is_dimensionless_quantity<T>;
-
 
 }  // namespace units
