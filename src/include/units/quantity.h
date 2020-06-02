@@ -366,7 +366,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   return ret(lhs.count() * rhs.count());
 }
 
-template<Scalar Value, typename D, typename U, typename Rep>
+template<DimensionlessQuantity Value, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<D, U, Rep>& q)
   requires std::regular_invocable<std::divides<>, Value, Rep>
 {
@@ -380,7 +380,7 @@ template<Scalar Value, typename D, typename U, typename Rep>
   return ret(v / q.count());
 }
 
-template<typename D, typename U, typename Rep, Scalar Value>
+template<typename D, typename U, typename Rep, DimensionlessQuantity  Value>
 [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D, U, Rep>& q, const Value& v)
   requires std::regular_invocable<std::divides<>, Rep, Value>
 {

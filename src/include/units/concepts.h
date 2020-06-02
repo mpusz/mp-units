@@ -289,33 +289,29 @@ concept Scalar =
   std::regular<T> &&
   (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
 
- template <typename T> 
- concept Arithmetic = std::is_arithmetic_v<T>;
-
 namespace detail{
 
-#if 0
-  // by default identify DimensionlessQuantity structurally but
-  // allow customisation, since there are some cases which
-  // dont conform to this definition.
-  template <typename T>
-  inline constexpr bool is_dimensionless_quantity = requires(T a, T b) {
-    { a * b } -> std::same_as<T>;
-  };
-#else
-  // structural version blows up in gcc9
-  // by default exclude everything
   template <typename T>
   inline constexpr bool is_dimensionless_quantity =  false;
 
-  // customise dimensionless by hand
-  // The built in arithmetic types are dimensionless
-  template <Arithmetic T>
-  inline constexpr bool is_dimensionless_quantity<T> = true;
-#endif
+  // defining default structurally creates a circular dependency where the operator overloads
+  // rely on this definition which relies on the operator overloads so,
+  // exclude models of Quantity before looking for the multiply op.
+  template <typename T>
+  concept not_quantity = !Quantity<T>;
+
+  template <not_quantity T>
+  inline constexpr bool is_dimensionless_quantity<T> = requires(T a, T b) {
+    { a * b } -> std::same_as<T>;
+  };
 
 }
-
+/**
+ * @brief A concept matching Dimensionless quantities
+ *
+ * A dimensionless quantity can de distinguished since multiplication 
+ * by its own type doesnt change its dimension.
+ */
 template <typename T>
 concept DimensionlessQuantity = detail::is_dimensionless_quantity<T>;
 
