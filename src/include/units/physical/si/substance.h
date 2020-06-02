@@ -32,7 +32,7 @@ struct mole : named_unit<metre, "mol", prefix> {};
 
 struct dim_substance : physical::dim_substance<mole> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, Value Rep = double>
 using substance = quantity<dim_substance, U, Rep>;
 
 inline namespace literals {

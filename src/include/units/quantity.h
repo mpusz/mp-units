@@ -60,7 +60,7 @@ concept safe_divisible = // exposition only
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<Dimension D, UnitOf<D> U, Scalar Rep = double>
+template<Dimension D, UnitOf<D> U, Value Rep = double>
 class quantity {
   Rep value_{};
 
@@ -73,9 +73,9 @@ public:
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
-  template<Scalar Value>
-    requires detail::safe_convertible<Value, rep>
-  constexpr explicit quantity(const Value& v) : value_{static_cast<rep>(v)} {}
+  template<Value Val>
+    requires detail::safe_convertible<Val, rep>
+  constexpr explicit quantity(const Val& v) : value_{static_cast<rep>(v)} {}
 
   template<Quantity Q2>
     requires equivalent_dim<D, typename Q2::dimension> &&
@@ -200,11 +200,11 @@ public:
     return *this;
   }
 
-  template<Scalar Value, typename T = Rep>
-  constexpr quantity& operator%=(const Value& rhs)
+  template<Value Val, typename T = Rep>
+  constexpr quantity& operator%=(const Val& rhs)
     requires (!treat_as_floating_point<rep>) &&
-             (!treat_as_floating_point<Value>) &&
-             requires(T v1, Value v2) { { v1 %= v2 } -> SAME_AS(T&); }
+             (!treat_as_floating_point<Val>) &&
+             requires(T v1, Val v2) { { v1 %= v2 } -> SAME_AS(T&); }
   //  requires(rep v1, Value v2) { { v1 %= v2 } -> SAME_AS(rep&); }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     value_ %= rhs;
@@ -322,24 +322,24 @@ template<typename D, typename U1, typename Rep1, typename U2, typename Rep2>
   return ret(ret(lhs).count() - ret(rhs).count());
 }
 
-template<typename D, typename U, typename Rep, Scalar Value>
-[[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Value& v)
-  requires std::regular_invocable<std::multiplies<>, Rep, Value>
+template<typename D, typename U, typename Rep, Value Val>
+[[nodiscard]] constexpr Quantity AUTO operator*(const quantity<D, U, Rep>& q, const Val& v)
+  requires std::regular_invocable<std::multiplies<>, Rep, Val>
 {
   using common_rep = decltype(q.count() * v);
   using ret = quantity<D, U, common_rep>;
   return ret(q.count() * v);
 }
 
-template<Scalar Value, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr Quantity AUTO operator*(const Value& v, const quantity<D, U, Rep>& q)
-  requires std::regular_invocable<std::multiplies<>, Value, Rep>
+template<Value Val, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr Quantity AUTO operator*(const Val& v, const quantity<D, U, Rep>& q)
+  requires std::regular_invocable<std::multiplies<>, Val, Rep>
 {
   return q * v;
 }
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr Scalar AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+[[nodiscard]] constexpr Value AUTO operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
   requires std::regular_invocable<std::multiplies<>, Rep1, Rep2> &&
            equivalent_dim<D1, dim_invert<D2>>
 {
@@ -366,9 +366,9 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   return ret(lhs.count() * rhs.count());
 }
 
-template<Scalar Value, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr Quantity AUTO operator/(const Value& v, const quantity<D, U, Rep>& q)
-  requires std::regular_invocable<std::divides<>, Value, Rep>
+template<Value Val, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr Quantity AUTO operator/(const Val& v, const quantity<D, U, Rep>& q)
+  requires std::regular_invocable<std::divides<>, Val, Rep>
 {
   Expects(q.count() != 0);
 
@@ -380,11 +380,11 @@ template<Scalar Value, typename D, typename U, typename Rep>
   return ret(v / q.count());
 }
 
-template<typename D, typename U, typename Rep, Scalar Value>
-[[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D, U, Rep>& q, const Value& v)
-  requires std::regular_invocable<std::divides<>, Rep, Value>
+template<typename D, typename U, typename Rep, Value Val>
+[[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D, U, Rep>& q, const Val& v)
+  requires std::regular_invocable<std::divides<>, Rep, Val>
 {
-  Expects(v != Value{0});
+  Expects(v != Val{0});
 
   using common_rep = decltype(q.count() / v);
   using ret = quantity<D, U, common_rep>;
@@ -392,7 +392,7 @@ template<typename D, typename U, typename Rep, Scalar Value>
 }
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-[[nodiscard]] constexpr Scalar AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+[[nodiscard]] constexpr Value AUTO operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
   requires std::regular_invocable<std::divides<>, Rep1, Rep2> &&
            equivalent_dim<D1, D2>
 {
@@ -419,11 +419,11 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   return ret(lhs.count() / rhs.count());
 }
 
-template<typename D, typename U, typename Rep, Scalar Value>
-[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U, Rep>& q, const Value& v)
+template<typename D, typename U, typename Rep, Value Val>
+[[nodiscard]] constexpr Quantity AUTO operator%(const quantity<D, U, Rep>& q, const Val& v)
   requires (!treat_as_floating_point<Rep>) &&
-           (!treat_as_floating_point<Value>) &&
-           std::regular_invocable<std::modulus<>, Rep, Value>
+           (!treat_as_floating_point<Val>) &&
+           std::regular_invocable<std::modulus<>, Rep, Val>
 {
   using common_rep = decltype(q.count() % v);
   using ret = quantity<D, U, common_rep>;
