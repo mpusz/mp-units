@@ -41,7 +41,7 @@ namespace units {
  * 
  * @tparam Num Numerator
  * @tparam Den Denominator (default @c 1)
- * @tparam Exp Exponent (default @c 0)
+ * @tparam Exp in_exponent (default @c 0)
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, std::intmax_t Exp = 0>
   requires(Den != 0)
@@ -75,7 +75,7 @@ inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
 
 // unused, and align exponents process could be subject to overflow in extreme cases
 
-// template<Ratio R1, Ratio R2>
+// template<in_ratio R1, in_ratio R2>
 // constexpr auto ratio_add_detail() {
 //   std::intmax_t num1 = R1::num;
 //   std::intmax_t num2 = R2::num;
@@ -105,7 +105,7 @@ inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
 // }
 
 
-// template<Ratio R1, Ratio R2>
+// template<in_ratio R1, in_ratio R2>
 // struct ratio_add_impl {
 //   static constexpr auto detail = ratio_add_detail<R1, R2>();
 //   using type = ratio<detail[0], detail[1], detail[2]>;
@@ -114,12 +114,12 @@ inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
 
 
 // ratio_add : not used
-// template<Ratio R1, Ratio R2>
+// template<in_ratio R1, in_ratio R2>
 // using ratio_add = detail::ratio_add_impl<R1, R2>::type;
 
 // ratio_subtract : not used
 // TODO implement ratio_subtract
-// template<Ratio R1, Ratio R2>
+// template<in_ratio R1, in_ratio R2>
 // using ratio_subtract = detail::ratio_subtract_impl<R1, R2>::type;
 
 // ratio_multiply
@@ -166,7 +166,7 @@ public:
 
 }  // namespace detail
 
-template<Ratio R1, Ratio R2>
+template<in_ratio R1, in_ratio R2>
 using ratio_multiply = detail::ratio_multiply_impl<R1, R2>::type;
 
 // ratio_divide
@@ -184,7 +184,7 @@ struct ratio_divide_impl {
 
 }  // namespace detail
 
-template<Ratio R1, Ratio R2>
+template<in_ratio R1, in_ratio R2>
 using ratio_divide = detail::ratio_divide_impl<R1, R2>::type;
 
 // ratio_pow
@@ -208,7 +208,7 @@ struct ratio_pow_impl<R, 0> {
 
 }  // namespace detail
 
-template<Ratio R, std::intmax_t N>
+template<in_ratio R, std::intmax_t N>
 using ratio_pow = detail::ratio_pow_impl<R, N>::type;
 
 // ratio_sqrt
@@ -237,7 +237,7 @@ static constexpr std::intmax_t sqrt_impl(std::intmax_t v)
   return root;
 }
 
-template<Ratio R>
+template<in_ratio R>
 constexpr auto make_exp_even()
 {
   if constexpr (R::exp % 2 == 0)
@@ -263,7 +263,7 @@ struct ratio_sqrt_impl<ratio<0, Den>> {
 
 }  // namespace detail
 
-template<Ratio R>
+template<in_ratio R>
 using ratio_sqrt = detail::ratio_sqrt_impl<R>::type;
 
 // common_ratio
@@ -282,7 +282,7 @@ struct common_ratio_impl {
 
 }  // namespace detail
 
-template<Ratio R1, Ratio R2>
+template<in_ratio R1, in_ratio R2>
 using common_ratio = detail::common_ratio_impl<R1, R2>::type;
 
 }  // namespace units

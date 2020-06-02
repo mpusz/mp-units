@@ -233,7 +233,7 @@ namespace units {
       return format_to(out, fmt::to_string(buffer), val);
     }
 
-    template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename CharT>
+    template<typename OutputIt, typename in_dimension, typename in_unit, typename Rep, typename CharT>
     struct units_formatter {
       OutputIt out;
       Rep val;
@@ -242,7 +242,7 @@ namespace units {
       unit_format_specs const & unit_specs;
 
       explicit units_formatter(
-        OutputIt o, quantity<Dimension, Unit, Rep> q,
+        OutputIt o, quantity<in_dimension, in_unit, Rep> q,
         global_format_specs<CharT> const & gspecs,
         rep_format_specs const & rspecs, unit_format_specs const & uspecs
       ):
@@ -263,7 +263,7 @@ namespace units {
 
       void on_quantity_unit([[maybe_unused]] const CharT)
       {
-        auto txt = unit_text<Dimension, Unit>();
+        auto txt = unit_text<in_dimension, in_unit>();
         auto txt_c_str = unit_specs.modifier == 'A' ? txt.ascii().c_str() : txt.standard().c_str();
         format_to(out, "{}", txt_c_str);
       }
@@ -273,10 +273,10 @@ namespace units {
 
 }  // namespace units
 
-template<typename Dimension, typename Unit, typename Rep, typename CharT>
-struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
+template<typename in_dimension, typename in_unit, typename Rep, typename CharT>
+struct fmt::formatter<units::quantity<in_dimension, in_unit, Rep>, CharT> {
 private:
-  using quantity = units::quantity<Dimension, Unit, Rep>;
+  using quantity = units::quantity<in_dimension, in_unit, Rep>;
   using iterator = fmt::basic_format_parse_context<CharT>::iterator;
   using arg_ref_type = fmt::internal::arg_ref<CharT>;
 
@@ -414,7 +414,7 @@ public:
   }
 
   template<typename FormatContext>
-  auto format(const units::quantity<Dimension, Unit, Rep>& q, FormatContext& ctx)
+  auto format(const units::quantity<in_dimension, in_unit, Rep>& q, FormatContext& ctx)
   {
     auto begin = format_str.begin(), end = format_str.end();
 
@@ -461,7 +461,7 @@ public:
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
       to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs);
-      constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
+      constexpr auto symbol = units::detail::unit_text<in_dimension, in_unit>();
       if(symbol.standard().size()) {
         *to_quantity_buffer++ = CharT(' ');
         format_to(to_quantity_buffer, "{}", symbol.standard().c_str());

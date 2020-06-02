@@ -32,7 +32,7 @@ namespace {
 
 using namespace units::physical;
 
-Energy AUTO total_energy(Momentum AUTO p, Mass AUTO m, Speed AUTO c)
+in_energy AUTO total_energy(in_momentum AUTO p, in_mass AUTO m, in_speed AUTO c)
 {
   return sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c)));
 }
@@ -42,13 +42,13 @@ void si_example()
   using namespace units::physical::si;
   using GeV = gigaelectronvolt;
 
-  constexpr Speed AUTO c = si2019::speed_of_light<>;
+  constexpr in_speed AUTO c = si2019::speed_of_light<>;
 
   std::cout << "\n*** SI units (c = " << c << ") ***\n";
 
-  const Momentum AUTO p = 4.q_GeV / c;
-  const Mass AUTO m = 3.q_GeV / pow<2>(c);
-  const Energy AUTO E = total_energy(p, m, c);
+  const in_momentum AUTO p = 4.q_GeV / c;
+  const in_mass AUTO m = 3.q_GeV / pow<2>(c);
+  const in_energy AUTO E = total_energy(p, m, c);
 
   std::cout << "[in GeV]\n"
             << "p = " << p << "\n"
@@ -73,10 +73,10 @@ void natural_example()
   using namespace units::physical::natural;
   using GeV = gigaelectronvolt;
 
-  constexpr Speed AUTO c = speed_of_light<>;
+  constexpr in_speed AUTO c = speed_of_light<>;
   const momentum<GeV> p(4);
   const mass<GeV> m(3);
-  const Energy AUTO E = total_energy(p, m, c);
+  const in_energy AUTO E = total_energy(p, m, c);
 
   std::cout << "\n*** Natural units (c = " << c << ") ***\n"
             << "p = " << p << "\n"

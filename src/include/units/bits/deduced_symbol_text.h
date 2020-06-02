@@ -86,7 +86,7 @@ constexpr auto deduced_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>
   return (exp_text<Es, Us::symbol, neg_exp, Idxs>() + ...);
 }
 
-template<DerivedDimension Dim, Unit... Us>
+template<in_derived_dimension Dim, in_unit... Us>
 constexpr auto deduced_symbol_text()
 {
   return deduced_symbol_text<Us...>(typename Dim::recipe(), std::index_sequence_for<Us...>());

@@ -45,7 +45,7 @@ namespace detail {
  * 3. Consolidate contiguous range of exponents of the same base dimensions to a one (or possibly zero) exponent for
  *    this base dimension.
  */
-template<Exponent... Es>
+template<in_exponent... Es>
 using make_dimension = to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exp_less>>::type>::type;
 
 }  // namespace detail
@@ -78,7 +78,7 @@ using make_dimension = to_derived_dimension_base<typename dim_consolidate<type_l
  * @tparam E the list of exponents of ingredient dimensions
  * @tparam ERest the list of exponents of ingredient dimensions
  */
-template<typename Child, Unit U, Exponent E, Exponent... ERest>
+template<typename Child, in_unit U, in_exponent E, in_exponent... ERest>
 struct derived_dimension : downcast_child<Child, typename detail::make_dimension<E, ERest...>> {
   using recipe = exp_list<E, ERest...>;
   using coherent_unit = U;

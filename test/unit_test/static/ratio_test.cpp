@@ -26,7 +26,7 @@
 
   using namespace units;
 
-  template<Ratio R1, Ratio R2>
+  template<in_ratio R1, in_ratio R2>
   inline constexpr bool same = R1::num == R2::num && R1::den == R2::den && R1::exp == R2::exp;
 
   static_assert(same<ratio<2, 4>, ratio<1, 2>>);

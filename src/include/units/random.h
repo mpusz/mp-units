@@ -29,7 +29,7 @@
 namespace units {
 
 namespace detail {
-    template <Quantity Q, typename InputIt>
+    template <in_quantity Q, typename InputIt>
     static std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
     {
         std::vector<typename Q::rep> intervals_rep;
@@ -38,7 +38,7 @@ namespace detail {
         return intervals_rep;
     }
     
-    template <Quantity Q>
+    template <in_quantity Q>
     static std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
     {
         std::vector<typename Q::rep> bl_rep;
@@ -47,7 +47,7 @@ namespace detail {
         return bl_rep;
     }
 
-    template <Quantity Q, typename UnaryOperation>
+    template <in_quantity Q, typename UnaryOperation>
     inline static std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& bl, UnaryOperation fw)
     {
         using rep = Q::rep;
@@ -61,7 +61,7 @@ namespace detail {
         return weights;
     }
 
-    template <Quantity Q, typename UnaryOperation>
+    template <in_quantity Q, typename UnaryOperation>
     static std::vector<typename Q::rep> fw_bl_pwl(std::initializer_list<Q>& bl, UnaryOperation fw)
     {
         std::vector<typename Q::rep> weights;
@@ -71,7 +71,7 @@ namespace detail {
     }
 } // namespace detail
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct uniform_int_distribution : public std::uniform_int_distribution<typename Q::rep>
 {
@@ -91,7 +91,7 @@ struct uniform_int_distribution : public std::uniform_int_distribution<typename 
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct uniform_real_distribution : public std::uniform_real_distribution<typename Q::rep>
 {
@@ -111,7 +111,7 @@ struct uniform_real_distribution : public std::uniform_real_distribution<typenam
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct binomial_distribution : public std::binomial_distribution<typename Q::rep>
 {
@@ -130,7 +130,7 @@ struct binomial_distribution : public std::binomial_distribution<typename Q::rep
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct negative_binomial_distribution : public std::negative_binomial_distribution<typename Q::rep>
 {
@@ -149,7 +149,7 @@ struct negative_binomial_distribution : public std::negative_binomial_distributi
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct geometric_distribution : public std::geometric_distribution<typename Q::rep>
 {
@@ -166,7 +166,7 @@ struct geometric_distribution : public std::geometric_distribution<typename Q::r
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
 {
@@ -183,7 +183,7 @@ struct poisson_distribution : public std::poisson_distribution<typename Q::rep>
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct exponential_distribution : public std::exponential_distribution<typename Q::rep>
 {
@@ -200,7 +200,7 @@ struct exponential_distribution : public std::exponential_distribution<typename 
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
 {
@@ -217,7 +217,7 @@ struct gamma_distribution : public std::gamma_distribution<typename Q::rep>
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
 {
@@ -234,7 +234,7 @@ struct weibull_distribution : public std::weibull_distribution<typename Q::rep>
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct extreme_value_distribution : public std::extreme_value_distribution<typename Q::rep>
 {
@@ -253,7 +253,7 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct normal_distribution : public std::normal_distribution<typename Q::rep>
 {
@@ -273,7 +273,7 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep>
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct lognormal_distribution : public std::lognormal_distribution<typename Q::rep>
 {
@@ -293,7 +293,7 @@ struct lognormal_distribution : public std::lognormal_distribution<typename Q::r
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct chi_squared_distribution : public std::chi_squared_distribution<typename Q::rep>
 {
@@ -310,7 +310,7 @@ struct chi_squared_distribution : public std::chi_squared_distribution<typename 
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
 {
@@ -330,7 +330,7 @@ struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep>
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep>
 {
@@ -347,7 +347,7 @@ struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 struct student_t_distribution : public std::student_t_distribution<typename Q::rep>
 {
@@ -364,7 +364,7 @@ struct student_t_distribution : public std::student_t_distribution<typename Q::r
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::integral<typename Q::rep>
 struct discrete_distribution : public std::discrete_distribution<typename Q::rep>
 {
@@ -389,7 +389,7 @@ struct discrete_distribution : public std::discrete_distribution<typename Q::rep
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 class piecewise_constant_distribution : public std::piecewise_constant_distribution<typename Q::rep>
 {
@@ -434,7 +434,7 @@ public:
     Q max() const { return Q(base::max()); }
 };
 
-template<Quantity Q>
+template<in_quantity Q>
     requires std::floating_point<typename Q::rep>
 class piecewise_linear_distribution : public std::piecewise_linear_distribution<typename Q::rep>
 {

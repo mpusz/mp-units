@@ -46,9 +46,9 @@ struct pebibyte : prefixed_unit<pebibyte, pebi, byte> {};
 struct dim_information : base_dimension<"information", bit> {};
 
 template<typename T>
-concept Information = QuantityOf<T, dim_information>;
+concept in_information = in_quantity_of<T, dim_information>;
 
-template<Unit U, Scalar Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using information = quantity<dim_information, U, Rep>;
 
 inline namespace literals {

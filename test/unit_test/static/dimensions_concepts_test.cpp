@@ -27,132 +27,132 @@ namespace {
 
 using namespace units::physical;
 
-static_assert(Length<si::length<si::metre>>);
-static_assert(!Length<si::time<si::second>>);
+static_assert(in_length<si::length<si::metre>>);
+static_assert(!in_length<si::time<si::second>>);
 
-static_assert(Mass<si::mass<si::kilogram>>);
-static_assert(!Mass<si::time<si::second>>);
+static_assert(in_mass<si::mass<si::kilogram>>);
+static_assert(!in_mass<si::time<si::second>>);
 
-static_assert(Time<si::time<si::second>>);
-static_assert(!Time<si::length<si::metre>>);
+static_assert(in_time<si::time<si::second>>);
+static_assert(!in_time<si::length<si::metre>>);
 
-static_assert(Current<si::current<si::ampere>>);
-static_assert(!Current<si::time<si::second>>);
+static_assert(in_current<si::current<si::ampere>>);
+static_assert(!in_current<si::time<si::second>>);
 
-static_assert(Temperature<si::temperature<si::kelvin>>);
-static_assert(!Temperature<si::time<si::second>>);
+static_assert(in_temperature<si::temperature<si::kelvin>>);
+static_assert(!in_temperature<si::time<si::second>>);
 
-static_assert(Substance<si::substance<si::mole>>);
-static_assert(!Substance<si::time<si::second>>);
+static_assert(in_substance<si::substance<si::mole>>);
+static_assert(!in_substance<si::time<si::second>>);
 
-static_assert(LuminousIntensity<si::luminous_intensity<si::candela>>);
-static_assert(!LuminousIntensity<si::time<si::second>>);
+static_assert(in_luminous_intensity<si::luminous_intensity<si::candela>>);
+static_assert(!in_luminous_intensity<si::time<si::second>>);
 
-static_assert(Frequency<si::frequency<si::hertz>>);
-static_assert(!Frequency<si::time<si::second>>);
+static_assert(in_frequency<si::frequency<si::hertz>>);
+static_assert(!in_frequency<si::time<si::second>>);
 
-static_assert(Area<si::area<si::square_metre>>);
-static_assert(!Area<si::time<si::second>>);
+static_assert(in_area<si::area<si::square_metre>>);
+static_assert(!in_area<si::time<si::second>>);
 
-static_assert(Volume<si::volume<si::cubic_metre>>);
-static_assert(!Volume<si::time<si::second>>);
+static_assert(in_volume<si::volume<si::cubic_metre>>);
+static_assert(!in_volume<si::time<si::second>>);
 
-static_assert(Speed<si::speed<si::metre_per_second>>);
-static_assert(!Speed<si::time<si::second>>);
+static_assert(in_speed<si::speed<si::metre_per_second>>);
+static_assert(!in_speed<si::time<si::second>>);
 
-static_assert(Acceleration<si::acceleration<si::metre_per_second_sq>>);
-static_assert(!Acceleration<si::time<si::second>>);
+static_assert(in_acceleration<si::acceleration<si::metre_per_second_sq>>);
+static_assert(!in_acceleration<si::time<si::second>>);
 
-static_assert(Force<si::force<si::newton>>);
-static_assert(!Force<si::time<si::second>>);
+static_assert(in_force<si::force<si::newton>>);
+static_assert(!in_force<si::time<si::second>>);
 
-static_assert(Energy<si::energy<si::joule>>);
-static_assert(!Energy<si::time<si::second>>);
+static_assert(in_energy<si::energy<si::joule>>);
+static_assert(!in_energy<si::time<si::second>>);
 
-static_assert(Power<si::power<si::watt>>);
-static_assert(!Power<si::time<si::second>>);
+static_assert(in_power<si::power<si::watt>>);
+static_assert(!in_power<si::time<si::second>>);
 
-static_assert(Voltage<si::voltage<si::volt>>);
-static_assert(!Voltage<si::time<si::second>>);
+static_assert(in_voltage<si::voltage<si::volt>>);
+static_assert(!in_voltage<si::time<si::second>>);
 
-static_assert(ElectricCharge<si::electric_charge<si::coulomb>>);
-static_assert(!ElectricCharge<si::time<si::second>>);
+static_assert(in_electric_charge<si::electric_charge<si::coulomb>>);
+static_assert(!in_electric_charge<si::time<si::second>>);
 
-static_assert(Capacitance<si::capacitance<si::farad>>);
-static_assert(!Capacitance<si::time<si::second>>);
+static_assert(in_capacitance<si::capacitance<si::farad>>);
+static_assert(!in_capacitance<si::time<si::second>>);
 
-static_assert(SurfaceTension<si::surface_tension<si::newton_per_metre>>);
-static_assert(!SurfaceTension<si::time<si::second>>);
+static_assert(in_surface_tension<si::surface_tension<si::newton_per_metre>>);
+static_assert(!in_surface_tension<si::time<si::second>>);
 
-static_assert(Pressure<si::pressure<si::pascal>>);
-static_assert(!Pressure<si::time<si::second>>);
+static_assert(in_pressure<si::pressure<si::pascal>>);
+static_assert(!in_pressure<si::time<si::second>>);
 
-static_assert(MagneticInduction<si::magnetic_induction<si::tesla>>);
-static_assert(!MagneticInduction<si::time<si::second>>);
+static_assert(in_magnetic_induction<si::magnetic_induction<si::tesla>>);
+static_assert(!in_magnetic_induction<si::time<si::second>>);
 
-static_assert(MagneticFlux<si::magnetic_flux<si::weber>>);
-static_assert(!MagneticFlux<si::time<si::second>>);
+static_assert(in_magnetic_flux<si::magnetic_flux<si::weber>>);
+static_assert(!in_magnetic_flux<si::time<si::second>>);
 
-static_assert(Inductance<si::inductance<si::henry>>);
-static_assert(!Inductance<si::time<si::second>>);
+static_assert(in_inductance<si::inductance<si::henry>>);
+static_assert(!in_inductance<si::time<si::second>>);
 
-static_assert(Conductance<si::conductance<si::siemens>>);
-static_assert(!Conductance<si::time<si::second>>);
+static_assert(in_conductance<si::conductance<si::siemens>>);
+static_assert(!in_conductance<si::time<si::second>>);
 
 // TODO Add when downcasting issue is solved
 // static_assert(Radioactivity<si::radioactivity<si::siemens>>);
 // static_assert(!Radioactivity<si::time<si::second>>);
 
-static_assert(CatalyticActivity<si::catalytic_activity<si::katal>>);
-static_assert(!CatalyticActivity<si::time<si::second>>);
+static_assert(in_catalytic_activity<si::catalytic_activity<si::katal>>);
+static_assert(!in_catalytic_activity<si::time<si::second>>);
 
-static_assert(AbsorbedDose<si::absorbed_dose<si::gray>>);
-static_assert(!AbsorbedDose<si::time<si::second>>);
+static_assert(in_absorbed_dose<si::absorbed_dose<si::gray>>);
+static_assert(!in_absorbed_dose<si::time<si::second>>);
 
-static_assert(CurrentDensity<si::current_density<si::ampere_per_metre_sq>>);
-static_assert(!CurrentDensity<si::time<si::second>>);
+static_assert(in_current_density<si::current_density<si::ampere_per_metre_sq>>);
+static_assert(!in_current_density<si::time<si::second>>);
 
-static_assert(Concentration<si::concentration<si::mol_per_metre_cub>>);
-static_assert(!Concentration<si::time<si::second>>);
+static_assert(in_concentration<si::concentration<si::mol_per_metre_cub>>);
+static_assert(!in_concentration<si::time<si::second>>);
 
-static_assert(Luminance<si::luminance<si::candela_per_metre_sq>>);
-static_assert(!Luminance<si::time<si::second>>);
+static_assert(in_luminance<si::luminance<si::candela_per_metre_sq>>);
+static_assert(!in_luminance<si::time<si::second>>);
 
-static_assert(DynamicViscosity<si::dynamic_viscosity<si::pascal_second>>);
-static_assert(!DynamicViscosity<si::time<si::second>>);
+static_assert(in_dynamic_viscosity<si::dynamic_viscosity<si::pascal_second>>);
+static_assert(!in_dynamic_viscosity<si::time<si::second>>);
 
-static_assert(HeatCapacity<si::heat_capacity<si::joule_per_kelvin>>);
-static_assert(!HeatCapacity<si::time<si::second>>);
+static_assert(in_heat_capacity<si::heat_capacity<si::joule_per_kelvin>>);
+static_assert(!in_heat_capacity<si::time<si::second>>);
 
-static_assert(SpecificHeatCapacity<si::specific_heat_capacity<si::joule_per_kilogram_kelvin>>);
-static_assert(!SpecificHeatCapacity<si::time<si::second>>);
+static_assert(in_specific_heat_capacity<si::specific_heat_capacity<si::joule_per_kilogram_kelvin>>);
+static_assert(!in_specific_heat_capacity<si::time<si::second>>);
 
-static_assert(MolarHeatCapacity<si::molar_heat_capacity<si::joule_per_mole_kelvin>>);
-static_assert(!MolarHeatCapacity<si::time<si::second>>);
+static_assert(in_molar_heat_capacity<si::molar_heat_capacity<si::joule_per_mole_kelvin>>);
+static_assert(!in_molar_heat_capacity<si::time<si::second>>);
 
-static_assert(ThermalConductivity<si::thermal_conductivity<si::watt_per_metre_kelvin>>);
-static_assert(!ThermalConductivity<si::time<si::second>>);
+static_assert(in_thermal_conductivity<si::thermal_conductivity<si::watt_per_metre_kelvin>>);
+static_assert(!in_thermal_conductivity<si::time<si::second>>);
 
 // TODO Add when downcasting issue is solved
 // static_assert(EnergyDensity<si::energy_density<si::joule_per_metre_cub>>);
 // static_assert(!EnergyDensity<si::time<si::second>>);
 
-static_assert(ElectricFieldStrength<si::electric_field_strength<si::volt_per_metre>>);
-static_assert(!ElectricFieldStrength<si::time<si::second>>);
+static_assert(in_electric_field_strength<si::electric_field_strength<si::volt_per_metre>>);
+static_assert(!in_electric_field_strength<si::time<si::second>>);
 
-static_assert(ChargeDensity<si::charge_density<si::coulomb_per_metre_cub>>);
-static_assert(!ChargeDensity<si::time<si::second>>);
+static_assert(in_charge_density<si::charge_density<si::coulomb_per_metre_cub>>);
+static_assert(!in_charge_density<si::time<si::second>>);
 
-static_assert(SurfaceChargeDensity<si::surface_charge_density<si::coulomb_per_metre_sq>>);
-static_assert(!SurfaceChargeDensity<si::time<si::second>>);
+static_assert(in_surface_charge_density<si::surface_charge_density<si::coulomb_per_metre_sq>>);
+static_assert(!in_surface_charge_density<si::time<si::second>>);
 
-static_assert(Permittivity<si::permittivity<si::farad_per_metre>>);
-static_assert(!Permittivity<si::time<si::second>>);
+static_assert(in_permittivity<si::permittivity<si::farad_per_metre>>);
+static_assert(!in_permittivity<si::time<si::second>>);
 
-static_assert(Permeability<si::permeability<si::henry_per_metre>>);
-static_assert(!Permeability<si::time<si::second>>);
+static_assert(in_permeability<si::permeability<si::henry_per_metre>>);
+static_assert(!in_permeability<si::time<si::second>>);
 
-static_assert(MolarEnergy<si::molar_energy<si::joule_per_mole>>);
-static_assert(!MolarEnergy<si::time<si::second>>);
+static_assert(in_molar_energy<si::molar_energy<si::joule_per_mole>>);
+static_assert(!in_molar_energy<si::time<si::second>>);
 
 }

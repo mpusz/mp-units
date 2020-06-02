@@ -50,16 +50,16 @@ namespace units {
  * @tparam U a unit to use as a reference for this dimension
  * @tparam R a ratio of a reference unit
  */
-template<UnitRatio R, typename U>
+template<in_unit_ratio R, typename U>
 struct scaled_unit : downcast_base<scaled_unit<R, U>> {
   using ratio = R;
   using reference = U;
 };
 
-template<Dimension D, UnitRatio R>
+template<in_dimension D, in_unit_ratio R>
 using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
 
-template<Unit U1, Unit U2>
+template<in_unit U1, in_unit U2>
 struct same_unit_reference : std::is_same<typename U1::reference, typename U2::reference> {};
 
 /**
@@ -95,7 +95,7 @@ struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
  * @tparam Symbol a short text representation of the unit
  * @tparam PF no_prefix or a type of prefix family
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF>
+template<typename Child, basic_symbol_text Symbol, in_prefix_family PF>
 struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
@@ -116,7 +116,7 @@ struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, UnitRatio R, Unit U>
+template<typename Child, basic_symbol_text Symbol, in_prefix_family PF, in_unit_ratio R, in_unit U>
 struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
@@ -134,7 +134,7 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
  * @tparam P prefix to be appied to the reference unit
  * @tparam U reference unit
  */
-template<typename Child, Prefix P, Unit U>
+template<typename Child, in_prefix P, in_unit U>
   requires U::is_named && std::same_as<typename P::prefix_family, typename U::prefix_family>
 struct prefixed_unit :
     downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
@@ -156,7 +156,7 @@ struct prefixed_unit :
  * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
  * @tparam URest the units for the rest of dimensions from the recipe
  */
-template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
+template<typename Child, in_derived_dimension Dim, in_unit U, in_unit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
            (U::is_named && (URest::is_named && ... && true))
 struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
@@ -165,7 +165,7 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
   using prefix_family = no_prefix;
 };
 
-// template<typename Child, Dimension Dim, basic_fixed_string Symbol, PrefixFamily PF, Unit U, Unit... Us>
+// template<typename Child, in_dimension Dim, basic_fixed_string Symbol, in_prefix_family PF, in_unit U, in_unit... Us>
 // struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
 //   static constexpr bool is_named = true;
 //   static constexpr auto symbol = Symbol;
@@ -181,11 +181,11 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
  * no_prefix is provided for PF template parameter (in such a case it is impossible to define
  * a prefix unit based on this one).
  *
- * @tparam U Unit for which an alias is defined
+ * @tparam U in_unit for which an alias is defined
  * @tparam Symbol a short text representation of the unit
  * @tparam PF no_prefix or a type of prefix family
  */
-template<Unit U, basic_symbol_text Symbol, PrefixFamily PF>
+template<in_unit U, basic_symbol_text Symbol, in_prefix_family PF>
 struct alias_unit : U {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
@@ -199,15 +199,15 @@ struct alias_unit : U {
  * prefix. It is only possible to create such a unit if the given prefix type matches the one
  * defined in a reference unit.
  *
- * @tparam U Unit for which an alias is defined
+ * @tparam U in_unit for which an alias is defined
  * @tparam P prefix to be appied to the reference unit
  * @tparam AU reference alias unit
  */
 // TODO gcc bug: 95015
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
-// template<Unit U, Prefix P, AliasUnit AU>
+// template<in_unit U, in_prefix P, AliasUnit AU>
 //   requires (!AliasUnit<U>) && std::same_as<typename P::prefix_family, typename AU::prefix_family>
-template<Unit U, Prefix P, Unit AU>
+template<in_unit U, in_prefix P, in_unit AU>
   requires std::same_as<typename P::prefix_family, typename AU::prefix_family>
 struct prefixed_alias_unit : U {
   static constexpr bool is_named = true;

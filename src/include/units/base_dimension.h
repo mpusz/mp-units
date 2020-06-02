@@ -38,16 +38,16 @@ namespace units {
  * 
  * Base unit is a measurement unit that is adopted by convention for a base quantity in a specific system of units.
  *
- * Pair of Symbol and Unit template parameters form an unique identifier of the base dimension. The same identifiers can
- * be multiplied and divided which will result with an adjustment of its factor in an Exponent of a DerivedDimension
+ * Pair of Symbol and in_unit template parameters form an unique identifier of the base dimension. The same identifiers can
+ * be multiplied and divided which will result with an adjustment of its factor in an in_exponent of a in_derived_dimension
  * (in case of zero the dimension will be simplified and removed from further analysis of current expresion). In case
- * the Symbol is the same but the Unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but
+ * the Symbol is the same but the in_unit differs (i.e. mixing SI and CGS length), there is no automatic simplification but
  * is possible to force it with a quantity_cast.
  *
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  * @tparam U a base unit to be used for this base dimension
  */
-template<basic_fixed_string Symbol, Unit U>
+template<basic_fixed_string Symbol, in_unit U>
   requires U::is_named
 struct base_dimension {
   using base_type_workaround = base_dimension; // TODO Replace with is_base_dimension when fixed
@@ -56,7 +56,7 @@ struct base_dimension {
 };
 
 // base_dimension_less
-template<BaseDimension D1, BaseDimension D2>
+template<in_base_dimension D1, in_base_dimension D2>
 struct base_dimension_less :
     std::bool_constant<(D1::symbol < D2::symbol) ||
                        (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {

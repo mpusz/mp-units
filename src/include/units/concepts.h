@@ -29,7 +29,7 @@
 
 namespace units {
 
-// PrefixFamily
+// in_prefix_family
 struct prefix_family;
 
 /**
@@ -38,9 +38,9 @@ struct prefix_family;
  * Satisfied by all types derived from `prefix_family`
  */
 template<typename T>
-concept PrefixFamily = std::derived_from<T, prefix_family>;
+concept in_prefix_family = std::derived_from<T, prefix_family>;
 
-// Prefix
+// in_prefix
 // TODO gcc:92150
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92150
 // namespace detail {
@@ -48,8 +48,8 @@ concept PrefixFamily = std::derived_from<T, prefix_family>;
 //   template<typename T>
 //   inline constexpr bool is_prefix = false;
 
-//   template<typename PrefixFamily, Ratio R, basic_fixed_string Symbol>
-//   inline constexpr bool is_prefix<prefix<PrefixFamily, R, Symbol>> = true;
+//   template<typename in_prefix_family, in_ratio R, basic_fixed_string Symbol>
+//   inline constexpr bool is_prefix<prefix<in_prefix_family, R, Symbol>> = true;
 
 // }  // namespace detail
 
@@ -59,8 +59,8 @@ concept PrefixFamily = std::derived_from<T, prefix_family>;
  * Satisfied by all instantiations of `prefix`.
  */
 template<typename T>
-//  concept Prefix = detail::is_prefix<T>;
-concept Prefix = true;
+//  concept in_prefix = detail::is_prefix<T>;
+concept in_prefix = true;
 
 
 namespace detail {
@@ -76,18 +76,18 @@ inline constexpr bool is_ratio = false;
  * Satisfied by all instantiations of `ratio`.
  */
 template<typename T>
-concept Ratio = detail::is_ratio<T>;
+concept in_ratio = detail::is_ratio<T>;
 
 /**
  * @brief A concept matching unit's ratio
  * 
- * Satisfied by all types that satisfy `Ratio<R>` and for which `R::num > 0` and `R::den > 0`
+ * Satisfied by all types that satisfy `in_ratio<R>` and for which `R::num > 0` and `R::den > 0`
  */
 template<typename R>
-concept UnitRatio = Ratio<R> && R::num > 0 && R::den > 0; // double negatives not allowed
+concept in_unit_ratio = in_ratio<R> && R::num > 0 && R::den > 0; // double negatives not allowed
 
-// Unit
-template<UnitRatio R, typename U>
+// in_unit
+template<in_unit_ratio R, typename U>
 struct scaled_unit;
 
 /**
@@ -96,9 +96,9 @@ struct scaled_unit;
  * Satisfied by all unit types derived from the instantiation of :class:`scaled_unit`.
  */
 template<typename T>
-concept Unit = is_derived_from_instantiation<T, scaled_unit>;
+concept in_unit = is_derived_from_instantiation<T, scaled_unit>;
 
-template<basic_fixed_string Symbol, Unit U>
+template<basic_fixed_string Symbol, in_unit U>
   requires U::is_named
 struct base_dimension;
 
@@ -127,9 +127,9 @@ inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
  * Satisfied by all dimension types derived from the instantiation of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;
+concept in_base_dimension = detail::is_base_dimension<typename T::base_type_workaround>;
 
-// Exponent
+// in_exponent
 namespace detail {
 
 template<typename T>
@@ -143,13 +143,13 @@ inline constexpr bool is_exp = false;
  * Satisfied by all instantiations of :class:`exp`.
  */
 template<typename T>
-concept Exponent = detail::is_exp<T>;
+concept in_exponent = detail::is_exp<T>;
 
-// DerivedDimension
+// in_derived_dimension
 namespace detail {
 
-template<Exponent E, Exponent... ERest>
-  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
+template<in_exponent E, in_exponent... ERest>
+  requires (in_base_dimension<typename E::dimension> && ... && in_base_dimension<typename ERest::dimension>)
 struct derived_dimension_base;
 
 } // namespace detail
@@ -160,29 +160,29 @@ struct derived_dimension_base;
  * Satisfied by all dimension types derived from the instantiation of `detail::derived_dimension_base`.
  */
 template<typename T>
-concept DerivedDimension = is_instantiation<downcast_base_t<T>, detail::derived_dimension_base>;
+concept in_derived_dimension = is_instantiation<downcast_base_t<T>, detail::derived_dimension_base>;
 
-// Dimension
+// in_dimension
 /**
  * @brief A concept matching all dimensions in the library. 
  * 
- * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
+ * Satisfied by all dimension types for which either `in_base_dimension<T>` or `in_derived_dimension<T>` is `true`.
  */
 template<typename T>
-concept Dimension = BaseDimension<T> || DerivedDimension<T>;
+concept in_dimension = in_base_dimension<T> || in_derived_dimension<T>;
 
 // UnitOf
 namespace detail {
 
-template<Dimension D>
+template<in_dimension D>
 struct dimension_unit_impl;
 
-template<BaseDimension D>
+template<in_base_dimension D>
 struct dimension_unit_impl<D> {
   using type = D::base_unit;
 };
 
-template<DerivedDimension D>
+template<in_derived_dimension D>
 struct dimension_unit_impl<D> {
   using type = D::coherent_unit;
 };
@@ -195,27 +195,27 @@ struct dimension_unit_impl<D> {
  * Depending on the dimension type it returns a base unit (for base dimensions)
  * or a coherent unit (in case of derived dimensions).
  * 
- * @tparam D Dimension type to get the unit from.
+ * @tparam D in_dimension type to get the unit from.
  */
-template<Dimension D>
+template<in_dimension D>
 using dimension_unit = detail::dimension_unit_impl<D>::type;
 
 /**
  * @brief A concept matching only units of a specified dimension.
  * 
- * Satisfied by all unit types that satisfy `Unit<U>`, `Dimension<D>`, and for which
+ * Satisfied by all unit types that satisfy `in_unit<U>`, `in_dimension<D>`, and for which
  * `U::reference` and @c dimension_unit<D>::reference denote the same unit type.
  * 
  * @tparam U Type to verify.
- * @tparam D Dimension type to use for verification.
+ * @tparam D in_dimension type to use for verification.
  */
 template<typename U, typename D>
 concept UnitOf =
-  Unit<U> &&
-  Dimension<D> &&
+  in_unit<U> &&
+  in_dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
-// Quantity
+// in_quantity
 namespace detail {
 
 template<typename T>
@@ -229,10 +229,10 @@ inline constexpr bool is_quantity = false;
  * Satisfied by all instantiations of :class:`quantity`.
  */
 template<typename T>
-concept Quantity = detail::is_quantity<T>;
+concept in_quantity = detail::is_quantity<T>;
 
 
-// WrappedQuantity
+// in_wrapped_quantity
 namespace detail {
 
 template<typename T>
@@ -240,20 +240,20 @@ inline constexpr bool is_wrapped_quantity = false;
 
 template<typename T>
   requires requires { typename T::value_type; }
-inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
+inline constexpr bool is_wrapped_quantity<T> = in_quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
 
 }  // namespace detail
 
 /**
  * @brief A concept matching types that wrap quantity objects.
  * 
- * Satisfied by all wrapper types that satisfy `Quantity<typename T::value_type>`
+ * Satisfied by all wrapper types that satisfy `in_quantity<typename T::value_type>`
  * recursively (i.e. `std::optional<si::length<si::metre>>`).
  */
 template<typename T>
-concept WrappedQuantity = detail::is_wrapped_quantity<T>;
+concept in_wrapped_quantity = detail::is_wrapped_quantity<T>;
 
-// Scalar
+// in_numeric_value
 
 namespace detail {
 
@@ -278,14 +278,14 @@ concept not_constructible_from_integral =
 }  // namespace detail
 
 /**
- * @brief A concept matching non-Quantity types.
+ * @brief A concept matching non-in_quantity types.
  * 
- * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
+ * Satisfied by types that satisfy `(!in_quantity<T>) && (!in_wrapped_quantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept Scalar =
-  (!Quantity<T>) &&
-  (!WrappedQuantity<T>) &&
+concept in_numeric_value =
+  (!in_quantity<T>) &&
+  (!in_wrapped_quantity<T>) &&
   std::regular<T> &&
   (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
 

@@ -107,10 +107,10 @@ constexpr auto derived_dimension_unit_text(exp_list<Es...> list)
   return derived_dimension_unit_text(list, std::index_sequence_for<Es...>());
 }
 
-template<Exponent... Es>
+template<in_exponent... Es>
 constexpr auto exp_list_with_named_units(exp_list<Es...>);
 
-template<Exponent Exp>
+template<in_exponent Exp>
 constexpr auto exp_list_with_named_units(Exp)
 {
   using dim = Exp::dimension;
@@ -123,13 +123,13 @@ constexpr auto exp_list_with_named_units(Exp)
   }
 }
 
-template<Exponent... Es>
+template<in_exponent... Es>
 constexpr auto exp_list_with_named_units(exp_list<Es...>)
 {
   return type_list_join<decltype(exp_list_with_named_units(Es()))...>();
 }
 
-template<Dimension Dim>
+template<in_dimension Dim>
 constexpr auto derived_dimension_unit_text()
 {
   using recipe = Dim::recipe;
@@ -140,7 +140,7 @@ constexpr auto derived_dimension_unit_text()
 template<typename T>
 concept has_symbol = requires{ T::symbol; };
 
-template<Dimension Dim, Unit U>
+template<in_dimension Dim, in_unit U>
 constexpr auto unit_text()
 {
   if constexpr(has_symbol<U>) {
@@ -164,7 +164,7 @@ constexpr auto unit_text()
   }
 }
 
-template<typename CharT, class Traits, Quantity Q>
+template<typename CharT, class Traits, in_quantity Q>
 std::basic_string<CharT> to_string(const Q& q)
 {
   std::basic_ostringstream<CharT, Traits> s;

@@ -61,9 +61,9 @@ constexpr long double fpow10(std::intmax_t exp)
 }
 
 
-// QuantityOf
+// in_quantity_of
 template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
+concept in_quantity_of = in_quantity<T> && in_dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
 
 // quantity_cast
 namespace detail {
@@ -73,7 +73,7 @@ struct quantity_cast_impl;
 
 template<typename To, typename CRatio, typename CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, true, true> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     return To(static_cast<To::rep>(q.count()));
@@ -82,7 +82,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true, true> {
 
 template<typename To, typename CRatio, constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -138,7 +138,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
 
 template<typename To, typename CRatio, constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio::den)));
@@ -147,7 +147,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
 
 template<typename To, typename CRatio, constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -165,7 +165,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
 
 template<typename To, typename CRatio, constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio::num)));
@@ -174,7 +174,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
 
 template<typename To, typename CRatio, constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -192,7 +192,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
 
 template<typename To, typename CRatio, not_constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -237,7 +237,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
 
 template<typename To, typename CRatio, not_constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     return To(static_cast<To::rep>(q.count() / CRatio::den));
@@ -246,7 +246,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
 
 template<typename To, typename CRatio, not_constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -264,7 +264,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
 
 template<typename To, typename CRatio, not_constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     return To(static_cast<To::rep>(q.count() * CRatio::num));
@@ -273,7 +273,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
 
 template<typename To, typename CRatio, not_constructible_from_integral CRep>
 struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
-  template<Quantity Q>
+  template<in_quantity Q>
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
@@ -289,21 +289,21 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   }
 };
 
-template<Dimension FromD, Unit FromU, Dimension ToD, Unit ToU>
+template<in_dimension FromD, in_unit FromU, in_dimension ToD, in_unit ToU>
 struct cast_ratio;
 
-template<BaseDimension FromD, Unit FromU, BaseDimension ToD, Unit ToU>
+template<in_base_dimension FromD, in_unit FromU, in_base_dimension ToD, in_unit ToU>
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
 };
 
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
+template<in_derived_dimension FromD, in_unit FromU, in_derived_dimension ToD, in_unit ToU>
   requires same_unit_reference<FromU, ToU>::value
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
 };
 
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
+template<in_derived_dimension FromD, in_unit FromU, in_derived_dimension ToD, in_unit ToU>
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using from_ratio = ratio_multiply<typename FromD::base_units_ratio, typename FromU::ratio>;
   using to_ratio = ratio_multiply<typename ToD::base_units_ratio, typename ToU::ratio>;
@@ -324,9 +324,9 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<in_quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires QuantityOf<To, D>
+  requires in_quantity_of<To, D>
 {
   using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
   using c_rep = std::common_type_t<typename To::rep, Rep>;
@@ -348,7 +348,7 @@ template<Quantity To, typename D, typename U, typename Rep>
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
-template<Dimension ToD, typename D, typename U, typename Rep>
+template<in_dimension ToD, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires equivalent_dim<ToD, D>
 {
@@ -367,7 +367,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Unit ToU, typename D, typename U, typename Rep>
+template<in_unit ToU, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires UnitOf<ToU, D>
 {
@@ -386,7 +386,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<Scalar ToRep, typename D, typename U, typename Rep>
+template<in_numeric_value ToRep, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);
