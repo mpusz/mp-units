@@ -29,11 +29,19 @@ namespace units::physical::international {
 
 struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, international::foot> {};
 
+//barrel
+//https://en.wikipedia.org/wiki/Volume_units_used_in_petroleum_engineering
+struct barrel : named_scaled_unit<barrel,"stb", no_prefix, ratio<1'000'000,6'289'811> , si::cubic_metre> {};
+
 inline namespace literals {
 
 // ft3
 constexpr auto operator"" q_ft3(unsigned long long l) { return si::volume<cubic_foot, std::int64_t>(l); }
 constexpr auto operator"" q_ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
+
+// ft3
+constexpr auto operator"" q_stb(unsigned long long l) { return si::volume<barrel, std::int64_t>(l); }
+constexpr auto operator"" q_stb(long double l) { return si::volume<barrel, long double>(l); }
 
 }  // namespace literals
 
