@@ -26,7 +26,7 @@
 
 namespace units {
 
-template<in_dimension D, UnitOf<D> U, in_numeric_value Rep>
+template<in_dimension D, in_unit_of<D> U, in_numeric_value Rep>
 class quantity;
 
 namespace detail {

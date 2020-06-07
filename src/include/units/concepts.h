@@ -171,7 +171,7 @@ concept in_derived_dimension = is_instantiation<downcast_base_t<T>, detail::deri
 template<typename T>
 concept in_dimension = in_base_dimension<T> || in_derived_dimension<T>;
 
-// UnitOf
+// in_unit_of
 namespace detail {
 
 template<in_dimension D>
@@ -210,7 +210,7 @@ using dimension_unit = detail::dimension_unit_impl<D>::type;
  * @tparam D in_dimension type to use for verification.
  */
 template<typename U, typename D>
-concept UnitOf =
+concept in_unit_of =
   in_unit<U> &&
   in_dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;

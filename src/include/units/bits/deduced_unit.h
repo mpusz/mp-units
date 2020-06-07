@@ -31,7 +31,7 @@ template<typename ExpList, in_unit... Us>
 inline constexpr bool same_scaled_units = false;
 
 template<typename... Es, in_unit... Us>
-inline constexpr bool same_scaled_units<exp_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+inline constexpr bool same_scaled_units<exp_list<Es...>, Us...> = (in_unit_of<Us, typename Es::dimension> && ...);
 
 // deduced_unit
 template<typename Result, int UnitExpNum, int UnitExpDen, typename in_unit_ratio>

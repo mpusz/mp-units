@@ -60,7 +60,7 @@ concept safe_divisible = // exposition only
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<in_dimension D, UnitOf<D> U, in_numeric_value Rep = double>
+template<in_dimension D, in_unit_of<D> U, in_numeric_value Rep = double>
 class quantity {
   Rep value_{};
 

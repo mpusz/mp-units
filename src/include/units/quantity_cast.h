@@ -369,7 +369,7 @@ template<in_dimension ToD, typename D, typename U, typename Rep>
  */
 template<in_unit ToU, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires UnitOf<ToU, D>
+  requires in_unit_of<ToU, D>
 {
   return quantity_cast<quantity<D, ToU, Rep>>(q);
 }
