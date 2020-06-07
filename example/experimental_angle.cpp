@@ -34,7 +34,7 @@ int main()
   auto torque = 20.0q_Nm;
   auto energy = 20.0q_J;
 
-  physical::Angle AUTO angle = torque / energy;
+  physical::in_angle AUTO angle = torque / energy;
 
   std::cout << angle << '\n';
 }

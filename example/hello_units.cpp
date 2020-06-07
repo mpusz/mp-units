@@ -27,7 +27,7 @@
 
 using namespace units::physical;
 
-constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
+constexpr in_speed AUTO avg_speed(in_length AUTO d, in_time AUTO t)
 {
   return d / t;
 }
@@ -35,10 +35,10 @@ constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
 int main()
 {
   using namespace units::physical::si::literals;
-  Speed AUTO v1 = avg_speed(220q_km, 2q_h);
-  Speed AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
-  Speed AUTO v3 = quantity_cast<si::metre_per_second>(v2);
-  Speed AUTO v4 = quantity_cast<int>(v3);
+  in_speed AUTO v1 = avg_speed(220q_km, 2q_h);
+  in_speed AUTO v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+  in_speed AUTO v3 = quantity_cast<si::metre_per_second>(v2);
+  in_speed AUTO v4 = quantity_cast<int>(v3);
 
   std::cout << v1 << '\n';                             // 110 km/h
   std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h

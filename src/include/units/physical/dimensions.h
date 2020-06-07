@@ -183,143 +183,143 @@ template<typename Child, in_unit U, in_dimension_of<dim_energy> E, in_dimension_
 struct dim_molar_energy : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
 
 template<typename T>
-concept Length = in_quantity_of<T, dim_length>;
+concept in_length = in_quantity_of<T, dim_length>;
 
 template<typename T>
-concept Mass = in_quantity_of<T, dim_mass>;
+concept in_mass = in_quantity_of<T, dim_mass>;
 
 template<typename T>
-concept Time = in_quantity_of<T, dim_time>;
+concept in_time = in_quantity_of<T, dim_time>;
 
 template<typename T>
-concept Current = in_quantity_of<T, dim_electric_current>;
+concept in_current = in_quantity_of<T, dim_electric_current>;
 
 template<typename T>
-concept Temperature = in_quantity_of<T, dim_thermodynamic_temperature>;
+concept in_temperature = in_quantity_of<T, dim_thermodynamic_temperature>;
 
 template<typename T>
-concept Substance = in_quantity_of<T, dim_substance>;
+concept in_substance = in_quantity_of<T, dim_substance>;
 
 template<typename T>
-concept LuminousIntensity = in_quantity_of<T, dim_luminous_intensity>;
+concept in_luminous_intensity = in_quantity_of<T, dim_luminous_intensity>;
 
 template <typename T>
-concept Angle = in_quantity_of<T, dim_angle>;
+concept in_angle = in_quantity_of<T, dim_angle>;
 
 template<typename T>
-concept Frequency = in_quantity_of<T, dim_frequency>;
+concept in_frequency = in_quantity_of<T, dim_frequency>;
 
 template<typename T>
-concept Area = in_quantity_of<T, dim_area>;
+concept in_area = in_quantity_of<T, dim_area>;
 
 template<typename T>
-concept Volume = in_quantity_of<T, dim_volume>;
+concept in_volume = in_quantity_of<T, dim_volume>;
 
 template<typename T>
-concept Speed = in_quantity_of<T, dim_speed>;
+concept in_speed = in_quantity_of<T, dim_speed>;
 
 template<typename T>
-concept Acceleration = in_quantity_of<T, dim_acceleration>;
+concept in_acceleration = in_quantity_of<T, dim_acceleration>;
 
 template<typename T>
-concept Force = in_quantity_of<T, dim_force>;
+concept in_force = in_quantity_of<T, dim_force>;
 
 template<typename T>
-concept Momentum = in_quantity_of<T, dim_momentum>;
+concept in_momentum = in_quantity_of<T, dim_momentum>;
 
 template<typename T>
-concept Energy = in_quantity_of<T, dim_energy>;
+concept in_energy = in_quantity_of<T, dim_energy>;
 
 template<typename T>
-concept Torque = in_quantity_of<T, dim_torque>;
+concept in_torque = in_quantity_of<T, dim_torque>;
 
 template<typename T>
-concept Density = in_quantity_of<T, dim_density>;
+concept in_density = in_quantity_of<T, dim_density>;
 
 template<typename T>
-concept Power = in_quantity_of<T, dim_power>;
+concept in_power = in_quantity_of<T, dim_power>;
 
 template<typename T>
-concept Voltage = in_quantity_of<T, dim_voltage>;
+concept in_voltage = in_quantity_of<T, dim_voltage>;
 
 template<typename T>
-concept ElectricCharge = in_quantity_of<T, dim_electric_charge>;
+concept in_electric_charge = in_quantity_of<T, dim_electric_charge>;
 
 template<typename T>
-concept Capacitance = in_quantity_of<T, dim_capacitance>;
+concept in_capacitance = in_quantity_of<T, dim_capacitance>;
 
 template<typename T>
-concept SurfaceTension = in_quantity_of<T, dim_surface_tension>;
+concept in_surface_tension = in_quantity_of<T, dim_surface_tension>;
 
 template<typename T>
-concept Pressure = in_quantity_of<T, dim_pressure>;
+concept in_pressure = in_quantity_of<T, dim_pressure>;
 
 template<typename T>
-concept MagneticInduction = in_quantity_of<T, dim_magnetic_induction>;
+concept in_magnetic_induction = in_quantity_of<T, dim_magnetic_induction>;
 
 template<typename T>
-concept MagneticFlux = in_quantity_of<T, dim_magnetic_flux>;
+concept in_magnetic_flux = in_quantity_of<T, dim_magnetic_flux>;
 
 template<typename T>
-concept Inductance = in_quantity_of<T, dim_inductance>;
+concept in_inductance = in_quantity_of<T, dim_inductance>;
 
 template<typename T>
-concept Conductance = in_quantity_of<T, dim_conductance>;
+concept in_conductance = in_quantity_of<T, dim_conductance>;
 
 // TODO Add when downcasting issue is solved
 // template<typename T>
 // concept Radioactivity = in_quantity_of<T, dim_radioactivity>;
 
 template<typename T>
-concept CatalyticActivity = in_quantity_of<T, dim_catalytic_activity>;
+concept in_catalytic_activity = in_quantity_of<T, dim_catalytic_activity>;
 
 template<typename T>
-concept AbsorbedDose = in_quantity_of<T, dim_absorbed_dose>;
+concept in_absorbed_dose = in_quantity_of<T, dim_absorbed_dose>;
 
 template<typename T>
-concept CurrentDensity = in_quantity_of<T, dim_current_density>;
+concept in_current_density = in_quantity_of<T, dim_current_density>;
 
 template<typename T>
-concept Concentration = in_quantity_of<T, dim_concentration>;
+concept in_concentration = in_quantity_of<T, dim_concentration>;
 
 template<typename T>
-concept Luminance = in_quantity_of<T, dim_luminance>;
+concept in_luminance = in_quantity_of<T, dim_luminance>;
 
 template<typename T>
-concept DynamicViscosity = in_quantity_of<T, dim_dynamic_viscosity>;
+concept in_dynamic_viscosity = in_quantity_of<T, dim_dynamic_viscosity>;
 
 template<typename T>
-concept HeatCapacity = in_quantity_of<T, dim_heat_capacity>;
+concept in_heat_capacity = in_quantity_of<T, dim_heat_capacity>;
 
 template<typename T>
-concept SpecificHeatCapacity = in_quantity_of<T, dim_specific_heat_capacity>;
+concept in_specific_heat_capacity = in_quantity_of<T, dim_specific_heat_capacity>;
 
 template<typename T>
-concept MolarHeatCapacity = in_quantity_of<T, dim_molar_heat_capacity>;
+concept in_molar_heat_capacity = in_quantity_of<T, dim_molar_heat_capacity>;
 
 template<typename T>
-concept ThermalConductivity = in_quantity_of<T, dim_thermal_conductivity>;
+concept in_thermal_conductivity = in_quantity_of<T, dim_thermal_conductivity>;
 
 // TODO Add when downcasting issue is solved
 // template<typename T>
 // concept EnergyDensity = in_quantity_of<T, dim_energy_density>;
 
 template<typename T>
-concept ElectricFieldStrength = in_quantity_of<T, dim_electric_field_strength>;
+concept in_electric_field_strength = in_quantity_of<T, dim_electric_field_strength>;
 
 template<typename T>
-concept ChargeDensity = in_quantity_of<T, dim_charge_density>;
+concept in_charge_density = in_quantity_of<T, dim_charge_density>;
 
 template<typename T>
-concept SurfaceChargeDensity = in_quantity_of<T, dim_surface_charge_density>;
+concept in_surface_charge_density = in_quantity_of<T, dim_surface_charge_density>;
 
 template<typename T>
-concept Permittivity = in_quantity_of<T, dim_permittivity>;
+concept in_permittivity = in_quantity_of<T, dim_permittivity>;
 
 template<typename T>
-concept Permeability = in_quantity_of<T, dim_permeability>;
+concept in_permeability = in_quantity_of<T, dim_permeability>;
 
 template<typename T>
-concept MolarEnergy = in_quantity_of<T, dim_molar_energy>;
+concept in_molar_energy = in_quantity_of<T, dim_molar_energy>;
 
 }  // namespace units::physical
