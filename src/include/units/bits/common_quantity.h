@@ -26,7 +26,7 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, NumericValue Rep>
+template<in_dimension D, UnitOf<D> U, in_numeric_value Rep>
 class quantity;
 
 namespace detail {
@@ -59,7 +59,7 @@ struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep>
 
 }  // namespace detail
 
-template<Quantity Q1, Quantity Q2, NumericValue Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+template<in_quantity Q1, in_quantity Q2, in_numeric_value Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
   requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
 using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
@@ -75,7 +75,7 @@ namespace concepts {
 
 #endif
 
-template<units::Quantity Q1, units::Quantity Q2>
+template<units::in_quantity Q1, units::in_quantity Q2>
   requires units::equivalent_dim<typename Q1::dimension, typename Q2::dimension>
 struct common_type<Q1, Q2> {
   using type = units::common_quantity<Q1, Q2>;

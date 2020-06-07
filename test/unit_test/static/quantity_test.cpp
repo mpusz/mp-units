@@ -213,7 +213,7 @@ static_assert(2q_dm3 + 2q_cm3 == 2002q_ml);
 
 // is_quantity
 
-static_assert(Quantity<length<millimetre, int>>);
+static_assert(in_quantity<length<millimetre, int>>);
 
 // common_quantity
 

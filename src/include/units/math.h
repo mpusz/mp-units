@@ -35,12 +35,12 @@ namespace units {
  * Both the quantity value and its dimension are the base of the operation.
  * 
  * @tparam N in_exponent
- * @param q Quantity being the base of the operation
- * @return Quantity The result of computation 
+ * @param q in_quantity being the base of the operation
+ * @return in_quantity The result of computation 
  */
-template<std::intmax_t N, Quantity Q>
+template<std::intmax_t N, in_quantity Q>
   requires(N != 0)
-inline Quantity AUTO pow(const Q& q) noexcept
+inline in_quantity AUTO pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
   using dim = dimension_pow<typename Q::dimension, N>;
@@ -55,7 +55,7 @@ inline Quantity AUTO pow(const Q& q) noexcept
  * 
  * @return Rep A scalar value of @c 1. 
  */
-template<std::intmax_t N, Quantity Q>
+template<std::intmax_t N, in_quantity Q>
   requires(N == 0)
 inline Q::rep pow(const Q&) noexcept
 {
@@ -67,11 +67,11 @@ inline Q::rep pow(const Q&) noexcept
  * 
  * Both the quantity value and its dimension are the base of the operation.
  * 
- * @param q Quantity being the base of the operation
- * @return Quantity The result of computation 
+ * @param q in_quantity being the base of the operation
+ * @return in_quantity The result of computation 
  */
-template<Quantity Q>
-inline Quantity AUTO sqrt(const Q& q) noexcept
+template<in_quantity Q>
+inline in_quantity AUTO sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
   using dim = dimension_sqrt<typename Q::dimension>;
@@ -84,11 +84,11 @@ inline Quantity AUTO sqrt(const Q& q) noexcept
 /**
  * @brief Computes the absolute value of a quantity
  * 
- * @param q Quantity being the base of the operation
- * @return Quantity The absolute value of a provided quantity
+ * @param q in_quantity being the base of the operation
+ * @return in_quantity The absolute value of a provided quantity
  */
-template<Quantity Q>
-constexpr Quantity AUTO abs(const Q& q) noexcept
+template<in_quantity Q>
+constexpr in_quantity AUTO abs(const Q& q) noexcept
   requires requires { std::abs(q.count()); }
 {
   return Q(std::abs(q.count()));
@@ -99,12 +99,12 @@ constexpr Quantity AUTO abs(const Q& q) noexcept
  * 
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
  * 
- * @tparam Q Quantity type being the base of the operation
- * @return Quantity The epsilon value for quantity's representation type
+ * @tparam Q in_quantity type being the base of the operation
+ * @return in_quantity The epsilon value for quantity's representation type
  */
-template<Quantity Q>
+template<in_quantity Q>
   requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
-constexpr Quantity AUTO epsilon() noexcept
+constexpr in_quantity AUTO epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
 }

@@ -34,7 +34,7 @@ namespace units {
  * @tparam Num numinator of the factor
  * @tparam Den denominator of the factor
  */
-template<Dimension Dim, std::intmax_t Num, std::intmax_t Den = 1>
+template<in_dimension Dim, std::intmax_t Num, std::intmax_t Den = 1>
 struct exp {
   using dimension = Dim;
   static constexpr int num = Num;

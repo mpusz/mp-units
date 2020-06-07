@@ -162,19 +162,19 @@ struct derived_dimension_base;
 template<typename T>
 concept in_derived_dimension = is_instantiation<downcast_base_t<T>, detail::derived_dimension_base>;
 
-// Dimension
+// in_dimension
 /**
  * @brief A concept matching all dimensions in the library. 
  * 
  * Satisfied by all dimension types for which either `in_base_dimension<T>` or `in_derived_dimension<T>` is `true`.
  */
 template<typename T>
-concept Dimension = in_base_dimension<T> || in_derived_dimension<T>;
+concept in_dimension = in_base_dimension<T> || in_derived_dimension<T>;
 
 // UnitOf
 namespace detail {
 
-template<Dimension D>
+template<in_dimension D>
 struct dimension_unit_impl;
 
 template<in_base_dimension D>
@@ -195,27 +195,27 @@ struct dimension_unit_impl<D> {
  * Depending on the dimension type it returns a base unit (for base dimensions)
  * or a coherent unit (in case of derived dimensions).
  * 
- * @tparam D Dimension type to get the unit from.
+ * @tparam D in_dimension type to get the unit from.
  */
-template<Dimension D>
+template<in_dimension D>
 using dimension_unit = detail::dimension_unit_impl<D>::type;
 
 /**
  * @brief A concept matching only units of a specified dimension.
  * 
- * Satisfied by all unit types that satisfy `in_unit<U>`, `Dimension<D>`, and for which
+ * Satisfied by all unit types that satisfy `in_unit<U>`, `in_dimension<D>`, and for which
  * `U::reference` and @c dimension_unit<D>::reference denote the same unit type.
  * 
  * @tparam U Type to verify.
- * @tparam D Dimension type to use for verification.
+ * @tparam D in_dimension type to use for verification.
  */
 template<typename U, typename D>
 concept UnitOf =
   in_unit<U> &&
-  Dimension<D> &&
+  in_dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
-// Quantity
+// in_quantity
 namespace detail {
 
 template<typename T>
@@ -229,10 +229,10 @@ inline constexpr bool is_quantity = false;
  * Satisfied by all instantiations of :class:`quantity`.
  */
 template<typename T>
-concept Quantity = detail::is_quantity<T>;
+concept in_quantity = detail::is_quantity<T>;
 
 
-// WrappedQuantity
+// in_wrapped_quantity
 namespace detail {
 
 template<typename T>
@@ -240,20 +240,20 @@ inline constexpr bool is_wrapped_quantity = false;
 
 template<typename T>
   requires requires { typename T::value_type; }
-inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
+inline constexpr bool is_wrapped_quantity<T> = in_quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
 
 }  // namespace detail
 
 /**
  * @brief A concept matching types that wrap quantity objects.
  * 
- * Satisfied by all wrapper types that satisfy `Quantity<typename T::value_type>`
+ * Satisfied by all wrapper types that satisfy `in_quantity<typename T::value_type>`
  * recursively (i.e. `std::optional<si::length<si::metre>>`).
  */
 template<typename T>
-concept WrappedQuantity = detail::is_wrapped_quantity<T>;
+concept in_wrapped_quantity = detail::is_wrapped_quantity<T>;
 
-// NumericValue
+// in_numeric_value
 
 namespace detail {
 
@@ -278,14 +278,14 @@ concept not_constructible_from_integral =
 }  // namespace detail
 
 /**
- * @brief A concept matching non-Quantity types.
+ * @brief A concept matching non-in_quantity types.
  * 
- * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
+ * Satisfied by types that satisfy `(!in_quantity<T>) && (!in_wrapped_quantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept NumericValue =
-  (!Quantity<T>) &&
-  (!WrappedQuantity<T>) &&
+concept in_numeric_value =
+  (!in_quantity<T>) &&
+  (!in_wrapped_quantity<T>) &&
   std::regular<T> &&
   (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
 

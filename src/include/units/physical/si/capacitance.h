@@ -54,7 +54,7 @@ struct yottafarad : prefixed_unit<yottafarad, yotta, farad> {};
 
 struct dim_capacitance : physical::dim_capacitance<dim_capacitance, farad, dim_electric_charge, dim_voltage> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using capacitance = quantity<dim_capacitance, U, Rep>;
 
 inline namespace literals {

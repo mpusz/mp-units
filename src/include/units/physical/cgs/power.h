@@ -33,7 +33,7 @@ struct erg_per_second : unit<erg_per_second> {};
 
 struct dim_power : physical::dim_power<dim_power, erg_per_second, dim_energy, dim_time> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {

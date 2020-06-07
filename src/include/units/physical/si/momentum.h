@@ -32,7 +32,7 @@ namespace units::physical::si {
 struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
 struct dim_momentum : physical::dim_momentum<dim_momentum, kilogram_metre_per_second, dim_mass, dim_speed> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using momentum = quantity<dim_momentum, U, Rep>;
 
 inline namespace literals {

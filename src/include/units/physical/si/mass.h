@@ -76,7 +76,7 @@ struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio<16'605'390'666'
 
 struct dim_mass : physical::dim_mass<kilogram> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {

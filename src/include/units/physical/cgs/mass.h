@@ -32,7 +32,7 @@ using si::gram;
 
 struct dim_mass : physical::dim_mass<gram> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {

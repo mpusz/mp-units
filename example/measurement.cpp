@@ -146,7 +146,7 @@ private:
   value_type uncertainty_{};
 };
 
-static_assert(units::NumericValue<measurement<double>>);
+static_assert(units::in_numeric_value<measurement<double>>);
 
 }  // namespace
 

@@ -54,7 +54,7 @@ struct square_yottametre : deduced_unit<square_yottametre, dim_area, yottametre>
 
 struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
 
-template<in_unit U, NumericValue Rep = double>
+template<in_unit U, in_numeric_value Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
 inline namespace literals {

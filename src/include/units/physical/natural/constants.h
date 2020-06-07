@@ -26,7 +26,7 @@
 
 namespace units::physical::natural {
 
-template<NumericValue Rep = double>
+template<in_numeric_value Rep = double>
 inline constexpr auto speed_of_light = speed<unitless, Rep>(1);
 
 }  // namespace units::physical::natural

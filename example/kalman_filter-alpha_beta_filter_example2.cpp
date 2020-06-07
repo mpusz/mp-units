@@ -12,7 +12,7 @@
 
 namespace {
 
-template<units::Quantity Q>
+template<units::in_quantity Q>
 struct state_variable {
   Q estimated_current_state;
   Q predicted_next_state;

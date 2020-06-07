@@ -56,7 +56,7 @@ struct scaled_unit : downcast_base<scaled_unit<R, U>> {
   using reference = U;
 };
 
-template<Dimension D, in_unit_ratio R>
+template<in_dimension D, in_unit_ratio R>
 using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
 
 template<in_unit U1, in_unit U2>
@@ -165,7 +165,7 @@ struct deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest..
   using prefix_family = no_prefix;
 };
 
-// template<typename Child, Dimension Dim, basic_fixed_string Symbol, in_prefix_family PF, in_unit U, in_unit... Us>
+// template<typename Child, in_dimension Dim, basic_fixed_string Symbol, in_prefix_family PF, in_unit U, in_unit... Us>
 // struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_derived_unit<Dim, U, Us...>> {
 //   static constexpr bool is_named = true;
 //   static constexpr auto symbol = Symbol;
