@@ -201,10 +201,10 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
-template<units::Unit U = si::metre, units::Value Rep = double>
+template<units::Unit U = si::metre, units::NumericValue Rep = double>
 using length_v = si::length<U, vector<Rep>>;
 
-template<units::Unit U = si::newton, units::Value Rep = double>
+template<units::Unit U = si::newton, units::NumericValue Rep = double>
 using force_v = si::force<U, vector<Rep>>;
 
 void quantity_of_vector_add()
@@ -274,7 +274,7 @@ void quantity_of_vector_tests()
   quantity_of_vector_divide_by_scalar();
 }
 
-template<units::Unit U = si::metre, units::Value Rep = double>
+template<units::Unit U = si::metre, units::NumericValue Rep = double>
 using length_m = si::length<U, matrix<Rep>>;
 
 void quantity_of_matrix_add()

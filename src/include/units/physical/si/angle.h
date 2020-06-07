@@ -32,7 +32,7 @@ struct radian : named_unit<radian, "rad", prefix> {};
 
 struct dim_angle : physical::dim_angle<radian> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using angle = quantity<dim_angle, U, Rep>;
 
 inline namespace literals {

@@ -52,7 +52,7 @@ struct yottacandela : prefixed_unit<yottacandela, yotta, candela> {};
 
 struct dim_luminous_intensity : physical::dim_luminous_intensity<candela> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 
 inline namespace literals {

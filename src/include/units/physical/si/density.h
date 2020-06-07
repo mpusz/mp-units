@@ -34,7 +34,7 @@ struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
 
 struct dim_density : physical::dim_density<dim_density, kilogram_per_metre_cub, dim_mass, dim_length> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {

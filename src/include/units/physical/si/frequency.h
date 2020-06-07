@@ -48,7 +48,7 @@ struct yottahertz : prefixed_unit<yottahertz, yotta, hertz> {};
 
 struct dim_frequency : physical::dim_frequency<dim_frequency, hertz, dim_time> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using frequency = quantity<dim_frequency, U, Rep>;
 
 inline namespace literals {

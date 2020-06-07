@@ -52,7 +52,7 @@ struct yottaampere : prefixed_unit<yottaampere, yotta, ampere> {};
 
 struct dim_electric_current : physical::dim_electric_current<ampere> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using current = quantity<dim_electric_current, U, Rep>;
 
 inline namespace literals {

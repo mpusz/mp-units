@@ -56,7 +56,7 @@ struct enzyme_unit : named_scaled_unit<enzyme_unit, "U", prefix, ratio<1, 60, -6
 
 struct dim_catalytic_activity : physical::dim_catalytic_activity<dim_catalytic_activity, katal, dim_time, dim_substance> {};
 
-template<Unit U, Value Rep = double>
+template<Unit U, NumericValue Rep = double>
 using catalytic_activity = quantity<dim_catalytic_activity, U, Rep>;
 
 inline namespace literals {
