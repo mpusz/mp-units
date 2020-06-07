@@ -61,9 +61,9 @@ constexpr long double fpow10(std::intmax_t exp)
 }
 
 
-// QuantityOf
+// in_quantity_of
 template<typename T, typename Dim>
-concept QuantityOf = in_quantity<T> && in_dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
+concept in_quantity_of = in_quantity<T> && in_dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
 
 // quantity_cast
 namespace detail {
@@ -326,7 +326,7 @@ struct cast_ratio<FromD, FromU, ToD, ToU> {
  */
 template<in_quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
-  requires QuantityOf<To, D>
+  requires in_quantity_of<To, D>
 {
   using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
   using c_rep = std::common_type_t<typename To::rep, Rep>;

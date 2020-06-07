@@ -39,7 +39,7 @@ struct tebibit_per_second : deduced_unit<tebibit_per_second, dim_bitrate, tebibi
 struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibit, physical::si::second> {};
 
 template<typename T>
-concept Bitrate = QuantityOf<T, dim_bitrate>;
+concept in_bitrate = in_quantity_of<T, dim_bitrate>;
 
 template<in_unit U, in_numeric_value Rep = double>
 using bitrate = quantity<dim_bitrate, U, Rep>;
