@@ -36,10 +36,10 @@ struct coulomb_per_metre_sq : unit<coulomb_per_metre_sq> {};
 struct dim_charge_density : physical::dim_charge_density<dim_charge_density, coulomb_per_metre_cub, dim_electric_charge, dim_length> {};
 struct dim_surface_charge_density : physical::dim_surface_charge_density<dim_surface_charge_density, coulomb_per_metre_sq, dim_electric_charge, dim_length> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using charge_density = quantity<dim_charge_density, U, Rep>;
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using surface_charge_density = quantity<dim_surface_charge_density, U, Rep>;
 
 inline namespace literals {

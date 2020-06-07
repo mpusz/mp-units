@@ -50,8 +50,8 @@ inline constexpr bool is_exp<exp<Dim, Num, Den>> = true;
 }  // namespace detail
 
 // exp_less
-template<Exponent E1, Exponent E2>
-  requires BaseDimension<typename E1::dimension> && BaseDimension<typename E2::dimension>
+template<in_exponent E1, in_exponent E2>
+  requires in_base_dimension<typename E1::dimension> && in_base_dimension<typename E2::dimension>
 struct exp_less : base_dimension_less<typename E1::dimension, typename E2::dimension> {};
 
 // exp_invert
@@ -62,13 +62,13 @@ constexpr exp<Dim, -Num, Den> exp_invert_impl(exp<Dim, Num, Den>);
 
 }  // namespace detail
 
-template<Exponent E>
+template<in_exponent E>
 using exp_invert = decltype(detail::exp_invert_impl(E()));
 
 // exp_multiply
 namespace detail {
 
-template<Exponent E, std::intmax_t Num, std::intmax_t Den>
+template<in_exponent E, std::intmax_t Num, std::intmax_t Den>
 struct exp_multiply_impl {
   using r1 = ratio<E::num, E::den>;
   using r2 = ratio<Num, Den>;
@@ -78,10 +78,10 @@ struct exp_multiply_impl {
 
 }  // namespace detail
 
-template<Exponent E, std::intmax_t Num, std::intmax_t Den>
+template<in_exponent E, std::intmax_t Num, std::intmax_t Den>
 using exp_multiply = detail::exp_multiply_impl<E, Num, Den>::type;
 
-template<Exponent... Es>
+template<in_exponent... Es>
 struct exp_list {};
 
 }  // namespace units

@@ -56,7 +56,7 @@ concept safe_divisible = // exposition only
  * Property of a phenomenon, body, or substance, where the property has a magnitude that can be
  * expressed by means of a number and a measurement unit.
  *
- * @tparam D a dimension of the quantity (can be either a BaseDimension or a DerivedDimension)
+ * @tparam D a dimension of the quantity (can be either a in_base_dimension or a in_derived_dimension)
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */

@@ -74,7 +74,7 @@ struct exalitre : prefixed_unit<petalitre, exa, litre> {};
 struct zettalitre : prefixed_alias_unit<cubic_megametre, zetta, litre> {};
 struct yottalitre : prefixed_unit<yottalitre, yotta, litre> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
 inline namespace literals {

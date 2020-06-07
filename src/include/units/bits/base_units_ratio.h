@@ -28,7 +28,7 @@
 
 namespace units::detail {
 
-template<Exponent E>
+template<in_exponent E>
   requires (E::den == 1 || E::den == 2) // TODO provide support for any den
 struct exp_ratio {
   using base_ratio = E::dimension::base_unit::ratio;

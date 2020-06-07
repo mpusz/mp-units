@@ -27,45 +27,45 @@
 namespace units::detail {
 
 // same_scaled_units
-template<typename ExpList, Unit... Us>
+template<typename ExpList, in_unit... Us>
 inline constexpr bool same_scaled_units = false;
 
-template<typename... Es, Unit... Us>
+template<typename... Es, in_unit... Us>
 inline constexpr bool same_scaled_units<exp_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // deduced_unit
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+template<typename Result, int UnitExpNum, int UnitExpDen, typename in_unit_ratio>
 struct ratio_op;
 
-template<typename Result, int UnitExpDen, typename UnitRatio>
-struct ratio_op<Result, 0, UnitExpDen, UnitRatio> {
+template<typename Result, int UnitExpDen, typename in_unit_ratio>
+struct ratio_op<Result, 0, UnitExpDen, in_unit_ratio> {
   using ratio = Result;
 };
 
-template<typename Result, int UnitExpNum, int UnitExpDen, typename UnitRatio>
+template<typename Result, int UnitExpNum, int UnitExpDen, typename in_unit_ratio>
 struct ratio_op {
   using calc_ratio =
-      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, UnitRatio>, ratio_divide<Result, UnitRatio>>;
+      conditional<(UnitExpNum * UnitExpDen > 0), ratio_multiply<Result, in_unit_ratio>, ratio_divide<Result, in_unit_ratio>>;
   static constexpr int value = (UnitExpNum * UnitExpDen > 0) ? (UnitExpNum - UnitExpDen) : (UnitExpNum + UnitExpDen);
-  using ratio = ratio_op<calc_ratio, value, UnitExpDen, UnitRatio>::ratio;
+  using ratio = ratio_op<calc_ratio, value, UnitExpDen, in_unit_ratio>::ratio;
 };
 
-template<typename ExpList, Unit... Us>
+template<typename ExpList, in_unit... Us>
 struct derived_ratio;
 
-template<Unit... Us>
+template<in_unit... Us>
 struct derived_ratio<exp_list<>, Us...> {
   using ratio = ::units::ratio<1>;
 };
 
-template<typename E, typename... ERest, Unit U, Unit... URest>
+template<typename E, typename... ERest, in_unit U, in_unit... URest>
 struct derived_ratio<exp_list<E, ERest...>, U, URest...> {
   using rest_ratio = derived_ratio<exp_list<ERest...>, URest...>::ratio;
   using unit_ratio = ratio_op<rest_ratio, E::num, E::den, typename U::ratio>::ratio;
   using ratio = ratio_divide<unit_ratio, typename dimension_unit<typename E::dimension>::ratio>;
 };
 
-template<DerivedDimension D, Unit... Us>
+template<in_derived_dimension D, in_unit... Us>
 using deduced_unit =
     scaled_unit<typename detail::derived_ratio<typename D::recipe, Us...>::ratio, typename D::coherent_unit::reference>;
 

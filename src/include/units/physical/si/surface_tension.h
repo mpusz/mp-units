@@ -32,7 +32,7 @@ struct newton_per_metre : unit<newton_per_metre> {};
 
 struct dim_surface_tension : physical::dim_surface_tension<dim_surface_tension, newton_per_metre, dim_force, dim_length> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using surface_tension = quantity<dim_surface_tension, U, Rep>;
 
 inline namespace literals {

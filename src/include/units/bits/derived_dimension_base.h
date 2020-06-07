@@ -44,8 +44,8 @@ namespace units::detail {
  * @tparam E a first exponent of a derived dimension
  * @tparam ERest zero or more following exponents of a derived dimension
  */
-template<Exponent E, Exponent... ERest>
-  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
+template<in_exponent E, in_exponent... ERest>
+  requires (in_base_dimension<typename E::dimension> && ... && in_base_dimension<typename ERest::dimension>)
 struct derived_dimension_base : downcast_base<derived_dimension_base<E, ERest...>> {
   using exponents = exp_list<E, ERest...>;
 };
@@ -53,7 +53,7 @@ struct derived_dimension_base : downcast_base<derived_dimension_base<E, ERest...
 template<typename T>
 struct to_derived_dimension_base;
 
-template<Exponent... Es>
+template<in_exponent... Es>
 struct to_derived_dimension_base<exp_list<Es...>> {
   using type = derived_dimension_base<Es...>;
 };

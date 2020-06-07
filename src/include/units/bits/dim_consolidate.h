@@ -54,7 +54,7 @@ struct dim_consolidate<exp_list<E1, ERest...>> {
   using type = type_list_push_front<typename dim_consolidate<exp_list<ERest...>>::type, E1>;
 };
 
-template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
+template<in_base_dimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
 struct dim_consolidate<exp_list<exp<Dim, Num1, Den1>, exp<Dim, Num2, Den2>, ERest...>> {
   // TODO: we have ration_add now, but dim_consolidate etc, now need to cope with our new ratio
   using r1 = std::ratio<Num1, Den1>;

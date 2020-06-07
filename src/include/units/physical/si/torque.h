@@ -34,7 +34,7 @@ struct newton_metre : named_unit<newton_metre, "Nm", prefix> {};
 
 struct dim_torque : physical::dim_torque<dim_torque, newton_metre, dim_energy, dim_angle> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using torque = quantity<dim_torque, U, Rep>;
 
 inline namespace literals {

@@ -31,7 +31,7 @@ namespace units {
 /**
  * @brief The base for all prefix families
  *
- * Every prefix family should inherit from this type to satisfy PrefixFamily concept.
+ * Every prefix family should inherit from this type to satisfy in_prefix_family concept.
  */
 struct prefix_family {};
 
@@ -45,7 +45,7 @@ struct no_prefix : prefix_family {};
 
 namespace detail {
 
-template<PrefixFamily PF, Ratio R>
+template<in_prefix_family PF, in_ratio R>
 struct prefix_base : downcast_base<prefix_base<PF, R>> {
   using prefix_family = PF;
   using ratio = R;
@@ -68,7 +68,7 @@ struct prefix_base : downcast_base<prefix_base<PF, R>> {
  * @tparam Symbol a text representation of the prefix
  * @tparam R factor to be used to scale a unit
  */
-template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, Ratio R>
+template<typename Child, in_prefix_family PF, basic_symbol_text Symbol, in_ratio R>
   requires (!std::same_as<PF, no_prefix>)
 struct prefix : downcast_child<Child, detail::prefix_base<PF, R>> {
   static constexpr auto symbol = Symbol;

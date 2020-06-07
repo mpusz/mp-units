@@ -34,7 +34,7 @@ namespace units {
  * 
  * Both the quantity value and its dimension are the base of the operation.
  * 
- * @tparam N Exponent
+ * @tparam N in_exponent
  * @param q Quantity being the base of the operation
  * @return Quantity The result of computation 
  */

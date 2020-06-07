@@ -54,7 +54,7 @@ struct yottanewton : prefixed_unit<yottanewton, yotta, newton> {};
 
 struct dim_force : physical::dim_force<dim_force, newton, dim_mass, dim_acceleration> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
 inline namespace literals {

@@ -43,7 +43,7 @@ struct day : named_scaled_unit<hour, "d", no_prefix, ratio<24>, hour> {};
 
 struct dim_time : physical::dim_time<second> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
 inline namespace literals {

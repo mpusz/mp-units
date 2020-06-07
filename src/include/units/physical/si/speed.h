@@ -34,7 +34,7 @@ struct dim_speed : physical::dim_speed<dim_speed, metre_per_second, dim_length, 
 
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
 inline namespace literals {

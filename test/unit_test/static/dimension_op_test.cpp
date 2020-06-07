@@ -50,7 +50,7 @@ struct typeinfo;
 template<typename... Ts>
 using dim_unpack = detail::dim_unpack<Ts...>::type;
 
-template<Exponent... Es>
+template<in_exponent... Es>
 using derived_dim = detail::derived_dimension_base<Es...>;
 
 static_assert(std::is_same_v<dim_unpack<>, exp_list<>>);

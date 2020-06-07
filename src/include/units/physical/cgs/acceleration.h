@@ -31,7 +31,7 @@ namespace units::physical::cgs {
 struct gal : named_unit<gal, "Gal", si::prefix> {};
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, gal, dim_length, dim_time> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {

@@ -289,21 +289,21 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   }
 };
 
-template<Dimension FromD, Unit FromU, Dimension ToD, Unit ToU>
+template<Dimension FromD, in_unit FromU, Dimension ToD, in_unit ToU>
 struct cast_ratio;
 
-template<BaseDimension FromD, Unit FromU, BaseDimension ToD, Unit ToU>
+template<in_base_dimension FromD, in_unit FromU, in_base_dimension ToD, in_unit ToU>
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
 };
 
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
+template<in_derived_dimension FromD, in_unit FromU, in_derived_dimension ToD, in_unit ToU>
   requires same_unit_reference<FromU, ToU>::value
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using type = ratio_divide<typename FromU::ratio, typename ToU::ratio>;
 };
 
-template<DerivedDimension FromD, Unit FromU, DerivedDimension ToD, Unit ToU>
+template<in_derived_dimension FromD, in_unit FromU, in_derived_dimension ToD, in_unit ToU>
 struct cast_ratio<FromD, FromU, ToD, ToU> {
   using from_ratio = ratio_multiply<typename FromD::base_units_ratio, typename FromU::ratio>;
   using to_ratio = ratio_multiply<typename ToD::base_units_ratio, typename ToU::ratio>;
@@ -367,7 +367,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Unit ToU, typename D, typename U, typename Rep>
+template<in_unit ToU, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires UnitOf<ToU, D>
 {

@@ -31,7 +31,7 @@ struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
 struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<kelvin> {};
 
-template<Unit U, NumericValue Rep = double>
+template<in_unit U, NumericValue Rep = double>
 using temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
 inline namespace literals {
