@@ -201,19 +201,22 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
-template<units::in_unit U = si::metre, units::in_numeric_value Rep = double>
+/*
+template<units::Unit U = si::metre, units::Scalar Rep = double>
 using length_v = si::length<U, vector<Rep>>;
 
-template<units::in_unit U = si::newton, units::in_numeric_value Rep = double>
+template<units::Unit U = si::newton, units::Scalar Rep = double>
 using force_v = si::force<U, vector<Rep>>;
+
 
 void quantity_of_vector_add()
 {
   std::cout << "\nquantity_of_vector_add:\n";
 
-  length_v<> v(vector<>{ 1, 2, 3 });
-  length_v<> u(vector<>{ 3, 2, 1 });
-  length_v<si::kilometre> t(vector<>{ 3, 2, 1 });
+  vector<> vrep { 1.0, 2.0, 3.0 };
+  length_v<> v(vrep);
+  length_v<> u(vector<>{ 3.0, 2.0, 1.0 });
+  length_v<si::kilometre> t(vector<>{ 3.0, 2.0, 1.0 });
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -266,6 +269,8 @@ void quantity_of_vector_divide_by_scalar()
   // std::cout << "v / 2 = " << v / 2 << "\n";
 }
 
+
+
 void quantity_of_vector_tests()
 {
   quantity_of_vector_add();
@@ -274,7 +279,9 @@ void quantity_of_vector_tests()
   quantity_of_vector_divide_by_scalar();
 }
 
-template<units::in_unit U = si::metre, units::in_numeric_value Rep = double>
+
+
+template<units::Unit U = si::metre, units::Scalar Rep = double>
 using length_m = si::length<U, matrix<Rep>>;
 
 void quantity_of_matrix_add()
@@ -346,12 +353,14 @@ void quantity_of_matrix_tests()
   quantity_of_matrix_divide_by_scalar();
 }
 
+*/
+
 }
 
 int main()
 {
   vector_of_quantity_tests();
   matrix_of_quantity_tests();
-  quantity_of_vector_tests();
-  quantity_of_matrix_tests();
+ // quantity_of_vector_tests();
+ // quantity_of_matrix_tests();
 }
