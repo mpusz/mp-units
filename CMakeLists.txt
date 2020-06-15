@@ -23,6 +23,15 @@
 cmake_minimum_required(VERSION 3.12)
 project(mp-units)
 
+set(MASTER_PROJECT OFF)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    set(MASTER_PROJECT ON)
+endif()
+
+option(MP_UNITS_DOCS "Enable documentation" ${MASTER_PROJECT})
+option(MP_UNITS_EXAMPLES "Enable examples" ${MASTER_PROJECT})
+option(MP_UNITS_TESTS "Enable tests" ${MASTER_PROJECT})
+
 # set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -43,11 +52,17 @@ set_warnings(TREAT_AS_ERRORS)
 add_subdirectory(src)
 
 # add unit tests
-enable_testing()
-add_subdirectory(test)
+if(MP_UNITS_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 # add usage example
-add_subdirectory(example)
+if(MP_UNITS_EXAMPLES)
+    add_subdirectory(example)
+endif()
 
 # generate project documentation
-add_subdirectory(docs)
+if(MP_UNITS_DOCS)
+    add_subdirectory(docs)
+endif()
