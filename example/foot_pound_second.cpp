@@ -54,18 +54,18 @@ struct Ship {
   fps::mass<fps::pound> shellMass;
   fps::speed<fps::foot_per_second> shellSpeed;
   fps::power<fps::foot_poundal_per_second> power;
-
-
 };
 
 // Print 'a' in its current units and print its value cast to the units in each of Args
 template<class ...Args, units::Quantity Q>
-auto fmt_line(const Q a) {
-  return fmt::format("{:22}",a) + (fmt::format(",{:20}", units::quantity_cast<Args>(a)) + ...);
+auto fmt_line(const Q a)
+{
+  return fmt::format("{:22}", a) + (fmt::format(",{:20}", units::quantity_cast<Args>(a)) + ...);
 }
 
 // Print the ship details in the units as defined in the Ship struct, in other imperial units, and in SI
-std::ostream& print_details(std::string_view description, const Ship& ship) {
+void print_details(std::string_view description, const Ship& ship)
+{
   using namespace units::physical::fps::literals;
   const auto waterDensity = 62.4q_lb_per_ft3;
   std::cout << fmt::format("{}\n", description);
@@ -79,7 +79,6 @@ std::ostream& print_details(std::string_view description, const Ship& ship) {
             << fmt::format("{:20} : {}\n", "fire shells weighing",fmt_line<fps::mass<fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
             << fmt::format("{:20} : {}\n", "fire shells at",fmt_line<fps::speed<fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
             << fmt::format("{:20} : {}\n", "volume underwater", fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
-  return std::cout;
 }
 
 int main()
@@ -87,7 +86,6 @@ int main()
   using namespace units::physical::si::literals;
   using namespace units::physical::fps::literals;
   
-
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{251.q_m}, .draft{9.3q_m}, .beam{36q_m}, .speed{56q_km_per_h}, .mass{50.3q_t}, .mainGuns{380q_mm}, .shellMass{800q_kg}, .shellSpeed{820.q_m_per_s}, .power{110.45q_kW}};
 
@@ -97,8 +95,9 @@ int main()
   // HMS King George V, using units from the foot-pound-second system
   auto kgv = Ship{.length{745.1q_ft}, .draft{33.q_ft + 7.5q_in}, .beam{103.2q_ft + 2.5q_in}, .speed{28.3q_knot}, .mass{42'245q_lton}, .mainGuns{14q_in}, .shellMass{1'590q_lb}, .shellSpeed{2483.q_ft_per_s}, .power{110'000q_hp}};
 
-  print_details("KMS Bismark, defined in appropriate units from the SI system", bismark) << "\n\n";
-  print_details("USS Iowa, defined in appropriate units foot-pound-second system", iowa) << "\n\n";
+  print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);
+  std::cout << "\n\n";
+  print_details("USS Iowa, defined in appropriate units foot-pound-second system", iowa);
+  std::cout << "\n\n";
   print_details("HMS King George V, defined in appropriate units foot-pound-second system", kgv);
-
 }
