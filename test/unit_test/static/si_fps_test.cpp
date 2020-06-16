@@ -133,8 +133,8 @@ using namespace units::physical::fps::literals;
 
 // static_assert(si::length<si::metre>(1) + 1q_ft == si::length<si::metre>(1.3048)); // should not compile (different dimensions)
 // static_assert(1q_ft / 0.3048 + si::length<si::metre>(1) == si::length<si::metre>(1.3048)); // should not compile (different dimensions)
-static_assert(quantity_cast<si::length<si::metre>>(1q_ft / 0.3048) + si::length<si::metre>(1) == si::length<si::metre>(2));   // 1 m in ft + 1 m
-static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(1q_ft / 0.3048) == si::length<si::metre>(2));   // 1 m + 1 m in ft
+static_assert(quantity_cast<si::length<si::metre>>(1.q_ft / 0.3048) + si::length<si::metre>(1) == si::length<si::metre>(2));   // 1 m in ft + 1 m
+static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(1.q_ft / 0.3048) == si::length<si::metre>(2));   // 1 m + 1 m in ft
 static_assert(1q_ft + quantity_cast<fps::length<fps::foot>>(si::length<si::metre>(0.3048)) == 2q_ft);                         // 1 ft + 1 ft in m
 static_assert(quantity_cast<fps::length<fps::foot>>(si::length<si::metre>(0.3048)) + 1q_ft == 2q_ft);                         // 1 ft in m + 1 ft
 
