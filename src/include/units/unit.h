@@ -249,7 +249,7 @@ struct alias_unit : U {
 // template<Unit U, Prefix P, AliasUnit AU>
 //   requires (!AliasUnit<U>) && std::same_as<typename P::prefix_family, typename AU::prefix_family>
 template<Unit U, Prefix P, Unit AU>
-  requires std::same_as<typename P::prefix_family, typename AU::prefix_family>
+  requires AU::is_named && std::same_as<typename P::prefix_family, typename AU::prefix_family>
 struct prefixed_alias_unit : U {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + AU::symbol;
