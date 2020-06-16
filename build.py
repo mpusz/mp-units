@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
         # dependencies
         remotes = "https://api.bintray.com/conan/bincrafters/public-conan, https://api.bintray.com/conan/twonington/public-conan",
-        build_policy = "outdated",
+        build_policy = ["outdated"],
         upload_dependencies="all",
         pip_install=["sphinx", "recommonmark", "breathe"],
 
