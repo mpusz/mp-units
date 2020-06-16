@@ -10,6 +10,7 @@ Examples
     examples/unknown_dimension
     examples/measurement
     examples/linear_algebra
+    examples/foot_pound_second
 
     examples/capacitor_time_curve
     examples/clcpp_response

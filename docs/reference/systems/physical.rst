@@ -10,6 +10,7 @@ Physical
     physical/international
     physical/us
     physical/imperial
+    physical/fps
     physical/iau
     physical/typographic
     physical/natural

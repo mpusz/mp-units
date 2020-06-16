@@ -19,6 +19,12 @@ Units
 .. doxygenstruct:: units::deduced_unit
    :members:
 
+.. doxygenstruct:: units::noble_deduced_unit
+   :members:
+
+.. doxygenstruct:: units::named_deduced_unit
+   :members:
+
 .. doxygenstruct:: units::alias_unit
    :members:
 

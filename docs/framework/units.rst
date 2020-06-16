@@ -300,8 +300,21 @@ does not exist at all. With it `si::kilometre_per_hour` can be defined as::
 
     }
 
-Please note that this is the only unit-related class template that takes
-a dimension as its parameter. This derived dimension provides a :term:`recipe`
+In case the deduced unit should served as a named one we can use ether a
+`named_deduced_unit` where the user is able to provide a symbol for the unit
+by him/her-self or `noble_deduced_unit` where the symbol is the deduced name
+based on the ingredients::
+
+    namespace fps {
+
+    struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_speed,
+                                                       "knot", no_prefix, nautical_mile, hour>{};
+    struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+
+    }
+
+Please note that deduced units are the only unit-related class template that
+take a dimension as its parameter. This derived dimension provides a :term:`recipe`
 used for its definition. Based on the information stored in the recipe
 (order, type, and exponents of composite dimensions) and the ratios of units
 provided in the template parameter list after the derived dimension parameter,
@@ -353,6 +366,8 @@ of a `scaled_unit` class template:
     [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[noble_deduced_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[named_deduced_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
     [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
 
