@@ -37,7 +37,7 @@ using speed = quantity<dim_speed, U, Rep>;
 
 struct mile_per_hour : deduced_unit<mile_per_hour, dim_speed, mile, hour>{};
 
-struct nautical_mile_per_hour :named_deduced_derived_unit<nautical_mile_per_hour, dim_speed, "knot", no_prefix, nautical_mile, hour>{};
+struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_speed, "knot", no_prefix, nautical_mile, hour>{};
 
 struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 

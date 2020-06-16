@@ -207,7 +207,7 @@ struct noble_deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, U
  */
 template<typename Child, DerivedDimension Dim, basic_symbol_text Symbol, PrefixFamily PF, Unit U, Unit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...>
-struct named_deduced_derived_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
+struct named_deduced_unit : downcast_child<Child, detail::deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;
