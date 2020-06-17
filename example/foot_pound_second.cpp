@@ -87,7 +87,7 @@ int main()
   using namespace units::physical::fps::literals;
   
   // KMS Bismark, using the units the Germans would use, taken from Wiki
-  auto bismark = Ship{.length{251.q_m}, .draft{9.3q_m}, .beam{36q_m}, .speed{56q_km_per_h}, .mass{50.3q_t}, .mainGuns{380q_mm}, .shellMass{800q_kg}, .shellSpeed{820.q_m_per_s}, .power{110.45q_kW}};
+  auto bismark = Ship{.length{251.q_m}, .draft{9.3q_m}, .beam{36q_m}, .speed{56q_km_per_h}, .mass{50'300q_t}, .mainGuns{380q_mm}, .shellMass{800q_kg}, .shellSpeed{820.q_m_per_s}, .power{110.45q_kW}};
 
   // USS Iowa, using units from the foot-pound-second system
   auto iowa = Ship{.length{860.q_ft}, .draft{37.q_ft + 2.q_in}, .beam{108.q_ft + 2.q_in}, .speed{33q_knot}, .mass{57'540q_lton}, .mainGuns{16q_in}, .shellMass{2700q_lb}, .shellSpeed{2690.q_ft_per_s}, .power{212'000q_hp}};
