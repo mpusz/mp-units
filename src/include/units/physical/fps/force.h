@@ -34,9 +34,12 @@ namespace units::physical::fps {
 struct poundal : named_unit<poundal, "pdl", no_prefix> {};
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-struct pound_force : named_scaled_unit<pound_force, "lbf", no_prefix, ratio<32'174'049, 1'000'000>, poundal> {};
+struct pound_force : named_scaled_unit<pound_force, "lbf", si::prefix, ratio<32'174'049, 1'000'000>, poundal> {};
 
+struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 
+// https://en.wikipedia.org/wiki/Kip_(unit), 
+struct kip : alias_unit<kilopound_force, "klbf", no_prefix> {};
 
 struct dim_force : physical::dim_force<dim_force, poundal, dim_mass, dim_acceleration> {};
 
@@ -52,6 +55,10 @@ constexpr auto operator"" q_pdl(long double l) { return force<poundal, long doub
 // pound force
 constexpr auto operator"" q_lbf(unsigned long long l) { return force<pound_force, std::int64_t>(l); }
 constexpr auto operator"" q_lbf(long double l) { return force<pound_force, long double>(l); }
+
+// kilopound force
+constexpr auto operator"" q_klbf(unsigned long long l) { return force<kilopound_force, std::int64_t>(l); }
+constexpr auto operator"" q_klbf(long double l) { return force<kilopound_force, long double>(l); }
 
 }  // namespace literals
 

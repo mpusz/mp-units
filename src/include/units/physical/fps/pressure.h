@@ -39,9 +39,9 @@ using pressure = quantity<dim_pressure, U, Rep>;
 
 struct pound_force_per_foot_sq : named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio<32'174'049, 1'000'000>, poundal_per_foot_sq> {};
 
-// struct pound_force_per_foot_sq : noble_deduced_unit<pound_force_per_foot_sq, dim_pressure, pound_force, square_ft> {};
-
 struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi", si::prefix, ratio<1, 144>, pound_force_per_foot_sq> {};
+
+struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 
 inline namespace literals {
 // Poundal per square foot
@@ -51,6 +51,10 @@ constexpr auto operator"" q_pdl_per_ft2(long double l) { return pressure<poundal
 // Pounds per square inch
 constexpr auto operator"" q_psi(unsigned long long l) { return pressure<pound_force_per_inch_sq, std::int64_t>(l); }
 constexpr auto operator"" q_psi(long double l) { return pressure<pound_force_per_inch_sq, long double>(l); }
+
+// kilopounds per square inch
+constexpr auto operator"" q_kpsi(unsigned long long l) { return pressure<kilopound_force_per_inch_sq, std::int64_t>(l); }
+constexpr auto operator"" q_kpsi(long double l) { return pressure<kilopound_force_per_inch_sq, long double>(l); }
 
 }  // namespace literals
 
