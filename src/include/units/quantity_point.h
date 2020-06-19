@@ -142,14 +142,14 @@ public:
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
     requires std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
   {
-    return lhs.q_ <=> rhs.relative();
+    return lhs.relative() <=> rhs.relative();
   }
 
   template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr auto operator==(const quantity_point& lhs, const QP& rhs)
+  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
     requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
   {
-    return lhs.q_ == rhs.relative();
+    return lhs.relative() == rhs.relative();
   }
 
 #else
@@ -158,7 +158,7 @@ public:
   [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
     requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
   {
-    return lhs.q_ == rhs.relative();
+    return lhs.relative() == rhs.relative();
   }
 
   template<QuantityPoint QP>
@@ -172,7 +172,7 @@ public:
   [[nodiscard]] friend constexpr bool operator<(const quantity_point& lhs, const QP& rhs)
     requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
   {
-    return lhs.q_ < rhs.relative();
+    return lhs.relative() < rhs.relative();
   }
 
   template<QuantityPoint QP>
@@ -202,19 +202,19 @@ public:
 template<typename D, typename U, typename Rep>
 quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
 
-constexpr QuantityPoint AUTO operator+(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
   requires requires { lhs.relative() + rhs; }
 {
   return quantity_point(lhs.relative() + rhs);
 }
 
-constexpr QuantityPoint AUTO operator+(const Quantity AUTO& lhs, const QuantityPoint AUTO& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const Quantity AUTO& lhs, const QuantityPoint AUTO& rhs)
   requires requires { rhs + lhs; }
 {
   return rhs + lhs;
 }
 
-constexpr QuantityPoint AUTO operator-(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
+[[nodiscard]] constexpr QuantityPoint AUTO operator-(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
   requires requires { lhs.relative() - rhs; }
 {
   return quantity_point(lhs.relative() - rhs);
