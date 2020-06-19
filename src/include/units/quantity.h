@@ -228,14 +228,14 @@ public:
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
+             std::three_way_comparable_with<Rep, Rep2>
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() <=> cq(rhs).count();
   }
 
   template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr auto operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
              std::equality_comparable_with<Rep, Rep2>
   {
