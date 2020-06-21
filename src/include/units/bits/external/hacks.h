@@ -45,6 +45,7 @@
 #else
 
 #include <concepts/concepts.hpp>
+#include <range/v3/range.hpp>
 
 #endif
 
@@ -84,6 +85,13 @@ namespace std {
   using concepts::same_as;
   using concepts::totally_ordered;
   using concepts::totally_ordered_with;
+
+  namespace ranges {
+
+  using ::ranges::forward_range;
+  using ::ranges::range_value_t;
+
+  }
 
   // missing in Range-v3
   template<class T>

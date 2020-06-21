@@ -26,17 +26,15 @@ function(add_example target)
 endfunction()
 
 add_example(avg_speed)
-add_example(hello_units)
-add_example(measurement)
-add_example(total_energy)
-add_example(unknown_dimension)
 add_example(box_example)
 add_example(capacitor_time_curve)
 add_example(clcpp_response)
 add_example(conversion_factor)
-add_example(kalman_filter-alpha_beta_filter_example2)
 add_example(experimental_angle)
 add_example(foot_pound_second)
+add_example(glide_computer)
+add_example(hello_units)
+add_example(kalman_filter-alpha_beta_filter_example2)
 
 conan_check_testing(linear_algebra)
 add_example(linear_algebra)
@@ -44,5 +42,9 @@ target_link_libraries(linear_algebra
     PRIVATE
         $<IF:$<TARGET_EXISTS:CONAN_PKG::linear_algebra>,CONAN_PKG::linear_algebra,linear_algebra::linear_algebra>
 )
+
+add_example(measurement)
+add_example(total_energy)
+add_example(unknown_dimension)
 
 add_subdirectory(alternative_namespaces)
