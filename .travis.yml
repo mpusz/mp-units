@@ -1,7 +1,3 @@
-env:
-  global:
-    - mp-units:CONAN_RUN_TESTS: 1
-
 linux: &linux
   os: linux
   dist: xenial
