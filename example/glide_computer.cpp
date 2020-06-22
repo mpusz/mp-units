@@ -61,15 +61,13 @@ public:
   static constexpr direction dir = D;
 
   vector() = default;
-  explicit constexpr vector(Q m): magnitude_(std::move(m)) {}
+  explicit constexpr vector(const Q& m): magnitude_(m) {}
 
-  // template<Quantity QQ>
-  //   requires QuantityPoint<Q>
-  // explicit constexpr vector(QQ q)
-  //   : magnitude_(std::move(q)) {}
+  template<Quantity QQ>
+    requires QuantityPoint<Q> && std::constructible_from<Q, QQ>
+  explicit constexpr vector(const QQ& q) : magnitude_(q) {}
 
-  constexpr const Q& magnitude() const & { return magnitude_; }
-  constexpr Q magnitude() const && { return std::move(magnitude_); }
+  constexpr Q magnitude() const { return magnitude_; }
 
   template<typename QQ = Q>
   [[nodiscard]] constexpr vector operator-() const
@@ -77,6 +75,14 @@ public:
     // requires requires { -magnitude(); } // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return vector(-magnitude());
+  }
+
+  template<typename Q2>
+  constexpr vector& operator-=(const vector<Q2, D>& v)
+    requires requires(Q q) { q -= v.magnitude(); }
+  {
+    magnitude_ -= v.magnitude();
+    return *this;
   }
 
 #if __GNUC__ >= 10
@@ -170,18 +176,23 @@ template<typename Q1, typename Q2, direction D>
   return vector<ret_type, D>(lhs.magnitude() - rhs.magnitude());
 }
 
-// template<typename Q1, typename Q2, direction D>
-// constexpr AUTO operator*(const vector<Q1, D>& lhs, const vector<Q2, D>& rhs)
-//   requires requires { lhs.magnitude() * rhs.magnitude(); }
-// {
-//   using ret_type = decltype(lhs.magnitude() * rhs.magnitude());
-//   return vector<ret_type, D>(lhs.magnitude() * rhs.magnitude());
-// }
+template<typename Q, direction D, Scalar V>
+[[nodiscard]] constexpr auto operator*(const vector<Q, D>& lhs, const V& value)
+  requires requires { lhs.magnitude() * value; }
+{
+  return vector<Q, D>(lhs.magnitude() * value);
+}
+
+template<typename Q, direction D, Scalar V>
+[[nodiscard]] constexpr auto operator*(const V& value, const vector<Q, D>& rhs)
+  requires requires { value * rhs.magnitude(); }
+{
+  return vector<Q, D>(value * rhs.magnitude());
+}
 
 template<typename Q1, typename Q2, direction D1, direction D2>
-[[nodiscard]] constexpr double operator/(const vector<Q1, D1>& lhs, const vector<Q2, D2>& rhs)
-  requires equivalent_dim<typename Q1::dimension, typename Q2::dimension> &&
-           requires { lhs.magnitude() / rhs.magnitude(); }
+[[nodiscard]] constexpr auto operator/(const vector<Q1, D1>& lhs, const vector<Q2, D2>& rhs)
+  requires requires { lhs.magnitude() / rhs.magnitude(); }
 {
   return lhs.magnitude() / rhs.magnitude();
 }
@@ -207,19 +218,14 @@ namespace {
 
 using namespace units::physical;
 
-// concepts do not scale :-(
-// template<typename T>
-// concept QPLength = QuantityPoint<T> && Length<typename T::quantity_type>;
-
 using distance = vector<si::length<si::kilometre>, direction::horizontal>;
 using height = vector<si::length<si::metre>, direction::vertical>;
 using altitude = vector<quantity_point<si::dim_length, si::metre>, direction::vertical>;
 
+using duration = si::time<si::second>;
+
 using velocity = vector<si::speed<si::kilometre_per_hour>, direction::horizontal>;
 using rate_of_climb = vector<si::speed<si::metre_per_second>, direction::vertical>;
-
-using time_point = quantity_point<si::dim_time, si::second>;
-using duration = si::time<si::second>;
 
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const altitude& a)
@@ -389,16 +395,16 @@ void print(const aircraft_tow& tow)
 // tactical flight computer basics
 namespace {
 
-struct position {
-  time_point timestamp;
+struct flight_point {
+  duration dur;
   distance dist;
   altitude alt;
 };
 
-constexpr altitude terrain_level_alt(const task& t, distance pos)
+constexpr altitude terrain_level_alt(const task& t, distance dist)
 {
   const height alt_diff = t.finish.alt - t.start.alt;
-  return t.start.alt + height(alt_diff.magnitude() * (pos / t.dist));
+  return t.start.alt + alt_diff * (dist / t.dist);
 }
 
 constexpr height agl(altitude glider_alt, altitude terrain_level)
@@ -406,102 +412,102 @@ constexpr height agl(altitude glider_alt, altitude terrain_level)
   return glider_alt - terrain_level;
 }
 
-position takeoff(const task& t)
+flight_point takeoff(const task& t)
 {
-  const position new_pos{{}, {}, t.start.alt};
-  return new_pos;
+  const flight_point new_point{{}, {}, t.start.alt};
+  return new_point;
 }
 
-void print(std::string_view phase_name, const position& pos, const position& new_pos)
+void print(std::string_view phase_name, const flight_point& point, const flight_point& new_point)
 {
   fmt::print("| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) |\n",
     phase_name,
-    quantity_cast<si::minute>(new_pos.timestamp - pos.timestamp), quantity_cast<si::minute>(new_pos.timestamp.relative()),
-    new_pos.dist - pos.dist, new_pos.dist,
-    new_pos.alt - pos.alt, new_pos.alt);
+    quantity_cast<si::minute>(new_point.dur - point.dur), quantity_cast<si::minute>(new_point.dur),
+    new_point.dist - point.dist, new_point.dist,
+    new_point.alt - point.alt, new_point.alt);
 }
 
-position tow(const position& pos, const aircraft_tow& at)
+flight_point tow(const flight_point& point, const aircraft_tow& at)
 {
-  const duration d = at.height_agl.magnitude() / at.performance.magnitude();
-  const position new_pos{pos.timestamp + d, pos.dist, pos.alt + at.height_agl};
+  const duration d = at.height_agl / at.performance;
+  const flight_point new_point{point.dur + d, point.dist, point.alt + at.height_agl};
 
-  print("Tow", pos, new_pos);
-  return new_pos;
+  print("Tow", point, new_point);
+  return new_point;
 }
 
-position circle(const position& pos, const glider& g, const weather& w, const task& t, height& height_to_gain)
+flight_point circle(const flight_point& point, const glider& g, const weather& w, const task& t, height& height_to_gain)
 {
-  const height h_agl = agl(pos.alt, terrain_level_alt(t, pos.dist));
+  const height h_agl = agl(point.alt, terrain_level_alt(t, point.dist));
   const height circle_height = std::min(w.cloud_base - h_agl, height_to_gain);
   const rate_of_climb circling_rate = w.thermal_strength + g.polar[0].climb;
-  const duration d = circle_height.magnitude() / circling_rate.magnitude();
-  const position new_pos{pos.timestamp + d, pos.dist, pos.alt + circle_height};
+  const duration d = circle_height / circling_rate;
+  const flight_point new_point{point.dur + d, point.dist, point.alt + circle_height};
 
-  height_to_gain = height_to_gain - circle_height; // TODO -=
+  height_to_gain -= circle_height;
 
-  print("Circle", pos, new_pos);
-  return new_pos;
+  print("Circle", point, new_point);
+  return new_point;
 }
 
 // Returns `x` of the intersection of a glide line and a terrain line.
-// y = -x / glide_ratio + pos.alt;
+// y = -x / glide_ratio + point.alt;
 // y = (finish_alt - ground_alt) / dist_to_finish * x + ground_alt + min_agl_height;
-constexpr distance glide_distance(const position& pos, const glider& g, const task& t, const safety& s, altitude ground_alt)
+constexpr distance glide_distance(const flight_point& point, const glider& g, const task& t, const safety& s, altitude ground_alt)
 {
-  const auto dist_to_finish = t.dist - pos.dist;
-  return distance((ground_alt + s.min_agl_height - pos.alt).magnitude() / ((ground_alt - t.finish.alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
+  const auto dist_to_finish = t.dist - point.dist;
+  return distance((ground_alt + s.min_agl_height - point.alt).magnitude() / ((ground_alt - t.finish.alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
 }
 
-position glide(const position& pos, const glider& g, const task& t, const safety& s)
+flight_point glide(const flight_point& point, const glider& g, const task& t, const safety& s)
 {
-  const auto ground_alt = terrain_level_alt(t, pos.dist);
-  const auto dist = glide_distance(pos, g, t, s, ground_alt);
+  const auto ground_alt = terrain_level_alt(t, point.dist);
+  const auto dist = glide_distance(point, g, t, s, ground_alt);
   const auto alt = ground_alt + s.min_agl_height;
-  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((pos.alt - alt).magnitude()));
+  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((point.alt - alt).magnitude()));
   const duration d = dist3d / g.polar[0].v.magnitude();
-  const position new_pos{pos.timestamp + d, pos.dist + dist, terrain_level_alt(t, pos.dist + dist) + s.min_agl_height};
+  const flight_point new_point{point.dur + d, point.dist + dist, terrain_level_alt(t, point.dist + dist) + s.min_agl_height};
 
-  print("Glide", pos, new_pos);
-  return new_pos;
+  print("Glide", point, new_point);
+  return new_point;
 }
 
-position final_glide(const position& pos, const glider& g, const task& t)
+flight_point final_glide(const flight_point& point, const glider& g, const task& t)
 {
-  const auto dist = t.dist - pos.dist;
-  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((pos.alt - t.finish.alt).magnitude()));
+  const auto dist = t.dist - point.dist;
+  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((point.alt - t.finish.alt).magnitude()));
   const duration d = dist3d / g.polar[0].v.magnitude();
-  const position new_pos{pos.timestamp + d, pos.dist + dist, t.finish.alt};
+  const flight_point new_point{point.dur + d, point.dist + dist, t.finish.alt};
 
-  print("Final Glide", pos, new_pos);
-  return new_pos;
+  print("Final Glide", point, new_point);
+  return new_point;
 }
 
 void estimate(const glider& g, const weather& w, const task& t, const safety& s, const aircraft_tow& at)
 {
   // ready to takeoff
-  position pos = takeoff(t);
+  flight_point point = takeoff(t);
 
   // estimate aircraft towing
-  pos = tow(pos, at);
+  point = tow(point, at);
 
   // estimate the altitude needed to reach the finish line from this place
   const altitude final_glide_alt = t.finish.alt + height(t.dist.magnitude() / glide_ratio(g.polar[0]));
 
   // how much height we still need to gain in the thermalls to reach the destination?
-  height height_to_gain = final_glide_alt - pos.alt;
+  height height_to_gain = final_glide_alt - point.alt;
 
   do {
     // glide to the next thermall
-    pos = glide(pos, g, t, s);
+    point = glide(point, g, t, s);
 
     // circle in a thermall to gain height
-    pos = circle(pos, g, w, t, height_to_gain);
+    point = circle(point, g, w, t, height_to_gain);
   }
   while(height_to_gain > height(0q_m));
 
   // final glide
-  pos = final_glide(pos, g, t);
+  point = final_glide(point, g, t);
 }
 
 } // namespace
@@ -518,8 +524,8 @@ void example()
   print(weather_conditions);
 
   const task t = {
-    waypoint{"EPPR", altitude(quantity_point(16q_ft))},
-    waypoint{"EPGI", altitude(quantity_point(115q_ft))},
+    waypoint{"EPPR", altitude(16q_ft)},
+    waypoint{"EPGI", altitude(115q_ft)},
     distance(81.7q_km)
   };
   print(t);
