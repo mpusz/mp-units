@@ -459,13 +459,18 @@ constexpr distance glide_distance(const flight_point& point, const glider& g, co
   return distance((ground_alt + s.min_agl_height - point.alt).magnitude() / ((ground_alt - t.finish.alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
 }
 
+inline si::length<si::kilometre> length_3d(distance dist, height h)
+{
+  return sqrt(pow<2>(dist.magnitude()) + pow<2>(h.magnitude()));
+}
+
 flight_point glide(const flight_point& point, const glider& g, const task& t, const safety& s)
 {
   const auto ground_alt = terrain_level_alt(t, point.dist);
   const auto dist = glide_distance(point, g, t, s, ground_alt);
   const auto alt = ground_alt + s.min_agl_height;
-  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((point.alt - alt).magnitude()));
-  const duration d = dist3d / g.polar[0].v.magnitude();
+  const auto l3d = length_3d(dist, point.alt - alt);
+  const duration d = l3d / g.polar[0].v.magnitude();
   const flight_point new_point{point.dur + d, point.dist + dist, terrain_level_alt(t, point.dist + dist) + s.min_agl_height};
 
   print("Glide", point, new_point);
@@ -475,8 +480,8 @@ flight_point glide(const flight_point& point, const glider& g, const task& t, co
 flight_point final_glide(const flight_point& point, const glider& g, const task& t)
 {
   const auto dist = t.dist - point.dist;
-  const auto dist3d = sqrt(pow<2>(dist.magnitude()) + pow<2>((point.alt - t.finish.alt).magnitude()));
-  const duration d = dist3d / g.polar[0].v.magnitude();
+  const auto l3d = length_3d(dist, point.alt - t.finish.alt);
+  const duration d = l3d / g.polar[0].v.magnitude();
   const flight_point new_point{point.dur + d, point.dist + dist, t.finish.alt};
 
   print("Final Glide", point, new_point);
