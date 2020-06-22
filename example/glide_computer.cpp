@@ -28,21 +28,6 @@
 #include <array>
 #include <iostream>
 
-// An example of a really simplified tactical glide computer
-// Simplifications:
-// - glider 100% clean and with full factory performance (brand new painting)
-// - no influence of the ballast (pilot weight, water, etc) to glider performance
-// - only one point on a glider polar curve
-// - no influence of bank angle (during circling) on a glider performance
-// - no wind
-// - constant thermals strength
-// - thermals exactly where and when we need them ;-)
-// - no airspaces
-// - Earth is flat
-// - ground level changes linearly between airports
-// - no ground obstacles (i.e. mountains) to pass
-// - flight path exactly on a shortest possible line to destination
-
 // horizontal/vertical vector
 namespace {
 
@@ -244,6 +229,21 @@ struct fmt::formatter<altitude> : formatter<si::length<si::metre>> {
     return format_to(ctx.out(), " AMSL");
   }
 };
+
+// An example of a really simplified tactical glide computer
+// Simplifications:
+// - glider 100% clean and with full factory performance (brand new painting)
+// - no influence of the ballast (pilot weight, water, etc) to glider performance
+// - only one point on a glider polar curve
+// - no influence of bank angle (during circling) on a glider performance
+// - no wind
+// - constant thermals strength
+// - thermals exactly where and when we need them ;-)
+// - no airspaces
+// - Earth is flat
+// - ground level changes linearly between airports
+// - no ground obstacles (i.e. mountains) to pass
+// - flight path exactly on a shortest possible line to destination
 
 // gliders database
 namespace {
