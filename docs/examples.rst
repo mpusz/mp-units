@@ -11,6 +11,7 @@ Examples
     examples/measurement
     examples/linear_algebra
     examples/foot_pound_second
+    examples/glide_computer
 
     examples/capacitor_time_curve
     examples/clcpp_response
