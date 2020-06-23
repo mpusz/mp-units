@@ -12,7 +12,7 @@ if __name__ == "__main__":
             ("https://api.bintray.com/conan/bincrafters/public-conan", True, "bincrafters"),
             ("https://api.bintray.com/conan/twonington/public-conan", True, "linear-algebra")
         ],
-        build_policy = ["outdated"],
+        build_policy = ["mp-units", "outdated"],
         upload_dependencies = "all",
         pip_install = ["sphinx", "recommonmark", "breathe"],
 
