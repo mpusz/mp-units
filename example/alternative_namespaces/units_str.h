@@ -7,5 +7,8 @@
 inline auto constexpr units_str(const units::Quantity AUTO& q)
 {
   typedef std::remove_cvref_t<decltype(q)> qtype;
-  return units::detail::unit_text<typename qtype::dimension, typename qtype::unit>();
+  return units::detail::unit_text<
+      typename units::get_dimension<qtype>::type, 
+      typename units::get_unit<qtype>::type
+  >();
 }

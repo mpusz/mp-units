@@ -37,6 +37,23 @@ namespace detail {
 template<typename Q1, typename Q2, typename Rep>
 struct common_quantity_impl;
 
+template<Quantity Lhs, Quantity Rhs, typename Rep>
+   requires same_unit_reference<
+      dimension_unit< typename get_dimension<Lhs>::type>, 
+      dimension_unit< typename get_dimension<Rhs>::type>
+   >::value
+struct common_quantity_impl<Lhs,Rhs, Rep> {
+  using D = typename get_dimension<Lhs>::type;
+  using U = downcast_unit<
+      D, 
+      common_ratio<
+         typename get_unit<Lhs>::type::ratio, 
+         typename get_unit<Rhs>::type::ratio 
+      >
+  >;
+  using type = quantity<D, U, Rep>;
+};
+
 template<typename D, typename U, typename Rep1, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
   using type = quantity<D, U, Rep>;
@@ -66,7 +83,7 @@ quantity_point<D, U, Rep> common_quantity_point_impl(quantity<D, U, Rep>);
 }  // namespace detail
 
 template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-  requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
+  requires equivalent_dim<typename get_dimension<Q1>::type, typename get_dimension<Q2>::type>
 using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 template<QuantityPoint QP1, QuantityPoint QP2>
@@ -87,7 +104,7 @@ namespace concepts {
 #endif
 
 template<units::Quantity Q1, units::Quantity Q2>
-  requires units::equivalent_dim<typename Q1::dimension, typename Q2::dimension>
+  requires units::equivalent_dim<typename units::get_dimension<Q1>::type, typename units::get_dimension<Q2>::type>
 struct common_type<Q1, Q2> {
   using type = units::common_quantity<Q1, Q2>;
 };

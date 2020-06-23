@@ -180,7 +180,7 @@ template<typename Q1, typename Q2, direction D>
 
 template<typename Q1, typename Q2, direction D1, direction D2>
 [[nodiscard]] constexpr double operator/(const vector<Q1, D1>& lhs, const vector<Q2, D2>& rhs)
-  requires equivalent_dim<typename Q1::dimension, typename Q2::dimension> &&
+  requires equivalent_dim<typename units::get_dimension<Q1>::type, typename units::get_dimension<Q2>::type> &&
            requires { lhs.magnitude() / rhs.magnitude(); }
 {
   return lhs.magnitude() / rhs.magnitude();

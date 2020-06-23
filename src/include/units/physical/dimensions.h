@@ -33,7 +33,7 @@ template<typename Dim, template<typename...> typename DimTemplate>
 concept DimensionOf = Dimension<Dim> && is_derived_from_instantiation<Dim, DimTemplate>;
 
 template<typename Q, template<typename...> typename DimTemplate>
-concept QuantityOf = Quantity<Q> && is_derived_from_instantiation<typename Q::dimension, DimTemplate>;
+concept QuantityOf = Quantity<Q> && is_derived_from_instantiation<typename get_dimension<Q>::type, DimTemplate>;
 
 // ------------------------ base dimensions -----------------------------
 

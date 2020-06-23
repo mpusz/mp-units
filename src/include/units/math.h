@@ -43,8 +43,8 @@ template<std::intmax_t N, Quantity Q>
 inline Quantity AUTO pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
-  using dim = dimension_pow<typename Q::dimension, N>;
-  using ratio = ratio_pow<typename Q::unit::ratio, N>;
+  using dim = dimension_pow<typename get_dimension<Q>::type, N>;
+  using ratio = ratio_pow<typename get_unit<Q>::type::ratio, N>;
   using unit = downcast_unit<dim, ratio>;
   using rep = Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
@@ -74,8 +74,8 @@ template<Quantity Q>
 inline Quantity AUTO sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
-  using dim = dimension_sqrt<typename Q::dimension>;
-  using ratio = ratio_sqrt<typename Q::unit::ratio>;
+  using dim = dimension_sqrt<typename get_dimension<Q>::type>;
+  using ratio = ratio_sqrt<typename get_unit<Q>::type::ratio>;
   using unit = downcast_unit<dim, ratio>;
   using rep = Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));

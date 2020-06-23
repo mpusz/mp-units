@@ -64,7 +64,7 @@ constexpr Rep fpow10(std::intmax_t exp)
 
 // QuantityOf
 template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
+concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename get_dimension<T>::type, Dim>;
 
 // quantity_cast
 namespace detail {
@@ -329,13 +329,33 @@ template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires QuantityOf<To, D>
 {
-  using c_ratio = detail::cast_ratio<D, U, typename To::dimension, typename To::unit>::type;
+  using c_ratio = detail::cast_ratio<D, U, typename get_dimension<To>::type, typename get_unit<To>::type>::type;
   using c_rep = std::common_type_t<typename To::rep, Rep>;
-  using ret_unit = downcast_unit<typename To::dimension, typename To::unit::ratio>;
-  using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
+  using ret_unit = downcast_unit<typename get_dimension<To>::type, typename get_unit<To>::type::ratio>;
+  using ret = quantity<typename get_dimension<To>::type, ret_unit, typename To::rep>;
   using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1, c_ratio::exp == 0>;
   return cast::cast(q);
 }
+
+template<Quantity To, Quantity From>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
+  requires QuantityOf<To, typename get_dimension<From>::type >
+{
+  using Dfrom = typename get_dimension<From>::type;
+  using Ufrom = typename get_unit<From>::type;
+  using Repfrom = typename From::rep;
+  using Dto = typename get_dimension<To>::type;
+  using Uto = typename get_unit<To>::type;
+  using Repto = typename To::rep;
+  using c_ratio = detail::cast_ratio<Dfrom, Ufrom, Dto, Uto>::type;
+  using c_rep = std::common_type_t<Repto, Repfrom>;
+  using ret_unit = downcast_unit<Dto, typename Uto::ratio>;
+  using ret = quantity<Dto, ret_unit, Repto>;
+  using cast = detail::quantity_cast_impl<ret, c_ratio, c_rep, c_ratio::num == 1, c_ratio::den == 1, c_ratio::exp == 0>;
+  return cast::cast(q);
+}
+
+
 
 /**
  * @brief Explcit cast of a quantity

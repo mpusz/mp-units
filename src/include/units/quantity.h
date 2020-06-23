@@ -59,7 +59,7 @@ struct quantity_friend_operations{
    template<ll_quantity_concept Lhs, ll_quantity_concept Rhs>
    [[nodiscard]] friend constexpr Quantity AUTO operator+(const Lhs& lhs, const Rhs& rhs)
      requires 
-            equivalent_dim<typename Lhs::dimension,typename Rhs::dimension>  &&
+            equivalent_dim<typename get_dimension<Lhs>::type,typename get_dimension<Rhs>::type>  &&
             std::regular_invocable<std::plus<>, typename Lhs::rep, typename Rhs::rep>
    {
      using common_rep = decltype(lhs.count() + rhs.count());
@@ -70,7 +70,7 @@ struct quantity_friend_operations{
    template<ll_quantity_concept Lhs, ll_quantity_concept Rhs>
    [[nodiscard]] friend  constexpr Quantity AUTO operator-(const Lhs& lhs, const Rhs& rhs)
      requires 
-            equivalent_dim<typename Lhs::dimension,typename Rhs::dimension>  &&
+            equivalent_dim<typename get_dimension<Lhs>::type,typename get_dimension<Rhs>::type>  &&
             std::regular_invocable<std::plus<>, typename Lhs::rep, typename Rhs::rep>
    {
      using common_rep = decltype(lhs.count() + rhs.count());
@@ -83,7 +83,7 @@ struct quantity_friend_operations{
      requires std::regular_invocable<std::multiplies<>, typename Q::rep, Value>
    {
      using common_rep = decltype(q.count() * v);
-     using ret = quantity<typename Q::dimension, typename Q::unit, common_rep>;
+     using ret = quantity<typename get_dimension<Q>::type, typename get_unit<Q>::type, common_rep>;
      return ret(q.count() * v);
    }
 
@@ -97,10 +97,10 @@ struct quantity_friend_operations{
    template<ll_quantity_concept Lhs, ll_quantity_concept Rhs>
    [[nodiscard]] friend constexpr Scalar AUTO operator*(const Lhs& lhs, const Rhs& rhs)
      requires std::regular_invocable<std::multiplies<>, typename Lhs::rep, typename Rhs::rep> &&
-              equivalent_dim<typename Lhs::dimension, dim_invert<typename Rhs::dimension>>
+              equivalent_dim<typename get_dimension<Lhs>::type, dim_invert<typename get_dimension<Rhs>::type>>
    {
      using common_rep = decltype(lhs.count() * rhs.count());
-     using ratio = ratio_multiply<typename Lhs::unit::ratio, typename Rhs::unit::ratio>;
+     using ratio = ratio_multiply<typename get_unit<Lhs>::type::ratio, typename get_unit<Rhs>::type::ratio>;
      if constexpr (treat_as_floating_point<common_rep>) {
        return common_rep(lhs.count()) * common_rep(rhs.count()) * common_rep(ratio::num) * fpow10(ratio::exp) / common_rep(ratio::den);
      } else {
@@ -133,8 +133,9 @@ struct quantity_friend_operations{
    {
      Expects(q.count() != 0);
 
-     using dim = dim_invert<typename Q::dimension>;
-     using ratio = ratio<Q::unit::ratio::den, Q::unit::ratio::num, -Q::unit::ratio::exp>;
+     using dim = dim_invert<typename get_dimension<Q>::type>;
+     using qunit = typename get_unit<Q>::type;
+     using ratio = ratio<qunit::ratio::den, qunit::ratio::num, -qunit::ratio::exp>;
      using unit = downcast_unit<dim, ratio>;
      using common_rep = decltype(v / q.count());
      using ret = quantity<dim, unit, common_rep>;
@@ -148,14 +149,14 @@ struct quantity_friend_operations{
      Expects(v != Value{0});
 
      using common_rep = decltype(q.count() / v);
-     using ret = quantity<typename Q::dimension, typename Q::unit, common_rep>;
+     using ret = quantity<typename get_dimension<Q>::type, typename get_unit<Q>::type, common_rep>;
      return ret(q.count() / v);
    }
 
    template<ll_quantity_concept Lhs , ll_quantity_concept Rhs>
    [[nodiscard]] friend constexpr Scalar AUTO operator/(const Lhs& lhs, const Rhs& rhs)
      requires std::regular_invocable<std::divides<>, typename Lhs::rep, typename Rhs::rep> &&
-              equivalent_dim<typename Lhs::dimension,typename Rhs::dimension>
+              equivalent_dim<typename get_dimension<Lhs>::type,typename get_dimension<Rhs>::type>
    {
      Expects(rhs.count() != 0);
 
@@ -171,9 +172,9 @@ struct quantity_friend_operations{
      Expects(rhs.count() != 0);
 
      using common_rep = decltype(lhs.count() / rhs.count());
-     using dim = dimension_divide<typename Lhs::dimension, typename Rhs::dimension>;
-     using ratio1 = ratio_divide<typename Lhs::unit::ratio, typename dimension_unit<typename Lhs::dimension>::ratio>;
-     using ratio2 = ratio_divide<typename Rhs::unit::ratio, typename dimension_unit<typename Rhs::dimension>::ratio>;
+     using dim = dimension_divide<typename get_dimension<Lhs>::type, typename get_dimension<Rhs>::type>;
+     using ratio1 = ratio_divide<typename get_unit<Lhs>::type::ratio, typename dimension_unit<typename get_dimension<Lhs>::type>::ratio>;
+     using ratio2 = ratio_divide<typename get_unit<Rhs>::type::ratio, typename dimension_unit<typename get_dimension<Rhs>::type>::ratio>;
      using ratio = ratio_multiply<ratio_divide<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
      using unit = downcast_unit<dim, ratio>;
      using ret = quantity<dim, unit, common_rep>;
@@ -187,7 +188,7 @@ struct quantity_friend_operations{
               std::regular_invocable<std::modulus<>, typename Q::rep, Value>
    {
      using common_rep = decltype(q.count() % v);
-     using ret = quantity<typename Q::dimension, typename Q::unit, common_rep>;
+     using ret = quantity<typename get_dimension<Q>::type, typename get_unit<Q>::type, common_rep>;
      return ret(q.count() % v);
    }
 
@@ -195,7 +196,7 @@ struct quantity_friend_operations{
    [[nodiscard]] friend constexpr Quantity AUTO operator%(const Lhs& lhs, const Rhs& rhs)
      requires (!treat_as_floating_point<typename Lhs::rep>) &&
               (!treat_as_floating_point<typename Rhs::rep>) &&
-              equivalent_dim<typename Lhs::dimension,typename Rhs::dimension> &&
+              equivalent_dim<typename get_dimension<Lhs>::type,typename get_dimension<Rhs>::type> &&
               std::regular_invocable<std::modulus<>, typename Lhs::rep, typename Rhs::rep>
    {
      using common_rep = decltype(lhs.count() % rhs.count());
@@ -235,9 +236,9 @@ public:
   constexpr explicit quantity(const Value& v) : value_{static_cast<rep>(v)} {}
 
   template<Quantity Q2>
-    requires equivalent_dim<D, typename Q2::dimension> &&
+    requires equivalent_dim<D, typename get_dimension<Q2>::type> &&
              detail::safe_convertible<typename Q2::rep, rep> &&
-             detail::safe_divisible<rep, typename Q2::unit, unit>
+             detail::safe_divisible<rep, typename get_unit<Q2>::type, unit>
   constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()} {}
 
   quantity& operator=(const quantity&) = default;

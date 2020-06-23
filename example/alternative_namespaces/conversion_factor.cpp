@@ -15,7 +15,6 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-
 #include "./units_str.h"
 #include "./length.h"
 #include <iostream>
@@ -28,13 +27,13 @@
 namespace {
 
 template<units::Quantity Target, units::Quantity Source>
-  requires units::equivalent_dim<typename Source::dimension, typename Target::dimension>
+  requires units::equivalent_dim<typename units::get_dimension<Source>::type, typename units::get_dimension<Target>::type>
 inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
 {
   // get quantities looking like inputs but with Q::rep that doesn't have narrowing conversion
   typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
-  typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
-  typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
+  typedef units::quantity<typename units::get_dimension<Source>::type, typename units::get_unit<Source>::type, rep> source;
+  typedef units::quantity<typename units::get_dimension<Target>::type, typename units::get_unit<Target>::type, rep> target;
   return target{source{1}}.count();
 }
 
