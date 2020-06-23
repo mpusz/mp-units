@@ -108,13 +108,18 @@ struct quantity_friend_operations{
      }
    }
 
+
    template<ll_quantity_concept Lhs, ll_quantity_concept Rhs>
    [[nodiscard]] friend constexpr Quantity AUTO operator*(const Lhs& lhs, const Rhs& rhs)
      requires std::regular_invocable<std::multiplies<>, typename Lhs::rep, typename Rhs::rep>
    {
-     using dim = dimension_multiply<typename Lhs::dimension, typename Rhs::dimension>;
-     using ratio1 = ratio_divide<typename Lhs::unit::ratio, typename dimension_unit<typename Lhs::dimension>::ratio>;
-     using ratio2 = ratio_divide<typename Rhs::unit::ratio, typename dimension_unit<typename Rhs::dimension>::ratio>;
+     using lhs_dimension = typename get_dimension<Lhs>::type;
+     using rhs_dimension = typename get_dimension<Rhs>::type;
+     using dim = dimension_multiply<lhs_dimension, rhs_dimension>;
+     using lhs_unit = typename get_unit<Lhs>::type;
+     using rhs_unit = typename get_unit<Rhs>::type;
+     using ratio1 = ratio_divide<typename lhs_unit::ratio, typename dimension_unit<lhs_dimension>::ratio>;
+     using ratio2 = ratio_divide<typename rhs_unit::ratio, typename dimension_unit<rhs_dimension>::ratio>;
      using ratio = ratio_multiply<ratio_multiply<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
      using unit = downcast_unit<dim, ratio>;
      using common_rep = decltype(lhs.count() * rhs.count());
@@ -454,6 +459,14 @@ public:
   {
     return os << detail::to_string<CharT, Traits>(q); 
   }
+};
+
+template <typename D, typename U, typename V> struct get_dimension<quantity<U,D,V> >{ 
+    using type = quantity<U,D,V>::dimension;
+};
+
+template< typename D, typename U, typename V> struct get_unit<quantity<U,D,V> >{
+   using type = quantity<U,D,V>::unit;
 };
 
 namespace detail {
