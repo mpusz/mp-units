@@ -33,13 +33,20 @@ struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio<3'048, 1'000, -1>, 
 
 struct inch : named_scaled_unit<inch, "in", no_prefix, ratio<1, 12>, foot> {};
 
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio<3, 1>, foot> {};
+// thousandth of an inch
+struct thousandth : named_scaled_unit<thousandth, "thou", no_prefix, ratio<1, 1'000>, inch> {};
+struct thou : alias_unit<thousandth, "thou", no_prefix>{};
+struct mil : alias_unit<thousandth, "mil", no_prefix>{};
+
+struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio<3, 1>, foot> {};
 
 struct fathom : named_scaled_unit<fathom, "ftm", no_prefix, ratio<6, 1>, foot> {};
 
+struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
+
 struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio<5'280>, foot> {};
 
-struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio<2000>, yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio<2'000>, yard> {};
 
 
 
@@ -49,6 +56,11 @@ template<Unit U, Scalar Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {
+
+// Thousandth
+constexpr auto operator"" q_thou(unsigned long long l) { return length<thousandth, std::int64_t>(l); }
+constexpr auto operator"" q_thou(long double l) { return length<thousandth, long double>(l); }
+
 
 // Inch
 constexpr auto operator"" q_in(unsigned long long l) { return length<inch, std::int64_t>(l); }
@@ -65,6 +77,10 @@ constexpr auto operator"" q_yd(long double l) { return length<yard, long double>
 // Fathom
 constexpr auto operator"" q_ftm(unsigned long long l) { return length<fathom, std::int64_t>(l); }
 constexpr auto operator"" q_ftm(long double l) { return length<fathom, long double>(l); }
+
+// Kiloyard
+constexpr auto operator"" q_kyd(unsigned long long l) { return length<kiloyard, std::int64_t>(l); }
+constexpr auto operator"" q_kyd(long double l) { return length<kiloyard, long double>(l); }
 
 // Mile
 constexpr auto operator"" q_mile(unsigned long long l) { return length<mile, std::int64_t>(l); }
