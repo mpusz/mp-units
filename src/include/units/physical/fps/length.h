@@ -60,6 +60,8 @@ inline namespace literals {
 // Thousandth
 constexpr auto operator"" q_thou(unsigned long long l) { return length<thousandth, std::int64_t>(l); }
 constexpr auto operator"" q_thou(long double l) { return length<thousandth, long double>(l); }
+constexpr auto operator"" q_mil(unsigned long long l) { return length<thousandth, std::int64_t>(l); }
+constexpr auto operator"" q_mil(long double l) { return length<thousandth, long double>(l); }
 
 
 // Inch
