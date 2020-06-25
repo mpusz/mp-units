@@ -17,7 +17,7 @@ as different strong types. Some of its function are defined only for quantities 
 and some for quantity points (additional constructor).
 
 .. literalinclude:: ../../example/glide_computer.cpp
-  :caption: 3D ``vector`` definition
+  :caption: glide_computer.cpp
   :start-at: #include
   :end-before: // custom types
   :linenos:
@@ -34,7 +34,7 @@ For the last case a custom text output is provided both for C++ output streams a
 facility.
 
 .. literalinclude:: ../../example/glide_computer.cpp
-  :caption: Strong types for different kind of quantities
+  :caption: glide_computer.cpp
   :start-at: // custom types
   :end-before: // An example of a really
   :linenos:
@@ -49,7 +49,7 @@ to finish a task and the duration needed to finish it while flying a selected gl
 conditions.
 
 .. literalinclude:: ../../example/glide_computer.cpp
-  :caption: Glide computer implementation
+  :caption: glide_computer.cpp
   :start-at: // An example of a really simplified tactical glide computer
   :linenos:
   :lineno-match:
