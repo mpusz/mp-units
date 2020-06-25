@@ -11,12 +11,15 @@ Here is a small example of possible operations::
     static_assert(1q_km + 1q_m == 1001q_m);
 
     // dimension conversions
-    static_assert(2q_m * 3q_m == 6q_m2);
-    static_assert(10q_km / 5q_km == 2);
-    static_assert(1000 / 1q_s == 1q_kHz);
     static_assert(1q_km / 1q_s == 1000q_m_per_s);
     static_assert(2q_km_per_h * 2q_h == 4q_km);
     static_assert(2q_km / 2q_km_per_h == 1q_h);
+
+    static_assert(2q_m * 3q_m == 6q_m2);
+
+    static_assert(10q_km / 5q_km == 2);
+
+    static_assert(1000 / 1q_s == 1q_kHz);
 
 .. admonition:: Try it on Compiler Explorer
 
