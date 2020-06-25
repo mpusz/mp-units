@@ -150,7 +150,7 @@ To use **mp-units** as a CMake imported library the following steps may be perfo
 
   .. code-block:: shell
 
-      git clone --recurse-submodules https://github.com/mpusz/units.git
+      git clone --recursive https://github.com/mpusz/units.git
 
   or in case it is already cloned without submodules, initialize, fetch, and checkout them with:
 
@@ -203,7 +203,7 @@ obtain Python dependencies, and run Conan with :envvar:`mp-units:CONAN_RUN_TESTS
 
 .. code-block:: shell
 
-    git clone --recurse-submodules https://github.com/mpusz/units.git && cd units
+    git clone --recursive https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     mkdir build && cd build
     conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
@@ -222,7 +222,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
 .. code-block:: shell
 
-    git clone --recurse-submodules https://github.com/mpusz/units.git && cd units
+    git clone --recursive https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
 
