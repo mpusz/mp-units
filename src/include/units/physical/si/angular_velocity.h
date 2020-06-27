@@ -30,7 +30,7 @@
 
 namespace units::physical::si {
 
-struct radian_per_second : named_unit<radian_per_second, "ω", no_prefix> {};
+struct radian_per_second : named_unit<radian_per_second, {"ω", "w"}, no_prefix> {};
 
 struct dim_angular_velocity : physical::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle, dim_time> {};
 
