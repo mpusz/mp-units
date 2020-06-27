@@ -63,6 +63,10 @@ struct dim_angle : base_dimension<"A", U> {};
 
 // ------------------------ derived dimensions -----------------------------
 
+
+template<typename Child, Unit U, DimensionOf<dim_angle> A, DimensionOf<dim_time> T>
+struct dim_angular_velocity : derived_dimension<Child, U, exp<A, 1>, exp<T, -1>> {};
+
 template<typename Child, Unit U, DimensionOf<dim_time> T>
 struct dim_frequency : derived_dimension<Child, U, exp<T, -1>> {};
 
@@ -205,6 +209,9 @@ concept LuminousIntensity = QuantityOf<T, dim_luminous_intensity>;
 
 template <typename T>
 concept Angle = QuantityOf<T, dim_angle>;
+
+template <typename T>
+concept AngularVelocity = QuantityOf<T, dim_angular_velocity>;
 
 template<typename T>
 concept Frequency = QuantityOf<T, dim_frequency>;
