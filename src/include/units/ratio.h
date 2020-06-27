@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
-#include <units/concepts.h>
 #include <units/bits/ratio_maths.h>
 #include <cstdint>
 #include <numeric>
@@ -33,192 +32,91 @@
 
 namespace units {
 
+struct ratio;
+constexpr ratio inverse(const ratio& r);
+
 /**
  * @brief Provides compile-time rational arithmetic support.
  * 
  * This class is really similar to @c std::ratio but gets an additional `Exp`
- * template parameter.
- * 
- * @tparam Num Numerator
- * @tparam Den Denominator (default @c 1)
- * @tparam Exp Exponent (default @c 0)
+ * template parameter that defines the exponent of the ratio. Another important
+ * difference is the fact that the objects of that class are used as class NTTPs
+ * rather then a type template parameter kind.
  */
-template<std::intmax_t Num, std::intmax_t Den = 1, std::intmax_t Exp = 0>
-  requires(Den != 0)
 struct ratio {
-  static_assert(-INTMAX_MAX <= Num, "numerator too negative");
-  static_assert(-INTMAX_MAX <= Den, "denominator too negative");
+  std::intmax_t num;
+  std::intmax_t den;
+  std::intmax_t exp;
 
- private:
-  static constexpr auto norm = detail::normalize(Num, Den, Exp);
+  explicit constexpr ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
+  {
+    detail::normalize(num, den, exp);
+  }
 
- public:
-  static constexpr std::intmax_t num = norm[0];
-  static constexpr std::intmax_t den = norm[1];
-  static constexpr std::intmax_t exp = norm[2];
+#if __GNUC__ >= 10
 
-  using type = ratio<num, den, exp>;
+  [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
-  static constexpr bool is_integral() {
-    if constexpr (exp < 0) {
-      return false;
-    } else {
-      return detail::gcdpow(num, exp, den) == den;
-    }
+#else
+
+  [[nodiscard]] friend constexpr bool operator==(const ratio& lhs, const ratio& rhs)
+  {
+    return lhs.num == rhs.num && lhs.den == rhs.den && lhs.exp == rhs.exp;
+  }
+
+  [[nodiscard]] friend constexpr bool operator!=(const ratio& lhs, const ratio& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+#endif
+
+  [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
+  {
+    const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);
+    const std::intmax_t gcd2 = std::gcd(rhs.num, lhs.den);
+    return ratio(detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),
+                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1),
+                 lhs.exp + rhs.exp);
+  }
+
+  [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs)
+  {
+    return lhs * inverse(rhs);
   }
 };
 
-namespace detail {
-
-template<intmax_t Num, intmax_t Den, intmax_t Exp>
-inline constexpr bool is_ratio<ratio<Num, Den, Exp>> = true;
-
-// unused, and align exponents process could be subject to overflow in extreme cases
-
-// template<Ratio R1, Ratio R2>
-// constexpr auto ratio_add_detail() {
-//   std::intmax_t num1 = R1::num;
-//   std::intmax_t num2 = R2::num;
-
-//   // align exponents
-//   std::intmax_t new_exp = R1::exp;
-//   if constexpr (R1::exp > R2::exp) {
-//     new_exp = R1::exp;
-//     while (new_exp > R2::exp) {
-//       num1 *= 10;
-//       --new_exp;
-//     }
-//   } else if constexpr (R1::exp < R2::exp) {
-//     new_exp = R2::exp;
-//     while (R1::exp < new_exp) {
-//       num2 *= 10;
-//       --new_exp;
-//     }
-//   }
-
-//   // common denominator
-//   std::intmax_t lcm_den = std::lcm(R1::den, R2::den);
-//   num1 = num1 * (lcm_den / R1::den);
-//   num2 = num2 * (lcm_den / R2::den);
-
-//   return std::array{num1 + num2, lcm_den, new_exp};
-// }
-
-
-// template<Ratio R1, Ratio R2>
-// struct ratio_add_impl {
-//   static constexpr auto detail = ratio_add_detail<R1, R2>();
-//   using type = ratio<detail[0], detail[1], detail[2]>;
-// };
-}// namespace detail
-
-
-// ratio_add : not used
-// template<Ratio R1, Ratio R2>
-// using ratio_add = detail::ratio_add_impl<R1, R2>::type;
-
-// ratio_subtract : not used
-// TODO implement ratio_subtract
-// template<Ratio R1, Ratio R2>
-// using ratio_subtract = detail::ratio_subtract_impl<R1, R2>::type;
-
-// ratio_multiply
-
-namespace detail {
-
-static constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
+[[nodiscard]] constexpr ratio inverse(const ratio& r)
 {
-  constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
-
-  const std::intmax_t a0 = detail::abs(lhs) % c;
-  const std::intmax_t a1 = detail::abs(lhs) / c;
-  const std::intmax_t b0 = detail::abs(rhs) % c;
-  const std::intmax_t b1 = detail::abs(rhs) / c;
-
-  Expects(a1 == 0 || b1 == 0);                               // overflow in multiplication
-  Expects(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
-  Expects(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
-  Expects((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
-
-  return lhs * rhs;
+  return ratio(r.den, r.num, -r.exp);
 }
 
-template<typename R1, typename R2>
-struct ratio_multiply_impl {
-private:
-  static constexpr std::intmax_t gcd1 = std::gcd(R1::num, R2::den);
-  static constexpr std::intmax_t gcd2 = std::gcd(R2::num, R1::den);
+[[nodiscard]] constexpr bool is_integral(const ratio& r)
+{
+  if(r.exp < 0) {
+    return false;
+  } else {
+    return detail::gcdpow(r.num, r.exp, r.den) == r.den;
+  }
+}
 
-  static constexpr auto norm = detail::normalize(safe_multiply(R1::num / gcd1, R2::num / gcd2),
-                                                 safe_multiply(R1::den / gcd2, R2::den / gcd1),
-                                                 R1::exp + R2::exp);
-
-  static constexpr std::intmax_t norm_num = norm[0];
-  static constexpr std::intmax_t norm_den = norm[1];
-  static constexpr std::intmax_t norm_exp = norm[2];
-
-public:
-  using type = ratio<norm_num, norm_den, norm_exp>;
-  static constexpr std::intmax_t num = type::num;
-  static constexpr std::intmax_t den = type::den;
-  static constexpr std::intmax_t exp = type::exp;
-};
-
-}  // namespace detail
-
-template<Ratio R1, Ratio R2>
-using ratio_multiply = detail::ratio_multiply_impl<R1, R2>::type;
-
-// ratio_divide
-
-namespace detail {
-
-template<typename R1, typename R2>
-struct ratio_divide_impl {
-  static_assert(R2::num != 0, "division by 0");
-  using type = ratio_multiply<R1, ratio<R2::den, R2::num, -R2::exp>>;
-  static constexpr std::intmax_t num = type::num;
-  static constexpr std::intmax_t den = type::den;
-  static constexpr std::intmax_t exp = type::exp;
-};
-
-}  // namespace detail
-
-template<Ratio R1, Ratio R2>
-using ratio_divide = detail::ratio_divide_impl<R1, R2>::type;
-
-// ratio_pow
-
-namespace detail {
-
-template<typename R, std::intmax_t N>
-struct ratio_pow_impl {
-  using type = ratio_multiply<typename ratio_pow_impl<R, N - 1>::type, R>;
-};
-
-template<typename R>
-struct ratio_pow_impl<R, 1> {
-  using type = R;
-};
-
-template<typename R>
-struct ratio_pow_impl<R, 0> {
-  using type = ratio<1>;
-};
-
-}  // namespace detail
-
-template<Ratio R, std::intmax_t N>
-using ratio_pow = detail::ratio_pow_impl<R, N>::type;
-
-// ratio_sqrt
+template<std::intmax_t N>
+[[nodiscard]] constexpr ratio pow(const ratio& r)
+{
+  if constexpr(N == 0)
+    return ratio(1);
+  else if constexpr(N == 1)
+    return r;
+  else
+    return pow<N-1>(r) * r;
+}
 
 namespace detail {
 
 // sqrt_impl avoids overflow and recursion
 // from http://www.codecodex.com/wiki/Calculate_an_integer_square_root#C.2B.2B
 // if v >= place this will fail  (so we can't quite use the last bit)
-static constexpr std::intmax_t sqrt_impl(std::intmax_t v)
+[[nodiscard]] constexpr std::intmax_t sqrt_impl(std::intmax_t v)
 {
   // place = 0x4000 0000 for 32bit
   // place = 0x4000 0000 0000 0000 for 64bit
@@ -237,52 +135,34 @@ static constexpr std::intmax_t sqrt_impl(std::intmax_t v)
   return root;
 }
 
-template<Ratio R>
-constexpr auto make_exp_even()
+[[nodiscard]] constexpr auto make_exp_even(const ratio& r)
 {
-  if constexpr (R::exp % 2 == 0)
-    return std::array{R::num, R::den, R::exp}; // already even (incl zero)
+  if(r.exp % 2 == 0)
+    return std::array{r.num, r.den, r.exp}; // already even (incl zero)
 
   // safely make exp even, so it can be divided by 2 for square root
-  if constexpr (R::exp > 0)
-    return std::array{R::num * 10, R::den, R::exp - 1};
+  if(r.exp > 0)
+    return std::array{r.num * 10, r.den, r.exp - 1};
   else
-    return std::array{R::num, R::den * 10, R::exp + 1};
+    return std::array{r.num, r.den * 10, r.exp + 1};
 }
 
-template<typename R>
-struct ratio_sqrt_impl {
-  constexpr static auto even = detail::make_exp_even<R>();
-  using type = ratio<detail::sqrt_impl(even[0]), detail::sqrt_impl(even[1]), even[2] / 2>;
-};
-
-template<std::intmax_t Den>
-struct ratio_sqrt_impl<ratio<0, Den>> {
-  using type = ratio<0>;
-};
-
 }  // namespace detail
 
-template<Ratio R>
-using ratio_sqrt = detail::ratio_sqrt_impl<R>::type;
+[[nodiscard]] constexpr ratio sqrt(const ratio& r)
+{
+  if(r.num == 0)
+    return ratio(0);
+  
+  const auto even = detail::make_exp_even(r);
+  return ratio(detail::sqrt_impl(even[0]), detail::sqrt_impl(even[1]), even[2] / 2);
+}
 
 // common_ratio
-
-namespace detail {
-
-// TODO: simplified
-template<typename R1, typename R2>
-struct common_ratio_impl {
-  static constexpr auto res = gcd_frac(R1::num, R1::den, R1::exp, R2::num, R2::den, R2::exp);
-  static constexpr std::intmax_t num = res[0];
-  static constexpr std::intmax_t den = res[1];
-  static constexpr std::intmax_t exp = res[2];
-  using type = ratio<num, den, exp>;
-};
-
-}  // namespace detail
-
-template<Ratio R1, Ratio R2>
-using common_ratio = detail::common_ratio_impl<R1, R2>::type;
+[[nodiscard]] constexpr ratio common_ratio(const ratio& r1, const ratio& r2)
+{
+  const auto res = detail::gcd_frac(r1.num, r1.den, r1.exp, r2.num, r2.den, r2.exp);
+  return ratio(res[0], res[1], res[2]);
+}
 
 }  // namespace units

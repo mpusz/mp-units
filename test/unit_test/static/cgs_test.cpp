@@ -57,7 +57,7 @@ static_assert(10q_cm == 2q_cm_per_s * 5q_s);
 static_assert(detail::unit_text<dim_speed, centimetre_per_second>() == "cm/s");
 
 // area
-static_assert(std::is_same_v<ratio_divide<centimetre::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
+static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
 static_assert(1q_cm * 1q_cm == 1q_cm2);
 static_assert(100q_cm2 / 10q_cm == 10q_cm);

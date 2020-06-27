@@ -44,8 +44,7 @@ inline Quantity AUTO pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
   using dim = dimension_pow<typename Q::dimension, N>;
-  using ratio = ratio_pow<typename Q::unit::ratio, N>;
-  using unit = downcast_unit<dim, ratio>;
+  using unit = downcast_unit<dim, pow<N>(Q::unit::ratio)>;
   using rep = Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
 }
@@ -75,8 +74,7 @@ inline Quantity AUTO sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
   using dim = dimension_sqrt<typename Q::dimension>;
-  using ratio = ratio_sqrt<typename Q::unit::ratio>;
-  using unit = downcast_unit<dim, ratio>;
+  using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
   using rep = Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));
 }

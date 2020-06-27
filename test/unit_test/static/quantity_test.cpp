@@ -39,7 +39,7 @@ using namespace units::physical::si;
 // constexpr quantity<si::dim_length, second, int> error(0);  // should not compile (unit of a different dimension)
 // constexpr quantity<si::dim_length, metre, quantity<si::dim_length, metre, int>> error(0);  // should not compile (quantity used as Rep)
 // constexpr quantity<metre, si::dim_length, double> error(0);  // should not compile (reordered arguments)
-// constexpr quantity<si::dim_length, scaled_unit<ratio<-1, 1>, metre>, int> error(0);  // should not compile (negative unit ratio)
+// constexpr quantity<si::dim_length, scaled_unit<ratio(-1, 1), metre>, int> error(0);  // should not compile (negative unit ratio)
 
 // member types
 
@@ -138,23 +138,23 @@ static_assert(std::is_same_v<decltype(1.0 * length<metre, int>()), length<metre,
 static_assert(
     std::is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
 static_assert(
-    std::is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio<36, 1, 2>, metre>, int>>);
+    std::is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio(36, 1, 2), metre>, int>>);
 static_assert(std::is_same_v<decltype(length<metre>() * physical::si::time<minute>()),
-              quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<ratio<6, 1, 1>, unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<ratio(6, 1, 1), unknown_coherent_unit>>>);
 static_assert(std::is_same_v<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
-static_assert(std::is_same_v<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio<1, 6, -1>, hertz>, int>>);
+static_assert(std::is_same_v<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio(1, 6, -1), hertz>, int>>);
 static_assert(std::is_same_v<decltype(1 / frequency<hertz, int>()), physical::si::time<second, int>>);
 static_assert(std::is_same_v<decltype(1 / length<kilometre>()),
-              quantity<unknown_dimension<units::exp<dim_length, -1>>, scaled_unit<ratio<1, 1, -3>, unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exp<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / 1.0), length<metre, double>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() / length<metre, double>()), double>);
 static_assert(std::is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), double>);
 static_assert(
     std::is_same_v<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
 static_assert(
-    std::is_same_v<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio<1, 6, -1>, metre_per_second>>>);
+    std::is_same_v<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio(1, 6, -1), metre_per_second>>>);
 static_assert(std::is_same_v<decltype(physical::si::time<minute>() / length<metre>()),
-              quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<ratio<6 ,1 , 1>, unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<ratio(6 ,1 , 1), unknown_coherent_unit>>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
 static_assert(std::is_same_v<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
 
@@ -234,7 +234,7 @@ static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_ft_us)>)
 
 // quantity_cast
 
-static_assert(std::is_same_v<decltype(quantity_cast<scaled_unit<ratio<1>, metre>>(2q_km))::unit, metre>);
+static_assert(std::is_same_v<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2q_km))::unit, metre>);
 
 static_assert(quantity_cast<length<metre, int>>(2q_km).count() == 2000);
 static_assert(quantity_cast<length<kilometre, int>>(2000q_m).count() == 2);

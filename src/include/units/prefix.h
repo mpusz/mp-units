@@ -45,10 +45,10 @@ struct no_prefix : prefix_family {};
 
 namespace detail {
 
-template<PrefixFamily PF, Ratio R>
+template<PrefixFamily PF, ratio R>
 struct prefix_base : downcast_base<prefix_base<PF, R>> {
   using prefix_family = PF;
-  using ratio = R;
+  static constexpr ::units::ratio ratio = R;
 };
 
 }  // namespace detail
@@ -68,7 +68,7 @@ struct prefix_base : downcast_base<prefix_base<PF, R>> {
  * @tparam Symbol a text representation of the prefix
  * @tparam R factor to be used to scale a unit
  */
-template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, Ratio R>
+template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, ratio R>
   requires (!std::same_as<PF, no_prefix>)
 struct prefix : downcast_child<Child, detail::prefix_base<PF, R>> {
   static constexpr auto symbol = Symbol;

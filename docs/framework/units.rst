@@ -186,20 +186,23 @@ Those units are the scaled versions of a time dimension's base unit,
 namely second. Those can be defined easily in the library using
 `named_scaled_unit` class template::
 
-    struct minute : named_scaled_unit<minute, "min", no_prefix, ratio<60>, second> {};
-    struct hour : named_scaled_unit<hour, "h", no_prefix, ratio<60>, minute> {};
-    struct day : named_scaled_unit<hour, "d", no_prefix, ratio<24>, hour> {};
+    struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
+    struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
+    struct day : named_scaled_unit<hour, "d", no_prefix, ratio(24), hour> {};
 
 where `no_prefix` is a special tag type describing that the library should
 not allow to define a new prefixed unit that would use this unit as a
 reference ("kilohours" does not have much sense, right?). The `ratio` type
 used in the definition is really similar to ``std::ratio`` but it takes
-the third additional argument that defines the exponent of the ratio.
+an additional ``Exp`` template parameter that defines the exponent of the ratio.
+Another important difference is the fact that the objects of that class are used
+as class NTTPs rather then a type template parameter kind.
+
 Thanks to it we can address nearly infinite scaling factors between units
 and define units like::
 
     struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix,
-                                            ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
+                                            ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
 
 .. 
     TODO Submit a bug for above lexing problem
@@ -221,26 +224,26 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     struct prefix : prefix_family {};
 
-    struct yocto  : units::prefix<yocto,  prefix, "y",  ratio<1, 1, -24>> {};
-    struct zepto  : units::prefix<zepto,  prefix, "z",  ratio<1, 1, -21>> {};
-    struct atto   : units::prefix<atto,   prefix, "a",  ratio<1, 1, -18>> {};
-    struct femto  : units::prefix<femto,  prefix, "f",  ratio<1, 1, -15>> {};
-    struct pico   : units::prefix<pico,   prefix, "p",  ratio<1, 1, -12>> {};
-    struct nano   : units::prefix<nano,   prefix, "n",  ratio<1, 1,  -9>> {};
-    struct micro  : units::prefix<micro,  prefix, "µ",  ratio<1, 1,  -6>> {};
-    struct milli  : units::prefix<milli,  prefix, "m",  ratio<1, 1,  -3>> {};
-    struct centi  : units::prefix<centi,  prefix, "c",  ratio<1, 1,  -2>> {};
-    struct deci   : units::prefix<deci,   prefix, "d",  ratio<1, 1,  -1>> {};
-    struct deca   : units::prefix<deca,   prefix, "da", ratio<1, 1,   1>> {};
-    struct hecto  : units::prefix<hecto,  prefix, "h",  ratio<1, 1,   2>> {};
-    struct kilo   : units::prefix<kilo,   prefix, "k",  ratio<1, 1,   3>> {};
-    struct mega   : units::prefix<mega,   prefix, "M",  ratio<1, 1,   6>> {};
-    struct giga   : units::prefix<giga,   prefix, "G",  ratio<1, 1,   9>> {};
-    struct tera   : units::prefix<tera,   prefix, "T",  ratio<1, 1,  12>> {};
-    struct peta   : units::prefix<peta,   prefix, "P",  ratio<1, 1,  15>> {};
-    struct exa    : units::prefix<exa,    prefix, "E",  ratio<1, 1,  18>> {};
-    struct zetta  : units::prefix<zetta,  prefix, "Z",  ratio<1, 1,  21>> {};
-    struct yotta  : units::prefix<yotta,  prefix, "Y",  ratio<1, 1,  24>> {};
+    struct yocto  : units::prefix<yocto,  prefix, "y",  ratio(1, 1, -24)> {};
+    struct zepto  : units::prefix<zepto,  prefix, "z",  ratio(1, 1, -21)> {};
+    struct atto   : units::prefix<atto,   prefix, "a",  ratio(1, 1, -18)> {};
+    struct femto  : units::prefix<femto,  prefix, "f",  ratio(1, 1, -15)> {};
+    struct pico   : units::prefix<pico,   prefix, "p",  ratio(1, 1, -12)> {};
+    struct nano   : units::prefix<nano,   prefix, "n",  ratio(1, 1,  -9)> {};
+    struct micro  : units::prefix<micro,  prefix, "µ",  ratio(1, 1,  -6)> {};
+    struct milli  : units::prefix<milli,  prefix, "m",  ratio(1, 1,  -3)> {};
+    struct centi  : units::prefix<centi,  prefix, "c",  ratio(1, 1,  -2)> {};
+    struct deci   : units::prefix<deci,   prefix, "d",  ratio(1, 1,  -1)> {};
+    struct deca   : units::prefix<deca,   prefix, "da", ratio(1, 1,   1)> {};
+    struct hecto  : units::prefix<hecto,  prefix, "h",  ratio(1, 1,   2)> {};
+    struct kilo   : units::prefix<kilo,   prefix, "k",  ratio(1, 1,   3)> {};
+    struct mega   : units::prefix<mega,   prefix, "M",  ratio(1, 1,   6)> {};
+    struct giga   : units::prefix<giga,   prefix, "G",  ratio(1, 1,   9)> {};
+    struct tera   : units::prefix<tera,   prefix, "T",  ratio(1, 1,  12)> {};
+    struct peta   : units::prefix<peta,   prefix, "P",  ratio(1, 1,  15)> {};
+    struct exa    : units::prefix<exa,    prefix, "E",  ratio(1, 1,  18)> {};
+    struct zetta  : units::prefix<zetta,  prefix, "Z",  ratio(1, 1,  21)> {};
+    struct yotta  : units::prefix<yotta,  prefix, "Y",  ratio(1, 1,  24)> {};
 
     }
 
@@ -251,12 +254,12 @@ domain::
 
     struct prefix : prefix_family {};
 
-    struct kibi : units::prefix<kibi, prefix, "Ki", ratio<                    1'024>> {};
-    struct mebi : units::prefix<mebi, prefix, "Mi", ratio<                1'048'576>> {};
-    struct gibi : units::prefix<gibi, prefix, "Gi", ratio<            1'073'741'824>> {};
-    struct tebi : units::prefix<tebi, prefix, "Ti", ratio<        1'099'511'627'776>> {};
-    struct pebi : units::prefix<pebi, prefix, "Pi", ratio<    1'125'899'906'842'624>> {};
-    struct exbi : units::prefix<exbi, prefix, "Ei", ratio<1'152'921'504'606'846'976>> {};
+    struct kibi : units::prefix<kibi, prefix, "Ki", ratio(                    1'024)> {};
+    struct mebi : units::prefix<mebi, prefix, "Mi", ratio(                1'048'576)> {};
+    struct gibi : units::prefix<gibi, prefix, "Gi", ratio(            1'073'741'824)> {};
+    struct tebi : units::prefix<tebi, prefix, "Ti", ratio(        1'099'511'627'776)> {};
+    struct pebi : units::prefix<pebi, prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
+    struct exbi : units::prefix<exbi, prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
 
     }
 
@@ -381,7 +384,7 @@ unknown/undefined unit type like in the below example::
     Length auto l = 100q_km_per_h * 10q_s;
 
 The type of ``l`` above will be
-:expr:`si::length<scaled_unit<ratio<1, 36, 1>, si::metre>, long double>`. This is caused
+:expr:`si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>`. This is caused
 by the fact that the library does not define a unit of a length quantity that has the
 ratio ``10/36`` of a `si::metre`. If such a unit was predefined we would see its concrete
 type here instead.

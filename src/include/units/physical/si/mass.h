@@ -72,7 +72,7 @@ struct exatonne : prefixed_alias_unit<yottagram, exa, tonne> {};
 struct zettatonne : prefixed_unit<zettatonne, zetta, tonne> {};
 struct yottatonne : prefixed_unit<yottatonne, yotta, tonne> {};
 
-struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio<16'605'390'666'050, 10'000'000'000'000, -27>, kilogram> {};
+struct dalton : named_scaled_unit<dalton, "Da", no_prefix, ratio(16'605'390'666'050, 10'000'000'000'000, -27), kilogram> {};
 
 struct dim_mass : physical::dim_mass<kilogram> {};
 

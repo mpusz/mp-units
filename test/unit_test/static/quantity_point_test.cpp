@@ -209,7 +209,7 @@ static_assert(std::equality_comparable_with<decltype(quantity_point(1q_m)), decl
 // quantity_cast
 
 static_assert(
-    std::is_same_v<decltype(quantity_point_cast<scaled_unit<ratio<1>, metre>>(quantity_point(2q_km)))::unit, metre>);
+    std::is_same_v<decltype(quantity_point_cast<scaled_unit<ratio(1), metre>>(quantity_point(2q_km)))::unit, metre>);
 
 static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2q_km)).relative().count() ==
               2000);

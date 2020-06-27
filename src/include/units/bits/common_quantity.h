@@ -44,20 +44,20 @@ struct common_quantity_impl<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
 
 template<typename D, typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-  using type = quantity<D, downcast_unit<D, common_ratio<typename U1::ratio, typename U2::ratio>>, Rep>;
+  using type = quantity<D, downcast_unit<D, common_ratio(U1::ratio, U2::ratio)>, Rep>;
 };
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
   requires same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value
 struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
-  using type = quantity<D1, downcast_unit<D1, common_ratio<typename U1::ratio, typename U2::ratio>>, Rep>;
+  using type = quantity<D1, downcast_unit<D1, common_ratio(U1::ratio, U2::ratio)>, Rep>;
 };
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
-  using ratio1 = ratio_multiply<typename D1::base_units_ratio, typename U1::ratio>;
-  using ratio2 = ratio_multiply<typename D2::base_units_ratio, typename U2::ratio>;
-  using type = quantity<D1, downcast_unit<D1, common_ratio<ratio1, ratio2>>, Rep>;
+  static constexpr ratio r1 = D1::base_units_ratio * U1::ratio;
+  static constexpr ratio r2 = D2::base_units_ratio * U2::ratio;
+  using type = quantity<D1, downcast_unit<D1, common_ratio(r1, r2)>, Rep>;
 };
 
 template<typename D, typename U, typename Rep>

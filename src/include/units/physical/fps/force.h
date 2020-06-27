@@ -34,7 +34,7 @@ namespace units::physical::fps {
 struct poundal : named_unit<poundal, "pdl", no_prefix> {};
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-struct pound_force : named_scaled_unit<pound_force, "lbf", si::prefix, ratio<32'174'049, 1'000'000>, poundal> {};
+struct pound_force : named_scaled_unit<pound_force, "lbf", si::prefix, ratio(32'174'049, 1'000'000), poundal> {};
 
 struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 

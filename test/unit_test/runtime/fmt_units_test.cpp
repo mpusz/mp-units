@@ -319,7 +319,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("unknown scaled unit with reference different than the dimension's coherent unit")
   {
-    CHECK(fmt::format("{}", mass<units::scaled_unit<units::ratio<2, 3>, gram>>(1)) == "1 [2/3 × 10⁻³] kg");
-    CHECK(fmt::format("{:%Q %Aq}", mass<units::scaled_unit<units::ratio<2, 3>, gram>>(1)) == "1 [2/3 x 10^-3] kg");
+    CHECK(fmt::format("{}", mass<units::scaled_unit<units::ratio(2, 3), gram>>(1)) == "1 [2/3 × 10⁻³] kg");
+    CHECK(fmt::format("{:%Q %Aq}", mass<units::scaled_unit<units::ratio(2, 3), gram>>(1)) == "1 [2/3 x 10^-3] kg");
   }
 }

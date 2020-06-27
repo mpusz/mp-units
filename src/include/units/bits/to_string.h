@@ -32,31 +32,31 @@ namespace units::detail {
 
 inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
 
-template<typename Ratio>
+template<ratio R>
 constexpr auto ratio_text()
 {
-  if constexpr(Ratio::num == 1 && Ratio::den == 1 && Ratio::exp != 0) {
-    return base_multiplier + superscript<Ratio::exp>() + basic_fixed_string(" ");
+  if constexpr(R.num == 1 && R.den == 1 && R.exp != 0) {
+    return base_multiplier + superscript<R.exp>() + basic_fixed_string(" ");
   }
-  else if constexpr(Ratio::num != 1 || Ratio::den != 1 || Ratio::exp != 0) {
-    auto txt = basic_fixed_string("[") + regular<Ratio::num>();
-    if constexpr(Ratio::den == 1) {
-      if constexpr(Ratio::exp == 0) {
+  else if constexpr(R.num != 1 || R.den != 1 || R.exp != 0) {
+    auto txt = basic_fixed_string("[") + regular<R.num>();
+    if constexpr(R.den == 1) {
+      if constexpr(R.exp == 0) {
         return txt + basic_fixed_string("] ");
       }
       else {
-        return txt + " " + base_multiplier + superscript<Ratio::exp>() +
+        return txt + " " + base_multiplier + superscript<R.exp>() +
             basic_fixed_string("] ");
       }
     }
     else {
-      if constexpr(Ratio::exp == 0) {
-        return txt + basic_fixed_string("/") + regular<Ratio::den>() +
+      if constexpr(R.exp == 0) {
+        return txt + basic_fixed_string("/") + regular<R.den>() +
             basic_fixed_string("] ");
       }
       else {
-        return txt + basic_fixed_string("/") + regular<Ratio::den>() +
-            " " + base_multiplier + superscript<Ratio::exp>() +
+        return txt + basic_fixed_string("/") + regular<R.den>() +
+            " " + base_multiplier + superscript<R.exp>() +
             basic_fixed_string("] ");
       }
     }
@@ -66,30 +66,30 @@ constexpr auto ratio_text()
   }
 }
 
-template<typename Ratio, typename PrefixFamily>
+template<ratio R, typename PrefixFamily>
 constexpr auto prefix_or_ratio_text()
 {
-  if constexpr(Ratio::num == 1 && Ratio::den == 1 && Ratio::exp == 0) {
+  if constexpr(R.num == 1 && R.den == 1 && R.exp == 0) {
     // no ratio/prefix
     return basic_fixed_string("");
   }
   else {
     if constexpr (!std::is_same_v<PrefixFamily, no_prefix>) {
       // try to form a prefix
-      using prefix = downcast<detail::prefix_base<PrefixFamily, Ratio>>;
+      using prefix = downcast<detail::prefix_base<PrefixFamily, R>>;
 
-      if constexpr(!std::is_same_v<prefix, prefix_base<PrefixFamily, Ratio>>) {
+      if constexpr(!std::is_same_v<prefix, prefix_base<PrefixFamily, R>>) {
         // print as a prefixed unit
         return prefix::symbol;
       }
       else {
         // print as a ratio of the coherent unit
-        return ratio_text<Ratio>();
+        return ratio_text<R>();
       }
     }
     else {
       // print as a ratio of the coherent unit
-      return ratio_text<Ratio>();
+      return ratio_text<R>();
     }
   }
 }
@@ -150,8 +150,7 @@ constexpr auto unit_text()
   else {
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
-    using ratio = ratio_divide<typename U::ratio, typename coherent_unit::ratio>;
-    auto prefix_txt = prefix_or_ratio_text<ratio, typename U::reference::prefix_family>();
+    auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family>();
 
     if constexpr(has_symbol<coherent_unit>) {
       // use predefined coherent unit symbol

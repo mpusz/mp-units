@@ -47,7 +47,7 @@ struct exajoule : prefixed_unit<exajoule, exa, joule> {};
 struct zettajoule : prefixed_unit<zettajoule, zetta, joule> {};
 struct yottajoule : prefixed_unit<yottajoule, yotta, joule> {};
 
-struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio<1'602'176'634, 1'000'000'000, -19>, joule> {};
+struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {};
 
 struct dim_energy : physical::dim_energy<dim_energy, joule, dim_force, dim_length> {};

@@ -35,7 +35,7 @@ struct dim_power : physical::dim_power<dim_power, foot_poundal_per_second, dim_e
 
 struct foot_pound_force_per_second : deduced_unit<foot_pound_force_per_second, dim_power, foot_pound_force, second> {};
 
-struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio<550>, foot_pound_force_per_second> {};
+struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio(550), foot_pound_force_per_second> {};
 
 template<Unit U, Scalar Rep = double>
 using power = quantity<dim_power, U, Rep>;

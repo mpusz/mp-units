@@ -28,13 +28,13 @@
 namespace units::physical::iau {
 
 // https://en.wikipedia.org/wiki/Light-year
-struct light_year : named_scaled_unit<light_year, "ly", no_prefix, ratio<9460730472580800>, si::metre> {};
+struct light_year : named_scaled_unit<light_year, "ly", no_prefix, ratio(9460730472580800), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Parsec
-struct parsec : named_scaled_unit<parsec, "pc", si::prefix, ratio<30'856'775'814'913'673>, si::metre> {};
+struct parsec : named_scaled_unit<parsec, "pc", si::prefix, ratio(30'856'775'814'913'673), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Angstrom
-struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio<1, 1, -10>, si::metre> {};
+struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio(1, 1, -10), si::metre> {};
 
 inline namespace literals {
 

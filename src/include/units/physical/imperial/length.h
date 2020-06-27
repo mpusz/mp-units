@@ -27,10 +27,10 @@
 namespace units::physical::imperial {
 
 // https://en.wikipedia.org/wiki/Chain_(unit)
-struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio<22, 1>, international::yard> {};
+struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio(22, 1), international::yard> {};
 
 // https://en.wikipedia.org/wiki/Rod_(unit)
-struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio<1, 4>, chain> {};
+struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
 
 inline namespace literals {
 

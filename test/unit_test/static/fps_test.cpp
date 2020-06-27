@@ -57,7 +57,7 @@ static_assert(10q_ft == 2q_ft_per_s * 5q_s);
 static_assert(detail::unit_text<dim_speed, foot_per_second>() == "ft/s");
 
 // area
-static_assert(std::is_same_v<ratio_divide<foot::ratio, dimension_unit<dim_length>::ratio>, ratio<1>>);
+static_assert(foot::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
 static_assert(1q_ft * 1q_ft == 1q_ft2);
 static_assert(100q_ft2 / 10q_ft == 10q_ft);

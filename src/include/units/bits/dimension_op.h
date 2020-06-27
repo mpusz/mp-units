@@ -66,14 +66,14 @@ inline constexpr bool equivalent_dim = detail::equivalent_dim_impl<D1, D2>::valu
  * 
  * Sometimes a temporary partial result of a complex calculation may not result in a predefined
  * dimension. In such a case an `unknown_dimension` is created with a coherent unit of `unknown_coherent_unit`
- * and ratio<1>.
+ * and ratio(1).
  * 
  * @tparam E the list of exponents of ingredient dimensions
  * @tparam ERest the list of exponents of ingredient dimensions
  */
 template<Exponent E, Exponent... ERest>
-struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>, scaled_unit<ratio<1>, unknown_coherent_unit>, E, ERest...> {
-  using coherent_unit = scaled_unit<ratio<1>, unknown_coherent_unit>;
+struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>, scaled_unit<ratio(1), unknown_coherent_unit>, E, ERest...> {
+  using coherent_unit = scaled_unit<ratio(1), unknown_coherent_unit>;
 };
 
 namespace detail {

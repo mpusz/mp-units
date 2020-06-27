@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
-#include <units/concepts.h>
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -46,7 +45,7 @@ template<typename T>
 
 // Computes (a * b) mod m relies on unsigned integer arithmetic, should not
 // overflow
-constexpr std::uint64_t mulmod(std::uint64_t a, std::uint64_t b, std::uint64_t m)
+[[nodiscard]] constexpr std::uint64_t mulmod(std::uint64_t a, std::uint64_t b, std::uint64_t m)
 {
   std::uint64_t res = 0;
 
@@ -78,7 +77,7 @@ constexpr std::uint64_t mulmod(std::uint64_t a, std::uint64_t b, std::uint64_t m
 }
 
 // Calculates (a ^ e) mod m , should not overflow.
-constexpr std::uint64_t modpow(std::uint64_t a, std::uint64_t e, std::uint64_t m)
+[[nodiscard]] constexpr std::uint64_t modpow(std::uint64_t a, std::uint64_t e, std::uint64_t m)
 {
   a %= m;
   std::uint64_t result = 1;
@@ -94,7 +93,7 @@ constexpr std::uint64_t modpow(std::uint64_t a, std::uint64_t e, std::uint64_t m
 }
 
 // gcd(a * 10 ^ e, b), should not overflow
-constexpr std::intmax_t gcdpow(std::intmax_t a, std::intmax_t e, std::intmax_t b) noexcept
+[[nodiscard]] constexpr std::intmax_t gcdpow(std::intmax_t a, std::intmax_t e, std::intmax_t b) noexcept
 {
   assert(a > 0);
   assert(e >= 0);
@@ -120,8 +119,8 @@ constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
 }
 
 // Computes the rational gcd of n1/d1 x 10^e1 and n2/d2 x 10^e2
-constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, std::intmax_t n2, std::intmax_t d2,
-                        std::intmax_t e2) noexcept
+[[nodiscard]] constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, std::intmax_t n2, std::intmax_t d2,
+                                      std::intmax_t e2) noexcept
 {
   // Short cut for equal ratios
   if (n1 == n2 && d1 == d2 && e1 == e2) {
@@ -152,8 +151,14 @@ constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, st
   return std::array{num / gcd, den / gcd, exp};
 }
 
-constexpr auto normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp)
+constexpr void normalize(std::intmax_t& num, std::intmax_t& den, std::intmax_t& exp)
 {
+  if(num == 0) {
+    den = 1;
+    exp = 0;
+    return;
+  }
+
   std::intmax_t gcd = std::gcd(num, den);
   num = num * (den < 0 ? -1 : 1) / gcd;
   den = detail::abs(den) / gcd;
@@ -166,8 +171,23 @@ constexpr auto normalize(std::intmax_t num, std::intmax_t den, std::intmax_t exp
     den /= 10;
     --exp;
   }
+}
 
-  return std::array{num, den, exp};
+[[nodiscard]] static constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
+{
+  constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
+
+  const std::intmax_t a0 = detail::abs(lhs) % c;
+  const std::intmax_t a1 = detail::abs(lhs) / c;
+  const std::intmax_t b0 = detail::abs(rhs) % c;
+  const std::intmax_t b1 = detail::abs(rhs) / c;
+
+  Expects(a1 == 0 || b1 == 0);                               // overflow in multiplication
+  Expects(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
+  Expects(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
+  Expects((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
+
+  return lhs * rhs;
 }
 
 }  // namespace units::detail

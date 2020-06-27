@@ -36,7 +36,7 @@ struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
 struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
 struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
 
-struct byte : named_scaled_unit<byte, "B", prefix, ratio<8>, bit> {};
+struct byte : named_scaled_unit<byte, "B", prefix, ratio(8), bit> {};
 struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
 struct mebibyte : prefixed_unit<mebibyte, mebi, byte> {};
 struct gibibyte : prefixed_unit<gibibyte, gibi, byte> {};

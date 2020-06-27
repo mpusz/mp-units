@@ -16,14 +16,9 @@ Concepts
 
     A concept matching a symbol prefix. Satisfied by all instantiations of :class:`prefix`.
 
-.. concept:: template<typename T> Ratio
+.. concept:: template<ratio R> UnitRatio
 
-    A concept matching a ratio. Satisfied by all instantiations of :class:`ratio`.
-
-.. concept:: template<typename R> UnitRatio
-
-    A concept matching unit's ratio. Satisfied by all types that satisfy :expr:`Ratio<R>` and
-    for which :expr:`R::num > 0` and :expr:`R::den > 0`.
+    Satisfied by all ratio values for which :expr:`R.num > 0` and :expr:`R.den > 0`.
 
 .. concept:: template<typename T> BaseDimension
 

@@ -46,7 +46,7 @@ concept safe_convertible = // exposition only
 template<typename Rep, typename UnitFrom, typename UnitTo>
 concept safe_divisible = // exposition only
     treat_as_floating_point<Rep> ||
-    ratio_divide<typename UnitFrom::ratio, typename UnitTo::ratio>::is_integral();
+    is_integral(UnitFrom::ratio / UnitTo::ratio);
 
 } // namespace detail
 
@@ -344,11 +344,11 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
            equivalent_dim<D1, dim_invert<D2>>
 {
   using common_rep = decltype(lhs.count() * rhs.count());
-  using ratio = ratio_multiply<typename U1::ratio, typename U2::ratio>;
+  const ratio r = U1::ratio * U2::ratio;
     if constexpr (treat_as_floating_point<common_rep>) {
-      return lhs.count() * rhs.count() * static_cast<common_rep>(ratio::num * fpow10(ratio::exp)) / static_cast<common_rep>(ratio::den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * fpow10<common_rep>(r.exp)) / static_cast<common_rep>(r.den);
     } else {
-      return lhs.count() * rhs.count() * static_cast<common_rep>(ratio::num * ipow10(ratio::exp)) / static_cast<common_rep>(ratio::den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * ipow10(r.exp)) / static_cast<common_rep>(r.den);
     }
 }
 
@@ -357,10 +357,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   requires std::regular_invocable<std::multiplies<>, Rep1, Rep2>
 {
   using dim = dimension_multiply<D1, D2>;
-  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
-  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_multiply<ratio_multiply<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
-  using unit = downcast_unit<dim, ratio>;
+  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
   using common_rep = decltype(lhs.count() * rhs.count());
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() * rhs.count());
@@ -373,8 +370,7 @@ template<Scalar Value, typename D, typename U, typename Rep>
   Expects(q.count() != 0);
 
   using dim = dim_invert<D>;
-  using ratio = ratio<U::ratio::den, U::ratio::num, -U::ratio::exp>;
-  using unit = downcast_unit<dim, ratio>;
+  using unit = downcast_unit<dim, ratio(U::ratio.den, U::ratio.num, -U::ratio.exp)>;
   using common_rep = decltype(v / q.count());
   using ret = quantity<dim, unit, common_rep>;
   return ret(v / q.count());
@@ -411,10 +407,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
 
   using common_rep = decltype(lhs.count() / rhs.count());
   using dim = dimension_divide<D1, D2>;
-  using ratio1 = ratio_divide<typename U1::ratio, typename dimension_unit<D1>::ratio>;
-  using ratio2 = ratio_divide<typename U2::ratio, typename dimension_unit<D2>::ratio>;
-  using ratio = ratio_multiply<ratio_divide<ratio1, ratio2>, typename dimension_unit<dim>::ratio>;
-  using unit = downcast_unit<dim, ratio>;
+  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
   using ret = quantity<dim, unit, common_rep>;
   return ret(lhs.count() / rhs.count());
 }

@@ -30,31 +30,22 @@ namespace units::detail {
 
 template<Exponent E>
   requires (E::den == 1 || E::den == 2) // TODO provide support for any den
-struct exp_ratio {
-  using base_ratio = E::dimension::base_unit::ratio;
-  using positive_ratio = conditional<E::num * E::den < 0, ratio<base_ratio::den, base_ratio::num, -base_ratio::exp>, base_ratio>;
-  static constexpr std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
-  using pow = ratio_pow<positive_ratio, N>;
-  using type = conditional<E::den == 2, ratio_sqrt<pow>, pow>;
-};
-
-template<typename ExpList>
-struct base_units_ratio_impl;
-
-template<typename E, typename... Es>
-struct base_units_ratio_impl<exp_list<E, Es...>> {
-  using type = ratio_multiply<typename exp_ratio<E>::type, typename base_units_ratio_impl<exp_list<Es...>>::type>;
-};
-
-template<typename E>
-struct base_units_ratio_impl<exp_list<E>> {
-  using type = exp_ratio<E>::type;
-};
+constexpr ratio exp_ratio()
+{
+  const ratio base_ratio = E::dimension::base_unit::ratio;
+  const ratio positive_ratio = E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
+  const std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
+  const ratio ratio_pow = pow<N>(positive_ratio);
+  return E::den == 2 ? sqrt(ratio_pow) : ratio_pow;
+}
 
 /**
  * @brief Calculates the common ratio of all the references of base units in the derived dimension
  */
-template<typename D>
-using base_units_ratio = base_units_ratio_impl<typename D::exponents>::type;
+template<typename... Es>
+constexpr ratio base_units_ratio(exp_list<Es...>)
+{
+  return (exp_ratio<Es>() * ...);
+}
 
 }  // namespace units::detail

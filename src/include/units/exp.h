@@ -70,10 +70,8 @@ namespace detail {
 
 template<Exponent E, std::intmax_t Num, std::intmax_t Den>
 struct exp_multiply_impl {
-  using r1 = ratio<E::num, E::den>;
-  using r2 = ratio<Num, Den>;
-  using r = ratio_multiply<r1, r2>;
-  using type = exp<typename E::dimension, r::num, r::den>;
+  static constexpr ratio r = ratio(E::num, E::den) * ratio(Num, Den);
+  using type = exp<typename E::dimension, r.num, r.den>;
 };
 
 }  // namespace detail

@@ -47,16 +47,19 @@ namespace units {
  * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
  * terms of gram, ...)
  *
- * @tparam U a unit to use as a reference for this dimension
  * @tparam R a ratio of a reference unit
+ * @tparam U a unit to use as a reference for this dimension
  */
-template<UnitRatio R, typename U>
+template<ratio R, typename U>
+  requires UnitRatio<R>
 struct scaled_unit : downcast_base<scaled_unit<R, U>> {
-  using ratio = R;
+  static constexpr ::units::ratio ratio = R;
   using reference = U;
 };
 
-template<Dimension D, UnitRatio R>
+template<Dimension D, auto R>
+// template<Dimension D, ratio R>  // TODO: GCC crash!!!
+  requires UnitRatio<R>
 using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
 
 template<Unit U1, Unit U2>
@@ -71,7 +74,7 @@ struct same_unit_reference : std::is_same<typename U1::reference, typename U2::r
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
+struct unit : downcast_child<Child, scaled_unit<ratio(1), Child>> {
   static constexpr bool is_named = false;
   using prefix_family = no_prefix;
 };
@@ -96,7 +99,7 @@ struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
  * @tparam PF no_prefix or a type of prefix family
  */
 template<typename Child, basic_symbol_text Symbol, PrefixFamily PF>
-struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
+struct named_unit : downcast_child<Child, scaled_unit<ratio(1), Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;
@@ -116,8 +119,9 @@ struct named_unit : downcast_child<Child, scaled_unit<ratio<1>, Child>> {
  * @tparam R a scale to apply to U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, UnitRatio R, Unit U>
-struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, typename U::ratio>, typename U::reference>> {
+template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, ratio R, Unit U>
+  requires UnitRatio<R>
+struct named_scaled_unit : downcast_child<Child, scaled_unit<R * U::ratio, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;
@@ -136,8 +140,7 @@ struct named_scaled_unit : downcast_child<Child, scaled_unit<ratio_multiply<R, t
  */
 template<typename Child, Prefix P, Unit U>
   requires U::is_named && std::same_as<typename P::prefix_family, typename U::prefix_family>
-struct prefixed_unit :
-    downcast_child<Child, scaled_unit<ratio_multiply<typename P::ratio, typename U::ratio>, typename U::reference>> {
+struct prefixed_unit : downcast_child<Child, scaled_unit<P::ratio * U::ratio, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_family = no_prefix;

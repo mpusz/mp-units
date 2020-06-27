@@ -25,6 +25,7 @@
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
+#include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
 
 namespace units {
@@ -63,32 +64,32 @@ template<typename T>
 concept Prefix = true;
 
 
-namespace detail {
-
-template<typename T>
-inline constexpr bool is_ratio = false;
-
-} // namespace detail
-
-/**
- * @brief A concept matching a ratio
- * 
- * Satisfied by all instantiations of `ratio`.
- */
-template<typename T>
-concept Ratio = detail::is_ratio<T>;
-
 /**
  * @brief A concept matching unit's ratio
  * 
- * Satisfied by all types that satisfy `Ratio<R>` and for which `R::num > 0` and `R::den > 0`
+ * Satisfied by all ratio values for which `R.num > 0` and `R.den > 0`.
  */
-template<typename R>
-concept UnitRatio = Ratio<R> && R::num > 0 && R::den > 0; // double negatives not allowed
+template<ratio R>
+concept UnitRatio = R.num > 0 && R.den > 0;
 
 // Unit
-template<UnitRatio R, typename U>
+template<ratio R, typename U>
+  requires UnitRatio<R>
 struct scaled_unit;
+
+// TODO: Remove when P1985 accepted
+namespace detail {
+
+struct is_derived_from_scaled_unit_impl {
+  template<ratio R, typename U>
+  static constexpr std::true_type check_base(const scaled_unit<R, U>&);
+  static constexpr std::false_type check_base(...);
+};
+
+template<typename T>
+inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_scaled_unit_impl::check_base(std::declval<T>()))::value;
+
+}  // namespace detail
 
 /**
  * @brief A concept matching all unit types in the library
@@ -96,7 +97,7 @@ struct scaled_unit;
  * Satisfied by all unit types derived from the instantiation of :class:`scaled_unit`.
  */
 template<typename T>
-concept Unit = is_derived_from_instantiation<T, scaled_unit>;
+concept Unit = detail::is_derived_from_scaled_unit<T>;
 
 template<basic_fixed_string Symbol, Unit U>
   requires U::is_named

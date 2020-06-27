@@ -22,7 +22,7 @@ Defining a New Unit
 My working desk is of ``180 cm x 60 cm`` which gives an area of ``0.3 m²``. I would like to
 make it a unit of area for my project::
 
-    struct desk : named_scaled_unit<desk, "desk", no_prefix, ratio<3, 10>, si::square_metre> {};
+    struct desk : named_scaled_unit<desk, "desk", no_prefix, ratio(3, 10), si::square_metre> {};
 
 With the above I can define a quantity with the area of ``2 desks``::
 
@@ -59,7 +59,7 @@ Enabling a Unit for Prefixing
 In case I decide it is reasonable to express my desks with SI prefixes the only thing I have
 to change in the above code is to replace `no_prefix` with `si_prefix`::
 
-    struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio<3, 10>, si::square_metre> {};
+    struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio(3, 10), si::square_metre> {};
 
 Now I can define a new unit named ``kilodesk``::
 
@@ -72,12 +72,12 @@ prefix family and prefixes are needed::
 
     struct shipping_prefix : prefix_family {};
 
-    struct package : prefix<package, shipping_prefix, "pkg", ratio<6>> {};
-    struct lorry : prefix<lorry, shipping_prefix, "lorry", ratio<6 * 40>> {};
+    struct package : prefix<package, shipping_prefix, "pkg", ratio(6)> {};
+    struct lorry : prefix<lorry, shipping_prefix, "lorry", ratio(6 * 40)> {};
 
 Now we can use it for our unit::
 
-    struct desk : named_scaled_unit<desk, "desk", shipping_prefix, ratio<3, 10>, si::square_metre> {};
+    struct desk : named_scaled_unit<desk, "desk", shipping_prefix, ratio(3, 10), si::square_metre> {};
     struct packagedesk : prefixed_unit<packagedesk, package, desk> {};
     struct lorrydesk : prefixed_unit<lorrydesk, lorry, desk> {};
 
