@@ -24,6 +24,8 @@
 
 #include "si/absorbed_dose.h"
 #include "si/acceleration.h"
+#include "si/angle.h"
+#include "si/angular_velocity.h"
 #include "si/area.h"
 #include "si/capacitance.h"
 #include "si/catalytic_activity.h"

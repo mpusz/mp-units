@@ -377,4 +377,7 @@ static_assert(1q_J_per_mol * 1q_mol_per_m3 * 1q_m3 == 1q_N * 1q_m);
 
 static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
 
+// angular velocity
+static_assert(1q_rad / 1q_s == 1q_rad_per_s);
+static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == "ω");
 }  // namespace
