@@ -9,6 +9,7 @@
   - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - `ratio` changed to the NTTP kind
+  - Minimum compiler version supported changed to gcc-9.3
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
