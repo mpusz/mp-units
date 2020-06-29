@@ -105,20 +105,14 @@ struct base_dimension;
 
 namespace detail {
 
-#if __GNUC__ == 9 && __GNUC_MINOR__ < 2
+struct is_derived_from_base_dimension_impl {
+  template<basic_fixed_string Symbol, typename U>
+  static constexpr std::true_type check_base(const base_dimension<Symbol, U>&);
+  static constexpr std::false_type check_base(...);
+};
 
 template<typename T>
-inline constexpr bool is_base_dimension = true;
-
-#else
-
-template<typename T>
-inline constexpr bool is_base_dimension = false;
-
-template<basic_fixed_string Name, typename... Params>
-inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
-
-#endif
+inline constexpr bool is_derived_from_base_dimension = decltype(is_derived_from_base_dimension_impl::check_base(std::declval<T>()))::value;
 
 }  // namespace detail
 
@@ -128,7 +122,7 @@ inline constexpr bool is_base_dimension<base_dimension<Name, Params...>> = true;
  * Satisfied by all dimension types derived from the instantiation of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = detail::is_base_dimension<typename T::base_type_workaround>;
+concept BaseDimension = detail::is_derived_from_base_dimension<T>;
 
 // Exponent
 namespace detail {
@@ -161,7 +155,7 @@ struct derived_dimension_base;
  * Satisfied by all dimension types derived from the instantiation of `detail::derived_dimension_base`.
  */
 template<typename T>
-concept DerivedDimension = is_instantiation<downcast_base_t<T>, detail::derived_dimension_base>;
+concept DerivedDimension = is_derived_from_instantiation_of<T, detail::derived_dimension_base>;
 
 // Dimension
 /**
