@@ -51,10 +51,10 @@ static_assert(invalid_types<physical::si::dim_length>);
 
 // member types
 
-static_assert(std::is_same_v<quantity_point<dim_length, metre, int>::rep, int>);
-static_assert(std::is_same_v<quantity_point<dim_length, metre, double>::rep, double>);
-static_assert(std::is_same_v<quantity_point<dim_length, metre, int>::unit, metre>);
-static_assert(std::is_same_v<quantity_point<dim_length, kilometre, int>::unit, kilometre>);
+static_assert(is_same_v<quantity_point<dim_length, metre, int>::rep, int>);
+static_assert(is_same_v<quantity_point<dim_length, metre, double>::rep, double>);
+static_assert(is_same_v<quantity_point<dim_length, metre, int>::unit, metre>);
+static_assert(is_same_v<quantity_point<dim_length, kilometre, int>::unit, kilometre>);
 
 // constructors
 
@@ -119,23 +119,23 @@ static_assert((quantity_point(2q_m) -= 1q_m).relative().count() == 1);
 
 // non-member arithmetic operators
 
-static_assert(std::is_same_v<decltype(quantity_point<dim_length, metre, int>() + length<metre, double>()),
+static_assert(is_same_v<decltype(quantity_point<dim_length, metre, int>() + length<metre, double>()),
                              quantity_point<dim_length, metre, double>>);
-static_assert(std::is_same_v<decltype(length<metre, int>() + quantity_point<dim_length, metre, double>()),
+static_assert(is_same_v<decltype(length<metre, int>() + quantity_point<dim_length, metre, double>()),
                              quantity_point<dim_length, metre, double>>);
-static_assert(std::is_same_v<decltype(quantity_point<dim_length, kilometre, int>() + length<metre, double>()),
+static_assert(is_same_v<decltype(quantity_point<dim_length, kilometre, int>() + length<metre, double>()),
                              quantity_point<dim_length, metre, double>>);
-static_assert(std::is_same_v<decltype(length<kilometre, int>() + quantity_point<dim_length, metre, double>()),
+static_assert(is_same_v<decltype(length<kilometre, int>() + quantity_point<dim_length, metre, double>()),
                              quantity_point<dim_length, metre, double>>);
-static_assert(std::is_same_v<decltype(quantity_point<dim_length, metre, double>() - length<metre, int>()),
+static_assert(is_same_v<decltype(quantity_point<dim_length, metre, double>() - length<metre, int>()),
                              quantity_point<dim_length, metre, double>>);
-static_assert(std::is_same_v<decltype(quantity_point<dim_length, kilometre, double>() - length<metre, int>()),
+static_assert(is_same_v<decltype(quantity_point<dim_length, kilometre, double>() - length<metre, int>()),
                              quantity_point<dim_length, metre, double>>);
 static_assert(
-    std::is_same_v<decltype(quantity_point<dim_length, metre, double>() - quantity_point<dim_length, metre, int>()),
+    is_same_v<decltype(quantity_point<dim_length, metre, double>() - quantity_point<dim_length, metre, int>()),
                    length<metre, double>>);
 static_assert(
-    std::is_same_v<decltype(quantity_point<dim_length, kilometre, double>() - quantity_point<dim_length, metre, int>()),
+    is_same_v<decltype(quantity_point<dim_length, kilometre, double>() - quantity_point<dim_length, metre, int>()),
                    length<metre, double>>);
 
 static_assert((1q_m + km).relative().count() == 1001);
@@ -187,13 +187,13 @@ static_assert(QuantityPoint<quantity_point<dim_length, millimetre, int>>);
 
 // common_quantity_point
 
-static_assert(std::is_same_v<
+static_assert(is_same_v<
               common_quantity_point<quantity_point<dim_length, metre, int>, quantity_point<dim_length, kilometre, int>>,
               quantity_point<dim_length, metre, int>>);
-static_assert(std::is_same_v<common_quantity_point<quantity_point<dim_length, kilometre, long long>,
+static_assert(is_same_v<common_quantity_point<quantity_point<dim_length, kilometre, long long>,
                                                    quantity_point<dim_length, metre, int>>,
                              quantity_point<dim_length, metre, long long>>);
-static_assert(std::is_same_v<common_quantity_point<quantity_point<dim_length, kilometre, long long>,
+static_assert(is_same_v<common_quantity_point<quantity_point<dim_length, kilometre, long long>,
                                                    quantity_point<dim_length, millimetre, double>>,
                              quantity_point<dim_length, millimetre, double>>);
 
@@ -209,7 +209,7 @@ static_assert(std::equality_comparable_with<decltype(quantity_point(1q_m)), decl
 // quantity_cast
 
 static_assert(
-    std::is_same_v<decltype(quantity_point_cast<scaled_unit<ratio(1), metre>>(quantity_point(2q_km)))::unit, metre>);
+    is_same_v<decltype(quantity_point_cast<scaled_unit<ratio(1), metre>>(quantity_point(2q_km)))::unit, metre>);
 
 static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2q_km)).relative().count() ==
               2000);

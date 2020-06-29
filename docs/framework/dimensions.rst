@@ -85,7 +85,7 @@ and `si::metre` is a :term:`base unit` of this base dimension. We can
 obtain those back easily with::
 
     static_assert(si::dim_length::symbol == "L");
-    static_assert(std::is_same_v<si::dim_length::base_unit, si::metre>);
+    static_assert(is_same_v<si::dim_length::base_unit, si::metre>);
 
 
 Derived Dimensions
@@ -169,8 +169,8 @@ Obtaining a Unit of the Dimension
 In order to obtain the base/coherent unit of any dimension type a
 `dimension_unit` helper was introduced::
 
-    static_assert(std::is_same_v<dimension_unit<si::dim_length>, si::metre>);
-    static_assert(std::is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);
+    static_assert(is_same_v<dimension_unit<si::dim_length>, si::metre>);
+    static_assert(is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);
 
 
 .. rubric:: Citations:

@@ -46,11 +46,11 @@ struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exp<dim_length, 1>, units::exp<dim_time, -1>> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
-static_assert(std::is_same_v<downcast<scaled_unit<ratio(1), metre>>, metre>);
-static_assert(std::is_same_v<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
-static_assert(std::is_same_v<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
-static_assert(std::is_same_v<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
-static_assert(std::is_same_v<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
+static_assert(is_same_v<downcast<scaled_unit<ratio(1), metre>>, metre>);
+static_assert(is_same_v<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
+static_assert(is_same_v<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
+static_assert(is_same_v<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
+static_assert(is_same_v<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
 
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");

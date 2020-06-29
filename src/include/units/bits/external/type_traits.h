@@ -46,6 +46,16 @@ struct conditional_impl<true> {
 template<bool B, typename T, typename F>
 using conditional = detail::conditional_impl<B>::template type<T, F>;
 
+// is_same
+template<class T, class U>
+inline constexpr bool is_same_v = false;
+
+template<class T>
+inline constexpr bool is_same_v<T, T> = true;
+
+template<class T, class U>
+using is_same = std::bool_constant<is_same_v<T, U>>;
+
 // is_instantiation_of
 namespace detail {
 

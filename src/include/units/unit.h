@@ -63,7 +63,7 @@ template<Dimension D, auto R>
 using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
 
 template<Unit U1, Unit U2>
-struct same_unit_reference : std::is_same<typename U1::reference, typename U2::reference> {};
+struct same_unit_reference : is_same<typename U1::reference, typename U2::reference> {};
 
 /**
  * @brief An unnamed unit

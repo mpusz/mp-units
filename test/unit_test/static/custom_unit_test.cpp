@@ -49,11 +49,11 @@ using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, R
 
 namespace {
 
-static_assert(std::is_same_v<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
-static_assert(std::is_same_v<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);
+static_assert(is_same_v<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
+static_assert(is_same_v<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);
 
-static_assert(std::is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
-static_assert(std::is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
+static_assert(is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
+static_assert(is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
 
 }
 
@@ -63,6 +63,6 @@ struct kilogram_per_second : unit<kilogram_per_second> {};
 struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exp<dim_mass, 1>, units::exp<dim_time, -1>> {};
 struct kilogram_per_hour : deduced_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
 constexpr auto a = 1q_kg / 1q_h;
-static_assert(std::is_same_v<decltype(a)::unit, kilogram_per_hour>);
+static_assert(is_same_v<decltype(a)::unit, kilogram_per_hour>);
 
 }

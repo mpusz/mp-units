@@ -27,8 +27,8 @@ will determine its type. The same applies to the resulting unit. For example:
     using namespace units::physical::si;
 
     constexpr auto result = 144q_km / 2q_h;
-    static_assert(std::is_same_v<decltype(result)::dimension, dim_speed>);
-    static_assert(std::is_same_v<decltype(result)::unit, kilometre_per_hour>);
+    static_assert(is_same_v<decltype(result)::dimension, dim_speed>);
+    static_assert(is_same_v<decltype(result)::unit, kilometre_per_hour>);
 
 However, if the resulting dimension is not predefined by the user the library framework
 will create an instance of an `unknown_dimension`. The coherent unit of such an unknown
@@ -45,10 +45,10 @@ we forget to include a header file with the resulting dimension definition:
     using namespace units::physical::si;
 
     constexpr auto result = 144q_km / 2q_h;
-    static_assert(std::is_same_v<decltype(result)::dimension,
-                                 unknown_dimension<exp<dim_length, 1>, exp<dim_time, -1>>>);
-    static_assert(std::is_same_v<decltype(result)::unit,
-                                 scaled_unit<ratio<1, 36, 1>, unknown_coherent_unit>>);
+    static_assert(is_same_v<decltype(result)::dimension,
+                            unknown_dimension<exp<dim_length, 1>, exp<dim_time, -1>>>);
+    static_assert(is_same_v<decltype(result)::unit,
+                            scaled_unit<ratio(1, 36, 1), unknown_coherent_unit>>);
 
 
 Operations On Unknown Dimensions And Their Units

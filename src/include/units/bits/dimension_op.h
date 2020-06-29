@@ -30,15 +30,15 @@ namespace units {
 // equivalent_dim
 namespace detail {
 
+template<BaseDimension D1, BaseDimension D2>
+using equivalent_base_dim = std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
+                                             same_unit_reference<typename D1::base_unit, typename D2::base_unit>>;
+
 template<Dimension D1, Dimension D2>
 struct equivalent_dim_impl : std::false_type {};
 
 template<BaseDimension D1, BaseDimension D2>
-struct equivalent_base_dim : std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
-                                        same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {};
-
-template<BaseDimension D1, BaseDimension D2>
-struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_base_dim<D1, D2>> {};
+struct equivalent_dim_impl<D1, D2> : std::disjunction<is_same<D1, D2>, equivalent_base_dim<D1, D2>> {};
 
 template<Exponent E1, Exponent E2>
 struct equivalent_exp : std::false_type {};
@@ -54,7 +54,7 @@ template<typename... Es1, typename... Es2>
 struct equivalent_derived_dim<derived_dimension_base<Es1...>, derived_dimension_base<Es2...>> : std::conjunction<equivalent_exp<Es1, Es2>...> {};
 
 template<DerivedDimension D1, DerivedDimension D2>
-struct equivalent_dim_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {};
+struct equivalent_dim_impl<D1, D2> : std::disjunction<is_same<D1, D2>, equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {};
 
 } // namespace detail
 
