@@ -10,8 +10,8 @@ osx: &osx
   language: generic
 matrix:
   include:
-    - <<: *linux
-      env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
+    # - <<: *linux
+    #   env: CONAN_GCC_VERSIONS=9 CONAN_DOCKER_IMAGE=conanio/gcc9
     - <<: *linux
       env: CONAN_GCC_VERSIONS=10 CONAN_DOCKER_IMAGE=conanio/gcc10 DEPLOY_DOCS=TRUE
 
