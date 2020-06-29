@@ -46,25 +46,25 @@ struct conditional_impl<true> {
 template<bool B, typename T, typename F>
 using conditional = detail::conditional_impl<B>::template type<T, F>;
 
-// is_instantiation
+// is_instantiation_of
 namespace detail {
 
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_instantiation_impl = false;
+inline constexpr bool is_instantiation_of_impl = false;
 
 template<typename... Params, template<typename...> typename Type>
-inline constexpr bool is_instantiation_impl<Type<Params...>, Type> = true;
+inline constexpr bool is_instantiation_of_impl<Type<Params...>, Type> = true;
 
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_instantiation = detail::is_instantiation_impl<T, Type>;
+inline constexpr bool is_instantiation_of = detail::is_instantiation_of_impl<T, Type>;
 
-// is_derived_from_instantiation
+// is_derived_from_instantiation_of
 namespace detail {
 
 template<template<typename...> typename Type>
-struct is_derived_from_instantiation_impl {
+struct is_derived_from_instantiation_of_impl {
   template<typename... Params>
   static constexpr std::true_type check_base(const Type<Params...>&);
   static constexpr std::false_type check_base(...);
@@ -73,6 +73,6 @@ struct is_derived_from_instantiation_impl {
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_derived_from_instantiation = decltype(detail::is_derived_from_instantiation_impl<Type>::check_base(std::declval<T>()))::value;
+inline constexpr bool is_derived_from_instantiation_of = decltype(detail::is_derived_from_instantiation_of_impl<Type>::check_base(std::declval<T>()))::value;
 
 }  // namespace units
