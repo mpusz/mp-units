@@ -28,7 +28,7 @@
 
 namespace units::physical::si {
 
-struct mole : named_unit<metre, "mol", prefix> {};
+struct mole : named_unit<mole, "mol", prefix> {};
 
 struct dim_substance : physical::dim_substance<mole> {};
 
