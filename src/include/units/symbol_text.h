@@ -13,8 +13,9 @@ template<std::size_t P>
 constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[P + 1]) noexcept
 {
 #ifndef NDEBUG
-  for (size_t i = 0; i < P; ++i)
-    validate_ascii_char(s[i]);
+  if constexpr (P != 0)
+    for (size_t i = 0; i < P; ++i)
+      validate_ascii_char(s[i]);
 #endif
 }
 
