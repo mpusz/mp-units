@@ -44,7 +44,8 @@ struct basic_fixed_string {
 
   constexpr basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
-    for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
+    if constexpr (N != 0)
+      for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
   [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
