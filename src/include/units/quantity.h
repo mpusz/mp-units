@@ -141,7 +141,7 @@ public:
 
   template<typename T = Rep>
     requires requires(T v) { { v++ } -> SAME_AS(T); }
-  constexpr quantity operator++(int)
+  [[nodiscard]] constexpr quantity operator++(int)
   // requires requires(rep v) { { v++ } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity(value_++);
@@ -158,7 +158,7 @@ public:
 
   template<typename T = Rep>
     requires requires(T v) { { v-- } -> SAME_AS(T); }
-  constexpr quantity operator--(int)
+  [[nodiscard]] constexpr quantity operator--(int)
   // requires requires(rep v) { { v-- } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity(value_--);
@@ -300,7 +300,7 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    return os << detail::to_string<CharT, Traits>(q); 
+    return os << detail::to_string<CharT, Traits>(q);
   }
 };
 
