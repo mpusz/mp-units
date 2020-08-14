@@ -38,7 +38,7 @@ def get_version():
 class UnitsConan(ConanFile):
     name = "mp-units"
     version = get_version()
-    author = "Lee Runyon"
+    author = "Mateusz Pusz"
     license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
@@ -76,6 +76,7 @@ class UnitsConan(ConanFile):
         if self.settings.compiler == ("gcc"):
             if Version(self.settings.compiler.version) < "9":
                 raise ConanInvalidConfiguration("Library requires at least g++-9")
+
         elif self.settings.compiler == ("clang"):
             if Version(self.settings.compiler.version) < "10":
                 raise ConanInvalidConfiguration("Library requires at least clang++-10")
