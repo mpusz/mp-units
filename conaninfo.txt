@@ -1,0 +1,34 @@
+[settings]
+
+
+[requires]
+
+
+[options]
+
+
+[full_settings]
+    arch=x86_64
+    build_type=Release
+    compiler=clang
+    compiler.cppstd=20
+    compiler.libcxx=libstdc++11
+    compiler.version=10
+    os=Windows
+    os.subsystem=msys2
+
+[full_requires]
+    fmt/6.1.0:47dd26779b56cb16b3fc3f0a77cd91ab26d011e7
+    range-v3/0.10.0@ericniebler/stable:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+
+[full_options]
+    fmt:header_only=False
+    fmt:shared=False
+    fmt:with_fmt_alias=False
+
+[recipe_hash]
+
+
+[env]
+    CC=C:/msys64/mingw64/bin/clang
+    CXX=C:/msys64/mingw64/bin/clang++

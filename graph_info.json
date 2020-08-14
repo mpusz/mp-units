@@ -1,0 +1,22 @@
+{
+ "options": [
+  [
+   "fmt:header_only",
+   "False"
+  ],
+  [
+   "fmt:shared",
+   "False"
+  ],
+  [
+   "fmt:with_fmt_alias",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": "mp-units",
+  "version": "0.5.0",
+  "user": null,
+  "channel": null
+ }
+}

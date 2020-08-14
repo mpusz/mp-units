@@ -1,0 +1,33 @@
+{
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "ref": "mp-units/0.5.0",
+    "options": "fmt:header_only=False\nfmt:shared=False\nfmt:with_fmt_alias=False",
+    "requires": [
+     "1",
+     "2"
+    ],
+    "path": "conanfile.py",
+    "context": "host"
+   },
+   "1": {
+    "ref": "fmt/6.1.0",
+    "options": "header_only=False\nshared=False\nwith_fmt_alias=False",
+    "package_id": "47dd26779b56cb16b3fc3f0a77cd91ab26d011e7",
+    "prev": "0",
+    "context": "host"
+   },
+   "2": {
+    "ref": "range-v3/0.10.0@ericniebler/stable",
+    "options": "",
+    "package_id": "5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9",
+    "prev": "0",
+    "context": "host"
+   }
+  },
+  "revisions_enabled": false
+ },
+ "version": "0.4",
+ "profile_host": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Release\ncompiler=clang\ncompiler.cppstd=20\ncompiler.libcxx=libstdc++11\ncompiler.version=10\nos=Windows\nos.subsystem=msys2\nos_build=Windows\n[options]\n[build_requires]\n[env]\nCC=C:/msys64/mingw64/bin/clang\nCXX=C:/msys64/mingw64/bin/clang++"
+}

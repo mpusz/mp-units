@@ -38,7 +38,7 @@ def get_version():
 class UnitsConan(ConanFile):
     name = "mp-units"
     version = get_version()
-    author = "Mateusz Pusz"
+    author = "Lee Runyon"
     license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
     url = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
@@ -71,35 +71,38 @@ class UnitsConan(ConanFile):
 
     def configure(self):
         #check if either gcc or clang compiler
-        if self.settings.compiler != ("gcc") || self.settings.compiler != ("clang")
-            #if self.settings.compiler != "gcc": # and self.settings.compiler != "clang":
-            raise ConanInvalidConfiguration("Library works only with gcc or clang") # and clang")
-        if self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "9":
-            raise ConanInvalidConfiguration("Library requires at least g++-9")
-        if self.settings.compiler == "clang" and Version(self.settings.compiler.version) < "10":
-            raise ConanInvalidConfiguration("Library requires at least clang++-11")
+        print(self.settings.compiler)
+
+        if self.settings.compiler == ("gcc"):
+            if Version(self.settings.compiler.version) < "9":
+                raise ConanInvalidConfiguration("Library requires at least g++-9")
+        elif self.settings.compiler == ("clang"):
+            if Version(self.settings.compiler.version) < "10":
+                raise ConanInvalidConfiguration("Library requires at least clang++-10")
+        else:
+            raise ConanInvalidConfiguration("Library works only with gcc or clang")
         if self.settings.compiler.cppstd not in ["20", "gnu20"]:
             raise ConanInvalidConfiguration("Library requires at least C++20 support")
-
+        return None
     def requirements(self):
         if self.settings.compiler == "clang" or Version(self.settings.compiler.version) < "10":
             self.requires("range-v3/0.10.0@ericniebler/stable")
-
+        return None
     def build_requirements(self):
         if self._run_tests:
             self.build_requires("Catch2/2.11.0@catchorg/stable")
-
+        return None
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
         if self._run_tests:
             self.run("ctest -VV -C %s" % cmake.build_type, run_environment=True)
-
+        return None
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
         cmake = self._configure_cmake()
         cmake.install()
-
+        return None
     def package_info(self):
         if self.settings.compiler == "gcc":
             self.cpp_info.cxxflags = [
