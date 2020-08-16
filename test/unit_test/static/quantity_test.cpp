@@ -124,6 +124,14 @@ static_assert((7q_m %= 2q_m).count() == 1);
 //  static_assert((7.m %= 2q_m).count() == 1);  // should not compile (operation not allowed for floating-point types)
 //  static_assert((7q_m %= 2.m).count() == 1);  // should not compile (operation not allowed for floating-point types)
 
+// static_assert(2q_m += 3.5q_m); // should not compile
+static_assert((2.5q_m += 3q_m).count() == 5.5);
+static_assert((2.5q_m += 3.5q_m).count() == 6);
+
+// static_assert(2q_m *= 3.5); // should not compile
+static_assert((2.5q_m *= 3).count() == 7.5);
+static_assert((2.5q_m *= 3.5).count() == 8.75);
+
 // non-member arithmetic operators
 
 static_assert(is_same_v<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);

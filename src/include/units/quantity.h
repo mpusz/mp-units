@@ -164,37 +164,33 @@ public:
     return quantity(value_--);
   }
 
-  template<typename T = Rep>
-    requires requires(T v1, T v2) { { v1 += v2 } -> SAME_AS(T&); }
-  constexpr quantity& operator+=(const quantity& q)
-  // requires requires(rep v1, rep v2) { { v1 += v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+  template<typename Rep2>
+    requires detail::safe_convertible<Rep2, rep>
+  constexpr quantity& operator+=(const quantity<D, U, Rep2>& q)
   {
     value_ += q.count();
     return *this;
   }
 
-  template<typename T = Rep>
-    requires requires(T v1, T v2) { { v1 -= v2 } -> SAME_AS(T&); }
-  constexpr quantity& operator-=(const quantity& q)
-  // requires requires(rep v1, rep v2) { { v1 -= v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+  template<typename Rep2>
+    requires detail::safe_convertible<Rep2, rep>
+  constexpr quantity& operator-=(const quantity<D, U, Rep2>& q)
   {
     value_ -= q.count();
     return *this;
   }
 
-  template<typename T = Rep>
-    requires requires(T v1, T v2) { { v1 *= v2 } -> SAME_AS(T&); }
-  constexpr quantity& operator*=(const rep& rhs)
-  // requires requires(rep v1, rep v2) { { v1 *= v2 } -> std::same_as<T&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+  template<typename Rep2>
+    requires detail::safe_convertible<Rep2, rep>
+  constexpr quantity& operator*=(const Rep2& rhs)
   {
     value_ *= rhs;
     return *this;
   }
 
-  template<typename T = Rep>
-    requires requires(T v1, T v2) { { v1 /= v2 } -> SAME_AS(T&); }
-  constexpr quantity& operator/=(const rep& rhs)
-  // requires requires(rep v1, rep v2) { { v1 /= v2 } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+  template<typename Rep2>
+    requires detail::safe_convertible<Rep2, rep>
+  constexpr quantity& operator/=(const Rep2& rhs)
   {
     value_ /= rhs;
     return *this;
