@@ -20,4 +20,4 @@ if [[ "$(uname -s)" == 'Darwin' ]]; then
 fi
 
 pip install -U conan_package_tools
-conan user
+conan config init
