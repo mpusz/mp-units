@@ -30,8 +30,7 @@ namespace units {
 /**
  * @brief A quantity point
  *
- * Property of a phenomenon, body, or substance, where the property has a magnitude that can be
- * expressed by means of a number and a measurement unit.
+ * An absolute quantity with respect to zero (which represents some origin).
  *
  * @tparam D a dimension of the quantity point (can be either a BaseDimension or a DerivedDimension)
  * @tparam U a measurement unit of the quantity point
