@@ -77,7 +77,7 @@ namespace units {
     template <typename CharT>
     struct global_format_specs
     {
-      fmt::internal::fill_t<CharT> fill = fmt::internal::fill_t<CharT>::make();
+      fmt::detail::fill_t<CharT> fill = fmt::detail::fill_t<CharT>::make();
       fmt::align_t align = fmt::align_t::none;
       int width = 0;
     };
@@ -128,7 +128,7 @@ namespace units {
       // parse precision if a floating point
       if(*begin == '.') {
         if (treat_as_floating_point)
-          begin = fmt::internal::parse_precision(begin, end, handler);
+          begin = fmt::detail::parse_precision(begin, end, handler);
         else
           handler.on_error("precision not allowed for integral quantity representation");
       }
@@ -278,7 +278,7 @@ struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
   using iterator = fmt::basic_format_parse_context<CharT>::iterator;
-  using arg_ref_type = fmt::internal::arg_ref<CharT>;
+  using arg_ref_type = fmt::detail::arg_ref<CharT>;
 
   units::detail::global_format_specs<CharT> global_specs;
   units::detail::rep_format_specs  rep_specs;
@@ -308,7 +308,7 @@ private:
       return arg_ref_type(arg_id);
     }
 
-    constexpr arg_ref_type make_arg_ref(fmt::internal::auto_id)
+    constexpr arg_ref_type make_arg_ref(fmt::detail::auto_id)
     {
       return arg_ref_type(context.next_arg_id());
     }
@@ -386,12 +386,12 @@ private:
     spec_handler handler{*this, ctx, format_str};
 
     // parse alignment
-    begin = fmt::internal::parse_align(begin, end, handler);
+    begin = fmt::detail::parse_align(begin, end, handler);
     if(begin == end)
       return {begin, begin};
 
     // parse width
-    begin = fmt::internal::parse_width(begin, end, handler);
+    begin = fmt::detail::parse_width(begin, end, handler);
     if(begin == end)
       return {begin, begin};
 
@@ -409,7 +409,7 @@ public:
   constexpr auto parse(fmt::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    format_str = fmt::basic_string_view<CharT>(&*range.begin, fmt::internal::to_unsigned(range.end - range.begin));
+    format_str = fmt::basic_string_view<CharT>(&*range.begin, fmt::detail::to_unsigned(range.end - range.begin));
     return range.end;
   }
 
@@ -419,8 +419,8 @@ public:
     auto begin = format_str.begin(), end = format_str.end();
 
     // process dynamic width and precision
-    fmt::internal::handle_dynamic_spec<fmt::internal::width_checker>(global_specs.width, width_ref, ctx);
-    fmt::internal::handle_dynamic_spec<fmt::internal::precision_checker>(rep_specs.precision, precision_ref, ctx);
+    fmt::detail::handle_dynamic_spec<fmt::detail::width_checker>(global_specs.width, width_ref, ctx);
+    fmt::detail::handle_dynamic_spec<fmt::detail::precision_checker>(rep_specs.precision, precision_ref, ctx);
 
     // In `global_format_buffer` we will create a global format string
     //  e.g. "{:*^10%.1Q_%q}, 1.23q_m" => "{:*^10}"
