@@ -2,7 +2,11 @@
 
 - **0.6.0 WIP**
   - linear_algebra updated to 0.7.0/testing
-  - libfmt updated to 6.2.1
+  - fmt updated to 7.0.3
+  - range-v3 updated to 0.11.0
+  - catch2 updated to 2.13.0
+  - doxygen updated to 1.8.18
+  - ms-gsl 3.1.0 dependency added
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
