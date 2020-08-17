@@ -13,6 +13,7 @@ Framework Basics
 
     framework/basic_concepts
     framework/quantities
+    framework/quantity_points
     framework/dimensions
     framework/units
     framework/constants
