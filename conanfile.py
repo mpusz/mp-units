@@ -83,7 +83,7 @@ class UnitsConan(ConanFile):
 
     def requirements(self):
         if self.settings.compiler == "clang" or Version(self.settings.compiler.version) < "10":
-            self.requires("range-v3/0.10.0@ericniebler/stable")
+            self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
         if self._run_tests:
