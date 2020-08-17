@@ -106,7 +106,6 @@ Add the following remotes to your local Conan instance:
 .. code-block:: shell
 
     conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
-    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
 
 .. note::

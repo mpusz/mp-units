@@ -88,8 +88,7 @@ class UnitsConan(ConanFile):
     def build_requirements(self):
         if self._run_tests:
             self.build_requires("catch2/2.13.0")
-            # TODO update doxygen to the latest version when available
-            self.build_requires("doxygen_installer/1.8.17@bincrafters/stable")
+            self.build_requires("doxygen/1.8.18")
             self.build_requires("linear_algebra/0.7.0@public-conan/testing")
 
     def build(self):
