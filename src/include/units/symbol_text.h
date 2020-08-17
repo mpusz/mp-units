@@ -2,6 +2,7 @@
 
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
+#include <gsl/gsl>
 
 namespace units {
 

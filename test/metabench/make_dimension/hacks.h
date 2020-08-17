@@ -24,13 +24,6 @@
 
 #include <concepts/concepts.hpp>
 
-#ifdef NDEBUG
-#define Expects(cond) (void)(cond);
-#else
-#include <cassert>
-#define Expects(cond) assert(cond);
-#endif
-
 namespace std {
 
   // concepts

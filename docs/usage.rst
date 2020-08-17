@@ -16,7 +16,8 @@ This repository contains three independent CMake-based projects:
   - header-only project containing whole **mp-units** library
   - when C++20 support will be fully supported by C++ compilers this library will have
     no external dependencies but until then it depends on
-    `range-v3 <https://github.com/ericniebler/range-v3>`_ (only for gcc versions < 10.0)
+    `range-v3 <https://github.com/ericniebler/range-v3>`_ (only for gcc versions < 10.0),
+    `ms-gsl <https://github.com/microsoft/GSL>`_,
     and `{fmt} <https://github.com/fmtlib/fmt>`_ libraries.
 
 - *.*

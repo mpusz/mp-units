@@ -56,6 +56,7 @@ target_compile_features(units INTERFACE cxx_std_20)
 target_link_libraries(units
     INTERFACE
         $<IF:$<TARGET_EXISTS:CONAN_PKG::fmt>,CONAN_PKG::fmt,fmt::fmt>
+        $<IF:$<TARGET_EXISTS:CONAN_PKG::ms-gsl>,CONAN_PKG::ms-gsl,Microsoft.GSL::GSL>
 )
 target_include_directories(units
     INTERFACE

@@ -46,7 +46,8 @@ class UnitsConan(ConanFile):
     exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "fmt/6.2.1"
+        "fmt/6.2.1",
+        "ms-gsl/3.1.0"
     )
     # scm = {
     #     "type": "git",

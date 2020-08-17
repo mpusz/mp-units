@@ -30,6 +30,7 @@
 #include <numeric>
 #include <tuple>
 #include <type_traits>
+#include <gsl/gsl>
 
 namespace units::detail {
 
