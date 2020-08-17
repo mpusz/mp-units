@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 # check if conan installed a test framework
-conan_check_testing(Catch2)
+conan_check_testing(catch2)
 
 add_executable(unit_tests_runtime
     catch_main.cpp
@@ -34,8 +34,8 @@ add_executable(unit_tests_runtime
 target_link_libraries(unit_tests_runtime
     PRIVATE
         mp::units
-        $<IF:$<TARGET_EXISTS:CONAN_PKG::Catch2>,CONAN_PKG::Catch2,Catch2::Catch2>
+        $<IF:$<TARGET_EXISTS:CONAN_PKG::catch2>,CONAN_PKG::catch2,Catch2::Catch2>
 )
 
-include(lib/cmake/Catch2/Catch)
+include(Catch)
 catch_discover_tests(unit_tests_runtime)
