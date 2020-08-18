@@ -3,13 +3,13 @@
 Basic Concepts
 ==============
 
-The most important concepts in the library are `Unit`, `Dimension`, and
-`Quantity`:
+The most important concepts in the library are `Unit`, `Dimension`,
+`Quantity` and `QuantityPoint`:
 
 .. image:: /_static/img/concepts.png
     :align: center
 
-.. 
+..
     http://www.nomnoml.com
 
     [<abstract>Dimension|
@@ -37,3 +37,5 @@ derived dimensions.
 
 `Quantity` is a concrete amount of a unit for a specified dimension with a
 specific representation.
+
+`QuantityPoint` is an absolute `Quantity` with respect to some origin.

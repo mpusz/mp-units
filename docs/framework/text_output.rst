@@ -6,6 +6,10 @@ Text Output
 Beside providing dimensional analysis and units conversions, the library
 also tries really hard to print any quantity in the most user friendly way.
 
+.. note::
+
+    The library provides no text output for quantity points.
+
 Output Streams
 --------------
 
