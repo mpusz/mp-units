@@ -38,7 +38,7 @@ namespace units {
  * @tparam Rep a type to be used to represent values of a quantity point
  */
 template<Dimension D, UnitOf<D> U, Scalar Rep = double>
-class [[nodiscard]] quantity_point {
+class quantity_point {
 public:
   using quantity_type = quantity<D, U, Rep>;
   using dimension = typename quantity_type::dimension;
@@ -67,7 +67,7 @@ public:
   [[nodiscard]] constexpr quantity_type relative() const noexcept { return q_; }
 
   template<typename Q = quantity_type>
-  static constexpr quantity_point min() noexcept
+  [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { Q::min(); }
   // requires requires { quantity_type::min(); }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
@@ -75,7 +75,7 @@ public:
   }
 
   template<typename Q = quantity_type>
-  static constexpr quantity_point max() noexcept
+  [[nodiscard]] static constexpr quantity_point max() noexcept
     requires requires { Q::max(); }
   // requires requires { quantity_type::max(); }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
@@ -93,7 +93,7 @@ public:
 
   template<typename Q = quantity_type>
     requires requires(Q q) { q++; }
-  constexpr quantity_point operator++(int)
+  [[nodiscard]] constexpr quantity_point operator++(int)
   // requires requires(quantity_type q) { q++; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity_point(q_++);
@@ -110,7 +110,7 @@ public:
 
   template<typename Q = quantity_type>
     requires requires(Q q) { q--; }
-  constexpr quantity_point operator--(int)
+  [[nodiscard]] constexpr quantity_point operator--(int)
   // requires requires(quantity_type q) { q--; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity_point(q_--);
