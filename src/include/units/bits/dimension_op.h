@@ -72,9 +72,7 @@ inline constexpr bool equivalent_dim = detail::equivalent_dim_impl<D1, D2>::valu
  * @tparam ERest the list of exponents of ingredient dimensions
  */
 template<Exponent E, Exponent... ERest>
-struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>, scaled_unit<ratio(1), unknown_coherent_unit>, E, ERest...> {
-  using coherent_unit = scaled_unit<ratio(1), unknown_coherent_unit>;
-};
+struct unknown_dimension : derived_dimension<unknown_dimension<E, ERest...>, unknown_coherent_unit, E, ERest...> {};
 
 namespace detail {
 
