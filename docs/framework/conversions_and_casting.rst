@@ -55,8 +55,9 @@ Implicit conversions are allowed only across quantities of the same dimension:
 Explicit
 --------
 
-Explicit conversions are available with a `quantity_cast` function template. They
-are especially useful to force a truncating conversion across quantities of the same
+Explicit conversions are available with
+the `quantity_cast` and `quantity_point_cast` function templates.
+They are especially useful to force a truncating conversion across quantities of the same
 dimension for integral representation types and ratios that may cause precision loss::
 
     si::length<si::kilometre, int> d1 = quantity_cast<kilometre>(1km + 1m);    // OK
@@ -87,6 +88,12 @@ once and leave the rest intact:
 
 - line #2 forces only a specific destination unit type,
 - line #3 sets only a representation type to the type provided by the user.
+
+`quantity_point_cast` takes anything that works for `quantity_point`
+or a specific target `quantity_point`:
+
+    std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0q_m})>(d)
+              << '\n';
 
 .. seealso::
 
