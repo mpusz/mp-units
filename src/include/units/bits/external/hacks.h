@@ -31,13 +31,6 @@
 #define COMP_GCC_MINOR __GNUC_MINOR__
 #endif
 
-#ifdef NDEBUG
-#define Expects(cond) (void)(cond);
-#else
-#include <cassert>
-#define Expects(cond) assert(cond);
-#endif
-
 #if COMP_GCC >= 10
 
 #include <concepts>
