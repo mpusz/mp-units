@@ -26,6 +26,7 @@
 #include <units/customization_points.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
+#include <units/pow.h>
 #include <units/quantity.h>
 #include <units/quantity_point.h>
 #include <cassert>
@@ -36,38 +37,6 @@
 #endif //_MSC_VER
 
 namespace units {
-
-constexpr std::intmax_t ipow10(std::intmax_t exp)
-{
-  assert(exp >= 0);
-  if (exp == 0) return 1;
-  std::intmax_t result = 1;
-  while (exp > 0) {
-    result *= 10;
-    --exp;
-  }
-  return result;
-}
-
-template<typename Rep>
-constexpr Rep fpow10(std::intmax_t exp)
-{
-  if (exp == 0) return Rep(1.0);
-  Rep result = Rep(1.0);
-  if (exp < 0) {
-    while (exp < 0) {
-      result = result / Rep(10.0);
-      ++exp;
-    }
-  } else {
-    while (exp > 0) {
-      result = result * Rep(10.0);
-      --exp;
-    }
-  }
-  return result;
-}
-
 
 // QuantityOf
 template<typename T, typename Dim>
