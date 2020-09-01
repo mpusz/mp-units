@@ -26,6 +26,7 @@
 #include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/to_string.h>
+#include <units/pow.h>
 #include <units/quantity_cast.h>
 
 #if COMP_MSVC || COMP_GCC >= 10
