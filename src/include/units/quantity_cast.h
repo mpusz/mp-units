@@ -26,6 +26,8 @@
 #include <units/customization_points.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
+#include <units/quantity.h>
+#include <units/quantity_point.h>
 #include <cassert>
 
 #ifdef _MSC_VER
