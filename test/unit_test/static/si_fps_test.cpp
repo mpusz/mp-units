@@ -69,8 +69,7 @@ static_assert(fps::length<fps::foot>(1) == 0.3048q_m);
 static_assert(fps::mass<fps::pound>(1) == 0.45359237q_kg);
 static_assert(fps::time<fps::second>(1) == 1q_s);
 static_assert(fps::speed<fps::foot_per_second>(1) == 0.3048q_m_per_s);
-static_assert(fps::area<fps::square_foot>(1) > 0.09290303q_m2 &&
-              fps::area<fps::square_foot>(1) < 0.09290305q_m2);
+static_assert(fps::area<fps::square_foot>(1) == 0.09290304q_m2);
 static_assert(fps::acceleration<fps::foot_per_second_sq>(1) == 0.3048q_m_per_s2);
 static_assert(fps::force<fps::poundal>(1) > 0.138254q_N && 
               fps::force<fps::poundal>(1) < 0.138256q_N);
@@ -113,8 +112,7 @@ static_assert(1q_ft == 0.3048q_m);
 static_assert(1q_lb == 0.45359237q_kg);
 static_assert(1q_s  == 1q_s);
 static_assert(1q_ft_per_s == 0.3048q_m_per_s);
-static_assert(1q_ft2 > 0.09290303q_m2 &&
-              1q_ft2 < 0.09290305q_m2);
+static_assert(1q_ft2 == 0.09290304q_m2);
 static_assert(1q_ft_per_s2 == 0.3048q_m_per_s2);
 static_assert(1q_pdl > 0.138254q_N && 
               1q_pdl < 0.138256q_N);

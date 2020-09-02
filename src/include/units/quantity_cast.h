@@ -313,7 +313,14 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
 template<typename Q1, typename Q2>
 constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 {
-  return quantity_ratio(from) / quantity_ratio(to);
+  using FromU = Q1::unit;
+  using ToU = Q2::unit;
+  if constexpr(same_unit_reference<FromU, ToU>::value) {
+    return FromU::ratio / ToU::ratio;
+  }
+  else {
+    return quantity_ratio(from) / quantity_ratio(to);
+  }
 }
 
 }  // namespace detail

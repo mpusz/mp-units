@@ -52,7 +52,11 @@ struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep>
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
   using dimension = conditional<is_instantiation_of<D1, unknown_dimension>, D2, D1>;
-  using type = quantity<dimension, downcast_unit<dimension, common_ratio(U1::ratio, U2::ratio)>, Rep>;
+  static constexpr ratio r1 = D1::base_units_ratio * U1::ratio;
+  static constexpr ratio r2 = D2::base_units_ratio * U2::ratio;
+  static constexpr ratio cr = common_ratio(r1, r2);
+  using unit = downcast_unit<dimension, cr / dimension::base_units_ratio>;
+  using type = quantity<dimension, unit, Rep>;
 };
 
 template<typename D, typename U, typename Rep>
