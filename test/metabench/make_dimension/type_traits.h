@@ -43,6 +43,6 @@ namespace units {
   }
 
   template<bool B, typename T, typename F>
-  using conditional = detail::conditional_impl<B>::template type<T, F>;
+  using conditional = TYPENAME detail::conditional_impl<B>::template type<T, F>;
 
 }

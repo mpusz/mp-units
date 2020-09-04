@@ -48,7 +48,7 @@ template<typename T>
 struct typeinfo;
 
 template<typename... Ts>
-using dim_unpack = detail::dim_unpack<Ts...>::type;
+using dim_unpack = TYPENAME detail::dim_unpack<Ts...>::type;
 
 template<Exponent... Es>
 using derived_dim = detail::derived_dimension_base<Es...>;

@@ -68,6 +68,6 @@ template<Downcastable T>
 using downcast = decltype(detail::downcast_impl<T>());
 
 template<Downcastable T>
-using downcast_base_t = T::downcast_base_type;
+using downcast_base_t = TYPENAME T::downcast_base_type;
 
 }  // namespace units

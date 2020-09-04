@@ -67,7 +67,7 @@ quantity_point<D, U, Rep> common_quantity_point_impl(quantity<D, U, Rep>);
 
 template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
   requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
-using common_quantity = detail::common_quantity_impl<Q1, Q2, Rep>::type;
+using common_quantity = TYPENAME detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 template<QuantityPoint QP1, QuantityPoint QP2>
   requires requires { typename common_quantity<typename QP1::quantity_type, typename QP2::quantity_type>; }
@@ -76,7 +76,7 @@ using common_quantity_point = decltype(
 
 }  // namespace units
 
-#if COMP_GCC >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
 namespace std {
 

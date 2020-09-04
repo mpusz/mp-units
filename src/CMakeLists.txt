@@ -70,9 +70,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(units
-    INTERFACE
-        -Wno-literal-suffix
-        -Wno-non-template-friend
+        INTERFACE
+            -Wno-literal-suffix
+            -Wno-non-template-friend
     )
 
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
@@ -85,7 +85,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
                 $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>,CONAN_PKG::range-v3,range-v3::range-v3>
         )
     endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(units
+        INTERFACE
+            /utf-8  # Specifies both the source character set and the execution character set as UTF-8
+            /wd4455 # 'operator name': literal suffix identifiers that do not start with an underscore are reserved
+    )
 endif()
+
 add_library(mp::units ALIAS units)
 
 # installation info

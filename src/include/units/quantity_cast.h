@@ -28,6 +28,11 @@
 #include <units/bits/external/type_traits.h>
 #include <cassert>
 
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4244) // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
+#endif //_MSC_VER
+
 namespace units {
 
 constexpr std::intmax_t ipow10(std::intmax_t exp)
@@ -77,7 +82,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(q.count()));
+    return To(static_cast<TYPENAME To::rep>(q.count()));
   }
 };
 
@@ -87,13 +92,13 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10<CRep>(CRatio.exp))));
+      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10<CRep>(CRatio.exp))));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio.exp))));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio.exp))));
       }
       else {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(ipow10(-CRatio.exp))));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(ipow10(-CRatio.exp))));
       }
     }
   }
@@ -104,7 +109,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, true> {
   template<typename Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
+    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
                                      (static_cast<CRep>(CRatio.num) /
                                       static_cast<CRep>(CRatio.den))));
   }
@@ -116,19 +121,19 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
+      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
                                      static_cast<CRep>(fpow10<CRep>(CRatio.exp)) *
                                      (static_cast<CRep>(CRatio.num) /
                                       static_cast<CRep>(CRatio.den))));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
                                       static_cast<CRep>(CRatio.num) *
                                       static_cast<CRep>(ipow10(CRatio.exp)) /
                                       static_cast<CRep>(CRatio.den)));
       }
       else {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) *
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
                                       static_cast<CRep>(CRatio.num) /
                                       (static_cast<CRep>(CRatio.den) *
                                        static_cast<CRep>(ipow10(-CRatio.exp)))));
@@ -142,7 +147,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio.den)));
+    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio.den)));
   }
 };
 
@@ -152,13 +157,13 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10<CRep>(CRatio.exp)) * (CRep{1} / static_cast<CRep>(CRatio.den))));
+      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(fpow10<CRep>(CRatio.exp)) * (CRep{1} / static_cast<CRep>(CRatio.den))));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio.exp)) / static_cast<CRep>(CRatio.den)));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(ipow10(CRatio.exp)) / static_cast<CRep>(CRatio.den)));
       }
       else {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) / (static_cast<CRep>(ipow10(-CRatio.exp)) * static_cast<CRep>(CRatio.den))));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / (static_cast<CRep>(ipow10(-CRatio.exp)) * static_cast<CRep>(CRatio.den))));
       }
     }
   }
@@ -169,7 +174,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num)));
+    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num)));
   }
 };
 
@@ -179,13 +184,13 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) * static_cast<CRep>(fpow10<CRep>(CRatio.exp))));
+      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) * static_cast<CRep>(fpow10<CRep>(CRatio.exp))));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) * static_cast<CRep>(ipow10(CRatio.exp))));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) * static_cast<CRep>(ipow10(CRatio.exp))));
       }
       else {
-        return To(static_cast<To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) / static_cast<CRep>(ipow10(-CRatio.exp))));
+        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num) / static_cast<CRep>(ipow10(-CRatio.exp))));
       }
     }
   }
@@ -197,13 +202,13 @@ struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(q.count() * fpow10<CRep>(CRatio.exp)));
+      return To(static_cast<TYPENAME To::rep>(q.count() * fpow10<CRep>(CRatio.exp)));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(q.count() * ipow10(CRatio.exp)));
+        return To(static_cast<TYPENAME To::rep>(q.count() * ipow10(CRatio.exp)));
       }
       else {
-        return To(static_cast<To::rep>(q.count() / ipow10(-CRatio.exp)));
+        return To(static_cast<TYPENAME To::rep>(q.count() / ipow10(-CRatio.exp)));
       }
     }
   }
@@ -214,7 +219,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, true> {
   template<typename Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(q.count() * (CRatio.num / CRatio.den)));
+    return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num / CRatio.den)));
   }
 };
 
@@ -224,13 +229,13 @@ struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(q.count() * fpow10<CRep>(CRatio.exp) * (CRatio.num / CRatio.den)));
+      return To(static_cast<TYPENAME To::rep>(q.count() * fpow10<CRep>(CRatio.exp) * (CRatio.num / CRatio.den)));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(q.count() * CRatio.num * ipow10(CRatio.exp) / CRatio.den));
+        return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num * ipow10(CRatio.exp) / CRatio.den));
       }
       else {
-        return To(static_cast<To::rep>(q.count()) * CRatio.num / (CRatio.den * ipow10(-CRatio.exp)));
+        return To(static_cast<TYPENAME To::rep>(q.count()) * CRatio.num / (CRatio.den * ipow10(-CRatio.exp)));
       }
     }
   }
@@ -241,7 +246,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(q.count() / CRatio.den));
+    return To(static_cast<TYPENAME To::rep>(q.count() / CRatio.den));
   }
 };
 
@@ -251,13 +256,13 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(q.count() * fpow10<CRep>(CRatio.exp) / CRatio.den));
+      return To(static_cast<TYPENAME To::rep>(q.count() * fpow10<CRep>(CRatio.exp) / CRatio.den));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(q.count() * ipow10(CRatio.exp) / CRatio.den));
+        return To(static_cast<TYPENAME To::rep>(q.count() * ipow10(CRatio.exp) / CRatio.den));
       }
       else {
-        return To(static_cast<To::rep>(q.count() / (ipow10(-CRatio.exp) * CRatio.den)));
+        return To(static_cast<TYPENAME To::rep>(q.count() / (ipow10(-CRatio.exp) * CRatio.den)));
       }
     }
   }
@@ -268,7 +273,7 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
   template<Quantity Q>
   static constexpr To cast(const Q& q)
   {
-    return To(static_cast<To::rep>(q.count() * CRatio.num));
+    return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num));
   }
 };
 
@@ -278,13 +283,13 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   static constexpr To cast(const Q& q)
   {
     if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<To::rep>(q.count() * CRatio.num * fpow10<CRep>(CRatio.exp)));
+      return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num * fpow10<CRep>(CRatio.exp)));
     } else {
       if constexpr (CRatio.exp > 0) {
-        return To(static_cast<To::rep>(q.count() * CRatio.num * ipow10(CRatio.exp)));
+        return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num * ipow10(CRatio.exp)));
       }
       else {
-        return To(static_cast<To::rep>(q.count() * CRatio.num / ipow10(-CRatio.exp)));
+        return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num / ipow10(-CRatio.exp)));
       }
     }
   }
@@ -413,3 +418,7 @@ template<typename CastSpec, typename D, typename U, typename Rep>
 }
 
 }  // namespace units
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif //_MSC_VER

@@ -36,8 +36,8 @@ static_assert(sym1 <= 'b');
 static_assert(sym1 <= 'c');
 static_assert(sym1 >= 'b');
 static_assert(sym1 >= 'a');
-static_assert(sym1.standard() == 'b');
-static_assert(sym1.ascii() == 'b');
+static_assert(sym1.standard() == "b");
+static_assert(sym1.ascii() == "b");
 
 constexpr basic_symbol_text sym2('a', 'b');
 static_assert(sym2 == basic_symbol_text('a', 'b'));
@@ -59,7 +59,7 @@ static_assert(sym5.standard() == "bc");
 static_assert(sym5.ascii() == "de");
 
 constexpr basic_fixed_string txt2("de");
-constexpr basic_symbol_text sym6(txt1, txt2);
+constexpr basic_symbol_text sym6(sym4.standard(), txt2);
 static_assert(sym6.standard() == "bc");
 static_assert(sym6.ascii() == "de");
 

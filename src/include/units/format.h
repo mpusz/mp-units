@@ -24,8 +24,18 @@
 
 #include <units/customization_points.h>
 #include <units/quantity.h>
-#include <fmt/format.h>
 #include <string_view>
+
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4702) // C4702: unreachable code
+#endif //_MSC_VER
+
+#include <fmt/format.h>
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif //_MSC_VER
 
 // Grammar
 // 
@@ -264,8 +274,12 @@ namespace units {
       void on_quantity_unit([[maybe_unused]] const CharT)
       {
         auto txt = unit_text<Dimension, Unit>();
-        auto txt_c_str = unit_specs.modifier == 'A' ? txt.ascii().c_str() : txt.standard().c_str();
-        format_to(out, "{}", txt_c_str);
+        if(unit_specs.modifier == 'A') {
+          format_to(out, "{}", txt.ascii().c_str());
+        }
+        else {
+          format_to(out, "{}", txt.standard().c_str());
+        }
       }
     };
 
@@ -277,7 +291,7 @@ template<typename Dimension, typename Unit, typename Rep, typename CharT>
 struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
-  using iterator = fmt::basic_format_parse_context<CharT>::iterator;
+  using iterator = TYPENAME fmt::basic_format_parse_context<CharT>::iterator;
   using arg_ref_type = fmt::detail::arg_ref<CharT>;
 
   units::detail::global_format_specs<CharT> global_specs;

@@ -45,7 +45,7 @@ inline Quantity AUTO pow(const Q& q) noexcept
 {
   using dim = dimension_pow<typename Q::dimension, N>;
   using unit = downcast_unit<dim, pow<N>(Q::unit::ratio)>;
-  using rep = Q::rep;
+  using rep = TYPENAME Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
 }
 
@@ -56,7 +56,7 @@ inline Quantity AUTO pow(const Q& q) noexcept
  */
 template<std::intmax_t N, Quantity Q>
   requires(N == 0)
-inline Q::rep pow(const Q&) noexcept
+inline TYPENAME Q::rep pow(const Q&) noexcept
 {
   return 1;
 }
@@ -75,7 +75,7 @@ inline Quantity AUTO sqrt(const Q& q) noexcept
 {
   using dim = dimension_sqrt<typename Q::dimension>;
   using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
-  using rep = Q::rep;
+  using rep = TYPENAME Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));
 }
 

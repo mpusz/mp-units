@@ -26,7 +26,7 @@
 #include <units/bits/external/hacks.h>
 #include <gsl/gsl_assert>
 
-#if COMP_GCC >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
 #endif
 
@@ -125,7 +125,7 @@ struct basic_symbol_text {
     return basic_symbol_text<StandardCharT, 1, 1>(lhs) + rhs;
   }
 
-#if COMP_GCC >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
   template<typename StandardCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,

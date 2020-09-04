@@ -122,7 +122,7 @@ With C++20 it is really easy to do::
 
     class my_rep {
     public:
-      [[nodiscard]] friend constexpr auto operator<=>(my_rep lhs, my_rep rhs) = default;
+      [[nodiscard]] constexpr auto operator<=>(my_rep other) const = default;
 
       // ...
     };

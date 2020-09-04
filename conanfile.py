@@ -72,17 +72,19 @@ class UnitsConan(ConanFile):
         return cmake
 
     def configure(self):
-        if self.settings.compiler != "gcc": # and self.settings.compiler != "clang":
-            raise ConanInvalidConfiguration("Library works only with gcc") # and clang")
+        if self.settings.compiler != "gcc" and self.settings.compiler != "Visual Studio": # and self.settings.compiler != "clang":
+            raise ConanInvalidConfiguration("Library works only with gcc and Visual Studio so far") # and clang")
         if self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "9":
             raise ConanInvalidConfiguration("Library requires at least g++-9")
+        if self.settings.compiler == "Visual Studio" and Version(self.settings.compiler.version) < "16":
+            raise ConanInvalidConfiguration("Library requires at least Visual Studio 2019")
         if self.settings.compiler == "clang" and Version(self.settings.compiler.version) < "11":
             raise ConanInvalidConfiguration("Library requires at least clang++-11")
-        if self.settings.compiler.cppstd not in ["20", "gnu20"]:
-            raise ConanInvalidConfiguration("Library requires at least C++20 support")
+        tools.check_min_cppstd(self, "20")
 
     def requirements(self):
-        if self.settings.compiler == "clang" or Version(self.settings.compiler.version) < "10":
+        if ((self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "10") or
+            self.settings.compiler == "clang"):
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):

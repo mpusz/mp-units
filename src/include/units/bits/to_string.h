@@ -113,12 +113,12 @@ constexpr auto exp_list_with_named_units(exp_list<Es...>);
 template<Exponent Exp>
 constexpr auto exp_list_with_named_units(Exp)
 {
-  using dim = Exp::dimension;
+  using dim = TYPENAME Exp::dimension;
   if constexpr(dimension_unit<dim>::is_named) {
     return exp_list<Exp>();
   }
   else {
-    using recipe = dim::recipe;
+    using recipe = TYPENAME dim::recipe;
     return exp_list_with_named_units(recipe());
   }
 }
@@ -132,7 +132,7 @@ constexpr auto exp_list_with_named_units(exp_list<Es...>)
 template<Dimension Dim>
 constexpr auto derived_dimension_unit_text()
 {
-  using recipe = Dim::recipe;
+  using recipe = TYPENAME Dim::recipe;
   return derived_dimension_unit_text(exp_list_with_named_units(recipe()));
 }
 

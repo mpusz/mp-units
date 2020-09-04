@@ -37,5 +37,12 @@ target_link_libraries(unit_tests_runtime
         $<IF:$<TARGET_EXISTS:CONAN_PKG::catch2>,CONAN_PKG::catch2,Catch2::Catch2>
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(unit_tests_runtime
+        PRIVATE
+            /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+    )
+endif()
+
 include(Catch)
 catch_discover_tests(unit_tests_runtime)

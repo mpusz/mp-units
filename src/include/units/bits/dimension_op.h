@@ -97,13 +97,13 @@ struct downcast_dimension_impl<D> {
 
 template<DerivedDimension D>
 struct downcast_dimension_impl<D> {
-  using type = check_unknown<downcast<D>>::type;
+  using type = TYPENAME check_unknown<downcast<D>>::type;
 };
 
 } // namespace detail
 
 template<Dimension D>
-using downcast_dimension = detail::downcast_dimension_impl<D>::type;
+using downcast_dimension = TYPENAME detail::downcast_dimension_impl<D>::type;
 
 // dim_invert
 namespace detail {
@@ -133,7 +133,7 @@ struct dim_invert_impl<D> : dim_invert_impl<downcast_base_t<D>> {
 }  // namespace detail
 
 template<Dimension D>
-using dim_invert = detail::dim_invert_impl<D>::type;
+using dim_invert = TYPENAME detail::dim_invert_impl<D>::type;
 
 // dimension_multiply
 namespace detail {
@@ -161,7 +161,7 @@ struct to_dimension<exp_list<exp<D, 1>>> {
  * dimension itself.
  */
 template<Dimension D1, Dimension D2>
-using merge_dimension = to_dimension<typename dim_consolidate<type_list_merge_sorted<typename D1::exponents, typename D2::exponents, exp_less>>::type>::type;
+using merge_dimension = TYPENAME to_dimension<typename dim_consolidate<type_list_merge_sorted<typename D1::exponents, typename D2::exponents, exp_less>>::type>::type;
 
 template<Dimension D1, Dimension D2>
 struct dimension_multiply_impl;
@@ -178,7 +178,7 @@ struct dimension_multiply_impl<D1, D2> {
 
 template<DerivedDimension D1, BaseDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = dimension_multiply_impl<D2, D1>::type;
+  using type = TYPENAME dimension_multiply_impl<D2, D1>::type;
 };
 
 template<DerivedDimension D1, DerivedDimension D2>
@@ -189,10 +189,10 @@ struct dimension_multiply_impl<D1, D2> {
 }  // namespace detail
 
 template<Dimension D1, Dimension D2>
-using dimension_multiply = detail::dimension_multiply_impl<D1, D2>::type;
+using dimension_multiply = TYPENAME detail::dimension_multiply_impl<D1, D2>::type;
 
 template<Dimension D1, Dimension D2>
-using dimension_divide = detail::dimension_multiply_impl<D1, dim_invert<D2>>::type;
+using dimension_divide = TYPENAME detail::dimension_multiply_impl<D1, dim_invert<D2>>::type;
 
 // dimension_sqrt
 namespace detail {
@@ -212,7 +212,7 @@ struct dimension_sqrt_impl<derived_dimension_base<exp<D, 2>>> {
 
 template<DerivedDimension D>
 struct dimension_sqrt_impl<D> {
-  using type = dimension_sqrt_impl<typename D::downcast_base_type>::type;
+  using type = TYPENAME dimension_sqrt_impl<typename D::downcast_base_type>::type;
 };
 
 template<typename... Es>
@@ -223,7 +223,7 @@ struct dimension_sqrt_impl<derived_dimension_base<Es...>> {
 }  // namespace detail
 
 template<Dimension D>
-using dimension_sqrt = detail::dimension_sqrt_impl<D>::type;
+using dimension_sqrt = TYPENAME detail::dimension_sqrt_impl<D>::type;
 
 // dimension_pow
 namespace detail {
@@ -248,7 +248,7 @@ struct dimension_pow_impl<derived_dimension_base<exp<D, 1, N>>, N> {
 
 template<DerivedDimension D, std::intmax_t N>
 struct dimension_pow_impl<D, N> {
-  using type = dimension_pow_impl<downcast_base_t<D>, N>::type;
+  using type = TYPENAME dimension_pow_impl<downcast_base_t<D>, N>::type;
 };
 
 template<typename... Es, std::intmax_t N>
@@ -259,6 +259,6 @@ struct dimension_pow_impl<derived_dimension_base<Es...>, N> {
 }  // namespace detail
 
 template<Dimension D, std::intmax_t N>
-using dimension_pow = detail::dimension_pow_impl<D, N>::type;
+using dimension_pow = TYPENAME detail::dimension_pow_impl<D, N>::type;
 
 }  // namespace units

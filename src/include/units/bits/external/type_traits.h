@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <type_traits>
 
 namespace units {
@@ -44,7 +45,7 @@ struct conditional_impl<true> {
 }  // namespace detail
 
 template<bool B, typename T, typename F>
-using conditional = detail::conditional_impl<B>::template type<T, F>;
+using conditional = TYPENAME detail::conditional_impl<B>::template type<T, F>;
 
 // is_same
 template<class T, class U>

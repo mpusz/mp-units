@@ -22,8 +22,14 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
+#include <algorithm>
 #include <cstdlib>
 #include <ostream>
+
+#if COMP_MSVC || COMP_GCC >= 10
+#include <compare>
+#endif
 
 namespace units {
 
@@ -70,20 +76,20 @@ struct basic_fixed_string {
     return basic_fixed_string<CharT, N + N2>(txt);
   }
 
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
-                                                  const basic_fixed_string<CharT2, N2>& rhs)
+  [[nodiscard]] constexpr bool operator==(const basic_fixed_string& other) const
   {
-    return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return std::ranges::equal(*this, other);
   }
 
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs,
-                                                 const basic_fixed_string<CharT2, N2>& rhs)
+  template<std::size_t N2>
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT, N2>&) { return false; }
+
+  template<std::size_t N2>
+  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs)
   {
-    return std::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 
 #else

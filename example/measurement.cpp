@@ -24,6 +24,10 @@
 #include <cmath>
 #include <iostream>
 
+#if COMP_MSVC || COMP_GCC >= 10
+#include <compare>
+#endif
+
 namespace {
 
 // root sum of squares
@@ -101,9 +105,9 @@ public:
     return measurement(val, val * rhs.relative_uncertainty());
   }
 
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
-  [[nodiscard]] friend constexpr auto operator<=>(const measurement& lhs, const measurement& rhs) = default;
+  [[nodiscard]] constexpr auto operator<=>(const measurement&) const = default;
 
 #else
 

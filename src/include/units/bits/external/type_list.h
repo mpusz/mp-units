@@ -24,6 +24,11 @@
 
 #include <units/bits/external/type_traits.h>
 
+#ifdef _MSC_VER
+#pragma warning (push)
+#pragma warning (disable:4296) // warning C4296: '<': expression is always false
+#endif //_MSC_VER
+
 namespace units {
 
 namespace detail {
@@ -54,7 +59,7 @@ struct type_list_push_front_impl<List<OldTypes...>, NewTypes...> {
 }  // namespace detail
 
 template<TypeList List, typename... Types>
-using type_list_push_front = detail::type_list_push_front_impl<List, Types...>::type;
+using type_list_push_front = TYPENAME detail::type_list_push_front_impl<List, Types...>::type;
 
 // push_back
 
@@ -71,7 +76,7 @@ struct type_list_push_back_impl<List<OldTypes...>, NewTypes...> {
 }  // namespace detail
 
 template<TypeList List, typename... Types>
-using type_list_push_back = detail::type_list_push_back_impl<List, Types...>::type;
+using type_list_push_back = TYPENAME detail::type_list_push_back_impl<List, Types...>::type;
 
 // join
 
@@ -84,13 +89,13 @@ struct type_list_join_impl {
 
 template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
 struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
-  using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
+  using type = TYPENAME type_list_join_impl<List<First..., Second...>, Rest...>::type;
 };
 
 }  // namespace detail
 
 template<TypeList... Lists>
-using type_list_join = detail::type_list_join_impl<Lists...>::type;
+using type_list_join = TYPENAME detail::type_list_join_impl<Lists...>::type;
 
 // split
 
@@ -125,8 +130,8 @@ template<template<typename...> typename List, std::size_t N, typename... Types>
 struct type_list_split<List<Types...>, N> {
   static_assert(N <= sizeof...(Types), "Invalid index provided");
   using split = detail::split_impl<List, 0, N, Types...>;
-  using first_list = split::first_list;
-  using second_list = split::second_list;
+  using first_list = TYPENAME split::first_list;
+  using second_list = TYPENAME split::second_list;
 };
 
 // split_half
@@ -169,7 +174,7 @@ struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...
 }  // namespace detail
 
 template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
-using type_list_merge_sorted = detail::type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
+using type_list_merge_sorted = TYPENAME detail::type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
 
 // sort
 
@@ -192,14 +197,18 @@ template<template<typename...> typename List, typename... Types, template<typena
 struct type_list_sort_impl<List<Types...>, Pred> {
   using types = List<Types...>;
   using split = type_list_split_half<List<Types...>>;
-  using sorted_left = type_list_sort_impl<typename split::first_list, Pred>::type;
-  using sorted_right = type_list_sort_impl<typename split::second_list, Pred>::type;
-  using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
+  using sorted_left = TYPENAME type_list_sort_impl<typename split::first_list, Pred>::type;
+  using sorted_right = TYPENAME type_list_sort_impl<typename split::second_list, Pred>::type;
+  using type = TYPENAME type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
 };
 
 }  // namespace detail
 
 template<TypeList List, template<typename, typename> typename Pred>
-using type_list_sort = detail::type_list_sort_impl<List, Pred>::type;
+using type_list_sort = TYPENAME detail::type_list_sort_impl<List, Pred>::type;
 
 }  // namespace units
+
+#ifdef _MSC_VER
+#pragma warning (pop)
+#endif //_MSC_VER

@@ -46,7 +46,7 @@ namespace detail {
  *    this base dimension.
  */
 template<Exponent... Es>
-using make_dimension = to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exp_less>>::type>::type;
+using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exp_less>>::type>::type;
 
 }  // namespace detail
 

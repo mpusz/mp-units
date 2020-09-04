@@ -28,7 +28,7 @@
 #include <units/bits/to_string.h>
 #include <units/quantity_cast.h>
 
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
 #endif
 
@@ -219,7 +219,7 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
   template<typename D2, typename U2, typename Rep2>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)

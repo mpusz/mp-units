@@ -48,7 +48,7 @@ struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
 
 template<DerivedDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
 struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
-  using type = dim_unpack<exp<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
+  using type = TYPENAME dim_unpack<exp<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
 };
 
 template<Exponent... Es, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>

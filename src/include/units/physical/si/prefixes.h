@@ -35,7 +35,7 @@ struct atto   : units::prefix<atto,   prefix, "a",             ratio(1, 1, -18)>
 struct femto  : units::prefix<femto,  prefix, "f",             ratio(1, 1, -15)> {};
 struct pico   : units::prefix<pico,   prefix, "p",             ratio(1, 1, -12)> {};
 struct nano   : units::prefix<nano,   prefix, "n",             ratio(1, 1,  -9)> {};
-struct micro  : units::prefix<micro,  prefix, {"\u00b5", "u"}, ratio(1, 1,  -6)> {};
+struct micro  : units::prefix<micro,  prefix, basic_symbol_text{"\u00b5", "u"}, ratio(1, 1,  -6)> {};
 struct milli  : units::prefix<milli,  prefix, "m",             ratio(1, 1,  -3)> {};
 struct centi  : units::prefix<centi,  prefix, "c",             ratio(1, 1,  -2)> {};
 struct deci   : units::prefix<deci,   prefix, "d",             ratio(1, 1,  -1)> {};

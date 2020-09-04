@@ -77,7 +77,7 @@ struct exp_multiply_impl {
 }  // namespace detail
 
 template<Exponent E, std::intmax_t Num, std::intmax_t Den>
-using exp_multiply = detail::exp_multiply_impl<E, Num, Den>::type;
+using exp_multiply = TYPENAME detail::exp_multiply_impl<E, Num, Den>::type;
 
 template<Exponent... Es>
 struct exp_list {};

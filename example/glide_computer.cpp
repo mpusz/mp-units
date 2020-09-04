@@ -28,6 +28,10 @@
 #include <array>
 #include <iostream>
 
+#if COMP_MSVC || COMP_GCC >= 10
+#include <compare>
+#endif
+
 // horizontal/vertical vector
 namespace {
 
@@ -70,7 +74,7 @@ public:
     return *this;
   }
 
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
   template<typename Q2>
   [[nodiscard]] friend constexpr auto operator<=>(const vector& lhs, const vector<Q2, D>& rhs)

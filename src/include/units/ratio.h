@@ -53,7 +53,7 @@ struct ratio {
     detail::normalize(num, den, exp);
   }
 
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 

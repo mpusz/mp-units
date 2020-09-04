@@ -174,12 +174,12 @@ struct dimension_unit_impl;
 
 template<BaseDimension D>
 struct dimension_unit_impl<D> {
-  using type = D::base_unit;
+  using type = TYPENAME D::base_unit;
 };
 
 template<DerivedDimension D>
 struct dimension_unit_impl<D> {
-  using type = D::coherent_unit;
+  using type = TYPENAME D::coherent_unit;
 };
 
 } // namespace detail
@@ -193,7 +193,7 @@ struct dimension_unit_impl<D> {
  * @tparam D Dimension type to get the unit from.
  */
 template<Dimension D>
-using dimension_unit = detail::dimension_unit_impl<D>::type;
+using dimension_unit = TYPENAME detail::dimension_unit_impl<D>::type;
 
 /**
  * @brief A concept matching only units of a specified dimension.

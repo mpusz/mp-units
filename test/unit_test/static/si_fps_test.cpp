@@ -142,7 +142,8 @@ static_assert(quantity_cast<fps::length<fps::foot>>(si::length<si::metre>(0.3048
 
 // static_assert(1q_ft - si::length<si::metre>(1) == -si::length<si::metre>(0.6952)); // should not compile (different dimensions)
 // static_assert(si::length<si::metre>(1) - 1q_ft == si::length<si::metre>(0.6952)); // should not compile (different dimensions)
-static_assert(quantity_cast<si::length<si::metre>>(6.q_ft) - si::length<si::metre>(1) == si::length<si::metre>(0.8288));      // 6 ft in m - 1 m  = ... m
+static_assert(quantity_cast<si::length<si::metre>>(6.q_ft) - si::length<si::metre>(1) > si::length<si::metre>(0.8287) &&
+              quantity_cast<si::length<si::metre>>(6.q_ft) - si::length<si::metre>(1) < si::length<si::metre>(0.8289));      // 6 ft in m - 1 m  = ... m
 static_assert(si::length<si::metre>(5) - quantity_cast<si::length<si::metre>>(6q_ft) == si::length<si::metre>(3.1712));       // 5 m - 6 ft in m  = ...
 static_assert(6.q_ft - quantity_cast<fps::length<fps::foot>>(si::length<si::metre>(0.3048)) == 5.q_ft);                       // 6 ft - 1 ft in m = 5 ft
 static_assert(quantity_cast<fps::length<fps::foot>>(si::length<si::metre>(1.8288)) - 1.q_ft == 5.q_ft);                       // 6 ft in m - 1 ft = 5 ft

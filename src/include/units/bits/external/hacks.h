@@ -29,9 +29,11 @@
 #elif __GNUC__
 #define COMP_GCC __GNUC__
 #define COMP_GCC_MINOR __GNUC_MINOR__
+#elif _MSC_VER
+#define COMP_MSVC _MSC_VER
 #endif
 
-#if COMP_GCC >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
 #include <concepts>
 
@@ -42,7 +44,7 @@
 
 #endif
 
-#if COMP_GCC >= 10 || COMP_CLANG >= 11
+#if COMP_MSVC || COMP_GCC >= 10 || COMP_CLANG >= 11
 
 #define AUTO auto
 #define SAME_AS(T) std::same_as<T>
@@ -54,8 +56,19 @@
 
 #endif
 
+#if COMP_MSVC
+
+#define TYPENAME typename
+
+#else
+
+#define TYPENAME
+
+#endif
+
 namespace std {
 
+#if COMP_GCC
 #if COMP_GCC >= 10
 
   template<class T>
@@ -99,6 +112,7 @@ namespace std {
   template<class F, class... Args>
   concept regular_invocable = invocable<F, Args...>;
 
+#endif
 #endif
 
 } // namespace std

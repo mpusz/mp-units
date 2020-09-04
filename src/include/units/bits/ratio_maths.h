@@ -24,6 +24,7 @@
 
 #include <units/bits/external/hacks.h>
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstdint>

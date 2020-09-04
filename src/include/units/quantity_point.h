@@ -25,6 +25,10 @@
 
 #include <units/quantity.h>
 
+#if COMP_MSVC || COMP_GCC >= 10
+#include <compare>
+#endif
+
 namespace units {
 
 /**
@@ -135,7 +139,7 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-#if __GNUC__ >= 10
+#if COMP_MSVC || COMP_GCC >= 10
 
   template<QuantityPoint QP>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
@@ -201,19 +205,22 @@ public:
 template<typename D, typename U, typename Rep>
 quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
 
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
+template<QuantityPoint QP, Quantity Q>
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const QP& lhs, const Q& rhs)
   requires requires { lhs.relative() + rhs; }
 {
   return quantity_point(lhs.relative() + rhs);
 }
 
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const Quantity AUTO& lhs, const QuantityPoint AUTO& rhs)
+template<Quantity Q, QuantityPoint QP>
+[[nodiscard]] constexpr QuantityPoint AUTO operator+(const Q& lhs, const QP& rhs)
   requires requires { rhs + lhs; }
 {
   return rhs + lhs;
 }
 
-[[nodiscard]] constexpr QuantityPoint AUTO operator-(const QuantityPoint AUTO& lhs, const Quantity AUTO& rhs)
+template<QuantityPoint QP, Quantity Q>
+[[nodiscard]] constexpr QuantityPoint AUTO operator-(const QP& lhs, const Q& rhs)
   requires requires { lhs.relative() - rhs; }
 {
   return quantity_point(lhs.relative() - rhs);
