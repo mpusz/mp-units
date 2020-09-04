@@ -91,8 +91,8 @@ public:
   }
 
   template<typename Q = quantity_type>
-    requires requires(Q q) { q++; }
   [[nodiscard]] constexpr quantity_point operator++(int)
+    requires requires(Q q) { q++; }
   // requires requires(quantity_type q) { q++; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity_point(q_++);
@@ -108,8 +108,8 @@ public:
   }
 
   template<typename Q = quantity_type>
-    requires requires(Q q) { q--; }
   [[nodiscard]] constexpr quantity_point operator--(int)
+    requires requires(Q q) { q--; }
   // requires requires(quantity_type q) { q--; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity_point(q_--);

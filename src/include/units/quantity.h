@@ -140,16 +140,16 @@ public:
   }
 
   template<typename T = Rep>
-    requires requires(T v) { { v++ } -> SAME_AS(T); }
   [[nodiscard]] constexpr quantity operator++(int)
+    requires requires(T v) { { v++ } -> SAME_AS(T); }
   // requires requires(rep v) { { v++ } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity(value_++);
   }
 
   template<typename T = Rep>
-    requires requires(T v) { { --v } -> SAME_AS(T&); }
   constexpr quantity& operator--()
+    requires requires(T v) { { --v } -> SAME_AS(T&); }
   // requires requires(rep v) { { --v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     --value_;
@@ -157,8 +157,8 @@ public:
   }
 
   template<typename T = Rep>
-    requires requires(T v) { { v-- } -> SAME_AS(T); }
   [[nodiscard]] constexpr quantity operator--(int)
+    requires requires(T v) { { v-- } -> SAME_AS(T); }
   // requires requires(rep v) { { v-- } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
   {
     return quantity(value_--);
