@@ -14,6 +14,7 @@
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - `ratio` changed to the NTTP kind
   - Minimum compiler version supported changed to gcc-9.3
+  - VS2019 support added
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
