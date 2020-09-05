@@ -35,7 +35,7 @@ struct prefix_family;
 
 /**
  * @brief A concept matching a prefix family
- * 
+ *
  * Satisfied by all types derived from `prefix_family`
  */
 template<typename T>
@@ -56,8 +56,8 @@ concept PrefixFamily = std::derived_from<T, prefix_family>;
 
 /**
  * @brief A concept matching a symbol prefix
- * 
- * Satisfied by all instantiations of `prefix`.
+ *
+ * Satisfied by all specializations of `prefix`.
  */
 template<typename T>
 //  concept Prefix = detail::is_prefix<T>;
@@ -66,7 +66,7 @@ concept Prefix = true;
 
 /**
  * @brief A concept matching unit's ratio
- * 
+ *
  * Satisfied by all ratio values for which `R.num > 0` and `R.den > 0`.
  */
 template<ratio R>
@@ -93,8 +93,8 @@ inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_sca
 
 /**
  * @brief A concept matching all unit types in the library
- * 
- * Satisfied by all unit types derived from the instantiation of :class:`scaled_unit`.
+ *
+ * Satisfied by all unit types derived from an specialization of :class:`scaled_unit`.
  */
 template<typename T>
 concept Unit = detail::is_derived_from_scaled_unit<T>;
@@ -118,8 +118,8 @@ inline constexpr bool is_derived_from_base_dimension = decltype(is_derived_from_
 
 /**
  * @brief A concept matching all base dimensions in the library.
- * 
- * Satisfied by all dimension types derived from the instantiation of `base_dimension`.
+ *
+ * Satisfied by all dimension types derived from an specialization of `base_dimension`.
  */
 template<typename T>
 concept BaseDimension = detail::is_derived_from_base_dimension<T>;
@@ -134,8 +134,8 @@ inline constexpr bool is_exp = false;
 
 /**
  * @brief A concept matching dimension's exponents.
- * 
- * Satisfied by all instantiations of :class:`exp`.
+ *
+ * Satisfied by all specializations of :class:`exp`.
  */
 template<typename T>
 concept Exponent = detail::is_exp<T>;
@@ -151,16 +151,16 @@ struct derived_dimension_base;
 
 /**
  * @brief A concept matching all derived dimensions in the library.
- * 
- * Satisfied by all dimension types derived from the instantiation of `detail::derived_dimension_base`.
+ *
+ * Satisfied by all dimension types derived from an specialization of `detail::derived_dimension_base`.
  */
 template<typename T>
-concept DerivedDimension = is_derived_from_instantiation_of<T, detail::derived_dimension_base>;
+concept DerivedDimension = is_derived_from_specialization_of<T, detail::derived_dimension_base>;
 
 // Dimension
 /**
- * @brief A concept matching all dimensions in the library. 
- * 
+ * @brief A concept matching all dimensions in the library.
+ *
  * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
  */
 template<typename T>
@@ -186,10 +186,10 @@ struct dimension_unit_impl<D> {
 
 /**
  * @brief Returns a 'default' unit of the dimension
- * 
+ *
  * Depending on the dimension type it returns a base unit (for base dimensions)
  * or a coherent unit (in case of derived dimensions).
- * 
+ *
  * @tparam D Dimension type to get the unit from.
  */
 template<Dimension D>
@@ -197,10 +197,10 @@ using dimension_unit = TYPENAME detail::dimension_unit_impl<D>::type;
 
 /**
  * @brief A concept matching only units of a specified dimension.
- * 
+ *
  * Satisfied by all unit types that satisfy `Unit<U>`, `Dimension<D>`, and for which
  * `U::reference` and @c dimension_unit<D>::reference denote the same unit type.
- * 
+ *
  * @tparam U Type to verify.
  * @tparam D Dimension type to use for verification.
  */
@@ -223,8 +223,8 @@ inline constexpr bool is_quantity_point = false;
 
 /**
  * @brief A concept matching all quantities in the library.
- * 
- * Satisfied by all instantiations of :class:`quantity`.
+ *
+ * Satisfied by all specializations of :class:`quantity`.
  */
 template<typename T>
 concept Quantity = detail::is_quantity<T>;
@@ -232,7 +232,7 @@ concept Quantity = detail::is_quantity<T>;
 /**
  * @brief A concept matching all quantity points in the library.
  *
- * Satisfied by all instantiations of :class:`quantity_point`.
+ * Satisfied by all specializations of :class:`quantity_point`.
  */
 template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
@@ -252,7 +252,7 @@ inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> 
 
 /**
  * @brief A concept matching types that wrap quantity objects.
- * 
+ *
  * Satisfied by all wrapper types that satisfy `Quantity<typename T::value_type>`
  * recursively (i.e. `std::optional<si::length<si::metre>>`).
  */
@@ -266,7 +266,7 @@ namespace detail {
 template<typename T>
 concept constructible_from_integral =
   // construction from an integral type
-  std::constructible_from<T, std::int64_t> && 
+  std::constructible_from<T, std::int64_t> &&
   // unit scaling
   std::regular_invocable<std::multiplies<>, T, T> &&
   std::regular_invocable<std::divides<>, T, T>;
@@ -274,7 +274,7 @@ concept constructible_from_integral =
 template<typename T>
 concept not_constructible_from_integral =
   // not construction from an integral type
-  (!std::constructible_from<T, std::int64_t>) && 
+  (!std::constructible_from<T, std::int64_t>) &&
 
   // scaling by the value from ratio
   std::regular_invocable<std::multiplies<>, T, std::int64_t> &&
@@ -285,7 +285,7 @@ concept not_constructible_from_integral =
 
 /**
  * @brief A concept matching non-Quantity types.
- * 
+ *
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>

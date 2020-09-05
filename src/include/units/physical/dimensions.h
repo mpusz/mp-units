@@ -30,10 +30,10 @@
 namespace units::physical {
 
 template<typename Dim, template<typename...> typename DimTemplate>
-concept DimensionOf = Dimension<Dim> && is_derived_from_instantiation_of<Dim, DimTemplate>;
+concept DimensionOf = Dimension<Dim> && is_derived_from_specialization_of<Dim, DimTemplate>;
 
 template<typename Q, template<typename...> typename DimTemplate>
-concept QuantityOf = Quantity<Q> && is_derived_from_instantiation_of<typename Q::dimension, DimTemplate>;
+concept QuantityOf = Quantity<Q> && is_derived_from_specialization_of<typename Q::dimension, DimTemplate>;
 
 // ------------------------ base dimensions -----------------------------
 

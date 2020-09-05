@@ -379,10 +379,10 @@ template<Scalar ToRep, typename D, typename U, typename Rep>
  */
 template<typename CastSpec, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& qp)
-  requires is_instantiation_of<CastSpec, quantity_point> ||
+  requires is_specialization_of<CastSpec, quantity_point> ||
            requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
 {
-  if constexpr (is_instantiation_of<CastSpec, quantity_point>)
+  if constexpr (is_specialization_of<CastSpec, quantity_point>)
     return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
   else
     return quantity_point(quantity_cast<CastSpec>(qp.relative()));
