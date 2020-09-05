@@ -1,7 +1,8 @@
 # Release notes
 
 - **0.6.0 WIP**
-  - linear_algebra updated to 0.7.0/testing
+  - Minimum compiler version supported changed to gcc-9.3
+  - linear_algebra updated to 0.7.0/stable
   - fmt updated to 7.0.3
   - range-v3 updated to 0.11.0
   - catch2 updated to 2.13.0
@@ -13,7 +14,6 @@
   - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - `ratio` changed to the NTTP kind
-  - Minimum compiler version supported changed to gcc-9.3
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
