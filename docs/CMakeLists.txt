@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
+
 option(GENERATE_DOCS "Generate project documenation" ON)
 if(NOT GENERATE_DOCS)
     return()

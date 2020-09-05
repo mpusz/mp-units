@@ -40,7 +40,7 @@ conan_init(cmake)
 add_subdirectory(src)
 
 # set restrictive compilation warnings
-set_warnings(units)
+set_warnings(mp-units)
 
 # add unit tests
 enable_testing()

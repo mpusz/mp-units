@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 from conans import ConanFile, CMake, tools
-from conans.tools import Version
+from conans.tools import Version, check_min_cppstd
 from conans.errors import ConanInvalidConfiguration
 import re
 
@@ -38,17 +38,18 @@ def get_version():
 class UnitsConan(ConanFile):
     name = "mp-units"
     version = get_version()
-    author = "Mateusz Pusz"
-    license = "https://github.com/mpusz/units/blob/master/LICENSE.md"
-    url = "https://github.com/mpusz/units"
+    homepage = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
-    exports = ["LICENSE.md"]
-    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
+    topics = ("units", "dimensions", "quantities", "dimensional-analysis", "physical-quantities", "physical-units", "system-of-units", "cpp23", "cpp20", "library", "quantity-manipulation")
+    license = "MIT"
+    url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "fmt/7.0.3",
         "ms-gsl/3.1.0"
     )
+    exports = ["LICENSE.md"]
+    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
     # scm = {
     #     "type": "git",
     #     "url": "auto",
@@ -61,6 +62,19 @@ class UnitsConan(ConanFile):
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
+    def _validate_compiler_settings(self):
+        compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
+        if compiler == "gcc":
+            if version < "9.3":
+                raise ConanInvalidConfiguration("mp-units requires at least g++-9.3")
+        elif compiler == "Visual Studio":
+            if version < "16":
+                raise ConanInvalidConfiguration("mp-units requires at least MSVC 16")
+        else:
+            raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
+        check_min_cppstd(self, "20")
+
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
         if self._run_tests:
@@ -72,15 +86,7 @@ class UnitsConan(ConanFile):
         return cmake
 
     def configure(self):
-        if self.settings.compiler != "gcc" and self.settings.compiler != "Visual Studio": # and self.settings.compiler != "clang":
-            raise ConanInvalidConfiguration("Library works only with gcc and Visual Studio so far") # and clang")
-        if self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "9":
-            raise ConanInvalidConfiguration("Library requires at least g++-9")
-        if self.settings.compiler == "Visual Studio" and Version(self.settings.compiler.version) < "16":
-            raise ConanInvalidConfiguration("Library requires at least Visual Studio 2019")
-        if self.settings.compiler == "clang" and Version(self.settings.compiler.version) < "11":
-            raise ConanInvalidConfiguration("Library requires at least clang++-11")
-        tools.check_min_cppstd(self, "20")
+        self._validate_compiler_settings()
 
     def requirements(self):
         if ((self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "10") or
@@ -104,18 +110,25 @@ class UnitsConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.install()
 
-    def package_info(self):
-        if self.settings.compiler == "gcc":
-            self.cpp_info.cxxflags = [
-                "-Wno-literal-suffix",
-                "-Wno-non-template-friend",
-            ]
-            if Version(self.settings.compiler.version) < "10":
-                self.cpp_info.cxxflags.extend([
-                    "-fconcepts"
-                ])
-
     def package_id(self):
         self.info.settings.clear()
         self.info.settings.compiler = self.settings.compiler
         self.info.settings.compiler.version = self.settings.compiler.version
+
+    def package_info(self):
+        compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
+        if compiler == "gcc":
+            self.cpp_info.cxxflags = [
+                "-Wno-literal-suffix",
+                "-Wno-non-template-friend",
+            ]
+            if version < "10":
+                self.cpp_info.cxxflags.extend([
+                    "-fconcepts"
+                ])
+        elif compiler == "Visual Studio":
+            self.cpp_info.cxxflags = [
+                "/utf-8",
+                "/wd4455"
+            ]

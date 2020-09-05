@@ -20,10 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.12)
 project(test_package)
-
-set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 # set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
@@ -41,4 +39,4 @@ target_link_libraries(${PROJECT_NAME}_conan PRIVATE CONAN_PKG::mp-units)
 # test cmake-generated target
 find_package(mp-units CONFIG REQUIRED)
 add_executable(${PROJECT_NAME}_cmake test_package.cpp)
-target_link_libraries(${PROJECT_NAME}_cmake PRIVATE mp::units)
+target_link_libraries(${PROJECT_NAME}_cmake PRIVATE mp-units::mp-units)

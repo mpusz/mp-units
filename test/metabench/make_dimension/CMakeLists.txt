@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
 
 add_metabench_test(metabench.data.make_dimension.no_concepts "no concepts" no_concepts.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
 add_metabench_test(metabench.data.make_dimension.concepts_iface "concepts iface" concepts_iface.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")

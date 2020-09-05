@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
+
 # check if conan installed a test framework
 conan_check_testing(catch2)
 
@@ -33,7 +35,7 @@ add_executable(unit_tests_runtime
 )
 target_link_libraries(unit_tests_runtime
     PRIVATE
-        mp::units
+        mp-units::mp-units
         $<IF:$<TARGET_EXISTS:CONAN_PKG::catch2>,CONAN_PKG::catch2,Catch2::Catch2>
 )
 

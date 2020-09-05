@@ -37,8 +37,8 @@ include(common/cmake/scripts)
 conan_init(cmake)
 
 # library definition
-add_library(units INTERFACE)
-#target_sources(units INTERFACE
+add_library(mp-units INTERFACE)
+#target_sources(mp-units INTERFACE
 #    include/units/dimension.h
 #    include/units/quantity.h
 #    include/units/unit.h
@@ -52,55 +52,55 @@ add_library(units INTERFACE)
 #    include/units/si/time.h
 #    include/units/si/speed.h
 #)
-target_compile_features(units INTERFACE cxx_std_20)
-target_link_libraries(units
+target_compile_features(mp-units INTERFACE cxx_std_20)
+target_link_libraries(mp-units
     INTERFACE
         $<IF:$<TARGET_EXISTS:CONAN_PKG::fmt>,CONAN_PKG::fmt,fmt::fmt>
         $<IF:$<TARGET_EXISTS:CONAN_PKG::ms-gsl>,CONAN_PKG::ms-gsl,Microsoft.GSL::GSL>
 )
-target_include_directories(units
+target_include_directories(mp-units
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_link_libraries(units
+    target_link_libraries(mp-units
         INTERFACE
             $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>,CONAN_PKG::range-v3,range-v3::range-v3>
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(units
+    target_compile_options(mp-units
         INTERFACE
             -Wno-literal-suffix
             -Wno-non-template-friend
     )
 
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
-        target_compile_options(units
+        target_compile_options(mp-units
             INTERFACE
                 -fconcepts
         )
-        target_link_libraries(units
+        target_link_libraries(mp-units
             INTERFACE
                 $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>,CONAN_PKG::range-v3,range-v3::range-v3>
         )
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(units
+    target_compile_options(mp-units
         INTERFACE
             /utf-8  # Specifies both the source character set and the execution character set as UTF-8
             /wd4455 # 'operator name': literal suffix identifiers that do not start with an underscore are reserved
     )
 endif()
 
-add_library(mp::units ALIAS units)
+add_library(mp-units::mp-units ALIAS mp-units)
 
 # installation info
-install_targets(units)
+install_targets(mp-units)
 install(DIRECTORY include/units
     DESTINATION include
     COMPONENT Devel
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/cmake/simple-config.cmake.in mp SameMajorVersion)
+configure_and_install(../cmake/common/cmake/simple-config.cmake.in mp-units SameMajorVersion)
