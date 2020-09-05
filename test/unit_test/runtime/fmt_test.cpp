@@ -938,7 +938,11 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q %q}", 1.2345q_m) == "1 m");
     CHECK(fmt::format("{:%.1Q %q}", 1.2345q_m) == "1.2 m");
     CHECK(fmt::format("{:%.2Q %q}", 1.2345q_m) == "1.23 m");
+#ifdef COMP_MSVC
+    CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.234 m");
+#else
     CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.235 m");
+#endif
     CHECK(fmt::format("{:%.4Q %q}", 1.2345q_m) == "1.2345 m");
     CHECK(fmt::format("{:%.5Q %q}", 1.2345q_m) == "1.23450 m");
     CHECK(fmt::format("{:%.10Q %q}", 1.2345q_m) == "1.2345000000 m");
@@ -949,7 +953,11 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q}", 1.2345q_m) == "1");
     CHECK(fmt::format("{:%.1Q}", 1.2345q_m) == "1.2");
     CHECK(fmt::format("{:%.2Q}", 1.2345q_m) == "1.23");
+#ifdef COMP_MSVC
+    CHECK(fmt::format("{:%.3Q}", 1.2345q_m) == "1.234");
+#else
     CHECK(fmt::format("{:%.3Q}", 1.2345q_m) == "1.235");
+#endif
     CHECK(fmt::format("{:%.4Q}", 1.2345q_m) == "1.2345");
     CHECK(fmt::format("{:%.5Q}", 1.2345q_m) == "1.23450");
     CHECK(fmt::format("{:%.10Q}", 1.2345q_m) == "1.2345000000");
@@ -980,10 +988,17 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ %q}", 42q_m) == "2a m");
     CHECK(fmt::format("{:%XQ %q}", 42q_m) == "2A m");
 
+#ifdef COMP_MSVC
+    CHECK(fmt::format("{:%aQ %q}",   1.2345678q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
+    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678q_m) == "0x1.3c1p+0 m");
+    CHECK(fmt::format("{:%AQ %q}",   1.2345678q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
+    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678q_m) == "0X1.3C1P+0 m");
+#else
     CHECK(fmt::format("{:%aQ %q}",   1.2345678q_m) == "0x9.e065152d8eae841p-3 m");
     CHECK(fmt::format("{:%.3aQ %q}", 1.2345678q_m) == "0x9.e06p-3 m");
     CHECK(fmt::format("{:%AQ %q}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3 m");
     CHECK(fmt::format("{:%.3AQ %q}", 1.2345678q_m) == "0X9.E06P-3 m");
+#endif
     CHECK(fmt::format("{:%eQ %q}",   1.2345678q_m) == "1.234568e+00 m");
     CHECK(fmt::format("{:%.3eQ %q}", 1.2345678q_m) == "1.235e+00 m");
     CHECK(fmt::format("{:%EQ %q}",   1.2345678q_m) == "1.234568E+00 m");
@@ -1007,10 +1022,17 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ}", 42q_m) == "2a");
     CHECK(fmt::format("{:%XQ}", 42q_m) == "2A");
 
+#ifdef COMP_MSVC
+    CHECK(fmt::format("{:%aQ}",   1.2345678q_m) == "0x1.3c0ca2a5b1d5dp+0");
+    CHECK(fmt::format("{:%.3aQ}", 1.2345678q_m) == "0x1.3c1p+0");
+    CHECK(fmt::format("{:%AQ}",   1.2345678q_m) == "0X1.3C0CA2A5B1D5DP+0");
+    CHECK(fmt::format("{:%.3AQ}", 1.2345678q_m) == "0X1.3C1P+0");
+#else
     CHECK(fmt::format("{:%aQ}",   1.2345678q_m) == "0x9.e065152d8eae841p-3");
     CHECK(fmt::format("{:%.3aQ}", 1.2345678q_m) == "0x9.e06p-3");
     CHECK(fmt::format("{:%AQ}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3");
     CHECK(fmt::format("{:%.3AQ}", 1.2345678q_m) == "0X9.E06P-3");
+#endif
     CHECK(fmt::format("{:%eQ}",   1.2345678q_m) == "1.234568e+00");
     CHECK(fmt::format("{:%.3eQ}", 1.2345678q_m) == "1.235e+00");
     CHECK(fmt::format("{:%EQ}",   1.2345678q_m) == "1.234568E+00");
