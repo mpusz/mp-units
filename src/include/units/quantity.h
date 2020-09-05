@@ -25,8 +25,8 @@
 
 #include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
+#include <units/bits/pow.h>
 #include <units/bits/to_string.h>
-#include <units/pow.h>
 #include <units/quantity_cast.h>
 
 #if COMP_MSVC || COMP_GCC >= 10
@@ -343,9 +343,9 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   using common_rep = decltype(lhs.count() * rhs.count());
   const ratio r = U1::ratio * U2::ratio;
     if constexpr (treat_as_floating_point<common_rep>) {
-      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * fpow10<common_rep>(r.exp)) / static_cast<common_rep>(r.den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * detail::fpow10<common_rep>(r.exp)) / static_cast<common_rep>(r.den);
     } else {
-      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * ipow10(r.exp)) / static_cast<common_rep>(r.den);
+      return lhs.count() * rhs.count() * static_cast<common_rep>(r.num * detail::ipow10(r.exp)) / static_cast<common_rep>(r.den);
     }
 }
 
