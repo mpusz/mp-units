@@ -25,7 +25,7 @@
 #include <cstdint>
 #include <cassert>
 
-namespace units {
+namespace units::detail {
 
 constexpr std::intmax_t ipow10(std::intmax_t exp)
 {
@@ -58,4 +58,4 @@ constexpr Rep fpow10(std::intmax_t exp)
   return result;
 }
 
-}  // namespace units
+}  // namespace units::detail
