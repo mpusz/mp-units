@@ -189,7 +189,7 @@ class MyCppLexer(MyCFamilyLexer):
                 'try', 'typeid', 'typename', 'using', 'virtual',
                 'constexpr', 'nullptr', 'decltype', 'thread_local',
                 'alignas', 'alignof', 'static_assert', 'noexcept', 'override',
-                'final', 'constinit', 'consteval', 'concept', 'co_await',
+                'final', 'constinit', 'consteval', 'constinit', 'concept', 'co_await',
                 'co_return', 'co_yield', 'requires', 'import', 'module'), suffix=r'\b'), Keyword),
             (r'char(16_t|32_t|8_t)\b', Keyword.Type),
             (r'(class)(\s+)', bygroups(Keyword, Text), 'classname'),
