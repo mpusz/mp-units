@@ -3,7 +3,7 @@ Usage
 
 .. note::
 
-    As this library targets C++23 and extensively uses C++20 features as of now it compiles correctly
+    This library targets C++23 and extensively uses C++20 features that is why, as of now, it compiles correctly
     only with gcc-9.3, MSVC 16.7, and newer.
 
 Repository Structure and Dependencies
@@ -14,11 +14,13 @@ This repository contains three independent CMake-based projects:
 - *./src*
 
   - header-only project containing whole **mp-units** library
-  - when C++20 support will be fully supported by C++ compilers this library will have
-    no external dependencies but until then it depends on
-    `range-v3 <https://github.com/ericniebler/range-v3>`_ (only for gcc versions < 10.0),
-    `ms-gsl <https://github.com/microsoft/GSL>`_,
-    and `{fmt} <https://github.com/fmtlib/fmt>`_ libraries.
+  - when this library will become part of the C++ standard it will have no external dependencies
+    but until then it depends on:
+
+    - `range-v3 <https://github.com/ericniebler/range-v3>`_ (only for gcc versions < 10.0) to provide
+      C++20 concepts library definitions.
+    - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
+    - `ms-gsl <https://github.com/microsoft/GSL>`_ to verify runtime contracts with `Expects` macro.
 
 - *.*
 
@@ -39,25 +41,21 @@ This repository contains three independent CMake-based projects:
 
 - *./test_package*
 
-  - library installation and Conan package verification
-
-.. note::
-
-    Please note that **mp-units** repository also depends on a git submodule in the
-    *./cmake/common* subdirectory providing some common CMake utilities.
+  - library installation and Conan package verification.
 
 
 Obtaining Dependencies
 ----------------------
 
 This library assumes that most of the dependencies will be provided by the
-`Conan Package Manager <https://conan.io/>`_. In case you would like to obtain needed
-dependencies by other means some modifications to library's CMake files will be needed.
-The rest of the dependencies are provided by :command:`python3-pip`.
+`Conan Package Manager <https://conan.io/>`_. In case you would like to obtain required
+dependencies by other means some modifications to library's CMake files might be needed.
+The rest of the dependencies responsible for documentation generation are provided by
+:command:`python3-pip`.
 
 .. seealso::
 
-  A full list of dependencies can be found in `Repository structure and dependencies`_.
+  A full list of dependencies can be found in `Repository Structure and Dependencies`_.
 
 Conan Quick Intro
 ^^^^^^^^^^^^^^^^^
@@ -69,7 +67,7 @@ In case you are not familiar with Conan, to install it (or upgrade) just do:
     pip3 install -U conan
 
 After that you might need to add a custom profile file for your development environment
-in *~/.conan/profile* directory. An example profile can look as follows:
+in *~/.conan/profiles* directory. An example profile can look as follows:
 
 .. code-block:: ini
     :emphasize-lines: 8
@@ -91,27 +89,13 @@ in *~/.conan/profile* directory. An example profile can look as follows:
     [env]
     CC=/usr/bin/gcc-10
     CXX=/usr/bin/g++-10
+    CONAN_CMAKE_GENERATOR=Ninja
 
 .. tip::
 
     Please note that **mp-units** library requires C++20 to be set either in a Conan profile or forced
     via Conan command line. If you do the former, you will not need to provide ``-s compiler.cppstd=20``
-    every time your rune a Conan command line (as it is suggested below).
-
-Non-standard Conan remotes
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Add the following remotes to your local Conan instance:
-
-.. code-block:: shell
-
-    conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
-    conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
-
-.. note::
-
-    The last two remotes are needed only if you plan to build all of the code and documentation
-    in **mp-units** repository.
+    every time your run a Conan command line (as it is suggested below).
 
 
 Build Options
@@ -120,20 +104,36 @@ Build Options
 Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. envvar:: CONAN_RUN_TESTS
+CONAN_RUN_TESTS
++++++++++++++++
 
-    **Defaulted to**: Not defined (``True``/``False`` if defined)
+**Values**: ``True``/``False``
 
-    Enables compilation of all the source code (tests and examples) and building the documentation.
-    To support that it requires some additional Conan build dependencies described in
-    `Repository structure and dependencies`_.
-    It also runs unit tests during Conan build.
+**Defaulted to**: ``False``
+
+Enables compilation of all the source code (tests and examples) and building the documentation.
+To support this it requires some additional Conan build dependencies described in
+`Repository Structure and Dependencies`_.
+It also runs unit tests during Conan build.
+
+CMake Options
+^^^^^^^^^^^^^
+
+GENERATE_DOCS
++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Enables project documentation generation.
 
 
-Building, Installation, and Reuse
----------------------------------
+Installation and Reuse
+----------------------
 
-There are a few different ways of installing/reusing **mp-units** in your project.
+There are many different ways of installing/reusing **mp-units** in your project. Below we mention
+only a few of many options possible.
 
 Copy
 ^^^^
@@ -141,36 +141,158 @@ Copy
 As **mp-units** is a C++ header-only library you can simply copy *src/include* directory to
 your source tree and use it as regular header files.
 
-CMake + Conan
-^^^^^^^^^^^^^
+.. important::
 
-To use **mp-units** as a CMake imported library the following steps may be performed:
+    In such a case you are on your own to make sure all the dependencies are installed and their header
+    files can be located during the build. Please also note that some compiler-specific flags are needed
+    to make the code compile without issues.
 
-1. Clone the repository together with its submodules:
+
+Copy + CMake
+^^^^^^^^^^^^
+
+In case you copy the whole **mp-units** repository to your project's file tree you can reuse CMake targets
+defined by the library. To do so you should use *CMakeLists.txt* file from the *./src* directory:
+
+.. code-block:: cmake
+
+    add_subdirectory(<path_to_units_folder>/src)
+    ...
+    target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
+
+.. important::
+
+    You are still on your own to make sure all the dependencies are installed and their header
+    files can be located during the build.
+
+
+Conan + CMake (release)
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. tip::
+
+    If you are new to Conan package manager it is highly recommended to read `Obtaining Dependencies`_
+    and refer to `Getting Started <https://docs.conan.io/en/latest/getting_started.html>`_ and
+    `Using packages <https://docs.conan.io/en/latest/using_packages.html>`_ chapters
+    of the official Conan documentation for more information.
+
+**mp-units** releases are hosted on `Conan-Center <https://conan.io/center/>`_. To obtain official
+library release the following steps may be performed:
+
+1. Create Conan configuration file (either *conanfile.txt* or *conanfile.py*) in your
+   project's top-level directory and add **mp-units** as a dependency of your project.
+   For example the simplest file may look as follows:
+
+  .. code-block:: ini
+      :caption: conanfile.txt
+
+      [requires]
+      mp-units/0.6.0
+
+      [generators]
+      cmake_find_package
+
+2. Import **mp-units** and its dependencies definitions to your project's build procedure
+   with ``find_package``:
+
+  .. code-block:: cmake
+
+      find_package(mp-units)
+
+3. Link your CMake targets with **mp-units**:
+
+  .. code-block:: cmake
+
+      target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
+      target_compile_features(<your_target> PUBLIC|PRIVATE|INTERFACE cxx_std_20)
+
+  .. important::
+
+    Unfortunately, packages distributed via Conan-Center cannot force the minimum version
+    of the C++ language used for your build process. This is why it is important to specify
+    it in `Conan profile file <Conan Quick Intro>`_ and with ``target_compile_features`` command
+    for each CMake target in your project.
+
+4. Download, build, and install Conan dependencies before running CMake configuration step:
 
   .. code-block:: shell
 
-      git clone --recursive https://github.com/mpusz/units.git
+      mkdir build && cd build
+      conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+      cmake .. -DCMAKE_BUILD_TYPE=Release
+      cmake --build .
 
-  or in case it is already cloned without submodules, initialize, fetch, and checkout them with:
+
+Conan + CMake (Live At Head)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This chapter describes the procedure to Live At Head which means to use the latest version
+of **mp-units** all the time.
+
+.. note::
+
+  Please note that even though the Conan packages that you will be using are generated **ONLY**
+  for builds that are considered stable (passed our CI tests) some minor regressions may happen
+  (our CI and C++20 build environment is not perfect yet). Also, please expect that the library
+  interface might, and probably will, change from time to time. Even though we do our best, such
+  changes might not be reflected in the project's documentation right away.
+
+The procedure is similar to the one described in `Conan + CMake (release)`_ with the following
+differences:
+
+1. Before starting the previous procedure add **mp-units** remote to your Conan configuration:
 
   .. code-block:: shell
 
-      git submodule update --init
+      conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
 
-2. Create Conan configuration file (either *conanfile.txt* or *conanfile.py*) in your
-   project's top-level directory and add **mp-units** as a dependency to your Conan configuration
-   file.
+2. In your Conan configuration file provide package identifier of the ``mpusz/testing`` stream:
 
-  - for example to use **mp-units** testing/prerelease version ``0.6.0`` in case of *conanfile.txt*
-    it is enough for it to just contain the following lines:
+  .. code-block:: ini
+      :caption: conanfile.txt
 
-    .. code-block:: ini
+      [requires]
+      mp-units/0.7.0@mpusz/testing
 
-        [requires]
-        mp-units/0.6.0@mpusz/testing
+      [generators]
+      cmake_find_package
 
-3. Import Conan dependencies definitions to the beginning of your top-level *CMakeLists.txt*
+  .. tip::
+
+    The identifiers of the latest packages can always be found in
+    `the project's README file <https://github.com/mpusz/units/blob/master/README.md>`_ or on
+    `the project's Bintray <https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz>`_.
+
+3. Force Conan to check for updated recipes `-u` and to build outdated packages `-b outdated`:
+
+  .. code-block:: shell
+
+      mkdir build && cd build
+      conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
+      cmake .. -DCMAKE_BUILD_TYPE=Release
+      cmake --build .
+
+
+``cmake`` Conan generator
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Above procedures suggested using ``cmake_find_package`` Conan generator which should be good
+enough to handle simple dependencies and configurations. If your project setup is complex you
+may prefer to use ``cmake`` generator. In such a case the above procedures should be updated as
+follows:
+
+1. Specify `cmake` generator in your Conan configuration file:
+
+  .. code-block:: ini
+      :caption: conanfile.txt
+
+      [requires]
+      mp-units/0.6.0
+
+      [generators]
+      cmake
+
+2. Import Conan dependencies definitions to the beginning of your top-level *CMakeLists.txt*
    file in your project:
 
   .. code-block:: cmake
@@ -178,35 +300,34 @@ To use **mp-units** as a CMake imported library the following steps may be perfo
       include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
       conan_basic_setup(TARGETS)
 
-4. Link your CMake target with **mp-units**:
+3. ``find_package(mp-units)`` is not needed anymore.
+
+4. Link your CMake targets with ``CONAN_PKG::mp-units``:
 
   .. code-block:: cmake
 
       target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE CONAN_PKG::mp-units)
 
-5. Download and install Conan dependencies before running CMake configuration step:
-
-  .. code-block:: shell
-
-      cd build
-      conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-
-6. Configure your CMake project as usual.
 
 
-Full **mp-units** Build, Unit Testing, and Documentation Generation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Contributing (or just building all the tests, examples, and documentation)
+--------------------------------------------------------------------------
 
 In case you would like to build all the source code (with unit tests and examples) and documentation
-in **mp-units** repository, you should use the *CMakeLists.txt* from the top-level directory,
-obtain Python dependencies, and run Conan with :envvar:`mp-units:CONAN_RUN_TESTS` = ``True``:
+in **mp-units** repository, you should:
+
+1. Add remotes of additional Conan dependencies.
+2. Use the *CMakeLists.txt* from the top-level directory.
+3. Obtain Python dependencies.
+4. Run Conan with :envvar:`CONAN_RUN_TESTS` = ``True``.
 
 .. code-block:: shell
 
-    git clone --recursive https://github.com/mpusz/units.git && cd units
+    conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
+    git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     mkdir build && cd build
-    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
+    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
     cmake .. -DCMAKE_BUILD_TYPE=Release
     cmake --build .
     ctest
@@ -222,9 +343,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
 .. code-block:: shell
 
-    git clone --recursive https://github.com/mpusz/units.git && cd units
-    pip3 install -r docs/requirements.txt
-    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated
+    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
 
 The above will create a Conan package and run tests provided in *./test_package* directory.
 
@@ -234,4 +353,4 @@ Uploading **mp-units** Package to the Conan Server
 
 .. code-block:: shell
 
-    conan upload -r <remote-name> --all mp-units/0.6.0@<user>/<channel>
+    conan upload -r <remote-name> --all mp-units/0.7.0@<user>/<channel>
