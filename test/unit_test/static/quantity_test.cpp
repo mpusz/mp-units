@@ -36,8 +36,6 @@ using namespace units::physical::si;
 
 // class invariants
 
-// constexpr quantity<si::dim_length, scaled_unit<ratio(-1, 1), metre>, int> error(0);  // should not compile (negative unit ratio)
-
 template<typename DimLength>
 concept invalid_types = requires
 {

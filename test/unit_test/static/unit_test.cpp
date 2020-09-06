@@ -51,6 +51,9 @@ static_assert(is_same_v<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetr
 static_assert(is_same_v<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
 static_assert(is_same_v<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
 static_assert(is_same_v<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
+#if COMP_MSVC || COMP_GCC >= 10
+static_assert([]<ratio R>() { return !requires { typename scaled_unit<R, metre>; }; }.template operator()<ratio(-1, 1)>()); // negative unit ratio
+#endif
 
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");
