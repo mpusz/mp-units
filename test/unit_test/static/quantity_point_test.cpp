@@ -47,7 +47,7 @@ concept invalid_types = requires
   !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
 };
 
-static_assert(invalid_types<physical::si::dim_length>);
+static_assert(invalid_types<dim_length>);
 
 // member types
 
