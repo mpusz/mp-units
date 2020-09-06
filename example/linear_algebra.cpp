@@ -33,7 +33,7 @@ template<class ET, class OT>
 std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
 {
   os << "|";
-  for (auto i = 0U;  i < v.size();  ++i) {
+  for (auto i = 0U; i < v.size(); ++i) {
     os << fmt::format(" {:>9}", v(i));
   }
   os << " |";
@@ -43,9 +43,9 @@ std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
 template<class ET, class OT>
 std::ostream& operator<<(std::ostream& os, const std::math::matrix<ET, OT>& v)
 {
-  for (auto i = 0U;  i < v.rows();  ++i) {
+  for (auto i = 0U; i < v.rows(); ++i) {
     os << "|";
-    for (auto j = 0U;  j < v.columns();  ++j) {
+    for (auto j = 0U; j < v.columns(); ++j) {
       os << fmt::format(" {:>9}", v(i, j));
     }
     os << (i != v.rows() - 1U ? " |\n" : " |");
@@ -54,15 +54,14 @@ std::ostream& operator<<(std::ostream& os, const std::math::matrix<ET, OT>& v)
 }
 
 
-using namespace std::math;
 using namespace units::physical;
 using namespace units::physical::si::literals;
 
 template<typename Rep = double>
-using vector = fs_vector<Rep, 3>;
+using vector = std::math::fs_vector<Rep, 3>;
 
 template<typename Rep = double>
-using matrix = fs_matrix<Rep, 3, 3>;
+using matrix = std::math::fs_matrix<Rep, 3, 3>;
 
 
 void vector_of_quantity_add()
