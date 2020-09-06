@@ -88,10 +88,4 @@ static_assert(common_ratio(ratio(100, 1), ratio(1, 10)) == ratio(1, 10));
 static_assert(common_ratio(ratio(1), ratio(1, 1, 3)) == ratio(1));
 static_assert(common_ratio(ratio(10, 1, -1), ratio(1, 1, -3)) == ratio(1, 1, -3));
 
-// nonzero denominator
-template <auto> struct require_constant;  // [range.split.view]
-template <auto F> concept constant = requires { typename require_constant<F()>; };
-
-static_assert(!constant<[] { ratio(1, 0); }>);
-
 }  // namespace
