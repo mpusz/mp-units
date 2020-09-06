@@ -40,6 +40,9 @@ struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(36, 1, 2), second> {
 struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+#if COMP_MSVC || COMP_GCC >= 10
+static_assert([]<Prefix R>() { return !requires { typename prefixed_unit<kelvin, R, kelvin>; }; }.template operator()<si::kilo>()); // negative unit ratio
+#endif
 // struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
 
 struct metre_per_second : unit<metre_per_second> {};
