@@ -229,7 +229,7 @@ static_assert(quantity_point_cast<int>(quantity_point(1.23q_m)).relative().count
 static_assert(quantity_point{1q_h} == quantity_point{3600q_s});
 
 template<typename Metre>
-constexpr bool no_crossdimensional_equality = !requires
+concept no_crossdimensional_equality = !requires
 {
     quantity_point(1q_s) == quantity_point(length<Metre, int>(1));
 };
@@ -238,6 +238,7 @@ static_assert(no_crossdimensional_equality<metre>);
 
 // length
 
+static_assert(quantity_point(1q_km) != quantity_point(1q_m));
 static_assert(quantity_point(1q_km) == quantity_point(1000q_m));
 static_assert(quantity_point(1q_km) + 1q_m == quantity_point(1001q_m));
 static_assert(1q_km + quantity_point(1q_m) == quantity_point(1001q_m));

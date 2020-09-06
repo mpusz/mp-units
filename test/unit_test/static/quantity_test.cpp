@@ -269,7 +269,7 @@ static_assert(quantity_cast<int>(1.23q_m).count() == 1);
 static_assert(1q_h == 3600q_s);
 
 template<typename Metre>
-constexpr bool no_crossdimensional_equality = !requires { 1q_s == length<Metre, int>(1); };
+concept no_crossdimensional_equality = !requires { 1q_s == length<Metre, int>(1); };
 
 static_assert(no_crossdimensional_equality<metre>);
 
