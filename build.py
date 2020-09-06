@@ -9,7 +9,6 @@ if __name__ == "__main__":
 
         # dependencies
         remotes = [
-            ("https://api.bintray.com/conan/bincrafters/public-conan", True, "bincrafters"),
             ("https://api.bintray.com/conan/twonington/public-conan", True, "linear-algebra")
         ],
         build_policy = ["mp-units", "outdated"],

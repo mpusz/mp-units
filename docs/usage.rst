@@ -80,7 +80,7 @@ in *~/.conan/profile* directory. An example profile can look as follows:
     arch=x86_64
     arch_build=x86_64
     compiler=gcc
-    compiler.version=9
+    compiler.version=10
     compiler.cppstd=20
     compiler.libcxx=libstdc++11
     build_type=Release
@@ -89,8 +89,8 @@ in *~/.conan/profile* directory. An example profile can look as follows:
     [build_requires]
 
     [env]
-    CC=/usr/bin/gcc-9
-    CXX=/usr/bin/g++-9
+    CC=/usr/bin/gcc-10
+    CXX=/usr/bin/g++-10
 
 .. tip::
 

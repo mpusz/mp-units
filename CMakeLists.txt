@@ -27,7 +27,7 @@ project(mp-units)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # include common tools and workarounds
-include(common/cmake/scripts)
+include(common/scripts)
 
 # use Conan configuration if available
 conan_init(cmake)
@@ -40,7 +40,7 @@ conan_init(cmake)
 add_subdirectory(src)
 
 # set restrictive compilation warnings
-set_warnings(units)
+set_warnings(mp-units)
 
 # add unit tests
 enable_testing()

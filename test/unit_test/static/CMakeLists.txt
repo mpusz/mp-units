@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
+
 add_library(unit_tests_static
     cgs_test.cpp
     custom_rep_min_req_test.cpp
@@ -43,5 +45,5 @@ add_library(unit_tests_static
 )
 target_link_libraries(unit_tests_static
     PRIVATE
-        mp::units
+        mp-units::mp-units
 )

@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
+
 function(add_example target)
     add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE mp::units)
+    target_link_libraries(${target} PRIVATE mp-units::mp-units)
 endfunction()
 
 add_example(box_example)

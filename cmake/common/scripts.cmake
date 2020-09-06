@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Mateusz Pusz
+# Copyright (c) 2017 Mateusz Pusz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
-add_subdirectory(unit_test/runtime)
-add_subdirectory(unit_test/static)
-#add_subdirectory(metabench)
+include(conan)
+include(install)
+include(static_analysis)
+include(warnings)

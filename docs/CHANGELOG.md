@@ -8,6 +8,7 @@
   - catch2 updated to 2.13.0
   - doxygen updated to 1.8.18
   - ms-gsl 3.1.0 dependency added
+  - MSVC 16.7 support added
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))

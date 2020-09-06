@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Mateusz Pusz
+# Copyright (c) 2017 Mateusz Pusz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
 
-add_subdirectory(unit_test/runtime)
-add_subdirectory(unit_test/static)
-#add_subdirectory(metabench)
+macro(enable_clang_tidy)
+    find_program(clang_tidy_cmd NAMES "clang-tidy")
+    if(NOT clang_tidy_cmd)
+        message(WARNING "clang-tidy not found!")
+    else()
+        if(NOT EXISTS "${CMAKE_SOURCE_DIR}/.clang-tidy")
+            message(FATAL_ERROR "'${CMAKE_SOURCE_DIR}/.clang-tidy' configuration file not found!")
+        endif()
+        set(CMAKE_CXX_CLANG_TIDY "${clang_tidy_cmd}")
+    endif()
+endmacro()
+
+
+macro(enable_iwyu)
+    find_program(iwyu_cmd NAMES "include-what-you-use")
+    if(NOT iwyu_cmd)
+        message(WARNING "include-what-you-use not found!")
+    else()
+        set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${iwyu_cmd}")
+    endif()
+endmacro()
