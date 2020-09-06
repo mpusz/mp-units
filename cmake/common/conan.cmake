@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Mateusz Pusz
+# Copyright (c) 2017 Mateusz Pusz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
-project(mp-units)
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+# Helper to use conan generated configuration if provided
+macro(conan_init generator)
+    if(${generator} STREQUAL "cmake_paths")
+        include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
+    elseif(${generator} STREQUAL "cmake")
+        if(NOT DEFINED CONAN_PACKAGE_NAME)
+            if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+                include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+                conan_basic_setup(TARGETS)
+            endif()
+        endif()
+    else()
+        message(FATAL_ERROR "Unknown Conan generator: ${generator}")
+    endif()
+endmacro()
 
-# include common tools and workarounds
-include(common/scripts)
 
-# use Conan configuration if available
-conan_init(cmake)
-
-# enable static analysis
-#enable_clang_tidy()
-#enable_iwyu()
-
-# add project code
-add_subdirectory(src)
-
-# set restrictive compilation warnings
-set_warnings(mp-units)
-
-# add unit tests
-enable_testing()
-add_subdirectory(test)
-
-# add usage example
-add_subdirectory(example)
-
-# generate project documentation
-add_subdirectory(docs)
+# Checks if conan installed testing dependencies
+macro(conan_check_testing test_framework)
+    if(NOT TARGET CONAN_PKG::${test_framework})
+        message(FATAL_ERROR "CONAN_PKG::${test_framework} not found!\nPlease run `conan install` with `-e CONAN_RUN_TESTS=True`.")
+    endif()
+endmacro()

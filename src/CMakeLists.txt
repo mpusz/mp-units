@@ -31,7 +31,7 @@ project(mp-units
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
 # include common tools and workarounds
-include(common/cmake/scripts)
+include(common/scripts)
 
 # use Conan configuration if available
 conan_init(cmake)
@@ -103,4 +103,4 @@ install(DIRECTORY include/units
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/cmake/simple-config.cmake.in mp-units SameMajorVersion)
+configure_and_install(../cmake/common/simple-config.cmake.in mp-units SameMajorVersion)

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Mateusz Pusz
+# Copyright (c) 2017 Mateusz Pusz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
-project(mp-units)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-# include common tools and workarounds
-include(common/scripts)
-
-# use Conan configuration if available
-conan_init(cmake)
-
-# enable static analysis
-#enable_clang_tidy()
-#enable_iwyu()
-
-# add project code
-add_subdirectory(src)
-
-# set restrictive compilation warnings
-set_warnings(mp-units)
-
-# add unit tests
-enable_testing()
-add_subdirectory(test)
-
-# add usage example
-add_subdirectory(example)
-
-# generate project documentation
-add_subdirectory(docs)
+include(conan)
+include(install)
+include(static_analysis)
+include(warnings)
