@@ -226,11 +226,15 @@ static_assert(quantity_point_cast<int>(quantity_point(1.23q_m)).relative().count
 
 // time
 
-#if COMP_MSVC || COMP_GCC >= 10
-static_assert(!std::equality_comparable_with<quantity_point<dim_time, second, int>,
-                                             quantity_point<dim_length, metre, int>>);  // different dimensions
-#endif
 static_assert(quantity_point{1q_h} == quantity_point{3600q_s});
+
+template<typename Metre>
+constexpr bool no_crossdimensional_equality = !requires
+{
+    quantity_point(1q_s) == quantity_point(length<Metre, int>(1));
+};
+
+static_assert(no_crossdimensional_equality<metre>);
 
 // length
 
