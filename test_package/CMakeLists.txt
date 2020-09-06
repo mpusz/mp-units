@@ -27,7 +27,7 @@ project(test_package)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
 # compilation options and flags used in a project development process
-include(common/cmake/scripts)
+include(common/scripts)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
