@@ -29,7 +29,6 @@ using namespace units;
 static_assert(ratio(2, 4) == ratio(1, 2));
 
 // basic exponents tests
-// note use of ::type is required because template params are changed while stamping out template
 static_assert(ratio(2, 40, 1) == ratio(1, 20, 1));
 static_assert(ratio(20, 4, -1) == ratio(10, 2, -1));
 static_assert(ratio(200, 5) == ratio(20'000, 50, -1));
