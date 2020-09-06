@@ -36,10 +36,15 @@ using namespace units::physical::si;
 
 // class invariants
 
-// constexpr quantity<si::dim_length, second, int> error(0);  // should not compile (unit of a different dimension)
-// constexpr quantity<si::dim_length, metre, quantity<si::dim_length, metre, int>> error(0);  // should not compile (quantity used as Rep)
-// constexpr quantity<metre, si::dim_length, double> error(0);  // should not compile (reordered arguments)
-// constexpr quantity<si::dim_length, scaled_unit<ratio(-1, 1), metre>, int> error(0);  // should not compile (negative unit ratio)
+template<typename DimLength>
+concept invalid_types = requires
+{
+  !requires { typename quantity<DimLength, second, int>; };  // unit of a different dimension
+  !requires { typename quantity<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
+  !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
+};
+
+static_assert(invalid_types<dim_length>);
 
 // member types
 
@@ -56,18 +61,21 @@ static_assert(km.count() == 1000);
 static_assert(length<metre, int>(km).count() == km.count());
 
 static_assert(length<metre, int>(1).count() == 1);
-// static_assert(length<metre, int>(1.0).count() == 1);   // should not compile (truncating conversion)
+static_assert(!std::is_constructible_v<length<metre, int>, double>); // truncating conversion
 static_assert(length<metre, double>(1.0).count() == 1.0);
 static_assert(length<metre, double>(1).count() == 1.0);
 static_assert(length<metre, double>(3.14).count() == 3.14);
 
 static_assert(length<metre, int>(km).count() == 1000);
-// static_assert(length<metre, int>(length<metre, double>(3.14)).count() == 3);   // should not compile (truncating conversion)
+static_assert(!std::is_constructible_v<length<metre, int>,
+                                       length<metre, double>>);  // truncating conversion
 static_assert(length<metre, double>(1000.0q_m).count() == 1000.0);
 static_assert(length<metre, double>(km).count() == 1000.0);
 static_assert(length<metre, int>(1q_km).count() == 1000);
-// static_assert(length<metre, int>(1q_s).count() == 1);   // should not compile (different dimensions)
-//static_assert(length<kilometre, int>(1010q_m).count() == 1);   // should not compile (truncating conversion)
+static_assert(!std::is_constructible_v<length<metre, int>,
+                                       physical::si::time<second, int>>);  // different dimensions
+static_assert(!std::is_constructible_v<length<kilometre, int>,
+                                       length<metre, int>>);  // truncating conversion
 
 // assignment operator
 
@@ -89,24 +97,22 @@ static_assert((-km).count() == -1000);
 static_assert((+(-km)).count() == -1000);
 static_assert((-(-km)).count() == 1000);
 
-// binary member operators
-
 static_assert([](auto v) {
   auto vv = v++;
-  return std::make_pair(v, vv);
-}(km) == std::make_pair(length<metre, int>(1001), length<metre, int>(1000)));
+  return std::pair(v, vv);
+}(km) == std::pair(length<metre, int>(1001), length<metre, int>(1000)));
 static_assert([](auto v) {
   auto vv = ++v;
-  return std::make_pair(v, vv);
-}(km) == std::make_pair(length<metre, int>(1001), length<metre, int>(1001)));
+  return std::pair(v, vv);
+}(km) == std::pair(length<metre, int>(1001), length<metre, int>(1001)));
 static_assert([](auto v) {
   auto vv = v--;
-  return std::make_pair(v, vv);
-}(km) == std::make_pair(length<metre, int>(999), length<metre, int>(1000)));
+  return std::pair(v, vv);
+}(km) == std::pair(length<metre, int>(999), length<metre, int>(1000)));
 static_assert([](auto v) {
   auto vv = --v;
-  return std::make_pair(v, vv);
-}(km) == std::make_pair(length<metre, int>(999), length<metre, int>(999)));
+  return std::pair(v, vv);
+}(km) == std::pair(length<metre, int>(999), length<metre, int>(999)));
 
 // compound assignment
 
@@ -116,21 +122,28 @@ static_assert((1q_m *= 2).count() == 2);
 static_assert((2q_m /= 2).count() == 1);
 static_assert((7q_m %= 2).count() == 1);
 static_assert((7q_m %= 2q_m).count() == 1);
-//  static_assert((7.m %= 2.).count() == 1);  // should not compile (operation not allowed for floating-point types)
-//  static_assert((7.m %= 2).count() == 1);  // should not compile (operation not allowed for floating-point types)
-//  static_assert((7q_m %= 2.).count() == 1);  // should not compile (operation not allowed for floating-point types)
-static_assert((7q_m %= 2q_m).count() == 1);
-//  static_assert((7.m %= 2.m).count() == 1);  // should not compile (operation not allowed for floating-point types)
-//  static_assert((7.m %= 2q_m).count() == 1);  // should not compile (operation not allowed for floating-point types)
-//  static_assert((7q_m %= 2.m).count() == 1);  // should not compile (operation not allowed for floating-point types)
 
-// static_assert(2q_m += 3.5q_m); // should not compile
 static_assert((2.5q_m += 3q_m).count() == 5.5);
 static_assert((2.5q_m += 3.5q_m).count() == 6);
 
-// static_assert(2q_m *= 3.5); // should not compile
 static_assert((2.5q_m *= 3).count() == 7.5);
 static_assert((2.5q_m *= 3.5).count() == 8.75);
+
+// operations not allowed for the respective quantities
+template<typename Metre>
+concept invalid_compound_assignments = requires()
+{
+    !requires(length<Metre, double> l) { l %= 2.; };
+    !requires(length<Metre, double> l) { l %= 2; };
+    !requires(length<Metre, int> l) { l %= 2.; };
+    !requires(length<Metre, double> l) { l %= 2.q_m; };
+    !requires(length<Metre, double> l) { l %= 2q_m; };
+    !requires(length<Metre, int> l) { l %= 2.q_m; };
+    !requires(length<Metre, int> l) { l += 3.5q_m; };
+    !requires(length<Metre, int> l) { l *= 3.5q_m; };
+};
+
+static_assert(invalid_compound_assignments<metre>);
 
 // non-member arithmetic operators
 
@@ -253,8 +266,12 @@ static_assert(quantity_cast<int>(1.23q_m).count() == 1);
 
 // time
 
-// static_assert(1q_s == 1q_m);  // should not compile (different dimensions)
 static_assert(1q_h == 3600q_s);
+
+template<typename Metre>
+constexpr bool no_crossdimensional_equality = !requires { 1q_s == length<Metre, int>(1); };
+
+static_assert(no_crossdimensional_equality<metre>);
 
 // length
 

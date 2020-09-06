@@ -40,7 +40,9 @@ struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(36, 1, 2), second> {
 struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
-// struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
+#if COMP_MSVC || COMP_GCC >= 10
+static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct kilokelvin, P, kelvin>; }; }(si::kilo{})); // negative unit ratio
+#endif
 
 struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exp<dim_length, 1>, units::exp<dim_time, -1>> {};
@@ -51,6 +53,9 @@ static_assert(is_same_v<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetr
 static_assert(is_same_v<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
 static_assert(is_same_v<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
 static_assert(is_same_v<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
+#if COMP_MSVC || COMP_GCC >= 10
+static_assert([]<ratio R>() { return !requires { typename scaled_unit<R, metre>; }; }.template operator()<ratio(-1, 1)>()); // negative unit ratio
+#endif
 
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");
