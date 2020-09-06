@@ -65,7 +65,7 @@ template<typename T>
 struct expl_constructible : scalar_ops<expl_constructible<T>> {
   T value_{};
   expl_constructible() = default;
-  constexpr expl_constructible(T v) : value_(std::move(v)) {}
+  constexpr explicit expl_constructible(T v) : value_(std::move(v)) {}
   // no conversion to fundamental arithmetic types
 };
 
