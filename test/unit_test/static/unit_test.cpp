@@ -41,9 +41,8 @@ struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 #if COMP_MSVC || COMP_GCC >= 10
-static_assert([]<Prefix R>() { return !requires { typename prefixed_unit<kelvin, R, kelvin>; }; }.template operator()<si::kilo>()); // negative unit ratio
+static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct kilokelvin, P, kelvin>; }; }(si::kilo{})); // negative unit ratio
 #endif
-// struct kilokelvin : prefixed_unit<kilokelvin, si::kilo, kelvin> {};  // should not compile (prefix not allowed for this reference unit)
 
 struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exp<dim_length, 1>, units::exp<dim_time, -1>> {};
