@@ -5,7 +5,7 @@ Working with Legacy Interfaces
 
 In case we are working with a legacy/unsafe interface we may be forced to
 extract the :term:`value of a quantity` with :func:`quantity::count()` or to
-extract the :term:`value of a quantity_point` with :func:`quantity_point::relative()`
+extract the value of a `quantity_point` with :func:`quantity_point::relative()`
 and pass it to the library's output:
 
 .. code-block::
@@ -37,7 +37,7 @@ and pass it to the library's output:
       legacy::print_eta(quantity_cast<si::metre_per_second>(v).count());
     }
 
-    template <QuantityPoint QP>
+    template<QuantityPoint QP>
       requires Length<typename QP::quantity_type>
     void set_path_position(QP p)
     {

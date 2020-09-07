@@ -4,7 +4,7 @@ Basic Concepts
 ==============
 
 The most important concepts in the library are `Unit`, `Dimension`,
-`Quantity` and `QuantityPoint`:
+`Quantity`, and `QuantityPoint`:
 
 .. image:: /_static/img/concepts.png
     :align: center

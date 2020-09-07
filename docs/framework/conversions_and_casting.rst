@@ -90,10 +90,9 @@ once and leave the rest intact:
 - line #3 sets only a representation type to the type provided by the user.
 
 `quantity_point_cast` takes anything that works for `quantity_point`
-or a specific target `quantity_point`:
+or a specific target `quantity_point`::
 
-    std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0q_m})>(d)
-              << '\n';
+    std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0q_m})>(d) << '\n';
 
 .. seealso::
 

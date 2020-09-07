@@ -31,10 +31,11 @@ the value to the `quantity_point` class template explicit constructor::
 Differences to quantity
 -----------------------
 
-Unlike `quantity`, the library provides
-- no helper aliases for quantity points, such as `length_point`,
+Unlike `quantity`, the library provides:
+
+- no helper aliases for quantity points, such as ``length_point``,
 - no UDLs for quantity points,
-- no dimension-specific concepts, such as `LengthPoint`
+- no dimension-specific concepts, such as ``LengthPoint``
   (there's the dimension-agnostic `QuantityPoint`),
 - a more limited set of operations on quantity points
   (see the :ref:`Conversions and Casting` chapter)

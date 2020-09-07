@@ -81,20 +81,23 @@ The result will always be a quantity point of the same dimension:
 
     .. code-block::
         :emphasize-lines: 3
+        
         Length auto dist1 = 2q_m;
         Length auto dist2 = 1q_m;
         auto res1 = dist1 - quantity_point{dist2};  // ERROR
 
-We can also substract two quantity points.
+We can also subtract two quantity points.
 The result is a relative quantity of the same dimension:
 
 .. code-block::
     :emphasize-lines: 3
+
     Length auto dist1 = 2q_m;
     Length auto dist2 = 1q_m;
     Length auto res1 = quantity_point{dist1} - quantity_point{dist2};
 
 That's it! You can't multiply nor divide quantity points with anything else.
+
 
 Base Dimensions
 ---------------
