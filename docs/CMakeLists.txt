@@ -95,6 +95,7 @@ add_custom_command(OUTPUT "${SPHINX_INDEX_FILE}"
                        "${CMAKE_CURRENT_SOURCE_DIR}/examples/linear_algebra.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/examples/measurement.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/examples/total_energy.rst"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/examples/unknown_dimension.rst"
                        
                        "${CMAKE_CURRENT_SOURCE_DIR}/faq.rst"
 
@@ -104,6 +105,7 @@ add_custom_command(OUTPUT "${SPHINX_INDEX_FILE}"
                        "${CMAKE_CURRENT_SOURCE_DIR}/framework/conversions_and_casting.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/framework/dimensions.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantities.rst"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_points.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/framework/text_output.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/framework/units.rst"
 
