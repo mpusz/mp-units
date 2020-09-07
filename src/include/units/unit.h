@@ -80,13 +80,6 @@ struct unit : downcast_child<Child, scaled_unit<ratio(1), Child>> {
 };
 
 /**
- * @brief Unknown unit
- * 
- * Used as a coherent unit of an unknown dimension.
- */
-struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
-
-/**
  * @brief A named unit
  *
  * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
@@ -258,5 +251,12 @@ struct prefixed_alias_unit : U {
   static constexpr auto symbol = P::symbol + AU::symbol;
   using prefix_family = no_prefix;
 };
+
+/**
+ * @brief Unknown unit
+ * 
+ * Used as a coherent unit of an unknown dimension.
+ */
+struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
 
 }  // namespace units
