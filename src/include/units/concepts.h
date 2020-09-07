@@ -80,14 +80,11 @@ struct scaled_unit;
 // TODO: Remove when P1985 accepted
 namespace detail {
 
-struct is_derived_from_scaled_unit_impl {
-  template<ratio R, typename U>
-  static constexpr std::true_type check_base(const scaled_unit<R, U>&);
-  static constexpr std::false_type check_base(...);
-};
+template<ratio R, typename U>
+void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_scaled_unit_impl::check_base(std::declval<T>()))::value;
+concept is_derived_from_scaled_unit = requires { to_base_scaled_unit(std::declval<const volatile T*>()); };
 
 }  // namespace detail
 
@@ -99,20 +96,18 @@ inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_sca
 template<typename T>
 concept Unit = detail::is_derived_from_scaled_unit<T>;
 
+// BaseDimension
 template<basic_fixed_string Symbol, Unit U>
   requires U::is_named
 struct base_dimension;
 
 namespace detail {
 
-struct is_derived_from_base_dimension_impl {
-  template<basic_fixed_string Symbol, typename U>
-  static constexpr std::true_type check_base(const base_dimension<Symbol, U>&);
-  static constexpr std::false_type check_base(...);
-};
+template<basic_fixed_string Symbol, typename U>
+void to_base_base_dimension(const volatile base_dimension<Symbol, U>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_base_dimension = decltype(is_derived_from_base_dimension_impl::check_base(std::declval<T>()))::value;
+concept is_derived_from_base_dimension = requires { to_base_base_dimension(std::declval<const volatile T*>()); };
 
 }  // namespace detail
 
