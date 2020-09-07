@@ -55,6 +55,7 @@ the below example for a quick preview of basic library features:
 ```cpp
 #include <units/physical/si/speed.h>
 #include <units/physical/international/speed.h>
+#include <units/format.h>
 #include <iostream>
 
 using namespace units::physical;
@@ -72,11 +73,11 @@ int main()
   Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
   Speed auto v4 = quantity_cast<int>(v3);
 
-  std::cout << v1 << '\n';    // 110 km/h
-  std::cout << v2 << '\n';    // 70 mi/h
-  std::cout << v3 << '\n';    // 31.2928 m/s
-  std::cout << v4 << '\n';    // 31 m/s
+  std::cout << v1 << '\n';                             // 110 km/h
+  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
+  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
+  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/f-f6y6)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/xE91TY)._
