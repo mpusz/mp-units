@@ -2,21 +2,19 @@
 
 - **0.6.0 WIP**
   - Minimum compiler version supported changed to gcc-9.3
+  - MSVC 16.7 support added
   - linear_algebra updated to 0.7.0/stable
   - fmt updated to 7.0.3
   - range-v3 updated to 0.11.0
   - catch2 updated to 2.13.0
   - doxygen updated to 1.8.18
   - ms-gsl 3.1.0 dependency added
-  - MSVC 16.7 support added
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
   - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - `ratio` changed to the NTTP kind
-  - Minimum compiler version supported changed to gcc-9.3
-  - VS2019 support added
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
