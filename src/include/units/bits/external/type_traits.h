@@ -59,18 +59,11 @@ template<class T, class U>
 using is_same = std::bool_constant<is_same_v<T, U>>;
 
 // is_specialization_of
-namespace detail {
-
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_specialization_of_impl = false;
+inline constexpr bool is_specialization_of = false;
 
 template<typename... Params, template<typename...> typename Type>
-inline constexpr bool is_specialization_of_impl<Type<Params...>, Type> = true;
-
-}  // namespace detail
-
-template<typename T, template<typename...> typename Type>
-inline constexpr bool is_specialization_of = detail::is_specialization_of_impl<T, Type>;
+inline constexpr bool is_specialization_of<Type<Params...>, Type> = true;
 
 // is_derived_from_specialization_of
 namespace detail {
