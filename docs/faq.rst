@@ -51,8 +51,8 @@ naming and we came up with ``q_`` prefix which results in a creation of
 quantity of a provided unit.
 
 
-Why do we use UDLs reserved for the C++ standard (no `_` prefix)?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Why do we use UDLs reserved for the C++ standard (no ``_`` prefix)?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This library is meant to become a part of the C++ Standard Library at some point
 in the future. We decided to work with the target interface to get implementation
@@ -63,8 +63,8 @@ with literals already existing in the language in our initial approach
 This approach has some side effects though. We had to disable some compiler warnings
 to make it work:
 
-- `/wd4455` on MSVC,
-- `-Wno-literal-suffix` on other compilers.
+- ``/wd4455`` on MSVC,
+- ``-Wno-literal-suffix`` on other compilers.
 
 
 Text formatting
