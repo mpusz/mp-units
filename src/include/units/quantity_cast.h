@@ -38,6 +38,21 @@
 
 namespace units {
 
+namespace detail {
+
+template<typename D, typename U, typename Rep>
+constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
+{
+  if constexpr(BaseDimension<D>) {
+    return U::ratio;
+  }
+  else {
+    return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
+  }
+}
+
+} // namespace detail
+
 // QuantityOf
 template<typename T, typename Dim>
 concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
@@ -266,16 +281,16 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
   }
 };
 
-template<Dimension FromD, Unit FromU, Dimension ToD, Unit ToU>
-constexpr ratio cast_ratio()
+template<typename Q1, typename Q2>
+constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 {
-  if constexpr(BaseDimension<FromD> || same_unit_reference<FromU, ToU>::value) {
+  using FromU = Q1::unit;
+  using ToU = Q2::unit;
+  if constexpr(same_unit_reference<FromU, ToU>::value) {
     return FromU::ratio / ToU::ratio;
   }
   else {
-    const ratio from_ratio = FromD::base_units_ratio * FromU::ratio;
-    const ratio to_ratio = ToD::base_units_ratio * ToU::ratio;
-    return from_ratio / to_ratio;
+    return quantity_ratio(from) / quantity_ratio(to);
   }
 }
 
@@ -297,7 +312,7 @@ template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires QuantityOf<To, D>
 {
-  using c_ratio = std::integral_constant<ratio, detail::cast_ratio<D, U, typename To::dimension, typename To::unit>()>;
+  using c_ratio = std::integral_constant<ratio, detail::cast_ratio(quantity<D, U, Rep>(), To())>;
   using c_rep = std::common_type_t<typename To::rep, Rep>;
   using ret_unit = downcast_unit<typename To::dimension, To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;

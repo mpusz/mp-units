@@ -44,10 +44,10 @@ concept safe_convertible = // exposition only
     std::convertible_to<From, To> &&
     (treat_as_floating_point<To> || (!treat_as_floating_point<From>));
 
-template<typename Rep, typename UnitFrom, typename UnitTo>
+template<typename Rep, typename QuantityFrom, typename QuantityTo>
 concept safe_divisible = // exposition only
     treat_as_floating_point<Rep> ||
-    is_integral(UnitFrom::ratio / UnitTo::ratio);
+    is_integral(quantity_ratio(QuantityFrom{}) / quantity_ratio(QuantityTo{}));
 
 } // namespace detail
 
@@ -81,7 +81,7 @@ public:
   template<Quantity Q2>
     requires equivalent_dim<D, typename Q2::dimension> &&
              detail::safe_convertible<typename Q2::rep, rep> &&
-             detail::safe_divisible<rep, typename Q2::unit, unit>
+             detail::safe_divisible<rep, Q2, quantity>
   constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()} {}
 
   quantity& operator=(const quantity&) = default;
