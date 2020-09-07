@@ -68,16 +68,12 @@ inline constexpr bool is_specialization_of<Type<Params...>, Type> = true;
 // is_derived_from_specialization_of
 namespace detail {
 
-template<template<typename...> typename Type>
-struct is_derived_from_specialization_of_impl {
-  template<typename... Params>
-  static constexpr std::true_type check_base(const Type<Params...>&);
-  static constexpr std::false_type check_base(...);
-};
+template<template<typename...> typename Type, typename... Params>
+void to_base_specialization_of(const volatile Type<Params...>*);
 
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_derived_from_specialization_of = decltype(detail::is_derived_from_specialization_of_impl<Type>::check_base(std::declval<T>()))::value;
+concept is_derived_from_specialization_of = requires { detail::to_base_specialization_of<Type>(std::declval<const volatile T*>()); };
 
 }  // namespace units
