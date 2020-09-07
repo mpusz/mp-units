@@ -52,14 +52,14 @@ static_assert(fps::time<fps::second>(1) == si::time<si::second>(1));
 static_assert(fps::speed<fps::foot_per_second>(1) == si::speed<si::metre_per_second>(0.3048));
 static_assert(fps::area<fps::square_foot>(1) == si::area<si::square_metre>(0.09290304));
 static_assert(fps::acceleration<fps::foot_per_second_sq>(1) == si::acceleration<si::metre_per_second_sq>(0.3048));
-static_assert(fps::force<fps::poundal>(1) >= si::force<si::newton>(0.138254) && 
-              fps::force<fps::poundal>(1) <= si::force<si::newton>(0.138256));
-static_assert(fps::energy<fps::foot_poundal>(1) >= si::energy<si::joule>(0.042140110093804) && 
-              fps::energy<fps::foot_poundal>(1) <= si::energy<si::joule>(0.042140110093806));
-static_assert(fps::power<fps::foot_poundal_per_second>(1) >= si::power<si::watt>(0.042140110093804) && 
-              fps::power<fps::foot_poundal_per_second>(1) <= si::power<si::watt>(0.042140110093806));
-static_assert(fps::pressure<fps::poundal_per_foot_sq>(1) >= si::pressure<si::pascal>(1.4881639435) &&
-              fps::pressure<fps::poundal_per_foot_sq>(1) <= si::pressure<si::pascal>(1.4881639437));
+static_assert(fps::force<fps::poundal>(1) > si::force<si::newton>(0.138254) && 
+              fps::force<fps::poundal>(1) < si::force<si::newton>(0.138256));
+static_assert(fps::energy<fps::foot_poundal>(1) > si::energy<si::joule>(0.042140110093804) && 
+              fps::energy<fps::foot_poundal>(1) < si::energy<si::joule>(0.042140110093806));
+static_assert(fps::power<fps::foot_poundal_per_second>(1) > si::power<si::watt>(0.042140110093804) && 
+              fps::power<fps::foot_poundal_per_second>(1) < si::power<si::watt>(0.042140110093806));
+static_assert(fps::pressure<fps::poundal_per_foot_sq>(1) > si::pressure<si::pascal>(1.4881639435) &&
+              fps::pressure<fps::poundal_per_foot_sq>(1) < si::pressure<si::pascal>(1.4881639437));
 
 namespace si_literals {
 
@@ -71,14 +71,14 @@ static_assert(fps::time<fps::second>(1) == 1q_s);
 static_assert(fps::speed<fps::foot_per_second>(1) == 0.3048q_m_per_s);
 static_assert(fps::area<fps::square_foot>(1) == 0.09290304q_m2);
 static_assert(fps::acceleration<fps::foot_per_second_sq>(1) == 0.3048q_m_per_s2);
-static_assert(fps::force<fps::poundal>(1) >= 0.138254q_N && 
-              fps::force<fps::poundal>(1) <= 0.138256q_N);
-static_assert(fps::energy<fps::foot_poundal>(1) >= 0.042140110093804q_J && 
-              fps::energy<fps::foot_poundal>(1) <= 0.042140110093806q_J);
-static_assert(fps::power<fps::foot_poundal_per_second>(1) >= 0.042140110093804q_W && 
-              fps::power<fps::foot_poundal_per_second>(1) <= 0.042140110093806q_W);
-static_assert(fps::pressure<fps::poundal_per_foot_sq>(1) >=  1.4881639435q_Pa &&
-              fps::pressure<fps::poundal_per_foot_sq>(1) <=  1.4881639437q_Pa);
+static_assert(fps::force<fps::poundal>(1) > 0.138254q_N && 
+              fps::force<fps::poundal>(1) < 0.138256q_N);
+static_assert(fps::energy<fps::foot_poundal>(1) > 0.042140110093804q_J && 
+              fps::energy<fps::foot_poundal>(1) < 0.042140110093806q_J);
+static_assert(fps::power<fps::foot_poundal_per_second>(1) > 0.042140110093804q_W && 
+              fps::power<fps::foot_poundal_per_second>(1) < 0.042140110093806q_W);
+static_assert(fps::pressure<fps::poundal_per_foot_sq>(1) >  1.4881639435q_Pa &&
+              fps::pressure<fps::poundal_per_foot_sq>(1) <  1.4881639437q_Pa);
 }
 
 namespace fps_literals {
@@ -91,14 +91,14 @@ static_assert(1q_s == si::time<si::second>(1));
 static_assert(1q_ft_per_s == si::speed<si::metre_per_second>(0.3048));
 static_assert(1q_ft2 == si::area<si::square_metre>(0.09290304));
 static_assert(1q_ft_per_s2 == si::acceleration<si::metre_per_second_sq>(0.3048));
-static_assert(1q_pdl >= si::force<si::newton>(0.138254) && 
-              1q_pdl <= si::force<si::newton>(0.138256));
-static_assert(1q_ft_pdl >= si::energy<si::joule>(0.042140110093804) && 
-              1q_ft_pdl <= si::energy<si::joule>(0.042140110093806));
-static_assert(1q_ft_pdl_per_s >= si::power<si::watt>(0.042140110093804) && 
-              1q_ft_pdl_per_s <= si::power<si::watt>(0.042140110093806));
-static_assert(1q_pdl_per_ft2>= si::pressure<si::pascal>(1.4881639435) &&
-              1q_pdl_per_ft2 <= si::pressure<si::pascal>(1.4881639437));
+static_assert(1q_pdl > si::force<si::newton>(0.138254) && 
+              1q_pdl < si::force<si::newton>(0.138256));
+static_assert(1q_ft_pdl > si::energy<si::joule>(0.042140110093804) && 
+              1q_ft_pdl < si::energy<si::joule>(0.042140110093806));
+static_assert(1q_ft_pdl_per_s > si::power<si::watt>(0.042140110093804) && 
+              1q_ft_pdl_per_s < si::power<si::watt>(0.042140110093806));
+static_assert(1q_pdl_per_ft2> si::pressure<si::pascal>(1.4881639435) &&
+              1q_pdl_per_ft2 < si::pressure<si::pascal>(1.4881639437));
 }
 
 namespace fps_plus_si_literals {
@@ -114,14 +114,14 @@ static_assert(1q_s  == 1q_s);
 static_assert(1q_ft_per_s == 0.3048q_m_per_s);
 static_assert(1q_ft2 == 0.09290304q_m2);
 static_assert(1q_ft_per_s2 == 0.3048q_m_per_s2);
-static_assert(1q_pdl >= 0.138254q_N && 
-              1q_pdl <= 0.138256q_N);
-static_assert(1q_ft_pdl >= 0.042140110093804q_J && 
-              1q_ft_pdl <= 0.042140110093806q_J);
-static_assert(1q_ft_pdl_per_s >= 0.042140110093804q_W && 
-              1q_ft_pdl_per_s <= 0.042140110093806q_W);
-static_assert(1q_pdl_per_ft2>= 1.4881639435q_Pa &&
-              1q_pdl_per_ft2 <=1.4881639437q_Pa);
+static_assert(1q_pdl > 0.138254q_N && 
+              1q_pdl < 0.138256q_N);
+static_assert(1q_ft_pdl > 0.042140110093804q_J && 
+              1q_ft_pdl < 0.042140110093806q_J);
+static_assert(1q_ft_pdl_per_s > 0.042140110093804q_W && 
+              1q_ft_pdl_per_s < 0.042140110093806q_W);
+static_assert(1q_pdl_per_ft2> 1.4881639435q_Pa &&
+              1q_pdl_per_ft2 <1.4881639437q_Pa);
 
 }
 
