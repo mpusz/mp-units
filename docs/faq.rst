@@ -8,20 +8,6 @@ FAQ
 General
 -------
 
-Why all UDLs are prefixed with ``q_`` instead of just using unit symbol?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Usage of only unit symbols in UDLs would be a preferred approach (less to type,
-easier to understand and maintain). However, while increasing the coverage for
-the library we learned that there are a lot unit symbols that conflict with
-built-in types or numeric extensions. A few of those are: ``F`` (farad),
-``J`` (joule), ``W`` (watt), ``K`` (kelvin), ``d`` (day),
-``l`` or ``L`` (litre), ``erg``, ``ergps``. For a while for those we used ``_``
-prefix to make the library work at all, but at some point we had to unify the
-naming and we came up with ``q_`` prefix which results in a creation of
-quantity of a provided unit.
-
-
 Why dimensions depend on units and not vice versa?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -48,6 +34,39 @@ Why do we spell ``metre`` instead of ``meter``?
 Well, this is how [ISO-80000]_ defines it (British English spelling by default).
 
 
+User Defined Literals (UDLs)
+----------------------------
+
+Why all UDLs are prefixed with ``q_`` instead of just using unit symbol?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Usage of only unit symbols in UDLs would be a preferred approach (less to type,
+easier to understand and maintain). However, while increasing the coverage for
+the library we learned that there are a lot unit symbols that conflict with
+built-in types or numeric extensions. A few of those are: ``F`` (farad),
+``J`` (joule), ``W`` (watt), ``K`` (kelvin), ``d`` (day),
+``l`` or ``L`` (litre), ``erg``, ``ergps``. For a while for those we used ``_``
+prefix to make the library work at all, but at some point we had to unify the
+naming and we came up with ``q_`` prefix which results in a creation of
+quantity of a provided unit.
+
+
+Why do we use UDLs reserved for the C++ standard (no `_` prefix)?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This library is meant to become a part of the C++ Standard Library at some point
+in the future. We decided to work with the target interface to get implementation
+and user experience. Only thanks to this we were able to detect multiple collisions
+with literals already existing in the language in our initial approach
+(`Why all UDLs are prefixed with q_ instead of just using unit symbol?
+<#why-unicode-quantity-symbols-are-used-by-default-instead-of-ascii-only-characters>`_).
+This approach has some side effects though. We had to disable some compiler warnings
+to make it work:
+
+- `/wd4455` on MSVC,
+- `-Wno-literal-suffix` on other compilers.
+
+
 Text formatting
 ---------------
 
@@ -67,16 +86,6 @@ to obey the rules and be consistent with ISO specifications.
     has the option of :ref:`ASCII-only quantity symbols`.
 
 
-.. rubric:: Footnotes:
-
-.. [ISO-80000] ISO 80000 or IEC 80000 is an international standard promulgated jointly
-    by the :abbr:`ISO (International Organization for Standardization)` and the
-    :abbr:`IEC (International Electrotechnical Commission)`. The standard introduces the
-    :term:`International System of Quantities`. It is a style guide for the use of
-    physical quantities and units of measurement, formulas involving them, and their
-    corresponding units, in scientific and educational documents for worldwide use.
-    Read more on `Wikipedia <ISO/IEC 80000 https://en.wikipedia.org/wiki/ISO/IEC_80000>`_.
-
 Compilation Errors
 ------------------
 
@@ -95,3 +104,20 @@ Again, usage of ``using namespace units``
 `using-directive <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_ may result in
 the collision between `units::exp` class template and C `exp <https://en.cppreference.com/w/c/numeric/math/exp>`_
 function. In such a case the library's `exp` class template needs to be prefixed with `units` namespace name.
+
+
+
+
+
+
+
+
+.. rubric:: Footnotes:
+
+.. [ISO-80000] ISO 80000 or IEC 80000 is an international standard promulgated jointly
+    by the :abbr:`ISO (International Organization for Standardization)` and the
+    :abbr:`IEC (International Electrotechnical Commission)`. The standard introduces the
+    :term:`International System of Quantities`. It is a style guide for the use of
+    physical quantities and units of measurement, formulas involving them, and their
+    corresponding units, in scientific and educational documents for worldwide use.
+    Read more on `Wikipedia <ISO/IEC 80000 https://en.wikipedia.org/wiki/ISO/IEC_80000>`_.
