@@ -86,6 +86,7 @@ template<ratio R, typename U>
 void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
 
 template<typename T>
+// inline constexpr bool // TODO: Replace with concept when it works with MSVC
 concept is_derived_from_scaled_unit = requires { to_base_scaled_unit(std::declval<const volatile T*>()); };
 
 }  // namespace detail
@@ -109,6 +110,7 @@ template<basic_fixed_string Symbol, typename U>
 void to_base_base_dimension(const volatile base_dimension<Symbol, U>*);
 
 template<typename T>
+// inline constexpr bool // TODO: Replace with concept when it works with MSVC
 concept is_derived_from_base_dimension = requires { to_base_base_dimension(std::declval<const volatile T*>()); };
 
 }  // namespace detail
