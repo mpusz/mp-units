@@ -185,6 +185,13 @@ auto default_unit()
  */
 template<Dimension D>
 using dimension_unit = decltype(detail::default_unit<D>());
+// TODO: replace with the below code when VS catches up
+// decltype([]{
+//     if constexpr (BaseDimension<D>)
+//         return TYPENAME D::base_unit{};
+//     else
+//         return TYPENAME D::coherent_unit{};
+// }());
 
 /**
  * @brief A concept matching only units of a specified dimension.
