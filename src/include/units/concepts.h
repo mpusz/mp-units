@@ -43,17 +43,21 @@ template<typename T>
 concept PrefixFamily = std::derived_from<T, prefix_family>;
 
 // Prefix
-// TODO gcc:92150
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=92150
-// namespace detail {
+template<PrefixFamily PF, ratio R>
+struct prefix_base;
 
-//   template<typename T>
-//   inline constexpr bool is_prefix = false;
+namespace detail {
 
-//   template<typename PrefixFamily, Ratio R, basic_fixed_string Symbol>
-//   inline constexpr bool is_prefix<prefix<PrefixFamily, R, Symbol>> = true;
+struct is_derived_from_prefix_base_impl {
+  template<typename PF, ratio R>
+  static constexpr std::true_type check_base(const prefix_base<PF, R>&);
+  static constexpr std::false_type check_base(...);
+};
 
-// }  // namespace detail
+template<typename T>
+inline constexpr bool is_derived_from_prefix_base = decltype(is_derived_from_prefix_base_impl::check_base(std::declval<T>()))::value;
+
+}  // namespace detail
 
 /**
  * @brief A concept matching a symbol prefix
@@ -61,9 +65,8 @@ concept PrefixFamily = std::derived_from<T, prefix_family>;
  * Satisfied by all specializations of `prefix`.
  */
 template<typename T>
-//  concept Prefix = detail::is_prefix<T>;
-concept Prefix = true;
-
+// concept Prefix = detail::is_derived_from_prefix_base<T>;
+concept Prefix = true;  // TODO: still some bug out there :-(
 
 /**
  * @brief A concept matching unit's ratio
