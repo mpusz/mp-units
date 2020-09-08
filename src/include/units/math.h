@@ -39,26 +39,18 @@ namespace units {
  * @return Quantity The result of computation 
  */
 template<std::intmax_t N, Quantity Q>
-  requires(N != 0)
-[[nodiscard]] inline Quantity auto pow(const Q& q) noexcept
+[[nodiscard]] inline auto pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
-  using dim = dimension_pow<typename Q::dimension, N>;
-  using unit = downcast_unit<dim, pow<N>(Q::unit::ratio)>;
   using rep = TYPENAME Q::rep;
-  return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
-}
-
-/**
- * @brief OVerload that always returns 1 for N == 0
- * 
- * @return Rep A scalar value of @c 1. 
- */
-template<std::intmax_t N, Quantity Q>
-  requires(N == 0)
-[[nodiscard]] inline TYPENAME Q::rep pow(const Q&) noexcept
-{
-  return 1;
+  if constexpr(N == 0) {
+    return rep(1);
+  }
+  else {
+    using dim = dimension_pow<typename Q::dimension, N>;
+    using unit = downcast_unit<dim, pow<N>(Q::unit::ratio)>;
+    return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
+  }
 }
 
 /**
