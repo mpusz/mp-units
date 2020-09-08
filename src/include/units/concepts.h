@@ -206,7 +206,7 @@ concept UnitOf =
   Dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
-// Quantity
+// Quantity, QuantityPoint
 namespace detail {
 
 template<typename T>
