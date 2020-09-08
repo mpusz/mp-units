@@ -167,10 +167,10 @@ namespace detail {
 template<Dimension D>
 auto default_unit()
 {
-    if constexpr (BaseDimension<D>)
-        return TYPENAME D::base_unit{};
-    else
-        return TYPENAME D::coherent_unit{};
+  if constexpr (BaseDimension<D>)
+    return TYPENAME D::base_unit{};
+  else
+    return TYPENAME D::coherent_unit{};
 }
 
 } // namespace detail
