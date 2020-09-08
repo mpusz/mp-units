@@ -148,8 +148,8 @@ constexpr auto derived_dimension_unit_text()
   return derived_dimension_unit_text(exponent_list_with_named_units(recipe()));
 }
 
-// TODO Inline below concept when switched to gcc-10
 template<typename T>
+// TODO replace with `inline constexpr bool has_symbol` when MSVC cathes up
 concept has_symbol = requires{ T::symbol; };
 
 template<Dimension Dim, Unit U>
