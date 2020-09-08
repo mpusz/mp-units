@@ -17,6 +17,7 @@
   - `ratio` changed to the NTTP kind
   - `exp` and `Exp` renamed to `exponent` and `Exponent`
   - Added support for `exp()` mathematical support
+  - Dimensionless quantities redesigned to be of `quantity` type
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
