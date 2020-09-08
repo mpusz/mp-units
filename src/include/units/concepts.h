@@ -165,17 +165,13 @@ concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 namespace detail {
 
 template<Dimension D>
-struct dimension_unit_impl;
-
-template<BaseDimension D>
-struct dimension_unit_impl<D> {
-  using type = TYPENAME D::base_unit;
-};
-
-template<DerivedDimension D>
-struct dimension_unit_impl<D> {
-  using type = TYPENAME D::coherent_unit;
-};
+auto default_unit()
+{
+    if constexpr (BaseDimension<D>)
+        return TYPENAME D::base_unit{};
+    else
+        return TYPENAME D::coherent_unit{};
+}
 
 } // namespace detail
 
@@ -188,7 +184,7 @@ struct dimension_unit_impl<D> {
  * @tparam D Dimension type to get the unit from.
  */
 template<Dimension D>
-using dimension_unit = TYPENAME detail::dimension_unit_impl<D>::type;
+using dimension_unit = decltype(detail::default_unit<D>());
 
 /**
  * @brief A concept matching only units of a specified dimension.
