@@ -33,7 +33,7 @@ struct pound_per_foot_cub : unit<pound_per_foot_cub> {};
 
 struct dim_density : physical::dim_density<dim_density, pound_per_foot_cub, dim_mass, dim_length> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {

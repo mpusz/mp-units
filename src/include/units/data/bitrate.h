@@ -41,7 +41,7 @@ struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibi
 template<typename T>
 concept Bitrate = QuantityOf<T, dim_bitrate>;
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using bitrate = quantity<dim_bitrate, U, Rep>;
 
 inline namespace literals {

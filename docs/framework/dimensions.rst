@@ -23,7 +23,7 @@ each other and the result will always be a quantity of the same dimension:
     Length auto res2 = dist1 - dist2;
 
 Additionally, we can always multiply or divide a quantity by a
-:term:`scalar` and in such a case the quantity's dimension will also
+:term:`scalable number` and in such a case the quantity's dimension will also
 not change:
 
 .. code-block::
@@ -35,7 +35,7 @@ not change:
     Length auto res3 = res2 / 2;   // 6 m
 
 However, if we try to multiply or divide quantities of the same or
-different dimensions, or we will divide a scalar by a quantity, we most
+different dimensions, or we will divide a scalable number by a quantity, we most
 probably will always end up in a quantity of a yet another dimension:
 
 .. code-block::
@@ -50,7 +50,7 @@ probably will always end up in a quantity of a yet another dimension:
 
 However, please note that there is an exception from the above rule.
 In case we divide the same dimensions, or multiply by the inverted
-dimension, than we will end up with just a scalar type:
+dimension, than we will end up with just a scalable number type:
 
 .. code-block::
     :emphasize-lines: 4-5
@@ -58,8 +58,8 @@ dimension, than we will end up with just a scalar type:
     Time auto dur1 = 10q_s;
     Time auto dur2 = 2q_s;
     Frequency auto fr1 = 5q_Hz;
-    Scalar auto v1 = dur1 / dur2;    // 5
-    Scalar auto v2 = dur1 * fr1;     // 50
+    ScalableNumber auto v1 = dur1 / dur2;    // 5
+    ScalableNumber auto v2 = dur1 * fr1;     // 50
 
 Quantity points have a more restricted set of operations.
 Quantity points can't be added together,

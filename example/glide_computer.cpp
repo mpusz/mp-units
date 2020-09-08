@@ -87,7 +87,7 @@ public:
   }
 
   template<typename V>
-    requires (Scalar<V> || Dimensionless<V>)
+    requires (ScalableNumber<V> || Dimensionless<V>)
   [[nodiscard]] friend constexpr auto operator*(const vector& lhs, const V& value)
     requires requires { lhs.magnitude() * value; }
   {
@@ -95,7 +95,7 @@ public:
   }
 
   template<typename V>
-    requires (Scalar<V> || Dimensionless<V>)
+    requires (ScalableNumber<V> || Dimensionless<V>)
   [[nodiscard]] friend constexpr auto operator*(const V& value, const vector& rhs)
     requires requires { value * rhs.magnitude(); }
   {

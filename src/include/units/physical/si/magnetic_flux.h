@@ -50,7 +50,7 @@ struct yottaweber : prefixed_unit<yottaweber, yotta, weber> {};
 
 struct dim_magnetic_flux : physical::dim_magnetic_flux<dim_magnetic_flux, weber, dim_magnetic_induction, dim_area> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using magnetic_flux = quantity<dim_magnetic_flux, U, Rep>;
 
 inline namespace literals {

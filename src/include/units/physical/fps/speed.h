@@ -32,7 +32,7 @@ namespace units::physical::fps {
 struct foot_per_second : unit<foot_per_second> {};
 struct dim_speed : physical::dim_speed<dim_speed, foot_per_second, dim_length, dim_time> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
 struct mile_per_hour : deduced_unit<mile_per_hour, dim_speed, mile, hour>{};

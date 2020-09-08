@@ -63,7 +63,7 @@ Concepts
     satisfy :expr:`Quantity<typename T::value_type>` recursively
     (i.e. :expr:`std::optional<si::length<si::metre>>`).
 
-.. concept:: template<typename T> Scalar
+.. concept:: template<typename T> ScalableNumber
 
     A concept matching non-Quantity types. Satisfied by types that match
     :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>` and satisfy one of the

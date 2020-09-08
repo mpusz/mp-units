@@ -37,7 +37,7 @@ namespace units {
  * @tparam U a measurement unit of the quantity point
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-template<Dimension D, UnitOf<D> U, Scalar Rep = double>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep = double>
 class quantity_point {
 public:
   using quantity_type = quantity<D, U, Rep>;

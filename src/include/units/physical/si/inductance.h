@@ -50,7 +50,7 @@ struct yottahenry : prefixed_unit<yottahenry, yotta, henry> {};
 
 struct dim_inductance : physical::dim_inductance<dim_inductance, henry, dim_magnetic_flux, dim_electric_current> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using inductance = quantity<dim_inductance, U, Rep>;
 
 inline namespace literals {

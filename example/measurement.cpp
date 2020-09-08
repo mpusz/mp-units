@@ -114,7 +114,7 @@ private:
   value_type uncertainty_{};
 };
 
-static_assert(units::Scalar<measurement<double>>);
+static_assert(units::ScalableNumber<measurement<double>>);
 
 }  // namespace
 

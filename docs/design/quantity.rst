@@ -11,7 +11,7 @@ Interface
 The difference is that it uses ``double`` as a default representation and has
 a few additional member types and functions::
 
-    template<Dimension D, UnitOf<D> U, Scalar Rep = double>
+    template<Dimension D, UnitOf<D> U, ScalableNumber Rep = double>
     class quantity {
     public:
       using dimension = D;
@@ -24,23 +24,23 @@ a few additional member types and functions::
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
       requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, dim_invert<D2>>
-    [[nodiscard]] constexpr Scalar auto operator*(const quantity<D1, U1, Rep1>& lhs,
-                                                  const quantity<D2, U2, Rep2>& rhs);
+    [[nodiscard]] constexpr ScalableNumber auto operator*(const quantity<D1, U1, Rep1>& lhs,
+                                                          const quantity<D2, U2, Rep2>& rhs);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
       requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, dim_invert<D2>>)
     [[nodiscard]] constexpr Quantity auto operator*(const quantity<D1, U1, Rep1>& lhs,
                                                     const quantity<D2, U2, Rep2>& rhs);
 
-    template<Scalar Value, typename D, typename U, typename Rep>
+    template<ScalableNumber Value, typename D, typename U, typename Rep>
       requires std::magma<std::ranges::divided_by, Value, Rep>
     [[nodiscard]] constexpr Quantity auto operator/(const Value& v,
                                                     const quantity<D, U, Rep>& q);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
       requires detail::basic_arithmetic<Rep1, Rep2> && equivalent_dim<D1, D2>
-    [[nodiscard]] constexpr Scalar auto operator/(const quantity<D1, U1, Rep1>& lhs,
-                                                  const quantity<D2, U2, Rep2>& rhs);
+    [[nodiscard]] constexpr ScalableNumber auto operator/(const quantity<D1, U1, Rep1>& lhs,
+                                                          const quantity<D2, U2, Rep2>& rhs);
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
       requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)

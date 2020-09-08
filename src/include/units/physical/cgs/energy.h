@@ -33,7 +33,7 @@ struct erg : named_unit<erg, "erg", si::prefix> {};
 
 struct dim_energy : physical::dim_energy<dim_energy, erg, dim_force, dim_length> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
 inline namespace literals {

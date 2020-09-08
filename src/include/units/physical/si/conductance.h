@@ -49,7 +49,7 @@ struct yottasiemens : prefixed_unit<yottasiemens, yotta, siemens> {};
 
 struct dim_conductance : physical::dim_conductance<dim_conductance, siemens, dim_resistance> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using conductance = quantity<dim_conductance, U, Rep>;
 
 inline namespace literals {

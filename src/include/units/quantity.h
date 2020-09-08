@@ -58,7 +58,7 @@ concept safe_divisible = // exposition only
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<Dimension D, UnitOf<D> U, Scalar Rep = double>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep = double>
 class quantity {
   Rep value_{};
 
@@ -71,7 +71,7 @@ public:
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires detail::safe_convertible<Value, rep>
   constexpr explicit(!(std::is_same_v<dimension, dim_one> && std::is_same_v<unit, unitless>)) quantity(const Value& v) : value_{static_cast<rep>(v)} {}
 
@@ -176,7 +176,7 @@ public:
     return *this;
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires (!treat_as_floating_point<rep>) &&
              (!treat_as_floating_point<Value>)
   constexpr quantity& operator%=(const Value& rhs)
@@ -227,7 +227,7 @@ public:
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires std::regular_invocable<std::multiplies<>, Rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
@@ -236,7 +236,7 @@ public:
     return ret(q.count() * v);
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires std::regular_invocable<std::multiplies<>, Value, Rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
@@ -254,7 +254,7 @@ public:
     return ret(lhs.count() * rhs.count());
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires std::regular_invocable<std::divides<>, Value, Rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
@@ -267,7 +267,7 @@ public:
     return ret(v / q.count());
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires std::regular_invocable<std::divides<>, Rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
@@ -291,7 +291,7 @@ public:
     return ret(lhs.count() / rhs.count());
   }
 
-  template<Scalar Value>
+  template<ScalableNumber Value>
     requires (!treat_as_floating_point<Rep>) &&
             (!treat_as_floating_point<Value>) &&
             std::regular_invocable<std::modulus<>, Rep, Value>

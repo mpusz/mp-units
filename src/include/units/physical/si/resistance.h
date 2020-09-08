@@ -50,7 +50,7 @@ struct yottaohm : prefixed_unit<yottaohm, yotta, ohm> {};
 
 struct dim_resistance : physical::dim_resistance<dim_resistance, ohm, dim_voltage, dim_electric_current> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using resistance = quantity<dim_resistance, U, Rep>;
 
 inline namespace literals {

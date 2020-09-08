@@ -121,7 +121,7 @@ coherent unit::
     struct desk_per_hour : deduced_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
 
     // a quantity of our dimension
-    template<Unit U, Scalar Rep = double>
+    template<Unit U, ScalableNumber Rep = double>
     using desk_rate = quantity<dim_desk_rate, U, Rep>;
 
     // a concept matching the above quantity
@@ -150,7 +150,7 @@ define a new base dimension, its units, quantity helper, concept, and UDLs::
     struct person : named_unit<person, "person", no_prefix> {};
     struct dim_people : base_dimension<"people", person> {};
 
-    template<Unit U, Scalar Rep = double>
+    template<Unit U, ScalableNumber Rep = double>
     using people = quantity<dim_people, U, Rep>;
 
     template<typename T>
@@ -169,7 +169,7 @@ With the above we can now define a new derived dimension::
 
     struct person_per_desk : deduced_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 
-    template<Unit U, Scalar Rep = double>
+    template<Unit U, ScalableNumber Rep = double>
     using occupancy_rate = quantity<dim_occupancy_rate, U, Rep>;
 
     template<typename T>

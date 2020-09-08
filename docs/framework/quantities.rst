@@ -11,7 +11,7 @@ with a specific representation and is represented in the library with a
 Quantity Construction
 ---------------------
 
-To create the quantity object from a :term:`scalar` we just have to pass
+To create the quantity object from a :term:`scalable number` we just have to pass
 the value to the `quantity` class template explicit constructor::
 
     quantity<si::dim_length, si::kilometre, double> d(123);
@@ -33,7 +33,7 @@ type to ``double`` by default::
 
     namespace si {
 
-    template<Unit U, Scalar Rep = double>
+    template<Unit U, ScalableNumber Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     }
@@ -73,7 +73,8 @@ be used::
 
     All instances of `quantity` class always match the `Quantity` concept.
     All other regular types that are not quantities are called
-    :term:`scalars <scalar>` by the library and match the `Scalar` concept.
+    :term:`scalable numbers <scalable number>` by the library and match the
+    `ScalableNumber` concept.
 
 However, the above is not the most important usage of those concepts. Let's
 assume that the user wants to implement an ``avg_speed`` function that will
@@ -183,7 +184,7 @@ are provided::
     template<typename T>
     concept Dimensionless = QuantityOf<T, dim_one>;
 
-    template<Unit U, Scalar Rep = double>
+    template<Unit U, ScalableNumber Rep = double>
     using dimensionless = quantity<dim_one, U, Rep>;
 
 There are two special units provided for usage with such a quantity:

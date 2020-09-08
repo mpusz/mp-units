@@ -54,7 +54,7 @@ struct yottagray : prefixed_unit<yottagray, yotta, gray> {};
 
 struct dim_absorbed_dose : physical::dim_absorbed_dose<dim_absorbed_dose, gray, dim_energy, dim_mass> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 
 inline namespace literals {

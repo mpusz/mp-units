@@ -33,7 +33,7 @@ struct dim_volume : physical::dim_volume<dim_volume, cubic_foot, dim_length> {};
 
 struct cubic_yard : deduced_unit<cubic_yard, dim_volume, yard> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
 inline namespace literals {

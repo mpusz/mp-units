@@ -31,7 +31,7 @@ namespace units::physical::si {
 struct volt_per_metre : unit<volt_per_metre> {};
 struct dim_electric_field_strength : physical::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
 
 inline namespace literals {

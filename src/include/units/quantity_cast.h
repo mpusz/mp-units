@@ -36,10 +36,10 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, Scalar Rep>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, Scalar Rep>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
 class quantity_point;
 
 namespace detail {
@@ -374,7 +374,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<Scalar ToRep, typename D, typename U, typename Rep>
+template<ScalableNumber ToRep, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);

@@ -32,7 +32,7 @@ namespace units::physical::si {
 struct pascal_second : unit<pascal_second> {};
 struct dim_dynamic_viscosity : physical::dim_dynamic_viscosity<dim_dynamic_viscosity, pascal_second, dim_pressure, dim_time> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using dynamic_viscosity = quantity<dim_dynamic_viscosity, U, Rep>;
 
 inline namespace literals {

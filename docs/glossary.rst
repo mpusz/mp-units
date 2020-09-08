@@ -198,7 +198,7 @@ Other definitions
       - The order and types of dimensions used in the recipe determine how an unnamed
         dimension's unit symbol is being printed in the text output
 
-    scalar
+    scalable number
       - Not a `quantity`
       - Can be passed as a representation type to the :class:`units::quantity` type or be used as a factor
         while multiplying or dividing a `quantity`.

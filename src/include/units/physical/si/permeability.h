@@ -33,7 +33,7 @@ struct henry_per_metre : unit<henry_per_metre> {};
 
 struct dim_permeability : physical::dim_permeability<dim_permeability, henry_per_metre, dim_inductance, dim_length> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using permeability = quantity<dim_permeability, U, Rep>;
 
 inline namespace literals {

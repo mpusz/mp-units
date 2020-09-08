@@ -39,13 +39,13 @@ struct dim_heat_capacity : physical::dim_heat_capacity<dim_heat_capacity, joule_
 struct dim_specific_heat_capacity : physical::dim_specific_heat_capacity<dim_specific_heat_capacity, joule_per_kilogram_kelvin, dim_heat_capacity, dim_mass> {};
 struct dim_molar_heat_capacity : physical::dim_molar_heat_capacity<dim_molar_heat_capacity, joule_per_mole_kelvin, dim_heat_capacity, dim_substance> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using heat_capacity = quantity<dim_heat_capacity, U, Rep>;
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using specific_heat_capacity = quantity<dim_specific_heat_capacity, U, Rep>;
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using molar_heat_capacity = quantity<dim_molar_heat_capacity, U, Rep>;
 
 inline namespace literals {

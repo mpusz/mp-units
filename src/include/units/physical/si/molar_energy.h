@@ -34,7 +34,7 @@ struct joule_per_mole : unit<joule_per_mole> {};
 
 struct dim_molar_energy : physical::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_substance> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;
 
 inline namespace literals {

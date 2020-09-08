@@ -86,7 +86,7 @@ using impl_impl = impl_constructible_impl_convertible<T>;
 
 static_assert(std::convertible_to<float, impl_impl<float>>);
 static_assert(std::convertible_to<impl_impl<float>, float>);
-static_assert(units::Scalar<impl_impl<float>>);
+static_assert(units::ScalableNumber<impl_impl<float>>);
 
 template<typename T>
 struct expl_constructible_impl_convertible : scalar_ops<expl_constructible_impl_convertible<T>> {
@@ -101,7 +101,7 @@ using expl_impl = expl_constructible_impl_convertible<T>;
 
 static_assert(!std::convertible_to<float, expl_impl<float>>);
 static_assert(std::convertible_to<expl_impl<float>, float>);
-static_assert(units::Scalar<expl_impl<float>>);
+static_assert(units::ScalableNumber<expl_impl<float>>);
 
 template<typename T>
 struct impl_constructible_expl_convertible : scalar_ops<impl_constructible_expl_convertible<T>> {
@@ -116,7 +116,7 @@ using impl_expl = impl_constructible_expl_convertible<T>;
 
 static_assert(std::convertible_to<float, impl_expl<float>>);
 static_assert(!std::convertible_to<impl_expl<float>, float>);
-static_assert(units::Scalar<impl_expl<float>>);
+static_assert(units::ScalableNumber<impl_expl<float>>);
 
 template<typename T>
 struct expl_constructible_expl_convertible : scalar_ops<expl_constructible_expl_convertible<T>> {
@@ -131,7 +131,7 @@ using expl_expl = expl_constructible_expl_convertible<T>;
 
 static_assert(!std::convertible_to<float, expl_expl<float>>);
 static_assert(!std::convertible_to<expl_expl<float>, float>);
-static_assert(units::Scalar<expl_expl<float>>);
+static_assert(units::ScalableNumber<expl_expl<float>>);
 
 }  // namespace
 
@@ -170,7 +170,7 @@ using namespace units::physical::si;
 
 // constructors
 
-// Quantity from Scalar
+// Quantity from ScalableNumber
 // int <- int
 static_assert(length<metre, int>(expl_impl<int>(1)).count() == 1);
 static_assert(!std::is_constructible_v<length<metre, int>, impl_expl<int>>);

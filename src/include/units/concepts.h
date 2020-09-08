@@ -250,7 +250,7 @@ inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> 
 template<typename T>
 concept WrappedQuantity = detail::is_wrapped_quantity<T>;
 
-// Scalar
+// ScalableNumber
 
 namespace detail {
 
@@ -280,7 +280,7 @@ concept not_constructible_from_integral =
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept Scalar =
+concept ScalableNumber =
   (!Quantity<T>) &&
   (!WrappedQuantity<T>) &&
   std::regular<T> &&

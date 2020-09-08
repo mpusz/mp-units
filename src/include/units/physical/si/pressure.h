@@ -54,7 +54,7 @@ struct yottapascal : prefixed_unit<yottapascal, yotta, pascal> {};
 
 struct dim_pressure : physical::dim_pressure<dim_pressure, pascal, dim_force, dim_area> {};
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
 inline namespace literals {

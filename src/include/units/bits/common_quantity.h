@@ -26,10 +26,10 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, Scalar Rep>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, Scalar Rep>
+template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
 class quantity_point;
 
 namespace detail {
@@ -65,7 +65,7 @@ quantity_point<D, U, Rep> common_quantity_point_impl(quantity<D, U, Rep>);
 
 }  // namespace detail
 
-template<Quantity Q1, Quantity Q2, Scalar Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+template<Quantity Q1, Quantity Q2, ScalableNumber Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
   requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
 using common_quantity = TYPENAME detail::common_quantity_impl<Q1, Q2, Rep>::type;
 

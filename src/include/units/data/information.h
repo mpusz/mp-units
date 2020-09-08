@@ -48,7 +48,7 @@ struct dim_information : base_dimension<"information", bit> {};
 template<typename T>
 concept Information = QuantityOf<T, dim_information>;
 
-template<Unit U, Scalar Rep = double>
+template<Unit U, ScalableNumber Rep = double>
 using information = quantity<dim_information, U, Rep>;
 
 inline namespace literals {
