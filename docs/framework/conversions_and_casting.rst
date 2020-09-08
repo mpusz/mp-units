@@ -99,3 +99,80 @@ or a specific target `quantity_point`::
     For more information on conversion and casting and on how to extend the above "integral"
     vs "floating-point" logic please refer to the :ref:`Using Custom Representation Types`
     chapter.
+
+
+Implicit conversions of dimensionless quantities
+------------------------------------------------
+
+As noted in the :ref:`Dimensionless Quantities` chapter, :term:`quantity of dimension one`
+is somehow special but still obey most of the rules defined for quantities. However, as they
+represent numbers it would be highly uncomfortable to every time type::
+
+    const auto d1 = 10q_km;
+    const auto d2 = 3q_km;
+    if(d1 / d2 > dimensionless<unitless, 2>) {
+      // ...
+    }
+
+or::
+
+    const auto fill_time_left = (box.height / box.fill_level(measured_mass) -
+                                 dimensionless<unitless, 1>) * fill_time;
+
+This is why it was decided to allow the ``dimensionless<unitless>`` quantity of any
+representation type to be implicitly constructible from this representation type.
+With that the above examples can be rewritten as follows::
+
+    const auto d1 = 10q_km;
+    const auto d2 = 3q_km;
+    if(d1 / d2 > 2) {
+      // ...
+    }
+
+and::
+
+    const auto fill_time_left = (box.height / box.fill_level(measured_mass) - 1) * fill_time;
+
+The above is true only for dimensionless quantities of `unitless` unit. If our quantity have a unit with
+ratio different than ``1`` the implicit conversion will not happen. This is to prevent cases were the code
+could be ambiguous. For example::
+
+    Dimensionless auto foo(Length auto d1, Length auto d2)
+    {
+      return d1 / d2 + 1;
+    }
+
+As long as we can reason about what such code means for ``foo(10q_km, 2q_km)`` it is not that obvious 
+at all in the case of ``foo(10q_cm, 2q_ft)``. To make such code to compile for every case we have to
+either change the type of the resulting unit to the one having ``ratio(1)`` (:term:`coherent derived unit`)::
+
+    Dimensionless auto foo(Length auto d1, Length auto d2)
+    {
+      return quantity_cast<unitless>(d1 / d2) + 1;
+    }
+
+or to explicitly state what is the unit of our dimensionless value, e.g. `unitless`, `percent`, etc::
+
+    Dimensionless auto foo(Length auto d1, Length auto d2)
+    {
+      return d1 / d2 + dimensionless<unitless>(1);
+    }
+
+There is one more important point to note here. As the the dimensionless quantity is more than just
+a number, it is never implicitly converted back to the representation type. This means that the following
+code will not compile::
+
+    auto v = std::exp(10q_m / 5q_m);
+
+To make it compile fine we have to either explicitly get the value stored in the quantity::
+
+    auto v = std::exp(quantity_cast<unitless>(10q_m / 5q_m).count());
+
+or use a mathematical wrapper function from `units` namespace::
+
+    auto v = units::exp(10q_m / 5q_m);
+
+.. important::
+
+    Always remember to explicitly cast the quantity to the destination unit with `quantity_cast` before
+    calling `quantity::count()`!

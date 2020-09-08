@@ -157,3 +157,59 @@ but often we would like to know a specific type too. We have two options here:
 
     More information on this subject can be found in :ref:`Conversions and Casting`
     chapter.
+
+
+Dimensionless Quantities
+------------------------
+
+Whenever we divide two quantities of the same dimension we end up with a
+:term:`dimensionless quantity` otherwise known as :term:`quantity of dimension one`::
+
+    static_assert(10q_km / 5q_km == 2);
+    static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, unitless, std::int64_t>>);
+
+According to the official ISO definition `dim_one` is a dimension "for which all the
+exponents of the factors corresponding to the base quantities in its quantity dimension
+are zero".
+
+.. seealso::
+
+    Reasoning for the above design is provided in
+    :ref:`Why a dimensionless quantity is not just an fundamental arithmetic type?`
+
+To simplify the usage of the dimensionless quantity a following concept and alias template
+are provided::
+
+    template<typename T>
+    concept Dimensionless = QuantityOf<T, dim_one>;
+
+    template<Unit U, Scalar Rep = double>
+    using dimensionless = quantity<dim_one, U, Rep>;
+
+There are two special units provided for usage with such a quantity:
+
+- `unitless` which is the :ref:`coherent unit` of dimensionless quantity and does not
+  provide any textual symbol (according to the ISO definition "the measurement units and
+  values of quantities of dimension one are numbers"),
+- `percent` which has the symbol ``%`` and ``ratio(1, 100)`` of the `unitless` unit.
+
+For example the following code::
+
+    std::cout << quantity_cast<percent>(50.q_m / 100.q_m) << '\n';
+
+will print ``50 %`` to the console output.
+
+Again, according to the ISO definition "such quantities convey more information than a
+number". This is exactly what we observe in the above example. The value stored inside
+the quantity, the text output, and the value returned by the `quantity::count()` member
+function is ``50`` rather than ``0.5``. It means that dimensionless quantities behave
+like all other quantities and store the value in terms of a ratio of a coherent unit.
+This allows us to not loose precision when we divide quantities of the same dimensions
+but with units having vastly different ratios, e.g.
+`Dimensionless Hubble parameter <https://en.wikipedia.org/wiki/Hubble%27s_law#Dimensionless_Hubble_parameter>`_
+is expressed as a ratio of kilometers and megaparsecs.
+
+.. seealso::
+
+    More information on dimensionless quantities can be found in
+    :ref:`Implicit conversions of dimensionless quantities`.

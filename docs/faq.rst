@@ -28,6 +28,34 @@ different dimensions (i.e. height, width, and depth) all of them will just be
 measured in meters.
 
 
+Why a dimensionless quantity is not just an fundamental arithmetic type?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the initial design of this library the resulting type of the division of
+two quantities was their common representation type::
+
+    static_assert(std::is_same_v<decltype(10q_km / 5q_km), std::int64_t>);
+
+The reasoning behind it was to not provide a false impression of a strong `quantity` type
+for something that looks and feels like a regular number. Also all of the mathematic
+and trigonometric functions were working fine out of the box with such representation
+types, so we did not have to rewrite ``sin()``, ``cos()``, ``exp()``, and others.
+
+However, the feedback we got from the production usage was that such an approach
+is really bad for generic programming. It is really hard to handle the result of
+division (or multiplication) of two quantities as it might be either a `quantity`
+or a fundamental type. If we want to raise such a result to some power we have to
+either use ``units::pow`` or ``std::pow`` depending on the resulting type. Those
+are only a few from many similar issues related to such an approach.
+
+This is why it was decided to go with the current approach.
+
+.. seealso::
+
+    More information on the current design can be found in :ref:`Dimensionless quantities`
+    chapter.
+
+
 Why do we spell ``metre`` instead of ``meter``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
