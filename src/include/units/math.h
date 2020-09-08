@@ -40,7 +40,7 @@ namespace units {
  */
 template<std::intmax_t N, Quantity Q>
   requires(N != 0)
-inline Quantity auto pow(const Q& q) noexcept
+[[nodiscard]] inline Quantity auto pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
   using dim = dimension_pow<typename Q::dimension, N>;
@@ -56,7 +56,7 @@ inline Quantity auto pow(const Q& q) noexcept
  */
 template<std::intmax_t N, Quantity Q>
   requires(N == 0)
-inline TYPENAME Q::rep pow(const Q&) noexcept
+[[nodiscard]] inline TYPENAME Q::rep pow(const Q&) noexcept
 {
   return 1;
 }
@@ -70,7 +70,7 @@ inline TYPENAME Q::rep pow(const Q&) noexcept
  * @return Quantity The result of computation 
  */
 template<Quantity Q>
-inline Quantity auto sqrt(const Q& q) noexcept
+[[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
   using dim = dimension_sqrt<typename Q::dimension>;
@@ -86,7 +86,7 @@ inline Quantity auto sqrt(const Q& q) noexcept
  * @return Quantity The value of the same quantity type
  */
 template<typename D, typename U, typename Rep>
-inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
+[[nodiscard]] inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
 {
   using coherent_unit = dimension_unit<D>;
   return quantity_cast<U>(quantity<D, coherent_unit, Rep>(std::exp(quantity_cast<coherent_unit>(q).count())));
@@ -99,7 +99,7 @@ inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
  * @return Quantity The absolute value of a provided quantity
  */
 template<Quantity Q>
-inline Quantity auto abs(const Q& q) noexcept
+[[nodiscard]] inline Quantity auto abs(const Q& q) noexcept
   requires requires { std::abs(q.count()); }
 {
   return Q(std::abs(q.count()));
@@ -115,7 +115,7 @@ inline Quantity auto abs(const Q& q) noexcept
  */
 template<Quantity Q>
   requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
-constexpr Quantity auto epsilon() noexcept
+[[nodiscard]] constexpr Quantity auto epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
 }
