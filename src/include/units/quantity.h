@@ -258,7 +258,7 @@ public:
     requires std::regular_invocable<std::divides<>, Value, Rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    Expects(q.count() != 0);
+    Expects(q.count() != zero().count());
 
     using dim = dim_invert<D>;
     using ret_unit = downcast_unit<dim, ratio(U::ratio.den, U::ratio.num, -U::ratio.exp)>;
@@ -271,7 +271,7 @@ public:
     requires std::regular_invocable<std::divides<>, Rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
-    Expects(v != Value{0});
+    Expects(v != zero().count());
 
     using common_rep = decltype(q.count() / v);
     using ret = quantity<D, U, common_rep>;
@@ -282,7 +282,7 @@ public:
     requires std::regular_invocable<std::divides<>, Rep, Rep2>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
-    Expects(rhs.count() != 0);
+    Expects(rhs.count() != zero().count());
 
     using common_rep = decltype(lhs.count() / rhs.count());
     using dim = dimension_divide<D, D2>;
