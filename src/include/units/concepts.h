@@ -28,6 +28,8 @@
 #include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
 #include <functional>
+#include <cstdint>
+#include <utility>
 
 namespace units {
 
@@ -84,14 +86,8 @@ struct scaled_unit;
 // TODO: Remove when P1985 accepted
 namespace detail {
 
-struct is_derived_from_scaled_unit_impl {
-  template<ratio R, typename U>
-  static constexpr std::true_type check_base(const scaled_unit<R, U>&);
-  static constexpr std::false_type check_base(...);
-};
-
-template<typename T>
-inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_scaled_unit_impl::check_base(std::declval<T>()))::value;
+template<ratio R, typename U>
+void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
 
 }  // namespace detail
 
@@ -101,22 +97,17 @@ inline constexpr bool is_derived_from_scaled_unit = decltype(is_derived_from_sca
  * Satisfied by all unit types derived from an specialization of :class:`scaled_unit`.
  */
 template<typename T>
-concept Unit = detail::is_derived_from_scaled_unit<T>;
+concept Unit = requires { detail::to_base_scaled_unit(std::declval<const volatile T*>()); };
 
+// BaseDimension
 template<basic_fixed_string Symbol, Unit U>
   requires U::is_named
 struct base_dimension;
 
 namespace detail {
 
-struct is_derived_from_base_dimension_impl {
-  template<basic_fixed_string Symbol, typename U>
-  static constexpr std::true_type check_base(const base_dimension<Symbol, U>&);
-  static constexpr std::false_type check_base(...);
-};
-
-template<typename T>
-inline constexpr bool is_derived_from_base_dimension = decltype(is_derived_from_base_dimension_impl::check_base(std::declval<T>()))::value;
+template<basic_fixed_string Symbol, typename U>
+void to_base_base_dimension(const volatile base_dimension<Symbol, U>*);
 
 }  // namespace detail
 
@@ -126,7 +117,7 @@ inline constexpr bool is_derived_from_base_dimension = decltype(is_derived_from_
  * Satisfied by all dimension types derived from an specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = detail::is_derived_from_base_dimension<T>;
+concept BaseDimension = requires { detail::to_base_base_dimension(std::declval<const volatile T*>()); };
 
 // Exponent
 namespace detail {

@@ -261,7 +261,7 @@ differences:
     `the project's README file <https://github.com/mpusz/units/blob/master/README.md>`_ or on
     `the project's Bintray <https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz>`_.
 
-3. Force Conan to check for updated recipes `-u` and to build outdated packages `-b outdated`:
+3. Force Conan to check for updated recipes ``-u`` and to build outdated packages ``-b outdated``:
 
   .. code-block:: shell
 
@@ -279,7 +279,7 @@ enough to handle simple dependencies and configurations. If your project setup i
 may prefer to use ``cmake`` generator. In such a case the above procedures should be updated as
 follows:
 
-1. Specify `cmake` generator in your Conan configuration file:
+1. Specify ``cmake`` generator in your Conan configuration file:
 
   .. code-block:: ini
       :caption: conanfile.txt
@@ -317,7 +317,7 @@ in **mp-units** repository, you should:
 1. Add remotes of additional Conan dependencies.
 2. Use the *CMakeLists.txt* from the top-level directory.
 3. Obtain Python dependencies.
-4. Run Conan with :envvar:`CONAN_RUN_TESTS` = ``True``.
+4. Run Conan with `CONAN_RUN_TESTS`_ = ``True``.
 
 .. code-block:: shell
 
