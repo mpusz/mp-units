@@ -43,7 +43,7 @@ constexpr ratio exp_ratio()
  * @brief Calculates the common ratio of all the references of base units in the derived dimension
  */
 template<typename... Es>
-constexpr ratio base_units_ratio(exp_list<Es...>)
+constexpr ratio base_units_ratio(exponent_list<Es...>)
 {
   return (exp_ratio<Es>() * ... * ratio(1));
 }

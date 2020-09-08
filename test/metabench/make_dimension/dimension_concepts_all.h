@@ -84,21 +84,21 @@ namespace units {
   // exp_dim_id_less
 
   template<Exponent E1, Exponent E2>
-  struct exp_less : base_dimension_less<E1::dimension, E2::dimension> {
+  struct exponent_less : base_dimension_less<E1::dimension, E2::dimension> {
   };
 
-  // exp_invert
+  // exponent_invert
 
   template<Exponent E>
-  struct exp_invert;
+  struct exponent_invert;
 
   template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den>
-  struct exp_invert<exponent<BaseDimension, Num, Den>> {
+  struct exponent_invert<exponent<BaseDimension, Num, Den>> {
     using type = exponent<BaseDimension, -Num, Den>;
   };
 
   template<Exponent E>
-  using exp_invert_t = exp_invert<E>::type;
+  using exponent_invert_t = exponent_invert<E>::type;
 
   // dimension
 
@@ -128,7 +128,7 @@ namespace units {
   struct dim_invert;
 
   template<Exponent... Es>
-  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exp_invert_t<Es>...>>> {};
+  struct dim_invert<dimension<Es...>> : std::type_identity<downcast_traits_t<dimension<exponent_invert_t<Es>...>>> {};
 
   template<Dimension D>
   using dim_invert_t = dim_invert<typename D::downcast_base_type>::type;
@@ -173,7 +173,7 @@ namespace units {
 
   template<Exponent... Es>
   struct make_dimension {
-    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exp_less>>;
+    using type = detail::dim_consolidate_t<type_list_sort<dimension<Es...>, exponent_less>>;
   };
 
   template<Exponent... Es>
@@ -181,7 +181,7 @@ namespace units {
 
   template<Dimension D1, Dimension D2>
   struct merge_dimension {
-    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exp_less>>;
+    using type = detail::dim_consolidate_t<type_list_merge_sorted<D1, D2, exponent_less>>;
   };
 
   template<Dimension D1, Dimension D2>
@@ -205,7 +205,7 @@ namespace units {
 
   template<Exponent... E1, Exponent... E2>
   struct dimension_divide<dimension<E1...>, dimension<E2...>>
-      : dimension_multiply<dimension<E1...>, dimension<exp_invert_t<E2>...>> {
+      : dimension_multiply<dimension<E1...>, dimension<exponent_invert_t<E2>...>> {
   };
 
   template<Dimension D1, Dimension D2>

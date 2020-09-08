@@ -31,7 +31,7 @@ template<typename ExpList, Unit... Us>
 inline constexpr bool same_scaled_units = false;
 
 template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<exp_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // deduced_unit
 
@@ -45,7 +45,7 @@ constexpr ratio inverse_if_negative(const ratio& r)
 }
 
 template<Unit... Us, typename... Es>
-constexpr ratio derived_ratio(exp_list<Es...>)
+constexpr ratio derived_ratio(exponent_list<Es...>)
 {
   return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio) / dimension_unit<typename Es::dimension>::ratio));
 }

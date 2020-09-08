@@ -46,14 +46,14 @@ namespace units::detail {
 template<Exponent... Es>
   requires (BaseDimension<typename Es::dimension> && ...)
 struct derived_dimension_base : downcast_base<derived_dimension_base<Es...>> {
-  using exponents = exp_list<Es...>;
+  using exponents = exponent_list<Es...>;
 };
 
 template<typename T>
 struct to_derived_dimension_base;
 
 template<Exponent... Es>
-struct to_derived_dimension_base<exp_list<Es...>> {
+struct to_derived_dimension_base<exponent_list<Es...>> {
   using type = derived_dimension_base<Es...>;
 };
 

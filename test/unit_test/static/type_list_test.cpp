@@ -98,20 +98,20 @@ struct d0 : base_dimension<"d0", u0> {};
 struct u1 : named_unit<u1, "u1", no_prefix> {};
 struct d1 : base_dimension<"d1", u1> {};
 
-static_assert(is_same_v<type_list_merge_sorted<type_list<units::exponent<d0, 1>>, type_list<units::exponent<d1, 1>>, exp_less>,
+static_assert(is_same_v<type_list_merge_sorted<type_list<units::exponent<d0, 1>>, type_list<units::exponent<d1, 1>>, exponent_less>,
                              type_list<units::exponent<d0, 1>, units::exponent<d1, 1>>>);
-static_assert(is_same_v<type_list_merge_sorted<type_list<units::exponent<d1, 1>>, type_list<units::exponent<d0, 1>>, exp_less>,
+static_assert(is_same_v<type_list_merge_sorted<type_list<units::exponent<d1, 1>>, type_list<units::exponent<d0, 1>>, exponent_less>,
                              type_list<units::exponent<d0, 1>, units::exponent<d1, 1>>>);
 
 // type_list_sort
 
 template<TypeList List>
-using exp_sort = type_list_sort<List, exp_less>;
+using exp_sort = type_list_sort<List, exponent_less>;
 
-static_assert(is_same_v<exp_sort<exp_list<units::exponent<d0, 1>>>, exp_list<units::exponent<d0, 1>>>);
+static_assert(is_same_v<exp_sort<exponent_list<units::exponent<d0, 1>>>, exponent_list<units::exponent<d0, 1>>>);
 static_assert(
-    is_same_v<exp_sort<exp_list<units::exponent<d0, 1>, units::exponent<d1, -1>>>, exp_list<units::exponent<d0, 1>, units::exponent<d1, -1>>>);
+    is_same_v<exp_sort<exponent_list<units::exponent<d0, 1>, units::exponent<d1, -1>>>, exponent_list<units::exponent<d0, 1>, units::exponent<d1, -1>>>);
 static_assert(
-    is_same_v<exp_sort<exp_list<units::exponent<d1, 1>, units::exponent<d0, -1>>>, exp_list<units::exponent<d0, -1>, units::exponent<d1, 1>>>);
+    is_same_v<exp_sort<exponent_list<units::exponent<d1, 1>, units::exponent<d0, -1>>>, exponent_list<units::exponent<d0, -1>, units::exponent<d1, 1>>>);
 
 }  // namespace

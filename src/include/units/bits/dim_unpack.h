@@ -38,7 +38,7 @@ struct dim_unpack;
 
 template<>
 struct dim_unpack<> {
-  using type = exp_list<>;
+  using type = exponent_list<>;
 };
 
 template<BaseDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
@@ -53,7 +53,7 @@ struct dim_unpack<exponent<Dim, Num, Den>, ERest...> {
 
 template<Exponent... Es, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
 struct dim_unpack<exponent<derived_dimension_base<Es...>, Num, Den>, ERest...> {
-  using type = type_list_push_front<typename dim_unpack<ERest...>::type, exp_multiply<Es, Num, Den>...>;
+  using type = type_list_push_front<typename dim_unpack<ERest...>::type, exponent_multiply<Es, Num, Den>...>;
 };
 
 }  // namespace units::detail

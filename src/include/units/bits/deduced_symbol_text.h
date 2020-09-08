@@ -80,7 +80,7 @@ template<typename... Es>
 inline constexpr int negative_exp_count = ((Es::num < 0 ? 1 : 0) + ... + 0);
 
 template<typename... Us, typename... Es, std::size_t... Idxs>
-constexpr auto deduced_symbol_text(exp_list<Es...>, std::index_sequence<Idxs...>)
+constexpr auto deduced_symbol_text(exponent_list<Es...>, std::index_sequence<Idxs...>)
 {
   constexpr auto neg_exp = negative_exp_count<Es...>;
   return (exp_text<Es, Us::symbol, neg_exp, Idxs>() + ...);

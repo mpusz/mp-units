@@ -103,40 +103,40 @@ constexpr auto prefix_or_ratio_text()
 }
 
 template<typename... Es, std::size_t... Idxs>
-constexpr auto derived_dimension_unit_text(exp_list<Es...>, std::index_sequence<Idxs...>)
+constexpr auto derived_dimension_unit_text(exponent_list<Es...>, std::index_sequence<Idxs...>)
 {
   return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, negative_exp_count<Es...>, Idxs>() + ... + basic_symbol_text(basic_fixed_string("")));
 }
 
 template<typename... Es>
-constexpr auto derived_dimension_unit_text(exp_list<Es...> list)
+constexpr auto derived_dimension_unit_text(exponent_list<Es...> list)
 {
   return derived_dimension_unit_text(list, std::index_sequence_for<Es...>());
 }
 
 template<Exponent... Es>
-constexpr auto exp_list_with_named_units(exp_list<Es...>);
+constexpr auto exponent_list_with_named_units(exponent_list<Es...>);
 
 template<Exponent Exp>
-constexpr auto exp_list_with_named_units(Exp)
+constexpr auto exponent_list_with_named_units(Exp)
 {
   using dim = TYPENAME Exp::dimension;
   if constexpr(dimension_unit<dim>::is_named) {
-    return exp_list<Exp>();
+    return exponent_list<Exp>();
   }
   else {
     using recipe = TYPENAME dim::recipe;
-    return exp_list_with_named_units(recipe());
+    return exponent_list_with_named_units(recipe());
   }
 }
 
 template<Exponent... Es>
-constexpr auto exp_list_with_named_units(exp_list<Es...>)
+constexpr auto exponent_list_with_named_units(exponent_list<Es...>)
 {
-  return type_list_join<decltype(exp_list_with_named_units(Es()))...>();
+  return type_list_join<decltype(exponent_list_with_named_units(Es()))...>();
 }
 
-constexpr auto exp_list_with_named_units(exp_list<> empty)
+constexpr auto exponent_list_with_named_units(exponent_list<> empty)
 {
   return empty;
 }
@@ -145,7 +145,7 @@ template<Dimension Dim>
 constexpr auto derived_dimension_unit_text()
 {
   using recipe = TYPENAME Dim::recipe;
-  return derived_dimension_unit_text(exp_list_with_named_units(recipe()));
+  return derived_dimension_unit_text(exponent_list_with_named_units(recipe()));
 }
 
 // TODO Inline below concept when switched to gcc-10

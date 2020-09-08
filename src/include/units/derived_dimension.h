@@ -46,7 +46,7 @@ namespace detail {
  *    this base dimension.
  */
 template<Exponent... Es>
-using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exp_less>>::type>::type;
+using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exponent_less>>::type>::type;
 
 }  // namespace detail
 
@@ -79,7 +79,7 @@ using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolida
  */
 template<typename Child, Unit U, Exponent... Es>
 struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {
-  using recipe = exp_list<Es...>;
+  using recipe = exponent_list<Es...>;
   using coherent_unit = U;
   static constexpr ratio base_units_ratio = detail::base_units_ratio(typename derived_dimension::exponents());
 };

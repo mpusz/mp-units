@@ -40,28 +40,28 @@ template<typename ExpList>
 struct dim_consolidate;
 
 template<>
-struct dim_consolidate<exp_list<>> {
-  using type = exp_list<>;
+struct dim_consolidate<exponent_list<>> {
+  using type = exponent_list<>;
 };
 
 template<typename E>
-struct dim_consolidate<exp_list<E>> {
-  using type = exp_list<E>;
+struct dim_consolidate<exponent_list<E>> {
+  using type = exponent_list<E>;
 };
 
 template<typename E1, typename... ERest>
-struct dim_consolidate<exp_list<E1, ERest...>> {
-  using type = type_list_push_front<typename dim_consolidate<exp_list<ERest...>>::type, E1>;
+struct dim_consolidate<exponent_list<E1, ERest...>> {
+  using type = type_list_push_front<typename dim_consolidate<exponent_list<ERest...>>::type, E1>;
 };
 
 template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
-struct dim_consolidate<exp_list<exponent<Dim, Num1, Den1>, exponent<Dim, Num2, Den2>, ERest...>> {
+struct dim_consolidate<exponent_list<exponent<Dim, Num1, Den1>, exponent<Dim, Num2, Den2>, ERest...>> {
   // TODO: we have ration_add now, but dim_consolidate etc, now need to cope with our new ratio
   using r1 = std::ratio<Num1, Den1>;
   using r2 = std::ratio<Num2, Den2>;
   using r = std::ratio_add<r1, r2>;
-  using type = conditional<r::num == 0, typename dim_consolidate<exp_list<ERest...>>::type,
-                           typename dim_consolidate<exp_list<exponent<Dim, r::num, r::den>, ERest...>>::type>;
+  using type = conditional<r::num == 0, typename dim_consolidate<exponent_list<ERest...>>::type,
+                           typename dim_consolidate<exponent_list<exponent<Dim, r::num, r::den>, ERest...>>::type>;
 };
 
 }  // namespace units::detail

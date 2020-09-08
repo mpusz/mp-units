@@ -49,27 +49,27 @@ inline constexpr bool is_exponent<exponent<Dim, Num, Den>> = true;
 
 }  // namespace detail
 
-// exp_less
+// exponent_less
 template<Exponent E1, Exponent E2>
   requires BaseDimension<typename E1::dimension> && BaseDimension<typename E2::dimension>
-struct exp_less : base_dimension_less<typename E1::dimension, typename E2::dimension> {};
+struct exponent_less : base_dimension_less<typename E1::dimension, typename E2::dimension> {};
 
-// exp_invert
+// exponent_invert
 namespace detail {
 
 template<typename Dim, std::intmax_t Num, std::intmax_t Den>
-constexpr exponent<Dim, -Num, Den> exp_invert_impl(exponent<Dim, Num, Den>);
+constexpr exponent<Dim, -Num, Den> exponent_invert_impl(exponent<Dim, Num, Den>);
 
 }  // namespace detail
 
 template<Exponent E>
-using exp_invert = decltype(detail::exp_invert_impl(E()));
+using exponent_invert = decltype(detail::exponent_invert_impl(E()));
 
-// exp_multiply
+// exponent_multiply
 namespace detail {
 
 template<Exponent E, std::intmax_t Num, std::intmax_t Den>
-struct exp_multiply_impl {
+struct exponent_multiply_impl {
   static constexpr ratio r = ratio(E::num, E::den) * ratio(Num, Den);
   using type = exponent<typename E::dimension, r.num, r.den>;
 };
@@ -77,9 +77,9 @@ struct exp_multiply_impl {
 }  // namespace detail
 
 template<Exponent E, std::intmax_t Num, std::intmax_t Den>
-using exp_multiply = TYPENAME detail::exp_multiply_impl<E, Num, Den>::type;
+using exponent_multiply = TYPENAME detail::exponent_multiply_impl<E, Num, Den>::type;
 
 template<Exponent... Es>
-struct exp_list {};
+struct exponent_list {};
 
 }  // namespace units

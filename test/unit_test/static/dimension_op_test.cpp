@@ -37,10 +37,10 @@ struct d2 : base_dimension<"d2", u2> {};
 struct u3 : named_unit<u3, "u3", no_prefix> {};
 struct d3 : base_dimension<"d3", u3> {};
 
-// exp_invert
+// exponent_invert
 
-static_assert(is_same_v<exp_invert<units::exponent<d0, 2>>, units::exponent<d0, -2>>);
-static_assert(is_same_v<exp_invert<units::exponent<d1, -2>>, units::exponent<d1, 2>>);
+static_assert(is_same_v<exponent_invert<units::exponent<d0, 2>>, units::exponent<d0, -2>>);
+static_assert(is_same_v<exponent_invert<units::exponent<d1, -2>>, units::exponent<d1, 2>>);
 
 // dim_unpack
 
@@ -53,14 +53,14 @@ using dim_unpack = TYPENAME detail::dim_unpack<Ts...>::type;
 template<Exponent... Es>
 using derived_dim = detail::derived_dimension_base<Es...>;
 
-static_assert(is_same_v<dim_unpack<>, exp_list<>>);
-static_assert(is_same_v<dim_unpack<units::exponent<d0, 1>>, exp_list<units::exponent<d0, 1>>>);
-static_assert(is_same_v<dim_unpack<units::exponent<d0, 1>, units::exponent<d1, 2>>, exp_list<units::exponent<d0, 1>, units::exponent<d1, 2>>>);
+static_assert(is_same_v<dim_unpack<>, exponent_list<>>);
+static_assert(is_same_v<dim_unpack<units::exponent<d0, 1>>, exponent_list<units::exponent<d0, 1>>>);
+static_assert(is_same_v<dim_unpack<units::exponent<d0, 1>, units::exponent<d1, 2>>, exponent_list<units::exponent<d0, 1>, units::exponent<d1, 2>>>);
 using dim1 = derived_dim<units::exponent<d0, 1>>;
 using dim2 = derived_dim<units::exponent<d0, 1>, units::exponent<d1, 2>>;
-static_assert(is_same_v<dim_unpack<units::exponent<dim1, 2>, units::exponent<d0, 1>>, exp_list<units::exponent<d0, 2>, units::exponent<d0, 1>>>);
+static_assert(is_same_v<dim_unpack<units::exponent<dim1, 2>, units::exponent<d0, 1>>, exponent_list<units::exponent<d0, 2>, units::exponent<d0, 1>>>);
 static_assert(is_same_v<dim_unpack<units::exponent<dim2, -2>, units::exponent<d0, 1>, units::exponent<d1, 2>>,
-                             exp_list<units::exponent<d0, -2>, units::exponent<d1, -4>, units::exponent<d0, 1>, units::exponent<d1, 2>>>);
+                             exponent_list<units::exponent<d0, -2>, units::exponent<d1, -4>, units::exponent<d0, 1>, units::exponent<d1, 2>>>);
 
 // dim_invert
 static_assert(is_same_v<dim_invert<derived_dim<units::exponent<d0, -1>>>, d0>);
