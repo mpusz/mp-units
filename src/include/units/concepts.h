@@ -85,10 +85,6 @@ namespace detail {
 template<ratio R, typename U>
 void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
 
-template<typename T>
-// inline constexpr bool // TODO: Replace with concept when it works with MSVC
-concept is_derived_from_scaled_unit = requires { to_base_scaled_unit(std::declval<const volatile T*>()); };
-
 }  // namespace detail
 
 /**
@@ -97,7 +93,7 @@ concept is_derived_from_scaled_unit = requires { to_base_scaled_unit(std::declva
  * Satisfied by all unit types derived from an specialization of :class:`scaled_unit`.
  */
 template<typename T>
-concept Unit = detail::is_derived_from_scaled_unit<T>;
+concept Unit = requires { detail::to_base_scaled_unit(std::declval<const volatile T*>()); };
 
 // BaseDimension
 template<basic_fixed_string Symbol, Unit U>
@@ -109,10 +105,6 @@ namespace detail {
 template<basic_fixed_string Symbol, typename U>
 void to_base_base_dimension(const volatile base_dimension<Symbol, U>*);
 
-template<typename T>
-// inline constexpr bool // TODO: Replace with concept when it works with MSVC
-concept is_derived_from_base_dimension = requires { to_base_base_dimension(std::declval<const volatile T*>()); };
-
 }  // namespace detail
 
 /**
@@ -121,7 +113,7 @@ concept is_derived_from_base_dimension = requires { to_base_base_dimension(std::
  * Satisfied by all dimension types derived from an specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = detail::is_derived_from_base_dimension<T>;
+concept BaseDimension = requires { detail::to_base_base_dimension(std::declval<const volatile T*>()); };
 
 // Exponent
 namespace detail {
