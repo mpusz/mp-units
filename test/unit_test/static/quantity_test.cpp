@@ -161,21 +161,21 @@ static_assert(
 static_assert(
     is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio(36, 1, 2), metre>, int>>);
 static_assert(is_same_v<decltype(length<metre>() * physical::si::time<minute>()),
-              quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, 1>>, scaled_unit<ratio(6, 1, 1), unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6, 1, 1), unknown_coherent_unit>>>);
 static_assert(is_same_v<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
 static_assert(is_same_v<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio(1, 6, -1), hertz>, int>>);
 static_assert(is_same_v<decltype(1 / frequency<hertz, int>()), physical::si::time<second, int>>);
 static_assert(is_same_v<decltype(1 / length<kilometre>()),
-              quantity<unknown_dimension<units::exp<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exponent<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>>>);
 static_assert(is_same_v<decltype(length<metre, int>() / 1.0), length<metre, double>>);
-static_assert(is_same_v<decltype(length<metre, int>() / length<metre, double>()), double>);
-static_assert(is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), double>);
+static_assert(is_same_v<decltype(length<metre, int>() / length<metre, double>()), dimensionless<unitless, double>>);
+static_assert(is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), dimensionless<scaled_unit<ratio(1, 1, 3), unitless>, double>>);
 static_assert(
     is_same_v<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
 static_assert(
     is_same_v<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio(1, 6, -1), metre_per_second>>>);
 static_assert(is_same_v<decltype(physical::si::time<minute>() / length<metre>()),
-              quantity<unknown_dimension<units::exp<dim_length, -1>, units::exp<dim_time, 1>>, scaled_unit<ratio(6 ,1 , 1), unknown_coherent_unit>>>);
+              quantity<unknown_dimension<units::exponent<dim_length, -1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6 ,1 , 1), unknown_coherent_unit>>>);
 static_assert(is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
 static_assert(is_same_v<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
 
@@ -186,13 +186,26 @@ static_assert((1q_km - 1q_m).count() == 999);
 static_assert((2q_m * 2).count() == 4);
 static_assert((3 * 3q_m).count() == 9);
 static_assert((4q_m / 2).count() == 2);
-static_assert(4q_m / 2q_m == 2);
-static_assert(4q_km / 2000q_m == 2);
+static_assert((4q_km / 2q_m).count() == 2);
+static_assert((4000q_m / 2q_m).count() == 2000);
 static_assert((7q_m % 2).count() == 1);
 static_assert((7q_m % 2q_m).count() == 1);
 static_assert((7q_km % 2000q_m).count() == 1000);
 
 static_assert((10q_km2 * 10q_km2) / 50q_km2 == 2q_km2);
+
+constexpr auto q1 = 10q_km / 5q_m;
+static_assert(std::is_same_v<decltype(q1), const dimensionless<scaled_unit<ratio(1, 1, 3), unitless>, std::int64_t>>);
+static_assert(q1.count() == 2);
+
+constexpr dimensionless<unitless> q2 = q1;
+static_assert(q2.count() == 2000);
+
+static_assert(quantity_cast<unitless>(q1).count() == 2000);
+
+constexpr auto q3 = 10q_s * 2q_kHz;
+static_assert(std::is_same_v<decltype(q3), const dimensionless<scaled_unit<ratio(1, 1, 3), unitless>, std::int64_t>>);
+static_assert(q3.count() == 20);
 
 // comparators
 
@@ -263,6 +276,37 @@ static_assert(quantity_cast<length<metre, int>>(1.23q_m).count() == 1);
 static_assert(quantity_cast<metre>(2q_km).count() == 2000);
 static_assert(quantity_cast<kilometre>(2000q_m).count() == 2);
 static_assert(quantity_cast<int>(1.23q_m).count() == 1);
+
+// dimensionless
+
+static_assert(std::is_convertible_v<double, dimensionless<unitless>>);
+static_assert(std::is_convertible_v<float, dimensionless<unitless>>);
+static_assert(!std::is_convertible_v<double, dimensionless<unitless, int>>);
+static_assert(std::is_convertible_v<int, dimensionless<unitless>>);
+
+static_assert(!std::is_convertible_v<double, dimensionless<scaled_unit<ratio(1, 1, 1), unitless>>>);
+static_assert(std::is_constructible_v<dimensionless<scaled_unit<ratio(1, 1, 1), unitless>>, double>);
+
+static_assert(dimensionless<unitless>(1.23) + dimensionless<unitless>(1.23) == dimensionless<unitless>(2.46));
+static_assert(dimensionless<unitless>(1.23) + dimensionless<unitless>(1.23) == 2.46);
+static_assert(dimensionless<unitless>(1.23) + 1.23 == 2.46);
+static_assert(1.23 + dimensionless<unitless>(1.23) == 2.46);
+static_assert(dimensionless<unitless>(1) + 1 == 2);
+static_assert(dimensionless<unitless, int>(1) + 1 == 2);
+
+template<typename Rep>
+concept invalid_dimensionless_operation = requires()
+{
+    !requires(dimensionless<unitless, Rep> d) { d + 1.23; };
+    !requires(dimensionless<unitless, Rep> d) { 1.23 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Rep> d) { 1 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Rep> d) { d + 1; };
+};
+static_assert(invalid_dimensionless_operation<int>);
+
+static_assert(quantity_cast<percent>(50.q_m / 100.q_m).count() == 50);
+static_assert(50.q_m / 100.q_m == dimensionless<percent>(50));
+
 
 // time
 

@@ -27,8 +27,6 @@
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/pow.h>
-#include <units/quantity.h>
-#include <units/quantity_point.h>
 #include <cassert>
 
 #ifdef _MSC_VER
@@ -37,6 +35,12 @@
 #endif //_MSC_VER
 
 namespace units {
+
+template<Dimension D, UnitOf<D> U, Scalar Rep>
+class quantity;
+
+template<Dimension D, UnitOf<D> U, Scalar Rep>
+class quantity_point;
 
 namespace detail {
 
@@ -284,8 +288,8 @@ struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
 template<typename Q1, typename Q2>
 constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 {
-  using FromU = Q1::unit;
-  using ToU = Q2::unit;
+  using FromU = TYPENAME Q1::unit;
+  using ToU = TYPENAME Q2::unit;
   if constexpr(same_unit_reference<FromU, ToU>::value) {
     return FromU::ratio / ToU::ratio;
   }

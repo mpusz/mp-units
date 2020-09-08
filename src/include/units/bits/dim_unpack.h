@@ -24,7 +24,7 @@
 
 #include <units/bits/derived_dimension_base.h>
 #include <units/bits/external/type_list.h>
-#include <units/exp.h>
+#include <units/exponent.h>
 
 namespace units::detail {
 
@@ -42,17 +42,17 @@ struct dim_unpack<> {
 };
 
 template<BaseDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
-struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
-  using type = type_list_push_front<typename dim_unpack<ERest...>::type, exp<Dim, Num, Den>>;
+struct dim_unpack<exponent<Dim, Num, Den>, ERest...> {
+  using type = type_list_push_front<typename dim_unpack<ERest...>::type, exponent<Dim, Num, Den>>;
 };
 
 template<DerivedDimension Dim, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
-struct dim_unpack<exp<Dim, Num, Den>, ERest...> {
-  using type = TYPENAME dim_unpack<exp<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
+struct dim_unpack<exponent<Dim, Num, Den>, ERest...> {
+  using type = TYPENAME dim_unpack<exponent<downcast_base_t<Dim>, Num, Den>, ERest...>::type;
 };
 
 template<Exponent... Es, std::intmax_t Num, std::intmax_t Den, Exponent... ERest>
-struct dim_unpack<exp<derived_dimension_base<Es...>, Num, Den>, ERest...> {
+struct dim_unpack<exponent<derived_dimension_base<Es...>, Num, Den>, ERest...> {
   using type = type_list_push_front<typename dim_unpack<ERest...>::type, exp_multiply<Es, Num, Den>...>;
 };
 

@@ -80,13 +80,26 @@ inline Quantity AUTO sqrt(const Q& q) noexcept
 }
 
 /**
+ * @brief Computes Euler's raised to the given power
+ * 
+ * @param q Quantity being the base of the operation
+ * @return Quantity The value of the same quantity type
+ */
+template<typename D, typename U, typename Rep>
+inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
+{
+  using coherent_unit = dimension_unit<D>;
+  return quantity_cast<U>(quantity<D, coherent_unit, Rep>(std::exp(quantity_cast<coherent_unit>(q).count())));
+}
+
+/**
  * @brief Computes the absolute value of a quantity
  * 
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
 template<Quantity Q>
-constexpr Quantity AUTO abs(const Q& q) noexcept
+inline Quantity AUTO abs(const Q& q) noexcept
   requires requires { std::abs(q.count()); }
 {
   return Q(std::abs(q.count()));

@@ -8,7 +8,7 @@ struct test<%= k %> {
 
 #if defined(METABENCH)
   using dim = units::make_dimension_t<<%=
-      xs = ((1)..(n)).map { |j| "units::exp<dim#{j}, 1>" }
+      xs = ((1)..(n)).map { |j| "units::exponent<dim#{j}, 1>" }
       rng = Random.new(k)
       xs.shuffle(random: rng).join(', ')
   %>>;

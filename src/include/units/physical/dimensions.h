@@ -65,126 +65,126 @@ struct dim_angle : base_dimension<"A", U> {};
 
 
 template<typename Child, Unit U, DimensionOf<dim_angle> A, DimensionOf<dim_time> T>
-struct dim_angular_velocity : derived_dimension<Child, U, exp<A, 1>, exp<T, -1>> {};
+struct dim_angular_velocity : derived_dimension<Child, U, exponent<A, 1>, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_time> T>
-struct dim_frequency : derived_dimension<Child, U, exp<T, -1>> {};
+struct dim_frequency : derived_dimension<Child, U, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L>
-struct dim_area : derived_dimension<Child, U, exp<L, 2>> {};
+struct dim_area : derived_dimension<Child, U, exponent<L, 2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L>
-struct dim_volume : derived_dimension<Child, U, exp<L, 3>> {};
+struct dim_volume : derived_dimension<Child, U, exponent<L, 3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
-struct dim_speed : derived_dimension<Child, U, exp<L, 1>, exp<T, -1>> {};
+struct dim_speed : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
-struct dim_acceleration : derived_dimension<Child, U, exp<L, 1>, exp<T, -2>> {};
+struct dim_acceleration : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_acceleration> A>
-struct dim_force : derived_dimension<Child, U, exp<M, 1>, exp<A, 1>> {};
+struct dim_force : derived_dimension<Child, U, exponent<M, 1>, exponent<A, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_speed> V>
-struct dim_momentum : derived_dimension<Child, U, exp<M, 1>, exp<V, 1>> {};
+struct dim_momentum : derived_dimension<Child, U, exponent<M, 1>, exponent<V, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
-struct dim_energy : derived_dimension<Child, U, exp<F, 1>, exp<L, 1>> {};
+struct dim_energy : derived_dimension<Child, U, exponent<F, 1>, exponent<L, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_angle> A>
-struct dim_torque : derived_dimension<Child, U, exp<E, 1>, exp<A, 1>> {};
+struct dim_torque : derived_dimension<Child, U, exponent<E, 1>, exponent<A, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_length> L>
-struct dim_density : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
+struct dim_density : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_time> T>
-struct dim_power : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
+struct dim_power : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_electric_current> C>
-struct dim_voltage : derived_dimension<Child, U, exp<P, 1>, exp<C, -1>> {};
+struct dim_voltage : derived_dimension<Child, U, exponent<P, 1>, exponent<C, -1>> {};
 
 template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_electric_current> C>
-struct dim_resistance : derived_dimension<Child,U, exp<V, 1>, exp<C, -1>> {};
+struct dim_resistance : derived_dimension<Child,U, exponent<V, 1>, exponent<C, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_electric_current> C>
-struct dim_electric_charge : derived_dimension<Child, U, exp<T, 1>, exp<C, 1>> {};
+struct dim_electric_charge : derived_dimension<Child, U, exponent<T, 1>, exponent<C, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> C, DimensionOf<dim_voltage> V>
-struct dim_capacitance : derived_dimension<Child, U, exp<C, 1>, exp<V, -1>> {};
+struct dim_capacitance : derived_dimension<Child, U, exponent<C, 1>, exponent<V, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
-struct dim_surface_tension : derived_dimension<Child, U, exp<F, 1>, exp<L, -1>> {};
+struct dim_surface_tension : derived_dimension<Child, U, exponent<F, 1>, exponent<L, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_area> A>
-struct dim_pressure : derived_dimension<Child, U, exp<F, 1>, exp<A, -1>> {};
+struct dim_pressure : derived_dimension<Child, U, exponent<F, 1>, exponent<A, -1>> {};
 
 template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_time> T, DimensionOf<dim_length> L>
-struct dim_magnetic_induction : derived_dimension<Child, U, exp<V, 1>, exp<T, 1>, exp<L, -2>> {};
+struct dim_magnetic_induction : derived_dimension<Child, U, exponent<V, 1>, exponent<T, 1>, exponent<L, -2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_magnetic_induction> B, DimensionOf<dim_area> A>
-struct dim_magnetic_flux : derived_dimension<Child, U, exp<B, 1>, exp<A, 1>> {};
+struct dim_magnetic_flux : derived_dimension<Child, U, exponent<B, 1>, exponent<A, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_magnetic_flux> F, DimensionOf<dim_electric_current> I>
-struct dim_inductance : derived_dimension<Child, U, exp<F, 1>, exp<I, -1>> {};
+struct dim_inductance : derived_dimension<Child, U, exponent<F, 1>, exponent<I, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_resistance> R>
-struct dim_conductance : derived_dimension<Child, U, exp<R, -1>> {};
+struct dim_conductance : derived_dimension<Child, U, exponent<R, -1>> {};
 
 // TODO Add when downcasting issue is solved
 // template<typename Child, Unit U, DimensionOf<dim_time> T>
-// struct dim_radioactivity : derived_dimension<Child, U, exp<T, -1>> {};
+// struct dim_radioactivity : derived_dimension<Child, U, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_substance> M>
-struct dim_catalytic_activity : derived_dimension<Child, U, exp<T, -1>, exp<M, 1>> {};
+struct dim_catalytic_activity : derived_dimension<Child, U, exponent<T, -1>, exponent<M, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_mass> M>
-struct dim_absorbed_dose : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
+struct dim_absorbed_dose : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_length> L>
-struct dim_current_density : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
+struct dim_current_density : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_substance> M, DimensionOf<dim_length> L>
-struct dim_concentration : derived_dimension<Child, U, exp<M, 1>, exp<L, -3>> {};
+struct dim_concentration : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_luminous_intensity> I, DimensionOf<dim_length> L>
-struct dim_luminance : derived_dimension<Child, U, exp<I, 1>, exp<L, -2>> {};
+struct dim_luminance : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_pressure> P, DimensionOf<dim_time> T>
-struct dim_dynamic_viscosity : derived_dimension<Child, U, exp<P, 1>, exp<T, 1>> {};
+struct dim_dynamic_viscosity : derived_dimension<Child, U, exponent<P, 1>, exponent<T, 1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_thermodynamic_temperature> T>
-struct dim_heat_capacity : derived_dimension<Child, U, exp<E, 1>, exp<T, -1>> {};
+struct dim_heat_capacity : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_mass> M>
-struct dim_specific_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -1>> {};
+struct dim_specific_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_substance> M>
-struct dim_molar_heat_capacity : derived_dimension<Child, U, exp<C, 1>, exp<M, -1>> {};
+struct dim_molar_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_length> L, DimensionOf<dim_thermodynamic_temperature> T>
-struct dim_thermal_conductivity : derived_dimension<Child, U, exp<P, 1>, exp<L, -1>, exp<T, -1>> {};
+struct dim_thermal_conductivity : derived_dimension<Child, U, exponent<P, 1>, exponent<L, -1>, exponent<T, -1>> {};
 
 // TODO Add when downcasting issue is solved
 // template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_length> L>
-// struct dim_energy_density : derived_dimension<Child, U, exp<E, 1>, exp<L, -3>> {};
+// struct dim_energy_density : derived_dimension<Child, U, exponent<E, 1>, exponent<L, -3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_length> L>
-struct dim_electric_field_strength : derived_dimension<Child, U, exp<V, 1>, exp<L, -1>> {};
+struct dim_electric_field_strength : derived_dimension<Child, U, exponent<V, 1>, exponent<L, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
-struct dim_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -3>> {};
+struct dim_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -3>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
-struct dim_surface_charge_density : derived_dimension<Child, U, exp<Q, 1>, exp<L, -2>> {};
+struct dim_surface_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -2>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_capacitance> C, DimensionOf<dim_length> L>
-struct dim_permittivity : derived_dimension<Child, U, exp<C, 1>, exp<L, -1>> {};
+struct dim_permittivity : derived_dimension<Child, U, exponent<C, 1>, exponent<L, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_inductance> H, DimensionOf<dim_length> L>
-struct dim_permeability : derived_dimension<Child, U, exp<H, 1>, exp<L, -1>> {};
+struct dim_permeability : derived_dimension<Child, U, exponent<H, 1>, exponent<L, -1>> {};
 
 template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_substance> M>
-struct dim_molar_energy : derived_dimension<Child, U, exp<E, 1>, exp<M, -1>> {};
+struct dim_molar_energy : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
 
 template<typename T>
 concept Length = QuantityOf<T, dim_length>;

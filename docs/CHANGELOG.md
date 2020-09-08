@@ -15,6 +15,8 @@
   - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - `ratio` changed to the NTTP kind
+  - `exp` and `Exp` renamed to `exponent` and `Exponent`
+  - Added support for `exp()` mathematical support
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library

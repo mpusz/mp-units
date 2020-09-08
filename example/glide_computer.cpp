@@ -46,6 +46,7 @@ template<typename Q, direction D>
   requires Quantity<Q> || QuantityPoint<Q>
 class vector {
 public:
+  using value_type = Q;
   using magnitude_type = Q;
   static constexpr direction dir = D;
 
@@ -72,6 +73,43 @@ public:
   {
     magnitude_ -= v.magnitude();
     return *this;
+  }
+
+  template<typename Q2>
+  [[nodiscard]] friend constexpr auto operator+(const vector& lhs, const vector<Q2, D>& rhs)
+    requires requires { lhs.magnitude() + rhs.magnitude(); }
+  {
+    using ret_type = decltype(lhs.magnitude() + rhs.magnitude());
+    return vector<ret_type, D>(lhs.magnitude() + rhs.magnitude());
+  }
+
+  template<typename Q2>
+  [[nodiscard]] friend constexpr auto operator-(const vector& lhs, const vector<Q2, D>& rhs)
+    requires requires { lhs.magnitude() - rhs.magnitude(); }
+  {
+    using ret_type = decltype(lhs.magnitude() - rhs.magnitude());
+    return vector<ret_type, D>(lhs.magnitude() - rhs.magnitude());
+  }
+
+  template<typename V>
+  [[nodiscard]] friend constexpr auto operator*(const vector& lhs, const V& value)
+    requires (Scalar<V> || Dimensionless<V>) && requires { lhs.magnitude() * value; }
+  {
+    return vector<Q, D>(lhs.magnitude() * value);
+  }
+
+  template<typename V>
+  [[nodiscard]] friend constexpr auto operator*(const V& value, const vector& rhs)
+    requires (Scalar<V> || Dimensionless<V>) && requires { value * rhs.magnitude(); }
+  {
+    return vector<Q, D>(value * rhs.magnitude());
+  }
+
+  template<typename Q2, direction D2>
+  [[nodiscard]] friend constexpr auto operator/(const vector& lhs, const vector<Q2, D2>& rhs)
+    requires requires { lhs.magnitude() / rhs.magnitude(); }
+  {
+    return lhs.magnitude() / rhs.magnitude();
   }
 
 #if COMP_MSVC || COMP_GCC >= 10
@@ -149,42 +187,6 @@ private:
   Q magnitude_{};
 };
 
-template<typename Q1, typename Q2, direction D>
-[[nodiscard]] constexpr auto operator+(const vector<Q1, D>& lhs, const vector<Q2, D>& rhs)
-  requires requires { lhs.magnitude() + rhs.magnitude(); }
-{
-  using ret_type = decltype(lhs.magnitude() + rhs.magnitude());
-  return vector<ret_type, D>(lhs.magnitude() + rhs.magnitude());
-}
-
-template<typename Q1, typename Q2, direction D>
-[[nodiscard]] constexpr auto operator-(const vector<Q1, D>& lhs, const vector<Q2, D>& rhs)
-  requires requires { lhs.magnitude() - rhs.magnitude(); }
-{
-  using ret_type = decltype(lhs.magnitude() - rhs.magnitude());
-  return vector<ret_type, D>(lhs.magnitude() - rhs.magnitude());
-}
-
-template<typename Q, direction D, Scalar V>
-[[nodiscard]] constexpr auto operator*(const vector<Q, D>& lhs, const V& value)
-  requires requires { lhs.magnitude() * value; }
-{
-  return vector<Q, D>(lhs.magnitude() * value);
-}
-
-template<typename Q, direction D, Scalar V>
-[[nodiscard]] constexpr auto operator*(const V& value, const vector<Q, D>& rhs)
-  requires requires { value * rhs.magnitude(); }
-{
-  return vector<Q, D>(value * rhs.magnitude());
-}
-
-template<typename Q1, typename Q2, direction D1, direction D2>
-[[nodiscard]] constexpr auto operator/(const vector<Q1, D1>& lhs, const vector<Q2, D2>& rhs)
-  requires requires { lhs.magnitude() / rhs.magnitude(); }
-{
-  return lhs.magnitude() / rhs.magnitude();
-}
 
 template<typename T>
 inline constexpr bool is_vector = false;
@@ -276,7 +278,7 @@ auto get_gliders()
   return gliders;
 }
 
-constexpr double glide_ratio(const glider::polar_point& polar)
+constexpr Dimensionless AUTO glide_ratio(const glider::polar_point& polar)
 {
   return polar.v / -polar.climb;
 }

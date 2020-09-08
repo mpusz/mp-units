@@ -46,7 +46,7 @@ we forget to include a header file with the resulting dimension definition:
 
     constexpr auto result = 144q_km / 2q_h;
     static_assert(is_same_v<decltype(result)::dimension,
-                            unknown_dimension<exp<dim_length, 1>, exp<dim_time, -1>>>);
+                            unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
     static_assert(is_same_v<decltype(result)::unit,
                             scaled_unit<ratio(1, 36, 1), unknown_coherent_unit>>);
 

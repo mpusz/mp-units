@@ -24,7 +24,7 @@
 
 #include <units/base_dimension.h>
 #include <units/bits/external/downcasting.h>
-#include <units/exp.h>
+#include <units/exponent.h>
 
 namespace units::detail {
 
@@ -35,19 +35,18 @@ namespace units::detail {
  * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  * A power of a factor is the factor raised to an exponent.
  * 
- * A derived dimension can be formed from multiple exponents (i.e. speed is represented as "exp<L, 1>, exp<T, -1>").
+ * A derived dimension can be formed from multiple exponents (i.e. speed is represented as "exponent<L, 1>, exponent<T, -1>").
  * It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
- * "exp<T, -1>").
+ * "exponent<T, -1>").
  * 
  * @note This class template is used by the library engine and should not be directly instantiated by the user.
  * 
- * @tparam E a first exponent of a derived dimension
- * @tparam ERest zero or more following exponents of a derived dimension
+ * @tparam Es zero or more exponents of a derived dimension
  */
-template<Exponent E, Exponent... ERest>
-  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
-struct derived_dimension_base : downcast_base<derived_dimension_base<E, ERest...>> {
-  using exponents = exp_list<E, ERest...>;
+template<Exponent... Es>
+  requires (BaseDimension<typename Es::dimension> && ...)
+struct derived_dimension_base : downcast_base<derived_dimension_base<Es...>> {
+  using exponents = exp_list<Es...>;
 };
 
 template<typename T>

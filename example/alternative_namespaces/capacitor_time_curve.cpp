@@ -23,8 +23,8 @@
 #include <units/physical/si/capacitance.h>
 #include <units/physical/si/resistance.h>
 #include <units/physical/si/time.h>
+#include <units/math.h>
 #include "./voltage.h"
-#include <cmath>
 #include <iostream>
 
 using namespace units::experimental;
@@ -41,7 +41,7 @@ int main()
   constexpr auto R = 4.7q_kR;
 
   for (auto t = 0q_ms; t <= 50q_ms; ++t) {
-    const auto Vt = V0 * std::exp(-t / (R * C));
+    const auto Vt = V0 * units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 

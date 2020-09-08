@@ -29,7 +29,7 @@
 #include <units/bits/dim_unpack.h>
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/type_list.h>
-#include <units/exp.h>
+#include <units/exponent.h>
 
 namespace units {
 
@@ -75,12 +75,11 @@ using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolida
  * 
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam U a coherent unit of a derived dimension
- * @tparam E the list of exponents of ingredient dimensions
- * @tparam ERest the list of exponents of ingredient dimensions
+ * @tparam Es the list of exponents of ingredient dimensions
  */
-template<typename Child, Unit U, Exponent E, Exponent... ERest>
-struct derived_dimension : downcast_child<Child, typename detail::make_dimension<E, ERest...>> {
-  using recipe = exp_list<E, ERest...>;
+template<typename Child, Unit U, Exponent... Es>
+struct derived_dimension : downcast_child<Child, typename detail::make_dimension<Es...>> {
+  using recipe = exp_list<Es...>;
   using coherent_unit = U;
   static constexpr ratio base_units_ratio = detail::base_units_ratio(typename derived_dimension::exponents());
 };

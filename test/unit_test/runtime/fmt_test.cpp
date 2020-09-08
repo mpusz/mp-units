@@ -421,6 +421,72 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
+  SECTION("dimensionless quantity")
+  {
+    SECTION("unitless with ratio == 1")
+    {
+      const auto q = 4q_m / 2q_m;
+      os << q;
+
+      SECTION("iostream")
+      {
+        CHECK(os.str() == "2");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        CHECK(fmt::format("{}", q) == os.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        CHECK(fmt::format("{:%Q %q}", q) == "2 ");
+      }
+    }
+
+    SECTION("unitless with ratio.exp != 0")
+    {
+      const auto q = 4q_km / 2q_m;
+      os << q;
+
+      SECTION("iostream")
+      {
+        CHECK(os.str() == "2 × 10³");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        CHECK(fmt::format("{}", q) == os.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        CHECK(fmt::format("{:%Q %q}", q) == "2 × 10³");
+      }
+    }
+
+    SECTION("percents")
+    {
+      const auto q = quantity_cast<percent>(15.q_m / 100.q_m);
+      os << q;
+
+      SECTION("iostream")
+      {
+        CHECK(os.str() == "15 %");
+      }
+
+      SECTION("fmt with default format {} on a quantity")
+      {
+        CHECK(fmt::format("{}", q) == os.str());
+      }
+
+      SECTION("fmt with format {:%Q %q} on a quantity")
+      {
+        CHECK(fmt::format("{:%Q %q}", q) == os.str());
+      }
+    }
+  }
+
   SECTION("quantity with an unkown dimension")
   {
     SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
@@ -573,7 +639,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("exp::num == 1 && exp::den == 1")
+    SECTION("exponent::num == 1 && exponent::den == 1")
     {
       const auto q = 4q_m * 2q_s;
       os << q;
@@ -594,7 +660,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("exp::num == 2 && exp::den == 1 for positive exponent")
+    SECTION("exponent::num == 2 && exponent::den == 1 for positive exponent")
     {
       const auto q = 4q_m * 2q_s * 2q_s;
       os << q;
@@ -615,7 +681,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (first dimension)")
+    SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (first dimension)")
     {
       const auto q = 8q_s / 2q_m / 2q_m;
       os << q;
@@ -636,7 +702,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("exp::num == 2 && exp::den == 1 for negative exponent (not first dimension)")
+    SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (not first dimension)")
     {
       const auto q = 8q_m / 2q_kg / 2q_kg;
       os << q;

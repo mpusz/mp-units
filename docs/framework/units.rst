@@ -120,17 +120,17 @@ will result in a different unnamed unit symbol:
     :emphasize-lines: 2-4, 6-8, 10-12
 
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exp<si::dim_mass, 1>,
-                                            exp<si::dim_length, 1>,
-                                            exp<si::dim_time, -1>> {};    // kg ⋅ m/s
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_time, -1>> {};    // kg ⋅ m/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exp<si::dim_length, 1>,
-                                            exp<si::dim_mass, 1>,
-                                            exp<si::dim_time, -1>> {};    // m ⋅ kg/s
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_time, -1>> {};    // m ⋅ kg/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exp<si::dim_time, -1>,
-                                            exp<si::dim_length, 1>,
-                                            exp<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
+                                            exponent<si::dim_time, -1>,
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
 
 where ``kilogram_metre_per_second`` is defined as::
 
@@ -143,8 +143,8 @@ However, the easiest way to define momentum is just to use the
     :emphasize-lines: 3
 
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exp<si::dim_mass, 1>,
-                                            exp<si::dim_speed, 1>> {}; // kg ⋅ m/s
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_speed, 1>> {}; // kg ⋅ m/s
 
 In such a case the library will do its magic and will automatically
 unpack a provided derived dimension to its base dimensions in order to
@@ -161,8 +161,8 @@ of ``N/m``):
     :emphasize-lines: 2
 
     struct dim_surface_tension : derived_dimension<dim_surface_tension, newton_per_metre,
-                                                   exp<si::dim_force, 1>,
-                                                   exp<si::dim_length, -1>> {}; // N/m
+                                                   exponent<si::dim_force, 1>,
+                                                   exponent<si::dim_length, -1>> {}; // N/m
 
 If we defined the above in terms of base units we would end up with
 a ``kg/s²`` derived unit symbol.
@@ -194,7 +194,7 @@ where `no_prefix` is a special tag type describing that the library should
 not allow to define a new prefixed unit that would use this unit as a
 reference ("kilohours" does not have much sense, right?). The `ratio` type
 used in the definition is really similar to ``std::ratio`` but it takes
-an additional ``Exp`` template parameter that defines the exponent of the ratio.
+an additional ``Exponent`` template parameter that defines the exponent of the ratio.
 Another important difference is the fact that the objects of that class are used
 as class NTTPs rather then a type template parameter kind.
 

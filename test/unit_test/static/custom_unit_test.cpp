@@ -33,14 +33,14 @@ using namespace units::physical::si;
 
 // power spectral density
 struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
-struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exp<dim_voltage, 2>, units::exp<dim_frequency, -1>> {};
+struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
 
 template<Unit U, Scalar Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
 // amplitude spectral density
 struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
-struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exp<dim_voltage, 1>, units::exp<dim_frequency, -1, 2>> {};
+struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>, units::exponent<dim_frequency, -1, 2>> {};
 
 template<Unit U, Scalar Rep = double>
 using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, Rep>;
@@ -60,7 +60,7 @@ static_assert(is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(
 namespace {
 
 struct kilogram_per_second : unit<kilogram_per_second> {};
-struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exp<dim_mass, 1>, units::exp<dim_time, -1>> {};
+struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {};
 struct kilogram_per_hour : deduced_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
 constexpr auto a = 1q_kg / 1q_h;
 static_assert(is_same_v<decltype(a)::unit, kilogram_per_hour>);

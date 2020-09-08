@@ -60,26 +60,26 @@ namespace units {
   struct base_dimension_less : std::bool_constant<D1 < D2> {
   };
 
-  // exp
+  // exponent
 
   template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den = 1>
-  struct exp {
+  struct exponent {
     static constexpr const base_dimension& dimension = BaseDimension;
     static constexpr std::intmax_t num = Num;
     static constexpr std::intmax_t den = Den;
   };
 
-  // is_exp
+  // is_exponent
   namespace detail {
     template<typename T>
-    inline constexpr bool is_exp = false;
+    inline constexpr bool is_exponent = false;
 
     template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den>
-    inline constexpr bool is_exp<exp<BaseDimension, Num, Den>> = true;
+    inline constexpr bool is_exponent<exponent<BaseDimension, Num, Den>> = true;
   }  // namespace detail
 
   template<typename T>
-  concept Exponent = detail::is_exp<T>;
+  concept Exponent = detail::is_exponent<T>;
 
   // exp_dim_id_less
 
@@ -93,8 +93,8 @@ namespace units {
   struct exp_invert;
 
   template<const base_dimension& BaseDimension, std::intmax_t Num, std::intmax_t Den>
-  struct exp_invert<exp<BaseDimension, Num, Den>> {
-    using type = exp<BaseDimension, -Num, Den>;
+  struct exp_invert<exponent<BaseDimension, Num, Den>> {
+    using type = exponent<BaseDimension, -Num, Den>;
   };
 
   template<Exponent E>
@@ -161,12 +161,12 @@ namespace units {
     };
 
     template<const base_dimension& D, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, Exponent... ERest>
-    struct dim_consolidate<dimension<exp<D, Num1, Den1>, exp<D, Num2, Den2>, ERest...>> {
+    struct dim_consolidate<dimension<exponent<D, Num1, Den1>, exponent<D, Num2, Den2>, ERest...>> {
       using r1 = std::ratio<Num1, Den1>;
       using r2 = std::ratio<Num2, Den2>;
       using r = std::ratio_add<r1, r2>;
       using type = conditional<r::num == 0, dim_consolidate_t<dimension<ERest...>>,
-                               dim_consolidate_t<dimension<exp<D, r::num, r::den>, ERest...>>>;
+                               dim_consolidate_t<dimension<exponent<D, r::num, r::den>, ERest...>>>;
     };
 
   }  // namespace detail

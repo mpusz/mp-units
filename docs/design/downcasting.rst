@@ -14,18 +14,18 @@ The same can be observed during debugging of a source code that use template ali
 Let's assume that we want to provide a user friendly name for a derived dimension of capacitance
 quantity. Other libraries will do it in the following way::
 
-    using dim_capacitance = detail::derived_dimension_base<exp<si::dim_electric_current, 2>,
-                                                           exp<si::dim_length, -2>,
-                                                           exp<si::dim_mass, -1>,
-                                                           exp<si::dim_time, 4>>;
+    using dim_capacitance = detail::derived_dimension_base<exponent<si::dim_electric_current, 2>,
+                                                           exponent<si::dim_length, -2>,
+                                                           exponent<si::dim_mass, -1>,
+                                                           exponent<si::dim_time, 4>>;
 
 The above solution does provide a good developer's experience but a really poor one for the end
 user. If we will get a compilation error message containing `dim_capacitance` in most cases
 the compiler will print the following type instead of the alias::
 
-    units::detail::derived_dimension_base<units::exp<units::physical::si::dim_electric_current, 2, 1>,
-    units::exp<units::physical::si::dim_length, -2, 1>, units::exp<units::physical::si::dim_mass, -1, 1>,
-    units::exp<units::physical::si::dim_time, 4, 1> >
+    units::detail::derived_dimension_base<units::exponent<units::physical::si::dim_electric_current, 2, 1>,
+    units::exponent<units::physical::si::dim_length, -2, 1>, units::exponent<units::physical::si::dim_mass,
+    -1, 1>, units::exponent<units::physical::si::dim_time, 4, 1> >
 
 You can notice that in case of **mp-units** even this long syntax was carefully selected to
 provide quite good user experience (some other units libraries produce a type that cannot easily
@@ -48,7 +48,7 @@ to use inheritance:
 .. 
     http://www.nomnoml.com
 
-    [derived_dimension_base<exp<si::dim_length, 2>>]<:-[dim_area]
+    [derived_dimension_base<exponent<si::dim_length, 2>>]<:-[dim_area]
 
 This gives us a nice looking strong type when directly used by the user. However, we just got
 ourselves into problems. The library's framework does not know how to switch from a long
@@ -79,9 +79,9 @@ The downcasting facility is provided by injecting two classes into our hierarchy
 .. 
     http://www.nomnoml.com
 
-    [downcast_base<detail::derived_dimension_base<exp<si::dim_length, 2>>>]<:-[detail::derived_dimension_base<exp<si::dim_length, 2>>]
-    [detail::derived_dimension_base<exp<si::dim_length, 2>>]<:-[downcast_child<dim_area, detail::derived_dimension_base<exp<si::dim_length, 2>>>]
-    [downcast_child<dim_area, detail::derived_dimension_base<exp<si::dim_length, 2>>>]<:-[dim_area]
+    [downcast_base<detail::derived_dimension_base<exponent<si::dim_length, 2>>>]<:-[detail::derived_dimension_base<exponent<si::dim_length, 2>>]
+    [detail::derived_dimension_base<exponent<si::dim_length, 2>>]<:-[downcast_child<dim_area, detail::derived_dimension_base<exponent<si::dim_length, 2>>>]
+    [downcast_child<dim_area, detail::derived_dimension_base<exponent<si::dim_length, 2>>>]<:-[dim_area]
 
 In the above example:
 

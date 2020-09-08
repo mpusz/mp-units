@@ -147,9 +147,9 @@ The above dimensions can be defined in the library with the
     namespace si {
 
     struct dim_area  : derived_dimension<dim_area, square_metre,
-                                         exp<dim_length, 2>> {};
+                                         exponent<dim_length, 2>> {};
     struct dim_speed : derived_dimension<dim_speed, metre_per_second,
-                                         exp<dim_length, 1>, exp<dim_time, -1>> {};
+                                         exponent<dim_length, 1>, exponent<dim_time, -1>> {};
 
     }
 
@@ -179,9 +179,9 @@ matter. Even if we define the above as:
     namespace si {
 
     struct dim_area  : derived_dimension<dim_area, square_metre,
-                                         exp<dim_length, 1>, exp<dim_length, 1>> {};
+                                         exponent<dim_length, 1>, exponent<dim_length, 1>> {};
     struct dim_speed : derived_dimension<dim_speed, metre_per_second,
-                                         exp<dim_time, -1>, exp<dim_length, 1>> {};
+                                         exponent<dim_time, -1>, exponent<dim_length, 1>> {};
 
     }
 

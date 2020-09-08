@@ -35,17 +35,17 @@ namespace units {
  * @tparam Den denominator of the factor
  */
 template<Dimension Dim, std::intmax_t Num, std::intmax_t Den = 1>
-struct exp {
+struct exponent {
   using dimension = Dim;
   static constexpr int num = Num;
   static constexpr int den = Den;
 };
 
-// is_exp
+// is_exponent
 namespace detail {
 
 template<typename Dim, std::intmax_t Num, std::intmax_t Den>
-inline constexpr bool is_exp<exp<Dim, Num, Den>> = true;
+inline constexpr bool is_exponent<exponent<Dim, Num, Den>> = true;
 
 }  // namespace detail
 
@@ -58,7 +58,7 @@ struct exp_less : base_dimension_less<typename E1::dimension, typename E2::dimen
 namespace detail {
 
 template<typename Dim, std::intmax_t Num, std::intmax_t Den>
-constexpr exp<Dim, -Num, Den> exp_invert_impl(exp<Dim, Num, Den>);
+constexpr exponent<Dim, -Num, Den> exp_invert_impl(exponent<Dim, Num, Den>);
 
 }  // namespace detail
 
@@ -71,7 +71,7 @@ namespace detail {
 template<Exponent E, std::intmax_t Num, std::intmax_t Den>
 struct exp_multiply_impl {
   static constexpr ratio r = ratio(E::num, E::den) * ratio(Num, Den);
-  using type = exp<typename E::dimension, r.num, r.den>;
+  using type = exponent<typename E::dimension, r.num, r.den>;
 };
 
 }  // namespace detail

@@ -13,9 +13,9 @@ The most important concepts in the library are `Unit`, `Dimension`,
     http://www.nomnoml.com
 
     [<abstract>Dimension|
-    [base_dimension<Symbol, Unit>]<-[exp<Dimension, Num, Den>]
-    [derived_dimension<Child, Unit, Exponent...>]<-[exp<Dimension, Num, Den>]
-    [exp<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
+    [base_dimension<Symbol, Unit>]<-[exponent<Dimension, Num, Den>]
+    [derived_dimension<Child, Unit, Exponent...>]<-[exponent<Dimension, Num, Den>]
+    [exponent<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
     ]
 
     [<abstract>Quantity|

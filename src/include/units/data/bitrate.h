@@ -30,7 +30,7 @@
 namespace units::data {
 
 struct bit_per_second : unit<bit_per_second> {};
-struct dim_bitrate : derived_dimension<dim_bitrate, bit_per_second, exp<dim_information, 1>, exp<physical::si::dim_time, -1>> {};
+struct dim_bitrate : derived_dimension<dim_bitrate, bit_per_second, exponent<dim_information, 1>, exponent<physical::si::dim_time, -1>> {};
 
 struct kibibit_per_second : deduced_unit<kibibit_per_second, dim_bitrate, kibibit, physical::si::second> {};
 struct mebibit_per_second : deduced_unit<mebibit_per_second, dim_bitrate, mebibit, physical::si::second> {};

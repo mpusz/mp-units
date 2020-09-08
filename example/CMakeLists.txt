@@ -33,7 +33,6 @@ add_example(clcpp_response)
 add_example(conversion_factor)
 add_example(experimental_angle)
 add_example(foot_pound_second)
-add_example(glide_computer)
 add_example(kalman_filter-alpha_beta_filter_example2)
 
 conan_check_testing(linear_algebra)
@@ -51,6 +50,7 @@ if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 # TODO Those examples use Concepts terse syntax not yet supported by MSVC
 
 add_example(avg_speed)
+add_example(glide_computer)
 add_example(hello_units)
 add_example(total_energy)
 

@@ -46,7 +46,7 @@ static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct
 #endif
 
 struct metre_per_second : unit<metre_per_second> {};
-struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exp<dim_length, 1>, units::exp<dim_time, -1>> {};
+struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exponent<dim_length, 1>, units::exponent<dim_time, -1>> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
 static_assert(is_same_v<downcast<scaled_unit<ratio(1), metre>>, metre>);

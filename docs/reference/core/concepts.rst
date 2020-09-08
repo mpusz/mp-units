@@ -27,7 +27,7 @@ Concepts
 
 .. concept:: template<typename T> Exponent
 
-    A concept matching dimension's exponents. Satisfied by all instantiations of :class:`exp`.
+    A concept matching dimension's exponents. Satisfied by all instantiations of :class:`exponent`.
 
 .. concept:: template<typename T> DerivedDimension
 

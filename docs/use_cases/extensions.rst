@@ -115,7 +115,7 @@ coherent unit::
 
     // new derived dimensions
     struct dim_desk_rate : derived_dimension<dim_desk_rate, square_metre_per_second,
-                                             exp<si::dim_area, 1>, exp<si::dim_time, -1>> {};
+                                             exponent<si::dim_area, 1>, exponent<si::dim_time, -1>> {};
 
     // our unit of interest for a new derived dimension
     struct desk_per_hour : deduced_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
@@ -164,7 +164,8 @@ With the above we can now define a new derived dimension::
 
     struct person_per_square_metre : unit<person_per_square_metre> {};
     struct dim_occupancy_rate : derived_dimension<dim_occupancy_rate, person_per_square_metre,
-                                                  exp<dim_people, 1>, exp<si::dim_area, -1>> {};
+                                                  exponent<dim_people, 1>,
+                                                  exponent<si::dim_area, -1>> {};
 
     struct person_per_desk : deduced_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 

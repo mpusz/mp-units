@@ -22,30 +22,25 @@
 
 #pragma once
 
-#include <units/base_dimension.h>
-#include <units/exponent.h>
-#include <units/ratio.h>
+#include <units/quantity_cast.h>
 
-namespace units::detail {
+namespace units {
 
-template<Exponent E>
-  requires (E::den == 1 || E::den == 2) // TODO provide support for any den
-constexpr ratio exp_ratio()
-{
-  const ratio base_ratio = E::dimension::base_unit::ratio;
-  const ratio positive_ratio = E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
-  const std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
-  const ratio ratio_pow = pow<N>(positive_ratio);
-  return E::den == 2 ? sqrt(ratio_pow) : ratio_pow;
-}
+struct unitless : named_unit<unitless, "", no_prefix> {};
+struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), unitless> {};
 
 /**
- * @brief Calculates the common ratio of all the references of base units in the derived dimension
+ * @brief Dimension one
+ * 
+ * Dimension for which all the exponents of the factors corresponding to the base
+ * dimensions are zero. Also commonly named as "dimensionless".
  */
-template<typename... Es>
-constexpr ratio base_units_ratio(exp_list<Es...>)
-{
-  return (exp_ratio<Es>() * ... * ratio(1));
-}
+struct dim_one : derived_dimension<dim_one, unitless> {};
 
-}  // namespace units::detail
+template<typename T>
+concept Dimensionless = QuantityOf<T, dim_one>;
+
+template<Unit U, Scalar Rep = double>
+using dimensionless = quantity<dim_one, U, Rep>;
+
+}  // namespace units

@@ -128,23 +128,23 @@ concept BaseDimension = detail::is_derived_from_base_dimension<T>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_exp = false;
+inline constexpr bool is_exponent = false;
 
 }  // namespace detail
 
 /**
  * @brief A concept matching dimension's exponents.
  *
- * Satisfied by all specializations of :class:`exp`.
+ * Satisfied by all specializations of :class:`exponent`.
  */
 template<typename T>
-concept Exponent = detail::is_exp<T>;
+concept Exponent = detail::is_exponent<T>;
 
 // DerivedDimension
 namespace detail {
 
-template<Exponent E, Exponent... ERest>
-  requires (BaseDimension<typename E::dimension> && ... && BaseDimension<typename ERest::dimension>)
+template<Exponent... Es>
+  requires (BaseDimension<typename Es::dimension> && ...)
 struct derived_dimension_base;
 
 } // namespace detail

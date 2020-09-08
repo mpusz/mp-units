@@ -36,28 +36,28 @@ template<ratio R>
 constexpr auto ratio_text()
 {
   if constexpr(R.num == 1 && R.den == 1 && R.exp != 0) {
-    return base_multiplier + superscript<R.exp>() + basic_fixed_string(" ");
+    return base_multiplier + superscript<R.exp>();
   }
   else if constexpr(R.num != 1 || R.den != 1 || R.exp != 0) {
     auto txt = basic_fixed_string("[") + regular<R.num>();
     if constexpr(R.den == 1) {
       if constexpr(R.exp == 0) {
-        return txt + basic_fixed_string("] ");
+        return txt + basic_fixed_string("]");
       }
       else {
         return txt + " " + base_multiplier + superscript<R.exp>() +
-            basic_fixed_string("] ");
+            basic_fixed_string("]");
       }
     }
     else {
       if constexpr(R.exp == 0) {
         return txt + basic_fixed_string("/") + regular<R.den>() +
-            basic_fixed_string("] ");
+            basic_fixed_string("]");
       }
       else {
         return txt + basic_fixed_string("/") + regular<R.den>() +
             " " + base_multiplier + superscript<R.exp>() +
-            basic_fixed_string("] ");
+            basic_fixed_string("]");
       }
     }
   }
@@ -66,7 +66,7 @@ constexpr auto ratio_text()
   }
 }
 
-template<ratio R, typename PrefixFamily>
+template<ratio R, typename PrefixFamily, std::size_t SymbolLen>
 constexpr auto prefix_or_ratio_text()
 {
   if constexpr(R.num == 1 && R.den == 1 && R.exp == 0) {
@@ -84,12 +84,20 @@ constexpr auto prefix_or_ratio_text()
       }
       else {
         // print as a ratio of the coherent unit
-        return ratio_text<R>();
+        constexpr auto txt = ratio_text<R>();
+        if constexpr(SymbolLen > 0 && txt.standard().size() > 0)
+          return txt + basic_fixed_string(" ");
+        else
+          return txt;
       }
     }
     else {
       // print as a ratio of the coherent unit
-      return ratio_text<R>();
+      constexpr auto txt = ratio_text<R>();
+      if constexpr(SymbolLen > 0 && txt.standard().size() > 0)
+        return txt + basic_fixed_string(" ");
+      else
+        return txt;
     }
   }
 }
@@ -97,8 +105,7 @@ constexpr auto prefix_or_ratio_text()
 template<typename... Es, std::size_t... Idxs>
 constexpr auto derived_dimension_unit_text(exp_list<Es...>, std::index_sequence<Idxs...>)
 {
-  constexpr auto neg_exp = negative_exp_count<Es...>;
-  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, neg_exp, Idxs>() + ...);
+  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, negative_exp_count<Es...>, Idxs>() + ... + basic_symbol_text(basic_fixed_string("")));
 }
 
 template<typename... Es>
@@ -129,6 +136,11 @@ constexpr auto exp_list_with_named_units(exp_list<Es...>)
   return type_list_join<decltype(exp_list_with_named_units(Es()))...>();
 }
 
+constexpr auto exp_list_with_named_units(exp_list<> empty)
+{
+  return empty;
+}
+
 template<Dimension Dim>
 constexpr auto derived_dimension_unit_text()
 {
@@ -150,15 +162,18 @@ constexpr auto unit_text()
   else {
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
-    auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family>();
 
     if constexpr(has_symbol<coherent_unit>) {
       // use predefined coherent unit symbol
-      return prefix_txt + coherent_unit::symbol;
+      constexpr auto symbol_text = coherent_unit::symbol;
+      constexpr auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family, symbol_text.standard().size()>();
+      return prefix_txt + symbol_text;
     }
     else {
       // use derived dimension ingredients to create a unit symbol
-      return prefix_txt + derived_dimension_unit_text<Dim>();
+      constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
+      constexpr auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family, symbol_text.standard().size()>();
+      return prefix_txt + symbol_text;
     }
   }
 }
