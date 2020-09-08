@@ -44,13 +44,13 @@ fixed_double_si_avg_speed(si::length<si::metre> d,
 }
 
 template<typename U1, typename R1, typename U2, typename R2>
-constexpr Speed AUTO si_avg_speed(si::length<U1, R1> d,
+constexpr Speed auto si_avg_speed(si::length<U1, R1> d,
                                      si::time<U2, R2> t)
 {
   return d / t;
 }
 
-constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
+constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
   return d / t;
 }
@@ -68,7 +68,7 @@ void example()
   // SI (int)
   {
     using namespace units::physical::si::literals;
-    constexpr Length AUTO distance = 220q_km;      // constructed from a UDL
+    constexpr Length auto distance = 220q_km;      // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
     std::cout << "SI units with 'int' as representation\n";
@@ -82,7 +82,7 @@ void example()
   // SI (double)
   {
     using namespace units::physical::si::literals;
-    constexpr Length AUTO distance = 220.q_km;  // constructed from a UDL
+    constexpr Length auto distance = 220.q_km;  // constructed from a UDL
     constexpr si::time<si::hour> duration(2);   // constructed from a value
 
     std::cout << "\nSI units with 'double' as representation\n";
@@ -98,7 +98,7 @@ void example()
   // Customary Units (int)
   {
     using namespace units::physical::international::literals;
-    constexpr Length AUTO distance = 140q_mi;      // constructed from a UDL
+    constexpr Length auto distance = 140q_mi;      // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
     std::cout << "\nUS Customary Units with 'int' as representation\n";
@@ -114,7 +114,7 @@ void example()
   // Customary Units (double)
   {
     using namespace units::physical::international::literals;
-    constexpr Length AUTO distance = 140.q_mi; // constructed from a UDL
+    constexpr Length auto distance = 140.q_mi; // constructed from a UDL
     constexpr si::time<si::hour> duration(2);  // constructed from a value
 
     std::cout << "\nUS Customary Units with 'double' as representation\n";
@@ -132,7 +132,7 @@ void example()
   // CGS (int)
   {
     using namespace units::physical::cgs::literals;
-    constexpr Length AUTO distance = 22'000'000q_cm;  // constructed from a UDL
+    constexpr Length auto distance = 22'000'000q_cm;  // constructed from a UDL
     constexpr cgs::time<si::hour, int> duration(2);   // constructed from a value
 
     std::cout << "\nCGS units with 'int' as representation\n";
@@ -151,7 +151,7 @@ void example()
   // CGS (double)
   {
     using namespace units::physical::cgs::literals;
-    constexpr Length AUTO distance = 22'000'000.q_cm; // constructed from a UDL
+    constexpr Length auto distance = 22'000'000.q_cm; // constructed from a UDL
     constexpr cgs::time<si::hour> duration(2);        // constructed from a value
 
     std::cout << "\nCGS units with 'double' as representation\n";

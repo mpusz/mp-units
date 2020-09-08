@@ -27,6 +27,7 @@
 #include <units/bits/external/hacks.h>
 #include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
+#include <functional>
 
 namespace units {
 

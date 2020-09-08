@@ -25,7 +25,7 @@
 
 using namespace units::physical;
 
-constexpr Speed AUTO avg_speed(Length AUTO d, Time AUTO t)
+constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
   return d / t;
 }

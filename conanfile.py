@@ -66,8 +66,8 @@ class UnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
-            if version < "9.3":
-                raise ConanInvalidConfiguration("mp-units requires at least g++-9.3")
+            if version < "10.0":
+                raise ConanInvalidConfiguration("mp-units requires at least g++-10")
         elif compiler == "Visual Studio":
             if version < "16":
                 raise ConanInvalidConfiguration("mp-units requires at least MSVC 16")
@@ -87,11 +87,6 @@ class UnitsConan(ConanFile):
 
     def configure(self):
         self._validate_compiler_settings()
-
-    def requirements(self):
-        if ((self.settings.compiler == "gcc" and Version(self.settings.compiler.version) < "10") or
-            self.settings.compiler == "clang"):
-            self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
         if self._run_tests:
@@ -123,10 +118,6 @@ class UnitsConan(ConanFile):
                 "-Wno-literal-suffix",
                 "-Wno-non-template-friend",
             ]
-            if version < "10":
-                self.cpp_info.cxxflags.extend([
-                    "-fconcepts"
-                ])
         elif compiler == "Visual Studio":
             self.cpp_info.cxxflags = [
                 "/utf-8",

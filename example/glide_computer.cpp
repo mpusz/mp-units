@@ -27,10 +27,7 @@
 #include <units/quantity_point.h>
 #include <array>
 #include <iostream>
-
-#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
-#endif
 
 // horizontal/vertical vector
 namespace {
@@ -59,10 +56,8 @@ public:
 
   constexpr Q magnitude() const { return magnitude_; }
 
-  template<typename QQ = Q>
   [[nodiscard]] constexpr vector operator-() const
-    requires requires(QQ q) { -q; }
-    // requires requires { -magnitude(); } // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { -magnitude(); }
   {
     return vector(-magnitude());
   }
@@ -92,15 +87,17 @@ public:
   }
 
   template<typename V>
+    requires (Scalar<V> || Dimensionless<V>)
   [[nodiscard]] friend constexpr auto operator*(const vector& lhs, const V& value)
-    requires (Scalar<V> || Dimensionless<V>) && requires { lhs.magnitude() * value; }
+    requires requires { lhs.magnitude() * value; }
   {
     return vector<Q, D>(lhs.magnitude() * value);
   }
 
   template<typename V>
+    requires (Scalar<V> || Dimensionless<V>)
   [[nodiscard]] friend constexpr auto operator*(const V& value, const vector& rhs)
-    requires (Scalar<V> || Dimensionless<V>) && requires { value * rhs.magnitude(); }
+    requires requires { value * rhs.magnitude(); }
   {
     return vector<Q, D>(value * rhs.magnitude());
   }
@@ -111,8 +108,6 @@ public:
   {
     return lhs.magnitude() / rhs.magnitude();
   }
-
-#if COMP_MSVC || COMP_GCC >= 10
 
   template<typename Q2>
   [[nodiscard]] friend constexpr auto operator<=>(const vector& lhs, const vector<Q2, D>& rhs)
@@ -128,56 +123,8 @@ public:
     return lhs.magnitude() == rhs.magnitude();
   }
 
-#else
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator==(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() == rhs.magnitude(); }
-  {
-    return lhs.magnitude() == rhs.magnitude();
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator!=(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() != rhs.magnitude(); }
-  {
-    return !(lhs == rhs);
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator<(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() < rhs.magnitude(); }
-  {
-    return lhs.magnitude() < rhs.magnitude();
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator>(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() > rhs.magnitude(); }
-  {
-    return rhs < lhs;
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator<=(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() <= rhs.magnitude(); }
-  {
-    return !(rhs < lhs);
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator>=(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() >= rhs.magnitude(); }
-  {
-    return !(lhs < rhs);
-  }
-
-#endif
-
-  // template<class CharT, class Traits>
-    // requires Quantity<Q> // TODO gated by gcc-9 (fixed in gcc-10)
-  template<class CharT, class Traits, typename QQ = Q>
-    requires Quantity<QQ>
+  template<class CharT, class Traits>
+    requires Quantity<Q>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const vector& v)
   {
     return os << v.magnitude();
@@ -278,7 +225,7 @@ auto get_gliders()
   return gliders;
 }
 
-constexpr Dimensionless AUTO glide_ratio(const glider::polar_point& polar)
+constexpr Dimensionless auto glide_ratio(const glider::polar_point& polar)
 {
   return polar.v / -polar.climb;
 }

@@ -40,7 +40,7 @@ namespace units {
  */
 template<std::intmax_t N, Quantity Q>
   requires(N != 0)
-inline Quantity AUTO pow(const Q& q) noexcept
+inline Quantity auto pow(const Q& q) noexcept
   requires requires { std::pow(q.count(), N); }
 {
   using dim = dimension_pow<typename Q::dimension, N>;
@@ -70,7 +70,7 @@ inline TYPENAME Q::rep pow(const Q&) noexcept
  * @return Quantity The result of computation 
  */
 template<Quantity Q>
-inline Quantity AUTO sqrt(const Q& q) noexcept
+inline Quantity auto sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
   using dim = dimension_sqrt<typename Q::dimension>;
@@ -99,7 +99,7 @@ inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
  * @return Quantity The absolute value of a provided quantity
  */
 template<Quantity Q>
-inline Quantity AUTO abs(const Q& q) noexcept
+inline Quantity auto abs(const Q& q) noexcept
   requires requires { std::abs(q.count()); }
 {
   return Q(std::abs(q.count()));
@@ -115,7 +115,7 @@ inline Quantity AUTO abs(const Q& q) noexcept
  */
 template<Quantity Q>
   requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
-constexpr Quantity AUTO epsilon() noexcept
+constexpr Quantity auto epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
 }

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <functional>
+#include <concepts>
 
 #if __clang__
 #define COMP_CLANG __clang_major__
@@ -31,29 +31,6 @@
 #define COMP_GCC_MINOR __GNUC_MINOR__
 #elif _MSC_VER
 #define COMP_MSVC _MSC_VER
-#endif
-
-#if COMP_MSVC || COMP_GCC >= 10
-
-#include <concepts>
-
-#else
-
-#include <concepts/concepts.hpp>
-#include <range/v3/range.hpp>
-
-#endif
-
-#if COMP_MSVC || COMP_GCC >= 10 || COMP_CLANG >= 11
-
-#define AUTO auto
-#define SAME_AS(T) std::same_as<T>
-
-#else
-
-#define AUTO
-#define SAME_AS(T) T
-
 #endif
 
 #if COMP_MSVC
@@ -66,53 +43,13 @@
 
 #endif
 
+#if COMP_GCC
+
 namespace std {
 
-#if COMP_GCC
-#if COMP_GCC >= 10
-
-  template<class T>
-  concept default_constructible = constructible_from<T>;
-
-#else
-
-  // concepts
-  using concepts::common_reference_with;
-  using concepts::common_with;
-  using concepts::constructible_from;
-  using concepts::convertible_to;
-  using concepts::default_constructible;
-  using concepts::derived_from;
-  using concepts::equality_comparable;
-  using concepts::equality_comparable_with;
-  // using concepts::floating_point;
-  using concepts::integral;
-  using concepts::regular;
-  using concepts::same_as;
-  using concepts::totally_ordered;
-  using concepts::totally_ordered_with;
-
-  namespace ranges {
-
-  using ::ranges::forward_range;
-  using ::ranges::range_value_t;
-
-  }
-
-  // missing in Range-v3
-  template<class T>
-  concept floating_point = std::is_floating_point_v<T>;
-
-  template<class F, class... Args>
-  concept invocable =
-  requires(F&& f, Args&&... args) {
-    std::invoke(std::forward<F>(f), std::forward<Args>(args)...);
-  };
-
-  template<class F, class... Args>
-  concept regular_invocable = invocable<F, Args...>;
-
-#endif
-#endif
+template<class T>
+concept default_constructible = constructible_from<T>;
 
 } // namespace std
+
+#endif

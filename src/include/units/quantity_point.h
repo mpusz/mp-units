@@ -24,10 +24,7 @@
 #pragma once
 
 #include <units/quantity.h>
-
-#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
-#endif
 
 namespace units {
 
@@ -69,69 +66,53 @@ public:
 
   [[nodiscard]] constexpr quantity_type relative() const noexcept { return q_; }
 
-  template<typename Q = quantity_type>
   [[nodiscard]] static constexpr quantity_point min() noexcept
-    requires requires { Q::min(); }
-  // requires requires { quantity_type::min(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_type::min(); }
   {
     return quantity_point(quantity_type::min());
   }
 
-  template<typename Q = quantity_type>
   [[nodiscard]] static constexpr quantity_point max() noexcept
-    requires requires { Q::max(); }
-  // requires requires { quantity_type::max(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_type::max(); }
   {
     return quantity_point(quantity_type::max());
   }
 
-  template<typename Q = quantity_type>
-    requires requires(Q q) { ++q; }
   constexpr quantity_point& operator++()
-  // requires requires(quantity_type q) { ++q; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q) { ++q; }
   {
     ++q_;
     return *this;
   }
 
-  template<typename Q = quantity_type>
   [[nodiscard]] constexpr quantity_point operator++(int)
-    requires requires(Q q) { q++; }
-  // requires requires(quantity_type q) { q++; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q) { q++; }
   {
     return quantity_point(q_++);
   }
 
-  template<typename Q = quantity_type>
-    requires requires(Q q) { --q; }
   constexpr quantity_point& operator--()
-  // requires requires(quantity_type q) { --q; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q) { --q; }
   {
     --q_;
     return *this;
   }
 
-  template<typename Q = quantity_type>
   [[nodiscard]] constexpr quantity_point operator--(int)
-    requires requires(Q q) { q--; }
-  // requires requires(quantity_type q) { q--; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q) { q--; }
   {
     return quantity_point(q_--);
   }
 
-  template<typename Q = quantity_type>
-    requires requires(Q q1, Q q2) { q1 += q2; }
   constexpr quantity_point& operator+=(const quantity_type& q)
-  // requires requires(quantity_type q) { q += q; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q) { q += q; }
   {
     q_ += q;
     return *this;
   }
 
-  template<typename Q = quantity_type>
-    requires requires(Q q1, Q q2) { q1 -= q2; }
   constexpr quantity_point& operator-=(const quantity_type& q)
-  // requires requires(quantity_type q) { q1 -= q2; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(quantity_type q1, quantity_type q2) { q1 -= q2; }
   {
     q_ -= q;
     return *this;
@@ -139,99 +120,57 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-#if COMP_MSVC || COMP_GCC >= 10
+
+  template<Quantity Q>
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point& lhs, const Q& rhs)
+    requires requires { lhs.relative() + rhs; }
+  {
+    const auto q = lhs.relative() + rhs;
+    using q_type = decltype(q);
+    return quantity_point<typename q_type::dimension, typename q_type::unit, typename q_type::rep>(q);
+  }
+
+  template<Quantity Q>
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(const Q& lhs, const quantity_point& rhs)
+    requires requires { rhs + lhs; }
+  {
+    return rhs + lhs;
+  }
+
+  template<Quantity Q>
+  [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point& lhs, const Q& rhs)
+    requires requires { lhs.relative() - rhs; }
+  {
+    const auto q = lhs.relative() - rhs;
+    using q_type = decltype(q);
+    return quantity_point<typename q_type::dimension, typename q_type::unit, typename q_type::rep>(q);
+  }
 
   template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
+  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point& lhs, const QP& rhs)
+    requires requires { lhs.relative() - rhs.relative(); }
+  {
+    return lhs.relative() - rhs.relative();
+  }
+
+  template<QuantityPoint QP>
     requires std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
+  [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
   {
     return lhs.relative() <=> rhs.relative();
   }
 
   template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
     requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
+  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
   {
     return lhs.relative() == rhs.relative();
   }
 
-#else
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
-    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
-  {
-    return lhs.relative() == rhs.relative();
-  }
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator!=(const quantity_point& lhs, const QP& rhs)
-    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
-  {
-    return !(lhs == rhs);
-  }
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator<(const quantity_point& lhs, const QP& rhs)
-    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
-  {
-    return lhs.relative() < rhs.relative();
-  }
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator<=(const quantity_point& lhs, const QP& rhs)
-    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
-  {
-    return !(rhs < lhs);
-  }
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator>(const quantity_point& lhs, const QP& rhs)
-    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
-  {
-    return rhs < lhs;
-  }
-
-  template<QuantityPoint QP>
-  [[nodiscard]] friend constexpr bool operator>=(const quantity_point& lhs, const QP& rhs)
-    requires std::totally_ordered_with<quantity_type, typename QP::quantity_type>
-  {
-    return !(lhs < rhs);
-  }
-
-#endif
 };
 
 template<typename D, typename U, typename Rep>
 quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
-
-template<QuantityPoint QP, Quantity Q>
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const QP& lhs, const Q& rhs)
-  requires requires { lhs.relative() + rhs; }
-{
-  return quantity_point(lhs.relative() + rhs);
-}
-
-template<Quantity Q, QuantityPoint QP>
-[[nodiscard]] constexpr QuantityPoint AUTO operator+(const Q& lhs, const QP& rhs)
-  requires requires { rhs + lhs; }
-{
-  return rhs + lhs;
-}
-
-template<QuantityPoint QP, Quantity Q>
-[[nodiscard]] constexpr QuantityPoint AUTO operator-(const QP& lhs, const Q& rhs)
-  requires requires { lhs.relative() - rhs; }
-{
-  return quantity_point(lhs.relative() - rhs);
-}
-
-template<QuantityPoint QP1, QuantityPoint QP2>
-[[nodiscard]] constexpr Quantity AUTO operator-(const QP1& lhs, const QP2& rhs)
-  requires requires { lhs.relative() - rhs.relative(); }
-{
-  return lhs.relative() - rhs.relative();
-}
 
 namespace detail {
 

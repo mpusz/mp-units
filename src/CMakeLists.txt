@@ -74,17 +74,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             -Wno-literal-suffix
             -Wno-non-template-friend
     )
-
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 10.0)
-        target_compile_options(mp-units
-            INTERFACE
-                -fconcepts
-        )
-        target_link_libraries(mp-units
-            INTERFACE
-                $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>,CONAN_PKG::range-v3,range-v3::range-v3>
-        )
-    endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(mp-units
         INTERFACE

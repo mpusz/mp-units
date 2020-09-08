@@ -4,7 +4,7 @@ Usage
 .. note::
 
     This library targets C++23 and extensively uses C++20 features that is why, as of now, it compiles correctly
-    only with gcc-9.3, MSVC 16.7, and newer.
+    only with gcc-10, MSVC 16.7, and newer.
 
 Repository Structure and Dependencies
 -------------------------------------
@@ -17,8 +17,6 @@ This repository contains three independent CMake-based projects:
   - when this library will become part of the C++ standard it will have no external dependencies
     but until then it depends on:
 
-    - `range-v3 <https://github.com/ericniebler/range-v3>`_ (only for gcc versions < 10.0) to provide
-      C++20 concepts library definitions.
     - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
     - `ms-gsl <https://github.com/microsoft/GSL>`_ to verify runtime contracts with `Expects` macro.
 

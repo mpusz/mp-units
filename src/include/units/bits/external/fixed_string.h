@@ -26,10 +26,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ostream>
-
-#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
-#endif
 
 namespace units {
 
@@ -76,8 +73,6 @@ struct basic_fixed_string {
     return basic_fixed_string<CharT, N + N2>(txt);
   }
 
-#if COMP_MSVC || COMP_GCC >= 10
-
   [[nodiscard]] constexpr bool operator==(const basic_fixed_string& other) const
   {
     return std::ranges::equal(*this, other);
@@ -91,74 +86,6 @@ struct basic_fixed_string {
   {
     return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
-
-#else
-
-  [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
-  {
-    for (size_t i = 0; i != lhs.size(); ++i)
-      if (lhs.data_[i] != rhs.data_[i]) return false;
-    return true;
-  }
-
-  [[nodiscard]] constexpr friend bool operator!=(const basic_fixed_string& lhs, const basic_fixed_string& rhs) noexcept
-  {
-    return !(lhs == rhs);
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator==(const basic_fixed_string&,
-                                                 const basic_fixed_string<CharT2, N2>&) noexcept
-  {
-    return false;
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator!=(const basic_fixed_string&,
-                                                 const basic_fixed_string<CharT2, N2>&) noexcept
-  {
-    return true;
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator<(const basic_fixed_string& lhs,
-                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
-  {
-    using std::begin, std::end;
-    auto first1 = begin(lhs.data_);
-    auto first2 = begin(rhs.data_);
-    const auto last1 = std::prev(end(lhs.data_));  // do not waste time for '\0'
-    const auto last2 = std::prev(end(rhs.data_));
-
-    for (; (first1 != last1) && (first2 != last2); ++first1, (void)++first2) {
-      if (*first1 < *first2) return true;
-      if (*first2 < *first1) return false;
-    }
-    return first1 == last1 && first2 != last2;
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator>(const basic_fixed_string& lhs,
-                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
-  {
-    return rhs < lhs;
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator<=(const basic_fixed_string& lhs,
-                                                const basic_fixed_string<CharT2, N2>& rhs) noexcept
-  {
-    return !(rhs < lhs);
-  }
-
-  template<typename CharT2, std::size_t N2>
-  [[nodiscard]] constexpr friend bool operator>=(const basic_fixed_string& lhs,
-                                                 const basic_fixed_string<CharT2, N2>& rhs) noexcept
-  {
-    return !(lhs < rhs);
-  }
-
-#endif
 
   template<class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,

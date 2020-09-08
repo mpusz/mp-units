@@ -29,11 +29,7 @@
 #include <units/bits/to_string.h>
 #include <units/dimensionless.h>
 #include <units/quantity_cast.h>
-
-#if COMP_MSVC || COMP_GCC >= 10
 #include <compare>
-#endif
-
 #include <ostream>
 
 namespace units {
@@ -90,78 +86,60 @@ public:
 
   [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
-  template<typename T = Rep>
   [[nodiscard]] static constexpr quantity zero() noexcept
-    requires requires { quantity_values<T>::zero(); }
-  // requires requires { quantity_values<Rep>::zero(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_values<Rep>::zero(); }
   {
     return quantity(quantity_values<Rep>::zero());
   }
 
-  template<typename T = Rep>
   [[nodiscard]] static constexpr quantity one() noexcept
-    requires requires { quantity_values<T>::one(); }
-  // requires requires { quantity_values<Rep>::one(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_values<Rep>::one(); }
   {
     return quantity(quantity_values<Rep>::one());
   }
 
-  template<typename T = Rep>
   [[nodiscard]] static constexpr quantity min() noexcept
-    requires requires { quantity_values<T>::min(); }
-  // requires requires { quantity_values<Rep>::min(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_values<Rep>::min(); }
   {
     return quantity(quantity_values<Rep>::min());
   }
 
-  template<typename T = Rep>
   [[nodiscard]] static constexpr quantity max() noexcept
-    requires requires { quantity_values<T>::max(); }
-  // requires requires { quantity_values<Rep>::max(); }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires { quantity_values<Rep>::max(); }
   {
     return quantity(quantity_values<Rep>::max());
   }
 
   [[nodiscard]] constexpr quantity operator+() const { return *this; }
 
-  template<typename T = Rep>
   [[nodiscard]] constexpr quantity operator-() const
-    requires std::regular_invocable<std::negate<>, T>
-  // requires std::regular_invocable<std::negate<>, rep>  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires std::regular_invocable<std::negate<>, rep>
   {
     return quantity(-count());
   }
 
-  template<typename T = Rep>
   constexpr quantity& operator++()
-    requires requires(T v) { { ++v } -> SAME_AS(T&); }
-  // requires requires(rep v) { { ++v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(rep v) { { ++v } -> std::same_as<rep&>; }
   {
     ++value_;
     return *this;
   }
 
-  template<typename T = Rep>
   [[nodiscard]] constexpr quantity operator++(int)
-    requires requires(T v) { { v++ } -> SAME_AS(T); }
-  // requires requires(rep v) { { v++ } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(rep v) { { v++ } -> std::same_as<rep>; }
   {
     return quantity(value_++);
   }
 
-  template<typename T = Rep>
   constexpr quantity& operator--()
-    requires requires(T v) { { --v } -> SAME_AS(T&); }
-  // requires requires(rep v) { { --v } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(rep v) { { --v } -> std::same_as<rep&>; }
   {
     --value_;
     return *this;
   }
 
-  template<typename T = Rep>
   [[nodiscard]] constexpr quantity operator--(int)
-    requires requires(T v) { { v-- } -> SAME_AS(T); }
-  // requires requires(rep v) { { v-- } -> std::same_as<rep>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+    requires requires(rep v) { { v-- } -> std::same_as<rep>; }
   {
     return quantity(value_--);
   }
@@ -198,22 +176,19 @@ public:
     return *this;
   }
 
-  template<Scalar Value, typename T = Rep>
-  constexpr quantity& operator%=(const Value& rhs)
+  template<Scalar Value>
     requires (!treat_as_floating_point<rep>) &&
-             (!treat_as_floating_point<Value>) &&
-             requires(T v1, Value v2) { { v1 %= v2 } -> SAME_AS(T&); }
-  //  requires(rep v1, Value v2) { { v1 %= v2 } -> SAME_AS(rep&); }  // TODO gated by gcc-9 (fixed in gcc-10)
+             (!treat_as_floating_point<Value>)
+  constexpr quantity& operator%=(const Value& rhs)
+    requires requires(rep v1, Value v2) { { v1 %= v2 } -> std::same_as<rep&>; }
   {
     value_ %= rhs;
     return *this;
   }
 
-  template<typename T = Rep>
   constexpr quantity& operator%=(const quantity& q)
     requires (!treat_as_floating_point<rep>) &&
-             requires(T v1, T v2) { { v1 %= v2 } -> SAME_AS(T&); }
-  // requires(rep v1, rep v2) { { v1 %= v2 } -> std::same_as<rep&>; }  // TODO gated by gcc-9 (fixed in gcc-10)
+             requires(rep v1, rep v2) { { v1 %= v2 } -> std::same_as<rep&>; }
   {
     value_ %= q.count();
     return *this;
@@ -229,8 +204,8 @@ public:
   }
 
   template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator+(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
     requires std::regular_invocable<std::plus<>, Rep, Rep2>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() + rhs.count());
     using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
@@ -244,8 +219,8 @@ public:
   }
 
   template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator-(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
     requires std::regular_invocable<std::minus<>, Rep, Rep2>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() - rhs.count());
     using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
@@ -253,8 +228,8 @@ public:
   }
 
   template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator*(const quantity& q, const Value& v)
     requires std::regular_invocable<std::multiplies<>, Rep, Value>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
     using common_rep = decltype(q.count() * v);
     using ret = quantity<D, U, common_rep>;
@@ -262,15 +237,15 @@ public:
   }
 
   template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator*(const Value& v, const quantity& q)
     requires std::regular_invocable<std::multiplies<>, Value, Rep>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
     return q * v;
   }
 
   template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator*(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires std::regular_invocable<std::multiplies<>, Rep, Rep2>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     using dim = dimension_multiply<D, D2>;
     using ret_unit = downcast_unit<dim, (U::ratio / dimension_unit<D>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
@@ -280,8 +255,8 @@ public:
   }
 
   template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator/(const Value& v, const quantity& q)
     requires std::regular_invocable<std::divides<>, Value, Rep>
+  [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
     Expects(q.count() != 0);
 
@@ -293,8 +268,8 @@ public:
   }
 
   template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator/(const quantity& q, const Value& v)
     requires std::regular_invocable<std::divides<>, Rep, Value>
+  [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     Expects(v != Value{0});
 
@@ -304,8 +279,8 @@ public:
   }
 
   template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator/(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires std::regular_invocable<std::divides<>, Rep, Rep2>
+  [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     Expects(rhs.count() != 0);
 
@@ -317,10 +292,10 @@ public:
   }
 
   template<Scalar Value>
-  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& q, const Value& v)
     requires (!treat_as_floating_point<Rep>) &&
             (!treat_as_floating_point<Value>) &&
             std::regular_invocable<std::modulus<>, Rep, Value>
+  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
   {
     using common_rep = decltype(q.count() % v);
     using ret = quantity<D, U, common_rep>;
@@ -328,89 +303,33 @@ public:
   }
 
   template<typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr Quantity AUTO operator%(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
     requires (!treat_as_floating_point<Rep>) &&
             (!treat_as_floating_point<Rep2>) &&
             std::regular_invocable<std::modulus<>, Rep, Rep2>
+  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() % rhs.count());
     using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() % ret(rhs).count());
   }
 
-#if COMP_MSVC || COMP_GCC >= 10
-
   template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
              std::three_way_comparable_with<Rep, Rep2>
+  [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() <=> cq(rhs).count();
   }
 
   template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
     requires equivalent_dim<D, D2> &&
              std::equality_comparable_with<Rep, Rep2>
+  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
     return cq(lhs).count() == cq(rhs).count();
   }
-
-#else
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::equality_comparable_with<Rep, Rep2>
-  {
-    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
-    return cq(lhs).count() == cq(rhs).count();
-  }
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator!=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::equality_comparable_with<Rep, Rep2>
-  {
-    return !(lhs == rhs);
-  }
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator<(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
-  {
-    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
-    return cq(lhs).count() < cq(rhs).count();
-  }
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator<=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
-  {
-    return !(rhs < lhs);
-  }
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
-  {
-    return rhs < lhs;
-  }
-
-  template<typename D2, typename U2, typename Rep2>
-  [[nodiscard]] friend constexpr bool operator>=(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-    requires equivalent_dim<D, D2> &&
-             std::totally_ordered_with<Rep, Rep2>
-  {
-    return !(lhs < rhs);
-  }
-
-#endif
 
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)

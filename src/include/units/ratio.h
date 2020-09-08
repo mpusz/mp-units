@@ -55,23 +55,7 @@ struct ratio {
     detail::normalize(num, den, exp);
   }
 
-#if COMP_MSVC || COMP_GCC >= 10
-
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
-
-#else
-
-  [[nodiscard]] friend constexpr bool operator==(const ratio& lhs, const ratio& rhs)
-  {
-    return lhs.num == rhs.num && lhs.den == rhs.den && lhs.exp == rhs.exp;
-  }
-
-  [[nodiscard]] friend constexpr bool operator!=(const ratio& lhs, const ratio& rhs)
-  {
-    return !(lhs == rhs);
-  }
-
-#endif
 
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {

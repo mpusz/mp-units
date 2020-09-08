@@ -44,7 +44,7 @@ a few additional member types and functions::
 
     template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
       requires detail::basic_arithmetic<Rep1, Rep2> && (!equivalent_dim<D1, D2>)
-    [[nodiscard]] constexpr Quantity AUTO operator/(const quantity<D1, U1, Rep1>& lhs,
+    [[nodiscard]] constexpr Quantity auto operator/(const quantity<D1, U1, Rep1>& lhs,
                                                     const quantity<D2, U2, Rep2>& rhs);
 
 Additional functions provide the support for operations that result in a

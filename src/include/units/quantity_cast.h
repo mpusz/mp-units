@@ -313,8 +313,8 @@ constexpr ratio cast_ratio(const Q1& from, const Q2& to)
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires QuantityOf<To, D>
+[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   using c_ratio = std::integral_constant<ratio, detail::cast_ratio(quantity<D, U, Rep>(), To())>;
   using c_rep = std::common_type_t<typename To::rep, Rep>;
@@ -337,8 +337,8 @@ template<Quantity To, typename D, typename U, typename Rep>
  * @tparam ToD a dimension type to use for a target quantity
  */
 template<Dimension ToD, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires equivalent_dim<ToD, D>
+[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<ToD, dimension_unit<ToD>, Rep>>(q);
 }
@@ -356,8 +356,8 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  * @tparam ToU a unit type to use for a target quantity
  */
 template<Unit ToU, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
   requires UnitOf<ToU, D>
+[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, ToU, Rep>>(q);
 }
@@ -397,9 +397,9 @@ template<Scalar ToRep, typename D, typename U, typename Rep>
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
  */
 template<typename CastSpec, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& qp)
   requires is_specialization_of<CastSpec, quantity_point> ||
            requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& qp)
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point>)
     return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));

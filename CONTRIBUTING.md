@@ -25,5 +25,4 @@ Until then, please code alike what is there already:
 
 ## Backward Compatibility
 
-Before submission, please remember to check if the code compiles fine on all the supported compilers (especially gcc-9.3 and MSVC are tricky).
-Unfortunately, we cannot add gcc-9.3 to the CI process as it is [not supported by Conan Docker images](https://github.com/conan-io/conan-docker-tools/issues/200).
+Before submission, please remember to check if the code compiles fine on all the supported compilers (gcc-10 and MSVC so far).

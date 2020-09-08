@@ -16,7 +16,7 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
 .. note::
 
     As this library targets C++23 and extensively uses C++20 features as of now it compiles correctly
-    only with gcc-9.3, MSVC 16.7, and newer.
+    only with gcc-10, MSVC 16.7, and newer.
 
 .. toctree::
     :maxdepth: 2
