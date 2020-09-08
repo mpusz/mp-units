@@ -8,8 +8,8 @@ with a specific representation and is represented in the library with a
 `quantity` class template.
 
 
-Construction
-------------
+Quantity Construction
+---------------------
 
 To create the quantity object from a :term:`scalar` we just have to pass
 the value to the `quantity` class template explicit constructor::

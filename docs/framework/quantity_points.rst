@@ -8,8 +8,8 @@ A :term:`quantity point` is an absolute quantity with respect to zero
 `quantity_point` class template.
 
 
-Construction
-------------
+Quantity Point Construction
+---------------------------
 
 To create the quantity point object from a `quantity` we just have to pass
 the value to the `quantity_point` class template explicit constructor::
