@@ -53,3 +53,4 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     glossary
     genindex
     CHANGELOG
+    references

@@ -208,8 +208,3 @@ In order to obtain the base/coherent unit of any dimension type a
 
     static_assert(is_same_v<dimension_unit<si::dim_length>, si::metre>);
     static_assert(is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);
-
-
-.. rubric:: Citations:
-
-.. [P0847] `"Deducing this" <https://wg21.link/P0847>`_, Programming Language C++ proposal

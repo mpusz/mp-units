@@ -393,8 +393,3 @@ type here instead.
 
     To learn more about unknown units please refer to
     :ref:`Working with Unknown Units and Dimensions` chapter.
-
-
-.. rubric:: Citations:
-
-.. [P0847] `"Deducing this" <https://wg21.link/P0847>`_, Programming Language C++ proposal
