@@ -104,6 +104,7 @@ static_assert(120 / 1q_min == 2q_Hz);
 static_assert(1000 / 1q_s == 1q_kHz);
 static_assert(1 / 1q_ms == 1q_kHz);
 static_assert(3.2q_GHz == 3'200'000'000q_Hz);
+static_assert((10q_Hz * 1q_min).count() == 10);
 static_assert(10q_Hz * 1q_min == dimensionless<scaled_unit<ratio(60), unitless>>(10));
 static_assert(10q_Hz * 1q_min == dimensionless<unitless>(600));
 static_assert(2 / 1q_Hz == 2q_s);
