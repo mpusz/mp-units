@@ -2,7 +2,7 @@
 
 - **0.6.0 WIP**
   - gcc-9 is no longer supported (at least gcc-10 is required)
-  - MSVC 16.7 support added
+  - Visual Studio 16.7 support added
   - linear_algebra updated to 0.7.0/stable
   - fmt updated to 7.0.3
   - range-v3 updated to 0.11.0

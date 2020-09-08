@@ -25,4 +25,5 @@ Until then, please code alike what is there already:
 
 ## Backward Compatibility
 
-Before submission, please remember to check if the code compiles fine on all the supported compilers (gcc-10 and MSVC so far).
+Before submission, please remember to check if the code compiles fine on all the supported compilers
+(gcc-10 and Visual Studio 16 so far).
