@@ -4,7 +4,7 @@ Physical
 .. toctree::
     :maxdepth: 2
 
-    dimensions_and_concepts
+    physical/dimensions_and_concepts
     physical/si
     physical/cgs
     physical/international
