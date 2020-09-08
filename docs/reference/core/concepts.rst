@@ -1,7 +1,7 @@
+.. namespace:: units
+
 Concepts
 ========
-
-.. namespace:: units
 
 .. note::
 

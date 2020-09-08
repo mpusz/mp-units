@@ -1,3 +1,5 @@
+.. namespace:: units
+
 FAQ
 ===
 
