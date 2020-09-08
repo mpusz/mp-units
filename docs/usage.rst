@@ -18,7 +18,7 @@ This repository contains three independent CMake-based projects:
     but until then it depends on:
 
     - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
-    - `ms-gsl <https://github.com/microsoft/GSL>`_ to verify runtime contracts with `Expects` macro.
+    - `ms-gsl <https://github.com/microsoft/GSL>`_ to verify runtime contracts with ``Expects`` macro.
 
 - *.*
 
@@ -155,7 +155,7 @@ defined by the library. To do so you should use *CMakeLists.txt* file from the *
 .. code-block:: cmake
 
     add_subdirectory(<path_to_units_folder>/src)
-    ...
+    # ...
     target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
 
 .. important::

@@ -56,12 +56,12 @@ Beside adding new elements a few other changes where applied compared to the
 `std::chrono::duration <https://en.cppreference.com/w/cpp/chrono/duration>`_
 class template:
 
-1. The ``duration`` is using ``std::common_type_t<Rep1, Rep2>`` to find a common
+1. The ``std::chrono::duration`` is using ``std::common_type_t<Rep1, Rep2>`` to find a common
    representation for a calculation result. Such a design was reported as problematic
    by SG6 (numerics study group) members as sometimes we want to provide a different
    type in case of multiplication and different in case of division. ``std::common_type``
-   lacks that additional information. That is why `units::quantity` uses the resulting
+   lacks that additional information. That is why `quantity` uses the resulting
    type of a concrete operator operation.
-2. `operator %` is constrained with `treat_as_floating_point` type trait to limit the
-   types to integral representations only. Also `operator %(Rep)` takes `Rep` as a
+2. ``quantity::operator%()`` is constrained with `treat_as_floating_point` type trait to limit the
+   types to integral representations only. Also ``quantity::operator%(Rep)`` takes ``Rep`` as a
    template argument to limit implicit conversions.
