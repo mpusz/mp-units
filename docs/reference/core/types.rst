@@ -5,6 +5,7 @@ Types
     :maxdepth: 1
 
     types/quantity
+    types/quantity_point
     types/dimensions
     types/units
     types/prefixes

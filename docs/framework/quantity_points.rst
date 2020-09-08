@@ -3,7 +3,7 @@
 Quantity Points
 ===============
 
-A :term:`quantity point` is an absolute quantity with respect to zero
+A `quantity point` is an absolute quantity with respect to zero
 (which represents some origin) and is represented in the library with a
 `quantity_point` class template.
 

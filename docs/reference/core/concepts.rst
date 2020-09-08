@@ -73,3 +73,8 @@ Concepts
       the elements of `ratio`), :expr:`T * T` and :expr:`T / T` must be valid,
     - otherwise, :expr:`T * std::int64_t`, :expr:`std::int64_t * T`, and :expr:`T / std::int64_t`
       must be valid.
+
+.. concept:: template<typename T> QuantityPoint
+
+    A concept matching all quantity points in the library. Satisfied by all instantiations of
+    :class:`quantity_point`.
