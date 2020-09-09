@@ -39,12 +39,12 @@ void simple_quantities()
   using distance = length<metre>;
   using duration = physical::si::time<second>;
 
-  constexpr distance km = 1.0q_km;
-  constexpr distance miles = 1.0q_mi;
+  constexpr distance km = 1.0_q_km;
+  constexpr distance miles = 1.0_q_mi;
 
-  constexpr duration sec = 1q_s;
-  constexpr duration min = 1q_min;
-  constexpr duration hr = 1q_h;
+  constexpr duration sec = 1_q_s;
+  constexpr duration min = 1_q_min;
+  constexpr duration hr = 1_q_h;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -61,14 +61,14 @@ void quantities_with_typed_units()
   using namespace units::physical::si;
   using namespace units::physical::international;
 
-  constexpr length<kilometre> km = 1.0q_km;
-  constexpr length<mile> miles = 1.0q_mi;
+  constexpr length<kilometre> km = 1.0_q_km;
+  constexpr length<mile> miles = 1.0_q_mi;
 
   std::cout.precision(6);
 
-  constexpr si::time<second> sec = 1q_s;
-  constexpr si::time<minute> min = 1q_min;
-  constexpr si::time<hour> hr = 1q_h;
+  constexpr si::time<second> sec = 1_q_s;
+  constexpr si::time<minute> min = 1_q_min;
+  constexpr si::time<hour> hr = 1_q_h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
@@ -77,7 +77,7 @@ void quantities_with_typed_units()
   std::cout << min << '\n';
   std::cout << hr << "\n\n";
 
-  constexpr length<metre> meter = 1q_m;
+  constexpr length<metre> meter = 1_q_m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
@@ -111,8 +111,8 @@ void calcs_comparison()
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  length<femtometre,float> L1A = 2.q_fm;
-  length<femtometre,float> L2A = 3.q_fm;
+  length<femtometre,float> L1A = 2._q_fm;
+  length<femtometre,float> L2A = 3._q_fm;
   length<femtometre,float> LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n",L1A,L2A,LrA);
 

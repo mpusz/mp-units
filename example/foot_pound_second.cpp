@@ -67,7 +67,7 @@ auto fmt_line(const Q a)
 void print_details(std::string_view description, const Ship& ship)
 {
   using namespace units::physical::fps::literals;
-  const auto waterDensity = 62.4q_lb_per_ft3;
+  const auto waterDensity = 62.4_q_lb_per_ft3;
   std::cout << fmt::format("{}\n", description);
   std::cout << fmt::format("{:20} : {}\n", "length",    fmt_line<fps::length<fps::yard>, si::length<si::metre>>(ship.length))
             << fmt::format("{:20} : {}\n", "draft",     fmt_line<fps::length<fps::yard>, si::length<si::metre>>(ship.draft))
@@ -87,13 +87,13 @@ int main()
   using namespace units::physical::fps::literals;
   
   // KMS Bismark, using the units the Germans would use, taken from Wiki
-  auto bismark = Ship{.length{251.q_m}, .draft{9.3q_m}, .beam{36q_m}, .speed{56q_km_per_h}, .mass{50'300q_t}, .mainGuns{380q_mm}, .shellMass{800q_kg}, .shellSpeed{820.q_m_per_s}, .power{110.45q_kW}};
+  auto bismark = Ship{.length{251._q_m}, .draft{9.3_q_m}, .beam{36_q_m}, .speed{56_q_km_per_h}, .mass{50'300_q_t}, .mainGuns{380_q_mm}, .shellMass{800_q_kg}, .shellSpeed{820._q_m_per_s}, .power{110.45_q_kW}};
 
   // USS Iowa, using units from the foot-pound-second system
-  auto iowa = Ship{.length{860.q_ft}, .draft{37.q_ft + 2.q_in}, .beam{108.q_ft + 2.q_in}, .speed{33q_knot}, .mass{57'540q_lton}, .mainGuns{16q_in}, .shellMass{2700q_lb}, .shellSpeed{2690.q_ft_per_s}, .power{212'000q_hp}};
+  auto iowa = Ship{.length{860._q_ft}, .draft{37._q_ft + 2._q_in}, .beam{108._q_ft + 2._q_in}, .speed{33_q_knot}, .mass{57'540_q_lton}, .mainGuns{16_q_in}, .shellMass{2700_q_lb}, .shellSpeed{2690._q_ft_per_s}, .power{212'000_q_hp}};
 
   // HMS King George V, using units from the foot-pound-second system
-  auto kgv = Ship{.length{745.1q_ft}, .draft{33.q_ft + 7.5q_in}, .beam{103.2q_ft + 2.5q_in}, .speed{28.3q_knot}, .mass{42'245q_lton}, .mainGuns{14q_in}, .shellMass{1'590q_lb}, .shellSpeed{2483.q_ft_per_s}, .power{110'000q_hp}};
+  auto kgv = Ship{.length{745.1_q_ft}, .draft{33._q_ft + 7.5_q_in}, .beam{103.2_q_ft + 2.5_q_in}, .speed{28.3_q_knot}, .mass{42'245_q_lton}, .mainGuns{14_q_in}, .shellMass{1'590_q_lb}, .shellSpeed{2483._q_ft_per_s}, .power{110'000_q_hp}};
 
   print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);
   std::cout << "\n\n";

@@ -39,8 +39,8 @@ using area = quantity<dim_area, U, Rep>;
 inline namespace literals {
 
 // ft2
-constexpr auto operator"" q_ft2(unsigned long long l) { return area<square_foot, std::int64_t>(l); }
-constexpr auto operator"" q_ft2(long double l) { return area<square_foot, long double>(l); }
+constexpr auto operator"" _q_ft2(unsigned long long l) { return area<square_foot, std::int64_t>(l); }
+constexpr auto operator"" _q_ft2(long double l) { return area<square_foot, long double>(l); }
 
 }
 

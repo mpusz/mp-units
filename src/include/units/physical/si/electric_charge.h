@@ -39,8 +39,8 @@ using electric_charge = quantity<dim_electric_charge, U, Rep>;
 inline namespace literals {
 
 // C
-constexpr auto operator"" q_C(unsigned long long l) { return electric_charge<coulomb, std::int64_t>(l); }
-constexpr auto operator"" q_C(long double l) { return electric_charge<coulomb, long double>(l); }
+constexpr auto operator"" _q_C(unsigned long long l) { return electric_charge<coulomb, std::int64_t>(l); }
+constexpr auto operator"" _q_C(long double l) { return electric_charge<coulomb, long double>(l); }
 
 }  // namespace literals
 

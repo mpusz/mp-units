@@ -48,15 +48,15 @@ values the library provides :abbr:`UDL (User Defined Literal)` s for each
 be as simple as::
 
     using namespace units::physical::si::literals;
-    constexpr auto d1 = 123q_km;    // si::length<si::kilometre, std::int64_t>
-    constexpr auto d2 = 123.q_km;   // si::length<si::kilometre, long double>
+    constexpr auto d1 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
+    constexpr auto d2 = 123._q_km;   // si::length<si::kilometre, long double>
 
-``123q_km`` should be read as a quantity of length in kilometers. Initially the
-library did not use the ``q_`` prefix for UDLs but it turned out that there are
+``123_q_km`` should be read as a quantity of length in kilometers. Initially the
+library did not use the ``_q_`` prefix for UDLs but it turned out that there are
 a few unit symbols that collide with literals already existing in C and C++
 language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
 ``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
-``q_`` prefix was consistently applied to all the UDLs.
+``_q_`` prefix was consistently applied to all the UDLs.
 
 
 Dimension-specific Concepts
@@ -67,7 +67,7 @@ requires quantity of a concrete dimension than dimension-specific concepts can
 be used::
 
     using namespace units::physical::si::literals;
-    constexpr Length auto d = 123q_km;  // si::length<si::kilometre, std::int64_t>
+    constexpr Length auto d = 123_q_km;  // si::length<si::kilometre, std::int64_t>
 
 .. note::
 
@@ -83,8 +83,8 @@ quantities. The usage of such a function can look as follows::
 
     using namespace units::physical::si::literals;
     using namespace units::physical::international::literals;
-    constexpr Speed auto v1 = avg_speed(220q_km, 2q_h);
-    constexpr Speed auto v2 = avg_speed(140q_mi, 2q_h);
+    constexpr Speed auto v1 = avg_speed(220_q_km, 2_q_h);
+    constexpr Speed auto v2 = avg_speed(140_q_mi, 2_q_h);
 
 In this and all other physical units libraries such a function can be
 implemented as::
@@ -142,7 +142,7 @@ but often we would like to know a specific type too. We have two options here:
 
 - query the actual dimension, unit, and representation types::
 
-    constexpr Speed auto v = avg_speed(220q_km, 2q_h);
+    constexpr Speed auto v = avg_speed(220_q_km, 2_q_h);
     using quantity_type = decltype(v);
     using dimension_type = quantity_type::dimension;
     using unit_type = quantity_type::unit;
@@ -150,7 +150,7 @@ but often we would like to know a specific type too. We have two options here:
 
 - convert or cast to a desired quantity type::
 
-    constexpr Speed auto v1 = avg_speed(220.q_km, 2q_h);
+    constexpr Speed auto v1 = avg_speed(220._q_km, 2_q_h);
     constexpr si::speed<si::metre_per_second> v2 = v1;
     constexpr Speed auto v3 = quantity_cast<si::speed<si::metre_per_second>(v1);
 
@@ -166,8 +166,8 @@ Dimensionless Quantities
 Whenever we divide two quantities of the same dimension we end up with a
 :term:`dimensionless quantity` otherwise known as :term:`quantity of dimension one`::
 
-    static_assert(10q_km / 5q_km == 2);
-    static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, one, std::int64_t>>);
+    static_assert(10_q_km / 5_q_km == 2);
+    static_assert(std::is_same_v<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
 
 According to the official ISO definition `dim_one` is a dimension "for which all the
 exponents of the factors corresponding to the base quantities in its quantity dimension
@@ -196,7 +196,7 @@ There are two special units provided for usage with such a quantity:
 
 For example the following code::
 
-    std::cout << quantity_cast<percent>(50.q_m / 100.q_m) << '\n';
+    std::cout << quantity_cast<percent>(50._q_m / 100._q_m) << '\n';
 
 will print ``50 %`` to the console output.
 

@@ -217,10 +217,10 @@ struct glider {
 auto get_gliders()
 {
   const std::array gliders = {
-    glider{"SZD-30 Pirat", {velocity(83q_km_per_h), rate_of_climb(-0.7389q_m_per_s)}},
-    glider{"SZD-51 Junior", {velocity(80q_km_per_h), rate_of_climb(-0.6349q_m_per_s)}},
-    glider{"SZD-48 Jantar Std 3", {velocity(110q_km_per_h), rate_of_climb(-0.77355q_m_per_s)}},
-    glider{"SZD-56 Diana", {velocity(110q_km_per_h), rate_of_climb(-0.63657q_m_per_s)}}
+    glider{"SZD-30 Pirat", {velocity(83_q_km_per_h), rate_of_climb(-0.7389_q_m_per_s)}},
+    glider{"SZD-51 Junior", {velocity(80_q_km_per_h), rate_of_climb(-0.6349_q_m_per_s)}},
+    glider{"SZD-48 Jantar Std 3", {velocity(110_q_km_per_h), rate_of_climb(-0.77355_q_m_per_s)}},
+    glider{"SZD-56 Diana", {velocity(110_q_km_per_h), rate_of_climb(-0.63657_q_m_per_s)}}
   };
   return gliders;
 }
@@ -258,9 +258,9 @@ struct weather {
 auto get_weather_conditions()
 {
   const std::array weather_conditions = {
-    std::pair("Good", weather{height(1900q_m), rate_of_climb(4.3q_m_per_s)}),
-    std::pair("Medium", weather{height(1550q_m), rate_of_climb(2.8q_m_per_s)}),
-    std::pair("Bad", weather{height(850q_m), rate_of_climb(1.8q_m_per_s)})
+    std::pair("Good", weather{height(1900_q_m), rate_of_climb(4.3_q_m_per_s)}),
+    std::pair("Medium", weather{height(1550_q_m), rate_of_climb(2.8_q_m_per_s)}),
+    std::pair("Bad", weather{height(850_q_m), rate_of_climb(1.8_q_m_per_s)})
   };
   return weather_conditions;
 }
@@ -462,7 +462,7 @@ void estimate(const glider& g, const weather& w, const task& t, const safety& s,
     // circle in a thermall to gain height
     point = circle(point, g, w, t, height_to_gain);
   }
-  while(height_to_gain > height(0q_m));
+  while(height_to_gain > height(0_q_m));
 
   // final glide
   point = final_glide(point, g, t);
@@ -482,16 +482,16 @@ void example()
   print(weather_conditions);
 
   const task t = {
-    waypoint{"EPPR", altitude(16q_ft)},
-    waypoint{"EPGI", altitude(115q_ft)},
-    distance(81.7q_km)
+    waypoint{"EPPR", altitude(16_q_ft)},
+    waypoint{"EPGI", altitude(115_q_ft)},
+    distance(81.7_q_km)
   };
   print(t);
 
-  const safety s = {height(300q_m)};
+  const safety s = {height(300_q_m)};
   print(s);
 
-  const aircraft_tow tow = {height(400q_m), rate_of_climb(1.6q_m_per_s)};
+  const aircraft_tow tow = {height(400_q_m), rate_of_climb(1.6_q_m_per_s)};
   print(tow);
 
   for(const auto& g : gliders) {

@@ -39,8 +39,8 @@ using current_density = quantity<dim_current_density, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator"" q_A_per_m2(unsigned long long l) { return current_density<ampere_per_metre_sq, std::int64_t>(l); }
-constexpr auto operator"" q_A_per_m2(long double l) { return current_density<ampere_per_metre_sq, long double>(l); }
+constexpr auto operator"" _q_A_per_m2(unsigned long long l) { return current_density<ampere_per_metre_sq, std::int64_t>(l); }
+constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<ampere_per_metre_sq, long double>(l); }
 
 }  // namespace literals
 

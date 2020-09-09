@@ -34,25 +34,25 @@ TEST_CASE("operator<< on a data quantity", "[text][ostream]")
   {
     SECTION("named unit")
     {
-      stream << 64q_B;
+      stream << 64_q_B;
       REQUIRE(stream.str() == "64 B");
     }
 
     SECTION("prefixed coherent unit")
     {
-      stream << 256q_Kib;
+      stream << 256_q_Kib;
       REQUIRE(stream.str() == "256 Kib");
     }
 
     SECTION("prefixed non-coherent unit")
     {
-      stream << 1024q_KiB;
+      stream << 1024_q_KiB;
       REQUIRE(stream.str() == "1024 KiB");
     }
 
     SECTION("other unit matching prefix")
     {
-      stream << 8q_Kib * 8q_Kib / 2q_b;
+      stream << 8_q_Kib * 8_q_Kib / 2_q_b;
       REQUIRE(stream.str() == "32 Mib");
     }
   }

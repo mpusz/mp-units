@@ -40,8 +40,8 @@ using torque = quantity<dim_torque, U, Rep>;
 inline namespace literals {
 
 // Nm
-constexpr auto operator"" q_Nm(unsigned long long l) { return torque<newton_metre, std::int64_t>(l); }
-constexpr auto operator"" q_Nm(long double l) { return torque<newton_metre, long double>(l); }
+constexpr auto operator"" _q_Nm(unsigned long long l) { return torque<newton_metre, std::int64_t>(l); }
+constexpr auto operator"" _q_Nm(long double l) { return torque<newton_metre, long double>(l); }
 
 }  // namespace literals
 

@@ -55,72 +55,72 @@ using power = quantity<dim_power, U, Rep>;
 inline namespace literals {
 
 // W
-constexpr auto operator"" q_W(unsigned long long l) { return power<watt, std::int64_t>(l); }
-constexpr auto operator"" q_W(long double l) { return power<watt, long double>(l); }
+constexpr auto operator"" _q_W(unsigned long long l) { return power<watt, std::int64_t>(l); }
+constexpr auto operator"" _q_W(long double l) { return power<watt, long double>(l); }
 
 // yW
-constexpr auto operator"" q_yW(unsigned long long l) { return power<yoctowatt, std::int64_t>(l); }
-constexpr auto operator"" q_yW(long double l) { return power<yoctowatt, long double>(l); }
+constexpr auto operator"" _q_yW(unsigned long long l) { return power<yoctowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_yW(long double l) { return power<yoctowatt, long double>(l); }
 
 // zW
-constexpr auto operator"" q_zW(unsigned long long l) { return power<zeptowatt, std::int64_t>(l); }
-constexpr auto operator"" q_zW(long double l) { return power<zeptowatt, long double>(l); }
+constexpr auto operator"" _q_zW(unsigned long long l) { return power<zeptowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_zW(long double l) { return power<zeptowatt, long double>(l); }
 
 // aW
-constexpr auto operator"" q_aW(unsigned long long l) { return power<attowatt, std::int64_t>(l); }
-constexpr auto operator"" q_aW(long double l) { return power<attowatt, long double>(l); }
+constexpr auto operator"" _q_aW(unsigned long long l) { return power<attowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_aW(long double l) { return power<attowatt, long double>(l); }
 
 // fW
-constexpr auto operator"" q_fW(unsigned long long l) { return power<femtowatt, std::int64_t>(l); }
-constexpr auto operator"" q_fW(long double l) { return power<femtowatt, long double>(l); }
+constexpr auto operator"" _q_fW(unsigned long long l) { return power<femtowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_fW(long double l) { return power<femtowatt, long double>(l); }
 
 // pW
-constexpr auto operator"" q_pW(unsigned long long l) { return power<picowatt, std::int64_t>(l); }
-constexpr auto operator"" q_pW(long double l) { return power<picowatt, long double>(l); }
+constexpr auto operator"" _q_pW(unsigned long long l) { return power<picowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_pW(long double l) { return power<picowatt, long double>(l); }
 
 // nW
-constexpr auto operator"" q_nW(unsigned long long l) { return power<nanowatt, std::int64_t>(l); }
-constexpr auto operator"" q_nW(long double l) { return power<nanowatt, long double>(l); }
+constexpr auto operator"" _q_nW(unsigned long long l) { return power<nanowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_nW(long double l) { return power<nanowatt, long double>(l); }
 
 // uW
-constexpr auto operator"" q_uW(unsigned long long l) { return power<microwatt, std::int64_t>(l); }
-constexpr auto operator"" q_uW(long double l) { return power<microwatt, long double>(l); }
+constexpr auto operator"" _q_uW(unsigned long long l) { return power<microwatt, std::int64_t>(l); }
+constexpr auto operator"" _q_uW(long double l) { return power<microwatt, long double>(l); }
 
 // mW
-constexpr auto operator"" q_mW(unsigned long long l) { return power<milliwatt, std::int64_t>(l); }
-constexpr auto operator"" q_mW(long double l) { return power<milliwatt, long double>(l); }
+constexpr auto operator"" _q_mW(unsigned long long l) { return power<milliwatt, std::int64_t>(l); }
+constexpr auto operator"" _q_mW(long double l) { return power<milliwatt, long double>(l); }
 
 // kW
-constexpr auto operator"" q_kW(unsigned long long l) { return power<kilowatt, std::int64_t>(l); }
-constexpr auto operator"" q_kW(long double l) { return power<kilowatt, long double>(l); }
+constexpr auto operator"" _q_kW(unsigned long long l) { return power<kilowatt, std::int64_t>(l); }
+constexpr auto operator"" _q_kW(long double l) { return power<kilowatt, long double>(l); }
 
 // MW
-constexpr auto operator"" q_MW(unsigned long long l) { return power<megawatt, std::int64_t>(l); }
-constexpr auto operator"" q_MW(long double l) { return power<megawatt, long double>(l); }
+constexpr auto operator"" _q_MW(unsigned long long l) { return power<megawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_MW(long double l) { return power<megawatt, long double>(l); }
 
 // GW
-constexpr auto operator"" q_GW(unsigned long long l) { return power<gigawatt, std::int64_t>(l); }
-constexpr auto operator"" q_GW(long double l) { return power<gigawatt, long double>(l); }
+constexpr auto operator"" _q_GW(unsigned long long l) { return power<gigawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_GW(long double l) { return power<gigawatt, long double>(l); }
 
 // TW
-constexpr auto operator"" q_TW(unsigned long long l) { return power<terawatt, std::int64_t>(l); }
-constexpr auto operator"" q_TW(long double l) { return power<terawatt, long double>(l); }
+constexpr auto operator"" _q_TW(unsigned long long l) { return power<terawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_TW(long double l) { return power<terawatt, long double>(l); }
 
 // PW
-constexpr auto operator"" q_PW(unsigned long long l) { return power<petawatt, std::int64_t>(l); }
-constexpr auto operator"" q_PW(long double l) { return power<petawatt, long double>(l); }
+constexpr auto operator"" _q_PW(unsigned long long l) { return power<petawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_PW(long double l) { return power<petawatt, long double>(l); }
 
 // EW
-constexpr auto operator"" q_EW(unsigned long long l) { return power<exawatt, std::int64_t>(l); }
-constexpr auto operator"" q_EW(long double l) { return power<exawatt, long double>(l); }
+constexpr auto operator"" _q_EW(unsigned long long l) { return power<exawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_EW(long double l) { return power<exawatt, long double>(l); }
 
 // ZW
-constexpr auto operator"" q_ZW(unsigned long long l) { return power<zettawatt, std::int64_t>(l); }
-constexpr auto operator"" q_ZW(long double l) { return power<zettawatt, long double>(l); }
+constexpr auto operator"" _q_ZW(unsigned long long l) { return power<zettawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_ZW(long double l) { return power<zettawatt, long double>(l); }
 
 // YW
-constexpr auto operator"" q_YW(unsigned long long l) { return power<yottawatt, std::int64_t>(l); }
-constexpr auto operator"" q_YW(long double l) { return power<yottawatt, long double>(l); }
+constexpr auto operator"" _q_YW(unsigned long long l) { return power<yottawatt, std::int64_t>(l); }
+constexpr auto operator"" _q_YW(long double l) { return power<yottawatt, long double>(l); }
 
 }  // namespace literals
 

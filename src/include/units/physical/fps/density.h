@@ -38,8 +38,8 @@ using density = quantity<dim_density, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator"" q_lb_per_ft3(unsigned long long l) { return density<pound_per_foot_cub, std::int64_t>(l); }
-constexpr auto operator"" q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
+constexpr auto operator"" _q_lb_per_ft3(unsigned long long l) { return density<pound_per_foot_cub, std::int64_t>(l); }
+constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
 
 }  // namespace literals
 

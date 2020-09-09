@@ -46,8 +46,8 @@ void si_example()
 
   std::cout << "\n*** SI units (c = " << c << ") ***\n";
 
-  const Momentum auto p = 4.q_GeV / c;
-  const Mass auto m = 3.q_GeV / pow<2>(c);
+  const Momentum auto p = 4._q_GeV / c;
+  const Mass auto m = 3._q_GeV / pow<2>(c);
   const Energy auto E = total_energy(p, m, c);
 
   std::cout << "[in GeV]\n"

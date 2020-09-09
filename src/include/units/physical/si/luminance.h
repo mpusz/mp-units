@@ -38,8 +38,8 @@ using luminance = quantity<dim_luminance, U, Rep>;
 inline namespace literals {
 
 // cd/m²
-constexpr auto operator"" q_cd_per_m2(unsigned long long l) { return luminance<candela_per_metre_sq, std::int64_t>(l); }
-constexpr auto operator"" q_cd_per_m2(long double l) { return luminance<candela_per_metre_sq, long double>(l); }
+constexpr auto operator"" _q_cd_per_m2(unsigned long long l) { return luminance<candela_per_metre_sq, std::int64_t>(l); }
+constexpr auto operator"" _q_cd_per_m2(long double l) { return luminance<candela_per_metre_sq, long double>(l); }
 
 }  // namespace literals
 

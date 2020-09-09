@@ -50,17 +50,17 @@ static_assert(foot::symbol == "ft");
 
 // speed
 
-static_assert(10q_ft / 5q_s == 2q_ft_per_s);
-static_assert(10q_ft / 2q_ft_per_s == 5q_s);
-static_assert(10q_ft == 2q_ft_per_s * 5q_s);
+static_assert(10_q_ft / 5_q_s == 2_q_ft_per_s);
+static_assert(10_q_ft / 2_q_ft_per_s == 5_q_s);
+static_assert(10_q_ft == 2_q_ft_per_s * 5_q_s);
 
 static_assert(detail::unit_text<dim_speed, foot_per_second>() == "ft/s");
 
 // area
 static_assert(foot::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
-static_assert(1q_ft * 1q_ft == 1q_ft2);
-static_assert(100q_ft2 / 10q_ft == 10q_ft);
+static_assert(1_q_ft * 1_q_ft == 1_q_ft2);
+static_assert(100_q_ft2 / 10_q_ft == 10_q_ft);
 
 static_assert(detail::unit_text<dim_area, square_foot>() == basic_symbol_text("ft²", "ft^2"));
 
@@ -68,34 +68,34 @@ static_assert(detail::unit_text<dim_area, square_foot>() == basic_symbol_text("f
 
 // acceleration
 
-static_assert(10q_ft_per_s / 10q_s == 1q_ft_per_s2);
-static_assert(10q_ft_per_s / 1q_ft_per_s2 == 10q_s);
-static_assert(1q_ft_per_s2 * 10q_s == 10q_ft_per_s);
+static_assert(10_q_ft_per_s / 10_q_s == 1_q_ft_per_s2);
+static_assert(10_q_ft_per_s / 1_q_ft_per_s2 == 10_q_s);
+static_assert(1_q_ft_per_s2 * 10_q_s == 10_q_ft_per_s);
 
 // force
 
-static_assert(10q_lb * 10q_ft_per_s2 == 100q_pdl);
-static_assert(100q_pdl / 10q_lb == 10q_ft_per_s2);
-static_assert(100q_pdl / 10q_ft_per_s2 == 10q_lb);
+static_assert(10_q_lb * 10_q_ft_per_s2 == 100_q_pdl);
+static_assert(100_q_pdl / 10_q_lb == 10_q_ft_per_s2);
+static_assert(100_q_pdl / 10_q_ft_per_s2 == 10_q_lb);
 
 // pressure
-static_assert(10q_pdl / 10q_ft2 == 1q_pdl_per_ft2);
-static_assert(10q_pdl / 1q_pdl_per_ft2 == 10q_ft2);
-static_assert(1q_pdl_per_ft2 * 10q_ft2 == 10q_pdl);
+static_assert(10_q_pdl / 10_q_ft2 == 1_q_pdl_per_ft2);
+static_assert(10_q_pdl / 1_q_pdl_per_ft2 == 10_q_ft2);
+static_assert(1_q_pdl_per_ft2 * 10_q_ft2 == 10_q_pdl);
 
 // energy
 
-static_assert(10q_pdl * 10q_ft == 100q_ft_pdl);
-static_assert(100q_ft_pdl / 10q_ft == 10q_pdl);
-static_assert(100q_ft_pdl / 10q_pdl == 10q_ft);
+static_assert(10_q_pdl * 10_q_ft == 100_q_ft_pdl);
+static_assert(100_q_ft_pdl / 10_q_ft == 10_q_pdl);
+static_assert(100_q_ft_pdl / 10_q_pdl == 10_q_ft);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
 // power
 
-static_assert(10q_ft_pdl / 10q_s == 1q_ft_pdl_per_s);
-static_assert(1q_ft_pdl_per_s * 10q_s == 10q_ft_pdl);
-static_assert(10q_ft_pdl / 1q_ft_pdl_per_s == 10q_s);
+static_assert(10_q_ft_pdl / 10_q_s == 1_q_ft_pdl_per_s);
+static_assert(1_q_ft_pdl_per_s * 10_q_s == 10_q_ft_pdl);
+static_assert(10_q_ft_pdl / 1_q_ft_pdl_per_s == 10_q_s);
 
 // static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == "ft_lbf/s");
 

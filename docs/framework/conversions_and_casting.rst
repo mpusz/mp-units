@@ -21,9 +21,9 @@ No Conversions
 No conversions (either implicit or explicit) are available across quantities of
 different dimensions::
 
-    si::length<si::metre> d1 = 1q_s;            // Compile-time error
-    si::length<si::metre> d2(1q_s);             // Compile-time error
-    auto d3 = quantity_cast<si::metre>(1q_s);   // Compile-time error
+    si::length<si::metre> d1 = 1_q_s;            // Compile-time error
+    si::length<si::metre> d2(1_q_s);             // Compile-time error
+    auto d3 = quantity_cast<si::metre>(1_q_s);   // Compile-time error
 
 
 Implicit
@@ -33,23 +33,23 @@ Implicit conversions are allowed only across quantities of the same dimension:
 
 - for integral types with ratios that guarantee no precision loss::
 
-    si::length<si::metre, int>        d1 = 1q_km + 1q_m;  // OK
-    si::length<si::millimetre, int>   d2 = 1q_km + 1q_m;  // OK
-    si::length<si::kilometre, int>    d3 = 1q_km + 1q_m;  // Compile-time error
-    si::length<si::kilometre, int>    d4(1q_km + 1q_m);   // Compile-time error
-    si::length<si::metre, int>        d5 = 1q_m + 1q_ft;  // Compile-time error
-    si::length<si::metre, int>        d6(1q_m + 1q_ft);   // Compile-time error
+    si::length<si::metre, int>        d1 = 1_q_km + 1_q_m;  // OK
+    si::length<si::millimetre, int>   d2 = 1_q_km + 1_q_m;  // OK
+    si::length<si::kilometre, int>    d3 = 1_q_km + 1_q_m;  // Compile-time error
+    si::length<si::kilometre, int>    d4(1_q_km + 1_q_m);   // Compile-time error
+    si::length<si::metre, int>        d5 = 1_q_m + 1_q_ft;  // Compile-time error
+    si::length<si::metre, int>        d6(1_q_m + 1_q_ft);   // Compile-time error
 
 - from an integral to a floating-point representation even in case of a truncating
   ratio::
 
-    si::length<si::kilometre, double> d7 = 1q_km + 1q_m;  // OK
-    si::length<si::metre, double>     d8 = 1q_m + 1q_ft;  // OK
+    si::length<si::kilometre, double> d7 = 1_q_km + 1_q_m;  // OK
+    si::length<si::metre, double>     d8 = 1_q_m + 1_q_ft;  // OK
 
 - when both sides use a floating-point representation::
 
-    si::length<si::metre, int>        d9 = 1.23q_m;       // Compile-time error
-    si::length<si::metre, double>    d10 = 1.23q_m;       // OK
+    si::length<si::metre, int>        d9 = 1.23_q_m;        // Compile-time error
+    si::length<si::metre, double>    d10 = 1.23_q_m;        // OK
 
 
 Explicit
@@ -92,7 +92,7 @@ once and leave the rest intact:
 `quantity_point_cast` takes anything that works for `quantity_point`
 or a specific target `quantity_point`::
 
-    std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0q_m})>(d) << '\n';
+    std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0_q_m})>(d) << '\n';
 
 .. seealso::
 
@@ -108,8 +108,8 @@ As noted in the :ref:`Dimensionless Quantities` chapter, :term:`quantity of dime
 is somehow special but still obey most of the rules defined for quantities. However, as they
 represent numbers it would be highly uncomfortable to every time type::
 
-    const auto d1 = 10q_km;
-    const auto d2 = 3q_km;
+    const auto d1 = 10_q_km;
+    const auto d2 = 3_q_km;
     if(d1 / d2 > dimensionless<one, 2>) {
       // ...
     }
@@ -123,8 +123,8 @@ This is why it was decided to allow the ``dimensionless<one>`` quantity of any
 representation type to be implicitly constructible from this representation type.
 With that the above examples can be rewritten as follows::
 
-    const auto d1 = 10q_km;
-    const auto d2 = 3q_km;
+    const auto d1 = 10_q_km;
+    const auto d2 = 3_q_km;
     if(d1 / d2 > 2) {
       // ...
     }
@@ -142,8 +142,8 @@ could be ambiguous. For example::
       return d1 / d2 + 1;
     }
 
-As long as we can reason about what such code means for ``foo(10q_km, 2q_km)`` it is not that obvious 
-at all in the case of ``foo(10q_cm, 2q_ft)``. To make such code to compile for every case we have to
+As long as we can reason about what such code means for ``foo(10_q_km, 2_q_km)`` it is not that obvious 
+at all in the case of ``foo(10_q_cm, 2_q_ft)``. To make such code to compile for every case we have to
 either change the type of the resulting unit to the one having ``ratio(1)`` (:term:`coherent derived unit`)::
 
     Dimensionless auto foo(Length auto d1, Length auto d2)
@@ -162,15 +162,15 @@ There is one more important point to note here. As the the dimensionless quantit
 a number, it is never implicitly converted back to the representation type. This means that the following
 code will not compile::
 
-    auto v = std::exp(10q_m / 5q_m);
+    auto v = std::exp(10_q_m / 5_q_m);
 
 To make it compile fine we have to either explicitly get the value stored in the quantity::
 
-    auto v = std::exp(quantity_cast<one>(10q_m / 5q_m).count());
+    auto v = std::exp(quantity_cast<one>(10_q_m / 5_q_m).count());
 
 or use a mathematical wrapper function from `units` namespace::
 
-    auto v = units::exp(10q_m / 5q_m);
+    auto v = units::exp(10_q_m / 5_q_m);
 
 .. important::
 

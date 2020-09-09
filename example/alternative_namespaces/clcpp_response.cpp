@@ -33,12 +33,12 @@ void simple_quantities()
   using distance = length::m<>;
   using q_time = q_time::s<>;
 
-  constexpr distance km = 1.0q_km;
-  constexpr distance miles = 1.0q_mi;
+  constexpr distance km = 1.0_q_km;
+  constexpr distance miles = 1.0_q_mi;
 
-  constexpr q_time sec = 1q_s;
-  constexpr q_time min = 1q_min;
-  constexpr q_time hr = 1q_h;
+  constexpr q_time sec = 1_q_s;
+  constexpr q_time min = 1_q_min;
+  constexpr q_time hr = 1_q_h;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -51,12 +51,12 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-  constexpr length::km<> km = 1.0q_km;
-  constexpr length::mi<> miles = 1.0q_mi;
+  constexpr length::km<> km = 1.0_q_km;
+  constexpr length::mi<> miles = 1.0_q_mi;
 
-  constexpr q_time::s<> sec = 1q_s;
-  constexpr q_time::min<> min = 1q_min;
-  constexpr q_time::h<> hr = 1q_h;
+  constexpr q_time::s<> sec = 1_q_s;
+  constexpr q_time::min<> min = 1_q_min;
+  constexpr q_time::h<> hr = 1_q_h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
@@ -65,7 +65,7 @@ void quantities_with_typed_units()
   std::cout << min << '\n';
   std::cout << hr << "\n\n";
 
-  constexpr length::m<> meter = 1q_m;
+  constexpr length::m<> meter = 1_q_m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
@@ -97,8 +97,8 @@ void calcs_comparison()
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  length::fm<float> L1A = 2.q_fm;
-  length::fm<float> L2A = 3.q_fm;
+  length::fm<float> L1A = 2._q_fm;
+  length::fm<float> L2A = 3._q_fm;
   length::fm<float> LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n",L1A,L2A,LrA);
 

@@ -36,7 +36,7 @@ Why a dimensionless quantity is not just an fundamental arithmetic type?
 In the initial design of this library the resulting type of the division of
 two quantities was their common representation type::
 
-    static_assert(std::is_same_v<decltype(10q_km / 5q_km), std::int64_t>);
+    static_assert(std::is_same_v<decltype(10_q_km / 5_q_km), std::int64_t>);
 
 The reasoning behind it was to not provide a false impression of a strong `quantity` type
 for something that looks and feels like a regular number. Also all of the mathematic
@@ -67,8 +67,13 @@ Well, this is how [ISO-80000]_ defines it (British English spelling by default).
 User Defined Literals (UDLs)
 ----------------------------
 
-Why all UDLs are prefixed with ``q_`` instead of just using unit symbol?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Why all UDLs are prefixed with ``_q_`` instead of just using unit symbol?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..note ..
+
+    Every ``_q_*`` UDL will be replaced by the ``q_*`` literal when/if **mp-units**
+    will become a part of the C++ Standard Library.
 
 Usage of only unit symbols in UDLs would be a preferred approach (less to type,
 easier to understand and maintain). However, while increasing the coverage for
@@ -77,24 +82,8 @@ built-in types or numeric extensions. A few of those are: ``F`` (farad),
 ``J`` (joule), ``W`` (watt), ``K`` (kelvin), ``d`` (day),
 ``l`` or ``L`` (litre), ``erg``, ``ergps``. For a while for those we used ``_``
 prefix to make the library work at all, but at some point we had to unify the
-naming and we came up with ``q_`` prefix which results in a creation of
+naming and we came up with ``_q_`` prefix which results in a creation of
 quantity of a provided unit.
-
-
-Why do we use UDLs reserved for the C++ standard (no ``_`` prefix)?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This library is meant to become a part of the C++ Standard Library at some point
-in the future. We decided to work with the target interface to get implementation
-and user experience. Only thanks to this we were able to detect multiple collisions
-with literals already existing in the language in our initial approach
-(`Why all UDLs are prefixed with q_ instead of just using unit symbol?
-<#why-unicode-quantity-symbols-are-used-by-default-instead-of-ascii-only-characters>`_).
-This approach has some side effects though. We had to disable some compiler warnings
-to make it work:
-
-- ``/wd4455`` on MSVC,
-- ``-Wno-literal-suffix`` on other compilers.
 
 
 Text formatting

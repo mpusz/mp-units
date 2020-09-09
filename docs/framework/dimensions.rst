@@ -17,8 +17,8 @@ each other and the result will always be a quantity of the same dimension:
 .. code-block::
     :emphasize-lines: 3-4
 
-    Length auto dist1 = 2q_m;
-    Length auto dist2 = 1q_m;
+    Length auto dist1 = 2_q_m;
+    Length auto dist2 = 1_q_m;
     Length auto res1 = dist1 + dist2;
     Length auto res2 = dist1 - dist2;
 
@@ -29,7 +29,7 @@ not change:
 .. code-block::
     :emphasize-lines: 2-4
 
-    Length auto dist = 2q_m;
+    Length auto dist = 2_q_m;
     Length auto res1 = dist * 2;   // 4 m
     Length auto res2 = 3 * res1;   // 12 m
     Length auto res3 = res2 / 2;   // 6 m
@@ -41,9 +41,9 @@ probably will always end up in a quantity of a yet another dimension:
 .. code-block::
     :emphasize-lines: 4-6
 
-    Length auto dist1 = 2q_m;
-    Length auto dist2 = 3q_m;
-    Time auto dur1 = 2q_s;
+    Length auto dist1 = 2_q_m;
+    Length auto dist2 = 3_q_m;
+    Time auto dur1 = 2_q_s;
     Area auto res1 = dist1 * dist2;     // 6 m²
     Speed auto res2 = dist1 / dur1;     // 1 m/s
     Frequency auto res3 = 10 / dur1;    // 5 Hz
@@ -55,9 +55,9 @@ dimension, than we will end up with just a scalable number type:
 .. code-block::
     :emphasize-lines: 4-5
 
-    Time auto dur1 = 10q_s;
-    Time auto dur2 = 2q_s;
-    Frequency auto fr1 = 5q_Hz;
+    Time auto dur1 = 10_q_s;
+    Time auto dur2 = 2_q_s;
+    Frequency auto fr1 = 5_q_Hz;
     ScalableNumber auto v1 = dur1 / dur2;    // 5
     ScalableNumber auto v2 = dur1 * fr1;     // 50
 
@@ -69,8 +69,8 @@ The result will always be a quantity point of the same dimension:
 .. code-block::
     :emphasize-lines: 3-5
 
-    Length auto dist1 = 2q_m;
-    Length auto dist2 = 1q_m;
+    Length auto dist1 = 2_q_m;
+    Length auto dist2 = 1_q_m;
     QuantityPoint auto res1 = quantity_point{dist1} + dist2;
     QuantityPoint auto res2 = dist1 + quantity_point{dist2};
     QuantityPoint auto res3 = quantity_point{dist1} - dist2;
@@ -82,8 +82,8 @@ The result will always be a quantity point of the same dimension:
     .. code-block::
         :emphasize-lines: 3
         
-        Length auto dist1 = 2q_m;
-        Length auto dist2 = 1q_m;
+        Length auto dist1 = 2_q_m;
+        Length auto dist2 = 1_q_m;
         auto res1 = dist1 - quantity_point{dist2};  // ERROR
 
 We can also subtract two quantity points.
@@ -92,8 +92,8 @@ The result is a relative quantity of the same dimension:
 .. code-block::
     :emphasize-lines: 3
 
-    Length auto dist1 = 2q_m;
-    Length auto dist2 = 1q_m;
+    Length auto dist1 = 2_q_m;
+    Length auto dist2 = 1_q_m;
     Length auto res1 = quantity_point{dist1} - quantity_point{dist2};
 
 That's it! You can't multiply nor divide quantity points with anything else.

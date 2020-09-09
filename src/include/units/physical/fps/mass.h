@@ -55,40 +55,40 @@ struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, ratio(2'2
 inline namespace literals {
 
 // Grain
-constexpr auto operator"" q_gr(unsigned long long l) { return mass<grain, std::int64_t>(l); }
-constexpr auto operator"" q_gr(long double l) { return mass<grain, long double>(l); }
+constexpr auto operator"" _q_gr(unsigned long long l) { return mass<grain, std::int64_t>(l); }
+constexpr auto operator"" _q_gr(long double l) { return mass<grain, long double>(l); }
 
 // Dram
-constexpr auto operator"" q_dr(unsigned long long l) { return mass<dram, std::int64_t>(l); }
-constexpr auto operator"" q_dr(long double l) { return mass<dram, long double>(l); }
+constexpr auto operator"" _q_dr(unsigned long long l) { return mass<dram, std::int64_t>(l); }
+constexpr auto operator"" _q_dr(long double l) { return mass<dram, long double>(l); }
 
 // Ounce
-constexpr auto operator"" q_oz(unsigned long long l) { return mass<ounce, std::int64_t>(l); }
-constexpr auto operator"" q_oz(long double l) { return mass<ounce, long double>(l); }
+constexpr auto operator"" _q_oz(unsigned long long l) { return mass<ounce, std::int64_t>(l); }
+constexpr auto operator"" _q_oz(long double l) { return mass<ounce, long double>(l); }
 
 // Pound
-constexpr auto operator"" q_lb(unsigned long long l) { return mass<pound, std::int64_t>(l); }
-constexpr auto operator"" q_lb(long double l) { return mass<pound, long double>(l); }
+constexpr auto operator"" _q_lb(unsigned long long l) { return mass<pound, std::int64_t>(l); }
+constexpr auto operator"" _q_lb(long double l) { return mass<pound, long double>(l); }
 
 // Stone
-constexpr auto operator"" q_st(unsigned long long l) { return mass<stone, std::int64_t>(l); }
-constexpr auto operator"" q_st(long double l) { return mass<stone, long double>(l); }
+constexpr auto operator"" _q_st(unsigned long long l) { return mass<stone, std::int64_t>(l); }
+constexpr auto operator"" _q_st(long double l) { return mass<stone, long double>(l); }
 
 // Quarter
-constexpr auto operator"" q_qr(unsigned long long l) { return mass<quarter, std::int64_t>(l); }
-constexpr auto operator"" q_qr(long double l) { return mass<quarter, long double>(l); }
+constexpr auto operator"" _q_qr(unsigned long long l) { return mass<quarter, std::int64_t>(l); }
+constexpr auto operator"" _q_qr(long double l) { return mass<quarter, long double>(l); }
 
 // Hundredweight
-constexpr auto operator"" q_cwt(unsigned long long l) { return mass<hundredweight, std::int64_t>(l); }
-constexpr auto operator"" q_cwt(long double l) { return mass<hundredweight, long double>(l); }
+constexpr auto operator"" _q_cwt(unsigned long long l) { return mass<hundredweight, std::int64_t>(l); }
+constexpr auto operator"" _q_cwt(long double l) { return mass<hundredweight, long double>(l); }
 
 // Short ton
-constexpr auto operator"" q_ston(unsigned long long l) { return mass<short_ton, std::int64_t>(l); }
-constexpr auto operator"" q_ston(long double l) { return mass<short_ton, long double>(l); }
+constexpr auto operator"" _q_ston(unsigned long long l) { return mass<short_ton, std::int64_t>(l); }
+constexpr auto operator"" _q_ston(long double l) { return mass<short_ton, long double>(l); }
 
 // Long Ton
-constexpr auto operator"" q_lton(unsigned long long l) { return mass<long_ton, std::int64_t>(l); }
-constexpr auto operator"" q_lton(long double l) { return mass<long_ton, long double>(l); }
+constexpr auto operator"" _q_lton(unsigned long long l) { return mass<long_ton, std::int64_t>(l); }
+constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long double>(l); }
 
 
 }

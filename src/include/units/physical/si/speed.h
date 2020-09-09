@@ -40,12 +40,12 @@ using speed = quantity<dim_speed, U, Rep>;
 inline namespace literals {
 
 // mps
-constexpr auto operator"" q_m_per_s(unsigned long long l) { return speed<metre_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_m_per_s(long double l) { return speed<metre_per_second, long double>(l); }
+constexpr auto operator"" _q_m_per_s(unsigned long long l) { return speed<metre_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_m_per_s(long double l) { return speed<metre_per_second, long double>(l); }
 
 // kmph
-constexpr auto operator"" q_km_per_h(unsigned long long l) { return speed<kilometre_per_hour, std::int64_t>(l); }
-constexpr auto operator"" q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
+constexpr auto operator"" _q_km_per_h(unsigned long long l) { return speed<kilometre_per_hour, std::int64_t>(l); }
+constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
 
 }  // namespace literals
 

@@ -308,7 +308,7 @@ constexpr ratio cast_ratio(const Q1& from, const Q2& to)
  *
  * This cast gets the target quantity type to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::time<units::physical::si::second>>(1q_ms);
+ * auto q1 = units::quantity_cast<units::physical::si::time<units::physical::si::second>>(1_q_ms);
  *
  * @tparam To a target quantity type to cast to
  */
@@ -332,7 +332,7 @@ template<Quantity To, typename D, typename U, typename Rep>
  *
  * This cast gets only the target dimension to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::acceleration>(200q_Gal);
+ * auto q1 = units::quantity_cast<units::physical::si::acceleration>(200_q_Gal);
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
@@ -351,7 +351,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * This cast gets only the target unit to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::second>(1q_ms);
+ * auto q1 = units::quantity_cast<units::physical::si::second>(1_q_ms);
  *
  * @tparam ToU a unit type to use for a target quantity
  */
@@ -370,7 +370,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * This cast gets only representation to cast to. For example:
  *
- * auto q1 = units::quantity_cast<int>(1q_ms);
+ * auto q1 = units::quantity_cast<int>(1_q_ms);
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
@@ -388,11 +388,11 @@ template<ScalableNumber ToRep, typename D, typename U, typename Rep>
  *
  * This cast gets the target quantity point type to cast to or anything that works for quantity_cast. For example:
  *
- * auto q1 = units::quantity_point_cast<decltype(quantity_point{0q_s})>(quantity_point{1q_ms});
- * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1q_ms});
- * auto q1 = units::quantity_point_cast<units::physical::si::acceleration>(quantity_point{200q_Gal});
- * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1q_ms});
- * auto q1 = units::quantity_point_cast<int>(quantity_point{1q_ms});
+ * auto q1 = units::quantity_point_cast<decltype(quantity_point{0_q_s})>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<units::physical::si::acceleration>(quantity_point{200_q_Gal});
+ * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<int>(quantity_point{1_q_ms});
  *
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
  */

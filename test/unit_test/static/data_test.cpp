@@ -31,17 +31,17 @@ using namespace units::data;
 
 // information
 
-static_assert(1q_B == 8q_b);
-static_assert(1024q_b == 1q_Kib);
-static_assert(1024q_B == 1q_KiB);
-static_assert(8 * 1024q_b == 1q_KiB);
-static_assert(8 * 1q_Kib == 1q_KiB);
+static_assert(1_q_B == 8_q_b);
+static_assert(1024_q_b == 1_q_Kib);
+static_assert(1024_q_B == 1_q_KiB);
+static_assert(8 * 1024_q_b == 1_q_KiB);
+static_assert(8 * 1_q_Kib == 1_q_KiB);
 
-static_assert(1q_Kib == 1024q_b);
-static_assert(1q_Mib == 1024q_Kib);
-static_assert(1q_Gib == 1024q_Mib);
-static_assert(1q_Tib == 1024q_Gib);
-static_assert(1q_Pib == 1024q_Tib);
+static_assert(1_q_Kib == 1024_q_b);
+static_assert(1_q_Mib == 1024_q_Kib);
+static_assert(1_q_Gib == 1024_q_Mib);
+static_assert(1_q_Tib == 1024_q_Gib);
+static_assert(1_q_Pib == 1024_q_Tib);
 
 // bitrate
 

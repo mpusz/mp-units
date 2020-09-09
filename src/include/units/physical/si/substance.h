@@ -38,8 +38,8 @@ using substance = quantity<dim_substance, U, Rep>;
 inline namespace literals {
 
 // mol
-constexpr auto operator"" q_mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
-constexpr auto operator"" q_mol(long double l) { return substance<mole, long double>(l); }
+constexpr auto operator"" _q_mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
+constexpr auto operator"" _q_mol(long double l) { return substance<mole, long double>(l); }
 
 }  // namespace literals
 

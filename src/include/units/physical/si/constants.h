@@ -54,7 +54,7 @@ template<ScalableNumber Rep = double>
 inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9'192'631'770);
 
 // template<ScalableNumber Rep = double>
-// inline constexpr auto luminous_efficacy = 683q_lm / 1q_W;
+// inline constexpr auto luminous_efficacy = 683_q_lm / 1_q_W;
 
 template<ScalableNumber Rep = double>
 inline constexpr auto standard_gravity = acceleration<metre_per_second_sq, Rep>(9.80665);

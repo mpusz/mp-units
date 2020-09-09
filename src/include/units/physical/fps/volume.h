@@ -39,12 +39,12 @@ using volume = quantity<dim_volume, U, Rep>;
 inline namespace literals {
 
 // ft3
-constexpr auto operator"" q_ft3(unsigned long long l) { return volume<cubic_foot, std::int64_t>(l); }
-constexpr auto operator"" q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
+constexpr auto operator"" _q_ft3(unsigned long long l) { return volume<cubic_foot, std::int64_t>(l); }
+constexpr auto operator"" _q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
 
 // yard3
-constexpr auto operator"" q_yd3(unsigned long long l) { return volume<cubic_yard, std::int64_t>(l); }
-constexpr auto operator"" q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
+constexpr auto operator"" _q_yd3(unsigned long long l) { return volume<cubic_yard, std::int64_t>(l); }
+constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
 

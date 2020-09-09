@@ -60,88 +60,88 @@ using pressure = quantity<dim_pressure, U, Rep>;
 inline namespace literals {
 
 // Pa
-constexpr auto operator"" q_Pa(unsigned long long l) { return pressure<pascal, std::int64_t>(l); }
-constexpr auto operator"" q_Pa(long double l) { return pressure<pascal, long double>(l); }
+constexpr auto operator"" _q_Pa(unsigned long long l) { return pressure<pascal, std::int64_t>(l); }
+constexpr auto operator"" _q_Pa(long double l) { return pressure<pascal, long double>(l); }
 
 // yPa
-constexpr auto operator"" q_yPa(unsigned long long l) { return pressure<yoctopascal, std::int64_t>(l); }
-constexpr auto operator"" q_yPa(long double l) { return pressure<yoctopascal, long double>(l); }
+constexpr auto operator"" _q_yPa(unsigned long long l) { return pressure<yoctopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_yPa(long double l) { return pressure<yoctopascal, long double>(l); }
 
 // zPa
-constexpr auto operator"" q_zPa(unsigned long long l) { return pressure<zeptopascal, std::int64_t>(l); }
-constexpr auto operator"" q_zPa(long double l) { return pressure<zeptopascal, long double>(l); }
+constexpr auto operator"" _q_zPa(unsigned long long l) { return pressure<zeptopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_zPa(long double l) { return pressure<zeptopascal, long double>(l); }
 
 // aPa
-constexpr auto operator"" q_aPa(unsigned long long l) { return pressure<attopascal, std::int64_t>(l); }
-constexpr auto operator"" q_aPa(long double l) { return pressure<attopascal, long double>(l); }
+constexpr auto operator"" _q_aPa(unsigned long long l) { return pressure<attopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_aPa(long double l) { return pressure<attopascal, long double>(l); }
 
 // fPa
-constexpr auto operator"" q_fPa(unsigned long long l) { return pressure<femtopascal, std::int64_t>(l); }
-constexpr auto operator"" q_fPa(long double l) { return pressure<femtopascal, long double>(l); }
+constexpr auto operator"" _q_fPa(unsigned long long l) { return pressure<femtopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_fPa(long double l) { return pressure<femtopascal, long double>(l); }
 
 // pPa
-constexpr auto operator"" q_pPa(unsigned long long l) { return pressure<picopascal, std::int64_t>(l); }
-constexpr auto operator"" q_pPa(long double l) { return pressure<picopascal, long double>(l); }
+constexpr auto operator"" _q_pPa(unsigned long long l) { return pressure<picopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_pPa(long double l) { return pressure<picopascal, long double>(l); }
 
 // nPa
-constexpr auto operator"" q_nPa(unsigned long long l) { return pressure<nanopascal, std::int64_t>(l); }
-constexpr auto operator"" q_nPa(long double l) { return pressure<nanopascal, long double>(l); }
+constexpr auto operator"" _q_nPa(unsigned long long l) { return pressure<nanopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_nPa(long double l) { return pressure<nanopascal, long double>(l); }
 
 // uPa
-constexpr auto operator"" q_uPa(unsigned long long l) { return pressure<micropascal, std::int64_t>(l); }
-constexpr auto operator"" q_uPa(long double l) { return pressure<micropascal, long double>(l); }
+constexpr auto operator"" _q_uPa(unsigned long long l) { return pressure<micropascal, std::int64_t>(l); }
+constexpr auto operator"" _q_uPa(long double l) { return pressure<micropascal, long double>(l); }
 
 // mPa
-constexpr auto operator"" q_mPa(unsigned long long l) { return pressure<millipascal, std::int64_t>(l); }
-constexpr auto operator"" q_mPa(long double l) { return pressure<millipascal, long double>(l); }
+constexpr auto operator"" _q_mPa(unsigned long long l) { return pressure<millipascal, std::int64_t>(l); }
+constexpr auto operator"" _q_mPa(long double l) { return pressure<millipascal, long double>(l); }
 
 // cPa
-constexpr auto operator"" q_cPa(unsigned long long l) { return pressure<centipascal, std::int64_t>(l); }
-constexpr auto operator"" q_cPa(long double l) { return pressure<centipascal, long double>(l); }
+constexpr auto operator"" _q_cPa(unsigned long long l) { return pressure<centipascal, std::int64_t>(l); }
+constexpr auto operator"" _q_cPa(long double l) { return pressure<centipascal, long double>(l); }
 
 // dPa
-constexpr auto operator"" q_dPa(unsigned long long l) { return pressure<decipascal, std::int64_t>(l); }
-constexpr auto operator"" q_dPa(long double l) { return pressure<decipascal, long double>(l); }
+constexpr auto operator"" _q_dPa(unsigned long long l) { return pressure<decipascal, std::int64_t>(l); }
+constexpr auto operator"" _q_dPa(long double l) { return pressure<decipascal, long double>(l); }
 
 // daPa
-constexpr auto operator"" q_daPa(unsigned long long l) { return pressure<decapascal, std::int64_t>(l); }
-constexpr auto operator"" q_daPa(long double l) { return pressure<decapascal, long double>(l); }
+constexpr auto operator"" _q_daPa(unsigned long long l) { return pressure<decapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_daPa(long double l) { return pressure<decapascal, long double>(l); }
 
 // hPa
-constexpr auto operator"" q_hPa(unsigned long long l) { return pressure<hectopascal, std::int64_t>(l); }
-constexpr auto operator"" q_hPa(long double l) { return pressure<hectopascal, long double>(l); }
+constexpr auto operator"" _q_hPa(unsigned long long l) { return pressure<hectopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_hPa(long double l) { return pressure<hectopascal, long double>(l); }
 
 // kPa
-constexpr auto operator"" q_kPa(unsigned long long l) { return pressure<kilopascal, std::int64_t>(l); }
-constexpr auto operator"" q_kPa(long double l) { return pressure<kilopascal, long double>(l); }
+constexpr auto operator"" _q_kPa(unsigned long long l) { return pressure<kilopascal, std::int64_t>(l); }
+constexpr auto operator"" _q_kPa(long double l) { return pressure<kilopascal, long double>(l); }
 
 // MPa
-constexpr auto operator"" q_MPa(unsigned long long l) { return pressure<megapascal, std::int64_t>(l); }
-constexpr auto operator"" q_MPa(long double l) { return pressure<megapascal, long double>(l); }
+constexpr auto operator"" _q_MPa(unsigned long long l) { return pressure<megapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_MPa(long double l) { return pressure<megapascal, long double>(l); }
 
 // GPa
-constexpr auto operator"" q_GPa(unsigned long long l) { return pressure<gigapascal, std::int64_t>(l); }
-constexpr auto operator"" q_GPa(long double l) { return pressure<gigapascal, long double>(l); }
+constexpr auto operator"" _q_GPa(unsigned long long l) { return pressure<gigapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_GPa(long double l) { return pressure<gigapascal, long double>(l); }
 
 // TPa
-constexpr auto operator"" q_TPa(unsigned long long l) { return pressure<terapascal, std::int64_t>(l); }
-constexpr auto operator"" q_TPa(long double l) { return pressure<terapascal, long double>(l); }
+constexpr auto operator"" _q_TPa(unsigned long long l) { return pressure<terapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_TPa(long double l) { return pressure<terapascal, long double>(l); }
 
 // PPa
-constexpr auto operator"" q_PPa(unsigned long long l) { return pressure<petapascal, std::int64_t>(l); }
-constexpr auto operator"" q_PPa(long double l) { return pressure<petapascal, long double>(l); }
+constexpr auto operator"" _q_PPa(unsigned long long l) { return pressure<petapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_PPa(long double l) { return pressure<petapascal, long double>(l); }
 
 // EPa
-constexpr auto operator"" q_EPa(unsigned long long l) { return pressure<exapascal, std::int64_t>(l); }
-constexpr auto operator"" q_EPa(long double l) { return pressure<exapascal, long double>(l); }
+constexpr auto operator"" _q_EPa(unsigned long long l) { return pressure<exapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_EPa(long double l) { return pressure<exapascal, long double>(l); }
 
 // ZPa
-constexpr auto operator"" q_ZPa(unsigned long long l) { return pressure<zettapascal, std::int64_t>(l); }
-constexpr auto operator"" q_ZPa(long double l) { return pressure<zettapascal, long double>(l); }
+constexpr auto operator"" _q_ZPa(unsigned long long l) { return pressure<zettapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_ZPa(long double l) { return pressure<zettapascal, long double>(l); }
 
 // YPa
-constexpr auto operator"" q_YPa(unsigned long long l) { return pressure<yottapascal, std::int64_t>(l); }
-constexpr auto operator"" q_YPa(long double l) { return pressure<yottapascal, long double>(l); }
+constexpr auto operator"" _q_YPa(unsigned long long l) { return pressure<yottapascal, std::int64_t>(l); }
+constexpr auto operator"" _q_YPa(long double l) { return pressure<yottapascal, long double>(l); }
 
 }  // namespace literals
 

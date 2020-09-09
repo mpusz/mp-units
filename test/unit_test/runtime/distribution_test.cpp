@@ -498,7 +498,7 @@ TEST_CASE("piecewise_constant_distribution")
   using q = length<metre, rep>;
 
   std::vector<rep> intervals_rep_vec = {1.0, 2.0, 3.0};
-  std::vector<q> intervals_qty_vec = {1.0q_m, 2.0q_m, 3.0q_m};
+  std::vector<q> intervals_qty_vec = {1.0_q_m, 2.0_q_m, 3.0_q_m};
 
   SECTION("default")
   {
@@ -515,7 +515,7 @@ TEST_CASE("piecewise_constant_distribution")
   
   SECTION ("parametrized_input_it") {
     constexpr std::array<rep, 3> intervals_rep = {1.0, 2.0, 3.0};
-    constexpr std::array<q, 3> intervals_qty = {1.0q_m, 2.0q_m, 3.0q_m};
+    constexpr std::array<q, 3> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     constexpr std::array<rep, 3> weights = {1.0, 2.0, 3.0};
     
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep.cbegin(), intervals_rep.cend(), weights.cbegin());
@@ -528,7 +528,7 @@ TEST_CASE("piecewise_constant_distribution")
 
   SECTION ("parametrized_initializer_list") {
     std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0q_m, 2.0q_m, 3.0q_m};
+    std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_constant_distribution<q>(intervals_qty, [](q qty) { return qty.count(); });
@@ -540,7 +540,7 @@ TEST_CASE("piecewise_constant_distribution")
   SECTION ("parametrized_range") {
     constexpr std::size_t nw = 2;
     constexpr rep xmin_rep = 1.0, xmax_rep = 3.0;
-    constexpr q xmin_qty = 1.0q_m, xmax_qty = 3.0q_m;
+    constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
     
     auto stl_dist = std::piecewise_constant_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_constant_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.count(); });
@@ -556,7 +556,7 @@ TEST_CASE("piecewise_linear_distribution")
   using q = length<metre, rep>;
 
   std::vector<rep> intervals_rep_vec = {1.0, 2.0, 3.0};
-  std::vector<q> intervals_qty_vec = {1.0q_m, 2.0q_m, 3.0q_m};
+  std::vector<q> intervals_qty_vec = {1.0_q_m, 2.0_q_m, 3.0_q_m};
 
   SECTION("default")
   {
@@ -573,7 +573,7 @@ TEST_CASE("piecewise_linear_distribution")
   
   SECTION ("parametrized_input_it") {
     constexpr std::array<rep, 3> intervals_rep = {1.0, 2.0, 3.0};
-    constexpr std::array<q, 3> intervals_qty = {1.0q_m, 2.0q_m, 3.0q_m};
+    constexpr std::array<q, 3> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     constexpr std::array<rep, 3> weights = {1.0, 2.0, 3.0};
     
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep.cbegin(), intervals_rep.cend(), weights.cbegin());
@@ -586,7 +586,7 @@ TEST_CASE("piecewise_linear_distribution")
 
   SECTION ("parametrized_initializer_list") {
     std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0q_m, 2.0q_m, 3.0q_m};
+    std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_linear_distribution<q>(intervals_qty, [](q qty) { return qty.count(); });
@@ -598,7 +598,7 @@ TEST_CASE("piecewise_linear_distribution")
   SECTION ("parametrized_range") {
     constexpr std::size_t nw = 2;
     constexpr rep xmin_rep = 1.0, xmax_rep = 3.0;
-    constexpr q xmin_qty = 1.0q_m, xmax_qty = 3.0q_m;
+    constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
     
     auto stl_dist = std::piecewise_linear_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_linear_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.count(); });

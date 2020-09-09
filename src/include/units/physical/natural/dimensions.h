@@ -61,6 +61,6 @@ template<Unit U, ScalableNumber Rep = double>
 using energy = quantity<dim_force, U, Rep>;
 
 // Typical UDLs will not work here as the same units are reused by many quantities.
-// Should we define some strange ones (i.e. q_mass_GeV)?
+// Should we define some strange ones (i.e. _q_mass_GeV)?
 
 }  // namespace units::physical::natural

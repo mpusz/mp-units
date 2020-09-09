@@ -27,28 +27,28 @@ The official :term:`quantity` definition states:
 
 So the most common use case would be to create a vector or matrix of quantities::
 
-    fs_vector<si::length<si::metre>, 3> v = { 1q_m, 2q_m, 3q_m };
-    fs_vector<si::length<si::metre>, 3> u = { 3q_m, 2q_m, 1q_m };
-    fs_vector<si::length<si::kilometre>, 3> t = { 3q_km, 2q_km, 1q_km };
+    fs_vector<si::length<si::metre>, 3> v = { 1_q_m, 2_q_m, 3_q_m };
+    fs_vector<si::length<si::metre>, 3> u = { 3_q_m, 2_q_m, 1_q_m };
+    fs_vector<si::length<si::kilometre>, 3> t = { 3_q_km, 2_q_km, 1_q_km };
 
 Having such definitions we can perform full dimensional analysis operations for the operations
 allowed by the Linear Algebra rules. For example::
 
-    std::cout << "v + u    = " << v + u << "\n";
-    std::cout << "v + t    = " << v + t << "\n";
-    std::cout << "t[m]     = " << vector<si::length<si::metre>>(t) << "\n";
-    std::cout << "v * u    = " << v * u << "\n";
-    std::cout << "2q_m * v = " << 2q_m * v << "\n";
+    std::cout << "v + u     = " << v + u << "\n";
+    std::cout << "v + t     = " << v + t << "\n";
+    std::cout << "t[m]      = " << vector<si::length<si::metre>>(t) << "\n";
+    std::cout << "v * u     = " << v * u << "\n";
+    std::cout << "2_q_m * v = " << 2_q_m * v << "\n";
 
 The above code works as expected and produces the following output:
 
 .. code-block:: text
 
-    v + u    = |       4 m       4 m       4 m |
-    v + t    = |    3001 m    2002 m    1003 m |
-    t[m]     = |    3000 m    2000 m    1000 m |
-    v * u    = 10 m²
-    2q_m * v = |     2 m²     4 m²     6 m² |
+    v + u     = |       4 m       4 m       4 m |
+    v + t     = |    3001 m    2002 m    1003 m |
+    t[m]      = |    3000 m    2000 m    1000 m |
+    v * u     = 10 m²
+    2_q_m * v = |     2 m²     4 m²     6 m² |
 
 
 Quantities of Linear Algebra Types
@@ -74,11 +74,11 @@ output:
 
 .. code-block:: text
 
-    v + u    = |         4         4         4 | m
-    v + t    = |      3001      2002      1003 | m
-    t[m]     = |      3000      2000      1000 | m
-    v * u    = 10 m²
-    2q_m * v = |         2         4         6 | m²
+    v + u     = |         4         4         4 | m
+    v + t     = |      3001      2002      1003 | m
+    t[m]      = |      3000      2000      1000 | m
+    v * u     = 10 m²
+    2_q_m * v = |         2         4         6 | m²
 
 
 .. seealso::

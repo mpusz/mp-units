@@ -58,23 +58,23 @@ static_assert(is_same_v<quantity_point<dim_length, kilometre, int>::unit, kilome
 
 // constructors
 
-static_assert(quantity_point<dim_length, metre, int>().relative() == 0q_m);
-constexpr quantity_point<dim_length, metre, int> km{1000q_m};
-static_assert(km.relative() == 1000q_m);
+static_assert(quantity_point<dim_length, metre, int>().relative() == 0_q_m);
+constexpr quantity_point<dim_length, metre, int> km{1000_q_m};
+static_assert(km.relative() == 1000_q_m);
 static_assert(quantity_point<dim_length, metre, int>(km).relative() == km.relative());
 
-static_assert(quantity_point<dim_length, metre, int>(1q_m).relative() == 1q_m);
+static_assert(quantity_point<dim_length, metre, int>(1_q_m).relative() == 1_q_m);
 static_assert(!std::is_constructible_v<quantity_point<dim_length, metre, int>, double>); // truncating conversion
-static_assert(quantity_point<dim_length, metre, double>(1.0q_m).relative() == 1.0q_m);
-static_assert(quantity_point<dim_length, metre, double>(1q_m).relative() == 1q_m);
-static_assert(quantity_point<dim_length, metre, long double>(3.14q_m).relative() == 3.14q_m);
+static_assert(quantity_point<dim_length, metre, double>(1.0_q_m).relative() == 1.0_q_m);
+static_assert(quantity_point<dim_length, metre, double>(1_q_m).relative() == 1_q_m);
+static_assert(quantity_point<dim_length, metre, long double>(3.14_q_m).relative() == 3.14_q_m);
 
-static_assert(quantity_point<dim_length, metre, int>(km).relative() == 1000q_m);
+static_assert(quantity_point<dim_length, metre, int>(km).relative() == 1000_q_m);
 static_assert(!std::is_constructible_v<quantity_point<dim_length, metre, int>,
                                        quantity_point<dim_length, metre, double>>);  // truncating conversion
-static_assert(quantity_point<dim_length, metre, double>(quantity_point(1000.0q_m)).relative() == 1000.0q_m);
-static_assert(quantity_point<dim_length, metre, double>(km).relative() == 1000.0q_m);
-static_assert(quantity_point<dim_length, metre, int>(quantity_point(1q_km)).relative() == 1000q_m);
+static_assert(quantity_point<dim_length, metre, double>(quantity_point(1000.0_q_m)).relative() == 1000.0_q_m);
+static_assert(quantity_point<dim_length, metre, double>(km).relative() == 1000.0_q_m);
+static_assert(quantity_point<dim_length, metre, int>(quantity_point(1_q_km)).relative() == 1000_q_m);
 static_assert(!std::is_constructible_v<quantity_point<dim_length, metre, int>,
                                        quantity_point<dim_time, second, int>>);  // different dimensions
 static_assert(!std::is_constructible_v<quantity_point<dim_length, kilometre, int>,
@@ -82,7 +82,7 @@ static_assert(!std::is_constructible_v<quantity_point<dim_length, kilometre, int
 
 // assignment operator
 
-static_assert([]() { quantity_point<dim_length, metre, int> l1(1q_m), l2{}; return l2 = l1; }().relative() == 1q_m);
+static_assert([]() { quantity_point<dim_length, metre, int> l1(1_q_m), l2{}; return l2 = l1; }().relative() == 1_q_m);
 
 // static member functions
 
@@ -98,24 +98,24 @@ static_assert(quantity_point<dim_length, metre, double>::max().relative().count(
 static_assert([](auto v) {
   auto vv = v++;
   return std::pair(v, vv);
-}(km) == std::pair(quantity_point<dim_length, metre, int>(1001q_m), quantity_point<dim_length, metre, int>(1000q_m)));
+}(km) == std::pair(quantity_point<dim_length, metre, int>(1001_q_m), quantity_point<dim_length, metre, int>(1000_q_m)));
 static_assert([](auto v) {
   auto vv = ++v;
   return std::pair(v, vv);
-}(km) == std::pair(quantity_point<dim_length, metre, int>(1001q_m), quantity_point<dim_length, metre, int>(1001q_m)));
+}(km) == std::pair(quantity_point<dim_length, metre, int>(1001_q_m), quantity_point<dim_length, metre, int>(1001_q_m)));
 static_assert([](auto v) {
   auto vv = v--;
   return std::pair(v, vv);
-}(km) == std::pair(quantity_point<dim_length, metre, int>(999q_m), quantity_point<dim_length, metre, int>(1000q_m)));
+}(km) == std::pair(quantity_point<dim_length, metre, int>(999_q_m), quantity_point<dim_length, metre, int>(1000_q_m)));
 static_assert([](auto v) {
   auto vv = --v;
   return std::pair(v, vv);
-}(km) == std::pair(quantity_point<dim_length, metre, int>(999q_m), quantity_point<dim_length, metre, int>(999q_m)));
+}(km) == std::pair(quantity_point<dim_length, metre, int>(999_q_m), quantity_point<dim_length, metre, int>(999_q_m)));
 
 // compound assignment
 
-static_assert((quantity_point(1q_m) += 1q_m).relative().count() == 2);
-static_assert((quantity_point(2q_m) -= 1q_m).relative().count() == 1);
+static_assert((quantity_point(1_q_m) += 1_q_m).relative().count() == 2);
+static_assert((quantity_point(2_q_m) -= 1_q_m).relative().count() == 1);
 
 // non-member arithmetic operators
 
@@ -138,48 +138,48 @@ static_assert(
     is_same_v<decltype(quantity_point<dim_length, kilometre, double>() - quantity_point<dim_length, metre, int>()),
                    length<metre, double>>);
 
-static_assert((1q_m + km).relative().count() == 1001);
-static_assert((quantity_point(1q_m) + 1q_km).relative().count() == 1001);
-static_assert((km - 1q_m).relative().count() == 999);
-static_assert((quantity_point(1q_km) - quantity_point(1q_m)).count() == 999);
+static_assert((1_q_m + km).relative().count() == 1001);
+static_assert((quantity_point(1_q_m) + 1_q_km).relative().count() == 1001);
+static_assert((km - 1_q_m).relative().count() == 999);
+static_assert((quantity_point(1_q_km) - quantity_point(1_q_m)).count() == 999);
 
 // comparators
 
-static_assert(quantity_point(2q_m) + 1q_m == quantity_point(3q_m));
-static_assert(!(2q_m + quantity_point(2q_m) == quantity_point(3q_m)));
-static_assert(quantity_point(2q_m) + 2q_m != quantity_point(3q_m));
-static_assert(!(2q_m + quantity_point(2q_m) != quantity_point(4q_m)));
-static_assert(quantity_point(2q_m) > quantity_point(1q_m));
-static_assert(!(quantity_point(1q_m) > quantity_point(1q_m)));
-static_assert(quantity_point(1q_m) < quantity_point(2q_m));
-static_assert(!(quantity_point(2q_m) < quantity_point(2q_m)));
-static_assert(quantity_point(2q_m) >= quantity_point(1q_m));
-static_assert(quantity_point(2q_m) >= quantity_point(2q_m));
-static_assert(!(quantity_point(2q_m) >= quantity_point(3q_m)));
-static_assert(quantity_point(1q_m) <= quantity_point(2q_m));
-static_assert(quantity_point(2q_m) <= quantity_point(2q_m));
-static_assert(!(quantity_point(3q_m) <= quantity_point(2q_m)));
+static_assert(quantity_point(2_q_m) + 1_q_m == quantity_point(3_q_m));
+static_assert(!(2_q_m + quantity_point(2_q_m) == quantity_point(3_q_m)));
+static_assert(quantity_point(2_q_m) + 2_q_m != quantity_point(3_q_m));
+static_assert(!(2_q_m + quantity_point(2_q_m) != quantity_point(4_q_m)));
+static_assert(quantity_point(2_q_m) > quantity_point(1_q_m));
+static_assert(!(quantity_point(1_q_m) > quantity_point(1_q_m)));
+static_assert(quantity_point(1_q_m) < quantity_point(2_q_m));
+static_assert(!(quantity_point(2_q_m) < quantity_point(2_q_m)));
+static_assert(quantity_point(2_q_m) >= quantity_point(1_q_m));
+static_assert(quantity_point(2_q_m) >= quantity_point(2_q_m));
+static_assert(!(quantity_point(2_q_m) >= quantity_point(3_q_m)));
+static_assert(quantity_point(1_q_m) <= quantity_point(2_q_m));
+static_assert(quantity_point(2_q_m) <= quantity_point(2_q_m));
+static_assert(!(quantity_point(3_q_m) <= quantity_point(2_q_m)));
 
-static_assert(quantity_point(3q_m) == quantity_point(3.0q_m));
-static_assert(quantity_point(3q_m) != quantity_point(3.14q_m));
-static_assert(quantity_point(2q_m) > quantity_point(1.0q_m));
-static_assert(quantity_point(1.0q_m) < quantity_point(2q_m));
-static_assert(quantity_point(2.0q_m) >= quantity_point(1q_m));
-static_assert(quantity_point(1q_m) <= quantity_point(2.0q_m));
+static_assert(quantity_point(3_q_m) == quantity_point(3.0_q_m));
+static_assert(quantity_point(3_q_m) != quantity_point(3.14_q_m));
+static_assert(quantity_point(2_q_m) > quantity_point(1.0_q_m));
+static_assert(quantity_point(1.0_q_m) < quantity_point(2_q_m));
+static_assert(quantity_point(2.0_q_m) >= quantity_point(1_q_m));
+static_assert(quantity_point(1_q_m) <= quantity_point(2.0_q_m));
 
-static_assert(quantity_point(1000q_m) == quantity_point(1q_km));
-static_assert(quantity_point(1001q_m) != quantity_point(1q_km));
-static_assert(quantity_point(1001q_m) > quantity_point(1q_km));
-static_assert(quantity_point(999q_m) < quantity_point(1q_km));
-static_assert(quantity_point(1000q_m) >= quantity_point(1q_km));
-static_assert(quantity_point(1000q_m) <= quantity_point(1q_km));
+static_assert(quantity_point(1000_q_m) == quantity_point(1_q_km));
+static_assert(quantity_point(1001_q_m) != quantity_point(1_q_km));
+static_assert(quantity_point(1001_q_m) > quantity_point(1_q_km));
+static_assert(quantity_point(999_q_m) < quantity_point(1_q_km));
+static_assert(quantity_point(1000_q_m) >= quantity_point(1_q_km));
+static_assert(quantity_point(1000_q_m) <= quantity_point(1_q_km));
 
 // alias units
 
-static_assert(quantity_point(2q_l) + 2q_ml == quantity_point(2002q_ml));
-static_assert(2q_l + quantity_point(2q_ml) == quantity_point(2002q_cm3));
-static_assert(quantity_point(2q_l) + 2q_cm3 == quantity_point(2002q_ml));
-static_assert(2q_dm3 + quantity_point(2q_cm3) == quantity_point(2002q_ml));
+static_assert(quantity_point(2_q_l) + 2_q_ml == quantity_point(2002_q_ml));
+static_assert(2_q_l + quantity_point(2_q_ml) == quantity_point(2002_q_cm3));
+static_assert(quantity_point(2_q_l) + 2_q_cm3 == quantity_point(2002_q_ml));
+static_assert(2_q_dm3 + quantity_point(2_q_cm3) == quantity_point(2002_q_ml));
 
 // is_quantity_point
 
@@ -201,47 +201,47 @@ static_assert(is_same_v<common_quantity_point<quantity_point<dim_length, kilomet
 
 using namespace units::physical::us::literals;
 
-static_assert(std::equality_comparable<decltype(quantity_point(1q_m))>);
-static_assert(std::equality_comparable_with<decltype(quantity_point(1q_m)), decltype(quantity_point(1q_km))>);
-static_assert(quantity_point(0q_m) == quantity_point(0q_ft_us));
-static_assert(std::equality_comparable_with<decltype(quantity_point(1q_m)), decltype(quantity_point(1q_ft_us))>);
+static_assert(std::equality_comparable<decltype(quantity_point(1_q_m))>);
+static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_km))>);
+static_assert(quantity_point(0_q_m) == quantity_point(0_q_ft_us));
+static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_ft_us))>);
 
 // quantity_cast
 
 static_assert(
-    is_same_v<decltype(quantity_point_cast<scaled_unit<ratio(1), metre>>(quantity_point(2q_km)))::unit, metre>);
+    is_same_v<decltype(quantity_point_cast<scaled_unit<ratio(1), metre>>(quantity_point(2_q_km)))::unit, metre>);
 
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2q_km)).relative().count() ==
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2_q_km)).relative().count() ==
               2000);
 static_assert(
-    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23q_m)).relative().count() ==
+    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23_q_m)).relative().count() ==
               1);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23q_m)).relative().count() == 1);
-static_assert(quantity_point_cast<metre>(quantity_point(2q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<kilometre>(quantity_point(2000q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<int>(quantity_point(1.23q_m)).relative().count() == 1);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2_q_km)).relative().count() == 2000);
+static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).relative().count() == 1);
+static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().count() == 2000);
+static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().count() == 2);
+static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().count() == 1);
 
 // time
 
-static_assert(quantity_point{1q_h} == quantity_point{3600q_s});
+static_assert(quantity_point{1_q_h} == quantity_point{3600_q_s});
 
 template<typename Metre>
 concept no_crossdimensional_equality = !requires
 {
-    quantity_point(1q_s) == quantity_point(length<Metre, int>(1));
+    quantity_point(1_q_s) == quantity_point(length<Metre, int>(1));
 };
 
 static_assert(no_crossdimensional_equality<metre>);
 
 // length
 
-static_assert(quantity_point(1q_km) != quantity_point(1q_m));
-static_assert(quantity_point(1q_km) == quantity_point(1000q_m));
-static_assert(quantity_point(1q_km) + 1q_m == quantity_point(1001q_m));
-static_assert(1q_km + quantity_point(1q_m) == quantity_point(1001q_m));
+static_assert(quantity_point(1_q_km) != quantity_point(1_q_m));
+static_assert(quantity_point(1_q_km) == quantity_point(1000_q_m));
+static_assert(quantity_point(1_q_km) + 1_q_m == quantity_point(1001_q_m));
+static_assert(1_q_km + quantity_point(1_q_m) == quantity_point(1001_q_m));
 
 template<class T>
 concept dimensional_analysis = requires(T t)

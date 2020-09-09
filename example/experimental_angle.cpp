@@ -31,8 +31,8 @@ using namespace units::physical::si::literals;
 
 int main()
 {
-  auto torque = 20.0q_Nm;
-  auto energy = 20.0q_J;
+  auto torque = 20.0_q_Nm;
+  auto energy = 20.0_q_J;
 
   physical::Angle auto angle = torque / energy;
 

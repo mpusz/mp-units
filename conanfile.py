@@ -115,11 +115,9 @@ class UnitsConan(ConanFile):
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
             self.cpp_info.cxxflags = [
-                "-Wno-literal-suffix",
-                "-Wno-non-template-friend",
+                "-Wno-non-template-friend"
             ]
         elif compiler == "Visual Studio":
             self.cpp_info.cxxflags = [
-                "/utf-8",
-                "/wd4455"
+                "/utf-8"
             ]

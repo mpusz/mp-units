@@ -38,8 +38,8 @@ using speed = quantity<dim_speed, U, Rep>;
 inline namespace literals {
 
 // cmps
-constexpr auto operator"" q_cm_per_s(unsigned long long l) { return speed<centimetre_per_second, std::int64_t>(l); }
-constexpr auto operator"" q_cm_per_s(long double l) { return speed<centimetre_per_second, long double>(l); }
+constexpr auto operator"" _q_cm_per_s(unsigned long long l) { return speed<centimetre_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_cm_per_s(long double l) { return speed<centimetre_per_second, long double>(l); }
 
 }  // namespace literals
 

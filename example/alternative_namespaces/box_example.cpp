@@ -56,11 +56,11 @@ using namespace units::physical::si::literals;
 
 int main()
 {
-  auto box = Box{1000.0q_mm, 500.0q_mm, 200.0q_mm};
-  box.set_contents_density(1000.0q_kg_per_m3);
+  auto box = Box{1000.0_q_mm, 500.0_q_mm, 200.0_q_mm};
+  box.set_contents_density(1000.0_q_kg_per_m3);
 
-  auto fill_time = 200.0q_s;      // time since starting fill
-  auto measured_mass = 20.0q_kg;  // measured mass at fill_time
+  auto fill_time = 200.0_q_s;      // time since starting fill
+  auto measured_mass = 20.0_q_kg;  // measured mass at fill_time
 
   std::cout << "mpusz/units box example ( using experimental alternative syntax for defining quantities) ...\n";
   std::cout << "fill height at " << fill_time << " = " << box.fill_level(measured_mass) << " ("

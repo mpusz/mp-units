@@ -38,8 +38,8 @@ using mass = quantity<dim_mass, U, Rep>;
 inline namespace literals {
 
 // g
-constexpr auto operator"" q_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
-constexpr auto operator"" q_g(long double l) { return mass<gram, long double>(l); }
+constexpr auto operator"" _q_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
+constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
 
 }
 

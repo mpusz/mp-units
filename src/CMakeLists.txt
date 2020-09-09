@@ -71,14 +71,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(mp-units
         INTERFACE
-            -Wno-literal-suffix
             -Wno-non-template-friend
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(mp-units
         INTERFACE
             /utf-8  # Specifies both the source character set and the execution character set as UTF-8
-            /wd4455 # 'operator name': literal suffix identifiers that do not start with an underscore are reserved
     )
 endif()
 

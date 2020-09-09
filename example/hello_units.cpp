@@ -35,7 +35,7 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace units::physical::si::literals;
-  Speed auto v1 = avg_speed(220q_km, 2q_h);
+  Speed auto v1 = avg_speed(220_q_km, 2_q_h);
   Speed auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
   Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
   Speed auto v4 = quantity_cast<int>(v3);

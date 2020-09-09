@@ -26,7 +26,7 @@ will determine its type. The same applies to the resulting unit. For example:
 
     using namespace units::physical::si;
 
-    constexpr auto result = 144q_km / 2q_h;
+    constexpr auto result = 144_q_km / 2_q_h;
     static_assert(is_same_v<decltype(result)::dimension, dim_speed>);
     static_assert(is_same_v<decltype(result)::unit, kilometre_per_hour>);
 
@@ -44,7 +44,7 @@ we forget to include a header file with the resulting dimension definition:
 
     using namespace units::physical::si;
 
-    constexpr auto result = 144q_km / 2q_h;
+    constexpr auto result = 144_q_km / 2_q_h;
     static_assert(is_same_v<decltype(result)::dimension,
                             unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
     static_assert(is_same_v<decltype(result)::unit,
@@ -96,10 +96,10 @@ in your program. A typical example here are temporary results of a long calculat
     {
       Speed auto s1 = avg_speed(d, t);
 
-      auto temp1 = s1 * 200q_km;  // intermediate unknown dimension
+      auto temp1 = s1 * 200_q_km;      // intermediate unknown dimension
 
-      Speed auto s2 = temp1 / 50q_km; // back to known dimensions again
-      Length auto d2 = s2 * 4q_h;
+      Speed auto s2 = temp1 / 50_q_km; // back to known dimensions again
+      Length auto d2 = s2 * 4_q_h;
 
       // ...
     }

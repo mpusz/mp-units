@@ -381,7 +381,7 @@ unknown/undefined unit type like in the below example::
 
     using namespace units::physical::si::literals;
 
-    Length auto l = 100q_km_per_h * 10q_s;
+    Length auto l = 100_q_km_per_h * 10_q_s;
 
 The type of ``l`` above will be
 :expr:`si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>`. This is caused

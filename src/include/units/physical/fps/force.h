@@ -49,16 +49,16 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // poundal
-constexpr auto operator"" q_pdl(unsigned long long l) { return force<poundal, std::int64_t>(l); }
-constexpr auto operator"" q_pdl(long double l) { return force<poundal, long double>(l); }
+constexpr auto operator"" _q_pdl(unsigned long long l) { return force<poundal, std::int64_t>(l); }
+constexpr auto operator"" _q_pdl(long double l) { return force<poundal, long double>(l); }
 
 // pound force
-constexpr auto operator"" q_lbf(unsigned long long l) { return force<pound_force, std::int64_t>(l); }
-constexpr auto operator"" q_lbf(long double l) { return force<pound_force, long double>(l); }
+constexpr auto operator"" _q_lbf(unsigned long long l) { return force<pound_force, std::int64_t>(l); }
+constexpr auto operator"" _q_lbf(long double l) { return force<pound_force, long double>(l); }
 
 // kilopound force
-constexpr auto operator"" q_klbf(unsigned long long l) { return force<kilopound_force, std::int64_t>(l); }
-constexpr auto operator"" q_klbf(long double l) { return force<kilopound_force, long double>(l); }
+constexpr auto operator"" _q_klbf(unsigned long long l) { return force<kilopound_force, std::int64_t>(l); }
+constexpr auto operator"" _q_klbf(long double l) { return force<kilopound_force, long double>(l); }
 
 }  // namespace literals
 

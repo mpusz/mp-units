@@ -36,22 +36,22 @@ int main()
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = 0.47q_uF;
-  constexpr auto V0 = 5.0q_V;
-  constexpr auto R = 4.7q_kR;
+  constexpr auto C = 0.47_q_uF;
+  constexpr auto V0 = 5.0_q_V;
+  constexpr auto R = 4.7_q_kR;
 
-  for (auto t = 0q_ms; t <= 50q_ms; ++t) {
+  for (auto t = 0_q_ms; t <= 50_q_ms; ++t) {
     const auto Vt = V0 * units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
-    if (Vt >= 1q_V)
+    if (Vt >= 1_q_V)
       std::cout << Vt;
-    else if (Vt >= 1q_mV)
+    else if (Vt >= 1_q_mV)
       std::cout << voltage::mV<>{Vt};
-    else if (Vt >= 1q_uV)
+    else if (Vt >= 1_q_uV)
       std::cout << voltage::uV<>{Vt};
-    else if (Vt >= 1q_nV)
+    else if (Vt >= 1_q_nV)
       std::cout << voltage::nV<>{Vt};
     else
       std::cout << voltage::pV<>{Vt};

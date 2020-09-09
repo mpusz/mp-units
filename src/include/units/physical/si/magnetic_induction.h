@@ -60,76 +60,76 @@ using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 inline namespace literals {
 
 // T
-constexpr auto operator"" q_T(unsigned long long l) { return magnetic_induction<tesla, std::int64_t>(l); }
-constexpr auto operator"" q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
+constexpr auto operator"" _q_T(unsigned long long l) { return magnetic_induction<tesla, std::int64_t>(l); }
+constexpr auto operator"" _q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
 
 // yT
-constexpr auto operator"" q_yT(unsigned long long l) { return magnetic_induction<yoctotesla, std::int64_t>(l); }
-constexpr auto operator"" q_yT(long double l) { return magnetic_induction<yoctotesla, long double>(l); }
+constexpr auto operator"" _q_yT(unsigned long long l) { return magnetic_induction<yoctotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_yT(long double l) { return magnetic_induction<yoctotesla, long double>(l); }
 
 // zT
-constexpr auto operator"" q_zT(unsigned long long l) { return magnetic_induction<zeptotesla, std::int64_t>(l); }
-constexpr auto operator"" q_zT(long double l) { return magnetic_induction<zeptotesla, long double>(l); }
+constexpr auto operator"" _q_zT(unsigned long long l) { return magnetic_induction<zeptotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_zT(long double l) { return magnetic_induction<zeptotesla, long double>(l); }
 
 // aT
-constexpr auto operator"" q_aT(unsigned long long l) { return magnetic_induction<attotesla, std::int64_t>(l); }
-constexpr auto operator"" q_aT(long double l) { return magnetic_induction<attotesla, long double>(l); }
+constexpr auto operator"" _q_aT(unsigned long long l) { return magnetic_induction<attotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_aT(long double l) { return magnetic_induction<attotesla, long double>(l); }
 
 // fT
-constexpr auto operator"" q_fT(unsigned long long l) { return magnetic_induction<femtotesla, std::int64_t>(l); }
-constexpr auto operator"" q_fT(long double l) { return magnetic_induction<femtotesla, long double>(l); }
+constexpr auto operator"" _q_fT(unsigned long long l) { return magnetic_induction<femtotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_fT(long double l) { return magnetic_induction<femtotesla, long double>(l); }
 
 // pT
-constexpr auto operator"" q_pT(unsigned long long l) { return magnetic_induction<picotesla, std::int64_t>(l); }
-constexpr auto operator"" q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
+constexpr auto operator"" _q_pT(unsigned long long l) { return magnetic_induction<picotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
 
 // nT
-constexpr auto operator"" q_nT(unsigned long long l) { return magnetic_induction<nanotesla, std::int64_t>(l); }
-constexpr auto operator"" q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
+constexpr auto operator"" _q_nT(unsigned long long l) { return magnetic_induction<nanotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
 
 // µT
-constexpr auto operator"" q_uT(unsigned long long l) { return magnetic_induction<microtesla, std::int64_t>(l); }
-constexpr auto operator"" q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
+constexpr auto operator"" _q_uT(unsigned long long l) { return magnetic_induction<microtesla, std::int64_t>(l); }
+constexpr auto operator"" _q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
 
 // mT
-constexpr auto operator"" q_mT(unsigned long long l) { return magnetic_induction<millitesla, std::int64_t>(l); }
-constexpr auto operator"" q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
+constexpr auto operator"" _q_mT(unsigned long long l) { return magnetic_induction<millitesla, std::int64_t>(l); }
+constexpr auto operator"" _q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
 
 // kT
-constexpr auto operator"" q_kT(unsigned long long l) { return magnetic_induction<kilotesla, std::int64_t>(l); }
-constexpr auto operator"" q_kT(long double l) { return magnetic_induction<kilotesla, long double>(l); }
+constexpr auto operator"" _q_kT(unsigned long long l) { return magnetic_induction<kilotesla, std::int64_t>(l); }
+constexpr auto operator"" _q_kT(long double l) { return magnetic_induction<kilotesla, long double>(l); }
 
 // MT
-constexpr auto operator"" q_MT(unsigned long long l) { return magnetic_induction<megatesla, std::int64_t>(l); }
-constexpr auto operator"" q_MT(long double l) { return magnetic_induction<megatesla, long double>(l); }
+constexpr auto operator"" _q_MT(unsigned long long l) { return magnetic_induction<megatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_MT(long double l) { return magnetic_induction<megatesla, long double>(l); }
 
 // GT
-constexpr auto operator"" q_GT(unsigned long long l) { return magnetic_induction<gigatesla, std::int64_t>(l); }
-constexpr auto operator"" q_GT(long double l) { return magnetic_induction<gigatesla, long double>(l); }
+constexpr auto operator"" _q_GT(unsigned long long l) { return magnetic_induction<gigatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_GT(long double l) { return magnetic_induction<gigatesla, long double>(l); }
 
 // TT
-constexpr auto operator"" q_TT(unsigned long long l) { return magnetic_induction<teratesla, std::int64_t>(l); }
-constexpr auto operator"" q_TT(long double l) { return magnetic_induction<teratesla, long double>(l); }
+constexpr auto operator"" _q_TT(unsigned long long l) { return magnetic_induction<teratesla, std::int64_t>(l); }
+constexpr auto operator"" _q_TT(long double l) { return magnetic_induction<teratesla, long double>(l); }
 
 // PT
-constexpr auto operator"" q_PT(unsigned long long l) { return magnetic_induction<petatesla, std::int64_t>(l); }
-constexpr auto operator"" q_PT(long double l) { return magnetic_induction<petatesla, long double>(l); }
+constexpr auto operator"" _q_PT(unsigned long long l) { return magnetic_induction<petatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_PT(long double l) { return magnetic_induction<petatesla, long double>(l); }
 
 // ET
-constexpr auto operator"" q_ET(unsigned long long l) { return magnetic_induction<exatesla, std::int64_t>(l); }
-constexpr auto operator"" q_ET(long double l) { return magnetic_induction<exatesla, long double>(l); }
+constexpr auto operator"" _q_ET(unsigned long long l) { return magnetic_induction<exatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_ET(long double l) { return magnetic_induction<exatesla, long double>(l); }
 
 // ZT
-constexpr auto operator"" q_ZT(unsigned long long l) { return magnetic_induction<zettatesla, std::int64_t>(l); }
-constexpr auto operator"" q_ZT(long double l) { return magnetic_induction<zettatesla, long double>(l); }
+constexpr auto operator"" _q_ZT(unsigned long long l) { return magnetic_induction<zettatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_ZT(long double l) { return magnetic_induction<zettatesla, long double>(l); }
 
 // YT
-constexpr auto operator"" q_YT(unsigned long long l) { return magnetic_induction<yottatesla, std::int64_t>(l); }
-constexpr auto operator"" q_YT(long double l) { return magnetic_induction<yottatesla, long double>(l); }
+constexpr auto operator"" _q_YT(unsigned long long l) { return magnetic_induction<yottatesla, std::int64_t>(l); }
+constexpr auto operator"" _q_YT(long double l) { return magnetic_induction<yottatesla, long double>(l); }
 
 // G
-constexpr auto operator"" q_G(unsigned long long l) { return magnetic_induction<gauss, std::int64_t>(l); }
-constexpr auto operator"" q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
+constexpr auto operator"" _q_G(unsigned long long l) { return magnetic_induction<gauss, std::int64_t>(l); }
+constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
 
 }  // namespace literals
 

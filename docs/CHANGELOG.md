@@ -19,6 +19,7 @@
   - Added support for `exp()` mathematical support
   - Dimensionless quantities redesigned to be of `quantity` type
   - `Scalar` concept renamed to `ScalableNumber`
+  - `q_*` UDL renamed to `_q_*`
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library

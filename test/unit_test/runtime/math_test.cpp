@@ -33,25 +33,25 @@ using namespace units::physical::si;
 TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
   SECTION ("'pow<0>(q)' returns '1'") {
-    CHECK(pow<0>(2q_m) == 1);
+    CHECK(pow<0>(2_q_m) == 1);
   }
 
   SECTION ("'pow<1>(q)' returns 'q'") {
-    CHECK(pow<1>(2q_m) == 2q_m);
+    CHECK(pow<1>(2_q_m) == 2_q_m);
   }
 
   SECTION ("'pow<2>(q)' squares both the value and a dimension") {
-    CHECK(pow<2>(2q_m) == 4q_m2);
+    CHECK(pow<2>(2_q_m) == 4_q_m2);
   }
 
   SECTION ("'pow<3>(q)' cubes both the value and a dimension") {
-    CHECK(pow<3>(2q_m) == 8q_m3);
+    CHECK(pow<3>(2_q_m) == 8_q_m3);
   }
 }
 
 TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly", "[math][sqrt]")
 {
-  REQUIRE(sqrt(4q_m2) == 2q_m);
+  REQUIRE(sqrt(4_q_m2) == 2_q_m);
 }
 
 TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
@@ -60,13 +60,13 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
   {
     SECTION ("integral representation")
     {
-      REQUIRE(abs(-1q_m) == 1q_m);
+      REQUIRE(abs(-1_q_m) == 1_q_m);
     }
 
 #ifndef COMP_MSVC
     SECTION ("floating-point representation")
     {
-      REQUIRE(abs(-1.q_m) == 1q_m);
+      REQUIRE(abs(-1._q_m) == 1_q_m);
     }
 #endif
   }
@@ -75,13 +75,13 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
   {
     SECTION ("integral representation")
     {
-      REQUIRE(abs(1q_m) == 1q_m);
+      REQUIRE(abs(1_q_m) == 1_q_m);
     }
 
 #ifndef COMP_MSVC
     SECTION ("floating-point representation")
     {
-      REQUIRE(abs(1.q_m) == 1q_m);
+      REQUIRE(abs(1._q_m) == 1_q_m);
     }
 #endif
   }
@@ -90,12 +90,12 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
 TEST_CASE("numeric_limits functions", "[limits]")
 {
   SECTION ("'epsilon' works as expected using default floating type") {
-    REQUIRE(epsilon<decltype(1.q_m)>().count() == std::numeric_limits<decltype(1.q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1._q_m)>().count() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using integers") {
-    REQUIRE(epsilon<decltype(1q_m)>().count() == std::numeric_limits<decltype(1q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().count() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using mixed Rep types") {
-    REQUIRE(epsilon<decltype(1q_m)>().count() != std::numeric_limits<decltype(1.q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().count() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
 }

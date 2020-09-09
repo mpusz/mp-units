@@ -42,19 +42,19 @@ using namespace units::physical::international;
 
 // length
 
-static_assert(1q_yd == 0.9144q_m);
-static_assert(1q_yd == 3q_ft);
-static_assert(1q_ft == 12q_in);
-static_assert(1q_mi == 1760q_yd);
+static_assert(1_q_yd == 0.9144_q_m);
+static_assert(1_q_yd == 3_q_ft);
+static_assert(1_q_ft == 12_q_in);
+static_assert(1_q_mi == 1760_q_yd);
 
-static_assert(5q_in + 8q_cm == 207q_mm);
+static_assert(5_q_in + 8_q_cm == 207_q_mm);
 
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
 // speed
 
-static_assert(10.0q_mi / 2q_h == 5q_mi_per_h);
+static_assert(10.0_q_mi / 2_q_h == 5_q_mi_per_h);
 
 static_assert(mile_per_hour::symbol == "mi/h");
 

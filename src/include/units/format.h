@@ -437,7 +437,7 @@ public:
     fmt::detail::handle_dynamic_spec<fmt::detail::precision_checker>(rep_specs.precision, precision_ref, ctx);
 
     // In `global_format_buffer` we will create a global format string
-    //  e.g. "{:*^10%.1Q_%q}, 1.23q_m" => "{:*^10}"
+    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
     fmt::basic_memory_buffer<CharT> global_format_buffer;
     auto to_gfb = std::back_inserter(global_format_buffer);
     format_to(to_gfb, "{{:");
@@ -466,7 +466,7 @@ public:
 
     // In `quantity_buffer` we will have the representation and the unit formatted according to their
     //  specification, ignoring global specifiers
-    //  e.g. "{:*^10%.1Q_%q}, 1.23q_m" => "1.2_m"
+    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "1.2_m"
     // TODO Avoid extra copying if width is not specified
     fmt::basic_memory_buffer<CharT> quantity_buffer;
     auto to_quantity_buffer = std::back_inserter(quantity_buffer);

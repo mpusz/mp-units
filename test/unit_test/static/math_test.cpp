@@ -31,14 +31,14 @@ namespace {
   using namespace units::physical::si::literals;
   using namespace units::physical::international::literals;
 
-  static_assert(is_same_v<decltype(pow<0>(2q_m)), std::int64_t>);
-  static_assert(is_same_v<decltype(pow<1>(2q_m)), decltype(2q_m)>);
-  static_assert(is_same_v<decltype(pow<2>(2q_m)), decltype(4q_m2)>);
-  static_assert(is_same_v<decltype(pow<2>(2q_km)), decltype(4q_km2)>);
-  static_assert(is_same_v<decltype(pow<2>(2q_ft)), decltype(4q_ft2)>);
-  static_assert(is_same_v<decltype(sqrt(4q_m2)), decltype(2q_m)>);
-  static_assert(is_same_v<decltype(sqrt(4q_km2)), decltype(2q_km)>);
-  static_assert(is_same_v<decltype(sqrt(4q_ft2)), decltype(2q_ft)>);
+  static_assert(is_same_v<decltype(pow<0>(2_q_m)), std::int64_t>);
+  static_assert(is_same_v<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);
+  static_assert(is_same_v<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
+  static_assert(is_same_v<decltype(pow<2>(2_q_km)), decltype(4_q_km2)>);
+  static_assert(is_same_v<decltype(pow<2>(2_q_ft)), decltype(4_q_ft2)>);
+  static_assert(is_same_v<decltype(sqrt(4_q_m2)), decltype(2_q_m)>);
+  static_assert(is_same_v<decltype(sqrt(4_q_km2)), decltype(2_q_km)>);
+  static_assert(is_same_v<decltype(sqrt(4_q_ft2)), decltype(2_q_ft)>);
 
 
 }  // namespace

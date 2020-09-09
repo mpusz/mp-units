@@ -45,7 +45,7 @@ int main()
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA = 2.0q_m;
+  constexpr length<metre> lengthA = 2.0_q_m;
   constexpr length<millimetre> lengthB = lengthA;
 
   std::cout << fmt::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)

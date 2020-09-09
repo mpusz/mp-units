@@ -60,88 +60,88 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // N
-constexpr auto operator"" q_N(unsigned long long l) { return force<newton, std::int64_t>(l); }
-constexpr auto operator"" q_N(long double l) { return force<newton, long double>(l); }
+constexpr auto operator"" _q_N(unsigned long long l) { return force<newton, std::int64_t>(l); }
+constexpr auto operator"" _q_N(long double l) { return force<newton, long double>(l); }
 
 // yN
-constexpr auto operator"" q_yN(unsigned long long l) { return force<yoctonewton, std::int64_t>(l); }
-constexpr auto operator"" q_yN(long double l) { return force<yoctonewton, long double>(l); }
+constexpr auto operator"" _q_yN(unsigned long long l) { return force<yoctonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_yN(long double l) { return force<yoctonewton, long double>(l); }
 
 // zN
-constexpr auto operator"" q_zN(unsigned long long l) { return force<zeptonewton, std::int64_t>(l); }
-constexpr auto operator"" q_zN(long double l) { return force<zeptonewton, long double>(l); }
+constexpr auto operator"" _q_zN(unsigned long long l) { return force<zeptonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_zN(long double l) { return force<zeptonewton, long double>(l); }
 
 // aN
-constexpr auto operator"" q_aN(unsigned long long l) { return force<attonewton, std::int64_t>(l); }
-constexpr auto operator"" q_aN(long double l) { return force<attonewton, long double>(l); }
+constexpr auto operator"" _q_aN(unsigned long long l) { return force<attonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_aN(long double l) { return force<attonewton, long double>(l); }
 
 // fN
-constexpr auto operator"" q_fN(unsigned long long l) { return force<femtonewton, std::int64_t>(l); }
-constexpr auto operator"" q_fN(long double l) { return force<femtonewton, long double>(l); }
+constexpr auto operator"" _q_fN(unsigned long long l) { return force<femtonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_fN(long double l) { return force<femtonewton, long double>(l); }
 
 // pN
-constexpr auto operator"" q_pN(unsigned long long l) { return force<piconewton, std::int64_t>(l); }
-constexpr auto operator"" q_pN(long double l) { return force<piconewton, long double>(l); }
+constexpr auto operator"" _q_pN(unsigned long long l) { return force<piconewton, std::int64_t>(l); }
+constexpr auto operator"" _q_pN(long double l) { return force<piconewton, long double>(l); }
 
 // nN
-constexpr auto operator"" q_nN(unsigned long long l) { return force<nanonewton, std::int64_t>(l); }
-constexpr auto operator"" q_nN(long double l) { return force<nanonewton, long double>(l); }
+constexpr auto operator"" _q_nN(unsigned long long l) { return force<nanonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_nN(long double l) { return force<nanonewton, long double>(l); }
 
 // uN
-constexpr auto operator"" q_uN(unsigned long long l) { return force<micronewton, std::int64_t>(l); }
-constexpr auto operator"" q_uN(long double l) { return force<micronewton, long double>(l); }
+constexpr auto operator"" _q_uN(unsigned long long l) { return force<micronewton, std::int64_t>(l); }
+constexpr auto operator"" _q_uN(long double l) { return force<micronewton, long double>(l); }
 
 // mN
-constexpr auto operator"" q_mN(unsigned long long l) { return force<millinewton, std::int64_t>(l); }
-constexpr auto operator"" q_mN(long double l) { return force<millinewton, long double>(l); }
+constexpr auto operator"" _q_mN(unsigned long long l) { return force<millinewton, std::int64_t>(l); }
+constexpr auto operator"" _q_mN(long double l) { return force<millinewton, long double>(l); }
 
 // cN
-constexpr auto operator"" q_cN(unsigned long long l) { return force<centinewton, std::int64_t>(l); }
-constexpr auto operator"" q_cN(long double l) { return force<centinewton, long double>(l); }
+constexpr auto operator"" _q_cN(unsigned long long l) { return force<centinewton, std::int64_t>(l); }
+constexpr auto operator"" _q_cN(long double l) { return force<centinewton, long double>(l); }
 
 // dN
-constexpr auto operator"" q_dN(unsigned long long l) { return force<decinewton, std::int64_t>(l); }
-constexpr auto operator"" q_dN(long double l) { return force<decinewton, long double>(l); }
+constexpr auto operator"" _q_dN(unsigned long long l) { return force<decinewton, std::int64_t>(l); }
+constexpr auto operator"" _q_dN(long double l) { return force<decinewton, long double>(l); }
 
 // daN
-constexpr auto operator"" q_daN(unsigned long long l) { return force<decanewton, std::int64_t>(l); }
-constexpr auto operator"" q_daN(long double l) { return force<decanewton, long double>(l); }
+constexpr auto operator"" _q_daN(unsigned long long l) { return force<decanewton, std::int64_t>(l); }
+constexpr auto operator"" _q_daN(long double l) { return force<decanewton, long double>(l); }
 
 // hN
-constexpr auto operator"" q_hN(unsigned long long l) { return force<hectonewton, std::int64_t>(l); }
-constexpr auto operator"" q_hN(long double l) { return force<hectonewton, long double>(l); }
+constexpr auto operator"" _q_hN(unsigned long long l) { return force<hectonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_hN(long double l) { return force<hectonewton, long double>(l); }
 
 // kN
-constexpr auto operator"" q_kN(unsigned long long l) { return force<kilonewton, std::int64_t>(l); }
-constexpr auto operator"" q_kN(long double l) { return force<kilonewton, long double>(l); }
+constexpr auto operator"" _q_kN(unsigned long long l) { return force<kilonewton, std::int64_t>(l); }
+constexpr auto operator"" _q_kN(long double l) { return force<kilonewton, long double>(l); }
 
 // MN
-constexpr auto operator"" q_MN(unsigned long long l) { return force<meganewton, std::int64_t>(l); }
-constexpr auto operator"" q_MN(long double l) { return force<meganewton, long double>(l); }
+constexpr auto operator"" _q_MN(unsigned long long l) { return force<meganewton, std::int64_t>(l); }
+constexpr auto operator"" _q_MN(long double l) { return force<meganewton, long double>(l); }
 
 // GN
-constexpr auto operator"" q_GN(unsigned long long l) { return force<giganewton, std::int64_t>(l); }
-constexpr auto operator"" q_GN(long double l) { return force<giganewton, long double>(l); }
+constexpr auto operator"" _q_GN(unsigned long long l) { return force<giganewton, std::int64_t>(l); }
+constexpr auto operator"" _q_GN(long double l) { return force<giganewton, long double>(l); }
 
 // TN
-constexpr auto operator"" q_TN(unsigned long long l) { return force<teranewton, std::int64_t>(l); }
-constexpr auto operator"" q_TN(long double l) { return force<teranewton, long double>(l); }
+constexpr auto operator"" _q_TN(unsigned long long l) { return force<teranewton, std::int64_t>(l); }
+constexpr auto operator"" _q_TN(long double l) { return force<teranewton, long double>(l); }
 
 // PN
-constexpr auto operator"" q_PN(unsigned long long l) { return force<petanewton, std::int64_t>(l); }
-constexpr auto operator"" q_PN(long double l) { return force<petanewton, long double>(l); }
+constexpr auto operator"" _q_PN(unsigned long long l) { return force<petanewton, std::int64_t>(l); }
+constexpr auto operator"" _q_PN(long double l) { return force<petanewton, long double>(l); }
 
 // EN
-constexpr auto operator"" q_EN(unsigned long long l) { return force<exanewton, std::int64_t>(l); }
-constexpr auto operator"" q_EN(long double l) { return force<exanewton, long double>(l); }
+constexpr auto operator"" _q_EN(unsigned long long l) { return force<exanewton, std::int64_t>(l); }
+constexpr auto operator"" _q_EN(long double l) { return force<exanewton, long double>(l); }
 
 // ZN
-constexpr auto operator"" q_ZN(unsigned long long l) { return force<zettanewton, std::int64_t>(l); }
-constexpr auto operator"" q_ZN(long double l) { return force<zettanewton, long double>(l); }
+constexpr auto operator"" _q_ZN(unsigned long long l) { return force<zettanewton, std::int64_t>(l); }
+constexpr auto operator"" _q_ZN(long double l) { return force<zettanewton, long double>(l); }
 
 // YN
-constexpr auto operator"" q_YN(unsigned long long l) { return force<yottanewton, std::int64_t>(l); }
-constexpr auto operator"" q_YN(long double l) { return force<yottanewton, long double>(l); }
+constexpr auto operator"" _q_YN(unsigned long long l) { return force<yottanewton, std::int64_t>(l); }
+constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long double>(l); }
 
 }  // namespace literals
 

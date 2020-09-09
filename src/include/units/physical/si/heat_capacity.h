@@ -51,16 +51,16 @@ using molar_heat_capacity = quantity<dim_molar_heat_capacity, U, Rep>;
 inline namespace literals {
 
 // J/K
-constexpr auto operator"" q_J_per_K(unsigned long long l) { return heat_capacity<joule_per_kelvin, std::int64_t>(l); }
-constexpr auto operator"" q_J_per_K(long double l) { return heat_capacity<joule_per_kelvin, long double>(l); }
+constexpr auto operator"" _q_J_per_K(unsigned long long l) { return heat_capacity<joule_per_kelvin, std::int64_t>(l); }
+constexpr auto operator"" _q_J_per_K(long double l) { return heat_capacity<joule_per_kelvin, long double>(l); }
 
 // J/(kg·K)
-constexpr auto operator"" q_J_per_kg_K(unsigned long long l) { return specific_heat_capacity<joule_per_kilogram_kelvin, std::int64_t>(l); }
-constexpr auto operator"" q_J_per_kg_K(long double l) { return specific_heat_capacity<joule_per_kilogram_kelvin, long double>(l); }
+constexpr auto operator"" _q_J_per_kg_K(unsigned long long l) { return specific_heat_capacity<joule_per_kilogram_kelvin, std::int64_t>(l); }
+constexpr auto operator"" _q_J_per_kg_K(long double l) { return specific_heat_capacity<joule_per_kilogram_kelvin, long double>(l); }
 
 // J/(mol·K)
-constexpr auto operator"" q_J_per_mol_K(unsigned long long l) { return molar_heat_capacity<joule_per_mole_kelvin, std::int64_t>(l); }
-constexpr auto operator"" q_J_per_mol_K(long double l) { return molar_heat_capacity<joule_per_mole_kelvin, long double>(l); }
+constexpr auto operator"" _q_J_per_mol_K(unsigned long long l) { return molar_heat_capacity<joule_per_mole_kelvin, std::int64_t>(l); }
+constexpr auto operator"" _q_J_per_mol_K(long double l) { return molar_heat_capacity<joule_per_mole_kelvin, long double>(l); }
 
 }  // namespace literals
 

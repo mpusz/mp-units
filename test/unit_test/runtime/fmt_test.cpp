@@ -49,7 +49,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("integral representation")
     {
-      const auto q = 60q_W;
+      const auto q = 60_q_W;
       os << q;
 
       SECTION("iostream")
@@ -70,7 +70,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("floating-point representation")
     {
-      const auto q = 1023.5q_Pa;
+      const auto q = 1023.5_q_Pa;
       os << q;
 
       SECTION("iostream")
@@ -92,7 +92,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
   SECTION("quantity with a predefined prefixed unit")
   {
-    const auto q = 125q_us;
+    const auto q = 125_q_us;
     os << q;
 
     SECTION("iostream")
@@ -158,7 +158,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
   SECTION("quantity with an alias unit")
   {
-    const auto q = 2q_l;
+    const auto q = 2_q_l;
     os << q;
 
     SECTION("iostream")
@@ -179,7 +179,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
   SECTION("quantity with a prefixed alias unit")
   {
-    const auto q = 2q_ml;
+    const auto q = 2_q_ml;
     os << q;
 
     SECTION("iostream")
@@ -204,7 +204,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("acceleration")
       {
-        const auto q = 20q_m / 2q_s / 1q_s;
+        const auto q = 20_q_m / 2_q_s / 1_q_s;
         os << q;
 
         SECTION("iostream")
@@ -225,7 +225,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("volume")
       {
-        const auto q = 2q_m * 1q_m * 1q_m;
+        const auto q = 2_q_m * 1_q_m * 1_q_m;
         os << q;
 
         SECTION("iostream")
@@ -246,7 +246,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        const auto q = 20q_N / 2q_m;
+        const auto q = 20_q_N / 2_q_m;
         os << q;
 
         SECTION("iostream")
@@ -270,7 +270,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("speed")
       {
-        const auto q = 20q_km / 2q_h;
+        const auto q = 20_q_km / 2_q_h;
         os << q;
 
         SECTION("iostream")
@@ -317,7 +317,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
     {
-      const auto q = 4q_N * 2q_cm;
+      const auto q = 4_q_N * 2_q_cm;
       os << q;
 
       SECTION("iostream")
@@ -338,7 +338,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio for a dimension without a special symbol")
     {
-      const auto q = 2q_um * 2q_cm * 2q_cm;
+      const auto q = 2_q_um * 2_q_cm * 2_q_cm;
       os << q;
 
       SECTION("iostream")
@@ -359,7 +359,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
-      const auto q = 4 * 2q_min / (2q_s * 2q_s);
+      const auto q = 4 * 2_q_min / (2_q_s * 2_q_s);
       os << q;
 
       SECTION("iostream")
@@ -380,7 +380,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      const auto q = 20q_J / 2q_min;
+      const auto q = 20_q_J / 2_q_min;
       os << q;
 
       SECTION("iostream")
@@ -401,7 +401,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      const auto q = 60q_kJ / 2q_min;
+      const auto q = 60_q_kJ / 2_q_min;
       os << q;
 
       SECTION("iostream")
@@ -425,7 +425,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("one with ratio == 1")
     {
-      const auto q = 4q_m / 2q_m;
+      const auto q = 4_q_m / 2_q_m;
       os << q;
 
       SECTION("iostream")
@@ -446,7 +446,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("one with ratio.exp != 0")
     {
-      const auto q = 4q_km / 2q_m;
+      const auto q = 4_q_km / 2_q_m;
       os << q;
 
       SECTION("iostream")
@@ -467,7 +467,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("percents")
     {
-      const auto q = quantity_cast<percent>(15.q_m / 100.q_m);
+      const auto q = quantity_cast<percent>(15._q_m / 100._q_m);
       os << q;
 
       SECTION("iostream")
@@ -493,7 +493,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("SI base units")
       {
-        const auto q = 2q_s * 2q_m * 2q_kg;
+        const auto q = 2_q_s * 2_q_m * 2_q_kg;
         os << q;
 
         SECTION("iostream")
@@ -514,7 +514,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("CGS base units")
       {
-        const auto q = 2.q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
+        const auto q = 2._q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
         os << q;
 
         SECTION("iostream")
@@ -536,7 +536,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio as an SI prefix")
     {
-      const auto q = 4q_km * 2q_s;
+      const auto q = 4_q_km * 2_q_s;
       os << q;
 
       SECTION("iostream")
@@ -557,7 +557,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
     {
-      const auto q = 4q_kg * 2q_min / (2q_s * 2q_s);
+      const auto q = 4_q_kg * 2_q_min / (2_q_s * 2_q_s);
       os << q;
 
       SECTION("iostream")
@@ -578,7 +578,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
     {
-      const auto q = 20q_kg / 2q_min;
+      const auto q = 20_q_kg / 2_q_min;
       os << q;
 
       SECTION("iostream")
@@ -599,7 +599,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("CGS base units")
     {
-      const auto q = 2.q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
+      const auto q = 2._q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
       os << q;
 
       SECTION("iostream")
@@ -620,7 +620,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
     {
-      const auto q = 60q_min / 2q_km;
+      const auto q = 60_q_min / 2_q_km;
       os << q;
 
       SECTION("iostream")
@@ -641,7 +641,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exponent::num == 1 && exponent::den == 1")
     {
-      const auto q = 4q_m * 2q_s;
+      const auto q = 4_q_m * 2_q_s;
       os << q;
 
       SECTION("iostream")
@@ -662,7 +662,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exponent::num == 2 && exponent::den == 1 for positive exponent")
     {
-      const auto q = 4q_m * 2q_s * 2q_s;
+      const auto q = 4_q_m * 2_q_s * 2_q_s;
       os << q;
 
       SECTION("iostream")
@@ -683,7 +683,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (first dimension)")
     {
-      const auto q = 8q_s / 2q_m / 2q_m;
+      const auto q = 8_q_s / 2_q_m / 2_q_m;
       os << q;
 
       SECTION("iostream")
@@ -704,7 +704,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (not first dimension)")
     {
-      const auto q = 8q_m / 2q_kg / 2q_kg;
+      const auto q = 8_q_m / 2_q_kg / 2_q_kg;
       os << q;
 
       SECTION("iostream")
@@ -725,7 +725,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("fractional positive exponent")
     {
-      const auto q = sqrt(9q_m);
+      const auto q = sqrt(9_q_m);
       os << q;
 
       SECTION("iostream")
@@ -746,7 +746,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("fractional negative exponent")
     {
-      const auto q = sqrt(9 / 1q_m);
+      const auto q = sqrt(9 / 1_q_m);
       os << q;
 
       SECTION("iostream")
@@ -773,12 +773,12 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
   {
     SECTION("positive value")
     {
-      CHECK(fmt::format("{:%Q}", 123q_km_per_h) == "123");
+      CHECK(fmt::format("{:%Q}", 123_q_km_per_h) == "123");
     }
 
     SECTION("negative value")
     {
-      CHECK(fmt::format("{:%Q}", 5q_m - 10q_m) == "-5");
+      CHECK(fmt::format("{:%Q}", 5_q_m - 10_q_m) == "-5");
     }
   }
 
@@ -786,12 +786,12 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
   {
     SECTION("positive value")
     {
-      CHECK(fmt::format("{:%Q}", 221.q_km / 2q_h) == "110.5");
+      CHECK(fmt::format("{:%Q}", 221._q_km / 2_q_h) == "110.5");
     }
 
     SECTION("negative value")
     {
-      CHECK(fmt::format("{:%Q}", 3.14q_m - 10q_m) == "-6.86");
+      CHECK(fmt::format("{:%Q}", 3.14_q_m - 10_q_m) == "-6.86");
     }
 
     SECTION("nan")
@@ -815,24 +815,24 @@ TEST_CASE("format string with only %q should print quantity unit symbol only", "
 {
   SECTION("standard format for a unit without Unicode symbols")
   {
-    CHECK(fmt::format("{:%q}", 123q_km_per_h) == "km/h");
+    CHECK(fmt::format("{:%q}", 123_q_km_per_h) == "km/h");
   }
 
   SECTION("ASCII format for a unit without Unicode symbols")
   {
-    CHECK(fmt::format("{:%Aq}", 123q_km_per_h) == "km/h");
+    CHECK(fmt::format("{:%Aq}", 123_q_km_per_h) == "km/h");
   }
 
   SECTION("standard format for a unit with Unicode symbols")
   {
     SECTION("Unicode signs in a unit symbol")
     {
-      CHECK(fmt::format("{:%q}", 123q_kR) == "kΩ");
+      CHECK(fmt::format("{:%q}", 123_q_kR) == "kΩ");
     }
 
     SECTION("Unicode signs in a unit symbol prefix")
     {
-      CHECK(fmt::format("{:%q}", 123q_uV) == "µV");
+      CHECK(fmt::format("{:%q}", 123_q_uV) == "µV");
     }
   }
 
@@ -840,12 +840,12 @@ TEST_CASE("format string with only %q should print quantity unit symbol only", "
   {
     SECTION("Unicode signs in a unit symbol")
     {
-      CHECK(fmt::format("{:%Aq}", 123q_kR) == "kohm");
+      CHECK(fmt::format("{:%Aq}", 123_q_kR) == "kohm");
     }
 
     SECTION("Unicode signs in a unit symbol prefix")
     {
-      CHECK(fmt::format("{:%Aq}", 123q_uV) == "uV");
+      CHECK(fmt::format("{:%Aq}", 123_q_uV) == "uV");
     }
   }
 }
@@ -854,32 +854,32 @@ TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
 {
   SECTION("no space")
   {
-    CHECK(fmt::format("{:%Q%q}", 123q_km_per_h) == "123km/h");
+    CHECK(fmt::format("{:%Q%q}", 123_q_km_per_h) == "123km/h");
   }
 
   SECTION("separator")
   {
-    CHECK(fmt::format("{:%Q###%q}", 123q_km_per_h) == "123###km/h");
+    CHECK(fmt::format("{:%Q###%q}", 123_q_km_per_h) == "123###km/h");
   }
 
   SECTION("opposite order")
   {
-    CHECK(fmt::format("{:%q %Q}", 123q_km_per_h) == "km/h 123");
+    CHECK(fmt::format("{:%q %Q}", 123_q_km_per_h) == "km/h 123");
   }
 
   SECTION("tabulator")
   {
-    CHECK(fmt::format("{:%Q%t%q}", 123q_km_per_h) == "123\tkm/h");
+    CHECK(fmt::format("{:%Q%t%q}", 123_q_km_per_h) == "123\tkm/h");
   }
 
   SECTION("new line")
   {
-    CHECK(fmt::format("{:%Q%n%q}", 123q_km_per_h) == "123\nkm/h");
+    CHECK(fmt::format("{:%Q%n%q}", 123_q_km_per_h) == "123\nkm/h");
   }
 
   SECTION("% sign")
   {
-    CHECK(fmt::format("{:%Q%% %q}", 123q_km_per_h) == "123% km/h");
+    CHECK(fmt::format("{:%Q%% %q}", 123_q_km_per_h) == "123% km/h");
   }
 }
 
@@ -891,87 +891,87 @@ TEST_CASE("fill and align specification", "[text][fmt][ostream]")
 
     SECTION("width = 10")
     {
-      os << "|" << std::setw(10) << 123q_m << "|";
+      os << "|" << std::setw(10) << 123_q_m << "|";
       CHECK(os.str() == "|     123 m|");
     }
 
     SECTION("width = 10, align = right")
     {
-      os << "|" << std::setw(10) << std::right << 123q_m << "|";
+      os << "|" << std::setw(10) << std::right << 123_q_m << "|";
       CHECK(os.str() == "|     123 m|");
     }
 
     SECTION("width = 10, align = left")
     {
-      os << "|" << std::setw(10) << std::left << 123q_m << "|";
+      os << "|" << std::setw(10) << std::left << 123_q_m << "|";
       CHECK(os.str() == "|123 m     |");
     }
 
     SECTION("width = 10, fill = *")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << 123q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << 123_q_m << "|";
       CHECK(os.str() == "|*****123 m|");
     }
 
     SECTION("width = 10, fill = *, align = right")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << std::right << 123q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << std::right << 123_q_m << "|";
       CHECK(os.str() == "|*****123 m|");
     }
 
     SECTION("width = 10, fill = *, align = left")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << std::left << 123q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << std::left << 123_q_m << "|";
       CHECK(os.str() == "|123 m*****|");
     }
   }
 
   SECTION("default format {} on a quantity")
   {
-    CHECK(fmt::format("|{:0}|", 123q_m) == "|123 m|");
-    CHECK(fmt::format("|{:10}|", 123q_m) == "|     123 m|");
-    CHECK(fmt::format("|{:<10}|", 123q_m) == "|123 m     |");
-    CHECK(fmt::format("|{:>10}|", 123q_m) == "|     123 m|");
-    CHECK(fmt::format("|{:^10}|", 123q_m) == "|  123 m   |");
-    CHECK(fmt::format("|{:*<10}|", 123q_m) == "|123 m*****|");
-    CHECK(fmt::format("|{:*>10}|", 123q_m) == "|*****123 m|");
-    CHECK(fmt::format("|{:*^10}|", 123q_m) == "|**123 m***|");
+    CHECK(fmt::format("|{:0}|", 123_q_m) == "|123 m|");
+    CHECK(fmt::format("|{:10}|", 123_q_m) == "|     123 m|");
+    CHECK(fmt::format("|{:<10}|", 123_q_m) == "|123 m     |");
+    CHECK(fmt::format("|{:>10}|", 123_q_m) == "|     123 m|");
+    CHECK(fmt::format("|{:^10}|", 123_q_m) == "|  123 m   |");
+    CHECK(fmt::format("|{:*<10}|", 123_q_m) == "|123 m*****|");
+    CHECK(fmt::format("|{:*>10}|", 123_q_m) == "|*****123 m|");
+    CHECK(fmt::format("|{:*^10}|", 123_q_m) == "|**123 m***|");
   }
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("|{:0%Q%q}|", 123q_m) == "|123m|");
-    CHECK(fmt::format("|{:10%Q%q}|", 123q_m) == "|      123m|");
-    CHECK(fmt::format("|{:<10%Q%q}|", 123q_m) == "|123m      |");
-    CHECK(fmt::format("|{:>10%Q%q}|", 123q_m) == "|      123m|");
-    CHECK(fmt::format("|{:^10%Q%q}|", 123q_m) == "|   123m   |");
-    CHECK(fmt::format("|{:*<10%Q%q}|", 123q_m) == "|123m******|");
-    CHECK(fmt::format("|{:*>10%Q%q}|", 123q_m) == "|******123m|");
-    CHECK(fmt::format("|{:*^10%Q%q}|", 123q_m) == "|***123m***|");
+    CHECK(fmt::format("|{:0%Q%q}|", 123_q_m) == "|123m|");
+    CHECK(fmt::format("|{:10%Q%q}|", 123_q_m) == "|      123m|");
+    CHECK(fmt::format("|{:<10%Q%q}|", 123_q_m) == "|123m      |");
+    CHECK(fmt::format("|{:>10%Q%q}|", 123_q_m) == "|      123m|");
+    CHECK(fmt::format("|{:^10%Q%q}|", 123_q_m) == "|   123m   |");
+    CHECK(fmt::format("|{:*<10%Q%q}|", 123_q_m) == "|123m******|");
+    CHECK(fmt::format("|{:*>10%Q%q}|", 123_q_m) == "|******123m|");
+    CHECK(fmt::format("|{:*^10%Q%q}|", 123_q_m) == "|***123m***|");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("|{:0%Q}|", 123q_m) == "|123|");
-    CHECK(fmt::format("|{:10%Q}|", 123q_m) == "|       123|");
-    CHECK(fmt::format("|{:<10%Q}|", 123q_m) == "|123       |");
-    CHECK(fmt::format("|{:>10%Q}|", 123q_m) == "|       123|");
-    CHECK(fmt::format("|{:^10%Q}|", 123q_m) == "|   123    |");
-    CHECK(fmt::format("|{:*<10%Q}|", 123q_m) == "|123*******|");
-    CHECK(fmt::format("|{:*>10%Q}|", 123q_m) == "|*******123|");
-    CHECK(fmt::format("|{:*^10%Q}|", 123q_m) == "|***123****|");
+    CHECK(fmt::format("|{:0%Q}|", 123_q_m) == "|123|");
+    CHECK(fmt::format("|{:10%Q}|", 123_q_m) == "|       123|");
+    CHECK(fmt::format("|{:<10%Q}|", 123_q_m) == "|123       |");
+    CHECK(fmt::format("|{:>10%Q}|", 123_q_m) == "|       123|");
+    CHECK(fmt::format("|{:^10%Q}|", 123_q_m) == "|   123    |");
+    CHECK(fmt::format("|{:*<10%Q}|", 123_q_m) == "|123*******|");
+    CHECK(fmt::format("|{:*>10%Q}|", 123_q_m) == "|*******123|");
+    CHECK(fmt::format("|{:*^10%Q}|", 123_q_m) == "|***123****|");
   }
 
   SECTION("symbol only format {:%q} on a quantity")
   {
-    CHECK(fmt::format("|{:0%q}|", 123q_m) == "|m|");
-    CHECK(fmt::format("|{:10%q}|", 123q_m) == "|m         |");
-    CHECK(fmt::format("|{:<10%q}|", 123q_m) == "|m         |");
-    CHECK(fmt::format("|{:>10%q}|", 123q_m) == "|         m|");
-    CHECK(fmt::format("|{:^10%q}|", 123q_m) == "|    m     |");
-    CHECK(fmt::format("|{:*<10%q}|", 123q_m) == "|m*********|");
-    CHECK(fmt::format("|{:*>10%q}|", 123q_m) == "|*********m|");
-    CHECK(fmt::format("|{:*^10%q}|", 123q_m) == "|****m*****|");
+    CHECK(fmt::format("|{:0%q}|", 123_q_m) == "|m|");
+    CHECK(fmt::format("|{:10%q}|", 123_q_m) == "|m         |");
+    CHECK(fmt::format("|{:<10%q}|", 123_q_m) == "|m         |");
+    CHECK(fmt::format("|{:>10%q}|", 123_q_m) == "|         m|");
+    CHECK(fmt::format("|{:^10%q}|", 123_q_m) == "|    m     |");
+    CHECK(fmt::format("|{:*<10%q}|", 123_q_m) == "|m*********|");
+    CHECK(fmt::format("|{:*>10%q}|", 123_q_m) == "|*********m|");
+    CHECK(fmt::format("|{:*^10%q}|", 123_q_m) == "|****m*****|");
   }
 }
 
@@ -982,16 +982,16 @@ TEST_CASE("sign specification", "[text][fmt]")
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1q_m) == "1m,+1m,1m, 1m");
-    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", -1q_m) == "-1m,-1m,-1m,-1m");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1_q_m) == "1m,+1m,1m, 1m");
+    CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", -1_q_m) == "-1m,-1m,-1m,-1m");
     CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", inf) == "infm,+infm,infm, infm");
     CHECK(fmt::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", nan) == "nanm,+nanm,nanm, nanm");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", 1q_m) == "1,+1,1, 1");
-    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", -1q_m) == "-1,-1,-1,-1");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", 1_q_m) == "1,+1,1, 1");
+    CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", -1_q_m) == "-1,-1,-1,-1");
     CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", inf) == "inf,+inf,inf, inf");
     CHECK(fmt::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", nan) == "nan,+nan,nan, nan");
   }
@@ -1001,32 +1001,32 @@ TEST_CASE("precision specification", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:%.0Q %q}", 1.2345q_m) == "1 m");
-    CHECK(fmt::format("{:%.1Q %q}", 1.2345q_m) == "1.2 m");
-    CHECK(fmt::format("{:%.2Q %q}", 1.2345q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.0Q %q}", 1.2345_q_m) == "1 m");
+    CHECK(fmt::format("{:%.1Q %q}", 1.2345_q_m) == "1.2 m");
+    CHECK(fmt::format("{:%.2Q %q}", 1.2345_q_m) == "1.23 m");
 #ifdef COMP_MSVC
-    CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.234 m");
+    CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.234 m");
 #else
-    CHECK(fmt::format("{:%.3Q %q}", 1.2345q_m) == "1.235 m");
+    CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.235 m");
 #endif
-    CHECK(fmt::format("{:%.4Q %q}", 1.2345q_m) == "1.2345 m");
-    CHECK(fmt::format("{:%.5Q %q}", 1.2345q_m) == "1.23450 m");
-    CHECK(fmt::format("{:%.10Q %q}", 1.2345q_m) == "1.2345000000 m");
+    CHECK(fmt::format("{:%.4Q %q}", 1.2345_q_m) == "1.2345 m");
+    CHECK(fmt::format("{:%.5Q %q}", 1.2345_q_m) == "1.23450 m");
+    CHECK(fmt::format("{:%.10Q %q}", 1.2345_q_m) == "1.2345000000 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:%.0Q}", 1.2345q_m) == "1");
-    CHECK(fmt::format("{:%.1Q}", 1.2345q_m) == "1.2");
-    CHECK(fmt::format("{:%.2Q}", 1.2345q_m) == "1.23");
+    CHECK(fmt::format("{:%.0Q}", 1.2345_q_m) == "1");
+    CHECK(fmt::format("{:%.1Q}", 1.2345_q_m) == "1.2");
+    CHECK(fmt::format("{:%.2Q}", 1.2345_q_m) == "1.23");
 #ifdef COMP_MSVC
-    CHECK(fmt::format("{:%.3Q}", 1.2345q_m) == "1.234");
+    CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.234");
 #else
-    CHECK(fmt::format("{:%.3Q}", 1.2345q_m) == "1.235");
+    CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.235");
 #endif
-    CHECK(fmt::format("{:%.4Q}", 1.2345q_m) == "1.2345");
-    CHECK(fmt::format("{:%.5Q}", 1.2345q_m) == "1.23450");
-    CHECK(fmt::format("{:%.10Q}", 1.2345q_m) == "1.2345000000");
+    CHECK(fmt::format("{:%.4Q}", 1.2345_q_m) == "1.2345");
+    CHECK(fmt::format("{:%.5Q}", 1.2345_q_m) == "1.23450");
+    CHECK(fmt::format("{:%.10Q}", 1.2345_q_m) == "1.2345000000");
   }
 }
 
@@ -1034,12 +1034,12 @@ TEST_CASE("precision specification for integral representation should throw", "[
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q %q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q %q}", 1_q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q}", 1q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(fmt::format("{:%.1Q}", 1_q_m), fmt::format_error, Message("precision not allowed for integral quantity representation"));
   }
 }
 
@@ -1047,70 +1047,70 @@ TEST_CASE("type specification", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:%bQ %q}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:%BQ %q}", 42q_m) == "101010 m");
-    CHECK(fmt::format("{:%dQ %q}", 42q_m) == "42 m");
-    CHECK(fmt::format("{:%oQ %q}", 42q_m) == "52 m");
-    CHECK(fmt::format("{:%xQ %q}", 42q_m) == "2a m");
-    CHECK(fmt::format("{:%XQ %q}", 42q_m) == "2A m");
+    CHECK(fmt::format("{:%bQ %q}", 42_q_m) == "101010 m");
+    CHECK(fmt::format("{:%BQ %q}", 42_q_m) == "101010 m");
+    CHECK(fmt::format("{:%dQ %q}", 42_q_m) == "42 m");
+    CHECK(fmt::format("{:%oQ %q}", 42_q_m) == "52 m");
+    CHECK(fmt::format("{:%xQ %q}", 42_q_m) == "2a m");
+    CHECK(fmt::format("{:%XQ %q}", 42_q_m) == "2A m");
 
 #ifdef COMP_MSVC
-    CHECK(fmt::format("{:%aQ %q}",   1.2345678q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
-    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678q_m) == "0x1.3c1p+0 m");
-    CHECK(fmt::format("{:%AQ %q}",   1.2345678q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
-    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678q_m) == "0X1.3C1P+0 m");
+    CHECK(fmt::format("{:%aQ %q}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
+    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x1.3c1p+0 m");
+    CHECK(fmt::format("{:%AQ %q}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
+    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678_q_m) == "0X1.3C1P+0 m");
 #else
-    CHECK(fmt::format("{:%aQ %q}",   1.2345678q_m) == "0x9.e065152d8eae841p-3 m");
-    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678q_m) == "0x9.e06p-3 m");
-    CHECK(fmt::format("{:%AQ %q}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3 m");
-    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678q_m) == "0X9.E06P-3 m");
+    CHECK(fmt::format("{:%aQ %q}",   1.2345678_q_m) == "0x9.e065152d8eae841p-3 m");
+    CHECK(fmt::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x9.e06p-3 m");
+    CHECK(fmt::format("{:%AQ %q}",   1.2345678_q_m) == "0X9.E065152D8EAE841P-3 m");
+    CHECK(fmt::format("{:%.3AQ %q}", 1.2345678_q_m) == "0X9.E06P-3 m");
 #endif
-    CHECK(fmt::format("{:%eQ %q}",   1.2345678q_m) == "1.234568e+00 m");
-    CHECK(fmt::format("{:%.3eQ %q}", 1.2345678q_m) == "1.235e+00 m");
-    CHECK(fmt::format("{:%EQ %q}",   1.2345678q_m) == "1.234568E+00 m");
-    CHECK(fmt::format("{:%.3EQ %q}", 1.2345678q_m) == "1.235E+00 m");
-    CHECK(fmt::format("{:%gQ %q}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:%gQ %q}",   1.2345678e8q_m) == "1.23457e+08 m");
-    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678e8q_m) == "1.23e+08 m");
-    CHECK(fmt::format("{:%GQ %q}",   1.2345678q_m) == "1.23457 m");
-    CHECK(fmt::format("{:%GQ %q}",   1.2345678e8q_m) == "1.23457E+08 m");
-    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678q_m) == "1.23 m");
-    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678e8q_m) == "1.23E+08 m");
+    CHECK(fmt::format("{:%eQ %q}",   1.2345678_q_m) == "1.234568e+00 m");
+    CHECK(fmt::format("{:%.3eQ %q}", 1.2345678_q_m) == "1.235e+00 m");
+    CHECK(fmt::format("{:%EQ %q}",   1.2345678_q_m) == "1.234568E+00 m");
+    CHECK(fmt::format("{:%.3EQ %q}", 1.2345678_q_m) == "1.235E+00 m");
+    CHECK(fmt::format("{:%gQ %q}",   1.2345678_q_m) == "1.23457 m");
+    CHECK(fmt::format("{:%gQ %q}",   1.2345678e8_q_m) == "1.23457e+08 m");
+    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678_q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.3gQ %q}", 1.2345678e8_q_m) == "1.23e+08 m");
+    CHECK(fmt::format("{:%GQ %q}",   1.2345678_q_m) == "1.23457 m");
+    CHECK(fmt::format("{:%GQ %q}",   1.2345678e8_q_m) == "1.23457E+08 m");
+    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678_q_m) == "1.23 m");
+    CHECK(fmt::format("{:%.3GQ %q}", 1.2345678e8_q_m) == "1.23E+08 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:%bQ}", 42q_m) == "101010");
-    CHECK(fmt::format("{:%BQ}", 42q_m) == "101010");
-    CHECK(fmt::format("{:%dQ}", 42q_m) == "42");
-    CHECK(fmt::format("{:%oQ}", 42q_m) == "52");
-    CHECK(fmt::format("{:%xQ}", 42q_m) == "2a");
-    CHECK(fmt::format("{:%XQ}", 42q_m) == "2A");
+    CHECK(fmt::format("{:%bQ}", 42_q_m) == "101010");
+    CHECK(fmt::format("{:%BQ}", 42_q_m) == "101010");
+    CHECK(fmt::format("{:%dQ}", 42_q_m) == "42");
+    CHECK(fmt::format("{:%oQ}", 42_q_m) == "52");
+    CHECK(fmt::format("{:%xQ}", 42_q_m) == "2a");
+    CHECK(fmt::format("{:%XQ}", 42_q_m) == "2A");
 
 #ifdef COMP_MSVC
-    CHECK(fmt::format("{:%aQ}",   1.2345678q_m) == "0x1.3c0ca2a5b1d5dp+0");
-    CHECK(fmt::format("{:%.3aQ}", 1.2345678q_m) == "0x1.3c1p+0");
-    CHECK(fmt::format("{:%AQ}",   1.2345678q_m) == "0X1.3C0CA2A5B1D5DP+0");
-    CHECK(fmt::format("{:%.3AQ}", 1.2345678q_m) == "0X1.3C1P+0");
+    CHECK(fmt::format("{:%aQ}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0");
+    CHECK(fmt::format("{:%.3aQ}", 1.2345678_q_m) == "0x1.3c1p+0");
+    CHECK(fmt::format("{:%AQ}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0");
+    CHECK(fmt::format("{:%.3AQ}", 1.2345678_q_m) == "0X1.3C1P+0");
 #else
-    CHECK(fmt::format("{:%aQ}",   1.2345678q_m) == "0x9.e065152d8eae841p-3");
-    CHECK(fmt::format("{:%.3aQ}", 1.2345678q_m) == "0x9.e06p-3");
-    CHECK(fmt::format("{:%AQ}",   1.2345678q_m) == "0X9.E065152D8EAE841P-3");
-    CHECK(fmt::format("{:%.3AQ}", 1.2345678q_m) == "0X9.E06P-3");
+    CHECK(fmt::format("{:%aQ}",   1.2345678_q_m) == "0x9.e065152d8eae841p-3");
+    CHECK(fmt::format("{:%.3aQ}", 1.2345678_q_m) == "0x9.e06p-3");
+    CHECK(fmt::format("{:%AQ}",   1.2345678_q_m) == "0X9.E065152D8EAE841P-3");
+    CHECK(fmt::format("{:%.3AQ}", 1.2345678_q_m) == "0X9.E06P-3");
 #endif
-    CHECK(fmt::format("{:%eQ}",   1.2345678q_m) == "1.234568e+00");
-    CHECK(fmt::format("{:%.3eQ}", 1.2345678q_m) == "1.235e+00");
-    CHECK(fmt::format("{:%EQ}",   1.2345678q_m) == "1.234568E+00");
-    CHECK(fmt::format("{:%.3EQ}", 1.2345678q_m) == "1.235E+00");
-    CHECK(fmt::format("{:%gQ}",   1.2345678q_m) == "1.23457");
-    CHECK(fmt::format("{:%gQ}",   1.2345678e8q_m) == "1.23457e+08");
-    CHECK(fmt::format("{:%.3gQ}", 1.2345678q_m) == "1.23");
-    CHECK(fmt::format("{:%.3gQ}", 1.2345678e8q_m) == "1.23e+08");
-    CHECK(fmt::format("{:%GQ}",   1.2345678q_m) == "1.23457");
-    CHECK(fmt::format("{:%GQ}",   1.2345678e8q_m) == "1.23457E+08");
-    CHECK(fmt::format("{:%.3GQ}", 1.2345678q_m) == "1.23");
-    CHECK(fmt::format("{:%.3GQ}", 1.2345678e8q_m) == "1.23E+08");
+    CHECK(fmt::format("{:%eQ}",   1.2345678_q_m) == "1.234568e+00");
+    CHECK(fmt::format("{:%.3eQ}", 1.2345678_q_m) == "1.235e+00");
+    CHECK(fmt::format("{:%EQ}",   1.2345678_q_m) == "1.234568E+00");
+    CHECK(fmt::format("{:%.3EQ}", 1.2345678_q_m) == "1.235E+00");
+    CHECK(fmt::format("{:%gQ}",   1.2345678_q_m) == "1.23457");
+    CHECK(fmt::format("{:%gQ}",   1.2345678e8_q_m) == "1.23457e+08");
+    CHECK(fmt::format("{:%.3gQ}", 1.2345678_q_m) == "1.23");
+    CHECK(fmt::format("{:%.3gQ}", 1.2345678e8_q_m) == "1.23e+08");
+    CHECK(fmt::format("{:%GQ}",   1.2345678_q_m) == "1.23457");
+    CHECK(fmt::format("{:%GQ}",   1.2345678e8_q_m) == "1.23457E+08");
+    CHECK(fmt::format("{:%.3GQ}", 1.2345678_q_m) == "1.23");
+    CHECK(fmt::format("{:%.3GQ}", 1.2345678e8_q_m) == "1.23E+08");
   }
 }
 
@@ -1118,20 +1118,20 @@ TEST_CASE("different base types with the # specifier")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(fmt::format("{:%#bQ %q}", 42q_m) == "0b101010 m");
-    CHECK(fmt::format("{:%#BQ %q}", 42q_m) == "0B101010 m");
-    CHECK(fmt::format("{:%#oQ %q}", 42q_m) == "052 m");
-    CHECK(fmt::format("{:%#xQ %q}", 42q_m) == "0x2a m");
-    CHECK(fmt::format("{:%#XQ %q}", 42q_m) == "0X2A m");
+    CHECK(fmt::format("{:%#bQ %q}", 42_q_m) == "0b101010 m");
+    CHECK(fmt::format("{:%#BQ %q}", 42_q_m) == "0B101010 m");
+    CHECK(fmt::format("{:%#oQ %q}", 42_q_m) == "052 m");
+    CHECK(fmt::format("{:%#xQ %q}", 42_q_m) == "0x2a m");
+    CHECK(fmt::format("{:%#XQ %q}", 42_q_m) == "0X2A m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(fmt::format("{:%#bQ}", 42q_m) == "0b101010");
-    CHECK(fmt::format("{:%#BQ}", 42q_m) == "0B101010");
-    CHECK(fmt::format("{:%#oQ}", 42q_m) == "052");
-    CHECK(fmt::format("{:%#xQ}", 42q_m) == "0x2a");
-    CHECK(fmt::format("{:%#XQ}", 42q_m) == "0X2A");
+    CHECK(fmt::format("{:%#bQ}", 42_q_m) == "0b101010");
+    CHECK(fmt::format("{:%#BQ}", 42_q_m) == "0B101010");
+    CHECK(fmt::format("{:%#oQ}", 42_q_m) == "052");
+    CHECK(fmt::format("{:%#xQ}", 42_q_m) == "0x2a");
+    CHECK(fmt::format("{:%#XQ}", 42_q_m) == "0X2A");
   }
 }
 
@@ -1141,7 +1141,7 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
   SECTION("int to double representation")
   {
-    const auto q = 121q_km / 2q_h;
+    const auto q = 121_q_km / 2_q_h;
 
     SECTION("original")
     {
@@ -1164,7 +1164,7 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
   SECTION("double to int representation")
   {
-    const auto q = 121.q_km / 2q_h;
+    const auto q = 121._q_km / 2_q_h;
 
     SECTION("original")
     {

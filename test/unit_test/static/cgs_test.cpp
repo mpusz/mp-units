@@ -50,17 +50,17 @@ static_assert(centimetre::symbol == "cm");
 
 // speed
 
-static_assert(10q_cm / 5q_s == 2q_cm_per_s);
-static_assert(10q_cm / 2q_cm_per_s == 5q_s);
-static_assert(10q_cm == 2q_cm_per_s * 5q_s);
+static_assert(10_q_cm / 5_q_s == 2_q_cm_per_s);
+static_assert(10_q_cm / 2_q_cm_per_s == 5_q_s);
+static_assert(10_q_cm == 2_q_cm_per_s * 5_q_s);
 
 static_assert(detail::unit_text<dim_speed, centimetre_per_second>() == "cm/s");
 
 // area
 static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
-static_assert(1q_cm * 1q_cm == 1q_cm2);
-static_assert(100q_cm2 / 10q_cm == 10q_cm);
+static_assert(1_q_cm * 1_q_cm == 1_q_cm2);
+static_assert(100_q_cm2 / 10_q_cm == 10_q_cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_text("cm²", "cm^2"));
 
@@ -68,35 +68,35 @@ static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_t
 
 // acceleration
 
-static_assert(10q_cm_per_s / 10q_s == 1q_Gal);
-static_assert(10q_cm_per_s / 1q_Gal == 10q_s);
-static_assert(1q_Gal * 10q_s == 10q_cm_per_s);
+static_assert(10_q_cm_per_s / 10_q_s == 1_q_Gal);
+static_assert(10_q_cm_per_s / 1_q_Gal == 10_q_s);
+static_assert(1_q_Gal * 10_q_s == 10_q_cm_per_s);
 
 // force
 
-static_assert(10q_g * 10q_Gal == 100q_dyn);
-static_assert(100q_dyn / 10q_g == 10q_Gal);
-static_assert(100q_dyn / 10q_Gal == 10q_g);
+static_assert(10_q_g * 10_q_Gal == 100_q_dyn);
+static_assert(100_q_dyn / 10_q_g == 10_q_Gal);
+static_assert(100_q_dyn / 10_q_Gal == 10_q_g);
 
 // pressure
 
-static_assert(10q_dyn / 10q_cm2 == 1q_Ba);
-static_assert(10q_dyn / 1q_Ba == 10q_cm2);
-static_assert(1q_Ba * 10q_cm2 == 10q_dyn);
+static_assert(10_q_dyn / 10_q_cm2 == 1_q_Ba);
+static_assert(10_q_dyn / 1_q_Ba == 10_q_cm2);
+static_assert(1_q_Ba * 10_q_cm2 == 10_q_dyn);
 
 // energy
 
-static_assert(10q_dyn * 10q_cm == 100q_erg);
-static_assert(100q_erg / 10q_cm == 10q_dyn);
-static_assert(100q_erg / 10q_dyn == 10q_cm);
+static_assert(10_q_dyn * 10_q_cm == 100_q_erg);
+static_assert(100_q_erg / 10_q_cm == 10_q_dyn);
+static_assert(100_q_erg / 10_q_dyn == 10_q_cm);
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
 // power
 
-static_assert(10q_erg / 10q_s == 1q_erg_per_s);
-static_assert(1q_erg_per_s * 10q_s == 10q_erg);
-static_assert(10q_erg / 1q_erg_per_s == 10q_s);
+static_assert(10_q_erg / 10_q_s == 1_q_erg_per_s);
+static_assert(1_q_erg_per_s * 10_q_s == 10_q_erg);
+static_assert(10_q_erg / 1_q_erg_per_s == 10_q_s);
 
 static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 
