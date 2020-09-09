@@ -25,44 +25,75 @@
 #include <units/bits/external/hacks.h>
 #include <type_traits>
 
+#ifdef DOWNCAST_MODE
+#if DOWNCAST_MODE < 0 || DOWNCAST_MODE > 2
+#error "Invalid DOWNCAST_MODE value"
+#endif
+#else
+#define DOWNCAST_MODE 2
+#endif
+
 namespace units {
 
 template<typename BaseType>
 struct downcast_base {
   using downcast_base_type = BaseType;
   friend auto downcast_guide(downcast_base);
+  friend auto downcast_poison_pill(downcast_base);
 };
 
 template<typename T>
 concept Downcastable =
-  requires {
-    typename T::downcast_base_type;
-  } &&
+  requires { typename T::downcast_base_type; } &&
   std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
-template<typename Target, Downcastable T>
-struct downcast_child : T {
-  friend auto downcast_guide(typename downcast_child::downcast_base /* base */) { return Target(); }
-};
-
-namespace detail {
-
 template<typename T>
-concept has_downcast =
+concept has_downcast_guide =
   requires {
     downcast_guide(std::declval<downcast_base<T>>());
   };
 
 template<typename T>
+concept has_downcast_poison_pill =
+  requires {
+    downcast_poison_pill(std::declval<downcast_base<T>>());
+  };
+
+template<typename Target, Downcastable T>
+struct downcast_child : T {
+  friend auto downcast_guide(typename T::downcast_base)
+  { return Target(); }
+};
+
+template<Downcastable T>
+struct downcast_poison : T {
+  friend auto downcast_poison_pill(typename T::downcast_base)
+  { return true; }
+};
+
+enum class downcast_mode {
+  off = 0,         // no downcasting at all
+  on = 1,          // downcasting always forced -> compile-time errors in case of duplicated definitions
+  automatic = 2    // downcasting automatically enabled if no collisions are present
+};
+
+template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(DOWNCAST_MODE)>
+struct downcast_dispatch : std::conditional_t<mode == downcast_mode::off, T,
+                                              std::conditional_t<mode == downcast_mode::automatic && has_downcast_guide<T>,
+                                                                 downcast_poison<T>, downcast_child<Target, T>>> {};
+
+namespace detail {
+
+template<typename T>
 constexpr auto downcast_impl()
 {
-  if constexpr (has_downcast<T>)
+  if constexpr(has_downcast_guide<T> && !has_downcast_poison_pill<T>)
     return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
   else
     return T();
 }
 
-}  // namespace detail
+}
 
 template<Downcastable T>
 using downcast = decltype(detail::downcast_impl<T>());

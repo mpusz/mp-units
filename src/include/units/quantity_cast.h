@@ -59,7 +59,7 @@ constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
 
 // QuantityOf
 template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent_dim<typename T::dimension, Dim>;
+concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent<typename T::dimension, Dim>;
 
 // quantity_cast
 namespace detail {
@@ -337,7 +337,7 @@ template<Quantity To, typename D, typename U, typename Rep>
  * @tparam ToD a dimension type to use for a target quantity
  */
 template<Dimension ToD, typename D, typename U, typename Rep>
-  requires equivalent_dim<ToD, D>
+  requires equivalent<ToD, D>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<ToD, dimension_unit<ToD>, Rep>>(q);

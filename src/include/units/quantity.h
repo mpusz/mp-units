@@ -76,7 +76,7 @@ public:
   constexpr explicit(!(std::is_same_v<dimension, dim_one> && std::is_same_v<unit, one>)) quantity(const Value& v) : value_{static_cast<rep>(v)} {}
 
   template<Quantity Q2>
-    requires equivalent_dim<D, typename Q2::dimension> &&
+    requires equivalent<D, typename Q2::dimension> &&
              detail::safe_convertible<typename Q2::rep, rep> &&
              detail::safe_divisible<rep, Q2, quantity>
   constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()} {}
@@ -314,7 +314,7 @@ public:
   }
 
   template<typename D2, typename U2, typename Rep2>
-    requires equivalent_dim<D, D2> &&
+    requires equivalent<D, D2> &&
              std::three_way_comparable_with<Rep, Rep2>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
@@ -323,7 +323,7 @@ public:
   }
 
   template<typename D2, typename U2, typename Rep2>
-    requires equivalent_dim<D, D2> &&
+    requires equivalent<D, D2> &&
              std::equality_comparable_with<Rep, Rep2>
   [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {

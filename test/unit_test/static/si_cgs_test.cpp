@@ -46,6 +46,13 @@ namespace {
 
 using namespace units::physical;
 
+static_assert(units::detail::quantity_ratio(si::length<si::metre>(1)) == units::ratio(1));
+static_assert(units::detail::quantity_ratio(cgs::length<cgs::centimetre>(1)) == units::ratio(1, 100));
+static_assert(units::detail::quantity_ratio(si::speed<si::metre_per_second>(1)) == units::ratio(1));
+static_assert(units::detail::quantity_ratio(cgs::speed<cgs::centimetre_per_second>(1)) == units::ratio(1, 100));
+static_assert(units::detail::quantity_ratio(si::force<si::newton>(1)) == units::ratio(1000));   // defined in terms of kilogram that are 1000 * gram
+static_assert(units::detail::quantity_ratio(cgs::force<cgs::dyne>(1)) == units::ratio(1, 100)); // defined in terms of gram so only centimetre ratio counts here
+
 static_assert(cgs::length<cgs::centimetre>(100) == si::length<si::metre>(1));
 static_assert(cgs::mass<cgs::gram>(1'000) == si::mass<si::kilogram>(1));
 static_assert(cgs::time<cgs::second>(1) == si::time<si::second>(1));

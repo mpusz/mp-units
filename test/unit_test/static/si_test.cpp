@@ -241,8 +241,6 @@ static_assert(kilogray::symbol == "kGy");
 
 // speed
 
-static_assert(is_same_v<decltype(1_q_km / 1_q_s), speed<scaled_unit<ratio(1, 1, 3), metre_per_second>, std::int64_t>>);
-
 static_assert(10_q_m / 5_q_s == 2_q_m_per_s);
 static_assert(10 / 5_q_s * 1_q_m == 2_q_m_per_s);
 static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);

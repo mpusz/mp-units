@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "units/math.h"
+#include "units/physical/international/area.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/speed.h"
 #include "units/physical/international/area.h"
@@ -27,18 +29,20 @@
 
 namespace {
 
-  using namespace units;
-  using namespace units::physical::si::literals;
-  using namespace units::physical::international::literals;
+using namespace units;
+using namespace units::physical::si::literals;
+using namespace units::physical::international::literals;
 
-  static_assert(is_same_v<decltype(pow<0>(2_q_m)), std::int64_t>);
-  static_assert(is_same_v<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);
-  static_assert(is_same_v<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
-  static_assert(is_same_v<decltype(pow<2>(2_q_km)), decltype(4_q_km2)>);
-  static_assert(is_same_v<decltype(pow<2>(2_q_ft)), decltype(4_q_ft2)>);
-  static_assert(is_same_v<decltype(sqrt(4_q_m2)), decltype(2_q_m)>);
-  static_assert(is_same_v<decltype(sqrt(4_q_km2)), decltype(2_q_km)>);
-  static_assert(is_same_v<decltype(sqrt(4_q_ft2)), decltype(2_q_ft)>);
+template<typename T, typename U>
+inline constexpr bool compare = DOWNCAST_MODE != 0 ? is_same_v<T, U> : (is_same_v<T, U> || units::equivalent<T, U>);
 
+static_assert(compare<decltype(pow<0>(2_q_m)), std::int64_t>);
+static_assert(compare<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);
+static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
+static_assert(compare<decltype(pow<2>(2_q_km)), decltype(4_q_km2)>);
+static_assert(compare<decltype(pow<2>(2_q_ft)), decltype(4_q_ft2)>);
+static_assert(compare<decltype(sqrt(4_q_m2)), decltype(2_q_m)>);
+static_assert(compare<decltype(sqrt(4_q_km2)), decltype(2_q_km)>);
+static_assert(compare<decltype(sqrt(4_q_ft2)), decltype(2_q_ft)>);
 
 }  // namespace

@@ -50,6 +50,8 @@ static_assert(centimetre::symbol == "cm");
 
 // speed
 
+static_assert((10_q_cm / 5_q_s).count() == 2);
+static_assert((2_q_cm_per_s).count() == 2);
 static_assert(10_q_cm / 5_q_s == 2_q_cm_per_s);
 static_assert(10_q_cm / 2_q_cm_per_s == 5_q_s);
 static_assert(10_q_cm == 2_q_cm_per_s * 5_q_s);
@@ -59,7 +61,11 @@ static_assert(detail::unit_text<dim_speed, centimetre_per_second>() == "cm/s");
 // area
 static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
+static_assert((1_q_cm * 1_q_cm).count() == 1);
+static_assert((1_q_cm2).count() == 1);
 static_assert(1_q_cm * 1_q_cm == 1_q_cm2);
+static_assert(100_q_cm * 100_q_cm == area<physical::si::square_metre>(1));
+static_assert(100_q_cm * 100_q_cm == length<physical::si::metre>(1) * length<physical::si::metre>(1));
 static_assert(100_q_cm2 / 10_q_cm == 10_q_cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_text("cm²", "cm^2"));

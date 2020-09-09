@@ -21,12 +21,16 @@
 // SOFTWARE.
 
 #include "units/unit.h"
+#include "units/bits/equivalent.h"
 #include "units/physical/si/prefixes.h"
 
 namespace {
 
 using namespace units;
 using namespace units::physical;
+
+template<typename T, typename U>
+inline constexpr bool compare = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
 
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
@@ -49,11 +53,11 @@ struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exponent<dim_length, 1>, units::exponent<dim_time, -1>> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
-static_assert(is_same_v<downcast<scaled_unit<ratio(1), metre>>, metre>);
-static_assert(is_same_v<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
-static_assert(is_same_v<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
-static_assert(is_same_v<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
-static_assert(is_same_v<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
+static_assert(compare<downcast<scaled_unit<ratio(1), metre>>, metre>);
+static_assert(compare<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
+static_assert(compare<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
+static_assert(compare<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
+static_assert(compare<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
 
 #if COMP_GCC >= 10
 static_assert([]<ratio R>() { return !requires { typename scaled_unit<R, metre>; }; }.template operator()<ratio(-1, 1)>()); // negative unit ratio

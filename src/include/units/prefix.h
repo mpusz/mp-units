@@ -71,7 +71,7 @@ struct prefix_base : downcast_base<prefix_base<PF, R>> {
  */
 template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, ratio R>
   requires (!std::same_as<PF, no_prefix>)
-struct prefix : downcast_child<Child, detail::prefix_base<PF, R>> {
+struct prefix : downcast_dispatch<Child, detail::prefix_base<PF, R>, downcast_mode::on> {
   static constexpr auto symbol = Symbol;
 };
 

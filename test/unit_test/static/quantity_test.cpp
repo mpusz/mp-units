@@ -34,6 +34,9 @@ namespace {
 using namespace units;
 using namespace units::physical::si;
 
+template<typename T, typename U>
+inline constexpr bool compare = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
+
 // class invariants
 
 template<typename DimLength>
@@ -147,37 +150,35 @@ static_assert(invalid_compound_assignments<metre>);
 
 // non-member arithmetic operators
 
-static_assert(is_same_v<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
-static_assert(is_same_v<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
+static_assert(compare<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
+static_assert(compare<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
+static_assert(compare<decltype(length<kilometre, int>() + length<metre, double>()), length<metre, double>>);
+static_assert(compare<decltype(length<metre, double>() - length<metre, int>()), length<metre, double>>);
+static_assert(compare<decltype(length<kilometre, double>() - length<metre, int>()), length<metre, double>>);
+static_assert(compare<decltype(length<metre, int>() * 1.0), length<metre, double>>);
+static_assert(compare<decltype(1.0 * length<metre, int>()), length<metre, double>>);
 static_assert(
-    is_same_v<decltype(length<kilometre, int>() + length<metre, double>()), length<metre, double>>);
-static_assert(is_same_v<decltype(length<metre, double>() - length<metre, int>()), length<metre, double>>);
+    compare<decltype(speed<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
 static_assert(
-    is_same_v<decltype(length<kilometre, double>() - length<metre, int>()), length<metre, double>>);
-static_assert(is_same_v<decltype(length<metre, int>() * 1.0), length<metre, double>>);
-static_assert(is_same_v<decltype(1.0 * length<metre, int>()), length<metre, double>>);
-static_assert(
-    is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
-static_assert(
-    is_same_v<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio(36, 1, 2), metre>, int>>);
-static_assert(is_same_v<decltype(length<metre>() * physical::si::time<minute>()),
+    compare<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio(36, 1, 2), metre>, int>>);
+static_assert(compare<decltype(length<metre>() * physical::si::time<minute>()),
               quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6, 1, 1), unknown_coherent_unit>>>);
-static_assert(is_same_v<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
-static_assert(is_same_v<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio(1, 6, -1), hertz>, int>>);
-static_assert(is_same_v<decltype(1 / frequency<hertz, int>()), physical::si::time<second, int>>);
-static_assert(is_same_v<decltype(1 / length<kilometre>()),
+static_assert(compare<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
+static_assert(compare<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio(1, 6, -1), hertz>, int>>);
+static_assert(compare<decltype(1 / frequency<hertz, int>()), physical::si::time<second, int>>);
+static_assert(compare<decltype(1 / length<kilometre>()),
               quantity<unknown_dimension<units::exponent<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>>>);
-static_assert(is_same_v<decltype(length<metre, int>() / 1.0), length<metre, double>>);
-static_assert(is_same_v<decltype(length<metre, int>() / length<metre, double>()), dimensionless<one, double>>);
-static_assert(is_same_v<decltype(length<kilometre, int>() / length<metre, double>()), dimensionless<scaled_unit<ratio(1, 1, 3), one>, double>>);
+static_assert(compare<decltype(length<metre, int>() / 1.0), length<metre, double>>);
+static_assert(compare<decltype(length<metre, int>() / length<metre, double>()), dimensionless<one, double>>);
+static_assert(compare<decltype(length<kilometre, int>() / length<metre, double>()), dimensionless<scaled_unit<ratio(1, 1, 3), one>, double>>);
 static_assert(
-    is_same_v<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
+    compare<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
 static_assert(
-    is_same_v<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio(1, 6, -1), metre_per_second>>>);
-static_assert(is_same_v<decltype(physical::si::time<minute>() / length<metre>()),
+    compare<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio(1, 6, -1), metre_per_second>>>);
+static_assert(compare<decltype(physical::si::time<minute>() / length<metre>()),
               quantity<unknown_dimension<units::exponent<dim_length, -1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6 ,1 , 1), unknown_coherent_unit>>>);
-static_assert(is_same_v<decltype(length<metre, int>() % short(1)), length<metre, int>>);
-static_assert(is_same_v<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
+static_assert(compare<decltype(length<metre, int>() % short(1)), length<metre, int>>);
+static_assert(compare<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
 
 static_assert((1_q_m + km).count() == 1001);
 static_assert((1_q_m + 1_q_km).count() == 1001);
@@ -251,11 +252,10 @@ static_assert(Quantity<length<millimetre, int>>);
 
 // common_quantity
 
-static_assert(is_same_v<common_quantity<length<metre, int>, length<kilometre, int>>, length<metre, int>>);
+static_assert(compare<common_quantity<length<metre, int>, length<kilometre, int>>, length<metre, int>>);
+static_assert(compare<common_quantity<length<kilometre, long long>, length<metre, int>>, length<metre, long long>>);
 static_assert(
-    is_same_v<common_quantity<length<kilometre, long long>, length<metre, int>>, length<metre, long long>>);
-static_assert(is_same_v<common_quantity<length<kilometre, long long>, length<millimetre, double>>,
-                             length<millimetre, double>>);
+    compare<common_quantity<length<kilometre, long long>, length<millimetre, double>>, length<millimetre, double>>);
 
 // common_type
 
@@ -272,7 +272,7 @@ static_assert(!std::equality_comparable_with<dimensionless<one, int>, double>);
 
 // quantity_cast
 
-static_assert(is_same_v<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2_q_km))::unit, metre>);
+static_assert(compare<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2_q_km))::unit, metre>);
 
 static_assert(quantity_cast<length<metre, int>>(2_q_km).count() == 2000);
 static_assert(quantity_cast<length<kilometre, int>>(2000_q_m).count() == 2);
@@ -339,6 +339,20 @@ static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);
 static_assert(2_q_km_per_h * 2_q_h == 4_q_km);
 static_assert(2_q_km / 2_q_km_per_h == 1_q_h);
 
-static_assert(is_same_v<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
+static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
+
+// downcasting
+
+#if DOWNCAST_MODE == 0
+
+static_assert(std::is_same_v<decltype(10_q_m / 5_q_s), quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, -1>>, scaled_unit<ratio(1), unknown_coherent_unit>, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<ratio(1, 1, -3), metre>, std::int64_t>>);
+
+#else
+
+static_assert(std::is_same_v<decltype(10_q_m / 5_q_s), speed<metre_per_second, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_mm + 1_q_km), length<millimetre, std::int64_t>>);
+
+#endif
 
 }  // namespace

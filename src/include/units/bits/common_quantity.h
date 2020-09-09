@@ -23,6 +23,8 @@
 #pragma once
 
 #include <units/bits/dimension_op.h>
+#include <units/bits/equivalent.h>
+#include <units/quantity_cast.h>
 
 namespace units {
 
@@ -55,9 +57,12 @@ struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep>
 
 template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
 struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
+  using dimension = conditional<is_specialization_of<D1, unknown_dimension>, D2, D1>;
   static constexpr ratio r1 = D1::base_units_ratio * U1::ratio;
   static constexpr ratio r2 = D2::base_units_ratio * U2::ratio;
-  using type = quantity<D1, downcast_unit<D1, common_ratio(r1, r2)>, Rep>;
+  static constexpr ratio cr = common_ratio(r1, r2);
+  using unit = downcast_unit<dimension, cr / dimension::base_units_ratio>;
+  using type = quantity<dimension, unit, Rep>;
 };
 
 template<typename D, typename U, typename Rep>
@@ -66,7 +71,7 @@ quantity_point<D, U, Rep> common_quantity_point_impl(quantity<D, U, Rep>);
 }  // namespace detail
 
 template<Quantity Q1, Quantity Q2, ScalableNumber Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-  requires equivalent_dim<typename Q1::dimension, typename Q2::dimension>
+  requires equivalent<typename Q1::dimension, typename Q2::dimension>
 using common_quantity = TYPENAME detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 template<QuantityPoint QP1, QuantityPoint QP2>
@@ -79,7 +84,7 @@ using common_quantity_point = decltype(
 namespace std {
 
 template<units::Quantity Q1, units::Quantity Q2>
-  requires units::equivalent_dim<typename Q1::dimension, typename Q2::dimension>
+  requires units::equivalent<typename Q1::dimension, typename Q2::dimension>
 struct common_type<Q1, Q2> {
   using type = units::common_quantity<Q1, Q2>;
 };
