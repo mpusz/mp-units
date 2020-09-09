@@ -136,8 +136,8 @@ static_assert(200._q_cm * quantity_cast<cgs::dim_length>(si::length<si::metre>(2
 // TODO Add support for quantity_cast on an unknown_dimension?
 // static_assert(quantity_cast<si::area<si::square_metre>>(200_q_cm * si::length<si::metre>(2)) == si::area<si::square_metre>(4));
 // static_assert(quantity_cast<si::dim_area>(200_q_cm * si::length<si::metre>(2)) == si::area<si::square_metre>(4));
-// static_assert(quantity_cast<cgs::area<cgs::square_centimeters>>(200_q_cm * si::length<si::metre>(2)) == 40'000_q_sq_cm);
-// static_assert(quantity_cast<cgs::dim_area>(200_q_cm * si::length<si::metre>(2)) == 40'000_q_sq_cm);
+// static_assert(quantity_cast<cgs::area<cgs::square_centimeters>>(200_q_cm * si::length<si::metre>(2)) == 40'000_q_cm2);
+// static_assert(quantity_cast<cgs::dim_area>(200_q_cm * si::length<si::metre>(2)) == 40'000_q_cm2);
 
 // division
 
