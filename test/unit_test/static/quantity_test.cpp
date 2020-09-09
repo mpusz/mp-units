@@ -265,6 +265,10 @@ static_assert(std::equality_comparable<decltype(1q_m)>);
 static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_cm)>);
 static_assert(0q_m == 0q_ft_us);
 static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_ft_us)>);
+static_assert(std::equality_comparable_with<dimensionless<one>, int>);
+static_assert(std::equality_comparable_with<dimensionless<one>, double>);
+static_assert(std::equality_comparable_with<dimensionless<one, int>, int>);
+static_assert(!std::equality_comparable_with<dimensionless<one, int>, double>);
 
 // quantity_cast
 
@@ -294,21 +298,22 @@ static_assert(1.23 + dimensionless<one>(1.23) == 2.46);
 static_assert(dimensionless<one>(1) + 1 == 2);
 static_assert(dimensionless<one, int>(1) + 1 == 2);
 
-template<typename Rep>
-concept invalid_dimensionless_operation = requires()
+template<typename Int>
+concept invalid_dimensionless_operations = requires
 {
-    !requires(dimensionless<one, Rep> d) { d + 1.23; };
-    !requires(dimensionless<one, Rep> d) { 1.23 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Rep> d) { 1 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Rep> d) { d + 1; };
+    !requires(dimensionless<one, Int> d) { d + 1.23; };
+    !requires(dimensionless<one, Int> d) { 1.23 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { 1 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { d + 1; };
 };
-static_assert(invalid_dimensionless_operation<int>);
+static_assert(invalid_dimensionless_operations<int>);
 
 static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, one, std::int64_t>>);
 
 static_assert(quantity_cast<percent>(50.q_m / 100.q_m).count() == 50);
 static_assert(50.q_m / 100.q_m == dimensionless<percent>(50));
 
+static_assert(dimensionless<one>(dimensionless<percent>(50)).count() == 0.5);
 
 // time
 
