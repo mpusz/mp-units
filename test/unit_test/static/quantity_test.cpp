@@ -265,6 +265,10 @@ static_assert(std::equality_comparable<decltype(1q_m)>);
 static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_cm)>);
 static_assert(0q_m == 0q_ft_us);
 static_assert(std::equality_comparable_with<decltype(1q_m), decltype(1q_ft_us)>);
+static_assert(std::equality_comparable_with<dimensionless<unitless>, int>);
+static_assert(std::equality_comparable_with<dimensionless<unitless>, double>);
+static_assert(std::equality_comparable_with<dimensionless<unitless, int>, int>);
+static_assert(!std::equality_comparable_with<dimensionless<unitless, int>, double>);
 
 // quantity_cast
 
