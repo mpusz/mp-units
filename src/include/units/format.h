@@ -32,6 +32,7 @@
 #endif //_MSC_VER
 
 #include <fmt/format.h>
+#include <fmt/locale.h>
 
 #ifdef _MSC_VER
 #pragma warning (pop)
@@ -48,7 +49,7 @@
 // units-type          ::=  [units-rep-modifier] 'Q'
 //                          [units-unit-modifier] 'q'
 //                          one of "nt%"
-// units-rep-modifier  ::=  [sign] [#] [precision] [units-rep-type]
+// units-rep-modifier  ::=  [sign] [#] [precision] [L] [units-rep-type]
 // units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
 // units-unit-modifier ::=  'A'
 
@@ -96,9 +97,10 @@ namespace units {
     struct rep_format_specs
     {
       fmt::sign_t sign = fmt::sign_t::none;
-      bool alt = false;
       int precision = -1;
       char type = '\0';
+      bool alt = false;
+      bool use_locale = false;
     };
 
     // Holds specs about the unit (%[specs]q)
@@ -141,6 +143,12 @@ namespace units {
           begin = fmt::detail::parse_precision(begin, end, handler);
         else
           handler.on_error("precision not allowed for integral quantity representation");
+      }
+
+      // parse L to enable the locale-specific form
+      if (*begin == 'L') {
+          handler.on_locale();
+          ++begin;
       }
 
       if(begin != end && *begin != '}' && *begin != '%') {
@@ -205,8 +213,8 @@ namespace units {
     }
 
     // build the 'representation' as requested in the format string, applying only units-rep-modifiers
-    template<typename CharT, typename Rep, typename OutputIt>
-    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, const rep_format_specs& rep_specs)
+    template<typename CharT, typename Rep, typename OutputIt, typename LocaleRef>
+    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, const rep_format_specs& rep_specs, LocaleRef loc)
     {
       fmt::basic_memory_buffer<CharT> buffer;
       auto to_buffer = std::back_inserter(buffer);
@@ -239,24 +247,32 @@ namespace units {
           format_to(to_buffer, "{}", type);
         }
       }
+      if (rep_specs.use_locale) {
+        format_to(to_buffer, "L");
+      }
       fmt::format_to(to_buffer, "}}");
+      if (rep_specs.use_locale and static_cast<bool>(loc)) {
+        return format_to(out, loc.template get<std::locale>(), fmt::to_string(buffer), val);
+      }
       return format_to(out, fmt::to_string(buffer), val);
     }
 
-    template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename CharT>
+    template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename LocaleRef, typename CharT>
     struct units_formatter {
       OutputIt out;
       Rep val;
       global_format_specs<CharT> const & global_specs;
       rep_format_specs const & rep_specs;
       unit_format_specs const & unit_specs;
+      LocaleRef loc;
 
       explicit units_formatter(
         OutputIt o, quantity<Dimension, Unit, Rep> q,
         global_format_specs<CharT> const & gspecs,
-        rep_format_specs const & rspecs, unit_format_specs const & uspecs
+        rep_format_specs const & rspecs, unit_format_specs const & uspecs,
+        LocaleRef lc
       ):
-        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs)
+        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), loc(lc)
       {
       }
 
@@ -268,7 +284,7 @@ namespace units {
 
       void on_quantity_value([[maybe_unused]] const CharT*, [[maybe_unused]] const CharT*)
       {
-        out = format_units_quantity_value<CharT>(out, val, rep_specs);
+        out = format_units_quantity_value<CharT>(out, val, rep_specs, loc);
       }
 
       void on_quantity_unit([[maybe_unused]] const CharT)
@@ -334,8 +350,9 @@ private:
     constexpr void on_plus()  { f.rep_specs.sign = fmt::sign::plus; }     // rep
     constexpr void on_minus() { f.rep_specs.sign = fmt::sign::minus; }    // rep
     constexpr void on_space() { f.rep_specs.sign = fmt::sign::space; }    // rep
-    constexpr void on_alt()  { f.rep_specs.alt  = true; }                // rep
+    constexpr void on_alt()   { f.rep_specs.alt  = true; }                // rep
     constexpr void on_precision(int precision) { f.rep_specs.precision = precision; } // rep
+    constexpr void on_locale() { f.rep_specs.use_locale = true; }         // rep
     constexpr void on_type(char type)                                     // rep
     {
       constexpr auto valid_rep_types = std::string_view{"aAbBdeEfFgGoxX"};
@@ -474,7 +491,7 @@ public:
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs);
+      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs, ctx.locale());
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.standard().size()) {
         *to_quantity_buffer++ = CharT(' ');
@@ -483,7 +500,7 @@ public:
     }
     else {
       // user provided format
-      units::detail::units_formatter f(to_quantity_buffer, q, global_specs, rep_specs, unit_specs);
+      units::detail::units_formatter f(to_quantity_buffer, q, global_specs, rep_specs, unit_specs, ctx.locale());
       parse_units_format(begin, end, f);
     }
     // Format the `quantity buffer` using specs from `global_format_buffer`
