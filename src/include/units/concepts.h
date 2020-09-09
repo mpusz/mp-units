@@ -50,14 +50,8 @@ namespace detail {
 template<PrefixFamily PF, ratio R>
 struct prefix_base;
 
-struct is_derived_from_prefix_base_impl {
-  template<typename PF, ratio R>
-  static constexpr std::true_type check_base(const prefix_base<PF, R>&);
-  static constexpr std::false_type check_base(...);
-};
-
-template<typename T>
-inline constexpr bool is_derived_from_prefix_base = decltype(is_derived_from_prefix_base_impl::check_base(std::declval<T>()))::value;
+template<PrefixFamily PF, ratio R>
+void to_prefix_base(const volatile prefix_base<PF, R>*);
 
 }  // namespace detail
 
@@ -67,7 +61,7 @@ inline constexpr bool is_derived_from_prefix_base = decltype(is_derived_from_pre
  * Satisfied by all specializations of `prefix`.
  */
 template<typename T>
-concept Prefix = detail::is_derived_from_prefix_base<T>;
+concept Prefix = requires(const volatile T* t) { detail::to_prefix_base(t); };
 
 /**
  * @brief A concept matching unit's ratio
