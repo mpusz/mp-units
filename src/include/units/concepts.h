@@ -45,10 +45,10 @@ template<typename T>
 concept PrefixFamily = std::derived_from<T, prefix_family>;
 
 // Prefix
+namespace detail {
+
 template<PrefixFamily PF, ratio R>
 struct prefix_base;
-
-namespace detail {
 
 struct is_derived_from_prefix_base_impl {
   template<typename PF, ratio R>
@@ -67,8 +67,7 @@ inline constexpr bool is_derived_from_prefix_base = decltype(is_derived_from_pre
  * Satisfied by all specializations of `prefix`.
  */
 template<typename T>
-// concept Prefix = detail::is_derived_from_prefix_base<T>;
-concept Prefix = true;  // TODO: still some bug out there :-(
+concept Prefix = detail::is_derived_from_prefix_base<T>;
 
 /**
  * @brief A concept matching unit's ratio
