@@ -24,16 +24,25 @@
 
 #include <units/base_dimension.h>
 #include <units/bits/external/type_traits.h>
+#include <units/derived_dimension.h>
 #include <units/quantity.h>
 #include <units/unit.h>
 
 namespace units::physical {
 
+namespace detail {
+
+template<template<typename...> typename DimTemplate, typename Child, Unit U, Exponent... Es>
+  requires requires { typename DimTemplate<Child, U, typename Es::dimension...>; }
+void to_base_derived_dimension_of(const volatile derived_dimension<Child, U, Es...>*);
+
+} // namespace detail
+
 template<typename Dim, template<typename...> typename DimTemplate>
-concept DimensionOf = Dimension<Dim> && is_derived_from_specialization_of<Dim, DimTemplate>;
+concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate> || requires(const volatile Dim* x) { detail::to_base_derived_dimension_of<DimTemplate>(x); });
 
 template<typename Q, template<typename...> typename DimTemplate>
-concept QuantityOf = Quantity<Q> && is_derived_from_specialization_of<typename Q::dimension, DimTemplate>;
+concept QuantityOf = Quantity<Q> && DimensionOf<typename Q::dimension, DimTemplate>;
 
 // ------------------------ base dimensions -----------------------------
 
