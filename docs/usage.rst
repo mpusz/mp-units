@@ -114,8 +114,35 @@ To support this it requires some additional Conan build dependencies described i
 `Repository Structure and Dependencies`_.
 It also runs unit tests during Conan build.
 
+
+Conan Options
+^^^^^^^^^^^^^
+
+downcast_mode
++++++++++++++
+
+**Values**: ``off``/``on``/``auto``
+
+**Defaulted to**: ``on``
+
+Specifies how :ref:`The Downcasting Facility` works:
+
+- ``off`` - no downcasting at all
+- ``on`` - downcasting always forced -> compile-time errors in case of duplicated definitions
+- ``automatic`` - downcasting automatically enabled if no collisions are present
+
 CMake Options
 ^^^^^^^^^^^^^
+
+DOWNCAST_MODE
++++++++++++++
+
+**Values**: ``OFF``/``ON``/``AUTO``
+
+**Defaulted to**: ``ON``
+
+Equivalent to `downcast`_.
+
 
 GENERATE_DOCS
 +++++++++++++
