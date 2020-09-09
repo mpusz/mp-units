@@ -299,14 +299,14 @@ static_assert(dimensionless<unitless>(1) + 1 == 2);
 static_assert(dimensionless<unitless, int>(1) + 1 == 2);
 
 template<typename Int>
-concept invalid_dimensionless_operation = requires
+concept invalid_dimensionless_operations = requires
 {
     !requires(dimensionless<unitless, Int> d) { d + 1.23; };
     !requires(dimensionless<unitless, Int> d) { 1.23 + d; };
     !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Int> d) { 1 + d; };
     !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Int> d) { d + 1; };
 };
-static_assert(invalid_dimensionless_operation<int>);
+static_assert(invalid_dimensionless_operations<int>);
 
 static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, unitless, std::int64_t>>);
 
