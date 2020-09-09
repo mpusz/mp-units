@@ -32,8 +32,8 @@ using namespace units;
 using namespace units::physical::si;
 
 // power spectral density
-struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
-struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
+struct volt2_per_hertz : unit<volt2_per_hertz> {};
+struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, volt2_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
 
 template<Unit U, ScalableNumber Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
@@ -52,8 +52,8 @@ namespace {
 static_assert(is_same_v<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
 static_assert(is_same_v<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);
 
-static_assert(is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
-static_assert(is_same_v<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
+static_assert(is_same_v<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<volt2_per_hertz>(16))>);
+static_assert(is_same_v<decltype(sqrt(power_spectral_density<volt2_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
 
 }
 
