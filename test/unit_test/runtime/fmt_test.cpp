@@ -1118,7 +1118,7 @@ TEST_CASE("type specification", "[text][fmt]")
   }
 }
 
-TEST_CASE("different base types with the # specifier")
+TEST_CASE("different base types with the # specifier", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
@@ -1136,6 +1136,30 @@ TEST_CASE("different base types with the # specifier")
     CHECK(fmt::format("{:%#oQ}", 42_q_m) == "052");
     CHECK(fmt::format("{:%#xQ}", 42_q_m) == "0x2a");
     CHECK(fmt::format("{:%#XQ}", 42_q_m) == "0X2A");
+  }
+}
+
+TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
+{
+  struct group2 : std::numpunct<char>
+  {
+      char        do_thousands_sep() const override { return  '_'; }
+      std::string do_grouping()      const override { return "\2"; }
+  };
+
+  struct group3 : std::numpunct<char>
+  {
+      char        do_thousands_sep() const override { return '\''; }
+      std::string do_grouping()      const override { return "\3"; }
+  };
+
+  std::locale grp2{std::locale::classic(), new group2};
+  std::locale grp3{std::locale::classic(), new group3};
+
+  SECTION("full format {:%LQ %q} on a quantity")
+  {
+    CHECK(fmt::format(grp2, "{:%LQ %q}", 299792458_q_m_per_s) == "2_99_79_24_58 m/s");
+    CHECK(fmt::format(grp3, "{:%LQ %q}", 299792458_q_m_per_s) == "299'792'458 m/s");
   }
 }
 
