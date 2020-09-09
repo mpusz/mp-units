@@ -28,6 +28,6 @@ The same constant defined for natural units may be provided as::
     namespace natural {
 
     template<ScalableNumber Rep = double>
-    inline constexpr auto speed_of_light = speed<unitless, Rep>(1);
+    inline constexpr auto speed_of_light = speed<one, Rep>(1);
 
     }

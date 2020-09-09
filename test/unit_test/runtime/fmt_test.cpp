@@ -423,7 +423,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
   SECTION("dimensionless quantity")
   {
-    SECTION("unitless with ratio == 1")
+    SECTION("one with ratio == 1")
     {
       const auto q = 4q_m / 2q_m;
       os << q;
@@ -444,7 +444,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("unitless with ratio.exp != 0")
+    SECTION("one with ratio.exp != 0")
     {
       const auto q = 4q_km / 2q_m;
       os << q;

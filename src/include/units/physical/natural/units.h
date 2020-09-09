@@ -27,7 +27,6 @@
 
 namespace units::physical::natural {
 
-struct unitless : named_unit<unitless, "", no_prefix> {};
 struct electronvolt : named_unit<electronvolt, "eV", si::prefix> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, si::giga, electronvolt> {};
 struct inverted_gigaelectronvolt : named_unit<inverted_gigaelectronvolt, basic_symbol_text{"GeV⁻¹", "GeV^-1"}, no_prefix> {};

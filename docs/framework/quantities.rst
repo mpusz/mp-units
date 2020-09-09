@@ -167,7 +167,7 @@ Whenever we divide two quantities of the same dimension we end up with a
 :term:`dimensionless quantity` otherwise known as :term:`quantity of dimension one`::
 
     static_assert(10q_km / 5q_km == 2);
-    static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, unitless, std::int64_t>>);
+    static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, one, std::int64_t>>);
 
 According to the official ISO definition `dim_one` is a dimension "for which all the
 exponents of the factors corresponding to the base quantities in its quantity dimension
@@ -189,10 +189,10 @@ are provided::
 
 There are two special units provided for usage with such a quantity:
 
-- `unitless` which is the :ref:`coherent unit` of dimensionless quantity and does not
+- `one` which is the :ref:`coherent unit` of dimensionless quantity and does not
   provide any textual symbol (according to the ISO definition "the measurement units and
   values of quantities of dimension one are numbers"),
-- `percent` which has the symbol ``%`` and ``ratio(1, 100)`` of the `unitless` unit.
+- `percent` which has the symbol ``%`` and ``ratio(1, 100)`` of the `one` unit.
 
 For example the following code::
 

@@ -41,8 +41,8 @@ static_assert(1q_au == 149'597'870'700q_m);
 static_assert(1q_km + 1q_m == 1001q_m);
 static_assert(10q_km / 5q_km == 2);
 static_assert(10q_km / 5q_km < 3);
-static_assert(100q_mm / 5q_cm == dimensionless<scaled_unit<ratio(1, 1, -1), unitless>>(20));
-static_assert(100q_mm / 5q_cm == dimensionless<unitless>(2));
+static_assert(100q_mm / 5q_cm == dimensionless<scaled_unit<ratio(1, 1, -1), one>>(20));
+static_assert(100q_mm / 5q_cm == dimensionless<one>(2));
 static_assert(10q_km / 2 == 5q_km);
 
 static_assert(millimetre::symbol == "mm");
@@ -105,8 +105,8 @@ static_assert(1000 / 1q_s == 1q_kHz);
 static_assert(1 / 1q_ms == 1q_kHz);
 static_assert(3.2q_GHz == 3'200'000'000q_Hz);
 static_assert((10q_Hz * 1q_min).count() == 10);
-static_assert(10q_Hz * 1q_min == dimensionless<scaled_unit<ratio(60), unitless>>(10));
-static_assert(10q_Hz * 1q_min == dimensionless<unitless>(600));
+static_assert(10q_Hz * 1q_min == dimensionless<scaled_unit<ratio(60), one>>(10));
+static_assert(10q_Hz * 1q_min == dimensionless<one>(600));
 static_assert(2 / 1q_Hz == 2q_s);
 
 // force

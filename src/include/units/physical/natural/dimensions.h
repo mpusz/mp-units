@@ -40,7 +40,7 @@ struct dim_mass : physical::dim_mass<gigaelectronvolt> {};
 template<Unit U, ScalableNumber Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-struct dim_speed : physical::dim_speed<dim_speed, unitless, dim_length, dim_time> {};
+struct dim_speed : physical::dim_speed<dim_speed, one, dim_length, dim_time> {};
 template<Unit U, ScalableNumber Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 

@@ -110,16 +110,16 @@ represent numbers it would be highly uncomfortable to every time type::
 
     const auto d1 = 10q_km;
     const auto d2 = 3q_km;
-    if(d1 / d2 > dimensionless<unitless, 2>) {
+    if(d1 / d2 > dimensionless<one, 2>) {
       // ...
     }
 
 or::
 
     const auto fill_time_left = (box.height / box.fill_level(measured_mass) -
-                                 dimensionless<unitless, 1>) * fill_time;
+                                 dimensionless<one, 1>) * fill_time;
 
-This is why it was decided to allow the ``dimensionless<unitless>`` quantity of any
+This is why it was decided to allow the ``dimensionless<one>`` quantity of any
 representation type to be implicitly constructible from this representation type.
 With that the above examples can be rewritten as follows::
 
@@ -133,7 +133,7 @@ and::
 
     const auto fill_time_left = (box.height / box.fill_level(measured_mass) - 1) * fill_time;
 
-The above is true only for dimensionless quantities of `unitless` unit. If our quantity have a unit with
+The above is true only for dimensionless quantities of `one` unit. If our quantity have a unit with
 ratio different than ``1`` the implicit conversion will not happen. This is to prevent cases were the code
 could be ambiguous. For example::
 
@@ -148,14 +148,14 @@ either change the type of the resulting unit to the one having ``ratio(1)`` (:te
 
     Dimensionless auto foo(Length auto d1, Length auto d2)
     {
-      return quantity_cast<unitless>(d1 / d2) + 1;
+      return quantity_cast<one>(d1 / d2) + 1;
     }
 
-or to explicitly state what is the unit of our dimensionless value, e.g. `unitless`, `percent`, etc::
+or to explicitly state what is the unit of our dimensionless value, e.g. `one`, `percent`, etc::
 
     Dimensionless auto foo(Length auto d1, Length auto d2)
     {
-      return d1 / d2 + dimensionless<unitless>(1);
+      return d1 / d2 + dimensionless<one>(1);
     }
 
 There is one more important point to note here. As the the dimensionless quantity is more than just
@@ -166,7 +166,7 @@ code will not compile::
 
 To make it compile fine we have to either explicitly get the value stored in the quantity::
 
-    auto v = std::exp(quantity_cast<unitless>(10q_m / 5q_m).count());
+    auto v = std::exp(quantity_cast<one>(10q_m / 5q_m).count());
 
 or use a mathematical wrapper function from `units` namespace::
 

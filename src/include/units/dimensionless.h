@@ -26,8 +26,8 @@
 
 namespace units {
 
-struct unitless : named_unit<unitless, "", no_prefix> {};
-struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), unitless> {};
+struct one : named_unit<one, "", no_prefix> {};
+struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), one> {};
 
 /**
  * @brief Dimension one
@@ -35,7 +35,7 @@ struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), unitl
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */
-struct dim_one : derived_dimension<dim_one, unitless> {};
+struct dim_one : derived_dimension<dim_one, one> {};
 
 template<typename T>
 concept Dimensionless = QuantityOf<T, dim_one>;
