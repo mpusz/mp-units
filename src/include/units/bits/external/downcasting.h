@@ -30,7 +30,7 @@
 #error "Invalid DOWNCAST_MODE value"
 #endif
 #else
-#define DOWNCAST_MODE 2
+#define DOWNCAST_MODE 1
 #endif
 
 namespace units {

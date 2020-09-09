@@ -52,7 +52,7 @@ class UnitsConan(ConanFile):
         "downcast": ["off", "on", "auto"]
     }
     default_options = {
-        "downcast": "auto"
+        "downcast": "on"
     }
     exports = ["LICENSE.md"]
     exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]

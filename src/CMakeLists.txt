@@ -27,7 +27,7 @@ project(mp-units
     LANGUAGES CXX
 )
 
-set(DOWNCAST_MODE AUTO CACHE STRING "Select downcasting mode")
+set(DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
 set_property(CACHE DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 
 # set path to custom cmake modules
