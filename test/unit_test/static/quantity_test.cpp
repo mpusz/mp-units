@@ -196,7 +196,7 @@ static_assert((7_q_km % 2000_q_m).count() == 1000);
 static_assert((10_q_km2 * 10_q_km2) / 50_q_km2 == 2_q_km2);
 
 constexpr auto q1 = 10_q_km / 5_q_m;
-static_assert(std::is_same_v<decltype(q1), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
+static_assert(compare<decltype(q1), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
 static_assert(q1.count() == 2);
 
 constexpr dimensionless<one> q2 = q1;
@@ -205,7 +205,7 @@ static_assert(q2.count() == 2000);
 static_assert(quantity_cast<one>(q1).count() == 2000);
 
 constexpr auto q3 = 10_q_s * 2_q_kHz;
-static_assert(std::is_same_v<decltype(q3), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
+static_assert(compare<decltype(q3), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
 static_assert(q3.count() == 20);
 
 // comparators
@@ -308,7 +308,7 @@ concept invalid_dimensionless_operations = requires
 };
 static_assert(invalid_dimensionless_operations<int>);
 
-static_assert(std::is_same_v<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
+static_assert(compare<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
 
 static_assert(quantity_cast<percent>(50._q_m / 100._q_m).count() == 50);
 static_assert(50._q_m / 100._q_m == dimensionless<percent>(50));
