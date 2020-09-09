@@ -299,7 +299,7 @@ static_assert(dimensionless<unitless>(1) + 1 == 2);
 static_assert(dimensionless<unitless, int>(1) + 1 == 2);
 
 template<typename Rep>
-concept invalid_dimensionless_operation = requires()
+concept invalid_dimensionless_operation = requires
 {
     !requires(dimensionless<unitless, Rep> d) { d + 1.23; };
     !requires(dimensionless<unitless, Rep> d) { 1.23 + d; };
