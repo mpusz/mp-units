@@ -298,13 +298,13 @@ static_assert(1.23 + dimensionless<unitless>(1.23) == 2.46);
 static_assert(dimensionless<unitless>(1) + 1 == 2);
 static_assert(dimensionless<unitless, int>(1) + 1 == 2);
 
-template<typename Rep>
+template<typename Int>
 concept invalid_dimensionless_operation = requires
 {
-    !requires(dimensionless<unitless, Rep> d) { d + 1.23; };
-    !requires(dimensionless<unitless, Rep> d) { 1.23 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Rep> d) { 1 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Rep> d) { d + 1; };
+    !requires(dimensionless<unitless, Int> d) { d + 1.23; };
+    !requires(dimensionless<unitless, Int> d) { 1.23 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Int> d) { 1 + d; };
+    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), unitless>, Int> d) { d + 1; };
 };
 static_assert(invalid_dimensionless_operation<int>);
 
