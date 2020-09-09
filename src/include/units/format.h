@@ -147,8 +147,8 @@ namespace units {
 
       // parse L to enable the locale-specific form
       if (*begin == 'L') {
-          handler.on_locale();
-          ++begin;
+        handler.on_locale();
+        ++begin;
       }
 
       if(begin != end && *begin != '}' && *begin != '%') {

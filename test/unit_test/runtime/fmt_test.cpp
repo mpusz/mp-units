@@ -1143,14 +1143,14 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
 {
   struct group2 : std::numpunct<char>
   {
-      char        do_thousands_sep() const override { return  '_'; }
-      std::string do_grouping()      const override { return "\2"; }
+    char        do_thousands_sep() const override { return  '_'; }
+    std::string do_grouping()      const override { return "\2"; }
   };
 
   struct group3 : std::numpunct<char>
   {
-      char        do_thousands_sep() const override { return '\''; }
-      std::string do_grouping()      const override { return "\3"; }
+    char        do_thousands_sep() const override { return '\''; }
+    std::string do_grouping()      const override { return "\3"; }
   };
 
   std::locale grp2{std::locale::classic(), new group2};
