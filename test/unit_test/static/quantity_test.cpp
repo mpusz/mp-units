@@ -313,6 +313,7 @@ static_assert(std::is_same_v<decltype(10q_km / 5q_km), quantity<dim_one, unitles
 static_assert(quantity_cast<percent>(50.q_m / 100.q_m).count() == 50);
 static_assert(50.q_m / 100.q_m == dimensionless<percent>(50));
 
+static_assert(dimensionless<unitless>(dimensionless<percent>(50)).count() == 0.5);
 
 // time
 
