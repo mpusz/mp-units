@@ -199,6 +199,112 @@ In **mp-units** library a custom system can either be constructed from
 unique/new custom base dimensions or reuse dimensions of other systems. This
 allows extending, mixing, reuse, and interoperation between different systems.
 
+Systems can be defined as standalone or provide interoperability and conversions
+with other systems. It is up to the user to decide which one fits better to the
+requirements.
+
+A standalone system is the one that has unique :term:`base units <base unit>`.
+Such units do not share their references with base units of other systems:
+
+.. code-block::
+    :emphasize-lines: 3, 6
+
+    namespace fps {
+
+    struct foot : named_unit<foot, "ft", no_prefix> {};
+    struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+
+    struct dim_length : base_dimension<"L", foot> {};
+
+    template<Unit U, ScalableNumber Rep = double>
+    using length = quantity<dim_length, U, Rep>;
+
+    }  // namespace fps
+
+If the base unit of one system has the same reference as the base unit of
+another system, and both systems share the same base dimension symbol, the
+library will enable conversions between units of those dimensions in
+different systems:
+
+.. code-block::
+    :emphasize-lines: 3, 6, 13, 16
+
+    namespace si {
+
+    struct metre : named_unit<metre, "m", units::physical::si::prefix> {};
+    struct kilometre : prefixed_unit<kilometre, units::physical::si::kilo, metre> {};
+
+    struct dim_length : base_dimension<"L", metre> {};
+
+    template<Unit U, ScalableNumber Rep = double>
+    using length = quantity<dim_length, U, Rep>;
+
+    namespace fps {
+
+    struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(3'048, 1'000, -1), metre> {};
+    struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+
+    struct dim_length : base_dimension<"L", foot> {};
+
+    template<Unit U, ScalableNumber Rep = double>
+    using length = quantity<dim_length, U, Rep>;
+
+    }  // namespace fps
+    }  // namespace si
+
+Having the above two systems we can try the following code::
+
+    constexpr auto fps_yard = fps::length<fps::yard>(1.);
+    std::cout << quantity_cast<si::kilometre>(fps_yard) << "\n";     // compile-time error
+
+    constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
+    std::cout << quantity_cast<si::kilometre>(si_fps_yard) << "\n";  // prints "0.0009144 km"
+
+Even though the base dimension of ``si::fps`` is defined in terms of
+``si::metre`` foot is preserved as the base unit of length in both systems::
+
+    constexpr auto fps_yard = fps::length<fps::yard>(1.);
+    constexpr auto fps_area = quantity_cast<unknown_coherent_unit>(fps_yard * fps_yard);
+    std::cout << fps_yard << "\n";     // 1 yd
+    std::cout << fps_area << "\n";     // 9 ft²
+
+    constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
+    constexpr auto si_fps_area = quantity_cast<unknown_coherent_unit>(si_fps_yard * si_fps_yard);
+    std::cout << si_fps_yard << "\n";  // 1 yd
+    std::cout << si_fps_area << "\n";  // 9 ft²
+
+In most cases we want conversions between systems and that is why nearly all
+systems provided with this library are implemented in terms on the :term:`SI`
+system. However, such an approach has also its problems. Let's see the
+following simple application using the above defined systems::
+
+    std::ostream& operator<<(std::ostream& os, const ratio& r)
+    {
+      return os << "ratio{" << r.num << ", " << r.den << ", " << r.exp << "}";
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Unit auto& u)
+    {
+      using unit_type = std::remove_cvref_t<decltype(u)>;
+      return os << unit_type::ratio << " x " << unit_type::reference::symbol.standard();
+    }
+
+    int main()
+    {
+      std::cout << "fps:     " << fps::yard() << "\n";      // fps:     ratio{3, 1, 0} x ft
+      std::cout << "si::fps: " << si::fps::yard() << "\n";  // si::fps: ratio{1143, 125, -1} x m
+    }
+
+As we can see, even though ``si::fps::yard`` is defined as ``3`` feet,
+the library always keeps the ratio relative to the primary reference unit
+which in this case is ``si::metre``. This results in much bigger ratios
+and in case of some units may result with a problem of limited resolution
+of ``std::int64_t`` used to store numerator, denominator, and exponent
+values of ratio. For example the ``si::fps::qubic_foot`` already has the
+ratio of ``ratio{55306341, 1953125, -3}``. In case of more complicated
+conversion ratio we can overflow `ratio` and get a compile-time error.
+In such a situation the standalone system may be a better choice here.
+
 
 .. seealso::
 

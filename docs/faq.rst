@@ -30,6 +30,18 @@ different dimensions (i.e. height, width, and depth) all of them will just be
 measured in meters.
 
 
+Why other systems are defined in the `si` namespace?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All systems defined in the `si` namespace are defined in terms of base units
+that are convertible to the :term:`SI` units. This enables conversions of
+units of the same physical dimension between different systems.
+
+.. seealso::
+
+    More details on this subject can be found in the :ref:`Custom Systems` chapter.
+
+
 Why a dimensionless quantity is not just an fundamental arithmetic type?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -64,9 +64,10 @@ definitions of prefixed units using `si::metre` as a reference (i.e.
 
 It is important to notice here that :term:`SI` is not the only system used
 in the industry and the library has to support other systems too. Also
-in some cases conversions between such systems should be allowed. The
-fact that the `base_dimension` takes the base unit in its definition makes
-it really easy to define other systems of units. For example length in the
+in some cases conversions between such systems should be allowed. Thanks to
+the fact that the `base_dimension` takes the base unit type in its definition
+allows us to easily define various systems of units for the same physical
+dimension. For example length in the
 `CGS <https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units>`_
 could be defined as::
 
@@ -79,10 +80,17 @@ could be defined as::
 The fact that both base dimensions use the same identifier ``"L"`` tells
 the library that both definitions refer to the same physical dimension of
 length. The only difference is the measurement unit used to define their
-base dimensions. Thanks to using `si::centimetre` in the `si::cgs::dim_length`
-definition we also enabled the ability to easily convert between those
-2 base dimensions (as the library knows how to convert `si::metre` to
-`si::centimetre` and vice versa).
+base dimensions. Thanks to using the unit that is defined in terms of the
+the same reference unit as the one provided to `si::dim_length` definition
+(namely `si::centimetre` which is ``1/100`` of `si::metre`) we also enabled
+the ability to easily convert between those 2 base dimensions (as the library
+knows how to convert `si::metre` to `si::centimetre` and vice versa).
+
+.. seealso::
+
+    More details on custom systems definitions and conversions between
+    units of the same physical dimension can be found in the
+    :ref:`Custom Systems` chapter.
 
 
 Derived Units
