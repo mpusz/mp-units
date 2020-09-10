@@ -25,6 +25,7 @@
 
 namespace {
 
+using namespace units;
 using namespace units::physical;
 
 static_assert(Length<si::length<si::metre>>);
@@ -56,18 +57,30 @@ static_assert(!Area<si::time<si::second>>);
 
 static_assert(Volume<si::volume<si::cubic_metre>>);
 static_assert(!Volume<si::area<si::square_metre>>);
+#if DOWNCAST_MODE == 0
+static_assert(Volume<quantity<unknown_dimension<exponent<si::dim_length, 3>>, unknown_coherent_unit>>);
+#endif
 
 static_assert(Speed<si::speed<si::metre_per_second>>);
 static_assert(!Speed<si::time<si::second>>);
 
 static_assert(Acceleration<si::acceleration<si::metre_per_second_sq>>);
 static_assert(!Acceleration<si::time<si::second>>);
+#if DOWNCAST_MODE == 0
+static_assert(Acceleration<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>>, unknown_coherent_unit>>);
+#endif
 
 static_assert(Force<si::force<si::newton>>);
 static_assert(!Force<si::time<si::second>>);
+#if DOWNCAST_MODE == 0
+// static_assert(Force<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>, exponent<si::dim_mass, 1>>, unknown_coherent_unit>>);
+#endif
 
 static_assert(Energy<si::energy<si::joule>>);
 static_assert(!Energy<si::time<si::second>>);
+#if DOWNCAST_MODE == 0
+// static_assert(Energy<quantity<unknown_dimension<exponent<si::dim_mass, 1>, exponent<si::dim_length, 2>, exponent<si::dim_time, -3>>, unknown_coherent_unit>>);
+#endif
 
 static_assert(Power<si::power<si::watt>>);
 static_assert(!Power<si::time<si::second>>);
