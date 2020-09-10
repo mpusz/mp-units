@@ -66,7 +66,7 @@ Grammar
     units-type: [units-rep-modifier] 'Q'
               : [units-unit-modifier] 'q'
               : one of "nt%"
-    units-rep-modifier: [sign] [#] [precision] [units-rep-type]
+    units-rep-modifier: [sign] [#] [precision] [L] [units-rep-type]
     units-rep-type: one of "aAbBdeEfFgGoxX"
     units-unit-modifier: 'A'
 
