@@ -39,7 +39,7 @@ struct microsecond : prefixed_unit<microsecond, micro, second> {};
 struct millisecond : prefixed_unit<millisecond, milli, second> {};
 struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
 struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
-struct day : named_scaled_unit<hour, "d", no_prefix, ratio(24), hour> {};
+struct day : named_scaled_unit<day, "d", no_prefix, ratio(24), hour> {};
 
 struct dim_time : physical::dim_time<second> {};
 
