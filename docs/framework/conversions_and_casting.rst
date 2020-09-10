@@ -78,16 +78,21 @@ Quantity Cast Overloads
     :linenos:
 
     std::cout << "Distance: " << quantity_cast<si::length<si::metre, int>>(d) << '\n';
+    std::cout << "Distance: " << quantity_cast<si::dim_length>(d) << '\n';
     std::cout << "Distance: " << quantity_cast<si::metre>(d) << '\n';
     std::cout << "Distance: " << quantity_cast<int>(d) << '\n';
+    std::cout << "Distance: " << quantity_cast<si::dim_length, si::metre>(d) << '\n';
 
 `quantity_cast` in line #1 takes a specific target `quantity` type to which an explicit
 cast should be performed. This option will change multiple quantity properties at once
-(unit, representation, etc). However, it is also possible to force only one property at
+(unit, representation, etc). However, it is also possible to force only some properties at
 once and leave the rest intact:
 
-- line #2 forces only a specific destination unit type,
-- line #3 sets only a representation type to the type provided by the user.
+- line #2 forces only a specific destination dimension type,
+- line #3 forces only a specific destination unit type,
+- line #4 sets only a representation type to the type provided by the user,
+- line #5 forces both a specific dimension and a unit while preserving the original
+  representation type.
 
 `quantity_point_cast` takes anything that works for `quantity_point`
 or a specific target `quantity_point`::

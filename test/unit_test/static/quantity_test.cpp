@@ -201,7 +201,7 @@ constexpr dimensionless<one> q2 = q1;
 static_assert(q2.count() == 2000);
 
 #if DOWNCAST_MODE == 0
-static_assert(quantity_cast<dimensionless<one>>(q1).count() == 2000);
+static_assert(quantity_cast<dim_one, one>(q1).count() == 2000);
 #else
 static_assert(quantity_cast<one>(q1).count() == 2000);
 #endif
@@ -282,6 +282,7 @@ static_assert(quantity_cast<length<metre, int>>(1.23_q_m).count() == 1);
 static_assert(quantity_cast<metre>(2_q_km).count() == 2000);
 static_assert(quantity_cast<kilometre>(2000_q_m).count() == 2);
 static_assert(quantity_cast<int>(1.23_q_m).count() == 1);
+static_assert(quantity_cast<dim_speed, kilometre_per_hour>(2000.0_q_m / 3600.0_q_s).count() == 2);
 
 // dimensionless
 
@@ -313,7 +314,7 @@ static_assert(invalid_dimensionless_operations<int>);
 static_assert(compare<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
 
 #if DOWNCAST_MODE == 0
-static_assert(quantity_cast<dimensionless<percent>>(50._q_m / 100._q_m).count() == 50);
+static_assert(quantity_cast<dim_one, percent>(50._q_m / 100._q_m).count() == 50);
 #else
 static_assert(quantity_cast<percent>(50._q_m / 100._q_m).count() == 50);
 #endif

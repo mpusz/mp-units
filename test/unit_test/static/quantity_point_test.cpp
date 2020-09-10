@@ -223,6 +223,7 @@ static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).
 static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().count() == 2000);
 static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().count() == 2);
 static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().count() == 1);
+static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().count() == 2);
 
 // time
 

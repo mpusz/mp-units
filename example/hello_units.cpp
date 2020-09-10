@@ -37,7 +37,11 @@ int main()
   using namespace units::physical::si::literals;
   Speed auto v1 = avg_speed(220_q_km, 2_q_h);
   Speed auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+#if DOWNCAST_MODE == 0
+  Speed auto v3 = quantity_cast<si::dim_speed, si::metre_per_second>(v2);
+#else
   Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
+#endif
   Speed auto v4 = quantity_cast<int>(v3);
 
   std::cout << v1 << '\n';                             // 110 km/h

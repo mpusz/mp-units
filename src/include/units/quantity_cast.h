@@ -301,7 +301,7 @@ constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 }  // namespace detail
 
 /**
- * @brief Explcit cast of a quantity
+ * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
@@ -325,7 +325,7 @@ template<Quantity To, typename D, typename U, typename Rep>
 }
 
 /**
- * @brief Explcit cast of a quantity
+ * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
@@ -344,7 +344,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
 }
 
 /**
- * @brief Explcit cast of a quantity
+ * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
@@ -363,7 +363,30 @@ template<Unit ToU, typename D, typename U, typename Rep>
 }
 
 /**
- * @brief Explcit cast of a quantity
+ * @brief Explicit cast of a quantity
+ *
+ * Implicit conversions between quantities of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ *
+ * This cast gets both the target dimension and unit to cast to. For example:
+ *
+ * auto q1 = units::quantity_cast<units::physical::si::dim_speed, units::physical::si::kilometre_per_hour>(v1);
+ *
+ * @note This cast is especially useful when working with quantities of unknown dimensions
+ * (@c unknown_dimension).
+ * 
+ * @tparam ToD a dimension type to use for a target quantity
+ * @tparam ToU a unit type to use for a target quantity
+ */
+template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
+  requires equivalent<ToD, D> && UnitOf<ToU, ToD>
+[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+{
+  return quantity_cast<quantity<ToD, ToU, Rep>>(q);
+}
+
+/**
+ * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
@@ -381,7 +404,7 @@ template<ScalableNumber ToRep, typename D, typename U, typename Rep>
 }
 
 /**
- * @brief Explcit cast of a quantity point
+ * @brief Explicit cast of a quantity point
  *
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
@@ -405,6 +428,29 @@ template<typename CastSpec, typename D, typename U, typename Rep>
     return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
   else
     return quantity_point(quantity_cast<CastSpec>(qp.relative()));
+}
+
+/**
+ * @brief Explicit cast of a quantity point
+ *
+ * Implicit conversions between quantity points of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets both the target dimension and unit to cast to. For example:
+ *
+ * auto q1 = units::quantity_point_cast<units::physical::si::dim_speed, units::physical::si::kilometre_per_hour>(v1);
+ *
+ * @note This cast is especially useful when working with quantity points of unknown dimensions
+ * (@c unknown_dimension).
+ * 
+ * @tparam ToD a dimension type to use for a target quantity
+ * @tparam ToU a unit type to use for a target quantity
+ */
+template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
+  requires equivalent<ToD, D> && UnitOf<ToU, ToD>
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& q)
+{
+  return quantity_point_cast<quantity_point<ToD, ToU, Rep>>(q);
 }
 
 }  // namespace units
