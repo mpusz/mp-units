@@ -23,23 +23,32 @@
 #pragma once
 
 #include <units/base_dimension.h>
+#include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
 #include <units/derived_dimension.h>
+#include <units/exponent.h>
 #include <units/quantity.h>
 #include <units/unit.h>
+#include <concepts>
 
 namespace units::physical {
 
 namespace detail {
 
-template<template<typename...> typename DimTemplate, typename Child, Unit U, Exponent... Es>
-  requires requires { typename DimTemplate<Child, U, typename Es::dimension...>; }
-void to_base_derived_dimension_of(const volatile derived_dimension<Child, U, Es...>*);
+template<typename Dim, template<typename...> typename DimTemplate>
+inline constexpr bool same_exponents_of = false;
+
+template<Exponent... Es, template<typename...> typename DimTemplate>
+inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> = requires { typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>; } && std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>::recipe>;
 
 } // namespace detail
 
 template<typename Dim, template<typename...> typename DimTemplate>
-concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate> || requires(const volatile Dim* x) { detail::to_base_derived_dimension_of<DimTemplate>(x); });
+concept EquivalentUnknownDimensionOf = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> && detail::same_exponents_of<Dim, DimTemplate>;
+
+template<typename Dim, template<typename...> typename DimTemplate>
+concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate> ||
+                                         EquivalentUnknownDimensionOf<Dim, DimTemplate>);
 
 template<typename Q, template<typename...> typename DimTemplate>
 concept QuantityOf = Quantity<Q> && DimensionOf<typename Q::dimension, DimTemplate>;
