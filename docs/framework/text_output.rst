@@ -72,7 +72,7 @@ Grammar
 
 In the above grammar:
 
-- ``fill-and-align``, ``width``, ``sign``, ``#``, and ``precision`` tokens and
+- ``fill-and-align``, ``width``, ``sign``, ``#``, ``precision`` and ``L`` tokens and
   individual tokens of :token:`units-rep-type` are defined in the
   `format.string.std <https://wg21.link/format.string.std>`_ chapter of the C++
   standard specification,
