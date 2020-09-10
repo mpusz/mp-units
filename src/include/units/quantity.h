@@ -203,12 +203,12 @@ public:
     return quantity(lhs.count() + rhs.count());
   }
 
-  template<typename U2, typename Rep2>
-    requires std::regular_invocable<std::plus<>, Rep, Rep2>
-  [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<typename D2, typename U2, typename Rep2>
+    requires std::regular_invocable<std::plus<>, Rep, Rep2> && equivalent<D, D2>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() + rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
+    using ret = common_quantity<quantity, quantity<D2, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() + ret(rhs).count());
   }
 
@@ -218,12 +218,12 @@ public:
     return quantity(lhs.count() - rhs.count());
   }
 
-  template<typename U2, typename Rep2>
-    requires std::regular_invocable<std::minus<>, Rep, Rep2>
-  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+  template<typename D2, typename U2, typename Rep2>
+    requires std::regular_invocable<std::minus<>, Rep, Rep2> && equivalent<D, D2>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
   {
     using common_rep = decltype(lhs.count() - rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
+    using ret = common_quantity<quantity, quantity<D2, U2, Rep2>, common_rep>;
     return ret(ret(lhs).count() - ret(rhs).count());
   }
 
