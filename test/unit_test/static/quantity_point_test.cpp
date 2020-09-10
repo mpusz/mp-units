@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include "units/math.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
@@ -34,9 +35,6 @@ namespace {
 
 using namespace units;
 using namespace units::physical::si;
-
-template<typename T, typename U>
-inline constexpr bool compare = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
 
 // class invariants
 

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <units/physical/si/mass.h>
 #include <units/physical/si/voltage.h>
 #include <units/physical/si/time.h>
@@ -48,9 +49,6 @@ using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, R
 }
 
 namespace {
-
-template<typename T, typename U>
-inline constexpr bool compare = DOWNCAST_MODE != 0 ? is_same_v<T, U> : (is_same_v<T, U> || units::equivalent<T, U>);
 
 static_assert(compare<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
 static_assert(compare<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);

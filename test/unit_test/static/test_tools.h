@@ -20,27 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "test_tools.h"
-#include "units/math.h"
-#include "units/physical/international/area.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/international/area.h"
-#include "units/math.h"
+#pragma once
 
-namespace {
+#include "units/bits/equivalent.h"
 
-using namespace units;
-using namespace units::physical::si::literals;
-using namespace units::physical::international::literals;
+template<typename T, typename U>
+inline constexpr bool compare_impl = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
 
-static_assert(compare<decltype(pow<0>(2_q_m)), std::int64_t>);
-static_assert(compare<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);
-static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
-static_assert(compare<decltype(pow<2>(2_q_km)), decltype(4_q_km2)>);
-static_assert(compare<decltype(pow<2>(2_q_ft)), decltype(4_q_ft2)>);
-static_assert(compare<decltype(sqrt(4_q_m2)), decltype(2_q_m)>);
-static_assert(compare<decltype(sqrt(4_q_km2)), decltype(2_q_km)>);
-static_assert(compare<decltype(sqrt(4_q_ft2)), decltype(2_q_ft)>);
-
-}  // namespace
+template<typename T, typename U>
+inline constexpr bool compare = compare_impl<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include "units/math.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
@@ -33,9 +34,6 @@ namespace {
 
 using namespace units;
 using namespace units::physical::si;
-
-template<typename T, typename U>
-inline constexpr bool compare = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
 
 // class invariants
 
@@ -202,7 +200,11 @@ static_assert(q1.count() == 2);
 constexpr dimensionless<one> q2 = q1;
 static_assert(q2.count() == 2000);
 
+#if DOWNCAST_MODE == 0
+static_assert(quantity_cast<dimensionless<one>>(q1).count() == 2000);
+#else
 static_assert(quantity_cast<one>(q1).count() == 2000);
+#endif
 
 constexpr auto q3 = 10_q_s * 2_q_kHz;
 static_assert(compare<decltype(q3), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
@@ -310,7 +312,11 @@ static_assert(invalid_dimensionless_operations<int>);
 
 static_assert(compare<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
 
+#if DOWNCAST_MODE == 0
+static_assert(quantity_cast<dimensionless<percent>>(50._q_m / 100._q_m).count() == 50);
+#else
 static_assert(quantity_cast<percent>(50._q_m / 100._q_m).count() == 50);
+#endif
 static_assert(50._q_m / 100._q_m == dimensionless<percent>(50));
 
 static_assert(dimensionless<one>(dimensionless<percent>(50)).count() == 0.5);
@@ -345,7 +351,7 @@ static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
 
 #if DOWNCAST_MODE == 0
 
-static_assert(std::is_same_v<decltype(10_q_m / 5_q_s), quantity<unknown_dimension<units::exp<dim_length, 1>, units::exp<dim_time, -1>>, scaled_unit<ratio(1), unknown_coherent_unit>, std::int64_t>>);
+static_assert(std::is_same_v<decltype(10_q_m / 5_q_s), quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>, scaled_unit<ratio(1), unknown_coherent_unit>, std::int64_t>>);
 static_assert(std::is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<ratio(1, 1, -3), metre>, std::int64_t>>);
 
 #else

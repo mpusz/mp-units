@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include "units/unit.h"
 #include "units/bits/equivalent.h"
 #include "units/physical/si/prefixes.h"
@@ -28,9 +29,6 @@ namespace {
 
 using namespace units;
 using namespace units::physical;
-
-template<typename T, typename U>
-inline constexpr bool compare = DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
 
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
