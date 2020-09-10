@@ -82,7 +82,7 @@ be calculating the average speed based on provided distance and duration
 quantities. The usage of such a function can look as follows::
 
     using namespace units::physical::si::literals;
-    using namespace units::physical::international::literals;
+    using namespace units::physical::si::international::literals;
     constexpr Speed auto v1 = avg_speed(220_q_km, 2_q_h);
     constexpr Speed auto v2 = avg_speed(140_q_mi, 2_q_h);
 

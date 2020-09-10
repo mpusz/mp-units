@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/speed.h>
-#include <units/physical/international/length.h>
-#include <units/math.h>
 #include <units/format.h>
+#include <units/math.h>
+#include <units/physical/si/international/length.h>
+#include <units/physical/si/speed.h>
 #include <units/quantity_point.h>
 #include <array>
-#include <iostream>
 #include <compare>
+#include <iostream>
 
 // horizontal/vertical vector
 namespace {
@@ -202,7 +202,7 @@ struct fmt::formatter<altitude> : formatter<si::length<si::metre>> {
 namespace {
 
 using namespace units::physical::si::literals;
-using namespace units::physical::international::literals;
+using namespace units::physical::si::international::literals;
 
 struct glider {
   struct polar_point {

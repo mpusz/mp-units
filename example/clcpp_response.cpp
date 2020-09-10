@@ -15,16 +15,16 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/physical/iau/length.h>
-#include <units/physical/imperial/length.h>
-#include <units/physical/international/length.h>
+#include <units/format.h>
 #include <units/physical/si/area.h>
+#include <units/physical/si/iau/length.h>
+#include <units/physical/si/imperial/length.h>
+#include <units/physical/si/international/length.h>
 #include <units/physical/si/length.h>
 #include <units/physical/si/time.h>
+#include <units/physical/si/typographic/length.h>
+#include <units/physical/si/us/length.h>
 #include <units/physical/si/volume.h>
-#include <units/physical/typographic/length.h>
-#include <units/physical/us/length.h>
-#include <units/format.h>
 #include <iostream>
 
 namespace {
@@ -34,7 +34,7 @@ using namespace units;
 void simple_quantities()
 {
   using namespace units::physical::si;
-  using namespace units::physical::international;
+  using namespace units::physical::si::international;
 
   using distance = length<metre>;
   using duration = physical::si::time<second>;
@@ -59,7 +59,7 @@ void quantities_with_typed_units()
 {
   using namespace units::physical;
   using namespace units::physical::si;
-  using namespace units::physical::international;
+  using namespace units::physical::si::international;
 
   constexpr length<kilometre> km = 1.0_q_km;
   constexpr length<mile> miles = 1.0_q_mi;
@@ -84,23 +84,23 @@ void quantities_with_typed_units()
   std::cout << meter << '\n';
 
   std::cout << " = " << quantity_cast<si::astronomical_unit>(meter) << '\n';
-  std::cout << " = " << quantity_cast<iau::angstrom>(meter) << '\n';
-  std::cout << " = " << quantity_cast<imperial::chain>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::fathom>(meter) << '\n';
-  std::cout << " = " << quantity_cast<us::fathom>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::foot>(meter) << '\n';
-  std::cout << " = " << quantity_cast<us::foot>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::inch>(meter) << '\n';
-  std::cout << " = " << quantity_cast<iau::light_year>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::mile>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::nautical_mile>(meter) << '\n';
-  std::cout << " = " << quantity_cast<iau::parsec>(meter) << '\n';
-  std::cout << " = " << quantity_cast<typographic::pica_comp>(meter) << '\n';
-  std::cout << " = " << quantity_cast<typographic::pica_prn>(meter) << '\n';
-  std::cout << " = " << quantity_cast<typographic::point_comp>(meter) << '\n';
-  std::cout << " = " << quantity_cast<typographic::point_prn>(meter) << '\n';
-  std::cout << " = " << quantity_cast<imperial::rod>(meter) << '\n';
-  std::cout << " = " << quantity_cast<international::yard>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::iau::angstrom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::imperial::chain>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::fathom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::us::fathom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::foot>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::us::foot>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::inch>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::iau::light_year>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::mile>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::nautical_mile>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::iau::parsec>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::typographic::pica_comp>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::typographic::pica_prn>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::typographic::point_comp>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::typographic::point_prn>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::imperial::rod>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::international::yard>(meter) << '\n';
 }
 
 void calcs_comparison()

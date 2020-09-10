@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "units/quantity_point.h"
 #include "test_tools.h"
 #include "units/math.h"
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/speed.h"
+#include "units/physical/si/us/length.h"
 #include "units/physical/si/volume.h"
-#include "units/physical/us/length.h"
-#include "units/quantity_point.h"
 #include <chrono>
 #include <utility>
 
@@ -200,7 +200,7 @@ static_assert(compare<common_quantity_point<quantity_point<dim_length, kilometre
 
 // common_type
 
-using namespace units::physical::us::literals;
+using namespace units::physical::si::us::literals;
 
 static_assert(std::equality_comparable<decltype(quantity_point(1_q_m))>);
 static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_km))>);

@@ -20,22 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/concepts.h>
 #include <units/format.h>
-#include <units/physical/fps/density.h>
-#include <units/physical/fps/length.h>
-#include <units/physical/fps/mass.h>
-#include <units/physical/fps/power.h>
-#include <units/physical/fps/speed.h>
-#include <units/physical/fps/volume.h>
+#include <units/physical/si/fps/density.h>
+#include <units/physical/si/fps/length.h>
+#include <units/physical/si/fps/mass.h>
+#include <units/physical/si/fps/power.h>
+#include <units/physical/si/fps/speed.h>
+#include <units/physical/si/fps/volume.h>
 #include <units/physical/si/length.h>
 #include <units/physical/si/mass.h>
 #include <units/physical/si/power.h>
 #include <units/physical/si/speed.h>
 #include <units/physical/si/volume.h>
-
-#include <units/concepts.h>
 #include <units/quantity.h>
-
 #include <iostream>
 
 using namespace units::physical;
@@ -43,17 +41,17 @@ using namespace units::physical;
 
 // Some basic specs for the warship   
 struct Ship {
-  fps::length<fps::foot> length;
-  fps::length<fps::foot> draft;
-  fps::length<fps::foot> beam;
+  si::fps::length<si::fps::foot> length;
+  si::fps::length<si::fps::foot> draft;
+  si::fps::length<si::fps::foot> beam;
 
-  fps::speed<fps::foot_per_second> speed;
-  fps::mass<fps::pound> mass;
+  si::fps::speed<si::fps::foot_per_second> speed;
+  si::fps::mass<si::fps::pound> mass;
 
-  fps::length<fps::inch> mainGuns; 
-  fps::mass<fps::pound> shellMass;
-  fps::speed<fps::foot_per_second> shellSpeed;
-  fps::power<fps::foot_poundal_per_second> power;
+  si::fps::length<si::fps::inch> mainGuns; 
+  si::fps::mass<si::fps::pound> shellMass;
+  si::fps::speed<si::fps::foot_per_second> shellSpeed;
+  si::fps::power<si::fps::foot_poundal_per_second> power;
 };
 
 // Print 'a' in its current units and print its value cast to the units in each of Args
@@ -63,28 +61,28 @@ auto fmt_line(const Q a)
   return fmt::format("{:22}", a) + (fmt::format(",{:20}", units::quantity_cast<Args>(a)) + ...);
 }
 
-// Print the ship details in the units as defined in the Ship struct, in other imperial units, and in SI
+// Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
-  using namespace units::physical::fps::literals;
+  using namespace units::physical::si::fps::literals;
   const auto waterDensity = 62.4_q_lb_per_ft3;
   std::cout << fmt::format("{}\n", description);
-  std::cout << fmt::format("{:20} : {}\n", "length",    fmt_line<fps::length<fps::yard>, si::length<si::metre>>(ship.length))
-            << fmt::format("{:20} : {}\n", "draft",     fmt_line<fps::length<fps::yard>, si::length<si::metre>>(ship.draft))
-            << fmt::format("{:20} : {}\n", "beam",      fmt_line<fps::length<fps::yard>, si::length<si::metre>>(ship.beam))
-            << fmt::format("{:20} : {}\n", "mass",      fmt_line<fps::mass<fps::long_ton>, si::mass<si::tonne>>(ship.mass))
-            << fmt::format("{:20} : {}\n", "speed",     fmt_line<fps::speed<fps::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
-            << fmt::format("{:20} : {}\n", "power",     fmt_line<fps::power<fps::horse_power>, si::power<si::kilowatt>>(ship.power))
-            << fmt::format("{:20} : {}\n", "main guns", fmt_line<fps::length<fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
-            << fmt::format("{:20} : {}\n", "fire shells weighing",fmt_line<fps::mass<fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
-            << fmt::format("{:20} : {}\n", "fire shells at",fmt_line<fps::speed<fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
+  std::cout << fmt::format("{:20} : {}\n", "length",    fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
+            << fmt::format("{:20} : {}\n", "draft",     fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
+            << fmt::format("{:20} : {}\n", "beam",      fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
+            << fmt::format("{:20} : {}\n", "mass",      fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
+            << fmt::format("{:20} : {}\n", "speed",     fmt_line<si::fps::speed<si::fps::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
+            << fmt::format("{:20} : {}\n", "power",     fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
+            << fmt::format("{:20} : {}\n", "main guns", fmt_line<si::fps::length<si::fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
+            << fmt::format("{:20} : {}\n", "fire shells weighing",fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
+            << fmt::format("{:20} : {}\n", "fire shells at",fmt_line<si::fps::speed<si::fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
             << fmt::format("{:20} : {}\n", "volume underwater", fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
 }
 
 int main()
 {
   using namespace units::physical::si::literals;
-  using namespace units::physical::fps::literals;
+  using namespace units::physical::si::fps::literals;
   
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{251._q_m}, .draft{9.3_q_m}, .beam{36_q_m}, .speed{56_q_km_per_h}, .mass{50'300_q_t}, .mainGuns{380_q_mm}, .shellMass{800_q_kg}, .shellSpeed{820._q_m_per_s}, .power{110.45_q_kW}};

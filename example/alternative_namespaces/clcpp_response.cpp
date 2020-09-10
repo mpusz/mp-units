@@ -25,7 +25,7 @@
 #include "./units_str.h"
 
 using namespace units::physical::si::literals;
-using namespace units::physical::international;
+using namespace units::physical::si::international;
 using namespace units::experimental;
 
 void simple_quantities()

@@ -20,19 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "units/math.h"
 #include "test_tools.h"
-#include "units/math.h"
-#include "units/physical/international/area.h"
 #include "units/physical/si/area.h"
+#include "units/physical/si/international/area.h"
 #include "units/physical/si/speed.h"
-#include "units/physical/international/area.h"
-#include "units/math.h"
 
 namespace {
 
 using namespace units;
 using namespace units::physical::si::literals;
-using namespace units::physical::international::literals;
+using namespace units::physical::si::international::literals;
 
 static_assert(compare<decltype(pow<0>(2_q_m)), std::int64_t>);
 static_assert(compare<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);

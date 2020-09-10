@@ -25,8 +25,8 @@
 #include "units/physical/si/area.h"
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/speed.h"
+#include "units/physical/si/us/length.h"
 #include "units/physical/si/volume.h"
-#include "units/physical/us/length.h"
 #include <chrono>
 #include <utility>
 
@@ -261,7 +261,7 @@ static_assert(
 
 // common_type
 
-using namespace units::physical::us::literals;
+using namespace units::physical::si::us::literals;
 
 static_assert(std::equality_comparable<decltype(1_q_m)>);
 static_assert(std::equality_comparable_with<decltype(1_q_m), decltype(1_q_cm)>);

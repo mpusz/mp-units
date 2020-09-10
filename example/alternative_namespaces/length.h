@@ -3,11 +3,11 @@
 #pragma once
 
 #include <units/physical/si/length.h>
-#include <units/physical/imperial/length.h>
-#include <units/physical/international/length.h>
-#include <units/physical/typographic/length.h>
-#include <units/physical/us/length.h>
-#include <units/physical/iau/length.h>
+#include <units/physical/si/imperial/length.h>
+#include <units/physical/si/international/length.h>
+#include <units/physical/si/typographic/length.h>
+#include <units/physical/si/us/length.h>
+#include <units/physical/si/iau/length.h>
 
 namespace units{
 namespace experimental{
@@ -30,55 +30,55 @@ template<typename Rep = double>
 using AU = units::physical::si::length<units::physical::si::astronomical_unit, Rep>;
 
 template<typename Rep = double>
-using in = units::physical::si::length<units::physical::international::inch, Rep>;
+using in = units::physical::si::length<units::physical::si::international::inch, Rep>;
 
 template<typename Rep = double>
-using angstrom = units::physical::si::length<units::physical::iau::angstrom, Rep>;
+using angstrom = units::physical::si::length<units::physical::si::iau::angstrom, Rep>;
 
 template<typename Rep = double>
-using ch = units::physical::si::length<units::physical::imperial::chain, Rep>;
+using ch = units::physical::si::length<units::physical::si::imperial::chain, Rep>;
 
 template<typename Rep = double>
-using fathom = units::physical::si::length<units::physical::international::fathom, Rep>;
+using fathom = units::physical::si::length<units::physical::si::international::fathom, Rep>;
 
 template<typename Rep = double>
-using fathom_us = units::physical::si::length<units::physical::us::fathom, Rep>;
+using fathom_us = units::physical::si::length<units::physical::si::us::fathom, Rep>;
 
 template<typename Rep = double>
-using ft = units::physical::si::length<units::physical::international::foot, Rep>;
+using ft = units::physical::si::length<units::physical::si::international::foot, Rep>;
 
 template<typename Rep = double>
-using ft_us = units::physical::si::length<units::physical::us::foot, Rep>;
+using ft_us = units::physical::si::length<units::physical::si::us::foot, Rep>;
 
 template<typename Rep = double>
-using ly = units::physical::si::length<units::physical::iau::light_year, Rep>;
+using ly = units::physical::si::length<units::physical::si::iau::light_year, Rep>;
 
 template<typename Rep = double>
-using mi = units::physical::si::length<units::physical::international::mile, Rep>;
+using mi = units::physical::si::length<units::physical::si::international::mile, Rep>;
 
 template<typename Rep = double>
-using mi_naut = units::physical::si::length<units::physical::international::nautical_mile, Rep>;
+using mi_naut = units::physical::si::length<units::physical::si::international::nautical_mile, Rep>;
 
 template<typename Rep = double>
-using pc = units::physical::si::length<units::physical::iau::parsec, Rep>;
+using pc = units::physical::si::length<units::physical::si::iau::parsec, Rep>;
 
 template<typename Rep = double>
-using pica_comp = units::physical::si::length<units::physical::typographic::pica_comp, Rep>;
+using pica_comp = units::physical::si::length<units::physical::si::typographic::pica_comp, Rep>;
 
 template<typename Rep = double>
-using pica_prn = units::physical::si::length<units::physical::typographic::pica_prn, Rep>;
+using pica_prn = units::physical::si::length<units::physical::si::typographic::pica_prn, Rep>;
 
 template<typename Rep = double>
-using point_comp = units::physical::si::length<units::physical::typographic::point_comp, Rep>;
+using point_comp = units::physical::si::length<units::physical::si::typographic::point_comp, Rep>;
 
 template<typename Rep = double>
-using point_prn = units::physical::si::length<units::physical::typographic::point_prn, Rep>;
+using point_prn = units::physical::si::length<units::physical::si::typographic::point_prn, Rep>;
 
 template<typename Rep = double>
-using rd = units::physical::si::length<units::physical::imperial::rod, Rep>;
+using rd = units::physical::si::length<units::physical::si::imperial::rod, Rep>;
 
 template<typename Rep = double>
-using yd = units::physical::si::length<units::physical::international::yard, Rep>;
+using yd = units::physical::si::length<units::physical::si::international::yard, Rep>;
 
 
 }  // namespace length

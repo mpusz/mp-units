@@ -20,24 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si.h"
-#include "units/physical/us/length.h"
-#include "units/physical/imperial/length.h"
-#include "units/physical/international/length.h"
-#include "units/physical/international/area.h"
-#include "units/physical/international/volume.h"
-#include "units/physical/international/speed.h"
-#include "units/physical/iau/length.h"
-#include "units/physical/typographic/length.h"
 #include "units/format.h"
+#include "units/physical/si.h"
+#include "units/physical/si/iau/length.h"
+#include "units/physical/si/imperial/length.h"
+#include "units/physical/si/international/area.h"
+#include "units/physical/si/international/length.h"
+#include "units/physical/si/international/speed.h"
+#include "units/physical/si/international/volume.h"
+#include "units/physical/si/typographic/length.h"
+#include "units/physical/si/us/length.h"
 #include <catch2/catch.hpp>
 
 using namespace units::physical::si;
-using namespace units::physical::international;
-using namespace units::physical::us;
-using namespace units::physical::iau;
-using namespace units::physical::imperial;
-using namespace units::physical::typographic;
+using namespace units::physical::si::international;
+using namespace units::physical::si::us;
+using namespace units::physical::si::iau;
+using namespace units::physical::si::imperial;
+using namespace units::physical::si::typographic;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {

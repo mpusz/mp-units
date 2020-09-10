@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/speed.h>
-#include <units/physical/international/speed.h>
 #include <units/format.h>
+#include <units/physical/si/international/speed.h>
+#include <units/physical/si/speed.h>
 #include <iostream>
 
 using namespace units::physical;
@@ -36,7 +36,7 @@ int main()
 {
   using namespace units::physical::si::literals;
   Speed auto v1 = avg_speed(220_q_km, 2_q_h);
-  Speed auto v2 = avg_speed(si::length<international::mile>(140), si::time<si::hour>(2));
+  Speed auto v2 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
 #if DOWNCAST_MODE == 0
   Speed auto v3 = quantity_cast<si::dim_speed, si::metre_per_second>(v2);
 #else

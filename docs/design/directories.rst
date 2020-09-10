@@ -10,14 +10,15 @@ Library Directories Structure
     │   └── external
     ├── data
     └── physical
-        ├── cgs
-        ├── iau
-        ├── imperial
-        ├── international
         ├── natural
-        ├── si
-        ├── typographic
-        └── us
+        └── si
+            ├── cgs
+            ├── fps
+            ├── iau
+            ├── imperial
+            ├── international
+            ├── typographic
+            └── us
 
 - *./units*
 

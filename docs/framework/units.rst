@@ -70,16 +70,16 @@ it really easy to define other systems of units. For example length in the
 `CGS <https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units>`_
 could be defined as::
 
-    namespace cgs {
+    namespace si::cgs {
 
     struct dim_length : base_dimension<"L", si::centimetre> {};
 
     }
 
 The fact that both base dimensions use the same identifier ``"L"`` tells
-the library that bot definitions refer to the same physical dimension of
+the library that both definitions refer to the same physical dimension of
 length. The only difference is the measurement unit used to define their
-base dimensions. Thanks to using `si::centimetre` in the `cgs::dim_length`
+base dimensions. Thanks to using `si::centimetre` in the `si::cgs::dim_length`
 definition we also enabled the ability to easily convert between those
 2 base dimensions (as the library knows how to convert `si::metre` to
 `si::centimetre` and vice versa).
@@ -308,7 +308,7 @@ In case the deduced unit should served as a named one we can use ether a
 by him/her-self or `noble_deduced_unit` where the symbol is the deduced name
 based on the ingredients::
 
-    namespace fps {
+    namespace si::fps {
 
     struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_speed,
                                                        "knot", no_prefix, nautical_mile, hour>{};

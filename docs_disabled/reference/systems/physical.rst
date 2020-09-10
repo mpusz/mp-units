@@ -6,11 +6,11 @@ Physical
 
     physical/dimensions_and_concepts
     physical/si
-    physical/cgs
-    physical/international
-    physical/us
-    physical/imperial
-    physical/fps
-    physical/iau
-    physical/typographic
+    physical/si_cgs
+    physical/si_international
+    physical/si_us
+    physical/si_imperial
+    physical/si_fps
+    physical/si_iau
+    physical/si_typographic
     physical/natural

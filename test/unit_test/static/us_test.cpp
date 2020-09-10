@@ -21,22 +21,22 @@
 // SOFTWARE.
 
 #include <units/physical/si/area.h>
+#include <units/physical/si/international/area.h>
+#include <units/physical/si/international/length.h>
+#include <units/physical/si/international/speed.h>
+#include <units/physical/si/international/volume.h>
 #include <units/physical/si/length.h>
-#include <units/physical/international/length.h>
 #include <units/physical/si/speed.h>
+#include <units/physical/si/us/length.h>
 #include <units/physical/si/volume.h>
-#include <units/physical/international/area.h>
-#include <units/physical/us/length.h>
-#include <units/physical/international/speed.h>
-#include <units/physical/international/volume.h>
 #include <utility>
 
 namespace {
 
 using namespace units;
 using namespace units::physical::si;
-using namespace units::physical::us;
-using namespace units::physical::international;
+using namespace units::physical::si::us;
+using namespace units::physical::si::international;
 
 /* ************** BASE DIMENSIONS **************** */
 

@@ -20,21 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
-#include <units/physical/fps/acceleration.h>
-#include <units/physical/fps/energy.h>
-#include <units/physical/fps/force.h>
-#include <units/physical/fps/length.h>
-#include <units/physical/fps/mass.h>
-#include <units/physical/fps/power.h>
-#include <units/physical/fps/pressure.h>
-#include <units/physical/fps/time.h>
-#include <units/physical/fps/speed.h>
+#include <units/physical/si/fps/acceleration.h>
+#include <units/physical/si/fps/energy.h>
+#include <units/physical/si/fps/force.h>
+#include <units/physical/si/fps/length.h>
+#include <units/physical/si/fps/mass.h>
+#include <units/physical/si/fps/power.h>
+#include <units/physical/si/fps/pressure.h>
+#include <units/physical/si/fps/speed.h>
+#include <units/physical/si/fps/time.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::fps;
+using namespace units::physical::si::fps;
 
 /* ************** BASE DIMENSIONS **************** */
 

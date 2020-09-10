@@ -20,18 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/cgs/length.h"
-#include "units/physical/cgs/mass.h"
+#include "units/format.h"
+#include "units/math.h"
 #include "units/physical/si/area.h"
+#include "units/physical/si/cgs/length.h"
+#include "units/physical/si/cgs/mass.h"
 #include "units/physical/si/frequency.h"
 #include "units/physical/si/power.h"
 #include "units/physical/si/pressure.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/volume.h"
-#include "units/physical/si/surface_tension.h"
 #include "units/physical/si/resistance.h"
-#include "units/format.h"
-#include "units/math.h"
+#include "units/physical/si/speed.h"
+#include "units/physical/si/surface_tension.h"
+#include "units/physical/si/volume.h"
 #include <catch2/catch.hpp>
 #include <iomanip>
 #include <sstream>
@@ -518,7 +518,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("CGS base units")
       {
-        const auto q = 2._q_s * cgs::length<cgs::centimetre>(2) * cgs::mass<cgs::gram>(2);
+        const auto q = 2._q_s * si::cgs::length<si::cgs::centimetre>(2) * si::cgs::mass<si::cgs::gram>(2);
         os << q;
 
         SECTION("iostream")
@@ -603,7 +603,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("CGS base units")
     {
-      const auto q = 2._q_s * cgs::length<si::metre>(2) * cgs::mass<si::kilogram>(2);
+      const auto q = 2._q_s * si::cgs::length<si::metre>(2) * si::cgs::mass<si::kilogram>(2);
       os << q;
 
       SECTION("iostream")

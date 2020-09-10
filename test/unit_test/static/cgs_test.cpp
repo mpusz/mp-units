@@ -20,21 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-
-#include <units/physical/cgs/acceleration.h>
-#include <units/physical/cgs/energy.h>
-#include <units/physical/cgs/force.h>
-#include <units/physical/cgs/length.h>
-#include <units/physical/cgs/mass.h>
-#include <units/physical/cgs/power.h>
-#include <units/physical/cgs/pressure.h>
-#include <units/physical/cgs/time.h>
-#include <units/physical/cgs/speed.h>
+#include <units/physical/si/cgs/acceleration.h>
+#include <units/physical/si/cgs/energy.h>
+#include <units/physical/si/cgs/force.h>
+#include <units/physical/si/cgs/length.h>
+#include <units/physical/si/cgs/mass.h>
+#include <units/physical/si/cgs/power.h>
+#include <units/physical/si/cgs/pressure.h>
+#include <units/physical/si/cgs/speed.h>
+#include <units/physical/si/cgs/time.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::cgs;
+using namespace units::physical::si::cgs;
 
 /* ************** BASE DIMENSIONS **************** */
 
