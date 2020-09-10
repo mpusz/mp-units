@@ -105,4 +105,4 @@ install(DIRECTORY include/units
 )
 
 # generate configuration files and install the package
-configure_and_install(../cmake/common/simple-config.cmake.in mp-units SameMajorVersion)
+configure_and_install(../cmake/mp-units-config.cmake.in mp-units SameMajorVersion)

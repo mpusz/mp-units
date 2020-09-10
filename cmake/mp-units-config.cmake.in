@@ -20,19 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake, tools, RunEnvironment
-import os
-
-class TestPackageConan(ConanFile):
-    settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake", "cmake_find_package"
-    
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()
-
-    def test(self):
-        if not tools.cross_building(self.settings):
-            self.run(os.path.join("bin", "test_package_conan"), run_environment=True)
-            self.run(os.path.join("bin", "test_package_cmake"), run_environment=True)
+include(CMakeFindDependencyMacro)
+find_dependency(fmt)
+find_dependency(Microsoft.GSL)
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake")
