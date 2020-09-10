@@ -73,7 +73,7 @@ public:
 
   template<ScalableNumber Value>
     requires detail::safe_convertible<Value, rep>
-  constexpr explicit(!(std::is_same_v<dimension, dim_one> && std::is_same_v<unit, one>)) quantity(const Value& v) : value_{static_cast<rep>(v)} {}
+  constexpr explicit(!(equivalent<quantity, dimensionless<one, Rep>>)) quantity(const Value& v) : value_{static_cast<rep>(v)} {}
 
   template<Quantity Q2>
     requires equivalent<D, typename Q2::dimension> &&
