@@ -9,6 +9,7 @@ Library Directories Structure
     ├── bits
     │   └── external
     ├── data
+    ├── generic
     └── physical
         ├── natural
         └── si
@@ -37,6 +38,11 @@ Library Directories Structure
     library or should be (or already are) the subject of separate standardization
     proposals not related to a Physical Units library proposal.
 
+- *./units/generic*
+
+  - Provides quantity types not related to any :term:`system of quantities`
+    (e.g. `dimensionless`, `angle`).
+
 - *./units/physical*
 
   - Contains the definition of physical units dimensions.
@@ -52,3 +58,9 @@ Library Directories Structure
 
   More information on provided :term:`systems of units <system of units>` can be
   found in :ref:`Systems` chapter.
+
+.. important::
+
+    While working with predefined systems please always include a header file with all
+    the definitions for the current system to limit the possibility of an ODR violation
+    (e.g. *units/physical/si/si.h*).

@@ -3,6 +3,10 @@ Quick Start
 
 Here is a small example of possible operations::
 
+    #include <units/physical/si/si.h>
+
+    using namespace units::physical::si;
+
     // simple numeric operations
     static_assert(10_q_km / 2 == 5_q_km);
 
@@ -31,8 +35,8 @@ but still easy to use interface where all unit conversions and dimensional analy
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
 
-    #include <units/physical/si/speed.h>
-    #include <units/physical/si/international/speed.h>
+    #include <units/physical/si/si.h>
+    #include <units/physical/si/international/international.h>
     #include <units/format.h>
     #include <iostream>
 

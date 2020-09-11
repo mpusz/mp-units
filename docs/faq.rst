@@ -73,7 +73,7 @@ This is why it was decided to go with the current approach.
 Why do we spell ``metre`` instead of ``meter``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Well, this is how [ISO-80000]_ defines it (British English spelling by default).
+Well, this is how [ISO80000]_ defines it (British English spelling by default).
 
 
 User Defined Literals (UDLs)
@@ -82,7 +82,7 @@ User Defined Literals (UDLs)
 Why all UDLs are prefixed with ``_q_`` instead of just using unit symbol?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-..note ..
+.. note::
 
     Every ``_q_*`` UDL will be replaced by the ``q_*`` literal when/if **mp-units**
     will become a part of the C++ Standard Library.
@@ -104,7 +104,7 @@ Text formatting
 Why Unicode quantity symbols are used by default instead of ASCII-only characters?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Both C++ and :term:`SI` ([ISO-80000]_) are standardized by the
+Both C++ and :term:`SI` ([ISO80000]_) are standardized by the
 :abbr:`ISO (International Organization for Standardization)`. :term:`SI` standard
 specifies Unicode symbols as the official unit names for some quantities (i.e. ``Ω``
 symbol for the resistance quantity). As **mp-units** library
@@ -127,20 +127,3 @@ Unfortunately, if `using-directives <https://en.cppreference.com/w/cpp/language/
 (i.e. ``using namespace units::physical::si``) are being used, `units::physical::si::time` will
 collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In such a case the library's
 `time` function needs to be prefixed with at least one (or all) namespace names.
-
-
-
-
-
-
-
-
-.. rubric:: Footnotes:
-
-.. [ISO-80000] ISO 80000 or IEC 80000 is an international standard promulgated jointly
-    by the :abbr:`ISO (International Organization for Standardization)` and the
-    :abbr:`IEC (International Electrotechnical Commission)`. The standard introduces the
-    :term:`International System of Quantities`. It is a style guide for the use of
-    physical quantities and units of measurement, formulas involving them, and their
-    corresponding units, in scientific and educational documents for worldwide use.
-    Read more on `Wikipedia <ISO/IEC 80000 https://en.wikipedia.org/wiki/ISO/IEC_80000>`_.

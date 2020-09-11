@@ -18,37 +18,42 @@ definition is included in the current translation unit) :ref:`The Downcasting Fa
 will determine its type. The same applies to the resulting unit. For example:
 
 .. code-block::
-    :emphasize-lines: 3,7-9
+    :emphasize-lines: 1,7,9
 
-    #include <units/physical/si/length.h>
-    #include <units/physical/si/time.h>
-    #include <units/physical/si/speed.h>
+    #include <units/physical/si/si.h>
 
     using namespace units::physical::si;
 
     constexpr auto result = 144_q_km / 2_q_h;
-    static_assert(is_same_v<decltype(result)::dimension, dim_speed>);
-    static_assert(is_same_v<decltype(result)::unit, kilometre_per_hour>);
+    static_assert(std::is_same_v<decltype(result)::dimension,
+                                 dim_speed>);
+    static_assert(std::is_same_v<decltype(result)::unit,
+                                 kilometre_per_hour>);
 
-However, if the resulting dimension is not predefined by the user the library framework
+However, if the resulting dimension is not predefined by the user, the library framework
 will create an instance of an `unknown_dimension`. The coherent unit of such an unknown
 dimension is an `unknown_coherent_unit`. Let's see what happens with our example when
-we forget to include a header file with the resulting dimension definition:
+instead including the header with all :term:`SI` definitions we will just provide base
+dimensions used in the division operation:
 
 .. code-block::
-    :emphasize-lines: 3,9,11
+    :emphasize-lines: 1-2,8,10
 
-    #include <units/physical/si/length.h>
-    #include <units/physical/si/time.h>
-    // #include <units/physical/si/speed.h>
+    #include <units/physical/si/base/length.h>
+    #include <units/physical/si/base/time.h>
 
     using namespace units::physical::si;
 
     constexpr auto result = 144_q_km / 2_q_h;
-    static_assert(is_same_v<decltype(result)::dimension,
-                            unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
-    static_assert(is_same_v<decltype(result)::unit,
-                            scaled_unit<ratio(1, 36, 1), unknown_coherent_unit>>);
+    static_assert(std::is_same_v<decltype(result)::dimension,
+                                 unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
+    static_assert(std::is_same_v<decltype(result)::unit,
+                                 scaled_unit<ratio(1, 36, 1), unknown_coherent_unit>>);
+
+.. important::
+
+    To limit the possibility of an ODR violation please always include a header file
+    with all the definitions for the current system (e.g. *units/physical/si/si.h*).
 
 
 Operations On Unknown Dimensions And Their Units

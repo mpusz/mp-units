@@ -1,7 +1,7 @@
 # Release notes
 
 - **0.6.0 WIP**
-  - gcc-9 is no longer supported (at least gcc-10 is required)
+  - (!) gcc-9 is no longer supported (at least gcc-10 is required)
   - Visual Studio 16.7 support added
   - linear_algebra updated to 0.7.0/stable
   - fmt updated to 7.0.3
@@ -9,17 +9,19 @@
   - catch2 updated to 2.13.0
   - doxygen updated to 1.8.18
   - ms-gsl 3.1.0 dependency added
+  - Removed the dependency on a git submodule with common CMake scripts
+  - (!) Refactored and cleaned up the library file tree
+  - (!) `q_*` UDL renamed to `_q_*`
+  - (!) `ratio` changed to the NTTP kind
+  - (!) `exp` and `Exp` renamed to `exponent` and `Exponent`
+  - (!) `Scalar` concept renamed to `ScalableNumber`
+  - (!) Dimensionless quantities redesigned to be of `quantity` type
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
   - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
   - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
-  - `ratio` changed to the NTTP kind
-  - `exp` and `Exp` renamed to `exponent` and `Exponent`
-  - Added support for `exp()` mathematical support
-  - Dimensionless quantities redesigned to be of `quantity` type
-  - `Scalar` concept renamed to `ScalableNumber`
-  - `q_*` UDL renamed to `_q_*`
+  - Added support for mathematical function `exp(quantity)`
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library

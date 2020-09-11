@@ -205,7 +205,7 @@ Other definitions
 
 .. rubric:: Footnotes:
 
-.. [1] [ISO-80000]_ gives general information and definitions concerning quantities, systems of quantities,
+.. [1] [ISO80000]_ gives general information and definitions concerning quantities, systems of quantities,
     units, quantity and unit symbols, and coherent unit systems, especially the International System
     of Quantities, ISQ, and the International System of Units, SI. The principles laid down in
     ISO 80000-1:2009 are intended for general use within the various fields of science and technology

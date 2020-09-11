@@ -21,7 +21,7 @@ and pass it to the library's output:
 .. code-block::
 
     #include "legacy.h"
-    #include <units/physical/si/speed.h>
+    #include <units/physical/si/si.h>
     #include <units/quantity_point.h>
 
     using namespace units::physical;

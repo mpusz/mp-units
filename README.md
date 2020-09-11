@@ -26,6 +26,10 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
+#include <units/physical/si/si.h>
+
+using namespace units::physical::si;
+
 // simple numeric operations
 static_assert(10_q_km / 2 == 5_q_km);
 
@@ -53,8 +57,8 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#include <units/physical/si/speed.h>
-#include <units/physical/si/international/speed.h>
+#include <units/physical/si/si.h>
+#include <units/physical/si/international/international.h>
 #include <units/format.h>
 #include <iostream>
 
