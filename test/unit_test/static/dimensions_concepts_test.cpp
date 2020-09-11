@@ -37,14 +37,14 @@ static_assert(!Mass<si::time<si::second>>);
 static_assert(Time<si::time<si::second>>);
 static_assert(!Time<si::length<si::metre>>);
 
-static_assert(Current<si::current<si::ampere>>);
-static_assert(!Current<si::time<si::second>>);
+static_assert(ElectricCurrent<si::electric_current<si::ampere>>);
+static_assert(!ElectricCurrent<si::time<si::second>>);
 
-static_assert(Temperature<si::temperature<si::kelvin>>);
-static_assert(!Temperature<si::time<si::second>>);
+static_assert(ThermodynamicTemperature<si::thermodynamic_temperature<si::kelvin>>);
+static_assert(!ThermodynamicTemperature<si::time<si::second>>);
 
-static_assert(Substance<si::substance<si::mole>>);
-static_assert(!Substance<si::time<si::second>>);
+static_assert(AmountOfSubstance<si::amount_of_substance<si::mole>>);
+static_assert(!AmountOfSubstance<si::time<si::second>>);
 
 static_assert(LuminousIntensity<si::luminous_intensity<si::candela>>);
 static_assert(!LuminousIntensity<si::time<si::second>>);
