@@ -61,7 +61,7 @@ void to_prefix_base(const volatile prefix_base<PF, R>*);
  * Satisfied by all specializations of `prefix`.
  */
 template<typename T>
-concept Prefix = requires(const volatile T* t) { detail::to_prefix_base(t); };
+concept Prefix = requires(T* t) { detail::to_prefix_base(t); };
 
 /**
  * @brief A concept matching unit's ratio
@@ -90,7 +90,7 @@ void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
  * Satisfied by all unit types derived from an specialization of :class:`scaled_unit`.
  */
 template<typename T>
-concept Unit = requires { detail::to_base_scaled_unit(std::declval<const volatile T*>()); };
+concept Unit = requires(T* t) { detail::to_base_scaled_unit(t); };
 
 // BaseDimension
 template<basic_fixed_string Symbol, Unit U>
@@ -110,7 +110,7 @@ void to_base_base_dimension(const volatile base_dimension<Symbol, U>*);
  * Satisfied by all dimension types derived from an specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = requires { detail::to_base_base_dimension(std::declval<const volatile T*>()); };
+concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); };
 
 // Exponent
 namespace detail {
