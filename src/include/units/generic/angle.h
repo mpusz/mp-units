@@ -32,6 +32,9 @@ struct radian : named_unit<radian, "rad", physical::si::prefix> {};
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};
 
+template<typename T>
+concept Angle = QuantityOfT<T, dim_angle>;
+
 template<Unit U, ScalableNumber Rep = double>
 using angle = quantity<dim_angle<>, U, Rep>;
 

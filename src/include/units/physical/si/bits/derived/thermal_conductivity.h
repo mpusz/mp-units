@@ -30,7 +30,7 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/bits/derived/power.h>
-#include <units/physical/si/base/temperature.h>
+#include <units/physical/si/base/thermodynamic_temperature.h>
 #include <units/quantity.h>
 
 namespace units::physical::si {

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/format.h>
+#include <units/generic/angle.h>
 #include <units/physical/si/si.h>
 #include <iostream>
 
@@ -32,7 +33,7 @@ int main()
   auto torque = 20.0_q_Nm;
   auto energy = 20.0_q_J;
 
-  physical::Angle auto angle = torque / energy;
+  Angle auto angle = torque / energy;
 
   std::cout << angle << '\n';
 }

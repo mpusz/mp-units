@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/bits/external/downcasting.h>
-#include <units/concepts.h>
+#include <units/bits/basic_concepts.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
 

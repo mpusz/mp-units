@@ -29,10 +29,10 @@
 #endif
 
 #include <units/physical/dimensions.h>
-#include <units/physical/si/base/temperature.h>
+#include <units/physical/si/base/thermodynamic_temperature.h>
 #include <units/physical/si/bits/derived/energy.h>
 #include <units/physical/si/base/mass.h>
-#include <units/physical/si/base/substance.h>
+#include <units/physical/si/base/amount_of_substance.h>
 #include <units/quantity.h>
 
 namespace units::physical::si {
@@ -43,7 +43,7 @@ struct joule_per_mole_kelvin : unit<joule_per_mole_kelvin> {};
 
 struct dim_heat_capacity : physical::dim_heat_capacity<dim_heat_capacity, joule_per_kelvin, dim_energy, dim_thermodynamic_temperature> {};
 struct dim_specific_heat_capacity : physical::dim_specific_heat_capacity<dim_specific_heat_capacity, joule_per_kilogram_kelvin, dim_heat_capacity, dim_mass> {};
-struct dim_molar_heat_capacity : physical::dim_molar_heat_capacity<dim_molar_heat_capacity, joule_per_mole_kelvin, dim_heat_capacity, dim_substance> {};
+struct dim_molar_heat_capacity : physical::dim_molar_heat_capacity<dim_molar_heat_capacity, joule_per_mole_kelvin, dim_heat_capacity, dim_amount_of_substance> {};
 
 template<Unit U, ScalableNumber Rep = double>
 using heat_capacity = quantity<dim_heat_capacity, U, Rep>;

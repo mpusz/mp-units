@@ -22,24 +22,16 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
-#include <units/quantity.h>
+#include <units/concepts.h>
+#include <units/physical/bits/electric_current.h>
+#include <units/physical/bits/length.h>
 
-namespace units::physical::si {
+namespace units::physical {
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+template<typename Child, Unit U, DimensionOfT<dim_electric_current> I, DimensionOfT<dim_length> L>
+struct dim_current_density : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
 
-struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<kelvin> {};
+template<typename T>
+concept CurrentDensity = QuantityOfT<T, dim_current_density>;
 
-template<Unit U, ScalableNumber Rep = double>
-using temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
-
-inline namespace literals {
-
-// K
-constexpr auto operator"" _q_K(unsigned long long l) { return temperature<kelvin, std::int64_t>(l); }
-constexpr auto operator"" _q_K(long double l) { return temperature<kelvin, long double>(l); }
-
-}  // namespace literals
-
-}  // namespace units::physical::si
+}  // namespace units::physical

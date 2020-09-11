@@ -29,7 +29,7 @@
 #endif
 
 #include <units/physical/dimensions.h>
-#include <units/physical/si/base/substance.h>
+#include <units/physical/si/base/amount_of_substance.h>
 #include <units/physical/si/base/time.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
@@ -60,7 +60,7 @@ struct yottakatal : prefixed_unit<yottakatal, yotta, katal> {};
 
 struct enzyme_unit : named_scaled_unit<enzyme_unit, "U", prefix, ratio(1, 60, -6), katal> {};
 
-struct dim_catalytic_activity : physical::dim_catalytic_activity<dim_catalytic_activity, katal, dim_time, dim_substance> {};
+struct dim_catalytic_activity : physical::dim_catalytic_activity<dim_catalytic_activity, katal, dim_time, dim_amount_of_substance> {};
 
 template<Unit U, ScalableNumber Rep = double>
 using catalytic_activity = quantity<dim_catalytic_activity, U, Rep>;

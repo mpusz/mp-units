@@ -57,10 +57,6 @@ constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
 
 } // namespace detail
 
-// QuantityOf
-template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent<typename T::dimension, Dim>;
-
 // quantity_cast
 namespace detail {
 

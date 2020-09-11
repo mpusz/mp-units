@@ -24,12 +24,12 @@
 
 #define MP_UNITS_SYSTEM_SI
 
-#include <units/physical/si/base/current.h>
+#include <units/physical/si/base/electric_current.h>
 #include <units/physical/si/base/length.h>
 #include <units/physical/si/base/luminous_intensity.h>
 #include <units/physical/si/base/mass.h>
-#include <units/physical/si/base/substance.h>
-#include <units/physical/si/base/temperature.h>
+#include <units/physical/si/base/amount_of_substance.h>
+#include <units/physical/si/base/thermodynamic_temperature.h>
 #include <units/physical/si/base/time.h>
 
 #include <units/physical/si/bits/derived/absorbed_dose.h>

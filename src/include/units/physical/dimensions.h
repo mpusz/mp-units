@@ -22,327 +22,50 @@
 
 #pragma once
 
-#include <units/base_dimension.h>
-#include <units/bits/dimension_op.h>
-#include <units/bits/external/type_traits.h>
-#include <units/derived_dimension.h>
-#include <units/exponent.h>
-#include <units/generic/angle.h>
-#include <units/quantity.h>
-#include <units/unit.h>
-#include <concepts>
-
-namespace units::physical {
-
-namespace detail {
-
-template<typename Dim, template<typename...> typename DimTemplate>
-inline constexpr bool same_exponents_of = false;
-
-template<Exponent... Es, template<typename...> typename DimTemplate>
-inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> = requires { typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>; } && std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>::recipe>;
-
-} // namespace detail
-
-template<typename Dim, template<typename...> typename DimTemplate>
-concept EquivalentUnknownDimensionOf = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> && detail::same_exponents_of<Dim, DimTemplate>;
-
-template<typename Dim, template<typename...> typename DimTemplate>
-concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate>);// ||
-                                        //  EquivalentUnknownDimensionOf<Dim, DimTemplate>);
-
-template<typename Q, template<typename...> typename DimTemplate>
-concept QuantityOf = Quantity<Q> && DimensionOf<typename Q::dimension, DimTemplate>;
-
-// ------------------------ base dimensions -----------------------------
-
-template<Unit U>
-struct dim_length : base_dimension<"L", U> {};
-
-template<Unit U>
-struct dim_mass : base_dimension<"M", U> {};
-
-template<Unit U>
-struct dim_time : base_dimension<"T", U> {};
-
-template<Unit U>
-struct dim_electric_current : base_dimension<"I", U> {};
-
-template<Unit U>
-struct dim_thermodynamic_temperature : base_dimension<"Θ", U> {};
-
-template<Unit U>
-struct dim_substance : base_dimension<"N", U> {};
-
-template<Unit U>
-struct dim_luminous_intensity : base_dimension<"J", U> {};
-
-// ------------------------ derived dimensions -----------------------------
-
-
-template<typename Child, Unit U, DimensionOf<dim_angle> A, DimensionOf<dim_time> T>
-struct dim_angular_velocity : derived_dimension<Child, U, exponent<A, 1>, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_time> T>
-struct dim_frequency : derived_dimension<Child, U, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_length> L>
-struct dim_area : derived_dimension<Child, U, exponent<L, 2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_length> L>
-struct dim_volume : derived_dimension<Child, U, exponent<L, 3>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
-struct dim_speed : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_length> L, DimensionOf<dim_time> T>
-struct dim_acceleration : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_acceleration> A>
-struct dim_force : derived_dimension<Child, U, exponent<M, 1>, exponent<A, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_speed> V>
-struct dim_momentum : derived_dimension<Child, U, exponent<M, 1>, exponent<V, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
-struct dim_energy : derived_dimension<Child, U, exponent<F, 1>, exponent<L, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_angle> A>
-struct dim_torque : derived_dimension<Child, U, exponent<E, 1>, exponent<A, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_mass> M, DimensionOf<dim_length> L>
-struct dim_density : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_time> T>
-struct dim_power : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_electric_current> C>
-struct dim_voltage : derived_dimension<Child, U, exponent<P, 1>, exponent<C, -1>> {};
-
-template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_electric_current> C>
-struct dim_resistance : derived_dimension<Child,U, exponent<V, 1>, exponent<C, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_electric_current> C>
-struct dim_electric_charge : derived_dimension<Child, U, exponent<T, 1>, exponent<C, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_electric_charge> C, DimensionOf<dim_voltage> V>
-struct dim_capacitance : derived_dimension<Child, U, exponent<C, 1>, exponent<V, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_length> L>
-struct dim_surface_tension : derived_dimension<Child, U, exponent<F, 1>, exponent<L, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_force> F, DimensionOf<dim_area> A>
-struct dim_pressure : derived_dimension<Child, U, exponent<F, 1>, exponent<A, -1>> {};
-
-template <typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_time> T, DimensionOf<dim_length> L>
-struct dim_magnetic_induction : derived_dimension<Child, U, exponent<V, 1>, exponent<T, 1>, exponent<L, -2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_magnetic_induction> B, DimensionOf<dim_area> A>
-struct dim_magnetic_flux : derived_dimension<Child, U, exponent<B, 1>, exponent<A, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_magnetic_flux> F, DimensionOf<dim_electric_current> I>
-struct dim_inductance : derived_dimension<Child, U, exponent<F, 1>, exponent<I, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_resistance> R>
-struct dim_conductance : derived_dimension<Child, U, exponent<R, -1>> {};
-
+#include <units/physical/bits/absorbed_dose.h>
+#include <units/physical/bits/acceleration.h>
+#include <units/physical/bits/amount_of_substance.h>
+#include <units/physical/bits/angular_velocity.h>
+#include <units/physical/bits/area.h>
+#include <units/physical/bits/capacitance.h>
+#include <units/physical/bits/catalytic_activity.h>
+#include <units/physical/bits/charge_density.h>
+#include <units/physical/bits/concentration.h>
+#include <units/physical/bits/conductance.h>
+#include <units/physical/bits/current_density.h>
+#include <units/physical/bits/density.h>
+#include <units/physical/bits/dimensions.h>
+#include <units/physical/bits/dynamic_viscosity.h>
+#include <units/physical/bits/electric_charge.h>
+#include <units/physical/bits/electric_current.h>
+#include <units/physical/bits/electric_field_strength.h>
+#include <units/physical/bits/energy.h>
 // TODO Add when downcasting issue is solved
-// template<typename Child, Unit U, DimensionOf<dim_time> T>
-// struct dim_radioactivity : derived_dimension<Child, U, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_time> T, DimensionOf<dim_substance> M>
-struct dim_catalytic_activity : derived_dimension<Child, U, exponent<T, -1>, exponent<M, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_mass> M>
-struct dim_absorbed_dose : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_electric_current> I, DimensionOf<dim_length> L>
-struct dim_current_density : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_substance> M, DimensionOf<dim_length> L>
-struct dim_concentration : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_luminous_intensity> I, DimensionOf<dim_length> L>
-struct dim_luminance : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_pressure> P, DimensionOf<dim_time> T>
-struct dim_dynamic_viscosity : derived_dimension<Child, U, exponent<P, 1>, exponent<T, 1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_thermodynamic_temperature> T>
-struct dim_heat_capacity : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_mass> M>
-struct dim_specific_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_heat_capacity> C, DimensionOf<dim_substance> M>
-struct dim_molar_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_power> P, DimensionOf<dim_length> L, DimensionOf<dim_thermodynamic_temperature> T>
-struct dim_thermal_conductivity : derived_dimension<Child, U, exponent<P, 1>, exponent<L, -1>, exponent<T, -1>> {};
-
+// #include <units/physical/bits/energy_density.h>
+#include <units/physical/bits/force.h>
+#include <units/physical/bits/frequency.h>
+#include <units/physical/bits/heat_capacity.h>
+#include <units/physical/bits/inductance.h>
+#include <units/physical/bits/length.h>
+#include <units/physical/bits/luminance.h>
+#include <units/physical/bits/luminous_intensity.h>
+#include <units/physical/bits/magnetic_flux.h>
+#include <units/physical/bits/magnetic_induction.h>
+#include <units/physical/bits/mass.h>
+#include <units/physical/bits/molar_energy.h>
+#include <units/physical/bits/momentum.h>
+#include <units/physical/bits/permeability.h>
+#include <units/physical/bits/permittivity.h>
+#include <units/physical/bits/power.h>
+#include <units/physical/bits/pressure.h>
 // TODO Add when downcasting issue is solved
-// template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_length> L>
-// struct dim_energy_density : derived_dimension<Child, U, exponent<E, 1>, exponent<L, -3>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_voltage> V, DimensionOf<dim_length> L>
-struct dim_electric_field_strength : derived_dimension<Child, U, exponent<V, 1>, exponent<L, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
-struct dim_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -3>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_electric_charge> Q, DimensionOf<dim_length> L>
-struct dim_surface_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -2>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_capacitance> C, DimensionOf<dim_length> L>
-struct dim_permittivity : derived_dimension<Child, U, exponent<C, 1>, exponent<L, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_inductance> H, DimensionOf<dim_length> L>
-struct dim_permeability : derived_dimension<Child, U, exponent<H, 1>, exponent<L, -1>> {};
-
-template<typename Child, Unit U, DimensionOf<dim_energy> E, DimensionOf<dim_substance> M>
-struct dim_molar_energy : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
-
-template<typename T>
-concept Length = QuantityOf<T, dim_length>;
-
-template<typename T>
-concept Mass = QuantityOf<T, dim_mass>;
-
-template<typename T>
-concept Time = QuantityOf<T, dim_time>;
-
-template<typename T>
-concept Current = QuantityOf<T, dim_electric_current>;
-
-template<typename T>
-concept Temperature = QuantityOf<T, dim_thermodynamic_temperature>;
-
-template<typename T>
-concept Substance = QuantityOf<T, dim_substance>;
-
-template<typename T>
-concept LuminousIntensity = QuantityOf<T, dim_luminous_intensity>;
-
-template <typename T>
-concept Angle = QuantityOf<T, dim_angle>;
-
-template <typename T>
-concept AngularVelocity = QuantityOf<T, dim_angular_velocity>;
-
-template<typename T>
-concept Frequency = QuantityOf<T, dim_frequency>;
-
-template<typename T>
-concept Area = QuantityOf<T, dim_area>;
-
-template<typename T>
-concept Volume = QuantityOf<T, dim_volume>;
-
-template<typename T>
-concept Speed = QuantityOf<T, dim_speed>;
-
-template<typename T>
-concept Acceleration = QuantityOf<T, dim_acceleration>;
-
-template<typename T>
-concept Force = QuantityOf<T, dim_force>;
-
-template<typename T>
-concept Momentum = QuantityOf<T, dim_momentum>;
-
-template<typename T>
-concept Energy = QuantityOf<T, dim_energy>;
-
-template<typename T>
-concept Torque = QuantityOf<T, dim_torque>;
-
-template<typename T>
-concept Density = QuantityOf<T, dim_density>;
-
-template<typename T>
-concept Power = QuantityOf<T, dim_power>;
-
-template<typename T>
-concept Voltage = QuantityOf<T, dim_voltage>;
-
-template<typename T>
-concept ElectricCharge = QuantityOf<T, dim_electric_charge>;
-
-template<typename T>
-concept Capacitance = QuantityOf<T, dim_capacitance>;
-
-template<typename T>
-concept SurfaceTension = QuantityOf<T, dim_surface_tension>;
-
-template<typename T>
-concept Pressure = QuantityOf<T, dim_pressure>;
-
-template<typename T>
-concept MagneticInduction = QuantityOf<T, dim_magnetic_induction>;
-
-template<typename T>
-concept MagneticFlux = QuantityOf<T, dim_magnetic_flux>;
-
-template<typename T>
-concept Inductance = QuantityOf<T, dim_inductance>;
-
-template<typename T>
-concept Conductance = QuantityOf<T, dim_conductance>;
-
-// TODO Add when downcasting issue is solved
-// template<typename T>
-// concept Radioactivity = QuantityOf<T, dim_radioactivity>;
-
-template<typename T>
-concept CatalyticActivity = QuantityOf<T, dim_catalytic_activity>;
-
-template<typename T>
-concept AbsorbedDose = QuantityOf<T, dim_absorbed_dose>;
-
-template<typename T>
-concept CurrentDensity = QuantityOf<T, dim_current_density>;
-
-template<typename T>
-concept Concentration = QuantityOf<T, dim_concentration>;
-
-template<typename T>
-concept Luminance = QuantityOf<T, dim_luminance>;
-
-template<typename T>
-concept DynamicViscosity = QuantityOf<T, dim_dynamic_viscosity>;
-
-template<typename T>
-concept HeatCapacity = QuantityOf<T, dim_heat_capacity>;
-
-template<typename T>
-concept SpecificHeatCapacity = QuantityOf<T, dim_specific_heat_capacity>;
-
-template<typename T>
-concept MolarHeatCapacity = QuantityOf<T, dim_molar_heat_capacity>;
-
-template<typename T>
-concept ThermalConductivity = QuantityOf<T, dim_thermal_conductivity>;
-
-// TODO Add when downcasting issue is solved
-// template<typename T>
-// concept EnergyDensity = QuantityOf<T, dim_energy_density>;
-
-template<typename T>
-concept ElectricFieldStrength = QuantityOf<T, dim_electric_field_strength>;
-
-template<typename T>
-concept ChargeDensity = QuantityOf<T, dim_charge_density>;
-
-template<typename T>
-concept SurfaceChargeDensity = QuantityOf<T, dim_surface_charge_density>;
-
-template<typename T>
-concept Permittivity = QuantityOf<T, dim_permittivity>;
-
-template<typename T>
-concept Permeability = QuantityOf<T, dim_permeability>;
-
-template<typename T>
-concept MolarEnergy = QuantityOf<T, dim_molar_energy>;
-
-}  // namespace units::physical
+// #include <units/physical/bits/radioactivity.h>
+#include <units/physical/bits/resistance.h>
+#include <units/physical/bits/speed.h>
+#include <units/physical/bits/surface_tension.h>
+#include <units/physical/bits/thermal_conductivity.h>
+#include <units/physical/bits/thermodynamic_temperature.h>
+#include <units/physical/bits/time.h>
+#include <units/physical/bits/torque.h>
+#include <units/physical/bits/voltage.h>
+#include <units/physical/bits/volume.h>

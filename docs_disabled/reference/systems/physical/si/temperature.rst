@@ -1,4 +1,4 @@
 Temperature
 ===========
 
-.. doxygenfile:: si/base/temperature.h
+.. doxygenfile:: si/base/thermodynamic_temperature.h

@@ -1,4 +1,4 @@
 Current
 =======
 
-.. doxygenfile:: si/base/current.h
+.. doxygenfile:: si/base/electric_current.h

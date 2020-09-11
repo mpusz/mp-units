@@ -30,13 +30,13 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/base/length.h>
-#include <units/physical/si/base/substance.h>
+#include <units/physical/si/base/amount_of_substance.h>
 #include <units/quantity.h>
 
 namespace units::physical::si {
 
 struct mol_per_metre_cub : unit<mol_per_metre_cub> {};
-struct dim_concentration : physical::dim_concentration<dim_concentration, mol_per_metre_cub, dim_substance, dim_length> {};
+struct dim_concentration : physical::dim_concentration<dim_concentration, mol_per_metre_cub, dim_amount_of_substance, dim_length> {};
 
 template<Unit U, ScalableNumber Rep = double>
 using concentration = quantity<dim_concentration, U, Rep>;

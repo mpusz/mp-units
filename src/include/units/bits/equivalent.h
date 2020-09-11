@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/concepts.h>
+#include <units/bits/basic_concepts.h>
 #include <units/unit.h>
 
 namespace units {

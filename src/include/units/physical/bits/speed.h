@@ -22,25 +22,16 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
-#include <units/physical/si/prefixes.h>
-#include <units/quantity.h>
+#include <units/concepts.h>
+#include <units/physical/bits/length.h>
+#include <units/physical/bits/time.h>
 
-namespace units::physical::si {
+namespace units::physical {
 
-struct mole : named_unit<mole, "mol", prefix> {};
+template<typename Child, Unit U, DimensionOfT<dim_length> L, DimensionOfT<dim_time> T>
+struct dim_speed : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -1>> {};
 
-struct dim_substance : physical::dim_substance<mole> {};
+template<typename T>
+concept Speed = QuantityOfT<T, dim_speed>;
 
-template<Unit U, ScalableNumber Rep = double>
-using substance = quantity<dim_substance, U, Rep>;
-
-inline namespace literals {
-
-// mol
-constexpr auto operator"" _q_mol(unsigned long long l) { return substance<mole, std::int64_t>(l); }
-constexpr auto operator"" _q_mol(long double l) { return substance<mole, long double>(l); }
-
-}  // namespace literals
-
-}  // namespace units::physical::si
+}  // namespace units::physical

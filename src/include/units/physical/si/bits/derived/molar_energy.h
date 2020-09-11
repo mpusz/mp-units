@@ -30,7 +30,7 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/bits/derived/energy.h>
-#include <units/physical/si/base/substance.h>
+#include <units/physical/si/base/amount_of_substance.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
@@ -38,7 +38,7 @@ namespace units::physical::si {
 
 struct joule_per_mole : unit<joule_per_mole> {};
 
-struct dim_molar_energy : physical::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_substance> {};
+struct dim_molar_energy : physical::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_amount_of_substance> {};
 
 template<Unit U, ScalableNumber Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;

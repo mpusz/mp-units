@@ -30,7 +30,7 @@
 
 #include <units/physical/dimensions.h>
 #include <units/physical/si/bits/derived/voltage.h>
-#include <units/physical/si/base/current.h>
+#include <units/physical/si/base/electric_current.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 
