@@ -45,7 +45,7 @@ static_assert(10_q_km / 5_q_km == 2);
 static_assert(1000 / 1_q_s == 1_q_kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/XPmjPz)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/oc7P9z)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -73,11 +73,11 @@ int main()
   Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
   Speed auto v4 = quantity_cast<int>(v3);
 
-  std::cout << v1 << '\n';                             // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-  std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
+  std::cout << v1 << '\n';   // 110 km/h
+  std::cout << v2 << '\n';   // 70 mi/h
+  std::cout << v3 << '\n';   // 31.2928 m/s
+  std::cout << v4 << '\n';   // 31 m/s
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/xE91TY)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/Wd9d87)._

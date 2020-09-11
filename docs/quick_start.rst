@@ -23,7 +23,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/XPmjPz>`_
+    `Example #1 <https://godbolt.org/z/oc7P9z>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -51,15 +51,15 @@ of basic library features::
       Speed auto v3 = quantity_cast<si::metre_per_second>(v2);
       Speed auto v4 = quantity_cast<int>(v3);
 
-      std::cout << v1 << '\n';                             // 110 km/h
-      std::cout << fmt::format("{}", v2) << '\n';          // 70 mi/h
-      std::cout << fmt::format("{:%Q in %q}", v3) << '\n'; // 31.2928 in m/s
-      std::cout << fmt::format("{:%Q}", v4) << '\n';       // 31
+      std::cout << v1 << '\n';   // 110 km/h
+      std::cout << v2 << '\n';   // 70 mi/h
+      std::cout << v3 << '\n';   // 31.2928 m/s
+      std::cout << v4 << '\n';   // 31 m/s
     }
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #2 <https://godbolt.org/z/xE91TY>`_
+    `Example #2 <https://godbolt.org/z/Wd9d87>`_
 
 .. seealso::
 
