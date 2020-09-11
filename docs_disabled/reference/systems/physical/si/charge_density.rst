@@ -1,4 +1,4 @@
 Charge Density
 ==============
 
-.. doxygenfile:: si/charge_density.h
+.. doxygenfile:: si/bits/derived/charge_density.h

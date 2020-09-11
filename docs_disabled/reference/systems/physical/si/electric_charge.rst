@@ -1,4 +1,4 @@
 Electric Charge
 ===============
 
-.. doxygenfile:: si/electric_charge.h
+.. doxygenfile:: si/bits/derived/electric_charge.h

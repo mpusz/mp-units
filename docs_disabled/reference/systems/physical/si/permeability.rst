@@ -1,4 +1,4 @@
 Permeability
 ============
 
-.. doxygenfile:: si/permeability.h
+.. doxygenfile:: si/bits/derived/permeability.h

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/physical/natural/dimensions.h>
+#include <units/physical/natural/bits/dimensions.h>
 
 namespace units::physical::natural {
 

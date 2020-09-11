@@ -1,4 +1,4 @@
 Permittivity
 ============
 
-.. doxygenfile:: si/permittivity.h
+.. doxygenfile:: si/bits/derived/permittivity.h

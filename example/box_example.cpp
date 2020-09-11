@@ -1,11 +1,4 @@
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/constants.h>
-#include <units/physical/si/density.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/volume.h>
+#include <units/physical/si/si.h>
 #include <units/format.h>
 #include <cassert>
 

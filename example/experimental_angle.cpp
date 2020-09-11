@@ -21,9 +21,7 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/torque.h>
+#include <units/physical/si/si.h>
 #include <iostream>
 
 using namespace units;

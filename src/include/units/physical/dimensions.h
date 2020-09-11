@@ -27,6 +27,7 @@
 #include <units/bits/external/type_traits.h>
 #include <units/derived_dimension.h>
 #include <units/exponent.h>
+#include <units/generic/angle.h>
 #include <units/quantity.h>
 #include <units/unit.h>
 #include <concepts>
@@ -47,8 +48,8 @@ template<typename Dim, template<typename...> typename DimTemplate>
 concept EquivalentUnknownDimensionOf = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> && detail::same_exponents_of<Dim, DimTemplate>;
 
 template<typename Dim, template<typename...> typename DimTemplate>
-concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate> ||
-                                         EquivalentUnknownDimensionOf<Dim, DimTemplate>);
+concept DimensionOf = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate>);// ||
+                                        //  EquivalentUnknownDimensionOf<Dim, DimTemplate>);
 
 template<typename Q, template<typename...> typename DimTemplate>
 concept QuantityOf = Quantity<Q> && DimensionOf<typename Q::dimension, DimTemplate>;
@@ -75,9 +76,6 @@ struct dim_substance : base_dimension<"N", U> {};
 
 template<Unit U>
 struct dim_luminous_intensity : base_dimension<"J", U> {};
-
-template<Unit U>
-struct dim_angle : base_dimension<"A", U> {};
 
 // ------------------------ derived dimensions -----------------------------
 

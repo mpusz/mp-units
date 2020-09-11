@@ -1,4 +1,4 @@
 Volume
 ======
 
-.. doxygenfile:: si/international/volume.h
+.. doxygenfile:: si/international/bits/derived/volume.h

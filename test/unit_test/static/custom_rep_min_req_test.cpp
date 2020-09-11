@@ -21,9 +21,7 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/speed.h"
+#include "units/physical/si/si.h"
 #include <chrono>
 #include <type_traits>
 #include <utility>

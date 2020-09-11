@@ -20,26 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/cgs/acceleration.h>
-#include <units/physical/si/cgs/area.h>
-#include <units/physical/si/cgs/energy.h>
-#include <units/physical/si/cgs/force.h>
-#include <units/physical/si/cgs/length.h>
-#include <units/physical/si/cgs/mass.h>
-#include <units/physical/si/cgs/power.h>
-#include <units/physical/si/cgs/pressure.h>
-#include <units/physical/si/cgs/speed.h>
-#include <units/physical/si/cgs/time.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/time.h>
+#include <units/physical/si/si.h>
+#include <units/physical/si/cgs/cgs.h>
 
 namespace {
 

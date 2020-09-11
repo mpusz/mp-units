@@ -1,4 +1,4 @@
 Luminance
 =========
 
-.. doxygenfile:: si/luminance.h
+.. doxygenfile:: si/base/luminance.h

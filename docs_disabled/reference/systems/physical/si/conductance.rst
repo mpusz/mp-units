@@ -1,4 +1,4 @@
 Conductance
 ===========
 
-.. doxygenfile:: si/conductance.h
+.. doxygenfile:: si/bits/derived/conductance.h

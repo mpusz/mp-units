@@ -1,4 +1,4 @@
 Length
 ======
 
-.. doxygenfile:: si/typographic/length.h
+.. doxygenfile:: si/typographic/base/length.h

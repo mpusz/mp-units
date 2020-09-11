@@ -1,4 +1,4 @@
 Frequency
 =========
 
-.. doxygenfile:: si/frequency.h
+.. doxygenfile:: si/bits/derived/frequency.h

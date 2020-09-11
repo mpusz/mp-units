@@ -1,4 +1,4 @@
 Time
 ====
 
-.. doxygenfile:: si/cgs/time.h
+.. doxygenfile:: si/cgs/base/time.h

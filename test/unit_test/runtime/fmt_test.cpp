@@ -22,16 +22,8 @@
 
 #include "units/format.h"
 #include "units/math.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/cgs/length.h"
-#include "units/physical/si/cgs/mass.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/power.h"
-#include "units/physical/si/pressure.h"
-#include "units/physical/si/resistance.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/surface_tension.h"
-#include "units/physical/si/volume.h"
+#include "units/physical/si/si.h"
+#include "units/physical/si/cgs/cgs.h"
 #include <catch2/catch.hpp>
 #include <iomanip>
 #include <sstream>

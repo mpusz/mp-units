@@ -20,10 +20,7 @@
     physical_quantities
 */
 
-#include <units/physical/si/capacitance.h>
-#include <units/physical/si/resistance.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/voltage.h>
+#include <units/physical/si/si.h>
 #include <units/math.h>
 #include <iostream>
 

@@ -1,4 +1,4 @@
 Length
 ======
 
-.. doxygenfile:: si/us/length.h
+.. doxygenfile:: si/us/base/length.h

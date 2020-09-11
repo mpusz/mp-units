@@ -27,7 +27,7 @@
 #include <units/bits/dimension_op.h>
 #include <units/bits/pow.h>
 #include <units/bits/to_string.h>
-#include <units/dimensionless.h>
+#include <units/generic/dimensionless.h>
 #include <units/quantity_cast.h>
 #include <compare>
 #include <ostream>

@@ -1,4 +1,4 @@
 Voltage
 =======
 
-.. doxygenfile:: si/voltage.h
+.. doxygenfile:: si/bits/derived/voltage.h

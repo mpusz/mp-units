@@ -1,4 +1,4 @@
 Power
 =====
 
-.. doxygenfile:: si/power.h
+.. doxygenfile:: si/bits/derived/power.h

@@ -20,15 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/cgs/acceleration.h>
-#include <units/physical/si/cgs/energy.h>
-#include <units/physical/si/cgs/force.h>
-#include <units/physical/si/cgs/length.h>
-#include <units/physical/si/cgs/mass.h>
-#include <units/physical/si/cgs/power.h>
-#include <units/physical/si/cgs/pressure.h>
-#include <units/physical/si/cgs/speed.h>
-#include <units/physical/si/cgs/time.h>
+#include <units/physical/si/cgs/cgs.h>
 
 namespace {
 

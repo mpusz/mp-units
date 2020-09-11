@@ -20,15 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/fps/acceleration.h>
-#include <units/physical/si/fps/energy.h>
-#include <units/physical/si/fps/force.h>
-#include <units/physical/si/fps/length.h>
-#include <units/physical/si/fps/mass.h>
-#include <units/physical/si/fps/power.h>
-#include <units/physical/si/fps/pressure.h>
-#include <units/physical/si/fps/speed.h>
-#include <units/physical/si/fps/time.h>
+#include <units/physical/si/fps/fps.h>
 
 namespace {
 

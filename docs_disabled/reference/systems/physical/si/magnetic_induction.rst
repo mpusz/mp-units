@@ -1,4 +1,4 @@
 Magnetic Induction
 ==================
 
-.. doxygenfile:: si/magnetic_induction.h
+.. doxygenfile:: si/bits/derived/magnetic_induction.h

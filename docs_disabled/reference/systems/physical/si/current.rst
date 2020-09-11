@@ -1,4 +1,4 @@
 Current
 =======
 
-.. doxygenfile:: si/current.h
+.. doxygenfile:: si/base/current.h

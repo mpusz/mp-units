@@ -1,4 +1,4 @@
 Area
 ====
 
-.. doxygenfile:: si/international/area.h
+.. doxygenfile:: si/international/bits/derived/area.h

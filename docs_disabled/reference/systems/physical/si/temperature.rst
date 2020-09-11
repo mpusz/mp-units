@@ -1,4 +1,4 @@
 Temperature
 ===========
 
-.. doxygenfile:: si/temperature.h
+.. doxygenfile:: si/base/temperature.h

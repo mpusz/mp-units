@@ -1,4 +1,4 @@
 Volume
 ======
 
-.. doxygenfile:: si/fps/volume.h
+.. doxygenfile:: si/fps/bits/derived/volume.h

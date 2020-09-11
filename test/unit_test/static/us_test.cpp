@@ -20,15 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/area.h>
-#include <units/physical/si/international/area.h>
-#include <units/physical/si/international/length.h>
-#include <units/physical/si/international/speed.h>
-#include <units/physical/si/international/volume.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/us/length.h>
-#include <units/physical/si/volume.h>
+#include <units/physical/si/si.h>
+#include <units/physical/si/international/international.h>
+#include <units/physical/si/us/us.h>
 #include <utility>
 
 namespace {

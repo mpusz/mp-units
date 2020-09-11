@@ -1,4 +1,4 @@
 Pressure
 ========
 
-.. doxygenfile:: si/fps/pressure.h
+.. doxygenfile:: si/fps/bits/derived/pressure.h

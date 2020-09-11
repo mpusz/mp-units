@@ -22,8 +22,8 @@
 
 #include <units/format.h>
 #include <units/math.h>
-#include <units/physical/si/international/length.h>
-#include <units/physical/si/speed.h>
+#include <units/physical/si/international/international.h>
+#include <units/physical/si/si.h>
 #include <units/quantity_point.h>
 #include <array>
 #include <compare>

@@ -1,4 +1,4 @@
 Molar Energy
 ============
 
-.. doxygenfile:: si/molar_energy.h
+.. doxygenfile:: si/bits/derived/molar_energy.h

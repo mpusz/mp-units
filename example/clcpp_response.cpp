@@ -16,15 +16,12 @@
 */
 
 #include <units/format.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/iau/length.h>
-#include <units/physical/si/imperial/length.h>
-#include <units/physical/si/international/length.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/typographic/length.h>
-#include <units/physical/si/us/length.h>
-#include <units/physical/si/volume.h>
+#include <units/physical/si/si.h>
+#include <units/physical/si/iau/iau.h>
+#include <units/physical/si/imperial/imperial.h>
+#include <units/physical/si/international/international.h>
+#include <units/physical/si/typographic/typographic.h>
+#include <units/physical/si/us/us.h>
 #include <iostream>
 
 namespace {

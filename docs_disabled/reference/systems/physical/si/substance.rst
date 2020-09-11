@@ -1,4 +1,4 @@
 Substance
 =========
 
-.. doxygenfile:: si/substance.h
+.. doxygenfile:: si/base/substance.h
