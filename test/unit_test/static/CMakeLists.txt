@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 3.12)
 
 add_library(unit_tests_static
     cgs_test.cpp
+    chrono_compat_test.cpp
     custom_rep_min_req_test.cpp
     custom_unit_test.cpp
     data_test.cpp
