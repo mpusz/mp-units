@@ -37,8 +37,8 @@ namespace units {
 template<Dimension Dim, std::intmax_t Num, std::intmax_t Den = 1>
 struct exponent {
   using dimension = Dim;
-  static constexpr int num = Num;
-  static constexpr int den = Den;
+  static constexpr std::intmax_t num = Num;
+  static constexpr std::intmax_t den = Den;
 };
 
 // is_exponent
