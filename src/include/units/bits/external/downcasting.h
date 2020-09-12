@@ -77,10 +77,15 @@ enum class downcast_mode {
   automatic = 2    // downcasting automatically enabled if no collisions are present
 };
 
+
 template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(DOWNCAST_MODE)>
 struct downcast_dispatch : std::conditional_t<mode == downcast_mode::off, T,
+#ifdef COMP_MSVC
+                                              downcast_child<Target, T>> {};
+#else
                                               std::conditional_t<mode == downcast_mode::automatic && has_downcast_guide<T>,
                                                                  downcast_poison<T>, downcast_child<Target, T>>> {};
+#endif
 
 namespace detail {
 
