@@ -48,16 +48,10 @@ concept Downcastable =
   std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
 template<typename T>
-concept has_downcast_guide =
-  requires {
-    downcast_guide(std::declval<downcast_base<T>>());
-  };
+concept has_downcast_guide = requires(T t) { downcast_guide(t); };
 
 template<typename T>
-concept has_downcast_poison_pill =
-  requires {
-    downcast_poison_pill(std::declval<downcast_base<T>>());
-  };
+concept has_downcast_poison_pill = requires(T t) { downcast_poison_pill(t); };
 
 template<typename Target, Downcastable T>
 struct downcast_child : T {
@@ -98,7 +92,7 @@ constexpr auto downcast_impl()
     return T();
 }
 
-}
+}  // namespace detail
 
 template<Downcastable T>
 using downcast = decltype(detail::downcast_impl<T>());

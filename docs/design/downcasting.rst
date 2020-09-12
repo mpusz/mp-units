@@ -111,7 +111,7 @@ In the above example:
 
       template<typename Target, Downcastable T>
       struct downcast_child : T {
-        friend auto downcast_guide(typename downcast_child::downcast_base) { return Target(); }
+        friend auto downcast_guide(typename T::downcast_base) { return Target(); }
       };
 
   This is the place where the actual return type of the ``downcast_guide`` function is provided
@@ -147,14 +147,12 @@ otherwise it works like a regular identity type trait returning a provided base 
     namespace detail {
 
       template<typename T>
-      concept has_downcast = requires {
-        downcast_guide(std::declval<downcast_base<T>>());
-      };
+      concept has_downcast_guide = requires(T t) { downcast_guide(t); };
 
       template<typename T>
       constexpr auto downcast_target_impl()
       {
-        if constexpr(has_downcast<T>)
+        if constexpr(has_downcast_guide<T>)
           return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
         else
           return T();
