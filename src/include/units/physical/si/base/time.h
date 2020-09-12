@@ -143,7 +143,7 @@ constexpr auto to_chrono_duration(units::physical::si::time<U, Rep> const & n)
  *  @tparam Duration a target std::chrono::duration type to cast to
  */
 template <typename Duration, units::Unit U, units::ScalableNumber Rep>
-  requires requires{{ std::chrono::duration_cast<Duration>(std::chrono::seconds{}) };}
+  requires requires{ std::chrono::duration_cast<Duration>(std::chrono::seconds{}); }
 constexpr auto to_chrono_duration(units::physical::si::time<U, Rep> const & n)
 {
   return std::chrono::duration_cast<Duration>(to_chrono_duration(n));
