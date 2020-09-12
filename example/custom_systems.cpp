@@ -88,7 +88,8 @@ std::ostream& operator<<(std::ostream& os, const ratio& r)
   return os << "ratio{" << r.num << ", " << r.den << ", " << r.exp << "}";
 }
 
-std::ostream& operator<<(std::ostream& os, const Unit auto& u)
+template<Unit U>
+std::ostream& operator<<(std::ostream& os, const U& u)
 {
   using unit_type = std::remove_cvref_t<decltype(u)>;
   return os << unit_type::ratio << " x " << unit_type::reference::symbol.standard();
