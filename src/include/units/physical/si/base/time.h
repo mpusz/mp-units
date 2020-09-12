@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
+#include <units/physical/dimensions/time.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 

@@ -1,4 +1,4 @@
 Prefixes
 ========
 
-.. doxygenfile:: si/bits/derived/prefixes.h
+.. doxygenfile:: si/derived/prefixes.h

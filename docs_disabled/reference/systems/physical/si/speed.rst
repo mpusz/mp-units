@@ -1,4 +1,4 @@
 Speed
 =====
 
-.. doxygenfile:: si/bits/derived/speed.h
+.. doxygenfile:: si/derived/speed.h

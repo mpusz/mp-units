@@ -21,7 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/physical/si/si.h>
+#include <units/physical/si/base/mass.h>
+#include <units/physical/si/derived/voltage.h>
+#include <units/physical/si/base/time.h>
+#include <units/physical/si/derived/frequency.h>
 #include <units/math.h>
 
 namespace {

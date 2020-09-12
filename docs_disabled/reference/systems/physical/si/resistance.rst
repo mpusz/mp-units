@@ -1,4 +1,4 @@
 Resistance
 ==========
 
-.. doxygenfile:: si/bits/derived/resistance.h
+.. doxygenfile:: si/derived/resistance.h

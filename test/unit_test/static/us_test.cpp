@@ -20,16 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/si.h>
-#include <units/physical/si/international/international.h>
-#include <units/physical/si/us/us.h>
+#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/international/derived/speed.h>
 #include <utility>
 
 namespace {
 
 using namespace units;
 using namespace units::physical::si;
-using namespace units::physical::si::us;
 using namespace units::physical::si::international;
 
 /* ************** BASE DIMENSIONS **************** */

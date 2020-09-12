@@ -1,4 +1,4 @@
 Volume
 ======
 
-.. doxygenfile:: si/bits/derived/volume.h
+.. doxygenfile:: si/derived/volume.h

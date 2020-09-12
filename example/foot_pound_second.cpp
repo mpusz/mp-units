@@ -22,8 +22,17 @@
 
 #include <units/concepts.h>
 #include <units/format.h>
-#include <units/physical/si/fps/fps.h>
-#include <units/physical/si/si.h>
+#include <units/physical/si/fps/derived/density.h>
+#include <units/physical/si/fps/base/length.h>
+#include <units/physical/si/fps/base/mass.h>
+#include <units/physical/si/fps/derived/power.h>
+#include <units/physical/si/fps/derived/speed.h>
+#include <units/physical/si/fps/derived/volume.h>
+#include <units/physical/si/base/length.h>
+#include <units/physical/si/base/mass.h>
+#include <units/physical/si/derived/power.h>
+#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/derived/volume.h>
 #include <units/quantity.h>
 #include <iostream>
 

@@ -22,6 +22,4 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_IMPERIAL
-
 #include <units/physical/si/imperial/base/length.h>

@@ -21,6 +21,16 @@
 // SOFTWARE.
 
 #include <units/physical/si/cgs/cgs.h>
+#include <units/physical/si/derived/acceleration.h>
+#include <units/physical/si/derived/area.h>
+#include <units/physical/si/derived/energy.h>
+#include <units/physical/si/derived/force.h>
+#include <units/physical/si/base/length.h>
+#include <units/physical/si/base/mass.h>
+#include <units/physical/si/derived/power.h>
+#include <units/physical/si/derived/pressure.h>
+#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/base/time.h>
 
 namespace {
 

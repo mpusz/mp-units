@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/si.h>
+#include <units/physical/si/derived/speed.h>
 #include <iostream>
 
 namespace {
@@ -40,7 +40,6 @@ void example()
   Time auto t1 = 10_q_s;
   Speed auto v1 = avg_speed(d1, t1);
 
-  // TODO: check if below is still true after adding whole SI module
   auto temp1 = v1 * 50_q_m;  // produces intermediate unknown dimension with 'unknown_coherent_unit' as its 'coherent_unit'
   Speed auto v2 = temp1 / 100_q_m; // back to known dimensions again
   Length auto d2 = v2 * 60_q_s;

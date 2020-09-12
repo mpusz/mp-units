@@ -3,7 +3,9 @@ Quick Start
 
 Here is a small example of possible operations::
 
-    #include <units/physical/si/si.h>
+    #include <units/physical/si/derived/area.h>
+    #include <units/physical/si/derived/frequency.h>
+    #include <units/physical/si/derived/speed.h>
 
     using namespace units::physical::si;
 
@@ -27,7 +29,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/oc7P9z>`_
+    `Example #1 <https://godbolt.org/z/jrKeqe>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -35,8 +37,8 @@ but still easy to use interface where all unit conversions and dimensional analy
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
 
-    #include <units/physical/si/si.h>
-    #include <units/physical/si/international/international.h>
+    #include <units/physical/si/derived/speed.h>
+    #include <units/physical/si/international/derived/speed.h>
     #include <units/format.h>
     #include <iostream>
 

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_DATA
-
 #include <units/data/base/information.h>
-#include <units/data/bits/derived/bitrate.h>
+#include <units/data/derived/bitrate.h>
 #include <units/data/prefixes.h>

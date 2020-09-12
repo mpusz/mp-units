@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/physical/si/international/international.h>
-#include <units/physical/si/si.h>
+#include <units/physical/si/international/derived/speed.h>
+#include <units/physical/si/derived/speed.h>
 #include <iostream>
 
 using namespace units::physical;

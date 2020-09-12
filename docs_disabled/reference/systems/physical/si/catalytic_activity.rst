@@ -1,4 +1,4 @@
 Catalytic Activity
 ==================
 
-.. doxygenfile:: si/bits/derived/catalytic_activity.h
+.. doxygenfile:: si/derived/catalytic_activity.h

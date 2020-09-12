@@ -1,5 +1,5 @@
 #include <units/format.h>
-#include <units/physical/si/si.h>
+#include <units/physical/si/derived/speed.h>
 #include <iostream>
 #include <array>
 

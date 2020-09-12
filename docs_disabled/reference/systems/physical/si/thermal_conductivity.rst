@@ -1,4 +1,4 @@
 Thermal Conductivity
 ====================
 
-.. doxygenfile:: si/bits/derived/thermal_conductivity.h
+.. doxygenfile:: si/derived/thermal_conductivity.h

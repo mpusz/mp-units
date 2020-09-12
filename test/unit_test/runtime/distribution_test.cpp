@@ -22,7 +22,7 @@
 
 #include <numeric>
 #include <units/random.h>
-#include <units/physical/si/si.h>
+#include <units/physical/si/base/length.h>
 #include <catch2/catch.hpp>
 
 using namespace units;

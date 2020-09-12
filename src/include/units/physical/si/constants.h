@@ -22,7 +22,13 @@
 
 #pragma once
 
-#include <units/physical/si/si.h>
+#include <units/physical/si/base/amount_of_substance.h>
+#include <units/physical/si/base/thermodynamic_temperature.h>
+#include <units/physical/si/derived/electric_charge.h>
+#include <units/physical/si/derived/energy.h>
+#include <units/physical/si/derived/frequency.h>
+#include <units/physical/si/derived/power.h>
+#include <units/physical/si/derived/speed.h>
 
 namespace units::physical::si::si2019 {
 

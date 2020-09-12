@@ -26,7 +26,9 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
-#include <units/physical/si/si.h>
+#include <units/physical/si/derived/area.h>
+#include <units/physical/si/derived/frequency.h>
+#include <units/physical/si/derived/speed.h>
 
 using namespace units::physical::si;
 
@@ -57,8 +59,8 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#include <units/physical/si/si.h>
-#include <units/physical/si/international/international.h>
+#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/international/derived/speed.h>
 #include <units/format.h>
 #include <iostream>
 

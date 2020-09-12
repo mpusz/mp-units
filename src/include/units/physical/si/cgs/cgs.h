@@ -22,16 +22,14 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_CGS
-
 #include <units/physical/si/cgs/base/length.h>
 #include <units/physical/si/cgs/base/mass.h>
 #include <units/physical/si/cgs/base/time.h>
 
-#include <units/physical/si/cgs/bits/derived/acceleration.h>
-#include <units/physical/si/cgs/bits/derived/area.h>
-#include <units/physical/si/cgs/bits/derived/energy.h>
-#include <units/physical/si/cgs/bits/derived/force.h>
-#include <units/physical/si/cgs/bits/derived/power.h>
-#include <units/physical/si/cgs/bits/derived/pressure.h>
-#include <units/physical/si/cgs/bits/derived/speed.h>
+#include <units/physical/si/cgs/derived/acceleration.h>
+#include <units/physical/si/cgs/derived/area.h>
+#include <units/physical/si/cgs/derived/energy.h>
+#include <units/physical/si/cgs/derived/force.h>
+#include <units/physical/si/cgs/derived/power.h>
+#include <units/physical/si/cgs/derived/pressure.h>
+#include <units/physical/si/cgs/derived/speed.h>

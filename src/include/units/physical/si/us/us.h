@@ -22,6 +22,4 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_US
-
 #include <units/physical/si/us/base/length.h>

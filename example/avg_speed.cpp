@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/cgs/cgs.h>
-#include <units/physical/si/international/international.h>
-#include <units/physical/si/si.h>
+#include <units/physical/si/cgs/derived/speed.h>
+#include <units/physical/si/international/derived/speed.h>
+#include <units/physical/si/derived/speed.h>
 #include <iostream>
 
 namespace {

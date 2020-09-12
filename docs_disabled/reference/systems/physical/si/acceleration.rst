@@ -1,4 +1,4 @@
 Acceleration
 ============
 
-.. doxygenfile:: si/bits/derived/acceleration.h
+.. doxygenfile:: si/derived/acceleration.h

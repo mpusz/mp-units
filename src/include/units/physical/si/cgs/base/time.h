@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
 #include <units/physical/si/base/time.h>
 #include <units/quantity.h>
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <units/physical/dimensions.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
 // get at the units text of the quantity, without its numeric value

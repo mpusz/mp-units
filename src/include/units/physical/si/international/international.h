@@ -22,10 +22,8 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_INTERNATIONAL
-
 #include <units/physical/si/international/base/length.h>
 
-#include <units/physical/si/international/bits/derived/area.h>
-#include <units/physical/si/international/bits/derived/speed.h>
-#include <units/physical/si/international/bits/derived/volume.h>
+#include <units/physical/si/international/derived/area.h>
+#include <units/physical/si/international/derived/speed.h>
+#include <units/physical/si/international/derived/volume.h>

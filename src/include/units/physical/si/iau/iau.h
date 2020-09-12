@@ -22,6 +22,4 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_IAU
-
 #include <units/physical/si/iau/base/length.h>

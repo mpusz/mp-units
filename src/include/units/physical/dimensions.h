@@ -22,50 +22,49 @@
 
 #pragma once
 
-#include <units/physical/bits/absorbed_dose.h>
-#include <units/physical/bits/acceleration.h>
-#include <units/physical/bits/amount_of_substance.h>
-#include <units/physical/bits/angular_velocity.h>
-#include <units/physical/bits/area.h>
-#include <units/physical/bits/capacitance.h>
-#include <units/physical/bits/catalytic_activity.h>
-#include <units/physical/bits/charge_density.h>
-#include <units/physical/bits/concentration.h>
-#include <units/physical/bits/conductance.h>
-#include <units/physical/bits/current_density.h>
-#include <units/physical/bits/density.h>
-#include <units/physical/bits/dimensions.h>
-#include <units/physical/bits/dynamic_viscosity.h>
-#include <units/physical/bits/electric_charge.h>
-#include <units/physical/bits/electric_current.h>
-#include <units/physical/bits/electric_field_strength.h>
-#include <units/physical/bits/energy.h>
+#include <units/physical/dimensions/absorbed_dose.h>
+#include <units/physical/dimensions/acceleration.h>
+#include <units/physical/dimensions/amount_of_substance.h>
+#include <units/physical/dimensions/angular_velocity.h>
+#include <units/physical/dimensions/area.h>
+#include <units/physical/dimensions/capacitance.h>
+#include <units/physical/dimensions/catalytic_activity.h>
+#include <units/physical/dimensions/charge_density.h>
+#include <units/physical/dimensions/concentration.h>
+#include <units/physical/dimensions/conductance.h>
+#include <units/physical/dimensions/current_density.h>
+#include <units/physical/dimensions/density.h>
+#include <units/physical/dimensions/dynamic_viscosity.h>
+#include <units/physical/dimensions/electric_charge.h>
+#include <units/physical/dimensions/electric_current.h>
+#include <units/physical/dimensions/electric_field_strength.h>
+#include <units/physical/dimensions/energy.h>
 // TODO Add when downcasting issue is solved
-// #include <units/physical/bits/energy_density.h>
-#include <units/physical/bits/force.h>
-#include <units/physical/bits/frequency.h>
-#include <units/physical/bits/heat_capacity.h>
-#include <units/physical/bits/inductance.h>
-#include <units/physical/bits/length.h>
-#include <units/physical/bits/luminance.h>
-#include <units/physical/bits/luminous_intensity.h>
-#include <units/physical/bits/magnetic_flux.h>
-#include <units/physical/bits/magnetic_induction.h>
-#include <units/physical/bits/mass.h>
-#include <units/physical/bits/molar_energy.h>
-#include <units/physical/bits/momentum.h>
-#include <units/physical/bits/permeability.h>
-#include <units/physical/bits/permittivity.h>
-#include <units/physical/bits/power.h>
-#include <units/physical/bits/pressure.h>
+// #include <units/physical/dimensions/energy_density.h>
+#include <units/physical/dimensions/force.h>
+#include <units/physical/dimensions/frequency.h>
+#include <units/physical/dimensions/heat_capacity.h>
+#include <units/physical/dimensions/inductance.h>
+#include <units/physical/dimensions/length.h>
+#include <units/physical/dimensions/luminance.h>
+#include <units/physical/dimensions/luminous_intensity.h>
+#include <units/physical/dimensions/magnetic_flux.h>
+#include <units/physical/dimensions/magnetic_induction.h>
+#include <units/physical/dimensions/mass.h>
+#include <units/physical/dimensions/molar_energy.h>
+#include <units/physical/dimensions/momentum.h>
+#include <units/physical/dimensions/permeability.h>
+#include <units/physical/dimensions/permittivity.h>
+#include <units/physical/dimensions/power.h>
+#include <units/physical/dimensions/pressure.h>
 // TODO Add when downcasting issue is solved
-// #include <units/physical/bits/radioactivity.h>
-#include <units/physical/bits/resistance.h>
-#include <units/physical/bits/speed.h>
-#include <units/physical/bits/surface_tension.h>
-#include <units/physical/bits/thermal_conductivity.h>
-#include <units/physical/bits/thermodynamic_temperature.h>
-#include <units/physical/bits/time.h>
-#include <units/physical/bits/torque.h>
-#include <units/physical/bits/voltage.h>
-#include <units/physical/bits/volume.h>
+// #include <units/physical/dimensions/radioactivity.h>
+#include <units/physical/dimensions/resistance.h>
+#include <units/physical/dimensions/speed.h>
+#include <units/physical/dimensions/surface_tension.h>
+#include <units/physical/dimensions/thermal_conductivity.h>
+#include <units/physical/dimensions/thermodynamic_temperature.h>
+#include <units/physical/dimensions/time.h>
+#include <units/physical/dimensions/torque.h>
+#include <units/physical/dimensions/voltage.h>
+#include <units/physical/dimensions/volume.h>

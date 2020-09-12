@@ -20,8 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/natural/natural.h>
-#include <units/physical/si/si.h>
+#include <units/physical/natural/constants.h>
+#include <units/physical/si/derived/energy.h>
+#include <units/physical/si/derived/momentum.h>
+#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/constants.h>
 #include <units/math.h>
 #include <iostream>
 

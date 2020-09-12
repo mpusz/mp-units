@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/physical/dimensions.h>
+#include <units/physical/dimensions/thermodynamic_temperature.h>
 #include <units/quantity.h>
 
 namespace units::physical::si {

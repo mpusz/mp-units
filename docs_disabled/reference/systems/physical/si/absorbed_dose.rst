@@ -1,4 +1,4 @@
 Absorbed Dose
 =============
 
-.. doxygenfile:: si/bits/derived/absorbed_dose.h
+.. doxygenfile:: si/derived/absorbed_dose.h

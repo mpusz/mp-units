@@ -1,4 +1,4 @@
 Magnetic Flux
 =============
 
-.. doxygenfile:: si/bits/derived/magnetic_flux.h
+.. doxygenfile:: si/derived/magnetic_flux.h

@@ -1,4 +1,4 @@
 Concentration
 =============
 
-.. doxygenfile:: si/bits/derived/conductance.h
+.. doxygenfile:: si/derived/conductance.h

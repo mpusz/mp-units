@@ -22,6 +22,4 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_SI_TYPOGRAPHIC
-
 #include <units/physical/si/typographic/base/length.h>
