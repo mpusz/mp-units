@@ -28,6 +28,8 @@
 namespace units {
 
 // DimensionOfT
+#if DOWNCAST_MODE == 0
+
 namespace detail {
 
 template<typename Dim, template<typename...> typename DimTemplate>
@@ -40,6 +42,8 @@ inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> =
 
 template<typename Dim, template<typename...> typename DimTemplate>
 concept EquivalentUnknownDimensionOfT = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> && detail::same_exponents_of<Dim, DimTemplate>;
+
+#endif
 
 template<typename Dim, template<typename...> typename DimTemplate>
 concept DimensionOfT = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate>
