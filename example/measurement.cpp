@@ -131,7 +131,7 @@ void example()
   const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));
 
   const Speed auto v1 = a * t;
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
   std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::dim_speed, si::kilometre_per_hour>(v1) << '\n';
 #else
   std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';

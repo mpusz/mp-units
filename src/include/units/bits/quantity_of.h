@@ -28,7 +28,7 @@
 namespace units {
 
 // DimensionOfT
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
 
 namespace detail {
 
@@ -53,7 +53,7 @@ concept EquivalentUnknownDimensionOfT = Dimension<Dim> && is_derived_from_specia
  */
 template<typename Dim, template<typename...> typename DimTemplate>
 concept DimensionOfT = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate>
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
                                           || EquivalentUnknownDimensionOfT<Dim, DimTemplate>
 #endif
 );

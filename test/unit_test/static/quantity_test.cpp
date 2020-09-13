@@ -197,7 +197,7 @@ static_assert(q1.count() == 2);
 constexpr dimensionless<one> q2 = q1;
 static_assert(q2.count() == 2000);
 
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
 static_assert(quantity_cast<dim_one, one>(q1).count() == 2000);
 #else
 static_assert(quantity_cast<one>(q1).count() == 2000);
@@ -310,7 +310,7 @@ static_assert(invalid_dimensionless_operations<int>);
 
 static_assert(compare<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
 
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
 static_assert(quantity_cast<dim_one, percent>(50._q_m / 100._q_m).count() == 50);
 #else
 static_assert(quantity_cast<percent>(50._q_m / 100._q_m).count() == 50);
@@ -347,7 +347,7 @@ static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
 
 // downcasting
 
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
 
 static_assert(std::is_same_v<decltype(10_q_m / 5_q_s), quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>, scaled_unit<ratio(1), unknown_coherent_unit>, std::int64_t>>);
 static_assert(std::is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<ratio(1, 1, -3), metre>, std::int64_t>>);

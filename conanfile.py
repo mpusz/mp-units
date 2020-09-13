@@ -84,11 +84,11 @@ class UnitsConan(ConanFile):
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
         if self.options.downcast_mode == "off":
-            cmake.definitions["DOWNCAST_MODE"] = 0
+            cmake.definitions["UNITS_DOWNCAST_MODE"] = 0
         elif self.options.downcast_mode == "on":
-            cmake.definitions["DOWNCAST_MODE"] = 1
+            cmake.definitions["UNITS_DOWNCAST_MODE"] = 1
         elif self.options.downcast_mode == "auto":
-            cmake.definitions["DOWNCAST_MODE"] = 2
+            cmake.definitions["UNITS_DOWNCAST_MODE"] = 2
 
         if self._run_tests:
             # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)

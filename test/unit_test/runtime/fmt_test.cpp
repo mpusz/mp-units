@@ -459,7 +459,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("percents")
     {
-#if DOWNCAST_MODE == 0
+#if UNITS_DOWNCAST_MODE == 0
       const auto q = quantity_cast<dim_one, percent>(15._q_m / 100._q_m);
 #else
       const auto q = quantity_cast<percent>(15._q_m / 100._q_m);

@@ -27,8 +27,8 @@ project(mp-units
     LANGUAGES CXX
 )
 
-set(DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
+set(UNITS_DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
+set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 
 # set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
@@ -84,15 +84,15 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-if(DOWNCAST_MODE STREQUAL "AUTO")
-    message(STATUS "Configuring DOWNCAST_MODE=AUTOMATIC")
-    target_compile_definitions(mp-units INTERFACE DOWNCAST_MODE=2)
-elseif(DOWNCAST_MODE)
-    message(STATUS "Configuring DOWNCAST_MODE=ON")
-    target_compile_definitions(mp-units INTERFACE DOWNCAST_MODE=1)
+if(UNITS_DOWNCAST_MODE STREQUAL "AUTO")
+    message(STATUS "Configuring UNITS_DOWNCAST_MODE=AUTOMATIC")
+    target_compile_definitions(mp-units INTERFACE UNITS_DOWNCAST_MODE=2)
+elseif(UNITS_DOWNCAST_MODE)
+    message(STATUS "Configuring UNITS_DOWNCAST_MODE=ON")
+    target_compile_definitions(mp-units INTERFACE UNITS_DOWNCAST_MODE=1)
 else()
-    message(STATUS "Configuring DOWNCAST_MODE=OFF")
-    target_compile_definitions(mp-units INTERFACE DOWNCAST_MODE=0)
+    message(STATUS "Configuring UNITS_DOWNCAST_MODE=OFF")
+    target_compile_definitions(mp-units INTERFACE UNITS_DOWNCAST_MODE=0)
 endif()
 
 add_library(mp-units::mp-units ALIAS mp-units)

@@ -25,12 +25,12 @@
 #include <units/bits/external/hacks.h>
 #include <type_traits>
 
-#ifdef DOWNCAST_MODE
-#if DOWNCAST_MODE < 0 || DOWNCAST_MODE > 2
-#error "Invalid DOWNCAST_MODE value"
+#ifdef UNITS_DOWNCAST_MODE
+#if UNITS_DOWNCAST_MODE < 0 || UNITS_DOWNCAST_MODE > 2
+#error "Invalid UNITS_DOWNCAST_MODE value"
 #endif
 #else
-#define DOWNCAST_MODE 1
+#define UNITS_DOWNCAST_MODE 1
 #endif
 
 namespace units {
@@ -72,7 +72,7 @@ enum class downcast_mode {
 };
 
 
-template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(DOWNCAST_MODE)>
+template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(UNITS_DOWNCAST_MODE)>
 struct downcast_dispatch : std::conditional_t<mode == downcast_mode::off, T,
 #ifdef COMP_MSVC
                                               downcast_child<Target, T>> {};

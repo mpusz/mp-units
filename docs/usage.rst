@@ -134,14 +134,14 @@ Specifies how :ref:`The Downcasting Facility` works:
 CMake Options
 ^^^^^^^^^^^^^
 
-DOWNCAST_MODE
-+++++++++++++
+UNITS_DOWNCAST_MODE
++++++++++++++++++++
 
 **Values**: ``OFF``/``ON``/``AUTO``
 
 **Defaulted to**: ``ON``
 
-Equivalent to `downcast`_.
+Equivalent to `downcast_mode`_.
 
 
 GENERATE_DOCS
