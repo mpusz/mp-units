@@ -14,16 +14,22 @@
   - Removed the dependency on a git submodule with common CMake scripts
   - (!) Refactored and cleaned up the library file tree
   - (!) `q_*` UDL renamed to `_q_*`
+  - (!) UDLs with "per" in name renamed from `*p*` to `*_per_*`
   - (!) `ratio` changed to the NTTP kind
   - (!) `exp` and `Exp` renamed to `exponent` and `Exponent`
   - (!) `Scalar` concept renamed to `ScalableNumber`
-  - (!) Dimensionless quantities redesigned to be of `quantity` type
+  - (!) Dimensionless quantities redesigned to be of a `quantity` type
+  - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
+  - `si::angular_velocity` support added (thanks [@mikeford3](https://github.com/mikeford3))
+  - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
+  - `si::day` unit symbol fixed to `d` (thanks [@komputerwiz](https://github.com/komputerwiz))
+  - `si::mole` unit symbol fixed to `mol` (thanks [@mikeford3](https://github.com/mikeford3))
   - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
   - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
-  - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
-  - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
   - Added support for mathematical function `exp(quantity)`
+  - Localization support for text output added (thanks [@rbrugo](https://github.com/rbrugo))
+  - `[[nodiscard]]` added to many functions
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
