@@ -1,6 +1,6 @@
 # Release notes
 
-- **0.6.0 WIP**
+- **0.6.0 September 13, 2020**
   - (!) gcc-9 is no longer supported (at least gcc-10 is required)
   - Visual Studio 16.7 support added
   - linear_algebra updated to 0.7.0/stable
