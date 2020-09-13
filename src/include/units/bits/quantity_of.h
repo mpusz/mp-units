@@ -45,6 +45,12 @@ concept EquivalentUnknownDimensionOfT = Dimension<Dim> && is_derived_from_specia
 
 #endif
 
+/**
+ * @brief A concept matching all dimensions matching provided dimension class template
+ *
+ * Satisfied by all dimensions being the instantiations derived from the provided dimension
+ * class template.
+ */
 template<typename Dim, template<typename...> typename DimTemplate>
 concept DimensionOfT = Dimension<Dim> && (is_derived_from_specialization_of<Dim, DimTemplate>
 #if DOWNCAST_MODE == 0
@@ -52,13 +58,22 @@ concept DimensionOfT = Dimension<Dim> && (is_derived_from_specialization_of<Dim,
 #endif
 );
 
-// QuantityOfT
+/**
+ * @brief A concept matching all quantities with provided dimension class template
+ *
+ * Satisfied by all quantities with a dimension being the instantiation derived from
+ * the provided dimension class template.
+ */
 template<typename Q, template<typename...> typename DimTemplate>
 concept QuantityOfT = Quantity<Q> && DimensionOfT<typename Q::dimension, DimTemplate>;
 
-// QuantityOf
+/**
+ * @brief A concept matching all quantities with provided dimension
+ *
+ * Satisfied by all quantities with a dimension being the instantiation derived from
+ * the provided dimension type.
+ */
 template<typename T, typename Dim>
 concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent<typename T::dimension, Dim>;
-
 
 }  // namespace units

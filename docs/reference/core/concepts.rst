@@ -78,3 +78,18 @@ Concepts
 
     A concept matching all quantity points in the library. Satisfied by all instantiations of
     :class:`quantity_point`.
+
+.. concept:: template<typename Dim, template<typename...> typename DimTemplate> concept DimensionOfT
+
+    A concept matching all dimensions being the instantiations derived from the provided dimension
+    class template.
+
+.. concept:: template<typename Q, template<typename...> typename DimTemplate> concept QuantityOfT
+
+    A concept matching all quantities with a dimension being the instantiation derived from
+    the provided dimension class template.
+
+.. concept:: template<typename T, typename Dim> concept QuantityOf
+
+    A concept matching all quantities with a dimension being the instantiation derived from
+    the provided dimension type.
