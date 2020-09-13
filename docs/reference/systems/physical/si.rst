@@ -8,6 +8,7 @@ SI
     si/constants
     si/absorbed_dose
     si/acceleration
+    si/amount_of_substance
     si/area
     si/capacitance
     si/catalytic_activity
@@ -15,10 +16,10 @@ SI
     si/concentration
     si/conductance
     si/current_density
-    si/current
     si/density
     si/dynamic_viscosity
     si/electric_charge
+    si/electric_current
     si/electric_field_strength
     si/energy
     si/force
@@ -39,10 +40,9 @@ SI
     si/pressure
     si/resistance
     si/speed
-    si/substance
     si/surface_tension
-    si/temperature
     si/thermal_conductivity
+    si/thermodynamic_temperature
     si/time
     si/voltage
     si/volume
