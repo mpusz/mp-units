@@ -14,7 +14,7 @@ if __name__ == "__main__":
         build_policy = ["mp-units", "outdated"],
         upload_dependencies = "all",
         pip_install = ["sphinx", "recommonmark", "breathe"],
-        docker_entry_script = "sudo apt-get -qq update && sudo apt-get -qq install -y libtinfo5",
+        docker_entry_script = "sudo apt-get -qq update && sudo apt-get install -y libtinfo5",
 
         # build configurations
         archs = ["x86_64"], #  limit to 64-bit only
