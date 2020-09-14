@@ -248,7 +248,7 @@ struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
         return To(static_cast<TYPENAME To::rep>(q.count() * (detail::ipow10(CRatio.exp) / CRatio.den)));
       }
       else {
-        return To(static_cast<TYPENAME To::rep>(q.count() / ((detail::ipow10(-CRatio.exp) * CRatio.den))));
+        return To(static_cast<TYPENAME To::rep>(q.count() / (detail::ipow10(-CRatio.exp) * CRatio.den)));
       }
     }
   }
