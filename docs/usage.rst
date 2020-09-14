@@ -247,6 +247,17 @@ library release the following steps may be performed:
       cmake .. -DCMAKE_BUILD_TYPE=Release
       cmake --build .
 
+.. important::
+
+  Due to an older Visual Studio 2019 used by the Conan-Center CI the **mp-units** package is
+  disabled for MSVC build there (`GitHub issue <https://github.com/conan-io/conan/issues/7680>`_).
+  If you want to obtain the latest release for VS2019 please replace ``mp-units/0.6.0`` with
+  ``mp-units/0.6.0@mpusz/stable`` in your Conan recipe file and add the following Conan remote:
+
+  .. code-block:: shell
+
+      conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
+
 
 Conan + CMake (Live At Head)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
