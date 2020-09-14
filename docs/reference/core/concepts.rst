@@ -32,7 +32,7 @@ Concepts
 .. concept:: template<typename T> DerivedDimension
 
     A concept matching all derived dimensions in the library. Satisfied by all dimension
-    types derived from the instantiation of :class:`detail::derived_dimension_base`.
+    types derived from the instantiation of ``detail::derived_dimension_base``.
 
 .. concept:: template<typename T> Dimension
 
@@ -48,7 +48,7 @@ Concepts
 
     A concept matching only units of a specified dimension. Satisfied by all unit types that
     satisfy :expr:`Unit<U>`, :expr:`Dimension<D>`, and for which :expr:`U::reference` and
-    :expr:`dimension_unit<D>::reference` denote the same unit type.
+    ``dimension_unit<D>::reference`` denote the same unit type.
 
     :tparam U: Type to verify against concept constraints.
     :tparam D: Dimension type to use for verification.
@@ -61,7 +61,7 @@ Concepts
 
     A concept matching types that wrap quantity objects. Satisfied by all wrapper types that
     satisfy :expr:`Quantity<typename T::value_type>` recursively
-    (i.e. :expr:`std::optional<si::length<si::metre>>`).
+    (i.e. ``std::optional<si::length<si::metre>>``).
 
 .. concept:: template<typename T> ScalableNumber
 
@@ -79,17 +79,17 @@ Concepts
     A concept matching all quantity points in the library. Satisfied by all instantiations of
     :class:`quantity_point`.
 
-.. concept:: template<typename Dim, template<typename...> typename DimTemplate> concept DimensionOfT
+.. concept:: template<typename Dim, template<typename...> typename DimTemplate> DimensionOfT
 
     A concept matching all dimensions being the instantiations derived from the provided dimension
     class template.
 
-.. concept:: template<typename Q, template<typename...> typename DimTemplate> concept QuantityOfT
+.. concept:: template<typename Q, template<typename...> typename DimTemplate> QuantityOfT
 
     A concept matching all quantities with a dimension being the instantiation derived from
     the provided dimension class template.
 
-.. concept:: template<typename T, typename Dim> concept QuantityOf
+.. concept:: template<typename T, typename Dim> QuantityOf
 
     A concept matching all quantities with a dimension being the instantiation derived from
     the provided dimension type.

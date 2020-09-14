@@ -7,9 +7,10 @@ A :term:`quantity` is a concrete amount of a unit for a specified dimension
 with a specific representation and is represented in the library with a
 `quantity` class template.
 
+.. _quantity-construction:
 
-Quantity Construction
----------------------
+Construction
+------------
 
 To create the quantity object from a :term:`scalable number` we just have to pass
 the value to the `quantity` class template explicit constructor::
@@ -189,7 +190,7 @@ are provided::
 
 There are two special units provided for usage with such a quantity:
 
-- `one` which is the :ref:`coherent unit` of dimensionless quantity and does not
+- `one` which is the :term:`coherent derived unit` of dimensionless quantity and does not
   provide any textual symbol (according to the ISO definition "the measurement units and
   values of quantities of dimension one are numbers"),
 - `percent` which has the symbol ``%`` and ``ratio(1, 100)`` of the `one` unit.

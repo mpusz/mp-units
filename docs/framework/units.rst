@@ -24,7 +24,7 @@ Base Units
 ``m`` (meter) is a base unit of length, ``s`` (second) is a base unit of
 time. In each :term:`coherent system of units`, there is only one base
 unit for each base quantity. This is why a base unit type is required by
-the `base_dimension` definition in this library. For example `si::dim_length`
+the `base_dimension` definition in this library. For example ``si::dim_length``
 can be defined in the following way::
 
     namespace si {
@@ -33,7 +33,7 @@ can be defined in the following way::
 
     }
 
-where `si::metre` is defined as::
+where ``si::metre`` is defined as::
 
     namespace si {
 
@@ -43,8 +43,8 @@ where `si::metre` is defined as::
 
 In the above definition ``"m"`` is the unit symbol to be used in the text
 output, and ``si::prefix`` specifies that the library should allow
-definitions of prefixed units using `si::metre` as a reference (i.e.
-`si::centimetre`).
+definitions of prefixed units using ``si::metre`` as a reference (i.e.
+``si::centimetre``).
 
 .. seealso::
 
@@ -81,10 +81,10 @@ The fact that both base dimensions use the same identifier ``"L"`` tells
 the library that both definitions refer to the same physical dimension of
 length. The only difference is the measurement unit used to define their
 base dimensions. Thanks to using the unit that is defined in terms of the
-the same reference unit as the one provided to `si::dim_length` definition
-(namely `si::centimetre` which is ``1/100`` of `si::metre`) we also enabled
+the same reference unit as the one provided to ``si::dim_length`` definition
+(namely ``si::centimetre`` which is ``1/100`` of ``si::metre``) we also enabled
 the ability to easily convert between those 2 base dimensions (as the library
-knows how to convert `si::metre` to `si::centimetre` and vice versa).
+knows how to convert ``si::metre`` to ``si::centimetre`` and vice versa).
 
 .. seealso::
 
@@ -145,7 +145,7 @@ where ``kilogram_metre_per_second`` is defined as::
     struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
 
 However, the easiest way to define momentum is just to use the
-`si::speed` derived dimension in the recipe:
+``si::speed`` derived dimension in the recipe:
 
 .. code-block::
     :emphasize-lines: 3
@@ -217,8 +217,8 @@ and define units like::
 
 Finally, the last of the `named_scaled_unit` class template parameters
 provide a reference unit for scaling. Please note that it can be a dimension's
-base/coherent unit (like `si::second`) or any other unit (i.e. `si::minute`,
-`si::hour`) that is a scaled version of the dimension's base/coherent unit.
+base/coherent unit (like ``si::second``) or any other unit (i.e. ``si::minute``,
+``si::hour``) that is a scaled version of the dimension's base/coherent unit.
 
 
 Prefixed Unit
@@ -272,7 +272,7 @@ domain::
     }
 
 With the definitions like above we can easily define prefixed unit. For
-example we can define `si::kilometre` as::
+example we can define ``si::kilometre`` as::
 
     namespace si {
 
@@ -303,7 +303,7 @@ ratio in reference to "metre per second":
 Whichever, we choose there will always be someone not happy with our choice.
 
 Thanks to a `deduced_unit` class template provided by the library this problem
-does not exist at all. With it `si::kilometre_per_hour` can be defined as::
+does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     namespace si {
 
@@ -392,12 +392,12 @@ unknown/undefined unit type like in the below example::
     Length auto l = 100_q_km_per_h * 10_q_s;
 
 The type of ``l`` above will be
-:expr:`si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>`. This is caused
+``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused
 by the fact that the library does not define a unit of a length quantity that has the
-ratio ``10/36`` of a `si::metre`. If such a unit was predefined we would see its concrete
+ratio ``10/36`` of a ``si::metre``. If such a unit was predefined we would see its concrete
 type here instead.
 
 .. seealso::
 
     To learn more about unknown units please refer to
-    :ref:`Working with Unknown Units and Dimensions` chapter.
+    :ref:`Working with Unknown Dimensions and Their Units` chapter.

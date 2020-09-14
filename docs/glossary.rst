@@ -44,21 +44,21 @@ ISO 80000 [1]_ definitions
         the Imperial System, etc.
 
     base quantity
-      - `Quantity` in a conventionally chosen subset of a given `system of quantities`, where
-        no `quantity` in the subset can be expressed in terms of the other `quantities <quantity>`
-        within that subset.
+      - `Quantity <quantity>` in a conventionally chosen subset of a given `system of quantities`,
+        where no `quantity` in the subset can be expressed in terms of the other
+        `quantities <quantity>` within that subset.
       - Base quantities are referred to as being mutually independent since a base quantity
         cannot be expressed as a product of powers of the other base quantities.
 
     derived quantity
-      - `Quantity`, in a `system of quantities`, defined in terms of the base quantities of
-        that system.
+      - `Quantity <quantity>`, in a `system of quantities`, defined in terms of the base
+        quantities of that system.
 
     International System of Quantities
     ISQ
-      - `System of quantities` based on the seven `base quantities <base quantity>`:
-        length, mass, time, electric current, thermodynamic temperature, amount of substance,
-        and luminous intensity.
+      - `System of quantities <system of quantities>` based on the seven
+        `base quantities <base quantity>`: length, mass, time, electric current, thermodynamic
+        temperature, amount of substance, and luminous intensity.
       - The International System of Units (SI) is based on the ISQ.
 
     dimension of a quantity
@@ -130,9 +130,9 @@ ISO 80000 [1]_ definitions
       - For example, in the `ISQ` Newton, Pascal, and katal are derived units.
 
     coherent derived unit
-      - `Derived unit` that, for a given `system of quantities` and for a chosen set of
-        `base units <base unit>`, is a product of powers of `base units <base unit>` with no
-        other proportionality factor than one.
+      - `Derived unit <derived unit>` that, for a given `system of quantities` and for a chosen
+        set of `base units <base unit>`, is a product of powers of `base units <base unit>` with
+        no other proportionality factor than one.
       - A power of a `base unit` is the `base unit` raised to an exponent.
       - Coherence can be determined only with respect to a particular `system of quantities`
         and a given set of `base units <base unit>`. That is, if the metre and the second are
@@ -145,23 +145,24 @@ ISO 80000 [1]_ definitions
 
     coherent system of units
 
-      - `System of units`, based on a given `system of quantities`, in which the measurement
-        unit for each `derived quantity` is a `coherent derived unit`.
+      - `System of units <system of units>`, based on a given `system of quantities`, in which
+        the measurement unit for each `derived quantity` is a `coherent derived unit`.
       - A `system of units` can be coherent only with respect to a `system of quantities` and
         the adopted `base units <base unit>`.
 
     off-system measurement unit
     off-system unit
-      - `Measurement unit` that does not belong to a given `system of units`. For example, the
-        electronvolt (:math:`≈ 1,602 18 × 10^{–19} J`) is an off-system measurement unit of energy with
-        respect to the `SI` or day, hour, minute are off-system measurement units of time with
-        respect to the `SI`.
+      - `Measurement unit <measurement unit>` that does not belong to a given `system of units`.
+        For example, the electronvolt (:math:`≈ 1,602 18 × 10^{–19} J`) is an off-system measurement
+        unit of energy with respect to the `SI` or day, hour, minute are off-system measurement
+        units of time with respect to the `SI`.
 
     International System of Units
     SI
-      - `System of units`, based on the `International System of Quantities`, their names and
-        symbols, including a series of prefixes and their names and symbols, together with rules
-        for their use, adopted by the General Conference on Weights and Measures (CGPM)
+      - `System of units <system of units>`, based on the `International System of Quantities`,
+        their names and symbols, including a series of prefixes and their names and symbols,
+        together with rules for their use, adopted by the General Conference on Weights and
+        Measures (CGPM)
 
     quantity value
     value of a quantity

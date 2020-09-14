@@ -20,7 +20,7 @@ quantity. Other libraries will do it in the following way::
                                                            exponent<si::dim_time, 4>>;
 
 The above solution does provide a good developer's experience but a really poor one for the end
-user. If we will get a compilation error message containing `dim_capacitance` in most cases
+user. If we will get a compilation error message containing ``dim_capacitance`` in most cases
 the compiler will print the following type instead of the alias::
 
     units::detail::derived_dimension_base<units::exponent<units::physical::si::dim_electric_current, 2, 1>,
@@ -29,12 +29,12 @@ the compiler will print the following type instead of the alias::
 
 You can notice that in case of **mp-units** even this long syntax was carefully selected to
 provide quite good user experience (some other units libraries produce a type that cannot easily
-fit on one slide) but it is not questionable less readable than just `dim_capacitance`.
+fit on one slide) but it is not questionable less readable than just ``dim_capacitance``.
 
 .. note::
 
     To better understand how the framework works and not clutter the text and graphs with
-    long types in the following examples we will switch from `dim_capacitance` to `dim_area`.
+    long types in the following examples we will switch from ``dim_capacitance`` to ``dim_area``.
     The latter one has much shorter definition but the end result for both will be exactly the same -
     user-friendly, short name printed by the compiler and the debugger.
 
@@ -52,7 +52,7 @@ to use inheritance:
 
 This gives us a nice looking strong type when directly used by the user. However, we just got
 ourselves into problems. The library's framework does not know how to switch from a long
-instantiation of a `derived_dimension_base` class template that was generated as a result
+instantiation of a ``derived_dimension_base`` class template that was generated as a result
 of dimensional calculation to a nicely named child class assigned by the user for this
 instantiation.
 
@@ -87,7 +87,7 @@ In the above example:
 
 - ``dim_area`` is a downcasting target (child class)
 
-- `detail::derived_dimension_base` class template instantiation is a downcasting source (base class)
+- ``detail::derived_dimension_base`` class template instantiation is a downcasting source (base class)
 
 - `downcast_base` is a class that implements :abbr:`CRTP (Curiously Recurring Template Pattern)`
   idiom, stores the base of a downcasting operation in a ``downcast_base_type`` member type,
@@ -137,10 +137,10 @@ Until now we scoped on how we define the base and target of a downcasting operat
 perform the actual downcasting operation a dedicated alias template is provided::
 
     template<Downcastable T>
-    using downcast = decltype(detail::downcast_target_impl<T>());
+    using downcast = decltype(detail::downcast_impl<T>());
 
 `downcast` is used to obtain the target type of the downcasting operation registered for a
-given instantiation in a base type. `detail::downcast_target_impl` checks if a downcasting
+given instantiation in a base type. ``detail::downcast_impl`` checks if a downcasting
 target is registered for the specific base class. If yes, it returns the registered type,
 otherwise it works like a regular identity type trait returning a provided base class::
 
@@ -150,7 +150,7 @@ otherwise it works like a regular identity type trait returning a provided base 
       concept has_downcast_guide = requires(T t) { downcast_guide(t); };
 
       template<typename T>
-      constexpr auto downcast_target_impl()
+      constexpr auto downcast_impl()
       {
         if constexpr(has_downcast_guide<T>)
           return decltype(downcast_guide(std::declval<downcast_base<T>>()))();

@@ -30,12 +30,12 @@ different dimensions (i.e. height, width, and depth) all of them will just be
 measured in meters.
 
 
-Why other systems are defined in the `si` namespace?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Why other systems are defined in the `physical::si` namespace?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All systems defined in the `si` namespace are defined in terms of base units
-that are convertible to the :term:`SI` units. This enables conversions of
-units of the same physical dimension between different systems.
+All systems defined in the `physical::si` namespace are defined in terms of
+base units that are convertible to the :term:`SI` units. This enables conversions
+of units of the same physical dimension between different systems.
 
 .. seealso::
 
@@ -126,4 +126,4 @@ error: reference to ‘time’ is ambiguous
 Unfortunately, if `using-directives <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_
 (i.e. ``using namespace units::physical::si``) are being used, `units::physical::si::time` will
 collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In such a case the library's
-`time` function needs to be prefixed with at least one (or all) namespace names.
+``time`` function needs to be prefixed with at least one (or all) namespace names.
