@@ -248,30 +248,4 @@ static_assert(length<kilometre, expl_impl<int>>(quantity_cast<kilometre>(length<
 static_assert(!std::is_constructible_v<length<kilometre, expl_expl<int>>, length<metre, expl_expl<int>>>);
 static_assert(length<kilometre, expl_expl<int>>(quantity_cast<kilometre>(length<metre, expl_expl<int>>(expl_expl<int>(2000)))).count() == expl_expl<int>(2));
 
-static_assert(!std::is_constructible_v<speed<metre_per_second, impl<int>>, speed<kilometre_per_hour, impl<int>>>);
-static_assert(speed<metre_per_second, impl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, impl<int>>(72))).count() == impl<int>(20));
-static_assert(!std::is_constructible_v<speed<metre_per_second, expl<int>>, speed<kilometre_per_hour, expl<int>>>);
-static_assert(speed<metre_per_second, expl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, expl<int>>(expl<int>(72)))).count() == expl<int>(20));
-static_assert(!std::is_constructible_v<speed<metre_per_second, impl_impl<int>>, speed<kilometre_per_hour, impl_impl<int>>>);
-static_assert(speed<metre_per_second, impl_impl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, impl_impl<int>>(72))).count() == impl_impl<int>(20));
-static_assert(!std::is_constructible_v<speed<metre_per_second, impl_expl<int>>, speed<kilometre_per_hour, impl_expl<int>>>);
-static_assert(speed<metre_per_second, impl_expl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, impl_expl<int>>(72))).count() == impl_expl<int>(20));
-static_assert(!std::is_constructible_v<speed<metre_per_second, expl_impl<int>>, speed<kilometre_per_hour, expl_impl<int>>>);
-static_assert(speed<metre_per_second, expl_impl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, expl_impl<int>>(expl_impl<int>(72)))).count() == expl_impl<int>(20));
-static_assert(!std::is_constructible_v<speed<metre_per_second, expl_expl<int>>, speed<kilometre_per_hour, expl_expl<int>>>);
-static_assert(speed<metre_per_second, expl_expl<int>>(quantity_cast<metre_per_second>(speed<kilometre_per_hour, expl_expl<int>>(expl_expl<int>(72)))).count() == expl_expl<int>(20));
-
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, impl<int>>, speed<metre_per_second, impl<int>>>);
-static_assert(speed<kilometre_per_hour, impl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, impl<int>>(20))).count() == impl<int>(72));
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, expl<int>>, speed<metre_per_second, expl<int>>>);
-static_assert(speed<kilometre_per_hour, expl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, expl<int>>(expl<int>(20)))).count() == expl<int>(72));
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, impl_impl<int>>, speed<metre_per_second, impl_impl<int>>>);
-static_assert(speed<kilometre_per_hour, impl_impl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, impl_impl<int>>(20))).count() == impl_impl<int>(72));
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, impl_expl<int>>, speed<metre_per_second, impl_expl<int>>>);
-static_assert(speed<kilometre_per_hour, impl_expl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, impl_expl<int>>(20))).count() == impl_expl<int>(72));
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, expl_impl<int>>, speed<metre_per_second, expl_impl<int>>>);
-static_assert(speed<kilometre_per_hour, expl_impl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, expl_impl<int>>(expl_impl<int>(20)))).count() == expl_impl<int>(72));
-static_assert(!std::is_constructible_v<speed<kilometre_per_hour, expl_expl<int>>, speed<metre_per_second, expl_expl<int>>>);
-static_assert(speed<kilometre_per_hour, expl_expl<int>>(quantity_cast<kilometre_per_hour>(speed<metre_per_second, expl_expl<int>>(expl_expl<int>(20)))).count() == expl_expl<int>(72));
-
 }  // namespace
