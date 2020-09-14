@@ -1,4 +1,4 @@
 Luminous Intensity
 ==================
 
-.. doxygenfile:: si/derived/luminous_intensity.h
+.. doxygenfile:: si/base/luminous_intensity.h
