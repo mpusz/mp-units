@@ -9,3 +9,4 @@ Core Library
     core/functions
     core/metafunctions
     core/customization_points
+    core/downcasting
