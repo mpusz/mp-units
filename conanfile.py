@@ -79,7 +79,8 @@ class UnitsConan(ConanFile):
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16")
         else:
             raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
-        check_min_cppstd(self, "20")
+        if compiler.get_safe("cppstd"):
+            check_min_cppstd(self, "20")
 
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
@@ -119,9 +120,7 @@ class UnitsConan(ConanFile):
         cmake.install()
 
     def package_id(self):
-        self.info.settings.clear()
-        self.info.settings.compiler = self.settings.compiler
-        self.info.settings.compiler.version = self.settings.compiler.version
+        self.info.header_only()
 
     def package_info(self):
         compiler = self.settings.compiler
