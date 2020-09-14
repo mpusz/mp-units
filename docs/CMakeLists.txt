@@ -143,6 +143,11 @@ add_custom_command(OUTPUT "${SPHINX_INDEX_FILE}"
                        "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data/information.rst"
                        "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data/prefixes.rst"
 
+                       "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic.rst"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/angle.rst"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/dimensionless.rst"
+                       "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/unknown.rst"
+
                        "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/physical.rst"
 
                        "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/physical/natural.rst"
