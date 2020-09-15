@@ -178,16 +178,4 @@ constexpr auto unit_text()
   }
 }
 
-template<typename CharT, class Traits, Quantity Q>
-std::basic_string<CharT> to_string(const Q& q)
-{
-  std::basic_ostringstream<CharT, Traits> s;
-  s << q.count();
-  constexpr auto symbol = unit_text<typename Q::dimension, typename Q::unit>();
-  if constexpr (symbol.standard().size()) {
-    s << " " << symbol.standard();
-  }
-  return s.str();
-}
-
 }  // namespace units::detail

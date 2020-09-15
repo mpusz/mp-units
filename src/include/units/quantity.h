@@ -26,7 +26,7 @@
 #include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/pow.h>
-#include <units/bits/to_string.h>
+#include <units/bits/unit_text.h>
 #include <units/generic/dimensionless.h>
 #include <units/quantity_cast.h>
 #include <compare>
@@ -334,7 +334,12 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    return os << detail::to_string<CharT, Traits>(q);
+    os << q.count();
+    constexpr auto symbol = detail::unit_text<D, U>();
+    if constexpr (symbol.standard().size()) {
+      os << " " << symbol.standard();
+    }
+    return os;
   }
 };
 
