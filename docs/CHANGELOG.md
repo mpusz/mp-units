@@ -1,6 +1,9 @@
 # Release notes
 
 - **0.7.0 WIP**
+  - perf: preconditions check do not influence the runtime performance of a Release build
+  - perf: `quantity_cast()` generates less assembly instructions
+  - perf: temporary string creation removed from `quantity::op<<()`
 
 - **0.6.0 September 13, 2020**
   - (!) gcc-9 is no longer supported (at least gcc-10 is required)
