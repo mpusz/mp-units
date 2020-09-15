@@ -334,11 +334,14 @@ public:
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
   {
-    os << q.count();
-    constexpr auto symbol = detail::unit_text<D, U>();
-    if constexpr (symbol.standard().size()) {
-      os << " " << symbol.standard();
+    if(os.width()) {
+      // std::setw() applies to the whole quantity output so it has to be first put into std::string
+      std::basic_ostringstream<CharT, Traits> s;
+      detail::to_stream(s, q);
+      return os << s.str();
     }
+
+    detail::to_stream(os, q);
     return os;
   }
 };
