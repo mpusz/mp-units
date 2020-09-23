@@ -38,11 +38,11 @@ using namespace units::physical::si;
 template<typename DimLength>
 concept invalid_types = requires
 {
-  !requires { typename quantity_point<DimLength, second, int>; };  // unit of a different dimension
-  !requires { typename quantity_point<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
+  requires !requires { typename quantity_point<DimLength, second, int>; };  // unit of a different dimension
+  requires !requires { typename quantity_point<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
   // quantity point used as Rep
-  !requires { typename quantity_point<DimLength, metre, quantity_point<DimLength, metre, int>>; };
-  !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
+  requires !requires { typename quantity_point<DimLength, metre, quantity_point<DimLength, metre, int>>; };
+  requires !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
 };
 
 static_assert(invalid_types<dim_length>);

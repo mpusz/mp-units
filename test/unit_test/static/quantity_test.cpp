@@ -37,9 +37,9 @@ using namespace units::physical::si;
 template<typename DimLength>
 concept invalid_types = requires
 {
-  !requires { typename quantity<DimLength, second, int>; };  // unit of a different dimension
-  !requires { typename quantity<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
-  !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
+  requires !requires { typename quantity<DimLength, second, int>; };  // unit of a different dimension
+  requires !requires { typename quantity<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
+  requires !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
 };
 
 static_assert(invalid_types<dim_length>);
@@ -131,14 +131,14 @@ static_assert((2.5_q_m *= 3.5).count() == 8.75);
 template<typename Metre>
 concept invalid_compound_assignments = requires()
 {
-    !requires(length<Metre, double> l) { l %= 2.; };
-    !requires(length<Metre, double> l) { l %= 2; };
-    !requires(length<Metre, int> l) { l %= 2.; };
-    !requires(length<Metre, double> l) { l %= 2._q_m; };
-    !requires(length<Metre, double> l) { l %= 2_q_m; };
-    !requires(length<Metre, int> l) { l %= 2._q_m; };
-    !requires(length<Metre, int> l) { l += 3.5_q_m; };
-    !requires(length<Metre, int> l) { l *= 3.5_q_m; };
+  requires !requires(length<Metre, double> l) { l %= 2.; };
+  requires !requires(length<Metre, double> l) { l %= 2; };
+  requires !requires(length<Metre, int> l) { l %= 2.; };
+  requires !requires(length<Metre, double> l) { l %= 2._q_m; };
+  requires !requires(length<Metre, double> l) { l %= 2_q_m; };
+  requires !requires(length<Metre, int> l) { l %= 2._q_m; };
+  requires !requires(length<Metre, int> l) { l += 3.5_q_m; };
+  requires !requires(length<Metre, int> l) { l *= 3.5_q_m; };
 };
 
 static_assert(invalid_compound_assignments<metre>);
@@ -301,10 +301,10 @@ static_assert(dimensionless<one, int>(1) + 1 == 2);
 template<typename Int>
 concept invalid_dimensionless_operations = requires
 {
-    !requires(dimensionless<one, Int> d) { d + 1.23; };
-    !requires(dimensionless<one, Int> d) { 1.23 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { 1 + d; };
-    !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { d + 1; };
+  requires !requires(dimensionless<one, Int> d) { d + 1.23; };
+  requires !requires(dimensionless<one, Int> d) { 1.23 + d; };
+  requires !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { 1 + d; };
+  requires !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { d + 1; };
 };
 static_assert(invalid_dimensionless_operations<int>);
 
