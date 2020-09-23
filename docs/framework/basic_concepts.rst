@@ -18,13 +18,14 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [exponent<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
     ]
 
-    [<abstract>Quantity|
-    [quantity<Dimension, Unit, Rep>]
+    [<abstract>QuantityPoint|
+    [quantity_point<Dimension, Unit, Rep>]
     ]
 
     [<abstract>Unit]<-[Dimension]
     [Dimension]<-[Quantity]
     [Unit]<-[Quantity]
+    [Quantity]<-[QuantityPoint]
 
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and
