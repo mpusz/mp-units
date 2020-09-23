@@ -346,6 +346,9 @@ public:
   }
 };
 
+template<ScalableNumber V>
+/* implicit */ quantity(V) -> quantity<dim_one, one, V>;
+
 namespace detail {
 
 template<typename D, typename U, typename Rep>
