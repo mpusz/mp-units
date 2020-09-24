@@ -60,8 +60,7 @@ concept safe_divisible = // exposition only
  */
 template<Dimension D, UnitOf<D> U, ScalableNumber Rep = double>
 class quantity {
-  Rep value_{};
-
+  Rep value_;
 public:
   using dimension = D;
   using unit = U;
