@@ -55,7 +55,7 @@ struct ratio {
     detail::normalize(num, den, exp);
   }
 
-  ratio(const ratio& other) : num(other.num), den(other.den), exp(other.exp) {}
+  constexpr ratio(const ratio& other) : num(other.num), den(other.den), exp(other.exp) {}
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
@@ -102,6 +102,13 @@ constexpr ratio abs(const ratio& r) {
 
 namespace detail {
 
+    // returns the position of the most significant one
+struct ratio_pair {
+  ratio a;
+  ratio b;
+  constexpr ratio_pair(ratio init_a, ratio init_b) : a(init_a), b(init_b) {}
+};
+
 //returns the position of the most significant one
 long constexpr bitScanReverse(long long a)
 {
@@ -112,15 +119,17 @@ long constexpr bitScanReverse(long long a)
   return i;
 }
 
-constexpr void reduceNumeratorForMul(ratio& a, ratio& b)
+constexpr ratio_pair reduceNumeratorForMul(const ratio_pair& rp)
 {
+  ratio a = rp.a;
+  ratio b = rp.b;
   bool a_is_positive = is_positive(a);
   bool b_is_positive = is_positive(b);
   a = abs(a);
   b = abs(b);
   long bsr = bitScanReverse(a.num) + bitScanReverse(b.num);
   bool got_reduced = false;
-  while ((bsr) >= (sizeof(long long) * 8 - 1)) {
+  while ((bsr) >= (sizeof(long long) * 8 - 2)) {
     got_reduced = false;
     if (a.den < ((long long)1 << (sizeof(long long) * 8 / 2)) && (a.den % 10 != 0)) {
       // force a denominator, maybe it helps with gdc
@@ -161,24 +170,26 @@ constexpr void reduceNumeratorForMul(ratio& a, ratio& b)
   if (!b_is_positive) {
     b.num = -b.num;
   }
+  return {a, b};
 }
 
-constexpr void reduceDenumeratorForMul(ratio& a, ratio& b)
+constexpr ratio_pair reduceDenumeratorForMul(const ratio_pair& rp)
 {
-  a = inverse(a);
-  b = inverse(b);
-  reduceNumeratorForMul(a, b);
-  a = inverse(a);
-  b = inverse(b);
+  ratio_pair temp = {inverse(rp.a), inverse(rp.b)};
+  temp = reduceNumeratorForMul(temp);
+  temp = {inverse(temp.a), inverse(temp.b)};
+  return temp;
 }
 
 // mul multiplies two ratios a and b and avoids overflow
 // works on positive and negative rations
-constexpr ratio mul(ratio a, ratio b)
+constexpr ratio mul(const ratio& a, const ratio& b)
 {
-  reduceNumeratorForMul(a, b);
-  reduceDenumeratorForMul(a, b);
-  return ratio{a.num * b.num, a.den * b.den, a.exp + b.exp};
+  ratio_pair temp = {a, b};
+  temp = reduceNumeratorForMul(temp);
+  temp = reduceDenumeratorForMul(temp);
+  ratio result{temp.a.num * temp.b.num, temp.a.den * temp.b.den, temp.a.exp + temp.b.exp};
+  return result;
 }
 
 // sqrt_impl avoids overflow and recursion
@@ -217,7 +228,9 @@ constexpr ratio mul(ratio a, ratio b)
 
 }  // namespace detail
 
-[[nodiscard]] constexpr ratio operator*(const ratio& lhs, const ratio& rhs) { return detail::mul(lhs, rhs); }
+[[nodiscard]] constexpr ratio operator*(const ratio& lhs, const ratio& rhs) { 
+  return detail::mul(lhs, rhs); 
+}
 
 [[nodiscard]] constexpr ratio sqrt(const ratio& r)
 {
