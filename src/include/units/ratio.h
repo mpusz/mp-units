@@ -36,8 +36,6 @@ namespace units {
 struct ratio;
 constexpr ratio inverse(const ratio& r);
 
-namespace detail { constexpr ratio mul(ratio a, ratio b); }
-
 /**
  * @brief Provides compile-time rational arithmetic support.
  * 
