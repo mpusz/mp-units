@@ -92,8 +92,8 @@ template<std::intmax_t N>
     return pow<N-1>(r) * r;
 }
 
-constexpr bool is_even(const ratio& r) { 
-  return (r.num >= 0) ^ (r.den >= 0); 
+constexpr bool is_positive(const ratio& r) { 
+  return !((r.num >= 0) ^ (r.den >= 0)); 
 }
 
 constexpr ratio abs(const ratio& r) { 
@@ -116,7 +116,7 @@ long constexpr bitScanReverse(long long a)
 // works on positive and negative rations
 constexpr ratio mul(const ratio& ra, const ratio& rb)
 {
-  bool result_is_even = is_even(ra) ^ is_even(rb);
+  bool result_is_even = !(is_positive(ra) ^ is_positive(rb));
   ratio a(abs(ra));
   ratio b(abs(rb));
   long long exp = a.exp + b.exp;
@@ -138,7 +138,7 @@ constexpr ratio mul(const ratio& ra, const ratio& rb)
     bsr -= 3;
     exp -= 1;
   }
-  return ratio{result_is_even ? (a.num * b.num) : (-a.num * b.num), a.den * b.den, exp};
+  return ratio{result_is_positive ? (a.num * b.num) : (-a.num * b.num), a.den * b.den, exp};
 }
 
 // sqrt_impl avoids overflow and recursion
