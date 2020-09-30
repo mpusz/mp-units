@@ -112,58 +112,73 @@ long constexpr bitScanReverse(long long a)
   return i;
 }
 
-// mul multiplies two ratios a and b and avoids overflow
-// works on positive and negative rations
-constexpr ratio mul(const ratio& ra, const ratio& rb)
+constexpr void reduceNumeratorForMul(ratio& a, ratio& b)
 {
-  bool result_is_positive = !(is_positive(ra) ^ is_positive(rb));
-  ratio a(abs(ra));
-  ratio b(abs(rb));
-  long long exp = a.exp + b.exp;
+  bool a_is_positive = is_positive(a);
+  bool b_is_positive = is_positive(b);
+  a = abs(a);
+  b = abs(b);
   long bsr = bitScanReverse(a.num) + bitScanReverse(b.num);
+  bool got_reduced = false;
   while ((bsr) >= (sizeof(long long) * 8 - 1)) {
-    if (a.den < ((long long)1 << (sizeof(long long) / 2))) {
-      a.den *= 10000;
-      exp += 4;
+    got_reduced = false;
+    if (a.den < ((long long)1 << (sizeof(long long) * 8 / 2)) && (a.den % 10 != 0)) {
+      // force a denominator, maybe it helps with gdc
+      // reduce without information loss
+      a.den *= 10;
+      a.exp += 1;
+      got_reduced = true;
+    }
+    if (b.den < ((long long)1 << (sizeof(long long) * 8 / 2)) && (b.den % 10 != 0)) {
+      b.den *= 10;
+      a.exp += 1;
+      got_reduced = true;
+    }
+    if (got_reduced == false) {
+      // reduce by loseing information | round up at 5
+      if (a.num > b.num) {
+        a.num = (a.num + 5) / 10;
+        a.exp += 1;
+      } else {
+        b.num = (b.num + 5) / 10;
+        a.exp += 1;
+      }
+    }
+    {
+      // thry reducing without losing information
       long long gcd = std::gcd(a.num, a.den);
       a.num = a.num / gcd;
       a.den = a.den / gcd;
-    } else if (b.den < ((long long)1 << (sizeof(long long) / 2))) {
-      b.den *= 10000;
-      exp += 4;
-      long long gcd = std::gcd(b.num, b.den);
+      gcd = std::gcd(b.num, b.den);
       b.num = b.num / gcd;
       b.den = b.den / gcd;
-    } else if (a.num > b.num) {
-      a.num = a.num / 10;
-    } else {
-      b.num = b.num / 10;
     }
     bsr = bitScanReverse(a.num) + bitScanReverse(b.num);
-    exp += 1;
   }
-  bsr = bitScanReverse(a.den) + bitScanReverse(b.den);
-  while (bsr >= (sizeof(long long) * 8 - 1)) {
-    if (a.num < ((long long)1 << (sizeof(long long) / 2))) {
-      a.num *= 10000;
-      exp -= 4;
-      long long gcd = std::gcd(a.num, a.den);
-      a.num = a.num / gcd;
-      a.den = a.den / gcd;
-    } else if (b.num < ((long long)1 << (sizeof(long long) / 2))) {
-      b.num *= 10000;
-      exp -= 4;
-      long long gcd = std::gcd(b.num, b.den);
-      b.num = b.num / gcd;
-      b.den = b.den / gcd;
-    } else if (a.den > b.den)
-      a.den = a.den / 10;
-    else
-      b.den = b.den / 10;
-    bsr -= 3;
-    exp -= 1;
+  if (!a_is_positive) {
+    a.num = -a.num;
   }
-  return ratio{result_is_positive ? (a.num * b.num) : (-a.num * b.num), a.den * b.den, exp};
+  if (!b_is_positive) {
+    b.num = -b.num;
+  }
+}
+
+constexpr void reduceDenumeratorForMul(ratio& a, ratio& b)
+{
+  a = inverse(a);
+  b = inverse(b);
+  reduceNumeratorForMul(a, b);
+  a = inverse(a);
+  b = inverse(b);
+}
+
+// mul multiplies two ratios a and b and avoids overflow
+// works on positive and negative rations
+constexpr ratio mul(ratio a, ratio b)
+{
+  reduceNumeratorForMul(a, b);
+  reduceDenumeratorForMul(a, b);
+  return ratio{a.num * b.num, a.den * b.den, a.exp + b.exp};
 }
 
 // sqrt_impl avoids overflow and recursion
