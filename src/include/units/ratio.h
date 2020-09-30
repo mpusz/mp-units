@@ -57,13 +57,8 @@ struct ratio {
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
-  [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
-  {
-    const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);
-    const std::intmax_t gcd2 = std::gcd(rhs.num, lhs.den);
-    return ratio(detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),
-                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1),
-                 lhs.exp + rhs.exp);
+  [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs) { 
+    return detail::mul(lhs, rhs);  
   }
 
   [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs)
@@ -97,7 +92,54 @@ template<std::intmax_t N>
     return pow<N-1>(r) * r;
 }
 
+constexpr bool is_even(const ratio& r) { 
+  return r.num >= 0 ^ r.den >= 0; 
+}
+
+constexpr ratio abs(const ratio& r) { 
+  return ratio{std::abs(r.num), std::abs(r.den), r.exp}; 
+}
+
 namespace detail {
+
+//returns the position of the most significant one
+long constexpr bitScanReverse(long long a)
+{
+  long i = 0;
+  for (long long one = 1; a >= one; one = one << 1) {
+    ++i;
+  }
+  return i;
+}
+
+//mul multiplies two ratios a and b and avoids overflow
+//works on positive and negative rations
+constexpr ratio mul(const ratio a, const ratio b)
+{
+  bool result_is_even = is_even(a) ^ is_even(b);
+  a = abs(a);
+  b = abs(b);
+  long exp = a.exp + b.exp;
+  long bsr = bitScanReverse(a.num) + bitScanReverse(b.num);
+  while ((bsr) >= (sizeof(long long) * 8 - 1)) {
+    if (a.num > b.num)
+      a.num = a.num / 10;
+    else
+      b.num = b.num / 10;
+    bsr -= 3;
+    exp += 1;
+  }
+  bsr = bitScanReverse(a.den) + bitScanReverse(b.den);
+  while (bsr >= (sizeof(long long) * 8 - 1)) {
+    if (a.den > b.den)
+      a.den = a.den / 10;
+    else
+      b.den = b.den / 10;
+    bsr -= 3;
+    exp -= 1;
+  }
+  return ratio{result_is_even ? (a.num * b.num) : (-a.num * b.num), a.den * b.den, exp};
+}
 
 // sqrt_impl avoids overflow and recursion
 // from http://www.codecodex.com/wiki/Calculate_an_integer_square_root#C.2B.2B
