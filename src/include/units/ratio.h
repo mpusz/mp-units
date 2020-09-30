@@ -36,6 +36,8 @@ namespace units {
 struct ratio;
 constexpr ratio inverse(const ratio& r);
 
+namespace detail { constexpr ratio mul(ratio a, ratio b); }
+
 /**
  * @brief Provides compile-time rational arithmetic support.
  * 
@@ -55,11 +57,11 @@ struct ratio {
     detail::normalize(num, den, exp);
   }
 
+  ratio(const ratio& other) : num(other.num), den(other.den), exp(other.exp) {}
+
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
-  [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs) { 
-    return detail::mul(lhs, rhs);  
-  }
+  friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs); // cannot be nodiscard I need to define this later because of scope reasons
 
   [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs)
   {
@@ -93,11 +95,11 @@ template<std::intmax_t N>
 }
 
 constexpr bool is_even(const ratio& r) { 
-  return r.num >= 0 ^ r.den >= 0; 
+  return (r.num >= 0) ^ (r.den >= 0); 
 }
 
 constexpr ratio abs(const ratio& r) { 
-  return ratio{std::abs(r.num), std::abs(r.den), r.exp}; 
+   return ratio{((r.num >= 0) ? r.num : -r.num), ((r.den >= 0) ? r.den : -r.den), r.exp};
 }
 
 namespace detail {
@@ -112,14 +114,14 @@ long constexpr bitScanReverse(long long a)
   return i;
 }
 
-//mul multiplies two ratios a and b and avoids overflow
-//works on positive and negative rations
-constexpr ratio mul(const ratio a, const ratio b)
+// mul multiplies two ratios a and b and avoids overflow
+// works on positive and negative rations
+constexpr ratio mul(const ratio& ra, const ratio& rb)
 {
-  bool result_is_even = is_even(a) ^ is_even(b);
-  a = abs(a);
-  b = abs(b);
-  long exp = a.exp + b.exp;
+  bool result_is_even = is_even(ra) ^ is_even(rb);
+  ratio a(abs(ra));
+  ratio b(abs(rb));
+  long long exp = a.exp + b.exp;
   long bsr = bitScanReverse(a.num) + bitScanReverse(b.num);
   while ((bsr) >= (sizeof(long long) * 8 - 1)) {
     if (a.num > b.num)
@@ -176,6 +178,8 @@ constexpr ratio mul(const ratio a, const ratio b)
 }
 
 }  // namespace detail
+
+[[nodiscard]] constexpr ratio operator*(const ratio& lhs, const ratio& rhs) { return detail::mul(lhs, rhs); }
 
 [[nodiscard]] constexpr ratio sqrt(const ratio& r)
 {
