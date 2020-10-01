@@ -131,14 +131,14 @@ constexpr ratio_pair reduceNumeratorForMul(const ratio_pair& rp)
   bool got_reduced = false;
   while ((bsr) >= (sizeof(long long) * 8 - 2)) {
     got_reduced = false;
-    if (a.den < ((long long)1 << (sizeof(long long) * 8 / 2)) && (a.den % 10 != 0)) {
+    if (a.den < ((long long)1 << (sizeof(long long) * 8 / 2 - 6)) && (a.den % 10 != 0)) {
       // force a denominator, maybe it helps with gdc
       // reduce without information loss
       a.den *= 10;
       a.exp += 1;
       got_reduced = true;
     }
-    if (b.den < ((long long)1 << (sizeof(long long) * 8 / 2)) && (b.den % 10 != 0)) {
+    if (b.den < ((long long)1 << (sizeof(long long) * 8 / 2 - 6)) && (b.den % 10 != 0)) {
       b.den *= 10;
       a.exp += 1;
       got_reduced = true;
