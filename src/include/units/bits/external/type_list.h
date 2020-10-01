@@ -150,6 +150,11 @@ namespace detail {
 template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
 struct type_list_merge_sorted_impl;
 
+template<template<typename...> typename List, template<typename, typename> typename Pred>
+struct type_list_merge_sorted_impl<List<>, List<>, Pred> {
+  using type = List<>;
+};
+
 template<template<typename...> typename List, typename... Lhs, template<typename, typename> typename Pred>
 struct type_list_merge_sorted_impl<List<Lhs...>, List<>, Pred> {
   using type = List<Lhs...>;
