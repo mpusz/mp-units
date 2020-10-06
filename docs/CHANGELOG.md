@@ -1,38 +1,45 @@
 # Release notes
 
 - **0.7.0 WIP**
+  - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
+  - refactor: basic concepts, `quantity` and `quantity_cast` refactored
+  - feat: CTAD for dimensionless quantity added
+  - feat: value initialization for quantity value removed (left with a default initialization)
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`
+  - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
+  - fix: ambiguous case for empty type list resolved
+  - build: doxygen updated to 1.8.20
 
 - **0.6.0 September 13, 2020**
-  - (!) gcc-9 is no longer supported (at least gcc-10 is required)
-  - Visual Studio 16.7 support added
-  - linear_algebra updated to 0.7.0/stable
-  - fmt updated to 7.0.3
-  - range-v3 updated to 0.11.0
-  - catch2 updated to 2.13.0
-  - doxygen updated to 1.8.18
-  - ms-gsl 3.1.0 dependency added
-  - Removed the dependency on a git submodule with common CMake scripts
-  - (!) Refactored and cleaned up the library file tree
-  - (!) `q_*` UDL renamed to `_q_*`
-  - (!) UDLs with "per" in name renamed from `*p*` to `*_per_*`
-  - (!) `ratio` changed to the NTTP kind
-  - (!) `exp` and `Exp` renamed to `exponent` and `Exponent`
-  - (!) `Scalar` concept renamed to `ScalableNumber`
-  - (!) Dimensionless quantities redesigned to be of a `quantity` type
-  - `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
-  - Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
-  - `si::angular_velocity` support added (thanks [@mikeford3](https://github.com/mikeford3))
-  - FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
-  - `si::day` unit symbol fixed to `d` (thanks [@komputerwiz](https://github.com/komputerwiz))
-  - `si::mole` unit symbol fixed to `mol` (thanks [@mikeford3](https://github.com/mikeford3))
-  - Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
-  - `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
-  - Added support for mathematical function `exp(quantity)`
-  - Localization support for text output added (thanks [@rbrugo](https://github.com/rbrugo))
-  - `[[nodiscard]]` added to many functions
+  - feat: `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
+  - feat: Added angle as SI base dimension (thanks [@kwikius](https://github.com/kwikius))
+  - feat: `si::angular_velocity` support added (thanks [@mikeford3](https://github.com/mikeford3))
+  - feat: FPS system added (thanks [@mikeford3](https://github.com/mikeford3))
+  - feat: Added support for mathematical function `exp(quantity)`
+  - feat: Localization support for text output added (thanks [@rbrugo](https://github.com/rbrugo))
+  - feat: Added STL random number distribution wrappers (thanks [@yasamoka](https://github.com/yasamoka))
+  - (!) refactor: Refactored and cleaned up the library file tree
+  - (!) refactor: `q_*` UDL renamed to `_q_*`
+  - (!) refactor: UDLs with "per" in name renamed from `*p*` to `*_per_*`
+  - (!) refactor: `ratio` changed to the NTTP kind
+  - (!) refactor: `exp` and `Exp` renamed to `exponent` and `Exponent`
+  - (!) refactor: `Scalar` concept renamed to `ScalableNumber`
+  - (!) refactor: Dimensionless quantities redesigned to be of a `quantity` type
+  - refactor: `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
+  - refactor: `[[nodiscard]]` added to many functions
+  - fix: `si::day` unit symbol fixed to `d` (thanks [@komputerwiz](https://github.com/komputerwiz))
+  - fix: `si::mole` unit symbol fixed to `mol` (thanks [@mikeford3](https://github.com/mikeford3))
+  - (!) build: gcc-9 is no longer supported (at least gcc-10 is required)
+  - build: Visual Studio 16.7 support added
+  - build: linear_algebra updated to 0.7.0/stable
+  - build: fmt updated to 7.0.3
+  - build: range-v3 updated to 0.11.0
+  - build: catch2 updated to 2.13.0
+  - build: doxygen updated to 1.8.18
+  - build: ms-gsl 3.1.0 dependency added
+  - build: Removed the dependency on a git submodule with common CMake scripts
 
 - **0.5.0 May 17, 2020**
   - Major refactoring and rewrite of the library
