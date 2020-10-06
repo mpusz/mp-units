@@ -52,7 +52,7 @@ struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {}
 
 struct dim_energy : physical::dim_energy<dim_energy, joule, dim_force, dim_length> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_energy> U, QuantityValue Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
 inline namespace literals {

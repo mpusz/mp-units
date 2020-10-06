@@ -32,7 +32,7 @@ namespace units::physical::si {
 struct mol_per_metre_cub : unit<mol_per_metre_cub> {};
 struct dim_concentration : physical::dim_concentration<dim_concentration, mol_per_metre_cub, dim_amount_of_substance, dim_length> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_concentration> U, QuantityValue Rep = double>
 using concentration = quantity<dim_concentration, U, Rep>;
 
 inline namespace literals {

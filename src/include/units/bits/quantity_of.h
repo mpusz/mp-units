@@ -73,7 +73,10 @@ concept QuantityOfT = Quantity<Q> && DimensionOfT<typename Q::dimension, DimTemp
  * Satisfied by all quantities with a dimension being the instantiation derived from
  * the provided dimension type.
  */
-template<typename T, typename Dim>
-concept QuantityOf = Quantity<T> && Dimension<Dim> && equivalent<typename T::dimension, Dim>;
+template<typename Q, typename Dim>
+concept QuantityOf = Quantity<Q> && Dimension<Dim> && equivalent<typename Q::dimension, Dim>;
+
+template<typename Q1, typename Q2>
+concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimension>;
 
 }  // namespace units

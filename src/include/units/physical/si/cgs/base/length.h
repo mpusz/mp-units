@@ -31,7 +31,7 @@ using si::centimetre;
 
 struct dim_length : physical::dim_length<centimetre> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_length> U, QuantityValue Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {

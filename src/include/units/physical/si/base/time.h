@@ -43,7 +43,7 @@ struct day : named_scaled_unit<day, "d", no_prefix, ratio(24), hour> {};
 
 struct dim_time : physical::dim_time<second> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_time> U, QuantityValue Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
 inline namespace literals {

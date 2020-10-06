@@ -26,7 +26,7 @@
 
 namespace units::physical::natural {
 
-template<ScalableNumber Rep = double>
+template<QuantityValue Rep = double>
 inline constexpr auto speed_of_light = speed<one, Rep>(1);
 
 }  // namespace units::physical::natural

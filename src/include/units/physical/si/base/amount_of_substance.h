@@ -32,7 +32,7 @@ struct mole : named_unit<mole, "mol", prefix> {};
 
 struct dim_amount_of_substance : physical::dim_amount_of_substance<mole> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_amount_of_substance> U, QuantityValue Rep = double>
 using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 
 inline namespace literals {

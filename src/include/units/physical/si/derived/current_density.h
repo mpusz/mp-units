@@ -34,7 +34,7 @@ struct ampere_per_metre_sq : unit<ampere_per_metre_sq> {};
 
 struct dim_current_density : physical::dim_current_density<dim_current_density, ampere_per_metre_sq, dim_electric_current, dim_length> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_current_density> U, QuantityValue Rep = double>
 using current_density = quantity<dim_current_density, U, Rep>;
 
 inline namespace literals {

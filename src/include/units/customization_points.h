@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/concepts.h>
 #include <limits>
 #include <type_traits>
 
@@ -37,8 +36,12 @@ namespace units {
  * 
  * @tparam Rep a representation type for which a type trait is defined
  */
-template<ScalableNumber Rep>
+template<typename Rep>
 inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
+
+template<typename T>
+  requires requires { typename T::value_type; }
+inline constexpr bool treat_as_floating_point<T> = treat_as_floating_point<typename T::value_type>;
 
 /**
  * @brief A type trait that defines zero, one, min, and max for a representation type
@@ -49,7 +52,7 @@ inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
  * 
  * @tparam Rep a representation type for which a type trait is defined
  */
-template<ScalableNumber Rep>
+template<typename Rep>
 struct quantity_values {
   static constexpr Rep zero() noexcept { return Rep(0); }
   static constexpr Rep one() noexcept { return Rep(1); }

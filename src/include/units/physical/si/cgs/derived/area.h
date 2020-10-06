@@ -32,7 +32,7 @@ using si::square_centimetre;
 
 struct dim_area : physical::dim_area<dim_area, square_centimetre, dim_length> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_area> U, QuantityValue Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
 inline namespace literals {

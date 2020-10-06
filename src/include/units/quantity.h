@@ -34,19 +34,52 @@
 
 namespace units {
 
-namespace detail {
+template<typename T>
+concept floating_point_ = // exposition only
+  (Quantity<T> && treat_as_floating_point<typename T::rep>) ||
+  (!Quantity<T> && treat_as_floating_point<T>);
 
 template<typename From, typename To>
-concept safe_convertible = // exposition only
+concept safe_convertible_to_ = // exposition only
+    !(Quantity<From>) &&
+    !(Quantity<To>) &&
     std::convertible_to<From, To> &&
-    (treat_as_floating_point<To> || (!treat_as_floating_point<From>));
+    (floating_point_<To> || (!floating_point_<From>));
 
-template<typename Rep, typename QuantityFrom, typename QuantityTo>
-concept safe_divisible = // exposition only
-    treat_as_floating_point<Rep> ||
-    is_integral(quantity_ratio(QuantityFrom{}) / quantity_ratio(QuantityTo{}));
+// QFrom ratio is an exact multiple of QTo
+template<typename QFrom, typename QTo>
+concept harmonic_ = // exposition only
+    Quantity<QFrom> &&
+    Quantity<QTo> &&
+    requires(QFrom from, QTo to) { requires is_integral(detail::quantity_ratio(from) / detail::quantity_ratio(to)); };
 
-} // namespace detail
+template<typename QFrom, typename QTo>
+concept safe_castable_to_ = // exposition only
+    Quantity<QFrom> &&
+    QuantityOf<QTo, typename QFrom::dimension> &&
+    scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+    (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
+
+template<typename Func, typename T, typename U>
+concept quantity_value_for_ =
+  std::regular_invocable<Func, T, U> &&
+  QuantityValue<std::invoke_result_t<Func, T, U>>;
+
+template<typename T, typename Func, typename U, typename V>
+concept invoke_result_convertible_to_ =
+  QuantityValue<T> &&
+  quantity_value_for_<Func, U, V> &&
+  safe_convertible_to_<T, std::invoke_result_t<Func, U, V>>;
+
+template<typename Func, typename Q, typename V>
+concept have_quantity_for_ =
+  Quantity<Q> &&
+  (!Quantity<V>) &&
+  quantity_value_for_<Func, typename Q::rep, V>;
+
+template<typename Func, Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires quantity_value_for_<Func, typename Q1::rep, typename Q2::rep>
+using common_quantity_for = common_quantity<Q1, Q2, std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 /**
  * @brief A quantity
@@ -58,63 +91,69 @@ concept safe_divisible = // exposition only
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<Dimension D, UnitOf<D> U, ScalableNumber Rep = double>
+template<Dimension D, UnitOf<D> U, QuantityValue Rep = double>
 class quantity {
   Rep value_;
 public:
+  // member types
   using dimension = D;
   using unit = U;
   using rep = Rep;
 
+  // static member functions
+  [[nodiscard]] static constexpr quantity zero() noexcept
+    requires requires { quantity_values<rep>::zero(); }
+  {
+    return quantity(quantity_values<rep>::zero());
+  }
+
+  [[nodiscard]] static constexpr quantity one() noexcept
+    requires requires { quantity_values<rep>::one(); }
+  {
+    return quantity(quantity_values<rep>::one());
+  }
+
+  [[nodiscard]] static constexpr quantity min() noexcept
+    requires requires { quantity_values<rep>::min(); }
+  {
+    return quantity(quantity_values<rep>::min());
+  }
+
+  [[nodiscard]] static constexpr quantity max() noexcept
+    requires requires { quantity_values<rep>::max(); }
+  {
+    return quantity(quantity_values<rep>::max());
+  }
+
+  // construction, assignment, destruction
   quantity() = default;
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
-  template<ScalableNumber Value>
-    requires detail::safe_convertible<Value, rep>
-  constexpr explicit(!(equivalent<quantity, dimensionless<one, Rep>>)) quantity(const Value& v) : value_{static_cast<rep>(v)} {}
+  template<safe_convertible_to_<rep> Value>
+  explicit(!(equivalent<quantity, dimensionless<::units::one, rep>>)) constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
 
-  template<Quantity Q2>
-    requires equivalent<D, typename Q2::dimension> &&
-             detail::safe_convertible<typename Q2::rep, rep> &&
-             detail::safe_divisible<rep, Q2, quantity>
-  constexpr quantity(const Q2& q) : value_{quantity_cast<quantity>(q).count()} {}
+  template<safe_castable_to_<quantity> Q2>
+  constexpr quantity(const Q2& q) : value_(quantity_cast<quantity>(q).count()) {}
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
+  // data access
   [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
-  [[nodiscard]] static constexpr quantity zero() noexcept
-    requires requires { quantity_values<Rep>::zero(); }
+  // member unary operators
+  [[nodiscard]] constexpr quantity operator+() const
+    requires requires(rep v) { { +v } -> std::same_as<rep>; }
   {
-    return quantity(quantity_values<Rep>::zero());
+    return *this;
   }
 
-  [[nodiscard]] static constexpr quantity one() noexcept
-    requires requires { quantity_values<Rep>::one(); }
-  {
-    return quantity(quantity_values<Rep>::one());
-  }
-
-  [[nodiscard]] static constexpr quantity min() noexcept
-    requires requires { quantity_values<Rep>::min(); }
-  {
-    return quantity(quantity_values<Rep>::min());
-  }
-
-  [[nodiscard]] static constexpr quantity max() noexcept
-    requires requires { quantity_values<Rep>::max(); }
-  {
-    return quantity(quantity_values<Rep>::max());
-  }
-
-  [[nodiscard]] constexpr quantity operator+() const { return *this; }
-
-  [[nodiscard]] constexpr quantity operator-() const
+  [[nodiscard]] constexpr Quantity auto operator-() const
     requires std::regular_invocable<std::negate<>, rep>
   {
-    return quantity(-count());
+    using ret = quantity<D, U, decltype(-count())>;
+    return ret(-count());
   }
 
   constexpr quantity& operator++()
@@ -143,51 +182,45 @@ public:
     return quantity(value_--);
   }
 
-  template<typename Rep2>
-    requires detail::safe_convertible<Rep2, rep>
-  constexpr quantity& operator+=(const quantity<D, U, Rep2>& q)
+  constexpr quantity& operator+=(const quantity& q)
+    requires requires(rep a, rep b) { { a += b } -> std::same_as<rep&>; }
   {
     value_ += q.count();
     return *this;
   }
 
-  template<typename Rep2>
-    requires detail::safe_convertible<Rep2, rep>
-  constexpr quantity& operator-=(const quantity<D, U, Rep2>& q)
+  constexpr quantity& operator-=(const quantity& q)
+    requires requires(rep a, rep b) { { a -= b } -> std::same_as<rep&>; }
   {
     value_ -= q.count();
     return *this;
   }
 
-  template<typename Rep2>
-    requires detail::safe_convertible<Rep2, rep>
-  constexpr quantity& operator*=(const Rep2& rhs)
+  constexpr quantity& operator*=(const rep& rhs)
+    requires requires(rep a, rep b) { { a *= b } -> std::same_as<rep&>; }
   {
     value_ *= rhs;
     return *this;
   }
 
-  template<typename Rep2>
-    requires detail::safe_convertible<Rep2, rep>
-  constexpr quantity& operator/=(const Rep2& rhs)
+  constexpr quantity& operator/=(const rep& rhs)
+    requires requires(rep a, rep b) { { a /= b } -> std::same_as<rep&>; }
   {
     value_ /= rhs;
     return *this;
   }
 
-  template<ScalableNumber Value>
-    requires (!treat_as_floating_point<rep>) &&
-             (!treat_as_floating_point<Value>)
-  constexpr quantity& operator%=(const Value& rhs)
-    requires requires(rep v1, Value v2) { { v1 %= v2 } -> std::same_as<rep&>; }
+  constexpr quantity& operator%=(const rep& rhs)
+    requires (!floating_point_<rep>) &&
+             requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }
   {
     value_ %= rhs;
     return *this;
   }
 
   constexpr quantity& operator%=(const quantity& q)
-    requires (!treat_as_floating_point<rep>) &&
-             requires(rep v1, rep v2) { { v1 %= v2 } -> std::same_as<rep&>; }
+    requires (!floating_point_<rep>) &&
+             requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }
   {
     value_ %= q.count();
     return *this;
@@ -195,143 +228,88 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-
   [[nodiscard]] friend constexpr quantity operator+(const quantity& lhs, const quantity& rhs)
-    requires std::regular_invocable<std::plus<>, Rep, Rep>
+    requires invoke_result_convertible_to_<rep, std::plus<>, rep, rep>
   {
     return quantity(lhs.count() + rhs.count());
   }
 
-  template<typename D2, typename U2, typename Rep2>
-    requires std::regular_invocable<std::plus<>, Rep, Rep2> && equivalent<D, D2>
-  [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-  {
-    using common_rep = decltype(lhs.count() + rhs.count());
-    using ret = common_quantity<quantity, quantity<D2, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() + ret(rhs).count());
-  }
-
   [[nodiscard]] friend constexpr quantity operator-(const quantity& lhs, const quantity& rhs)
-    requires std::regular_invocable<std::minus<>, Rep, Rep>
+    requires invoke_result_convertible_to_<rep, std::minus<>, rep, rep>
   {
     return quantity(lhs.count() - rhs.count());
   }
 
-  template<typename D2, typename U2, typename Rep2>
-    requires std::regular_invocable<std::minus<>, Rep, Rep2> && equivalent<D, D2>
-  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-  {
-    using common_rep = decltype(lhs.count() - rhs.count());
-    using ret = common_quantity<quantity, quantity<D2, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() - ret(rhs).count());
-  }
-
-  template<ScalableNumber Value>
-    requires std::regular_invocable<std::multiplies<>, Rep, Value>
+  template<typename Value>
+    requires (!Quantity<Value>) &&
+          invoke_result_convertible_to_<rep, std::multiplies<>, rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
-    using common_rep = decltype(q.count() * v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, rep, Value>>;
     return ret(q.count() * v);
   }
 
-  template<ScalableNumber Value>
-    requires std::regular_invocable<std::multiplies<>, Value, Rep>
+  template<typename Value>
+    requires (!Quantity<Value>) &&
+          invoke_result_convertible_to_<rep, std::multiplies<>, rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
     return q * v;
   }
 
-  template<typename D2, typename U2, typename Rep2>
-    requires std::regular_invocable<std::multiplies<>, Rep, Rep2>
-  [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-  {
-    using dim = dimension_multiply<D, D2>;
-    using ret_unit = downcast_unit<dim, (U::ratio / dimension_unit<D>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
-    using common_rep = decltype(lhs.count() * rhs.count());
-    using ret = quantity<dim, ret_unit, common_rep>;
-    return ret(lhs.count() * rhs.count());
-  }
-
-  template<ScalableNumber Value>
-    requires std::regular_invocable<std::divides<>, Value, Rep>
-  [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
-  {
-    // Expects(q.count() != zero().count());
-
-    using dim = dim_invert<D>;
-    using ret_unit = downcast_unit<dim, ratio(U::ratio.den, U::ratio.num, -U::ratio.exp)>;
-    using common_rep = decltype(v / q.count());
-    using ret = quantity<dim, ret_unit, common_rep>;
-    return ret(v / q.count());
-  }
-
-  template<ScalableNumber Value>
-    requires std::regular_invocable<std::divides<>, Rep, Value>
+  template<typename Value>
+    requires (!Quantity<Value>) &&
+          invoke_result_convertible_to_<rep, std::divides<>, rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     // Expects(v != zero().count());
-
-    using common_rep = decltype(q.count() / v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<D, U, std::invoke_result_t<std::divides<>, rep, Value>>;
     return ret(q.count() / v);
   }
 
-  template<typename D2, typename U2, typename Rep2>
-    requires std::regular_invocable<std::divides<>, Rep, Rep2>
-  [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+  template<typename Value>
+    requires (!Quantity<Value>) &&
+          invoke_result_convertible_to_<rep, std::divides<>, Value, rep>
+  [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    // Expects(rhs.count() != zero().count());
-
-    using common_rep = decltype(lhs.count() / rhs.count());
-    using dim = dimension_divide<D, D2>;
-    using ret_unit = downcast_unit<dim, (U::ratio / dimension_unit<D>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
-    using ret = quantity<dim, ret_unit, common_rep>;
-    return ret(lhs.count() / rhs.count());
+    // Expects(q.count() != zero().count());
+    using dim = dim_invert<D>;
+    using ret_unit = downcast_unit<dim, inverse(U::ratio)>;
+    using ret = quantity<dim, ret_unit, std::invoke_result_t<std::divides<>, Value, rep>>;
+    return ret(v / q.count());
   }
 
-  template<ScalableNumber Value>
-    requires (!treat_as_floating_point<Rep>) &&
-            (!treat_as_floating_point<Value>) &&
-            std::regular_invocable<std::modulus<>, Rep, Value>
+  template<typename Value>
+    requires (!Quantity<Value>) && (!floating_point_<rep>) && (!floating_point_<Value>) &&
+            invoke_result_convertible_to_<rep, std::modulus<>, rep, Value>
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
   {
-    using common_rep = decltype(q.count() % v);
-    using ret = quantity<D, U, common_rep>;
+    using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, Value>>;
     return ret(q.count() % v);
   }
 
-  template<typename U2, typename Rep2>
-    requires (!treat_as_floating_point<Rep>) &&
-            (!treat_as_floating_point<Rep2>) &&
-            std::regular_invocable<std::modulus<>, Rep, Rep2>
-  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity<D, U2, Rep2>& rhs)
+  [[nodiscard]] friend constexpr quantity operator%(const quantity& lhs, const quantity& rhs)
+    requires (!floating_point_<rep>) &&
+            invoke_result_convertible_to_<rep, std::modulus<>, rep, rep>
   {
-    using common_rep = decltype(lhs.count() % rhs.count());
-    using ret = common_quantity<quantity, quantity<D, U2, Rep2>, common_rep>;
-    return ret(ret(lhs).count() % ret(rhs).count());
+    return quantity(lhs.count() % rhs.count());
   }
 
-  template<typename D2, typename U2, typename Rep2>
-    requires equivalent<D, D2> &&
-             std::three_way_comparable_with<Rep, Rep2>
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
+  [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)
+    requires std::three_way_comparable<rep>
+#if COMP_GCC == 10 && COMP_GCC_MINOR >= 2
+  = default;
+#else
   {
-    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
-    return cq(lhs).count() <=> cq(rhs).count();
+    return lhs.count() <=> rhs.count();
   }
+#endif
 
-  template<typename D2, typename U2, typename Rep2>
-    requires equivalent<D, D2> &&
-             std::equality_comparable_with<Rep, Rep2>
-  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity<D2, U2, Rep2>& rhs)
-  {
-    using cq = common_quantity<quantity, quantity<D2, U2, Rep2>>;
-    return cq(lhs).count() == cq(rhs).count();
-  }
+  [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity& rhs) = default;
 
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity& q)
+    requires requires { os << q.count(); }
   {
     if(os.width()) {
       // std::setw() applies to the whole quantity output so it has to be first put into std::string
@@ -345,8 +323,81 @@ public:
   }
 };
 
-template<ScalableNumber V>
+// CTAD
+template<QuantityValue V>
 /* implicit */ quantity(V) -> quantity<dim_one, one, V>;
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
+{
+  using ret = common_quantity_for<std::plus<>, Q1, Q2>;
+  return ret(ret(lhs).count() + ret(rhs).count());
+}
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
+{
+  using ret = common_quantity_for<std::minus<>, Q1, Q2>;
+  return ret(ret(lhs).count() - ret(rhs).count());
+}
+
+template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
+  requires quantity_value_for_<std::multiplies<>, Rep1, Rep2>
+[[nodiscard]] constexpr Quantity auto operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+{
+  using dim = dimension_multiply<D1, D2>;
+  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
+  using ret = quantity<dim, unit, std::invoke_result_t<std::multiplies<>, Rep1, Rep2>>;
+  return ret(lhs.count() * rhs.count());
+}
+
+template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
+  requires quantity_value_for_<std::divides<>, Rep1, Rep2>
+[[nodiscard]] constexpr Quantity auto operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+{
+  // Expects(rhs.count() != zero().count());
+  using dim = dimension_divide<D1, D2>;
+  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
+  using ret = quantity<dim, unit, std::invoke_result_t<std::divides<>, Rep1, Rep2>>;
+  return ret(lhs.count() / rhs.count());
+}
+
+template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>
+  requires (!floating_point_<Rep1>) && (!floating_point_<Rep2>) &&
+          quantity_value_for_<std::modulus<>, Rep1, Rep2>
+[[nodiscard]] constexpr Quantity auto operator%(const quantity<D1, U1, Rep1>& lhs, const quantity<dim_one, U2, Rep2>& rhs)
+{
+  using unit = downcast_unit<D1, U1::ratio * U2::ratio>;
+  using ret = quantity<D1, unit, std::invoke_result_t<std::modulus<>, Rep1, Rep2>>;
+  return ret(lhs.count() % rhs.count());
+}
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires (!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
+          quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
+{
+  using ret = common_quantity_for<std::modulus<>, Q1, Q2>;
+  return ret(ret(lhs).count() % ret(rhs).count());
+}
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
+{
+  using cq = common_quantity<Q1, Q2>;
+  return cq(lhs).count() <=> cq(rhs).count();
+}
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+  requires std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
+{
+  using cq = common_quantity<Q1, Q2>;
+  return cq(lhs).count() == cq(rhs).count();
+}
 
 namespace detail {
 

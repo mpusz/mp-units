@@ -36,10 +36,10 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
+template<Dimension D, UnitOf<D> U, QuantityValue Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, ScalableNumber Rep>
+template<Dimension D, UnitOf<D> U, QuantityValue Rep>
 class quantity_point;
 
 namespace detail {
@@ -55,232 +55,6 @@ constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
   }
 }
 
-} // namespace detail
-
-// quantity_cast
-namespace detail {
-
-template<typename To, ratio CRatio, typename CRep, bool NumIsOne, bool DenIsOne, bool ExpIsZero>
-struct quantity_cast_impl;
-
-template<typename To, ratio CRatio, typename CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, true, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(q.count()));
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(detail::fpow10<CRep>(CRatio.exp))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(detail::ipow10(CRatio.exp))));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(detail::ipow10(-CRatio.exp))));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, false, true> {
-  template<typename Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
-                                     (static_cast<CRep>(CRatio.num) /
-                                      static_cast<CRep>(CRatio.den))));
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
-  template<typename Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
-                                     (static_cast<CRep>(detail::fpow10<CRep>(CRatio.exp)) *
-                                     (static_cast<CRep>(CRatio.num) /
-                                      static_cast<CRep>(CRatio.den)))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
-                                      (static_cast<CRep>(CRatio.num) *
-                                      static_cast<CRep>(detail::ipow10(CRatio.exp)) /
-                                      static_cast<CRep>(CRatio.den))));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) *
-                                      (static_cast<CRep>(CRatio.num) /
-                                      (static_cast<CRep>(CRatio.den) *
-                                       static_cast<CRep>(detail::ipow10(-CRatio.exp))))));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / static_cast<CRep>(CRatio.den)));
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(detail::fpow10<CRep>(CRatio.exp)) * (CRep{1} / static_cast<CRep>(CRatio.den)))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(detail::ipow10(CRatio.exp)) / static_cast<CRep>(CRatio.den))));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) / (static_cast<CRep>(detail::ipow10(-CRatio.exp)) * static_cast<CRep>(CRatio.den))));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * static_cast<CRep>(CRatio.num)));
-  }
-};
-
-template<typename To, ratio CRatio, constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(CRatio.num) * static_cast<CRep>(detail::fpow10<CRep>(CRatio.exp)))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(CRatio.num) * static_cast<CRep>(detail::ipow10(CRatio.exp)))));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(static_cast<CRep>(q.count()) * (static_cast<CRep>(CRatio.num) / static_cast<CRep>(detail::ipow10(-CRatio.exp)))));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, true, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(q.count() * detail::fpow10<CRep>(CRatio.exp)));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(q.count() * detail::ipow10(CRatio.exp)));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(q.count() / detail::ipow10(-CRatio.exp)));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, false, true> {
-  template<typename Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num / CRatio.den)));
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, false, false> {
-  template<typename Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(q.count() * (detail::fpow10<CRep>(CRatio.exp) * (CRatio.num / CRatio.den))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num * detail::ipow10(CRatio.exp) / CRatio.den)));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(q.count()) * (CRatio.num / (CRatio.den * detail::ipow10(-CRatio.exp))));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, false, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(q.count() / CRatio.den));
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, true, false, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(q.count() * (detail::fpow10<CRep>(CRatio.exp) / CRatio.den)));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(q.count() * (detail::ipow10(CRatio.exp) / CRatio.den)));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(q.count() / (detail::ipow10(-CRatio.exp) * CRatio.den)));
-      }
-    }
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, true, true> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    return To(static_cast<TYPENAME To::rep>(q.count() * CRatio.num));
-  }
-};
-
-template<typename To, ratio CRatio, not_constructible_from_integral CRep>
-struct quantity_cast_impl<To, CRatio, CRep, false, true, false> {
-  template<Quantity Q>
-  static constexpr To cast(const Q& q)
-  {
-    if constexpr (treat_as_floating_point<CRep>) {
-      return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num * detail::fpow10<CRep>(CRatio.exp))));
-    } else {
-      if constexpr (CRatio.exp > 0) {
-        return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num * detail::ipow10(CRatio.exp))));
-      }
-      else {
-        return To(static_cast<TYPENAME To::rep>(q.count() * (CRatio.num / detail::ipow10(-CRatio.exp))));
-      }
-    }
-  }
-};
-
 template<typename Q1, typename Q2>
 constexpr ratio cast_ratio(const Q1& from, const Q2& to)
 {
@@ -293,6 +67,26 @@ constexpr ratio cast_ratio(const Q1& from, const Q2& to)
     return quantity_ratio(from) / quantity_ratio(to);
   }
 }
+
+template<typename From, typename To>
+struct cast_traits;
+
+template<typename From, typename To>
+  requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
+struct cast_traits<From, To> {
+  using ratio_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
+  using rep_type = ratio_type;
+};
+
+template<typename From, typename To>
+  requires (!common_type_with_<std::common_type_t<From, To>, std::intmax_t>) &&
+          scalable_number_<std::common_type_t<From, To>, std::intmax_t> && 
+          requires { typename std::common_type_t<From, To>::value_type; } &&
+          common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>
+struct cast_traits<From, To> {
+  using ratio_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
+  using rep_type = std::common_type_t<From, To>;
+};
 
 }  // namespace detail
 
@@ -308,16 +102,33 @@ constexpr ratio cast_ratio(const Q1& from, const Q2& to)
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> Rep>
   requires QuantityOf<To, D>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
-  using c_ratio = std::integral_constant<ratio, detail::cast_ratio(quantity<D, U, Rep>(), To())>;
-  using c_rep = std::common_type_t<typename To::rep, Rep>;
   using ret_unit = downcast_unit<typename To::dimension, To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
-  using cast = detail::quantity_cast_impl<ret, c_ratio::value, c_rep, c_ratio::value.num == 1, c_ratio::value.den == 1, c_ratio::value.exp == 0>;
-  return cast::cast(q);
+  using traits = detail::cast_traits<Rep, typename To::rep>;
+  using ratio_type = TYPENAME traits::ratio_type;
+  using rep_type = TYPENAME traits::rep_type;
+  constexpr auto c_ratio = detail::cast_ratio(quantity<D, U, Rep>(), To());
+
+  if constexpr (treat_as_floating_point<rep_type>) {
+    return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+                              (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) / static_cast<ratio_type>(c_ratio.den))));
+  }
+  else {
+    if constexpr (c_ratio.exp > 0) {
+      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+                              (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
+                              static_cast<ratio_type>(c_ratio.den)));
+    }
+    else {
+      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+                              static_cast<ratio_type>(c_ratio.num) /
+                              (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
+    }
+  }
 }
 
 /**
@@ -393,7 +204,7 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<ScalableNumber ToRep, typename D, typename U, typename Rep>
+template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);

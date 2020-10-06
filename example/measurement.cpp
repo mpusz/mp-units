@@ -114,14 +114,12 @@ private:
   value_type uncertainty_{};
 };
 
-static_assert(units::ScalableNumber<measurement<double>>);
-
 }  // namespace
 
-template<typename T>
-inline constexpr bool units::treat_as_floating_point<measurement<T>> = std::is_floating_point_v<T>;
 
 namespace {
+
+static_assert(units::QuantityValue<measurement<double>>);
 
 void example()
 {

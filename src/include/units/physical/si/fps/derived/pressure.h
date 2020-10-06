@@ -34,7 +34,7 @@ struct poundal_per_foot_sq : unit<poundal_per_foot_sq> {};
 
 struct dim_pressure : physical::dim_pressure<dim_pressure, poundal_per_foot_sq, dim_force, dim_area> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_pressure> U, QuantityValue Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
 struct pound_force_per_foot_sq : named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio(32'174'049, 1'000'000), poundal_per_foot_sq> {};

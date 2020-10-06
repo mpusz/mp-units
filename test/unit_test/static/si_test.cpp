@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
+#include <units/math.h>
 #include <units/physical/si/si.h>
-#include <utility>
 
 namespace {
 

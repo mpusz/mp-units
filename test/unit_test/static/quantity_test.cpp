@@ -22,9 +22,16 @@
 
 #include "test_tools.h"
 #include "units/math.h"
-#include "units/physical/si/si.h"
-#include "units/physical/si/us/us.h"
+#include "units/physical/si/cgs/derived/speed.h"
+#include "units/physical/si/derived/area.h"
+#include "units/physical/si/derived/frequency.h"
+#include "units/physical/si/derived/speed.h"
+#include "units/physical/si/derived/volume.h"
+#include "units/physical/si/fps/derived/speed.h"
 #include <chrono>
+#include <complex>
+#include <mutex>
+#include <string>
 #include <utility>
 
 namespace {
@@ -32,54 +39,67 @@ namespace {
 using namespace units;
 using namespace units::physical::si;
 
-// class invariants
 
-template<typename DimLength>
-concept invalid_types = requires
-{
-  requires !requires { typename quantity<DimLength, second, int>; };  // unit of a different dimension
-  requires !requires { typename quantity<DimLength, metre, quantity<DimLength, metre, int>>; };  // quantity used as Rep
-  requires !requires { typename quantity<metre, DimLength, double>; };  // reordered arguments
+//////////////////////////////
+// quantity class invariants
+//////////////////////////////
+
+static_assert(sizeof(length<metre>) == sizeof(double));
+static_assert(sizeof(length<metre, short>) == sizeof(short));
+
+#if COMP_GCC != 10 || COMP_GCC_MINOR != 2  // TODO remove when gcc 10.3 releases
+template<template<typename, typename, typename> typename Q>
+concept invalid_types = requires {
+  requires !requires { typename Q<dim_length, second, int>; };  // unit of a different dimension
+  requires !requires { typename Q<dim_length, metre, length<metre>>; };  // quantity used as Rep
+  requires !requires { typename Q<metre, dim_length, double>; };  // reordered arguments
+  requires !requires { typename Q<metre, double, dim_length>; };  // reordered arguments
 };
+static_assert(invalid_types<quantity>);
+#endif
 
-static_assert(invalid_types<dim_length>);
+static_assert(std::is_trivially_default_constructible_v<length<metre>>);
+static_assert(std::is_trivially_copy_constructible_v<length<metre>>);
+static_assert(std::is_trivially_move_constructible_v<length<metre>>);
+static_assert(std::is_trivially_copy_assignable_v<length<metre>>);
+static_assert(std::is_trivially_move_assignable_v<length<metre>>);
+static_assert(std::is_trivially_destructible_v<length<metre>>);
 
+static_assert(std::is_nothrow_default_constructible_v<length<metre>>);
+static_assert(std::is_nothrow_copy_constructible_v<length<metre>>);
+static_assert(std::is_nothrow_move_constructible_v<length<metre>>);
+static_assert(std::is_nothrow_copy_assignable_v<length<metre>>);
+static_assert(std::is_nothrow_move_assignable_v<length<metre>>);
+static_assert(std::is_nothrow_destructible_v<length<metre>>);
+
+static_assert(std::is_trivially_copyable_v<length<metre>>);
+static_assert(std::is_standard_layout_v<length<metre>>);
+
+static_assert(std::default_initializable<length<metre>>);
+static_assert(std::move_constructible<length<metre>>);
+static_assert(std::copy_constructible<length<metre>>);
+static_assert(std::equality_comparable<length<metre>>);
+static_assert(std::totally_ordered<length<metre>>);
+static_assert(std::regular<length<metre>>);
+
+static_assert(std::three_way_comparable<length<metre>>);
+
+
+//////////////////
 // member types
+//////////////////
 
-static_assert(is_same_v<length<metre, int>::rep, int>);
-static_assert(is_same_v<length<metre, double>::rep, double>);
+static_assert(is_same_v<length<metre, int>::dimension, dim_length>);
+static_assert(is_same_v<fps::length<fps::mile>::dimension, fps::dim_length>);
 static_assert(is_same_v<length<metre, int>::unit, metre>);
-static_assert(is_same_v<length<kilometre, int>::unit, kilometre>);
+static_assert(is_same_v<fps::length<fps::mile>::unit, fps::mile>);
+static_assert(is_same_v<length<metre, int>::rep, int>);
+static_assert(is_same_v<fps::length<fps::mile>::rep, double>);
 
-// constructors
 
-static_assert(length<metre, int>().count() == 0);
-constexpr length<metre, int> km{1000};
-static_assert(km.count() == 1000);
-static_assert(length<metre, int>(km).count() == km.count());
-
-static_assert(length<metre, int>(1).count() == 1);
-static_assert(!std::is_constructible_v<length<metre, int>, double>); // truncating conversion
-static_assert(length<metre, double>(1.0).count() == 1.0);
-static_assert(length<metre, double>(1).count() == 1.0);
-static_assert(length<metre, double>(3.14).count() == 3.14);
-
-static_assert(length<metre, int>(km).count() == 1000);
-static_assert(!std::is_constructible_v<length<metre, int>,
-                                       length<metre, double>>);  // truncating conversion
-static_assert(length<metre, double>(1000.0_q_m).count() == 1000.0);
-static_assert(length<metre, double>(km).count() == 1000.0);
-static_assert(length<metre, int>(1_q_km).count() == 1000);
-static_assert(!std::is_constructible_v<length<metre, int>,
-                                       physical::si::time<second, int>>);  // different dimensions
-static_assert(!std::is_constructible_v<length<kilometre, int>,
-                                       length<metre, int>>);  // truncating conversion
-
-// assignment operator
-
-static_assert([]() { length<metre, int> l1(1), l2(2); return l2 = l1; }().count() == 1);
-
+////////////////////////////
 // static member functions
+////////////////////////////
 
 static_assert(length<metre, int>::zero().count() == 0);
 static_assert(length<metre, int>::min().count() == std::numeric_limits<int>::lowest());
@@ -88,32 +108,165 @@ static_assert(length<metre, double>::zero().count() == 0.0);
 static_assert(length<metre, double>::min().count() == std::numeric_limits<double>::lowest());
 static_assert(length<metre, double>::max().count() == std::numeric_limits<double>::max());
 
-// unary member operators
 
-static_assert((+km).count() == 1000);
-static_assert((-km).count() == -1000);
-static_assert((+(-km)).count() == -1000);
-static_assert((-(-km)).count() == 1000);
+//////////////////////////////
+// construction from a value
+//////////////////////////////
 
-static_assert([](auto v) {
-  auto vv = v++;
-  return std::pair(v, vv);
-}(km) == std::pair(length<metre, int>(1001), length<metre, int>(1000)));
-static_assert([](auto v) {
-  auto vv = ++v;
-  return std::pair(v, vv);
-}(km) == std::pair(length<metre, int>(1001), length<metre, int>(1001)));
-static_assert([](auto v) {
-  auto vv = v--;
-  return std::pair(v, vv);
-}(km) == std::pair(length<metre, int>(999), length<metre, int>(1000)));
-static_assert([](auto v) {
-  auto vv = --v;
-  return std::pair(v, vv);
-}(km) == std::pair(length<metre, int>(999), length<metre, int>(999)));
+// only explicit construction from a value
+static_assert(std::constructible_from<length<metre>, double>);
+static_assert(!std::convertible_to<double, length<metre>>);
 
+static_assert(std::constructible_from<length<metre>, float>);
+static_assert(!std::convertible_to<float, length<metre>>);
+
+static_assert(std::constructible_from<length<metre, float>, double>);  // truncating implicit conversions double -> float allowed
+static_assert(!std::convertible_to<double, length<metre, float>>);
+
+static_assert(std::constructible_from<length<metre>, int>);
+static_assert(!std::convertible_to<int, length<metre>>);
+
+static_assert(std::constructible_from<length<metre>, short>);
+static_assert(!std::convertible_to<short, length<metre>>);
+
+static_assert(std::constructible_from<length<metre, short>, int>);  // truncating implicit conversions int -> short allowed
+static_assert(!std::convertible_to<int, length<metre, short>>);
+
+// exception, implicit construction from a value allowed for a dimensionless quantity
+static_assert(std::constructible_from<dimensionless<one>, double>);
+static_assert(std::convertible_to<double, dimensionless<one>>);
+
+static_assert(std::constructible_from<dimensionless<one>, float>);
+static_assert(std::convertible_to<float, dimensionless<one>>);
+
+static_assert(std::constructible_from<dimensionless<one, float>, double>);
+static_assert(std::convertible_to<double, dimensionless<one, float>>);
+
+static_assert(std::constructible_from<dimensionless<one>, int>);
+static_assert(std::convertible_to<int, dimensionless<one>>);
+
+static_assert(std::constructible_from<dimensionless<one>, short>);
+static_assert(std::convertible_to<short, dimensionless<one>>);
+
+static_assert(std::constructible_from<dimensionless<one, short>, int>);
+static_assert(std::convertible_to<int, dimensionless<one, short>>);
+
+// but only if a dimensionless quantity has a ratio(1)
+static_assert(std::constructible_from<dimensionless<percent>, double>);
+static_assert(!std::convertible_to<double, dimensionless<percent>>);
+
+static_assert(std::constructible_from<dimensionless<percent>, float>);
+static_assert(!std::convertible_to<float, dimensionless<percent>>);
+
+static_assert(std::constructible_from<dimensionless<percent, float>, double>);  // truncating implicit conversions double -> float allowed
+static_assert(!std::convertible_to<double, dimensionless<percent, float>>);
+
+static_assert(std::constructible_from<dimensionless<percent>, int>);
+static_assert(!std::convertible_to<int, dimensionless<percent>>);
+
+static_assert(std::constructible_from<dimensionless<percent>, short>);
+static_assert(!std::convertible_to<short, dimensionless<percent>>);
+
+static_assert(std::constructible_from<dimensionless<percent, short>, int>);  // truncating implicit conversions int -> short allowed
+static_assert(!std::convertible_to<int, dimensionless<percent, short>>);
+
+// floating-point to integral truncating conversion not allowed
+static_assert(!std::constructible_from<length<metre, int>, double>);
+static_assert(!std::convertible_to<double, length<metre, int>>);
+
+static_assert(!std::constructible_from<dimensionless<one, int>, double>);
+static_assert(!std::convertible_to<double, dimensionless<one, int>>);
+
+static_assert(length<metre, int>().count() == 0); // value initialization
+static_assert(length<metre, int>(1).count() == 1);
+static_assert(length<metre, double>(1.0).count() == 1.0);
+static_assert(length<metre, double>(1).count() == 1.0);
+static_assert(length<metre, double>(3.14).count() == 3.14);
+
+
+///////////////////////////////////////
+// construction from another quantity
+///////////////////////////////////////
+
+// conversion only between equivalent dimensions
+static_assert(std::constructible_from<length<metre>, length<metre>>);
+static_assert(std::convertible_to<length<metre>, length<metre>>);
+static_assert(std::constructible_from<length<centimetre>, cgs::length<cgs::centimetre>>);
+static_assert(std::convertible_to<cgs::length<cgs::centimetre>, length<centimetre>>);
+static_assert(std::constructible_from<fps::length<fps::foot>, cgs::length<cgs::centimetre>>);
+static_assert(std::convertible_to<cgs::length<cgs::centimetre>, fps::length<fps::foot>>);
+
+// conversion between different dimensions not allowed
+static_assert(!std::constructible_from<length<metre>, physical::si::time<second>>);
+static_assert(!std::convertible_to<physical::si::time<second>, length<metre>>);
+static_assert(!std::constructible_from<length<metre>, speed<metre_per_second>>);
+static_assert(!std::convertible_to<speed<metre_per_second>, length<metre>>);
+
+// implicit conversion from another quantity only if non-truncating
+static_assert(std::constructible_from<length<metre>, length<metre, int>>);  // int -> double OK
+static_assert(std::convertible_to<length<metre, int>, length<metre>>);  // int -> double OK
+
+static_assert(!std::constructible_from<length<metre, int>, length<metre>>);  // truncating double -> int not allowed
+static_assert(!std::convertible_to<length<metre>, length<metre, int>>);  // truncating double -> int not allowed
+
+static_assert(std::constructible_from<length<metre, int>, length<kilometre, int>>);  // kilometre<int> -> metre<int> OK
+static_assert(std::convertible_to<length<kilometre, int>, length<metre, int>>);  // kilometre<int> -> metre<int> OK
+
+static_assert(!std::constructible_from<length<kilometre, int>, length<metre, int>>);  // truncating metre<int> -> kilometre<int> not allowed
+static_assert(!std::convertible_to<length<metre, int>, length<kilometre, int>>);  // truncating metre<int> -> kilometre<int> not allowed
+
+// converting to double always OK
+static_assert(std::constructible_from<length<metre>, length<kilometre, int>>);  
+static_assert(std::convertible_to<length<kilometre, int>, length<metre>>);
+static_assert(std::constructible_from<length<kilometre>, length<metre, int>>);
+static_assert(std::convertible_to<length<metre, int>, length<kilometre>>);
+
+static_assert(length<metre, int>(123_q_m).count() == 123);
+static_assert(length<kilometre, int>(2_q_km).count() == 2);
+static_assert(length<metre, int>(2_q_km).count() == 2000);
+static_assert(length<kilometre>(1500_q_m).count() == 1.5);
+
+
+/////////
+// CTAD
+/////////
+
+static_assert(std::is_same_v<decltype(quantity{length<metre, int>(123)}), length<metre, int>>);
+static_assert(std::is_same_v<decltype(quantity{speed<metre_per_second>(123)}), speed<metre_per_second>>);
+// static_assert(std::is_same_v<decltype(length{length<metre, int>(123)}), length<metre, int>>);   // TODO gcc ICE
+static_assert(std::is_same_v<decltype(quantity{123_q_m}), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(quantity{1}), dimensionless<one, int>>);
+static_assert(std::is_same_v<decltype(quantity{1.23}), dimensionless<one, double>>);
+
+
+////////////////////////
+// assignment operator
+////////////////////////
+
+static_assert([]() { length<metre, int> l1(1), l2(2); return l2 = l1; }().count() == 1);
+static_assert([]() { length<metre, int> l1(1), l2(2); return l2 = std::move(l1); }().count() == 1);
+
+
+////////////////////
+// unary operators
+////////////////////
+
+static_assert((+123_q_m).count() == 123);
+static_assert((-123_q_m).count() == -123);
+static_assert((+(-123_q_m)).count() == -123);
+static_assert((-(-123_q_m)).count() == 123);
+
+static_assert([](auto v) { auto vv = v++; return std::pair(v, vv); }(123_q_m) == std::pair(124_q_m, 123_q_m));
+static_assert([](auto v) { auto vv = ++v; return std::pair(v, vv); }(123_q_m) == std::pair(124_q_m, 124_q_m));
+static_assert([](auto v) { auto vv = v--; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 123_q_m));
+static_assert([](auto v) { auto vv = --v; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 122_q_m));
+
+
+////////////////////////
 // compound assignment
+////////////////////////
 
+// same type
 static_assert((1_q_m += 1_q_m).count() == 2);
 static_assert((2_q_m -= 1_q_m).count() == 1);
 static_assert((1_q_m *= 2).count() == 2);
@@ -121,190 +274,372 @@ static_assert((2_q_m /= 2).count() == 1);
 static_assert((7_q_m %= 2).count() == 1);
 static_assert((7_q_m %= 2_q_m).count() == 1);
 
+// different types
 static_assert((2.5_q_m += 3_q_m).count() == 5.5);
-static_assert((2.5_q_m += 3.5_q_m).count() == 6);
-
+static_assert((123_q_m += 1_q_km).count() == 1123);
+static_assert((5.5_q_m -= 3_q_m).count() == 2.5);
+static_assert((1123_q_m -= 1_q_km).count() == 123);
 static_assert((2.5_q_m *= 3).count() == 7.5);
-static_assert((2.5_q_m *= 3.5).count() == 8.75);
+static_assert((7.5_q_m /= 3).count() == 2.5);
+static_assert((3500_q_m %= 1_q_km).count() == 500);
 
-// operations not allowed for the respective quantities
 template<typename Metre>
-concept invalid_compound_assignments = requires()
-{
+concept invalid_compound_assignments = requires() {
+  // truncating not allowed
+  requires !requires(length<Metre, int> l) { l += 2.5_q_m; };
+  requires !requires(length<Metre, int> l) { l -= 2.5_q_m; };
+  requires !requires(length<kilometre, int> l) { l += length<Metre, int>(2); };
+  requires !requires(length<kilometre, int> l) { l -= length<Metre, int>(2); };
+  requires !requires(length<kilometre, int> l) { l %= length<Metre, int>(2); };
+
+  // only quantities can be added or subtracted
+  requires !requires(length<Metre, int> l) { l += 2; };
+  requires !requires(length<Metre, int> l) { l -= 2; };
+
+  // compound multiply/divide by another quantity not allowed
+  requires !requires(length<Metre, int> l) { l *= 2_q_m; };
+  requires !requires(length<Metre, int> l) { l /= 2_q_m; };
+
+  // modulo operations on a floating point representation not allowed
   requires !requires(length<Metre, double> l) { l %= 2.; };
   requires !requires(length<Metre, double> l) { l %= 2; };
-  requires !requires(length<Metre, int> l) { l %= 2.; };
   requires !requires(length<Metre, double> l) { l %= 2._q_m; };
   requires !requires(length<Metre, double> l) { l %= 2_q_m; };
   requires !requires(length<Metre, int> l) { l %= 2._q_m; };
-  requires !requires(length<Metre, int> l) { l += 3.5_q_m; };
-  requires !requires(length<Metre, int> l) { l *= 3.5_q_m; };
 };
-
 static_assert(invalid_compound_assignments<metre>);
 
-// non-member arithmetic operators
 
-static_assert(compare<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
-static_assert(compare<decltype(length<metre, int>() + length<metre, double>()), length<metre, double>>);
-static_assert(compare<decltype(length<kilometre, int>() + length<metre, double>()), length<metre, double>>);
-static_assert(compare<decltype(length<metre, double>() - length<metre, int>()), length<metre, double>>);
-static_assert(compare<decltype(length<kilometre, double>() - length<metre, int>()), length<metre, double>>);
-static_assert(compare<decltype(length<metre, int>() * 1.0), length<metre, double>>);
-static_assert(compare<decltype(1.0 * length<metre, int>()), length<metre, double>>);
-static_assert(
-    compare<decltype(speed<metre_per_second, int>() * physical::si::time<second, int>()), length<metre, int>>);
-static_assert(
-    compare<decltype(speed<metre_per_second, int>() * physical::si::time<hour, int>()), length<scaled_unit<ratio(36, 1, 2), metre>, int>>);
-static_assert(compare<decltype(length<metre>() * physical::si::time<minute>()),
-              quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6, 1, 1), unknown_coherent_unit>>>);
-static_assert(compare<decltype(1 / physical::si::time<second, int>()), frequency<hertz, int>>);
-static_assert(compare<decltype(1 / physical::si::time<minute, int>()), frequency<scaled_unit<ratio(1, 6, -1), hertz>, int>>);
-static_assert(compare<decltype(1 / frequency<hertz, int>()), physical::si::time<second, int>>);
-static_assert(compare<decltype(1 / length<kilometre>()),
-              quantity<unknown_dimension<units::exponent<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>>>);
-static_assert(compare<decltype(length<metre, int>() / 1.0), length<metre, double>>);
-static_assert(compare<decltype(length<metre, int>() / length<metre, double>()), dimensionless<one, double>>);
-static_assert(compare<decltype(length<kilometre, int>() / length<metre, double>()), dimensionless<scaled_unit<ratio(1, 1, 3), one>, double>>);
-static_assert(
-    compare<decltype(length<metre, int>() / physical::si::time<second, int>()), speed<metre_per_second, int>>);
-static_assert(
-    compare<decltype(length<metre>() / physical::si::time<minute>()), speed<scaled_unit<ratio(1, 6, -1), metre_per_second>>>);
-static_assert(compare<decltype(physical::si::time<minute>() / length<metre>()),
-              quantity<unknown_dimension<units::exponent<dim_length, -1>, units::exponent<dim_time, 1>>, scaled_unit<ratio(6 ,1 , 1), unknown_coherent_unit>>>);
-static_assert(compare<decltype(length<metre, int>() % short(1)), length<metre, int>>);
-static_assert(compare<decltype(length<metre, int>() % length<metre, short>(1)), length<metre, int>>);
+////////////////////
+// binary operators
+////////////////////
 
-static_assert((1_q_m + km).count() == 1001);
+template<typename Metre>
+concept invalid_binary_operations = requires {
+  // no crossdimensional addition and subtraction
+  requires !requires { 1_q_s + length<Metre, int>(1); };
+  requires !requires { 1_q_s - length<Metre, int>(1); };
+
+  // no floating-point modulo
+  requires !requires(length<Metre, double> a) { a % 2_q_m; };
+  requires !requires(length<Metre, double> a) { 2_q_m % a; };
+  requires !requires(length<Metre, double> a) { a % 2; };
+  requires !requires(length<Metre, double> a, length<Metre, double> b) { a % b; };
+  requires !requires(length<Metre, double> a, length<Metre, int> b) { a % b; };
+  requires !requires(length<Metre, double> a, length<Metre, int> b) { b % a; };
+};
+static_assert(invalid_binary_operations<metre>);
+
+// same representation type
+static_assert(std::is_same_v<decltype(1_q_m + 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m - 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m * 1), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m * quantity{1}), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1 * 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(quantity{1} * 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m / 1), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m / quantity{1}), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m % 1), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m % quantity{1}), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_m % 1_q_m), length<metre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m * dimensionless<percent, std::int64_t>(1)), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) * 1_q_m), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m / dimensionless<percent, std::int64_t>(1)), length<hectometre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % dimensionless<percent, std::int64_t>(1)), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m * 1_q_m), area<square_metre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m / 1_q_m), dimensionless<one, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_s), frequency<hertz, std::int64_t>>);
+static_assert(compare<decltype(quantity{1} / 1_q_s), frequency<hertz, std::int64_t>>);
+static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1_q_s), frequency<scaled_unit<ratio(1, 100), hertz>, std::int64_t>>);
+
+// different representation types
+static_assert(std::is_same_v<decltype(1_q_m + 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m - 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m * 1.L), length<metre, long double>>);  // TODO should we address fundamental types implicit truncating conversions with concepts?
+static_assert(std::is_same_v<decltype(1 * 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m * quantity{1.L}), length<metre, long double>>);  // TODO should we address fundamental types implicit truncating conversions with concepts?
+static_assert(std::is_same_v<decltype(quantity{1} * 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m / 1.L), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m / quantity{1.L}), length<metre, long double>>);
+static_assert(compare<decltype(1_q_m * dimensionless<percent, long double>(1)), length<centimetre, long double>>);
+static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) * 1._q_m), length<centimetre, long double>>);
+static_assert(compare<decltype(1_q_m * 1._q_m), area<square_metre, long double>>);
+static_assert(compare<decltype(1_q_m / dimensionless<percent, long double>(1)), length<hectometre, long double>>);
+static_assert(compare<decltype(1_q_m / 1._q_m), dimensionless<one, long double>>);
+static_assert(compare<decltype(1 / 1._q_s), frequency<hertz, long double>>);
+static_assert(compare<decltype(quantity{1} / 1._q_s), frequency<hertz, long double>>);
+static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1._q_s), frequency<scaled_unit<ratio(1, 100), hertz>, long double>>);
+static_assert(compare<decltype(1_q_m % short(1)), length<metre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % quantity{short(1)}), length<metre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % dimensionless<percent, short>(1)), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % length<metre, short>(1)), length<metre, std::int64_t>>);
+
+static_assert(std::is_same_v<decltype(1._q_m + 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m - 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m * 1), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1.L * 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m * quantity{1}), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(quantity{1.L} * 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m / 1), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m / quantity{1}), length<metre, long double>>);
+static_assert(compare<decltype(1._q_m * dimensionless<percent, std::int64_t>(1)), length<centimetre, long double>>);
+static_assert(compare<decltype(dimensionless<percent, long double>(1) * 1_q_m), length<centimetre, long double>>);
+static_assert(compare<decltype(1._q_m / dimensionless<percent, std::int64_t>(1)), length<hectometre, long double>>);
+static_assert(compare<decltype(1._q_m * 1_q_m), area<square_metre, long double>>);
+static_assert(compare<decltype(1._q_m / 1_q_m), dimensionless<one, long double>>);
+static_assert(compare<decltype(1.L / 1_q_s), frequency<hertz, long double>>);
+static_assert(compare<decltype(quantity{1.L} / 1_q_s), frequency<hertz, long double>>);
+static_assert(compare<decltype(dimensionless<percent, long double>(1) / 1_q_s), frequency<scaled_unit<ratio(1, 100), hertz>, long double>>);
+
+// different units
+static_assert(std::is_same_v<decltype(1_q_m + 1_q_km), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1._q_m + 1_q_km), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m + 1._q_km), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m + 1._q_km), length<metre, long double>>);
+
+static_assert(std::is_same_v<decltype(1_q_km + 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1._q_km + 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_km + 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_km + 1._q_m), length<metre, long double>>);
+
+static_assert(std::is_same_v<decltype(1_q_m - 1_q_km), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1._q_m - 1_q_km), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_m - 1._q_km), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_m - 1._q_km), length<metre, long double>>);
+
+static_assert(std::is_same_v<decltype(1_q_km - 1_q_m), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1._q_km - 1_q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1_q_km - 1._q_m), length<metre, long double>>);
+static_assert(std::is_same_v<decltype(1._q_km - 1._q_m), length<metre, long double>>);
+
+static_assert(std::is_same_v<decltype(1_q_m % 1_q_km), length<metre, std::int64_t>>);
+static_assert(std::is_same_v<decltype(1_q_km % 1_q_m), length<metre, std::int64_t>>);
+
+// different dimensions
+static_assert(compare<decltype(1_q_m_per_s * 1_q_s), length<metre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<ratio(36, 1, 2), metre>, std::int64_t>>);
+static_assert(compare<decltype(1_q_m * 1_q_min), quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>, scaled_unit<ratio(60), unknown_coherent_unit>, std::int64_t>>);
+static_assert(compare<decltype(1_q_s * 1_q_Hz), dimensionless<one, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_min), frequency<scaled_unit<ratio(1, 60), hertz>, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_Hz), physical::si::time<second, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_km), quantity<unknown_dimension<exponent<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>, std::int64_t>>);
+static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<ratio(1000), one>, std::int64_t>>);
+static_assert(compare<decltype(1_q_m / 1_q_s), speed<metre_per_second, std::int64_t>>);
+static_assert(compare<decltype(1_q_m / 1_q_min), speed<scaled_unit<ratio(1, 60), metre_per_second>, std::int64_t>>);
+static_assert(compare<decltype(1_q_min / 1_q_m), quantity<unknown_dimension<exponent<dim_length, -1>, exponent<dim_time, 1>>, scaled_unit<ratio(60), unknown_coherent_unit>, std::int64_t>>);
+
+static_assert((1_q_m + 1_q_m).count() == 2);
 static_assert((1_q_m + 1_q_km).count() == 1001);
-static_assert((km - 1_q_m).count() == 999);
+static_assert((1_q_km + 1_q_m).count() == 1001);
+static_assert((2_q_m - 1_q_m).count() == 1);
 static_assert((1_q_km - 1_q_m).count() == 999);
 static_assert((2_q_m * 2).count() == 4);
+static_assert((2_q_m * quantity{2}).count() == 4);
+static_assert((2_q_m * dimensionless<percent, int>(2)).count() == 4);
 static_assert((3 * 3_q_m).count() == 9);
+static_assert((quantity{3} * 3_q_m).count() == 9);
+static_assert((dimensionless<percent, int>(3) * 3_q_m).count() == 9);
 static_assert((4_q_m / 2).count() == 2);
+static_assert((4_q_m / quantity{2}).count() == 2);
+static_assert((4_q_m / dimensionless<percent, int>(2)).count() == 2);
 static_assert((4_q_km / 2_q_m).count() == 2);
 static_assert((4000_q_m / 2_q_m).count() == 2000);
+
+static_assert((1.5_q_m + 1_q_m).count() == 2.5);
+static_assert((1.5_q_m + 1_q_km).count() == 1001.5);
+static_assert((1.5_q_km + 1_q_m).count() == 1501);
+static_assert((2.5_q_m - 1_q_m).count() == 1.5);
+static_assert((1.5_q_km - 1_q_m).count() == 1499);
+static_assert((2.5_q_m * 2).count() == 5);
+static_assert((2.5_q_m * quantity{2}).count() == 5);
+static_assert((2.5_q_m * dimensionless<percent, int>(2)).count() == 5);
+static_assert((2.5L * 2_q_m).count() == 5);
+static_assert((quantity{2.5L} * 2_q_m).count() == 5);
+static_assert((dimensionless<percent, long double>(2.5L) * 2_q_m).count() == 5);
+static_assert((5._q_m / 2).count() == 2.5);
+static_assert((5._q_m / quantity{2}).count() == 2.5);
+static_assert((5._q_m / dimensionless<percent, int>(2)).count() == 2.5);
+static_assert((5._q_km / 2_q_m).count() == 2.5);
+static_assert((5000._q_m / 2_q_m).count() == 2500);
+
+static_assert((1_q_m + 1.5_q_m).count() == 2.5);
+static_assert((1_q_m + 1.5_q_km).count() == 1501);
+static_assert((1_q_km + 1.5_q_m).count() == 1001.5);
+static_assert((2_q_m - 1.5_q_m).count() == 0.5);
+static_assert((1_q_km - 1.5_q_m).count() == 998.5);
+static_assert((2_q_m * 2.5L).count() == 5);
+static_assert((2_q_m * quantity{2.5L}).count() == 5);
+static_assert((2_q_m * dimensionless<percent, long double>(2.5L)).count() == 5);
+static_assert((2 * 2.5_q_m).count() == 5);
+static_assert((quantity{2} * 2.5_q_m).count() == 5);
+static_assert((dimensionless<percent, int>(2) * 2.5_q_m).count() == 5);
+static_assert((5_q_m / 2.5L).count() == 2);
+static_assert((5_q_m / quantity{2.5L}).count() == 2);
+static_assert((5_q_m / dimensionless<percent, long double>(2.5L)).count() == 2);
+static_assert((5_q_km / 2.5_q_m).count() == 2);
+static_assert((5000_q_m / 2.5_q_m).count() == 2000);
+
 static_assert((7_q_m % 2).count() == 1);
+static_assert((7_q_m % quantity{2}).count() == 1);
+static_assert((7_q_m % dimensionless<percent, int>(2)).count() == 1);
 static_assert((7_q_m % 2_q_m).count() == 1);
 static_assert((7_q_km % 2000_q_m).count() == 1000);
 
 static_assert((10_q_km2 * 10_q_km2) / 50_q_km2 == 2_q_km2);
 
-constexpr auto q1 = 10_q_km / 5_q_m;
-static_assert(compare<decltype(q1), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
-static_assert(q1.count() == 2);
-
-constexpr dimensionless<one> q2 = q1;
-static_assert(q2.count() == 2000);
+static_assert((10_q_km / 5_q_m).count() == 2);
+static_assert(dimensionless<one>(10_q_km / 5_q_m).count() == 2000);
 
 #if UNITS_DOWNCAST_MODE == 0
-static_assert(quantity_cast<dim_one, one>(q1).count() == 2000);
+static_assert(quantity_cast<dim_one, one>(10_q_km / 5_q_m).count() == 2000);
 #else
-static_assert(quantity_cast<one>(q1).count() == 2000);
+static_assert(quantity_cast<one>(10_q_km / 5_q_m).count() == 2000);
 #endif
 
-constexpr auto q3 = 10_q_s * 2_q_kHz;
-static_assert(compare<decltype(q3), const dimensionless<scaled_unit<ratio(1, 1, 3), one>, std::int64_t>>);
-static_assert(q3.count() == 20);
+static_assert((10_q_s * 2_q_kHz).count() == 20);
 
-// comparators
 
-static_assert(2_q_m + 1_q_m == 3_q_m);
-static_assert(!(2_q_m + 2_q_m == 3_q_m));
-static_assert(2_q_m + 2_q_m != 3_q_m);
-static_assert(!(2_q_m + 2_q_m != 4_q_m));
-static_assert(2_q_m > 1_q_m);
-static_assert(!(1_q_m > 1_q_m));
-static_assert(1_q_m < 2_q_m);
-static_assert(!(2_q_m < 2_q_m));
-static_assert(2_q_m >= 1_q_m);
-static_assert(2_q_m >= 2_q_m);
-static_assert(!(2_q_m >= 3_q_m));
-static_assert(1_q_m <= 2_q_m);
-static_assert(2_q_m <= 2_q_m);
-static_assert(!(3_q_m <= 2_q_m));
+// dimensionless
 
-static_assert(3_q_m == 3.0_q_m);
-static_assert(3_q_m != 3.14_q_m);
-static_assert(2_q_m > 1.0_q_m);
-static_assert(1.0_q_m < 2_q_m);
-static_assert(2.0_q_m >= 1_q_m);
-static_assert(1_q_m <= 2.0_q_m);
+static_assert(quantity{1} + quantity{1} == 2);
+static_assert(1 + quantity{1} == 2);
+static_assert(quantity{1} + 1 == 2);
+static_assert(quantity{2} - quantity{1} == 1);
+static_assert(2 - quantity{1} == 1);
+static_assert(quantity{2} - 1 == 1);
+static_assert(quantity{2} * quantity{2} == 4);
+static_assert(2 * quantity{2} == 4);
+static_assert(quantity{2} * 2 == 4);
+static_assert(quantity{4} / quantity{2} == 2);
+static_assert(4 / quantity{2} == 2);
+static_assert(quantity{4} / 2 == 2);
+static_assert(quantity{4} % quantity{2} == 0);
+static_assert(4 % quantity{2} == 0);
+static_assert(quantity{4} % 2 == 0);
 
-static_assert(1000_q_m == 1_q_km);
-static_assert(1001_q_m != 1_q_km);
-static_assert(1001_q_m > 1_q_km);
-static_assert(999_q_m < 1_q_km);
-static_assert(1000_q_m >= 1_q_km);
-static_assert(1000_q_m <= 1_q_km);
 
-// alias units
+///////////////////////
+// equality operators
+///////////////////////
 
-static_assert(2_q_l + 2_q_ml == 2002_q_ml);
-static_assert(2_q_l + 2_q_ml == 2002_q_cm3);
-static_assert(2_q_l + 2_q_cm3 == 2002_q_ml);
-static_assert(2_q_dm3 + 2_q_cm3 == 2002_q_ml);
+template<typename Metre>
+concept no_crossdimensional_equality = requires {
+  requires !requires { 1_q_s == length<Metre, int>(1); };
+  requires !requires { 1_q_s != length<Metre, int>(1); };
+};
+static_assert(no_crossdimensional_equality<metre>);
 
-// is_quantity
+// same type
+static_assert(length<metre, int>(123) == length<metre, int>(123));
+static_assert(length<metre, int>(321) != length<metre, int>(123));
+static_assert(!(length<metre, int>(123) == length<metre, int>(321)));
+static_assert(!(length<metre, int>(123) != length<metre, int>(123)));
 
-static_assert(Quantity<length<millimetre, int>>);
+// different types
+static_assert(length<metre, double>(123) == length<metre, int>(123));
+static_assert(length<metre, double>(321) != length<metre, int>(123));
+static_assert(!(length<metre, double>(123) == length<metre, int>(321)));
+static_assert(!(length<metre, double>(123) != length<metre, int>(123)));
 
-// common_quantity
+static_assert(length<kilometre, int>(123) == length<metre, int>(123000));
+static_assert(length<kilometre, int>(321) != length<metre, int>(123000));
+static_assert(!(length<kilometre, int>(123) == length<metre, int>(321000)));
+static_assert(!(length<kilometre, int>(123) != length<metre, int>(123000)));
 
-static_assert(compare<common_quantity<length<metre, int>, length<kilometre, int>>, length<metre, int>>);
-static_assert(compare<common_quantity<length<kilometre, long long>, length<metre, int>>, length<metre, long long>>);
-static_assert(
-    compare<common_quantity<length<kilometre, long long>, length<millimetre, double>>, length<millimetre, double>>);
+// dimensionless
 
-// common_type
+static_assert(quantity{123} == 123);
+static_assert(quantity{321} != 123);
+static_assert(123 == quantity{123});
+static_assert(123 != quantity{321});
 
-using namespace units::physical::si::us::literals;
 
-static_assert(std::equality_comparable<decltype(1_q_m)>);
-static_assert(std::equality_comparable_with<decltype(1_q_m), decltype(1_q_cm)>);
-static_assert(0_q_m == 0_q_ft_us);
-static_assert(std::equality_comparable_with<decltype(1_q_m), decltype(1_q_ft_us)>);
+///////////////////////
+// ordering operators
+///////////////////////
+
+template<typename Metre>
+concept no_crossdimensional_ordering = requires {
+  requires !requires { 1_q_s < length<Metre, int>(1); };
+  requires !requires { 1_q_s > length<Metre, int>(1); };
+  requires !requires { 1_q_s <= length<Metre, int>(1); };
+  requires !requires { 1_q_s >= length<Metre, int>(1); };
+};
+static_assert(no_crossdimensional_ordering<metre>);
+
+// same type
+static_assert(length<metre, int>(123) < length<metre, int>(321));
+static_assert(length<metre, int>(123) <= length<metre, int>(123));
+static_assert(length<metre, int>(123) <= length<metre, int>(321));
+static_assert(length<metre, int>(321) > length<metre, int>(123));
+static_assert(length<metre, int>(123) >= length<metre, int>(123));
+static_assert(length<metre, int>(321) >= length<metre, int>(123));
+static_assert(!(length<metre, int>(321) < length<metre, int>(123)));
+static_assert(!(length<metre, int>(123) < length<metre, int>(123)));
+static_assert(!(length<metre, int>(321) <= length<metre, int>(123)));
+static_assert(!(length<metre, int>(123) > length<metre, int>(321)));
+static_assert(!(length<metre, int>(123) > length<metre, int>(123)));
+static_assert(!(length<metre, int>(123) >= length<metre, int>(321)));
+
+// different types
+static_assert(length<metre, double>(123) < length<metre, int>(321));
+static_assert(length<metre, double>(123) <= length<metre, int>(123));
+static_assert(length<metre, double>(123) <= length<metre, int>(321));
+static_assert(length<metre, double>(321) > length<metre, int>(123));
+static_assert(length<metre, double>(123) >= length<metre, int>(123));
+static_assert(length<metre, double>(321) >= length<metre, int>(123));
+static_assert(!(length<metre, double>(321) < length<metre, int>(123)));
+static_assert(!(length<metre, double>(123) < length<metre, int>(123)));
+static_assert(!(length<metre, double>(321) <= length<metre, int>(123)));
+static_assert(!(length<metre, double>(123) > length<metre, int>(321)));
+static_assert(!(length<metre, double>(123) > length<metre, int>(123)));
+static_assert(!(length<metre, double>(123) >= length<metre, int>(321)));
+
+static_assert(length<kilometre, int>(123) < length<metre, int>(321000));
+static_assert(length<kilometre, int>(123) <= length<metre, int>(123000));
+static_assert(length<kilometre, int>(123) <= length<metre, int>(321000));
+static_assert(length<kilometre, int>(321) > length<metre, int>(123000));
+static_assert(length<kilometre, int>(123) >= length<metre, int>(123000));
+static_assert(length<kilometre, int>(321) >= length<metre, int>(123000));
+static_assert(!(length<kilometre, int>(321) < length<metre, int>(123000)));
+static_assert(!(length<kilometre, int>(123) < length<metre, int>(123000)));
+static_assert(!(length<kilometre, int>(321) <= length<metre, int>(123000)));
+static_assert(!(length<kilometre, int>(123) > length<metre, int>(321000)));
+static_assert(!(length<kilometre, int>(123) > length<metre, int>(123000)));
+static_assert(!(length<kilometre, int>(123) >= length<metre, int>(321000)));
+
+// dimensionless
+
+static_assert(quantity{123} < 321);
+static_assert(quantity{123} <= 123);
+static_assert(quantity{123} <= 321);
+static_assert(quantity{321} > 123);
+static_assert(quantity{123} >= 123);
+static_assert(quantity{321} >= 123);
+
+static_assert(123 < quantity{321});
+static_assert(123 <= quantity{123});
+static_assert(123 <= quantity{321});
+static_assert(321 > quantity{123});
+static_assert(123 >= quantity{123});
+static_assert(321 >= quantity{123});
+
+
+//////////////////
+// dimensionless
+//////////////////
+
 static_assert(std::equality_comparable_with<dimensionless<one>, int>);
 static_assert(std::equality_comparable_with<dimensionless<one>, double>);
 static_assert(std::equality_comparable_with<dimensionless<one, int>, int>);
 static_assert(!std::equality_comparable_with<dimensionless<one, int>, double>);
 
-// quantity_cast
-
-static_assert(compare<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2_q_km))::unit, metre>);
-
-static_assert(quantity_cast<length<metre, int>>(2_q_km).count() == 2000);
-static_assert(quantity_cast<length<kilometre, int>>(2000_q_m).count() == 2);
-static_assert(quantity_cast<length<metre, int>>(1.23_q_m).count() == 1);
-static_assert(quantity_cast<metre>(2_q_km).count() == 2000);
-static_assert(quantity_cast<kilometre>(2000_q_m).count() == 2);
-static_assert(quantity_cast<int>(1.23_q_m).count() == 1);
-static_assert(quantity_cast<dim_speed, kilometre_per_hour>(2000.0_q_m / 3600.0_q_s).count() == 2);
-
-// dimensionless
-
-static_assert(std::is_convertible_v<double, dimensionless<one>>);
-static_assert(std::is_convertible_v<float, dimensionless<one>>);
-static_assert(!std::is_convertible_v<double, dimensionless<one, int>>);
-static_assert(std::is_convertible_v<int, dimensionless<one>>);
-
-static_assert(!std::is_convertible_v<double, dimensionless<scaled_unit<ratio(1, 1, 1), one>>>);
-static_assert(std::is_constructible_v<dimensionless<scaled_unit<ratio(1, 1, 1), one>>, double>);
-
-static_assert(dimensionless<one>(1.23) + dimensionless<one>(1.23) == dimensionless<one>(2.46));
-static_assert(dimensionless<one>(1.23) + dimensionless<one>(1.23) == 2.46);
-static_assert(dimensionless<one>(1.23) + 1.23 == 2.46);
-static_assert(1.23 + dimensionless<one>(1.23) == 2.46);
-static_assert(dimensionless<one>(1) + 1 == 2);
-static_assert(dimensionless<one, int>(1) + 1 == 2);
-
 template<typename Int>
-concept invalid_dimensionless_operations = requires
-{
+concept invalid_dimensionless_operations = requires {
   requires !requires(dimensionless<one, Int> d) { d + 1.23; };
   requires !requires(dimensionless<one, Int> d) { 1.23 + d; };
-  requires !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { 1 + d; };
-  requires !requires(dimensionless<scaled_unit<ratio(1, 1, 1), one>, Int> d) { d + 1; };
+  requires !requires(dimensionless<percent, Int> d) { 1 + d; };
+  requires !requires(dimensionless<percent, Int> d) { d + 1; };
 };
 static_assert(invalid_dimensionless_operations<int>);
 
@@ -319,36 +654,36 @@ static_assert(50._q_m / 100._q_m == dimensionless<percent>(50));
 
 static_assert(dimensionless<one>(dimensionless<percent>(50)).count() == 0.5);
 
-static_assert(std::is_same_v<decltype(quantity{1}), dimensionless<one, int>>);
-static_assert(std::is_same_v<decltype(quantity{1.23}), dimensionless<one, double>>);
 
-// time
+////////////////
+// alias units
+////////////////
 
-static_assert(1_q_h == 3600_q_s);
+static_assert(compare<decltype(2_q_l + 2_q_ml), volume<cubic_centimetre, std::int64_t>>);
+static_assert(2_q_l + 2_q_ml == 2002_q_cm3);
+static_assert(2_q_l + 2_q_ml == 2002_q_ml);
+static_assert(2_q_l + 2_q_cm3 == 2002_q_ml);
+static_assert(2_q_dm3 + 2_q_cm3 == 2002_q_ml);
 
-template<typename Metre>
-concept no_crossdimensional_equality = !requires { 1_q_s == length<Metre, int>(1); };
 
-static_assert(no_crossdimensional_equality<metre>);
+//////////////////
+// quantity_cast
+//////////////////
 
-// length
+static_assert(compare<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2_q_km))::unit, metre>);
 
-static_assert(1_q_km == 1000_q_m);
-static_assert(1_q_km + 1_q_m == 1001_q_m);
-static_assert(10_q_km / 5_q_km == 2);
-static_assert(10_q_km / 2 == 5_q_km);
+static_assert(quantity_cast<length<metre, int>>(2_q_km).count() == 2000);
+static_assert(quantity_cast<length<kilometre, int>>(2000_q_m).count() == 2);
+static_assert(quantity_cast<length<metre, int>>(1.23_q_m).count() == 1);
+static_assert(quantity_cast<metre>(2_q_km).count() == 2000);
+static_assert(quantity_cast<kilometre>(2000_q_m).count() == 2);
+static_assert(quantity_cast<int>(1.23_q_m).count() == 1);
+static_assert(quantity_cast<dim_speed, kilometre_per_hour>(2000.0_q_m / 3600.0_q_s).count() == 2);
 
-// speed
 
-static_assert(10_q_m / 5_q_s == 2_q_m_per_s);
-static_assert(10 / 5_q_s * 1_q_m == 2_q_m_per_s);
-static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);
-static_assert(2_q_km_per_h * 2_q_h == 4_q_km);
-static_assert(2_q_km / 2_q_km_per_h == 1_q_h);
-
-static_assert(compare<decltype(pow<2>(2_q_m)), decltype(4_q_m2)>);
-
+////////////////
 // downcasting
+////////////////
 
 #if UNITS_DOWNCAST_MODE == 0
 

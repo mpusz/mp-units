@@ -32,7 +32,7 @@ namespace units::physical::si::cgs {
 struct centimetre_per_second : unit<centimetre_per_second> {};
 struct dim_speed : physical::dim_speed<dim_speed, centimetre_per_second, dim_length, dim_time> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_speed> U, QuantityValue Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
 inline namespace literals {

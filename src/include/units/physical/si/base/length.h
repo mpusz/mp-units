@@ -54,7 +54,7 @@ struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix,
 
 struct dim_length : physical::dim_length<metre> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_length> U, QuantityValue Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {

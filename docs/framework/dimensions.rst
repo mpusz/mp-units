@@ -58,8 +58,8 @@ dimension, than we will end up with just a scalable number type:
     Time auto dur1 = 10_q_s;
     Time auto dur2 = 2_q_s;
     Frequency auto fr1 = 5_q_Hz;
-    ScalableNumber auto v1 = dur1 / dur2;    // 5
-    ScalableNumber auto v2 = dur1 * fr1;     // 50
+    QuantityValue auto v1 = dur1 / dur2;    // 5
+    QuantityValue auto v2 = dur1 * fr1;     // 50
 
 Quantity points have a more restricted set of operations.
 Quantity points can't be added together,

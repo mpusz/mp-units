@@ -32,7 +32,7 @@ struct pound : named_scaled_unit<pound, "lb", no_prefix, ratio(45'359'237, 100'0
 
 struct dim_mass : physical::dim_mass<pound> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_mass> U, QuantityValue Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
 struct grain : named_scaled_unit<grain, "gr", no_prefix, ratio(1, 7000), pound>{};

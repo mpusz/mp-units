@@ -31,7 +31,7 @@ namespace units::physical::si {
 struct metre_per_second_sq : unit<metre_per_second_sq> {};
 struct dim_acceleration : physical::dim_acceleration<dim_acceleration, metre_per_second_sq, dim_length, dim_time> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_acceleration> U, QuantityValue Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {

@@ -25,6 +25,7 @@
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
+#include <units/customization_points.h>
 #include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
 #include <functional>
@@ -229,6 +230,34 @@ template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
 
 
+// QuantityValue
+
+template<typename T, typename U>
+concept common_type_with_ =
+  std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
+  std::constructible_from<std::common_type_t<T, U>, T> &&
+  std::constructible_from<std::common_type_t<T, U>, U>;
+
+template<typename T, typename U = T>
+concept scalable_number_ = // exposition only
+  std::regular_invocable<std::multiplies<>, T, U> &&
+  std::regular_invocable<std::divides<>, T, U>;
+
+template<typename T>
+concept castable_number_ = // exposition only
+  common_type_with_<T, std::intmax_t> &&
+  scalable_number_<std::common_type_t<T, std::intmax_t>>;
+
+template<typename T> 
+concept scalable_ = // exposition only
+  castable_number_<T> ||
+  (requires { typename T::value_type; } && castable_number_<typename T::value_type> && scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
+
+template<typename From, typename To> 
+concept scalable_with_ = // exposition only
+  common_type_with_<From, To> &&
+  scalable_<std::common_type_t<From, To>>;
+
 // WrappedQuantity
 namespace detail {
 
@@ -248,31 +277,8 @@ inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> 
  * recursively (i.e. `std::optional<si::length<si::metre>>`).
  */
 template<typename T>
-concept WrappedQuantity = detail::is_wrapped_quantity<T>;
-
-// ScalableNumber
-
-namespace detail {
-
-template<typename T>
-concept constructible_from_integral =
-  // construction from an integral type
-  std::constructible_from<T, std::int64_t> &&
-  // unit scaling
-  std::regular_invocable<std::multiplies<>, T, T> &&
-  std::regular_invocable<std::divides<>, T, T>;
-
-template<typename T>
-concept not_constructible_from_integral =
-  // not construction from an integral type
-  (!std::constructible_from<T, std::int64_t>) &&
-
-  // scaling by the value from ratio
-  std::regular_invocable<std::multiplies<>, T, std::int64_t> &&
-  std::regular_invocable<std::multiplies<>, std::int64_t, T>; // &&
-  // std::regular_invocable<std::divides<>, T, std::int64_t>;  // TODO Uncomment when a bug in LA is fixed
-
-}  // namespace detail
+concept wrapped_quantity_ = // exposition only
+  detail::is_wrapped_quantity<T>;
 
 /**
  * @brief A concept matching non-Quantity types.
@@ -280,10 +286,10 @@ concept not_constructible_from_integral =
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept ScalableNumber =
+concept QuantityValue =
   (!Quantity<T>) &&
-  (!WrappedQuantity<T>) &&
+  (!wrapped_quantity_<T>) &&
   std::regular<T> &&
-  (detail::constructible_from_integral<T> || detail::not_constructible_from_integral<T>);
+  scalable_<T>;
 
 }  // namespace units

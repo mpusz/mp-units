@@ -43,7 +43,7 @@ struct kip : alias_unit<kilopound_force, "klbf", no_prefix> {};
 
 struct dim_force : physical::dim_force<dim_force, poundal, dim_mass, dim_acceleration> {};
 
-template<Unit U, ScalableNumber Rep = double>
+template<UnitOf<dim_force> U, QuantityValue Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
 inline namespace literals {
