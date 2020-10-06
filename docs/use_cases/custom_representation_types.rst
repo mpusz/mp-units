@@ -18,10 +18,10 @@ satisfy at least the `QuantityValue` concept. Which means that they:
 - cannot be quantities by themselves,
 - cannot be wrappers over the `quantity` type (i.e. ``std::optional<si::length<si::metre>>``),
 - have to be regular types (e.g. they have to provide equality operators)
-- if they are constructible from a fundamental integral type, they have to provide multiplication
-  and division operators for their types,
-- otherwise, their values need to support the multiplication or division by the values of the
-  ``std::int64_t`` type which is the type used to store elements of a `ratio`.
+- should either have common type with ``std::intmax_t`` which provides multiplication and
+  division operators
+- or :expr:`T::value_type` must be valid, and common type of ``T::value_type`` and ``std::intmax_t``
+  must at least provide multiplication and division operators with itself and ``T``.
 
 With the above we will be able to construct quantities, convert between the units of the same
 dimension, and compare them for equality.
@@ -30,14 +30,16 @@ dimension, and compare them for equality.
 The Simplest Custom Representation Type
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The simplest representation type that fullfills the above requirements can look as follows::
+The simplest representation type that fulfills the above requirements can look as follows::
 
     class my_rep {
-      int value_{};
+      std::intmax_t value_;
     public:
       my_rep() = default;
-      constexpr my_rep(int v) : value_(v) {}
-      [[nodiscard]] friend constexpr bool operator==(my_rep lhs, my_rep rhs) = default;
+      explicit constexpr my_rep(std::intmax_t v) noexcept : value_(v) {}
+
+      [[nodiscard]] bool operator==(my_rep) const = default;
+
       [[nodiscard]] friend constexpr my_rep operator*(my_rep lhs, my_rep rhs)
       {
         return my_rep(lhs.value_ * rhs.value_);
@@ -51,7 +53,7 @@ The simplest representation type that fullfills the above requirements can look 
 Now we can put ``my_rep`` as the last parameter of the `quantity` class template and the following
 code will work just fine::
 
-    static_assert(si::length<si::metre, my_rep>(2'000) == si::length<si::kilometre, my_rep>(2));
+    static_assert(si::length<si::metre, my_rep>(my_rep(2'000)) == si::length<si::kilometre, my_rep>(my_rep(2)));
 
 
 Construction of Quantities with Custom Representation Types
@@ -158,7 +160,7 @@ Thanks to it the following code will run as expected::
                   si::length<si::kilometre, my_rep>(3));
 
 Of course, the above operators are the smallest possible set to provide support for basic
-arithmetic operations. In case the user wants to use faster or more sofisticated operators
+arithmetic operations. In case the user wants to use faster or more sophisticated operators
 the following ones can be provided::
 
     class my_rep {

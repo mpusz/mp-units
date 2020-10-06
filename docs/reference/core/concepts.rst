@@ -65,14 +65,15 @@ Concepts
 
 .. concept:: template<typename T> QuantityValue
 
-    A concept matching non-Quantity types. Satisfied by types that match
-    :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>` and satisfy one of the
-    following:
+    A concept matching types that can be used as a `Quantity` representation type. Satisfied
+    by types that match :expr:`(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>` and
+    satisfy one of the following:
 
-    - if type :expr:`T` is constructible from ``std::int64_t`` (which is the type that stores
-      the elements of `ratio`), :expr:`T * T` and :expr:`T / T` must be valid,
-    - otherwise, :expr:`T * std::int64_t`, :expr:`std::int64_t * T`, and :expr:`T / std::int64_t`
-      must be valid.
+    - if :expr:`common_type_with<T, std::intmax_t>` is ``true``, then :expr:`std::common_type_t<T, std::intmax_t>`
+      must at least provide binary multiplication and division operators,
+    - otherwise, :expr:`T::value_type` must be valid, :expr:`common_type_with<T::value_type, std::intmax_t>` be
+      ``true``, and :expr:`std::common_type_t<T::value_type, std::intmax_t>` must at least provide binary
+      multiplication and division operators with itself and ``T``.
 
 .. concept:: template<typename T> QuantityPoint
 
