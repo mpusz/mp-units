@@ -137,9 +137,13 @@ static_assert(QuantityValue<min_expl<>>);
 static_assert(!QuantityValue<min_expl<1>>);
 static_assert(!QuantityValue<min_expl<2>>);
 static_assert(!QuantityValue<min_expl<3>>);
+#if COMP_GCC == 10 && COMP_GCC_MINOR > 0
 static_assert(!QuantityValue<min_expl<4>>);
+#endif
 static_assert(!QuantityValue<min_expl<5>>);
+#if COMP_GCC == 10 && COMP_GCC_MINOR > 0
 static_assert(!QuantityValue<min_expl<6>>);
+#endif
 static_assert(!QuantityValue<min_expl<7>>);
 static_assert(!QuantityValue<min_expl<8>>);
 static_assert(!QuantityValue<min_expl<9>>);
