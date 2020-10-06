@@ -60,14 +60,14 @@ public:
   min_expl& operator=(min_expl&&) requires (Mode == 6) = delete;
 
   // equality
-  bool operator==(const min_expl&) const requires (Mode != 7) = default;
+  [[nodiscard]] bool operator==(const min_expl&) const requires (Mode != 7) = default;
 
   // scalability - multiplication
-  friend constexpr min_expl operator*(const min_expl& lhs, const min_expl& rhs) requires (Mode != 8)
+  [[nodiscard]] friend constexpr min_expl operator*(const min_expl& lhs, const min_expl& rhs) requires (Mode != 8)
   { return min_expl(lhs.value_ * rhs.value_); }
 
   // scalability - division
-  friend constexpr min_expl operator/(const min_expl& lhs, const min_expl& rhs) requires (Mode != 9)
+  [[nodiscard]] friend constexpr min_expl operator/(const min_expl& lhs, const min_expl& rhs) requires (Mode != 9)
   { return min_expl(lhs.value_ / rhs.value_); }
 };
 
