@@ -37,13 +37,10 @@ static_assert(std::constructible_from<si::time<si::second, std::int64_t>, std::c
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second, std::int64_t>>);
 static_assert(std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second, std::int64_t>>);
-static_assert(std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::hours>);
+static_assert(!std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::hours>);
 static_assert(!std::convertible_to<std::chrono::hours, si::time<si::second, std::int64_t>>);
 static_assert(!std::constructible_from<si::time<si::hour, std::int64_t>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::hour, std::int64_t>>);
-
-// quantity_cast
-static_assert(quantity_cast<si::time<si::hour, int>>(7200s).count() == 2);
 
 // CTAD
 static_assert(std::is_same_v<decltype(quantity{1s}), si::time<si::second, std::int64_t>>);

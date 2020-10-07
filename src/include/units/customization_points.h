@@ -71,6 +71,6 @@ struct quantity_values {
  * @tparam T the type to provide support for
  */
 template<typename T>
-struct quantity_traits;
+struct quantity_like_traits;
 
 } // namespace units

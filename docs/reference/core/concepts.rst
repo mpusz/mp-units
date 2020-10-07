@@ -59,20 +59,20 @@ Concepts
 
 .. concept:: template<typename T> QuantityLike
 
-    A concept matching all quantity-like types. Satisfied by all types for which a correct specialization
-    of :class:`quantity_traits` type trait is provided.
+    A concept matching all quantity-like types other than specialization of :class:`quantity`. Satisfied by
+    all types for which a correct specialization of :class:`quantity_like_traits` type trait is provided.
 
 .. concept:: template<typename T> WrappedQuantity
 
     A concept matching types that wrap quantity objects. Satisfied by all wrapper types that
-    satisfy :expr:`QuantityLike<typename T::value_type>` recursively
+    satisfy :expr:`Quantity<typename T::value_type> || QuantityLike<typename T::value_type>` recursively
     (i.e. ``std::optional<si::length<si::metre>>``).
 
 .. concept:: template<typename T> QuantityValue
 
     A concept matching types that can be used as a `Quantity` representation type. Satisfied
-    by types that match :expr:`(!QuantityLike<T>) && (!WrappedQuantity<T>) && std::regular<T>` and
-    satisfy one of the following:
+    by types that match :expr:`(!Quantity<T>) && (!QuantityLike<T>) && (!WrappedQuantity<T>) && std::regular<T>`
+    and satisfy one of the following:
 
     - if :expr:`common_type_with<T, std::intmax_t>` is ``true``, then :expr:`std::common_type_t<T, std::intmax_t>`
       must at least provide binary multiplication and division operators,

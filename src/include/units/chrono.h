@@ -29,7 +29,7 @@
 namespace units {
 
 template<typename Rep, typename Period>
-struct quantity_traits<std::chrono::duration<Rep, Period>> {
+struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   using dimension = physical::si::dim_time;
   using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;

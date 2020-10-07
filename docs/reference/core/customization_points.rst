@@ -6,5 +6,5 @@ Customization Points
 .. doxygenstruct:: units::quantity_values
    :members:
 
-.. doxygenstruct:: units::quantity_traits
+.. doxygenstruct:: units::quantity_like_traits
    :members:

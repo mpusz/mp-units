@@ -118,7 +118,7 @@ static_assert(!QuantityPoint<std::chrono::seconds>);
 
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityLike<std::chrono::hours>);
-static_assert(QuantityLike<si::time<si::second>>);
+static_assert(!QuantityLike<si::time<si::second>>);
 static_assert(!QuantityLike<int>);
 
 // WrappedQuantity
