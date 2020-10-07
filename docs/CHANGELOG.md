@@ -3,6 +3,7 @@
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
+  - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
   - feat: value initialization for quantity value removed (left with a default initialization)
   - perf: preconditions check do not influence the runtime performance of a Release build

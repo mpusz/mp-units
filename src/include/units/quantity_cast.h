@@ -44,14 +44,17 @@ class quantity_point;
 
 namespace detail {
 
-template<typename D, typename U, typename Rep>
-constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
+template<QuantityLike Q>
+constexpr auto quantity_ratio(const Q&)
 {
-  if constexpr(BaseDimension<D>) {
-    return U::ratio;
+  using traits = quantity_traits<Q>;
+  using dim = TYPENAME traits::dimension;
+  using unit = TYPENAME traits::unit;
+  if constexpr(BaseDimension<dim>) {
+    return unit::ratio;
   }
   else {
-    return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
+    return dim::base_units_ratio * unit::ratio / dim::coherent_unit::ratio;
   }
 }
 
@@ -102,29 +105,34 @@ struct cast_traits<From, To> {
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> Rep>
-  requires QuantityOf<To, D>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+template<Quantity To, QuantityLike From>
+  requires QuantityOf<To, typename quantity_traits<From>::dimension> &&
+           scalable_with_<typename quantity_traits<From>::rep, typename To::rep>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
 {
+  using traits = quantity_traits<From>;
+  using from_dim = TYPENAME traits::dimension;
+  using from_unit = TYPENAME traits::unit;
+  using from_rep = TYPENAME traits::rep;
   using ret_unit = downcast_unit<typename To::dimension, To::unit::ratio>;
   using ret = quantity<typename To::dimension, ret_unit, typename To::rep>;
-  using traits = detail::cast_traits<Rep, typename To::rep>;
-  using ratio_type = TYPENAME traits::ratio_type;
-  using rep_type = TYPENAME traits::rep_type;
-  constexpr auto c_ratio = detail::cast_ratio(quantity<D, U, Rep>(), To());
+  using cast_traits = detail::cast_traits<from_rep, typename To::rep>;
+  using ratio_type = TYPENAME cast_traits::ratio_type;
+  using rep_type = TYPENAME cast_traits::rep_type;
+  constexpr auto c_ratio = detail::cast_ratio(quantity<from_dim, from_unit, from_rep>(), To());
 
   if constexpr (treat_as_floating_point<rep_type>) {
-    return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+    return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(traits::count(q)) *
                               (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) / static_cast<ratio_type>(c_ratio.den))));
   }
   else {
     if constexpr (c_ratio.exp > 0) {
-      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(traits::count(q)) *
                               (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
                               static_cast<ratio_type>(c_ratio.den)));
     }
     else {
-      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+      return ret(static_cast<TYPENAME To::rep>(static_cast<rep_type>(traits::count(q)) *
                               static_cast<ratio_type>(c_ratio.num) /
                               (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
     }
@@ -143,11 +151,11 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
-template<Dimension ToD, typename D, typename U, typename Rep>
-  requires equivalent<ToD, D>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+template<Dimension ToD, QuantityLike From>
+  requires equivalent<ToD, typename quantity_traits<From>::dimension>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
 {
-  return quantity_cast<quantity<ToD, dimension_unit<ToD>, Rep>>(q);
+  return quantity_cast<quantity<ToD, dimension_unit<ToD>, typename quantity_traits<From>::rep>>(q);
 }
 
 /**
@@ -162,11 +170,11 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Unit ToU, typename D, typename U, typename Rep>
-  requires UnitOf<ToU, D>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+template<Unit ToU, QuantityLike From>
+  requires UnitOf<ToU, typename quantity_traits<From>::dimension>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
 {
-  return quantity_cast<quantity<D, ToU, Rep>>(q);
+  return quantity_cast<quantity<typename quantity_traits<From>::dimension, ToU, typename quantity_traits<From>::rep>>(q);
 }
 
 /**
@@ -185,11 +193,11 @@ template<Unit ToU, typename D, typename U, typename Rep>
  * @tparam ToD a dimension type to use for a target quantity
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
-  requires equivalent<ToD, D> && UnitOf<ToU, ToD>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+template<Dimension ToD, Unit ToU, QuantityLike From>
+  requires equivalent<ToD, typename quantity_traits<From>::dimension> && UnitOf<ToU, ToD>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
 {
-  return quantity_cast<quantity<ToD, ToU, Rep>>(q);
+  return quantity_cast<quantity<ToD, ToU, typename quantity_traits<From>::rep>>(q);
 }
 
 /**
@@ -204,10 +212,11 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
-[[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
+template<QuantityValue ToRep, QuantityLike From>
+  requires scalable_with_<typename quantity_traits<From>::rep, ToRep>
+[[nodiscard]] constexpr auto quantity_cast(const From& q)
 {
-  return quantity_cast<quantity<D, U, ToRep>>(q);
+  return quantity_cast<quantity<typename quantity_traits<From>::dimension, typename quantity_traits<From>::unit, ToRep>>(q);
 }
 
 /**

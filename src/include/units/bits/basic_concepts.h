@@ -229,6 +229,19 @@ concept Quantity = detail::is_quantity<T>;
 template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
 
+/**
+ * @brief A concept matching all quantity-like types
+ * 
+ * Satisfied by all types for which a correct specialization of `quantity_traits`
+ * type trait is provided.
+ */
+template<typename T>
+concept QuantityLike = requires(T q) {
+  typename quantity_traits<T>::dimension;
+  typename quantity_traits<T>::unit;
+  typename quantity_traits<T>::rep;
+  { quantity_traits<T>::count(q) } -> std::convertible_to<typename quantity_traits<T>::rep>;
+};
 
 // QuantityValue
 
@@ -266,7 +279,7 @@ inline constexpr bool is_wrapped_quantity = false;
 
 template<typename T>
   requires requires { typename T::value_type; }
-inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
+inline constexpr bool is_wrapped_quantity<T> = QuantityLike<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
 
 }  // namespace detail
 
@@ -287,7 +300,7 @@ concept wrapped_quantity_ = // exposition only
  */
 template<typename T>
 concept QuantityValue =
-  (!Quantity<T>) &&
+  (!QuantityLike<T>) &&
   (!wrapped_quantity_<T>) &&
   std::regular<T> &&
   scalable_<T>;

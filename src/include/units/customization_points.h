@@ -60,4 +60,17 @@ struct quantity_values {
   static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
 };
 
+/**
+ * @brief Provides support for external quantity-like types
+ * 
+ * The type trait should provide the following nested type aliases: @c dimension, @c unit, @c rep,
+ * and a static member function @c count(T) that will return the raw value of the quantity.
+ * 
+ * Usage example can be found in units/chrono.h header file.
+ * 
+ * @tparam T the type to provide support for
+ */
+template<typename T>
+struct quantity_traits;
+
 } // namespace units

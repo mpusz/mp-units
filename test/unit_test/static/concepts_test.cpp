@@ -24,6 +24,7 @@
 #include "units/physical/si/derived/speed.h"
 #include "units/physical/si/fps/derived/speed.h"
 #include "units/quantity_point.h"
+#include "units/chrono.h"
 #include <chrono>
 #include <complex>
 #include <mutex>
@@ -112,6 +113,13 @@ static_assert(!Quantity<quantity_point<si::dim_length, si::metre>>);
 static_assert(QuantityPoint<quantity_point<si::dim_length, si::metre>>);
 static_assert(!QuantityPoint<si::length<si::metre>>);
 static_assert(!QuantityPoint<std::chrono::seconds>);
+
+// QuantityLike
+
+static_assert(QuantityLike<std::chrono::seconds>);
+static_assert(QuantityLike<std::chrono::hours>);
+static_assert(QuantityLike<si::time<si::second>>);
+static_assert(!QuantityLike<int>);
 
 // WrappedQuantity
 

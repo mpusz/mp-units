@@ -36,8 +36,8 @@ namespace units {
 
 template<typename T>
 concept floating_point_ = // exposition only
-  (Quantity<T> && treat_as_floating_point<typename T::rep>) ||
-  (!Quantity<T> && treat_as_floating_point<T>);
+  (QuantityLike<T> && treat_as_floating_point<typename quantity_traits<T>::rep>) ||
+  (!QuantityLike<T> && treat_as_floating_point<T>);
 
 template<typename From, typename To>
 concept safe_convertible_to_ = // exposition only
@@ -49,15 +49,15 @@ concept safe_convertible_to_ = // exposition only
 // QFrom ratio is an exact multiple of QTo
 template<typename QFrom, typename QTo>
 concept harmonic_ = // exposition only
-    Quantity<QFrom> &&
+    QuantityLike<QFrom> &&
     Quantity<QTo> &&
     requires(QFrom from, QTo to) { requires is_integral(detail::quantity_ratio(from) / detail::quantity_ratio(to)); };
 
 template<typename QFrom, typename QTo>
 concept safe_castable_to_ = // exposition only
-    Quantity<QFrom> &&
-    QuantityOf<QTo, typename QFrom::dimension> &&
-    scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+    QuantityLike<QFrom> &&
+    QuantityOf<QTo, typename quantity_traits<QFrom>::dimension> &&
+    scalable_with_<typename quantity_traits<QFrom>::rep, typename QTo::rep> &&
     (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>
@@ -133,8 +133,8 @@ public:
   template<safe_convertible_to_<rep> Value>
   explicit(!(equivalent<quantity, dimensionless<::units::one, rep>>)) constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
 
-  template<safe_castable_to_<quantity> Q2>
-  constexpr quantity(const Q2& q) : value_(quantity_cast<quantity>(q).count()) {}
+  template<safe_castable_to_<quantity> Q>
+  explicit(!Quantity<Q>) constexpr quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
@@ -325,9 +325,13 @@ public:
 
 // CTAD
 template<QuantityValue V>
-/* implicit */ quantity(V) -> quantity<dim_one, one, V>;
+explicit(false) quantity(V) -> quantity<dim_one, one, V>;
 
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<QuantityLike Q>
+explicit(!Quantity<Q>) quantity(Q) -> quantity<typename quantity_traits<Q>::dimension, typename quantity_traits<Q>::unit, typename quantity_traits<Q>::rep>;
+
+// non-member binary operators
+template<QuantityLike Q1, QuantityEquivalentTo<Q1> Q2>
   requires quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
@@ -398,6 +402,15 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   using cq = common_quantity<Q1, Q2>;
   return cq(lhs).count() == cq(rhs).count();
 }
+
+// type traits
+template<typename D, typename U, typename Rep>
+struct quantity_traits<quantity<D, U, Rep>> {
+  using dimension = D;
+  using unit = U;
+  using rep = Rep;
+  static constexpr rep count(const quantity<D, U, Rep>& q) { return q.count(); }
+};
 
 namespace detail {
 
