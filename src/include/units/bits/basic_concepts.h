@@ -246,7 +246,7 @@ concept QuantityLike = requires(T q) {
 // QuantityValue
 
 template<typename T, typename U>
-concept common_type_with_ =
+concept common_type_with_ = // exposition only
   std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
   std::constructible_from<std::common_type_t<T, U>, T> &&
   std::constructible_from<std::common_type_t<T, U>, U>;
@@ -266,10 +266,10 @@ concept scalable_ = // exposition only
   castable_number_<T> ||
   (requires { typename T::value_type; } && castable_number_<typename T::value_type> && scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
 
-template<typename From, typename To> 
+template<typename T, typename U> 
 concept scalable_with_ = // exposition only
-  common_type_with_<From, To> &&
-  scalable_<std::common_type_t<From, To>>;
+  common_type_with_<T, U> &&
+  scalable_<std::common_type_t<T, U>>;
 
 // WrappedQuantity
 namespace detail {
