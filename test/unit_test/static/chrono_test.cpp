@@ -35,8 +35,8 @@ using namespace std::chrono_literals;
 // construction
 static_assert(std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second, std::int64_t>>);
-static_assert(std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::seconds>);
-static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second, std::int64_t>>);
+static_assert(std::constructible_from<si::time<si::hour, std::int64_t>, std::chrono::hours>);
+static_assert(!std::convertible_to<std::chrono::hours, si::time<si::hour, std::int64_t>>);
 static_assert(!std::constructible_from<si::time<si::second, std::int64_t>, std::chrono::hours>);
 static_assert(!std::convertible_to<std::chrono::hours, si::time<si::second, std::int64_t>>);
 static_assert(!std::constructible_from<si::time<si::hour, std::int64_t>, std::chrono::seconds>);
