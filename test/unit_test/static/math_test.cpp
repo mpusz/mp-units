@@ -39,5 +39,16 @@ static_assert(compare<decltype(pow<2>(2_q_ft)), decltype(4_q_ft2)>);
 static_assert(compare<decltype(sqrt(4_q_m2)), decltype(2_q_m)>);
 static_assert(compare<decltype(sqrt(4_q_km2)), decltype(2_q_km)>);
 static_assert(compare<decltype(sqrt(4_q_ft2)), decltype(2_q_ft)>);
+static_assert(compare<decltype(cbrt(8_q_m3)), decltype(2_q_m)>);
+static_assert(compare<decltype(cbrt(8_q_km3)), decltype(2_q_km)>);
+static_assert(compare<decltype(cbrt(8_q_ft3)), decltype(2_q_ft)>);
+static_assert(compare<decltype(pow<1, 4>(4_q_m2 * 4_q_m2)), decltype(2_q_m)>);
+static_assert(compare<decltype(pow<1, 4>(4_q_km2 * 4_q_km2)), decltype(2_q_km)>);
+static_assert(compare<decltype(pow<1, 4>(4_q_ft2 * 4_q_ft2)), decltype(2_q_ft)>);
+
+// rational dimensions
+static_assert(compare<decltype(pow<1, 4>(4_q_m2)), decltype(sqrt(2_q_m))>);
+static_assert(compare<decltype(pow<1, 4>(4_q_km2)), decltype(sqrt(2_q_km))>);
+static_assert(compare<decltype(pow<1, 4>(4_q_ft2)), decltype(sqrt(2_q_ft))>);
 
 }  // namespace

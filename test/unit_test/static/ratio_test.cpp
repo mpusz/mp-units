@@ -63,18 +63,25 @@ static_assert(pow<2>(ratio(1, 2)) == ratio(1, 4));
 static_assert(pow<3>(ratio(1, 2)) == ratio(1, 8));
 
 // pow with exponents
-static_assert(pow<2>(ratio(1, 2, 3))  == ratio(1, 4, 6));
+static_assert(pow<2>(ratio(1, 2, 3)) == ratio(1, 4, 6));
+static_assert(pow<4, 2>(ratio(1, 2, 3)) == ratio(1, 4, 6));
 static_assert(pow<3>(ratio(1, 2, -6)) == ratio(1, 8, -18));
 
 static_assert(sqrt(ratio(9)) == ratio(3));
+static_assert(cbrt(ratio(27)) == ratio(3));
 static_assert(sqrt(ratio(4)) == ratio(2));
+static_assert(cbrt(ratio(8)) == ratio(2));
 static_assert(sqrt(ratio(1)) == ratio(1));
+static_assert(cbrt(ratio(1)) == ratio(1));
 static_assert(sqrt(ratio(0)) == ratio(0));
+static_assert(cbrt(ratio(0)) == ratio(0));
 static_assert(sqrt(ratio(1, 4)) == ratio(1, 2));
+static_assert(cbrt(ratio(1, 8)) == ratio(1, 2));
 
 // sqrt with exponents
 static_assert(sqrt(ratio(9, 1, 2)) == ratio(3, 1, 1));
-static_assert(sqrt(ratio(4)) == ratio(2));
+static_assert(cbrt(ratio(27, 1, 3)) == ratio(3, 1, 1));
+static_assert(cbrt(ratio(27, 1, 2)) == ratio(13, 1, 0));
 
 // common_ratio
 static_assert(common_ratio(ratio(1), ratio(1000)) == ratio(1));

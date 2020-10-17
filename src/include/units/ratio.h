@@ -24,6 +24,8 @@
 
 #include <units/bits/external/hacks.h>
 #include <units/bits/ratio_maths.h>
+#include <units/bits/pow.h>
+#include <units/bits/root.h>
 #include <cstdint>
 #include <numeric>
 #include <type_traits>
@@ -37,7 +39,7 @@ constexpr ratio inverse(const ratio& r);
 
 /**
  * @brief Provides compile-time rational arithmetic support.
- * 
+ *
  * This class is really similar to @c std::ratio but gets an additional `Exp`
  * template parameter that defines the exponent of the ratio. Another important
  * difference is the fact that the objects of that class are used as class NTTPs
@@ -85,63 +87,69 @@ struct ratio {
   }
 }
 
-template<std::intmax_t N>
-[[nodiscard]] constexpr ratio pow(const ratio& r)
-{
-  if constexpr(N == 0)
-    return ratio(1);
-  else if constexpr(N == 1)
-    return r;
-  else
-    return pow<N-1>(r) * r;
-}
-
 namespace detail {
 
-// sqrt_impl avoids overflow and recursion
-// from http://www.codecodex.com/wiki/Calculate_an_integer_square_root#C.2B.2B
-// if v >= place this will fail  (so we can't quite use the last bit)
-[[nodiscard]] constexpr std::intmax_t sqrt_impl(std::intmax_t v)
+[[nodiscard]] constexpr auto make_exp_align(const ratio& r, std::intmax_t alignment)
 {
-  // place = 0x4000 0000 for 32bit
-  // place = 0x4000 0000 0000 0000 for 64bit
-  std::intmax_t place = static_cast<std::intmax_t>(1) << (sizeof(std::intmax_t) * 8 - 2);
-  while (place > v) place /= 4;  // optimized by complier as place >>= 2
+  Expects(alignment > 0);
+  const std::intmax_t rem = r.exp % alignment;
 
-  std::intmax_t root = 0;
-  while (place) {
-    if (v >= root + place) {
-      v -= root + place;
-      root += place * 2;
-    }
-    root /= 2;
-    place /= 4;
+  if (rem == 0) {  // already aligned
+    return std::array{r.num, r.den, r.exp};
   }
-  return root;
+
+  if (r.exp > 0) {  // remainder is positive
+    return std::array{r.num * ipow10(rem), r.den, r.exp - rem};
+  }
+
+  // remainder is negative
+  return std::array{r.num, r.den * ipow10(-rem), r.exp - rem};
 }
 
-[[nodiscard]] constexpr auto make_exp_even(const ratio& r)
+template<std::intmax_t N>
+[[nodiscard]] constexpr ratio root(const ratio& r) requires requires { N > 0; }
 {
-  if(r.exp % 2 == 0)
-    return std::array{r.num, r.den, r.exp}; // already even (incl zero)
+  if constexpr (N == 1) {
+    return r;
+  } else {
+    if (r.num == 0) {
+      return ratio(0);
+    }
 
-  // safely make exp even, so it can be divided by 2 for square root
-  if(r.exp > 0)
-    return std::array{r.num * 10, r.den, r.exp - 1};
-  else
-    return std::array{r.num, r.den * 10, r.exp + 1};
+    const auto aligned = make_exp_align(r, N);
+    return ratio(iroot<N>(aligned[0]), iroot<N>(aligned[1]), aligned[2] / N);
+  }
 }
 
 }  // namespace detail
 
-[[nodiscard]] constexpr ratio sqrt(const ratio& r)
+template<std::intmax_t Num, std::intmax_t Den = 1>
+[[nodiscard]] constexpr ratio pow(const ratio& r) requires requires { Den != 0; }
 {
-  if(r.num == 0)
-    return ratio(0);
-  
-  const auto even = detail::make_exp_even(r);
-  return ratio(detail::sqrt_impl(even[0]), detail::sqrt_impl(even[1]), even[2] / 2);
+  if constexpr (Num == 0) {
+    return ratio(1);
+  } else if constexpr (Num == Den) {
+    return r;
+  } else {
+    // simplify factors first and compute power for positive exponent
+    constexpr std::intmax_t gcd = std::gcd(Num, Den);
+    constexpr std::intmax_t num = detail::abs(Num / gcd);
+    constexpr std::intmax_t den = detail::abs(Den / gcd);
+
+    // integer root loses precision so do pow first
+    const ratio result = detail::root<den>(detail::pow_impl<num>(r));
+
+    if constexpr (Num * Den < 0) {  // account for negative exponent
+      return inverse(result);
+    } else {
+      return result;
+    }
+  }
 }
+
+[[nodiscard]] constexpr ratio sqrt(const ratio& r) { return pow<1, 2>(r); }
+
+[[nodiscard]] constexpr ratio cbrt(const ratio& r) { return pow<1, 3>(r); }
 
 // common_ratio
 [[nodiscard]] constexpr ratio common_ratio(const ratio& r1, const ratio& r2)
