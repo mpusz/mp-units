@@ -159,71 +159,43 @@ using dimension_multiply = TYPENAME detail::dimension_multiply_impl<D1, D2>::typ
 template<Dimension D1, Dimension D2>
 using dimension_divide = TYPENAME detail::dimension_multiply_impl<D1, dim_invert<D2>>::type;
 
-// dimension_sqrt
-namespace detail {
-
-template<Dimension D>
-struct dimension_sqrt_impl;
-
-template<BaseDimension D>
-struct dimension_sqrt_impl<D> {
-  using type = downcast_dimension<derived_dimension_base<exponent<D, 1, 2>>>;
-};
-
-template<BaseDimension D>
-struct dimension_sqrt_impl<derived_dimension_base<exponent<D, 2>>> {
-  using type = D;
-};
-
-template<DerivedDimension D>
-struct dimension_sqrt_impl<D> {
-  using type = TYPENAME dimension_sqrt_impl<typename D::downcast_base_type>::type;
-};
-
-template<typename... Es>
-struct dimension_sqrt_impl<derived_dimension_base<Es...>> {
-  using type = downcast_dimension<derived_dimension_base<exponent_multiply<Es, 1, 2>...>>;
-};
-
-}  // namespace detail
-
-template<Dimension D>
-using dimension_sqrt = TYPENAME detail::dimension_sqrt_impl<D>::type;
-
 // dimension_pow
 namespace detail {
 
-template<Dimension D, std::intmax_t N>
+template<Dimension D, std::intmax_t Num, std::intmax_t Den = 1>
 struct dimension_pow_impl;
 
-template<BaseDimension D, std::intmax_t N>
-struct dimension_pow_impl<D, N> {
-  using type = downcast_dimension<derived_dimension_base<exponent<D, N>>>;
+template<BaseDimension D, std::intmax_t Num, std::intmax_t Den>
+struct dimension_pow_impl<D, Num, Den> {
+  using type = downcast_dimension<derived_dimension_base<exponent<D, Num, Den>>>;
 };
 
 template<BaseDimension D>
-struct dimension_pow_impl<D, 1> {
+struct dimension_pow_impl<D, 1, 1> {
   using type = D;
 };
 
-template<BaseDimension D, std::intmax_t N>
-struct dimension_pow_impl<derived_dimension_base<exponent<D, 1, N>>, N> {
+template<BaseDimension D, std::intmax_t Num, std::intmax_t Den>
+struct dimension_pow_impl<derived_dimension_base<exponent<D, Den, Num>>, Num, Den> {
   using type = D;
 };
 
-template<DerivedDimension D, std::intmax_t N>
-struct dimension_pow_impl<D, N> {
-  using type = TYPENAME dimension_pow_impl<downcast_base_t<D>, N>::type;
+template<DerivedDimension D, std::intmax_t Num, std::intmax_t Den>
+struct dimension_pow_impl<D, Num, Den> {
+  using type = TYPENAME dimension_pow_impl<downcast_base_t<D>, Num, Den>::type;
 };
 
-template<typename... Es, std::intmax_t N>
-struct dimension_pow_impl<derived_dimension_base<Es...>, N> {
-  using type = downcast_dimension<derived_dimension_base<exponent_multiply<Es, N, 1>...>>;
-}; 
+template<typename... Es, std::intmax_t Num, std::intmax_t Den>
+struct dimension_pow_impl<derived_dimension_base<Es...>, Num, Den> {
+  using type = downcast_dimension<derived_dimension_base<exponent_multiply<Es, Num, Den>...>>;
+};
 
 }  // namespace detail
 
-template<Dimension D, std::intmax_t N>
-using dimension_pow = TYPENAME detail::dimension_pow_impl<D, N>::type;
+template<Dimension D, std::intmax_t Num, std::intmax_t Den = 1>
+using dimension_pow = TYPENAME detail::dimension_pow_impl<D, Num, Den>::type;
+
+template<Dimension D>
+using dimension_sqrt = TYPENAME detail::dimension_pow_impl<D, 1, 2>::type;
 
 }  // namespace units

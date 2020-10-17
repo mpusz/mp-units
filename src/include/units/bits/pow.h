@@ -58,4 +58,20 @@ constexpr Rep fpow10(std::intmax_t exp)
   return result;
 }
 
+template<std::intmax_t N, typename T>
+constexpr T pow_impl(const T& v) noexcept
+{
+  if constexpr (N == 0) {
+    return T(1);
+  } else if constexpr (N == 1) {
+    return v;
+  } else if constexpr (N < 0) {
+    return 1 / pow_impl<-N>(v);
+  } else if constexpr (N % 2 == 0) {  // even
+    return pow_impl<N / 2>(v * v);
+  } else {  // odd
+    return v * pow_impl<(N - 1) / 2>(v * v);
+  }
+}
+
 }  // namespace units::detail

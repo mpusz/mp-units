@@ -31,44 +31,63 @@ namespace units {
 
 /**
  * @brief Computes the value of a quantity raised to the power `N`
- * 
+ *
  * Both the quantity value and its dimension are the base of the operation.
- * 
- * @tparam N Exponent
+ *
+ * @tparam Num Exponent numerator
+ * @tparam Den Exponent denominator
  * @param q Quantity being the base of the operation
- * @return Quantity The result of computation 
+ * @return Quantity The result of computation
  */
-template<std::intmax_t N, Quantity Q>
+template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
 [[nodiscard]] inline auto pow(const Q& q) noexcept
-  requires requires { std::pow(q.count(), N); }
+  requires requires { std::pow(q.count(), 1.0); Den != 0; }
 {
   using rep = TYPENAME Q::rep;
-  if constexpr(N == 0) {
+  if constexpr (Num == 0) {
     return rep(1);
-  }
-  else {
-    using dim = dimension_pow<typename Q::dimension, N>;
-    using unit = downcast_unit<dim, pow<N>(Q::unit::ratio)>;
-    return quantity<dim, unit, rep>(static_cast<rep>(std::pow(q.count(), N)));
+  } else {
+    using dim = dimension_pow<typename Q::dimension, Num, Den>;
+    using unit = downcast_unit<dim, pow<Num, Den>(Q::unit::ratio)>;
+    return quantity<dim, unit, rep>(
+        static_cast<rep>(std::pow(q.count(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
 
 /**
  * @brief Computes the square root of a quantity
- * 
+ *
  * Both the quantity value and its dimension are the base of the operation.
- * 
+ *
  * @param q Quantity being the base of the operation
- * @return Quantity The result of computation 
+ * @return Quantity The result of computation
  */
 template<Quantity Q>
 [[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
   requires requires { std::sqrt(q.count()); }
 {
-  using dim = dimension_sqrt<typename Q::dimension>;
+  using dim = dimension_pow<typename Q::dimension, 1, 2>;
   using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
   using rep = TYPENAME Q::rep;
   return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));
+}
+
+/**
+ * @brief Computes the cubic root of a quantity
+ *
+ * Both the quantity value and its dimension are the base of the operation.
+ *
+ * @param q Quantity being the base of the operation
+ * @return Quantity The result of computation
+ */
+template<Quantity Q>
+[[nodiscard]] inline Quantity auto cbrt(const Q& q) noexcept
+  requires requires { std::cbrt(q.count()); }
+{
+  using dim = dimension_pow<typename Q::dimension, 1, 3>;
+  using unit = downcast_unit<dim, cbrt(Q::unit::ratio)>;
+  using rep = TYPENAME Q::rep;
+  return quantity<dim, unit, rep>(static_cast<rep>(std::cbrt(q.count())));
 }
 
 /**
