@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
+#include <units/bits/math_concepts.h>
 #include <units/bits/ratio_maths.h>
 #include <units/bits/pow.h>
 #include <units/bits/root.h>
@@ -107,7 +108,8 @@ namespace detail {
 }
 
 template<std::intmax_t N>
-[[nodiscard]] constexpr ratio root(const ratio& r) requires requires { N > 0; }
+  requires gt_zero<N>
+[[nodiscard]] constexpr ratio root(const ratio& r)
 {
   if constexpr (N == 1) {
     return r;
@@ -124,7 +126,8 @@ template<std::intmax_t N>
 }  // namespace detail
 
 template<std::intmax_t Num, std::intmax_t Den = 1>
-[[nodiscard]] constexpr ratio pow(const ratio& r) requires requires { Den != 0; }
+  requires detail::non_zero<Den>
+[[nodiscard]] constexpr ratio pow(const ratio& r)
 {
   if constexpr (Num == 0) {
     return ratio(1);
