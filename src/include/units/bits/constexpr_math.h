@@ -23,40 +23,41 @@
 #pragma once
 
 #include <gsl/gsl_assert>
+#include <units/bits/math_concepts.h>
 #include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
 
 namespace units::detail {
 
 struct decimal_fp {
-  double significand;
-  std::intmax_t mantissa;
+  double significant;
+  std::intmax_t exponent;
 };
 
 [[nodiscard]] constexpr decimal_fp to_decimal(double v) noexcept
 {
   if (v == 0) {
-    return {.significand = 0.0, .mantissa = 0};
+    return {.significant = 0.0, .exponent = 0};
   }
 
-  double significand = abs(v);
-  std::intmax_t mantissa = 0;
+  double significant = abs(v);
+  std::intmax_t exponent = 0;
 
-  while (significand < 1) {
-    significand *= 10.0;
-    --mantissa;
+  while (significant < 1) {
+    significant *= 10.0;
+    --exponent;
   }
 
-  while (significand >= 10) {
-    significand /= 10.0;
-    ++mantissa;
+  while (significant >= 10) {
+    significant /= 10.0;
+    ++exponent;
   }
 
   if (v < 0) {
-    significand = -significand;
+    significant = -significant;
   }
 
-  return {.significand = significand, .mantissa = mantissa};
+  return {.significant = significant, .exponent = exponent};
 }
 
 /* approximate natural log as https://math.stackexchange.com/a/977836
@@ -66,8 +67,8 @@ struct decimal_fp {
 {
   Expects(v > 0);
 
-  // lookup table to speed up convergence for all significand values
-  // significand values of 7 and greater benefit mostly as they now converge in 5 terms compared to O(10)-O(100)
+  // lookup table to speed up convergence for all significant values
+  // significant values of 7 and greater benefit mostly as they now converge in 5 terms compared to O(10)-O(100)
   // required without the table
   //
   // using python:
@@ -177,14 +178,14 @@ struct decimal_fp {
   };
   decimal_fp x = to_decimal(v);
 
-  // dividing the significand by nearest lower value in [1.0, 1.1, 1.2, ..., 9.9] will greatly improve convergence
-  x.significand *= 10;
-  const auto isignificand = static_cast<std::size_t>(x.significand);
-  x.significand /= static_cast<double>(isignificand);
-  const double result = static_cast<double>(x.mantissa - 1) * log_table[9] + log_table[isignificand - 1];
+  // dividing the significant by nearest lower value in [1.0, 1.1, 1.2, ..., 9.9] will greatly improve convergence
+  x.significant *= 10;
+  const auto isignificant = static_cast<std::size_t>(x.significant);
+  x.significant /= static_cast<double>(isignificant);
+  const double result = static_cast<double>(x.exponent - 1) * log_table[9] + log_table[isignificant - 1];
 
-  // 1.0 <= significand < 1.1 converges rapidly
-  const double y = (x.significand - 1) / (x.significand + 1);
+  // 1.0 <= significant < 1.1 converges rapidly
+  const double y = (x.significant - 1) / (x.significant + 1);
   const double y_squared = y * y;
   double sum = 0;
   // 5 terms are needed for convergence to machine precision in the worst case scenario
@@ -201,7 +202,8 @@ struct decimal_fp {
  larger Factor values improve convergence for all values but reduce the precision
 */
 template<std::size_t N, std::intmax_t Factor = 256>
-[[nodiscard]] constexpr double constexpr_exp(double v) noexcept requires requires { Factor > 0; }
+  requires gt_zero<Factor>
+[[nodiscard]] constexpr double constexpr_exp(double v) noexcept
 {
   if constexpr (N == 0) {
     return 1.0;

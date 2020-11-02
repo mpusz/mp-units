@@ -40,8 +40,8 @@ namespace units {
  * @return Quantity The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
-[[nodiscard]] inline auto pow(const Q& q) noexcept
-  requires requires { std::pow(q.count(), 1.0); Den != 0; }
+  requires detail::non_zero<Den>
+[[nodiscard]] inline auto pow(const Q& q) noexcept requires requires { std::pow(q.count(), 1.0); }
 {
   using rep = TYPENAME Q::rep;
   if constexpr (Num == 0) {

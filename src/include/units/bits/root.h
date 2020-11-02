@@ -24,6 +24,7 @@
 
 #include <gsl/gsl_assert>
 #include <units/bits/constexpr_math.h>
+#include <units/bits/math_concepts.h>
 #include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
 #include <cmath>
@@ -31,7 +32,8 @@
 namespace units::detail {
 
 template<std::intmax_t N, typename F>
-[[nodiscard]] constexpr std::intmax_t iroot_impl(std::intmax_t v, F const& pow_function) noexcept requires requires { N > 0; }
+  requires gt_zero<N>
+[[nodiscard]] constexpr std::intmax_t iroot_impl(std::intmax_t v, F const& pow_function) noexcept
 {
   if constexpr (N == 1) {
     return v;
@@ -61,13 +63,15 @@ template<std::intmax_t N, typename F>
 // Factor = 32 needs quite a few more terms to converge
 // https://godbolt.org/z/odWq1o
 template<std::intmax_t N, std::size_t ExpOrder = 12, std::intmax_t Factor = 64>
-[[nodiscard]] constexpr std::intmax_t iroot_compile(std::intmax_t v) noexcept requires requires { N > 0; }
+  requires gt_zero<N>
+[[nodiscard]] constexpr std::intmax_t iroot_compile(std::intmax_t v) noexcept
 {
   return iroot_impl<N>(v, [](double x, double exponent) { return constexpr_pow<ExpOrder, Factor>(x, exponent); });
 }
 
 template<std::intmax_t N>
-[[nodiscard]] std::intmax_t iroot_runtime(std::intmax_t v) noexcept requires requires { N > 0; }
+  requires gt_zero<N>
+[[nodiscard]] std::intmax_t iroot_runtime(std::intmax_t v) noexcept
 {
   return iroot_impl<N>(v, [](double x, double exponent) {
     if constexpr (N == 2) {
@@ -81,7 +85,8 @@ template<std::intmax_t N>
 }
 
 template<std::intmax_t N>
-[[nodiscard]] constexpr std::intmax_t iroot(std::intmax_t v) noexcept requires requires { N > 0; }
+  requires gt_zero<N>
+[[nodiscard]] constexpr std::intmax_t iroot(std::intmax_t v) noexcept
 {
   // compile time version is much slower, use faster version at runtime
   if (std::is_constant_evaluated()) {
