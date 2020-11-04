@@ -47,7 +47,7 @@ jobs:
           CONAN_USERNAME: ${{ secrets.CONAN_USERNAME }}
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
-          CONAN_UPLOAD: ${{ secrets.CONAN_LOGIN_USERNAME }}
+          CONAN_UPLOAD: ${{ secrets.CONAN_UPLOAD }}
           CONAN_OPTIONS: mp-units:generate_docs=False
           CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
         run: |
