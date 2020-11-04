@@ -1,0 +1,87 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2018 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: mp-units CI
+
+on: [push, pull_request]
+
+jobs:
+  conan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+        - { name: "gcc", version: "10" }
+    name: ${{ matrix.compiler.name }} ${{ matrix.compiler.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+        run: |
+          python -m pip install --upgrade pip
+      - name: Install Conan
+        run: |
+          pip install -U conan_package_tools
+          conan config init
+      - name: Run
+        env:
+          CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+          CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+          CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
+          CONAN_OPTIONS: mp-units:generate_docs=False
+        run: |
+          export CONAN_`echo ${{ matrix.compiler.name }} | tr [:lower:] [:upper:]`_VERSIONS="${{ matrix.compiler.version }}"
+          python build.py
+
+  docs:
+    needs: conan
+    name: Documentation
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc-10
+      CXX: g++-10
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt install -y gcc-10 g++-10
+          pip install -Ur docs/requirements.txt
+
+      - name: Install Conan
+        run: |
+          pip install -U conan
+          conan config init
+
+      - name: Build
+        run:
+          mkdir build && cd build
+          conan install .. -e CONAN_RUN_TESTS=True
+          cmake ..
+          cmake --build . --target sphinx
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/docs/sphinx
