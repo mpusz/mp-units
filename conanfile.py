@@ -49,10 +49,12 @@ class UnitsConan(ConanFile):
         "ms-gsl/3.1.0"
     )
     options = {
-        "downcast_mode": ["off", "on", "auto"]
+        "downcast_mode": ["off", "on", "auto"],
+        "generate_docs": [True, False]
     }
     default_options = {
-        "downcast_mode": "on"
+        "downcast_mode": "on",
+        "generate_docs": True
     }
     exports = ["LICENSE.md"]
     exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
@@ -93,6 +95,7 @@ class UnitsConan(ConanFile):
 
         if self._run_tests:
             # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
+            cmake.definitions["GENERATE_DOCS"] = self.options.generate_docs
             cmake.configure()
         else:
             # consumer's mode (library sources only)
@@ -102,11 +105,17 @@ class UnitsConan(ConanFile):
     def configure(self):
         self._validate_compiler_settings()
 
+    def config_options(self):
+        if not self._run_tests:
+            # generate_docs has sense only in a development or CI build
+            del self.options.generate_docs
+
     def build_requirements(self):
         if self._run_tests:
             self.build_requires("catch2/2.13.0")
-            self.build_requires("doxygen/1.8.20")
             self.build_requires("linear_algebra/0.7.0@public-conan/stable")
+            if self.options.generate_docs:
+                self.build_requires("doxygen/1.8.20")
 
     def build(self):
         cmake = self._configure_cmake()
