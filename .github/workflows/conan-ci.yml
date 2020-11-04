@@ -63,6 +63,17 @@ jobs:
       CXX: g++-10
     steps:
       - uses: actions/checkout@v2
+      - name: Cache Conan data
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-conan-data
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -81,7 +92,7 @@ jobs:
       - name: Install Conan dependencies
         run: |
           mkdir build && cd build
-          conan install .. -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
       - name: Generate documentation
         run: |
           cmake ..
