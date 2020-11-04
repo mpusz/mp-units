@@ -73,7 +73,7 @@ jobs:
           pip install -U conan
           conan config init
       - name: Generate
-        run:
+        run: |
           mkdir build && cd build
           conan install .. -e CONAN_RUN_TESTS=True
           cmake ..
