@@ -44,10 +44,12 @@ jobs:
           pip install -U conan_package_tools
       - name: Run
         env:
+          CONAN_USERNAME: ${{ secrets.CONAN_USERNAME }}
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
-          CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
+          CONAN_UPLOAD: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_OPTIONS: mp-units:generate_docs=False
+          CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
         run: |
           export CONAN_`echo ${{ matrix.compiler.name }} | tr [:lower:] [:upper:]`_VERSIONS="${{ matrix.compiler.version }}"
           python build.py
