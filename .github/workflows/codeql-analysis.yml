@@ -51,18 +51,39 @@ jobs:
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
+      if: ${{ matrix.language }} != 'cpp'
       uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
 
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
-
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - name: Cache Conan data
+      if: ${{ matrix.language }} == 'cpp'
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-conan-data
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Set up Python
+      if: ${{ matrix.language }} == 'cpp'
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Conan build
+      if: ${{ matrix.language }} == 'cpp'
+      run: |
+        pip install -U conan
+        conan config init
+        conan remote add upload ${{ secrets.CONAN_UPLOAD }}
+        conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
+        mkdir build && cd build
+        conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -o mp-units:generate_docs=False -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+        conan build ..
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
