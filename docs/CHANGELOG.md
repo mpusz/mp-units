@@ -12,6 +12,7 @@
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
   - build: doxygen updated to 1.8.20
+  - ci: CI switched from Travis CI to GitHub Actions
 
 - **0.6.0 September 13, 2020**
   - feat: `quantity_point` support added (thanks [@johelegp](https://github.com/johelegp))
