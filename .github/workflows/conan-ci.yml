@@ -22,7 +22,13 @@
 
 name: mp-units CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
 
 jobs:
   conan:
@@ -49,56 +55,8 @@ jobs:
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_UPLOAD: ${{ secrets.CONAN_UPLOAD }}
           CONAN_OPTIONS: mp-units:generate_docs=False
+          CONAN_CMAKE_GENERATOR: Ninja
           CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
         run: |
           export CONAN_`echo ${{ matrix.compiler.name }} | tr [:lower:] [:upper:]`_VERSIONS="${{ matrix.compiler.version }}"
           python build.py
-
-  docs:
-    needs: conan
-    name: Documentation
-    runs-on: ubuntu-20.04
-    env:
-      CC: gcc-10
-      CXX: g++-10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cache Conan data
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-conan-data
-        with:
-          path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - name: Install Python dependencies
-        run: |
-          pip install -Ur docs/requirements.txt
-      - name: Install Conan
-        run: |
-          pip install -U conan
-      - name: Configure Conan
-        run: |
-          conan config init
-          conan remote add upload ${{ secrets.CONAN_UPLOAD }}
-          conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
-      - name: Install Conan dependencies
-        run: |
-          mkdir build && cd build
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
-      - name: Generate documentation
-        run: |
-          cmake ..
-          cmake --build . --target sphinx
-      - name: Deploy documentation
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/docs/sphinx
