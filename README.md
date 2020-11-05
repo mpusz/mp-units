@@ -6,10 +6,10 @@
 
 # `mp-units` - A Units Library for C++
 
-**The mp-units library is the subject of this ISO C++ paper: [P1935](https://wg21.link/p1935).
-It is explained in this [CppCon 2019 talk](https://youtu.be/0YW6yxkdhlU) (slightly dated now).
-We are working towards potentially having it standardized for C++23 and are actively looking
-for parties interested in field trialing the library.**
+**The mp-units library is the subject of ISO standardization for C++23/26. More on this can
+be found in ISO C++ paper [P1935](https://wg21.link/p1935) and
+[CppCon 2020 talk](https://www.youtube.com/watch?v=7dExYGSOJzo). We are actively looking for
+parties interested in field trialing the library.**
 
 
 ## Documentation
