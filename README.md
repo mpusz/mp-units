@@ -1,5 +1,6 @@
 [![GitHub license](https://img.shields.io/github/license/mpusz/units?color=blue?maxAge=3600)](./LICENSE.md)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/mpusz/units/mp-units%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22mp-units+CI%22)
+[![GitHub Workflow CI](https://img.shields.io/github/workflow/status/mpusz/units/mp-units%20CI/master)](https://github.com/mpusz/units/actions?query=workflow%3A%22mp-units+CI%22+branch%3Amaster)
+[![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=documentation)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 [![Conan stable](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg?version=0.6.0%3Astable)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/0.6.0%3Astable/link)
 [![Conan testing](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
 
