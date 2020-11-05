@@ -51,14 +51,14 @@ jobs:
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
-      if: ${{ matrix.language }} != 'cpp'
+      if: matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
 
     - name: Cache Conan data
-      if: ${{ matrix.language }} == 'cpp'
+      if: matrix.language == 'cpp'
       uses: actions/cache@v2
       env:
         cache-name: cache-conan-data
@@ -70,12 +70,12 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
     - name: Set up Python
-      if: ${{ matrix.language }} == 'cpp'
+      if: matrix.language == 'cpp'
       uses: actions/setup-python@v2
       with:
         python-version: '3.8'
     - name: Conan build
-      if: ${{ matrix.language }} == 'cpp'
+      if: matrix.language == 'cpp'
       run: |
         pip install -U conan
         conan config init
