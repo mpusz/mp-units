@@ -22,14 +22,17 @@
 
 name: Documentation
 
-on: [push, pull_request]
-# on:
-#   push:
-#     paths:
-#     - 'docs/**'
-#   pull_request:
-#     paths:
-#     - 'docs/**'
+on:
+  push:
+    paths:
+    - 'docs/**'
+    - 'src/**'
+    - 'example/**'
+  pull_request:
+    paths:
+    - 'docs/**'
+    - 'src/**'
+    - 'example/**'
 
 jobs:
   docs:
