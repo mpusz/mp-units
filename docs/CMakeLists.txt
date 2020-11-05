@@ -66,7 +66,7 @@ set(SPHINX_INDEX_FILE "${SPHINX_BUILD}/index.html")
 # - The Sphinx config has been updated
 add_custom_command(OUTPUT "${SPHINX_INDEX_FILE}"
                    COMMAND
-                       "${SPHINX_EXECUTABLE}" -b html -j auto -Q "-Dbreathe_projects.mp-units=${DOXYGEN_OUTPUT_DIR}/xml" "${SPHINX_SOURCE}" "${SPHINX_BUILD}"
+                       "${SPHINX_EXECUTABLE}" -b html -j auto "-Dbreathe_projects.mp-units=${DOXYGEN_OUTPUT_DIR}/xml" "${SPHINX_SOURCE}" "${SPHINX_BUILD}"
                    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
                    DEPENDS
                        "${CMAKE_CURRENT_SOURCE_DIR}/_static/css/custom.css"
