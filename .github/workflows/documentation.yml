@@ -55,9 +55,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
-      - name: Install Ninja
-        run: |
-          sudo apt install ninja-build 
       - name: Install Python dependencies
         run: |
           pip install -Ur docs/requirements.txt
@@ -70,16 +67,16 @@ jobs:
           conan remote add upload ${{ secrets.CONAN_UPLOAD }}
           conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
       - name: Install Conan dependencies
-        env:
-          CONAN_CMAKE_GENERATOR: Ninja
         run: |
           mkdir build && cd build
           conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+      - name: Configure CMake
+        run: |
+          cd build
+          cmake ..
       - name: Generate documentation
         run: |
-          pwd
-          ls -al
-          cmake .. -G Ninja
+          cd build
           cmake --build . --target sphinx
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
