@@ -15,16 +15,22 @@ name: "CodeQL"
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+    - 'docs/**'
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ master ]
+    paths-ignore:
+    - 'docs/**'
   schedule:
     - cron: '24 2 * * 6'
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    env:
+      CC: gcc-10
+      CXX: g++-10
 
     strategy:
       fail-fast: false
