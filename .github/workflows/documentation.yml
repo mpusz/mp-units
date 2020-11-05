@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+name: Documentation
+
 on: [push, pull_request]
 # on:
 #   push:
@@ -53,6 +55,9 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
+      - name: Install Ninja
+        run: |
+          sudo apt install ninja-build 
       - name: Install Python dependencies
         run: |
           pip install -Ur docs/requirements.txt
