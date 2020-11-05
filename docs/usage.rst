@@ -144,8 +144,8 @@ UNITS_DOWNCAST_MODE
 Equivalent to `downcast_mode`_.
 
 
-GENERATE_DOCS
-+++++++++++++
+BUILD_DOCS
+++++++++++
 
 **Values**: ``ON``/``OFF``
 

@@ -22,8 +22,8 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-option(GENERATE_DOCS "Generate project documenation" ON)
-if(NOT GENERATE_DOCS)
+option(BUILD_DOCS "Generate project documenation" ON)
+if(NOT BUILD_DOCS)
     return()
 endif()
 

@@ -79,7 +79,7 @@ jobs:
         conan remote add upload ${{ secrets.CONAN_UPLOAD }}
         conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
         mkdir _lgtm_build_dir && cd _lgtm_build_dir
-        conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -o mp-units:generate_docs=False -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+        conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -o mp-units:build_docs=False -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
