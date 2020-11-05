@@ -353,12 +353,17 @@ in **mp-units** repository, you should:
     pip3 install -r docs/requirements.txt
     mkdir build && cd build
     conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+    conan build ..
+
+The above will download and install all of the dependencies needed for the development of the library,
+build all of the source code and documentation, and run unit tests. Instead of the last ``conan build ..`` step you can
+also do the following:
+
+.. code-block:: shell
+
     cmake .. -DCMAKE_BUILD_TYPE=Release
     cmake --build .
     ctest
-
-The above will download and install all of the dependencies needed for the development of the library,
-build all of the source code and documentation, and run unit tests.
 
 
 Packaging
