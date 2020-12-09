@@ -36,8 +36,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 # include common tools and workarounds
 include(common/scripts)
 
-# use Conan configuration if available
-conan_init(cmake)
+find_package(fmt CONFIG REQUIRED)
+find_package(Microsoft.GSL CONFIG REQUIRED)
 
 # library definition
 add_library(mp-units INTERFACE)
@@ -58,8 +58,8 @@ add_library(mp-units INTERFACE)
 target_compile_features(mp-units INTERFACE cxx_std_20)
 target_link_libraries(mp-units
     INTERFACE
-        $<IF:$<TARGET_EXISTS:CONAN_PKG::fmt>,CONAN_PKG::fmt,fmt::fmt>
-        $<IF:$<TARGET_EXISTS:CONAN_PKG::ms-gsl>,CONAN_PKG::ms-gsl,Microsoft.GSL::GSL>
+        fmt::fmt
+        Microsoft.GSL::GSL
 )
 target_include_directories(mp-units
     INTERFACE
@@ -70,7 +70,7 @@ target_include_directories(mp-units
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_link_libraries(mp-units
         INTERFACE
-            $<IF:$<TARGET_EXISTS:CONAN_PKG::range-v3>,CONAN_PKG::range-v3,range-v3::range-v3>
+            range-v3::range-v3
     )
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(mp-units

@@ -22,8 +22,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-# check if conan installed a test framework
-conan_check_testing(catch2)
+find_package(Catch2 CONFIG REQUIRED)
 
 add_executable(unit_tests_runtime
     catch_main.cpp
@@ -36,7 +35,7 @@ add_executable(unit_tests_runtime
 target_link_libraries(unit_tests_runtime
     PRIVATE
         mp-units::mp-units
-        $<IF:$<TARGET_EXISTS:CONAN_PKG::catch2>,CONAN_PKG::catch2,Catch2::Catch2>
+        Catch2::Catch2
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

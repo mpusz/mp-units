@@ -23,14 +23,13 @@
 cmake_minimum_required(VERSION 3.12)
 project(mp-units)
 
-# set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+# set paths to Conan packages
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
 
 # include common tools and workarounds
 include(common/scripts)
-
-# use Conan configuration if available
-conan_init(cmake)
 
 # enable static analysis
 #enable_clang_tidy()

@@ -43,7 +43,7 @@ class UnitsConan(ConanFile):
     topics = ("units", "dimensions", "quantities", "dimensional-analysis", "physical-quantities", "physical-units", "system-of-units", "cpp23", "cpp20", "library", "quantity-manipulation")
     license = "MIT"
     url = "https://github.com/mpusz/units"
-    settings = "compiler"
+    settings = "compiler", "build_type"
     requires = (
         "fmt/7.0.3",
         "ms-gsl/3.1.0"
@@ -64,7 +64,7 @@ class UnitsConan(ConanFile):
     #     "revision": "auto",
     #     "submodule": "recursive"
     # }
-    generators = "cmake"
+    generators = "cmake_find_package_multi", "cmake_paths"
 
     @property
     def _run_tests(self):
