@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.12)
-project(mp-units)
+project(mp-units
+    LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -41,12 +42,12 @@ add_subdirectory(src)
 # set restrictive compilation warnings
 set_warnings(mp-units)
 
-# add unit tests
-enable_testing()
-add_subdirectory(test)
-
 # add usage example
 add_subdirectory(example)
 
 # generate project documentation
 add_subdirectory(docs)
+
+# add unit tests
+enable_testing()
+add_subdirectory(test)

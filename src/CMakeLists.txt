@@ -41,20 +41,6 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 
 # library definition
 add_library(mp-units INTERFACE)
-#target_sources(mp-units INTERFACE
-#    include/units/dimension.h
-#    include/units/quantity.h
-#    include/units/unit.h
-#
-#    include/units/bits/tools.h
-#    include/units/bits/type_list.h
-#
-#    include/units/si/base_dimensions.h
-#    include/units/si/frequency.h
-#    include/units/si/length.h
-#    include/units/si/time.h
-#    include/units/si/speed.h
-#)
 target_compile_features(mp-units INTERFACE cxx_std_20)
 target_link_libraries(mp-units
     INTERFACE
