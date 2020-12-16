@@ -25,6 +25,7 @@ from conans.tools import Version, check_min_cppstd
 from conans.errors import ConanInvalidConfiguration
 import re
 
+required_conan_version = ">=1.32.0"
 
 def get_version():
     try:
@@ -33,7 +34,6 @@ def get_version():
         return version.strip()
     except Exception:
         return None
-
 
 class UnitsConan(ConanFile):
     name = "mp-units"
@@ -70,20 +70,6 @@ class UnitsConan(ConanFile):
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
-    def _validate_compiler_settings(self):
-        compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
-        if compiler == "gcc":
-            if version < "10.0":
-                raise ConanInvalidConfiguration("mp-units requires at least g++-10")
-        elif compiler == "Visual Studio":
-            if version < "16":
-                raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.7")
-        else:
-            raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
-        if compiler.get_safe("cppstd"):
-            check_min_cppstd(self, "20")
-
     def _configure_cmake(self, folder="src"):
         cmake = CMake(self)
         if self.options.downcast_mode == "off":
@@ -102,8 +88,19 @@ class UnitsConan(ConanFile):
             cmake.configure(source_folder=folder)
         return cmake
 
-    def configure(self):
-        self._validate_compiler_settings()
+    def validate(self):
+        compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
+        if compiler == "gcc":
+            if version < "10.0":
+                raise ConanInvalidConfiguration("mp-units requires at least g++-10")
+        elif compiler == "Visual Studio":
+            if version < "16":
+                raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.7")
+        else:
+            raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
+        if compiler.get_safe("cppstd"):
+            check_min_cppstd(self, "20")
 
     def config_options(self):
         if not self._run_tests:
