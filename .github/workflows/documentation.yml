@@ -80,7 +80,7 @@ jobs:
       - name: Generate documentation
         run: |
           cd build
-          cmake --build . --target sphinx --config Release
+          cmake --build . --target documentation --config Release
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
