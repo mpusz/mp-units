@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-name: mp-units CI
+name: mp-units Conan CI
 
 on:
   push:
@@ -55,7 +55,6 @@ jobs:
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_UPLOAD: ${{ secrets.CONAN_UPLOAD }}
           CONAN_OPTIONS: mp-units:build_docs=False
-          CONAN_CMAKE_GENERATOR: Ninja
           CONAN_DOCKER_IMAGE: conanio/${{ matrix.compiler.name }}${{ matrix.compiler.version }}
         run: |
           export CONAN_`echo ${{ matrix.compiler.name }} | tr [:lower:] [:upper:]`_VERSIONS="${{ matrix.compiler.version }}"
