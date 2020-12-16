@@ -91,11 +91,11 @@ template<typename U, typename Rep>
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
-template<Quantity Q>
-[[nodiscard]] inline Quantity auto abs(const Q& q) noexcept
+template<typename D, typename U, typename Rep>
+[[nodiscard]] inline quantity<D, U, Rep> abs(const quantity<D, U, Rep>& q) noexcept
   requires requires { std::abs(q.count()); }
 {
-  return Q(std::abs(q.count()));
+  return quantity<D, U, Rep>(std::abs(q.count()));
 }
 
 /**
