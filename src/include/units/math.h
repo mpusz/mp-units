@@ -74,14 +74,15 @@ template<Quantity Q>
 /**
  * @brief Computes Euler's raised to the given power
  * 
+ * @note Such an operation has sense only for a dimensionless quantity.
+ * 
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
-template<typename D, typename U, typename Rep>
-[[nodiscard]] inline quantity<D, U, Rep> exp(const quantity<D, U, Rep>& q)
+template<typename U, typename Rep>
+[[nodiscard]] inline dimensionless<U, Rep> exp(const dimensionless<U, Rep>& q)
 {
-  using coherent_unit = dimension_unit<D>;
-  return quantity_cast<U>(quantity<D, coherent_unit, Rep>(std::exp(quantity_cast<coherent_unit>(q).count())));
+  return quantity_cast<U>(dimensionless<one, Rep>(std::exp(quantity_cast<one>(q).count())));
 }
 
 /**
