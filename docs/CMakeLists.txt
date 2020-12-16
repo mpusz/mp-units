@@ -22,11 +22,6 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-option(BUILD_DOCS "Generate project documentation" ON)
-if(NOT BUILD_DOCS)
-    return()
-endif()
-
 # Find all the public headers
 file(GLOB_RECURSE unitsPublicHeaders "${PROJECT_SOURCE_DIR}/src/*.h")
 
@@ -226,7 +221,7 @@ set(unitsSphinxDocs
 include(documentation)
 include(GNUInstallDirs)
 
-add_documentation(documentation ALL
+add_documentation(documentation
     BREATHE_PROJECT mp-units
     CODE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
     INSTALL_DIR ${CMAKE_INSTALL_DOCDIR}
