@@ -76,11 +76,11 @@ jobs:
       - name: Configure CMake
         run: |
           cd build
-          cmake ..
+          cmake .. -G "Ninja Multi-Config"
       - name: Generate documentation
         run: |
           cd build
-          cmake --build . --target sphinx
+          cmake --build . --target sphinx --config Release
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
