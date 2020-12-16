@@ -224,7 +224,6 @@ include(GNUInstallDirs)
 add_documentation(documentation
     BREATHE_PROJECT mp-units
     CODE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
-    INSTALL_DIR ${CMAKE_INSTALL_DOCDIR}
     CODE_DEPENDS ${unitsPublicHeaders}
     DOCS_DEPENDS ${unitsSphinxDocs}
 )
