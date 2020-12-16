@@ -23,20 +23,11 @@
 cmake_minimum_required(VERSION 3.12)
 project(test_package)
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
-
-# compilation options and flags used in a project development process
-include(common/scripts)
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
-
-# test conan-generated target
-add_executable(${PROJECT_NAME}_conan test_package.cpp)
-target_link_libraries(${PROJECT_NAME}_conan PRIVATE CONAN_PKG::mp-units)
+# enable package discovery based on the local configuration files
+list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 # test cmake-generated target
 find_package(mp-units CONFIG REQUIRED)
-add_executable(${PROJECT_NAME}_cmake test_package.cpp)
-target_link_libraries(${PROJECT_NAME}_cmake PRIVATE mp-units::mp-units)
+add_executable(test_package test_package.cpp)
+target_link_libraries(test_package PRIVATE mp-units::mp-units)
+target_compile_features(test_package PRIVATE cxx_std_20)
