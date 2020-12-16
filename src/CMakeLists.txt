@@ -33,9 +33,6 @@ set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 # set path to custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
-# include common tools and workarounds
-include(common/scripts)
-
 find_package(fmt CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
@@ -82,6 +79,8 @@ else()
 endif()
 
 add_library(mp-units::mp-units ALIAS mp-units)
+
+include(install)
 
 # installation info
 install_targets(mp-units)
