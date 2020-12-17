@@ -37,6 +37,7 @@ on:
 env:
   CC: gcc-10
   CXX: g++-10
+  CMAKE_GENERATOR: Ninja
 
 jobs:
   setup:
@@ -55,6 +56,9 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Install Ninja
+        run: |
+          sudo apt install -y ninja-build
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -83,7 +87,7 @@ jobs:
       - name: Configure CMake
         run: |
           cd build/${{ matrix.build_type }}
-          cmake ../../src -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
+          cmake ../../src -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
       - name: Install
         run: |
           cd build/${{ matrix.build_type }}
@@ -101,7 +105,7 @@ jobs:
       - name: Configure CMake
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
-          cmake ../.. -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=../../../build/${{ matrix.build_type }}/conan_paths.cmake
+          cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=../../../build/${{ matrix.build_type }}/conan_paths.cmake
       - name: Build
         run: |
           cd test_package/build/${{ matrix.build_type }}

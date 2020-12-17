@@ -36,13 +36,15 @@ on:
     - 'src/**'
     - 'example/**'
 
+env:
+  CC: gcc-10
+  CXX: g++-10
+  CMAKE_GENERATOR: Ninja
+
 jobs:
   docs:
     name: Sphinx
     runs-on: ubuntu-20.04
-    env:
-      CC: gcc-10
-      CXX: g++-10
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
@@ -56,6 +58,9 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Install Ninja
+        run: |
+          sudo apt install -y ninja-build
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -78,7 +83,7 @@ jobs:
       - name: Configure CMake
         run: |
           cd build
-          cmake .. -G Ninja
+          cmake ..
       - name: Generate documentation
         run: |
           cd build
