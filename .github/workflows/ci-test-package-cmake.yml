@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-name: mp-units CMake Test Package CI
+name: CMake Test Package CI
 
 on:
   push:
@@ -46,7 +46,7 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [ "Release", "Debug" ]
-    name: mp-units installation (${{ matrix.build_type }})
+    name: CMake test_package (${{ matrix.build_type }})
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
