@@ -40,9 +40,13 @@ env:
   CMAKE_GENERATOR: Ninja
 
 jobs:
-  setup:
-    name: Environment setup
+  test_package:
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ "Release", "Debug" ]
+    name: mp-units installation (${{ matrix.build_type }})
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
@@ -70,47 +74,27 @@ jobs:
         run: |
           conan config init
           conan remote add upload ${{ secrets.CONAN_UPLOAD }}
-  
-  install:
-    needs: setup
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type: [ "Release", "Debug" ]
-    name: mp-units installation (${{ matrix.build_type }})
-    steps:
       - name: Install Conan dependencies
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
           conan install ../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }} -b outdated -u
-      - name: Configure CMake
+      - name: Configure mp-units CMake
         run: |
           cd build/${{ matrix.build_type }}
           cmake ../../src -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
-      - name: Install
+      - name: Install mp-units
         run: |
           cd build/${{ matrix.build_type }}
           cmake --install . --prefix test_package
-
-  test_package:
-    needs: install
-    runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type: [ "Release", "Debug" ]
-    name: Testing CMake package (${{ matrix.build_type }})
-    steps:
-      - name: Configure CMake
+      - name: Configure test_package CMake
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=../../../build/${{ matrix.build_type }}/conan_paths.cmake
-      - name: Build
+      - name: Build test_package
         run: |
           cd test_package/build/${{ matrix.build_type }}
           cmake --build .
-      - name: Run
+      - name: Run test_package
         run: |
           cd test_package/build/${{ matrix.build_type }}
           ./test_package
