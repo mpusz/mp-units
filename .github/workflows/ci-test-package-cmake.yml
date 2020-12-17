@@ -68,41 +68,45 @@ jobs:
           conan remote add upload ${{ secrets.CONAN_UPLOAD }}
   
   install:
-    name: mp-units installation
     needs: setup
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ "Release", "Debug" ]
+    name: mp-units installation (${{ matrix.build_type }})
     steps:
       - name: Install Conan dependencies
         run: |
-          mkdir build && cd build
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=Release -b outdated -u
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=Debug -b outdated -u
+          mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
+          conan install ../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }} -b outdated -u
       - name: Configure CMake
         run: |
-          cd build
-          cmake ../src -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
+          cd build/${{ matrix.build_type }}
+          cmake ../../src -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
       - name: Install
         run: |
-          cd build
-          cmake --install . --prefix test_package --config Release
-          cmake --install . --prefix test_package --config Debug
+          cd build/${{ matrix.build_type }}
+          cmake --install . --prefix test_package
 
   test_package:
-    name: Testing CMake package
     needs: install
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ "Release", "Debug" ]
+    name: Testing CMake package (${{ matrix.build_type }})
     steps:
       - name: Configure CMake
         run: |
-          mkdir test_package/build && cd test_package/build
-          cmake .. -G "Ninja Multi-Config" -DCMAKE_INSTALL_PREFIX=../../build/test_package -DCMAKE_TOOLCHAIN_FILE=../../build/conan_paths.cmake
-      - name: Build and run Release
+          mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
+          cmake ../.. -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=../../../build/${{ matrix.build_type }}/conan_paths.cmake
+      - name: Build
         run: |
-          cd test_package/build
-          cmake --build . --config Release
-          ./Release/test_package
-      - name: Build and run Debug
+          cd test_package/build/${{ matrix.build_type }}
+          cmake --build .
+      - name: Run
         run: |
-          cd test_package/build
-          cmake --build . --config Debug
-          ./Debug/test_package
+          cd test_package/build/${{ matrix.build_type }}
+          ./test_package
