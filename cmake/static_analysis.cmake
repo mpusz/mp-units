@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.14)
 
 macro(enable_clang_tidy)
     find_program(clang_tidy_cmd NAMES "clang-tidy")

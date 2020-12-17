@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 find_package(Catch2 CONFIG REQUIRED)
 
@@ -34,7 +34,7 @@ add_executable(unit_tests_runtime
 )
 target_link_libraries(unit_tests_runtime
     PRIVATE
-        mp-units::mp-units
+        mp::units
         Catch2::Catch2
 )
 

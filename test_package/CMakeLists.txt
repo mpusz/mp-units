@@ -26,8 +26,8 @@ project(test_package)
 # enable package discovery based on the local configuration files
 list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
-# test cmake-generated target
 find_package(mp-units CONFIG REQUIRED)
+
 add_executable(test_package test_package.cpp)
-target_link_libraries(test_package PRIVATE mp-units::mp-units)
+target_link_libraries(test_package PRIVATE mp::units)
 target_compile_features(test_package PRIVATE cxx_std_20)

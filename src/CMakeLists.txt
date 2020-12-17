@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 project(mp-units
     VERSION 0.7.0
@@ -78,16 +78,22 @@ else()
     target_compile_definitions(mp-units INTERFACE UNITS_DOWNCAST_MODE=0)
 endif()
 
-add_library(mp-units::mp-units ALIAS mp-units)
-
-include(install)
+add_library(mp::units ALIAS mp-units)
+set_target_properties(mp-units PROPERTIES EXPORT_NAME units)
 
 # installation info
-install_targets(mp-units)
-install(DIRECTORY include/units
-    DESTINATION include
-    COMPONENT Devel
-)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
-# generate configuration files and install the package
-configure_and_install(../cmake/mp-units-config.cmake.in mp-units SameMajorVersion)
+include(GNUInstallDirs)
+install(TARGETS mp-units EXPORT mp-unitsTargets)
+install(EXPORT mp-unitsTargets
+    NAMESPACE mp::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+)
+install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+)
+install(DIRECTORY include/units
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)

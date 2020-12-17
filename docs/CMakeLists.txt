@@ -20,7 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
+
+option(BUILD_DOCS "Generate project documentation" ON)
+if(NOT BUILD_DOCS)
+    return()
+endif()
 
 # Find all the public headers
 file(GLOB_RECURSE unitsPublicHeaders "${PROJECT_SOURCE_DIR}/src/*.h")
@@ -221,9 +226,10 @@ set(unitsSphinxDocs
 include(documentation)
 include(GNUInstallDirs)
 
-add_documentation(documentation
+add_documentation(documentation ALL
     BREATHE_PROJECT mp-units
     CODE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
+    INSTALL_DIR ${CMAKE_INSTALL_DOCDIR}
     CODE_DEPENDS ${unitsPublicHeaders}
     DOCS_DEPENDS ${unitsSphinxDocs}
 )

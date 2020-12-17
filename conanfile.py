@@ -129,13 +129,20 @@ class UnitsConan(ConanFile):
         self.info.header_only()
 
     def package_info(self):
+        self.cpp_info.filenames["cmake_find_package"] = "mp-units"
+        self.cpp_info.filenames["cmake_find_package_multi"] = "mp-units"
+        self.cpp_info.names["cmake_find_package"] = "mp"
+        self.cpp_info.names["cmake_find_package_multi"] = "mp"
+        self.cpp_info.components["units"].name = "units"
+        self.cpp_info.components["units"].requires = ["fmt::fmt", "ms-gsl::ms-gsl"]
+
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
-            self.cpp_info.cxxflags = [
+            self.cpp_info.components["units"].cxxflags = [
                 "-Wno-non-template-friend"
             ]
         elif compiler == "Visual Studio":
-            self.cpp_info.cxxflags = [
+            self.cpp_info.components["units"].cxxflags = [
                 "/utf-8"
             ]

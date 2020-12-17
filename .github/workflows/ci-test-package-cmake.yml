@@ -1,0 +1,108 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2018 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: mp-units CMake Test Package CI
+
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - 'example/**'
+    - 'test/**'
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - 'example/**'
+    - 'test/**'
+
+env:
+  CC: gcc-10
+  CXX: g++-10
+
+jobs:
+  setup:
+    name: Environment setup
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Conan data
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-conan-data
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install Conan
+        run: |
+          pip install -U conan
+      - name: Configure Conan
+        run: |
+          conan config init
+          conan remote add upload ${{ secrets.CONAN_UPLOAD }}
+  
+  install:
+    name: mp-units installation
+    needs: setup
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install Conan dependencies
+        run: |
+          mkdir build && cd build
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=Release -b outdated -u
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=Debug -b outdated -u
+      - name: Configure CMake
+        run: |
+          cd build
+          cmake ../src -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake
+      - name: Install
+        run: |
+          cd build
+          cmake --install . --prefix test_package --config Release
+          cmake --install . --prefix test_package --config Debug
+
+  test_package:
+    name: Testing CMake package
+    needs: install
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Configure CMake
+        run: |
+          mkdir test_package/build && cd test_package/build
+          cmake .. -G "Ninja Multi-Config" -DCMAKE_INSTALL_PREFIX=../../build/test_package -DCMAKE_TOOLCHAIN_FILE=../../build/conan_paths.cmake
+      - name: Build and run Release
+        run: |
+          cd test_package/build
+          cmake --build . --config Release
+          ./Release/test_package
+      - name: Build and run Debug
+        run: |
+          cd test_package/build
+          cmake --build . --config Debug
+          ./Debug/test_package

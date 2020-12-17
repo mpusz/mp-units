@@ -23,4 +23,5 @@
 include(CMakeFindDependencyMacro)
 find_dependency(fmt)
 find_dependency(Microsoft.GSL)
-include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake")
+
+include("${CMAKE_CURRENT_LIST_DIR}/mp-unitsTargets.cmake")
