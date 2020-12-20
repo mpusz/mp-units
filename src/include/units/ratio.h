@@ -29,7 +29,7 @@
 #include <type_traits>
 #include <tuple>
 #include <algorithm>
-#include <gsl/gsl_assert>
+#include <gsl/assert>
 
 namespace units {
 

@@ -24,7 +24,7 @@
 
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
-#include <gsl/gsl_assert>
+#include <gsl/assert>
 #include <compare>
 
 namespace units {
