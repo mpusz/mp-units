@@ -95,10 +95,11 @@ class UnitsConan(ConanFile):
         if compiler.get_safe("cppstd"):
             check_min_cppstd(self, "20")
 
-    def config_options(self):
-        if not self._run_tests:
-            # build_docs has sense only in a development or CI build
-            del self.options.build_docs
+    # TODO Uncomment this when environment is supported in the Conan toolchain
+    # def config_options(self):
+    #     if not self._run_tests:
+    #         # build_docs has sense only in a development or CI build
+    #         del self.options.build_docs
 
     def build_requirements(self):
         if self._run_tests:
