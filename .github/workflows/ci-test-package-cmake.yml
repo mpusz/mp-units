@@ -89,7 +89,8 @@ jobs:
       - name: Configure test_package CMake
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
-          cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=../../../build/${{ matrix.build_type }}/conan_toolchain.cmake
+          conan install ../../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }}
+          cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Build test_package
         run: |
           cd test_package/build/${{ matrix.build_type }}

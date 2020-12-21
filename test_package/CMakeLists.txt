@@ -23,9 +23,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(test_package)
 
-# enable package discovery based on the local configuration files
-list(PREPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
-
 find_package(mp-units CONFIG REQUIRED)
 
 add_executable(test_package test_package.cpp)
