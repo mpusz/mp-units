@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, tools
 from conans.tools import Version, check_min_cppstd
+from conan.tools.cmake import CMakeToolchain, CMake
 from conans.errors import ConanInvalidConfiguration
 import re
 
@@ -64,28 +65,20 @@ class UnitsConan(ConanFile):
     #     "revision": "auto",
     #     "submodule": "recursive"
     # }
-    generators = "cmake_find_package_multi", "cmake_paths"
+    generators = "cmake_find_package_multi"
 
     @property
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
-    def _configure_cmake(self, folder="src"):
+    def _configure_cmake(self):
         cmake = CMake(self)
-        if self.options.downcast_mode == "off":
-            cmake.definitions["UNITS_DOWNCAST_MODE"] = 0
-        elif self.options.downcast_mode == "on":
-            cmake.definitions["UNITS_DOWNCAST_MODE"] = 1
-        elif self.options.downcast_mode == "auto":
-            cmake.definitions["UNITS_DOWNCAST_MODE"] = 2
-
         if self._run_tests:
             # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
-            cmake.definitions["BUILD_DOCS"] = self.options.build_docs
             cmake.configure()
         else:
             # consumer's mode (library sources only)
-            cmake.configure(source_folder=folder)
+            cmake.configure(source_folder="src")
         return cmake
 
     def validate(self):
@@ -113,6 +106,13 @@ class UnitsConan(ConanFile):
             self.build_requires("linear_algebra/0.7.0@public-conan/stable")
             if self.options.build_docs:
                 self.build_requires("doxygen/1.8.20")
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
+        # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
+        tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
+        tc.generate()
 
     def build(self):
         cmake = self._configure_cmake()

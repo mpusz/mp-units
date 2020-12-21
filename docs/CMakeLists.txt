@@ -22,8 +22,8 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-option(BUILD_DOCS "Generate project documentation" ON)
-if(NOT BUILD_DOCS)
+option(UNITS_BUILD_DOCS "Generate project documentation" ON)
+if(NOT UNITS_BUILD_DOCS)
     return()
 endif()
 
