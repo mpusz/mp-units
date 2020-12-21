@@ -31,7 +31,7 @@
 #include <numeric>
 #include <tuple>
 #include <type_traits>
-#include <gsl/assert>
+#include <gsl/gsl_assert>
 
 namespace units::detail {
 
