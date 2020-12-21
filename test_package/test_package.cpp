@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
 #include <units/physical/si/derived/speed.h>
 #include <iostream>
 
@@ -34,5 +33,5 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace units::physical::si::literals;
-  std::cout << fmt::format("Average speed = {}", avg_speed(240._q_km, 2_q_h)) << '\n';
+  std::cout << "Average speed = " << avg_speed(240._q_km, 2_q_h) << '\n';
 }
