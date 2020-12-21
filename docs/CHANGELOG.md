@@ -3,15 +3,23 @@
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
+  - refactor: `abs()` definition refactored to be more explicit about the return type
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
   - feat: value initialization for quantity value removed (left with a default initialization)
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`
+  - (!) fix: `exp()` has sense only for dimensionless quantities
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
+  - (!) build: The library should now be linked as `mp::units` in the CMake's `target_link_libraries()`
+  - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
+  - (!) build: `-g cmake_paths` has to be manually provided for `conan install` command (workaround for a Conan bug)
   - build: doxygen updated to 1.8.20
+  - build: Conan generator switched to `cmake_find_package_multi`
+  - build: Conan CMakeToolchain support added
+  - build: CMake scripts cleanup
   - ci: CI switched from Travis CI to GitHub Actions
 
 - **0.6.0 September 13, 2020**
