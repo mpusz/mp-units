@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.2)
 
 add_metabench_test(metabench.data.ratio.create.std_ratio "std::ratio" create_std_ratio.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
 add_metabench_test(metabench.data.ratio.create.ratio_type_constexpr "ratio with constexpr" create_ratio_type_constexpr.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
