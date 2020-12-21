@@ -73,7 +73,7 @@ jobs:
       - name: Configure Conan
         run: |
           conan config init
-          conan remote add upload ${{ secrets.CONAN_UPLOAD }}
+          conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
       - name: Install Conan dependencies
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}

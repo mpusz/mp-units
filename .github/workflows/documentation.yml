@@ -74,7 +74,7 @@ jobs:
       - name: Configure Conan
         run: |
           conan config init
-          conan remote add upload ${{ secrets.CONAN_UPLOAD }}
+          conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
           conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
       - name: Install Conan dependencies
         run: |

@@ -22,9 +22,9 @@
 
 # The following environment variables are required
 # - CONAN_USERNAME
+# - CONAN_UPLOAD
 # - CONAN_LOGIN_USERNAME
 # - CONAN_PASSWORD
-# - CONAN_UPLOAD
 
 from cpt.packager import ConanMultiPackager
 
