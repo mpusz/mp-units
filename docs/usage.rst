@@ -131,6 +131,16 @@ Specifies how :ref:`The Downcasting Facility` works:
 - ``on`` - downcasting always forced -> compile-time errors in case of duplicated definitions
 - ``automatic`` - downcasting automatically enabled if no collisions are present
 
+build_docs
+++++++++++
+
+**Values**: ``True``/``False``
+
+**Defaulted to**: ``True``
+
+If enabled, Conan installs the documentation generation dependencies (i.e. doxygen).
+Additionally, enables project documentation generation when the project is being built by Conan.
+
 CMake Options
 ^^^^^^^^^^^^^
 
@@ -144,8 +154,8 @@ UNITS_DOWNCAST_MODE
 Equivalent to `downcast_mode`_.
 
 
-BUILD_DOCS
-++++++++++
+UNITS_BUILD_DOCS
+++++++++++++++++
 
 **Values**: ``ON``/``OFF``
 
@@ -187,8 +197,8 @@ defined by the library. To do so you should use *CMakeLists.txt* file from the *
 
 .. important::
 
-    You are still on your own to make sure all the dependencies are installed and their header
-    files can be located during the build.
+    You are still on your own to make sure all the dependencies are installed and their header and CMake
+    configuration files can be located during the build.
 
 
 Conan + CMake (release)
@@ -215,7 +225,7 @@ library release the following steps may be performed:
       mp-units/0.6.0
 
       [generators]
-      cmake_find_package
+      cmake_find_package_multi
 
 2. Import **mp-units** and its dependencies definitions to your project's build procedure
    with ``find_package``:
@@ -280,7 +290,7 @@ differences:
       mp-units/0.7.0@mpusz/testing
 
       [generators]
-      cmake_find_package
+      cmake_find_package_multi
 
   .. tip::
 
@@ -294,45 +304,8 @@ differences:
 
       mkdir build && cd build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake .. -DCMAKE_BUILD_TYPE=Release
-      cmake --build .
-
-
-``cmake`` Conan generator
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Above procedures suggested using ``cmake_find_package`` Conan generator which should be good
-enough to handle simple dependencies and configurations. If your project setup is complex you
-may prefer to use ``cmake`` generator. In such a case the above procedures should be updated as
-follows:
-
-1. Specify ``cmake`` generator in your Conan configuration file:
-
-  .. code-block:: ini
-      :caption: conanfile.txt
-
-      [requires]
-      mp-units/0.6.0
-
-      [generators]
-      cmake
-
-2. Import Conan dependencies definitions to the beginning of your top-level *CMakeLists.txt*
-   file in your project:
-
-  .. code-block:: cmake
-
-      include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-      conan_basic_setup(TARGETS)
-
-3. ``find_package(mp-units)`` is not needed anymore.
-
-4. Link your CMake targets with ``CONAN_PKG::mp-units``:
-
-  .. code-block:: cmake
-
-      target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE CONAN_PKG::mp-units)
-
+      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake --build . --config Release
 
 
 Contributing (or just building all the tests, examples, and documentation)
@@ -356,13 +329,17 @@ in **mp-units** repository, you should:
     conan build ..
 
 The above will download and install all of the dependencies needed for the development of the library,
-build all of the source code and documentation, and run unit tests. Instead of the last ``conan build ..`` step you can
-also do the following:
+build all of the source code and documentation, and run unit tests.
+
+If you prefer to build the project via CMake rather then Conan, then you should add ``-g cmake_paths`` generator
+to ``conan install`` and replace the last ``conan build ..`` step with the CMake build:
 
 .. code-block:: shell
 
-    cmake .. -DCMAKE_BUILD_TYPE=Release
-    cmake --build .
+    # ...
+    conan install .. -g cmake_paths -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake --build . --config Release
     ctest
 
 
