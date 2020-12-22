@@ -36,13 +36,6 @@ add_example(experimental_angle)
 add_example(foot_pound_second)
 add_example(kalman_filter-alpha_beta_filter_example2)
 
-find_package(linear_algebra CONFIG REQUIRED)
-add_example(linear_algebra)
-target_link_libraries(linear_algebra
-    PRIVATE
-        linear_algebra::linear_algebra
-)
-
 add_example(measurement)
 add_example(unknown_dimension)
 
@@ -54,6 +47,15 @@ add_example(avg_speed)
 add_example(glide_computer)
 add_example(hello_units)
 add_example(total_energy)
+
+# TODO "atomic constraint should be a constant expression" error in std::invocable
+
+find_package(linear_algebra CONFIG REQUIRED)
+add_example(linear_algebra)
+target_link_libraries(linear_algebra
+    PRIVATE
+        linear_algebra::linear_algebra
+)
 
 add_subdirectory(alternative_namespaces)
 
