@@ -41,8 +41,8 @@ concept floating_point_ = // exposition only
 
 template<typename From, typename To>
 concept safe_convertible_to_ = // exposition only
-    !(Quantity<From>) &&
-    !(Quantity<To>) &&
+    (!Quantity<From>) &&
+    (!Quantity<To>) &&
     std::convertible_to<From, To> &&
     (floating_point_<To> || (!floating_point_<From>));
 
