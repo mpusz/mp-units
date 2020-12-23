@@ -44,8 +44,8 @@ jobs:
             compiler: { type: VISUAL, version: 16, cc: "cl", cxx: "cl" }
           }
         - {
-            name: "Ubuntu GCC 10.2",
-            os: ubuntu-latest,
+            name: "Ubuntu GCC 10.1.0",
+            os: ubuntu-20.04,
             compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
           }
         build_type: [ "Release", "Debug" ]
