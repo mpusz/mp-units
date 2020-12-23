@@ -32,13 +32,13 @@ on:
 
 jobs:
   conan:
+    name: ${{ matrix.compiler.name }} ${{ matrix.compiler.version }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         compiler:
         - { name: "gcc", version: "10" }
-    name: ${{ matrix.compiler.name }} ${{ matrix.compiler.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python

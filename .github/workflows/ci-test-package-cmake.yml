@@ -41,12 +41,12 @@ env:
 
 jobs:
   test_package:
+    name: CMake test_package (${{ matrix.build_type }})
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         build_type: [ "Release", "Debug" ]
-    name: CMake test_package (${{ matrix.build_type }})
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
