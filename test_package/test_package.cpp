@@ -23,9 +23,10 @@
 #include <units/physical/si/derived/speed.h>
 #include <iostream>
 
-using namespace units::physical;
+using namespace units;
 
-constexpr Speed auto avg_speed(Length auto d, Time auto t)
+template<physical::Length Length, physical::Time Time>
+constexpr auto avg_speed(Length d, Time t)
 {
   return d / t;
 }
