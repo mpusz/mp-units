@@ -42,8 +42,8 @@ TEST_CASE("uniform_int_distribution")
   }
   
   SECTION ("parametrized") {
-    constexpr rep a = 5;
-    constexpr rep b = 2;
+    constexpr rep a = 2;
+    constexpr rep b = 5;
     
     auto stl_dist = std::uniform_int_distribution(a, b);
     auto units_dist = units::uniform_int_distribution(q(a), q(b));
@@ -69,8 +69,8 @@ TEST_CASE("uniform_real_distribution")
   }
   
   SECTION ("parametrized") {
-    constexpr rep a = 5.0;
-    constexpr rep b = 2.0;
+    constexpr rep a = 2.0;
+    constexpr rep b = 5.0;
     
     auto stl_dist = std::uniform_real_distribution(a, b);
     auto units_dist = units::uniform_real_distribution(q(a), q(b));
