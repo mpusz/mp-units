@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-name: Windows CI
+name: New CI
 
 on:
   push:
@@ -63,6 +63,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: Install Ninja
+        shell: bash
         run: |
           if [ $RUNNER_OS == 'Linux' ]; then
             apt install -y ninja-build
@@ -80,6 +81,7 @@ jobs:
         run: |
           pip install -U conan_package_tools
       - name: Set Conan default profile
+        shell: bash
         run: |
           conan profile new --detect default
           if [ ${{ matrix.config.compiler.type }} == 'GCC' ]; then
