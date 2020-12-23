@@ -45,7 +45,7 @@ if __name__ == "__main__":
         # build configurations
         archs = ["x86_64"], #  limit to 64-bit only
     )
-    builder.add_common_builds(pure_c=False)
+    builder.add_common_builds(pure_c=True)
     for settings, options, env_vars, build_requires, reference in builder.items:
         settings["compiler.cppstd"] = "20"
         env_vars["mp-units:CONAN_RUN_TESTS"] = "True"
