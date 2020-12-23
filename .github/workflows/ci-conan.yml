@@ -51,17 +51,17 @@ jobs:
         build_type: [ "Release", "Debug" ]
     steps:
       - uses: actions/checkout@v2
-      - name: Cache Conan data
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-conan-data
-        with:
-          path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache Conan data
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-conan-data
+      #   with:
+      #     path: ~/.conan/data
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
       - name: Install Ninja
         shell: bash
         run: |
@@ -70,7 +70,7 @@ jobs:
           elif [ $RUNNER_OS == 'Windows' ]; then
             choco install ninja
           else
-            echo "$RUNNER_OS not supported"
+            echo "'$RUNNER_OS' not supported"
             exit 1
           fi
       - name: Set up Python
@@ -89,6 +89,7 @@ jobs:
           elif [ ${{ matrix.config.compiler.type }} == 'CLANG' ]; then
             conan profile update settings.compiler.libcxx=libc++ default
           fi
+          conan profile show default
       - name: Run conan-package-tools
         env:
           CONAN_USERNAME: mpusz
