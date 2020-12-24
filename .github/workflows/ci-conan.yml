@@ -48,6 +48,12 @@ jobs:
             os: ubuntu-20.04,
             compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
           }
+        - {
+            name: "Ubuntu GCC 10.2.0",
+            os: ubuntu-20.04,
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            docker_image: conanio/gcc10
+          }
         build_type: [ "Release", "Debug" ]
     steps:
       - uses: actions/checkout@v2
@@ -90,7 +96,7 @@ jobs:
             conan profile update settings.compiler.libcxx=libc++ default
           fi
           conan profile show default
-      - name: Run conan-package-tools
+      - name: Run Conan Package Tools
         env:
           CONAN_USERNAME: mpusz
           CONAN_OPTIONS: mp-units:build_docs=False
@@ -102,5 +108,6 @@ jobs:
           CC: ${{ matrix.config.compiler.cc }}
           CXX: ${{ matrix.config.compiler.cxx }}
           CONAN_${{ matrix.config.compiler.type }}_VERSIONS: ${{ matrix.config.compiler.version }}
+          CONAN_DOCKER_IMAGE: ${{ matrix.config.docker_image }}
         run: |
           python build.py
