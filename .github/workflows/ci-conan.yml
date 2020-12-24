@@ -69,6 +69,7 @@ jobs:
       #       ${{ runner.os }}-build-
       #       ${{ runner.os }}-
       - name: Install Ninja
+        if: !matrix.config.docker_image
         shell: bash
         run: |
           if [ $RUNNER_OS == 'Linux' ]; then
@@ -87,6 +88,7 @@ jobs:
         run: |
           pip install -U conan_package_tools
       - name: Set Conan default profile
+        if: !matrix.config.docker_image
         shell: bash
         run: |
           conan profile new --detect default
@@ -97,6 +99,7 @@ jobs:
           fi
           conan profile show default
       - name: Run Conan Package Tools
+        shell: bash
         env:
           CONAN_USERNAME: mpusz
           CONAN_OPTIONS: mp-units:build_docs=False
@@ -108,6 +111,8 @@ jobs:
           CC: ${{ matrix.config.compiler.cc }}
           CXX: ${{ matrix.config.compiler.cxx }}
           CONAN_${{ matrix.config.compiler.type }}_VERSIONS: ${{ matrix.config.compiler.version }}
-          CONAN_DOCKER_IMAGE: ${{ matrix.config.docker_image }}
         run: |
+          if [ ! -z "${{ matrix.config.docker_image }}" ]; then
+            export CONAN_DOCKER_IMAGE=${{ matrix.config.docker_image }}
+          fi
           python build.py
