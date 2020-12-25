@@ -69,7 +69,8 @@ jobs:
       #       ${{ runner.os }}-build-
       #       ${{ runner.os }}-
       - name: Install Ninja
-        if: !(matrix.config.docker_image)
+        # TODO Find a proper syntax to make the below work
+        # if: !matrix.config.docker_image
         shell: bash
         run: |
           if [ $RUNNER_OS == 'Linux' ]; then
@@ -88,7 +89,8 @@ jobs:
         run: |
           pip install -U conan_package_tools
       - name: Set Conan default profile
-        if: !(matrix.config.docker_image)
+        # TODO Find a proper syntax to make the below work
+        # if: !matrix.config.docker_image
         shell: bash
         run: |
           conan profile new --detect default
