@@ -41,6 +41,12 @@ inline namespace literals {
 constexpr auto operator"" _q_ft2(unsigned long long l) { return area<square_foot, std::int64_t>(l); }
 constexpr auto operator"" _q_ft2(long double l) { return area<square_foot, long double>(l); }
 
-}
+}  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto ft2 = area<square_foot, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

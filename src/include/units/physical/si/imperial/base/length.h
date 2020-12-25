@@ -34,12 +34,21 @@ struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
 
 inline namespace literals {
 
+// ch
 constexpr auto operator"" _q_ch(unsigned long long l) { return si::length<chain, std::int64_t>(l); }
 constexpr auto operator"" _q_ch(long double l) { return si::length<chain, long double>(l); }
 
+// rd
 constexpr auto operator"" _q_rd(unsigned long long l) { return si::length<rod, std::int64_t>(l); }
 constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto ch = si::length<chain, detail::one_rep>{};
+inline constexpr auto rd = si::length<rod, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::imperial

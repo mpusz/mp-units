@@ -41,6 +41,12 @@ inline namespace literals {
 constexpr auto operator"" _q_cm2(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
 constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre, long double>(l); }
 
-}
+}  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto cm2 = area<square_centimetre, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::cgs

@@ -22,25 +22,48 @@
 
 #pragma once
 
-#include <units/physical/dimensions/momentum.h>
-#include <units/physical/si/base/mass.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/quantity.h>
+#include <units/bits/basic_concepts.h>
+#include <units/customization_points.h>
+#include <type_traits>
 
-namespace units::physical::si {
+namespace units::detail {
 
-struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
-struct dim_momentum : physical::dim_momentum<dim_momentum, kilogram_metre_per_second, dim_mass, dim_speed> {};
+struct one_rep {
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Rep operator*(const Rep& lhs, one_rep)
+  {
+    return lhs;
+  }
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Rep operator/(const Rep& lhs, one_rep)
+  {
+    return lhs;
+  }
 
-template<UnitOf<dim_momentum> U, QuantityValue Rep = double>
-using momentum = quantity<dim_momentum, U, Rep>;
+  template<QuantityValue Rep>
+  [[nodiscard]] constexpr operator Rep() const noexcept
+  {
+    return quantity_values<Rep>::one();
+  }
 
-inline namespace literals {
+  [[nodiscard]] bool operator==(const one_rep&) const = default;
+  [[nodiscard]] auto operator<=>(const one_rep&) const = default;
+};
 
-// kg*m/s
-constexpr auto operator"" _q_kg_m_per_s(unsigned long long l) { return momentum<kilogram_metre_per_second, std::int64_t>(l); }
-constexpr auto operator"" _q_kg_m_per_s(long double l) { return momentum<kilogram_metre_per_second, long double>(l); }
+}  // namespace units::detail
 
-}  // namespace literals
+namespace std {
+template<>
+struct common_type<units::detail::one_rep, units::detail::one_rep> {
+  using type = units::detail::one_rep;
+};
+template<units::QuantityValue Rep>
+struct common_type<units::detail::one_rep, Rep> {
+  using type = Rep;
+};
+template<units::QuantityValue Rep>
+struct common_type<Rep, units::detail::one_rep> {
+  using type = Rep;
+};
 
-}  // namespace units::physical::si
+}  // namespace std

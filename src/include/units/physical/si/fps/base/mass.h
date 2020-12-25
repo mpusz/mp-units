@@ -89,7 +89,20 @@ constexpr auto operator"" _q_ston(long double l) { return mass<short_ton, long d
 constexpr auto operator"" _q_lton(unsigned long long l) { return mass<long_ton, std::int64_t>(l); }
 constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long double>(l); }
 
+}  // namespace literals
 
-}
+namespace unit_constants {
+
+inline constexpr auto gr = mass<grain, detail::one_rep>{};
+inline constexpr auto dr = mass<dram, detail::one_rep>{};
+inline constexpr auto oz = mass<ounce, detail::one_rep>{};
+inline constexpr auto lb = mass<pound, detail::one_rep>{};
+inline constexpr auto st = mass<stone, detail::one_rep>{};
+inline constexpr auto qr = mass<quarter, detail::one_rep>{};
+inline constexpr auto cwt = mass<hundredweight, detail::one_rep>{};
+inline constexpr auto ston = mass<short_ton, detail::one_rep>{};
+inline constexpr auto lton = mass<long_ton, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

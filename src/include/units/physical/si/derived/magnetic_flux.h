@@ -125,4 +125,26 @@ constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottawebe
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto Wb = magnetic_flux<weber, detail::one_rep>{};
+inline constexpr auto yWb = magnetic_flux<yoctoweber, detail::one_rep>{};
+inline constexpr auto zWb = magnetic_flux<zeptoweber, detail::one_rep>{};
+inline constexpr auto aWb = magnetic_flux<attoweber, detail::one_rep>{};
+inline constexpr auto fWb = magnetic_flux<femtoweber, detail::one_rep>{};
+inline constexpr auto pWb = magnetic_flux<picoweber, detail::one_rep>{};
+inline constexpr auto nWb = magnetic_flux<nanoweber, detail::one_rep>{};
+inline constexpr auto uWb = magnetic_flux<microweber, detail::one_rep>{};
+inline constexpr auto mWb = magnetic_flux<milliweber, detail::one_rep>{};
+inline constexpr auto kWb = magnetic_flux<kiloweber, detail::one_rep>{};
+inline constexpr auto MWb = magnetic_flux<megaweber, detail::one_rep>{};
+inline constexpr auto GWb = magnetic_flux<gigaweber, detail::one_rep>{};
+inline constexpr auto TWb = magnetic_flux<teraweber, detail::one_rep>{};
+inline constexpr auto PWb = magnetic_flux<petaweber, detail::one_rep>{};
+inline constexpr auto EWb = magnetic_flux<exaweber, detail::one_rep>{};
+inline constexpr auto ZWb = magnetic_flux<zettaweber, detail::one_rep>{};
+inline constexpr auto YWb = magnetic_flux<yottaweber, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

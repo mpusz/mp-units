@@ -40,6 +40,12 @@ inline namespace literals {
 constexpr auto operator"" _q_cm(unsigned long long l) { return length<centimetre, std::int64_t>(l); }
 constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long double>(l); }
 
-}
+}  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto cm = length<centimetre, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::cgs

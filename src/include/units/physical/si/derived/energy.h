@@ -135,4 +135,28 @@ constexpr auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto J = energy<joule, detail::one_rep>{};
+inline constexpr auto yJ = energy<yoctojoule, detail::one_rep>{};
+inline constexpr auto zJ = energy<zeptojoule, detail::one_rep>{};
+inline constexpr auto aJ = energy<attojoule, detail::one_rep>{};
+inline constexpr auto fJ = energy<femtojoule, detail::one_rep>{};
+inline constexpr auto pJ = energy<picojoule, detail::one_rep>{};
+inline constexpr auto nJ = energy<nanojoule, detail::one_rep>{};
+inline constexpr auto uJ = energy<microjoule, detail::one_rep>{};
+inline constexpr auto mJ = energy<millijoule, detail::one_rep>{};
+inline constexpr auto kJ = energy<kilojoule, detail::one_rep>{};
+inline constexpr auto MJ = energy<megajoule, detail::one_rep>{};
+inline constexpr auto GJ = energy<gigajoule, detail::one_rep>{};
+inline constexpr auto TJ = energy<terajoule, detail::one_rep>{};
+inline constexpr auto PJ = energy<petajoule, detail::one_rep>{};
+inline constexpr auto EJ = energy<exajoule, detail::one_rep>{};
+inline constexpr auto ZJ = energy<zettajoule, detail::one_rep>{};
+inline constexpr auto YJ = energy<yottajoule, detail::one_rep>{};
+inline constexpr auto eV = energy<electronvolt, detail::one_rep>{};
+inline constexpr auto GeV = energy<gigaelectronvolt, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

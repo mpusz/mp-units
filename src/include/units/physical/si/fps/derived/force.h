@@ -62,4 +62,12 @@ constexpr auto operator"" _q_klbf(long double l) { return force<kilopound_force,
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto pdl = force<poundal, detail::one_rep>{};
+inline constexpr auto lbf = force<pound_force, detail::one_rep>{};
+inline constexpr auto klbf = force<kilopound_force, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si::fps

@@ -38,7 +38,7 @@ using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {
 
-// ergps
+// erg/s
 constexpr auto operator"" _q_erg_per_s(unsigned long long l) { return power<erg_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_erg_per_s(long double l) { return power<erg_per_second, long double>(l); }
 

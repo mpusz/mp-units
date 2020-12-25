@@ -145,4 +145,30 @@ constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long 
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto V = voltage<volt, detail::one_rep>{};
+inline constexpr auto yV = voltage<yoctovolt, detail::one_rep>{};
+inline constexpr auto zV = voltage<zeptovolt, detail::one_rep>{};
+inline constexpr auto aV = voltage<attovolt, detail::one_rep>{};
+inline constexpr auto fV = voltage<femtovolt, detail::one_rep>{};
+inline constexpr auto pV = voltage<picovolt, detail::one_rep>{};
+inline constexpr auto nV = voltage<nanovolt, detail::one_rep>{};
+inline constexpr auto uV = voltage<microvolt, detail::one_rep>{};
+inline constexpr auto mV = voltage<millivolt, detail::one_rep>{};
+inline constexpr auto cV = voltage<centivolt, detail::one_rep>{};
+inline constexpr auto dV = voltage<decivolt, detail::one_rep>{};
+inline constexpr auto daV = voltage<decavolt, detail::one_rep>{};
+inline constexpr auto hV = voltage<hectovolt, detail::one_rep>{};
+inline constexpr auto kV = voltage<kilovolt, detail::one_rep>{};
+inline constexpr auto MV = voltage<megavolt, detail::one_rep>{};
+inline constexpr auto GV = voltage<gigavolt, detail::one_rep>{};
+inline constexpr auto TV = voltage<teravolt, detail::one_rep>{};
+inline constexpr auto PV = voltage<petavolt, detail::one_rep>{};
+inline constexpr auto EV = voltage<exavolt, detail::one_rep>{};
+inline constexpr auto ZV = voltage<zettavolt, detail::one_rep>{};
+inline constexpr auto YV = voltage<yottavolt, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

@@ -38,6 +38,12 @@ inline namespace literals {
 
 using si::literals::operator"" _q_s;
 
-}
+}  // namespace literals
+
+namespace unit_constants {
+
+using si::unit_constants::s;
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

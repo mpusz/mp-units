@@ -40,6 +40,12 @@ inline namespace literals {
 constexpr auto operator"" _q_g(unsigned long long l) { return mass<gram, std::int64_t>(l); }
 constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
 
-}
+}  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto g = mass<gram, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::cgs

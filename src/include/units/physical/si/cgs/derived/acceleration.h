@@ -42,4 +42,10 @@ constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long 
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto Gal = acceleration<gal, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si::cgs

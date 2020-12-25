@@ -45,4 +45,10 @@ constexpr auto operator"" _q_Nm(long double l) { return torque<newton_metre, lon
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto Nm = torque<newton_metre, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

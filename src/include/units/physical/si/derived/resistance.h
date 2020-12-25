@@ -125,4 +125,26 @@ constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, lon
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto R = resistance<ohm, detail::one_rep>{};
+inline constexpr auto yR = resistance<yoctoohm, detail::one_rep>{};
+inline constexpr auto zR = resistance<zeptoohm, detail::one_rep>{};
+inline constexpr auto aR = resistance<attoohm, detail::one_rep>{};
+inline constexpr auto fR = resistance<femtoohm, detail::one_rep>{};
+inline constexpr auto pR = resistance<picoohm, detail::one_rep>{};
+inline constexpr auto nR = resistance<nanoohm, detail::one_rep>{};
+inline constexpr auto uR = resistance<microohm, detail::one_rep>{};
+inline constexpr auto mR = resistance<milliohm, detail::one_rep>{};
+inline constexpr auto kR = resistance<kiloohm, detail::one_rep>{};
+inline constexpr auto MR = resistance<megaohm, detail::one_rep>{};
+inline constexpr auto GR = resistance<gigaohm, detail::one_rep>{};
+inline constexpr auto TR = resistance<teraohm, detail::one_rep>{};
+inline constexpr auto PR = resistance<petaohm, detail::one_rep>{};
+inline constexpr auto ER = resistance<exaohm, detail::one_rep>{};
+inline constexpr auto ZR = resistance<zettaohm, detail::one_rep>{};
+inline constexpr auto YR = resistance<yottaohm, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

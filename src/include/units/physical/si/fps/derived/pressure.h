@@ -44,6 +44,7 @@ struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi
 struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 
 inline namespace literals {
+
 // Poundal per square foot
 constexpr auto operator"" _q_pdl_per_ft2(unsigned long long l) { return pressure<poundal_per_foot_sq, std::int64_t>(l); }
 constexpr auto operator"" _q_pdl_per_ft2(long double l) { return pressure<poundal_per_foot_sq, long double>(l); }
@@ -57,5 +58,12 @@ constexpr auto operator"" _q_kpsi(unsigned long long l) { return pressure<kilopo
 constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_force_per_inch_sq, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto psi = pressure<pound_force_per_inch_sq, detail::one_rep>{};
+inline constexpr auto kpsi = pressure<kilopound_force_per_inch_sq, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

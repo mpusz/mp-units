@@ -43,6 +43,7 @@ add_library(unit_tests_static
     si_fps_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
+    unit_constants.cpp
     unit_test.cpp
     us_test.cpp
 )

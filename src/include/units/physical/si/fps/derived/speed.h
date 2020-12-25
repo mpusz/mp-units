@@ -44,16 +44,25 @@ struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
 inline namespace literals {
 
+// ft/s
 constexpr auto operator"" _q_ft_per_s(unsigned long long l) { return speed<foot_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
 
+// mph
 constexpr auto operator"" _q_mph(unsigned long long l) { return speed<mile_per_hour, std::int64_t>(l); }
 constexpr auto operator"" _q_mph(long double l) { return speed<mile_per_hour, long double>(l); }
 
+// kn
 constexpr auto operator"" _q_knot(unsigned long long l) { return speed<knot, std::int64_t>(l); }
 constexpr auto operator"" _q_knot(long double l) { return speed<knot, long double>(l); }
 
-
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto mph = speed<mile_per_hour, detail::one_rep>{};
+inline constexpr auto knot = speed<fps::knot, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

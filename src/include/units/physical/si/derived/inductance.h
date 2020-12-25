@@ -125,4 +125,26 @@ constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, l
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto H = inductance<henry, detail::one_rep>{};
+inline constexpr auto yH = inductance<yoctohenry, detail::one_rep>{};
+inline constexpr auto zH = inductance<zeptohenry, detail::one_rep>{};
+inline constexpr auto aH = inductance<attohenry, detail::one_rep>{};
+inline constexpr auto fH = inductance<femtohenry, detail::one_rep>{};
+inline constexpr auto pH = inductance<picohenry, detail::one_rep>{};
+inline constexpr auto nH = inductance<nanohenry, detail::one_rep>{};
+inline constexpr auto uH = inductance<microhenry, detail::one_rep>{};
+inline constexpr auto mH = inductance<millihenry, detail::one_rep>{};
+inline constexpr auto kH = inductance<kilohenry, detail::one_rep>{};
+inline constexpr auto MH = inductance<megahenry, detail::one_rep>{};
+inline constexpr auto GH = inductance<gigahenry, detail::one_rep>{};
+inline constexpr auto TH = inductance<terahenry, detail::one_rep>{};
+inline constexpr auto PH = inductance<petahenry, detail::one_rep>{};
+inline constexpr auto EH = inductance<exahenry, detail::one_rep>{};
+inline constexpr auto ZH = inductance<zettahenry, detail::one_rep>{};
+inline constexpr auto YH = inductance<yottahenry, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si
