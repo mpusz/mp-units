@@ -45,6 +45,7 @@ using energy = quantity<dim_energy, U, Rep>;
 
 inline namespace literals {
 
+// foot poundal
 constexpr auto operator"" _q_ft_pdl(unsigned long long l) { return energy<foot_poundal, std::int64_t>(l); }
 constexpr auto operator"" _q_ft_pdl(long double l) { return energy<foot_poundal, long double>(l); }
 
@@ -53,5 +54,12 @@ constexpr auto operator"" _q_ft_lbf(unsigned long long l) { return energy<foot_p
 constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_force, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto ft_pdl = energy<foot_poundal, detail::one_rep>{};
+inline constexpr auto ft_lbf = energy<foot_pound_force, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

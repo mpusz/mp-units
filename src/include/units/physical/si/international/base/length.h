@@ -94,4 +94,17 @@ constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long do
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto yd = si::length<yard, detail::one_rep>{};
+inline constexpr auto ft = si::length<foot, detail::one_rep>{};
+inline constexpr auto fathom = si::length<international::fathom, detail::one_rep>{};
+inline constexpr auto in = si::length<inch, detail::one_rep>{};
+inline constexpr auto mi = si::length<mile, detail::one_rep>{};
+inline constexpr auto mi_naut = si::length<nautical_mile, detail::one_rep>{};
+inline constexpr auto thou = si::length<international::thou, detail::one_rep>{};
+inline constexpr auto mil = si::length<international::mil, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si::international

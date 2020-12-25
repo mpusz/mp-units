@@ -58,7 +58,7 @@ using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 
 inline namespace literals {
 
-// G
+// Gy
 constexpr auto operator"" _q_Gy(unsigned long long l) { return absorbed_dose<gray, std::int64_t>(l); }
 constexpr auto operator"" _q_Gy(long double l) { return absorbed_dose<gray, long double>(l); }
 
@@ -143,5 +143,31 @@ constexpr auto operator"" _q_YGy(unsigned long long l) { return absorbed_dose<yo
 constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto Gy = absorbed_dose<gray, detail::one_rep>{};
+inline constexpr auto yGy = absorbed_dose<yoctogray, detail::one_rep>{};
+inline constexpr auto zGy = absorbed_dose<zeptogray, detail::one_rep>{};
+inline constexpr auto aGy = absorbed_dose<attogray, detail::one_rep>{};
+inline constexpr auto fGy = absorbed_dose<femtogray, detail::one_rep>{};
+inline constexpr auto pGy = absorbed_dose<picogray, detail::one_rep>{};
+inline constexpr auto nGy = absorbed_dose<nanogray, detail::one_rep>{};
+inline constexpr auto uGy = absorbed_dose<microgray, detail::one_rep>{};
+inline constexpr auto mGy = absorbed_dose<milligray, detail::one_rep>{};
+inline constexpr auto cGy = absorbed_dose<centigray, detail::one_rep>{};
+inline constexpr auto dGy = absorbed_dose<decigray, detail::one_rep>{};
+inline constexpr auto daGy = absorbed_dose<decagray, detail::one_rep>{};
+inline constexpr auto hGy = absorbed_dose<hectogray, detail::one_rep>{};
+inline constexpr auto kGy = absorbed_dose<kilogray, detail::one_rep>{};
+inline constexpr auto MGy = absorbed_dose<megagray, detail::one_rep>{};
+inline constexpr auto GGy = absorbed_dose<gigagray, detail::one_rep>{};
+inline constexpr auto TGy = absorbed_dose<teragray, detail::one_rep>{};
+inline constexpr auto PGy = absorbed_dose<petagray, detail::one_rep>{};
+inline constexpr auto EGy = absorbed_dose<exagray, detail::one_rep>{};
+inline constexpr auto ZGy = absorbed_dose<zettagray, detail::one_rep>{};
+inline constexpr auto YGy = absorbed_dose<yottagray, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si

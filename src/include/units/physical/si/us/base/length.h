@@ -47,10 +47,18 @@ constexpr auto operator"" _q_ft_us(long double l) { return si::length<units::phy
 constexpr auto operator"" _q_fathom_us(unsigned long long l) { return si::length<units::physical::si::us::fathom, std::int64_t>(l); }
 constexpr auto operator"" _q_fathom_us(long double l) { return si::length<units::physical::si::us::fathom, long double>(l); }
 
-// ft
+// mi
 constexpr auto operator"" _q_mi_us(unsigned long long l) { return si::length<units::physical::si::us::mile, std::int64_t>(l); }
 constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::physical::si::us::mile, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto ft = si::length<units::physical::si::us::foot, detail::one_rep>{};
+inline constexpr auto fathom = si::length<units::physical::si::us::fathom, detail::one_rep>{};
+inline constexpr auto mi = si::length<units::physical::si::us::mile, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::us

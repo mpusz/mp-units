@@ -36,7 +36,7 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {
 
-// ft_per_s2
+// ft/s2
 constexpr auto operator"" _q_ft_per_s2(unsigned long long l) { return acceleration<foot_per_second_sq, std::int64_t>(l); }
 constexpr auto operator"" _q_ft_per_s2(long double l) { return acceleration<foot_per_second_sq, long double>(l); }
 

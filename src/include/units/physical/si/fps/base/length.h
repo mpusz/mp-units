@@ -91,7 +91,21 @@ constexpr auto operator"" _q_mile(long double l) { return length<mile, long doub
 constexpr auto operator"" _q_naut_mi(unsigned long long l) { return length<nautical_mile, std::int64_t>(l); }
 constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mile, long double>(l); }
 
+}  // namespace literals
 
-}
+namespace unit_constants {
+
+inline constexpr auto thou = length<thousandth, detail::one_rep>{};
+inline constexpr auto mil = thou;
+
+inline constexpr auto in = length<inch, detail::one_rep>{};
+inline constexpr auto ft = length<foot, detail::one_rep>{};
+inline constexpr auto yd = length<yard, detail::one_rep>{};
+inline constexpr auto ftm = length<fathom, detail::one_rep>{};
+inline constexpr auto kyd = length<kiloyard, detail::one_rep>{};
+inline constexpr auto mile = length<fps::mile, detail::one_rep>{};
+inline constexpr auto naut_mi = length<nautical_mile, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

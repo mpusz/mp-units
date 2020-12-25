@@ -42,10 +42,17 @@ inline namespace literals {
 constexpr auto operator"" _q_ft3(unsigned long long l) { return volume<cubic_foot, std::int64_t>(l); }
 constexpr auto operator"" _q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
 
-// yard3
+// yd3
 constexpr auto operator"" _q_yd3(unsigned long long l) { return volume<cubic_yard, std::int64_t>(l); }
 constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto ft3 = volume<cubic_foot, detail::one_rep>{};
+inline constexpr auto yd3 = volume<cubic_yard, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

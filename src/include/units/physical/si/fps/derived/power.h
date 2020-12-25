@@ -46,15 +46,20 @@ inline namespace literals {
 constexpr auto operator"" _q_ft_pdl_per_s(unsigned long long l) { return power<foot_poundal_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
 
-
 // foot pound force per second
 constexpr auto operator"" _q_ft_lbf_per_s(unsigned long long l) { return power<foot_pound_force_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
 
-
+// horse power
 constexpr auto operator"" _q_hp(unsigned long long l) { return power<horse_power, std::int64_t>(l); }
 constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto hp = power<horse_power, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si::fps

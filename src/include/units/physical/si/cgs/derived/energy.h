@@ -44,4 +44,10 @@ constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto erg = energy<cgs::erg, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si::cgs

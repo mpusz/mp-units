@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/one_rep.h>
 #include <units/physical/dimensions/mass.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
@@ -254,5 +255,53 @@ constexpr auto operator"" _q_Da(unsigned long long l) { return mass<dalton, std:
 constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double>(l); }
 
 }  // namespace literals
+
+namespace unit_constants {
+
+inline constexpr auto g = mass<gram, detail::one_rep>{};
+inline constexpr auto yg = mass<yoctogram, detail::one_rep>{};
+inline constexpr auto zg = mass<zeptogram, detail::one_rep>{};
+inline constexpr auto ag = mass<attogram, detail::one_rep>{};
+inline constexpr auto fg = mass<femtogram, detail::one_rep>{};
+inline constexpr auto pg = mass<picogram, detail::one_rep>{};
+inline constexpr auto ng = mass<nanogram, detail::one_rep>{};
+inline constexpr auto ug = mass<microgram, detail::one_rep>{};
+inline constexpr auto mg = mass<milligram, detail::one_rep>{};
+inline constexpr auto cg = mass<centigram, detail::one_rep>{};
+inline constexpr auto dg = mass<decigram, detail::one_rep>{};
+inline constexpr auto dag = mass<decagram, detail::one_rep>{};
+inline constexpr auto hg = mass<hectogram, detail::one_rep>{};
+inline constexpr auto kg = mass<kilogram, detail::one_rep>{};
+inline constexpr auto Mg = mass<megagram, detail::one_rep>{};
+inline constexpr auto Gg = mass<gigagram, detail::one_rep>{};
+inline constexpr auto Tg = mass<teragram, detail::one_rep>{};
+inline constexpr auto Pg = mass<petagram, detail::one_rep>{};
+inline constexpr auto Eg = mass<exagram, detail::one_rep>{};
+inline constexpr auto Zg = mass<zettagram, detail::one_rep>{};
+inline constexpr auto Yg = mass<yottagram, detail::one_rep>{};
+inline constexpr auto t = mass<tonne, detail::one_rep>{};
+inline constexpr auto yt = mass<yoctotonne, detail::one_rep>{};
+inline constexpr auto zt = mass<zeptotonne, detail::one_rep>{};
+inline constexpr auto at = mass<attotonne, detail::one_rep>{};
+inline constexpr auto ft = mass<femtotonne, detail::one_rep>{};
+inline constexpr auto pt = mass<picotonne, detail::one_rep>{};
+inline constexpr auto nt = mass<nanotonne, detail::one_rep>{};
+inline constexpr auto ut = mass<microtonne, detail::one_rep>{};
+inline constexpr auto mt = mass<millitonne, detail::one_rep>{};
+inline constexpr auto ct = mass<centitonne, detail::one_rep>{};
+inline constexpr auto dt = mass<decitonne, detail::one_rep>{};
+inline constexpr auto dat = mass<decatonne, detail::one_rep>{};
+inline constexpr auto ht = mass<hectotonne, detail::one_rep>{};
+inline constexpr auto kt = mass<kilotonne, detail::one_rep>{};
+inline constexpr auto Mt = mass<megatonne, detail::one_rep>{};
+inline constexpr auto Gt = mass<gigatonne, detail::one_rep>{};
+inline constexpr auto Tt = mass<teratonne, detail::one_rep>{};
+inline constexpr auto Pt = mass<petatonne, detail::one_rep>{};
+inline constexpr auto Et = mass<exatonne, detail::one_rep>{};
+inline constexpr auto Zt = mass<zettatonne, detail::one_rep>{};
+inline constexpr auto Yt = mass<yottatonne, detail::one_rep>{};
+inline constexpr auto Da = mass<dalton, detail::one_rep>{};
+
+}  // namespace unit_constants
 
 }  // namespace units::physical::si

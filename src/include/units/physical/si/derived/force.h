@@ -145,4 +145,30 @@ constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long 
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto N = force<newton, detail::one_rep>{};
+inline constexpr auto yN = force<yoctonewton, detail::one_rep>{};
+inline constexpr auto zN = force<zeptonewton, detail::one_rep>{};
+inline constexpr auto aN = force<attonewton, detail::one_rep>{};
+inline constexpr auto fN = force<femtonewton, detail::one_rep>{};
+inline constexpr auto pN = force<piconewton, detail::one_rep>{};
+inline constexpr auto nN = force<nanonewton, detail::one_rep>{};
+inline constexpr auto uN = force<micronewton, detail::one_rep>{};
+inline constexpr auto mN = force<millinewton, detail::one_rep>{};
+inline constexpr auto cN = force<centinewton, detail::one_rep>{};
+inline constexpr auto dN = force<decinewton, detail::one_rep>{};
+inline constexpr auto daN = force<decanewton, detail::one_rep>{};
+inline constexpr auto hN = force<hectonewton, detail::one_rep>{};
+inline constexpr auto kN = force<kilonewton, detail::one_rep>{};
+inline constexpr auto MN = force<meganewton, detail::one_rep>{};
+inline constexpr auto GN = force<giganewton, detail::one_rep>{};
+inline constexpr auto TN = force<teranewton, detail::one_rep>{};
+inline constexpr auto PN = force<petanewton, detail::one_rep>{};
+inline constexpr auto EN = force<exanewton, detail::one_rep>{};
+inline constexpr auto ZN = force<zettanewton, detail::one_rep>{};
+inline constexpr auto YN = force<yottanewton, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si

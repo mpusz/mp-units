@@ -43,5 +43,11 @@ constexpr auto operator"" _q_Pa_s(long double l) { return dynamic_viscosity<pasc
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto Pa_s = dynamic_viscosity<pascal_second, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::physical::si
 

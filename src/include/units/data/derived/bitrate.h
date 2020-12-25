@@ -56,4 +56,15 @@ constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { return bitrate<pe
 
 }  // namespace literals
 
+namespace unit_constants {
+
+inline constexpr auto b_per_s = bitrate<bit_per_second, detail::one_rep>{};
+inline constexpr auto Kib_per_s = bitrate<kibibit_per_second, detail::one_rep>{};
+inline constexpr auto Mib_per_s = bitrate<mebibit_per_second, detail::one_rep>{};
+inline constexpr auto Gib_per_s = bitrate<gibibit_per_second, detail::one_rep>{};
+inline constexpr auto Tib_per_s = bitrate<tebibit_per_second, detail::one_rep>{};
+inline constexpr auto Pib_per_s = bitrate<pebibit_per_second, detail::one_rep>{};
+
+}  // namespace unit_constants
+
 }  // namespace units::data

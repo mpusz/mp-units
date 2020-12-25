@@ -43,7 +43,6 @@ inline namespace literals {
 constexpr auto operator"" _q_rad_per_s(unsigned long long l) { return angular_velocity<radian_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<radian_per_second, long double>(l); }
 
-
 }  // namespace literals
 
 }  // namespace units::physical::si
