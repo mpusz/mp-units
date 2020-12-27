@@ -45,7 +45,7 @@ jobs:
           }
         - {
             name: "Ubuntu GCC 10.1.0",
-            os: ubuntu-latest,
+            os: ubuntu-18.04,
             compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
           }
         - {
