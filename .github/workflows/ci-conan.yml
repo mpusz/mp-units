@@ -44,30 +44,20 @@ jobs:
             compiler: { type: VISUAL, version: 16, cc: "cl", cxx: "cl" }
           }
         - {
-            name: "Ubuntu GCC 10.1.0",
+            name: "Ubuntu GCC 10.2.0",
             os: ubuntu-20.04,
             compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
           }
-        - {
-            name: "Ubuntu GCC 10.2.0",
-            os: ubuntu-20.04,
-            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
-            docker_image: conanio/gcc10
-          }
+        # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
+        # - {
+        #     name: "Ubuntu GCC 10.2.0",
+        #     os: ubuntu-20.04,
+        #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+        #     docker_image: conanio/gcc10
+        #   }
         build_type: [ "Release", "Debug" ]
     steps:
       - uses: actions/checkout@v2
-      # - name: Cache Conan data
-      #   uses: actions/cache@v2
-      #   env:
-      #     cache-name: cache-conan-data
-      #   with:
-      #     path: ~/.conan/data
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
