@@ -258,10 +258,11 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::multiplies<>, rep, Value>
+          invoke_result_convertible_to_<rep, std::multiplies<>, Value, rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
-    return q * v;
+    using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, Value, rep>>;
+    return ret(v * q.count());
   }
 
   template<typename Value>
