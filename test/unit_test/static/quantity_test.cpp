@@ -47,7 +47,7 @@ using namespace units::physical::si;
 static_assert(sizeof(length<metre>) == sizeof(double));
 static_assert(sizeof(length<metre, short>) == sizeof(short));
 
-#if COMP_GCC != 10 || COMP_GCC_MINOR != 2  // TODO remove when gcc 10.3 releases
+#if COMP_GCC != 10 || COMP_GCC_MINOR > 2
 template<template<typename, typename, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<dim_length, second, int>; };  // unit of a different dimension
