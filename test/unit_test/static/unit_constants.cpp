@@ -59,7 +59,7 @@ static_assert(2 * m / s == 2_q_m_per_s);
 static_assert(2 / s * m == 2_q_m_per_s);
 static_assert(2 * (m / s) == 2_q_m_per_s);
 static_assert(2 * ::m_per_s == 2_q_m_per_s);
-static_assert(std::is_same_v<decltype(::m_per_s)::rep, decltype(m)::rep>);
+static_assert(is_same_v<decltype(::m_per_s)::rep, decltype(m)::rep>);
 
 static_assert(120 * km / (2 * h) == 60_q_km_per_h);
 static_assert(120 * km / 2 / h == 60_q_km_per_h);
@@ -68,9 +68,9 @@ static_assert([] {
   const auto duration{2};
   return length * km / (duration * h);
 }() == 60_q_km_per_h);
-static_assert(std::is_same_v<decltype(std::int64_t{120} * km / (2 * h)), decltype(60_q_km_per_h)>);
-static_assert(std::is_same_v<decltype(std::int64_t{120} * km / 2 / h), decltype(60_q_km_per_h)>);
-static_assert(std::is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>);
+static_assert(is_same_v<decltype(std::int64_t{120} * km / (2 * h)), decltype(60_q_km_per_h)>);
+static_assert(is_same_v<decltype(std::int64_t{120} * km / 2 / h), decltype(60_q_km_per_h)>);
+static_assert(is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>);
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 
@@ -79,7 +79,7 @@ static_assert([] {
   signed s = 2;  // hides  ^
   Length auto v = 20 * m / s;
   /*      */ v0 = 10 * m / ::s;
-  return !std::is_same_v<decltype(v0), decltype(v)>;
+  return !is_same_v<decltype(v0), decltype(v)>;
 }());
 
 int main() {}

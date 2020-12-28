@@ -43,8 +43,8 @@ static_assert(!std::constructible_from<si::time<si::hour, std::chrono::seconds::
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::hour, std::chrono::seconds::rep>>);
 
 // CTAD
-static_assert(std::is_same_v<decltype(quantity{1s}), si::time<si::second, std::chrono::seconds::rep>>);
-static_assert(std::is_same_v<decltype(quantity{1h}), si::time<si::hour, std::chrono::hours::rep>>);
+static_assert(is_same_v<decltype(quantity{1s}), si::time<si::second, std::chrono::seconds::rep>>);
+static_assert(is_same_v<decltype(quantity{1h}), si::time<si::hour, std::chrono::hours::rep>>);
 
 // operators
 static_assert(quantity{1s} + 1_q_s == 2_q_s);

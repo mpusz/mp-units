@@ -157,7 +157,7 @@ namespace units {
     template<typename E1, typename... ERest>
     struct dim_consolidate<dimension<E1, ERest...>> {
       using rest = dim_consolidate_t<dimension<ERest...>>;
-      using type = conditional<std::is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
+      using type = conditional<is_same_v<rest, dimension<>>, dimension<E1>, type_list_push_front<rest, E1>>;
     };
 
     template<const base_dimension& D, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
