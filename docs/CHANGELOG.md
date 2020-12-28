@@ -2,15 +2,17 @@
 
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
-  - (!) refactor: Output stream operators moved to the `units/quantity_io.h` header file
+  - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
+  - feat: unit constants support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
   - feat: value initialization for quantity value removed (left with a default initialization)
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`
+  - perf: limited the C++ Standard Library headers usage
   - (!) fix: `exp()` has sense only for dimensionless quantities
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
