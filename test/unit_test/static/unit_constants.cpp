@@ -36,9 +36,10 @@
 #pragma warning( disable : 4459 ) // Disable shadowing warning.
 #endif
 
+using namespace units;
 using namespace units::physical;
-using namespace si;
-using namespace unit_constants;
+using namespace units::physical::si;
+using namespace units::physical::si::unit_constants;
 
 static_assert(2 * m == 2_q_m);
 static_assert(2 * s == 2_q_s);

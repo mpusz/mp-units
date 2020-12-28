@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "units/physical/si/base/length.h"
+#include <ostream>
 
 namespace {
 
