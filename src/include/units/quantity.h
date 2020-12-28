@@ -30,7 +30,6 @@
 #include <units/generic/dimensionless.h>
 #include <units/quantity_cast.h>
 #include <compare>
-#include <ostream>
 
 namespace units {
 

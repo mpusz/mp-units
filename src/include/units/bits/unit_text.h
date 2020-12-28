@@ -26,7 +26,6 @@
 #include <units/bits/external/text_tools.h>
 #include <units/prefix.h>
 #include <units/derived_dimension.h>
-#include <sstream>
 
 namespace units::detail {
 
@@ -175,16 +174,6 @@ constexpr auto unit_text()
       constexpr auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family, symbol_text.standard().size()>();
       return prefix_txt + symbol_text;
     }
-  }
-}
-
-template<typename CharT, class Traits, typename D, typename U, typename Rep>
-void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
-{
-  os << q.count();
-  constexpr auto symbol = detail::unit_text<D, U>();
-  if constexpr (symbol.standard().size()) {
-    os << " " << symbol.standard();
   }
 }
 

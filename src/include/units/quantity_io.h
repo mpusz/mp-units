@@ -25,8 +25,23 @@
 
 #include <units/bits/external/fixed_string_io.h>
 #include <units/quantity.h>
+#include <sstream>
 
 namespace units {
+
+namespace detail {
+
+template<typename CharT, class Traits, typename D, typename U, typename Rep>
+void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
+{
+  os << q.count();
+  constexpr auto symbol = detail::unit_text<D, U>();
+  if constexpr (symbol.standard().size()) {
+    os << " " << symbol.standard();
+  }
+}
+
+} //  namespace detail
 
 template<typename CharT, typename Traits, typename D, typename U, typename Rep>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
