@@ -22,8 +22,8 @@
 
 #include "units/math.h"
 #include "test_tools.h"
-#include "units/physical/si/si.h"
-#include "units/physical/si/international/international.h"
+#include "units/physical/si/derived/area.h"
+#include "units/physical/si/international/derived/area.h"
 
 namespace {
 

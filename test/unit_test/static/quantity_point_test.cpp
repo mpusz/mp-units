@@ -23,8 +23,10 @@
 #include "units/quantity_point.h"
 #include "test_tools.h"
 #include "units/math.h"
-#include "units/physical/si/si.h"
-#include "units/physical/si/us/us.h"
+#include "units/physical/si/derived/area.h"
+#include "units/physical/si/derived/speed.h"
+#include "units/physical/si/derived/volume.h"
+#include "units/physical/si/us/base/length.h"
 #include <chrono>
 #include <utility>
 
