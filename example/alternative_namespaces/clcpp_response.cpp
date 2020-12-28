@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <units/format.h>
+#include <units/quantity_io.h>
 
 #include "./length.h"
 #include "./volume.h"

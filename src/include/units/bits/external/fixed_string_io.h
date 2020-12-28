@@ -20,23 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/generic/angle.h>
-#include <units/physical/si/base/length.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/torque.h>
-#include <units/quantity_io.h>
-#include <iostream>
+#pragma once
 
-using namespace units;
-using namespace units::physical::si::literals;
+#include <units/bits/external/fixed_string.h>
+#include <ostream>
 
-int main()
+namespace units {
+
+template<typename CharT, class Traits, std::size_t N>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const basic_fixed_string<CharT, N>& txt)
 {
-  auto torque = 20.0_q_Nm;
-  auto energy = 20.0_q_J;
-
-  Angle auto angle = torque / energy;
-
-  std::cout << angle << '\n';
+  return os << txt.c_str();
 }
+
+}  // namespace units

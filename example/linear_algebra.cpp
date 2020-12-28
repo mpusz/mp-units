@@ -24,13 +24,14 @@
 #include <units/physical/si/derived/force.h>
 #include <units/physical/si/derived/energy.h>
 #include <units/format.h>
+#include <units/quantity_io.h>
 #include <linear_algebra.hpp>
 #include <iostream>
 
-namespace {
+namespace STD_LA {
 
 template<class ET, class OT>
-std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
+std::ostream& operator<<(std::ostream& os, const vector<ET, OT>& v)
 {
   os << "|";
   for (auto i = 0U; i < v.size(); ++i) {
@@ -41,7 +42,7 @@ std::ostream& operator<<(std::ostream& os, const std::math::vector<ET, OT>& v)
 }
 
 template<class ET, class OT>
-std::ostream& operator<<(std::ostream& os, const std::math::matrix<ET, OT>& v)
+std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
 {
   for (auto i = 0U; i < v.rows(); ++i) {
     os << "|";
@@ -53,6 +54,9 @@ std::ostream& operator<<(std::ostream& os, const std::math::matrix<ET, OT>& v)
   return os;
 }
 
+}  // namespace STD_LA
+
+namespace {
 
 using namespace units::physical;
 using namespace units::physical::si::literals;
@@ -345,7 +349,7 @@ void quantity_of_matrix_tests()
   quantity_of_matrix_divide_by_scalar();
 }
 
-}
+}  // namespace
 
 int main()
 {

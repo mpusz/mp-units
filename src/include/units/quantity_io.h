@@ -1,3 +1,4 @@
+
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -20,23 +21,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/generic/angle.h>
-#include <units/physical/si/base/length.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/torque.h>
-#include <units/quantity_io.h>
-#include <iostream>
+#pragma once
 
-using namespace units;
-using namespace units::physical::si::literals;
+#include <units/bits/external/fixed_string_io.h>
+#include <units/quantity.h>
 
-int main()
+namespace units {
+
+template<typename CharT, typename Traits, typename D, typename U, typename Rep>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
+  requires requires { os << q.count(); }
 {
-  auto torque = 20.0_q_Nm;
-  auto energy = 20.0_q_J;
+  if(os.width()) {
+    // std::setw() applies to the whole quantity output so it has to be first put into std::string
+    std::basic_ostringstream<CharT, Traits> s;
+    detail::to_stream(s, q);
+    return os << s.str();
+  }
 
-  Angle auto angle = torque / energy;
-
-  std::cout << angle << '\n';
+  detail::to_stream(os, q);
+  return os;
 }
+
+}  // namespace units

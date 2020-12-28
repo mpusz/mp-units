@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/quantity.h>
+#include <units/quantity_io.h>
 #include <units/physical/si/prefixes.h>
 #include <iostream>
 

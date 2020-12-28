@@ -23,6 +23,7 @@
 #include <units/physical/si/cgs/derived/speed.h>
 #include <units/physical/si/international/derived/speed.h>
 #include <units/physical/si/derived/speed.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
 namespace {

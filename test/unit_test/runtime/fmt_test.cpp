@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/format.h"
-#include "units/math.h"
-#include "units/physical/si/si.h"
-#include "units/physical/si/cgs/cgs.h"
+#include <units/format.h>
+#include <units/math.h>
+#include <units/physical/si/si.h>
+#include <units/physical/si/cgs/cgs.h>
+#include <units/quantity_io.h>
 #include <catch2/catch.hpp>
 #include <iomanip>
 #include <sstream>

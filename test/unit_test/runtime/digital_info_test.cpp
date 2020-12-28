@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/data/data.h>
+#include <units/quantity_io.h>
 #include <catch2/catch.hpp>
 #include <sstream>
 

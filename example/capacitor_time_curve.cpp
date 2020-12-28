@@ -25,6 +25,7 @@
 #include <units/physical/si/base/time.h>
 #include <units/physical/si/derived/voltage.h>
 #include <units/math.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
 int main()

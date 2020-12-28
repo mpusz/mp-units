@@ -24,6 +24,7 @@
 #include <units/physical/si/derived/resistance.h>
 #include <units/physical/si/base/time.h>
 #include <units/math.h>
+#include <units/quantity_io.h>
 #include "./voltage.h"
 #include <iostream>
 

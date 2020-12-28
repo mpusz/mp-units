@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/physical/si/derived/speed.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
 using namespace units;

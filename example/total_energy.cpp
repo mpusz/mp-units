@@ -26,6 +26,7 @@
 #include <units/physical/si/derived/speed.h>
 #include <units/physical/si/constants.h>
 #include <units/math.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
 namespace {

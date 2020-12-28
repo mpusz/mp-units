@@ -1,4 +1,5 @@
 
+#include <units/quantity_io.h>
 #include "./length.h"
 #include "./acceleration.h"
 #include "./density.h"

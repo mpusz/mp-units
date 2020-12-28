@@ -23,10 +23,10 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
-#include <algorithm>
 #include <cstdlib>
-#include <ostream>
 #include <compare>
+
+// TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 
 namespace units {
 
@@ -52,14 +52,15 @@ struct basic_fixed_string {
   }
 
   [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
-  [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data_; }
-  [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data_[index]; }
-  [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data_[index]; }
+  [[nodiscard]] constexpr const CharT* data() const noexcept { return data_; }
+  [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
+  [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data()[index]; }
+  [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data()[index]; }
 
-  [[nodiscard]] constexpr iterator begin() noexcept { return std::begin(data_); }
-  [[nodiscard]] constexpr const_iterator begin() const noexcept { return std::begin(data_); }
-  [[nodiscard]] constexpr iterator end() noexcept { return std::end(data_); }
-  [[nodiscard]] constexpr const_iterator end() const noexcept { return std::end(data_); }
+  [[nodiscard]] constexpr iterator begin() noexcept { return data(); }
+  [[nodiscard]] constexpr const_iterator begin() const noexcept { return data(); }
+  [[nodiscard]] constexpr iterator end() noexcept { return data() + size(); }
+  [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
 
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
@@ -75,7 +76,14 @@ struct basic_fixed_string {
 
   [[nodiscard]] constexpr bool operator==(const basic_fixed_string& other) const
   {
-    return std::ranges::equal(*this, other);
+    if (size() != other.size())
+      return false;
+    for (size_t i = 0; i != size(); ++i) {
+      if ((*this)[i] != other[i])
+        return false;
+    }
+    return true;
+    // return std::ranges::equal(*this, other);
   }
 
   template<std::size_t N2>
@@ -84,14 +92,20 @@ struct basic_fixed_string {
   template<std::size_t N2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs)
   {
-    return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-  }
+    auto first1 = lhs.begin();
+    const auto last1 = lhs.end();
+    auto first2 = rhs.begin();
+    const auto last2 = rhs.end();
+    auto comp = std::compare_three_way();
 
-  template<class Traits>
-  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
-                                                       const basic_fixed_string& txt)
-  {
-    return os << txt.c_str();
+    for (; first1 != last1 && first2 != last2; ++first1, ++first2)
+      if (auto cmp = comp(*first1, *first2); cmp != 0)
+        return cmp;
+ 
+    return first1 != last1 ? std::strong_ordering::greater :
+           first2 != last2 ? std::strong_ordering::less :
+                             std::strong_ordering::equal;
+    // return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 };
 

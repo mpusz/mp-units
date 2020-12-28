@@ -18,6 +18,7 @@
 
 #include "./units_str.h"
 #include "./length.h"
+#include <units/quantity_io.h>
 #include <iostream>
 
 /*

@@ -7,6 +7,7 @@
 #include <units/physical/si/base/time.h>
 #include <units/physical/si/derived/volume.h>
 #include <units/format.h>
+#include <units/quantity_io.h>
 #include <cassert>
 
 namespace {

@@ -17,6 +17,7 @@
 
 #include <units/physical/si/base/length.h>
 #include <units/format.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
 /*
