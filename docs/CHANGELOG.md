@@ -2,6 +2,7 @@
 
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
+  - (!) refactor: Output stream operators moved to the `units/quantity_io.h` header file
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
   - feat: interoperability with `std::chrono::duration` and other units libraries

@@ -40,6 +40,7 @@ of basic library features::
     #include <units/physical/si/derived/speed.h>
     #include <units/physical/si/international/derived/speed.h>
     #include <units/format.h>
+    #include <units/quantity_io.h>
     #include <iostream>
 
     using namespace units::physical;

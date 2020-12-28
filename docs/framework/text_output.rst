@@ -13,6 +13,11 @@ also tries really hard to print any quantity in the most user friendly way.
 Output Streams
 --------------
 
+.. tip::
+    
+    The streaming support is provided via the ``<units/quantity_io.h>`` header
+    file.
+
 The easiest way to print a quantity is to provide its object to the output
 stream::
 
