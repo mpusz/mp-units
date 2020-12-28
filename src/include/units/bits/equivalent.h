@@ -33,22 +33,22 @@ template<typename T, typename U>
 struct equivalent_impl : std::false_type {
 };
 
+template<typename T>
+struct equivalent_impl<T, T> : std::true_type {
+};
+
+
 // units
 
 template<Unit U1, Unit U2>
-struct equivalent_impl<U1, U2> : std::disjunction<std::is_same<U1, U2>, std::is_base_of<U1, U2>, std::is_base_of<U2, U1>> {};
+struct equivalent_impl<U1, U2> : std::is_base_of<U1, U2>, std::is_base_of<U2, U1> {};
 
 
 // dimensions
 
 template<BaseDimension D1, BaseDimension D2>
-struct equivalent_base_dim :
-    std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
+struct equivalent_impl<D1, D2> : std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
                      same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {
-};
-
-template<BaseDimension D1, BaseDimension D2>
-struct equivalent_impl<D1, D2> : std::disjunction<std::is_same<D1, D2>, equivalent_base_dim<D1, D2>> {
 };
 
 template<Exponent E1, Exponent E2>
@@ -71,7 +71,7 @@ struct equivalent_derived_dim<derived_dimension_base<Es1...>, derived_dimension_
 
 template<DerivedDimension D1, DerivedDimension D2>
 struct equivalent_impl<D1, D2> :
-    std::disjunction<std::is_same<D1, D2>, std::is_base_of<D1, D2>, std::is_base_of<D2, D1>,
+    std::disjunction<std::is_base_of<D1, D2>, std::is_base_of<D2, D1>,
                      equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {
 };
 
@@ -85,10 +85,9 @@ struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
 
 template<typename Q1, typename Q2>
   requires (Quantity<Q1> && Quantity<Q2>) || (QuantityPoint<Q1> && QuantityPoint<Q2>)
-struct equivalent_impl<Q1, Q2> : std::disjunction<std::is_same<Q1, Q2>,
-                                                  std::conjunction<equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
-                                                                   equivalent_unit<typename Q1::unit, typename Q1::dimension,
-                                                                                   typename Q2::unit, typename Q2::dimension>>> {};
+struct equivalent_impl<Q1, Q2> : std::conjunction<equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
+                                                                  equivalent_unit<typename Q1::unit, typename Q1::dimension,
+                                                                                  typename Q2::unit, typename Q2::dimension>> {};
 
 }  // namespace detail
 

@@ -25,7 +25,14 @@
 #include "units/bits/equivalent.h"
 
 template<typename T, typename U>
-inline constexpr bool compare_impl = UNITS_DOWNCAST_MODE != 0 ? std::is_same_v<T, U> : (std::is_same_v<T, U> || units::equivalent<T, U>);
+inline constexpr bool compare_impl = false;
+
+template<typename T>
+inline constexpr bool compare_impl<T, T> = true;
+
+template<typename T, typename U>
+  requires (UNITS_DOWNCAST_MODE == 0)
+inline constexpr bool compare_impl<T, U> = units::equivalent<T, U>;
 
 template<typename T, typename U>
 inline constexpr bool compare = compare_impl<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;

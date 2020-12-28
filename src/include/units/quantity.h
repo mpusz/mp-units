@@ -133,7 +133,8 @@ public:
   quantity(quantity&&) = default;
 
   template<safe_convertible_to_<rep> Value>
-  explicit(!(equivalent<quantity, dimensionless<::units::one, rep>>)) constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
+  explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
+  constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
 
   template<QuantityLike Q>
     requires std::same_as<quantity, quantity_like_type<Q>>
