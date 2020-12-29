@@ -73,7 +73,7 @@ template<std::intmax_t N>
   requires gt_zero<N>
 [[nodiscard]] std::intmax_t iroot_runtime(std::intmax_t v) noexcept
 {
-  return iroot_impl<N>(v, [](double x, double exponent) {
+  return iroot_impl<N>(v, [](double x, [[maybe_unused]] double exponent) {
     if constexpr (N == 2) {
       return std::sqrt(x);
     } else if constexpr (N == 3) {
