@@ -126,23 +126,23 @@ constexpr auto operator"" _q_YW(long double l) { return power<yottawatt, long do
 
 namespace unit_constants {
 
-inline constexpr auto W = power<watt, detail::one_rep>{};
-inline constexpr auto yW = power<yoctowatt, detail::one_rep>{};
-inline constexpr auto zW = power<zeptowatt, detail::one_rep>{};
-inline constexpr auto aW = power<attowatt, detail::one_rep>{};
-inline constexpr auto fW = power<femtowatt, detail::one_rep>{};
-inline constexpr auto pW = power<picowatt, detail::one_rep>{};
-inline constexpr auto nW = power<nanowatt, detail::one_rep>{};
-inline constexpr auto uW = power<microwatt, detail::one_rep>{};
-inline constexpr auto mW = power<milliwatt, detail::one_rep>{};
-inline constexpr auto kW = power<kilowatt, detail::one_rep>{};
-inline constexpr auto MW = power<megawatt, detail::one_rep>{};
-inline constexpr auto GW = power<gigawatt, detail::one_rep>{};
-inline constexpr auto TW = power<terawatt, detail::one_rep>{};
-inline constexpr auto PW = power<petawatt, detail::one_rep>{};
-inline constexpr auto EW = power<exawatt, detail::one_rep>{};
-inline constexpr auto ZW = power<zettawatt, detail::one_rep>{};
-inline constexpr auto YW = power<yottawatt, detail::one_rep>{};
+inline constexpr auto W = power<watt, one_rep>{};
+inline constexpr auto yW = power<yoctowatt, one_rep>{};
+inline constexpr auto zW = power<zeptowatt, one_rep>{};
+inline constexpr auto aW = power<attowatt, one_rep>{};
+inline constexpr auto fW = power<femtowatt, one_rep>{};
+inline constexpr auto pW = power<picowatt, one_rep>{};
+inline constexpr auto nW = power<nanowatt, one_rep>{};
+inline constexpr auto uW = power<microwatt, one_rep>{};
+inline constexpr auto mW = power<milliwatt, one_rep>{};
+inline constexpr auto kW = power<kilowatt, one_rep>{};
+inline constexpr auto MW = power<megawatt, one_rep>{};
+inline constexpr auto GW = power<gigawatt, one_rep>{};
+inline constexpr auto TW = power<terawatt, one_rep>{};
+inline constexpr auto PW = power<petawatt, one_rep>{};
+inline constexpr auto EW = power<exawatt, one_rep>{};
+inline constexpr auto ZW = power<zettawatt, one_rep>{};
+inline constexpr auto YW = power<yottawatt, one_rep>{};
 
 }  // namespace unit_constants
 

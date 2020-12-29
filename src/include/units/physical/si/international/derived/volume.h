@@ -39,7 +39,7 @@ constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, 
 
 namespace unit_constants {
 
-inline constexpr auto ft3 = si::volume<cubic_foot, detail::one_rep>{};
+inline constexpr auto ft3 = si::volume<cubic_foot, one_rep>{};
 
 }  // namespace unit_constants
 

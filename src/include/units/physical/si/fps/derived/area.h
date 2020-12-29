@@ -45,7 +45,7 @@ constexpr auto operator"" _q_ft2(long double l) { return area<square_foot, long 
 
 namespace unit_constants {
 
-inline constexpr auto ft2 = area<square_foot, detail::one_rep>{};
+inline constexpr auto ft2 = area<square_foot, one_rep>{};
 
 }  // namespace unit_constants
 

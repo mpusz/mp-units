@@ -125,23 +125,23 @@ constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, l
 
 namespace unit_constants {
 
-inline constexpr auto Hz = frequency<hertz, detail::one_rep>{};
-inline constexpr auto yHz = frequency<yoctohertz, detail::one_rep>{};
-inline constexpr auto zHz = frequency<zeptohertz, detail::one_rep>{};
-inline constexpr auto aHz = frequency<attohertz, detail::one_rep>{};
-inline constexpr auto fHz = frequency<femtohertz, detail::one_rep>{};
-inline constexpr auto pHz = frequency<picohertz, detail::one_rep>{};
-inline constexpr auto nHz = frequency<nanohertz, detail::one_rep>{};
-inline constexpr auto uHz = frequency<microhertz, detail::one_rep>{};
-inline constexpr auto mHz = frequency<millihertz, detail::one_rep>{};
-inline constexpr auto kHz = frequency<kilohertz, detail::one_rep>{};
-inline constexpr auto MHz = frequency<megahertz, detail::one_rep>{};
-inline constexpr auto GHz = frequency<gigahertz, detail::one_rep>{};
-inline constexpr auto THz = frequency<terahertz, detail::one_rep>{};
-inline constexpr auto PHz = frequency<petahertz, detail::one_rep>{};
-inline constexpr auto EHz = frequency<exahertz, detail::one_rep>{};
-inline constexpr auto ZHz = frequency<zettahertz, detail::one_rep>{};
-inline constexpr auto YHz = frequency<yottahertz, detail::one_rep>{};
+inline constexpr auto Hz = frequency<hertz, one_rep>{};
+inline constexpr auto yHz = frequency<yoctohertz, one_rep>{};
+inline constexpr auto zHz = frequency<zeptohertz, one_rep>{};
+inline constexpr auto aHz = frequency<attohertz, one_rep>{};
+inline constexpr auto fHz = frequency<femtohertz, one_rep>{};
+inline constexpr auto pHz = frequency<picohertz, one_rep>{};
+inline constexpr auto nHz = frequency<nanohertz, one_rep>{};
+inline constexpr auto uHz = frequency<microhertz, one_rep>{};
+inline constexpr auto mHz = frequency<millihertz, one_rep>{};
+inline constexpr auto kHz = frequency<kilohertz, one_rep>{};
+inline constexpr auto MHz = frequency<megahertz, one_rep>{};
+inline constexpr auto GHz = frequency<gigahertz, one_rep>{};
+inline constexpr auto THz = frequency<terahertz, one_rep>{};
+inline constexpr auto PHz = frequency<petahertz, one_rep>{};
+inline constexpr auto EHz = frequency<exahertz, one_rep>{};
+inline constexpr auto ZHz = frequency<zettahertz, one_rep>{};
+inline constexpr auto YHz = frequency<yottahertz, one_rep>{};
 
 }  // namespace unit_constants
 

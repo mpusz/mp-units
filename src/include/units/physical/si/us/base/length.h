@@ -55,9 +55,9 @@ constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::phy
 
 namespace unit_constants {
 
-inline constexpr auto ft = si::length<units::physical::si::us::foot, detail::one_rep>{};
-inline constexpr auto fathom = si::length<units::physical::si::us::fathom, detail::one_rep>{};
-inline constexpr auto mi = si::length<units::physical::si::us::mile, detail::one_rep>{};
+inline constexpr auto ft = si::length<units::physical::si::us::foot, one_rep>{};
+inline constexpr auto fathom = si::length<units::physical::si::us::fathom, one_rep>{};
+inline constexpr auto mi = si::length<units::physical::si::us::mile, one_rep>{};
 
 }  // namespace unit_constants
 

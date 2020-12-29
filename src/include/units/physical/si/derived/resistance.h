@@ -127,23 +127,23 @@ constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, lon
 
 namespace unit_constants {
 
-inline constexpr auto R = resistance<ohm, detail::one_rep>{};
-inline constexpr auto yR = resistance<yoctoohm, detail::one_rep>{};
-inline constexpr auto zR = resistance<zeptoohm, detail::one_rep>{};
-inline constexpr auto aR = resistance<attoohm, detail::one_rep>{};
-inline constexpr auto fR = resistance<femtoohm, detail::one_rep>{};
-inline constexpr auto pR = resistance<picoohm, detail::one_rep>{};
-inline constexpr auto nR = resistance<nanoohm, detail::one_rep>{};
-inline constexpr auto uR = resistance<microohm, detail::one_rep>{};
-inline constexpr auto mR = resistance<milliohm, detail::one_rep>{};
-inline constexpr auto kR = resistance<kiloohm, detail::one_rep>{};
-inline constexpr auto MR = resistance<megaohm, detail::one_rep>{};
-inline constexpr auto GR = resistance<gigaohm, detail::one_rep>{};
-inline constexpr auto TR = resistance<teraohm, detail::one_rep>{};
-inline constexpr auto PR = resistance<petaohm, detail::one_rep>{};
-inline constexpr auto ER = resistance<exaohm, detail::one_rep>{};
-inline constexpr auto ZR = resistance<zettaohm, detail::one_rep>{};
-inline constexpr auto YR = resistance<yottaohm, detail::one_rep>{};
+inline constexpr auto R = resistance<ohm, one_rep>{};
+inline constexpr auto yR = resistance<yoctoohm, one_rep>{};
+inline constexpr auto zR = resistance<zeptoohm, one_rep>{};
+inline constexpr auto aR = resistance<attoohm, one_rep>{};
+inline constexpr auto fR = resistance<femtoohm, one_rep>{};
+inline constexpr auto pR = resistance<picoohm, one_rep>{};
+inline constexpr auto nR = resistance<nanoohm, one_rep>{};
+inline constexpr auto uR = resistance<microohm, one_rep>{};
+inline constexpr auto mR = resistance<milliohm, one_rep>{};
+inline constexpr auto kR = resistance<kiloohm, one_rep>{};
+inline constexpr auto MR = resistance<megaohm, one_rep>{};
+inline constexpr auto GR = resistance<gigaohm, one_rep>{};
+inline constexpr auto TR = resistance<teraohm, one_rep>{};
+inline constexpr auto PR = resistance<petaohm, one_rep>{};
+inline constexpr auto ER = resistance<exaohm, one_rep>{};
+inline constexpr auto ZR = resistance<zettaohm, one_rep>{};
+inline constexpr auto YR = resistance<yottaohm, one_rep>{};
 
 }  // namespace unit_constants
 

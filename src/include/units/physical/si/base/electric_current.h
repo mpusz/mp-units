@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/one_rep.h>
+#include <units/one_rep.h>
 #include <units/physical/dimensions/electric_current.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
@@ -146,27 +146,27 @@ constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaam
 
 namespace unit_constants {
 
-inline constexpr auto A = electric_current<ampere, detail::one_rep>{};
-inline constexpr auto yA = electric_current<yoctoampere, detail::one_rep>{};
-inline constexpr auto zA = electric_current<zeptoampere, detail::one_rep>{};
-inline constexpr auto aA = electric_current<attoampere, detail::one_rep>{};
-inline constexpr auto fA = electric_current<femtoampere, detail::one_rep>{};
-inline constexpr auto pA = electric_current<picoampere, detail::one_rep>{};
-inline constexpr auto nA = electric_current<nanoampere, detail::one_rep>{};
-inline constexpr auto uA = electric_current<microampere, detail::one_rep>{};
-inline constexpr auto mA = electric_current<milliampere, detail::one_rep>{};
-inline constexpr auto cA = electric_current<centiampere, detail::one_rep>{};
-inline constexpr auto dA = electric_current<deciampere, detail::one_rep>{};
-inline constexpr auto daA = electric_current<decaampere, detail::one_rep>{};
-inline constexpr auto hA = electric_current<hectoampere, detail::one_rep>{};
-inline constexpr auto kA = electric_current<kiloampere, detail::one_rep>{};
-inline constexpr auto MA = electric_current<megaampere, detail::one_rep>{};
-inline constexpr auto GA = electric_current<gigaampere, detail::one_rep>{};
-inline constexpr auto TA = electric_current<teraampere, detail::one_rep>{};
-inline constexpr auto PA = electric_current<petaampere, detail::one_rep>{};
-inline constexpr auto EA = electric_current<exaampere, detail::one_rep>{};
-inline constexpr auto ZA = electric_current<zettaampere, detail::one_rep>{};
-inline constexpr auto YA = electric_current<yottaampere, detail::one_rep>{};
+inline constexpr auto A = electric_current<ampere, one_rep>{};
+inline constexpr auto yA = electric_current<yoctoampere, one_rep>{};
+inline constexpr auto zA = electric_current<zeptoampere, one_rep>{};
+inline constexpr auto aA = electric_current<attoampere, one_rep>{};
+inline constexpr auto fA = electric_current<femtoampere, one_rep>{};
+inline constexpr auto pA = electric_current<picoampere, one_rep>{};
+inline constexpr auto nA = electric_current<nanoampere, one_rep>{};
+inline constexpr auto uA = electric_current<microampere, one_rep>{};
+inline constexpr auto mA = electric_current<milliampere, one_rep>{};
+inline constexpr auto cA = electric_current<centiampere, one_rep>{};
+inline constexpr auto dA = electric_current<deciampere, one_rep>{};
+inline constexpr auto daA = electric_current<decaampere, one_rep>{};
+inline constexpr auto hA = electric_current<hectoampere, one_rep>{};
+inline constexpr auto kA = electric_current<kiloampere, one_rep>{};
+inline constexpr auto MA = electric_current<megaampere, one_rep>{};
+inline constexpr auto GA = electric_current<gigaampere, one_rep>{};
+inline constexpr auto TA = electric_current<teraampere, one_rep>{};
+inline constexpr auto PA = electric_current<petaampere, one_rep>{};
+inline constexpr auto EA = electric_current<exaampere, one_rep>{};
+inline constexpr auto ZA = electric_current<zettaampere, one_rep>{};
+inline constexpr auto YA = electric_current<yottaampere, one_rep>{};
 
 }  // namespace unit_constants
 

@@ -44,7 +44,7 @@ constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long 
 
 namespace unit_constants {
 
-inline constexpr auto cm = length<centimetre, detail::one_rep>{};
+inline constexpr auto cm = length<centimetre, one_rep>{};
 
 }  // namespace unit_constants
 

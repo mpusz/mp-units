@@ -151,28 +151,28 @@ constexpr auto operator"" _q_ha(long double l) { return area<hectare, long doubl
 
 namespace unit_constants {
 
-inline constexpr auto m2 = area<square_metre, detail::one_rep>{};
-inline constexpr auto ym2 = area<square_yoctometre, detail::one_rep>{};
-inline constexpr auto zm2 = area<square_zeptometre, detail::one_rep>{};
-inline constexpr auto am2 = area<square_attometre, detail::one_rep>{};
-inline constexpr auto fm2 = area<square_femtometre, detail::one_rep>{};
-inline constexpr auto pm2 = area<square_picometre, detail::one_rep>{};
-inline constexpr auto nm2 = area<square_nanometre, detail::one_rep>{};
-inline constexpr auto um2 = area<square_micrometre, detail::one_rep>{};
-inline constexpr auto mm2 = area<square_millimetre, detail::one_rep>{};
-inline constexpr auto cm2 = area<square_centimetre, detail::one_rep>{};
-inline constexpr auto dm2 = area<square_decimetre, detail::one_rep>{};
-inline constexpr auto dam2 = area<square_decametre, detail::one_rep>{};
-inline constexpr auto hm2 = area<square_hectometre, detail::one_rep>{};
-inline constexpr auto km2 = area<square_kilometre, detail::one_rep>{};
-inline constexpr auto Mm2 = area<square_megametre, detail::one_rep>{};
-inline constexpr auto Gm2 = area<square_gigametre, detail::one_rep>{};
-inline constexpr auto Tm2 = area<square_terametre, detail::one_rep>{};
-inline constexpr auto Pm2 = area<square_petametre, detail::one_rep>{};
-inline constexpr auto Em2 = area<square_exametre, detail::one_rep>{};
-inline constexpr auto Zm2 = area<square_zettametre, detail::one_rep>{};
-inline constexpr auto Ym2 = area<square_yottametre, detail::one_rep>{};
-inline constexpr auto ha = area<hectare, detail::one_rep>{};
+inline constexpr auto m2 = area<square_metre, one_rep>{};
+inline constexpr auto ym2 = area<square_yoctometre, one_rep>{};
+inline constexpr auto zm2 = area<square_zeptometre, one_rep>{};
+inline constexpr auto am2 = area<square_attometre, one_rep>{};
+inline constexpr auto fm2 = area<square_femtometre, one_rep>{};
+inline constexpr auto pm2 = area<square_picometre, one_rep>{};
+inline constexpr auto nm2 = area<square_nanometre, one_rep>{};
+inline constexpr auto um2 = area<square_micrometre, one_rep>{};
+inline constexpr auto mm2 = area<square_millimetre, one_rep>{};
+inline constexpr auto cm2 = area<square_centimetre, one_rep>{};
+inline constexpr auto dm2 = area<square_decimetre, one_rep>{};
+inline constexpr auto dam2 = area<square_decametre, one_rep>{};
+inline constexpr auto hm2 = area<square_hectometre, one_rep>{};
+inline constexpr auto km2 = area<square_kilometre, one_rep>{};
+inline constexpr auto Mm2 = area<square_megametre, one_rep>{};
+inline constexpr auto Gm2 = area<square_gigametre, one_rep>{};
+inline constexpr auto Tm2 = area<square_terametre, one_rep>{};
+inline constexpr auto Pm2 = area<square_petametre, one_rep>{};
+inline constexpr auto Em2 = area<square_exametre, one_rep>{};
+inline constexpr auto Zm2 = area<square_zettametre, one_rep>{};
+inline constexpr auto Ym2 = area<square_yottametre, one_rep>{};
+inline constexpr auto ha = area<hectare, one_rep>{};
 
 }  // namespace unit_constants
 

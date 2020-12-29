@@ -127,23 +127,23 @@ constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, l
 
 namespace unit_constants {
 
-inline constexpr auto H = inductance<henry, detail::one_rep>{};
-inline constexpr auto yH = inductance<yoctohenry, detail::one_rep>{};
-inline constexpr auto zH = inductance<zeptohenry, detail::one_rep>{};
-inline constexpr auto aH = inductance<attohenry, detail::one_rep>{};
-inline constexpr auto fH = inductance<femtohenry, detail::one_rep>{};
-inline constexpr auto pH = inductance<picohenry, detail::one_rep>{};
-inline constexpr auto nH = inductance<nanohenry, detail::one_rep>{};
-inline constexpr auto uH = inductance<microhenry, detail::one_rep>{};
-inline constexpr auto mH = inductance<millihenry, detail::one_rep>{};
-inline constexpr auto kH = inductance<kilohenry, detail::one_rep>{};
-inline constexpr auto MH = inductance<megahenry, detail::one_rep>{};
-inline constexpr auto GH = inductance<gigahenry, detail::one_rep>{};
-inline constexpr auto TH = inductance<terahenry, detail::one_rep>{};
-inline constexpr auto PH = inductance<petahenry, detail::one_rep>{};
-inline constexpr auto EH = inductance<exahenry, detail::one_rep>{};
-inline constexpr auto ZH = inductance<zettahenry, detail::one_rep>{};
-inline constexpr auto YH = inductance<yottahenry, detail::one_rep>{};
+inline constexpr auto H = inductance<henry, one_rep>{};
+inline constexpr auto yH = inductance<yoctohenry, one_rep>{};
+inline constexpr auto zH = inductance<zeptohenry, one_rep>{};
+inline constexpr auto aH = inductance<attohenry, one_rep>{};
+inline constexpr auto fH = inductance<femtohenry, one_rep>{};
+inline constexpr auto pH = inductance<picohenry, one_rep>{};
+inline constexpr auto nH = inductance<nanohenry, one_rep>{};
+inline constexpr auto uH = inductance<microhenry, one_rep>{};
+inline constexpr auto mH = inductance<millihenry, one_rep>{};
+inline constexpr auto kH = inductance<kilohenry, one_rep>{};
+inline constexpr auto MH = inductance<megahenry, one_rep>{};
+inline constexpr auto GH = inductance<gigahenry, one_rep>{};
+inline constexpr auto TH = inductance<terahenry, one_rep>{};
+inline constexpr auto PH = inductance<petahenry, one_rep>{};
+inline constexpr auto EH = inductance<exahenry, one_rep>{};
+inline constexpr auto ZH = inductance<zettahenry, one_rep>{};
+inline constexpr auto YH = inductance<yottahenry, one_rep>{};
 
 }  // namespace unit_constants
 

@@ -58,7 +58,7 @@ constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long 
 
 namespace unit_constants {
 
-inline constexpr auto hp = power<horse_power, detail::one_rep>{};
+inline constexpr auto hp = power<horse_power, one_rep>{};
 
 }  // namespace unit_constants
 

@@ -57,8 +57,8 @@ constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_fo
 
 namespace unit_constants {
 
-inline constexpr auto ft_pdl = energy<foot_poundal, detail::one_rep>{};
-inline constexpr auto ft_lbf = energy<foot_pound_force, detail::one_rep>{};
+inline constexpr auto ft_pdl = energy<foot_poundal, one_rep>{};
+inline constexpr auto ft_lbf = energy<foot_pound_force, one_rep>{};
 
 }  // namespace unit_constants
 

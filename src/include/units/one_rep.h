@@ -26,7 +26,7 @@
 #include <units/customization_points.h>
 #include <type_traits>
 
-namespace units::detail {
+namespace units {
 
 struct one_rep {
   template<QuantityValue Rep>
@@ -50,19 +50,19 @@ struct one_rep {
   [[nodiscard]] auto operator<=>(const one_rep&) const = default;
 };
 
-}  // namespace units::detail
+}  // namespace units
 
 namespace std {
 template<>
-struct common_type<units::detail::one_rep, units::detail::one_rep> {
-  using type = units::detail::one_rep;
+struct common_type<units::one_rep, units::one_rep> {
+  using type = units::one_rep;
 };
 template<units::QuantityValue Rep>
-struct common_type<units::detail::one_rep, Rep> {
+struct common_type<units::one_rep, Rep> {
   using type = Rep;
 };
 template<units::QuantityValue Rep>
-struct common_type<Rep, units::detail::one_rep> {
+struct common_type<Rep, units::one_rep> {
   using type = Rep;
 };
 

@@ -147,27 +147,27 @@ constexpr auto operator"" _q_YPa(long double l) { return pressure<yottapascal, l
 
 namespace unit_constants {
 
-inline constexpr auto Pa = pressure<pascal, detail::one_rep>{};
-inline constexpr auto yPa = pressure<yoctopascal, detail::one_rep>{};
-inline constexpr auto zPa = pressure<zeptopascal, detail::one_rep>{};
-inline constexpr auto aPa = pressure<attopascal, detail::one_rep>{};
-inline constexpr auto fPa = pressure<femtopascal, detail::one_rep>{};
-inline constexpr auto pPa = pressure<picopascal, detail::one_rep>{};
-inline constexpr auto nPa = pressure<nanopascal, detail::one_rep>{};
-inline constexpr auto uPa = pressure<micropascal, detail::one_rep>{};
-inline constexpr auto mPa = pressure<millipascal, detail::one_rep>{};
-inline constexpr auto cPa = pressure<centipascal, detail::one_rep>{};
-inline constexpr auto dPa = pressure<decipascal, detail::one_rep>{};
-inline constexpr auto daPa = pressure<decapascal, detail::one_rep>{};
-inline constexpr auto hPa = pressure<hectopascal, detail::one_rep>{};
-inline constexpr auto kPa = pressure<kilopascal, detail::one_rep>{};
-inline constexpr auto MPa = pressure<megapascal, detail::one_rep>{};
-inline constexpr auto GPa = pressure<gigapascal, detail::one_rep>{};
-inline constexpr auto TPa = pressure<terapascal, detail::one_rep>{};
-inline constexpr auto PPa = pressure<petapascal, detail::one_rep>{};
-inline constexpr auto EPa = pressure<exapascal, detail::one_rep>{};
-inline constexpr auto ZPa = pressure<zettapascal, detail::one_rep>{};
-inline constexpr auto YPa = pressure<yottapascal, detail::one_rep>{};
+inline constexpr auto Pa = pressure<pascal, one_rep>{};
+inline constexpr auto yPa = pressure<yoctopascal, one_rep>{};
+inline constexpr auto zPa = pressure<zeptopascal, one_rep>{};
+inline constexpr auto aPa = pressure<attopascal, one_rep>{};
+inline constexpr auto fPa = pressure<femtopascal, one_rep>{};
+inline constexpr auto pPa = pressure<picopascal, one_rep>{};
+inline constexpr auto nPa = pressure<nanopascal, one_rep>{};
+inline constexpr auto uPa = pressure<micropascal, one_rep>{};
+inline constexpr auto mPa = pressure<millipascal, one_rep>{};
+inline constexpr auto cPa = pressure<centipascal, one_rep>{};
+inline constexpr auto dPa = pressure<decipascal, one_rep>{};
+inline constexpr auto daPa = pressure<decapascal, one_rep>{};
+inline constexpr auto hPa = pressure<hectopascal, one_rep>{};
+inline constexpr auto kPa = pressure<kilopascal, one_rep>{};
+inline constexpr auto MPa = pressure<megapascal, one_rep>{};
+inline constexpr auto GPa = pressure<gigapascal, one_rep>{};
+inline constexpr auto TPa = pressure<terapascal, one_rep>{};
+inline constexpr auto PPa = pressure<petapascal, one_rep>{};
+inline constexpr auto EPa = pressure<exapascal, one_rep>{};
+inline constexpr auto ZPa = pressure<zettapascal, one_rep>{};
+inline constexpr auto YPa = pressure<yottapascal, one_rep>{};
 
 }  // namespace unit_constants
 

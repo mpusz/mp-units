@@ -147,27 +147,27 @@ constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, 
 
 namespace unit_constants {
 
-inline constexpr auto F = capacitance<farad, detail::one_rep>{};
-inline constexpr auto yF = capacitance<yoctofarad, detail::one_rep>{};
-inline constexpr auto zF = capacitance<zeptofarad, detail::one_rep>{};
-inline constexpr auto aF = capacitance<attofarad, detail::one_rep>{};
-inline constexpr auto fF = capacitance<femtofarad, detail::one_rep>{};
-inline constexpr auto pF = capacitance<picofarad, detail::one_rep>{};
-inline constexpr auto nF = capacitance<nanofarad, detail::one_rep>{};
-inline constexpr auto uF = capacitance<microfarad, detail::one_rep>{};
-inline constexpr auto mF = capacitance<millifarad, detail::one_rep>{};
-inline constexpr auto cF = capacitance<centifarad, detail::one_rep>{};
-inline constexpr auto dF = capacitance<decifarad, detail::one_rep>{};
-inline constexpr auto daF = capacitance<decafarad, detail::one_rep>{};
-inline constexpr auto hF = capacitance<hectofarad, detail::one_rep>{};
-inline constexpr auto kF = capacitance<kilofarad, detail::one_rep>{};
-inline constexpr auto MF = capacitance<megafarad, detail::one_rep>{};
-inline constexpr auto GF = capacitance<gigafarad, detail::one_rep>{};
-inline constexpr auto TF = capacitance<terafarad, detail::one_rep>{};
-inline constexpr auto PF = capacitance<petafarad, detail::one_rep>{};
-inline constexpr auto EF = capacitance<exafarad, detail::one_rep>{};
-inline constexpr auto ZF = capacitance<zettafarad, detail::one_rep>{};
-inline constexpr auto YF = capacitance<yottafarad, detail::one_rep>{};
+inline constexpr auto F = capacitance<farad, one_rep>{};
+inline constexpr auto yF = capacitance<yoctofarad, one_rep>{};
+inline constexpr auto zF = capacitance<zeptofarad, one_rep>{};
+inline constexpr auto aF = capacitance<attofarad, one_rep>{};
+inline constexpr auto fF = capacitance<femtofarad, one_rep>{};
+inline constexpr auto pF = capacitance<picofarad, one_rep>{};
+inline constexpr auto nF = capacitance<nanofarad, one_rep>{};
+inline constexpr auto uF = capacitance<microfarad, one_rep>{};
+inline constexpr auto mF = capacitance<millifarad, one_rep>{};
+inline constexpr auto cF = capacitance<centifarad, one_rep>{};
+inline constexpr auto dF = capacitance<decifarad, one_rep>{};
+inline constexpr auto daF = capacitance<decafarad, one_rep>{};
+inline constexpr auto hF = capacitance<hectofarad, one_rep>{};
+inline constexpr auto kF = capacitance<kilofarad, one_rep>{};
+inline constexpr auto MF = capacitance<megafarad, one_rep>{};
+inline constexpr auto GF = capacitance<gigafarad, one_rep>{};
+inline constexpr auto TF = capacitance<terafarad, one_rep>{};
+inline constexpr auto PF = capacitance<petafarad, one_rep>{};
+inline constexpr auto EF = capacitance<exafarad, one_rep>{};
+inline constexpr auto ZF = capacitance<zettafarad, one_rep>{};
+inline constexpr auto YF = capacitance<yottafarad, one_rep>{};
 
 }  // namespace unit_constants
 

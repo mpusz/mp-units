@@ -60,8 +60,8 @@ constexpr auto operator"" _q_knot(long double l) { return speed<knot, long doubl
 
 namespace unit_constants {
 
-inline constexpr auto mph = speed<mile_per_hour, detail::one_rep>{};
-inline constexpr auto knot = speed<fps::knot, detail::one_rep>{};
+inline constexpr auto mph = speed<mile_per_hour, one_rep>{};
+inline constexpr auto knot = speed<fps::knot, one_rep>{};
 
 }  // namespace unit_constants
 

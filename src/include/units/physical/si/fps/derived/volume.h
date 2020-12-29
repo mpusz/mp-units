@@ -50,8 +50,8 @@ constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long
 
 namespace unit_constants {
 
-inline constexpr auto ft3 = volume<cubic_foot, detail::one_rep>{};
-inline constexpr auto yd3 = volume<cubic_yard, detail::one_rep>{};
+inline constexpr auto ft3 = volume<cubic_foot, one_rep>{};
+inline constexpr auto yd3 = volume<cubic_yard, one_rep>{};
 
 }  // namespace unit_constants
 

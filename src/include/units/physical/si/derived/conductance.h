@@ -126,23 +126,23 @@ constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens
 
 namespace unit_constants {
 
-inline constexpr auto S = conductance<siemens, detail::one_rep>{};
-inline constexpr auto yS = conductance<yoctosiemens, detail::one_rep>{};
-inline constexpr auto zS = conductance<zeptosiemens, detail::one_rep>{};
-inline constexpr auto aS = conductance<attosiemens, detail::one_rep>{};
-inline constexpr auto fS = conductance<femtosiemens, detail::one_rep>{};
-inline constexpr auto pS = conductance<picosiemens, detail::one_rep>{};
-inline constexpr auto nS = conductance<nanosiemens, detail::one_rep>{};
-inline constexpr auto uS = conductance<microsiemens, detail::one_rep>{};
-inline constexpr auto mS = conductance<millisiemens, detail::one_rep>{};
-inline constexpr auto kS = conductance<kilosiemens, detail::one_rep>{};
-inline constexpr auto MS = conductance<megasiemens, detail::one_rep>{};
-inline constexpr auto GS = conductance<gigasiemens, detail::one_rep>{};
-inline constexpr auto TS = conductance<terasiemens, detail::one_rep>{};
-inline constexpr auto PS = conductance<petasiemens, detail::one_rep>{};
-inline constexpr auto ES = conductance<exasiemens, detail::one_rep>{};
-inline constexpr auto ZS = conductance<zettasiemens, detail::one_rep>{};
-inline constexpr auto YS = conductance<yottasiemens, detail::one_rep>{};
+inline constexpr auto S = conductance<siemens, one_rep>{};
+inline constexpr auto yS = conductance<yoctosiemens, one_rep>{};
+inline constexpr auto zS = conductance<zeptosiemens, one_rep>{};
+inline constexpr auto aS = conductance<attosiemens, one_rep>{};
+inline constexpr auto fS = conductance<femtosiemens, one_rep>{};
+inline constexpr auto pS = conductance<picosiemens, one_rep>{};
+inline constexpr auto nS = conductance<nanosiemens, one_rep>{};
+inline constexpr auto uS = conductance<microsiemens, one_rep>{};
+inline constexpr auto mS = conductance<millisiemens, one_rep>{};
+inline constexpr auto kS = conductance<kilosiemens, one_rep>{};
+inline constexpr auto MS = conductance<megasiemens, one_rep>{};
+inline constexpr auto GS = conductance<gigasiemens, one_rep>{};
+inline constexpr auto TS = conductance<terasiemens, one_rep>{};
+inline constexpr auto PS = conductance<petasiemens, one_rep>{};
+inline constexpr auto ES = conductance<exasiemens, one_rep>{};
+inline constexpr auto ZS = conductance<zettasiemens, one_rep>{};
+inline constexpr auto YS = conductance<yottasiemens, one_rep>{};
 
 }  // namespace unit_constants
 

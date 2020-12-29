@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/one_rep.h>
+#include <units/one_rep.h>
 #include <units/physical/dimensions/thermodynamic_temperature.h>
 #include <units/quantity.h>
 
@@ -45,7 +45,7 @@ constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature
 
 namespace unit_constants {
 
-inline constexpr auto K = thermodynamic_temperature<kelvin, detail::one_rep>{};
+inline constexpr auto K = thermodynamic_temperature<kelvin, one_rep>{};
 
 }  // namespace unit_constants
 

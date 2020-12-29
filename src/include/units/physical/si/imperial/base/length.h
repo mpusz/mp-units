@@ -46,8 +46,8 @@ constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long dou
 
 namespace unit_constants {
 
-inline constexpr auto ch = si::length<chain, detail::one_rep>{};
-inline constexpr auto rd = si::length<rod, detail::one_rep>{};
+inline constexpr auto ch = si::length<chain, one_rep>{};
+inline constexpr auto rd = si::length<rod, one_rep>{};
 
 }  // namespace unit_constants
 

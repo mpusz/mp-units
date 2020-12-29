@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/one_rep.h>
+#include <units/one_rep.h>
 #include <units/physical/dimensions/time.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
@@ -101,18 +101,18 @@ constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l)
 
 namespace unit_constants {
 
-inline constexpr auto ys = time<yoctosecond, detail::one_rep>{};
-inline constexpr auto zs = time<zeptosecond, detail::one_rep>{};
-inline constexpr auto as = time<attosecond, detail::one_rep>{};
-inline constexpr auto fs = time<femtosecond, detail::one_rep>{};
-inline constexpr auto ps = time<picosecond, detail::one_rep>{};
-inline constexpr auto ns = time<nanosecond, detail::one_rep>{};
-inline constexpr auto us = time<microsecond, detail::one_rep>{};
-inline constexpr auto ms = time<millisecond, detail::one_rep>{};
-inline constexpr auto s = time<second, detail::one_rep>{};
-inline constexpr auto min = time<minute, detail::one_rep>{};
-inline constexpr auto h = time<hour, detail::one_rep>{};
-inline constexpr auto d = time<day, detail::one_rep>{};
+inline constexpr auto ys = time<yoctosecond, one_rep>{};
+inline constexpr auto zs = time<zeptosecond, one_rep>{};
+inline constexpr auto as = time<attosecond, one_rep>{};
+inline constexpr auto fs = time<femtosecond, one_rep>{};
+inline constexpr auto ps = time<picosecond, one_rep>{};
+inline constexpr auto ns = time<nanosecond, one_rep>{};
+inline constexpr auto us = time<microsecond, one_rep>{};
+inline constexpr auto ms = time<millisecond, one_rep>{};
+inline constexpr auto s = time<second, one_rep>{};
+inline constexpr auto min = time<minute, one_rep>{};
+inline constexpr auto h = time<hour, one_rep>{};
+inline constexpr auto d = time<day, one_rep>{};
 
 }  // namespace unit_constants
 

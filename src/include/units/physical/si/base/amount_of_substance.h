@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/one_rep.h>
+#include <units/one_rep.h>
 #include <units/physical/dimensions/amount_of_substance.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity.h>
@@ -46,7 +46,7 @@ constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mol
 
 namespace unit_constants {
 
-inline constexpr auto mol = amount_of_substance<mole, detail::one_rep>{};
+inline constexpr auto mol = amount_of_substance<mole, one_rep>{};
 
 }  // namespace unit_constants
 

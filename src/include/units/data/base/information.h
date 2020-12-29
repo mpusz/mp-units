@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/bits/one_rep.h>
+#include <units/one_rep.h>
 #include <units/base_dimension.h>
 #include <units/data/prefixes.h>
 #include <units/unit.h>
@@ -74,19 +74,19 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { return information<pebi
 
 namespace unit_constants {
 
-inline constexpr auto b = information<bit, detail::one_rep>{};
-inline constexpr auto Kib = information<kibibit, detail::one_rep>{};
-inline constexpr auto Mib = information<mebibit, detail::one_rep>{};
-inline constexpr auto Gib = information<gibibit, detail::one_rep>{};
-inline constexpr auto Tib = information<tebibit, detail::one_rep>{};
-inline constexpr auto Pib = information<pebibit, detail::one_rep>{};
+inline constexpr auto b = information<bit, one_rep>{};
+inline constexpr auto Kib = information<kibibit, one_rep>{};
+inline constexpr auto Mib = information<mebibit, one_rep>{};
+inline constexpr auto Gib = information<gibibit, one_rep>{};
+inline constexpr auto Tib = information<tebibit, one_rep>{};
+inline constexpr auto Pib = information<pebibit, one_rep>{};
 
-inline constexpr auto B = information<byte, detail::one_rep>{};
-inline constexpr auto KiB = information<kibibyte, detail::one_rep>{};
-inline constexpr auto MiB = information<mebibyte, detail::one_rep>{};
-inline constexpr auto GiB = information<gibibyte, detail::one_rep>{};
-inline constexpr auto TiB = information<tebibyte, detail::one_rep>{};
-inline constexpr auto PiB = information<pebibyte, detail::one_rep>{};
+inline constexpr auto B = information<byte, one_rep>{};
+inline constexpr auto KiB = information<kibibyte, one_rep>{};
+inline constexpr auto MiB = information<mebibyte, one_rep>{};
+inline constexpr auto GiB = information<gibibyte, one_rep>{};
+inline constexpr auto TiB = information<tebibyte, one_rep>{};
+inline constexpr auto PiB = information<pebibyte, one_rep>{};
 
 }  // namespace unit_constants
 
