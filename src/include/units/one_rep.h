@@ -28,7 +28,42 @@
 
 namespace units {
 
+/**
+ * @brief A representation type to be used for unit constants
+ *
+ * This representation type is intended to be used in the unit constants definition:
+ *
+ * @code{.cpp}
+ * namespace unit_constants {
+ * 
+ * inline constexpr auto m = length<metre, one_rep>{};
+ * inline constexpr auto km = length<kilometre, one_rep>{};
+ * 
+ * }
+ * @endcode
+ * 
+ * Unit constants simplify quantity creation:
+ * 
+ * @code{.cpp}
+ * using namespace units::physical::si::unit_constants;
+ *
+ * auto d = 123 * m;
+ * auto v = 70 * km / h;
+ * @endcode
+ *
+ * Also, it is allowed to define custom unit constants from existing ones:
+ * 
+ * @code{.cpp}
+ * constexpr auto Nm = N * m;
+ * constexpr auto mph = mi / h;
+ * @endcode
+ * 
+ * `km * 3` or `s / 4` syntax is not allowed for quantity creation.
+ */
 struct one_rep {
+  [[nodiscard]] friend constexpr one_rep operator*(one_rep, one_rep) { return {}; }
+  [[nodiscard]] friend constexpr one_rep operator/(one_rep, one_rep) { return {}; }
+
   template<QuantityValue Rep>
   [[nodiscard]] friend constexpr Rep operator*(const Rep& lhs, one_rep)
   {
@@ -39,6 +74,11 @@ struct one_rep {
   {
     return lhs;
   }
+
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Rep operator*(one_rep, const Rep&) = delete;
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Rep operator/(one_rep, const Rep&) = delete;
 
   template<QuantityValue Rep>
   [[nodiscard]] constexpr operator Rep() const noexcept
