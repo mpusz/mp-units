@@ -90,6 +90,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/prefixes.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity_point.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/representation.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/units.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/basic_fixed_string.rst"

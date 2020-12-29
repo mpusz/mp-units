@@ -16,6 +16,7 @@ To create the quantity object from a :term:`scalable number` we just have to pas
 the value to the `quantity` class template explicit constructor::
 
     quantity<si::dim_length, si::kilometre, double> d(123);
+    quantity<si::dim_speed, si::kilometre_per_hour, int> v(70);
 
 .. note::
 
@@ -28,6 +29,9 @@ the value to the `quantity` class template explicit constructor::
 
         quantity<si::dim_length, si::kilometre, double> d = 123;  // ERROR
 
+Dimension-Specific Aliases
+++++++++++++++++++++++++++
+
 To simplify `quantity` objects creation the library provides helper aliases for
 quantities of each :term:`dimension` which additionally set the representation
 type to ``double`` by default::
@@ -37,28 +41,162 @@ type to ``double`` by default::
     template<Unit U, QuantityValue Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
+    template<Unit U, QuantityValue Rep = double>
+    using speed = quantity<dim_speed, U, Rep>;
+
     }
 
 Thanks to that, the above example can be rewritten as follows::
 
     si::length<si::kilometre> d(123);
+    si::speed<si::kilometre_per_hour, int> v(70);
+
+User Defined Literals
++++++++++++++++++++++
 
 To further simplify construction of quantities with compile-time known
 values the library provides :abbr:`UDL (User Defined Literal)` s for each
-:term:`unit` of every :term:`dimension`. Thanks to them the same code can
-be as simple as::
+:term:`unit` of every :term:`dimension`::
+
+    inline namespace literals {
+
+    constexpr auto operator"" _q_km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
+    constexpr auto operator"" _q_km(long double l) { return length<kilometre, long double>(l); }
+
+    constexpr auto operator"" _q_km_per_h(unsigned long long l) { return speed<kilometre_per_hour, std::int64_t>(l); }
+    constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
+
+    }
+
+Thanks to them the same code can be as simple as::
 
     using namespace units::physical::si::literals;
-    constexpr auto d1 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
-    constexpr auto d2 = 123._q_km;   // si::length<si::kilometre, long double>
+    auto d = 123._q_km;     // si::length<si::kilometre, long double>
+    auto v = 70_q_km_per_h; // si::speed<si::kilometre_per_hour, std::int64_t>
 
-``123_q_km`` should be read as a quantity of length in kilometers. Initially the
-library did not use the ``_q_`` prefix for UDLs but it turned out that there are
-a few unit symbols that collide with literals already existing in C and C++
-language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
-``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
-``_q_`` prefix was consistently applied to all the UDLs.
+.. note::
 
+    ``123._q_km`` should be read as a quantity of length in kilometers. Initially the
+    library did not use the ``_q_`` prefix for UDLs but it turned out that there are
+    a few unit symbols that collide with literals already existing in C and C++
+    language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
+    ``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
+    ``_q_`` prefix was consistently applied to all the UDLs.
+
+
+Unit Constants
+++++++++++++++
+
+Unit Constants provide an alternative way to simplify quantities creation.
+They are defined using a special `one_rep` representation type::
+
+    namespace unit_constants {
+
+    inline constexpr auto km = length<kilometre, one_rep>{};
+    inline constexpr auto h = time<hour, one_rep>{};
+
+    }
+
+With the above our code can look as follows::
+
+    using namespace units::physical::si::unit_constants;
+    auto d = 123. * km;     // si::length<si::kilometre, double>
+    auto v = 70 * km / h;   // si::speed<si::kilometre_per_hour, int>
+
+.. important::
+
+    ``km * 3`` or ``s / 4`` syntax is not allowed.
+
+It is also allowed to easily define custom unit constants from existing ones::
+
+    inline constexpr auto Nm = N * m;
+    inline constexpr auto km_per_h = km / h;
+    inline constexpr auto mph = mi / h;
+
+UDLs vs Unit Constants
+++++++++++++++++++++++
+
+UDLs are helpful but they also have some disadvantages compared to Unit Constants:
+
+1. UDLs are only for compile-time known values and do not work for runtime variables
+    - UDLs::
+
+        using namespace units::physical::si::literals;
+        auto v1 = 120_q_km / 2_q_h;
+        auto v2 = length<kilometre>(distance) / time<hour>(duration);
+
+    - Unit Constants::
+
+        using namespace units::physical::si::unit_constants;
+        auto v1 = 120 * km / (2 * h);
+        auto v2 = distance * km / (duration * h);
+
+    Constants treat both cases in a unified way. It is also worth to notice that we work mostly with runtime variables
+    and compile-time known values mostly appear only in physical constants and unit tests.
+
+2. UDLs cannot be disambiguated with a namespace name
+    - UDLs::
+
+        using namespace units::physical::si::literals;
+        using namespace units::physical::si::cgs::literals;
+        auto d = 1_q_cm;   // FAILS TO COMPILE
+
+    - Unit Constants::
+
+        inline constexpr auto si_cm = units::physical::si::unit_constants::cm;
+        inline constexpr auto cgs_cm = units::physical::si::cgs::unit_constants::cm;
+
+        auto d1 = 1. * si_cm;   // si::length<si::centimetre>
+        auto d2 = 1. * cgs_cm;  // si::cgs::length<si::centimetre>
+
+3. Poor control over the representation types as UDLs return only ``std::int64_t`` or ``long double``
+    - UDLs::
+
+        using namespace units::physical::si::literals;
+        auto d1 = 123._q_km;   // si::length<si::kilometre, long double>
+        auto d2 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
+
+      No possibility to obtain any other representation type.
+
+    - Unit Constants::
+
+        using namespace units::physical::si::unit_constants;
+        auto d1 = 123. * km;   // si::length<si::kilometre, double>
+        auto d2 = 123 * km;    // si::length<si::kilometre, int>
+        auto d3 = 123.f * km;  // si::length<si::kilometre, float>
+        auto d4 = 123.L * km;  // si::length<si::kilometre, long double>
+        auto d5 = 123ul * km;  // si::length<si::kilometre, unsigned long>
+        auto d6 = 123ll * km;  // si::length<si::kilometre, long long>
+
+4. UDLs are verbose to define and standardize
+    - UDLs:
+        - for each unit an integral and a floating-point UDL have to be defined
+        - have to be provided for unnamed derived units (i.e. ``_q_km_per_h``)
+    
+    - Unit Constants:
+        - one constant per unit
+        - unnamed derived units constructed from base constants (i.e. ``km / h``)
+
+The only issue we are aware of with Unit Constants is a potential problem of specifying
+a quantity in denominator::
+
+    using namespace units::physical::si::unit_constants;
+    Speed auto v = 220 * km / 2 * h;  // FAILS TO COMPILE (not a quantity of a speed dimension)
+
+The above code can be fixed in one of the below ways:
+
+- braces around quantities in denominator::
+
+    Speed auto v = 220 * km / (2 * h);
+
+- inverting an operator for quantities in denominator::
+
+    Speed auto v = 220 * km / 2 / h;
+
+- creating a custom unit constant for a derived quantity::
+
+    inline constexpr auto km_per_h = km / h;
+    Speed auto v = 220 / 2 * km_per_h;
 
 Dimension-specific Concepts
 ---------------------------
