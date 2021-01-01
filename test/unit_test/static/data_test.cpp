@@ -36,6 +36,9 @@ static_assert(1024_q_B == 1_q_KiB);
 static_assert(8 * 1024_q_b == 1_q_KiB);
 static_assert(8 * 1_q_Kib == 1_q_KiB);
 
+static_assert(1_q_kb == 1000_q_b);
+static_assert(2000_q_Mib == 2097152_q_kb);
+
 static_assert(1_q_Kib == 1024_q_b);
 static_assert(1_q_Mib == 1024_q_Kib);
 static_assert(1_q_Gib == 1024_q_Mib);

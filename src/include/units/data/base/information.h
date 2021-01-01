@@ -24,6 +24,7 @@
 
 #include <units/one_rep.h>
 #include <units/base_dimension.h>
+#include <units/physical/si/prefixes.h>
 #include <units/data/prefixes.h>
 #include <units/unit.h>
 #include <units/quantity.h>
@@ -36,6 +37,13 @@ struct mebibit : prefixed_unit<mebibit, mebi, bit> {};
 struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
 struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
 struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
+
+struct si_bit : alias_unit<bit, "b", units::physical::si::prefix> {};
+struct kilobit : prefixed_unit<kilobit, units::physical::si::kilo, si_bit> {};
+struct megabit : prefixed_unit<megabit, units::physical::si::mega, si_bit> {};
+struct gigabit : prefixed_unit<gigabit, units::physical::si::giga, si_bit> {};
+struct terabit : prefixed_unit<terabit, units::physical::si::tera, si_bit> {};
+struct petabit : prefixed_unit<petabit, units::physical::si::peta, si_bit> {};
 
 struct byte : named_scaled_unit<byte, "B", prefix, ratio(8), bit> {};
 struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
@@ -62,6 +70,13 @@ constexpr auto operator"" _q_Gib(unsigned long long l) { return information<gibi
 constexpr auto operator"" _q_Tib(unsigned long long l) { return information<tebibit, std::int64_t>(l); }
 constexpr auto operator"" _q_Pib(unsigned long long l) { return information<pebibit, std::int64_t>(l); }
 
+// bits (SI)
+constexpr auto operator"" _q_kb(unsigned long long l) { return information<kilobit, std::int64_t>(l); }
+constexpr auto operator"" _q_Mb(unsigned long long l) { return information<megabit, std::int64_t>(l); }
+constexpr auto operator"" _q_Gb(unsigned long long l) { return information<gigabit, std::int64_t>(l); }
+constexpr auto operator"" _q_Tb(unsigned long long l) { return information<terabit, std::int64_t>(l); }
+constexpr auto operator"" _q_Pb(unsigned long long l) { return information<petabit, std::int64_t>(l); }
+
 // bytes
 constexpr auto operator"" _q_B(unsigned long long l) { return information<byte, std::int64_t>(l); }
 constexpr auto operator"" _q_KiB(unsigned long long l) { return information<kibibyte, std::int64_t>(l); }
@@ -80,6 +95,12 @@ inline constexpr auto Mib = information<mebibit, one_rep>{};
 inline constexpr auto Gib = information<gibibit, one_rep>{};
 inline constexpr auto Tib = information<tebibit, one_rep>{};
 inline constexpr auto Pib = information<pebibit, one_rep>{};
+
+inline constexpr auto kb = information<kilobit, one_rep>{};
+inline constexpr auto Mb = information<megabit, one_rep>{};
+inline constexpr auto Gb = information<gigabit, one_rep>{};
+inline constexpr auto Tb = information<terabit, one_rep>{};
+inline constexpr auto Pb = information<petabit, one_rep>{};
 
 inline constexpr auto B = information<byte, one_rep>{};
 inline constexpr auto KiB = information<kibibyte, one_rep>{};

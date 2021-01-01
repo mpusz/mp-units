@@ -38,6 +38,12 @@ struct gibibit_per_second : deduced_unit<gibibit_per_second, dim_bitrate, gibibi
 struct tebibit_per_second : deduced_unit<tebibit_per_second, dim_bitrate, tebibit, physical::si::second> {};
 struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibit, physical::si::second> {};
 
+struct kilobit_per_second : deduced_unit<kilobit_per_second, dim_bitrate, kilobit, physical::si::second> {};
+struct megabit_per_second : deduced_unit<megabit_per_second, dim_bitrate, megabit, physical::si::second> {};
+struct gigabit_per_second : deduced_unit<gigabit_per_second, dim_bitrate, gigabit, physical::si::second> {};
+struct terabit_per_second : deduced_unit<terabit_per_second, dim_bitrate, terabit, physical::si::second> {};
+struct petabit_per_second : deduced_unit<petabit_per_second, dim_bitrate, petabit, physical::si::second> {};
+
 template<typename T>
 concept Bitrate = QuantityOf<T, dim_bitrate>;
 
@@ -54,6 +60,12 @@ constexpr auto operator"" _q_Gib_per_s(unsigned long long l) { return bitrate<gi
 constexpr auto operator"" _q_Tib_per_s(unsigned long long l) { return bitrate<tebibit_per_second, std::int64_t>(l); }
 constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { return bitrate<pebibit_per_second, std::int64_t>(l); }
 
+constexpr auto operator"" _q_kb_per_s(unsigned long long l) { return bitrate<kilobit_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_Mb_per_s(unsigned long long l) { return bitrate<megabit_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_Gb_per_s(unsigned long long l) { return bitrate<gigabit_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_Tb_per_s(unsigned long long l) { return bitrate<terabit_per_second, std::int64_t>(l); }
+constexpr auto operator"" _q_Pb_per_s(unsigned long long l) { return bitrate<petabit_per_second, std::int64_t>(l); }
+
 }  // namespace literals
 
 namespace unit_constants {
@@ -64,6 +76,12 @@ inline constexpr auto Mib_per_s = bitrate<mebibit_per_second, one_rep>{};
 inline constexpr auto Gib_per_s = bitrate<gibibit_per_second, one_rep>{};
 inline constexpr auto Tib_per_s = bitrate<tebibit_per_second, one_rep>{};
 inline constexpr auto Pib_per_s = bitrate<pebibit_per_second, one_rep>{};
+
+inline constexpr auto kb_per_s = bitrate<kilobit_per_second, one_rep>{};
+inline constexpr auto Mb_per_s = bitrate<megabit_per_second, one_rep>{};
+inline constexpr auto Gb_per_s = bitrate<gigabit_per_second, one_rep>{};
+inline constexpr auto Tb_per_s = bitrate<terabit_per_second, one_rep>{};
+inline constexpr auto Pb_per_s = bitrate<petabit_per_second, one_rep>{};
 
 }  // namespace unit_constants
 
