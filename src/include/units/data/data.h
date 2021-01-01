@@ -24,4 +24,5 @@
 
 #include <units/data/base/information.h>
 #include <units/data/derived/bitrate.h>
+#include <units/data/derived/symbolrate.h>
 #include <units/data/prefixes.h>
