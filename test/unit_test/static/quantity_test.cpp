@@ -670,8 +670,6 @@ static_assert(2_q_dm3 + 2_q_cm3 == 2002_q_ml);
 // quantity_cast
 //////////////////
 
-static_assert(compare<decltype(quantity_cast<scaled_unit<ratio(1), metre>>(2_q_km))::unit, metre>);
-
 static_assert(quantity_cast<length<metre, int>>(2_q_km).count() == 2000);
 static_assert(quantity_cast<length<kilometre, int>>(2000_q_m).count() == 2);
 static_assert(quantity_cast<length<metre, int>>(1.23_q_m).count() == 1);
@@ -680,6 +678,8 @@ static_assert(quantity_cast<kilometre>(2000_q_m).count() == 2);
 static_assert(quantity_cast<int>(1.23_q_m).count() == 1);
 static_assert(quantity_cast<dim_speed, kilometre_per_hour>(2000.0_q_m / 3600.0_q_s).count() == 2);
 
+static_assert(is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<litre, std::int64_t>>);
+static_assert(!is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<cubic_decimetre, std::int64_t>>);
 
 ////////////////
 // downcasting
