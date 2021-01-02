@@ -204,14 +204,14 @@ public:
   }
 
   constexpr quantity& operator*=(const rep& rhs)
-    requires requires(rep a, rep b) { { a *= b } -> std::same_as<rep&>; }
+    requires requires(rep a, const rep b) { { a *= b } -> std::same_as<rep&>; }
   {
     value_ *= rhs;
     return *this;
   }
 
   constexpr quantity& operator/=(const rep& rhs)
-    requires requires(rep a, rep b) { { a /= b } -> std::same_as<rep&>; }
+    requires requires(rep a, const rep b) { { a /= b } -> std::same_as<rep&>; }
   {
     value_ /= rhs;
     return *this;
@@ -219,7 +219,7 @@ public:
 
   constexpr quantity& operator%=(const rep& rhs)
     requires (!floating_point_<rep>) &&
-             requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }
+             requires(rep a, const rep b) { { a %= b } -> std::same_as<rep&>; }
   {
     value_ %= rhs;
     return *this;
@@ -249,7 +249,7 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::multiplies<>, rep, Value>
+          invoke_result_convertible_to_<rep, std::multiplies<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, rep, Value>>;
@@ -258,7 +258,7 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::multiplies<>, Value, rep>
+          invoke_result_convertible_to_<rep, std::multiplies<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, Value, rep>>;
@@ -267,7 +267,7 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::divides<>, rep, Value>
+          invoke_result_convertible_to_<rep, std::divides<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     // Expects(v != zero().count());
@@ -277,7 +277,7 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::divides<>, Value, rep>
+          invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
     // Expects(q.count() != zero().count());
@@ -289,7 +289,7 @@ public:
 
   template<typename Value>
     requires (!Quantity<Value>) && (!floating_point_<rep>) && (!floating_point_<Value>) &&
-            invoke_result_convertible_to_<rep, std::modulus<>, rep, Value>
+            invoke_result_convertible_to_<rep, std::modulus<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, Value>>;
