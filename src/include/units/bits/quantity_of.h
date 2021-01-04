@@ -79,4 +79,41 @@ concept QuantityOf = Quantity<Q> && Dimension<Dim> && equivalent<typename Q::dim
 template<typename Q1, typename Q2>
 concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimension>;
 
+/**
+ * @brief A concept matching all quantity points with provided dimension
+ *
+ * Satisfied by all quantity points with a dimension being the instantiation derived from
+ * the provided dimension type.
+ */
+template<typename QP, typename Dim>
+concept QuantityPointOf = QuantityPoint<QP> && Dimension<Dim> && equivalent<typename QP::dimension, Dim>;
+
+template<typename QP1, typename QP2>
+concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::dimension>;
+
+/**
+ * @brief A concept matching only quantity kinds of a specific kind.
+ *
+ * @tparam QK Quantity kind to verify.
+ * @tparam K Kind type to use for verification.
+ */
+template<typename QK, typename K>
+concept QuantityKindOf = QuantityKind<QK> && Kind<K> && equivalent<typename QK::kind_type, K>;
+
+template<typename QK1, typename QK2>
+concept QuantityKindEquivalentTo = QuantityKind<QK1> && QuantityKindOf<QK2, typename QK1::kind_type>;
+
+/**
+ * @brief A concept matching only quantity point kinds of a specific point kind.
+ *
+ * @tparam QPK Quantity point kind to verify.
+ * @tparam PK Point kind type to use for verification.
+ */
+template<typename QPK, typename PK>
+concept QuantityPointKindOf = QuantityPointKind<QPK> && PointKind<PK> && equivalent<typename QPK::point_kind_type, PK>;
+
+template<typename QPK1, typename QPK2>
+concept QuantityPointKindEquivalentTo =
+  QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>;
+
 }  // namespace units

@@ -5,18 +5,18 @@ glide_computer
 
 This example presents the usage of:
 
-- different units for length, time, and velocity,
+- different kinds for length, time, and velocity,
 - quantities text output formatting,
-- `quantity_point` to mark "absolute" values like ``altitude`` (as opposed to ``height``),
-- a simple ``vector`` class to show how to handle 3D space for aviation needs and how to build abstractions
-  on top of a `Quantity` concept.
+- the use of quantity kinds to show how to handle 3D space for aviation needs,
+- `quantity_point_kind` to mark "absolute" values like ``altitude`` (as opposed to ``height``).
 
-``vector`` class template provides a strong type that divides quantities and quantity points to the ones
-on a horizontal (X, Y) plane and vertical (Z) axis. Its purpose is to make different kinds of quantity
-(i.e. length) separated strong types (i.e. distance, height). Additionally, it wraps both a `quantity`
-and `quantity_point` types which means that we can define a ``height`` and ``altitude`` respectively
-as different strong types. Some of its function are defined only for quantities (additional operators)
-and some for quantity points (additional constructor).
+The use of `quantity_kind` and `quantity_point_kind` provide strong typing
+that divide quantities and quantity points to the ones on a horizontal (X, Y) plane and vertical (Z) axis.
+Their purpose is to make different kinds of quantity
+(i.e. length) separate strong types (i.e. distance, height).
+Additionally, separating a quantity from its quantity point
+means that we can define a ``height`` and ``altitude`` as different strong types.
+A quantity point provides a more restricted interface meant for absolute calculations.
 
 .. literalinclude:: ../../example/glide_computer.cpp
   :caption: glide_computer.cpp

@@ -51,6 +51,8 @@ struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exponent<dim_length, 1>, units::exponent<dim_time, -1>> {};
 struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
+static_assert(equivalent<metre::named_unit, metre>);
+static_assert(equivalent<metre::scaled_unit, metre>);
 static_assert(compare<downcast<scaled_unit<ratio(1), metre>>, metre>);
 static_assert(compare<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
 static_assert(compare<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);

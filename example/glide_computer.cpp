@@ -24,130 +24,17 @@
 #include <units/math.h>
 #include <units/physical/si/international/base/length.h>
 #include <units/physical/si/derived/speed.h>
-#include <units/quantity_point.h>
+#include <units/quantity_point_kind.h>
 #include <array>
 #include <compare>
 #include <iostream>
 
-// horizontal/vertical vector
-namespace {
-
-using namespace units;
-
-enum class direction {
-  horizontal,
-  vertical
-};
-
-template<typename Q, direction D>
-  requires Quantity<Q> || QuantityPoint<Q>
-class vector {
-public:
-  using value_type = Q;
-  using magnitude_type = Q;
-  static constexpr direction dir = D;
-
-  vector() = default;
-  explicit constexpr vector(const Q& m): magnitude_(m) {}
-
-  template<Quantity QQ>
-    requires QuantityPoint<Q> && std::constructible_from<Q, QQ>
-  explicit constexpr vector(const QQ& q) : magnitude_(q) {}
-
-  constexpr Q magnitude() const { return magnitude_; }
-
-  [[nodiscard]] constexpr vector operator-() const
-    requires requires { -magnitude(); }
-  {
-    return vector(-magnitude());
-  }
-
-  template<typename Q2>
-  constexpr vector& operator-=(const vector<Q2, D>& v)
-    requires requires(Q q) { q -= v.magnitude(); }
-  {
-    magnitude_ -= v.magnitude();
-    return *this;
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator+(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() + rhs.magnitude(); }
-  {
-    using ret_type = decltype(lhs.magnitude() + rhs.magnitude());
-    return vector<ret_type, D>(lhs.magnitude() + rhs.magnitude());
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator-(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() - rhs.magnitude(); }
-  {
-    using ret_type = decltype(lhs.magnitude() - rhs.magnitude());
-    return vector<ret_type, D>(lhs.magnitude() - rhs.magnitude());
-  }
-
-  template<typename V>
-    requires (QuantityValue<V> || Dimensionless<V>)
-  [[nodiscard]] friend constexpr auto operator*(const vector& lhs, const V& value)
-    requires requires { lhs.magnitude() * value; }
-  {
-    return vector<Q, D>(lhs.magnitude() * value);
-  }
-
-  template<typename V>
-    requires (QuantityValue<V> || Dimensionless<V>)
-  [[nodiscard]] friend constexpr auto operator*(const V& value, const vector& rhs)
-    requires requires { value * rhs.magnitude(); }
-  {
-    return vector<Q, D>(value * rhs.magnitude());
-  }
-
-  template<typename Q2, direction D2>
-  [[nodiscard]] friend constexpr auto operator/(const vector& lhs, const vector<Q2, D2>& rhs)
-    requires requires { lhs.magnitude() / rhs.magnitude(); }
-  {
-    return lhs.magnitude() / rhs.magnitude();
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr auto operator<=>(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() <=> rhs.magnitude(); }
-  {
-    return lhs.magnitude() <=> rhs.magnitude();
-  }
-
-  template<typename Q2>
-  [[nodiscard]] friend constexpr bool operator==(const vector& lhs, const vector<Q2, D>& rhs)
-    requires requires { lhs.magnitude() == rhs.magnitude(); }
-  {
-    return lhs.magnitude() == rhs.magnitude();
-  }
-
-  template<class CharT, class Traits>
-    requires Quantity<Q>
-  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const vector& v)
-  {
-    return os << v.magnitude();
-  }
-
-private:
-  Q magnitude_{};
-};
-
-
-template<typename T>
-inline constexpr bool is_vector = false;
-template<typename Q, direction D>
-inline constexpr bool is_vector<vector<Q, D>> = true;
-
-} // namespace
-
-template<Quantity Q, direction D>
-struct fmt::formatter<vector<Q, D>> : formatter<Q> {
+template<units::QuantityKind QK>
+struct fmt::formatter<QK> : formatter<typename QK::quantity_type> {
   template <typename FormatContext>
-  auto format(const vector<Q, D>& v, FormatContext& ctx)
+  auto format(const QK& v, FormatContext& ctx)
   {
-    return formatter<Q>::format(v.magnitude(), ctx);
+    return formatter<typename QK::quantity_type>::format(v.common(), ctx);
   }
 };
 
@@ -155,20 +42,27 @@ struct fmt::formatter<vector<Q, D>> : formatter<Q> {
 namespace {
 
 using namespace units::physical;
+using namespace units;
 
-using distance = vector<si::length<si::kilometre>, direction::horizontal>;
-using height = vector<si::length<si::metre>, direction::vertical>;
-using altitude = vector<quantity_point<si::dim_length, si::metre>, direction::vertical>;
+struct horizontal_vector : kind<horizontal_vector, si::dim_length> {};
+struct vertical_vector : kind<vertical_vector, si::dim_length> {};
+struct vertical_point : point_kind<vertical_point, vertical_vector> {};
+struct velocity_vector : derived_kind<velocity_vector, horizontal_vector, si::dim_speed> {};
+struct rate_of_climb_vector : derived_kind<rate_of_climb_vector, vertical_vector, si::dim_speed> {};
+
+using distance = quantity_kind<horizontal_vector, si::kilometre>;
+using height = quantity_kind<vertical_vector, si::metre>;
+using altitude = quantity_point_kind<vertical_point, si::metre>;
 
 using duration = si::time<si::second>;
 
-using velocity = vector<si::speed<si::kilometre_per_hour>, direction::horizontal>;
-using rate_of_climb = vector<si::speed<si::metre_per_second>, direction::vertical>;
+using velocity = quantity_kind<velocity_vector, si::kilometre_per_hour>;
+using rate_of_climb = quantity_kind<rate_of_climb_vector, si::metre_per_second>;
 
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const altitude& a)
 {
-  return os << a.magnitude().relative() << " AMSL";
+  return os << a.relative().common() << " AMSL";
 }
 
 } // namespace
@@ -178,7 +72,7 @@ struct fmt::formatter<altitude> : formatter<si::length<si::metre>> {
   template <typename FormatContext>
   auto format(altitude a, FormatContext& ctx)
   {
-    formatter<si::length<si::metre>>::format(a.magnitude().relative(), ctx);
+    formatter<si::length<si::metre>>::format(a.relative().common(), ctx);
     return format_to(ctx.out(), " AMSL");
   }
 };
@@ -201,8 +95,15 @@ struct fmt::formatter<altitude> : formatter<si::length<si::metre>> {
 // gliders database
 namespace {
 
-using namespace units::physical::si::literals;
-using namespace units::physical::si::international::literals;
+using namespace si::literals;
+using namespace si::international::literals;
+using namespace si::unit_constants;
+
+template<QuantityKind QK1, QuantityKind QK2>
+constexpr Quantity auto operator/(const QK1& lhs, const QK2& rhs)
+  requires requires { lhs.common() / rhs.common(); } {
+  return lhs.common() / rhs.common();
+}
 
 struct glider {
   struct polar_point {
@@ -217,10 +118,10 @@ struct glider {
 auto get_gliders()
 {
   const std::array gliders = {
-    glider{"SZD-30 Pirat", {velocity(83_q_km_per_h), rate_of_climb(-0.7389_q_m_per_s)}},
-    glider{"SZD-51 Junior", {velocity(80_q_km_per_h), rate_of_climb(-0.6349_q_m_per_s)}},
-    glider{"SZD-48 Jantar Std 3", {velocity(110_q_km_per_h), rate_of_climb(-0.77355_q_m_per_s)}},
-    glider{"SZD-56 Diana", {velocity(110_q_km_per_h), rate_of_climb(-0.63657_q_m_per_s)}}
+    glider{"SZD-30 Pirat", {velocity(83 * km / h), rate_of_climb(-0.7389 * m / s)}},
+    glider{"SZD-51 Junior", {velocity(80 * km / h), rate_of_climb(-0.6349 * m / s)}},
+    glider{"SZD-48 Jantar Std 3", {velocity(110 * km / h), rate_of_climb(-0.77355 * m / s)}},
+    glider{"SZD-56 Diana", {velocity(110 * km / h), rate_of_climb(-0.63657 * m / s)}}
   };
   return gliders;
 }
@@ -235,7 +136,7 @@ template<std::ranges::forward_range R>
 void print(const R& gliders)
 {
   std::cout << "Gliders:\n";
-  std::cout << "========\n";  
+  std::cout << "========\n";
   for(const auto& g : gliders) {
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
@@ -258,9 +159,9 @@ struct weather {
 auto get_weather_conditions()
 {
   const std::array weather_conditions = {
-    std::pair("Good", weather{height(1900_q_m), rate_of_climb(4.3_q_m_per_s)}),
-    std::pair("Medium", weather{height(1550_q_m), rate_of_climb(2.8_q_m_per_s)}),
-    std::pair("Bad", weather{height(850_q_m), rate_of_climb(1.8_q_m_per_s)})
+    std::pair("Good", weather{height(1900 * m), rate_of_climb(4.3 * m / s)}),
+    std::pair("Medium", weather{height(1550 * m), rate_of_climb(2.8 * m / s)}),
+    std::pair("Bad", weather{height(850 * m), rate_of_climb(1.8 * m / s)})
   };
   return weather_conditions;
 }
@@ -270,7 +171,7 @@ template<std::ranges::forward_range R>
 void print(const R& conditions)
 {
   std::cout << "Weather:\n";
-  std::cout << "========\n";  
+  std::cout << "========\n";
   for(const auto& c : conditions) {
     std::cout << "- Kind:              " << c.first << "\n";
     const auto& w = c.second;
@@ -409,12 +310,12 @@ flight_point circle(const flight_point& point, const glider& g, const weather& w
 constexpr distance glide_distance(const flight_point& point, const glider& g, const task& t, const safety& s, altitude ground_alt)
 {
   const auto dist_to_finish = t.dist - point.dist;
-  return distance((ground_alt + s.min_agl_height - point.alt).magnitude() / ((ground_alt - t.finish.alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
+  return distance((ground_alt + s.min_agl_height - point.alt).common() / ((ground_alt - t.finish.alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
 }
 
 inline si::length<si::kilometre> length_3d(distance dist, height h)
 {
-  return sqrt(pow<2>(dist.magnitude()) + pow<2>(h.magnitude()));
+  return sqrt(pow<2>(dist.common()) + pow<2>(h.common()));
 }
 
 flight_point glide(const flight_point& point, const glider& g, const task& t, const safety& s)
@@ -423,7 +324,7 @@ flight_point glide(const flight_point& point, const glider& g, const task& t, co
   const auto dist = glide_distance(point, g, t, s, ground_alt);
   const auto alt = ground_alt + s.min_agl_height;
   const auto l3d = length_3d(dist, point.alt - alt);
-  const duration d = l3d / g.polar[0].v.magnitude();
+  const duration d = l3d / g.polar[0].v.common();
   const flight_point new_point{point.dur + d, point.dist + dist, terrain_level_alt(t, point.dist + dist) + s.min_agl_height};
 
   print("Glide", point, new_point);
@@ -434,7 +335,7 @@ flight_point final_glide(const flight_point& point, const glider& g, const task&
 {
   const auto dist = t.dist - point.dist;
   const auto l3d = length_3d(dist, point.alt - t.finish.alt);
-  const duration d = l3d / g.polar[0].v.magnitude();
+  const duration d = l3d / g.polar[0].v.common();
   const flight_point new_point{point.dur + d, point.dist + dist, t.finish.alt};
 
   print("Final Glide", point, new_point);
@@ -450,7 +351,7 @@ void estimate(const glider& g, const weather& w, const task& t, const safety& s,
   point = tow(point, at);
 
   // estimate the altitude needed to reach the finish line from this place
-  const altitude final_glide_alt = t.finish.alt + height(t.dist.magnitude() / glide_ratio(g.polar[0]));
+  const altitude final_glide_alt = t.finish.alt + height(t.dist.common() / glide_ratio(g.polar[0]));
 
   // how much height we still need to gain in the thermalls to reach the destination?
   height height_to_gain = final_glide_alt - point.alt;
@@ -462,7 +363,7 @@ void estimate(const glider& g, const weather& w, const task& t, const safety& s,
     // circle in a thermall to gain height
     point = circle(point, g, w, t, height_to_gain);
   }
-  while(height_to_gain > height(0_q_m));
+  while(height_to_gain > height(0 * m));
 
   // final glide
   point = final_glide(point, g, t);
@@ -488,10 +389,10 @@ void example()
   };
   print(t);
 
-  const safety s = {height(300_q_m)};
+  const safety s = {height(300 * m)};
   print(s);
 
-  const aircraft_tow tow = {height(400_q_m), rate_of_climb(1.6_q_m_per_s)};
+  const aircraft_tow tow = {height(400 * m), rate_of_climb(1.6 * m / ::s)};
   print(tow);
 
   for(const auto& g : gliders) {

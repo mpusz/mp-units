@@ -202,7 +202,51 @@ concept UnitOf =
   Dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
-// Quantity, QuantityPoint
+// Kind
+namespace detail {
+
+template<typename, Dimension>
+struct _kind_base;
+
+}  // namespace detail
+
+template<typename T, template<typename...> typename Base>
+concept kind_impl_ =
+  is_derived_from_specialization_of<T, Base> &&
+  requires(T* t) {
+    typename T::base_kind;
+    typename T::dimension;
+    requires Dimension<typename T::dimension>;
+  };
+
+/**
+ * @brief A concept matching all kind types
+ *
+ * Satisfied by all kind types derived from an specialization of :class:`kind`.
+ */
+template<typename T>
+concept Kind =
+  kind_impl_<T, detail::_kind_base> &&
+  kind_impl_<typename T::base_kind, detail::_kind_base> &&
+  std::same_as<typename T::base_kind, typename T::base_kind::base_kind>;
+
+// PointKind
+namespace detail {
+
+template<Kind>
+struct _point_kind_base;
+
+}  // namespace detail
+
+/**
+ * @brief A concept matching all point kind types
+ *
+ * Satisfied by all point kind types derived from an specialization of :class:`point_kind`.
+ */
+template<typename T>
+concept PointKind = kind_impl_<T, detail::_point_kind_base>;
+
+// Quantity, QuantityPoint, QuantityKind, QuantityPointKind
 namespace detail {
 
 template<typename T>
@@ -210,6 +254,12 @@ inline constexpr bool is_quantity = false;
 
 template<typename T>
 inline constexpr bool is_quantity_point = false;
+
+template<typename T>
+inline constexpr bool is_quantity_kind = false;
+
+template<typename T>
+inline constexpr bool is_quantity_point_kind = false;
 
 }  // namespace detail
 
@@ -230,8 +280,26 @@ template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
 
 /**
+ * @brief A concept matching all quantity kinds in the library.
+ *
+ * Satisfied by all specializations of @c quantity_kind.
+ */
+template<typename T>
+concept QuantityKind = detail::is_quantity_kind<T>;
+
+/**
+ * @brief A concept matching all quantity point kinds in the library.
+ *
+ * Satisfied by all specializations of @c quantity_point_kind.
+ */
+template<typename T>
+concept QuantityPointKind = detail::is_quantity_point_kind<T>;
+
+// QuantityLike
+
+/**
  * @brief A concept matching all quantity-like types (other than specialization of @c quantity)
- * 
+ *
  * Satisfied by all types for which a correct specialization of `quantity_like_traits`
  * type trait is provided.
  */
@@ -261,12 +329,12 @@ concept castable_number_ = // exposition only
   common_type_with_<T, std::intmax_t> &&
   scalable_number_<std::common_type_t<T, std::intmax_t>>;
 
-template<typename T> 
+template<typename T>
 concept scalable_ = // exposition only
   castable_number_<T> ||
   (requires { typename T::value_type; } && castable_number_<typename T::value_type> && scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
 
-template<typename T, typename U> 
+template<typename T, typename U>
 concept scalable_with_ = // exposition only
   common_type_with_<T, U> &&
   scalable_<std::common_type_t<T, U>>;
@@ -280,6 +348,10 @@ inline constexpr bool is_wrapped_quantity = false;
 template<typename T>
   requires requires { typename T::value_type; }
 inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::value_type> || QuantityLike<typename T::value_type> || is_wrapped_quantity<typename T::value_type>;
+
+template<typename T>
+  requires requires { typename T::quantity_type; }
+inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::quantity_type>;
 
 }  // namespace detail
 

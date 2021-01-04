@@ -4,7 +4,7 @@ Basic Concepts
 ==============
 
 The most important concepts in the library are `Unit`, `Dimension`,
-`Quantity`, and `QuantityPoint`:
+`Quantity`, `QuantityPoint`, `QuantityKind`, and `QuantityPointKind`:
 
 .. image:: /_static/img/concepts.png
     :align: center
@@ -18,14 +18,34 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [exponent<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
     ]
 
+    [<abstract>Quantity|
+    [quantity<Dimension, Unit, Rep>]
+    ]
+
     [<abstract>QuantityPoint|
     [quantity_point<Dimension, Unit, Rep>]
+    ]
+
+    [<abstract>QuantityKind|
+    [quantity_kind<Kind, Unit, Rep>]
+    ]
+
+    [<abstract>QuantityPointKind|
+    [quantity_point_kind<PointKind, Unit, Rep>]
     ]
 
     [<abstract>Unit]<-[Dimension]
     [Dimension]<-[Quantity]
     [Unit]<-[Quantity]
     [Quantity]<-[QuantityPoint]
+
+    [<abstract>Kind]<-[QuantityKind]
+    [Dimension]<-[Kind]
+    [Quantity]<-[QuantityKind]
+
+    [<abstract>PointKind]<-[QuantityPointKind]
+    [Kind]<-[PointKind]
+    [QuantityKind]-<[QuantityPointKind]
 
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and
@@ -40,3 +60,7 @@ derived dimensions.
 specific representation.
 
 `QuantityPoint` is an absolute `Quantity` with respect to some origin.
+
+`QuantityKind` is a `Quantity` with more specific usage.
+
+`QuantityPointKind` is an absolute `QuantityKind` with respect to some origin.

@@ -3,8 +3,10 @@
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
+  - refactor: `quantity_point` (partially) updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
+  - feat: quantity (point) kind support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: unit constants support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added

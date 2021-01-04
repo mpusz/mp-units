@@ -42,6 +42,12 @@ class quantity;
 template<Dimension D, UnitOf<D> U, QuantityValue Rep>
 class quantity_point;
 
+template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
+class quantity_kind;
+
+template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep>
+class quantity_point_kind;
+
 namespace detail {
 
 template<typename D, typename U, typename Rep>
@@ -80,7 +86,7 @@ struct cast_traits<From, To> {
 
 template<typename From, typename To>
   requires (!common_type_with_<std::common_type_t<From, To>, std::intmax_t>) &&
-          scalable_number_<std::common_type_t<From, To>, std::intmax_t> && 
+          scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
           requires { typename std::common_type_t<From, To>::value_type; } &&
           common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>
 struct cast_traits<From, To> {
@@ -103,7 +109,7 @@ struct cast_traits<From, To> {
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> Rep>
-  requires QuantityOf<To, D>
+  requires QuantityOf<To, D> && std::constructible_from<typename To::rep, std::common_type_t<typename To::rep, Rep>>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   using traits = detail::cast_traits<Rep, typename To::rep>;
@@ -137,7 +143,7 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
  *
  * This cast gets only the target dimension to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::acceleration>(200_q_Gal);
+ * auto q1 = units::quantity_cast<units::physical::si::dim_acceleration>(200_q_Gal);
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
@@ -179,7 +185,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * @note This cast is especially useful when working with quantities of unknown dimensions
  * (@c unknown_dimension).
- * 
+ *
  * @tparam ToD a dimension type to use for a target quantity
  * @tparam ToU a unit type to use for a target quantity
  */
@@ -203,6 +209,7 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  * @tparam ToRep a representation type to use for a target quantity
  */
 template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
+  requires std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);
@@ -218,7 +225,7 @@ template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
  *
  * auto q1 = units::quantity_point_cast<decltype(quantity_point{0_q_s})>(quantity_point{1_q_ms});
  * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1_q_ms});
- * auto q1 = units::quantity_point_cast<units::physical::si::acceleration>(quantity_point{200_q_Gal});
+ * auto q1 = units::quantity_point_cast<units::physical::si::dim_acceleration>(quantity_point{200_q_Gal});
  * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1_q_ms});
  * auto q1 = units::quantity_point_cast<int>(quantity_point{1_q_ms});
  *
@@ -247,7 +254,7 @@ template<typename CastSpec, typename D, typename U, typename Rep>
  *
  * @note This cast is especially useful when working with quantity points of unknown dimensions
  * (@c unknown_dimension).
- * 
+ *
  * @tparam ToD a dimension type to use for a target quantity
  * @tparam ToU a unit type to use for a target quantity
  */
@@ -256,6 +263,119 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& q)
 {
   return quantity_point_cast<quantity_point<ToD, ToU, Rep>>(q);
+}
+
+/**
+ * @brief Explicit cast of a quantity kind
+ *
+ * Implicit conversions between quantity kinds of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets the target (quantity) kind type to cast to or anything that works for quantity_cast. For example:
+ *
+ * auto q1 = units::quantity_kind_cast<decltype(ns::width{1 * m})>(quantity_kind{ns::width{1 * mm});
+ * auto q1 = units::quantity_kind_cast<ns::height_kind>(ns::width{1 * m});
+ * auto q1 = units::quantity_kind_cast<units::physical::si::length<units::physical::si::metre>>(ns::width{1 * mm});
+ * auto q1 = units::quantity_kind_cast<units::physical::si::dim_acceleration>(ns::rate_of_climb{200 * Gal});
+ * auto q1 = units::quantity_kind_cast<units::physical::si::metre>(ns::width{1 * mm});
+ * auto q1 = units::quantity_kind_cast<int>(ns::width{1.0 * mm});
+ *
+ * @tparam CastSpec a target (quantity) kind type to cast to or anything that works for quantity_cast
+ */
+template<typename CastSpec, typename K, typename U, typename Rep>
+[[nodiscard]] constexpr QuantityKind auto quantity_kind_cast(const quantity_kind<K, U, Rep>& qk)
+  requires (is_specialization_of<CastSpec, quantity_kind> &&
+              requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); }) ||
+           (Kind<CastSpec> && UnitOf<U, typename CastSpec::dimension>) ||
+           requires { quantity_cast<CastSpec>(qk.common()); }
+{
+  if constexpr (is_specialization_of<CastSpec, quantity_kind>)
+    return CastSpec(quantity_cast<typename CastSpec::quantity_type>(qk.common()));
+  else if constexpr (Kind<CastSpec>)
+    return quantity_kind<CastSpec, U, Rep>(qk.common());
+  else {
+    auto q{quantity_cast<CastSpec>(qk.common())};
+    using Q = decltype(q);
+    return quantity_kind<K, typename Q::unit, typename Q::rep>(static_cast<Q&&>(q));
+  }
+}
+
+/**
+ * @brief Explicit cast of a quantity kind
+ *
+ * Implicit conversions between quantity kinds of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets both the target kind and unit to cast to. For example:
+ *
+ * auto q1 = units::quantity_kind_cast<ns::height_kind, units::physical::si::kilometre>(w);
+ *
+ * @note This cast is especially useful when working with quantity kinds of unknown kind.
+ *
+ * @tparam ToK the kind type to use for the target quantity
+ * @tparam ToU the unit type to use for the target quantity
+ */
+template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
+  requires equivalent<typename ToK::dimension, typename K::dimension> && UnitOf<ToU, typename ToK::dimension>
+[[nodiscard]] constexpr QuantityKind auto quantity_kind_cast(const quantity_kind<K, U, Rep>& qk)
+{
+  return quantity_kind_cast<quantity_kind<ToK, ToU, Rep>>(qk);
+}
+
+/**
+ * @brief Explicit cast of a quantity point kind
+ *
+ * Implicit conversions between quantity point kinds of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets the target (quantity) point kind type to cast to or anything that works for quantity_kind_cast. For example:
+ *
+ * auto q1 = units::quantity_point_kind_cast<decltype(ns::x_coordinate{1 * m))>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<decltype(ns::width{1 * m})>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind>(ns::x_coordinate{1 * m});
+ * auto q1 = units::quantity_point_kind_cast<ns::height_kind>(ns::x_coordinate{1 * m});
+ * auto q1 = units::quantity_point_kind_cast<units::physical::si::length<units::physical::si::metre>>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<units::physical::si::dim_acceleration>(quantity_point_kind(ns::rate_of_climb{200 * Gal}));
+ * auto q1 = units::quantity_point_kind_cast<units::physical::si::metre>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<int>(ns::x_coordinate{1.0 * mm});
+ *
+ * @tparam CastSpec a target (quantity) point kind type to cast to or anything that works for quantity_kind_cast
+ */
+template<typename CastSpec, typename PK, typename U, typename Rep>
+[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep>& qpk)
+  requires (is_specialization_of<CastSpec, quantity_point_kind> &&
+              requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); }) ||
+           (PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>) ||
+           requires { quantity_kind_cast<CastSpec>(qpk.relative()); }
+{
+  if constexpr (is_specialization_of<CastSpec, quantity_point_kind>)
+    return CastSpec(quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()));
+  else if constexpr (PointKind<CastSpec>)
+    return quantity_point_kind(quantity_kind_cast<typename CastSpec::base_kind>(qpk.relative()));
+  else
+    return quantity_point_kind(quantity_kind_cast<CastSpec>(qpk.relative()));
+}
+
+/**
+ * @brief Explicit cast of a quantity point kind
+ *
+ * Implicit conversions between quantity point kinds of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ *
+ * This cast gets both the target point kind and unit to cast to. For example:
+ *
+ * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind, units::physical::si::kilometre>(x);
+ *
+ * @note This cast is especially useful when working with quantity point kinds of unknown point kind.
+ *
+ * @tparam ToPK the point kind type to use for the target quantity
+ * @tparam ToU the unit type to use for the target quantity
+ */
+template<PointKind ToPK, Unit ToU, typename PK, typename U, typename Rep>
+  requires equivalent<typename ToPK::dimension, typename PK::dimension> && UnitOf<ToU, typename ToPK::dimension>
+[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep>& qpk)
+{
+  return quantity_point_kind_cast<quantity_point_kind<ToPK, ToU, Rep>>(qpk);
 }
 
 }  // namespace units

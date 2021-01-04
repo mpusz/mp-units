@@ -4,8 +4,12 @@ Working with Legacy Interfaces
 ==============================
 
 In case we are working with a legacy/unsafe interface we may be forced to
-extract the :term:`value of a quantity` with :func:`quantity::count()` or to
-extract the value of a `quantity_point` with :func:`quantity_point::relative()`
+extract the :term:`value of a quantity` with :func:`quantity::count()`
+(in addition
+to the quantity of a `quantity_point` with :func:`quantity_point::relative()`,
+or the quantity of a `quantity_kind` with :func:`quantity_kind::common()`,
+or the quantity kind of a `quantity_point_kind`
+with :func:`quantity_point_kind::relative()`)
 and pass it to the library's output:
 
 .. code-block::
