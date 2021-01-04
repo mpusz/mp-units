@@ -22,18 +22,20 @@
 
 #include "units/quantity_point.h"
 #include "test_tools.h"
+#include "units/chrono.h"
 #include "units/math.h"
 #include "units/physical/si/derived/area.h"
 #include "units/physical/si/derived/speed.h"
 #include "units/physical/si/derived/volume.h"
 #include "units/physical/si/us/base/length.h"
-#include <chrono>
 #include <utility>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace physical::si;
+using namespace unit_constants;
+using namespace std::chrono_literals;
 
 // class invariants
 
@@ -55,8 +57,16 @@ static_assert(is_same_v<quantity_point<dim_length, metre, int>::rep, int>);
 static_assert(is_same_v<quantity_point<dim_length, metre, double>::rep, double>);
 static_assert(is_same_v<quantity_point<dim_length, metre, int>::unit, metre>);
 static_assert(is_same_v<quantity_point<dim_length, kilometre, int>::unit, kilometre>);
+static_assert(is_same_v<quantity_point<dim_length, metre, int>::dimension, dim_length>);
+static_assert(is_same_v<quantity_point<dim_length, metre, int>::quantity_type, quantity<dim_length, metre, int>>);
 
 // constructors
+
+static_assert(quantity_point(1).relative() == quantity(1));
+static_assert(!std::is_convertible_v<int, quantity_point<dim_one, one, int>>);
+
+static_assert(quantity_point(42s).relative() == 42 * s);
+static_assert(!std::is_convertible_v<std::chrono::seconds, quantity_point<dim_time, second, std::chrono::seconds::rep>>);
 
 static_assert(quantity_point<dim_length, metre, int>().relative() == 0_q_m);
 constexpr quantity_point<dim_length, metre, int> km{1000_q_m};

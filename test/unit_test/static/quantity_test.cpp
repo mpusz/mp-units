@@ -220,7 +220,7 @@ static_assert(!std::constructible_from<length<kilometre, int>, length<metre, int
 static_assert(!std::convertible_to<length<metre, int>, length<kilometre, int>>);  // truncating metre<int> -> kilometre<int> not allowed
 
 // converting to double always OK
-static_assert(std::constructible_from<length<metre>, length<kilometre, int>>);  
+static_assert(std::constructible_from<length<metre>, length<kilometre, int>>);
 static_assert(std::convertible_to<length<kilometre, int>, length<metre>>);
 static_assert(std::constructible_from<length<kilometre>, length<metre, int>>);
 static_assert(std::convertible_to<length<metre, int>, length<kilometre>>);

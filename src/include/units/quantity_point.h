@@ -53,8 +53,14 @@ public:
   quantity_point(const quantity_point&) = default;
   quantity_point(quantity_point&&) = default;
 
-  template<Quantity Q>
-    requires std::is_convertible_v<Q, quantity_type>
+  template<safe_convertible_to_<rep> Value>
+    requires is_same_v<dimension, dim_one> && std::is_constructible_v<quantity_type, Value>
+  constexpr explicit quantity_point(const Value& v) : q_(v) {}
+
+  constexpr explicit quantity_point(const quantity_type& q) : q_{q} {}
+
+  template<QuantityLike Q>
+    requires std::is_constructible_v<quantity_type, Q>
   constexpr explicit quantity_point(const Q& q) : q_{q} {}
 
   template<QuantityPoint QP2>
@@ -169,8 +175,12 @@ public:
 
 };
 
-template<typename D, typename U, typename Rep>
-quantity_point(quantity<D, U, Rep>) -> quantity_point<D, U, Rep>;
+template<QuantityValue V>
+explicit(false) quantity_point(V) -> quantity_point<dim_one, one, V>;
+
+template<QuantityLike Q>
+quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,
+  typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
 
 namespace detail {
 

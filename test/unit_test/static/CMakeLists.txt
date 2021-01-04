@@ -34,9 +34,12 @@ add_library(unit_tests_static
     dimensions_concepts_test.cpp
     fixed_string_test.cpp
     fps_test.cpp
+    kind_test.cpp
     math_test.cpp
-    quantity_point_test.cpp
     quantity_test.cpp
+    quantity_point_test.cpp
+    quantity_kind_test.cpp
+    quantity_point_kind_test.cpp
     ratio_test.cpp
     si_test.cpp
     si_cgs_test.cpp

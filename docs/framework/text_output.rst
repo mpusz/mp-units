@@ -8,13 +8,14 @@ also tries really hard to print any quantity in the most user friendly way.
 
 .. note::
 
-    The library provides no text output for quantity points.
+    The library provides no text output for
+    quantity points or quantity (point) kinds.
 
 Output Streams
 --------------
 
 .. tip::
-    
+
     The streaming support is provided via the ``<units/quantity_io.h>`` header
     file.
 

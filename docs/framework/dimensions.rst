@@ -50,7 +50,7 @@ probably will always end up in a quantity of a yet another dimension:
 
 However, please note that there is an exception from the above rule.
 In case we divide the same dimensions, or multiply by the inverted
-dimension, than we will end up with just a scalable number type:
+dimension, than we will end up with just a dimensionless quantity:
 
 .. code-block::
     :emphasize-lines: 4-5
@@ -58,8 +58,23 @@ dimension, than we will end up with just a scalable number type:
     Time auto dur1 = 10_q_s;
     Time auto dur2 = 2_q_s;
     Frequency auto fr1 = 5_q_Hz;
-    QuantityValue auto v1 = dur1 / dur2;    // 5
-    QuantityValue auto v2 = dur1 * fr1;     // 50
+    Dimensionless auto v1 = dur1 / dur2;    // quantity(5)
+    Dimensionless auto v2 = dur1 * fr1;     // quantity(50)
+
+Quantity kinds behave the same as quantities for addition, substraction, and
+multiplication with, and division by a :term:`scalable number`.
+
+Multiplication and divison with a quantity
+(but not a quantity kind) is allowed.
+The result is a quantity kind with the appropiate dimension
+and related to the original quantity kind.
+
+    struct height : kind<height, dim_length> {};
+    struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};
+
+    quantity_kind h(height{}, 100 * m);
+    quantity_point_kind rate = h / (25 * s);
+      // `quantity_point_kind<rate_of_climb, si::metre_per_second, int>(4 * m / s)`
 
 Quantity points have a more restricted set of operations.
 Quantity points can't be added together,
@@ -81,7 +96,7 @@ The result will always be a quantity point of the same dimension:
 
     .. code-block::
         :emphasize-lines: 3
-        
+
         Length auto dist1 = 2_q_m;
         Length auto dist2 = 1_q_m;
         auto res1 = dist1 - quantity_point{dist2};  // ERROR
@@ -97,6 +112,9 @@ The result is a relative quantity of the same dimension:
     Length auto res1 = quantity_point{dist1} - quantity_point{dist2};
 
 That's it! You can't multiply nor divide quantity points with anything else.
+
+The same restrictions of a quantity point with respect to its quantity
+apply to a quantity point kind with respect to its quantity kind.
 
 
 Base Dimensions

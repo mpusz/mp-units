@@ -41,7 +41,7 @@ struct equivalent_impl<T, T> : std::true_type {
 // units
 
 template<Unit U1, Unit U2>
-struct equivalent_impl<U1, U2> : std::is_base_of<U1, U2>, std::is_base_of<U2, U1> {};
+struct equivalent_impl<U1, U2> : std::disjunction<std::is_base_of<U1, U2>, std::is_base_of<U2, U1>> {};
 
 
 // dimensions
@@ -81,13 +81,28 @@ template<Unit U1, Dimension D1, Unit U2, Dimension D2>
 struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
                                           std::bool_constant<U1::ratio / dimension_unit<D1>::ratio == U2::ratio / dimension_unit<D2>::ratio>> {};
 
-// quantities and quantity points
+
+// (point) kinds
+
+template<typename T, typename U>
+  requires (Kind<T> && Kind<U>) || (PointKind<T> && PointKind<U>)
+struct equivalent_impl<T, U> :
+  std::conjunction<std::is_same<typename T::base_kind, typename U::base_kind>,
+                   equivalent_impl<typename T::dimension, typename U::dimension>> {};
+
+
+// quantities, quantity points, quantity (point) kinds
 
 template<typename Q1, typename Q2>
   requires (Quantity<Q1> && Quantity<Q2>) || (QuantityPoint<Q1> && QuantityPoint<Q2>)
 struct equivalent_impl<Q1, Q2> : std::conjunction<equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
                                                                   equivalent_unit<typename Q1::unit, typename Q1::dimension,
                                                                                   typename Q2::unit, typename Q2::dimension>> {};
+
+template<typename QK1, typename QK2>
+  requires (QuantityKind<QK1> && QuantityKind<QK2>) || (QuantityPointKind<QK1> && QuantityPointKind<QK2>)
+struct equivalent_impl<QK1, QK2> : std::conjunction<equivalent_impl<typename QK1::kind_type, typename QK2::kind_type>,
+                                                    equivalent_impl<typename QK1::quantity_type, typename QK2::quantity_type>> {};
 
 }  // namespace detail
 

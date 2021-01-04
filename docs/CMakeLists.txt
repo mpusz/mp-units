@@ -70,6 +70,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/dimensions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantities.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_points.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_kinds.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/text_output.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/units.rst"
 

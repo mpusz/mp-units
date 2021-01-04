@@ -56,7 +56,8 @@ Explicit
 --------
 
 Explicit conversions are available with
-the `quantity_cast` and `quantity_point_cast` function templates.
+the `quantity_cast`, `quantity_point_cast`,
+`quantity_kind_cast`, and `quantity_point_kind_cast` function templates.
 They are especially useful to force a truncating conversion across quantities of the same
 dimension for integral representation types and ratios that may cause precision loss::
 
@@ -99,6 +100,13 @@ or a specific target `quantity_point`::
 
     std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0_q_m})>(d) << '\n';
 
+For a single explicit template argument,
+`quantity_point_kind_cast` is a superset of `quantity_kind_cast`,
+which is also a superset of `quantity_cast`.
+For the (dimension, unit) pair of explicit arguments case of `quantity_cast`,
+`quantity_point_kind_cast` and `quantity_kind_cast`
+accept a `PointKind` and `Kind` instead of a `Dimension`, respectively.
+
 .. seealso::
 
     For more information on conversion and casting and on how to extend the above "integral"
@@ -115,14 +123,14 @@ represent numbers it would be highly uncomfortable to every time type::
 
     const auto d1 = 10_q_km;
     const auto d2 = 3_q_km;
-    if(d1 / d2 > dimensionless<one, 2>) {
+    if(d1 / d2 > dimensionless<one>(2)) {
       // ...
     }
 
 or::
 
     const auto fill_time_left = (box.height / box.fill_level(measured_mass) -
-                                 dimensionless<one, 1>) * fill_time;
+                                 dimensionless<one>(1)) * fill_time;
 
 This is why it was decided to allow the ``dimensionless<one>`` quantity of any
 representation type to be implicitly constructible from this representation type.
@@ -147,7 +155,7 @@ could be ambiguous. For example::
       return d1 / d2 + 1;
     }
 
-As long as we can reason about what such code means for ``foo(10_q_km, 2_q_km)`` it is not that obvious 
+As long as we can reason about what such code means for ``foo(10_q_km, 2_q_km)`` it is not that obvious
 at all in the case of ``foo(10_q_cm, 2_q_ft)``. To make such code to compile for every case we have to
 either change the type of the resulting unit to the one having ``ratio(1)`` (:term:`coherent derived unit`)::
 
