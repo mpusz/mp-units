@@ -197,14 +197,14 @@ concept invalid_member_operations = requires(length<metre, Rep> lhs) {
 static_assert(invalid_member_operations<min_expl<>>);
 
 // equality
-static_assert(length<kilometre, min_expl<>>(min_expl<>(2)) == length<metre, min_expl<>>(min_expl<>(2000)));
-static_assert(length<metre, min_expl<>>(min_expl<>(123)) * min_expl<>(2) == length<metre, min_expl<>>(min_expl<>(246)));
-static_assert(length<metre, min_expl<>>(min_expl<>(123)) * quantity{min_expl<>(2)} == length<metre, min_expl<>>(min_expl<>(246)));
-static_assert(min_expl<>(2) * length<metre, min_expl<>>(min_expl<>(123)) == length<metre, min_expl<>>(min_expl<>(246)));
-static_assert(quantity{min_expl<>(2)} * length<metre, min_expl<>>(min_expl<>(123)) == length<metre, min_expl<>>(min_expl<>(246)));
-static_assert(length<metre, min_expl<>>(min_expl<>(246)) / min_expl<>(2) == length<metre, min_expl<>>(min_expl<>(123)));
-static_assert(length<metre, min_expl<>>(min_expl<>(246)) / quantity{min_expl<>(2)} == length<metre, min_expl<>>(min_expl<>(123)));
-static_assert(length<metre, min_expl<>>(min_expl<>(246)) / length<metre, min_expl<>>(min_expl<>(2)) == quantity{min_expl<>(123)});
-static_assert(length<metre, min_expl<>>(min_expl<>(246)) / length<metre, min_expl<>>(min_expl<>(2)) == min_expl<>(123));
+static_assert(length<kilometre, min_expl<>>(min_expl(2)) == length<metre, min_expl<>>(min_expl(2000)));
+static_assert(length<metre, min_expl<>>(min_expl(123)) * min_expl(2) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(length<metre, min_expl<>>(min_expl(123)) * quantity{min_expl(2)} == length<metre, min_expl<>>(min_expl(246)));
+static_assert(min_expl(2) * length<metre, min_expl<>>(min_expl(123)) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(quantity{min_expl(2)} * length<metre, min_expl<>>(min_expl(123)) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / min_expl(2) == length<metre, min_expl<>>(min_expl(123)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / quantity{min_expl(2)} == length<metre, min_expl<>>(min_expl(123)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) == quantity{min_expl(123)});
+static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) == min_expl(123));
 
 }  // namespace
