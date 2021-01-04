@@ -32,15 +32,24 @@ using namespace units::physical::si::literals;
 using namespace std::chrono_literals;
 
 
-// construction
+// construction - same rep type
 static_assert(std::constructible_from<si::time<si::second, std::chrono::seconds::rep>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second, std::chrono::seconds::rep>>);
 static_assert(std::constructible_from<si::time<si::hour, std::chrono::hours::rep>, std::chrono::hours>);
 static_assert(!std::convertible_to<std::chrono::hours, si::time<si::hour, std::chrono::hours::rep>>);
-static_assert(!std::constructible_from<si::time<si::second, std::chrono::hours::rep>, std::chrono::hours>);
+static_assert(std::constructible_from<si::time<si::second, std::chrono::hours::rep>, std::chrono::hours>);
 static_assert(!std::convertible_to<std::chrono::hours, si::time<si::second, std::chrono::hours::rep>>);
 static_assert(!std::constructible_from<si::time<si::hour, std::chrono::seconds::rep>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::hour, std::chrono::seconds::rep>>);
+
+// construction - different rep type (integral to a floating-point)
+static_assert(std::constructible_from<si::time<si::second>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::second>>);
+static_assert(std::constructible_from<si::time<si::second>, std::chrono::hours>);
+static_assert(!std::convertible_to<std::chrono::hours, si::time<si::second>>);
+static_assert(std::constructible_from<si::time<si::hour>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, si::time<si::hour>>);
+
 
 // CTAD
 static_assert(is_same_v<decltype(quantity{1s}), si::time<si::second, std::chrono::seconds::rep>>);

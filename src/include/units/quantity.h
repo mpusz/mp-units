@@ -136,12 +136,12 @@ public:
   explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
   constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
 
-  template<QuantityLike Q>
-    requires std::same_as<quantity, quantity_like_type<Q>>
-  explicit constexpr quantity(const Q& q) : value_(q.count()) {}
-
   template<safe_castable_to_<quantity> Q>
   constexpr quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
+
+  template<QuantityLike Q>
+    requires safe_castable_to_<quantity_like_type<Q>, quantity>
+  explicit constexpr quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::count(q))) {}
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
