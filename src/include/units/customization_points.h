@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <limits>
 #include <type_traits>
 
@@ -54,10 +55,21 @@ inline constexpr bool treat_as_floating_point<T> = treat_as_floating_point<typen
  */
 template<typename Rep>
 struct quantity_values {
-  static constexpr Rep zero() noexcept { return Rep(0); }
-  static constexpr Rep one() noexcept { return Rep(1); }
-  static constexpr Rep min() noexcept { return std::numeric_limits<Rep>::lowest(); }
-  static constexpr Rep max() noexcept { return std::numeric_limits<Rep>::max(); }
+  static constexpr Rep zero() noexcept
+    requires std::constructible_from<Rep, int>
+  { return Rep(0); }
+
+  static constexpr Rep one() noexcept
+    requires std::constructible_from<Rep, int>
+  { return Rep(1); }
+
+  static constexpr Rep min() noexcept
+    requires requires { { std::numeric_limits<Rep>::lowest() } -> std::same_as<Rep>; }
+  { return std::numeric_limits<Rep>::lowest(); }
+
+  static constexpr Rep max() noexcept
+    requires requires { { std::numeric_limits<Rep>::max() } -> std::same_as<Rep>; }
+  { return std::numeric_limits<Rep>::max(); }
 };
 
 /**
