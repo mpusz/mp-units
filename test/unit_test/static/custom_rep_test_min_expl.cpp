@@ -133,6 +133,12 @@ static_assert(!std::convertible_to<min_expl<>, length<metre, int>>);
 static_assert(!std::constructible_from<length<metre, int>, length<metre, min_expl<>>>);
 static_assert(!std::convertible_to<length<metre, min_expl<>>, length<metre, int>>);
 
+static_assert(!std::constructible_from<length<metre, min_expl<>>, dimensionless<one>>);
+static_assert(!std::convertible_to<dimensionless<one>, length<metre, min_expl<>>>);
+
+static_assert(!std::constructible_from<length<metre, int>, dimensionless<one, min_expl<>>>);
+static_assert(!std::convertible_to<dimensionless<one, min_expl<>>, length<metre, int>>);
+
 // all operations needed to satisfy concept
 static_assert(QuantityValue<min_expl<>>);
 static_assert(!QuantityValue<min_expl<1>>);
