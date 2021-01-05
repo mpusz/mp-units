@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <gsl/gsl_assert>
+#include <gsl/gsl-lite.hpp>
 #include <units/bits/math_concepts.h>
 #include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
@@ -65,7 +65,7 @@ struct decimal_fp {
  */
 [[nodiscard]] constexpr double constexpr_log(double v) noexcept
 {
-  Expects(v > 0);
+  gsl_Expects(v > 0);
 
   // lookup table to speed up convergence for all significant values
   // significant values of 7 and greater benefit mostly as they now converge in 5 terms compared to O(10)-O(100)

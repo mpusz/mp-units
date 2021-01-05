@@ -18,7 +18,7 @@ This repository contains three independent CMake-based projects:
     but until then it depends on:
 
     - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
-    - `ms-gsl <https://github.com/microsoft/GSL>`_ to verify runtime contracts with ``Expects`` macro.
+    - `gsl-lite <https://github.com/gsl-lite/gsl-lite>`_ to verify runtime contracts with ``Expects`` macro.
 
 - *.*
 

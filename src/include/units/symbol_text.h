@@ -24,14 +24,14 @@
 
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
-#include <gsl/gsl_assert>
+#include <gsl/gsl-lite.hpp>
 #include <compare>
 
 namespace units {
 
 namespace detail {
 
-constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { Expects((c & 0x80) == 0); }
+constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { gsl_Expects((c & 0x80) == 0); }
 
 template<std::size_t N>
 constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) noexcept

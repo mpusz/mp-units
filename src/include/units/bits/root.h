@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <gsl/gsl_assert>
+#include <gsl/gsl-lite.hpp>
 #include <units/bits/constexpr_math.h>
 #include <units/bits/math_concepts.h>
 #include <units/bits/pow.h>
@@ -38,7 +38,7 @@ template<std::intmax_t N, typename F>
   if constexpr (N == 1) {
     return v;
   } else {
-    Expects(v >= 0);
+    gsl_Expects(v >= 0);
     if (v == 0) {
       return 0;
     }

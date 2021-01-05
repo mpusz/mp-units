@@ -270,7 +270,7 @@ public:
           invoke_result_convertible_to_<rep, std::divides<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
-    // Expects(v != zero().count());
+    gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     using ret = quantity<D, U, std::invoke_result_t<std::divides<>, rep, Value>>;
     return ret(q.count() / v);
   }
@@ -280,7 +280,7 @@ public:
           invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    // Expects(q.count() != zero().count());
+    gsl_ExpectsAudit(q.count() != quantity_values<rep>::zero());
     using dim = dim_invert<D>;
     using ret_unit = downcast_unit<dim, inverse(U::ratio)>;
     using ret = quantity<dim, ret_unit, std::invoke_result_t<std::divides<>, Value, rep>>;
@@ -354,7 +354,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   requires quantity_value_for_<std::divides<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
 {
-  // Expects(rhs.count() != zero().count());
+  gsl_ExpectsAudit(rhs.count() != (quantity_values<Rep2>::zero()));
   using dim = dimension_divide<D1, D2>;
   using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
   using ret = quantity<dim, unit, std::invoke_result_t<std::divides<>, Rep1, Rep2>>;

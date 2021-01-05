@@ -28,6 +28,8 @@
 
 namespace units {
 
+struct invalid_one_rep {};
+
 /**
  * @brief A representation type to be used for unit constants
  *
@@ -88,11 +90,22 @@ struct one_rep {
 
   [[nodiscard]] bool operator==(const one_rep&) const = default;
   [[nodiscard]] auto operator<=>(const one_rep&) const = default;
+
+  [[nodiscard]] constexpr bool operator==(const invalid_one_rep&) const { return false; }
+};
+
+template<>
+struct quantity_values<one_rep> {
+  static constexpr invalid_one_rep zero() noexcept { return invalid_one_rep{}; }
+  static constexpr one_rep one() noexcept { return one_rep{}; }
+  static constexpr one_rep min() noexcept { return one(); }
+  static constexpr one_rep max() noexcept { return one(); }
 };
 
 }  // namespace units
 
 namespace std {
+
 template<>
 struct common_type<units::one_rep, units::one_rep> {
   using type = units::one_rep;

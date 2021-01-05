@@ -34,7 +34,7 @@ set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
 
 find_package(fmt CONFIG REQUIRED)
-find_package(Microsoft.GSL CONFIG REQUIRED)
+find_package(gsl-lite CONFIG REQUIRED)
 
 # library definition
 add_library(mp-units INTERFACE)
@@ -42,7 +42,7 @@ target_compile_features(mp-units INTERFACE cxx_std_20)
 target_link_libraries(mp-units
     INTERFACE
         fmt::fmt
-        Microsoft.GSL::GSL
+        gsl::gsl-lite
 )
 target_include_directories(mp-units
     INTERFACE

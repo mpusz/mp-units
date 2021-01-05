@@ -47,7 +47,7 @@ class UnitsConan(ConanFile):
     settings = "compiler", "build_type"
     requires = (
         "fmt/7.0.3",
-        "ms-gsl/3.1.0"
+        "gsl-lite/0.37.0"
     )
     options = {
         "downcast_mode": ["off", "on", "auto"],
@@ -135,7 +135,7 @@ class UnitsConan(ConanFile):
         self.cpp_info.names["cmake_find_package"] = "mp"
         self.cpp_info.names["cmake_find_package_multi"] = "mp"
         self.cpp_info.components["units"].name = "units"
-        self.cpp_info.components["units"].requires = ["fmt::fmt", "ms-gsl::ms-gsl"]
+        self.cpp_info.components["units"].requires = ["fmt::fmt", "gsl::gsl-lite"]
 
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)

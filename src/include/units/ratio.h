@@ -31,7 +31,7 @@
 #include <numeric>
 #include <type_traits>
 #include <tuple>
-#include <gsl/gsl_assert>
+#include <gsl/gsl-lite.hpp>
 
 namespace units {
 
@@ -53,7 +53,7 @@ struct ratio {
 
   explicit constexpr ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
   {
-    Expects(den != 0);
+    gsl_Expects(den != 0);
     detail::normalize(num, den, exp);
   }
 
@@ -92,7 +92,7 @@ namespace detail {
 
 [[nodiscard]] constexpr auto make_exp_align(const ratio& r, std::intmax_t alignment)
 {
-  Expects(alignment > 0);
+  gsl_Expects(alignment > 0);
   const std::intmax_t rem = r.exp % alignment;
 
   if (rem == 0) {  // already aligned

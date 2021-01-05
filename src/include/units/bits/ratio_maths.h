@@ -30,7 +30,7 @@
 #include <numeric>
 #include <tuple>
 #include <type_traits>
-#include <gsl/gsl_assert>
+#include <gsl/gsl-lite.hpp>
 
 namespace units::detail {
 
@@ -183,10 +183,10 @@ constexpr void normalize(std::intmax_t& num, std::intmax_t& den, std::intmax_t& 
   const std::intmax_t b0 = detail::abs(rhs) % c;
   const std::intmax_t b1 = detail::abs(rhs) / c;
 
-  Expects(a1 == 0 || b1 == 0);                               // overflow in multiplication
-  Expects(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
-  Expects(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
-  Expects((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
+  gsl_Expects(a1 == 0 || b1 == 0);                               // overflow in multiplication
+  gsl_Expects(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
+  gsl_Expects(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
+  gsl_Expects((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
 
   return lhs * rhs;
 }
