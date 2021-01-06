@@ -283,6 +283,11 @@ static_assert((2.5_q_m *= 3).count() == 7.5);
 static_assert((7.5_q_m /= 3).count() == 2.5);
 static_assert((3500_q_m %= 1_q_km).count() == 500);
 
+// next two lines trigger the gcc 'Wconversion' warning
+// (warning disabled in CMake for this file)
+static_assert((22_q_m *= 33.33).count() == 733);
+static_assert((22_q_m /= 3.33).count() == 6);
+
 template<typename Metre>
 concept invalid_compound_assignments = requires() {
   // truncating not allowed

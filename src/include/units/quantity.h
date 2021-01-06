@@ -203,15 +203,17 @@ public:
     return *this;
   }
 
-  constexpr quantity& operator*=(const rep& rhs)
-    requires requires(rep a, const rep b) { { a *= b } -> std::same_as<rep&>; }
+  template<typename Rep2>
+  constexpr quantity& operator*=(const Rep2& rhs)
+    requires requires(rep a, const Rep2 b) { { a *= b } -> std::same_as<rep&>; }
   {
     value_ *= rhs;
     return *this;
   }
 
-  constexpr quantity& operator/=(const rep& rhs)
-    requires requires(rep a, const rep b) { { a /= b } -> std::same_as<rep&>; }
+  template<typename Rep2>
+  constexpr quantity& operator/=(const Rep2& rhs)
+    requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
   {
     value_ /= rhs;
     return *this;
