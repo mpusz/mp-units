@@ -283,10 +283,12 @@ static_assert((2.5_q_m *= 3).count() == 7.5);
 static_assert((7.5_q_m /= 3).count() == 2.5);
 static_assert((3500_q_m %= 1_q_km).count() == 500);
 
-// next two lines trigger the gcc 'Wconversion' warning
+#ifndef COMP_MSVC  // TODO ICE (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
+// next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
 static_assert((22_q_m *= 33.33).count() == 733);
 static_assert((22_q_m /= 3.33).count() == 6);
+#endif
 
 template<typename Metre>
 concept invalid_compound_assignments = requires() {
