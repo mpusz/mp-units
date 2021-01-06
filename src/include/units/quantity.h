@@ -356,7 +356,7 @@ template<typename D1, typename U1, typename Rep1, typename D2, typename U2, type
   requires quantity_value_for_<std::divides<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.count() != (quantity_values<Rep2>::zero()));
+  gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
   using dim = dimension_divide<D1, D2>;
   using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
   using ret = quantity<dim, unit, std::invoke_result_t<std::divides<>, Rep1, Rep2>>;
