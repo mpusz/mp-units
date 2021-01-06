@@ -135,7 +135,7 @@ class UnitsConan(ConanFile):
         self.cpp_info.names["cmake_find_package"] = "mp"
         self.cpp_info.names["cmake_find_package_multi"] = "mp"
         self.cpp_info.components["units"].name = "units"
-        self.cpp_info.components["units"].requires = ["fmt::fmt", "gsl::gsl-lite"]
+        self.cpp_info.components["units"].requires = ["fmt::fmt", "gsl-lite::gsl-lite"]
 
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
