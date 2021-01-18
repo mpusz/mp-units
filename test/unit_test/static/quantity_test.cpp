@@ -37,7 +37,11 @@
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+namespace si = physical::si;
+using namespace si;
+using namespace unit_constants;
+
+constexpr auto cgs_cm = cgs::unit_constants::cm;
 
 
 //////////////////////////////
@@ -684,6 +688,8 @@ static_assert(quantity_cast<metre>(2_q_km).count() == 2000);
 static_assert(quantity_cast<kilometre>(2000_q_m).count() == 2);
 static_assert(quantity_cast<int>(1.23_q_m).count() == 1);
 static_assert(quantity_cast<dim_speed, kilometre_per_hour>(2000.0_q_m / 3600.0_q_s).count() == 2);
+
+static_assert(quantity_cast<dim_length>(1 * cgs_cm) == 1 * cm);
 
 static_assert(is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<litre, std::int64_t>>);
 static_assert(!is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<cubic_decimetre, std::int64_t>>);
