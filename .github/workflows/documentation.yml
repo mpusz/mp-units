@@ -79,7 +79,7 @@ jobs:
       - name: Install Conan dependencies
         run: |
           mkdir build && cd build
-          conan install .. -g cmake_paths -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
       - name: Configure CMake
         run: |
           cd build

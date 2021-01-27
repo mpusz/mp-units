@@ -18,7 +18,6 @@
   - fix: ambiguous case for empty type list resolved
   - (!) build: The library should now be linked as `mp::units` in the CMake's `target_link_libraries()`
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
-  - (!) build: `-g cmake_paths` has to be manually provided for `conan install` command (workaround for a Conan bug)
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
   - build: fmt updated to 7.1.3

@@ -331,13 +331,12 @@ in **mp-units** repository, you should:
 The above will download and install all of the dependencies needed for the development of the library,
 build all of the source code and documentation, and run unit tests.
 
-If you prefer to build the project via CMake rather then Conan, then you should add ``-g cmake_paths`` generator
-to ``conan install`` and replace the last ``conan build ..`` step with the CMake build:
+If you prefer to build the project via CMake rather then Conan, then you should replace the last ``conan build ..``
+step with the CMake build:
 
 .. code-block:: shell
 
     # ...
-    conan install .. -g cmake_paths -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
     cmake --build . --config Release
     ctest

@@ -26,7 +26,7 @@ from conan.tools.cmake import CMakeToolchain, CMake
 from conans.errors import ConanInvalidConfiguration
 import re
 
-required_conan_version = ">=1.32.0"
+required_conan_version = ">=1.33.0"
 
 def get_version():
     try:
@@ -65,7 +65,7 @@ class UnitsConan(ConanFile):
     #     "revision": "auto",
     #     "submodule": "recursive"
     # }
-    generators = "cmake_find_package_multi"
+    generators = "cmake_find_package_multi", "cmake_paths"
 
     @property
     def _run_tests(self):
