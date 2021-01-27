@@ -88,7 +88,7 @@ namespace units {
     template <typename CharT>
     struct global_format_specs
     {
-      fmt::detail::fill_t<CharT> fill = fmt::detail::fill_t<CharT>::make();
+      fmt::detail::fill_t<CharT> fill;
       fmt::align_t align = fmt::align_t::none;
       int width = 0;
     };

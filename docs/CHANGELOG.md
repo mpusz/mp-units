@@ -21,6 +21,7 @@
   - (!) build: `-g cmake_paths` has to be manually provided for `conan install` command (workaround for a Conan bug)
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
+  - build: fmt updated to 7.1.3
   - build: Conan generator switched to `cmake_find_package_multi`
   - build: Conan CMakeToolchain support added
   - build: CMake scripts cleanup

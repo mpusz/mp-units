@@ -46,7 +46,7 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     settings = "compiler", "build_type"
     requires = (
-        "fmt/7.0.3",
+        "fmt/7.1.3",
         "gsl-lite/0.37.0"
     )
     options = {
