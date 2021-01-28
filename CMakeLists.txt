@@ -38,7 +38,7 @@ add_subdirectory(src)
 
 # set restrictive compilation warnings
 include(warnings)
-set_warnings(mp-units)
+set_warnings(mp-units INTERFACE)
 
 # add usage example
 add_subdirectory(example)

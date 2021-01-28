@@ -25,11 +25,15 @@
 cmake_minimum_required(VERSION 3.2)
 
 # Configure compiler warning level
-function(set_warnings target)
+function(set_warnings target scope)
     option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" TRUE)
 
     if(NOT TARGET ${target})
         message(FATAL_ERROR "'${target}' is not a CMake target")
+    endif()
+
+    if(NOT (scope STREQUAL "PRIVATE" OR scope STREQUAL "PUBLIC" OR scope STREQUAL "INTERFACE"))
+        message(FATAL_ERROR "'${scope}' is not one of (PRIVATE, PUBLIC, INTERFACE)")
     endif()
 
     set(MSVC_WARNINGS
@@ -101,11 +105,11 @@ function(set_warnings target)
     if(MSVC)
         string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
-        target_compile_options(${target} INTERFACE ${MSVC_WARNINGS})
+        target_compile_options(${target} ${scope} ${MSVC_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-        target_compile_options(${target} INTERFACE ${CLANG_WARNINGS})
+        target_compile_options(${target} ${scope} ${CLANG_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_compile_options(${target} INTERFACE ${GCC_WARNINGS})
+        target_compile_options(${target} ${scope} ${GCC_WARNINGS})
     else()
         message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
     endif()
