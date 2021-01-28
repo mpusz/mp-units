@@ -22,7 +22,7 @@
 
 from conans import ConanFile, tools
 from conans.tools import Version, check_min_cppstd
-from conan.tools.cmake import CMakeToolchain, CMake
+from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps
 from conans.errors import ConanInvalidConfiguration
 import re
 
@@ -65,7 +65,7 @@ class UnitsConan(ConanFile):
     #     "revision": "auto",
     #     "submodule": "recursive"
     # }
-    generators = "cmake_find_package_multi", "cmake_paths"
+    generators = "cmake_paths"
 
     @property
     def _run_tests(self):
@@ -114,6 +114,8 @@ class UnitsConan(ConanFile):
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
         tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
         tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = self._configure_cmake()
