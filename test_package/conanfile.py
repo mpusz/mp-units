@@ -20,12 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake, tools, RunEnvironment
+from conans import ConanFile, tools, RunEnvironment
+from conan.tools.cmake import CMakeToolchain, CMake
 
 class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package_multi"
     
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+
     def build(self):
         cmake = CMake(self)
         cmake.configure()
