@@ -51,5 +51,3 @@ target_link_libraries(unit_tests_static
     PRIVATE
         mp::units
 )
-
-set_source_files_properties(quantity_test.cpp PROPERTIES COMPILE_OPTIONS $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4244,-Wno-conversion>)

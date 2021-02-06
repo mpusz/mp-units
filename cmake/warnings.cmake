@@ -67,6 +67,7 @@ function(set_warnings target scope)
         /w14928 # illegal copy-initialization; more than one user-defined
                 # conversion has been implicitly applied
         /permissive- # standards conformance mode for MSVC compiler.
+        /wd4244 #
     )
 
     set(CLANG_WARNINGS
@@ -82,8 +83,8 @@ function(set_warnings target scope)
         -Wunused # warn on anything being unused
         -Woverloaded-virtual # warn if you overload (not override) a virtual function
         -Wcast-qual # warn on dropping const or volatile qualifiers
-        -Wconversion # warn on type conversions that may lose data
-        -Wsign-conversion # warn on sign conversions
+    #   -Wconversion # warn on type conversions that may lose data
+    #   -Wsign-conversion # warn on sign conversions
         -Wnull-dereference # warn if a null dereference is detected
         -Wdouble-promotion # warn if float is implicit promoted to double
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
