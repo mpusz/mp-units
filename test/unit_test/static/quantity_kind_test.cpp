@@ -386,10 +386,17 @@ static_assert([]() {
   w = width<metre, int>(3 * m);
   assert(&(w *= 3.9) == &w && w.common() == 11 * m);
   assert(&(w /= 3.9) == &w && w.common() == 2 * m);
-  assert(&(w %= 3.9) == &w && w.common() == 2 * m);
   return true;
 }());
 #endif
+
+static_assert((std::uint8_t(255) * m %= 256) == (width<metre, std::uint8_t>(255 * m) %= 256).common());
+// static_assert((std::uint8_t(255) * m %= 256 * m) !=
+//   (width<metre, std::uint8_t>(255 * m) %= width<metre, std::uint8_t>(256 * m)).common());  // UB
+static_assert((std::uint8_t(255) * m %= 257) == (width<metre, std::uint8_t>(255 * m) %= 257).common());
+// TODO: Fix
+static_assert((std::uint8_t(255) * m %= 257 * m) ==
+  (width<metre, std::uint8_t>(255 * m) %= width<metre, std::uint8_t>(257 * m)).common());
 
 static_assert(same((-width<metre, short>(short{1} * m)).common(), int{-1} * m));
 
@@ -405,6 +412,7 @@ template<typename Width>
 concept invalid_compound_assignments = requires(quantity_kind<Width, metre, int> w) {
   requires !requires { w += 1; };
   requires !requires { w -= 1; };
+  requires !requires { w %= 1.0; };
   requires !requires { w %= w * 1.0; };
   requires invalid_compound_assignments_<Width, metre, length<metre, int>>;
   requires invalid_compound_assignments_<Width, metre, height<metre, int>>;
@@ -428,6 +436,15 @@ static_assert(same(width<metre, int>(2 * m) - width<metre, int>(3 * m), width<me
 static_assert(same(width<metre, int>(2 * m) - width<metre, double>(3. * m), width<metre, double>(-1. * m)));
 static_assert(same(width<metre, double>(2. * m) - width<metre, int>(3 * m), width<metre, double>(-1. * m)));
 static_assert(same(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
+
+static_assert(is_same_v<
+  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().count()), int>);
+static_assert(is_same_v<
+  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().count()), int>);
+static_assert((width<metre, std::uint8_t>(128 * m) + width<metre, std::uint8_t>(128 * m)).common().count() ==
+  std::uint8_t(128) + std::uint8_t(128));
+static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 * m)).common().count() ==
+  std::uint8_t(0) - std::uint8_t(1));
 
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, double>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, length<metre>>);
@@ -492,6 +509,10 @@ static_assert(same(((2 * m) / height<metre, int>(3 * m) * (0 * m)), height<metre
 
 static_assert(same(width<metre, int>(2 * m) % 3, width<metre, int>(2 * m)));
 static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<metre, int>(1 * m)));
+
+static_assert(is_same_v<
+  decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().count()),
+  decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
 static_assert(!std::is_invocable_v<std::multiplies<>, width<metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, width<metre>, height<metre>>);

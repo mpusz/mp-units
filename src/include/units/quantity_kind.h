@@ -189,8 +189,9 @@ public:
     return *this;
   }
 
-  constexpr quantity_kind& operator%=(const rep& rhs)
-    requires requires(quantity_type q) { q %= rhs; }
+  template<typename Rep2>
+  constexpr quantity_kind& operator%=(const Rep2& rhs)
+    requires (!Quantity<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
   {
     q_ %= rhs;
     return *this;
@@ -205,18 +206,6 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-  [[nodiscard]] friend constexpr quantity_kind operator+(const quantity_kind& lhs, const quantity_kind& rhs)
-    requires requires { lhs.common() + rhs.common(); }
-  {
-    return quantity_kind(lhs.common() + rhs.common());
-  }
-
-  [[nodiscard]] friend constexpr quantity_kind operator-(const quantity_kind& lhs, const quantity_kind& rhs)
-    requires requires { lhs.common() - rhs.common(); }
-  {
-    return quantity_kind(lhs.common() - rhs.common());
-  }
-
   template<QuantityValue Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const quantity_kind& qk, const Value& v)
     requires requires { { qk.common() * v } -> Quantity; }
@@ -250,12 +239,6 @@ public:
     requires requires { qk.common() % v; }
   {
     return detail::make_quantity_kind<quantity_kind>(qk.common() % v);
-  }
-
-  [[nodiscard]] friend constexpr quantity_kind operator%(const quantity_kind& lhs, const quantity_kind& rhs)
-    requires requires { lhs.common() % rhs.common(); }
-  {
-    return quantity_kind(lhs.common() % rhs.common());
   }
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_kind& lhs, const quantity_kind& rhs)

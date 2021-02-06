@@ -43,15 +43,22 @@ using namespace units::physical::si::unit_constants;
 
 static_assert(2 * m == 2_q_m);
 static_assert(2 * s == 2_q_s);
-#if !defined(COMP_MSVC) || defined(NDEBUG)
-static_assert([]<auto& s = ::s>() {
-  assert(!requires { s / 2; });
-  assert(!requires { s * 2; });
-  assert(!requires { s + 2; });
-  assert(!requires { s + s; });
-  return 1_q_s + s == 2_q_s;
-}());
-#endif
+template<auto& s>
+concept invalid_operations = requires {
+  requires !requires { s / 2; };
+  requires !requires { s * 2; };
+  requires !requires { s + 2; };
+  requires !requires { 2 + s; };
+  requires !requires { s + s; };
+  requires !requires { s - 2; };
+  requires !requires { 2 - s; };
+  requires !requires { s - s; };
+  requires !requires { s + 1_q_s; };
+  requires !requires { s - 1_q_s; };
+  requires !requires { 1_q_s + s; };
+  requires !requires { 1_q_s - s; };
+};
+static_assert(invalid_operations<s>);
 
 constexpr auto m_per_s = m / s;
 

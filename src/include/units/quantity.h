@@ -150,10 +150,11 @@ public:
   [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 
   // member unary operators
-  [[nodiscard]] constexpr quantity operator+() const
-    requires requires(rep v) { { +v } -> std::same_as<rep>; }
+  [[nodiscard]] constexpr Quantity auto operator+() const
+    requires requires(rep v) { { +v } -> std::common_with<rep>; }
   {
-    return *this;
+    using ret = quantity<D, U, decltype(+count())>;
+    return ret(+count());
   }
 
   [[nodiscard]] constexpr Quantity auto operator-() const
@@ -233,9 +234,10 @@ public:
     return *this;
   }
 
-  constexpr quantity& operator%=(const rep& rhs)
-    requires (!floating_point_<rep>) &&
-             requires(rep a, const rep b) { { a %= b } -> std::same_as<rep&>; }
+  template<typename Rep2>
+  constexpr quantity& operator%=(const Rep2& rhs)
+    requires (!floating_point_<rep>) && (!floating_point_<Rep2>) &&
+             requires(rep a, const Rep2 b) { { a %= b } -> std::same_as<rep&>; }
   {
     value_ %= rhs;
     return *this;
@@ -251,16 +253,34 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-  [[nodiscard]] friend constexpr quantity operator+(const quantity& lhs, const quantity& rhs)
-    requires invoke_result_convertible_to_<rep, std::plus<>, rep, rep>
+  template<typename Value>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
+    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
+          invoke_result_convertible_to_<rep, std::plus<>, rep, Value>
   {
-    return quantity(lhs.count() + rhs.count());
+    return units::quantity(lhs.count() + rhs);
+  }
+  template<typename Value>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
+    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
+          invoke_result_convertible_to_<rep, std::plus<>, Value, rep>
+  {
+    return units::quantity(lhs + rhs.count());
   }
 
-  [[nodiscard]] friend constexpr quantity operator-(const quantity& lhs, const quantity& rhs)
-    requires invoke_result_convertible_to_<rep, std::minus<>, rep, rep>
+  template<typename Value>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const Value& rhs)
+    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
+          invoke_result_convertible_to_<rep, std::minus<>, rep, Value>
   {
-    return quantity(lhs.count() - rhs.count());
+    return units::quantity(lhs.count() - rhs);
+  }
+  template<typename Value>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
+    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
+          invoke_result_convertible_to_<rep, std::minus<>, Value, rep>
+  {
+    return units::quantity(lhs - rhs.count());
   }
 
   template<typename Value>
@@ -312,11 +332,11 @@ public:
     return ret(q.count() % v);
   }
 
-  [[nodiscard]] friend constexpr quantity operator%(const quantity& lhs, const quantity& rhs)
-    requires (!floating_point_<rep>) &&
+  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity& rhs)
+    requires (!floating_point_<rep>) && is_same_v<unit, units::one> &&
             invoke_result_convertible_to_<rep, std::modulus<>, rep, rep>
   {
-    return quantity(lhs.count() % rhs.count());
+    return units::quantity(lhs.count() % rhs.count());
   }
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)

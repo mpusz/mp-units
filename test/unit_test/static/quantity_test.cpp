@@ -30,6 +30,7 @@
 #include "units/physical/si/fps/derived/speed.h"
 #include <chrono>
 #include <complex>
+#include <cstdint>
 #include <mutex>
 #include <string>
 #include <utility>
@@ -265,6 +266,8 @@ static_assert([](auto v) { auto vv = ++v; return std::pair(v, vv); }(123_q_m) ==
 static_assert([](auto v) { auto vv = v--; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 123_q_m));
 static_assert([](auto v) { auto vv = --v; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 122_q_m));
 
+static_assert(is_same_v<decltype((+(short{0} * m)).count()), int>);
+
 
 ////////////////////////
 // compound assignment
@@ -290,6 +293,12 @@ static_assert((7.5_q_m /= 3).count() == 2.5);
 static_assert((2.5_q_m *= quantity(3)).count() == 7.5);
 static_assert((7.5_q_m /= quantity(3)).count() == 2.5);
 static_assert((3500_q_m %= 1_q_km).count() == 500);
+
+static_assert((std::uint8_t(255) * m %= 256).count() == [] { std::uint8_t ui(255); return ui %= 256; }());
+// static_assert((std::uint8_t(255) * m %= 256 * m).count() != [] { std::uint8_t ui(255); return ui %= 256; }());  // UB
+static_assert((std::uint8_t(255) * m %= 257).count() == [] { std::uint8_t ui(255); return ui %= 257; }());
+// TODO: Fix
+static_assert((std::uint8_t(255) * m %= 257 * m).count() != [] { std::uint8_t ui(255); return ui %= 257; }());
 
 #ifndef COMP_MSVC  // TODO ICE (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
 // next two lines trigger conversions warnings
@@ -368,6 +377,14 @@ static_assert(compare<decltype(1_q_m / 1_q_m), dimensionless<one, std::int64_t>>
 static_assert(compare<decltype(1 / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(quantity{1} / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1_q_s), frequency<scaled_unit<ratio(1, 100), hertz>, std::int64_t>>);
+
+static_assert(is_same_v<decltype((std::uint8_t(0) * m + std::uint8_t(0) * m).count()), int>);
+static_assert(is_same_v<decltype((std::uint8_t(0) * m - std::uint8_t(0) * m).count()), int>);
+static_assert((std::uint8_t(128) * m + std::uint8_t(128) * m).count() == std::uint8_t(128) + std::uint8_t(128));
+static_assert((std::uint8_t(0) * m - std::uint8_t(1) * m).count() == std::uint8_t(0) - std::uint8_t(1));
+
+static_assert(is_same_v<decltype(((std::uint8_t(0) * m) % (std::uint8_t(0) * m)).count()),
+                        decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
 // different representation types
 static_assert(is_same_v<decltype(1_q_m + 1._q_m), length<metre, long double>>);
@@ -536,6 +553,24 @@ static_assert(quantity{4} % quantity{2} == 0);
 static_assert(4 % quantity{2} == 0);
 static_assert(quantity{4} % 2 == 0);
 
+static_assert(is_same_v<decltype(quantity(0) + 0.0), decltype(quantity(0.0))>);
+static_assert(is_same_v<decltype(quantity(0) - 0.0), decltype(quantity(0.0))>);
+static_assert(is_same_v<decltype(0.0 + quantity(0)), decltype(quantity(0.0))>);
+static_assert(is_same_v<decltype(0.0 + quantity(0)), decltype(quantity(0.0))>);
+static_assert(quantity(1) + 2.3 == quantity(1 + 2.3));
+static_assert(quantity(1) - 2.3 == quantity(1 - 2.3));
+static_assert(1.2 + quantity(3) == quantity(1.2 + 3));
+static_assert(1.2 - quantity(3) == quantity(1.2 - 3));
+
+static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} + quantity{std::uint8_t(0)}).count()), int>);
+static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} - quantity{std::uint8_t(0)}).count()), int>);
+static_assert((quantity{std::uint8_t(128)} + quantity{std::uint8_t(128)}).count() ==
+              std::uint8_t(128) + std::uint8_t(128));
+static_assert((quantity{std::uint8_t(0)} - quantity{std::uint8_t(1)}).count() == std::uint8_t(0) - std::uint8_t(1));
+
+static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} % quantity{std::uint8_t(0)}).count()),
+                        decltype(std::uint8_t(0) % std::uint8_t(0))>);
+
 
 ///////////////////////
 // equality operators
@@ -655,8 +690,6 @@ static_assert(!std::equality_comparable_with<dimensionless<one, int>, double>);
 
 template<typename Int>
 concept invalid_dimensionless_operations = requires {
-  requires !requires(dimensionless<one, Int> d) { d + 1.23; };
-  requires !requires(dimensionless<one, Int> d) { 1.23 + d; };
   requires !requires(dimensionless<percent, Int> d) { 1 + d; };
   requires !requires(dimensionless<percent, Int> d) { d + 1; };
 };
