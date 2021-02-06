@@ -134,7 +134,7 @@ public:
 
   template<safe_convertible_to_<rep> Value>
   explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
-  constexpr quantity(const Value& v) : value_(static_cast<rep>(v)) {}
+  constexpr quantity(const Value& v) : value_(v) {}
 
   template<safe_castable_to_<quantity> Q>
   constexpr quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
