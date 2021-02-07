@@ -275,6 +275,8 @@ static_assert((1_q_m += 1_q_m).count() == 2);
 static_assert((2_q_m -= 1_q_m).count() == 1);
 static_assert((1_q_m *= 2).count() == 2);
 static_assert((2_q_m /= 2).count() == 1);
+static_assert((1_q_m *= quantity(2)).count() == 2);
+static_assert((2_q_m /= quantity(2)).count() == 1);
 static_assert((7_q_m %= 2).count() == 1);
 static_assert((7_q_m %= 2_q_m).count() == 1);
 
@@ -285,6 +287,8 @@ static_assert((5.5_q_m -= 3_q_m).count() == 2.5);
 static_assert((1123_q_m -= 1_q_km).count() == 123);
 static_assert((2.5_q_m *= 3).count() == 7.5);
 static_assert((7.5_q_m /= 3).count() == 2.5);
+static_assert((2.5_q_m *= quantity(3)).count() == 7.5);
+static_assert((7.5_q_m /= quantity(3)).count() == 2.5);
 static_assert((3500_q_m %= 1_q_km).count() == 500);
 
 #ifndef COMP_MSVC  // TODO ICE (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
@@ -292,6 +296,8 @@ static_assert((3500_q_m %= 1_q_km).count() == 500);
 // (warning disabled in CMake for this file)
 static_assert((22_q_m *= 33.33).count() == 733);
 static_assert((22_q_m /= 3.33).count() == 6);
+static_assert((22_q_m *= quantity(33.33)).count() == 733);
+static_assert((22_q_m /= quantity(3.33)).count() == 6);
 #endif
 
 template<typename Metre>
@@ -512,6 +518,8 @@ static_assert((10_q_s * 2_q_kHz).count() == 20);
 
 // dimensionless
 
+static_assert((quantity{3} *= quantity{2}) == 6);
+static_assert((quantity{6} /= quantity{2}) == 3);
 static_assert(quantity{1} + quantity{1} == 2);
 static_assert(1 + quantity{1} == 2);
 static_assert(quantity{1} + 1 == 2);
