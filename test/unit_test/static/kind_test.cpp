@@ -33,7 +33,7 @@ using namespace physical::si;
 namespace {
 
 template<Downcastable T>
-using downcast_result = std::conditional_t<UNITS_DOWNCAST_MODE, T, units::downcast_base_t<T>>;
+using downcast_result = std::conditional_t<UNITS_DOWNCAST_MODE != 0, T, units::downcast_base_t<T>>;
 
 
 // no library-defined base kind
