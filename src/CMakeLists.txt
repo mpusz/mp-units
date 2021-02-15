@@ -87,12 +87,10 @@ write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameM
 include(GNUInstallDirs)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
 install(EXPORT mp-unitsTargets
-    NAMESPACE mp::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+    NAMESPACE mp-units::
 )
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )
-install(DIRECTORY include/units
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+install(DIRECTORY include/units TYPE INCLUDE)
