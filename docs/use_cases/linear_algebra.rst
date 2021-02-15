@@ -36,7 +36,7 @@ allowed by the Linear Algebra rules. For example::
 
     std::cout << "v + u     = " << v + u << "\n";
     std::cout << "v + t     = " << v + t << "\n";
-    std::cout << "t[m]      = " << vector<si::length<si::metre>>(t) << "\n";
+    std::cout << "t[m]      = " << fs_vector<si::length<si::metre>, 3>(t) << "\n";
     std::cout << "v * u     = " << v * u << "\n";
     std::cout << "2_q_m * v = " << 2_q_m * v << "\n";
 
