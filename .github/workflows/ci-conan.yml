@@ -32,7 +32,7 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
+    name: ${{ matrix.config.name }} ${{ matrix.build_type }} [downcast=${{ matrix.downcast_mode }}]
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -60,7 +60,8 @@ jobs:
         #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
         #     docker_image: conanio/gcc10
         #   }
-        build_type: [ "Release", "Debug" ]
+        build_type: [ "Release", "Debug" ],
+        downcast_mode: [ "on", "auto" ]
     steps:
       - uses: actions/checkout@v2
       - name: Install Ninja
@@ -99,7 +100,7 @@ jobs:
         shell: bash
         env:
           CONAN_USERNAME: mpusz
-          CONAN_OPTIONS: mp-units:build_docs=False
+          CONAN_OPTIONS: mp-units:build_docs=False,mp-units:downcast_mode=${{ matrix.downcast_mode }}
           CONAN_UPLOAD: https://api.bintray.com/conan/mpusz/conan-mpusz
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
