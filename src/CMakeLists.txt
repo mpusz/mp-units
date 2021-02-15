@@ -78,8 +78,7 @@ if(DEFINED UNITS_DOWNCAST_MODE)
     endif()
 endif()
 
-add_library(mp::units ALIAS mp-units)
-set_target_properties(mp-units PROPERTIES EXPORT_NAME units)
+add_library(mp-units::mp-units ALIAS mp-units)
 
 # installation info
 include(CMakePackageConfigHelpers)

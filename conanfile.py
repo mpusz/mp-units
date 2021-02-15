@@ -67,19 +67,22 @@ class UnitsConan(ConanFile):
     # }
     generators = "cmake_paths"
 
+    _cmake = None
+
     @property
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
     def _configure_cmake(self):
-        cmake = CMake(self)
-        if self._run_tests:
-            # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
-            cmake.configure()
-        else:
-            # consumer's mode (library sources only)
-            cmake.configure(source_folder="src")
-        return cmake
+        if not self._cmake:
+            self._cmake = CMake(self)
+            if self._run_tests:
+                # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
+                self._cmake.configure()
+            else:
+                # consumer's mode (library sources only)
+                self._cmake.configure(source_folder="src")
+        return self._cmake
 
     def validate(self):
         compiler = self.settings.compiler
@@ -132,20 +135,8 @@ class UnitsConan(ConanFile):
         self.info.header_only()
 
     def package_info(self):
-        self.cpp_info.filenames["cmake_find_package"] = "mp-units"
-        self.cpp_info.filenames["cmake_find_package_multi"] = "mp-units"
-        self.cpp_info.names["cmake_find_package"] = "mp"
-        self.cpp_info.names["cmake_find_package_multi"] = "mp"
-        self.cpp_info.components["units"].name = "units"
-        self.cpp_info.components["units"].requires = ["fmt::fmt", "gsl-lite::gsl-lite"]
-
         compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
         if compiler == "gcc":
-            self.cpp_info.components["units"].cxxflags = [
-                "-Wno-non-template-friend"
-            ]
+            self.cpp_info.cxxflags = ["-Wno-non-template-friend"]
         elif compiler == "Visual Studio":
-            self.cpp_info.components["units"].cxxflags = [
-                "/utf-8"
-            ]
+            self.cpp_info.cxxflags = ["/utf-8"]

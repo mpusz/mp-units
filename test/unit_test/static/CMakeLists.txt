@@ -49,5 +49,5 @@ add_library(unit_tests_static
 )
 target_link_libraries(unit_tests_static
     PRIVATE
-        mp::units
+        mp-units::mp-units
 )
