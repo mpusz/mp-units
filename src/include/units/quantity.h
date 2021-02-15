@@ -210,12 +210,26 @@ public:
     value_ *= rhs;
     return *this;
   }
+  template<typename Rep2>
+  constexpr quantity& operator*=(const dimensionless<units::one, Rep2>& rhs)
+    requires requires(rep a, const Rep2 b) { { a *= b } -> std::same_as<rep&>; }
+  {
+    value_ *= rhs.count();
+    return *this;
+  }
 
   template<typename Rep2>
   constexpr quantity& operator/=(const Rep2& rhs)
     requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
   {
     value_ /= rhs;
+    return *this;
+  }
+  template<typename Rep2>
+  constexpr quantity& operator/=(const dimensionless<units::one, Rep2>& rhs)
+    requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
+  {
+    value_ /= rhs.count();
     return *this;
   }
 
