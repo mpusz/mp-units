@@ -30,9 +30,9 @@
 
 namespace units::physical::si {
 
-struct newton_metre : named_unit<newton_metre, "Nm", prefix> {};
+struct newton_metre_per_radian : unit<newton_metre_per_radian> {};
 
-struct dim_torque : physical::dim_torque<dim_torque, newton_metre, dim_energy, dim_angle<>> {};
+struct dim_torque : physical::dim_torque<dim_torque, newton_metre_per_radian, dim_force, dim_length, dim_angle<>> {};
 
 template<UnitOf<dim_torque> U, QuantityValue Rep = double>
 using torque = quantity<dim_torque, U, Rep>;
@@ -40,14 +40,14 @@ using torque = quantity<dim_torque, U, Rep>;
 inline namespace literals {
 
 // Nm
-constexpr auto operator"" _q_Nm(unsigned long long l) { return torque<newton_metre, std::int64_t>(l); }
-constexpr auto operator"" _q_Nm(long double l) { return torque<newton_metre, long double>(l); }
+constexpr auto operator"" _q_Nm_per_rad(unsigned long long l) { return torque<newton_metre_per_radian, std::int64_t>(l); }
+constexpr auto operator"" _q_Nm_per_rad(long double l) { return torque<newton_metre_per_radian, long double>(l); }
 
 }  // namespace literals
 
 namespace unit_constants {
 
-inline constexpr auto Nm = torque<newton_metre, one_rep>{};
+inline constexpr auto Nm_per_rad = torque<newton_metre_per_radian, one_rep>{};
 
 }  // namespace unit_constants
 

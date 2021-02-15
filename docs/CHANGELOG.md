@@ -14,6 +14,7 @@
   - perf: temporary string creation removed from `quantity::op<<()`
   - perf: limited the C++ Standard Library headers usage
   - (!) fix: `exp()` has sense only for dimensionless quantities
+  - (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) + default unit name change
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
   - (!) build: The library should now be linked as `mp::units` in the CMake's `target_link_libraries()`

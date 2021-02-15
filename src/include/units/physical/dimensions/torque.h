@@ -28,8 +28,8 @@
 
 namespace units::physical {
 
-template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_angle> A>
-struct dim_torque : derived_dimension<Child, U, exponent<E, 1>, exponent<A, 1>> {};
+template<typename Child, Unit U, DimensionOfT<dim_force> F, DimensionOfT<dim_length> L, DimensionOfT<dim_angle> A>
+struct dim_torque : derived_dimension<Child, U, exponent<F, 1>, exponent<L, 1>, exponent<A, -1>> {};
 
 template<typename T>
 concept Torque = QuantityOfT<T, dim_torque>;

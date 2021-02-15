@@ -305,6 +305,11 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1_q_J_per_mol) == "1 J/mol");
   }
 
+  SECTION("torque")
+  {
+    CHECK(fmt::format("{}", 1_q_Nm_per_rad) == "1 N ⋅ m/rad");
+  }
+
   SECTION("incoherent units with powers")
   {
     CHECK(fmt::format("{}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
