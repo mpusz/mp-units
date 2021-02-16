@@ -295,6 +295,13 @@ template<Quantity Q, QuantityKind QK>
   return detail::downcasted_kind<QK>(lhs / rhs.common());
 }
 
+template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
+[[nodiscard]] constexpr Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
+  requires requires { lhs.common() / rhs.common(); }
+{
+  return lhs.common() / rhs.common();
+}
+
 template<QuantityKind QK, Dimensionless D>
 [[nodiscard]] constexpr QuantityKind auto operator%(const QK& lhs, const D& rhs)
   requires requires { lhs.common() % rhs; }

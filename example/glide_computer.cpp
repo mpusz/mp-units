@@ -101,7 +101,7 @@ using namespace si::unit_constants;
 
 template<QuantityKind QK1, QuantityKind QK2>
 constexpr Quantity auto operator/(const QK1& lhs, const QK2& rhs)
-  requires requires { lhs.common() / rhs.common(); } {
+  requires (!QuantityKindEquivalentTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); } {
   return lhs.common() / rhs.common();
 }
 

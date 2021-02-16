@@ -507,6 +507,10 @@ static_assert(same(((2 * m) / height<metre, double>(3. * m)).common(), quantity(
 static_assert(same(((2. * m) / height<metre, int>(3 * m)).common(), quantity(2. / 3)));
 static_assert(same(((2 * m) / height<metre, int>(3 * m) * (0 * m)), height<metre, int>(0 * m)));
 
+static_assert(same(width<metre, int>(8 * m) / width<metre, int>(2 * m), quantity{4}));
+static_assert(same(width<metre, int>(8 * m) / width<metre, double>(2 * m), quantity{4.0}));
+static_assert(same(width<metre, double>(8 * m) / width<metre, int>(2 * m), quantity{4.0}));
+
 static_assert(same(width<metre, int>(2 * m) % 3, width<metre, int>(2 * m)));
 static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<metre, int>(1 * m)));
 
