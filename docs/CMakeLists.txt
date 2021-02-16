@@ -38,6 +38,8 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_2.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/units.png"
 
+    "${CMAKE_CURRENT_SOURCE_DIR}/_themes/sphinx_rtd_theme.zip"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/design.rst"
@@ -69,8 +71,8 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/conversions_and_casting.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/dimensions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantities.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_points.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_kinds.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_points.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/text_output.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/units.rst"
 
@@ -88,8 +90,11 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/metafunctions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/dimensions.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/kinds.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/prefixes.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity_kind.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity_point_kind.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/quantity_point.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/representation.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/units.rst"
@@ -217,6 +222,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/custom_representation_types.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/extensions.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/interoperability.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/legacy_interfaces.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/linear_algebra.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/natural_units.rst"
