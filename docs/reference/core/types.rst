@@ -6,7 +6,7 @@ Types
 
     types/quantity
     types/quantity_point
-    types/kind
+    types/kinds
     types/quantity_kind
     types/quantity_point_kind
     types/dimensions
