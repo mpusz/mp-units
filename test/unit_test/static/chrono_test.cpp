@@ -31,6 +31,7 @@ using namespace units::physical;
 using namespace units::physical::si::literals;
 using namespace std::chrono_literals;
 
+static_assert(QuantityLike<std::chrono::seconds>);
 
 // construction - same rep type
 static_assert(std::constructible_from<si::time<si::second, std::chrono::seconds::rep>, std::chrono::seconds>);

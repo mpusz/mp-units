@@ -261,6 +261,9 @@ inline constexpr bool is_quantity_kind = false;
 template<typename T>
 inline constexpr bool is_quantity_point_kind = false;
 
+template<typename T>
+inline constexpr bool is_quantity_like = false;
+
 }  // namespace detail
 
 /**
@@ -304,12 +307,7 @@ concept QuantityPointKind = detail::is_quantity_point_kind<T>;
  * type trait is provided.
  */
 template<typename T>
-concept QuantityLike = requires(T q) {
-  typename quantity_like_traits<T>::dimension;
-  typename quantity_like_traits<T>::unit;
-  typename quantity_like_traits<T>::rep;
-  { quantity_like_traits<T>::count(q) } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
-};
+concept QuantityLike = detail::is_quantity_like<T>;
 
 // QuantityValue
 
@@ -377,5 +375,21 @@ concept QuantityValue =
   (!wrapped_quantity_<T>) &&
   std::regular<T> &&
   scalable_<T>;
+
+namespace detail {
+
+template<typename T>
+  requires requires(T q) {
+    typename quantity_like_traits<T>::dimension;
+    typename quantity_like_traits<T>::unit;
+    typename quantity_like_traits<T>::rep;
+    requires Dimension<typename quantity_like_traits<T>::dimension>;
+    requires Unit<typename quantity_like_traits<T>::unit>;
+    requires QuantityValue<typename quantity_like_traits<T>::rep>;
+    { quantity_like_traits<T>::count(q) } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+  }
+inline constexpr bool is_quantity_like<T> = true;
+
+} // namespace detail
 
 }  // namespace units
