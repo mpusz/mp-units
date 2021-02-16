@@ -67,23 +67,40 @@ dimension, than we will end up with just a dimensionless quantity:
 Quantity Kinds
 ++++++++++++++
 
-Quantity kinds behave the same as quantities for addition and subtraction.
-The same behavior is also provided for multiplication with, and division by
-a :term:`scalable number`.
-
-Multiplication and division with a quantity (but not a quantity kind) is allowed.
-The result is a quantity kind with the appropriate dimension
-and related to the original quantity kind:
+Quantity kinds behave the same as quantities for all operations,
+except that the quantity types in the operators' declarations
+are quantity kind types instead.
+Additionally, for the dimensional analysis operators,
+you can use a quantity argument instead of a quantity kind.
 
 .. code-block::
-    :emphasize-lines: 5-6
+    :emphasize-lines: 8-9
 
-    struct height : kind<height, dim_length> {};
-    struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};
+    struct height_kind : kind<height_kind, dim_length> {};
+    struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
 
-    quantity_kind h(height{}, 100 * m);
-    quantity_point_kind rate = h / (25 * s);
-      // quantity_point_kind<rate_of_climb, si::metre_per_second, int>(4 * m / s)
+    template <Unit U, QuantityValue Rep = double> using height = quantity_kind<height_kind, U, Rep>;
+    template <Unit U, QuantityValue Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
+
+    height h{100 * m};
+    rate_of_climb rate = h / (25 * s);
+      // quantity_kind<rate_of_climb_kind, si::metre_per_second, int>(4 * m / s)
+
+.. code-block::
+    :emphasize-lines: 8-12
+
+    struct width_kind : kind<width_kind, dim_length> {};
+    struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
+
+    template <Unit U, QuantityValue Rep = double> using width = quantity_kind<width_kind, U, Rep>;
+    template <Unit U, QuantityValue Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
+
+    width w{5 * m};
+    horizontal_area area1 = w * w;
+      // quantity_kind<horizontal_area_kind, si::metre_per_second, int>(25 * m * m)
+    width w2 = area1 / w; // quantity_kind<width_kind, si::metre, int>(5 * m)
+    auto q1 = w / w; // Dimensionless quantity kinds related to width
+    auto q2 = w / (5 * m); // with .common() equal to quantity{1}
 
 Quantity Points
 +++++++++++++++

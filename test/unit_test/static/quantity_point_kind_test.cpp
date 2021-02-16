@@ -333,7 +333,6 @@ static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples<percent, double>(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(apples<one, double>(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(apples<percent, double>(dimensionless<percent>(1))));
-static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(width<metre, int>(1 * m) / m));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(oranges<one, int>(1)));
 // clang-format on
 

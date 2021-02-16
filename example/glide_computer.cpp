@@ -100,8 +100,8 @@ using namespace si::international::literals;
 using namespace si::unit_constants;
 
 template<QuantityKind QK1, QuantityKind QK2>
-constexpr Quantity auto operator/(const QK1& lhs, const QK2& rhs)
-  requires requires { lhs.common() / rhs.common(); } {
+constexpr Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
+  requires (!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); } {
   return lhs.common() / rhs.common();
 }
 
@@ -258,7 +258,7 @@ struct flight_point {
 constexpr altitude terrain_level_alt(const task& t, distance dist)
 {
   const height alt_diff = t.finish.alt - t.start.alt;
-  return t.start.alt + alt_diff * (dist / t.dist);
+  return t.start.alt + alt_diff * (dist / t.dist).common();
 }
 
 constexpr height agl(altitude glider_alt, altitude terrain_level)
@@ -283,7 +283,7 @@ void print(std::string_view phase_name, const flight_point& point, const flight_
 
 flight_point tow(const flight_point& point, const aircraft_tow& at)
 {
-  const duration d = at.height_agl / at.performance;
+  const duration d = (at.height_agl / at.performance).common();
   const flight_point new_point{point.dur + d, point.dist, point.alt + at.height_agl};
 
   print("Tow", point, new_point);
@@ -295,7 +295,7 @@ flight_point circle(const flight_point& point, const glider& g, const weather& w
   const height h_agl = agl(point.alt, terrain_level_alt(t, point.dist));
   const height circle_height = std::min(w.cloud_base - h_agl, height_to_gain);
   const rate_of_climb circling_rate = w.thermal_strength + g.polar[0].climb;
-  const duration d = circle_height / circling_rate;
+  const duration d = (circle_height / circling_rate).common();
   const flight_point new_point{point.dur + d, point.dist, point.alt + circle_height};
 
   height_to_gain -= circle_height;

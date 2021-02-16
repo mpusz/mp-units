@@ -46,6 +46,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/design/directories.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/downcasting.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/quantity.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/design/quantity_kind.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/examples.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/avg_speed.rst"

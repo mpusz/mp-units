@@ -278,9 +278,10 @@ static_assert((1_q_m += 1_q_m).count() == 2);
 static_assert((2_q_m -= 1_q_m).count() == 1);
 static_assert((1_q_m *= 2).count() == 2);
 static_assert((2_q_m /= 2).count() == 1);
+static_assert((7_q_m %= 2).count() == 1);
 static_assert((1_q_m *= quantity(2)).count() == 2);
 static_assert((2_q_m /= quantity(2)).count() == 1);
-static_assert((7_q_m %= 2).count() == 1);
+static_assert((7_q_m %= quantity(2)).count() == 1);
 static_assert((7_q_m %= 2_q_m).count() == 1);
 
 // different types
@@ -295,8 +296,10 @@ static_assert((7.5_q_m /= quantity(3)).count() == 2.5);
 static_assert((3500_q_m %= 1_q_km).count() == 500);
 
 static_assert((std::uint8_t(255) * m %= 256).count() == [] { std::uint8_t ui(255); return ui %= 256; }());
+static_assert((std::uint8_t(255) * m %= quantity(256)).count() == [] { std::uint8_t ui(255); return ui %= 256; }());
 // static_assert((std::uint8_t(255) * m %= 256 * m).count() != [] { std::uint8_t ui(255); return ui %= 256; }());  // UB
 static_assert((std::uint8_t(255) * m %= 257).count() == [] { std::uint8_t ui(255); return ui %= 257; }());
+static_assert((std::uint8_t(255) * m %= quantity(257)).count() == [] { std::uint8_t ui(255); return ui %= 257; }());
 // TODO: Fix
 static_assert((std::uint8_t(255) * m %= 257 * m).count() != [] { std::uint8_t ui(255); return ui %= 257; }());
 
@@ -309,14 +312,21 @@ static_assert((22_q_m *= quantity(33.33)).count() == 733);
 static_assert((22_q_m /= quantity(3.33)).count() == 6);
 #endif
 
-template<typename Metre>
+template<typename Metre, typename Kilometre>
 concept invalid_compound_assignments = requires() {
   // truncating not allowed
   requires !requires(length<Metre, int> l) { l += 2.5_q_m; };
   requires !requires(length<Metre, int> l) { l -= 2.5_q_m; };
-  requires !requires(length<kilometre, int> l) { l += length<Metre, int>(2); };
-  requires !requires(length<kilometre, int> l) { l -= length<Metre, int>(2); };
-  requires !requires(length<kilometre, int> l) { l %= length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l += length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l -= length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, double>(2); };
+
+  // TODO: accept non-truncating argument
+  requires !requires(length<Kilometre, int> l) { l *= 1 * km / m; };
+  requires !requires(length<Kilometre, int> l) { l /= 1 * km / m; };
+  requires !requires(length<Kilometre, int> l) { l %= 1 * km / m; };
 
   // only quantities can be added or subtracted
   requires !requires(length<Metre, int> l) { l += 2; };
@@ -333,7 +343,7 @@ concept invalid_compound_assignments = requires() {
   requires !requires(length<Metre, double> l) { l %= 2_q_m; };
   requires !requires(length<Metre, int> l) { l %= 2._q_m; };
 };
-static_assert(invalid_compound_assignments<metre>);
+static_assert(invalid_compound_assignments<metre, kilometre>);
 
 
 ////////////////////
