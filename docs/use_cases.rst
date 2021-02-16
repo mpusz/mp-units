@@ -14,6 +14,7 @@ Use Cases
     use_cases/unknown_dimensions
     use_cases/legacy_interfaces
     use_cases/custom_representation_types
+    use_cases/interoperability
     use_cases/linear_algebra
     use_cases/extensions
     use_cases/natural_units
