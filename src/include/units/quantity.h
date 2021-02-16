@@ -246,6 +246,16 @@ public:
     return *this;
   }
 
+  template<typename Rep2>
+  constexpr quantity& operator%=(const dimensionless<units::one, Rep2>& rhs)
+    requires (!floating_point_<rep>) && (!floating_point_<Rep2>) &&
+             requires(rep a, const Rep2 b) { { a %= b } -> std::same_as<rep&>; }
+  {
+    gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
+    value_ %= rhs.count();
+    return *this;
+  }
+
   constexpr quantity& operator%=(const quantity& q)
     requires (!floating_point_<rep>) &&
              requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }

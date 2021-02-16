@@ -41,7 +41,7 @@ the value to the `quantity_kind` class template constructor::
 Differences To Quantity
 -----------------------
 
-Unlike `quantity`, the library provides:
+The library provides:
 
 - no kinds, such as ``radius`` or ``width``, therefore
 
@@ -49,7 +49,7 @@ Unlike `quantity`, the library provides:
     * no kind-specific concepts, such as ``Radius``,
       (there's the generic `QuantityKind` and kind-specifiable `QuantityKindOf`),
 
-- a slightly different set of operations on quantity kinds
+- a slightly larger set of operations on quantity kinds
   (see the :ref:`framework/dimensions:Quantity Kinds` chapter).
 
 

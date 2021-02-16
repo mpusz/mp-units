@@ -54,6 +54,15 @@ inline constexpr auto& downcasted_kind = downcasted_kind_fn<typename QK::kind_ty
 }  // namespace detail
 
 /**
+ * @brief A concept matching two related quantity kinds
+ *
+ * Satisfied by quantity kinds having equivalent base kinds.
+ */
+template<typename QK1, typename QK2>
+concept QuantityKindRelatedTo = QuantityKind<QK1> && QuantityKind<QK2> &&
+  equivalent<typename QK1::kind_type::base_kind, typename QK2::kind_type::base_kind>;
+
+/**
  * @brief A quantity kind
  *
  * A quantity with more specific usage as determined by its kind.
@@ -180,6 +189,13 @@ public:
     q_ *= rhs;
     return *this;
   }
+  template<typename Rep2>
+  constexpr quantity_kind& operator*=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
+    requires requires(quantity_type q) { q *= rhs.common(); }
+  {
+    q_ *= rhs.common();
+    return *this;
+  }
 
   template<typename Rep2>
   constexpr quantity_kind& operator/=(const Rep2& rhs)
@@ -189,13 +205,27 @@ public:
     q_ /= rhs;
     return *this;
   }
+  template<typename Rep2>
+  constexpr quantity_kind& operator/=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
+    requires requires(quantity_type q) { q /= rhs.common(); }
+  {
+    q_ /= rhs.common();
+    return *this;
+  }
 
   template<typename Rep2>
   constexpr quantity_kind& operator%=(const Rep2& rhs)
-    requires (!Quantity<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
+    requires (!Quantity<Rep2> || Dimensionless<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     q_ %= rhs;
+    return *this;
+  }
+  template<typename Rep2>
+  constexpr quantity_kind& operator%=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
+    requires requires(quantity_type q) { q %= rhs.common(); }
+  {
+    q_ %= rhs.common();
     return *this;
   }
 
@@ -256,9 +286,6 @@ public:
   [[nodiscard]] friend constexpr bool operator==(const quantity_kind&, const quantity_kind&) = default;
 };
 
-template<Kind K, QuantityValue V>
-explicit(false) quantity_kind(K, V) -> quantity_kind<K, one, V>;
-
 template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
 [[nodiscard]] constexpr QuantityKind auto operator+(const QK1& lhs, const QK2& rhs)
   requires requires { lhs.common() + rhs.common(); }
@@ -287,6 +314,13 @@ template<Quantity Q, QuantityKind QK>
   return detail::downcasted_kind<QK>(lhs * rhs.common());
 }
 
+template<QuantityKind QK1, QuantityKindRelatedTo<QK1> QK2>
+[[nodiscard]] constexpr QuantityKind auto operator*(const QK1& lhs, const QK2& rhs)
+  requires requires { lhs.common() * rhs.common(); }
+{
+  return detail::downcasted_kind<QK1>(lhs.common() * rhs.common());
+}
+
 template<QuantityKind QK, Quantity Q>
 [[nodiscard]] constexpr QuantityKind auto operator/(const QK& lhs, const Q& rhs)
   requires requires { lhs.common() / rhs; }
@@ -301,6 +335,13 @@ template<Quantity Q, QuantityKind QK>
 {
   gsl_ExpectsAudit(rhs.common().count() != quantity_values<typename QK::rep>::zero());
   return detail::downcasted_kind<QK>(lhs / rhs.common());
+}
+
+template<QuantityKind QK1, QuantityKindRelatedTo<QK1> QK2>
+[[nodiscard]] constexpr QuantityKind auto operator/(const QK1& lhs, const QK2& rhs)
+  requires requires { lhs.common() / rhs.common(); }
+{
+  return detail::downcasted_kind<QK1>(lhs.common() / rhs.common());
 }
 
 template<QuantityKind QK, Dimensionless D>

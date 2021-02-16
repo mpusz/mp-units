@@ -182,9 +182,6 @@ public:
 
 };
 
-template<PointKind PK, QuantityValue V>
-explicit(false) quantity_point_kind(PK, V) -> quantity_point_kind<PK, one, V>;
-
 template<QuantityKind QK>
 quantity_point_kind(QK) ->
   quantity_point_kind<downcast_point_kind<typename QK::kind_type>, typename QK::unit, typename QK::rep>;
