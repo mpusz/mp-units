@@ -10,19 +10,22 @@
   - feat: unit constants support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
-  - feat: value initialization for quantity value removed (left with a default initialization)
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`
+  - perf: value initialization for quantity value removed (left with a default initialization)
+  - perf: limited the `equivalent` trait usage
   - perf: limited the C++ Standard Library headers usage
   - (!) fix: `exp()` has sense only for dimensionless quantities
   - (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) + default unit name change
+  - fix: quantity's operators fixed to behave like the underlying types do
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
   - build: fmt updated to 7.1.3
+  - build: ms-gsl replaced with gsl-lite
   - build: Conan generator switched to `cmake_find_package_multi`
   - build: Conan CMakeToolchain support added
   - build: CMake scripts cleanup
