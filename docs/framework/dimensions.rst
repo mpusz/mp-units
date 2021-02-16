@@ -8,8 +8,11 @@ In the previous chapter we briefly introduced the notion of a physical
 Length, time, speed, area, energy are only a few examples of physical
 dimensions.
 
-Operations
-----------
+Arithmetics
+-----------
+
+Quantities
+++++++++++
 
 Quantities of the same dimension can be easily added or subtracted with
 each other and the result will always be a quantity of the same dimension:
@@ -61,24 +64,32 @@ dimension, than we will end up with just a dimensionless quantity:
     Dimensionless auto v1 = dur1 / dur2;    // quantity(5)
     Dimensionless auto v2 = dur1 * fr1;     // quantity(50)
 
-Quantity kinds behave the same as quantities for addition, substraction, and
-multiplication with, and division by a :term:`scalable number`.
+Quantity Kinds
+++++++++++++++
 
-Multiplication and divison with a quantity
-(but not a quantity kind) is allowed.
-The result is a quantity kind with the appropiate dimension
-and related to the original quantity kind.
+Quantity kinds behave the same as quantities for addition and subtraction.
+The same behavior is also provided for multiplication with, and division by
+a :term:`scalable number`.
+
+Multiplication and division with a quantity (but not a quantity kind) is allowed.
+The result is a quantity kind with the appropriate dimension
+and related to the original quantity kind:
+
+.. code-block::
+    :emphasize-lines: 5-6
 
     struct height : kind<height, dim_length> {};
     struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};
 
     quantity_kind h(height{}, 100 * m);
     quantity_point_kind rate = h / (25 * s);
-      // `quantity_point_kind<rate_of_climb, si::metre_per_second, int>(4 * m / s)`
+      // quantity_point_kind<rate_of_climb, si::metre_per_second, int>(4 * m / s)
+
+Quantity Points
++++++++++++++++
 
 Quantity points have a more restricted set of operations.
-Quantity points can't be added together,
-but can be added to or subtracted from quantities.
+Quantity can be added to or subtracted from a quantity point.
 The result will always be a quantity point of the same dimension:
 
 .. code-block::
@@ -90,17 +101,6 @@ The result will always be a quantity point of the same dimension:
     QuantityPoint auto res2 = dist1 + quantity_point{dist2};
     QuantityPoint auto res3 = quantity_point{dist1} - dist2;
 
-.. note::
-
-    You can't subtract a quantity from a quantity point:
-
-    .. code-block::
-        :emphasize-lines: 3
-
-        Length auto dist1 = 2_q_m;
-        Length auto dist2 = 1_q_m;
-        auto res1 = dist1 - quantity_point{dist2};  // ERROR
-
 We can also subtract two quantity points.
 The result is a relative quantity of the same dimension:
 
@@ -111,7 +111,25 @@ The result is a relative quantity of the same dimension:
     Length auto dist2 = 1_q_m;
     Length auto res1 = quantity_point{dist1} - quantity_point{dist2};
 
-That's it! You can't multiply nor divide quantity points with anything else.
+.. note::
+
+    It is not allowed to:
+
+    - add quantity points
+    - subtract a quantity point from a quantity:
+    - multiply nor divide quantity points with anything else.
+
+    .. code-block::
+        :emphasize-lines: 3-5
+
+        Length auto dist1 = 2_q_m;
+        Length auto dist2 = 1_q_m;
+        auto res1 = quantity_point{dist1} + quantity_point{dist2};  // ERROR
+        auto res2 = dist1 - quantity_point{dist2};                  // ERROR
+        auto res3 = quantity_point{dist1} / 2_q_s;                  // ERROR
+
+Quantity Point Kinds
+++++++++++++++++++++
 
 The same restrictions of a quantity point with respect to its quantity
 apply to a quantity point kind with respect to its quantity kind.
@@ -185,7 +203,8 @@ an dimension's unnamed unit symbol is being printed in the text output.
 .. seealso::
 
     More information on how the :term:`recipe` affect the printed symbol
-    of unnamed unit can be found in the :ref:`Derived Unnamed Units` chapter.
+    of unnamed unit can be found in the :ref:`framework/units:Derived Unnamed Units`
+    chapter.
 
 It is important to mention here that beside text output the order and
 the number of elements in the `derived_dimension` definition does not
@@ -213,7 +232,8 @@ analysis in the library to work as expected.
     child class inherited from the instantiation of this `derived_dimension`
     class template. This is called a
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
-    in many places in this library to provide :ref:`The Downcasting Facility`.
+    in many places in this library to provide
+    :ref:`design/downcasting:The Downcasting Facility`.
     Hopefully if [P0847]_ will land in C++23 the additional CRTP-related
     template parameter will be removed from this definition.
 

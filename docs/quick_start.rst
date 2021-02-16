@@ -76,4 +76,4 @@ of basic library features::
 
 .. seealso::
 
-    You can find more code examples in the :ref:`Examples` chapter.
+    You can find more code examples in the :ref:`examples:Examples` chapter.

@@ -57,7 +57,8 @@ definitions of prefixed units using ``si::metre`` as a reference (i.e.
     child class inherited from the instantiation of this `named_unit`
     class template. This is called a
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
-    in many places in this library to provide :ref:`The Downcasting Facility`.
+    in many places in this library to provide
+    :ref:`design/downcasting:The Downcasting Facility`.
     Hopefully if [P0847]_ will land in C++23 the additional CRTP-related
     template parameter will be removed from this definition.
 
@@ -90,7 +91,7 @@ knows how to convert ``si::metre`` to ``si::centimetre`` and vice versa).
 
     More details on custom systems definitions and conversions between
     units of the same physical dimension can be found in the
-    :ref:`Custom Systems` chapter.
+    :ref:`use_cases/extensions:Custom Systems` chapter.
 
 
 Derived Units
@@ -399,5 +400,5 @@ type here instead.
 
 .. seealso::
 
-    To learn more about unknown units please refer to
-    :ref:`Working with Unknown Dimensions and Their Units` chapter.
+    To learn more about unknown units please refer to the
+    :ref:`use_cases/unknown_dimensions:Working with Unknown Dimensions and Their Units` chapter.

@@ -55,8 +55,7 @@ Implicit conversions are allowed only across quantities of the same dimension:
 Explicit
 --------
 
-Explicit conversions are available with
-the `quantity_cast`, `quantity_point_cast`,
+Explicit conversions are available with the `quantity_cast`, `quantity_point_cast`,
 `quantity_kind_cast`, and `quantity_point_kind_cast` function templates.
 They are especially useful to force a truncating conversion across quantities of the same
 dimension for integral representation types and ratios that may cause precision loss::
@@ -66,9 +65,9 @@ dimension for integral representation types and ratios that may cause precision 
 
 .. seealso::
 
-    Explicit casts are also really useful when working with legacy interfaces. More
-    information on this subject can be found in :ref:`Working with Legacy Interfaces`
-    chapter.
+    Explicit casts are also really useful when working with legacy interfaces.
+    More information on this subject can be found in the
+    :ref:`use_cases/legacy_interfaces:Working with Legacy Interfaces` chapter.
 
 Quantity Cast Overloads
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -109,17 +108,18 @@ accept a `PointKind` and `Kind` instead of a `Dimension`, respectively.
 
 .. seealso::
 
-    For more information on conversion and casting and on how to extend the above "integral"
-    vs "floating-point" logic please refer to the :ref:`Using Custom Representation Types`
-    chapter.
+    For more information on conversion and casting and on how to extend the above
+    "integral" vs "floating-point" logic please refer to the
+    :ref:`use_cases/custom_representation_types:Using Custom Representation Types` chapter.
 
 
 Implicit conversions of dimensionless quantities
 ------------------------------------------------
 
-As noted in the :ref:`Dimensionless Quantities` chapter, :term:`quantity of dimension one`
-is somehow special but still obey most of the rules defined for quantities. However, as they
-represent numbers it would be highly uncomfortable to every time type::
+As noted in the :ref:`framework/quantities:Dimensionless Quantities` chapter,
+:term:`quantity of dimension one` is somehow special but still obey most of the rules defined
+for quantities. However, as they represent numbers it would be highly uncomfortable to every
+time type::
 
     const auto d1 = 10_q_km;
     const auto d2 = 3_q_km;

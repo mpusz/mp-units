@@ -78,7 +78,7 @@ struct quantity_values {
  * The type trait should provide the following nested type aliases: @c dimension, @c unit, @c rep,
  * and a static member function @c count(T) that will return the raw value of the quantity.
  * 
- * Usage example can be found in units/chrono.h header file.
+ * Usage example can be found in @c units/chrono.h header file.
  * 
  * @tparam T the type to provide support for
  */

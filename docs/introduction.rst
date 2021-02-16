@@ -14,7 +14,7 @@ general facility for unit conversions.
 
 The library architecture has been designed with flexibility and extensibility
 in mind. The demonstrations of the ease of adding new dimensions, their units,
-and unit conversions are provided in the :ref:`Examples`.
+and unit conversions are provided in the :ref:`examples:Examples`.
 
 Open Source
 -----------
@@ -61,7 +61,7 @@ To achieve this goal several techniques are applied:
 - usage of C++20 concepts,
 - using strong types for framework entities (instead of type aliases),
 - limiting the number of template arguments to the bare minimum,
-- :ref:`The Downcasting Facility`.
+- :ref:`design/downcasting:The Downcasting Facility`.
 
 .. important::
 

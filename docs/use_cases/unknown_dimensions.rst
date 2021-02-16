@@ -10,12 +10,14 @@ detail.
 What is an unknown dimension?
 -----------------------------
 
-As we learned in the :ref:`Dimensions` chapter, in most cases the result of multiplying
-or dividing two quantities of specific dimensions is a quantity of yet another dimension.
+As we learned in the :ref:`framework/dimensions:Dimensions` chapter, in most cases the result
+of multiplying or dividing two quantities of specific dimensions is a quantity of yet another
+dimension.
 
 If such a resulting dimension is predefined by the user (and a proper header file with its
-definition is included in the current translation unit) :ref:`The Downcasting Facility`
-will determine its type. The same applies to the resulting unit. For example:
+definition is included in the current translation unit)
+:ref:`design/downcasting:The Downcasting Facility` will determine its type.
+The same applies to the resulting unit. For example:
 
 .. code-block::
     :emphasize-lines: 1,7,9
@@ -83,7 +85,7 @@ following::
 .. seealso::
 
     Another good example of unknown dimension usage can be found in the
-    :ref:`box_example`::
+    :ref:`examples/box_example:box_example`::
 
         std::cout << "float rise rate = " << box.fill_level(measured_mass) / fill_time << '\n';
 

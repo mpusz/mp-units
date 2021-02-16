@@ -16,8 +16,7 @@ Output Streams
 
 .. tip::
 
-    The streaming support is provided via the ``<units/quantity_io.h>`` header
-    file.
+    The streaming support is provided via the ``<units/quantity_io.h>`` header file.
 
 The easiest way to print a quantity is to provide its object to the output
 stream::
@@ -54,6 +53,10 @@ over width, fill, and alignment::
 
 fmt::format
 -----------
+
+.. tip::
+
+    The text formatting support is provided via the ``<units/format.h>`` header file.
 
 The **mp-units** via ``fmt::format`` provides a fine-grained control over what
 and how is being printed on the text output.

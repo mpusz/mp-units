@@ -39,7 +39,8 @@ of units of the same physical dimension between different systems.
 
 .. seealso::
 
-    More details on this subject can be found in the :ref:`Custom Systems` chapter.
+    More details on this subject can be found in the
+    :ref:`use_cases/extensions:Custom Systems` chapter.
 
 
 Why a dimensionless quantity is not just an fundamental arithmetic type?
@@ -66,8 +67,8 @@ This is why it was decided to go with the current approach.
 
 .. seealso::
 
-    More information on the current design can be found in :ref:`Dimensionless quantities`
-    chapter.
+    More information on the current design can be found in
+    the :ref:`framework/quantities:Dimensionless Quantities` chapter.
 
 
 Why do we spell ``metre`` instead of ``meter``?
@@ -114,7 +115,7 @@ to obey the rules and be consistent with ISO specifications.
 .. seealso::
 
     We do understand engineering reality and constraints and that is why the library
-    has the option of :ref:`ASCII-only quantity symbols`.
+    has the option of :ref:`framework/text_output:ASCII-only quantity symbols`.
 
 
 Compilation Errors
@@ -124,6 +125,7 @@ error: reference to ‘time’ is ambiguous
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Unfortunately, if `using-directives <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_
-(i.e. ``using namespace units::physical::si``) are being used, `units::physical::si::time` will
-collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In such a case the library's
-``time`` function needs to be prefixed with at least one (or all) namespace names.
+(i.e. ``using namespace units::physical::si``) are being used, `units::physical::si::time`
+will collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In
+such a case the library's ``time`` function needs to be prefixed with at least one (or all)
+namespace names.

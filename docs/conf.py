@@ -294,6 +294,10 @@ nitpicky = True
 # or ('envvar', 'LD_LIBRARY_PATH').
 nitpick_ignore = []
 
+# True to prefix each section label with the name of the document it is in,
+# followed by a colon. Useful for avoiding ambiguity when the same section
+# heading appears in different documents.
+autosectionlabel_prefix_document = True
 
 # -- C++ configuration ---------------------------------------------------
 

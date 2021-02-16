@@ -7,16 +7,14 @@ A quantity kind is a quantity of more specific usage.
 It is represented in the library with a `quantity_kind` class template.
 
 
-.. _quantity-point-construction:
-
-Kind creation
+Kind Creation
 -------------
 
 We need a `kind` to represent the more specific usage of a quantity::
 
     struct radius : kind<radius, si::dim_length> {};
 
-Quantities of kind `radius` represent a radius.
+Quantities of kind ``radius`` represent a radius.
 They are clearly distinct from more generic usages of length quantities.
 
 
@@ -40,23 +38,26 @@ the value to the `quantity_kind` class template constructor::
         quantity_kind<radius, si::kilometre, double> d = 123 * km;  // ERROR
 
 
-Differences to quantity
+Differences To Quantity
 -----------------------
 
 Unlike `quantity`, the library provides:
 
 - no kinds, such as ``radius`` or ``width``, therefore
+
     * no UDLs or unit constants,
     * no kind-specific concepts, such as ``Radius``,
       (there's the generic `QuantityKind` and kind-specifiable `QuantityKindOf`),
+
 - a slightly different set of operations on quantity kinds
-  (see the :ref:`Dimensions` chapter).
+  (see the :ref:`framework/dimensions:Quantity Kinds` chapter).
 
-Quantity point kind
--------------------
 
-A quantity point kind is the analogous of a quantity point for quantity kinds.
-(see the :ref:`Quantity Points` chapter).
+Quantity Point Kinds
+--------------------
+
+A quantity point kind is the analogous of a quantity point for quantity kinds
+(see the :ref:`framework/quantity_points:Quantity Points` chapter).
 
 They are represented in the library with a `quantity_point_kind` class template.
 
@@ -67,6 +68,10 @@ First, we need a `point_kind` for a `kind`::
 
 Now ``x`` coordinates can be constructed::
 
-    quantity_point_kind<x_coordinate, si::metre, int> auto x_pos(123 * m);
-    // `QuantityPointKindOf<x_coordinate>` with `x_pos.relative()`
-    // equal to `quantity_kind<width, si::metre, int>(123 * m)`
+    quantity_point_kind<x_coordinate, si::metre, int> auto x_pos(123 * m); // QuantityPointKindOf<x_coordinate>
+    auto x = x_pos.relative();   // quantity_kind<width, si::metre, int>(123 * m)
+
+.. seealso::
+
+    Please refer to :ref:`examples/glide_computer:glide_computer` example for more
+    information on the quantity kinds usage.

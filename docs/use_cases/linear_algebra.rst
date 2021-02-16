@@ -61,7 +61,8 @@ types provided to a `quantity` class template.
 .. seealso::
 
     More information on providing custom representation types for `quantity` can be
-    found in the :ref:`Using Custom Representation Types` chapter.
+    found in the :ref:`use_cases/custom_representation_types:Using Custom Representation Types`
+    chapter.
 
 With this the above vector definitions can be rewritten as follows::
 
@@ -84,4 +85,4 @@ output:
 .. seealso::
 
     For more examples of Linear Algebra definition and operations please refer to
-    the :ref:`linear_algebra` example.
+    the :ref:`examples/linear_algebra:linear_algebra` example.

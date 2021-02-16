@@ -309,4 +309,5 @@ In such a situation the standalone system may be a better choice here.
 .. seealso::
 
     More information on extending the library can be found in the
-    :ref:`Using Custom Representation Types` chapter.
+    :ref:`use_cases/custom_representation_types:Using Custom Representation Types`
+    chapter.

@@ -45,7 +45,7 @@ The most important concepts in the library are `Unit`, `Dimension`,
 
     [<abstract>PointKind]<-[QuantityPointKind]
     [Kind]<-[PointKind]
-    [QuantityKind]-<[QuantityPointKind]
+    [QuantityKind]<-[QuantityPointKind]
 
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and

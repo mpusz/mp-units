@@ -7,7 +7,6 @@ A :term:`quantity` is a concrete amount of a unit for a specified dimension
 with a specific representation and is represented in the library with a
 `quantity` class template.
 
-.. _quantity-construction:
 
 Construction
 ------------
@@ -198,6 +197,7 @@ The above code can be fixed in one of the below ways:
     inline constexpr auto km_per_h = km / h;
     Speed auto v = 220 / 2 * km_per_h;
 
+
 Dimension-specific Concepts
 ---------------------------
 
@@ -266,8 +266,8 @@ units like CGS.
 
 .. seealso::
 
-    Please refer to :ref:`avg_speed` example for more information on different
-    kinds of interfaces supported by the library.
+    Please refer to :ref:`examples/avg_speed:avg_speed` example for more
+    information on different kinds of interfaces supported by the library.
 
 
 Working With Constrained Deduced Quantity Types
@@ -295,8 +295,8 @@ but often we would like to know a specific type too. We have two options here:
 
 .. seealso::
 
-    More information on this subject can be found in :ref:`Conversions and Casting`
-    chapter.
+    More information on this subject can be found in the
+    :ref:`framework/conversions_and_casting:Conversions and Casting` chapter.
 
 
 Dimensionless Quantities
@@ -315,7 +315,7 @@ are zero".
 .. seealso::
 
     Reasoning for the above design is provided in
-    :ref:`Why a dimensionless quantity is not just an fundamental arithmetic type?`
+    :ref:`faq:Why a dimensionless quantity is not just an fundamental arithmetic type?`
 
 To simplify the usage of the dimensionless quantity a following concept and alias template
 are provided::
@@ -351,5 +351,6 @@ is expressed as a ratio of kilometers and megaparsecs.
 
 .. seealso::
 
-    More information on dimensionless quantities can be found in
-    :ref:`Implicit conversions of dimensionless quantities`.
+    More information on dimensionless quantities can be found in the
+    :ref:`framework/conversions_and_casting:Implicit conversions of dimensionless quantities`
+    chapter.

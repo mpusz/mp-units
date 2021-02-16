@@ -1,6 +1,8 @@
 The Downcasting Facility
 ========================
 
+.. doxygenenum:: downcast_mode
+
 .. concept:: template<typename T> Downcastable
 
 .. doxygenstruct:: units::downcast_base

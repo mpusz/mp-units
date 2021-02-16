@@ -8,8 +8,6 @@ A quantity point is an absolute quantity with respect to zero
 `quantity_point` class template.
 
 
-.. _quantity-point-construction:
-
 Construction
 ------------
 
@@ -30,7 +28,7 @@ the value to the `quantity_point` class template explicit constructor::
         quantity_point<si::dim_length, si::kilometre, double> d = 123_q_km;  // ERROR
 
 
-Differences to quantity
+Differences To Quantity
 -----------------------
 
 Unlike `quantity`, the library provides:
@@ -40,4 +38,4 @@ Unlike `quantity`, the library provides:
 - no dimension-specific concepts, such as ``LengthPoint``
   (there's the dimension-agnostic `QuantityPoint`),
 - a more limited set of operations on quantity points
-  (see the :ref:`Dimensions` chapter)
+  (see the :ref:`framework/dimensions:Quantity Points` chapter)

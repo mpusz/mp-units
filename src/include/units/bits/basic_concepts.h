@@ -222,7 +222,7 @@ concept kind_impl_ =
 /**
  * @brief A concept matching all kind types
  *
- * Satisfied by all kind types derived from an specialization of :class:`kind`.
+ * Satisfied by all kind types derived from an specialization of @c kind.
  */
 template<typename T>
 concept Kind =
@@ -241,7 +241,7 @@ struct _point_kind_base;
 /**
  * @brief A concept matching all point kind types
  *
- * Satisfied by all point kind types derived from an specialization of :class:`point_kind`.
+ * Satisfied by all point kind types derived from an specialization of @c point_kind.
  */
 template<typename T>
 concept PointKind = kind_impl_<T, detail::_point_kind_base>;

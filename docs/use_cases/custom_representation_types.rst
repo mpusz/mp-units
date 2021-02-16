@@ -217,10 +217,11 @@ operations.
 `treat_as_floating_point`
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the :ref:`Conversions and Casting` chapter we learned that the conversions provided by the
-library's framework treat floating-point representation types differently than the integral
-ones. This behavior can also be extended to the custom representation types with
-`treat_as_floating_point` customization point which default definition is::
+In the :ref:`framework/conversions_and_casting:Conversions and Casting` chapter we learned
+that the conversions provided by the library's framework treat floating-point representation
+types differently than the integral ones. This behavior can also be extended to the custom
+representation types with `treat_as_floating_point` customization point which default
+definition is::
 
     template<QuantityValue Rep>
     inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
@@ -303,4 +304,5 @@ representation types with::
 .. seealso::
 
     For more examples of custom representation types usage please refer to the
-    :ref:`Linear Algebra vs. Quantities` chapter and the :ref:`measurement` example.
+    :ref:`use_cases/linear_algebra:Linear Algebra vs. Quantities` chapter and the
+    :ref:`examples/measurement:measurement` example.

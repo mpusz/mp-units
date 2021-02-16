@@ -125,7 +125,7 @@ downcast_mode
 
 **Defaulted to**: ``on``
 
-Specifies how :ref:`The Downcasting Facility` works:
+Specifies how :ref:`design/downcasting:The Downcasting Facility` works:
 
 - ``off`` - no downcasting at all
 - ``on`` - downcasting always forced -> compile-time errors in case of duplicated definitions

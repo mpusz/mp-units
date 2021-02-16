@@ -57,7 +57,7 @@ Library Directories Structure
 .. seealso::
 
   More information on provided :term:`systems of units <system of units>` can be
-  found in :ref:`Systems` chapter.
+  found in :ref:`reference/systems:Systems` chapter.
 
 .. important::
 

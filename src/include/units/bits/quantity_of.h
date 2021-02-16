@@ -76,6 +76,11 @@ concept QuantityOfT = Quantity<Q> && DimensionOfT<typename Q::dimension, DimTemp
 template<typename Q, typename Dim>
 concept QuantityOf = Quantity<Q> && Dimension<Dim> && equivalent<typename Q::dimension, Dim>;
 
+/**
+ * @brief A concept matching two equivalent quantities
+ *
+ * Satisfied by quantities having equivalent dimensions.
+ */
 template<typename Q1, typename Q2>
 concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimension>;
 
@@ -88,6 +93,11 @@ concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimen
 template<typename QP, typename Dim>
 concept QuantityPointOf = QuantityPoint<QP> && Dimension<Dim> && equivalent<typename QP::dimension, Dim>;
 
+/**
+ * @brief A concept matching two equivalent quantity points
+ *
+ * Satisfied by quantity points having equivalent dimensions.
+ */
 template<typename QP1, typename QP2>
 concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::dimension>;
 
@@ -100,6 +110,11 @@ concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, t
 template<typename QK, typename K>
 concept QuantityKindOf = QuantityKind<QK> && Kind<K> && equivalent<typename QK::kind_type, K>;
 
+/**
+ * @brief A concept matching two equivalent quantity kinds
+ *
+ * Satisfied by quantity kinds having equivalent kinds.
+ */
 template<typename QK1, typename QK2>
 concept QuantityKindEquivalentTo = QuantityKind<QK1> && QuantityKindOf<QK2, typename QK1::kind_type>;
 
@@ -112,6 +127,11 @@ concept QuantityKindEquivalentTo = QuantityKind<QK1> && QuantityKindOf<QK2, type
 template<typename QPK, typename PK>
 concept QuantityPointKindOf = QuantityPointKind<QPK> && PointKind<PK> && equivalent<typename QPK::point_kind_type, PK>;
 
+/**
+ * @brief A concept matching two equivalent quantity point kinds
+ *
+ * Satisfied by quantity point kinds having equivalent kinds.
+ */
 template<typename QPK1, typename QPK2>
 concept QuantityPointKindEquivalentTo =
   QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>;
