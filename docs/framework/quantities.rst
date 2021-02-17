@@ -118,63 +118,78 @@ UDLs vs Unit Constants
 UDLs are helpful but they also have some disadvantages compared to Unit Constants:
 
 1. UDLs are only for compile-time known values and do not work for runtime variables
-    - UDLs::
 
-        using namespace units::physical::si::literals;
-        auto v1 = 120_q_km / 2_q_h;
-        auto v2 = length<kilometre>(distance) / time<hour>(duration);
+   - UDLs::
 
-    - Unit Constants::
+       using namespace units::physical::si::literals;
+       auto v1 = 120_q_km / 2_q_h;
+       auto v2 = length<kilometre>(distance) / time<hour>(duration);
 
-        using namespace units::physical::si::unit_constants;
-        auto v1 = 120 * km / (2 * h);
-        auto v2 = distance * km / (duration * h);
+   - Unit Constants::
 
-    Constants treat both cases in a unified way. It is also worth to notice that we work mostly with runtime variables
-    and compile-time known values mostly appear only in physical constants and unit tests.
+       using namespace units::physical::si::unit_constants;
+       auto v1 = 120 * km / (2 * h);
+       auto v2 = distance * km / (duration * h);
+
+   Constants treat both cases in a unified way. It is also worth to notice that we work
+   mostly with runtime variables and compile-time known values mostly appear only in physical
+   constants and unit tests.
 
 2. UDLs cannot be disambiguated with a namespace name
-    - UDLs::
 
-        using namespace units::physical::si::literals;
-        using namespace units::physical::si::cgs::literals;
-        auto d = 1_q_cm;   // FAILS TO COMPILE
+   - UDLs::
 
-    - Unit Constants::
+       using namespace units::physical::si::literals;
+       using namespace units::physical::si::cgs::literals;
+       auto d = 1_q_cm;   // FAILS TO COMPILE
 
-        inline constexpr auto si_cm = units::physical::si::unit_constants::cm;
-        inline constexpr auto cgs_cm = units::physical::si::cgs::unit_constants::cm;
+   - Unit Constants::
 
-        auto d1 = 1. * si_cm;   // si::length<si::centimetre>
-        auto d2 = 1. * cgs_cm;  // si::cgs::length<si::centimetre>
+       inline constexpr auto si_cm = units::physical::si::unit_constants::cm;
+       inline constexpr auto cgs_cm = units::physical::si::cgs::unit_constants::cm;
 
-3. Poor control over the representation types as UDLs return only ``std::int64_t`` or ``long double``
-    - UDLs::
+       auto d1 = 1. * si_cm;   // si::length<si::centimetre>
+       auto d2 = 1. * cgs_cm;  // si::cgs::length<si::centimetre>
 
-        using namespace units::physical::si::literals;
-        auto d1 = 123._q_km;   // si::length<si::kilometre, long double>
-        auto d2 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
+3. Poor control over the representation types as UDLs return only ``std::int64_t`` or
+   ``long double``
 
-      No possibility to obtain any other representation type.
+   - UDLs::
 
-    - Unit Constants::
+       using namespace units::physical::si::literals;
+       auto d1 = 123._q_km;   // si::length<si::kilometre, long double>
+       auto d2 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
 
-        using namespace units::physical::si::unit_constants;
-        auto d1 = 123. * km;   // si::length<si::kilometre, double>
-        auto d2 = 123 * km;    // si::length<si::kilometre, int>
-        auto d3 = 123.f * km;  // si::length<si::kilometre, float>
-        auto d4 = 123.L * km;  // si::length<si::kilometre, long double>
-        auto d5 = 123ul * km;  // si::length<si::kilometre, unsigned long>
-        auto d6 = 123ll * km;  // si::length<si::kilometre, long long>
+     No possibility to obtain any other representation type.
+
+   - Unit Constants::
+
+       using namespace units::physical::si::unit_constants;
+       auto d1 = 123. * km;   // si::length<si::kilometre, double>
+       auto d2 = 123 * km;    // si::length<si::kilometre, int>
+       auto d3 = 123.f * km;  // si::length<si::kilometre, float>
+       auto d4 = 123.L * km;  // si::length<si::kilometre, long double>
+       auto d5 = 123ul * km;  // si::length<si::kilometre, unsigned long>
+       auto d6 = 123ll * km;  // si::length<si::kilometre, long long>
 
 4. UDLs are verbose to define and standardize
-    - UDLs:
-        - for each unit an integral and a floating-point UDL have to be defined
-        - have to be provided for unnamed derived units (i.e. ``_q_km_per_h``)
+
+   - UDLs:
+     
+     - for each unit an integral and a floating-point UDL have to be defined
+     - have to be provided for unnamed derived units (i.e. ``_q_km_per_h``)
     
-    - Unit Constants:
-        - one constant per unit
-        - unnamed derived units constructed from base constants (i.e. ``km / h``)
+   - Unit Constants:
+   
+     - one constant per unit
+     - unnamed derived units constructed from base constants (i.e. ``km / h``)
+
+5. Typical UDL definition for quantities when compiled with a ``-Wsign-conversion``
+   flag results in a compilation warning. This warning could be silenced with a
+   ``static_cast<std::int64_t>(value)`` in every UDL, but in a such case other safety
+   and security issues could be silently introduced.
+   Unit Constants, on the opposite, always use the exact representation type provided
+   by the user so there is no chance for a truncating conversion on a quantity construction.
 
 The only issue we are aware of with Unit Constants is a potential problem of specifying
 a quantity in denominator::
