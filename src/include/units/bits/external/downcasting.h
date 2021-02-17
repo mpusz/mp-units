@@ -56,7 +56,7 @@ concept has_downcast_poison_pill = requires(T t) { downcast_poison_pill(t); };
 template<typename Target, Downcastable T>
 struct downcast_child : T {
   friend auto downcast_guide(typename T::downcast_base)
-  { return Target(); }
+  { return std::type_identity<Target>(); }
 };
 
 template<Downcastable T>
@@ -89,13 +89,13 @@ constexpr auto downcast_impl()
   if constexpr(has_downcast_guide<T> && !has_downcast_poison_pill<T>)
     return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
   else
-    return T();
+    return std::type_identity<T>();
 }
 
 }  // namespace detail
 
 template<Downcastable T>
-using downcast = decltype(detail::downcast_impl<T>());
+using downcast = TYPENAME decltype(detail::downcast_impl<T>())::type;
 
 template<Downcastable T>
 using downcast_base_t = TYPENAME T::downcast_base_type;
