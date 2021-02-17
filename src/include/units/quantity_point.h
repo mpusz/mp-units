@@ -28,6 +28,10 @@
 
 namespace units {
 
+template<QuantityPointLike QP>
+using quantity_point_like_type = quantity_point<typename quantity_point_like_traits<QP>::dimension,
+  typename quantity_point_like_traits<QP>::unit, typename quantity_point_like_traits<QP>::rep>;
+
 /**
  * @brief A quantity point
  *
@@ -62,6 +66,11 @@ public:
   template<QuantityLike Q>
     requires std::is_constructible_v<quantity_type, Q>
   constexpr explicit quantity_point(const Q& q) : q_{q} {}
+
+  template<QuantityPointLike QP>
+  constexpr explicit quantity_point(const QP& qp)
+    requires std::is_constructible_v<quantity_type, decltype(quantity_point_like_traits<QP>::relative(qp))>
+    : q_{quantity_point_like_traits<QP>::relative(qp)} {}
 
   template<QuantityPoint QP2>
     requires std::is_convertible_v<typename QP2::quantity_type, quantity_type>
@@ -181,6 +190,9 @@ explicit(false) quantity_point(V) -> quantity_point<dim_one, one, V>;
 template<QuantityLike Q>
 quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,
   typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
+
+template<QuantityPointLike QP>
+explicit quantity_point(QP) -> quantity_point_like_type<QP>;
 
 namespace detail {
 

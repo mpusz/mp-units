@@ -53,3 +53,14 @@ such an explicit conversion::
 
         using namespace std::chrono_literals;
         quantity q = 1s;  // ERROR
+
+For external quantity point-like types, `quantity_point_like_traits` is also provided.
+It works just like `quantity_like_traits`, except that
+``count(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value.
+
+Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_kind_point`
+provide a deduction guide from `QuantityPointLike`::
+
+    using namespace std::chrono_literals;
+
+    static_assert(quantity_point{std::chrono::sys_seconds{1s}} + 1_q_s == quantity_point{2s});
