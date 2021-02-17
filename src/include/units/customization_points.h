@@ -85,4 +85,17 @@ struct quantity_values {
 template<typename T>
 struct quantity_like_traits;
 
+/**
+ * @brief Provides support for external quantity point-like types
+ * 
+ * The type trait should provide the following nested type aliases: @c dimension, @c unit, @c rep,
+ * and a static member function @c relative(T) that will return the quantity-like value of the quantity point.
+ * 
+ * Usage example can be found in @c units/chrono.h header file.
+ * 
+ * @tparam T the type to provide support for
+ */
+template<typename T>
+struct quantity_point_like_traits;
+
 } // namespace units

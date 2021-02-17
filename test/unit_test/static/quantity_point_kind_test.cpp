@@ -39,6 +39,7 @@ using namespace units;
 namespace si = physical::si;
 using namespace si;
 using namespace unit_constants;
+using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 
 constexpr auto cgs_cm = cgs::unit_constants::cm;
 
@@ -303,6 +304,8 @@ static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_p
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_point(dimensionless<percent, int>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_point(dimensionless<percent, double>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, double>>(quantity_point(1.0 * s)));
+
+static_assert(construct_from_only<quantity_point_kind<time_point_kind, second, int>>(sys_seconds{42s}).relative().common() == 42 * s);
 // clang-format on
 
 
