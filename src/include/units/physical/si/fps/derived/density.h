@@ -39,8 +39,8 @@ using density = quantity<dim_density, U, Rep>;
 inline namespace literals {
 
 // lb/ft³
-constexpr auto operator"" _q_lb_per_ft3(unsigned long long l) { return density<pound_per_foot_cub, std::int64_t>(l); }
-constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
+consteval auto operator"" _q_lb_per_ft3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return density<pound_per_foot_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
 
 }  // namespace literals
 

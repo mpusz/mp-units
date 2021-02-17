@@ -38,8 +38,8 @@ using concentration = quantity<dim_concentration, U, Rep>;
 inline namespace literals {
 
 // mol/m³
-constexpr auto operator"" _q_mol_per_m3(unsigned long long l) { return concentration<mol_per_metre_cub, std::int64_t>(l); }
-constexpr auto operator"" _q_mol_per_m3(long double l) { return concentration<mol_per_metre_cub, long double>(l); }
+consteval auto operator"" _q_mol_per_m3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return concentration<mol_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_mol_per_m3(long double l) { return concentration<mol_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 

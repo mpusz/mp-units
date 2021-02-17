@@ -60,92 +60,92 @@ using area = quantity<dim_area, U, Rep>;
 inline namespace literals {
 
 // m2
-constexpr auto operator"" _q_m2(unsigned long long l) { return area<square_metre, std::int64_t>(l); }
-constexpr auto operator"" _q_m2(long double l) { return area<square_metre, long double>(l); }
+consteval auto operator"" _q_m2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_m2(long double l) { return area<square_metre, long double>(l); }
 
 // ym2
-constexpr auto operator"" _q_ym2(unsigned long long l) { return area<square_yoctometre, std::int64_t>(l); }
-constexpr auto operator"" _q_ym2(long double l) { return area<square_yoctometre, long double>(l); }
+consteval auto operator"" _q_ym2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_yoctometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_ym2(long double l) { return area<square_yoctometre, long double>(l); }
 
 // zm2
-constexpr auto operator"" _q_zm2(unsigned long long l) { return area<square_zeptometre, std::int64_t>(l); }
-constexpr auto operator"" _q_zm2(long double l) { return area<square_zeptometre, long double>(l); }
+consteval auto operator"" _q_zm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_zeptometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_zm2(long double l) { return area<square_zeptometre, long double>(l); }
 
 // am2
-constexpr auto operator"" _q_am2(unsigned long long l) { return area<square_attometre, std::int64_t>(l); }
-constexpr auto operator"" _q_am2(long double l) { return area<square_attometre, long double>(l); }
+consteval auto operator"" _q_am2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_attometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_am2(long double l) { return area<square_attometre, long double>(l); }
 
 // fm2
-constexpr auto operator"" _q_fm2(unsigned long long l) { return area<square_femtometre, std::int64_t>(l); }
-constexpr auto operator"" _q_fm2(long double l) { return area<square_femtometre, long double>(l); }
+consteval auto operator"" _q_fm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_femtometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_fm2(long double l) { return area<square_femtometre, long double>(l); }
 
 // pm2
-constexpr auto operator"" _q_pm2(unsigned long long l) { return area<square_picometre, std::int64_t>(l); }
-constexpr auto operator"" _q_pm2(long double l) { return area<square_picometre, long double>(l); }
+consteval auto operator"" _q_pm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_picometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_pm2(long double l) { return area<square_picometre, long double>(l); }
 
 // nm2
-constexpr auto operator"" _q_nm2(unsigned long long l) { return area<square_nanometre, std::int64_t>(l); }
-constexpr auto operator"" _q_nm2(long double l) { return area<square_nanometre, long double>(l); }
+consteval auto operator"" _q_nm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_nanometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_nm2(long double l) { return area<square_nanometre, long double>(l); }
 
 // um2
-constexpr auto operator"" _q_um2(unsigned long long l) { return area<square_micrometre, std::int64_t>(l); }
-constexpr auto operator"" _q_um2(long double l) { return area<square_micrometre, long double>(l); }
+consteval auto operator"" _q_um2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_micrometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_um2(long double l) { return area<square_micrometre, long double>(l); }
 
 // mm2
-constexpr auto operator"" _q_mm2(unsigned long long l) { return area<square_millimetre, std::int64_t>(l); }
-constexpr auto operator"" _q_mm2(long double l) { return area<square_millimetre, long double>(l); }
+consteval auto operator"" _q_mm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_millimetre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_mm2(long double l) { return area<square_millimetre, long double>(l); }
 
 // cm2
-constexpr auto operator"" _q_cm2(unsigned long long l) { return area<square_centimetre, std::int64_t>(l); }
-constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre, long double>(l); }
+consteval auto operator"" _q_cm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_centimetre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_cm2(long double l) { return area<square_centimetre, long double>(l); }
 
 // dm2
-constexpr auto operator"" _q_dm2(unsigned long long l) { return area<square_decimetre, std::int64_t>(l); }
-constexpr auto operator"" _q_dm2(long double l) { return area<square_decimetre, long double>(l); }
+consteval auto operator"" _q_dm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_decimetre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_dm2(long double l) { return area<square_decimetre, long double>(l); }
 
 // dam2
-constexpr auto operator"" _q_dam2(unsigned long long l) { return area<square_decametre, std::int64_t>(l); }
-constexpr auto operator"" _q_dam2(long double l) { return area<square_decametre, long double>(l); }
+consteval auto operator"" _q_dam2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_decametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_dam2(long double l) { return area<square_decametre, long double>(l); }
 
 // hm2
-constexpr auto operator"" _q_hm2(unsigned long long l) { return area<square_hectometre, std::int64_t>(l); }
-constexpr auto operator"" _q_hm2(long double l) { return area<square_hectometre, long double>(l); }
+consteval auto operator"" _q_hm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_hectometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_hm2(long double l) { return area<square_hectometre, long double>(l); }
 
 // km2
-constexpr auto operator"" _q_km2(unsigned long long l) { return area<square_kilometre, std::int64_t>(l); }
-constexpr auto operator"" _q_km2(long double l) { return area<square_kilometre, long double>(l); }
+consteval auto operator"" _q_km2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_kilometre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_km2(long double l) { return area<square_kilometre, long double>(l); }
 
 // Mm2
-constexpr auto operator"" _q_Mm2(unsigned long long l) { return area<square_megametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Mm2(long double l) { return area<square_megametre, long double>(l); }
+consteval auto operator"" _q_Mm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_megametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Mm2(long double l) { return area<square_megametre, long double>(l); }
 
 // Gm2
-constexpr auto operator"" _q_Gm2(unsigned long long l) { return area<square_gigametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Gm2(long double l) { return area<square_gigametre, long double>(l); }
+consteval auto operator"" _q_Gm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_gigametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Gm2(long double l) { return area<square_gigametre, long double>(l); }
 
 // Tm2
-constexpr auto operator"" _q_Tm2(unsigned long long l) { return area<square_terametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Tm2(long double l) { return area<square_terametre, long double>(l); }
+consteval auto operator"" _q_Tm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_terametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Tm2(long double l) { return area<square_terametre, long double>(l); }
 
 // Pm2
-constexpr auto operator"" _q_Pm2(unsigned long long l) { return area<square_petametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Pm2(long double l) { return area<square_petametre, long double>(l); }
+consteval auto operator"" _q_Pm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_petametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Pm2(long double l) { return area<square_petametre, long double>(l); }
 
 // Em2
-constexpr auto operator"" _q_Em2(unsigned long long l) { return area<square_exametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Em2(long double l) { return area<square_exametre, long double>(l); }
+consteval auto operator"" _q_Em2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_exametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Em2(long double l) { return area<square_exametre, long double>(l); }
 
 // Zm2
-constexpr auto operator"" _q_Zm2(unsigned long long l) { return area<square_zettametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Zm2(long double l) { return area<square_zettametre, long double>(l); }
+consteval auto operator"" _q_Zm2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_zettametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Zm2(long double l) { return area<square_zettametre, long double>(l); }
 
 // Ym2
-constexpr auto operator"" _q_Ym2(unsigned long long l) { return area<square_yottametre, std::int64_t>(l); }
-constexpr auto operator"" _q_Ym2(long double l) { return area<square_yottametre, long double>(l); }
+consteval auto operator"" _q_Ym2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<square_yottametre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Ym2(long double l) { return area<square_yottametre, long double>(l); }
 
 // ha
-constexpr auto operator"" _q_ha(unsigned long long l) { return area<hectare, std::int64_t>(l); }
-constexpr auto operator"" _q_ha(long double l) { return area<hectare, long double>(l); }
+consteval auto operator"" _q_ha(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return area<hectare, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_ha(long double l) { return area<hectare, long double>(l); }
 
 }  // namespace literals
 

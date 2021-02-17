@@ -39,8 +39,8 @@ using permittivity = quantity<dim_permittivity, U, Rep>;
 inline namespace literals {
 
 // F/m
-constexpr auto operator"" _q_F_per_m(unsigned long long l) { return permittivity<farad_per_metre, std::int64_t>(l); }
-constexpr auto operator"" _q_F_per_m(long double l) { return permittivity<farad_per_metre, long double>(l); }
+consteval auto operator"" _q_F_per_m(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return permittivity<farad_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_F_per_m(long double l) { return permittivity<farad_per_metre, long double>(l); }
 
 }  // namespace literals
 

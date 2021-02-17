@@ -59,11 +59,11 @@ values the library provides :abbr:`UDL (User Defined Literal)` s for each
 
     inline namespace literals {
 
-    constexpr auto operator"" _q_km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
-    constexpr auto operator"" _q_km(long double l) { return length<kilometre, long double>(l); }
+    consteval auto operator"" _q_km(unsigned long long l) { return length<kilometre, std::int64_t>(l); }
+    consteval auto operator"" _q_km(long double l) { return length<kilometre, long double>(l); }
 
-    constexpr auto operator"" _q_km_per_h(unsigned long long l) { return speed<kilometre_per_hour, std::int64_t>(l); }
-    constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
+    consteval auto operator"" _q_km_per_h(unsigned long long l) { return speed<kilometre_per_hour, std::int64_t>(l); }
+    consteval auto operator"" _q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
 
     }
 

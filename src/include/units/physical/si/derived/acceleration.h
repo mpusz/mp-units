@@ -37,8 +37,8 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 inline namespace literals {
 
 // m/s2
-constexpr auto operator"" _q_m_per_s2(unsigned long long l) { return acceleration<metre_per_second_sq, std::int64_t>(l); }
-constexpr auto operator"" _q_m_per_s2(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
+consteval auto operator"" _q_m_per_s2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return acceleration<metre_per_second_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_m_per_s2(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
 
 }  // namespace literals
 

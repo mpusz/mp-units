@@ -39,8 +39,8 @@ using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 inline namespace literals {
 
 // mol
-constexpr auto operator"" _q_mol(unsigned long long l) { return amount_of_substance<mole, std::int64_t>(l); }
-constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mole, long double>(l); }
+consteval auto operator"" _q_mol(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return amount_of_substance<mole, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_mol(long double l) { return amount_of_substance<mole, long double>(l); }
 
 }  // namespace literals
 

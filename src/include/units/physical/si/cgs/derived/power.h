@@ -39,8 +39,8 @@ using power = quantity<dim_power, U, Rep>;
 inline namespace literals {
 
 // erg/s
-constexpr auto operator"" _q_erg_per_s(unsigned long long l) { return power<erg_per_second, std::int64_t>(l); }
-constexpr auto operator"" _q_erg_per_s(long double l) { return power<erg_per_second, long double>(l); }
+consteval auto operator"" _q_erg_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<erg_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_erg_per_s(long double l) { return power<erg_per_second, long double>(l); }
 
 }  // namespace literals
 

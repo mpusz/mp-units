@@ -46,16 +46,16 @@ struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, 
 inline namespace literals {
 
 // Poundal per square foot
-constexpr auto operator"" _q_pdl_per_ft2(unsigned long long l) { return pressure<poundal_per_foot_sq, std::int64_t>(l); }
-constexpr auto operator"" _q_pdl_per_ft2(long double l) { return pressure<poundal_per_foot_sq, long double>(l); }
+consteval auto operator"" _q_pdl_per_ft2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return pressure<poundal_per_foot_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_pdl_per_ft2(long double l) { return pressure<poundal_per_foot_sq, long double>(l); }
 
 // Pounds per square inch
-constexpr auto operator"" _q_psi(unsigned long long l) { return pressure<pound_force_per_inch_sq, std::int64_t>(l); }
-constexpr auto operator"" _q_psi(long double l) { return pressure<pound_force_per_inch_sq, long double>(l); }
+consteval auto operator"" _q_psi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return pressure<pound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_psi(long double l) { return pressure<pound_force_per_inch_sq, long double>(l); }
 
 // kilopounds per square inch
-constexpr auto operator"" _q_kpsi(unsigned long long l) { return pressure<kilopound_force_per_inch_sq, std::int64_t>(l); }
-constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_force_per_inch_sq, long double>(l); }
+consteval auto operator"" _q_kpsi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return pressure<kilopound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_kpsi(long double l) { return pressure<kilopound_force_per_inch_sq, long double>(l); }
 
 }  // namespace literals
 

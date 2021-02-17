@@ -39,16 +39,16 @@ struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio(1, 1,
 inline namespace literals {
 
 // ly
-constexpr auto operator"" _q_ly(unsigned long long l) { return si::length<light_year, std::int64_t>(l); }
-constexpr auto operator"" _q_ly(long double l) { return si::length<light_year, long double>(l); }
+consteval auto operator"" _q_ly(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<light_year, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_ly(long double l) { return si::length<light_year, long double>(l); }
 
 // pc
-constexpr auto operator"" _q_pc(unsigned long long l) { return si::length<parsec, std::int64_t>(l); }
-constexpr auto operator"" _q_pc(long double l) { return si::length<parsec, long double>(l); }
+consteval auto operator"" _q_pc(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<parsec, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_pc(long double l) { return si::length<parsec, long double>(l); }
 
 // angstrom
-constexpr auto operator"" _q_angstrom(unsigned long long l) { return si::length<angstrom, std::int64_t>(l); }
-constexpr auto operator"" _q_angstrom(long double l) { return si::length<angstrom, long double>(l); }
+consteval auto operator"" _q_angstrom(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<angstrom, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_angstrom(long double l) { return si::length<angstrom, long double>(l); }
 
 }  // namespace literals
 

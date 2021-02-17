@@ -39,8 +39,8 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // erg
-constexpr auto operator"" _q_erg(unsigned long long l) { return energy<erg, std::int64_t>(l); }
-constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double>(l); }
+consteval auto operator"" _q_erg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<erg, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_erg(long double l) { return energy<erg, long double>(l); }
 
 }  // namespace literals
 

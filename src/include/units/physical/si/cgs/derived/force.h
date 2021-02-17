@@ -40,8 +40,8 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // dyn
-constexpr auto operator"" _q_dyn(unsigned long long l) { return force<dyne, std::int64_t>(l); }
-constexpr auto operator"" _q_dyn(long double l) { return force<dyne, long double>(l); }
+consteval auto operator"" _q_dyn(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return force<dyne, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_dyn(long double l) { return force<dyne, long double>(l); }
 
 }  // namespace literals
 

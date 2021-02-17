@@ -59,88 +59,88 @@ using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 inline namespace literals {
 
 // Gy
-constexpr auto operator"" _q_Gy(unsigned long long l) { return absorbed_dose<gray, std::int64_t>(l); }
-constexpr auto operator"" _q_Gy(long double l) { return absorbed_dose<gray, long double>(l); }
+consteval auto operator"" _q_Gy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<gray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_Gy(long double l) { return absorbed_dose<gray, long double>(l); }
 
 // yGy
-constexpr auto operator"" _q_yGy(unsigned long long l) { return absorbed_dose<yoctogray, std::int64_t>(l); }
-constexpr auto operator"" _q_yGy(long double l) { return absorbed_dose<yoctogray, long double>(l); }
+consteval auto operator"" _q_yGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<yoctogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_yGy(long double l) { return absorbed_dose<yoctogray, long double>(l); }
 
 // zGy
-constexpr auto operator"" _q_zGy(unsigned long long l) { return absorbed_dose<zeptogray, std::int64_t>(l); }
-constexpr auto operator"" _q_zGy(long double l) { return absorbed_dose<zeptogray, long double>(l); }
+consteval auto operator"" _q_zGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<zeptogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_zGy(long double l) { return absorbed_dose<zeptogray, long double>(l); }
 
 // aGy
-constexpr auto operator"" _q_aGy(unsigned long long l) { return absorbed_dose<attogray, std::int64_t>(l); }
-constexpr auto operator"" _q_aGy(long double l) { return absorbed_dose<attogray, long double>(l); }
+consteval auto operator"" _q_aGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<attogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_aGy(long double l) { return absorbed_dose<attogray, long double>(l); }
 
 // fGy
-constexpr auto operator"" _q_fGy(unsigned long long l) { return absorbed_dose<femtogray, std::int64_t>(l); }
-constexpr auto operator"" _q_fGy(long double l) { return absorbed_dose<femtogray, long double>(l); }
+consteval auto operator"" _q_fGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<femtogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_fGy(long double l) { return absorbed_dose<femtogray, long double>(l); }
 
 // pGy
-constexpr auto operator"" _q_pGy(unsigned long long l) { return absorbed_dose<picogray, std::int64_t>(l); }
-constexpr auto operator"" _q_pGy(long double l) { return absorbed_dose<picogray, long double>(l); }
+consteval auto operator"" _q_pGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<picogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_pGy(long double l) { return absorbed_dose<picogray, long double>(l); }
 
 // nGy
-constexpr auto operator"" _q_nGy(unsigned long long l) { return absorbed_dose<nanogray, std::int64_t>(l); }
-constexpr auto operator"" _q_nGy(long double l) { return absorbed_dose<nanogray, long double>(l); }
+consteval auto operator"" _q_nGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<nanogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_nGy(long double l) { return absorbed_dose<nanogray, long double>(l); }
 
 // uGy
-constexpr auto operator"" _q_uGy(unsigned long long l) { return absorbed_dose<microgray, std::int64_t>(l); }
-constexpr auto operator"" _q_uGy(long double l) { return absorbed_dose<microgray, long double>(l); }
+consteval auto operator"" _q_uGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<microgray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_uGy(long double l) { return absorbed_dose<microgray, long double>(l); }
 
 // mGy
-constexpr auto operator"" _q_mGy(unsigned long long l) { return absorbed_dose<milligray, std::int64_t>(l); }
-constexpr auto operator"" _q_mGy(long double l) { return absorbed_dose<milligray, long double>(l); }
+consteval auto operator"" _q_mGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<milligray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_mGy(long double l) { return absorbed_dose<milligray, long double>(l); }
 
 // cGy
-constexpr auto operator"" _q_cGy(unsigned long long l) { return absorbed_dose<centigray, std::int64_t>(l); }
-constexpr auto operator"" _q_cGy(long double l) { return absorbed_dose<centigray, long double>(l); }
+consteval auto operator"" _q_cGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<centigray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_cGy(long double l) { return absorbed_dose<centigray, long double>(l); }
 
 // dGy
-constexpr auto operator"" _q_dGy(unsigned long long l) { return absorbed_dose<decigray, std::int64_t>(l); }
-constexpr auto operator"" _q_dGy(long double l) { return absorbed_dose<decigray, long double>(l); }
+consteval auto operator"" _q_dGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<decigray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_dGy(long double l) { return absorbed_dose<decigray, long double>(l); }
 
 // daGy
-constexpr auto operator"" _q_daGy(unsigned long long l) { return absorbed_dose<decagray, std::int64_t>(l); }
-constexpr auto operator"" _q_daGy(long double l) { return absorbed_dose<decagray, long double>(l); }
+consteval auto operator"" _q_daGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<decagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_daGy(long double l) { return absorbed_dose<decagray, long double>(l); }
 
 // hGy
-constexpr auto operator"" _q_hGy(unsigned long long l) { return absorbed_dose<hectogray, std::int64_t>(l); }
-constexpr auto operator"" _q_hGy(long double l) { return absorbed_dose<hectogray, long double>(l); }
+consteval auto operator"" _q_hGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<hectogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_hGy(long double l) { return absorbed_dose<hectogray, long double>(l); }
 
 // kGy
-constexpr auto operator"" _q_kGy(unsigned long long l) { return absorbed_dose<kilogray, std::int64_t>(l); }
-constexpr auto operator"" _q_kGy(long double l) { return absorbed_dose<kilogray, long double>(l); }
+consteval auto operator"" _q_kGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<kilogray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_kGy(long double l) { return absorbed_dose<kilogray, long double>(l); }
 
 // MGy
-constexpr auto operator"" _q_MGy(unsigned long long l) { return absorbed_dose<megagray, std::int64_t>(l); }
-constexpr auto operator"" _q_MGy(long double l) { return absorbed_dose<megagray, long double>(l); }
+consteval auto operator"" _q_MGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<megagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_MGy(long double l) { return absorbed_dose<megagray, long double>(l); }
 
 // GGy
-constexpr auto operator"" _q_GGy(unsigned long long l) { return absorbed_dose<gigagray, std::int64_t>(l); }
-constexpr auto operator"" _q_GGy(long double l) { return absorbed_dose<gigagray, long double>(l); }
+consteval auto operator"" _q_GGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<gigagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_GGy(long double l) { return absorbed_dose<gigagray, long double>(l); }
 
 // TGy
-constexpr auto operator"" _q_TGy(unsigned long long l) { return absorbed_dose<teragray, std::int64_t>(l); }
-constexpr auto operator"" _q_TGy(long double l) { return absorbed_dose<teragray, long double>(l); }
+consteval auto operator"" _q_TGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<teragray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_TGy(long double l) { return absorbed_dose<teragray, long double>(l); }
 
 // PGy
-constexpr auto operator"" _q_PGy(unsigned long long l) { return absorbed_dose<petagray, std::int64_t>(l); }
-constexpr auto operator"" _q_PGy(long double l) { return absorbed_dose<petagray, long double>(l); }
+consteval auto operator"" _q_PGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<petagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_PGy(long double l) { return absorbed_dose<petagray, long double>(l); }
 
 // EGy
-constexpr auto operator"" _q_EGy(unsigned long long l) { return absorbed_dose<exagray, std::int64_t>(l); }
-constexpr auto operator"" _q_EGy(long double l) { return absorbed_dose<exagray, long double>(l); }
+consteval auto operator"" _q_EGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<exagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_EGy(long double l) { return absorbed_dose<exagray, long double>(l); }
 
 // ZGy
-constexpr auto operator"" _q_ZGy(unsigned long long l) { return absorbed_dose<zettagray, std::int64_t>(l); }
-constexpr auto operator"" _q_ZGy(long double l) { return absorbed_dose<zettagray, long double>(l); }
+consteval auto operator"" _q_ZGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<zettagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_ZGy(long double l) { return absorbed_dose<zettagray, long double>(l); }
 
 // YGy
-constexpr auto operator"" _q_YGy(unsigned long long l) { return absorbed_dose<yottagray, std::int64_t>(l); }
-constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray, long double>(l); }
+consteval auto operator"" _q_YGy(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return absorbed_dose<yottagray, std::int64_t>(static_cast<std::int64_t>(l)); }
+consteval auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray, long double>(l); }
 
 }  // namespace literals
 
