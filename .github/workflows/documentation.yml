@@ -83,7 +83,7 @@ jobs:
       - name: Configure CMake
         run: |
           cd build
-          cmake ..
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Generate documentation
         run: |
           cd build
