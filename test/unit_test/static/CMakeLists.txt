@@ -22,6 +22,20 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+add_library(unit_tests_static_truncating
+    quantity_test.cpp
+    quantity_kind_test.cpp
+    quantity_point_kind_test.cpp
+)
+target_link_libraries(unit_tests_static_truncating
+    PRIVATE
+        mp-units::mp-units
+)
+target_compile_options(unit_tests_static_truncating
+    PRIVATE
+        $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+)
+
 add_library(unit_tests_static
     cgs_test.cpp
     chrono_test.cpp
@@ -36,10 +50,7 @@ add_library(unit_tests_static
     fps_test.cpp
     kind_test.cpp
     math_test.cpp
-    quantity_test.cpp
     quantity_point_test.cpp
-    quantity_kind_test.cpp
-    quantity_point_kind_test.cpp
     ratio_test.cpp
     si_test.cpp
     si_cgs_test.cpp
@@ -52,5 +63,6 @@ add_library(unit_tests_static
 )
 target_link_libraries(unit_tests_static
     PRIVATE
+        unit_tests_static_truncating
         mp-units::mp-units
 )

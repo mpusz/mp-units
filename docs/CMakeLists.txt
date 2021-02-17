@@ -27,6 +27,9 @@ if(NOT UNITS_BUILD_DOCS)
     return()
 endif()
 
+# set paths to Conan packages (needed for doxygen)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
+
 # Find all the public headers
 file(GLOB_RECURSE unitsPublicHeaders "${PROJECT_SOURCE_DIR}/src/*.h")
 

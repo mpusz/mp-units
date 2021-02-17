@@ -26,8 +26,9 @@ project(mp-units
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# set paths to Conan packages
-include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
+# set restrictive compilation warnings
+include(warnings)
+set_warnings()
 
 # enable static analysis
 #enable_clang_tidy()
@@ -35,10 +36,6 @@ include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
 
 # add project code
 add_subdirectory(src)
-
-# set restrictive compilation warnings
-include(warnings)
-set_warnings(mp-units INTERFACE)
 
 # add usage example
 add_subdirectory(example)

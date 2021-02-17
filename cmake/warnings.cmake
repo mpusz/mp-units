@@ -25,21 +25,13 @@
 cmake_minimum_required(VERSION 3.2)
 
 # Configure compiler warning level
-function(set_warnings target scope)
+function(set_warnings)
     option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" TRUE)
-
-    if(NOT TARGET ${target})
-        message(FATAL_ERROR "'${target}' is not a CMake target")
-    endif()
-
-    if(NOT (scope STREQUAL "PRIVATE" OR scope STREQUAL "PUBLIC" OR scope STREQUAL "INTERFACE"))
-        message(FATAL_ERROR "'${scope}' is not one of (PRIVATE, PUBLIC, INTERFACE)")
-    endif()
 
     set(MSVC_WARNINGS
         /W4 # Baseline reasonable warnings
         /w14062 # enumerator 'identifier' in a switch of enum 'enumeration' is not handled
-    #   /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
+        /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
         /w14254 # 'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
         /w14263 # 'function': member function does not override any base class virtual member function
         /w14265 # 'classname': class has virtual functions, but destructor is not
@@ -67,7 +59,6 @@ function(set_warnings target scope)
         /w14928 # illegal copy-initialization; more than one user-defined
                 # conversion has been implicitly applied
         /permissive- # standards conformance mode for MSVC compiler.
-        /wd4244 #
     )
 
     set(CLANG_WARNINGS
@@ -83,8 +74,9 @@ function(set_warnings target scope)
         -Wunused # warn on anything being unused
         -Woverloaded-virtual # warn if you overload (not override) a virtual function
         -Wcast-qual # warn on dropping const or volatile qualifiers
-    #   -Wconversion # warn on type conversions that may lose data
-    #   -Wsign-conversion # warn on sign conversions
+        -Wconversion # warn on type conversions that may lose data
+        # disabled due to the truncating on UDLs
+        # -Wsign-conversion # warn on sign conversions
         -Wnull-dereference # warn if a null dereference is detected
         -Wdouble-promotion # warn if float is implicit promoted to double
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
@@ -106,11 +98,11 @@ function(set_warnings target scope)
     if(MSVC)
         string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
-        target_compile_options(${target} ${scope} ${MSVC_WARNINGS})
+        add_compile_options(${MSVC_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-        target_compile_options(${target} ${scope} ${CLANG_WARNINGS})
+        add_compile_options(${CLANG_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_compile_options(${target} ${scope} ${GCC_WARNINGS})
+        add_compile_options(${GCC_WARNINGS})
     else()
         message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
     endif()
