@@ -38,7 +38,7 @@ using dynamic_viscosity = quantity<dim_dynamic_viscosity, U, Rep>;
 inline namespace literals {
 
 // Pa·s
-constexpr auto operator"" _q_Pa_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return dynamic_viscosity<pascal_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pa_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return dynamic_viscosity<pascal_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_Pa_s(long double l) { return dynamic_viscosity<pascal_second, long double>(l); }
 
 }  // namespace literals

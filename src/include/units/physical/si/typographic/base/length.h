@@ -36,19 +36,19 @@ struct point_prn : named_scaled_unit<point_prn, "point(prn)", no_prefix, ratio(1
 inline namespace literals {
 
 // pica comp
-constexpr auto operator"" _q_pica_comp(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<pica_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pica_comp(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<pica_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_pica_comp(long double l) { return si::length<pica_comp, long double>(l); }
 
 // pica prn
-constexpr auto operator"" _q_pica_prn(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<pica_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pica_prn(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<pica_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_pica_prn(long double l) { return si::length<pica_prn, long double>(l); }
 
 // point comp
-constexpr auto operator"" _q_point_comp(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<point_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_point_comp(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<point_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_point_comp(long double l) { return si::length<point_comp, long double>(l); }
 
 // point prn
-constexpr auto operator"" _q_point_prn(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<point_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_point_prn(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<point_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_prn, long double>(l); }
 
 }  // namespace literals

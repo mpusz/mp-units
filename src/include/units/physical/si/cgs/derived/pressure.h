@@ -40,7 +40,7 @@ using pressure = quantity<dim_pressure, U, Rep>;
 inline namespace literals {
 
 // Ba
-constexpr auto operator"" _q_Ba(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return pressure<barye, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ba(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return pressure<barye, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_Ba(long double l) { return pressure<barye, long double>(l); }
 
 }  // namespace literals

@@ -38,7 +38,7 @@ using surface_tension = quantity<dim_surface_tension, U, Rep>;
 inline namespace literals {
 
 // N/m
-constexpr auto operator"" _q_N_per_m(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return surface_tension<newton_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_N_per_m(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return surface_tension<newton_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<newton_per_metre, long double>(l); }
 
 }  // namespace literals

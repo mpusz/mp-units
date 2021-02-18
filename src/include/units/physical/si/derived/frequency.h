@@ -54,71 +54,71 @@ using frequency = quantity<dim_frequency, U, Rep>;
 inline namespace literals {
 
 // Hz
-constexpr auto operator"" _q_Hz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<hertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Hz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<hertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_Hz(long double l) { return frequency<hertz, long double>(l); }
 
 // yHz
-constexpr auto operator"" _q_yHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<yoctohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<yoctohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_yHz(long double l) { return frequency<yoctohertz, long double>(l); }
 
 // zHz
-constexpr auto operator"" _q_zHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<zeptohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<zeptohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_zHz(long double l) { return frequency<zeptohertz, long double>(l); }
 
 // aHz
-constexpr auto operator"" _q_aHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<attohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<attohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_aHz(long double l) { return frequency<attohertz, long double>(l); }
 
 // fHz
-constexpr auto operator"" _q_fHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<femtohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<femtohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_fHz(long double l) { return frequency<femtohertz, long double>(l); }
 
 // pHz
-constexpr auto operator"" _q_pHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<picohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<picohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_pHz(long double l) { return frequency<picohertz, long double>(l); }
 
 // nHz
-constexpr auto operator"" _q_nHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<nanohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<nanohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_nHz(long double l) { return frequency<nanohertz, long double>(l); }
 
 // uHz
-constexpr auto operator"" _q_uHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<microhertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<microhertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_uHz(long double l) { return frequency<microhertz, long double>(l); }
 
 // mHz
-constexpr auto operator"" _q_mHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<millihertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<millihertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_mHz(long double l) { return frequency<millihertz, long double>(l); }
 
 // kHz
-constexpr auto operator"" _q_kHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<kilohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<kilohertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_kHz(long double l) { return frequency<kilohertz, long double>(l); }
 
 // MHz
-constexpr auto operator"" _q_MHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<megahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<megahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_MHz(long double l) { return frequency<megahertz, long double>(l); }
 
 // GHz
-constexpr auto operator"" _q_GHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<gigahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<gigahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_GHz(long double l) { return frequency<gigahertz, long double>(l); }
 
 // THz
-constexpr auto operator"" _q_THz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<terahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_THz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<terahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_THz(long double l) { return frequency<terahertz, long double>(l); }
 
 // PHz
-constexpr auto operator"" _q_PHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<petahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<petahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_PHz(long double l) { return frequency<petahertz, long double>(l); }
 
 // EHz
-constexpr auto operator"" _q_EHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<exahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<exahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_EHz(long double l) { return frequency<exahertz, long double>(l); }
 
 // ZHz
-constexpr auto operator"" _q_ZHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<zettahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<zettahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_ZHz(long double l) { return frequency<zettahertz, long double>(l); }
 
 // YHz
-constexpr auto operator"" _q_YHz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return frequency<yottahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YHz(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return frequency<yottahertz, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, long double>(l); }
 
 }  // namespace literals

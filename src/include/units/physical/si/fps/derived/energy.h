@@ -46,11 +46,11 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // foot poundal
-constexpr auto operator"" _q_ft_pdl(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<foot_poundal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_pdl(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<foot_poundal, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_ft_pdl(long double l) { return energy<foot_poundal, long double>(l); }
 
 // foot_pound force
-constexpr auto operator"" _q_ft_lbf(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<foot_pound_force, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_lbf(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<foot_pound_force, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_force, long double>(l); }
 
 }  // namespace literals

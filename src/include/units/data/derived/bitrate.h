@@ -47,12 +47,12 @@ using bitrate = quantity<dim_bitrate, U, Rep>;
 inline namespace literals {
 
 // bits
-constexpr auto operator"" _q_b_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<bit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Kib_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<kibibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Mib_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<mebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Gib_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<gibibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Tib_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<tebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return bitrate<pebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_b_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<bit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Kib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<kibibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<mebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<gibibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<tebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<pebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
 

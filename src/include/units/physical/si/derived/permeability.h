@@ -39,7 +39,7 @@ using permeability = quantity<dim_permeability, U, Rep>;
 inline namespace literals {
 
 // H/m
-constexpr auto operator"" _q_H_per_m(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return permeability<henry_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_H_per_m(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return permeability<henry_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_H_per_m(long double l) { return permeability<henry_per_metre, long double>(l); }
 
 }  // namespace literals

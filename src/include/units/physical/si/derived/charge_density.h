@@ -45,11 +45,11 @@ using surface_charge_density = quantity<dim_surface_charge_density, U, Rep>;
 inline namespace literals {
 
 // C/m³
-constexpr auto operator"" _q_C_per_m3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return charge_density<coulomb_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_C_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return charge_density<coulomb_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_C_per_m3(long double l) { return charge_density<coulomb_per_metre_cub, long double>(l); }
 
 // C/m²
-constexpr auto operator"" _q_C_per_m2(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return surface_charge_density<coulomb_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_C_per_m2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return surface_charge_density<coulomb_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_density<coulomb_per_metre_sq, long double>(l); }
 
 }  // namespace literals

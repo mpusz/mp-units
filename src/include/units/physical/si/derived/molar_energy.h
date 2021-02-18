@@ -40,7 +40,7 @@ using molar_energy = quantity<dim_molar_energy, U, Rep>;
 inline namespace literals {
 
 // J/mol
-constexpr auto operator"" _q_J_per_mol(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return molar_energy<joule_per_mole, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_J_per_mol(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return molar_energy<joule_per_mole, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joule_per_mole, long double>(l); }
 
 }  // namespace literals

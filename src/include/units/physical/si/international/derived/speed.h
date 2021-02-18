@@ -32,7 +32,7 @@ struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_speed, si::internatio
 inline namespace literals {
 
 // mi/h
-constexpr auto operator"" _q_mi_per_h(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mi_per_h(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per_hour, long double>(l); }
 
 }  // namespace literals

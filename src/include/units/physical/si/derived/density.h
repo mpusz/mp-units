@@ -40,7 +40,7 @@ using density = quantity<dim_density, U, Rep>;
 inline namespace literals {
 
 // kg / m³
-constexpr auto operator"" _q_kg_per_m3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return density<kilogram_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kg_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return density<kilogram_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_kg_per_m3(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
 
 }  // namespace literals

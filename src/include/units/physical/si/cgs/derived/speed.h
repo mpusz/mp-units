@@ -38,7 +38,7 @@ using speed = quantity<dim_speed, U, Rep>;
 inline namespace literals {
 
 // cm/s
-constexpr auto operator"" _q_cm_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<centimetre_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cm_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<centimetre_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_cm_per_s(long double l) { return speed<centimetre_per_second, long double>(l); }
 
 }  // namespace literals

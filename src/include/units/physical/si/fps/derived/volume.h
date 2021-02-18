@@ -39,11 +39,11 @@ using volume = quantity<dim_volume, U, Rep>;
 inline namespace literals {
 
 // ft3
-constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
 
 // yd3
-constexpr auto operator"" _q_yd3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return volume<cubic_yard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yd3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return volume<cubic_yard, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
