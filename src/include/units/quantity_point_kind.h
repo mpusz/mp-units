@@ -67,6 +67,10 @@ public:
     requires std::is_constructible_v<quantity_type, Q>
   constexpr explicit quantity_point_kind(const Q& q) : qk_{q} {}
 
+  template<QuantityPointLike QP>
+    requires std::is_constructible_v<quantity_point<dimension, U, Rep>, QP>
+  constexpr explicit quantity_point_kind(const QP& qp) : qk_{quantity_point_like_traits<QP>::relative(qp)} {}
+
   constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep>& qp) : qk_{qp.relative()} {}
 
   constexpr explicit quantity_point_kind(const quantity_kind_type& qk) : qk_{qk} {}

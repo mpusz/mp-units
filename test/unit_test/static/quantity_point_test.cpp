@@ -36,6 +36,7 @@ using namespace units;
 using namespace physical::si;
 using namespace unit_constants;
 using namespace std::chrono_literals;
+using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 
 // class invariants
 
@@ -66,7 +67,9 @@ static_assert(quantity_point(1).relative() == quantity(1));
 static_assert(!std::is_convertible_v<int, quantity_point<dim_one, one, int>>);
 
 static_assert(quantity_point(42s).relative() == 42 * s);
+static_assert(quantity_point(sys_seconds{42s}).relative() == 42 * s);
 static_assert(!std::is_convertible_v<std::chrono::seconds, quantity_point<dim_time, second, std::chrono::seconds::rep>>);
+static_assert(!std::is_convertible_v<sys_seconds, quantity_point<dim_time, second, sys_seconds::rep>>);
 
 static_assert(quantity_point<dim_length, metre, int>().relative() == 0_q_m);
 constexpr quantity_point<dim_length, metre, int> km{1000_q_m};
