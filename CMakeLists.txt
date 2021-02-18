@@ -30,6 +30,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(warnings)
 set_warnings()
 
+# set all contracts checking in a Debug build
+add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
+
 # enable static analysis
 #enable_clang_tidy()
 #enable_iwyu()
