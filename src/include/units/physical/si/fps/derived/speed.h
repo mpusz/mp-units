@@ -45,16 +45,16 @@ struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 inline namespace literals {
 
 // ft/s
-consteval auto operator"" _q_ft_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<foot_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
+constexpr auto operator"" _q_ft_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<foot_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
 
 // mph
-consteval auto operator"" _q_mph(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mph(long double l) { return speed<mile_per_hour, long double>(l); }
+constexpr auto operator"" _q_mph(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mph(long double l) { return speed<mile_per_hour, long double>(l); }
 
 // kn
-consteval auto operator"" _q_knot(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<knot, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_knot(long double l) { return speed<knot, long double>(l); }
+constexpr auto operator"" _q_knot(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return speed<knot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_knot(long double l) { return speed<knot, long double>(l); }
 
 }  // namespace literals
 

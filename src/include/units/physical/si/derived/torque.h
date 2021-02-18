@@ -40,8 +40,8 @@ using torque = quantity<dim_torque, U, Rep>;
 inline namespace literals {
 
 // Nm
-consteval auto operator"" _q_Nm_per_rad(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return torque<newton_metre_per_radian, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Nm_per_rad(long double l) { return torque<newton_metre_per_radian, long double>(l); }
+constexpr auto operator"" _q_Nm_per_rad(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return torque<newton_metre_per_radian, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Nm_per_rad(long double l) { return torque<newton_metre_per_radian, long double>(l); }
 
 }  // namespace literals
 

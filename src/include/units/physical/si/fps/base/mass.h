@@ -54,40 +54,40 @@ struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, ratio(2'2
 inline namespace literals {
 
 // Grain
-consteval auto operator"" _q_gr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<grain, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_gr(long double l) { return mass<grain, long double>(l); }
+constexpr auto operator"" _q_gr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<grain, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_gr(long double l) { return mass<grain, long double>(l); }
 
 // Dram
-consteval auto operator"" _q_dr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<dram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dr(long double l) { return mass<dram, long double>(l); }
+constexpr auto operator"" _q_dr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<dram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dr(long double l) { return mass<dram, long double>(l); }
 
 // Ounce
-consteval auto operator"" _q_oz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<ounce, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_oz(long double l) { return mass<ounce, long double>(l); }
+constexpr auto operator"" _q_oz(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<ounce, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_oz(long double l) { return mass<ounce, long double>(l); }
 
 // Pound
-consteval auto operator"" _q_lb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<pound, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_lb(long double l) { return mass<pound, long double>(l); }
+constexpr auto operator"" _q_lb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<pound, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_lb(long double l) { return mass<pound, long double>(l); }
 
 // Stone
-consteval auto operator"" _q_st(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<stone, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_st(long double l) { return mass<stone, long double>(l); }
+constexpr auto operator"" _q_st(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<stone, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_st(long double l) { return mass<stone, long double>(l); }
 
 // Quarter
-consteval auto operator"" _q_qr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<quarter, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_qr(long double l) { return mass<quarter, long double>(l); }
+constexpr auto operator"" _q_qr(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<quarter, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_qr(long double l) { return mass<quarter, long double>(l); }
 
 // Hundredweight
-consteval auto operator"" _q_cwt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hundredweight, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_cwt(long double l) { return mass<hundredweight, long double>(l); }
+constexpr auto operator"" _q_cwt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hundredweight, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cwt(long double l) { return mass<hundredweight, long double>(l); }
 
 // Short ton
-consteval auto operator"" _q_ston(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<short_ton, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ston(long double l) { return mass<short_ton, long double>(l); }
+constexpr auto operator"" _q_ston(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<short_ton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ston(long double l) { return mass<short_ton, long double>(l); }
 
 // Long Ton
-consteval auto operator"" _q_lton(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<long_ton, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_lton(long double l) { return mass<long_ton, long double>(l); }
+constexpr auto operator"" _q_lton(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<long_ton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long double>(l); }
 
 }  // namespace literals
 

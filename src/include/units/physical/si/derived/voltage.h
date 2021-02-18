@@ -60,88 +60,88 @@ using voltage = quantity<dim_voltage, U, Rep>;
 inline namespace literals {
 
 // V
-consteval auto operator"" _q_V(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<volt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_V(long double l) { return voltage<volt, long double>(l); }
+constexpr auto operator"" _q_V(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<volt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_V(long double l) { return voltage<volt, long double>(l); }
 
 // yV
-consteval auto operator"" _q_yV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<yoctovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yV(long double l) { return voltage<yoctovolt, long double>(l); }
+constexpr auto operator"" _q_yV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<yoctovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yV(long double l) { return voltage<yoctovolt, long double>(l); }
 
 // zV
-consteval auto operator"" _q_zV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<zeptovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zV(long double l) { return voltage<zeptovolt, long double>(l); }
+constexpr auto operator"" _q_zV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<zeptovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zV(long double l) { return voltage<zeptovolt, long double>(l); }
 
 // aV
-consteval auto operator"" _q_aV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<attovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aV(long double l) { return voltage<attovolt, long double>(l); }
+constexpr auto operator"" _q_aV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<attovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aV(long double l) { return voltage<attovolt, long double>(l); }
 
 // fV
-consteval auto operator"" _q_fV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<femtovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fV(long double l) { return voltage<femtovolt, long double>(l); }
+constexpr auto operator"" _q_fV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<femtovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fV(long double l) { return voltage<femtovolt, long double>(l); }
 
 // pV
-consteval auto operator"" _q_pV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<picovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pV(long double l) { return voltage<picovolt, long double>(l); }
+constexpr auto operator"" _q_pV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<picovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pV(long double l) { return voltage<picovolt, long double>(l); }
 
 // nV
-consteval auto operator"" _q_nV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<nanovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nV(long double l) { return voltage<nanovolt, long double>(l); }
+constexpr auto operator"" _q_nV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<nanovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nV(long double l) { return voltage<nanovolt, long double>(l); }
 
 // uV
-consteval auto operator"" _q_uV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<microvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uV(long double l) { return voltage<microvolt, long double>(l); }
+constexpr auto operator"" _q_uV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<microvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uV(long double l) { return voltage<microvolt, long double>(l); }
 
 // mV
-consteval auto operator"" _q_mV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<millivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mV(long double l) { return voltage<millivolt, long double>(l); }
+constexpr auto operator"" _q_mV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<millivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mV(long double l) { return voltage<millivolt, long double>(l); }
 
 // cV
-consteval auto operator"" _q_cV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<centivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_cV(long double l) { return voltage<centivolt, long double>(l); }
+constexpr auto operator"" _q_cV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<centivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cV(long double l) { return voltage<centivolt, long double>(l); }
 
 // dV
-consteval auto operator"" _q_dV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<decivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dV(long double l) { return voltage<decivolt, long double>(l); }
+constexpr auto operator"" _q_dV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<decivolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dV(long double l) { return voltage<decivolt, long double>(l); }
 
 // daV
-consteval auto operator"" _q_daV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<decavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_daV(long double l) { return voltage<decavolt, long double>(l); }
+constexpr auto operator"" _q_daV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<decavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_daV(long double l) { return voltage<decavolt, long double>(l); }
 
 // hV
-consteval auto operator"" _q_hV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<hectovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hV(long double l) { return voltage<hectovolt, long double>(l); }
+constexpr auto operator"" _q_hV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<hectovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hV(long double l) { return voltage<hectovolt, long double>(l); }
 
 // kV
-consteval auto operator"" _q_kV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<kilovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kV(long double l) { return voltage<kilovolt, long double>(l); }
+constexpr auto operator"" _q_kV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<kilovolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kV(long double l) { return voltage<kilovolt, long double>(l); }
 
 // MV
-consteval auto operator"" _q_MV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<megavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MV(long double l) { return voltage<megavolt, long double>(l); }
+constexpr auto operator"" _q_MV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<megavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MV(long double l) { return voltage<megavolt, long double>(l); }
 
 // GV
-consteval auto operator"" _q_GV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<gigavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GV(long double l) { return voltage<gigavolt, long double>(l); }
+constexpr auto operator"" _q_GV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<gigavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GV(long double l) { return voltage<gigavolt, long double>(l); }
 
 // TV
-consteval auto operator"" _q_TV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<teravolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TV(long double l) { return voltage<teravolt, long double>(l); }
+constexpr auto operator"" _q_TV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<teravolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TV(long double l) { return voltage<teravolt, long double>(l); }
 
 // PV
-consteval auto operator"" _q_PV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<petavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PV(long double l) { return voltage<petavolt, long double>(l); }
+constexpr auto operator"" _q_PV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<petavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PV(long double l) { return voltage<petavolt, long double>(l); }
 
 // EV
-consteval auto operator"" _q_EV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<exavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_EV(long double l) { return voltage<exavolt, long double>(l); }
+constexpr auto operator"" _q_EV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<exavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EV(long double l) { return voltage<exavolt, long double>(l); }
 
 // ZV
-consteval auto operator"" _q_ZV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<zettavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZV(long double l) { return voltage<zettavolt, long double>(l); }
+constexpr auto operator"" _q_ZV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<zettavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZV(long double l) { return voltage<zettavolt, long double>(l); }
 
 // YV
-consteval auto operator"" _q_YV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<yottavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YV(long double l) { return voltage<yottavolt, long double>(l); }
+constexpr auto operator"" _q_YV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return voltage<yottavolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long double>(l); }
 
 }  // namespace literals
 

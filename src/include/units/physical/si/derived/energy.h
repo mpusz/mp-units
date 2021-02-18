@@ -58,80 +58,80 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // J
-consteval auto operator"" _q_J(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<joule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_J(long double l) { return energy<joule, long double>(l); }
+constexpr auto operator"" _q_J(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<joule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_J(long double l) { return energy<joule, long double>(l); }
 
 // yJ
-consteval auto operator"" _q_yJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<yoctojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yJ(long double l) { return energy<yoctojoule, long double>(l); }
+constexpr auto operator"" _q_yJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<yoctojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yJ(long double l) { return energy<yoctojoule, long double>(l); }
 
 // zJ
-consteval auto operator"" _q_zJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<zeptojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zJ(long double l) { return energy<zeptojoule, long double>(l); }
+constexpr auto operator"" _q_zJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<zeptojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zJ(long double l) { return energy<zeptojoule, long double>(l); }
 
 // aJ
-consteval auto operator"" _q_aJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<attojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aJ(long double l) { return energy<attojoule, long double>(l); }
+constexpr auto operator"" _q_aJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<attojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aJ(long double l) { return energy<attojoule, long double>(l); }
 
 // fJ
-consteval auto operator"" _q_fJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<femtojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fJ(long double l) { return energy<femtojoule, long double>(l); }
+constexpr auto operator"" _q_fJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<femtojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fJ(long double l) { return energy<femtojoule, long double>(l); }
 
 // pJ
-consteval auto operator"" _q_pJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<picojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pJ(long double l) { return energy<picojoule, long double>(l); }
+constexpr auto operator"" _q_pJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<picojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pJ(long double l) { return energy<picojoule, long double>(l); }
 
 // nJ
-consteval auto operator"" _q_nJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<nanojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nJ(long double l) { return energy<nanojoule, long double>(l); }
+constexpr auto operator"" _q_nJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<nanojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nJ(long double l) { return energy<nanojoule, long double>(l); }
 
 // uJ
-consteval auto operator"" _q_uJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<microjoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uJ(long double l) { return energy<microjoule, long double>(l); }
+constexpr auto operator"" _q_uJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<microjoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uJ(long double l) { return energy<microjoule, long double>(l); }
 
 // mJ
-consteval auto operator"" _q_mJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<millijoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mJ(long double l) { return energy<millijoule, long double>(l); }
+constexpr auto operator"" _q_mJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<millijoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mJ(long double l) { return energy<millijoule, long double>(l); }
 
 // kJ
-consteval auto operator"" _q_kJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<kilojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kJ(long double l) { return energy<kilojoule, long double>(l); }
+constexpr auto operator"" _q_kJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<kilojoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kJ(long double l) { return energy<kilojoule, long double>(l); }
 
 // MJ
-consteval auto operator"" _q_MJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<megajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MJ(long double l) { return energy<megajoule, long double>(l); }
+constexpr auto operator"" _q_MJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<megajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MJ(long double l) { return energy<megajoule, long double>(l); }
 
 // GJ
-consteval auto operator"" _q_GJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<gigajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GJ(long double l) { return energy<gigajoule, long double>(l); }
+constexpr auto operator"" _q_GJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<gigajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GJ(long double l) { return energy<gigajoule, long double>(l); }
 
 // TJ
-consteval auto operator"" _q_TJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<terajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TJ(long double l) { return energy<terajoule, long double>(l); }
+constexpr auto operator"" _q_TJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<terajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TJ(long double l) { return energy<terajoule, long double>(l); }
 
 // PJ
-consteval auto operator"" _q_PJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<petajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PJ(long double l) { return energy<petajoule, long double>(l); }
+constexpr auto operator"" _q_PJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<petajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PJ(long double l) { return energy<petajoule, long double>(l); }
 
 // EJ
-consteval auto operator"" _q_EJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<exajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_EJ(long double l) { return energy<exajoule, long double>(l); }
+constexpr auto operator"" _q_EJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<exajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EJ(long double l) { return energy<exajoule, long double>(l); }
 
 // ZJ
-consteval auto operator"" _q_ZJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<zettajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZJ(long double l) { return energy<zettajoule, long double>(l); }
+constexpr auto operator"" _q_ZJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<zettajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZJ(long double l) { return energy<zettajoule, long double>(l); }
 
 // YJ
-consteval auto operator"" _q_YJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<yottajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YJ(long double l) { return energy<yottajoule, long double>(l); }
+constexpr auto operator"" _q_YJ(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<yottajoule, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YJ(long double l) { return energy<yottajoule, long double>(l); }
 
 // eV
-consteval auto operator"" _q_eV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<electronvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_eV(long double l) { return energy<electronvolt, long double>(l); }
+constexpr auto operator"" _q_eV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<electronvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_eV(long double l) { return energy<electronvolt, long double>(l); }
 
 // GeV
-consteval auto operator"" _q_GeV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<gigaelectronvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
+constexpr auto operator"" _q_GeV(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return energy<gigaelectronvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
 
 }  // namespace literals
 

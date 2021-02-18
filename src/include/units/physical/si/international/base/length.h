@@ -61,36 +61,36 @@ using mil = thou;
 inline namespace literals {
 
 // yd
-consteval auto operator"" _q_yd(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<yard, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yd(long double l) { return si::length<yard, long double>(l); }
+constexpr auto operator"" _q_yd(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<yard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yd(long double l) { return si::length<yard, long double>(l); }
 
 // ft
-consteval auto operator"" _q_ft(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<foot, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft(long double l) { return si::length<foot, long double>(l); }
+constexpr auto operator"" _q_ft(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft(long double l) { return si::length<foot, long double>(l); }
 
 // fathom
-consteval auto operator"" _q_fathom(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fathom(long double l) { return si::length<fathom, long double>(l); }
+constexpr auto operator"" _q_fathom(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fathom(long double l) { return si::length<fathom, long double>(l); }
 
 // in
-consteval auto operator"" _q_in(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<inch, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_in(long double l) { return si::length<inch, long double>(l); }
+constexpr auto operator"" _q_in(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<inch, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_in(long double l) { return si::length<inch, long double>(l); }
 
 // mi
-consteval auto operator"" _q_mi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<mile, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mi(long double l) { return si::length<mile, long double>(l); }
+constexpr auto operator"" _q_mi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mi(long double l) { return si::length<mile, long double>(l); }
 
 // mi_naut
-consteval auto operator"" _q_naut_mi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
+constexpr auto operator"" _q_naut_mi(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
 
 // thou
-consteval auto operator"" _q_thou(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<thou, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_thou(long double l) { return si::length<thou, long double>(l); }
+constexpr auto operator"" _q_thou(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<thou, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_thou(long double l) { return si::length<thou, long double>(l); }
 
 // mil
-consteval auto operator"" _q_mil(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<mil, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mil(long double l) { return si::length<mil, long double>(l); }
+constexpr auto operator"" _q_mil(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::length<mil, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long double>(l); }
 
 }  // namespace literals
 

@@ -56,72 +56,72 @@ using magnetic_flux = quantity<dim_magnetic_flux, U, Rep>;
 inline namespace literals {
 
 // Wb
-consteval auto operator"" _q_Wb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<weber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Wb(long double l) { return magnetic_flux<weber, long double>(l); }
+constexpr auto operator"" _q_Wb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<weber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Wb(long double l) { return magnetic_flux<weber, long double>(l); }
 
 // yWb
-consteval auto operator"" _q_yWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<yoctoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yWb(long double l) { return magnetic_flux<yoctoweber, long double>(l); }
+constexpr auto operator"" _q_yWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<yoctoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yWb(long double l) { return magnetic_flux<yoctoweber, long double>(l); }
 
 // zWb
-consteval auto operator"" _q_zWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<zeptoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zWb(long double l) { return magnetic_flux<zeptoweber, long double>(l); }
+constexpr auto operator"" _q_zWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<zeptoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zWb(long double l) { return magnetic_flux<zeptoweber, long double>(l); }
 
 // aWb
-consteval auto operator"" _q_aWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<attoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aWb(long double l) { return magnetic_flux<attoweber, long double>(l); }
+constexpr auto operator"" _q_aWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<attoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aWb(long double l) { return magnetic_flux<attoweber, long double>(l); }
 
 // fWb
-consteval auto operator"" _q_fWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<femtoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fWb(long double l) { return magnetic_flux<femtoweber, long double>(l); }
+constexpr auto operator"" _q_fWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<femtoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fWb(long double l) { return magnetic_flux<femtoweber, long double>(l); }
 
 // pWb
-consteval auto operator"" _q_pWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<picoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pWb(long double l) { return magnetic_flux<picoweber, long double>(l); }
+constexpr auto operator"" _q_pWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<picoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pWb(long double l) { return magnetic_flux<picoweber, long double>(l); }
 
 // nWb
-consteval auto operator"" _q_nWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<nanoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nWb(long double l) { return magnetic_flux<nanoweber, long double>(l); }
+constexpr auto operator"" _q_nWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<nanoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nWb(long double l) { return magnetic_flux<nanoweber, long double>(l); }
 
 // µWb
-consteval auto operator"" _q_uWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<microweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uWb(long double l) { return magnetic_flux<microweber, long double>(l); }
+constexpr auto operator"" _q_uWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<microweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uWb(long double l) { return magnetic_flux<microweber, long double>(l); }
 
 // mWb
-consteval auto operator"" _q_mWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<milliweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mWb(long double l) { return magnetic_flux<milliweber, long double>(l); }
+constexpr auto operator"" _q_mWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<milliweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mWb(long double l) { return magnetic_flux<milliweber, long double>(l); }
 
 // kWb
-consteval auto operator"" _q_kWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<kiloweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kWb(long double l) { return magnetic_flux<kiloweber, long double>(l); }
+constexpr auto operator"" _q_kWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<kiloweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kWb(long double l) { return magnetic_flux<kiloweber, long double>(l); }
 
 // MWb
-consteval auto operator"" _q_MWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<megaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MWb(long double l) { return magnetic_flux<megaweber, long double>(l); }
+constexpr auto operator"" _q_MWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<megaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MWb(long double l) { return magnetic_flux<megaweber, long double>(l); }
 
 // GWb
-consteval auto operator"" _q_GWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<gigaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GWb(long double l) { return magnetic_flux<gigaweber, long double>(l); }
+constexpr auto operator"" _q_GWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<gigaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GWb(long double l) { return magnetic_flux<gigaweber, long double>(l); }
 
 // TWb
-consteval auto operator"" _q_TWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<teraweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TWb(long double l) { return magnetic_flux<teraweber, long double>(l); }
+constexpr auto operator"" _q_TWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<teraweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TWb(long double l) { return magnetic_flux<teraweber, long double>(l); }
 
 // PWb
-consteval auto operator"" _q_PWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<petaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PWb(long double l) { return magnetic_flux<petaweber, long double>(l); }
+constexpr auto operator"" _q_PWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<petaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PWb(long double l) { return magnetic_flux<petaweber, long double>(l); }
 
 // EWb
-consteval auto operator"" _q_EWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<exaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_EWb(long double l) { return magnetic_flux<exaweber, long double>(l); }
+constexpr auto operator"" _q_EWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<exaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EWb(long double l) { return magnetic_flux<exaweber, long double>(l); }
 
 // ZWb
-consteval auto operator"" _q_ZWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<zettaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZWb(long double l) { return magnetic_flux<zettaweber, long double>(l); }
+constexpr auto operator"" _q_ZWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<zettaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZWb(long double l) { return magnetic_flux<zettaweber, long double>(l); }
 
 // YWb
-consteval auto operator"" _q_YWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<yottaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YWb(long double l) { return magnetic_flux<yottaweber, long double>(l); }
+constexpr auto operator"" _q_YWb(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_flux<yottaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottaweber, long double>(l); }
 
 }  // namespace literals
 

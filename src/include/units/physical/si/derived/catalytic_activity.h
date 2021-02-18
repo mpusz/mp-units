@@ -62,92 +62,92 @@ using catalytic_activity = quantity<dim_catalytic_activity, U, Rep>;
 inline namespace literals {
 
 // kat
-consteval auto operator"" _q_kat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<katal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kat(long double l) { return catalytic_activity<katal, long double>(l); }
+constexpr auto operator"" _q_kat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<katal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kat(long double l) { return catalytic_activity<katal, long double>(l); }
 
 // ykat
-consteval auto operator"" _q_ykat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<yoctokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ykat(long double l) { return catalytic_activity<yoctokatal, long double>(l); }
+constexpr auto operator"" _q_ykat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<yoctokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ykat(long double l) { return catalytic_activity<yoctokatal, long double>(l); }
 
 // zkat
-consteval auto operator"" _q_zkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<zeptokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zkat(long double l) { return catalytic_activity<zeptokatal, long double>(l); }
+constexpr auto operator"" _q_zkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<zeptokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zkat(long double l) { return catalytic_activity<zeptokatal, long double>(l); }
 
 // akat
-consteval auto operator"" _q_akat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<attokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_akat(long double l) { return catalytic_activity<attokatal, long double>(l); }
+constexpr auto operator"" _q_akat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<attokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_akat(long double l) { return catalytic_activity<attokatal, long double>(l); }
 
 // fkat
-consteval auto operator"" _q_fkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<femtokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fkat(long double l) { return catalytic_activity<femtokatal, long double>(l); }
+constexpr auto operator"" _q_fkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<femtokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fkat(long double l) { return catalytic_activity<femtokatal, long double>(l); }
 
 // pkat
-consteval auto operator"" _q_pkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<picokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pkat(long double l) { return catalytic_activity<picokatal, long double>(l); }
+constexpr auto operator"" _q_pkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<picokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pkat(long double l) { return catalytic_activity<picokatal, long double>(l); }
 
 // nkat
-consteval auto operator"" _q_nkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<nanokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nkat(long double l) { return catalytic_activity<nanokatal, long double>(l); }
+constexpr auto operator"" _q_nkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<nanokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nkat(long double l) { return catalytic_activity<nanokatal, long double>(l); }
 
 // ukat
-consteval auto operator"" _q_ukat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<microkatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ukat(long double l) { return catalytic_activity<microkatal, long double>(l); }
+constexpr auto operator"" _q_ukat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<microkatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ukat(long double l) { return catalytic_activity<microkatal, long double>(l); }
 
 // mkat
-consteval auto operator"" _q_mkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<millikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mkat(long double l) { return catalytic_activity<millikatal, long double>(l); }
+constexpr auto operator"" _q_mkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<millikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mkat(long double l) { return catalytic_activity<millikatal, long double>(l); }
 
 // ckat
-consteval auto operator"" _q_ckat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<centikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ckat(long double l) { return catalytic_activity<centikatal, long double>(l); }
+constexpr auto operator"" _q_ckat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<centikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ckat(long double l) { return catalytic_activity<centikatal, long double>(l); }
 
 // dkat
-consteval auto operator"" _q_dkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<decikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dkat(long double l) { return catalytic_activity<decikatal, long double>(l); }
+constexpr auto operator"" _q_dkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<decikatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dkat(long double l) { return catalytic_activity<decikatal, long double>(l); }
 
 // dakat
-consteval auto operator"" _q_dakat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<decakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dakat(long double l) { return catalytic_activity<decakatal, long double>(l); }
+constexpr auto operator"" _q_dakat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<decakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dakat(long double l) { return catalytic_activity<decakatal, long double>(l); }
 
 // hkat
-consteval auto operator"" _q_hkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<hectokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hkat(long double l) { return catalytic_activity<hectokatal, long double>(l); }
+constexpr auto operator"" _q_hkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<hectokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hkat(long double l) { return catalytic_activity<hectokatal, long double>(l); }
 
 // kkat
-consteval auto operator"" _q_kkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<kilokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kkat(long double l) { return catalytic_activity<kilokatal, long double>(l); }
+constexpr auto operator"" _q_kkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<kilokatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kkat(long double l) { return catalytic_activity<kilokatal, long double>(l); }
 
 // Mkat
-consteval auto operator"" _q_Mkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<megakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Mkat(long double l) { return catalytic_activity<megakatal, long double>(l); }
+constexpr auto operator"" _q_Mkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<megakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mkat(long double l) { return catalytic_activity<megakatal, long double>(l); }
 
 // Gkat
-consteval auto operator"" _q_Gkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<gigakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Gkat(long double l) { return catalytic_activity<gigakatal, long double>(l); }
+constexpr auto operator"" _q_Gkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<gigakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gkat(long double l) { return catalytic_activity<gigakatal, long double>(l); }
 
 // Tkat
-consteval auto operator"" _q_Tkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<terakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Tkat(long double l) { return catalytic_activity<terakatal, long double>(l); }
+constexpr auto operator"" _q_Tkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<terakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tkat(long double l) { return catalytic_activity<terakatal, long double>(l); }
 
 // Pkat
-consteval auto operator"" _q_Pkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<petakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Pkat(long double l) { return catalytic_activity<petakatal, long double>(l); }
+constexpr auto operator"" _q_Pkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<petakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pkat(long double l) { return catalytic_activity<petakatal, long double>(l); }
 
 // Ekat
-consteval auto operator"" _q_Ekat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<exakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Ekat(long double l) { return catalytic_activity<exakatal, long double>(l); }
+constexpr auto operator"" _q_Ekat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<exakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ekat(long double l) { return catalytic_activity<exakatal, long double>(l); }
 
 // Zkat
-consteval auto operator"" _q_Zkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<zettakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Zkat(long double l) { return catalytic_activity<zettakatal, long double>(l); }
+constexpr auto operator"" _q_Zkat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<zettakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Zkat(long double l) { return catalytic_activity<zettakatal, long double>(l); }
 
 // Ykat
-consteval auto operator"" _q_Ykat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<yottakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Ykat(long double l) { return catalytic_activity<yottakatal, long double>(l); }
+constexpr auto operator"" _q_Ykat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<yottakatal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ykat(long double l) { return catalytic_activity<yottakatal, long double>(l); }
 
 // U
-consteval auto operator"" _q_U(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<enzyme_unit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_U(long double l) { return catalytic_activity<enzyme_unit, long double>(l); }
+constexpr auto operator"" _q_U(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return catalytic_activity<enzyme_unit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_U(long double l) { return catalytic_activity<enzyme_unit, long double>(l); }
 
 }  // namespace literals
 

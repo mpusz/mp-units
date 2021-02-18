@@ -38,8 +38,8 @@ using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep
 inline namespace literals {
 
 // K
-consteval auto operator"" _q_K(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return thermodynamic_temperature<kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_K(long double l) { return thermodynamic_temperature<kelvin, long double>(l); }
+constexpr auto operator"" _q_K(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return thermodynamic_temperature<kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature<kelvin, long double>(l); }
 
 }  // namespace literals
 

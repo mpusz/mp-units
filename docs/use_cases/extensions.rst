@@ -35,8 +35,8 @@ alias or an :abbr:`UDL (User Defined Literal)`::
     using desks = si::area<desk, std::int64_t>;
 
     // UDLs
-    consteval auto operator"" _d(unsigned long long l) { return si::area<desk, std::int64_t>(l); }
-    consteval auto operator"" _d(long double l)        { return si::area<desk, long double>(l); }
+    constexpr auto operator"" _d(unsigned long long l) { return si::area<desk, std::int64_t>(l); }
+    constexpr auto operator"" _d(long double l)        { return si::area<desk, long double>(l); }
 
 Right now I am fully set up for my project and can start my work of tracking the area taken
 by my desks::
@@ -156,8 +156,8 @@ define a new base dimension, its units, quantity helper, concept, and UDLs::
     template<typename T>
     concept People = QuantityOf<T, dim_people>;
 
-    consteval auto operator"" _p(unsigned long long l) { return people<person, std::int64_t>(l); }
-    consteval auto operator"" _p(long double l) { return people<person, long double>(l); }
+    constexpr auto operator"" _p(unsigned long long l) { return people<person, std::int64_t>(l); }
+    constexpr auto operator"" _p(long double l) { return people<person, long double>(l); }
 
 
 With the above we can now define a new derived dimension::

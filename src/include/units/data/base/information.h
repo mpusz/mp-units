@@ -55,20 +55,20 @@ using information = quantity<dim_information, U, Rep>;
 inline namespace literals {
 
 // bits
-consteval auto operator"" _q_b(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<bit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Kib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<kibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Mib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<mebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Gib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<gibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Tib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<tebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Pib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<pebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_b(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<bit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Kib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<kibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<mebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<gibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<tebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pib(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<pebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 // bytes
-consteval auto operator"" _q_B(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<byte, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_KiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<kibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<mebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<gibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<tebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<pebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_B(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<byte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_KiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<kibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<mebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<gibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<tebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return information<pebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
 

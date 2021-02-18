@@ -32,8 +32,8 @@ struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, si::international::
 inline namespace literals {
 
 // ft3
-consteval auto operator"" _q_ft3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
+constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return si::volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
 
 }  // namespace literals
 

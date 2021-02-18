@@ -60,88 +60,88 @@ using capacitance = quantity<dim_capacitance, U, Rep>;
 inline namespace literals {
 
 // F
-consteval auto operator"" _q_F(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<farad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_F(long double l) { return capacitance<farad, long double>(l); }
+constexpr auto operator"" _q_F(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<farad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_F(long double l) { return capacitance<farad, long double>(l); }
 
 // yF
-consteval auto operator"" _q_yF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<yoctofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yF(long double l) { return capacitance<yoctofarad, long double>(l); }
+constexpr auto operator"" _q_yF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<yoctofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yF(long double l) { return capacitance<yoctofarad, long double>(l); }
 
 // zF
-consteval auto operator"" _q_zF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<zeptofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zF(long double l) { return capacitance<zeptofarad, long double>(l); }
+constexpr auto operator"" _q_zF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<zeptofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zF(long double l) { return capacitance<zeptofarad, long double>(l); }
 
 // aF
-consteval auto operator"" _q_aF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<attofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aF(long double l) { return capacitance<attofarad, long double>(l); }
+constexpr auto operator"" _q_aF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<attofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aF(long double l) { return capacitance<attofarad, long double>(l); }
 
 // fF
-consteval auto operator"" _q_fF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<femtofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fF(long double l) { return capacitance<femtofarad, long double>(l); }
+constexpr auto operator"" _q_fF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<femtofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fF(long double l) { return capacitance<femtofarad, long double>(l); }
 
 // pF
-consteval auto operator"" _q_pF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<picofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pF(long double l) { return capacitance<picofarad, long double>(l); }
+constexpr auto operator"" _q_pF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<picofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pF(long double l) { return capacitance<picofarad, long double>(l); }
 
 // nF
-consteval auto operator"" _q_nF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<nanofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nF(long double l) { return capacitance<nanofarad, long double>(l); }
+constexpr auto operator"" _q_nF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<nanofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nF(long double l) { return capacitance<nanofarad, long double>(l); }
 
 // uF
-consteval auto operator"" _q_uF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<microfarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uF(long double l) { return capacitance<microfarad, long double>(l); }
+constexpr auto operator"" _q_uF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<microfarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uF(long double l) { return capacitance<microfarad, long double>(l); }
 
 // mF
-consteval auto operator"" _q_mF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<millifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mF(long double l) { return capacitance<millifarad, long double>(l); }
+constexpr auto operator"" _q_mF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<millifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mF(long double l) { return capacitance<millifarad, long double>(l); }
 
 // cF
-consteval auto operator"" _q_cF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<centifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_cF(long double l) { return capacitance<centifarad, long double>(l); }
+constexpr auto operator"" _q_cF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<centifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cF(long double l) { return capacitance<centifarad, long double>(l); }
 
 // dF
-consteval auto operator"" _q_dF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<decifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dF(long double l) { return capacitance<decifarad, long double>(l); }
+constexpr auto operator"" _q_dF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<decifarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dF(long double l) { return capacitance<decifarad, long double>(l); }
 
 // daF
-consteval auto operator"" _q_daF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<decafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_daF(long double l) { return capacitance<decafarad, long double>(l); }
+constexpr auto operator"" _q_daF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<decafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_daF(long double l) { return capacitance<decafarad, long double>(l); }
 
 // hF
-consteval auto operator"" _q_hF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<hectofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hF(long double l) { return capacitance<hectofarad, long double>(l); }
+constexpr auto operator"" _q_hF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<hectofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hF(long double l) { return capacitance<hectofarad, long double>(l); }
 
 // kF
-consteval auto operator"" _q_kF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<kilofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kF(long double l) { return capacitance<kilofarad, long double>(l); }
+constexpr auto operator"" _q_kF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<kilofarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kF(long double l) { return capacitance<kilofarad, long double>(l); }
 
 // MF
-consteval auto operator"" _q_MF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<megafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MF(long double l) { return capacitance<megafarad, long double>(l); }
+constexpr auto operator"" _q_MF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<megafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MF(long double l) { return capacitance<megafarad, long double>(l); }
 
 // GF
-consteval auto operator"" _q_GF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<gigafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GF(long double l) { return capacitance<gigafarad, long double>(l); }
+constexpr auto operator"" _q_GF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<gigafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GF(long double l) { return capacitance<gigafarad, long double>(l); }
 
 // TF
-consteval auto operator"" _q_TF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<terafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TF(long double l) { return capacitance<terafarad, long double>(l); }
+constexpr auto operator"" _q_TF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<terafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TF(long double l) { return capacitance<terafarad, long double>(l); }
 
 // PF
-consteval auto operator"" _q_PF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<petafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PF(long double l) { return capacitance<petafarad, long double>(l); }
+constexpr auto operator"" _q_PF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<petafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PF(long double l) { return capacitance<petafarad, long double>(l); }
 
 // EF
-consteval auto operator"" _q_EF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<exafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_EF(long double l) { return capacitance<exafarad, long double>(l); }
+constexpr auto operator"" _q_EF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<exafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EF(long double l) { return capacitance<exafarad, long double>(l); }
 
 // ZF
-consteval auto operator"" _q_ZF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<zettafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZF(long double l) { return capacitance<zettafarad, long double>(l); }
+constexpr auto operator"" _q_ZF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<zettafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZF(long double l) { return capacitance<zettafarad, long double>(l); }
 
 // YF
-consteval auto operator"" _q_YF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<yottafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YF(long double l) { return capacitance<yottafarad, long double>(l); }
+constexpr auto operator"" _q_YF(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return capacitance<yottafarad, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, long double>(l); }
 
 }  // namespace literals
 

@@ -83,176 +83,176 @@ using mass = quantity<dim_mass, U, Rep>;
 inline namespace literals {
 
 // g
-consteval auto operator"" _q_g(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
+constexpr auto operator"" _q_g(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
 
 // yg
-consteval auto operator"" _q_yg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yoctogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yg(long double l) { return mass<yoctogram, long double>(l); }
+constexpr auto operator"" _q_yg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yoctogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yg(long double l) { return mass<yoctogram, long double>(l); }
 
 // zg
-consteval auto operator"" _q_zg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zeptogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zg(long double l) { return mass<zeptogram, long double>(l); }
+constexpr auto operator"" _q_zg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zeptogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zg(long double l) { return mass<zeptogram, long double>(l); }
 
 // ag
-consteval auto operator"" _q_ag(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<attogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ag(long double l) { return mass<attogram, long double>(l); }
+constexpr auto operator"" _q_ag(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<attogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ag(long double l) { return mass<attogram, long double>(l); }
 
 // fg
-consteval auto operator"" _q_fg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<femtogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fg(long double l) { return mass<femtogram, long double>(l); }
+constexpr auto operator"" _q_fg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<femtogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fg(long double l) { return mass<femtogram, long double>(l); }
 
 // pg
-consteval auto operator"" _q_pg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<picogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pg(long double l) { return mass<picogram, long double>(l); }
+constexpr auto operator"" _q_pg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<picogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pg(long double l) { return mass<picogram, long double>(l); }
 
 // ng
-consteval auto operator"" _q_ng(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<nanogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ng(long double l) { return mass<nanogram, long double>(l); }
+constexpr auto operator"" _q_ng(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<nanogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ng(long double l) { return mass<nanogram, long double>(l); }
 
 // ug
-consteval auto operator"" _q_ug(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<microgram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ug(long double l) { return mass<microgram, long double>(l); }
+constexpr auto operator"" _q_ug(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<microgram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ug(long double l) { return mass<microgram, long double>(l); }
 
 // mg
-consteval auto operator"" _q_mg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<milligram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mg(long double l) { return mass<milligram, long double>(l); }
+constexpr auto operator"" _q_mg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<milligram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mg(long double l) { return mass<milligram, long double>(l); }
 
 // cg
-consteval auto operator"" _q_cg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<centigram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_cg(long double l) { return mass<centigram, long double>(l); }
+constexpr auto operator"" _q_cg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<centigram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cg(long double l) { return mass<centigram, long double>(l); }
 
 // dg
-consteval auto operator"" _q_dg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decigram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dg(long double l) { return mass<decigram, long double>(l); }
+constexpr auto operator"" _q_dg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decigram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dg(long double l) { return mass<decigram, long double>(l); }
 
 // dag
-consteval auto operator"" _q_dag(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dag(long double l) { return mass<decagram, long double>(l); }
+constexpr auto operator"" _q_dag(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dag(long double l) { return mass<decagram, long double>(l); }
 
 // hg
-consteval auto operator"" _q_hg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hectogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hg(long double l) { return mass<hectogram, long double>(l); }
+constexpr auto operator"" _q_hg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hectogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hg(long double l) { return mass<hectogram, long double>(l); }
 
 // kg
-consteval auto operator"" _q_kg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<kilogram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kg(long double l) { return mass<kilogram, long double>(l); }
+constexpr auto operator"" _q_kg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<kilogram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kg(long double l) { return mass<kilogram, long double>(l); }
 
 // Mg
-consteval auto operator"" _q_Mg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<megagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Mg(long double l) { return mass<megagram, long double>(l); }
+constexpr auto operator"" _q_Mg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<megagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mg(long double l) { return mass<megagram, long double>(l); }
 
 // Gg
-consteval auto operator"" _q_Gg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gigagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Gg(long double l) { return mass<gigagram, long double>(l); }
+constexpr auto operator"" _q_Gg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gigagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gg(long double l) { return mass<gigagram, long double>(l); }
 
 // Tg
-consteval auto operator"" _q_Tg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<teragram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Tg(long double l) { return mass<teragram, long double>(l); }
+constexpr auto operator"" _q_Tg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<teragram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tg(long double l) { return mass<teragram, long double>(l); }
 
 // Pg
-consteval auto operator"" _q_Pg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<petagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Pg(long double l) { return mass<petagram, long double>(l); }
+constexpr auto operator"" _q_Pg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<petagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pg(long double l) { return mass<petagram, long double>(l); }
 
 // Eg
-consteval auto operator"" _q_Eg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<exagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Eg(long double l) { return mass<exagram, long double>(l); }
+constexpr auto operator"" _q_Eg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<exagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Eg(long double l) { return mass<exagram, long double>(l); }
 
 // Zg
-consteval auto operator"" _q_Zg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zettagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Zg(long double l) { return mass<zettagram, long double>(l); }
+constexpr auto operator"" _q_Zg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zettagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Zg(long double l) { return mass<zettagram, long double>(l); }
 
 // Yg
-consteval auto operator"" _q_Yg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yottagram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Yg(long double l) { return mass<yottagram, long double>(l); }
+constexpr auto operator"" _q_Yg(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yottagram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Yg(long double l) { return mass<yottagram, long double>(l); }
 
 // t
-consteval auto operator"" _q_t(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<tonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_t(long double l) { return mass<tonne, long double>(l); }
+constexpr auto operator"" _q_t(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<tonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_t(long double l) { return mass<tonne, long double>(l); }
 
 // yt
-consteval auto operator"" _q_yt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yoctotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yt(long double l) { return mass<yoctotonne, long double>(l); }
+constexpr auto operator"" _q_yt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yoctotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yt(long double l) { return mass<yoctotonne, long double>(l); }
 
 // zt
-consteval auto operator"" _q_zt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zeptotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zt(long double l) { return mass<zeptotonne, long double>(l); }
+constexpr auto operator"" _q_zt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zeptotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zt(long double l) { return mass<zeptotonne, long double>(l); }
 
 // at
-consteval auto operator"" _q_at(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<attotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_at(long double l) { return mass<attotonne, long double>(l); }
+constexpr auto operator"" _q_at(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<attotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_at(long double l) { return mass<attotonne, long double>(l); }
 
 // ft
-/*consteval auto operator"" _q_ft(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }*/
+/*constexpr auto operator"" _q_ft(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }*/
 
 // pt
-consteval auto operator"" _q_pt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<picotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pt(long double l) { return mass<picotonne, long double>(l); }
+constexpr auto operator"" _q_pt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<picotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pt(long double l) { return mass<picotonne, long double>(l); }
 
 // nt
-consteval auto operator"" _q_nt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<nanotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nt(long double l) { return mass<nanotonne, long double>(l); }
+constexpr auto operator"" _q_nt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<nanotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nt(long double l) { return mass<nanotonne, long double>(l); }
 
 // ut
-consteval auto operator"" _q_ut(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<microtonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ut(long double l) { return mass<microtonne, long double>(l); }
+constexpr auto operator"" _q_ut(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<microtonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ut(long double l) { return mass<microtonne, long double>(l); }
 
 // mt
-consteval auto operator"" _q_mt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<millitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mt(long double l) { return mass<millitonne, long double>(l); }
+constexpr auto operator"" _q_mt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<millitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mt(long double l) { return mass<millitonne, long double>(l); }
 
 // ct
-consteval auto operator"" _q_ct(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<centitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ct(long double l) { return mass<centitonne, long double>(l); }
+constexpr auto operator"" _q_ct(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<centitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ct(long double l) { return mass<centitonne, long double>(l); }
 
 // dt
-consteval auto operator"" _q_dt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dt(long double l) { return mass<decitonne, long double>(l); }
+constexpr auto operator"" _q_dt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decitonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dt(long double l) { return mass<decitonne, long double>(l); }
 
 // dat
-consteval auto operator"" _q_dat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dat(long double l) { return mass<decatonne, long double>(l); }
+constexpr auto operator"" _q_dat(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<decatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dat(long double l) { return mass<decatonne, long double>(l); }
 
 // ht
-consteval auto operator"" _q_ht(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hectotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ht(long double l) { return mass<hectotonne, long double>(l); }
+constexpr auto operator"" _q_ht(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<hectotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ht(long double l) { return mass<hectotonne, long double>(l); }
 
 // kt
-consteval auto operator"" _q_kt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<kilotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kt(long double l) { return mass<kilotonne, long double>(l); }
+constexpr auto operator"" _q_kt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<kilotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kt(long double l) { return mass<kilotonne, long double>(l); }
 
 // Mt
-consteval auto operator"" _q_Mt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<megatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Mt(long double l) { return mass<megatonne, long double>(l); }
+constexpr auto operator"" _q_Mt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<megatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mt(long double l) { return mass<megatonne, long double>(l); }
 
 // Gt
-consteval auto operator"" _q_Gt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gigatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Gt(long double l) { return mass<gigatonne, long double>(l); }
+constexpr auto operator"" _q_Gt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gigatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gt(long double l) { return mass<gigatonne, long double>(l); }
 
 // Tt
-consteval auto operator"" _q_Tt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<teratonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Tt(long double l) { return mass<teratonne, long double>(l); }
+constexpr auto operator"" _q_Tt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<teratonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tt(long double l) { return mass<teratonne, long double>(l); }
 
 // Pt
-consteval auto operator"" _q_Pt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<petatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Pt(long double l) { return mass<petatonne, long double>(l); }
+constexpr auto operator"" _q_Pt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<petatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pt(long double l) { return mass<petatonne, long double>(l); }
 
 // Et
-consteval auto operator"" _q_Et(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<exatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Et(long double l) { return mass<exatonne, long double>(l); }
+constexpr auto operator"" _q_Et(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<exatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Et(long double l) { return mass<exatonne, long double>(l); }
 
 // Zt
-consteval auto operator"" _q_Zt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zettatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Zt(long double l) { return mass<zettatonne, long double>(l); }
+constexpr auto operator"" _q_Zt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<zettatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Zt(long double l) { return mass<zettatonne, long double>(l); }
 
 // Yt
-consteval auto operator"" _q_Yt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yottatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Yt(long double l) { return mass<yottatonne, long double>(l); }
+constexpr auto operator"" _q_Yt(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<yottatonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Yt(long double l) { return mass<yottatonne, long double>(l); }
 
 // Da
-consteval auto operator"" _q_Da(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<dalton, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_Da(long double l) { return mass<dalton, long double>(l); }
+constexpr auto operator"" _q_Da(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<dalton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double>(l); }
 
 }  // namespace literals
 

@@ -37,8 +37,8 @@ using mass = quantity<dim_mass, U, Rep>;
 inline namespace literals {
 
 // g
-consteval auto operator"" _q_g(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gram, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
+constexpr auto operator"" _q_g(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return mass<gram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
 
 }  // namespace literals
 

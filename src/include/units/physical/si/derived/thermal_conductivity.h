@@ -39,8 +39,8 @@ using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
 inline namespace literals {
 
 // W/(m K)
-consteval auto operator"" _q_W_per_m_K(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return thermal_conductivity<watt_per_metre_kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_W_per_m_K(long double l) { return thermal_conductivity<watt_per_metre_kelvin, long double>(l); }
+constexpr auto operator"" _q_W_per_m_K(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return thermal_conductivity<watt_per_metre_kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_W_per_m_K(long double l) { return thermal_conductivity<watt_per_metre_kelvin, long double>(l); }
 
 }  // namespace literals
 

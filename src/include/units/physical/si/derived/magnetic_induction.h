@@ -60,76 +60,76 @@ using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 inline namespace literals {
 
 // T
-consteval auto operator"" _q_T(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<tesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
+constexpr auto operator"" _q_T(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<tesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
 
 // yT
-consteval auto operator"" _q_yT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<yoctotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yT(long double l) { return magnetic_induction<yoctotesla, long double>(l); }
+constexpr auto operator"" _q_yT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<yoctotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yT(long double l) { return magnetic_induction<yoctotesla, long double>(l); }
 
 // zT
-consteval auto operator"" _q_zT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<zeptotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zT(long double l) { return magnetic_induction<zeptotesla, long double>(l); }
+constexpr auto operator"" _q_zT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<zeptotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zT(long double l) { return magnetic_induction<zeptotesla, long double>(l); }
 
 // aT
-consteval auto operator"" _q_aT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<attotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aT(long double l) { return magnetic_induction<attotesla, long double>(l); }
+constexpr auto operator"" _q_aT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<attotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aT(long double l) { return magnetic_induction<attotesla, long double>(l); }
 
 // fT
-consteval auto operator"" _q_fT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<femtotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fT(long double l) { return magnetic_induction<femtotesla, long double>(l); }
+constexpr auto operator"" _q_fT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<femtotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fT(long double l) { return magnetic_induction<femtotesla, long double>(l); }
 
 // pT
-consteval auto operator"" _q_pT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<picotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
+constexpr auto operator"" _q_pT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<picotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
 
 // nT
-consteval auto operator"" _q_nT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<nanotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
+constexpr auto operator"" _q_nT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<nanotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
 
 // µT
-consteval auto operator"" _q_uT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<microtesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
+constexpr auto operator"" _q_uT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<microtesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
 
 // mT
-consteval auto operator"" _q_mT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<millitesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
+constexpr auto operator"" _q_mT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<millitesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
 
 // kT
-consteval auto operator"" _q_kT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<kilotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kT(long double l) { return magnetic_induction<kilotesla, long double>(l); }
+constexpr auto operator"" _q_kT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<kilotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kT(long double l) { return magnetic_induction<kilotesla, long double>(l); }
 
 // MT
-consteval auto operator"" _q_MT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<megatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MT(long double l) { return magnetic_induction<megatesla, long double>(l); }
+constexpr auto operator"" _q_MT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<megatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MT(long double l) { return magnetic_induction<megatesla, long double>(l); }
 
 // GT
-consteval auto operator"" _q_GT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<gigatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GT(long double l) { return magnetic_induction<gigatesla, long double>(l); }
+constexpr auto operator"" _q_GT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<gigatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GT(long double l) { return magnetic_induction<gigatesla, long double>(l); }
 
 // TT
-consteval auto operator"" _q_TT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<teratesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TT(long double l) { return magnetic_induction<teratesla, long double>(l); }
+constexpr auto operator"" _q_TT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<teratesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TT(long double l) { return magnetic_induction<teratesla, long double>(l); }
 
 // PT
-consteval auto operator"" _q_PT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<petatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PT(long double l) { return magnetic_induction<petatesla, long double>(l); }
+constexpr auto operator"" _q_PT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<petatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PT(long double l) { return magnetic_induction<petatesla, long double>(l); }
 
 // ET
-consteval auto operator"" _q_ET(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<exatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ET(long double l) { return magnetic_induction<exatesla, long double>(l); }
+constexpr auto operator"" _q_ET(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<exatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ET(long double l) { return magnetic_induction<exatesla, long double>(l); }
 
 // ZT
-consteval auto operator"" _q_ZT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<zettatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZT(long double l) { return magnetic_induction<zettatesla, long double>(l); }
+constexpr auto operator"" _q_ZT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<zettatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZT(long double l) { return magnetic_induction<zettatesla, long double>(l); }
 
 // YT
-consteval auto operator"" _q_YT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<yottatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YT(long double l) { return magnetic_induction<yottatesla, long double>(l); }
+constexpr auto operator"" _q_YT(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<yottatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YT(long double l) { return magnetic_induction<yottatesla, long double>(l); }
 
 // G
-consteval auto operator"" _q_G(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<gauss, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
+constexpr auto operator"" _q_G(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return magnetic_induction<gauss, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
 
 }  // namespace literals
 

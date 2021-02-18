@@ -43,16 +43,16 @@ using power = quantity<dim_power, U, Rep>;
 inline namespace literals {
 
 // foot pound force per second
-consteval auto operator"" _q_ft_pdl_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<foot_poundal_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
+constexpr auto operator"" _q_ft_pdl_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<foot_poundal_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
 
 // foot pound force per second
-consteval auto operator"" _q_ft_lbf_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<foot_pound_force_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
+constexpr auto operator"" _q_ft_lbf_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<foot_pound_force_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
 
 // horse power
-consteval auto operator"" _q_hp(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<horse_power, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hp(long double l) { return power<horse_power, long double>(l); }
+constexpr auto operator"" _q_hp(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return power<horse_power, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long double>(l); }
 
 }  // namespace literals
 

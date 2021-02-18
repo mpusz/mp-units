@@ -59,88 +59,88 @@ using electric_current = quantity<dim_electric_current, U, Rep>;
 inline namespace literals {
 
 // A
-consteval auto operator"" _q_A(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<ampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_A(long double l) { return electric_current<ampere, long double>(l); }
+constexpr auto operator"" _q_A(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<ampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_A(long double l) { return electric_current<ampere, long double>(l); }
 
 // yA
-consteval auto operator"" _q_yA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<yoctoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_yA(long double l) { return electric_current<yoctoampere, long double>(l); }
+constexpr auto operator"" _q_yA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<yoctoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yA(long double l) { return electric_current<yoctoampere, long double>(l); }
 
 // zA
-consteval auto operator"" _q_zA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<zeptoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_zA(long double l) { return electric_current<zeptoampere, long double>(l); }
+constexpr auto operator"" _q_zA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<zeptoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zA(long double l) { return electric_current<zeptoampere, long double>(l); }
 
 // aA
-consteval auto operator"" _q_aA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<attoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_aA(long double l) { return electric_current<attoampere, long double>(l); }
+constexpr auto operator"" _q_aA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<attoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aA(long double l) { return electric_current<attoampere, long double>(l); }
 
 // fA
-consteval auto operator"" _q_fA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<femtoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_fA(long double l) { return electric_current<femtoampere, long double>(l); }
+constexpr auto operator"" _q_fA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<femtoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fA(long double l) { return electric_current<femtoampere, long double>(l); }
 
 // pA
-consteval auto operator"" _q_pA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<picoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_pA(long double l) { return electric_current<picoampere, long double>(l); }
+constexpr auto operator"" _q_pA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<picoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pA(long double l) { return electric_current<picoampere, long double>(l); }
 
 // nA
-consteval auto operator"" _q_nA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<nanoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_nA(long double l) { return electric_current<nanoampere, long double>(l); }
+constexpr auto operator"" _q_nA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<nanoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nA(long double l) { return electric_current<nanoampere, long double>(l); }
 
 // uA
-consteval auto operator"" _q_uA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<microampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_uA(long double l) { return electric_current<microampere, long double>(l); }
+constexpr auto operator"" _q_uA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<microampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uA(long double l) { return electric_current<microampere, long double>(l); }
 
 // mA
-consteval auto operator"" _q_mA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<milliampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_mA(long double l) { return electric_current<milliampere, long double>(l); }
+constexpr auto operator"" _q_mA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<milliampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mA(long double l) { return electric_current<milliampere, long double>(l); }
 
 // cA
-consteval auto operator"" _q_cA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<centiampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_cA(long double l) { return electric_current<centiampere, long double>(l); }
+constexpr auto operator"" _q_cA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<centiampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cA(long double l) { return electric_current<centiampere, long double>(l); }
 
 // dA
-consteval auto operator"" _q_dA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<deciampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_dA(long double l) { return electric_current<deciampere, long double>(l); }
+constexpr auto operator"" _q_dA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<deciampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dA(long double l) { return electric_current<deciampere, long double>(l); }
 
 // daA
-consteval auto operator"" _q_daA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<decaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_daA(long double l) { return electric_current<decaampere, long double>(l); }
+constexpr auto operator"" _q_daA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<decaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_daA(long double l) { return electric_current<decaampere, long double>(l); }
 
 // hA
-consteval auto operator"" _q_hA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<hectoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_hA(long double l) { return electric_current<hectoampere, long double>(l); }
+constexpr auto operator"" _q_hA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<hectoampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hA(long double l) { return electric_current<hectoampere, long double>(l); }
 
 // kA
-consteval auto operator"" _q_kA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<kiloampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_kA(long double l) { return electric_current<kiloampere, long double>(l); }
+constexpr auto operator"" _q_kA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<kiloampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kA(long double l) { return electric_current<kiloampere, long double>(l); }
 
 // MA
-consteval auto operator"" _q_MA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<megaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_MA(long double l) { return electric_current<megaampere, long double>(l); }
+constexpr auto operator"" _q_MA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<megaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MA(long double l) { return electric_current<megaampere, long double>(l); }
 
 // GA
-consteval auto operator"" _q_GA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<gigaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_GA(long double l) { return electric_current<gigaampere, long double>(l); }
+constexpr auto operator"" _q_GA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<gigaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GA(long double l) { return electric_current<gigaampere, long double>(l); }
 
 // TA
-consteval auto operator"" _q_TA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<teraampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_TA(long double l) { return electric_current<teraampere, long double>(l); }
+constexpr auto operator"" _q_TA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<teraampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TA(long double l) { return electric_current<teraampere, long double>(l); }
 
 // PA
-consteval auto operator"" _q_PA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<petaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_PA(long double l) { return electric_current<petaampere, long double>(l); }
+constexpr auto operator"" _q_PA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<petaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PA(long double l) { return electric_current<petaampere, long double>(l); }
 
 // EA
-consteval auto operator"" _q_EA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<exaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_EA(long double l) { return electric_current<exaampere, long double>(l); }
+constexpr auto operator"" _q_EA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<exaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EA(long double l) { return electric_current<exaampere, long double>(l); }
 
 // ZA
-consteval auto operator"" _q_ZA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<zettaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_ZA(long double l) { return electric_current<zettaampere, long double>(l); }
+constexpr auto operator"" _q_ZA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<zettaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZA(long double l) { return electric_current<zettaampere, long double>(l); }
 
 // YA
-consteval auto operator"" _q_YA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<yottaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_YA(long double l) { return electric_current<yottaampere, long double>(l); }
+constexpr auto operator"" _q_YA(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return electric_current<yottaampere, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaampere, long double>(l); }
 
 } // namespace literals
 

@@ -40,8 +40,8 @@ using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 inline namespace literals {
 
 // rad / s
-consteval auto operator"" _q_rad_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return angular_velocity<radian_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
-consteval auto operator"" _q_rad_per_s(long double l) { return angular_velocity<radian_per_second, long double>(l); }
+constexpr auto operator"" _q_rad_per_s(unsigned long long l) { gsl_Expects(std::in_range<std::int64_t>(l)); return angular_velocity<radian_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<radian_per_second, long double>(l); }
 
 }  // namespace literals
 
