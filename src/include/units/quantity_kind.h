@@ -185,6 +185,7 @@ public:
   constexpr quantity_kind& operator/=(const Rep2& rhs)
     requires requires(quantity_type q) { q /= rhs; }
   {
+    gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     q_ /= rhs;
     return *this;
   }
@@ -193,6 +194,7 @@ public:
   constexpr quantity_kind& operator%=(const Rep2& rhs)
     requires (!Quantity<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
   {
+    gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     q_ %= rhs;
     return *this;
   }
@@ -200,6 +202,7 @@ public:
   constexpr quantity_kind& operator%=(const quantity_kind& qk)
     requires requires(quantity_type q) { q %= qk.common(); }
   {
+    gsl_ExpectsAudit(qk.common().count() != quantity_values<rep>::zero());
     q_ %= qk.common();
     return *this;
   }
@@ -224,6 +227,7 @@ public:
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const quantity_kind& qk, const Value& v)
     requires requires { { qk.common() / v } -> Quantity; }
   {
+    gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     return detail::make_quantity_kind<quantity_kind>(qk.common() / v);
   }
 
@@ -231,6 +235,7 @@ public:
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const Value& v, const quantity_kind& qk)
     requires requires { { v / qk.common() } -> Quantity; }
   {
+    gsl_ExpectsAudit(qk.common().count() != quantity_values<rep>::zero());
     return detail::downcasted_kind<quantity_kind>(v / qk.common());
   }
 
@@ -238,6 +243,7 @@ public:
   [[nodiscard]] friend constexpr QuantityKind auto operator%(const quantity_kind& qk, const Value& v)
     requires requires { qk.common() % v; }
   {
+    gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     return detail::make_quantity_kind<quantity_kind>(qk.common() % v);
   }
 
@@ -285,6 +291,7 @@ template<QuantityKind QK, Quantity Q>
 [[nodiscard]] constexpr QuantityKind auto operator/(const QK& lhs, const Q& rhs)
   requires requires { lhs.common() / rhs; }
 {
+  gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q::rep>::zero());
   return detail::downcasted_kind<QK>(lhs.common() / rhs);
 }
 
@@ -292,6 +299,7 @@ template<Quantity Q, QuantityKind QK>
 [[nodiscard]] constexpr QuantityKind auto operator/(const Q& lhs, const QK& rhs)
   requires requires { lhs / rhs.common(); }
 {
+  gsl_ExpectsAudit(rhs.common().count() != quantity_values<typename QK::rep>::zero());
   return detail::downcasted_kind<QK>(lhs / rhs.common());
 }
 
@@ -299,6 +307,7 @@ template<QuantityKind QK, Dimensionless D>
 [[nodiscard]] constexpr QuantityKind auto operator%(const QK& lhs, const D& rhs)
   requires requires { lhs.common() % rhs; }
 {
+  gsl_ExpectsAudit(rhs.count() != quantity_values<typename D::rep>::zero());
   return detail::make_quantity_kind<QK>(lhs.common() % rhs);
 }
 
@@ -306,6 +315,7 @@ template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
 [[nodiscard]] constexpr QuantityKind auto operator%(const QK1& lhs, const QK2& rhs)
   requires requires { lhs.common() % rhs.common(); }
 {
+  gsl_ExpectsAudit(rhs.common().count() != quantity_values<typename QK2::rep>::zero());
   return detail::make_quantity_kind<QK1>(lhs.common() % rhs.common());
 }
 
