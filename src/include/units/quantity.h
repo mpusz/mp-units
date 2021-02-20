@@ -363,7 +363,7 @@ template<QuantityValue V>
 explicit(false) quantity(V) -> quantity<dim_one, one, V>;
 
 template<QuantityLike Q>
-explicit quantity(Q) -> quantity_like_type<Q>;
+explicit quantity(Q) -> quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
 
 // non-member binary operators
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>

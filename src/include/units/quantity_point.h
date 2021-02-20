@@ -28,10 +28,6 @@
 
 namespace units {
 
-template<QuantityPointLike QP>
-using quantity_point_like_type = quantity_point<typename quantity_point_like_traits<QP>::dimension,
-  typename quantity_point_like_traits<QP>::unit, typename quantity_point_like_traits<QP>::rep>;
-
 /**
  * @brief A quantity point
  *
@@ -192,7 +188,9 @@ quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,
   typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
 
 template<QuantityPointLike QP>
-explicit quantity_point(QP) -> quantity_point_like_type<QP>;
+explicit quantity_point(QP) -> quantity_point<typename quantity_point_like_traits<QP>::dimension,
+                                              typename quantity_point_like_traits<QP>::unit,
+                                              typename quantity_point_like_traits<QP>::rep>;
 
 namespace detail {
 
