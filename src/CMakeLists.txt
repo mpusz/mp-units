@@ -51,6 +51,7 @@ target_include_directories(mp-units
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    find_package(range-v3)
     target_link_libraries(mp-units
         INTERFACE
             range-v3::range-v3

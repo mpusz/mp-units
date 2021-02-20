@@ -90,19 +90,25 @@ class UnitsConan(ConanFile):
         if compiler == "gcc":
             if version < "10.0":
                 raise ConanInvalidConfiguration("mp-units requires at least g++-10")
+        elif compiler == "clang":
+            if version < "12":
+                raise ConanInvalidConfiguration("mp-units requires at least clang++-12")
         elif compiler == "Visual Studio":
             if version < "16":
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.7")
         else:
-            raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
-        if compiler.get_safe("cppstd"):
-            check_min_cppstd(self, "20")
+            raise ConanInvalidConfiguration("Unsupported compiler")
+        check_min_cppstd(self, "20")
 
     # TODO Uncomment this when environment is supported in the Conan toolchain
     # def config_options(self):
     #     if not self._run_tests:
     #         # build_docs has sense only in a development or CI build
     #         del self.options.build_docs
+
+    def requirements(self):
+        if self.settings.compiler == "clang":
+            self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
         if self._run_tests:
