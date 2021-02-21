@@ -60,7 +60,7 @@ namespace std {
 template<class T>
 concept default_constructible = constructible_from<T>;
 
-#elif COMP_CLANG
+#elif !COMP_CLANG
 
 // concepts
 using concepts::three_way_comparable;

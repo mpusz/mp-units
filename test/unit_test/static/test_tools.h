@@ -45,8 +45,10 @@ constexpr bool constructible_from(Vs...) {
   return std::constructible_from<T, Us..., Vs...>;
 }
 
+template<class T> void convertible_from__(T);
+
 template<typename T, typename... Us>
-concept convertible_from_ = requires(Us... us) { [](T) {}({us...}); };
+concept convertible_from_ = requires(Us... us) { convertible_from__<T>({us...}); };
 
 template<typename T, typename... Us, typename... Vs>
 constexpr bool convertible_from(Vs...) {

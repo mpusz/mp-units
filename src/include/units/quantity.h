@@ -50,7 +50,7 @@ template<typename QFrom, typename QTo>
 concept harmonic_ = // exposition only
     Quantity<QFrom> &&
     Quantity<QTo> &&
-    requires(QFrom from, QTo to) { requires is_integral(detail::quantity_ratio(from) / detail::quantity_ratio(to)); };
+    is_integral(detail::quantity_ratio<QFrom> / detail::quantity_ratio<QTo>);
 
 template<typename QFrom, typename QTo>
 concept safe_castable_to_ = // exposition only
@@ -134,6 +134,11 @@ public:
 
   template<safe_convertible_to_<rep> Value>
   constexpr explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
+  quantity(const Value& v) : value_(v) {}
+
+  template<safe_convertible_to_<rep> Value>
+    requires is_same_v<dimension, unknown_dimension<>>
+  constexpr explicit(!(is_same_v<dimension, unknown_dimension<>> && unit::ratio == ratio{1, 1, 0}))
   quantity(const Value& v) : value_(v) {}
 
   template<safe_castable_to_<quantity> Q>
@@ -269,30 +274,30 @@ public:
   // Below friend functions are to be found via argument-dependent lookup only
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
-    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
-          invoke_result_convertible_to_<rep, std::plus<>, rep, Value>
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
+          requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>; }
   {
     return units::quantity(lhs.count() + rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
-    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
-          invoke_result_convertible_to_<rep, std::plus<>, Value, rep>
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
+          requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>; }
   {
     return units::quantity(lhs + rhs.count());
   }
 
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const Value& rhs)
-    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
-          invoke_result_convertible_to_<rep, std::minus<>, rep, Value>
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
+          requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>; }
   {
     return units::quantity(lhs.count() - rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
-    requires (!Quantity<Value>) && is_same_v<unit, units::one> &&
-          invoke_result_convertible_to_<rep, std::minus<>, Value, rep>
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
+          requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>; }
   {
     return units::quantity(lhs - rhs.count());
   }
