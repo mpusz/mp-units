@@ -65,7 +65,7 @@ inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = []
 }();
 
 template<typename QFrom, typename QTo>
-constexpr ratio cast_ratio(const QFrom& from, const QTo& to)
+inline constexpr ratio cast_ratio = []
 {
   using FromU = TYPENAME QFrom::unit;
   using ToU = TYPENAME QTo::unit;
@@ -75,7 +75,7 @@ constexpr ratio cast_ratio(const QFrom& from, const QTo& to)
   else {
     return quantity_ratio<QFrom> / quantity_ratio<QTo>;
   }
-}
+}();
 
 template<typename From, typename To>
 struct cast_traits;
@@ -118,7 +118,7 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
   using traits = detail::cast_traits<Rep, typename To::rep>;
   using ratio_type = TYPENAME traits::ratio_type;
   using rep_type = TYPENAME traits::rep_type;
-  constexpr auto c_ratio = detail::cast_ratio(quantity<D, U, Rep>(), To());
+  constexpr auto c_ratio = detail::cast_ratio<quantity<D, U, Rep>, To>;
 
   if constexpr (treat_as_floating_point<rep_type>) {
     return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *

@@ -31,7 +31,7 @@
 #define COMP_MSVC _MSC_VER
 #endif
 
-#if COMP_CLANG
+#if COMP_CLANG && false
 
 #include <concepts/compare.hpp>
 #include <concepts/concepts.hpp>
