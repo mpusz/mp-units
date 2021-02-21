@@ -134,7 +134,7 @@ public:
 
   template<Quantity Q>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point& lhs, const Q& rhs)
-    requires requires { lhs.relative() + rhs; }
+    requires requires(quantity_type q) { q + rhs; }
   {
     const auto q = lhs.relative() + rhs;
     using q_type = decltype(q);
@@ -150,7 +150,7 @@ public:
 
   template<Quantity Q>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point& lhs, const Q& rhs)
-    requires requires { lhs.relative() - rhs; }
+    requires requires(quantity_type q) { q - rhs; }
   {
     const auto q = lhs.relative() - rhs;
     using q_type = decltype(q);
@@ -159,7 +159,7 @@ public:
 
   template<QuantityPoint QP>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point& lhs, const QP& rhs)
-    requires requires { lhs.relative() - rhs.relative(); }
+    requires requires(quantity_type q) { q - rhs.relative(); }
   {
     return lhs.relative() - rhs.relative();
   }
