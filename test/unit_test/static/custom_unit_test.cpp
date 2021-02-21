@@ -63,6 +63,6 @@ namespace {
 struct kilogram_per_second : unit<kilogram_per_second> {};
 struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {};
 struct kilogram_per_hour : deduced_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
-constexpr auto a = 1_q_kg / 1_q_h;
+[[maybe_unused]] constexpr auto a = 1_q_kg / 1_q_h;
 
 }

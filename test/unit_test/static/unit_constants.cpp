@@ -82,6 +82,7 @@ static_assert(is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>)
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 
+#if !defined(COMP_CLANG) // -Wshadow
 static_assert([] {
   Speed auto v0 = 10 * m / s;
   signed s = 2;  // hides  ^
@@ -89,5 +90,6 @@ static_assert([] {
   /*      */ v0 = 10 * m / ::s;
   return !is_same_v<decltype(v0), decltype(v)>;
 }());
+#endif
 
 int main() {}
