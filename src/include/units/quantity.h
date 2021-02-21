@@ -136,11 +136,6 @@ public:
   constexpr explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
   quantity(const Value& v) : value_(v) {}
 
-  template<safe_convertible_to_<rep> Value>
-    requires is_same_v<dimension, unknown_dimension<>>
-  constexpr explicit(!(is_same_v<dimension, unknown_dimension<>> && unit::ratio == ratio{1, 1, 0}))
-  quantity(const Value& v) : value_(v) {}
-
   template<safe_castable_to_<quantity> Q>
   constexpr explicit(false) quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
 
