@@ -50,8 +50,11 @@ class quantity_point_kind;
 
 namespace detail {
 
+template<typename T>
+  inline constexpr ratio quantity_ratio = std::enable_if_t<!Quantity<T>>{};
+
 template<typename D, typename U, typename Rep>
-constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
+inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = []
 {
   if constexpr(BaseDimension<D>) {
     return U::ratio;
@@ -59,18 +62,18 @@ constexpr auto quantity_ratio(const quantity<D, U, Rep>&)
   else {
     return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
   }
-}
+}();
 
-template<typename Q1, typename Q2>
-constexpr ratio cast_ratio(const Q1& from, const Q2& to)
+template<typename QFrom, typename QTo>
+constexpr ratio cast_ratio(const QFrom& from, const QTo& to)
 {
-  using FromU = TYPENAME Q1::unit;
-  using ToU = TYPENAME Q2::unit;
+  using FromU = TYPENAME QFrom::unit;
+  using ToU = TYPENAME QTo::unit;
   if constexpr(same_unit_reference<FromU, ToU>::value) {
     return FromU::ratio / ToU::ratio;
   }
   else {
-    return quantity_ratio(from) / quantity_ratio(to);
+    return quantity_ratio<QFrom> / quantity_ratio<QTo>;
   }
 }
 
