@@ -287,10 +287,10 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  */
 template<typename CastSpec, typename K, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityKind auto quantity_kind_cast(const quantity_kind<K, U, Rep>& qk)
-  requires (is_specialization_of<CastSpec, quantity_kind> &&
-              requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); }) ||
-           (Kind<CastSpec> && UnitOf<U, typename CastSpec::dimension>) ||
-           requires { quantity_cast<CastSpec>(qk.common()); }
+  requires requires { requires is_specialization_of<CastSpec, quantity_kind>;
+              requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); }; } ||
+           requires { requires Kind<CastSpec>; requires UnitOf<U, typename CastSpec::dimension>; } ||
+           requires { requires requires { quantity_cast<CastSpec>(qk.common()); }; }
 {
   if constexpr (is_specialization_of<CastSpec, quantity_kind>)
     return CastSpec(quantity_cast<typename CastSpec::quantity_type>(qk.common()));
