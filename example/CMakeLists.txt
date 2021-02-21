@@ -35,6 +35,7 @@ add_example(custom_systems)
 add_example(experimental_angle)
 add_example(foot_pound_second)
 add_example(kalman_filter-alpha_beta_filter_example2)
+add_example(temperature)
 
 add_example(measurement)
 add_example(unknown_dimension)

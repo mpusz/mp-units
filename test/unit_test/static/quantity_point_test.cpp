@@ -36,6 +36,7 @@ using namespace units;
 using namespace physical::si;
 using namespace unit_constants;
 using namespace std::chrono_literals;
+using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 
 // class invariants

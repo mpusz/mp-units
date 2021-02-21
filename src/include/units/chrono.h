@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/customization_points.h>
+#include <units/origin.h>
 #include <units/physical/si/base/time.h>
 #include <chrono>
 
@@ -36,11 +37,15 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   [[nodiscard]] static constexpr rep count(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
 
+template <typename C>
+struct chrono_clock_point_origin : point_origin<chrono_clock_point_origin<C>> {};
+
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
   using dimension = physical::si::dim_time;
   using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;
+  using origin = chrono_clock_point_origin<typename std::chrono::time_point<C, std::chrono::duration<Rep, Period>>::clock>;
   [[nodiscard]] static constexpr auto relative(
     const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp) {
     return qp.time_since_epoch();

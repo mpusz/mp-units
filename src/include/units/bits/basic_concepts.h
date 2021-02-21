@@ -246,6 +246,32 @@ struct _point_kind_base;
 template<typename T>
 concept PointKind = kind_impl_<T, detail::_point_kind_base>;
 
+// PointOrigin
+namespace detail {
+
+template <typename>
+struct _origin_base;
+
+}  // namespace detail
+
+template<typename T, template<typename...> typename Base>
+concept origin_impl_ =
+is_derived_from_specialization_of<T, Base> &&
+requires(T* t) {
+  typename T::base_origin;
+};
+
+/**
+ * @brief A concept matching all point origin types
+ *
+ * Satisfied by all point origin types derived from an specialization of @c point_origin.
+ */
+template<typename T>
+concept PointOrigin =
+  origin_impl_<T, detail::_origin_base> &&
+  origin_impl_<typename T::base_origin, detail::_origin_base> &&
+  std::same_as<typename T::base_origin, typename T::base_origin::base_origin>;
+
 // Quantity, QuantityPoint, QuantityKind, QuantityPointKind
 namespace detail {
 

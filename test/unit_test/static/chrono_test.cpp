@@ -31,10 +31,12 @@ using namespace units;
 using namespace units::physical;
 using namespace units::physical::si::literals;
 using namespace std::chrono_literals;
+using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 using sys_days = std::chrono::time_point<std::chrono::system_clock,
   std::chrono::duration<long, std::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>>;
-template<typename U, typename Rep = double> using time_point = quantity_point<si::dim_time, U, Rep>;
+template<typename U, typename Rep = double, typename Org = sys_clock_origin> using time_point
+  = quantity_point<si::dim_time, U, Rep, Org>;
 
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityPointLike<sys_seconds>);
@@ -82,7 +84,7 @@ static_assert(is_same_v<decltype(quantity_point{sys_days{sys_days::duration{1}}}
 static_assert(quantity{1s} + 1_q_s == 2_q_s);
 static_assert(quantity{1s} + 1_q_min == 61_q_s);
 static_assert(10_q_m / quantity{2s} == 5_q_m_per_s);
-static_assert(quantity_point{sys_seconds{1s}} + 1_q_s == quantity_point{2_q_s});
-static_assert(quantity_point{sys_seconds{1s}} + 1_q_min == quantity_point{61_q_s});
+static_assert(quantity_point{sys_seconds{1s}} + 1_q_s == quantity_point{sys_seconds{2s}});
+static_assert(quantity_point{sys_seconds{1s}} + 1_q_min == quantity_point{sys_seconds{61s}});
 
 }  // namespace

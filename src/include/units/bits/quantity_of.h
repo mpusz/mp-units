@@ -96,10 +96,10 @@ concept QuantityPointOf = QuantityPoint<QP> && Dimension<Dim> && equivalent<type
 /**
  * @brief A concept matching two equivalent quantity points
  *
- * Satisfied by quantity points having equivalent dimensions.
+ * Satisfied by quantity points having equivalent dimensions and the same reference point
  */
 template<typename QP1, typename QP2>
-concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::dimension>;
+concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::dimension> && std::is_same_v<typename QP2::origin, typename QP1::origin>;
 
 /**
  * @brief A concept matching only quantity kinds of a specific kind.
@@ -130,10 +130,10 @@ concept QuantityPointKindOf = QuantityPointKind<QPK> && PointKind<PK> && equival
 /**
  * @brief A concept matching two equivalent quantity point kinds
  *
- * Satisfied by quantity point kinds having equivalent kinds.
+ * Satisfied by quantity point kinds having equivalent kinds and the same reference point.
  */
 template<typename QPK1, typename QPK2>
 concept QuantityPointKindEquivalentTo =
-  QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>;
+  QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>  && std::is_same_v<typename QPK2::origin, typename QPK1::origin>;
 
 }  // namespace units
