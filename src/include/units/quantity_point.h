@@ -116,7 +116,7 @@ public:
   }
 
   constexpr quantity_point& operator+=(const quantity_type& q)
-    requires requires(quantity_type q) { q += q; }
+    requires requires { q_ += q; }
   {
     q_ += q;
     return *this;

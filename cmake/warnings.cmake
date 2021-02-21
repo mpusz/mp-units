@@ -77,8 +77,13 @@ function(set_warnings)
         -Wconversion # warn on type conversions that may lose data
         -Wsign-conversion # warn on sign conversions
         -Wnull-dereference # warn if a null dereference is detected
-        -Wdouble-promotion # warn if float is implicit promoted to double
+    #   -Wdouble-promotion # warn if float is implicit promoted to double
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
+        -Wno-float-conversion
+        -Wno-shorten-64-to-32
+        -Wno-implicit-float-conversion
+        -Wno-implicit-int-float-conversion
+        -Wno-implicit-int-conversion
     )
 
     if(WARNINGS_AS_ERRORS)
