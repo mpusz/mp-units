@@ -141,27 +141,27 @@ public:
 
   template<QuantityKind QK>
   [[nodiscard]] friend constexpr QuantityPointKind auto operator+(const quantity_point_kind& lhs, const QK& rhs)
-    requires requires { lhs.relative() + rhs; }
+    requires requires(quantity_kind_type qk) { qk + rhs; }
   {
     return units::quantity_point_kind(lhs.relative() + rhs);
   }
 
   template<QuantityKind QK>
   [[nodiscard]] friend constexpr QuantityPointKind auto operator+(const QK& lhs, const quantity_point_kind& rhs)
-    requires requires { lhs + rhs.relative(); }
+    requires requires(quantity_kind_type qk) { lhs + qk; }
   {
     return units::quantity_point_kind(lhs + rhs.relative());
   }
 
   template<QuantityKind QK>
   [[nodiscard]] friend constexpr QuantityPointKind auto operator-(const quantity_point_kind& lhs, const QK& rhs)
-    requires requires { lhs.relative() - rhs; }
+    requires requires(quantity_kind_type qk) { qk - rhs; }
   {
     return units::quantity_point_kind(lhs.relative() - rhs);
   }
 
   [[nodiscard]] friend constexpr QuantityKind auto operator-(const quantity_point_kind& lhs, const quantity_point_kind& rhs)
-    requires requires { lhs.relative() - rhs.relative(); }
+    requires requires(quantity_kind_type qk) { qk - qk; }
   {
     return lhs.relative() - rhs.relative();
   }
