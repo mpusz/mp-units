@@ -83,9 +83,9 @@ struct one_rep {
   [[nodiscard]] friend constexpr Rep operator/(one_rep, const Rep&) = delete;
 
   template<typename Rep>
+    requires requires { quantity_values<Rep>::one(); }
   [[nodiscard]] constexpr operator Rep() const noexcept
   {
-    static_assert(QuantityValue<Rep>);
     return quantity_values<Rep>::one();
   }
 
