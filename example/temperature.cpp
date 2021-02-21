@@ -39,7 +39,7 @@ struct centikelvin : scaled_unit<ratio(1, 100), si::kelvin> {
 
 }  // namespace detail
 
-struct celsius : alias_unit<si::kelvin, "\u00b0C", no_prefix> {
+struct celsius : alias_unit<si::kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {
 };
 
 struct celsius_temperature_origin : point_origin<celsius_temperature_origin> {
@@ -50,7 +50,7 @@ struct celsius_temperature_origin : point_origin<celsius_temperature_origin> {
 template<UnitOf<si::dim_thermodynamic_temperature> U = celsius, QuantityValue Rep = double>
 using celsius_temperature_point = quantity_point<si::dim_thermodynamic_temperature, U, Rep, celsius_temperature_origin>;
 
-struct fahrenheit : named_scaled_unit<fahrenheit, "\u00b0F", no_prefix, ratio(5, 9), si::kelvin> {
+struct fahrenheit : named_scaled_unit<fahrenheit, basic_symbol_text{"\u00b0F", "`F"}, no_prefix, ratio(5, 9), si::kelvin> {
 };
 
 namespace detail {
