@@ -31,7 +31,11 @@
 #define COMP_MSVC _MSC_VER
 #endif
 
-#if COMP_CLANG && false
+#if defined(COMP_CLANG) && !defined(UNITS_LIBCXX)
+#define UNITS_LIBCXX 0
+#endif
+
+#if COMP_CLANG && UNITS_LIBCXX
 
 #include <concepts/compare.hpp>
 #include <concepts/concepts.hpp>
@@ -60,7 +64,7 @@ namespace std {
 template<class T>
 concept default_constructible = constructible_from<T>;
 
-#elif COMP_CLANG && false
+#elif COMP_CLANG && UNITS_LIBCXX
 
 // concepts
 using concepts::three_way_comparable;

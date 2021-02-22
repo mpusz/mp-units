@@ -61,7 +61,7 @@ function(set_warnings)
         /permissive- # standards conformance mode for MSVC compiler.
     )
 
-    set(CLANG_WARNINGS
+    set(GCC_COMMON_WARNINGS
         -Wall
         -Wextra # reasonable and standard
         -Wpedantic # warn if non-standard C++ is used
@@ -79,6 +79,10 @@ function(set_warnings)
         -Wnull-dereference # warn if a null dereference is detected
     #   -Wdouble-promotion # warn if float is implicit promoted to double
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
+    )
+
+    set(CLANG_WARNINGS
+        ${GCC_COMMON_WARNINGS}
         -Wno-float-conversion
         -Wno-shorten-64-to-32
         -Wno-implicit-float-conversion
@@ -92,7 +96,7 @@ function(set_warnings)
     endif()
 
     set(GCC_WARNINGS
-        ${CLANG_WARNINGS}
+        ${GCC_COMMON_WARNINGS}
         -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
         -Wduplicated-cond # warn if if / else chain has duplicated conditions
         -Wduplicated-branches # warn if if / else branches have duplicated code

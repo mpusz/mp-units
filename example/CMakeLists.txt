@@ -48,6 +48,11 @@ add_example(glide_computer)
 add_example(hello_units)
 add_example(total_energy)
 
+target_compile_options(glide_computer
+    PRIVATE
+        $<$<CXX_COMPILER_ID:Clang>:-Wno-missing-braces>
+)
+
 # TODO "atomic constraint should be a constant expression" error in std::invocable
 
 find_package(linear_algebra CONFIG REQUIRED)
