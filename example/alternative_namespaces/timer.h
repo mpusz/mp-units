@@ -51,7 +51,7 @@ namespace units{ namespace experimental{
             static constexpr auto divider = 1000.0 / CLOCKS_PER_SEC;
            
             return q_time::ms<>( 
-                difftime(wanted , start_time) 
+                static_cast<double>(wanted - start_time)
             ) * divider;
         }
         bool is_running() const {return running;}
