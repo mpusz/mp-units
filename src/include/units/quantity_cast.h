@@ -39,13 +39,13 @@ namespace units {
 template<Dimension D, UnitOf<D> U, QuantityValue Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep, PointOrigin Org>
+template<Dimension D, UnitOf<D> U, QuantityValue Rep, PointOrigin Orig>
 class quantity_point;
 
 template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
 class quantity_kind;
 
-template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep, PointOrigin Org>
+template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep, PointOrigin Orig>
 class quantity_point_kind;
 
 namespace detail {
@@ -231,10 +231,10 @@ template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
  *
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
  */
-template<typename CastSpec, typename D, typename U, typename Rep, typename O>
+template<typename CastSpec, typename D, typename U, typename Rep, typename Orig>
   requires is_specialization_of<CastSpec, quantity_point> ||
            requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
-[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep, O>& qp)
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep, Orig>& qp)
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point>)
     return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
@@ -258,11 +258,11 @@ template<typename CastSpec, typename D, typename U, typename Rep, typename O>
  * @tparam ToD a dimension type to use for a target quantity
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep, typename O>
+template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep, typename Orig>
   requires equivalent<ToD, D> && UnitOf<ToU, ToD>
-[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep, O>& q)
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep, Orig>& q)
 {
-  return quantity_point_cast<quantity_point<ToD, ToU, Rep, O>>(q);
+  return quantity_point_cast<quantity_point<ToD, ToU, Rep, Orig>>(q);
 }
 
 /**
@@ -341,8 +341,8 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
  *
  * @tparam CastSpec a target (quantity) point kind type to cast to or anything that works for quantity_kind_cast
  */
-template<typename CastSpec, typename PK, typename U, typename Rep, typename Org>
-[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep, Org>& qpk)
+template<typename CastSpec, typename PK, typename U, typename Rep, typename Orig>
+[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep, Orig>& qpk)
   requires (is_specialization_of<CastSpec, quantity_point_kind> &&
               requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); }) ||
            (PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>) ||
@@ -371,11 +371,11 @@ template<typename CastSpec, typename PK, typename U, typename Rep, typename Org>
  * @tparam ToPK the point kind type to use for the target quantity
  * @tparam ToU the unit type to use for the target quantity
  */
-template<PointKind ToPK, Unit ToU, typename PK, typename U, typename Rep, typename Org>
+template<PointKind ToPK, Unit ToU, typename PK, typename U, typename Rep, typename Orig>
   requires equivalent<typename ToPK::dimension, typename PK::dimension> && UnitOf<ToU, typename ToPK::dimension>
-[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep, Org>& qpk)
+[[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep, Orig>& qpk)
 {
-  return quantity_point_kind_cast<quantity_point_kind<ToPK, ToU, Rep, Org>>(qpk);
+  return quantity_point_kind_cast<quantity_point_kind<ToPK, ToU, Rep, Orig>>(qpk);
 }
 
 }  // namespace units

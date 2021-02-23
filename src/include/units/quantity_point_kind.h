@@ -38,7 +38,7 @@ namespace units {
  * @tparam U the measurement unit of the quantity point kind
  * @tparam Rep the type to be used to represent values of the quantity point kind
  */
-template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep = double, PointOrigin Org = default_point_origin<typename dimension_unit<typename PK::dimension>::reference>>
+template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep = double, PointOrigin Orig = default_point_origin<typename dimension_unit<typename PK::dimension>::reference>>
 class quantity_point_kind {
 public:
   using point_kind_type = PK;
@@ -48,7 +48,7 @@ public:
   using dimension = typename quantity_type::dimension;
   using unit = typename quantity_type::unit;
   using rep = typename quantity_type::rep;
-  using origin = Org;
+  using origin = Orig;
 
 private:
   quantity_kind_type qk_;
@@ -69,10 +69,10 @@ public:
   constexpr explicit quantity_point_kind(const Q& q) : qk_{q} {}
 
   template<QuantityPointLike QP>
-    requires std::is_constructible_v<quantity_point<dimension, U, Rep, Org>, QP>
+    requires std::is_constructible_v<quantity_point<dimension, U, Rep, Orig>, QP>
   constexpr explicit quantity_point_kind(const QP& qp) : qk_{quantity_point_like_traits<QP>::relative(qp)} {}
 
-  constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep, Org>& qp) : qk_{qp.relative()} {}
+  constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep, Orig>& qp) : qk_{qp.relative()} {}
 
   constexpr explicit quantity_point_kind(const quantity_kind_type& qk) : qk_{qk} {}
 
@@ -189,8 +189,8 @@ quantity_point_kind(QK) ->
 
 namespace detail {
 
-template<typename PK, typename U, typename Rep, typename Org>
-inline constexpr bool is_quantity_point_kind<quantity_point_kind<PK, U, Rep, Org>> = true;
+template<typename PK, typename U, typename Rep, typename Orig>
+inline constexpr bool is_quantity_point_kind<quantity_point_kind<PK, U, Rep, Orig>> = true;
 
 }  // namespace detail
 

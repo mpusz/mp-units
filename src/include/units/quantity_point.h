@@ -38,14 +38,14 @@ namespace units {
  * @tparam U a measurement unit of the quantity point
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-template<Dimension D, UnitOf<D> U, QuantityValue Rep = double, PointOrigin Org = default_point_origin<typename dimension_unit<D>::reference>>
+template<Dimension D, UnitOf<D> U, QuantityValue Rep = double, PointOrigin Orig = default_point_origin<typename dimension_unit<D>::reference>>
 class quantity_point {
 public:
   using quantity_type = quantity<D, U, Rep>;
   using dimension = typename quantity_type::dimension;
   using unit = typename quantity_type::unit;
   using rep = typename quantity_type::rep;
-  using origin = Org;
+  using origin = Orig;
 
 private:
   quantity_type q_{};
@@ -202,8 +202,8 @@ explicit quantity_point(QP) -> quantity_point<typename quantity_point_like_trait
 
 namespace detail {
 
-template<typename D, typename U, typename Rep, typename Org>
-inline constexpr bool is_quantity_point<quantity_point<D, U, Rep, Org>> = true;
+template<typename D, typename U, typename Rep, typename Orig>
+inline constexpr bool is_quantity_point<quantity_point<D, U, Rep, Orig>> = true;
 
 }  // namespace detail
 

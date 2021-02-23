@@ -35,8 +35,8 @@ using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 using sys_days = std::chrono::time_point<std::chrono::system_clock,
   std::chrono::duration<long, std::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>>;
-template<typename U, typename Rep = double, typename Org = sys_clock_origin> using time_point
-  = quantity_point<si::dim_time, U, Rep, Org>;
+template<typename U, typename Rep = double, typename Org = sys_clock_origin>
+using time_point = quantity_point<si::dim_time, U, Rep, Org>;
 
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityPointLike<sys_seconds>);
