@@ -269,30 +269,30 @@ public:
   // Below friend functions are to be found via argument-dependent lookup only
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
-    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
-          requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>; }
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
+          requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>; }         // when Clang catches up.
   {
     return units::quantity(lhs.count() + rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
-    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
-          requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>; }
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
+          requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>; }         // when Clang catches up.
   {
     return units::quantity(lhs + rhs.count());
   }
 
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const Value& rhs)
-    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
-          requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>; }
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
+          requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>; }        // when Clang catches up.
   {
     return units::quantity(lhs.count() - rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
-    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;
-          requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>; }
+    requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
+          requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>; }        // when Clang catches up.
   {
     return units::quantity(lhs - rhs.count());
   }

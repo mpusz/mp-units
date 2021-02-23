@@ -290,7 +290,7 @@ template<typename CastSpec, typename K, typename U, typename Rep>
   requires requires { requires is_specialization_of<CastSpec, quantity_kind>;
               requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); }; } ||
            requires { requires Kind<CastSpec>; requires UnitOf<U, typename CastSpec::dimension>; } ||
-           requires { quantity_cast<CastSpec>(qk.common()); }
+           requires { quantity_cast<CastSpec>(qk.common()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_kind>)
     return CastSpec(quantity_cast<typename CastSpec::quantity_type>(qk.common()));
@@ -349,7 +349,7 @@ template<typename CastSpec, typename PK, typename U, typename Rep>
   requires requires { requires is_specialization_of<CastSpec, quantity_point_kind>;
               requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); }; } ||
            requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
-           requires { quantity_kind_cast<CastSpec>(qpk.relative()); }
+           requires { quantity_kind_cast<CastSpec>(qpk.relative()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point_kind>)
     return CastSpec(quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()));

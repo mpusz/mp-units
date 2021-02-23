@@ -36,7 +36,7 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>&
 {
   os << q.count();
   constexpr auto symbol = detail::unit_text<D, U>();
-  if constexpr (bool(symbol.standard().size())) {
+  if constexpr (!symbol.standard().empty()) {
     os << " " << symbol.standard();
   }
 }

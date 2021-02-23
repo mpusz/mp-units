@@ -51,6 +51,7 @@ struct basic_fixed_string {
       for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
+  [[nodiscard]] constexpr bool empty() const noexcept { return N == 0; }
   [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
   [[nodiscard]] constexpr const CharT* data() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
