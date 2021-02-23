@@ -37,7 +37,7 @@ struct _origin_base : downcast_base<_origin_base<Orig>> {
 }  // namespace detail
 
 template<PointOrigin Orig>
-  requires Kind<downcast<detail::_origin_base<typename Orig::base_origin>>>
+  requires PointOrigin<downcast<detail::_origin_base<typename Orig::base_origin>>>
 using downcast_origin = downcast<detail::_origin_base<typename Orig::base_origin>>;
 
 template<typename Orig>
