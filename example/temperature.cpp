@@ -70,14 +70,13 @@ template<UnitOf<si::dim_thermodynamic_temperature> U = fahrenheit, QuantityValue
 using fahrenheit_temperature_point =
     quantity_point<si::dim_thermodynamic_temperature, U, Rep, fahrenheit_temperature_origin>;
 
-
 template<QuantityPoint QP1, QuantityPoint QP2>
  requires fixed_known_offset<typename QP1::origin, typename QP2::origin>
 QP1 quantity_point_offset_cast(const QP2& qp)
 {
-  using Q = typename QP1::quantity_type;
-  using Orig1 = typename QP1::origin;
-  using Orig2 = typename QP2::origin;
+  using Q = TYPENAME QP1::quantity_type;
+  using Orig1 = TYPENAME QP1::origin;
+  using Orig2 = TYPENAME QP2::origin;
   return QP1(quantity_cast<Q>(qp.relative() + offset_between_origins<Q,Orig2,Orig1>));
 }
 
@@ -93,7 +92,6 @@ void debug_type()
 
 int main()
 {
-  // somehow my GCC 10.2 is ICEing in CTAD here, so I specify them explicitly.
   celsius_temperature_point<> freezing(0 * K);
   celsius_temperature_point<> boiling(100 * K);
 
