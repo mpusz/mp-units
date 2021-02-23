@@ -81,17 +81,17 @@ concept DerivedPointOrigin = PointOrigin<Org>&& requires
 
 template<PointOrigin Org>
 struct reference_origin {
-  using type = typename Org::reference_origin;
+  using type = TYPENAME Org::reference_origin;
 };
 
 template<PointOrigin Org>
 using reference_origin_t =
-    typename std::conditional_t<DerivedPointOrigin<Org>, reference_origin<Org>, std::type_identity<Org>>::type;
+    TYPENAME std::conditional_t<DerivedPointOrigin<Org>, reference_origin<Org>, std::type_identity<Org>>::type;
 
 template<QuantityPoint P>
 auto offset_to_reference_origin()
 {
-  using Org = typename P::origin;
+  using Org = TYPENAME P::origin;
   if constexpr (DerivedPointOrigin<Org>) {
     return Org::reference_offset;
   } else {
@@ -107,7 +107,7 @@ template<QuantityPoint QP1, QuantityPoint QP2>
                    ::detail::reference_origin_t<typename QP2::origin>>)
 QP1 quantity_point_offset_cast(const QP2& qp)
 {
-  using Q = typename QP1::quantity_type;
+  using Q = TYPENAME QP1::quantity_type;
   return QP1(quantity_cast<Q>(qp.relative() + ::detail::offset_to_reference_origin<QP2>() -
          ::detail::offset_to_reference_origin<QP1>()));
 }
