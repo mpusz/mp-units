@@ -31,21 +31,21 @@ namespace detail {
 
 template<PointOrigin Orig>
 struct reference_origin {
-  using type = typename Orig::reference_origin;
+  using type = TYPENAME Orig::reference_origin;
 };
 
 template<PointOrigin Orig>
 using reference_origin_t =
-  typename std::conditional_t<DerivedPointOrigin<Orig>, reference_origin<Orig>, std::type_identity<Orig>>::type;
+  TYPENAME std::conditional_t<DerivedPointOrigin<Orig>, reference_origin<Orig>, std::type_identity<Orig>>::type;
 
 template<PointOrigin Orig>
 struct ultimate_reference_origin {
   using type =
-    typename std::conditional_t<DerivedPointOrigin<Orig>, ultimate_reference_origin<reference_origin_t<Orig>>, std::type_identity<Orig>>::type;
+    TYPENAME std::conditional_t<DerivedPointOrigin<Orig>, ultimate_reference_origin<reference_origin_t<Orig>>, std::type_identity<Orig>>::type;
 };
 
 template<PointOrigin Orig>
-using ultimate_reference_origin_t = typename ultimate_reference_origin<Orig>::type;
+using ultimate_reference_origin_t = TYPENAME ultimate_reference_origin<Orig>::type;
 
 template <Quantity Q, PointOrigin Orig>
 struct offset_to_ultimate_reference_origin {
