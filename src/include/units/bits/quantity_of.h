@@ -24,6 +24,7 @@
 
 #include <units/bits/dimension_op.h>
 #include <units/bits/equivalent.h>
+#include <units/bits/point_origin_reference.h>
 
 namespace units {
 
@@ -92,6 +93,15 @@ concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimen
  */
 template<typename QP, typename Dim>
 concept QuantityPointOf = QuantityPoint<QP> && Dimension<Dim> && equivalent<typename QP::dimension, Dim>;
+
+/**
+ * @brief A concept matching all quantity points that can be referred to the specified origin point.
+ *
+ * Satisfied by all quantity points whose origin is ultimately referred to the same origin as the ultimate
+ * reference of the requested origin point.
+ */
+template<typename QP, typename Orig>
+concept QuantityPointReferableTo = QuantityPoint<QP> && PointOrigin<Orig> && fixed_known_offset<typename QP::origin, Orig>;
 
 /**
  * @brief A concept matching two equivalent quantity points

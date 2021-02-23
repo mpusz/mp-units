@@ -90,7 +90,7 @@ using common_quantity_point_kind = std::common_type_t<QPK1, QPK2>;
 namespace std {
 
 template<units::Quantity Q1, units::QuantityEquivalentTo<Q1> Q2>
-requires requires { typename common_type_t<typename Q1::rep, typename Q2::rep>; }
+  requires requires { typename common_type_t<typename Q1::rep, typename Q2::rep>; }
 struct common_type<Q1, Q2> {
   using type = units::common_quantity<Q1, Q2>;
 };
@@ -106,7 +106,7 @@ struct common_type<QP1, QP2> {
 };
 
 template<units::QuantityKind QK1, units::QuantityKindEquivalentTo<QK1> QK2>
- requires requires { typename common_type_t<typename QK1::rep, typename QK2::rep>; }
+  requires requires { typename common_type_t<typename QK1::rep, typename QK2::rep>; }
 struct common_type<QK1, QK2> {
   using type = units::quantity_kind<typename QK1::kind_type,
     typename common_type_t<typename QK1::quantity_type, typename QK2::quantity_type>::unit,

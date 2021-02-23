@@ -42,9 +42,9 @@ struct centikelvin : scaled_unit<ratio(1, 100), si::kelvin> {
 struct celsius : alias_unit<si::kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {
 };
 
-struct celsius_temperature_origin : point_origin<celsius_temperature_origin> {
+struct celsius_temperature_origin : point_origin<celsius_temperature_origin, si::kelvin> {
   using reference_origin = si::kelvin_temperature_origin;
-  static constexpr auto reference_offset = si::thermodynamic_temperature<::detail::centikelvin, long int>(27315);
+  static constexpr auto offset_to_reference = si::thermodynamic_temperature<::detail::centikelvin, long int>(27315);
 };
 
 template<UnitOf<si::dim_thermodynamic_temperature> U = celsius, QuantityValue Rep = double>
@@ -60,9 +60,9 @@ struct millifahrenheit : scaled_unit<ratio(5, 9000), si::kelvin> {
 
 }  // namespace detail
 
-struct fahrenheit_temperature_origin : point_origin<fahrenheit_temperature_origin> {
+struct fahrenheit_temperature_origin : point_origin<fahrenheit_temperature_origin, si::kelvin> {
   using reference_origin = si::kelvin_temperature_origin;
-  static constexpr auto reference_offset =
+  static constexpr auto offset_to_reference =
       si::thermodynamic_temperature<::detail::millifahrenheit, long int>(273150 * 9 / 5 + 32000);
 };
 
@@ -71,45 +71,14 @@ using fahrenheit_temperature_point =
     quantity_point<si::dim_thermodynamic_temperature, U, Rep, fahrenheit_temperature_origin>;
 
 
-namespace detail {
-
-template<typename Org>
-concept DerivedPointOrigin = PointOrigin<Org>&& requires
-{
-  typename Org::reference_origin;
-};
-
-template<PointOrigin Org>
-struct reference_origin {
-  using type = typename Org::reference_origin;
-};
-
-template<PointOrigin Org>
-using reference_origin_t =
-    typename std::conditional_t<DerivedPointOrigin<Org>, reference_origin<Org>, std::type_identity<Org>>::type;
-
-template<QuantityPoint P>
-auto offset_to_reference_origin()
-{
-  using Org = typename P::origin;
-  if constexpr (DerivedPointOrigin<Org>) {
-    return Org::reference_offset;
-  } else {
-    return typename P::quantity_type(0);
-  }
-}
-
-}  // namespace detail
-
 template<QuantityPoint QP1, QuantityPoint QP2>
- requires(
-    std::is_same_v<::detail::reference_origin_t<typename QP1::origin>,
-                   ::detail::reference_origin_t<typename QP2::origin>>)
+ requires fixed_known_offset<typename QP1::origin, typename QP2::origin>
 QP1 quantity_point_offset_cast(const QP2& qp)
 {
   using Q = typename QP1::quantity_type;
-  return QP1(quantity_cast<Q>(qp.relative() + ::detail::offset_to_reference_origin<QP2>() -
-         ::detail::offset_to_reference_origin<QP1>()));
+  using Orig1 = typename QP1::origin;
+  using Orig2 = typename QP2::origin;
+  return QP1(quantity_cast<Q>(qp.relative() + offset_between_origins<Q,Orig2,Orig1>));
 }
 
 using namespace si::literals;

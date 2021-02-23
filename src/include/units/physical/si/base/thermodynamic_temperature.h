@@ -37,7 +37,7 @@ struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<k
 template<UnitOf<dim_thermodynamic_temperature> U, QuantityValue Rep = double>
 using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
-struct kelvin_temperature_origin : point_origin<kelvin_temperature_origin> {};
+struct kelvin_temperature_origin : point_origin<kelvin_temperature_origin, kelvin> {};
 
 template<UnitOf<dim_thermodynamic_temperature> U = kelvin, QuantityValue Rep = double>
 using kelvin_temperature_point = quantity_point<dim_thermodynamic_temperature, U, Rep, kelvin_temperature_origin>;

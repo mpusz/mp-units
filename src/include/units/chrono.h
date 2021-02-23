@@ -38,7 +38,7 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
 };
 
 template <typename C>
-struct chrono_clock_point_origin : point_origin<chrono_clock_point_origin<C>> {};
+struct chrono_clock_point_origin : point_origin<chrono_clock_point_origin<C>, typename dimension_unit<physical::si::dim_time>::reference> {};
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {

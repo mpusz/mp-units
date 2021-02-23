@@ -91,6 +91,14 @@ struct equivalent_impl<T, U> :
                    equivalent_impl<typename T::dimension, typename U::dimension>> {};
 
 
+// point origins
+
+template<typename Orig1, typename Orig2>
+  requires (PointOrigin<Orig1> && PointOrigin<Orig2>)
+struct equivalent_impl<Orig1, Orig2> :
+    std::conjunction<std::is_same<typename Orig1::base_origin, typename Orig2::base_origin>,
+                     equivalent_impl<typename Orig1::reference_unit, typename Orig2::reference_unit>> {};
+
 // quantities, quantity points, quantity (point) kinds
 
 template<typename Q1, typename Q2>

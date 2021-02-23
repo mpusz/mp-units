@@ -29,19 +29,20 @@ namespace units {
 
 namespace detail {
 
-template<typename Orig>
-struct _origin_base : downcast_base<_origin_base<Orig>> {
+template<typename Orig, Unit U>
+struct _origin_base : downcast_base<_origin_base<Orig, U>> {
   using base_origin = Orig;
+  using reference_unit = U;
 };
 
 }  // namespace detail
 
-template<PointOrigin Orig>
-  requires PointOrigin<downcast<detail::_origin_base<typename Orig::base_origin>>>
-using downcast_origin = downcast<detail::_origin_base<typename Orig::base_origin>>;
+template<PointOrigin Orig, Unit U>
+  requires PointOrigin<downcast<detail::_origin_base<typename Orig::base_origin, U>>>
+using downcast_origin = downcast<detail::_origin_base<typename Orig::base_origin, U>>;
 
-template<typename Orig>
-struct point_origin : downcast_dispatch<Orig, detail::_origin_base<Orig>> {};
+template<typename Orig, Unit U>
+struct point_origin : downcast_dispatch<Orig, detail::_origin_base<Orig, U>> {};
 
 /**
  * @brief A "default" point origin for scales associated with the base unit of a dimension
@@ -51,6 +52,6 @@ struct point_origin : downcast_dispatch<Orig, detail::_origin_base<Orig>> {};
  * @tparam U the base unit for measurements with respect to this origin.
  */
 template <Unit U>
-struct default_point_origin : point_origin<default_point_origin<U>> {};
+struct default_point_origin : point_origin<default_point_origin<U>, U> {};
 
 }  // namespace units

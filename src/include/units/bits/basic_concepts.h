@@ -246,32 +246,6 @@ struct _point_kind_base;
 template<typename T>
 concept PointKind = kind_impl_<T, detail::_point_kind_base>;
 
-// PointOrigin
-namespace detail {
-
-template <typename>
-struct _origin_base;
-
-}  // namespace detail
-
-template<typename T, template<typename...> typename Base>
-concept origin_impl_ =
-is_derived_from_specialization_of<T, Base> &&
-requires(T* t) {
-  typename T::base_origin;
-};
-
-/**
- * @brief A concept matching all point origin types
- *
- * Satisfied by all point origin types derived from an specialization of @c point_origin.
- */
-template<typename T>
-concept PointOrigin =
-  origin_impl_<T, detail::_origin_base> &&
-  origin_impl_<typename T::base_origin, detail::_origin_base> &&
-  std::same_as<typename T::base_origin, typename T::base_origin::base_origin>;
-
 // Quantity, QuantityPoint, QuantityKind, QuantityPointKind
 namespace detail {
 
@@ -347,6 +321,44 @@ concept QuantityLike = detail::is_quantity_like<T>;
 template<typename T>
 concept QuantityPointLike = detail::is_quantity_point_like<T>;
 
+// PointOrigin
+namespace detail {
+
+template <typename, Unit>
+struct _origin_base;
+
+template <typename T>
+concept has_different_reference_origin_ =
+requires() {
+  typename T::reference_origin;
+} && !std::same_as<T, typename T::reference_origin>;
+
+template<typename T, template<typename...> typename Base>
+concept origin_impl_ =
+  is_derived_from_specialization_of<T, Base> &&
+  requires() {
+    typename T::base_origin;
+  } && (!has_different_reference_origin_<T>
+        || (std::same_as<typename T::reference_unit, typename T::reference_origin::reference_unit> &&
+            requires {
+              T::offset_to_reference;
+            } &&
+            Quantity<std::remove_cvref_t<decltype(T::offset_to_reference)>> &&
+            std::same_as<typename dimension_unit<typename decltype(T::offset_to_reference)::dimension>::reference, typename T::reference_unit>));
+
+}  // namespace detail
+
+/**
+ * @brief A concept matching all point origin types
+ *
+ * Satisfied by all point origin types derived from a specialization of @c point_origin.
+ */
+template<typename T>
+concept PointOrigin =
+  detail::origin_impl_<T, detail::_origin_base> &&
+  detail::origin_impl_<typename T::base_origin, detail::_origin_base> &&
+  std::same_as<typename T::base_origin, typename T::base_origin::base_origin>;
+
 // QuantityValue
 
 template<typename T, typename U>
@@ -414,6 +426,17 @@ concept QuantityValue =
   std::regular<T> &&
   scalable_<T>;
 
+// DerivedPointOrigin
+/**
+ * @brief A concept matching all point origin types which have a fixed offset from a "reference origin
+ *
+ * Satisfied by all PointOrigins which have a nested member type reference_origin
+ * and constant quantity member offset_to_reference.
+ */
+template<typename T>
+concept DerivedPointOrigin =
+  PointOrigin<T> && detail::has_different_reference_origin_<T>;
+
 namespace detail {
 
 template<typename T>
@@ -433,9 +456,11 @@ template<typename T>
     typename quantity_point_like_traits<T>::dimension;
     typename quantity_point_like_traits<T>::unit;
     typename quantity_point_like_traits<T>::rep;
+    typename quantity_point_like_traits<T>::origin;
     requires Dimension<typename quantity_point_like_traits<T>::dimension>;
     requires Unit<typename quantity_point_like_traits<T>::unit>;
     requires QuantityValue<typename quantity_point_like_traits<T>::rep>;
+    requires PointOrigin<typename quantity_point_like_traits<T>::origin>;
     { quantity_point_like_traits<T>::relative(q) } -> QuantityLike;
   }
 inline constexpr bool is_quantity_point_like<T> = true;
