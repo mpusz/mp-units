@@ -22,6 +22,7 @@
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
   - fix: downcasting facility for non-default-constructible types
+  - fix: restore user-warnings within the library implementation
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
