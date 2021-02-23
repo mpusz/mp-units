@@ -83,10 +83,9 @@ struct one_rep {
   [[nodiscard]] friend constexpr Rep operator/(one_rep, const Rep&) = delete;
 
   template<typename Rep>
-    requires requires { quantity_values<Rep>::one(); requires !Quantity<Rep> && // TODO: Replace with `QuantityValue`
-                                                              !QuantityLike<Rep> && // when Clang catches up.
-                                                              !wrapped_quantity_<Rep>; }
-  [[nodiscard]] constexpr operator Rep() const noexcept
+    requires requires { quantity_values<Rep>::one(); } &&
+          (!Quantity<Rep> && !QuantityLike<Rep> && !wrapped_quantity_<Rep>)  // TODO: Replace with `QuantityValue`
+  [[nodiscard]] constexpr operator Rep() const noexcept                      // when Clang catches up.
   {
     return quantity_values<Rep>::one();
   }
