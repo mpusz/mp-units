@@ -22,53 +22,16 @@
 
 #include <units/origin.h>
 #include <units/physical/si/base/thermodynamic_temperature.h>
+#include <units/physical/si/imperial/base/thermodynamic_temperature.h>
 #include <units/physical/si/prefixes.h>
 #include <units/quantity_io.h>
 #include <units/quantity_point.h>
-#include <units/ratio.h>
 #include <iostream>
 
 using namespace units;
 
 namespace si = units::physical::si;
-
-namespace detail {
-
-struct centikelvin : scaled_unit<ratio(1, 100), si::kelvin> {
-};
-
-}  // namespace detail
-
-struct celsius : alias_unit<si::kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {
-};
-
-struct celsius_temperature_origin : point_origin<celsius_temperature_origin, si::kelvin> {
-  using reference_origin = si::kelvin_temperature_origin;
-  static constexpr auto offset_to_reference = si::thermodynamic_temperature<::detail::centikelvin, long int>(27315);
-};
-
-template<UnitOf<si::dim_thermodynamic_temperature> U = celsius, QuantityValue Rep = double>
-using celsius_temperature_point = quantity_point<si::dim_thermodynamic_temperature, U, Rep, celsius_temperature_origin>;
-
-struct fahrenheit : named_scaled_unit<fahrenheit, basic_symbol_text{"\u00b0F", "`F"}, no_prefix, ratio(5, 9), si::kelvin> {
-};
-
-namespace detail {
-
-struct millifahrenheit : scaled_unit<ratio(5, 9000), si::kelvin> {
-};
-
-}  // namespace detail
-
-struct fahrenheit_temperature_origin : point_origin<fahrenheit_temperature_origin, si::kelvin> {
-  using reference_origin = si::kelvin_temperature_origin;
-  static constexpr auto offset_to_reference =
-      si::thermodynamic_temperature<::detail::millifahrenheit, long int>(273150 * 9 / 5 + 32000);
-};
-
-template<UnitOf<si::dim_thermodynamic_temperature> U = fahrenheit, QuantityValue Rep = double>
-using fahrenheit_temperature_point =
-    quantity_point<si::dim_thermodynamic_temperature, U, Rep, fahrenheit_temperature_origin>;
+namespace imperial = units::physical::si::imperial;
 
 template<QuantityPoint QP1, QuantityPoint QP2>
  requires fixed_known_offset<typename QP1::origin, typename QP2::origin>
@@ -83,23 +46,16 @@ QP1 quantity_point_offset_cast(const QP2& qp)
 using namespace si::literals;
 using namespace si::unit_constants;
 
-template<typename T>
-void debug_type()
-{
-  static_assert(!std::is_same_v<T, T>);
-}
-
-
 int main()
 {
-  celsius_temperature_point<> freezing(0 * K);
-  celsius_temperature_point<> boiling(100 * K);
+  si::celsius_temperature_point<> freezing = 0_qp_deg_C;
+  si::celsius_temperature_point<> boiling = 100_qp_deg_C;
 
-  auto f_C = quantity_point_offset_cast<celsius_temperature_point<>>(freezing);
-  auto b_C = quantity_point_offset_cast<celsius_temperature_point<>>(boiling);
+  auto f_C = quantity_point_offset_cast<si::celsius_temperature_point<>>(freezing);
+  auto b_C = quantity_point_offset_cast<si::celsius_temperature_point<>>(boiling);
 
-  auto f_F = quantity_point_offset_cast<fahrenheit_temperature_point<>>(freezing);
-  auto b_F = quantity_point_offset_cast<fahrenheit_temperature_point<>>(boiling);
+  auto f_F = quantity_point_offset_cast<imperial::fahrenheit_temperature_point<>>(freezing);
+  auto b_F = quantity_point_offset_cast<imperial::fahrenheit_temperature_point<>>(boiling);
 
   auto f_K = quantity_point_offset_cast<si::kelvin_temperature_point<>>(freezing);
   auto b_K = quantity_point_offset_cast<si::kelvin_temperature_point<>>(boiling);

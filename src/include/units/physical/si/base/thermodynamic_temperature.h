@@ -27,10 +27,12 @@
 #include <units/quantity.h>
 #include <units/quantity_point.h>
 #include <units/origin.h>
+#include <units/physical/si/prefixes.h>
 
 namespace units::physical::si {
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K", prefix> {};
+struct millikelvin : prefixed_unit<millikelvin, milli, kelvin> {};
 
 struct dim_thermodynamic_temperature : physical::dim_thermodynamic_temperature<kelvin> {};
 
@@ -42,17 +44,58 @@ struct kelvin_temperature_origin : point_origin<kelvin_temperature_origin, kelvi
 template<UnitOf<dim_thermodynamic_temperature> U = kelvin, QuantityValue Rep = double>
 using kelvin_temperature_point = quantity_point<dim_thermodynamic_temperature, U, Rep, kelvin_temperature_origin>;
 
+struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {};
+
+struct celsius_temperature_origin : point_origin<celsius_temperature_origin, kelvin> {
+  using reference_origin = kelvin_temperature_origin;
+  static constexpr auto offset_to_reference = thermodynamic_temperature<millikelvin, long int>(273150);
+};
+
+template<UnitOf<dim_thermodynamic_temperature> U = degree_celsius, QuantityValue Rep = double>
+using celsius_temperature_point = quantity_point<si::dim_thermodynamic_temperature, U, Rep, celsius_temperature_origin>;
+
 inline namespace literals {
 
 // K
 constexpr auto operator"" _q_K(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return thermodynamic_temperature<kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature<kelvin, long double>(l); }
+constexpr auto operator"" _qp_K(unsigned long long l) {
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return kelvin_temperature_point<kelvin, std::int64_t>(thermodynamic_temperature<kelvin, std::int64_t>(static_cast<std::int64_t>(l)));
+}
+constexpr auto operator"" _qp_K(long double l) {
+  return kelvin_temperature_point<kelvin, long double>(thermodynamic_temperature<kelvin, long double>(l));
+}
+// mK
+constexpr auto operator"" _q_mK(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return thermodynamic_temperature<millikelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mK(long double l) { return thermodynamic_temperature<millikelvin, long double>(l); }
+constexpr auto operator"" _qp_mK(unsigned long long l) {
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return kelvin_temperature_point<millikelvin, std::int64_t>(thermodynamic_temperature<millikelvin, std::int64_t>(static_cast<std::int64_t>(l)));
+}
+constexpr auto operator"" _qp_mK(long double l) {
+  return kelvin_temperature_point<millikelvin, long double>(thermodynamic_temperature<millikelvin, long double>(l));
+}
+
+// degree C
+constexpr auto operator"" _q_deg_C(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return thermodynamic_temperature<degree_celsius, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_deg_C(long double l) { return thermodynamic_temperature<degree_celsius, long double>(l); }
+constexpr auto operator"" _qp_deg_C(unsigned long long l) {
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return celsius_temperature_point<degree_celsius, std::int64_t>(thermodynamic_temperature<degree_celsius, std::int64_t>(static_cast<std::int64_t>(l)));
+}
+constexpr auto operator"" _qp_deg_C(long double l) {
+  return celsius_temperature_point<degree_celsius, long double>(thermodynamic_temperature<degree_celsius, long double>(l));
+}
 
 }  // namespace literals
 
 namespace unit_constants {
 
 inline constexpr auto K = thermodynamic_temperature<kelvin, one_rep>{};
+inline constexpr auto mK = thermodynamic_temperature<millikelvin, one_rep>{};
+
+inline constexpr auto deg_C = thermodynamic_temperature<degree_celsius, one_rep>{};
 
 }  // namespace unit_constants
 

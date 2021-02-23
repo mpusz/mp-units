@@ -37,6 +37,7 @@ namespace units {
  * @tparam D a dimension of the quantity point (can be either a BaseDimension or a DerivedDimension)
  * @tparam U a measurement unit of the quantity point
  * @tparam Rep a type to be used to represent values of a quantity point
+ * @tparam Orig an abstract origin point with respect to which to define the quantity point
  */
 template<Dimension D, UnitOf<D> U, QuantityValue Rep = double, PointOrigin Orig = default_point_origin<typename dimension_unit<D>::reference>>
 class quantity_point {
@@ -178,8 +179,8 @@ public:
   }
 
   template<QuantityPoint QP>
-  requires (std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
-            && std::is_same_v<origin, typename QP::origin>)
+    requires (std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
+              && std::is_same_v<origin, typename QP::origin>)
   [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
   {
     return lhs.relative() == rhs.relative();
