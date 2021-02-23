@@ -24,6 +24,7 @@
 
 #include <units/concepts.h>
 #include <units/customization_points.h>
+#include <units/bits/common_quantity.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/pow.h>
@@ -220,10 +221,15 @@ template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
  *
  * Implicit conversions between quantity points of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
+ * If the cast re-references the origin in the quantity point, the distance between the origins must be known
+ * and fixed; the value will the correctly be adjusted to refer to the same physical point.
  *
- * This cast gets the target quantity point type to cast to or anything that works for quantity_cast. For example:
+ * This cast gets the target quantity point type to cast to, the new point origin or anything that works for quantity_cast.
+ * For example:
  *
  * auto q1 = units::quantity_point_cast<decltype(quantity_point{0_q_s})>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<decltype(0_qp_deg_F)>(1_qp_deg_C);
+ * auto q1 = units::quantity_point_cast<units::physical::si::celsius_temperature_origin>(1_qp_deg_F);
  * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1_q_ms});
  * auto q1 = units::quantity_point_cast<units::physical::si::dim_acceleration>(quantity_point{200_q_Gal});
  * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1_q_ms});
@@ -232,14 +238,23 @@ template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
  */
 template<typename CastSpec, typename D, typename U, typename Rep, typename Orig>
-  requires is_specialization_of<CastSpec, quantity_point> ||
+  requires (is_specialization_of<CastSpec, quantity_point> && fixed_known_offset<typename CastSpec::origin,Orig>) ||
+           (PointOrigin<CastSpec> && fixed_known_offset<CastSpec,Orig>) ||
            requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
 [[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep, Orig>& qp)
 {
-  if constexpr (is_specialization_of<CastSpec, quantity_point>)
-    return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
-  else
-    return quantity_point(quantity_cast<CastSpec>(qp.relative()));
+  if constexpr (is_specialization_of<CastSpec, quantity_point>) {
+    using FromQ = quantity<D, U, Rep>;
+    using ToQ = TYPENAME CastSpec::quantity_type;
+    using Q = std::common_type_t<FromQ, ToQ>;
+    using ToOrig = TYPENAME CastSpec::origin;
+    return quantity_cast<ToQ>(qp.relative() + offset_between_origins<Q, Orig, ToOrig>).template absolute<ToOrig>();
+  } else {
+    if constexpr (PointOrigin<CastSpec>)
+      return quantity_point_cast<quantity_point<D, U, Rep, CastSpec>>(qp);
+    else
+      return quantity_cast<CastSpec>(qp.relative()).template absolute<Orig>();
+  }
 }
 
 /**
@@ -344,16 +359,28 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
 template<typename CastSpec, typename PK, typename U, typename Rep, typename Orig>
 [[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep, Orig>& qpk)
   requires (is_specialization_of<CastSpec, quantity_point_kind> &&
-              requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); }) ||
+              requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); } &&
+              fixed_known_offset<typename CastSpec::origin,Orig>) ||
+           (PointOrigin<CastSpec> && fixed_known_offset<CastSpec,Orig>) ||
            (PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>) ||
            requires { quantity_kind_cast<CastSpec>(qpk.relative()); }
 {
-  if constexpr (is_specialization_of<CastSpec, quantity_point_kind>)
-    return CastSpec(quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()));
-  else if constexpr (PointKind<CastSpec>)
-    return quantity_point_kind(quantity_kind_cast<typename CastSpec::base_kind>(qpk.relative()));
-  else
-    return quantity_point_kind(quantity_kind_cast<CastSpec>(qpk.relative()));
+  if constexpr (is_specialization_of<CastSpec, quantity_point_kind>) {
+    using FromQ = quantity<typename PK::dimension, U, Rep>;
+    using ToQ = TYPENAME CastSpec::quantity_type;
+    using ToQK = TYPENAME CastSpec::quantity_kind_type;
+    using Q = std::common_type_t<FromQ, ToQ>;
+    using QK = quantity_kind<typename PK::base_kind, typename Q::unit, typename Q::rep>;
+    using ToOrig = TYPENAME CastSpec::origin;
+    return quantity_kind_cast<ToQK>(qpk.relative() + QK(offset_between_origins<Q, Orig, ToOrig>)).template absolute<ToOrig>();
+  } else {
+    if constexpr (PointOrigin<CastSpec>)
+      return quantity_point_kind_cast<quantity_point<PK, U, Rep, CastSpec>>(qpk);
+    else if constexpr (PointKind<CastSpec>)
+      return quantity_kind_cast<typename CastSpec::base_kind>(qpk.relative()).template absolute<Orig>();
+    else
+      return quantity_kind_cast<CastSpec>(qpk.relative()).template absolute<Orig>();
+  }
 }
 
 /**

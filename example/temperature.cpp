@@ -33,16 +33,6 @@ using namespace units;
 namespace si = units::physical::si;
 namespace imperial = units::physical::si::imperial;
 
-template<QuantityPoint QP1, QuantityPoint QP2>
- requires fixed_known_offset<typename QP1::origin, typename QP2::origin>
-QP1 quantity_point_offset_cast(const QP2& qp)
-{
-  using Q = TYPENAME QP1::quantity_type;
-  using Orig1 = TYPENAME QP1::origin;
-  using Orig2 = TYPENAME QP2::origin;
-  return QP1(quantity_cast<Q>(qp.relative() + offset_between_origins<Q,Orig2,Orig1>));
-}
-
 using namespace si::literals;
 using namespace si::unit_constants;
 
@@ -51,14 +41,14 @@ int main()
   si::celsius_temperature_point<> freezing = 0_qp_deg_C;
   si::celsius_temperature_point<> boiling = 100_qp_deg_C;
 
-  auto f_C = quantity_point_offset_cast<si::celsius_temperature_point<>>(freezing);
-  auto b_C = quantity_point_offset_cast<si::celsius_temperature_point<>>(boiling);
+  auto f_C = quantity_point_cast<si::celsius_temperature_point<>>(freezing);
+  auto b_C = quantity_point_cast<si::celsius_temperature_point<>>(boiling);
 
-  auto f_F = quantity_point_offset_cast<imperial::fahrenheit_temperature_point<>>(freezing);
-  auto b_F = quantity_point_offset_cast<imperial::fahrenheit_temperature_point<>>(boiling);
+  auto f_F = quantity_point_cast<imperial::fahrenheit_temperature_point<>>(freezing);
+  auto b_F = quantity_point_cast<imperial::fahrenheit_temperature_point<>>(boiling);
 
-  auto f_K = quantity_point_offset_cast<si::kelvin_temperature_point<>>(freezing);
-  auto b_K = quantity_point_offset_cast<si::kelvin_temperature_point<>>(boiling);
+  auto f_K = quantity_point_cast<si::kelvin_temperature_point<>>(freezing);
+  auto b_K = quantity_point_cast<si::kelvin_temperature_point<>>(boiling);
 
   std::cout << "Freezing point: " << f_C.relative() << "; Boiling point: " << b_C.relative() << std::endl;
   std::cout << "Freezing point: " << f_F.relative() << "; Boiling point: " << b_F.relative() << std::endl;
