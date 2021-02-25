@@ -248,12 +248,12 @@ template<typename CastSpec, typename D, typename U, typename Rep, typename Orig>
     using ToQ = TYPENAME CastSpec::quantity_type;
     using Q = std::common_type_t<FromQ, ToQ>;
     using ToOrig = TYPENAME CastSpec::origin;
-    return quantity_cast<ToQ>(qp.relative() + offset_between_origins<Q, Orig, ToOrig>).template absolute<ToOrig>();
+    return absolute<ToOrig>(quantity_cast<ToQ>(qp.relative() + offset_between_origins<Q, Orig, ToOrig>));
   } else {
     if constexpr (PointOrigin<CastSpec>)
       return quantity_point_cast<quantity_point<D, U, Rep, CastSpec>>(qp);
     else
-      return quantity_cast<CastSpec>(qp.relative()).template absolute<Orig>();
+      return absolute<Orig>(quantity_cast<CastSpec>(qp.relative()));
   }
 }
 
@@ -372,14 +372,14 @@ template<typename CastSpec, typename PK, typename U, typename Rep, typename Orig
     using Q = std::common_type_t<FromQ, ToQ>;
     using QK = quantity_kind<typename PK::base_kind, typename Q::unit, typename Q::rep>;
     using ToOrig = TYPENAME CastSpec::origin;
-    return quantity_kind_cast<ToQK>(qpk.relative() + QK(offset_between_origins<Q, Orig, ToOrig>)).template absolute<ToOrig>();
+    return absolute<ToOrig>(quantity_kind_cast<ToQK>(qpk.relative() + QK(offset_between_origins<Q, Orig, ToOrig>)));
   } else {
     if constexpr (PointOrigin<CastSpec>)
       return quantity_point_kind_cast<quantity_point<PK, U, Rep, CastSpec>>(qpk);
     else if constexpr (PointKind<CastSpec>)
-      return quantity_kind_cast<typename CastSpec::base_kind>(qpk.relative()).template absolute<Orig>();
+      return absolute<Orig>(quantity_kind_cast<typename CastSpec::base_kind>(qpk.relative()));
     else
-      return quantity_kind_cast<CastSpec>(qpk.relative()).template absolute<Orig>();
+      return absolute<Orig>(quantity_kind_cast<CastSpec>(qpk.relative()));
   }
 }
 

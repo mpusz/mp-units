@@ -73,11 +73,10 @@ For a custom origin point, the corresponding point constant can be defined as fo
 Construction by UDL
 ^^^^^^^^^^^^^^^^^^^
 
-Only for temperatures, the library provides UDL:
+Only for temperatures, the library provides the following UDL:
  - `_qp_K`
  - `_qp_deg_C`
  - `_qp_deg_F`
-
 
 Differences To Quantity
 -----------------------

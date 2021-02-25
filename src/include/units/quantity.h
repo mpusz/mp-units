@@ -146,9 +146,6 @@ public:
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
-  template <PointOrigin Orig>
-  [[nodiscard]] constexpr quantity_point<dimension, unit, rep, Orig> absolute() const noexcept;
-
   // data access
   [[nodiscard]] constexpr rep count() const noexcept { return value_; }
 

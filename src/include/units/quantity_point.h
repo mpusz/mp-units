@@ -201,10 +201,10 @@ explicit quantity_point(QP) -> quantity_point<typename quantity_point_like_trait
                                               typename quantity_point_like_traits<QP>::rep,
                                               typename quantity_point_like_traits<QP>::origin>;
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
-template <PointOrigin Orig>
-inline constexpr quantity_point<D, U, Rep, Orig> quantity<D,U,Rep>::absolute() const noexcept {
-  return quantity_point<D, U, Rep, Orig>(*this);
+
+template <PointOrigin Orig, Dimension D, UnitOf<D> U, QuantityValue Rep>
+inline constexpr quantity_point<D, U, Rep, Orig> absolute(const quantity<D,U,Rep> &q) noexcept {
+  return quantity_point<D, U, Rep, Orig>(q);
 }
 
 namespace detail {

@@ -104,9 +104,6 @@ public:
   quantity_kind& operator=(const quantity_kind&) = default;
   quantity_kind& operator=(quantity_kind&&) = default;
 
-  template <PointOrigin Orig>
-  [[nodiscard]] constexpr quantity_point_kind<downcast_point_kind<kind_type>, unit, rep, Orig> absolute() const noexcept;
-
   [[nodiscard]] constexpr quantity_type common() const noexcept { return q_; }
 
   [[nodiscard]] static constexpr quantity_kind zero() noexcept

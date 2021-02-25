@@ -187,14 +187,13 @@ template<QuantityKind QK>
 quantity_point_kind(QK) ->
   quantity_point_kind<downcast_point_kind<typename QK::kind_type>, typename QK::unit, typename QK::rep>;
 
-template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
-template <PointOrigin Orig>
+template <PointOrigin Orig, Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
 inline constexpr quantity_point_kind<downcast_point_kind<K>,
                                      typename quantity_kind<K,U,Rep>::unit,
                                      typename quantity_kind<K,U,Rep>::rep,
                                      Orig>
-  quantity_kind<K,U,Rep>::absolute() const noexcept {
-  return quantity_point_kind<downcast_point_kind<K>,U, Rep, Orig>(*this);
+  absolute(const quantity_kind<K,U,Rep> &qk) noexcept {
+  return quantity_point_kind<downcast_point_kind<K>,U, Rep, Orig>(qk);
 }
 
 namespace detail {
