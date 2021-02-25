@@ -80,6 +80,12 @@ Concepts
       ``true``, and ``std::common_type_t<T::value_type, std::intmax_t>`` must at least provide binary
       multiplication and division operators with itself and ``T``.
 
+.. concept:: template<typename T> PointOrigin
+
+    A concept matching all point origins in the library. Satisfied by all instantiations of
+    :class:`point_origin`. Point origins are used to denote the abstract reference with respect to which
+    :class:`quantity_point`s are measured.
+
 .. concept:: template<typename T> QuantityPoint
 
     A concept matching all quantity points in the library. Satisfied by all instantiations of

@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <units/one_rep.h>
+#include <units/zero_rep.h>
 #include <units/physical/si/base/thermodynamic_temperature.h>
 
 namespace units::physical::si::imperial {
@@ -30,19 +32,20 @@ struct degree_fahrenheit : named_scaled_unit<degree_fahrenheit, basic_symbol_tex
 
 namespace detail {
 
-struct zero_fahrenheit_abs_temperature_ : scaled_unit<ratio(27315 * 9 + 5 * 3200, 900), kelvin> {};
+struct zero_fahrenheit_abs_temperature_ : scaled_unit<ratio(27315 * 9 - 5 * 3200, 900), kelvin> {};
 
 }  // namespace detail
 
 struct fahrenheit_temperature_origin : point_origin<fahrenheit_temperature_origin, kelvin> {
   using reference_origin = kelvin_temperature_origin;
+  // TODO: We should really use \c one_rep here instead! However, for that we'd require it to be fully arithmetic; pity it isn't.
   static constexpr auto offset_to_reference =
-      si::thermodynamic_temperature<imperial::detail::zero_fahrenheit_abs_temperature_, long int>(1);
+      si::thermodynamic_temperature<imperial::detail::zero_fahrenheit_abs_temperature_, int>(1);
 };
 
 template<UnitOf<si::dim_thermodynamic_temperature> U = degree_fahrenheit, QuantityValue Rep = double>
 using fahrenheit_temperature_point =
-  quantity_point<dim_thermodynamic_temperature, U, Rep, fahrenheit_temperature_origin>;
+  si::thermodynamic_temperature_point<U, Rep, fahrenheit_temperature_origin>;
 
 inline namespace literals {
 
@@ -63,6 +66,17 @@ namespace unit_constants {
 
 inline constexpr auto deg_F = thermodynamic_temperature<degree_fahrenheit, one_rep>{};
 
+inline constexpr auto zp_deg_fahrenheit = thermodynamic_temperature_point<degree_fahrenheit, zero_rep, fahrenheit_temperature_origin>{};
+
 }  // namespace unit_constants
 
 }  // namespace units::physical::si::imperial
+
+namespace units {
+
+template <QuantityValue Rep>
+inline constexpr auto interpret_as_temperature_point(const units::physical::si::thermodynamic_temperature<units::physical::si::imperial::degree_fahrenheit, Rep> &t) {
+  return units::physical::si::imperial::fahrenheit_temperature_point<units::physical::si::imperial::degree_fahrenheit, Rep>(t);
+}
+
+}  // namespace units

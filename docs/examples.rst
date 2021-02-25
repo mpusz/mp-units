@@ -7,6 +7,7 @@ Examples
     examples/hello_units
     examples/avg_speed
     examples/box_example
+    examples/temperature
     examples/unknown_dimension
     examples/measurement
     examples/linear_algebra

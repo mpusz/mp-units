@@ -35,22 +35,28 @@ namespace imperial = units::physical::si::imperial;
 
 using namespace si::literals;
 using namespace si::unit_constants;
+using namespace imperial::unit_constants;
+
+template <typename QP>
+void print_typical_temperatures() {
+  // Highlighting different methods to construct a thermodynamic_temperature_point:
+  static constexpr auto absolute = zp_kelvin + 0*K;
+  static constexpr auto really_cold = zp_deg_fahrenheit + 0*deg_F;
+  static constexpr auto freezing = 0_qp_deg_C;
+  static constexpr auto human_body = interpret_as_temperature_point(98*deg_F);
+  static constexpr auto boiling = zp_deg_celsius + 100*deg_C;
+
+  std::cout << "Absolute zero: " << quantity_point_cast<QP>(absolute).relative();
+  std::cout << ", really cold: " << quantity_point_cast<QP>(really_cold).relative();
+  std::cout << ", water freezing: " << quantity_point_cast<QP>(freezing).relative();
+  std::cout << ", typical human body: " << quantity_point_cast<QP>(human_body).relative();
+  std::cout << ", water boiling: " << quantity_point_cast<QP>(boiling).relative();
+  std::cout << std::endl;
+}
 
 int main()
 {
-  si::celsius_temperature_point<> freezing = 0_qp_deg_C;
-  si::celsius_temperature_point<> boiling = 100_qp_deg_C;
-
-  auto f_C = quantity_point_cast<si::celsius_temperature_point<>>(freezing);
-  auto b_C = quantity_point_cast<si::celsius_temperature_point<>>(boiling);
-
-  auto f_F = quantity_point_cast<imperial::fahrenheit_temperature_point<>>(freezing);
-  auto b_F = quantity_point_cast<imperial::fahrenheit_temperature_point<>>(boiling);
-
-  auto f_K = quantity_point_cast<si::kelvin_temperature_point<>>(freezing);
-  auto b_K = quantity_point_cast<si::kelvin_temperature_point<>>(boiling);
-
-  std::cout << "Freezing point: " << f_C.relative() << "; Boiling point: " << b_C.relative() << std::endl;
-  std::cout << "Freezing point: " << f_F.relative() << "; Boiling point: " << b_F.relative() << std::endl;
-  std::cout << "Freezing point: " << f_K.relative() << "; Boiling point: " << b_K.relative() << std::endl;
+  print_typical_temperatures<si::celsius_temperature_point<>>();
+  print_typical_temperatures<imperial::fahrenheit_temperature_point<>>();
+  print_typical_temperatures<si::kelvin_temperature_point<>>();
 }
