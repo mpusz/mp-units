@@ -86,7 +86,7 @@ namespace detail {
 template<typename T>
 constexpr auto downcast_impl()
 {
-  if constexpr(has_downcast_guide<T> && !has_downcast_poison_pill<T>)
+  if constexpr(has_downcast_guide<downcast_base<T>> && !has_downcast_poison_pill<downcast_base<T>>)
     return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
   else
     return std::type_identity<T>();
