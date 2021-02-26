@@ -44,9 +44,15 @@ if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 # TODO Those examples use Concepts terse syntax not yet supported by MSVC
 
 add_example(avg_speed)
-add_example(glide_computer)
 add_example(hello_units)
 add_example(total_energy)
+
+add_executable(glide_computer
+    geographic.cpp geographic.h
+    glide_computer.cpp glide_computer.h
+    glide_computer_example.cpp
+)
+target_link_libraries(glide_computer PRIVATE mp-units::mp-units)
 
 # TODO "atomic constraint should be a constant expression" error in std::invocable
 
