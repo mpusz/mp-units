@@ -119,9 +119,6 @@ namespace geographic {
 struct horizontal_kind : units::kind<horizontal_kind, units::physical::si::dim_length> {};
 using distance = units::quantity_kind<horizontal_kind, units::physical::si::kilometre>;
 
-using namespace units::physical::si::unit_constants;
-inline constexpr auto earth_radius = 6371 * km;
-
 struct position {
   latitude lat;
   longitude lon;

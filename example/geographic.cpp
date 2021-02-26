@@ -24,6 +24,13 @@
 #include <cmath>
 #include <numbers>
 
+namespace {
+
+using namespace units::physical::si::unit_constants;
+inline constexpr auto earth_radius = 6371 * km;
+
+}  // namespace
+
 namespace geographic {
 
 distance spherical_distance(position from, position to)
