@@ -26,6 +26,7 @@ on:
 
 jobs:
   analyze:
+    if: github.repository_owner == 'mpusz'
     name: Analyze
     runs-on: ubuntu-20.04
     env:
