@@ -24,21 +24,12 @@ from conans import ConanFile, tools
 from conans.tools import Version, check_min_cppstd
 from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps
 from conans.errors import ConanInvalidConfiguration
-import re
+import os, re
 
 required_conan_version = ">=1.33.0"
 
-def get_version():
-    try:
-        content = tools.load("src/CMakeLists.txt")
-        version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
-        return version.strip()
-    except Exception:
-        return None
-
 class UnitsConan(ConanFile):
     name = "mp-units"
-    version = get_version()
     homepage = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
     topics = ("units", "dimensions", "quantities", "dimensional-analysis", "physical-quantities", "physical-units", "system-of-units", "cpp23", "cpp20", "library", "quantity-manipulation")
@@ -83,6 +74,11 @@ class UnitsConan(ConanFile):
                 # consumer's mode (library sources only)
                 self._cmake.configure(source_folder="src")
         return self._cmake
+
+    def set_version(self):
+        content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
+        version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
+        self.version = version.strip()
 
     def validate(self):
         compiler = self.settings.compiler
