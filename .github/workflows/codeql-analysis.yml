@@ -21,8 +21,6 @@ on:
     branches: [ master ]
     paths-ignore:
     - 'docs/**'
-  schedule:
-    - cron: '24 2 * * 6'
 
 jobs:
   analyze:
