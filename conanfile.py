@@ -44,7 +44,7 @@ class UnitsConan(ConanFile):
     topics = ("units", "dimensions", "quantities", "dimensional-analysis", "physical-quantities", "physical-units", "system-of-units", "cpp23", "cpp20", "library", "quantity-manipulation")
     license = "MIT"
     url = "https://github.com/mpusz/units"
-    settings = "compiler", "build_type"
+    settings = "os", "compiler", "build_type", "arch"
     requires = (
         "fmt/7.1.3",
         "gsl-lite/0.37.0"
