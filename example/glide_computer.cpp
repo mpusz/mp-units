@@ -153,7 +153,7 @@ void estimate(timestamp start_ts, const glider& g, const weather& w, const task&
 
     // circle in a thermall to gain height
     pos = circle(start_ts, pos, g, w, t, height_to_gain);
-  } while (height_to_gain > height(0 * m));
+  } while (height_to_gain > height{});
 
   // final glide
   pos = final_glide(start_ts, pos, g, t);

@@ -107,8 +107,6 @@ struct fmt::formatter<glide_computer::altitude> : formatter<units::physical::si:
 // definition of glide computer databases and utilities
 namespace glide_computer {
 
-using namespace si::unit_constants;
-
 struct glider {
   struct polar_point {
     velocity v;
@@ -162,7 +160,7 @@ public:
 
   distance get_length() const { return length_; }
 
-  distance get_leg_dist_offset(size_t leg_index) const { return leg_index == 0 ? distance(0 * km) : leg_total_distances_[leg_index - 1]; }
+  distance get_leg_dist_offset(size_t leg_index) const { return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1]; }
   size_t get_leg_index(distance dist) const
   {
     return static_cast<size_t>(std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
@@ -191,7 +189,7 @@ struct flight_point {
   timestamp ts;
   altitude alt;
   size_t leg_idx = 0;
-  distance dist{0 * km};
+  distance dist{};
 };
 
 altitude terrain_level_alt(const task& t, const flight_point& pos);

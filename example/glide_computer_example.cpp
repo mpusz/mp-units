@@ -31,6 +31,7 @@ using namespace glide_computer;
 
 auto get_gliders()
 {
+  using namespace si::unit_constants;
   static const std::array gliders = {
       glider{"SZD-30 Pirat", {velocity(83 * km / h), rate_of_climb(-0.7389 * m / s)}},
       glider{"SZD-51 Junior", {velocity(80 * km / h), rate_of_climb(-0.6349 * m / s)}},
@@ -41,6 +42,7 @@ auto get_gliders()
 
 auto get_weather_conditions()
 {
+  using namespace si::unit_constants;
   static const std::array weather_conditions = {
       std::pair("Good", weather{height(1900 * m), rate_of_climb(4.3 * m / s)}),
       std::pair("Medium", weather{height(1550 * m), rate_of_climb(2.8 * m / s)}),
@@ -135,17 +137,19 @@ void print(const aircraft_tow& tow)
 
 void example()
 {
-  const safety s = {height(300 * m)};
+  using namespace si::unit_constants;
+
+  const safety sfty = {height(300 * m)};
   const auto gliders = get_gliders();
   const auto waypoints = get_waypoints();
   const auto weather_conditions = get_weather_conditions();
   const task t = {waypoints[0], waypoints[1], waypoints[0]};
-  const aircraft_tow tow = {height(400 * m), rate_of_climb(1.6 * m / ::s)};
+  const aircraft_tow tow = {height(400 * m), rate_of_climb(1.6 * m / s)};
   // TODO use C++20 date library when available
   // set `start_time` to 11:00 am today
   const timestamp start_time(std::chrono::system_clock::now());
 
-  print(s);
+  print(sfty);
   print(gliders);
   print(waypoints);
   print(weather_conditions);
@@ -158,7 +162,7 @@ void example()
       std::cout << txt << "\n";
       fmt::print("{0:=^{1}}\n\n", "", txt.size());
 
-      estimate(start_time, g, c.second, t, s, tow);
+      estimate(start_time, g, c.second, t, sfty, tow);
 
       std::cout << "\n\n";
     }
