@@ -4,7 +4,7 @@ Usage
 .. note::
 
     This library targets C++23 and extensively uses C++20 features that is why, as of now, it compiles correctly
-    only with gcc-10, Visual Studio 16.7, and newer.
+    only with gcc-10, Visual Studio 16.9, and newer.
 
 Repository Structure and Dependencies
 -------------------------------------
