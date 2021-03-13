@@ -23,6 +23,8 @@
 cmake_minimum_required(VERSION 3.2)
 
 option(UNITS_BUILD_DOCS "Generate project documentation" ON)
+message(STATUS "Project documentation generation: ${UNITS_BUILD_DOCS}")
+
 if(NOT UNITS_BUILD_DOCS)
     return()
 endif()

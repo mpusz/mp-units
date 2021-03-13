@@ -22,9 +22,10 @@
 
 cmake_minimum_required(VERSION 3.15)
 project(mp-units
-    LANGUAGES CXX)
+    LANGUAGES CXX
+)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # set restrictive compilation warnings
 include(warnings)
