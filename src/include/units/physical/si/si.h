@@ -45,6 +45,8 @@
 #include <units/physical/si/derived/electric_charge.h>
 #include <units/physical/si/derived/electric_field_strength.h>
 #include <units/physical/si/derived/energy.h>
+// TODO Add when downcasting issue is solved (collides with pressure)
+// #include <units/physical/si/derived/energy_density.h>
 #include <units/physical/si/derived/force.h>
 #include <units/physical/si/derived/frequency.h>
 #include <units/physical/si/derived/heat_capacity.h>
@@ -58,6 +60,8 @@
 #include <units/physical/si/derived/permittivity.h>
 #include <units/physical/si/derived/power.h>
 #include <units/physical/si/derived/pressure.h>
+// TODO Add when downcasting issue is solved (collides with frequency)
+// #include <units/physical/si/derived/radioactivity.h>
 #include <units/physical/si/derived/resistance.h>
 #include <units/physical/si/derived/speed.h>
 #include <units/physical/si/derived/surface_tension.h>

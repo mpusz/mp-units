@@ -113,7 +113,7 @@ static_assert(Conductance<si::conductance<si::siemens>>);
 static_assert(!Conductance<si::time<si::second>>);
 
 // TODO Add when downcasting issue is solved
-// static_assert(Radioactivity<si::radioactivity<si::siemens>>);
+// static_assert(Radioactivity<si::radioactivity<si::becquerel>>);
 // static_assert(!Radioactivity<si::time<si::second>>);
 
 static_assert(CatalyticActivity<si::catalytic_activity<si::katal>>);

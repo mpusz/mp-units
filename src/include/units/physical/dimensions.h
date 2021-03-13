@@ -39,7 +39,7 @@
 #include <units/physical/dimensions/electric_current.h>
 #include <units/physical/dimensions/electric_field_strength.h>
 #include <units/physical/dimensions/energy.h>
-// TODO Add when downcasting issue is solved
+// TODO Add when downcasting issue is solved (collides with pressure)
 // #include <units/physical/dimensions/energy_density.h>
 #include <units/physical/dimensions/force.h>
 #include <units/physical/dimensions/frequency.h>
@@ -57,7 +57,7 @@
 #include <units/physical/dimensions/permittivity.h>
 #include <units/physical/dimensions/power.h>
 #include <units/physical/dimensions/pressure.h>
-// TODO Add when downcasting issue is solved
+// TODO Add when downcasting issue is solved (collides with frequency)
 // #include <units/physical/dimensions/radioactivity.h>
 #include <units/physical/dimensions/resistance.h>
 #include <units/physical/dimensions/speed.h>

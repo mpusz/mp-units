@@ -24,15 +24,14 @@
 
 #include <units/concepts.h>
 #include <units/physical/dimensions/energy.h>
-#include <units/physical/dimensions/length.h>
+#include <units/physical/dimensions/volume.h>
 
 namespace units::physical {
 
-// TODO Add when downcasting issue is solved
-// template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_length> L>
-// struct dim_energy_density : derived_dimension<Child, U, exponent<E, 1>, exponent<L, -3>> {};
+template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_volume> V>
+struct dim_energy_density : derived_dimension<Child, U, exponent<E, 1>, exponent<V, -1>> {};
 
-// template<typename T>
-// concept EnergyDensity = QuantityOfT<T, dim_energy_density>;
+template<typename T>
+concept EnergyDensity = QuantityOfT<T, dim_energy_density>;
 
 }  // namespace units::physical
