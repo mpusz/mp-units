@@ -44,7 +44,7 @@ public:
   min_expl() requires (Mode != 1) = default;
 
   // construction from std::int64_t
-  explicit constexpr min_expl(std::intmax_t v) noexcept requires (Mode != 2) : value_(v) {}
+  constexpr explicit min_expl(std::intmax_t v) noexcept requires (Mode != 2) : value_(v) {}
 
   // copy construction
   min_expl(const min_expl&) requires (Mode != 3) = default;

@@ -51,7 +51,7 @@ struct ratio {
   std::intmax_t den;
   std::intmax_t exp;
 
-  explicit constexpr ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
+  constexpr explicit ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
   {
     gsl_Expects(den != 0);
     detail::normalize(num, den, exp);

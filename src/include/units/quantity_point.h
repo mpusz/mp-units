@@ -70,7 +70,7 @@ public:
 
   template<QuantityPoint QP2>
     requires std::is_convertible_v<typename QP2::quantity_type, quantity_type>
-  constexpr quantity_point(const QP2& qp) : q_{qp.relative()} {}
+  constexpr explicit(false) quantity_point(const QP2& qp) : q_{qp.relative()} {}
 
   quantity_point& operator=(const quantity_point&) = default;
   quantity_point& operator=(quantity_point&&) = default;

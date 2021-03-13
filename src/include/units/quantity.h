@@ -133,15 +133,15 @@ public:
   quantity(quantity&&) = default;
 
   template<safe_convertible_to_<rep> Value>
-  explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
-  constexpr quantity(const Value& v) : value_(v) {}
+  constexpr explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
+  quantity(const Value& v) : value_(v) {}
 
   template<safe_castable_to_<quantity> Q>
-  constexpr quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
+  constexpr explicit(false) quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
 
   template<QuantityLike Q>
     requires safe_castable_to_<quantity_like_type<Q>, quantity>
-  explicit constexpr quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::count(q))) {}
+  constexpr explicit quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::count(q))) {}
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;

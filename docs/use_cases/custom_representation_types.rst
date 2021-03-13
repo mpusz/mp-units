@@ -36,7 +36,7 @@ The simplest representation type that fulfills the above requirements can look a
       std::intmax_t value_;
     public:
       my_rep() = default;
-      explicit constexpr my_rep(std::intmax_t v) noexcept : value_(v) {}
+      constexpr explicit my_rep(std::intmax_t v) noexcept : value_(v) {}
 
       [[nodiscard]] bool operator==(my_rep) const = default;
 
