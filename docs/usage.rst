@@ -304,8 +304,8 @@ differences:
 
       mkdir build && cd build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
-      cmake --build . --config Release
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake --build .
 
 
 Contributing (or just building all the tests, examples, and documentation)
@@ -337,8 +337,8 @@ step with the CMake build:
 .. code-block:: shell
 
     # ...
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
-    cmake --build . --config Release
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake --build .
     ctest
 
 
