@@ -39,10 +39,6 @@ add_example(kalman_filter-alpha_beta_filter_example2)
 add_example(measurement)
 add_example(unknown_dimension)
 
-if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-
-# TODO Those examples use Concepts terse syntax not yet supported by MSVC
-
 add_example(avg_speed)
 add_example(hello_units)
 add_example(total_energy)
@@ -64,5 +60,3 @@ target_link_libraries(linear_algebra
 )
 
 add_subdirectory(alternative_namespaces)
-
-endif()

@@ -69,12 +69,12 @@ inline namespace literals {
 
 constexpr auto operator"" _N(unsigned long long v) { return latitude(static_cast<latitude::value_type>(v)); }
 constexpr auto operator"" _N(long double v) { return latitude(static_cast<latitude::value_type>(v)); }
-constexpr auto operator"" _S(unsigned long long v) { return latitude(static_cast<latitude::value_type>(-v)); }
-constexpr auto operator"" _S(long double v) { return latitude(static_cast<latitude::value_type>(-v)); }
+constexpr auto operator"" _S(unsigned long long v) { return latitude(-static_cast<latitude::value_type>(v)); }
+constexpr auto operator"" _S(long double v) { return latitude(-static_cast<latitude::value_type>(v)); }
 constexpr auto operator"" _E(unsigned long long v) { return longitude(static_cast<longitude::value_type>(v)); }
 constexpr auto operator"" _E(long double v) { return longitude(static_cast<longitude::value_type>(v)); }
-constexpr auto operator"" _W(unsigned long long v) { return longitude(static_cast<longitude::value_type>(-v)); }
-constexpr auto operator"" _W(long double v) { return longitude(static_cast<longitude::value_type>(-v)); }
+constexpr auto operator"" _W(unsigned long long v) { return longitude(-static_cast<longitude::value_type>(v)); }
+constexpr auto operator"" _W(long double v) { return longitude(-static_cast<longitude::value_type>(v)); }
 
 }  // namespace literals
 
