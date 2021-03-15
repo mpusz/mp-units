@@ -86,6 +86,10 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+      - name: Install Libc++
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        shell: bash
+        run: |
           sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
