@@ -30,8 +30,21 @@ project(mp-units
 set(UNITS_DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
 set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+# check if libc++ is being used
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(CHECK_START "Checking if libc++ is being used")
+    list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+    include(CheckSymbolExists)
+    check_symbol_exists(_LIBCPP_VERSION "ciso646" UNITS_LIBCXX)
+
+    list(POP_BACK CMAKE_MESSAGE_INDENT)
+    if(UNITS_LIBCXX)
+        message(CHECK_PASS "found")
+    else()
+        message(CHECK_FAIL "not found")
+    endif()
+endif()
 
 find_package(fmt CONFIG REQUIRED)
 find_package(gsl-lite CONFIG REQUIRED)
@@ -51,11 +64,13 @@ target_include_directories(mp-units
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    find_package(range-v3)
-    target_link_libraries(mp-units
-        INTERFACE
-            range-v3::range-v3
-    )
+    if(UNITS_LIBCXX)
+        find_package(range-v3)
+        target_link_libraries(mp-units
+            INTERFACE
+                range-v3::range-v3
+        )
+    endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(mp-units
         INTERFACE

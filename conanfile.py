@@ -103,7 +103,7 @@ class UnitsConan(ConanFile):
     #         del self.options.build_docs
 
     def requirements(self):
-        if self.settings.compiler == "clang":
+        if self.settings.compiler == "clang" and self.settings.compiler.libcxx == "libc++":
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):

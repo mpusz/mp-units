@@ -31,15 +31,24 @@
 #define COMP_MSVC _MSC_VER
 #endif
 
-#if defined(COMP_CLANG) && !defined(UNITS_LIBCXX)
-#define UNITS_LIBCXX 0
+#if COMP_CLANG
+
+#include <ciso646>
+#if _LIBCPP_VERSION
+#define UNITS_LIBCXX _LIBCPP_VERSION
 #endif
 
-#if COMP_CLANG && UNITS_LIBCXX
+#endif
+
+#if COMP_CLANG == 12 && UNITS_LIBCXX
 
 #include <concepts/compare.hpp>
 #include <concepts/concepts.hpp>
 #include <range/v3/functional/comparisons.hpp>
+#include <range/v3/iterator.hpp>
+#include <range/v3/range/concepts.hpp>
+#include <range/v3/algorithm/lower_bound.hpp>
+#include <range/v3/algorithm/transform.hpp>
 
 #endif
 
@@ -67,35 +76,46 @@ concept default_constructible = constructible_from<T>;
 #elif COMP_CLANG && UNITS_LIBCXX
 
 // concepts
-using concepts::three_way_comparable;
-using concepts::three_way_comparable_with;
-// using concepts::common_reference_with;
 using concepts::common_with;
 using concepts::constructible_from;
 using concepts::convertible_to;
-// using concepts::default_constructible;
+using concepts::copy_constructible;
 using concepts::derived_from;
-// using concepts::equality_comparable;
+using concepts::equality_comparable;
 using concepts::equality_comparable_with;
-// // using concepts::floating_point;
-// using concepts::integral;
+using concepts::integral;
+using concepts::move_constructible;
 using concepts::regular;
-// using concepts::same_as;
-// using concepts::totally_ordered;
-// using concepts::totally_ordered_with;
+using concepts::three_way_comparable;
+using concepts::three_way_comparable_with;
+using concepts::totally_ordered;
 
 using ranges::compare_three_way;
 
-// namespace ranges {
+namespace ranges {
 
-// using ::ranges::forward_range;
-// using ::ranges::range_value_t;
+using ::ranges::begin;
+using ::ranges::end;
+using ::ranges::distance;
 
-// }
+using ::ranges::forward_range;
+using ::ranges::input_range;
+using ::ranges::range_value_t;
 
-// // missing in Range-v3
-// template<class T>
-// concept floating_point = std::is_floating_point_v<T>;
+using ::ranges::lower_bound;
+using ::ranges::transform;
+
+}
+
+// missing in Range-v3
+template<class T>
+concept floating_point = std::is_floating_point_v<T>;
+
+template<class T>
+concept default_initializable =
+    std::constructible_from<T> &&
+    requires { T{}; } &&
+    requires { ::new (static_cast<void*>(nullptr)) T; };
 
 template<class F, class... Args>
 concept invocable =

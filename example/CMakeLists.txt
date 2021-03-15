@@ -43,20 +43,20 @@ add_example(avg_speed)
 add_example(hello_units)
 add_example(total_energy)
 
-add_executable(glide_computer
-    geographic.cpp geographic.h
-    glide_computer.cpp glide_computer.h
-    glide_computer_example.cpp
-)
-target_link_libraries(glide_computer PRIVATE mp-units::mp-units)
+if(NOT UNITS_LIBCXX)
+    add_executable(glide_computer
+        geographic.cpp geographic.h
+        glide_computer.cpp glide_computer.h
+        glide_computer_example.cpp
+    )
+    target_link_libraries(glide_computer PRIVATE mp-units::mp-units)
 
-# TODO "atomic constraint should be a constant expression" error in std::invocable
-
-find_package(linear_algebra CONFIG REQUIRED)
-add_example(linear_algebra)
-target_link_libraries(linear_algebra
-    PRIVATE
-        linear_algebra::linear_algebra
-)
+    find_package(linear_algebra CONFIG REQUIRED)
+    add_example(linear_algebra)
+    target_link_libraries(linear_algebra
+        PRIVATE
+            linear_algebra::linear_algebra
+    )
+endif()
 
 add_subdirectory(alternative_namespaces)

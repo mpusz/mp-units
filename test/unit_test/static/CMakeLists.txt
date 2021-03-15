@@ -24,9 +24,13 @@ cmake_minimum_required(VERSION 3.2)
 
 add_library(unit_tests_static_truncating
     quantity_test.cpp
-    quantity_kind_test.cpp
-    quantity_point_kind_test.cpp
 )
+if(NOT UNITS_LIBCXX)
+    target_sources(unit_tests_static_truncating PRIVATE
+        quantity_kind_test.cpp
+        quantity_point_kind_test.cpp
+    )
+endif()
 target_link_libraries(unit_tests_static_truncating
     PRIVATE
         mp-units::mp-units
@@ -41,7 +45,6 @@ add_library(unit_tests_static
     chrono_test.cpp
     concepts_test.cpp
     custom_rep_test_min_expl.cpp
-    custom_rep_test_min_impl.cpp
     custom_unit_test.cpp
     data_test.cpp
     dimension_op_test.cpp
@@ -50,7 +53,6 @@ add_library(unit_tests_static
     fps_test.cpp
     kind_test.cpp
     math_test.cpp
-    quantity_point_test.cpp
     ratio_test.cpp
     si_test.cpp
     si_cgs_test.cpp
@@ -61,6 +63,14 @@ add_library(unit_tests_static
     unit_test.cpp
     us_test.cpp
 )
+
+if(NOT UNITS_LIBCXX)
+    target_sources(unit_tests_static PRIVATE
+        custom_rep_test_min_impl.cpp
+        quantity_point_test.cpp
+    )
+endif()
+
 target_link_libraries(unit_tests_static
     PRIVATE
         unit_tests_static_truncating
