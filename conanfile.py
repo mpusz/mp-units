@@ -88,7 +88,7 @@ class UnitsConan(ConanFile):
                 raise ConanInvalidConfiguration("mp-units requires at least g++-10")
         elif compiler == "Visual Studio":
             if version < "16":
-                raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
+                raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.7")
         else:
             raise ConanInvalidConfiguration("mp-units is supported only by gcc and Visual Studio so far")
         if compiler.get_safe("cppstd"):
