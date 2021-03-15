@@ -399,7 +399,7 @@ static_assert(!std::is_assignable_v<abscissa<metre, int>, abscissa<millimetre, i
 #if !defined(COMP_MSVC) || defined(NDEBUG)
 static_assert([]() {
   const width<metre, int> w(1 * m);
-  quantity_point_kind x(w);
+  [[maybe_unused]] quantity_point_kind x(w);
   assert(&++x == &x && x.relative().common() == 2 * m);
   assert(&--x == &x && x.relative().common() == 1 * m);
   assert((x++).relative().common() == 1 * m && x.relative().common() == 2 * m);
