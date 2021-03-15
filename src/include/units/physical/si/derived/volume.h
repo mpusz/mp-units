@@ -70,7 +70,7 @@ struct megalitre : prefixed_alias_unit<cubic_decametre, mega, litre> {};
 struct gigalitre : prefixed_alias_unit<cubic_hectometre, giga, litre> {};
 struct teralitre : prefixed_alias_unit<cubic_kilometre, tera, litre> {};
 struct petalitre : prefixed_unit<petalitre, peta, litre> {};
-struct exalitre : prefixed_unit<petalitre, exa, litre> {};
+struct exalitre : prefixed_unit<exalitre, exa, litre> {};
 struct zettalitre : prefixed_alias_unit<cubic_megametre, zetta, litre> {};
 struct yottalitre : prefixed_unit<yottalitre, yotta, litre> {};
 
