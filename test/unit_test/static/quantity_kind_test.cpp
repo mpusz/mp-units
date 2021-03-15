@@ -176,7 +176,7 @@ static_assert(width<metre, double>::max().common().count() == std::numeric_limit
 ////////////////////////
 
 // default initialization
-#if !defined(COMP_MSVC)
+#if !defined(UNITS_COMP_MSVC)
 static_assert([] {
   const auto read_uninitialized_quantity = [] {
     width<metre> w;
@@ -367,7 +367,7 @@ static_assert(!std::is_assignable_v<width<metre, int>, width<millimetre, int>>);
 // member operators
 /////////////////////
 
-#if !defined(COMP_MSVC) || defined(NDEBUG)
+#if !defined(UNITS_COMP_MSVC) || defined(NDEBUG)
 static_assert([]() {
   width<metre, int> w(1 * m);
   assert(+w.common() == 1 * m);

@@ -43,7 +43,7 @@ struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
-#if !COMP_MSVC
+#if !UNITS_COMP_MSVC
 static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct kilokelvin, P, kelvin>; }; }(si::kilo{})); // no prefix allowed
 #endif
 
@@ -59,7 +59,7 @@ static_assert(compare<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.de
 static_assert(compare<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
 static_assert(compare<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
 
-#if !COMP_MSVC
+#if !UNITS_COMP_MSVC
 static_assert([]<ratio R>() { return !requires { typename scaled_unit<R, metre>; }; }.template operator()<ratio(-1, 1)>()); // negative unit ratio
 #endif
 

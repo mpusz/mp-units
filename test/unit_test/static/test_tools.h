@@ -97,7 +97,7 @@ constexpr T construct_from_only(Us... us) {
   return construct_from<T>(us...);
 }
 
-#if !defined(COMP_GCC)
+#if !defined(UNITS_COMP_GCC)
 template<template<typename...> typename T, typename = std::void_t<>, typename... Us>
 concept ctad_constructible_from_ = requires(Us... us) { T(us...); };
 #else

@@ -144,11 +144,11 @@ static_assert(QuantityValue<min_expl<>>);
 static_assert(!QuantityValue<min_expl<1>>);
 static_assert(!QuantityValue<min_expl<2>>);
 static_assert(!QuantityValue<min_expl<3>>);
-#if !defined(COMP_GCC) || COMP_GCC > 10 || COMP_GCC_MINOR > 1
+#if !defined(UNITS_COMP_GCC) || UNITS_COMP_GCC > 10 || UNITS_COMP_GCC_MINOR > 1
 static_assert(!QuantityValue<min_expl<4>>);
 #endif
 static_assert(!QuantityValue<min_expl<5>>);
-#if !defined(COMP_GCC) || COMP_GCC > 10 || COMP_GCC_MINOR > 1
+#if !defined(UNITS_COMP_GCC) || UNITS_COMP_GCC > 10 || UNITS_COMP_GCC_MINOR > 1
 static_assert(!QuantityValue<min_expl<6>>);
 #endif
 static_assert(!QuantityValue<min_expl<7>>);

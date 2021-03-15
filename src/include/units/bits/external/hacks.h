@@ -23,15 +23,15 @@
 #pragma once
 
 #if __clang__
-#define COMP_CLANG __clang_major__
+#define UNITS_COMP_CLANG __clang_major__
 #elif __GNUC__
-#define COMP_GCC __GNUC__
-#define COMP_GCC_MINOR __GNUC_MINOR__
+#define UNITS_COMP_GCC __GNUC__
+#define UNITS_COMP_GCC_MINOR __GNUC_MINOR__
 #elif _MSC_VER
-#define COMP_MSVC _MSC_VER
+#define UNITS_COMP_MSVC _MSC_VER
 #endif
 
-#if COMP_CLANG
+#if UNITS_COMP_CLANG
 
 #include <ciso646>
 #if _LIBCPP_VERSION
@@ -40,7 +40,7 @@
 
 #endif
 
-#if COMP_CLANG == 12 && UNITS_LIBCXX
+#if UNITS_COMP_CLANG == 12 && UNITS_LIBCXX
 
 #include <concepts/compare.hpp>
 #include <concepts/concepts.hpp>
@@ -55,7 +55,7 @@
 #include <concepts>
 #include <compare>
 
-#if COMP_MSVC || COMP_CLANG
+#if UNITS_COMP_MSVC || UNITS_COMP_CLANG
 
 #define TYPENAME typename
 
@@ -68,12 +68,12 @@
 
 namespace std {
 
-#if COMP_GCC
+#if UNITS_COMP_GCC
 
 template<class T>
 concept default_constructible = constructible_from<T>;
 
-#elif COMP_CLANG && UNITS_LIBCXX
+#elif UNITS_COMP_CLANG && UNITS_LIBCXX
 
 // concepts
 using concepts::common_with;

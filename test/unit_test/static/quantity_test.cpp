@@ -52,7 +52,7 @@ constexpr auto cgs_cm = cgs::unit_constants::cm;
 static_assert(sizeof(length<metre>) == sizeof(double));
 static_assert(sizeof(length<metre, short>) == sizeof(short));
 
-#if COMP_GCC != 10 || COMP_GCC_MINOR > 2
+#if UNITS_COMP_GCC != 10 || UNITS_COMP_GCC_MINOR > 2
 template<template<typename, typename, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<dim_length, second, int>; };  // unit of a different dimension
@@ -303,7 +303,7 @@ static_assert((std::uint8_t(255) * m %= quantity(257)).count() == [] { std::uint
 // TODO: Fix
 static_assert((std::uint8_t(255) * m %= 257 * m).count() != [] { std::uint8_t ui(255); return ui %= 257; }());
 
-#ifndef COMP_MSVC  // TODO ICE (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
+#ifndef UNITS_COMP_MSVC  // TODO ICE (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
 static_assert((22_q_m *= 33.33).count() == 733);

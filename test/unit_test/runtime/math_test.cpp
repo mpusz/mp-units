@@ -73,7 +73,7 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
       REQUIRE(abs(-1_q_m) == 1_q_m);
     }
 
-#ifndef COMP_MSVC
+#ifndef UNITS_COMP_MSVC
     SECTION ("floating-point representation")
     {
       REQUIRE(abs(-1._q_m) == 1_q_m);
@@ -88,7 +88,7 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
       REQUIRE(abs(1_q_m) == 1_q_m);
     }
 
-#ifndef COMP_MSVC
+#ifndef UNITS_COMP_MSVC
     SECTION ("floating-point representation")
     {
       REQUIRE(abs(1._q_m) == 1_q_m);

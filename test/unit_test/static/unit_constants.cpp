@@ -32,7 +32,7 @@
 #include <cstdint>
 #include <type_traits>
 
-#if defined(COMP_MSVC)
+#if defined(UNITS_COMP_MSVC)
 #pragma warning( disable : 4459 ) // Disable shadowing warning.
 #endif
 
@@ -82,7 +82,7 @@ static_assert(is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>)
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 
-#if !defined(COMP_CLANG) // -Wshadow
+#if !defined(UNITS_COMP_CLANG) // -Wshadow
 static_assert([] {
   Speed auto v0 = 10 * m / s;
   signed s = 2;  // hides  ^

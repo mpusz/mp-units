@@ -1001,7 +1001,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q %q}", 1.2345_q_m) == "1 m");
     CHECK(fmt::format("{:%.1Q %q}", 1.2345_q_m) == "1.2 m");
     CHECK(fmt::format("{:%.2Q %q}", 1.2345_q_m) == "1.23 m");
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.234 m");
 #else
     CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.235 m");
@@ -1016,7 +1016,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q}", 1.2345_q_m) == "1");
     CHECK(fmt::format("{:%.1Q}", 1.2345_q_m) == "1.2");
     CHECK(fmt::format("{:%.2Q}", 1.2345_q_m) == "1.23");
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.234");
 #else
     CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.235");
@@ -1051,7 +1051,7 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ %q}", 42_q_m) == "2a m");
     CHECK(fmt::format("{:%XQ %q}", 42_q_m) == "2A m");
 
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%aQ %q}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
     CHECK(fmt::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x1.3c1p+0 m");
     CHECK(fmt::format("{:%AQ %q}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
@@ -1085,7 +1085,7 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ}", 42_q_m) == "2a");
     CHECK(fmt::format("{:%XQ}", 42_q_m) == "2A");
 
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%aQ}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0");
     CHECK(fmt::format("{:%.3aQ}", 1.2345678_q_m) == "0x1.3c1p+0");
     CHECK(fmt::format("{:%AQ}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0");

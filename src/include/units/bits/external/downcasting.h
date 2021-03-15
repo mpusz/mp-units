@@ -74,7 +74,7 @@ enum class downcast_mode {
 
 template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(UNITS_DOWNCAST_MODE)>
 struct downcast_dispatch : std::conditional_t<mode == downcast_mode::off, T,
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
                                               downcast_child<Target, T>> {};
 #else
                                               std::conditional_t<mode == downcast_mode::automatic && has_downcast_guide<T>,

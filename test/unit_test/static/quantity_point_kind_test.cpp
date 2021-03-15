@@ -188,7 +188,7 @@ static_assert(abscissa<metre, double>::max().relative().common().count() == std:
 ////////////////////////
 
 // default initialization
-#if !defined(COMP_MSVC)
+#if !defined(UNITS_COMP_MSVC)
 static_assert([] {
   const auto read_uninitialized_quantity = [] {
     abscissa<metre> w;
@@ -396,7 +396,7 @@ static_assert(!std::is_assignable_v<abscissa<metre, int>, abscissa<millimetre, i
 // member operators
 /////////////////////
 
-#if !defined(COMP_MSVC) || defined(NDEBUG)
+#if !defined(UNITS_COMP_MSVC) || defined(NDEBUG)
 static_assert([]() {
   const width<metre, int> w(1 * m);
   [[maybe_unused]] quantity_point_kind x(w);

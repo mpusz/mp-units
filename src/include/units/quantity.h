@@ -357,7 +357,7 @@ public:
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)
     requires std::three_way_comparable<rep>
-#if COMP_GCC == 10 && COMP_GCC_MINOR >= 2
+#if UNITS_COMP_GCC == 10 && UNITS_COMP_GCC_MINOR >= 2
   = default;
 #else
   {
