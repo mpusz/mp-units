@@ -23,6 +23,7 @@ This repository contains three independent CMake-based projects:
 
     - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
     - `gsl-lite <https://github.com/gsl-lite/gsl-lite>`_ to verify runtime contracts with the ``gsl_Expects`` macro.
+    - [only for clang-12 with libc++] `range-v3 <https://github.com/ericniebler/range-v3>`_ to provide needed C++20 concepts and utilities.
 
 - *.*
 
