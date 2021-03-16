@@ -22,11 +22,11 @@
 
 #include <numeric>
 #include <units/random.h>
-#include <units/physical/si/length.h>
+#include <units/isq/si/length.h>
 #include <catch2/catch.hpp>
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 TEST_CASE("uniform_int_distribution")
 {

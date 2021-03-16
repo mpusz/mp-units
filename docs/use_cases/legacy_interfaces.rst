@@ -25,10 +25,10 @@ and pass it to the library's output:
 .. code-block::
 
     #include "legacy.h"
-    #include <units/physical/si/si.h>
+    #include <units/isq/si/si.h>
     #include <units/quantity_point.h>
 
-    using namespace units::physical;
+    using namespace units::isq;
 
     constexpr Speed auto avg_speed(Length auto d, Time auto t)
     {

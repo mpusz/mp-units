@@ -20,22 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/speed.h>
+#include <units/isq/si/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 namespace {
 
-template<units::physical::Length D, units::physical::Time T>
-constexpr units::physical::Speed auto avg_speed(D d, T t)
+template<units::isq::Length D, units::isq::Time T>
+constexpr units::isq::Speed auto avg_speed(D d, T t)
 {
   return d / t;
 }
 
 void example()
 {
-  using namespace units::physical;
-  using namespace units::physical::si::literals;
+  using namespace units::isq;
+  using namespace units::isq::si::literals;
 
   Length auto d1 = 123_q_m;
   Time auto t1 = 10_q_s;

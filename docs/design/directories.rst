@@ -63,4 +63,4 @@ Library Directories Structure
 
     While working with predefined systems please always include a header file with all
     the definitions for the current system to limit the possibility of an ODR violation
-    (e.g. *units/physical/si/si.h*).
+    (e.g. *units/isq/si/si.h*).

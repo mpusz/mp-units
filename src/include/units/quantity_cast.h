@@ -107,7 +107,7 @@ struct cast_traits<From, To> {
  *
  * This cast gets the target quantity type to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::time<units::physical::si::second>>(1_q_ms);
+ * auto q1 = units::quantity_cast<units::isq::si::time<units::isq::si::second>>(1_q_ms);
  *
  * @tparam To a target quantity type to cast to
  */
@@ -146,7 +146,7 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
  *
  * This cast gets only the target dimension to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::dim_acceleration>(200_q_Gal);
+ * auto q1 = units::quantity_cast<units::isq::si::dim_acceleration>(200_q_Gal);
  *
  * @tparam ToD a dimension type to use for a target quantity
  */
@@ -165,7 +165,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
  *
  * This cast gets only the target unit to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::second>(1_q_ms);
+ * auto q1 = units::quantity_cast<units::isq::si::second>(1_q_ms);
  *
  * @tparam ToU a unit type to use for a target quantity
  */
@@ -184,7 +184,7 @@ template<Unit ToU, typename D, typename U, typename Rep>
  *
  * This cast gets both the target dimension and unit to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::physical::si::dim_speed, units::physical::si::kilometre_per_hour>(v1);
+ * auto q1 = units::quantity_cast<units::isq::si::dim_speed, units::isq::si::kilometre_per_hour>(v1);
  *
  * @note This cast is especially useful when working with quantities of unknown dimensions
  * (@c unknown_dimension).
@@ -227,9 +227,9 @@ template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
  * This cast gets the target quantity point type to cast to or anything that works for quantity_cast. For example:
  *
  * auto q1 = units::quantity_point_cast<decltype(quantity_point{0_q_s})>(quantity_point{1_q_ms});
- * auto q1 = units::quantity_point_cast<units::physical::si::time<units::physical::si::second>>(quantity_point{1_q_ms});
- * auto q1 = units::quantity_point_cast<units::physical::si::dim_acceleration>(quantity_point{200_q_Gal});
- * auto q1 = units::quantity_point_cast<units::physical::si::second>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<units::isq::si::time<units::isq::si::second>>(quantity_point{1_q_ms});
+ * auto q1 = units::quantity_point_cast<units::isq::si::dim_acceleration>(quantity_point{200_q_Gal});
+ * auto q1 = units::quantity_point_cast<units::isq::si::second>(quantity_point{1_q_ms});
  * auto q1 = units::quantity_point_cast<int>(quantity_point{1_q_ms});
  *
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
@@ -253,7 +253,7 @@ template<typename CastSpec, typename D, typename U, typename Rep>
  *
  * This cast gets both the target dimension and unit to cast to. For example:
  *
- * auto q1 = units::quantity_point_cast<units::physical::si::dim_speed, units::physical::si::kilometre_per_hour>(v1);
+ * auto q1 = units::quantity_point_cast<units::isq::si::dim_speed, units::isq::si::kilometre_per_hour>(v1);
  *
  * @note This cast is especially useful when working with quantity points of unknown dimensions
  * (@c unknown_dimension).
@@ -278,9 +278,9 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  *
  * auto q1 = units::quantity_kind_cast<decltype(ns::width{1 * m})>(quantity_kind{ns::width{1 * mm});
  * auto q1 = units::quantity_kind_cast<ns::height_kind>(ns::width{1 * m});
- * auto q1 = units::quantity_kind_cast<units::physical::si::length<units::physical::si::metre>>(ns::width{1 * mm});
- * auto q1 = units::quantity_kind_cast<units::physical::si::dim_acceleration>(ns::rate_of_climb{200 * Gal});
- * auto q1 = units::quantity_kind_cast<units::physical::si::metre>(ns::width{1 * mm});
+ * auto q1 = units::quantity_kind_cast<units::isq::si::length<units::isq::si::metre>>(ns::width{1 * mm});
+ * auto q1 = units::quantity_kind_cast<units::isq::si::dim_acceleration>(ns::rate_of_climb{200 * Gal});
+ * auto q1 = units::quantity_kind_cast<units::isq::si::metre>(ns::width{1 * mm});
  * auto q1 = units::quantity_kind_cast<int>(ns::width{1.0 * mm});
  *
  * @tparam CastSpec a target (quantity) kind type to cast to or anything that works for quantity_cast
@@ -311,7 +311,7 @@ template<typename CastSpec, typename K, typename U, typename Rep>
  *
  * This cast gets both the target kind and unit to cast to. For example:
  *
- * auto q1 = units::quantity_kind_cast<ns::height_kind, units::physical::si::kilometre>(w);
+ * auto q1 = units::quantity_kind_cast<ns::height_kind, units::isq::si::kilometre>(w);
  *
  * @note This cast is especially useful when working with quantity kinds of unknown kind.
  *
@@ -337,9 +337,9 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
  * auto q1 = units::quantity_point_kind_cast<decltype(ns::width{1 * m})>(ns::x_coordinate{1 * mm});
  * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind>(ns::x_coordinate{1 * m});
  * auto q1 = units::quantity_point_kind_cast<ns::height_kind>(ns::x_coordinate{1 * m});
- * auto q1 = units::quantity_point_kind_cast<units::physical::si::length<units::physical::si::metre>>(ns::x_coordinate{1 * mm});
- * auto q1 = units::quantity_point_kind_cast<units::physical::si::dim_acceleration>(quantity_point_kind(ns::rate_of_climb{200 * Gal}));
- * auto q1 = units::quantity_point_kind_cast<units::physical::si::metre>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<units::isq::si::length<units::isq::si::metre>>(ns::x_coordinate{1 * mm});
+ * auto q1 = units::quantity_point_kind_cast<units::isq::si::dim_acceleration>(quantity_point_kind(ns::rate_of_climb{200 * Gal}));
+ * auto q1 = units::quantity_point_kind_cast<units::isq::si::metre>(ns::x_coordinate{1 * mm});
  * auto q1 = units::quantity_point_kind_cast<int>(ns::x_coordinate{1.0 * mm});
  *
  * @tparam CastSpec a target (quantity) point kind type to cast to or anything that works for quantity_kind_cast
@@ -367,7 +367,7 @@ template<typename CastSpec, typename PK, typename U, typename Rep>
  *
  * This cast gets both the target point kind and unit to cast to. For example:
  *
- * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind, units::physical::si::kilometre>(x);
+ * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind, units::isq::si::kilometre>(x);
  *
  * @note This cast is especially useful when working with quantity point kinds of unknown point kind.
  *

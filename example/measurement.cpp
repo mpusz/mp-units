@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/acceleration.h>
+#include <units/isq/si/acceleration.h>
 #include <units/quantity_io.h>
 #include <cmath>
 #include <compare>
@@ -124,7 +124,7 @@ static_assert(units::QuantityValue<measurement<double>>);
 
 void example()
 {
-  using namespace units::physical;
+  using namespace units::isq;
 
   const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
   const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));

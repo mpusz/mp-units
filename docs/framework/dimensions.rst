@@ -171,7 +171,7 @@ provided. For example the SI base dimension of length can be defined as::
     }
 
 In the above code sample ``"L"`` is an base dimension's unique identifier
-and `physical::si::metre` is a :term:`base unit` of this base dimension. We can
+and `isq::si::metre` is a :term:`base unit` of this base dimension. We can
 obtain those back easily with::
 
     static_assert(si::dim_length::symbol == "L");
@@ -206,8 +206,8 @@ The above dimensions can be defined in the library with the
 
     }
 
-In the above code sample `physical::si::square_metre` and
-`physical::si::metre_per_second` are the
+In the above code sample `isq::si::square_metre` and
+`isq::si::metre_per_second` are the
 :term:`coherent derived units <coherent derived unit>` of those derived dimensions.
 
 Coherent unit argument is followed by the list of exponents that form this

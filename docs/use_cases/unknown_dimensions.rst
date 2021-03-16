@@ -22,9 +22,9 @@ The same applies to the resulting unit. For example:
 .. code-block::
     :emphasize-lines: 1,7,9
 
-    #include <units/physical/si/si.h>
+    #include <units/isq/si/si.h>
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
 
     constexpr auto result = 144_q_km / 2_q_h;
     static_assert(std::is_same_v<decltype(result)::dimension,
@@ -41,10 +41,10 @@ dimensions used in the division operation:
 .. code-block::
     :emphasize-lines: 1-2,8,10
 
-    #include <units/physical/si/length.h>
-    #include <units/physical/si/time.h>
+    #include <units/isq/si/length.h>
+    #include <units/isq/si/time.h>
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
 
     constexpr auto result = 144_q_km / 2_q_h;
     static_assert(std::is_same_v<decltype(result)::dimension,
@@ -55,7 +55,7 @@ dimensions used in the division operation:
 .. important::
 
     To limit the possibility of an ODR violation please always include a header file
-    with all the definitions for the current system (e.g. *units/physical/si/si.h*).
+    with all the definitions for the current system (e.g. *units/isq/si/si.h*).
 
 
 Operations On Unknown Dimensions And Their Units

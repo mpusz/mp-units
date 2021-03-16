@@ -53,7 +53,7 @@ struct Box {
 
 #include <iostream>
 
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 int main()
 {

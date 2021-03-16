@@ -21,12 +21,12 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/physical/si/international/speed.h>
-#include <units/physical/si/speed.h>
+#include <units/isq/si/international/speed.h>
+#include <units/isq/si/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
-using namespace units::physical;
+using namespace units::isq;
 
 constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
@@ -35,8 +35,8 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 
 int main()
 {
-  using namespace units::physical::si::literals;
-  using namespace units::physical::si::unit_constants;
+  using namespace units::isq::si::literals;
+  using namespace units::isq::si::unit_constants;
 
   constexpr Speed auto v1 = 110 * km / h;
   constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);

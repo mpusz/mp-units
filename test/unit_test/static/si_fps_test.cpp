@@ -20,30 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/fps/acceleration.h>
-#include <units/physical/si/fps/area.h>
-#include <units/physical/si/fps/energy.h>
-#include <units/physical/si/fps/force.h>
-#include <units/physical/si/fps/length.h>
-#include <units/physical/si/fps/mass.h>
-#include <units/physical/si/fps/power.h>
-#include <units/physical/si/fps/pressure.h>
-#include <units/physical/si/fps/speed.h>
-#include <units/physical/si/fps/time.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/time.h>
+#include <units/isq/si/acceleration.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/energy.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/fps/acceleration.h>
+#include <units/isq/si/fps/area.h>
+#include <units/isq/si/fps/energy.h>
+#include <units/isq/si/fps/force.h>
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/fps/mass.h>
+#include <units/isq/si/fps/power.h>
+#include <units/isq/si/fps/pressure.h>
+#include <units/isq/si/fps/speed.h>
+#include <units/isq/si/fps/time.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/power.h>
+#include <units/isq/si/pressure.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
 static_assert(si::fps::length<si::fps::foot>(1) == si::length<si::metre>(0.3048));
 static_assert(si::fps::mass<si::fps::pound>(1) == si::mass<si::kilogram>(0.45359237));
@@ -62,7 +62,7 @@ static_assert(si::fps::pressure<si::fps::poundal_per_foot_sq>(1) > si::pressure<
 
 namespace si_literals {
 
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 static_assert(si::fps::length<si::fps::foot>(1) == 0.3048_q_m);
 static_assert(si::fps::mass<si::fps::pound>(1) == 0.45359237_q_kg);
@@ -82,7 +82,7 @@ static_assert(si::fps::pressure<si::fps::poundal_per_foot_sq>(1) >  1.4881639435
 
 namespace fps_literals {
 
-using namespace units::physical::si::fps::literals;
+using namespace units::isq::si::fps::literals;
 
 static_assert(1_q_ft == si::length<si::metre>(0.3048));
 static_assert(1_q_lb == si::mass<si::kilogram>(0.45359237));
@@ -102,8 +102,8 @@ static_assert(1_q_pdl_per_ft2> si::pressure<si::pascal>(1.4881639435) &&
 
 namespace fps_plus_si_literals {
 
-using namespace units::physical::si::literals;
-using namespace units::physical::si::fps::literals;
+using namespace units::isq::si::literals;
+using namespace units::isq::si::fps::literals;
 
 // static_assert(100_q_cm == 1_q_m);   // ambiguous
 // static_assert(1'000_q_g == 1_q_kg); // ambiguous
@@ -126,7 +126,7 @@ static_assert(1_q_pdl_per_ft2> 1.4881639435_q_Pa &&
 
 namespace fps_test {
 
-using namespace units::physical::si::fps::literals;
+using namespace units::isq::si::fps::literals;
 
 // addition
 

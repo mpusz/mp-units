@@ -1,5 +1,5 @@
 #include <units/format.h>
-#include <units/physical/si/speed.h>
+#include <units/isq/si/speed.h>
 #include <iostream>
 #include <array>
 
@@ -16,8 +16,8 @@ struct state_variable {
   Q predicted_next_state;
 };
 
-using namespace units::physical;
-using namespace units::physical::si::literals;
+using namespace units::isq;
+using namespace units::isq::si::literals;
 
 constexpr auto radar_transmit_interval = 5.0_q_s;
 constexpr double kalman_range_gain = 0.2;

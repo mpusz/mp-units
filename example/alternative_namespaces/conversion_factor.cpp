@@ -41,7 +41,7 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
 
 }  // namespace
 
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 using namespace units::experimental;
 
 int main()

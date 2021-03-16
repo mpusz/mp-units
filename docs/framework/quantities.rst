@@ -69,7 +69,7 @@ values the library provides :abbr:`UDL (User Defined Literal)` s for each
 
 Thanks to them the same code can be as simple as::
 
-    using namespace units::physical::si::literals;
+    using namespace units::isq::si::literals;
     auto d = 123._q_km;     // si::length<si::kilometre, long double>
     auto v = 70_q_km_per_h; // si::speed<si::kilometre_per_hour, std::int64_t>
 
@@ -98,7 +98,7 @@ They are defined using a special `one_rep` representation type::
 
 With the above our code can look as follows::
 
-    using namespace units::physical::si::unit_constants;
+    using namespace units::isq::si::unit_constants;
     auto d = 123. * km;     // si::length<si::kilometre, double>
     auto v = 70 * km / h;   // si::speed<si::kilometre_per_hour, int>
 
@@ -121,13 +121,13 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 
    - UDLs::
 
-       using namespace units::physical::si::literals;
+       using namespace units::isq::si::literals;
        auto v1 = 120_q_km / 2_q_h;
        auto v2 = length<kilometre>(distance) / time<hour>(duration);
 
    - Unit Constants::
 
-       using namespace units::physical::si::unit_constants;
+       using namespace units::isq::si::unit_constants;
        auto v1 = 120 * km / (2 * h);
        auto v2 = distance * km / (duration * h);
 
@@ -139,14 +139,14 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 
    - UDLs::
 
-       using namespace units::physical::si::literals;
-       using namespace units::physical::si::cgs::literals;
+       using namespace units::isq::si::literals;
+       using namespace units::isq::si::cgs::literals;
        auto d = 1_q_cm;   // FAILS TO COMPILE
 
    - Unit Constants::
 
-       inline constexpr auto si_cm = units::physical::si::unit_constants::cm;
-       inline constexpr auto cgs_cm = units::physical::si::cgs::unit_constants::cm;
+       inline constexpr auto si_cm = units::isq::si::unit_constants::cm;
+       inline constexpr auto cgs_cm = units::isq::si::cgs::unit_constants::cm;
 
        auto d1 = 1. * si_cm;   // si::length<si::centimetre>
        auto d2 = 1. * cgs_cm;  // si::cgs::length<si::centimetre>
@@ -156,7 +156,7 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 
    - UDLs::
 
-       using namespace units::physical::si::literals;
+       using namespace units::isq::si::literals;
        auto d1 = 123._q_km;   // si::length<si::kilometre, long double>
        auto d2 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
 
@@ -164,7 +164,7 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 
    - Unit Constants::
 
-       using namespace units::physical::si::unit_constants;
+       using namespace units::isq::si::unit_constants;
        auto d1 = 123. * km;   // si::length<si::kilometre, double>
        auto d2 = 123 * km;    // si::length<si::kilometre, int>
        auto d3 = 123.f * km;  // si::length<si::kilometre, float>
@@ -194,7 +194,7 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 The only issue we are aware of with Unit Constants is a potential problem of specifying
 a quantity in denominator::
 
-    using namespace units::physical::si::unit_constants;
+    using namespace units::isq::si::unit_constants;
     Speed auto v = 220 * km / 2 * h;  // FAILS TO COMPILE (not a quantity of a speed dimension)
 
 The above code can be fixed in one of the below ways:
@@ -220,7 +220,7 @@ In case the user does not care about the specific unit and representation but
 requires quantity of a concrete dimension than dimension-specific concepts can
 be used::
 
-    using namespace units::physical::si::literals;
+    using namespace units::isq::si::literals;
     constexpr Length auto d = 123_q_km;  // si::length<si::kilometre, std::int64_t>
 
 .. note::
@@ -235,8 +235,8 @@ assume that the user wants to implement an ``avg_speed`` function that will
 be calculating the average speed based on provided distance and duration
 quantities. The usage of such a function can look as follows::
 
-    using namespace units::physical::si::literals;
-    using namespace units::physical::si::international::literals;
+    using namespace units::isq::si::literals;
+    using namespace units::isq::si::international::literals;
     constexpr Speed auto v1 = avg_speed(220_q_km, 2_q_h);
     constexpr Speed auto v2 = avg_speed(140_q_mi, 2_q_h);
 

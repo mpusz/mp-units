@@ -22,21 +22,21 @@
 
 #include <units/concepts.h>
 #include <units/format.h>
-#include <units/physical/si/fps/density.h>
-#include <units/physical/si/fps/length.h>
-#include <units/physical/si/fps/mass.h>
-#include <units/physical/si/fps/power.h>
-#include <units/physical/si/fps/speed.h>
-#include <units/physical/si/fps/volume.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/volume.h>
+#include <units/isq/si/fps/density.h>
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/fps/mass.h>
+#include <units/isq/si/fps/power.h>
+#include <units/isq/si/fps/speed.h>
+#include <units/isq/si/fps/volume.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/power.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/volume.h>
 #include <units/quantity.h>
 #include <iostream>
 
-using namespace units::physical;
+using namespace units::isq;
 
 
 // Some basic specs for the warship   
@@ -64,7 +64,7 @@ auto fmt_line(const Q a)
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
-  using namespace units::physical::si::fps::literals;
+  using namespace units::isq::si::fps::literals;
   const auto waterDensity = 62.4_q_lb_per_ft3;
   std::cout << fmt::format("{}\n", description);
   std::cout << fmt::format("{:20} : {}\n", "length",    fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
@@ -81,8 +81,8 @@ void print_details(std::string_view description, const Ship& ship)
 
 int main()
 {
-  using namespace units::physical::si::literals;
-  using namespace units::physical::si::fps::literals;
+  using namespace units::isq::si::literals;
+  using namespace units::isq::si::fps::literals;
   
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{251._q_m}, .draft{9.3_q_m}, .beam{36_q_m}, .speed{56_q_km_per_h}, .mass{50'300_q_t}, .mainGuns{380_q_mm}, .shellMass{800_q_kg}, .shellSpeed{820._q_m_per_s}, .power{110.45_q_kW}};

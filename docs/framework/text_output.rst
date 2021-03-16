@@ -21,8 +21,8 @@ Output Streams
 The easiest way to print a quantity is to provide its object to the output
 stream::
 
-    using namespace units::physical::si::literals;
-    using namespace units::physical::si::international::literals;
+    using namespace units::isq::si::literals;
+    using namespace units::isq::si::international::literals;
     constexpr Speed auto v1 = avg_speed(220._q_km, 2_q_h);
     constexpr Speed auto v2 = avg_speed(140._q_mi, 2_q_h);
     std::cout << v1 << '\n';  // 110 km/h

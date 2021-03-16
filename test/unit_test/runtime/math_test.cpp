@@ -21,12 +21,12 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/volume.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/volume.h"
 #include <catch2/catch.hpp>
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // classical
 

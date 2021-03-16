@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/length.h"
+#include "units/isq/si/length.h"
 #include <ostream>
 
 namespace {
@@ -82,7 +82,7 @@ struct std::common_type<min_expl<Mode>, std::intmax_t> : std::type_identity<min_
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // quantity explicitly constructible (not convertible) from the representation type
 static_assert(std::constructible_from<length<metre, min_expl<>>, min_expl<>>);

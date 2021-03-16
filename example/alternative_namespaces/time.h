@@ -1,21 +1,21 @@
 
 #pragma once
 
-#include <units/physical/si/time.h>
+#include <units/isq/si/time.h>
 
 // named qtime due to conflict with time_t time(time_t*)
 namespace q_time {
 
 template<typename Rep = double>
-using s = units::physical::si::time<units::physical::si::second, Rep>;
+using s = units::isq::si::time<units::isq::si::second, Rep>;
 
 template<typename Rep = double>
-using ms = units::physical::si::time<units::physical::si::millisecond, Rep>;
+using ms = units::isq::si::time<units::isq::si::millisecond, Rep>;
 
 template<typename Rep = double>
-using min = units::physical::si::time<units::physical::si::minute, Rep>;
+using min = units::isq::si::time<units::isq::si::minute, Rep>;
 
 template<typename Rep = double>
-using h = units::physical::si::time<units::physical::si::hour, Rep>;
+using h = units::isq::si::time<units::isq::si::hour, Rep>;
 
 }  // namespace time

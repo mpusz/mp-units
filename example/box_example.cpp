@@ -1,18 +1,18 @@
-#include <units/physical/si/constants.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/density.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/volume.h>
+#include <units/isq/si/constants.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/density.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/volume.h>
 #include <units/format.h>
 #include <cassert>
 #include <iostream>
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
 using m = si::metre;
 using m2 = si::square_metre;

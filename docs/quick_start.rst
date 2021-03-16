@@ -3,11 +3,11 @@ Quick Start
 
 Here is a small example of possible operations::
 
-    #include <units/physical/si/area.h>
-    #include <units/physical/si/frequency.h>
-    #include <units/physical/si/speed.h>
+    #include <units/isq/si/area.h>
+    #include <units/isq/si/frequency.h>
+    #include <units/isq/si/speed.h>
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
 
     // simple numeric operations
     static_assert(10_q_km / 2 == 5_q_km);
@@ -38,12 +38,12 @@ performed without sacrificing on accuracy. Please see the below example for a qu
 of basic library features::
 
     #include <units/format.h>
-    #include <units/physical/si/speed.h>
-    #include <units/physical/si/international/speed.h>
+    #include <units/isq/si/speed.h>
+    #include <units/isq/si/international/speed.h>
     #include <units/quantity_io.h>
     #include <iostream>
 
-    using namespace units::physical;
+    using namespace units::isq;
 
     constexpr Speed auto avg_speed(Length auto d, Time auto t)
     {
@@ -52,8 +52,8 @@ of basic library features::
 
     int main()
     {
-      using namespace units::physical::si::literals;
-      using namespace units::physical::si::unit_constants;
+      using namespace units::isq::si::literals;
+      using namespace units::isq::si::unit_constants;
 
       constexpr Speed auto v1 = 110 * km / h;
       constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);

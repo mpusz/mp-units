@@ -22,16 +22,16 @@
 
 #include <units/format.h>
 #include <units/math.h>
-#include <units/physical/si/si.h>
-#include <units/physical/si/cgs/cgs.h>
+#include <units/isq/si/si.h>
+#include <units/isq/si/cgs/cgs.h>
 #include <units/quantity_io.h>
 #include <catch2/catch.hpp>
 #include <iomanip>
 #include <sstream>
 
 using namespace units;
-using namespace units::physical;
-using namespace units::physical::si;
+using namespace units::isq;
+using namespace units::isq::si;
 using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")

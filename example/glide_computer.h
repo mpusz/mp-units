@@ -25,8 +25,8 @@
 #include "geographic.h"
 #include <units/format.h>
 #include <units/math.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/international/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/international/length.h>
 #include <units/quantity_point_kind.h>
 
 // An example of a really simplified tactical glide computer
@@ -44,7 +44,7 @@
 // - flight path exactly on a shortest possible line to destination
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 template<units::QuantityKind QK>
 struct fmt::formatter<QK> : formatter<typename QK::quantity_type> {
@@ -95,11 +95,11 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 }  // namespace glide_computer
 
 template<>
-struct fmt::formatter<glide_computer::altitude> : formatter<units::physical::si::length<units::physical::si::metre>> {
+struct fmt::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
   template<typename FormatContext>
   auto format(glide_computer::altitude a, FormatContext& ctx)
   {
-    formatter<units::physical::si::length<units::physical::si::metre>>::format(a.relative().common(), ctx);
+    formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
     return format_to(ctx.out(), " AMSL");
   }
 };

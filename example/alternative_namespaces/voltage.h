@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <units/physical/si/voltage.h>
+#include <units/isq/si/voltage.h>
 
 namespace units{
 namespace experimental{
@@ -10,19 +10,19 @@ namespace experimental{
 namespace voltage {
 
 template<typename Rep = double>
-using V = units::physical::si::voltage<units::physical::si::volt, Rep>;
+using V = units::isq::si::voltage<units::isq::si::volt, Rep>;
 
 template<typename Rep = double>
-using mV = units::physical::si::voltage<units::physical::si::millivolt, Rep>;
+using mV = units::isq::si::voltage<units::isq::si::millivolt, Rep>;
 
 template<typename Rep = double>
-using uV = units::physical::si::voltage<units::physical::si::microvolt, Rep>;
+using uV = units::isq::si::voltage<units::isq::si::microvolt, Rep>;
 
 template<typename Rep = double>
-using nV = units::physical::si::voltage<units::physical::si::nanovolt, Rep>;
+using nV = units::isq::si::voltage<units::isq::si::nanovolt, Rep>;
 
 template<typename Rep = double>
-using pV = units::physical::si::voltage<units::physical::si::picovolt, Rep>;
+using pV = units::isq::si::voltage<units::isq::si::picovolt, Rep>;
 
 }  // namespace voltage
 

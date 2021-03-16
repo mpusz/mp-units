@@ -20,18 +20,18 @@
     physical_quantities
 */
 
-#include <units/physical/si/capacitance.h>
-#include <units/physical/si/resistance.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/voltage.h>
+#include <units/isq/si/capacitance.h>
+#include <units/isq/si/resistance.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/voltage.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 int main()
 {
-  using namespace units::physical;
-  using namespace units::physical::si;
+  using namespace units::isq;
+  using namespace units::isq::si;
 
   std::cout << "mp-units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);

@@ -57,7 +57,7 @@ Enabling a Unit for Prefixing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In case I decide it is reasonable to express my desks with SI prefixes the only thing I have
-to change in the above code is to replace `no_prefix` with `physical::si::prefix`::
+to change in the above code is to replace `no_prefix` with `isq::si::prefix`::
 
     struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio(3, 10), si::square_metre> {};
 
@@ -231,8 +231,8 @@ different systems:
 
     namespace si {
 
-    struct metre : named_unit<metre, "m", units::physical::si::prefix> {};
-    struct kilometre : prefixed_unit<kilometre, units::physical::si::kilo, metre> {};
+    struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+    struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
     struct dim_length : base_dimension<"L", metre> {};
 

@@ -21,16 +21,16 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/physical/si/mass.h>
-#include <units/physical/si/voltage.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/frequency.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/voltage.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/frequency.h>
 #include <units/math.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // power spectral density
 struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};

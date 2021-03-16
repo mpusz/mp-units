@@ -22,12 +22,12 @@
 
 #include "test_tools.h"
 #include "units/math.h"
-#include "units/physical/si/cgs/speed.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/volume.h"
-#include "units/physical/si/fps/speed.h"
+#include "units/isq/si/cgs/speed.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/frequency.h"
+#include "units/isq/si/speed.h"
+#include "units/isq/si/volume.h"
+#include "units/isq/si/fps/speed.h"
 #include <chrono>
 #include <complex>
 #include <cstdint>
@@ -38,7 +38,7 @@
 namespace {
 
 using namespace units;
-namespace si = physical::si;
+namespace si = isq::si;
 using namespace si;
 using namespace unit_constants;
 
@@ -202,8 +202,8 @@ static_assert(std::constructible_from<fps::length<fps::foot>, cgs::length<cgs::c
 static_assert(std::convertible_to<cgs::length<cgs::centimetre>, fps::length<fps::foot>>);
 
 // conversion between different dimensions not allowed
-static_assert(!std::constructible_from<length<metre>, physical::si::time<second>>);
-static_assert(!std::convertible_to<physical::si::time<second>, length<metre>>);
+static_assert(!std::constructible_from<length<metre>, isq::si::time<second>>);
+static_assert(!std::convertible_to<isq::si::time<second>, length<metre>>);
 static_assert(!std::constructible_from<length<metre>, speed<metre_per_second>>);
 static_assert(!std::convertible_to<speed<metre_per_second>, length<metre>>);
 
@@ -465,7 +465,7 @@ static_assert(compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<ratio(36
 static_assert(compare<decltype(1_q_m * 1_q_min), quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>, scaled_unit<ratio(60), unknown_coherent_unit>, std::int64_t>>);
 static_assert(compare<decltype(1_q_s * 1_q_Hz), dimensionless<one, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_min), frequency<scaled_unit<ratio(1, 60), hertz>, std::int64_t>>);
-static_assert(compare<decltype(1 / 1_q_Hz), physical::si::time<second, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_Hz), isq::si::time<second, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_km), quantity<unknown_dimension<exponent<dim_length, -1>>, scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>, std::int64_t>>);
 static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<ratio(1000), one>, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / 1_q_s), speed<metre_per_second, std::int64_t>>);

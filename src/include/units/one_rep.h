@@ -47,7 +47,7 @@ struct invalid_one_rep {};
  * Unit constants simplify quantity creation:
  * 
  * @code{.cpp}
- * using namespace units::physical::si::unit_constants;
+ * using namespace units::isq::si::unit_constants;
  *
  * auto d = 123 * m;
  * auto v = 70 * km / h;

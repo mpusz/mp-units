@@ -53,7 +53,7 @@ auto get_weather_conditions()
 auto get_waypoints()
 {
   using namespace geographic::literals;
-  using namespace units::physical::si::international::unit_constants;
+  using namespace units::isq::si::international::unit_constants;
   static const std::array waypoints = {
       waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude(16 * ft)},    // N54°14'51.8" E18°40'28.2"
       waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude(115 * ft)}   // N53°31'27.9" E18°50'58.1"

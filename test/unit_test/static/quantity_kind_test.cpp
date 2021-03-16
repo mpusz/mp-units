@@ -22,11 +22,11 @@
 
 #include "test_tools.h"
 #include "units/chrono.h"
-#include "units/physical/si/cgs/speed.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/fps/speed.h"
+#include "units/isq/si/cgs/speed.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/frequency.h"
+#include "units/isq/si/speed.h"
+#include "units/isq/si/fps/speed.h"
 #include "units/quantity_point.h"
 #include "units/quantity_kind.h"
 #include <cassert>
@@ -36,7 +36,7 @@
 namespace {
 
 using namespace units;
-namespace si = physical::si;
+namespace si = isq::si;
 using namespace si;
 using namespace unit_constants;
 

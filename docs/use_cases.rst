@@ -6,7 +6,7 @@ Use Cases
     For brevity all the code examples in this chapter assume::
 
         using namespace units;
-        using namespace units::physical;
+        using namespace units::isq;
 
 .. toctree::
     :maxdepth: 1

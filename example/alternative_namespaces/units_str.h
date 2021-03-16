@@ -1,6 +1,6 @@
 #pragma once
 
-#include <units/physical/si/prefixes.h>
+#include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
 // get at the units text of the quantity, without its numeric value
 inline auto constexpr units_str(const units::Quantity auto& q)

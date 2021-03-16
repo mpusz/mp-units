@@ -388,7 +388,7 @@ and user should not instantiate it by him/her-self. However the user can sometim
 observe this type in case an unit/dimension conversion expression will end up with an
 unknown/undefined unit type like in the below example::
 
-    using namespace units::physical::si::literals;
+    using namespace units::isq::si::literals;
 
     Length auto l = 100_q_km_per_h * 10_q_s;
 

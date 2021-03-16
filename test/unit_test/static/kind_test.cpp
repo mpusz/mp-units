@@ -23,12 +23,12 @@
 #include "test_tools.h"
 #include "units/generic/angle.h"
 #include "units/kind.h"
-#include "units/physical/si/length.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/speed.h"
+#include "units/isq/si/length.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/speed.h"
 
 using namespace units;
-using namespace physical::si;
+using namespace isq::si;
 
 namespace {
 
@@ -106,7 +106,7 @@ static_assert(!equivalent<radius, radial_area>);
 static_assert(!equivalent<radius, radial_point>);
 
 
-struct width : kind<width, units::physical::si::dim_length> {};
+struct width : kind<width, units::isq::si::dim_length> {};
 using horizontal_speed = downcast_kind<width, dim_speed>;
 
 struct abscissa : point_kind<abscissa, width> {};                                  // program-defined base point kind

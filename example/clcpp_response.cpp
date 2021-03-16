@@ -16,15 +16,15 @@
 */
 
 #include <units/format.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/iau/length.h>
-#include <units/physical/si/imperial/length.h>
-#include <units/physical/si/international/length.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/time.h>
-#include <units/physical/si/typographic/length.h>
-#include <units/physical/si/us/length.h>
-#include <units/physical/si/volume.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/iau/length.h>
+#include <units/isq/si/imperial/length.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/typographic/length.h>
+#include <units/isq/si/us/length.h>
+#include <units/isq/si/volume.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
@@ -34,11 +34,11 @@ using namespace units;
 
 void simple_quantities()
 {
-  using namespace units::physical::si;
-  using namespace units::physical::si::international;
+  using namespace units::isq::si;
+  using namespace units::isq::si::international;
 
   using distance = length<metre>;
-  using duration = physical::si::time<second>;
+  using duration = isq::si::time<second>;
 
   constexpr distance km = 1.0_q_km;
   constexpr distance miles = 1.0_q_mi;
@@ -58,9 +58,9 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-  using namespace units::physical;
-  using namespace units::physical::si;
-  using namespace units::physical::si::international;
+  using namespace units::isq;
+  using namespace units::isq::si;
+  using namespace units::isq::si::international;
 
   constexpr length<kilometre> km = 1.0_q_km;
   constexpr length<mile> miles = 1.0_q_mi;
@@ -106,7 +106,7 @@ void quantities_with_typed_units()
 
 void calcs_comparison()
 {
-  using namespace units::physical::si;
+  using namespace units::isq::si;
 
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"

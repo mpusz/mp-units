@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/speed.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/energy.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/energy.h>
 #include <units/format.h>
 #include <units/quantity_io.h>
 #include <linear_algebra.hpp>
@@ -58,8 +58,8 @@ std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
 
 namespace {
 
-using namespace units::physical;
-using namespace units::physical::si::literals;
+using namespace units::isq;
+using namespace units::isq::si::literals;
 
 template<typename Rep = double>
 using vector = std::math::fs_vector<Rep, 3>;

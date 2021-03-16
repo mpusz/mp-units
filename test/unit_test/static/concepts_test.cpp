@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/cgs/speed.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/fps/speed.h"
+#include "units/isq/si/cgs/speed.h"
+#include "units/isq/si/speed.h"
+#include "units/isq/si/fps/speed.h"
 #include "units/quantity_point.h"
 #include "units/chrono.h"
 #include <chrono>
@@ -34,7 +34,7 @@
 namespace {
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 // Prefix family
 

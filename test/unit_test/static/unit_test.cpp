@@ -23,12 +23,12 @@
 #include "test_tools.h"
 #include "units/unit.h"
 #include "units/bits/equivalent.h"
-#include "units/physical/si/prefixes.h"
+#include "units/isq/si/prefixes.h"
 
 namespace {
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};

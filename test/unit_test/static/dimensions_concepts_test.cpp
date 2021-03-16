@@ -21,12 +21,12 @@
 // SOFTWARE.
 
 
-#include <units/physical/si/si.h>
+#include <units/isq/si/si.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 static_assert(Length<si::length<si::metre>>);
 static_assert(!Length<si::time<si::second>>);

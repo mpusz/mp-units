@@ -16,14 +16,14 @@ provide the following:
 For example, to provide support for the ``std::chrono::duration`` it is enough to define::
 
     #include <units/customization_points.h>
-    #include <units/physical/si/time.h>
+    #include <units/isq/si/time.h>
     #include <chrono>
 
     namespace units {
 
     template<typename Rep, typename Period>
     struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
-      using dimension = physical::si::dim_time;
+      using dimension = isq::si::dim_time;
       using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
       using rep = Rep;
       [[nodiscard]] static constexpr rep count(const std::chrono::duration<Rep, Period>& q) { return q.count(); }

@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <units/quantity_io.h>
-#include <units/physical/si/prefixes.h>
+#include <units/isq/si/prefixes.h>
 #include <iostream>
 
 using namespace units;
@@ -40,8 +40,8 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace si {
 
-struct metre : named_unit<metre, "m", units::physical::si::prefix> {};
-struct kilometre : prefixed_unit<kilometre, units::physical::si::kilo, metre> {};
+struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
 struct dim_length : base_dimension<"L", metre> {};
 

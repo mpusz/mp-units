@@ -1,14 +1,14 @@
 
 #pragma once
 
-#include <units/physical/si/area.h>
+#include <units/isq/si/area.h>
 
 namespace area {
 
 template<typename Rep = double>
-using m2 = units::physical::si::area<units::physical::si::square_metre, Rep>;
+using m2 = units::isq::si::area<units::isq::si::square_metre, Rep>;
 
 template<typename Rep = double>
-using fm2 = units::physical::si::area<units::physical::si::square_femtometre, Rep>;
+using fm2 = units::isq::si::area<units::isq::si::square_femtometre, Rep>;
 
 }  // namespace area

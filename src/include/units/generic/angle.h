@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <units/physical/si/prefixes.h>
+#include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
 
 namespace units {
 
-struct radian : named_unit<radian, "rad", physical::si::prefix> {};
+struct radian : named_unit<radian, "rad", isq::si::prefix> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};

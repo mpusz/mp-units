@@ -22,11 +22,11 @@
 
 #include "test_tools.h"
 #include "units/chrono.h"
-#include "units/physical/si/cgs/speed.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/frequency.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/fps/speed.h"
+#include "units/isq/si/cgs/speed.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/frequency.h"
+#include "units/isq/si/speed.h"
+#include "units/isq/si/fps/speed.h"
 #include "units/quantity_point.h"
 #include "units/quantity_point_kind.h"
 #include <cassert>
@@ -36,7 +36,7 @@
 namespace {
 
 using namespace units;
-namespace si = physical::si;
+namespace si = isq::si;
 using namespace si;
 using namespace unit_constants;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
@@ -633,8 +633,8 @@ static_assert(invalid_cast<int>);
 
 namespace mylib {
 
-struct width_kind : kind<width_kind, units::physical::si::dim_length> {};
-struct height_kind : kind<height_kind, units::physical::si::dim_length> {};
+struct width_kind : kind<width_kind, units::isq::si::dim_length> {};
+struct height_kind : kind<height_kind, units::isq::si::dim_length> {};
 struct abscissa_kind : point_kind<abscissa_kind, width_kind> {};
 struct ordinate_kind : point_kind<ordinate_kind, height_kind> {};
 

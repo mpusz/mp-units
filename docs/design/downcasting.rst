@@ -23,9 +23,9 @@ The above solution does provide a good developer's experience but a really poor 
 user. If we will get a compilation error message containing ``dim_capacitance`` in most cases
 the compiler will print the following type instead of the alias::
 
-    units::detail::derived_dimension_base<units::exponent<units::physical::si::dim_electric_current, 2, 1>,
-    units::exponent<units::physical::si::dim_length, -2, 1>, units::exponent<units::physical::si::dim_mass,
-    -1, 1>, units::exponent<units::physical::si::dim_time, 4, 1> >
+    units::detail::derived_dimension_base<units::exponent<units::isq::si::dim_electric_current, 2, 1>,
+    units::exponent<units::isq::si::dim_length, -2, 1>, units::exponent<units::isq::si::dim_mass,
+    -1, 1>, units::exponent<units::isq::si::dim_time, 4, 1> >
 
 You can notice that in case of **mp-units** even this long syntax was carefully selected to
 provide quite good user experience (some other units libraries produce a type that cannot easily

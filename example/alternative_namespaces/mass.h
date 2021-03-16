@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <units/physical/si/mass.h>
+#include <units/isq/si/mass.h>
 
 namespace units{
 namespace experimental{
@@ -10,7 +10,7 @@ namespace experimental{
 namespace mass {
 
 template<typename Rep = double>
-using kg = units::physical::si::mass<units::physical::si::kilogram, Rep>;
+using kg = units::isq::si::mass<units::isq::si::kilogram, Rep>;
 
 }
 

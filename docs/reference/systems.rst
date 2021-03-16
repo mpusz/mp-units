@@ -9,7 +9,7 @@ Systems
 .. toctree::
     :maxdepth: 2
 
-    systems/physical
+    systems/isq
 
 .. toctree::
     :maxdepth: 1

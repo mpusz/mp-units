@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "units/physical/si/length.h"
+#include "units/isq/si/length.h"
 #include <chrono>
 #include <type_traits>
 #include <utility>
@@ -60,7 +60,7 @@ struct std::common_type<U, min_impl<T>> : std::common_type<T, U> {};
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 static_assert(QuantityValue<min_impl<int>>);
 static_assert(QuantityValue<min_impl<double>>);

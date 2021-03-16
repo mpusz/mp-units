@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/cgs/speed.h>
-#include <units/physical/si/international/speed.h>
-#include <units/physical/si/speed.h>
+#include <units/isq/si/cgs/speed.h>
+#include <units/isq/si/international/speed.h>
+#include <units/isq/si/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
 constexpr si::speed<si::metre_per_second, int>
 fixed_int_si_avg_speed(si::length<si::metre, int> d,
@@ -68,7 +68,7 @@ void example()
 {
   // SI (int)
   {
-    using namespace units::physical::si::literals;
+    using namespace units::isq::si::literals;
     constexpr Length auto distance = 220_q_km;     // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -82,7 +82,7 @@ void example()
 
   // SI (double)
   {
-    using namespace units::physical::si::literals;
+    using namespace units::isq::si::literals;
     constexpr Length auto distance = 220._q_km; // constructed from a UDL
     constexpr si::time<si::hour> duration(2);   // constructed from a value
 
@@ -98,7 +98,7 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::physical::si::international::literals;
+    using namespace units::isq::si::international::literals;
     constexpr Length auto distance = 140_q_mi;     // constructed from a UDL
     constexpr si::time<si::hour, int> duration(2); // constructed from a value
 
@@ -114,7 +114,7 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::physical::si::international::literals;
+    using namespace units::isq::si::international::literals;
     constexpr Length auto distance = 140._q_mi; // constructed from a UDL
     constexpr si::time<si::hour> duration(2);   // constructed from a value
 
@@ -132,7 +132,7 @@ void example()
 
   // CGS (int)
   {
-    using namespace units::physical::si::cgs::literals;
+    using namespace units::isq::si::cgs::literals;
     constexpr Length auto distance = 22'000'000_q_cm; // constructed from a UDL
     constexpr si::cgs::time<si::hour, int> duration(2);   // constructed from a value
 
@@ -151,7 +151,7 @@ void example()
 
   // CGS (double)
   {
-    using namespace units::physical::si::cgs::literals;
+    using namespace units::isq::si::cgs::literals;
     constexpr Length auto distance = 22'000'000._q_cm; // constructed from a UDL
     constexpr si::cgs::time<si::hour> duration(2);     // constructed from a value
 

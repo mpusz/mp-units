@@ -22,16 +22,16 @@
 
 #include "units/math.h"
 #include "test_tools.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/volume.h"
-#include "units/physical/si/international/area.h"
-#include "units/physical/si/international/volume.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/volume.h"
+#include "units/isq/si/international/area.h"
+#include "units/isq/si/international/volume.h"
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si::literals;
-using namespace units::physical::si::international::literals;
+using namespace units::isq::si::literals;
+using namespace units::isq::si::international::literals;
 
 static_assert(compare<decltype(pow<0>(2_q_m)), std::int64_t>);
 static_assert(compare<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);

@@ -26,7 +26,7 @@
 
 namespace {
 
-using namespace units::physical::si::unit_constants;
+using namespace units::isq::si::unit_constants;
 inline constexpr auto earth_radius = 6371 * km;
 
 }  // namespace

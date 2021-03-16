@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/format.h>
-#include <units/physical/si/length.h>
+#include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
 #include <compare>
 
@@ -116,8 +116,8 @@ struct fmt::formatter<geographic::longitude> : formatter<geographic::longitude::
 
 namespace geographic {
 
-struct horizontal_kind : units::kind<horizontal_kind, units::physical::si::dim_length> {};
-using distance = units::quantity_kind<horizontal_kind, units::physical::si::kilometre>;
+struct horizontal_kind : units::kind<horizontal_kind, units::isq::si::dim_length> {};
+using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
 
 struct position {
   latitude lat;

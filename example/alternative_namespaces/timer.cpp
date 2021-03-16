@@ -8,7 +8,7 @@
 */
 
 using namespace units::experimental;
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 int main()
 {

@@ -22,12 +22,12 @@
 
 #include "test_tools.h"
 #include <units/math.h>
-#include <units/physical/si/si.h>
+#include <units/isq/si/si.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 /* ************** BASE DIMENSIONS **************** */
 

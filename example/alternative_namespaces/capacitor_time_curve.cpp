@@ -20,16 +20,16 @@
     physical_quantities
 */
 
-#include <units/physical/si/capacitance.h>
-#include <units/physical/si/resistance.h>
-#include <units/physical/si/time.h>
+#include <units/isq/si/capacitance.h>
+#include <units/isq/si/resistance.h>
+#include <units/isq/si/time.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
 #include "./voltage.h"
 #include <iostream>
 
 using namespace units::experimental;
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 int main()
 {

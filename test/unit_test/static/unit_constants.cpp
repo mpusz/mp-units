@@ -21,13 +21,13 @@
 // SOFTWARE.
 
 #include "units/bits/external/hacks.h"
-#include "units/physical/dimensions/length.h"
-#include "units/physical/dimensions/speed.h"
-#include "units/physical/si/length.h"
-#include "units/physical/si/mass.h"
-#include "units/physical/si/time.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/speed.h"
+#include "units/isq/dimensions/length.h"
+#include "units/isq/dimensions/speed.h"
+#include "units/isq/si/length.h"
+#include "units/isq/si/mass.h"
+#include "units/isq/si/time.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/speed.h"
 #include <cassert>
 #include <cstdint>
 #include <type_traits>
@@ -37,9 +37,9 @@
 #endif
 
 using namespace units;
-using namespace units::physical;
-using namespace units::physical::si;
-using namespace units::physical::si::unit_constants;
+using namespace units::isq;
+using namespace units::isq::si;
+using namespace units::isq::si::unit_constants;
 
 static_assert(2 * m == 2_q_m);
 static_assert(2 * s == 2_q_s);

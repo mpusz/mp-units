@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include <units/physical/si/length.h>
-#include <units/physical/si/imperial/length.h>
-#include <units/physical/si/international/length.h>
-#include <units/physical/si/typographic/length.h>
-#include <units/physical/si/us/length.h>
-#include <units/physical/si/iau/length.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/imperial/length.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/typographic/length.h>
+#include <units/isq/si/us/length.h>
+#include <units/isq/si/iau/length.h>
 
 namespace units{
 namespace experimental{
@@ -15,70 +15,70 @@ namespace experimental{
 namespace length {
 
 template<typename Rep = double>
-using m = units::physical::si::length<units::physical::si::metre, Rep>;
+using m = units::isq::si::length<units::isq::si::metre, Rep>;
 
 template<typename Rep = double>
-using mm = units::physical::si::length<units::physical::si::millimetre, Rep>;
+using mm = units::isq::si::length<units::isq::si::millimetre, Rep>;
 
 template<typename Rep = double>
-using fm = units::physical::si::length<units::physical::si::femtometre, Rep>;
+using fm = units::isq::si::length<units::isq::si::femtometre, Rep>;
 
 template<typename Rep = double>
-using km = units::physical::si::length<units::physical::si::kilometre, Rep>;
+using km = units::isq::si::length<units::isq::si::kilometre, Rep>;
 
 template<typename Rep = double>
-using AU = units::physical::si::length<units::physical::si::astronomical_unit, Rep>;
+using AU = units::isq::si::length<units::isq::si::astronomical_unit, Rep>;
 
 template<typename Rep = double>
-using in = units::physical::si::length<units::physical::si::international::inch, Rep>;
+using in = units::isq::si::length<units::isq::si::international::inch, Rep>;
 
 template<typename Rep = double>
-using angstrom = units::physical::si::length<units::physical::si::iau::angstrom, Rep>;
+using angstrom = units::isq::si::length<units::isq::si::iau::angstrom, Rep>;
 
 template<typename Rep = double>
-using ch = units::physical::si::length<units::physical::si::imperial::chain, Rep>;
+using ch = units::isq::si::length<units::isq::si::imperial::chain, Rep>;
 
 template<typename Rep = double>
-using fathom = units::physical::si::length<units::physical::si::international::fathom, Rep>;
+using fathom = units::isq::si::length<units::isq::si::international::fathom, Rep>;
 
 template<typename Rep = double>
-using fathom_us = units::physical::si::length<units::physical::si::us::fathom, Rep>;
+using fathom_us = units::isq::si::length<units::isq::si::us::fathom, Rep>;
 
 template<typename Rep = double>
-using ft = units::physical::si::length<units::physical::si::international::foot, Rep>;
+using ft = units::isq::si::length<units::isq::si::international::foot, Rep>;
 
 template<typename Rep = double>
-using ft_us = units::physical::si::length<units::physical::si::us::foot, Rep>;
+using ft_us = units::isq::si::length<units::isq::si::us::foot, Rep>;
 
 template<typename Rep = double>
-using ly = units::physical::si::length<units::physical::si::iau::light_year, Rep>;
+using ly = units::isq::si::length<units::isq::si::iau::light_year, Rep>;
 
 template<typename Rep = double>
-using mi = units::physical::si::length<units::physical::si::international::mile, Rep>;
+using mi = units::isq::si::length<units::isq::si::international::mile, Rep>;
 
 template<typename Rep = double>
-using mi_naut = units::physical::si::length<units::physical::si::international::nautical_mile, Rep>;
+using mi_naut = units::isq::si::length<units::isq::si::international::nautical_mile, Rep>;
 
 template<typename Rep = double>
-using pc = units::physical::si::length<units::physical::si::iau::parsec, Rep>;
+using pc = units::isq::si::length<units::isq::si::iau::parsec, Rep>;
 
 template<typename Rep = double>
-using pica_comp = units::physical::si::length<units::physical::si::typographic::pica_comp, Rep>;
+using pica_comp = units::isq::si::length<units::isq::si::typographic::pica_comp, Rep>;
 
 template<typename Rep = double>
-using pica_prn = units::physical::si::length<units::physical::si::typographic::pica_prn, Rep>;
+using pica_prn = units::isq::si::length<units::isq::si::typographic::pica_prn, Rep>;
 
 template<typename Rep = double>
-using point_comp = units::physical::si::length<units::physical::si::typographic::point_comp, Rep>;
+using point_comp = units::isq::si::length<units::isq::si::typographic::point_comp, Rep>;
 
 template<typename Rep = double>
-using point_prn = units::physical::si::length<units::physical::si::typographic::point_prn, Rep>;
+using point_prn = units::isq::si::length<units::isq::si::typographic::point_prn, Rep>;
 
 template<typename Rep = double>
-using rd = units::physical::si::length<units::physical::si::imperial::rod, Rep>;
+using rd = units::isq::si::length<units::isq::si::imperial::rod, Rep>;
 
 template<typename Rep = double>
-using yd = units::physical::si::length<units::physical::si::international::yard, Rep>;
+using yd = units::isq::si::length<units::isq::si::international::yard, Rep>;
 
 
 }  // namespace length

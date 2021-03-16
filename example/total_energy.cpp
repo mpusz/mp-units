@@ -20,18 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/natural/constants.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/momentum.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/constants.h>
+#include <units/isq/natural/constants.h>
+#include <units/isq/si/energy.h>
+#include <units/isq/si/momentum.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/constants.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
 Energy auto total_energy(Momentum auto p, Mass auto m, Speed auto c)
 {
@@ -40,7 +40,7 @@ Energy auto total_energy(Momentum auto p, Mass auto m, Speed auto c)
 
 void si_example()
 {
-  using namespace units::physical::si;
+  using namespace units::isq::si;
   using GeV = gigaelectronvolt;
 
   constexpr Speed auto c = si2019::speed_of_light<>;
@@ -71,7 +71,7 @@ void si_example()
 
 void natural_example()
 {
-  using namespace units::physical::natural;
+  using namespace units::isq::natural;
   using GeV = gigaelectronvolt;
 
   constexpr Speed auto c = speed_of_light<>;

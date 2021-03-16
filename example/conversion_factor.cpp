@@ -15,7 +15,7 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/physical/si/length.h>
+#include <units/isq/si/length.h>
 #include <units/format.h>
 #include <units/quantity_io.h>
 #include <iostream>
@@ -42,7 +42,7 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
 
 int main()
 {
-  using namespace units::physical::si;
+  using namespace units::isq::si;
 
   std::cout << "conversion factor in mp-units...\n\n";
 

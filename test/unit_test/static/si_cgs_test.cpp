@@ -20,30 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/cgs/acceleration.h>
-#include <units/physical/si/cgs/area.h>
-#include <units/physical/si/cgs/energy.h>
-#include <units/physical/si/cgs/force.h>
-#include <units/physical/si/cgs/length.h>
-#include <units/physical/si/cgs/mass.h>
-#include <units/physical/si/cgs/power.h>
-#include <units/physical/si/cgs/pressure.h>
-#include <units/physical/si/cgs/speed.h>
-#include <units/physical/si/cgs/time.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/time.h>
+#include <units/isq/si/acceleration.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/cgs/acceleration.h>
+#include <units/isq/si/cgs/area.h>
+#include <units/isq/si/cgs/energy.h>
+#include <units/isq/si/cgs/force.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/cgs/mass.h>
+#include <units/isq/si/cgs/power.h>
+#include <units/isq/si/cgs/pressure.h>
+#include <units/isq/si/cgs/speed.h>
+#include <units/isq/si/cgs/time.h>
+#include <units/isq/si/energy.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/power.h>
+#include <units/isq/si/pressure.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
 static_assert(units::detail::quantity_ratio<si::length<si::metre>> == units::ratio(1));
 static_assert(units::detail::quantity_ratio<si::cgs::length<si::cgs::centimetre>> == units::ratio(1, 100));
@@ -65,7 +65,7 @@ static_assert(si::cgs::pressure<si::cgs::barye>(10) == si::pressure<si::pascal>(
 
 namespace si_test {
 
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 static_assert(si::cgs::length<si::cgs::centimetre>(100) == 1_q_m);
 static_assert(si::cgs::mass<si::cgs::gram>(1'000) == 1_q_kg);
@@ -81,7 +81,7 @@ static_assert(si::cgs::pressure<si::cgs::barye>(10) == 1_q_Pa);
 
 namespace cgs_test {
 
-using namespace units::physical::si::cgs::literals;
+using namespace units::isq::si::cgs::literals;
 
 static_assert(100_q_cm == si::length<si::metre>(1));
 static_assert(1'000_q_g == si::mass<si::kilogram>(1));
@@ -97,8 +97,8 @@ static_assert(10_q_Ba == si::pressure<si::pascal>(1));
 
 namespace both_test {
 
-using namespace units::physical::si::literals;
-using namespace units::physical::si::cgs::literals;
+using namespace units::isq::si::literals;
+using namespace units::isq::si::cgs::literals;
 
 // static_assert(100_q_cm == 1_q_m);   // ambiguous
 // static_assert(1'000_q_g == 1_q_kg); // ambiguous

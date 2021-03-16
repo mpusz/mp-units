@@ -24,16 +24,16 @@
 #include "test_tools.h"
 #include "units/chrono.h"
 #include "units/math.h"
-#include "units/physical/si/area.h"
-#include "units/physical/si/speed.h"
-#include "units/physical/si/volume.h"
-#include "units/physical/si/us/length.h"
+#include "units/isq/si/area.h"
+#include "units/isq/si/speed.h"
+#include "units/isq/si/volume.h"
+#include "units/isq/si/us/length.h"
 #include <utility>
 
 namespace {
 
 using namespace units;
-using namespace physical::si;
+using namespace isq::si;
 using namespace unit_constants;
 using namespace std::chrono_literals;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
@@ -212,7 +212,7 @@ static_assert(compare<common_quantity_point<quantity_point<dim_length, kilometre
 
 // common_type
 
-using namespace units::physical::si::us::literals;
+using namespace units::isq::si::us::literals;
 
 static_assert(std::equality_comparable<decltype(quantity_point(1_q_m))>);
 static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_km))>);

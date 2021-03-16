@@ -20,22 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/cgs/cgs.h>
-#include <units/physical/si/acceleration.h>
-#include <units/physical/si/area.h>
-#include <units/physical/si/energy.h>
-#include <units/physical/si/force.h>
-#include <units/physical/si/length.h>
-#include <units/physical/si/mass.h>
-#include <units/physical/si/power.h>
-#include <units/physical/si/pressure.h>
-#include <units/physical/si/speed.h>
-#include <units/physical/si/time.h>
+#include <units/isq/si/cgs/cgs.h>
+#include <units/isq/si/acceleration.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/energy.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/power.h>
+#include <units/isq/si/pressure.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si::cgs;
+using namespace units::isq::si::cgs;
 
 /* ************** BASE DIMENSIONS **************** */
 
@@ -65,8 +65,8 @@ static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1))
 static_assert((1_q_cm * 1_q_cm).count() == 1);
 static_assert((1_q_cm2).count() == 1);
 static_assert(1_q_cm * 1_q_cm == 1_q_cm2);
-static_assert(100_q_cm * 100_q_cm == area<physical::si::square_metre>(1));
-static_assert(100_q_cm * 100_q_cm == length<physical::si::metre>(1) * length<physical::si::metre>(1));
+static_assert(100_q_cm * 100_q_cm == area<isq::si::square_metre>(1));
+static_assert(100_q_cm * 100_q_cm == length<isq::si::metre>(1) * length<isq::si::metre>(1));
 static_assert(100_q_cm2 / 10_q_cm == 10_q_cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_text("cm²", "cm^2"));
