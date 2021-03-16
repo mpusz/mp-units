@@ -53,3 +53,4 @@ target_link_libraries(mp-units-systems INTERFACE
     mp-units::si-us
 )
 add_library(mp-units::systems ALIAS mp-units-systems)
+install(TARGETS mp-units-systems EXPORT mp-unitsTargets)
