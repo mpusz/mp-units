@@ -111,12 +111,12 @@ jobs:
       - name: Install Conan Package Tools
         run: |
           pip install -U conan_package_tools
-      - name: Set Conan default profile
+      - name: Configure Conan
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
         shell: bash
         run: |
-          conan profile new --detect default
+          conan config init
           if [ ${{ matrix.config.compiler.type }} == 'GCC' | ${{ matrix.config.compiler.type }} == 'CLANG' ]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
