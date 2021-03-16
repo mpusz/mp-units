@@ -4,13 +4,13 @@ International System of Quantities (ISQ)
 .. toctree::
     :maxdepth: 2
 
-    physical/dimensions_and_concepts
-    physical/si
-    physical/si_cgs
-    physical/si_international
-    physical/si_us
-    physical/si_imperial
-    physical/si_fps
-    physical/si_iau
-    physical/si_typographic
-    physical/natural
+    isq/dimensions_and_concepts
+    isq/si
+    isq/si_cgs
+    isq/si_international
+    isq/si_us
+    isq/si_imperial
+    isq/si_fps
+    isq/si_iau
+    isq/si_typographic
+    isq/natural
