@@ -117,7 +117,7 @@ jobs:
         shell: bash
         run: |
           conan config init
-          if [ ${{ matrix.config.compiler.type }} == 'GCC' || ${{ matrix.config.compiler.type }} == 'CLANG' ]; then
+          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
