@@ -121,6 +121,12 @@ jobs:
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
+      - name: Add support for clang-12 to Conan's settings.yml
+        # TODO Remove when Conan will support clang-12 (after clang-12 release)
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        run: |
+          sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Run Conan Package Tools
         shell: bash
         env:
