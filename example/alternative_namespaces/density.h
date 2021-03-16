@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <units/physical/si/derived/density.h>
+#include <units/physical/si/density.h>
 
 namespace units{
 namespace experimental{

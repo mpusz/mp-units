@@ -41,8 +41,8 @@ dimensions used in the division operation:
 .. code-block::
     :emphasize-lines: 1-2,8,10
 
-    #include <units/physical/si/base/length.h>
-    #include <units/physical/si/base/time.h>
+    #include <units/physical/si/length.h>
+    #include <units/physical/si/time.h>
 
     using namespace units::physical::si;
 

@@ -22,7 +22,7 @@
 
 #include "test_tools.h"
 #include <units/chrono.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/speed.h>
 #include <units/quantity_point.h>
 
 namespace {

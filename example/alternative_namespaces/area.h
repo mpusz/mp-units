@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <units/physical/si/derived/area.h>
+#include <units/physical/si/area.h>
 
 namespace area {
 

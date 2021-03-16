@@ -1,4 +1,4 @@
 Speed
 =====
 
-.. doxygenfile:: si/fps/derived/speed.h
+.. doxygenfile:: si/fps/speed.h

@@ -1,4 +1,4 @@
 Momentum
 ========
 
-.. doxygenfile:: si/derived/momentum.h
+.. doxygenfile:: si/momentum.h

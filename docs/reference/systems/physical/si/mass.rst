@@ -1,4 +1,4 @@
 Mass
 ====
 
-.. doxygenfile:: si/base/mass.h
+.. doxygenfile:: si/mass.h

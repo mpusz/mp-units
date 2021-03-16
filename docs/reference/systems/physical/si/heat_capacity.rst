@@ -1,4 +1,4 @@
 Heat Capacity
 =============
 
-.. doxygenfile:: si/derived/heat_capacity.h
+.. doxygenfile:: si/heat_capacity.h

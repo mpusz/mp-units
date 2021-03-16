@@ -1,4 +1,4 @@
 Electric Field Strength
 =======================
 
-.. doxygenfile:: si/derived/electric_field_strength.h
+.. doxygenfile:: si/electric_field_strength.h

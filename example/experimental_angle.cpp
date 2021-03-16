@@ -22,9 +22,9 @@
 
 #include <units/format.h>
 #include <units/generic/angle.h>
-#include <units/physical/si/base/length.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/torque.h>
+#include <units/physical/si/length.h>
+#include <units/physical/si/energy.h>
+#include <units/physical/si/torque.h>
 #include <units/quantity_io.h>
 #include <iostream>
 

@@ -28,9 +28,9 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
-#include <units/physical/si/derived/area.h>
-#include <units/physical/si/derived/frequency.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/area.h>
+#include <units/physical/si/frequency.h>
+#include <units/physical/si/speed.h>
 
 using namespace units::physical::si;
 
@@ -62,8 +62,8 @@ the below example for a quick preview of basic library features:
 
 ```cpp
 #include <units/format.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/international/derived/speed.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/si/international/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
 

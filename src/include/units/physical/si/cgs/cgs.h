@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include <units/physical/si/cgs/base/length.h>
-#include <units/physical/si/cgs/base/mass.h>
-#include <units/physical/si/cgs/base/time.h>
+#include <units/physical/si/cgs/length.h>
+#include <units/physical/si/cgs/mass.h>
+#include <units/physical/si/cgs/time.h>
 
-#include <units/physical/si/cgs/derived/acceleration.h>
-#include <units/physical/si/cgs/derived/area.h>
-#include <units/physical/si/cgs/derived/energy.h>
-#include <units/physical/si/cgs/derived/force.h>
-#include <units/physical/si/cgs/derived/power.h>
-#include <units/physical/si/cgs/derived/pressure.h>
-#include <units/physical/si/cgs/derived/speed.h>
+#include <units/physical/si/cgs/acceleration.h>
+#include <units/physical/si/cgs/area.h>
+#include <units/physical/si/cgs/energy.h>
+#include <units/physical/si/cgs/force.h>
+#include <units/physical/si/cgs/power.h>
+#include <units/physical/si/cgs/pressure.h>
+#include <units/physical/si/cgs/speed.h>

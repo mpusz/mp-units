@@ -25,8 +25,8 @@
 #include "geographic.h"
 #include <units/format.h>
 #include <units/math.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/international/base/length.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/si/international/length.h>
 #include <units/quantity_point_kind.h>
 
 // An example of a really simplified tactical glide computer

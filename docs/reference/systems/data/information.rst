@@ -1,4 +1,4 @@
 Information
 ===========
 
-.. doxygenfile:: data/base/information.h
+.. doxygenfile:: data/information.h

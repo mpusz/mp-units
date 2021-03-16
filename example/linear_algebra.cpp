@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/derived/force.h>
-#include <units/physical/si/derived/energy.h>
+#include <units/physical/si/speed.h>
+#include <units/physical/si/force.h>
+#include <units/physical/si/energy.h>
 #include <units/format.h>
 #include <units/quantity_io.h>
 #include <linear_algebra.hpp>

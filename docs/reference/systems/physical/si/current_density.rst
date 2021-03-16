@@ -1,4 +1,4 @@
 Current density
 ===============
 
-.. doxygenfile:: si/derived/current_density.h
+.. doxygenfile:: si/current_density.h

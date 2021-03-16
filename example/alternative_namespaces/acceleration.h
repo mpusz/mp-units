@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <units/physical/si/derived/acceleration.h>
+#include <units/physical/si/acceleration.h>
 
 namespace units{
 namespace experimental{

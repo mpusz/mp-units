@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <units/physical/si/base/time.h>
+#include <units/physical/si/time.h>
 
 // named qtime due to conflict with time_t time(time_t*)
 namespace q_time {

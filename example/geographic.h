@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/format.h>
-#include <units/physical/si/base/length.h>
+#include <units/physical/si/length.h>
 #include <units/quantity_kind.h>
 #include <compare>
 

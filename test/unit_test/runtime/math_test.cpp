@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include "units/math.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/volume.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/volume.h"
 #include <catch2/catch.hpp>
 
 using namespace units;

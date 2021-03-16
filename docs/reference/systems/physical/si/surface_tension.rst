@@ -1,4 +1,4 @@
 Surface Tension
 ===============
 
-.. doxygenfile:: si/derived/surface_tension.h
+.. doxygenfile:: si/surface_tension.h

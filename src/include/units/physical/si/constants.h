@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <units/physical/si/base/amount_of_substance.h>
-#include <units/physical/si/base/thermodynamic_temperature.h>
-#include <units/physical/si/derived/electric_charge.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/frequency.h>
-#include <units/physical/si/derived/power.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/amount_of_substance.h>
+#include <units/physical/si/thermodynamic_temperature.h>
+#include <units/physical/si/electric_charge.h>
+#include <units/physical/si/energy.h>
+#include <units/physical/si/frequency.h>
+#include <units/physical/si/power.h>
+#include <units/physical/si/speed.h>
 
 namespace units::physical::si::si2019 {
 

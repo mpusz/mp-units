@@ -1,4 +1,4 @@
 Concentration
 =============
 
-.. doxygenfile:: si/derived/concentration.h
+.. doxygenfile:: si/concentration.h

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <units/physical/si/base/mass.h>
+#include <units/physical/si/mass.h>
 
 namespace units{
 namespace experimental{

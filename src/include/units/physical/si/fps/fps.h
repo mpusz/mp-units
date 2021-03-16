@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include <units/physical/si/fps/base/length.h>
-#include <units/physical/si/fps/base/mass.h>
-#include <units/physical/si/fps/base/time.h>
+#include <units/physical/si/fps/length.h>
+#include <units/physical/si/fps/mass.h>
+#include <units/physical/si/fps/time.h>
 
-#include <units/physical/si/fps/derived/acceleration.h>
-#include <units/physical/si/fps/derived/area.h>
-#include <units/physical/si/fps/derived/density.h>
-#include <units/physical/si/fps/derived/energy.h>
-#include <units/physical/si/fps/derived/force.h>
-#include <units/physical/si/fps/derived/power.h>
-#include <units/physical/si/fps/derived/pressure.h>
-#include <units/physical/si/fps/derived/speed.h>
-#include <units/physical/si/fps/derived/volume.h>
+#include <units/physical/si/fps/acceleration.h>
+#include <units/physical/si/fps/area.h>
+#include <units/physical/si/fps/density.h>
+#include <units/physical/si/fps/energy.h>
+#include <units/physical/si/fps/force.h>
+#include <units/physical/si/fps/power.h>
+#include <units/physical/si/fps/pressure.h>
+#include <units/physical/si/fps/speed.h>
+#include <units/physical/si/fps/volume.h>

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <units/physical/si/derived/voltage.h>
+#include <units/physical/si/voltage.h>
 
 namespace units{
 namespace experimental{

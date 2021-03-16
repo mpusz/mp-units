@@ -1,4 +1,4 @@
 Density
 =======
 
-.. doxygenfile:: si/fps/derived/density.h
+.. doxygenfile:: si/fps/density.h

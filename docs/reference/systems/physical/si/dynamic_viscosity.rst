@@ -1,4 +1,4 @@
 Dynamic Viscosity
 =================
 
-.. doxygenfile:: si/derived/dynamic_viscosity.h
+.. doxygenfile:: si/dynamic_viscosity.h

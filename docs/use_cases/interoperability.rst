@@ -16,7 +16,7 @@ provide the following:
 For example, to provide support for the ``std::chrono::duration`` it is enough to define::
 
     #include <units/customization_points.h>
-    #include <units/physical/si/base/time.h>
+    #include <units/physical/si/time.h>
     #include <chrono>
 
     namespace units {

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/base/length.h"
+#include "units/physical/si/length.h"
 #include <ostream>
 
 namespace {

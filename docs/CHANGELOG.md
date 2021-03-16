@@ -3,6 +3,7 @@
 - **0.7.0 WIP**
   - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
+  - (!) refactor: Refactored the library file tree
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type

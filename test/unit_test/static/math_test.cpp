@@ -22,10 +22,10 @@
 
 #include "units/math.h"
 #include "test_tools.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/volume.h"
-#include "units/physical/si/international/derived/area.h"
-#include "units/physical/si/international/derived/volume.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/volume.h"
+#include "units/physical/si/international/area.h"
+#include "units/physical/si/international/volume.h"
 
 namespace {
 

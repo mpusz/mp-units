@@ -1,4 +1,4 @@
 Force
 =====
 
-.. doxygenfile:: si/derived/force.h
+.. doxygenfile:: si/force.h

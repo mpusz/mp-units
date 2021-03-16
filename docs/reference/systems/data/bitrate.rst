@@ -1,4 +1,4 @@
 Bitrate
 =======
 
-.. doxygenfile:: data/derived/bitrate.h
+.. doxygenfile:: data/bitrate.h

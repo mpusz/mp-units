@@ -24,10 +24,10 @@
 #include "test_tools.h"
 #include "units/chrono.h"
 #include "units/math.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/speed.h"
-#include "units/physical/si/derived/volume.h"
-#include "units/physical/si/us/base/length.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/speed.h"
+#include "units/physical/si/volume.h"
+#include "units/physical/si/us/length.h"
 #include <utility>
 
 namespace {

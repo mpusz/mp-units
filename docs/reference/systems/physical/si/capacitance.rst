@@ -1,4 +1,4 @@
 Capacitance
 ===========
 
-.. doxygenfile:: si/derived/capacitance.h
+.. doxygenfile:: si/capacitance.h

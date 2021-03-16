@@ -23,9 +23,9 @@
 #include "test_tools.h"
 #include "units/generic/angle.h"
 #include "units/kind.h"
-#include "units/physical/si/base/length.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/speed.h"
+#include "units/physical/si/length.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/speed.h"
 
 using namespace units;
 using namespace physical::si;

@@ -22,6 +22,6 @@
 
 #pragma once
 
-#include <units/data/base/information.h>
-#include <units/data/derived/bitrate.h>
+#include <units/data/information.h>
+#include <units/data/bitrate.h>
 #include <units/data/prefixes.h>

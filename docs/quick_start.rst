@@ -3,9 +3,9 @@ Quick Start
 
 Here is a small example of possible operations::
 
-    #include <units/physical/si/derived/area.h>
-    #include <units/physical/si/derived/frequency.h>
-    #include <units/physical/si/derived/speed.h>
+    #include <units/physical/si/area.h>
+    #include <units/physical/si/frequency.h>
+    #include <units/physical/si/speed.h>
 
     using namespace units::physical::si;
 
@@ -38,8 +38,8 @@ performed without sacrificing on accuracy. Please see the below example for a qu
 of basic library features::
 
     #include <units/format.h>
-    #include <units/physical/si/derived/speed.h>
-    #include <units/physical/si/international/derived/speed.h>
+    #include <units/physical/si/speed.h>
+    #include <units/physical/si/international/speed.h>
     #include <units/quantity_io.h>
     #include <iostream>
 

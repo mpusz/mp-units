@@ -1,4 +1,4 @@
 Area
 ====
 
-.. doxygenfile:: si/cgs/derived/area.h
+.. doxygenfile:: si/cgs/area.h

@@ -23,11 +23,11 @@
 #include "units/bits/external/hacks.h"
 #include "units/physical/dimensions/length.h"
 #include "units/physical/dimensions/speed.h"
-#include "units/physical/si/base/length.h"
-#include "units/physical/si/base/mass.h"
-#include "units/physical/si/base/time.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/speed.h"
+#include "units/physical/si/length.h"
+#include "units/physical/si/mass.h"
+#include "units/physical/si/time.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/speed.h"
 #include <cassert>
 #include <cstdint>
 #include <type_traits>

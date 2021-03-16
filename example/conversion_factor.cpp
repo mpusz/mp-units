@@ -15,7 +15,7 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/physical/si/base/length.h>
+#include <units/physical/si/length.h>
 #include <units/format.h>
 #include <units/quantity_io.h>
 #include <iostream>

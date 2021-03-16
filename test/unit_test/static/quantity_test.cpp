@@ -22,12 +22,12 @@
 
 #include "test_tools.h"
 #include "units/math.h"
-#include "units/physical/si/cgs/derived/speed.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/frequency.h"
-#include "units/physical/si/derived/speed.h"
-#include "units/physical/si/derived/volume.h"
-#include "units/physical/si/fps/derived/speed.h"
+#include "units/physical/si/cgs/speed.h"
+#include "units/physical/si/area.h"
+#include "units/physical/si/frequency.h"
+#include "units/physical/si/speed.h"
+#include "units/physical/si/volume.h"
+#include "units/physical/si/fps/speed.h"
 #include <chrono>
 #include <complex>
 #include <cstdint>

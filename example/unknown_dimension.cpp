@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
 

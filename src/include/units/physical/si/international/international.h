@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/physical/si/international/base/length.h>
+#include <units/physical/si/international/length.h>
 
-#include <units/physical/si/international/derived/area.h>
-#include <units/physical/si/international/derived/speed.h>
-#include <units/physical/si/international/derived/volume.h>
+#include <units/physical/si/international/area.h>
+#include <units/physical/si/international/speed.h>
+#include <units/physical/si/international/volume.h>

@@ -1,4 +1,4 @@
 Energy
 ======
 
-.. doxygenfile:: si/derived/energy.h
+.. doxygenfile:: si/energy.h

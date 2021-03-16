@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include <units/physical/natural/constants.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/momentum.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/physical/si/energy.h>
+#include <units/physical/si/momentum.h>
+#include <units/physical/si/speed.h>
 #include <units/physical/si/constants.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
