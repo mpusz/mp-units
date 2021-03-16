@@ -21,34 +21,20 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-project(mp-units
-    VERSION 0.7.0
-    LANGUAGES CXX
-)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+#
+# add_system(SystemName <depependencies>...)
+#
+function(add_system name)
+    add_library(mp-units-${name} INTERFACE)
+    target_link_libraries(mp-units-${name} INTERFACE ${ARGN})
+    target_include_directories(mp-units-${name} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    )
+    set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
+    add_library(mp-units::${name} ALIAS mp-units-${name})
 
-include(GNUInstallDirs)
-add_subdirectory(core)
-add_subdirectory(systems)
-
-# project-wide wrapper
-add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE
-    mp-units::core
-    mp-units::systems
-)
-add_library(mp-units::mp-units ALIAS mp-units)
-
-# installation
-install(EXPORT mp-unitsTargets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-    NAMESPACE mp-units::
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
-
-install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-)
+    install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
+    install(DIRECTORY include/units TYPE INCLUDE)
+endfunction()

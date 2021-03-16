@@ -21,34 +21,21 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-project(mp-units
-    VERSION 0.7.0
-    LANGUAGES CXX
-)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+function(check_libcxx_in_use variable)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(CHECK_START "Checking if libc++ is being used")
+        list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-include(GNUInstallDirs)
-add_subdirectory(core)
-add_subdirectory(systems)
+        include(CheckSymbolExists)
+        check_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
+        set(${variable} ${${variable}} PARENT_SCOPE)
 
-# project-wide wrapper
-add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE
-    mp-units::core
-    mp-units::systems
-)
-add_library(mp-units::mp-units ALIAS mp-units)
-
-# installation
-install(EXPORT mp-unitsTargets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-    NAMESPACE mp-units::
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
-
-install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-)
+        list(POP_BACK CMAKE_MESSAGE_INDENT)
+        if(UNITS_LIBCXX)
+            message(CHECK_PASS "found")
+        else()
+            message(CHECK_FAIL "not found")
+        endif()
+    endif()
+endfunction()

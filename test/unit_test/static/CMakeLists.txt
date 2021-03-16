@@ -31,13 +31,11 @@ if(NOT UNITS_LIBCXX)
         quantity_point_kind_test.cpp
     )
 endif()
-target_link_libraries(unit_tests_static_truncating
-    PRIVATE
-        mp-units::mp-units
+target_link_libraries(unit_tests_static_truncating PRIVATE
+    mp-units::mp-units
 )
-target_compile_options(unit_tests_static_truncating
-    PRIVATE
-        $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+target_compile_options(unit_tests_static_truncating PRIVATE
+    $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
 
 add_library(unit_tests_static
@@ -71,8 +69,7 @@ if(NOT UNITS_LIBCXX)
     )
 endif()
 
-target_link_libraries(unit_tests_static
-    PRIVATE
-        unit_tests_static_truncating
-        mp-units::mp-units
+target_link_libraries(unit_tests_static PRIVATE
+    unit_tests_static_truncating
+    mp-units::mp-units
 )

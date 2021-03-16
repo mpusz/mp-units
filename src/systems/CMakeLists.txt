@@ -21,34 +21,35 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-project(mp-units
-    VERSION 0.7.0
-    LANGUAGES CXX
+
+include(AddSystem)
+
+# systems
+add_subdirectory(data)
+add_subdirectory(isq)
+add_subdirectory(isq-natural)
+add_subdirectory(si)
+add_subdirectory(si-cgs)
+add_subdirectory(si-fps)
+add_subdirectory(si-iau)
+add_subdirectory(si-imperial)
+add_subdirectory(si-international)
+add_subdirectory(si-typographic)
+add_subdirectory(si-us)
+
+# wrapper for all the systems
+add_library(mp-units-systems INTERFACE)
+target_link_libraries(mp-units-systems INTERFACE
+    mp-units::data
+    mp-units::isq
+    mp-units::isq-natural
+    mp-units::si
+    mp-units::si-cgs
+    mp-units::si-fps
+    mp-units::si-iau
+    mp-units::si-imperial
+    mp-units::si-international
+    mp-units::si-typographic
+    mp-units::si-us
 )
-
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-
-include(GNUInstallDirs)
-add_subdirectory(core)
-add_subdirectory(systems)
-
-# project-wide wrapper
-add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE
-    mp-units::core
-    mp-units::systems
-)
-add_library(mp-units::mp-units ALIAS mp-units)
-
-# installation
-install(EXPORT mp-unitsTargets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-    NAMESPACE mp-units::
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
-
-install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-)
+add_library(mp-units::systems ALIAS mp-units-systems)

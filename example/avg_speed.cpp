@@ -46,7 +46,7 @@ fixed_double_si_avg_speed(si::length<si::metre> d,
 
 template<typename U1, typename R1, typename U2, typename R2>
 constexpr Speed auto si_avg_speed(si::length<U1, R1> d,
-                                     si::time<U2, R2> t)
+                                  si::time<U2, R2> t)
 {
   return d / t;
 }

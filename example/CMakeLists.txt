@@ -22,26 +22,27 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+#
+# add_example(target <depependencies>...)
+#
 function(add_example target)
     add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE mp-units::mp-units)
+    target_link_libraries(${target} PRIVATE ${ARGN})
 endfunction()
 
-add_example(box_example)
-add_example(capacitor_time_curve)
-add_example(clcpp_response)
-add_example(conversion_factor)
-add_example(custom_systems)
-add_example(experimental_angle)
-add_example(foot_pound_second)
-add_example(kalman_filter-alpha_beta_filter_example2)
-
-add_example(measurement)
-add_example(unknown_dimension)
-
-add_example(avg_speed)
-add_example(hello_units)
-add_example(total_energy)
+add_example(avg_speed mp-units::si mp-units::si-cgs mp-units::si-international)
+add_example(box_example mp-units::si)
+add_example(capacitor_time_curve mp-units::si)
+add_example(clcpp_response mp-units::si mp-units::si-iau mp-units::si-imperial mp-units::si-international mp-units::si-typographic mp-units::si-us)
+add_example(conversion_factor mp-units::si)
+add_example(custom_systems mp-units::si)
+add_example(experimental_angle mp-units::si)
+add_example(foot_pound_second mp-units::si-fps)
+add_example(hello_units mp-units::si mp-units::si-international)
+add_example(kalman_filter-alpha_beta_filter_example2 mp-units::si)
+add_example(measurement mp-units::si)
+add_example(total_energy mp-units::si mp-units::isq-natural)
+add_example(unknown_dimension mp-units::si)
 
 if(NOT UNITS_LIBCXX)
     add_executable(glide_computer
@@ -49,14 +50,11 @@ if(NOT UNITS_LIBCXX)
         glide_computer.cpp glide_computer.h
         glide_computer_example.cpp
     )
-    target_link_libraries(glide_computer PRIVATE mp-units::mp-units)
+    target_link_libraries(glide_computer PRIVATE mp-units::si mp-units::si-international)
 
     find_package(linear_algebra CONFIG REQUIRED)
-    add_example(linear_algebra)
-    target_link_libraries(linear_algebra
-        PRIVATE
-            linear_algebra::linear_algebra
-    )
+    add_example(linear_algebra mp-units::si)
+    target_link_libraries(linear_algebra PRIVATE linear_algebra::linear_algebra)
 endif()
 
 add_subdirectory(alternative_namespaces)

@@ -32,16 +32,14 @@ add_executable(unit_tests_runtime
     fmt_units_test.cpp
     distribution_test.cpp
 )
-target_link_libraries(unit_tests_runtime
-    PRIVATE
-        mp-units::mp-units
-        Catch2::Catch2
+target_link_libraries(unit_tests_runtime PRIVATE
+    mp-units::mp-units
+    Catch2::Catch2
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(unit_tests_runtime
-        PRIVATE
-            /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+    target_compile_options(unit_tests_runtime PRIVATE
+        /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
     )
 endif()
 
