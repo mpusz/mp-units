@@ -78,6 +78,14 @@ jobs:
         downcast_mode: [ "on", "auto" ]
     steps:
       - uses: actions/checkout@v2
+      - name: Cache Chocolatey Dependencies
+        if: runner.os == 'Windows'
+        uses: actions/cache@v2
+        with:
+          path: C:\ProgramData\chocolatey\lib
+          key: choco-cache-${{ hashFiles('**/dependencies.config') }}
+          restore-keys: |
+            choco-cache-
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
