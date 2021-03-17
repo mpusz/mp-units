@@ -81,11 +81,15 @@ jobs:
       - name: Cache Chocolatey Dependencies
         if: runner.os == 'Windows'
         uses: actions/cache@v2
+        env:
+          cache-name: cache-choco-lib
         with:
           path: C:\ProgramData\chocolatey\lib
-          key: choco-cache-${{ hashFiles('**/dependencies.config') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('C:\ProgramData\chocolatey\lib\**') }}
           restore-keys: |
-            choco-cache-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
