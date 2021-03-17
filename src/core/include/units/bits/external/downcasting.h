@@ -38,8 +38,11 @@ namespace units {
 template<typename BaseType>
 struct downcast_base {
   using downcast_base_type = BaseType;
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
   friend auto downcast_guide(downcast_base);
   friend auto downcast_poison_pill(downcast_base);
+UNITS_DIAGNOSTIC_POP
 };
 
 template<typename T>
