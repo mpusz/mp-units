@@ -85,7 +85,7 @@ jobs:
           cache-name: cache-choco-lib
         with:
           path: C:\ProgramData\chocolatey\lib
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('C:\ProgramData\chocolatey\lib\**') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('C:\ProgramData\chocolatey\lib\**\*.nuspec') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
