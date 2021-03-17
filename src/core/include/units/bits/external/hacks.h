@@ -31,6 +31,26 @@
 #define UNITS_COMP_MSVC _MSC_VER
 #endif
 
+// Adapted from https://github.com/ericniebler/range-v3/blob/master/include/range/v3/detail/config.hpp#L185.
+#define UNITS_PRAGMA(X) _Pragma(#X)
+#if !UNITS_COMP_MSVC
+#define UNITS_DIAGNOSTIC_PUSH UNITS_PRAGMA(GCC diagnostic push)
+#define UNITS_DIAGNOSTIC_POP UNITS_PRAGMA(GCC diagnostic pop)
+#define UNITS_DIAGNOSTIC_IGNORE_PRAGMAS UNITS_PRAGMA(GCC diagnostic ignored "-Wpragmas")
+#define UNITS_DIAGNOSTIC_IGNORE(X) \
+  UNITS_DIAGNOSTIC_IGNORE_PRAGMAS \
+  UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-pragmas") \
+  UNITS_PRAGMA(GCC diagnostic ignored "-Wunknown-warning-option") \
+  UNITS_PRAGMA(GCC diagnostic ignored X)
+#define UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND UNITS_DIAGNOSTIC_IGNORE("-Wnon-template-friend")
+#else
+#define UNITS_DIAGNOSTIC_PUSH UNITS_PRAGMA(warning(push))
+#define UNITS_DIAGNOSTIC_POP UNITS_PRAGMA(warning(pop))
+#define UNITS_DIAGNOSTIC_IGNORE_PRAGMAS UNITS_PRAGMA(warning(disable : 4068))
+#define UNITS_DIAGNOSTIC_IGNORE(X) UNITS_DIAGNOSTIC_IGNORE_PRAGMAS UNITS_PRAGMA(warning(disable : X))
+#define UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
+#endif
+
 #if UNITS_COMP_CLANG
 
 #include <ciso646>
