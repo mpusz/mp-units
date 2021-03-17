@@ -147,27 +147,27 @@ constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long 
 
 namespace unit_constants {
 
-inline constexpr auto V = voltage<volt, one_rep>{};
-inline constexpr auto yV = voltage<yoctovolt, one_rep>{};
-inline constexpr auto zV = voltage<zeptovolt, one_rep>{};
-inline constexpr auto aV = voltage<attovolt, one_rep>{};
-inline constexpr auto fV = voltage<femtovolt, one_rep>{};
-inline constexpr auto pV = voltage<picovolt, one_rep>{};
-inline constexpr auto nV = voltage<nanovolt, one_rep>{};
-inline constexpr auto uV = voltage<microvolt, one_rep>{};
-inline constexpr auto mV = voltage<millivolt, one_rep>{};
-inline constexpr auto cV = voltage<centivolt, one_rep>{};
-inline constexpr auto dV = voltage<decivolt, one_rep>{};
-inline constexpr auto daV = voltage<decavolt, one_rep>{};
-inline constexpr auto hV = voltage<hectovolt, one_rep>{};
-inline constexpr auto kV = voltage<kilovolt, one_rep>{};
-inline constexpr auto MV = voltage<megavolt, one_rep>{};
-inline constexpr auto GV = voltage<gigavolt, one_rep>{};
-inline constexpr auto TV = voltage<teravolt, one_rep>{};
-inline constexpr auto PV = voltage<petavolt, one_rep>{};
-inline constexpr auto EV = voltage<exavolt, one_rep>{};
-inline constexpr auto ZV = voltage<zettavolt, one_rep>{};
-inline constexpr auto YV = voltage<yottavolt, one_rep>{};
+inline constexpr auto V = reference<dim_voltage, volt>{};
+inline constexpr auto yV = reference<dim_voltage, yoctovolt>{};
+inline constexpr auto zV = reference<dim_voltage, zeptovolt>{};
+inline constexpr auto aV = reference<dim_voltage, attovolt>{};
+inline constexpr auto fV = reference<dim_voltage, femtovolt>{};
+inline constexpr auto pV = reference<dim_voltage, picovolt>{};
+inline constexpr auto nV = reference<dim_voltage, nanovolt>{};
+inline constexpr auto uV = reference<dim_voltage, microvolt>{};
+inline constexpr auto mV = reference<dim_voltage, millivolt>{};
+inline constexpr auto cV = reference<dim_voltage, centivolt>{};
+inline constexpr auto dV = reference<dim_voltage, decivolt>{};
+inline constexpr auto daV = reference<dim_voltage, decavolt>{};
+inline constexpr auto hV = reference<dim_voltage, hectovolt>{};
+inline constexpr auto kV = reference<dim_voltage, kilovolt>{};
+inline constexpr auto MV = reference<dim_voltage, megavolt>{};
+inline constexpr auto GV = reference<dim_voltage, gigavolt>{};
+inline constexpr auto TV = reference<dim_voltage, teravolt>{};
+inline constexpr auto PV = reference<dim_voltage, petavolt>{};
+inline constexpr auto EV = reference<dim_voltage, exavolt>{};
+inline constexpr auto ZV = reference<dim_voltage, zettavolt>{};
+inline constexpr auto YV = reference<dim_voltage, yottavolt>{};
 
 }  // namespace unit_constants
 

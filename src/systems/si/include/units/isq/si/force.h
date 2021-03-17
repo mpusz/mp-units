@@ -147,27 +147,27 @@ constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long 
 
 namespace unit_constants {
 
-inline constexpr auto N = force<newton, one_rep>{};
-inline constexpr auto yN = force<yoctonewton, one_rep>{};
-inline constexpr auto zN = force<zeptonewton, one_rep>{};
-inline constexpr auto aN = force<attonewton, one_rep>{};
-inline constexpr auto fN = force<femtonewton, one_rep>{};
-inline constexpr auto pN = force<piconewton, one_rep>{};
-inline constexpr auto nN = force<nanonewton, one_rep>{};
-inline constexpr auto uN = force<micronewton, one_rep>{};
-inline constexpr auto mN = force<millinewton, one_rep>{};
-inline constexpr auto cN = force<centinewton, one_rep>{};
-inline constexpr auto dN = force<decinewton, one_rep>{};
-inline constexpr auto daN = force<decanewton, one_rep>{};
-inline constexpr auto hN = force<hectonewton, one_rep>{};
-inline constexpr auto kN = force<kilonewton, one_rep>{};
-inline constexpr auto MN = force<meganewton, one_rep>{};
-inline constexpr auto GN = force<giganewton, one_rep>{};
-inline constexpr auto TN = force<teranewton, one_rep>{};
-inline constexpr auto PN = force<petanewton, one_rep>{};
-inline constexpr auto EN = force<exanewton, one_rep>{};
-inline constexpr auto ZN = force<zettanewton, one_rep>{};
-inline constexpr auto YN = force<yottanewton, one_rep>{};
+inline constexpr auto N = reference<dim_force, newton>{};
+inline constexpr auto yN = reference<dim_force, yoctonewton>{};
+inline constexpr auto zN = reference<dim_force, zeptonewton>{};
+inline constexpr auto aN = reference<dim_force, attonewton>{};
+inline constexpr auto fN = reference<dim_force, femtonewton>{};
+inline constexpr auto pN = reference<dim_force, piconewton>{};
+inline constexpr auto nN = reference<dim_force, nanonewton>{};
+inline constexpr auto uN = reference<dim_force, micronewton>{};
+inline constexpr auto mN = reference<dim_force, millinewton>{};
+inline constexpr auto cN = reference<dim_force, centinewton>{};
+inline constexpr auto dN = reference<dim_force, decinewton>{};
+inline constexpr auto daN = reference<dim_force, decanewton>{};
+inline constexpr auto hN = reference<dim_force, hectonewton>{};
+inline constexpr auto kN = reference<dim_force, kilonewton>{};
+inline constexpr auto MN = reference<dim_force, meganewton>{};
+inline constexpr auto GN = reference<dim_force, giganewton>{};
+inline constexpr auto TN = reference<dim_force, teranewton>{};
+inline constexpr auto PN = reference<dim_force, petanewton>{};
+inline constexpr auto EN = reference<dim_force, exanewton>{};
+inline constexpr auto ZN = reference<dim_force, zettanewton>{};
+inline constexpr auto YN = reference<dim_force, yottanewton>{};
 
 }  // namespace unit_constants
 

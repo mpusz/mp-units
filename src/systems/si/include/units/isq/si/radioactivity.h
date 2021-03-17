@@ -145,27 +145,27 @@ constexpr auto operator"" _q_YBq(long double l) { return radioactivity<yottabecq
 
 namespace unit_constants {
 
-inline constexpr auto Bq = radioactivity<becquerel, one_rep>{};
-inline constexpr auto yBq = radioactivity<yoctobecquerel, one_rep>{};
-inline constexpr auto zBq = radioactivity<zeptobecquerel, one_rep>{};
-inline constexpr auto aBq = radioactivity<attobecquerel, one_rep>{};
-inline constexpr auto fBq = radioactivity<femtobecquerel, one_rep>{};
-inline constexpr auto pBq = radioactivity<picobecquerel, one_rep>{};
-inline constexpr auto nBq = radioactivity<nanobecquerel, one_rep>{};
-inline constexpr auto uBq = radioactivity<microbecquerel, one_rep>{};
-inline constexpr auto mBq = radioactivity<millibecquerel, one_rep>{};
-inline constexpr auto cBq = radioactivity<centibecquerel, one_rep>{};
-inline constexpr auto dBq = radioactivity<decibecquerel, one_rep>{};
-inline constexpr auto daBq = radioactivity<decabecquerel, one_rep>{};
-inline constexpr auto hBq = radioactivity<hectobecquerel, one_rep>{};
-inline constexpr auto kBq = radioactivity<kilobecquerel, one_rep>{};
-inline constexpr auto MBq = radioactivity<megabecquerel, one_rep>{};
-inline constexpr auto GBq = radioactivity<gigabecquerel, one_rep>{};
-inline constexpr auto TBq = radioactivity<terabecquerel, one_rep>{};
-inline constexpr auto PBq = radioactivity<petabecquerel, one_rep>{};
-inline constexpr auto EBq = radioactivity<exabecquerel, one_rep>{};
-inline constexpr auto ZBq = radioactivity<zettabecquerel, one_rep>{};
-inline constexpr auto YBq = radioactivity<yottabecquerel, one_rep>{};
+inline constexpr auto Bq = reference<dim_radioactivity, becquerel>{};
+inline constexpr auto yBq = reference<dim_radioactivity, yoctobecquerel>{};
+inline constexpr auto zBq = reference<dim_radioactivity, zeptobecquerel>{};
+inline constexpr auto aBq = reference<dim_radioactivity, attobecquerel>{};
+inline constexpr auto fBq = reference<dim_radioactivity, femtobecquerel>{};
+inline constexpr auto pBq = reference<dim_radioactivity, picobecquerel>{};
+inline constexpr auto nBq = reference<dim_radioactivity, nanobecquerel>{};
+inline constexpr auto uBq = reference<dim_radioactivity, microbecquerel>{};
+inline constexpr auto mBq = reference<dim_radioactivity, millibecquerel>{};
+inline constexpr auto cBq = reference<dim_radioactivity, centibecquerel>{};
+inline constexpr auto dBq = reference<dim_radioactivity, decibecquerel>{};
+inline constexpr auto daBq = reference<dim_radioactivity, decabecquerel>{};
+inline constexpr auto hBq = reference<dim_radioactivity, hectobecquerel>{};
+inline constexpr auto kBq = reference<dim_radioactivity, kilobecquerel>{};
+inline constexpr auto MBq = reference<dim_radioactivity, megabecquerel>{};
+inline constexpr auto GBq = reference<dim_radioactivity, gigabecquerel>{};
+inline constexpr auto TBq = reference<dim_radioactivity, terabecquerel>{};
+inline constexpr auto PBq = reference<dim_radioactivity, petabecquerel>{};
+inline constexpr auto EBq = reference<dim_radioactivity, exabecquerel>{};
+inline constexpr auto ZBq = reference<dim_radioactivity, zettabecquerel>{};
+inline constexpr auto YBq = reference<dim_radioactivity, yottabecquerel>{};
 
 }  // namespace unit_constants
 

@@ -126,23 +126,23 @@ constexpr auto operator"" _q_YW(long double l) { return power<yottawatt, long do
 
 namespace unit_constants {
 
-inline constexpr auto W = power<watt, one_rep>{};
-inline constexpr auto yW = power<yoctowatt, one_rep>{};
-inline constexpr auto zW = power<zeptowatt, one_rep>{};
-inline constexpr auto aW = power<attowatt, one_rep>{};
-inline constexpr auto fW = power<femtowatt, one_rep>{};
-inline constexpr auto pW = power<picowatt, one_rep>{};
-inline constexpr auto nW = power<nanowatt, one_rep>{};
-inline constexpr auto uW = power<microwatt, one_rep>{};
-inline constexpr auto mW = power<milliwatt, one_rep>{};
-inline constexpr auto kW = power<kilowatt, one_rep>{};
-inline constexpr auto MW = power<megawatt, one_rep>{};
-inline constexpr auto GW = power<gigawatt, one_rep>{};
-inline constexpr auto TW = power<terawatt, one_rep>{};
-inline constexpr auto PW = power<petawatt, one_rep>{};
-inline constexpr auto EW = power<exawatt, one_rep>{};
-inline constexpr auto ZW = power<zettawatt, one_rep>{};
-inline constexpr auto YW = power<yottawatt, one_rep>{};
+inline constexpr auto W = reference<dim_power, watt>{};
+inline constexpr auto yW = reference<dim_power, yoctowatt>{};
+inline constexpr auto zW = reference<dim_power, zeptowatt>{};
+inline constexpr auto aW = reference<dim_power, attowatt>{};
+inline constexpr auto fW = reference<dim_power, femtowatt>{};
+inline constexpr auto pW = reference<dim_power, picowatt>{};
+inline constexpr auto nW = reference<dim_power, nanowatt>{};
+inline constexpr auto uW = reference<dim_power, microwatt>{};
+inline constexpr auto mW = reference<dim_power, milliwatt>{};
+inline constexpr auto kW = reference<dim_power, kilowatt>{};
+inline constexpr auto MW = reference<dim_power, megawatt>{};
+inline constexpr auto GW = reference<dim_power, gigawatt>{};
+inline constexpr auto TW = reference<dim_power, terawatt>{};
+inline constexpr auto PW = reference<dim_power, petawatt>{};
+inline constexpr auto EW = reference<dim_power, exawatt>{};
+inline constexpr auto ZW = reference<dim_power, zettawatt>{};
+inline constexpr auto YW = reference<dim_power, yottawatt>{};
 
 }  // namespace unit_constants
 

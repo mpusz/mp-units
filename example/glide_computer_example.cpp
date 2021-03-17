@@ -32,11 +32,14 @@ using namespace glide_computer;
 auto get_gliders()
 {
   using namespace si::unit_constants;
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {
       glider{"SZD-30 Pirat", {velocity(83 * km / h), rate_of_climb(-0.7389 * m / s)}},
       glider{"SZD-51 Junior", {velocity(80 * km / h), rate_of_climb(-0.6349 * m / s)}},
       glider{"SZD-48 Jantar Std 3", {velocity(110 * km / h), rate_of_climb(-0.77355 * m / s)}},
       glider{"SZD-56 Diana", {velocity(110 * km / h), rate_of_climb(-0.63657 * m / s)}}};
+UNITS_DIAGNOSTIC_POP
   return gliders;
 }
 

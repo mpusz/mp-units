@@ -44,7 +44,12 @@ inline namespace literals {
 constexpr auto operator"" _q_rad(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return angle<radian, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_rad(long double l) { return angle<radian, long double>(l); }
 
-
 }  // namespace literals
+
+inline namespace unit_constants {
+
+inline constexpr auto rad = reference<dim_angle<>, radian>{};
+
+}  // namespace unit_constants
 
 }  // namespace units

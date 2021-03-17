@@ -127,23 +127,23 @@ constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, lon
 
 namespace unit_constants {
 
-inline constexpr auto R = resistance<ohm, one_rep>{};
-inline constexpr auto yR = resistance<yoctoohm, one_rep>{};
-inline constexpr auto zR = resistance<zeptoohm, one_rep>{};
-inline constexpr auto aR = resistance<attoohm, one_rep>{};
-inline constexpr auto fR = resistance<femtoohm, one_rep>{};
-inline constexpr auto pR = resistance<picoohm, one_rep>{};
-inline constexpr auto nR = resistance<nanoohm, one_rep>{};
-inline constexpr auto uR = resistance<microohm, one_rep>{};
-inline constexpr auto mR = resistance<milliohm, one_rep>{};
-inline constexpr auto kR = resistance<kiloohm, one_rep>{};
-inline constexpr auto MR = resistance<megaohm, one_rep>{};
-inline constexpr auto GR = resistance<gigaohm, one_rep>{};
-inline constexpr auto TR = resistance<teraohm, one_rep>{};
-inline constexpr auto PR = resistance<petaohm, one_rep>{};
-inline constexpr auto ER = resistance<exaohm, one_rep>{};
-inline constexpr auto ZR = resistance<zettaohm, one_rep>{};
-inline constexpr auto YR = resistance<yottaohm, one_rep>{};
+inline constexpr auto R = reference<dim_resistance, ohm>{};
+inline constexpr auto yR = reference<dim_resistance, yoctoohm>{};
+inline constexpr auto zR = reference<dim_resistance, zeptoohm>{};
+inline constexpr auto aR = reference<dim_resistance, attoohm>{};
+inline constexpr auto fR = reference<dim_resistance, femtoohm>{};
+inline constexpr auto pR = reference<dim_resistance, picoohm>{};
+inline constexpr auto nR = reference<dim_resistance, nanoohm>{};
+inline constexpr auto uR = reference<dim_resistance, microohm>{};
+inline constexpr auto mR = reference<dim_resistance, milliohm>{};
+inline constexpr auto kR = reference<dim_resistance, kiloohm>{};
+inline constexpr auto MR = reference<dim_resistance, megaohm>{};
+inline constexpr auto GR = reference<dim_resistance, gigaohm>{};
+inline constexpr auto TR = reference<dim_resistance, teraohm>{};
+inline constexpr auto PR = reference<dim_resistance, petaohm>{};
+inline constexpr auto ER = reference<dim_resistance, exaohm>{};
+inline constexpr auto ZR = reference<dim_resistance, zettaohm>{};
+inline constexpr auto YR = reference<dim_resistance, yottaohm>{};
 
 }  // namespace unit_constants
 

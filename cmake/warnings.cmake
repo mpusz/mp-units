@@ -72,7 +72,6 @@ macro(_set_flags)
 
     set(CLANG_WARNINGS
         ${GCC_COMMON_WARNINGS}
-        -Wno-missing-braces
     )
 
     set(GCC_WARNINGS

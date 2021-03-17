@@ -127,23 +127,23 @@ constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, l
 
 namespace unit_constants {
 
-inline constexpr auto H = inductance<henry, one_rep>{};
-inline constexpr auto yH = inductance<yoctohenry, one_rep>{};
-inline constexpr auto zH = inductance<zeptohenry, one_rep>{};
-inline constexpr auto aH = inductance<attohenry, one_rep>{};
-inline constexpr auto fH = inductance<femtohenry, one_rep>{};
-inline constexpr auto pH = inductance<picohenry, one_rep>{};
-inline constexpr auto nH = inductance<nanohenry, one_rep>{};
-inline constexpr auto uH = inductance<microhenry, one_rep>{};
-inline constexpr auto mH = inductance<millihenry, one_rep>{};
-inline constexpr auto kH = inductance<kilohenry, one_rep>{};
-inline constexpr auto MH = inductance<megahenry, one_rep>{};
-inline constexpr auto GH = inductance<gigahenry, one_rep>{};
-inline constexpr auto TH = inductance<terahenry, one_rep>{};
-inline constexpr auto PH = inductance<petahenry, one_rep>{};
-inline constexpr auto EH = inductance<exahenry, one_rep>{};
-inline constexpr auto ZH = inductance<zettahenry, one_rep>{};
-inline constexpr auto YH = inductance<yottahenry, one_rep>{};
+inline constexpr auto H = reference<dim_inductance, henry>{};
+inline constexpr auto yH = reference<dim_inductance, yoctohenry>{};
+inline constexpr auto zH = reference<dim_inductance, zeptohenry>{};
+inline constexpr auto aH = reference<dim_inductance, attohenry>{};
+inline constexpr auto fH = reference<dim_inductance, femtohenry>{};
+inline constexpr auto pH = reference<dim_inductance, picohenry>{};
+inline constexpr auto nH = reference<dim_inductance, nanohenry>{};
+inline constexpr auto uH = reference<dim_inductance, microhenry>{};
+inline constexpr auto mH = reference<dim_inductance, millihenry>{};
+inline constexpr auto kH = reference<dim_inductance, kilohenry>{};
+inline constexpr auto MH = reference<dim_inductance, megahenry>{};
+inline constexpr auto GH = reference<dim_inductance, gigahenry>{};
+inline constexpr auto TH = reference<dim_inductance, terahenry>{};
+inline constexpr auto PH = reference<dim_inductance, petahenry>{};
+inline constexpr auto EH = reference<dim_inductance, exahenry>{};
+inline constexpr auto ZH = reference<dim_inductance, zettahenry>{};
+inline constexpr auto YH = reference<dim_inductance, yottahenry>{};
 
 }  // namespace unit_constants
 

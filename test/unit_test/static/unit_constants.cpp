@@ -60,14 +60,15 @@ concept invalid_operations = requires {
 };
 static_assert(invalid_operations<s>);
 
-constexpr auto m_per_s = m / s;
-
 static_assert(2_q_m / s == 2_q_m_per_s);
 static_assert(2 * m / s == 2_q_m_per_s);
 static_assert(2 / s * m == 2_q_m_per_s);
 static_assert(2 * (m / s) == 2_q_m_per_s);
+
+#if !(UNITS_COMP_GCC == 10 && UNITS_COMP_GCC_MINOR == 1)
+constexpr auto m_per_s = m / s;
 static_assert(2 * ::m_per_s == 2_q_m_per_s);
-static_assert(is_same_v<decltype(::m_per_s)::rep, decltype(m)::rep>);
+#endif
 
 static_assert(120 * km / (2 * h) == 60_q_km_per_h);
 static_assert(120 * km / 2 / h == 60_q_km_per_h);
@@ -82,14 +83,17 @@ static_assert(is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>)
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 
-#if !defined(UNITS_COMP_CLANG) // -Wshadow
-static_assert([] {
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
+constexpr bool test_hiding() {
   Speed auto v0 = 10 * m / s;
   signed s = 2;  // hides  ^
   Length auto v = 20 * m / s;
   /*      */ v0 = 10 * m / ::s;
   return !is_same_v<decltype(v0), decltype(v)>;
-}());
-#endif
+}
+
+static_assert(test_hiding());
+UNITS_DIAGNOSTIC_POP
 
 int main() {}

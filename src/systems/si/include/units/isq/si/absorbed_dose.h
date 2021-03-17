@@ -146,27 +146,27 @@ constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray
 
 namespace unit_constants {
 
-inline constexpr auto Gy = absorbed_dose<gray, one_rep>{};
-inline constexpr auto yGy = absorbed_dose<yoctogray, one_rep>{};
-inline constexpr auto zGy = absorbed_dose<zeptogray, one_rep>{};
-inline constexpr auto aGy = absorbed_dose<attogray, one_rep>{};
-inline constexpr auto fGy = absorbed_dose<femtogray, one_rep>{};
-inline constexpr auto pGy = absorbed_dose<picogray, one_rep>{};
-inline constexpr auto nGy = absorbed_dose<nanogray, one_rep>{};
-inline constexpr auto uGy = absorbed_dose<microgray, one_rep>{};
-inline constexpr auto mGy = absorbed_dose<milligray, one_rep>{};
-inline constexpr auto cGy = absorbed_dose<centigray, one_rep>{};
-inline constexpr auto dGy = absorbed_dose<decigray, one_rep>{};
-inline constexpr auto daGy = absorbed_dose<decagray, one_rep>{};
-inline constexpr auto hGy = absorbed_dose<hectogray, one_rep>{};
-inline constexpr auto kGy = absorbed_dose<kilogray, one_rep>{};
-inline constexpr auto MGy = absorbed_dose<megagray, one_rep>{};
-inline constexpr auto GGy = absorbed_dose<gigagray, one_rep>{};
-inline constexpr auto TGy = absorbed_dose<teragray, one_rep>{};
-inline constexpr auto PGy = absorbed_dose<petagray, one_rep>{};
-inline constexpr auto EGy = absorbed_dose<exagray, one_rep>{};
-inline constexpr auto ZGy = absorbed_dose<zettagray, one_rep>{};
-inline constexpr auto YGy = absorbed_dose<yottagray, one_rep>{};
+inline constexpr auto Gy = reference<dim_absorbed_dose, gray>{};
+inline constexpr auto yGy = reference<dim_absorbed_dose, yoctogray>{};
+inline constexpr auto zGy = reference<dim_absorbed_dose, zeptogray>{};
+inline constexpr auto aGy = reference<dim_absorbed_dose, attogray>{};
+inline constexpr auto fGy = reference<dim_absorbed_dose, femtogray>{};
+inline constexpr auto pGy = reference<dim_absorbed_dose, picogray>{};
+inline constexpr auto nGy = reference<dim_absorbed_dose, nanogray>{};
+inline constexpr auto uGy = reference<dim_absorbed_dose, microgray>{};
+inline constexpr auto mGy = reference<dim_absorbed_dose, milligray>{};
+inline constexpr auto cGy = reference<dim_absorbed_dose, centigray>{};
+inline constexpr auto dGy = reference<dim_absorbed_dose, decigray>{};
+inline constexpr auto daGy = reference<dim_absorbed_dose, decagray>{};
+inline constexpr auto hGy = reference<dim_absorbed_dose, hectogray>{};
+inline constexpr auto kGy = reference<dim_absorbed_dose, kilogray>{};
+inline constexpr auto MGy = reference<dim_absorbed_dose, megagray>{};
+inline constexpr auto GGy = reference<dim_absorbed_dose, gigagray>{};
+inline constexpr auto TGy = reference<dim_absorbed_dose, teragray>{};
+inline constexpr auto PGy = reference<dim_absorbed_dose, petagray>{};
+inline constexpr auto EGy = reference<dim_absorbed_dose, exagray>{};
+inline constexpr auto ZGy = reference<dim_absorbed_dose, zettagray>{};
+inline constexpr auto YGy = reference<dim_absorbed_dose, yottagray>{};
 
 }  // namespace unit_constants
 

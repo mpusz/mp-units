@@ -44,7 +44,7 @@ constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l
 
 namespace unit_constants {
 
-inline constexpr auto g = mass<gram, one_rep>{};
+inline constexpr auto g = reference<dim_mass, gram>{};
 
 }  // namespace unit_constants
 

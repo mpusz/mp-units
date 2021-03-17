@@ -147,27 +147,27 @@ constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, 
 
 namespace unit_constants {
 
-inline constexpr auto F = capacitance<farad, one_rep>{};
-inline constexpr auto yF = capacitance<yoctofarad, one_rep>{};
-inline constexpr auto zF = capacitance<zeptofarad, one_rep>{};
-inline constexpr auto aF = capacitance<attofarad, one_rep>{};
-inline constexpr auto fF = capacitance<femtofarad, one_rep>{};
-inline constexpr auto pF = capacitance<picofarad, one_rep>{};
-inline constexpr auto nF = capacitance<nanofarad, one_rep>{};
-inline constexpr auto uF = capacitance<microfarad, one_rep>{};
-inline constexpr auto mF = capacitance<millifarad, one_rep>{};
-inline constexpr auto cF = capacitance<centifarad, one_rep>{};
-inline constexpr auto dF = capacitance<decifarad, one_rep>{};
-inline constexpr auto daF = capacitance<decafarad, one_rep>{};
-inline constexpr auto hF = capacitance<hectofarad, one_rep>{};
-inline constexpr auto kF = capacitance<kilofarad, one_rep>{};
-inline constexpr auto MF = capacitance<megafarad, one_rep>{};
-inline constexpr auto GF = capacitance<gigafarad, one_rep>{};
-inline constexpr auto TF = capacitance<terafarad, one_rep>{};
-inline constexpr auto PF = capacitance<petafarad, one_rep>{};
-inline constexpr auto EF = capacitance<exafarad, one_rep>{};
-inline constexpr auto ZF = capacitance<zettafarad, one_rep>{};
-inline constexpr auto YF = capacitance<yottafarad, one_rep>{};
+inline constexpr auto F = reference<dim_capacitance, farad>{};
+inline constexpr auto yF = reference<dim_capacitance, yoctofarad>{};
+inline constexpr auto zF = reference<dim_capacitance, zeptofarad>{};
+inline constexpr auto aF = reference<dim_capacitance, attofarad>{};
+inline constexpr auto fF = reference<dim_capacitance, femtofarad>{};
+inline constexpr auto pF = reference<dim_capacitance, picofarad>{};
+inline constexpr auto nF = reference<dim_capacitance, nanofarad>{};
+inline constexpr auto uF = reference<dim_capacitance, microfarad>{};
+inline constexpr auto mF = reference<dim_capacitance, millifarad>{};
+inline constexpr auto cF = reference<dim_capacitance, centifarad>{};
+inline constexpr auto dF = reference<dim_capacitance, decifarad>{};
+inline constexpr auto daF = reference<dim_capacitance, decafarad>{};
+inline constexpr auto hF = reference<dim_capacitance, hectofarad>{};
+inline constexpr auto kF = reference<dim_capacitance, kilofarad>{};
+inline constexpr auto MF = reference<dim_capacitance, megafarad>{};
+inline constexpr auto GF = reference<dim_capacitance, gigafarad>{};
+inline constexpr auto TF = reference<dim_capacitance, terafarad>{};
+inline constexpr auto PF = reference<dim_capacitance, petafarad>{};
+inline constexpr auto EF = reference<dim_capacitance, exafarad>{};
+inline constexpr auto ZF = reference<dim_capacitance, zettafarad>{};
+inline constexpr auto YF = reference<dim_capacitance, yottafarad>{};
 
 }  // namespace unit_constants
 
