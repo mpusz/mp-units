@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-add_system(data mp-units::core)
+add_units_module(data mp-units::core)

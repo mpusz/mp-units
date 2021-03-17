@@ -22,8 +22,6 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-include(AddSystem)
-
 # systems
 add_subdirectory(data)
 add_subdirectory(isq)

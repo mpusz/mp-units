@@ -22,4 +22,19 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-add_units_module(si-cgs mp-units::si)
+#
+# add_units_module(ModuleName <depependencies>...)
+#
+function(add_units_module name)
+    add_library(mp-units-${name} INTERFACE)
+    target_link_libraries(mp-units-${name} INTERFACE ${ARGN})
+    target_include_directories(mp-units-${name} INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+    )
+    set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
+    add_library(mp-units::${name} ALIAS mp-units-${name})
+
+    install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
+    install(DIRECTORY include/units TYPE INCLUDE)
+endfunction()

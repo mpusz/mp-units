@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-add_units_module(si-cgs mp-units::si)
+add_units_module(core-io mp-units::core)

@@ -22,19 +22,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-#
-# add_system(SystemName <depependencies>...)
-#
-function(add_system name)
-    add_library(mp-units-${name} INTERFACE)
-    target_link_libraries(mp-units-${name} INTERFACE ${ARGN})
-    target_include_directories(mp-units-${name} INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    )
-    set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
-    add_library(mp-units::${name} ALIAS mp-units-${name})
+# find dependencies
+find_package(fmt CONFIG REQUIRED)
 
-    install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
-    install(DIRECTORY include/units TYPE INCLUDE)
-endfunction()
+add_units_module(core-fmt mp-units::core fmt::fmt)

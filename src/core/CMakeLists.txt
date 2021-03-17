@@ -27,7 +27,6 @@ set(UNITS_DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
 set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 
 # find dependencies
-find_package(fmt CONFIG REQUIRED)
 find_package(gsl-lite CONFIG REQUIRED)
 
 # check if libc++ is being used
@@ -38,7 +37,6 @@ check_libcxx_in_use(UNITS_LIBCXX)
 add_library(mp-units-core INTERFACE)
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE
-    fmt::fmt
     gsl::gsl-lite
 )
 target_include_directories(mp-units-core INTERFACE
