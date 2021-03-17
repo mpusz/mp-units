@@ -295,7 +295,8 @@ differences:
       mp-units/0.7.0@mpusz/testing
 
       [generators]
-      cmake_find_package_multi
+      CMakeToolchain
+      CMakeDeps
 
   .. tip::
 
