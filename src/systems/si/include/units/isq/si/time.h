@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/isq/dimensions/time.h>
 #include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
@@ -101,18 +101,18 @@ constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l)
 
 namespace unit_constants {
 
-inline constexpr auto ys = time<yoctosecond, one_rep>{};
-inline constexpr auto zs = time<zeptosecond, one_rep>{};
-inline constexpr auto as = time<attosecond, one_rep>{};
-inline constexpr auto fs = time<femtosecond, one_rep>{};
-inline constexpr auto ps = time<picosecond, one_rep>{};
-inline constexpr auto ns = time<nanosecond, one_rep>{};
-inline constexpr auto us = time<microsecond, one_rep>{};
-inline constexpr auto ms = time<millisecond, one_rep>{};
-inline constexpr auto s = time<second, one_rep>{};
-inline constexpr auto min = time<minute, one_rep>{};
-inline constexpr auto h = time<hour, one_rep>{};
-inline constexpr auto d = time<day, one_rep>{};
+inline constexpr auto ys = reference<dim_time, yoctosecond>{};
+inline constexpr auto zs = reference<dim_time, zeptosecond>{};
+inline constexpr auto as = reference<dim_time, attosecond>{};
+inline constexpr auto fs = reference<dim_time, femtosecond>{};
+inline constexpr auto ps = reference<dim_time, picosecond>{};
+inline constexpr auto ns = reference<dim_time, nanosecond>{};
+inline constexpr auto us = reference<dim_time, microsecond>{};
+inline constexpr auto ms = reference<dim_time, millisecond>{};
+inline constexpr auto s = reference<dim_time, second>{};
+inline constexpr auto min = reference<dim_time, minute>{};
+inline constexpr auto h = reference<dim_time, hour>{};
+inline constexpr auto d = reference<dim_time, day>{};
 
 }  // namespace unit_constants
 

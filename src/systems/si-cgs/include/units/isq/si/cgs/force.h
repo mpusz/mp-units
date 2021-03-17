@@ -47,7 +47,7 @@ constexpr auto operator"" _q_dyn(long double l) { return force<dyne, long double
 
 namespace unit_constants {
 
-inline constexpr auto dyn = force<dyne, one_rep>{};
+inline constexpr auto dyn = reference<dim_force, dyne>{};
 
 }  // namespace unit_constants
 

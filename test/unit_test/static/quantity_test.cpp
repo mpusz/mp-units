@@ -342,6 +342,13 @@ concept invalid_compound_assignments = requires() {
   requires !requires(length<Metre, double> l) { l %= 2._q_m; };
   requires !requires(length<Metre, double> l) { l %= 2_q_m; };
   requires !requires(length<Metre, int> l) { l %= 2._q_m; };
+
+  // no unit constants
+  requires !requires(length<Metre, int> l) { l += m; };
+  requires !requires(length<Metre, int> l) { l -= m; };
+  requires !requires(length<Metre, int> l) { l *= m; };
+  requires !requires(length<Metre, int> l) { l /= m; };
+  requires !requires(length<Metre, int> l) { l %= m; };
 };
 static_assert(invalid_compound_assignments<metre, kilometre>);
 
@@ -363,6 +370,14 @@ concept invalid_binary_operations = requires {
   requires !requires(length<Metre, double> a, length<Metre, double> b) { a % b; };
   requires !requires(length<Metre, double> a, length<Metre, int> b) { a % b; };
   requires !requires(length<Metre, double> a, length<Metre, int> b) { b % a; };
+
+  // unit constants
+  requires !requires { length<Metre, int>(1) + m; };
+  requires !requires { length<Metre, int>(1) - m; };
+  requires !requires { length<Metre, int>(1) % m; };
+  requires !requires { m + length<Metre, int>(1); };
+  requires !requires { m - length<Metre, int>(1); };
+  requires !requires { m % length<Metre, int>(1); };
 };
 static_assert(invalid_binary_operations<metre>);
 
@@ -542,6 +557,11 @@ static_assert(quantity_cast<one>(10_q_km / 5_q_m).count() == 2000);
 
 static_assert((10_q_s * 2_q_kHz).count() == 20);
 
+// unit constants
+
+static_assert(2_q_m * m == (2_q_m2));
+static_assert(2_q_m2 / m == (2_q_m));
+
 
 // dimensionless
 
@@ -580,6 +600,9 @@ static_assert((quantity{std::uint8_t(0)} - quantity{std::uint8_t(1)}).count() ==
 
 static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} % quantity{std::uint8_t(0)}).count()),
                         decltype(std::uint8_t(0) % std::uint8_t(0))>);
+
+static_assert(quantity{2} * m == 2_q_m);
+static_assert(quantity{2} / m == 2 / 1_q_m);
 
 
 ///////////////////////

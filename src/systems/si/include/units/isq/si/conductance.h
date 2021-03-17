@@ -126,23 +126,23 @@ constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens
 
 namespace unit_constants {
 
-inline constexpr auto S = conductance<siemens, one_rep>{};
-inline constexpr auto yS = conductance<yoctosiemens, one_rep>{};
-inline constexpr auto zS = conductance<zeptosiemens, one_rep>{};
-inline constexpr auto aS = conductance<attosiemens, one_rep>{};
-inline constexpr auto fS = conductance<femtosiemens, one_rep>{};
-inline constexpr auto pS = conductance<picosiemens, one_rep>{};
-inline constexpr auto nS = conductance<nanosiemens, one_rep>{};
-inline constexpr auto uS = conductance<microsiemens, one_rep>{};
-inline constexpr auto mS = conductance<millisiemens, one_rep>{};
-inline constexpr auto kS = conductance<kilosiemens, one_rep>{};
-inline constexpr auto MS = conductance<megasiemens, one_rep>{};
-inline constexpr auto GS = conductance<gigasiemens, one_rep>{};
-inline constexpr auto TS = conductance<terasiemens, one_rep>{};
-inline constexpr auto PS = conductance<petasiemens, one_rep>{};
-inline constexpr auto ES = conductance<exasiemens, one_rep>{};
-inline constexpr auto ZS = conductance<zettasiemens, one_rep>{};
-inline constexpr auto YS = conductance<yottasiemens, one_rep>{};
+inline constexpr auto S = reference<dim_conductance, siemens>{};
+inline constexpr auto yS = reference<dim_conductance, yoctosiemens>{};
+inline constexpr auto zS = reference<dim_conductance, zeptosiemens>{};
+inline constexpr auto aS = reference<dim_conductance, attosiemens>{};
+inline constexpr auto fS = reference<dim_conductance, femtosiemens>{};
+inline constexpr auto pS = reference<dim_conductance, picosiemens>{};
+inline constexpr auto nS = reference<dim_conductance, nanosiemens>{};
+inline constexpr auto uS = reference<dim_conductance, microsiemens>{};
+inline constexpr auto mS = reference<dim_conductance, millisiemens>{};
+inline constexpr auto kS = reference<dim_conductance, kilosiemens>{};
+inline constexpr auto MS = reference<dim_conductance, megasiemens>{};
+inline constexpr auto GS = reference<dim_conductance, gigasiemens>{};
+inline constexpr auto TS = reference<dim_conductance, terasiemens>{};
+inline constexpr auto PS = reference<dim_conductance, petasiemens>{};
+inline constexpr auto ES = reference<dim_conductance, exasiemens>{};
+inline constexpr auto ZS = reference<dim_conductance, zettasiemens>{};
+inline constexpr auto YS = reference<dim_conductance, yottasiemens>{};
 
 }  // namespace unit_constants
 

@@ -24,14 +24,25 @@
 #pragma once
 
 #include <units/bits/common_quantity.h>
-#include <units/bits/dimension_op.h>
 #include <units/bits/pow.h>
 #include <units/bits/unit_text.h>
 #include <units/generic/dimensionless.h>
 #include <units/quantity_cast.h>
+#include <units/reference.h>
 #include <compare>
+#include <utility>
 
 namespace units {
+
+namespace detail {
+
+template<Reference R>  // Replace with `v * R{}` pending https://github.com/BobSteagall/wg21/issues/58.
+inline constexpr auto make_quantity = [](auto v) {
+  using Rep = decltype(v);
+  return quantity<typename R::dimension, typename R::unit, Rep>(std::move(v));
+};
+
+}  // namespace detail
 
 template<typename T>
 concept floating_point_ = // exposition only
@@ -98,6 +109,7 @@ class quantity {
   Rep value_;
 public:
   // member types
+  using reference = units::reference<D, U>;
   using dimension = D;
   using unit = U;
   using rep = Rep;
@@ -392,25 +404,41 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   return ret(ret(lhs).count() - ret(rhs).count());
 }
 
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-  requires quantity_value_for_<std::multiplies<>, Rep1, Rep2>
-[[nodiscard]] constexpr Quantity auto operator*(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+template<typename QuantityOrQuantityValue, typename D, typename U>
+  requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
+[[nodiscard]] constexpr Quantity auto operator*(const QuantityOrQuantityValue& lhs, reference<D, U>)
 {
-  using dim = dimension_multiply<D1, D2>;
-  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
-  using ret = quantity<dim, unit, std::invoke_result_t<std::multiplies<>, Rep1, Rep2>>;
-  return ret(lhs.count() * rhs.count());
+  if constexpr (Quantity<QuantityOrQuantityValue>)
+    return lhs * quantity<D, U, typename QuantityOrQuantityValue::rep>::one();
+  else
+    return quantity<D, U, QuantityOrQuantityValue>(lhs);
 }
 
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2>
-  requires quantity_value_for_<std::divides<>, Rep1, Rep2>
-[[nodiscard]] constexpr Quantity auto operator/(const quantity<D1, U1, Rep1>& lhs, const quantity<D2, U2, Rep2>& rhs)
+template<Quantity Q1, Quantity Q2>
+  requires quantity_value_for_<std::multiplies<>, typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
-  gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
-  using dim = dimension_divide<D1, D2>;
-  using unit = downcast_unit<dim, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<dim>::ratio>;
-  using ret = quantity<dim, unit, std::invoke_result_t<std::divides<>, Rep1, Rep2>>;
-  return ret(lhs.count() / rhs.count());
+  return detail::make_quantity<reference_multiply<typename Q1::reference, typename Q2::reference>>(
+    lhs.count() * rhs.count());
+}
+
+template<typename QuantityOrQuantityValue, typename D, typename U>
+  requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
+[[nodiscard]] constexpr Quantity auto operator/(const QuantityOrQuantityValue& lhs, reference<D, U>)
+{
+  if constexpr (Quantity<QuantityOrQuantityValue>)
+    return lhs / quantity<D, U, typename QuantityOrQuantityValue::rep>::one();
+  else
+    return lhs / quantity<D, U, QuantityOrQuantityValue>::one();
+}
+
+template<Quantity Q1, Quantity Q2>
+  requires quantity_value_for_<std::divides<>, typename Q1::rep, typename Q2::rep>
+[[nodiscard]] constexpr Quantity auto operator/(const Q1& lhs, const Q2& rhs)
+{
+  gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q2::rep>::zero());
+  return detail::make_quantity<reference_divide<typename Q1::reference, typename Q2::reference>>(
+    lhs.count() / rhs.count());
 }
 
 template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>

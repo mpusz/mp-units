@@ -55,10 +55,10 @@ constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_
 
 namespace unit_constants {
 
-inline constexpr auto pica_comp = si::length<typographic::pica_comp, one_rep>{};
-inline constexpr auto pica_prn = si::length<typographic::pica_prn, one_rep>{};
-inline constexpr auto point_comp = si::length<typographic::point_comp, one_rep>{};
-inline constexpr auto point_prn = si::length<typographic::point_prn, one_rep>{};
+inline constexpr auto pica_comp = reference<si::dim_length, typographic::pica_comp>{};
+inline constexpr auto pica_prn = reference<si::dim_length, typographic::pica_prn>{};
+inline constexpr auto point_comp = reference<si::dim_length, typographic::point_comp>{};
+inline constexpr auto point_prn = reference<si::dim_length, typographic::point_prn>{};
 
 }  // namespace unit_constants
 

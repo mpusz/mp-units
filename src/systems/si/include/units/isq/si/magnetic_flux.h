@@ -127,23 +127,23 @@ constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottawebe
 
 namespace unit_constants {
 
-inline constexpr auto Wb = magnetic_flux<weber, one_rep>{};
-inline constexpr auto yWb = magnetic_flux<yoctoweber, one_rep>{};
-inline constexpr auto zWb = magnetic_flux<zeptoweber, one_rep>{};
-inline constexpr auto aWb = magnetic_flux<attoweber, one_rep>{};
-inline constexpr auto fWb = magnetic_flux<femtoweber, one_rep>{};
-inline constexpr auto pWb = magnetic_flux<picoweber, one_rep>{};
-inline constexpr auto nWb = magnetic_flux<nanoweber, one_rep>{};
-inline constexpr auto uWb = magnetic_flux<microweber, one_rep>{};
-inline constexpr auto mWb = magnetic_flux<milliweber, one_rep>{};
-inline constexpr auto kWb = magnetic_flux<kiloweber, one_rep>{};
-inline constexpr auto MWb = magnetic_flux<megaweber, one_rep>{};
-inline constexpr auto GWb = magnetic_flux<gigaweber, one_rep>{};
-inline constexpr auto TWb = magnetic_flux<teraweber, one_rep>{};
-inline constexpr auto PWb = magnetic_flux<petaweber, one_rep>{};
-inline constexpr auto EWb = magnetic_flux<exaweber, one_rep>{};
-inline constexpr auto ZWb = magnetic_flux<zettaweber, one_rep>{};
-inline constexpr auto YWb = magnetic_flux<yottaweber, one_rep>{};
+inline constexpr auto Wb = reference<dim_magnetic_flux, weber>{};
+inline constexpr auto yWb = reference<dim_magnetic_flux, yoctoweber>{};
+inline constexpr auto zWb = reference<dim_magnetic_flux, zeptoweber>{};
+inline constexpr auto aWb = reference<dim_magnetic_flux, attoweber>{};
+inline constexpr auto fWb = reference<dim_magnetic_flux, femtoweber>{};
+inline constexpr auto pWb = reference<dim_magnetic_flux, picoweber>{};
+inline constexpr auto nWb = reference<dim_magnetic_flux, nanoweber>{};
+inline constexpr auto uWb = reference<dim_magnetic_flux, microweber>{};
+inline constexpr auto mWb = reference<dim_magnetic_flux, milliweber>{};
+inline constexpr auto kWb = reference<dim_magnetic_flux, kiloweber>{};
+inline constexpr auto MWb = reference<dim_magnetic_flux, megaweber>{};
+inline constexpr auto GWb = reference<dim_magnetic_flux, gigaweber>{};
+inline constexpr auto TWb = reference<dim_magnetic_flux, teraweber>{};
+inline constexpr auto PWb = reference<dim_magnetic_flux, petaweber>{};
+inline constexpr auto EWb = reference<dim_magnetic_flux, exaweber>{};
+inline constexpr auto ZWb = reference<dim_magnetic_flux, zettaweber>{};
+inline constexpr auto YWb = reference<dim_magnetic_flux, yottaweber>{};
 
 }  // namespace unit_constants
 

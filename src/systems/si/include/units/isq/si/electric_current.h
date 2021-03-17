@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/isq/dimensions/electric_current.h>
 #include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
@@ -146,27 +146,27 @@ constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaam
 
 namespace unit_constants {
 
-inline constexpr auto A = electric_current<ampere, one_rep>{};
-inline constexpr auto yA = electric_current<yoctoampere, one_rep>{};
-inline constexpr auto zA = electric_current<zeptoampere, one_rep>{};
-inline constexpr auto aA = electric_current<attoampere, one_rep>{};
-inline constexpr auto fA = electric_current<femtoampere, one_rep>{};
-inline constexpr auto pA = electric_current<picoampere, one_rep>{};
-inline constexpr auto nA = electric_current<nanoampere, one_rep>{};
-inline constexpr auto uA = electric_current<microampere, one_rep>{};
-inline constexpr auto mA = electric_current<milliampere, one_rep>{};
-inline constexpr auto cA = electric_current<centiampere, one_rep>{};
-inline constexpr auto dA = electric_current<deciampere, one_rep>{};
-inline constexpr auto daA = electric_current<decaampere, one_rep>{};
-inline constexpr auto hA = electric_current<hectoampere, one_rep>{};
-inline constexpr auto kA = electric_current<kiloampere, one_rep>{};
-inline constexpr auto MA = electric_current<megaampere, one_rep>{};
-inline constexpr auto GA = electric_current<gigaampere, one_rep>{};
-inline constexpr auto TA = electric_current<teraampere, one_rep>{};
-inline constexpr auto PA = electric_current<petaampere, one_rep>{};
-inline constexpr auto EA = electric_current<exaampere, one_rep>{};
-inline constexpr auto ZA = electric_current<zettaampere, one_rep>{};
-inline constexpr auto YA = electric_current<yottaampere, one_rep>{};
+inline constexpr auto A = reference<dim_electric_current, ampere>{};
+inline constexpr auto yA = reference<dim_electric_current, yoctoampere>{};
+inline constexpr auto zA = reference<dim_electric_current, zeptoampere>{};
+inline constexpr auto aA = reference<dim_electric_current, attoampere>{};
+inline constexpr auto fA = reference<dim_electric_current, femtoampere>{};
+inline constexpr auto pA = reference<dim_electric_current, picoampere>{};
+inline constexpr auto nA = reference<dim_electric_current, nanoampere>{};
+inline constexpr auto uA = reference<dim_electric_current, microampere>{};
+inline constexpr auto mA = reference<dim_electric_current, milliampere>{};
+inline constexpr auto cA = reference<dim_electric_current, centiampere>{};
+inline constexpr auto dA = reference<dim_electric_current, deciampere>{};
+inline constexpr auto daA = reference<dim_electric_current, decaampere>{};
+inline constexpr auto hA = reference<dim_electric_current, hectoampere>{};
+inline constexpr auto kA = reference<dim_electric_current, kiloampere>{};
+inline constexpr auto MA = reference<dim_electric_current, megaampere>{};
+inline constexpr auto GA = reference<dim_electric_current, gigaampere>{};
+inline constexpr auto TA = reference<dim_electric_current, teraampere>{};
+inline constexpr auto PA = reference<dim_electric_current, petaampere>{};
+inline constexpr auto EA = reference<dim_electric_current, exaampere>{};
+inline constexpr auto ZA = reference<dim_electric_current, zettaampere>{};
+inline constexpr auto YA = reference<dim_electric_current, yottaampere>{};
 
 }  // namespace unit_constants
 

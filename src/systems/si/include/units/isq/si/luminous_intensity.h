@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/isq/dimensions/luminous_intensity.h>
 #include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
@@ -146,27 +146,27 @@ constexpr auto operator"" _q_Ycd(long double l) { return luminous_intensity<yott
 
 namespace unit_constants {
 
-inline constexpr auto cd = luminous_intensity<candela, one_rep>{};
-inline constexpr auto ycd = luminous_intensity<yoctocandela, one_rep>{};
-inline constexpr auto zcd = luminous_intensity<zeptocandela, one_rep>{};
-inline constexpr auto acd = luminous_intensity<attocandela, one_rep>{};
-inline constexpr auto fcd = luminous_intensity<femtocandela, one_rep>{};
-inline constexpr auto pcd = luminous_intensity<picocandela, one_rep>{};
-inline constexpr auto ncd = luminous_intensity<nanocandela, one_rep>{};
-inline constexpr auto ucd = luminous_intensity<microcandela, one_rep>{};
-inline constexpr auto mcd = luminous_intensity<millicandela, one_rep>{};
-inline constexpr auto ccd = luminous_intensity<centicandela, one_rep>{};
-inline constexpr auto dcd = luminous_intensity<decicandela, one_rep>{};
-inline constexpr auto dacd = luminous_intensity<decacandela, one_rep>{};
-inline constexpr auto hcd = luminous_intensity<hectocandela, one_rep>{};
-inline constexpr auto kcd = luminous_intensity<kilocandela, one_rep>{};
-inline constexpr auto Mcd = luminous_intensity<megacandela, one_rep>{};
-inline constexpr auto Gcd = luminous_intensity<gigacandela, one_rep>{};
-inline constexpr auto Tcd = luminous_intensity<teracandela, one_rep>{};
-inline constexpr auto Pcd = luminous_intensity<petacandela, one_rep>{};
-inline constexpr auto Ecd = luminous_intensity<exacandela, one_rep>{};
-inline constexpr auto Zcd = luminous_intensity<zettacandela, one_rep>{};
-inline constexpr auto Ycd = luminous_intensity<yottacandela, one_rep>{};
+inline constexpr auto cd = reference<dim_luminous_intensity, candela>{};
+inline constexpr auto ycd = reference<dim_luminous_intensity, yoctocandela>{};
+inline constexpr auto zcd = reference<dim_luminous_intensity, zeptocandela>{};
+inline constexpr auto acd = reference<dim_luminous_intensity, attocandela>{};
+inline constexpr auto fcd = reference<dim_luminous_intensity, femtocandela>{};
+inline constexpr auto pcd = reference<dim_luminous_intensity, picocandela>{};
+inline constexpr auto ncd = reference<dim_luminous_intensity, nanocandela>{};
+inline constexpr auto ucd = reference<dim_luminous_intensity, microcandela>{};
+inline constexpr auto mcd = reference<dim_luminous_intensity, millicandela>{};
+inline constexpr auto ccd = reference<dim_luminous_intensity, centicandela>{};
+inline constexpr auto dcd = reference<dim_luminous_intensity, decicandela>{};
+inline constexpr auto dacd = reference<dim_luminous_intensity, decacandela>{};
+inline constexpr auto hcd = reference<dim_luminous_intensity, hectocandela>{};
+inline constexpr auto kcd = reference<dim_luminous_intensity, kilocandela>{};
+inline constexpr auto Mcd = reference<dim_luminous_intensity, megacandela>{};
+inline constexpr auto Gcd = reference<dim_luminous_intensity, gigacandela>{};
+inline constexpr auto Tcd = reference<dim_luminous_intensity, teracandela>{};
+inline constexpr auto Pcd = reference<dim_luminous_intensity, petacandela>{};
+inline constexpr auto Ecd = reference<dim_luminous_intensity, exacandela>{};
+inline constexpr auto Zcd = reference<dim_luminous_intensity, zettacandela>{};
+inline constexpr auto Ycd = reference<dim_luminous_intensity, yottacandela>{};
 
 }  // namespace unit_constants
 

@@ -93,15 +93,15 @@ constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long do
 
 namespace unit_constants {
 
-inline constexpr auto gr = mass<grain, one_rep>{};
-inline constexpr auto dr = mass<dram, one_rep>{};
-inline constexpr auto oz = mass<ounce, one_rep>{};
-inline constexpr auto lb = mass<pound, one_rep>{};
-inline constexpr auto st = mass<stone, one_rep>{};
-inline constexpr auto qr = mass<quarter, one_rep>{};
-inline constexpr auto cwt = mass<hundredweight, one_rep>{};
-inline constexpr auto ston = mass<short_ton, one_rep>{};
-inline constexpr auto lton = mass<long_ton, one_rep>{};
+inline constexpr auto gr = reference<dim_mass, grain>{};
+inline constexpr auto dr = reference<dim_mass, dram>{};
+inline constexpr auto oz = reference<dim_mass, ounce>{};
+inline constexpr auto lb = reference<dim_mass, pound>{};
+inline constexpr auto st = reference<dim_mass, stone>{};
+inline constexpr auto qr = reference<dim_mass, quarter>{};
+inline constexpr auto cwt = reference<dim_mass, hundredweight>{};
+inline constexpr auto ston = reference<dim_mass, short_ton>{};
+inline constexpr auto lton = reference<dim_mass, long_ton>{};
 
 }  // namespace unit_constants
 

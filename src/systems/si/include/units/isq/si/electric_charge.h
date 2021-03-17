@@ -46,7 +46,7 @@ constexpr auto operator"" _q_C(long double l) { return electric_charge<coulomb, 
 
 namespace unit_constants {
 
-inline constexpr auto C = electric_charge<coulomb, one_rep>{};
+inline constexpr auto C = reference<dim_electric_charge, coulomb>{};
 
 }  // namespace unit_constants
 

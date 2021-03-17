@@ -246,6 +246,22 @@ struct _point_kind_base;
 template<typename T>
 concept PointKind = kind_impl_<T, detail::_point_kind_base>;
 
+// Reference
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_reference = false;
+
+}  // namespace detail
+
+/**
+ * @brief A concept matching all references in the library.
+ *
+ * Satisfied by all specializations of @c reference.
+ */
+template<typename T>
+concept Reference = detail::is_reference<T>;
+
 // Quantity, QuantityPoint, QuantityKind, QuantityPointKind
 namespace detail {
 

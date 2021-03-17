@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/isq/dimensions/mass.h>
 #include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
@@ -258,49 +258,49 @@ constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double
 
 namespace unit_constants {
 
-inline constexpr auto g = mass<gram, one_rep>{};
-inline constexpr auto yg = mass<yoctogram, one_rep>{};
-inline constexpr auto zg = mass<zeptogram, one_rep>{};
-inline constexpr auto ag = mass<attogram, one_rep>{};
-inline constexpr auto fg = mass<femtogram, one_rep>{};
-inline constexpr auto pg = mass<picogram, one_rep>{};
-inline constexpr auto ng = mass<nanogram, one_rep>{};
-inline constexpr auto ug = mass<microgram, one_rep>{};
-inline constexpr auto mg = mass<milligram, one_rep>{};
-inline constexpr auto cg = mass<centigram, one_rep>{};
-inline constexpr auto dg = mass<decigram, one_rep>{};
-inline constexpr auto dag = mass<decagram, one_rep>{};
-inline constexpr auto hg = mass<hectogram, one_rep>{};
-inline constexpr auto kg = mass<kilogram, one_rep>{};
-inline constexpr auto Mg = mass<megagram, one_rep>{};
-inline constexpr auto Gg = mass<gigagram, one_rep>{};
-inline constexpr auto Tg = mass<teragram, one_rep>{};
-inline constexpr auto Pg = mass<petagram, one_rep>{};
-inline constexpr auto Eg = mass<exagram, one_rep>{};
-inline constexpr auto Zg = mass<zettagram, one_rep>{};
-inline constexpr auto Yg = mass<yottagram, one_rep>{};
-inline constexpr auto t = mass<tonne, one_rep>{};
-inline constexpr auto yt = mass<yoctotonne, one_rep>{};
-inline constexpr auto zt = mass<zeptotonne, one_rep>{};
-inline constexpr auto at = mass<attotonne, one_rep>{};
-inline constexpr auto ft = mass<femtotonne, one_rep>{};
-inline constexpr auto pt = mass<picotonne, one_rep>{};
-inline constexpr auto nt = mass<nanotonne, one_rep>{};
-inline constexpr auto ut = mass<microtonne, one_rep>{};
-inline constexpr auto mt = mass<millitonne, one_rep>{};
-inline constexpr auto ct = mass<centitonne, one_rep>{};
-inline constexpr auto dt = mass<decitonne, one_rep>{};
-inline constexpr auto dat = mass<decatonne, one_rep>{};
-inline constexpr auto ht = mass<hectotonne, one_rep>{};
-inline constexpr auto kt = mass<kilotonne, one_rep>{};
-inline constexpr auto Mt = mass<megatonne, one_rep>{};
-inline constexpr auto Gt = mass<gigatonne, one_rep>{};
-inline constexpr auto Tt = mass<teratonne, one_rep>{};
-inline constexpr auto Pt = mass<petatonne, one_rep>{};
-inline constexpr auto Et = mass<exatonne, one_rep>{};
-inline constexpr auto Zt = mass<zettatonne, one_rep>{};
-inline constexpr auto Yt = mass<yottatonne, one_rep>{};
-inline constexpr auto Da = mass<dalton, one_rep>{};
+inline constexpr auto g = reference<dim_mass, gram>{};
+inline constexpr auto yg = reference<dim_mass, yoctogram>{};
+inline constexpr auto zg = reference<dim_mass, zeptogram>{};
+inline constexpr auto ag = reference<dim_mass, attogram>{};
+inline constexpr auto fg = reference<dim_mass, femtogram>{};
+inline constexpr auto pg = reference<dim_mass, picogram>{};
+inline constexpr auto ng = reference<dim_mass, nanogram>{};
+inline constexpr auto ug = reference<dim_mass, microgram>{};
+inline constexpr auto mg = reference<dim_mass, milligram>{};
+inline constexpr auto cg = reference<dim_mass, centigram>{};
+inline constexpr auto dg = reference<dim_mass, decigram>{};
+inline constexpr auto dag = reference<dim_mass, decagram>{};
+inline constexpr auto hg = reference<dim_mass, hectogram>{};
+inline constexpr auto kg = reference<dim_mass, kilogram>{};
+inline constexpr auto Mg = reference<dim_mass, megagram>{};
+inline constexpr auto Gg = reference<dim_mass, gigagram>{};
+inline constexpr auto Tg = reference<dim_mass, teragram>{};
+inline constexpr auto Pg = reference<dim_mass, petagram>{};
+inline constexpr auto Eg = reference<dim_mass, exagram>{};
+inline constexpr auto Zg = reference<dim_mass, zettagram>{};
+inline constexpr auto Yg = reference<dim_mass, yottagram>{};
+inline constexpr auto t = reference<dim_mass, tonne>{};
+inline constexpr auto yt = reference<dim_mass, yoctotonne>{};
+inline constexpr auto zt = reference<dim_mass, zeptotonne>{};
+inline constexpr auto at = reference<dim_mass, attotonne>{};
+inline constexpr auto ft = reference<dim_mass, femtotonne>{};
+inline constexpr auto pt = reference<dim_mass, picotonne>{};
+inline constexpr auto nt = reference<dim_mass, nanotonne>{};
+inline constexpr auto ut = reference<dim_mass, microtonne>{};
+inline constexpr auto mt = reference<dim_mass, millitonne>{};
+inline constexpr auto ct = reference<dim_mass, centitonne>{};
+inline constexpr auto dt = reference<dim_mass, decitonne>{};
+inline constexpr auto dat = reference<dim_mass, decatonne>{};
+inline constexpr auto ht = reference<dim_mass, hectotonne>{};
+inline constexpr auto kt = reference<dim_mass, kilotonne>{};
+inline constexpr auto Mt = reference<dim_mass, megatonne>{};
+inline constexpr auto Gt = reference<dim_mass, gigatonne>{};
+inline constexpr auto Tt = reference<dim_mass, teratonne>{};
+inline constexpr auto Pt = reference<dim_mass, petatonne>{};
+inline constexpr auto Et = reference<dim_mass, exatonne>{};
+inline constexpr auto Zt = reference<dim_mass, zettatonne>{};
+inline constexpr auto Yt = reference<dim_mass, yottatonne>{};
+inline constexpr auto Da = reference<dim_mass, dalton>{};
 
 }  // namespace unit_constants
 

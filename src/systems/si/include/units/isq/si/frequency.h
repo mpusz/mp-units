@@ -125,23 +125,23 @@ constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, l
 
 namespace unit_constants {
 
-inline constexpr auto Hz = frequency<hertz, one_rep>{};
-inline constexpr auto yHz = frequency<yoctohertz, one_rep>{};
-inline constexpr auto zHz = frequency<zeptohertz, one_rep>{};
-inline constexpr auto aHz = frequency<attohertz, one_rep>{};
-inline constexpr auto fHz = frequency<femtohertz, one_rep>{};
-inline constexpr auto pHz = frequency<picohertz, one_rep>{};
-inline constexpr auto nHz = frequency<nanohertz, one_rep>{};
-inline constexpr auto uHz = frequency<microhertz, one_rep>{};
-inline constexpr auto mHz = frequency<millihertz, one_rep>{};
-inline constexpr auto kHz = frequency<kilohertz, one_rep>{};
-inline constexpr auto MHz = frequency<megahertz, one_rep>{};
-inline constexpr auto GHz = frequency<gigahertz, one_rep>{};
-inline constexpr auto THz = frequency<terahertz, one_rep>{};
-inline constexpr auto PHz = frequency<petahertz, one_rep>{};
-inline constexpr auto EHz = frequency<exahertz, one_rep>{};
-inline constexpr auto ZHz = frequency<zettahertz, one_rep>{};
-inline constexpr auto YHz = frequency<yottahertz, one_rep>{};
+inline constexpr auto Hz = reference<dim_frequency, hertz>{};
+inline constexpr auto yHz = reference<dim_frequency, yoctohertz>{};
+inline constexpr auto zHz = reference<dim_frequency, zeptohertz>{};
+inline constexpr auto aHz = reference<dim_frequency, attohertz>{};
+inline constexpr auto fHz = reference<dim_frequency, femtohertz>{};
+inline constexpr auto pHz = reference<dim_frequency, picohertz>{};
+inline constexpr auto nHz = reference<dim_frequency, nanohertz>{};
+inline constexpr auto uHz = reference<dim_frequency, microhertz>{};
+inline constexpr auto mHz = reference<dim_frequency, millihertz>{};
+inline constexpr auto kHz = reference<dim_frequency, kilohertz>{};
+inline constexpr auto MHz = reference<dim_frequency, megahertz>{};
+inline constexpr auto GHz = reference<dim_frequency, gigahertz>{};
+inline constexpr auto THz = reference<dim_frequency, terahertz>{};
+inline constexpr auto PHz = reference<dim_frequency, petahertz>{};
+inline constexpr auto EHz = reference<dim_frequency, exahertz>{};
+inline constexpr auto ZHz = reference<dim_frequency, zettahertz>{};
+inline constexpr auto YHz = reference<dim_frequency, yottahertz>{};
 
 }  // namespace unit_constants
 

@@ -45,7 +45,7 @@ constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre,
 
 namespace unit_constants {
 
-inline constexpr auto cm2 = area<square_centimetre, one_rep>{};
+inline constexpr auto cm2 = reference<dim_area, square_centimetre>{};
 
 }  // namespace unit_constants
 

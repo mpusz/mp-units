@@ -153,28 +153,28 @@ constexpr auto operator"" _q_U(long double l) { return catalytic_activity<enzyme
 
 namespace unit_constants {
 
-inline constexpr auto kat = catalytic_activity<katal, one_rep>{};
-inline constexpr auto ykat = catalytic_activity<yoctokatal, one_rep>{};
-inline constexpr auto zkat = catalytic_activity<zeptokatal, one_rep>{};
-inline constexpr auto akat = catalytic_activity<attokatal, one_rep>{};
-inline constexpr auto fkat = catalytic_activity<femtokatal, one_rep>{};
-inline constexpr auto pkat = catalytic_activity<picokatal, one_rep>{};
-inline constexpr auto nkat = catalytic_activity<nanokatal, one_rep>{};
-inline constexpr auto ukat = catalytic_activity<microkatal, one_rep>{};
-inline constexpr auto mkat = catalytic_activity<millikatal, one_rep>{};
-inline constexpr auto ckat = catalytic_activity<centikatal, one_rep>{};
-inline constexpr auto dkat = catalytic_activity<decikatal, one_rep>{};
-inline constexpr auto dakat = catalytic_activity<decakatal, one_rep>{};
-inline constexpr auto hkat = catalytic_activity<hectokatal, one_rep>{};
-inline constexpr auto kkat = catalytic_activity<kilokatal, one_rep>{};
-inline constexpr auto Mkat = catalytic_activity<megakatal, one_rep>{};
-inline constexpr auto Gkat = catalytic_activity<gigakatal, one_rep>{};
-inline constexpr auto Tkat = catalytic_activity<terakatal, one_rep>{};
-inline constexpr auto Pkat = catalytic_activity<petakatal, one_rep>{};
-inline constexpr auto Ekat = catalytic_activity<exakatal, one_rep>{};
-inline constexpr auto Zkat = catalytic_activity<zettakatal, one_rep>{};
-inline constexpr auto Ykat = catalytic_activity<yottakatal, one_rep>{};
-inline constexpr auto U = catalytic_activity<enzyme_unit, one_rep>{};
+inline constexpr auto kat = reference<dim_catalytic_activity, katal>{};
+inline constexpr auto ykat = reference<dim_catalytic_activity, yoctokatal>{};
+inline constexpr auto zkat = reference<dim_catalytic_activity, zeptokatal>{};
+inline constexpr auto akat = reference<dim_catalytic_activity, attokatal>{};
+inline constexpr auto fkat = reference<dim_catalytic_activity, femtokatal>{};
+inline constexpr auto pkat = reference<dim_catalytic_activity, picokatal>{};
+inline constexpr auto nkat = reference<dim_catalytic_activity, nanokatal>{};
+inline constexpr auto ukat = reference<dim_catalytic_activity, microkatal>{};
+inline constexpr auto mkat = reference<dim_catalytic_activity, millikatal>{};
+inline constexpr auto ckat = reference<dim_catalytic_activity, centikatal>{};
+inline constexpr auto dkat = reference<dim_catalytic_activity, decikatal>{};
+inline constexpr auto dakat = reference<dim_catalytic_activity, decakatal>{};
+inline constexpr auto hkat = reference<dim_catalytic_activity, hectokatal>{};
+inline constexpr auto kkat = reference<dim_catalytic_activity, kilokatal>{};
+inline constexpr auto Mkat = reference<dim_catalytic_activity, megakatal>{};
+inline constexpr auto Gkat = reference<dim_catalytic_activity, gigakatal>{};
+inline constexpr auto Tkat = reference<dim_catalytic_activity, terakatal>{};
+inline constexpr auto Pkat = reference<dim_catalytic_activity, petakatal>{};
+inline constexpr auto Ekat = reference<dim_catalytic_activity, exakatal>{};
+inline constexpr auto Zkat = reference<dim_catalytic_activity, zettakatal>{};
+inline constexpr auto Ykat = reference<dim_catalytic_activity, yottakatal>{};
+inline constexpr auto U = reference<dim_catalytic_activity, enzyme_unit>{};
 
 }  // namespace unit_constants
 

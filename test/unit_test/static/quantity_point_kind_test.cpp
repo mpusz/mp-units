@@ -220,9 +220,6 @@ static_assert(construct_from_only<nth_apple<one, double>>(1).relative().common()
 static_assert(construct_from_only<nth_apple<one, double>>(short{1}).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, short>>(1).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, int>>(1).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, double>>(one_rep{}).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, int>>(one_rep{}).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, short>>(one_rep{}).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().count() == 1);
 static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().count() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(1.0));
@@ -605,7 +602,6 @@ static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cg
 // clang-format on
 template<typename Int>
 concept invalid_cast = requires(Int i) {
-  requires !requires { quantity_point_kind_cast<abscissa<metre, one_rep>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<apples<one, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<rate_of_climb<metre_per_second, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<apple>(abscissa<metre, Int>(i * m)); };
@@ -620,7 +616,6 @@ concept invalid_cast = requires(Int i) {
   requires !requires { quantity_point_kind_cast<dimensionless<one>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<square_metre>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<second>(abscissa<metre, Int>(i * m)); };
-  requires !requires { quantity_point_kind_cast<one_rep>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<quantity_point<dim_length, metre, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<quantity_point<dim_one, one, Int>>(abscissa<metre, Int>(i * m)); };
 };

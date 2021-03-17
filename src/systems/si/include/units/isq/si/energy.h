@@ -137,25 +137,25 @@ constexpr auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt
 
 namespace unit_constants {
 
-inline constexpr auto J = energy<joule, one_rep>{};
-inline constexpr auto yJ = energy<yoctojoule, one_rep>{};
-inline constexpr auto zJ = energy<zeptojoule, one_rep>{};
-inline constexpr auto aJ = energy<attojoule, one_rep>{};
-inline constexpr auto fJ = energy<femtojoule, one_rep>{};
-inline constexpr auto pJ = energy<picojoule, one_rep>{};
-inline constexpr auto nJ = energy<nanojoule, one_rep>{};
-inline constexpr auto uJ = energy<microjoule, one_rep>{};
-inline constexpr auto mJ = energy<millijoule, one_rep>{};
-inline constexpr auto kJ = energy<kilojoule, one_rep>{};
-inline constexpr auto MJ = energy<megajoule, one_rep>{};
-inline constexpr auto GJ = energy<gigajoule, one_rep>{};
-inline constexpr auto TJ = energy<terajoule, one_rep>{};
-inline constexpr auto PJ = energy<petajoule, one_rep>{};
-inline constexpr auto EJ = energy<exajoule, one_rep>{};
-inline constexpr auto ZJ = energy<zettajoule, one_rep>{};
-inline constexpr auto YJ = energy<yottajoule, one_rep>{};
-inline constexpr auto eV = energy<electronvolt, one_rep>{};
-inline constexpr auto GeV = energy<gigaelectronvolt, one_rep>{};
+inline constexpr auto J = reference<dim_energy, joule>{};
+inline constexpr auto yJ = reference<dim_energy, yoctojoule>{};
+inline constexpr auto zJ = reference<dim_energy, zeptojoule>{};
+inline constexpr auto aJ = reference<dim_energy, attojoule>{};
+inline constexpr auto fJ = reference<dim_energy, femtojoule>{};
+inline constexpr auto pJ = reference<dim_energy, picojoule>{};
+inline constexpr auto nJ = reference<dim_energy, nanojoule>{};
+inline constexpr auto uJ = reference<dim_energy, microjoule>{};
+inline constexpr auto mJ = reference<dim_energy, millijoule>{};
+inline constexpr auto kJ = reference<dim_energy, kilojoule>{};
+inline constexpr auto MJ = reference<dim_energy, megajoule>{};
+inline constexpr auto GJ = reference<dim_energy, gigajoule>{};
+inline constexpr auto TJ = reference<dim_energy, terajoule>{};
+inline constexpr auto PJ = reference<dim_energy, petajoule>{};
+inline constexpr auto EJ = reference<dim_energy, exajoule>{};
+inline constexpr auto ZJ = reference<dim_energy, zettajoule>{};
+inline constexpr auto YJ = reference<dim_energy, yottajoule>{};
+inline constexpr auto eV = reference<dim_energy, electronvolt>{};
+inline constexpr auto GeV = reference<dim_energy, gigaelectronvolt>{};
 
 }  // namespace unit_constants
 

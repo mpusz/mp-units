@@ -61,8 +61,8 @@ constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_for
 
 namespace unit_constants {
 
-inline constexpr auto psi = pressure<pound_force_per_inch_sq, one_rep>{};
-inline constexpr auto kpsi = pressure<kilopound_force_per_inch_sq, one_rep>{};
+inline constexpr auto psi = reference<dim_pressure, pound_force_per_inch_sq>{};
+inline constexpr auto kpsi = reference<dim_pressure, kilopound_force_per_inch_sq>{};
 
 }  // namespace unit_constants
 

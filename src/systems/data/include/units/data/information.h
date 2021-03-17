@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/base_dimension.h>
 #include <units/data/prefixes.h>
 #include <units/unit.h>
@@ -74,19 +74,19 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 namespace unit_constants {
 
-inline constexpr auto b = information<bit, one_rep>{};
-inline constexpr auto Kib = information<kibibit, one_rep>{};
-inline constexpr auto Mib = information<mebibit, one_rep>{};
-inline constexpr auto Gib = information<gibibit, one_rep>{};
-inline constexpr auto Tib = information<tebibit, one_rep>{};
-inline constexpr auto Pib = information<pebibit, one_rep>{};
+inline constexpr auto b = reference<dim_information, bit>{};
+inline constexpr auto Kib = reference<dim_information, kibibit>{};
+inline constexpr auto Mib = reference<dim_information, mebibit>{};
+inline constexpr auto Gib = reference<dim_information, gibibit>{};
+inline constexpr auto Tib = reference<dim_information, tebibit>{};
+inline constexpr auto Pib = reference<dim_information, pebibit>{};
 
-inline constexpr auto B = information<byte, one_rep>{};
-inline constexpr auto KiB = information<kibibyte, one_rep>{};
-inline constexpr auto MiB = information<mebibyte, one_rep>{};
-inline constexpr auto GiB = information<gibibyte, one_rep>{};
-inline constexpr auto TiB = information<tebibyte, one_rep>{};
-inline constexpr auto PiB = information<pebibyte, one_rep>{};
+inline constexpr auto B = reference<dim_information, byte>{};
+inline constexpr auto KiB = reference<dim_information, kibibyte>{};
+inline constexpr auto MiB = reference<dim_information, mebibyte>{};
+inline constexpr auto GiB = reference<dim_information, gibibyte>{};
+inline constexpr auto TiB = reference<dim_information, tebibyte>{};
+inline constexpr auto PiB = reference<dim_information, pebibyte>{};
 
 }  // namespace unit_constants
 

@@ -39,7 +39,7 @@ constexpr auto operator"" _q_ft2(long double l) { return si::area<square_foot, l
 
 namespace unit_constants {
 
-inline constexpr auto ft2 = si::area<square_foot, one_rep>{};
+inline constexpr auto ft2 = reference<si::dim_area, square_foot>{};
 
 }  // namespace unit_constants
 

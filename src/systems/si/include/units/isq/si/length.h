@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/one_rep.h>
+#include <units/reference.h>
 #include <units/isq/dimensions/length.h>
 #include <units/isq/si/prefixes.h>
 #include <units/quantity.h>
@@ -152,28 +152,28 @@ constexpr auto operator"" _q_au(long double l) { return length<astronomical_unit
 
 namespace unit_constants {
 
-inline constexpr auto m = length<metre, one_rep>{};
-inline constexpr auto ym = length<yoctometre, one_rep>{};
-inline constexpr auto zm = length<zeptometre, one_rep>{};
-inline constexpr auto am = length<attometre, one_rep>{};
-inline constexpr auto fm = length<femtometre, one_rep>{};
-inline constexpr auto pm = length<picometre, one_rep>{};
-inline constexpr auto nm = length<nanometre, one_rep>{};
-inline constexpr auto um = length<micrometre, one_rep>{};
-inline constexpr auto mm = length<millimetre, one_rep>{};
-inline constexpr auto cm = length<centimetre, one_rep>{};
-inline constexpr auto dm = length<decimetre, one_rep>{};
-inline constexpr auto dam = length<decametre, one_rep>{};
-inline constexpr auto hm = length<hectometre, one_rep>{};
-inline constexpr auto km = length<kilometre, one_rep>{};
-inline constexpr auto Mm = length<megametre, one_rep>{};
-inline constexpr auto Gm = length<gigametre, one_rep>{};
-inline constexpr auto Tm = length<terametre, one_rep>{};
-inline constexpr auto Pm = length<petametre, one_rep>{};
-inline constexpr auto Em = length<exametre, one_rep>{};
-inline constexpr auto Zm = length<zettametre, one_rep>{};
-inline constexpr auto Ym = length<yottametre, one_rep>{};
-inline constexpr auto au = length<astronomical_unit, one_rep>{};
+inline constexpr auto m = reference<dim_length, metre>{};
+inline constexpr auto ym = reference<dim_length, yoctometre>{};
+inline constexpr auto zm = reference<dim_length, zeptometre>{};
+inline constexpr auto am = reference<dim_length, attometre>{};
+inline constexpr auto fm = reference<dim_length, femtometre>{};
+inline constexpr auto pm = reference<dim_length, picometre>{};
+inline constexpr auto nm = reference<dim_length, nanometre>{};
+inline constexpr auto um = reference<dim_length, micrometre>{};
+inline constexpr auto mm = reference<dim_length, millimetre>{};
+inline constexpr auto cm = reference<dim_length, centimetre>{};
+inline constexpr auto dm = reference<dim_length, decimetre>{};
+inline constexpr auto dam = reference<dim_length, decametre>{};
+inline constexpr auto hm = reference<dim_length, hectometre>{};
+inline constexpr auto km = reference<dim_length, kilometre>{};
+inline constexpr auto Mm = reference<dim_length, megametre>{};
+inline constexpr auto Gm = reference<dim_length, gigametre>{};
+inline constexpr auto Tm = reference<dim_length, terametre>{};
+inline constexpr auto Pm = reference<dim_length, petametre>{};
+inline constexpr auto Em = reference<dim_length, exametre>{};
+inline constexpr auto Zm = reference<dim_length, zettametre>{};
+inline constexpr auto Ym = reference<dim_length, yottametre>{};
+inline constexpr auto au = reference<dim_length, astronomical_unit>{};
 
 }  // namespace unit_constants
 

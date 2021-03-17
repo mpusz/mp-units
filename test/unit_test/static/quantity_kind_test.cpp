@@ -434,6 +434,11 @@ concept invalid_compound_assignments = requires(quantity_kind<Width, metre, int>
   requires !requires { w *= 1 * km / m; };
   requires !requires { w /= 1 * km / m; };
   requires !requires { w %= 1 * km / m; };
+  requires !requires { w += m; };
+  requires !requires { w -= m; };
+  requires !requires { w *= m; };
+  requires !requires { w /= m; };
+  requires !requires { w %= m; };
   requires !requires { w *= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
   requires !requires { w /= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
   requires !requires { w %= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
@@ -478,10 +483,12 @@ static_assert(!std::is_invocable_v<std::plus<>, width<metre>, double>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, length<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, quantity_point<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, height<metre>>);
+static_assert(!std::is_invocable_v<std::plus<>, width<metre>, reference<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, double>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, length<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, quantity_point<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, height<metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, width<metre>, reference<dim_length, metre>>);
 
 // clang-format off
 static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
@@ -541,6 +548,7 @@ static_assert(same(apples<one, int>(2) * quantity(2), apples<one, int>(4)));
 static_assert(same(quantity(2) * apples<one, int>(2), apples<one, int>(4)));
 
 // clang-format off
+static_assert(same(width<metre, int>(4 * m) * m, horizontal_area<square_metre, int>(4 * m * m)));
 static_assert(same(width<metre, int>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, int>(4 * m * m)));
 static_assert(same(width<metre, int>(2 * m) * width<metre, double>(2 * m), horizontal_area<square_metre, double>(4 * m * m)));
 static_assert(same(width<metre, double>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, double>(4 * m * m)));
@@ -549,6 +557,7 @@ static_assert(same(width<metre, double>(2 * m) * width<metre, int>(2 * m), horiz
 static_assert(same(apples<one, int>(2) * apples<one, int>(2), apples<one, int>(4)));
 static_assert(same(apples<one, int>(2) * (2 / apples<one, int>(1)), apples<one, int>(4)));
 
+static_assert(same(width<kilometre>(4 * m) * mm, horizontal_area<square_metre>(4 * m * mm)));
 static_assert(same(width<kilometre>(2 * m) * width<millimetre>(2 * m), horizontal_area<square_metre>(4 * m * m)));
 static_assert(same(width<metre>(2 * m) * (1 / width<metre>(2 * m)),
                    quantity_kind<downcast_kind<width_kind, dim_one>, one>(1)));
@@ -626,6 +635,7 @@ static_assert(same(apples<one, int>(8) / apples<one, int>(2), apples<one, int>(4
 static_assert(same(apples<one, int>(8) / (2 / apples<one, int>(1)), apples<one, int>(4)));
 
 static_assert(same(horizontal_area<square_metre>(8 * m * m) / width<metre>(2 * m), width<metre>(4 * m)));
+static_assert(same(horizontal_area<square_metre>(4 * m * m) / m, width<metre>(4 * m)));
 
 static_assert(same(width<metre, int>(2 * m) % 3, width<metre, int>(2 * m)));
 static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<metre, int>(1 * m)));
@@ -634,14 +644,17 @@ static_assert(is_same_v<
   decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().count()),
   decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
+static_assert(!std::is_invocable_v<std::multiplies<>, reference<dim_length, metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, width<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, height<metre>, quantity_point<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, quantity_point<dim_length, metre>, height<metre>>);
 
+static_assert(!std::is_invocable_v<std::divides<>, reference<dim_length, metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::divides<>, width<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::divides<>, height<metre>, quantity_point<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::divides<>, quantity_point<dim_length, metre>, height<metre>>);
 
+static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, reference<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, length<metre, int>>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, quantity_point<dim_length, metre, int>>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, double>);
@@ -690,6 +703,8 @@ concept invalid_equality = requires(quantity_kind<Width, metre, int> w) {
   requires !requires { w == 1 * m; };
   requires !requires { w != 1.0 * cgs_cm; };
   requires !requires { w == 1 * km; };
+  requires !requires { w != m; };
+  requires !requires { w == km; };
   requires !requires { w != quantity(1); };
   requires !requires { w == dimensionless<percent>(1.0); };
   requires !requires { w != height<metre, int>(1 * m); };
@@ -770,7 +785,6 @@ static_assert(same(quantity_kind_cast<length<centimetre, int>>(width<cgs::centim
 // clang-format on
 template<typename Width>
 concept invalid_cast = requires {
-  requires !requires { quantity_kind_cast<width<metre, one_rep>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<apples<one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<horizontal_area<square_metre, int>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<rate_of_climb<metre_per_second, int>>(quantity_kind<Width, metre, int>(1 * m)); };
@@ -783,7 +797,6 @@ concept invalid_cast = requires {
   requires !requires { quantity_kind_cast<dimensionless<one>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<square_metre>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<second>(quantity_kind<Width, metre, int>(1 * m)); };
-  requires !requires { quantity_kind_cast<one_rep>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<quantity_point<dim_length, metre, int>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<quantity_point<dim_one, one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
 };

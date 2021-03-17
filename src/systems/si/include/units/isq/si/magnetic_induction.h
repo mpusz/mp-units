@@ -135,24 +135,24 @@ constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss,
 
 namespace unit_constants {
 
-inline constexpr auto T = magnetic_induction<tesla, one_rep>{};
-inline constexpr auto yT = magnetic_induction<yoctotesla, one_rep>{};
-inline constexpr auto zT = magnetic_induction<zeptotesla, one_rep>{};
-inline constexpr auto aT = magnetic_induction<attotesla, one_rep>{};
-inline constexpr auto fT = magnetic_induction<femtotesla, one_rep>{};
-inline constexpr auto pT = magnetic_induction<picotesla, one_rep>{};
-inline constexpr auto nT = magnetic_induction<nanotesla, one_rep>{};
-inline constexpr auto uT = magnetic_induction<microtesla, one_rep>{};
-inline constexpr auto mT = magnetic_induction<millitesla, one_rep>{};
-inline constexpr auto kT = magnetic_induction<kilotesla, one_rep>{};
-inline constexpr auto MT = magnetic_induction<megatesla, one_rep>{};
-inline constexpr auto GT = magnetic_induction<gigatesla, one_rep>{};
-inline constexpr auto TT = magnetic_induction<teratesla, one_rep>{};
-inline constexpr auto PT = magnetic_induction<petatesla, one_rep>{};
-inline constexpr auto ET = magnetic_induction<exatesla, one_rep>{};
-inline constexpr auto ZT = magnetic_induction<zettatesla, one_rep>{};
-inline constexpr auto YT = magnetic_induction<yottatesla, one_rep>{};
-inline constexpr auto G = magnetic_induction<gauss, one_rep>{};
+inline constexpr auto T = reference<dim_magnetic_induction, tesla>{};
+inline constexpr auto yT = reference<dim_magnetic_induction, yoctotesla>{};
+inline constexpr auto zT = reference<dim_magnetic_induction, zeptotesla>{};
+inline constexpr auto aT = reference<dim_magnetic_induction, attotesla>{};
+inline constexpr auto fT = reference<dim_magnetic_induction, femtotesla>{};
+inline constexpr auto pT = reference<dim_magnetic_induction, picotesla>{};
+inline constexpr auto nT = reference<dim_magnetic_induction, nanotesla>{};
+inline constexpr auto uT = reference<dim_magnetic_induction, microtesla>{};
+inline constexpr auto mT = reference<dim_magnetic_induction, millitesla>{};
+inline constexpr auto kT = reference<dim_magnetic_induction, kilotesla>{};
+inline constexpr auto MT = reference<dim_magnetic_induction, megatesla>{};
+inline constexpr auto GT = reference<dim_magnetic_induction, gigatesla>{};
+inline constexpr auto TT = reference<dim_magnetic_induction, teratesla>{};
+inline constexpr auto PT = reference<dim_magnetic_induction, petatesla>{};
+inline constexpr auto ET = reference<dim_magnetic_induction, exatesla>{};
+inline constexpr auto ZT = reference<dim_magnetic_induction, zettatesla>{};
+inline constexpr auto YT = reference<dim_magnetic_induction, yottatesla>{};
+inline constexpr auto G = reference<dim_magnetic_induction, gauss>{};
 
 }  // namespace unit_constants
 

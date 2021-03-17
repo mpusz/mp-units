@@ -95,16 +95,16 @@ constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mil
 
 namespace unit_constants {
 
-inline constexpr auto thou = length<thousandth, one_rep>{};
+inline constexpr auto thou = reference<dim_length, thousandth>{};
 inline constexpr auto mil = thou;
 
-inline constexpr auto in = length<inch, one_rep>{};
-inline constexpr auto ft = length<foot, one_rep>{};
-inline constexpr auto yd = length<yard, one_rep>{};
-inline constexpr auto ftm = length<fathom, one_rep>{};
-inline constexpr auto kyd = length<kiloyard, one_rep>{};
-inline constexpr auto mile = length<fps::mile, one_rep>{};
-inline constexpr auto naut_mi = length<nautical_mile, one_rep>{};
+inline constexpr auto in = reference<dim_length, inch>{};
+inline constexpr auto ft = reference<dim_length, foot>{};
+inline constexpr auto yd = reference<dim_length, yard>{};
+inline constexpr auto ftm = reference<dim_length, fathom>{};
+inline constexpr auto kyd = reference<dim_length, kiloyard>{};
+inline constexpr auto mile = reference<dim_length, fps::mile>{};
+inline constexpr auto naut_mi = reference<dim_length, nautical_mile>{};
 
 }  // namespace unit_constants
 
