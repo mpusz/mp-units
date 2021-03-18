@@ -83,39 +83,40 @@ Thanks to them the same code can be as simple as::
     ``_q_`` prefix was consistently applied to all the UDLs.
 
 
-Unit Constants
-++++++++++++++
+Quantity References
++++++++++++++++++++
 
-Unit Constants provide an alternative way to simplify quantities creation.
-They are defined using a special `one_rep` representation type::
+Quantity References provide an alternative way to simplify quantities creation.
+They are defined using the `reference` class template::
 
-    namespace unit_constants {
+    namespace references {
 
-    inline constexpr auto km = length<kilometre, one_rep>{};
-    inline constexpr auto h = time<hour, one_rep>{};
+    inline constexpr auto km = reference<dim_length, kilometre>{};
+    inline constexpr auto h = reference<dim_time, hour>{};
 
     }
 
 With the above our code can look as follows::
 
-    using namespace units::isq::si::unit_constants;
+    using namespace units::isq::si::references;
     auto d = 123. * km;     // si::length<si::kilometre, double>
-    auto v = 70 * km / h;   // si::speed<si::kilometre_per_hour, int>
+    auto v = 70 * (km / h);   // si::speed<si::kilometre_per_hour, int>
 
 .. important::
 
     ``km * 3`` or ``s / 4`` syntax is not allowed.
+    Neither is ``70 * km / h``, but ``70 * (km / h)`` is.
 
-It is also allowed to easily define custom unit constants from existing ones::
+It is also allowed to easily define custom quantity references from existing ones::
 
     inline constexpr auto Nm = N * m;
     inline constexpr auto km_per_h = km / h;
     inline constexpr auto mph = mi / h;
 
-UDLs vs Unit Constants
-++++++++++++++++++++++
+UDLs vs Quantity References
++++++++++++++++++++++++++++
 
-UDLs are helpful but they also have some disadvantages compared to Unit Constants:
+UDLs are helpful but they also have some disadvantages compared to Quantity References:
 
 1. UDLs are only for compile-time known values and do not work for runtime variables
 
@@ -125,13 +126,13 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
        auto v1 = 120_q_km / 2_q_h;
        auto v2 = length<kilometre>(distance) / time<hour>(duration);
 
-   - Unit Constants::
+   - Quantity References::
 
-       using namespace units::isq::si::unit_constants;
+       using namespace units::isq::si::references;
        auto v1 = 120 * km / (2 * h);
-       auto v2 = distance * km / (duration * h);
+       auto v2 = distance * (1 * km) / (duration * (1 * h));
 
-   Constants treat both cases in a unified way. It is also worth to notice that we work
+   References treat both cases in a unified way. It is also worth to notice that we work
    mostly with runtime variables and compile-time known values mostly appear only in physical
    constants and unit tests.
 
@@ -143,10 +144,10 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
        using namespace units::isq::si::cgs::literals;
        auto d = 1_q_cm;   // FAILS TO COMPILE
 
-   - Unit Constants::
+   - Quantity References::
 
-       inline constexpr auto si_cm = units::isq::si::unit_constants::cm;
-       inline constexpr auto cgs_cm = units::isq::si::cgs::unit_constants::cm;
+       inline constexpr auto si_cm = units::isq::si::references::cm;
+       inline constexpr auto cgs_cm = units::isq::si::cgs::references::cm;
 
        auto d1 = 1. * si_cm;   // si::length<si::centimetre>
        auto d2 = 1. * cgs_cm;  // si::cgs::length<si::centimetre>
@@ -162,9 +163,9 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
 
      No possibility to obtain any other representation type.
 
-   - Unit Constants::
+   - Quantity References::
 
-       using namespace units::isq::si::unit_constants;
+       using namespace units::isq::si::references;
        auto d1 = 123. * km;   // si::length<si::kilometre, double>
        auto d2 = 123 * km;    // si::length<si::kilometre, int>
        auto d3 = 123.f * km;  // si::length<si::kilometre, float>
@@ -179,38 +180,17 @@ UDLs are helpful but they also have some disadvantages compared to Unit Constant
      - for each unit an integral and a floating-point UDL have to be defined
      - have to be provided for unnamed derived units (i.e. ``_q_km_per_h``)
     
-   - Unit Constants:
+   - Quantity References:
    
-     - one constant per unit
-     - unnamed derived units constructed from base constants (i.e. ``km / h``)
+     - one reference per unit
+     - unnamed derived units constructed from base references (i.e. ``km / h``)
 
 5. Typical UDL definition for quantities when compiled with a ``-Wsign-conversion``
    flag results in a compilation warning. This warning could be silenced with a
    ``static_cast<std::int64_t>(value)`` in every UDL, but in a such case other safety
    and security issues could be silently introduced.
-   Unit Constants, on the opposite, always use the exact representation type provided
+   Quantity References, on the opposite, always use the exact representation type provided
    by the user so there is no chance for a truncating conversion on a quantity construction.
-
-The only issue we are aware of with Unit Constants is a potential problem of specifying
-a quantity in denominator::
-
-    using namespace units::isq::si::unit_constants;
-    Speed auto v = 220 * km / 2 * h;  // FAILS TO COMPILE (not a quantity of a speed dimension)
-
-The above code can be fixed in one of the below ways:
-
-- braces around quantities in denominator::
-
-    Speed auto v = 220 * km / (2 * h);
-
-- inverting an operator for quantities in denominator::
-
-    Speed auto v = 220 * km / 2 / h;
-
-- creating a custom unit constant for a derived quantity::
-
-    inline constexpr auto km_per_h = km / h;
-    Speed auto v = 220 / 2 * km_per_h;
 
 
 Dimension-specific Concepts

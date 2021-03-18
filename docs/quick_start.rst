@@ -29,7 +29,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/YWch6d>`_
+    `Example #1 <https://godbolt.org/z/shcohY>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -55,7 +55,7 @@ of basic library features::
       using namespace units::isq::si::literals;
       using namespace units::isq::si::unit_constants;
 
-      constexpr Speed auto v1 = 110 * km / h;
+      constexpr Speed auto v1 = 110 * (km / h);
       constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
       constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
       constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
@@ -72,7 +72,7 @@ of basic library features::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #2 <https://godbolt.org/z/eca49d>`_
+    `Example #2 <https://godbolt.org/z/dY1dEd>`_
 
 .. seealso::
 

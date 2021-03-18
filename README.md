@@ -53,7 +53,7 @@ static_assert(10_q_km / 5_q_km == 2);
 static_assert(1000 / 1_q_s == 1_q_kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/YWch6d)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/shcohY)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -77,9 +77,9 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace units::isq::si::literals;
-  using namespace units::isq::si::unit_constants;
+  using namespace units::isq::si::references;
 
-  constexpr Speed auto v1 = 110 * km / h;
+  constexpr Speed auto v1 = 110 * (km / h);
   constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
   constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
   constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
@@ -95,4 +95,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/eca49d)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/dY1dEd)._
