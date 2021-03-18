@@ -36,10 +36,10 @@ namespace units {
 
 namespace detail {
 
-template<Reference R>  // TODO: Replace with `v * R{}` pending https://github.com/BobSteagall/wg21/issues/58.
+template<Reference auto R>  // TODO: Replace with `v * R{}` pending https://github.com/BobSteagall/wg21/issues/58.
 inline constexpr auto make_quantity = [](auto v) {
   using Rep = decltype(v);
-  return quantity<typename R::dimension, typename R::unit, Rep>(std::move(v));
+  return quantity<typename decltype(R)::dimension, typename decltype(R)::unit, Rep>(std::move(v));
 };
 
 }  // namespace detail
@@ -108,11 +108,11 @@ template<Dimension D, UnitOf<D> U, QuantityValue Rep = double>
 class quantity {
   Rep value_;
 public:
-  // member types
-  using reference = units::reference<D, U>;
+  // member types and values
   using dimension = D;
   using unit = U;
   using rep = Rep;
+  static constexpr units::reference<D, U> reference{};
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
@@ -418,8 +418,7 @@ template<Quantity Q1, Quantity Q2>
   requires quantity_value_for_<std::multiplies<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
-  return detail::make_quantity<reference_multiply<typename Q1::reference, typename Q2::reference>>(
-    lhs.count() * rhs.count());
+  return detail::make_quantity<Q1::reference * Q2::reference>(lhs.count() * rhs.count());
 }
 
 template<typename QuantityOrQuantityValue, typename D, typename U>
@@ -437,8 +436,7 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] constexpr Quantity auto operator/(const Q1& lhs, const Q2& rhs)
 {
   gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q2::rep>::zero());
-  return detail::make_quantity<reference_divide<typename Q1::reference, typename Q2::reference>>(
-    lhs.count() / rhs.count());
+  return detail::make_quantity<Q1::reference / Q2::reference>(lhs.count() / rhs.count());
 }
 
 template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>
