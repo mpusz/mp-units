@@ -300,9 +300,8 @@ template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
   return detail::make_quantity_kind<QK1>(lhs.common() - rhs.common());
 }
 
-template<QuantityKind QK, typename QuantityOrReference>
-  requires Quantity<QuantityOrReference> || Reference<QuantityOrReference>
-[[nodiscard]] constexpr QuantityKind auto operator*(const QK& lhs, const QuantityOrReference& rhs)
+template<QuantityKind QK, Quantity Q>
+[[nodiscard]] constexpr QuantityKind auto operator*(const QK& lhs, const Q& rhs)
   requires requires { lhs.common() * rhs; }
 {
   return detail::downcasted_kind<QK>(lhs.common() * rhs);
@@ -322,13 +321,11 @@ template<QuantityKind QK1, QuantityKindRelatedTo<QK1> QK2>
   return detail::downcasted_kind<QK1>(lhs.common() * rhs.common());
 }
 
-template<QuantityKind QK, typename QuantityOrReference>
-  requires Quantity<QuantityOrReference> || Reference<QuantityOrReference>
-[[nodiscard]] constexpr QuantityKind auto operator/(const QK& lhs, const QuantityOrReference& rhs)
+template<QuantityKind QK, Quantity Q>
+[[nodiscard]] constexpr QuantityKind auto operator/(const QK& lhs, const Q& rhs)
   requires requires { lhs.common() / rhs; }
 {
-  if constexpr (Quantity<QuantityOrReference>)
-    gsl_ExpectsAudit(rhs.count() != quantity_values<typename QuantityOrReference::rep>::zero());
+  gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q::rep>::zero());
   return detail::downcasted_kind<QK>(lhs.common() / rhs);
 }
 
