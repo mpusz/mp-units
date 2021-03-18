@@ -72,7 +72,7 @@ using reference_divide = detail::reference_divide_impl<
  * using namespace units::isq::si::references;
  *
  * auto d = 123 * m;
- * auto v = 70 * km / h;
+ * auto v = 70 * (km / h);
  * @endcode
  *
  * Also, it is allowed to define custom quantity references from existing ones:
@@ -89,15 +89,19 @@ struct reference {
   using dimension = D;
   using unit = U;
 
-#if !UNITS_COMP_MSVC
-  template<typename QuantityOrQuantityValue, typename D2, typename U2>
-    requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
-  friend constexpr Quantity auto operator*(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
+  // Hidden Friends
+  // Below friend functions are to be found via argument-dependent lookup only
 
-  template<typename QuantityOrQuantityValue, typename D2, typename U2>
-    requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
-  friend constexpr Quantity auto operator/(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
+#if !UNITS_COMP_MSVC
+  template<QuantityValue Rep, typename D2, typename U2>
+  friend constexpr Quantity auto operator*(const Rep& lhs, reference<D2, U2>);
+
+  template<QuantityValue Rep, typename D2, typename U2>
+  friend constexpr Quantity auto operator/(const Rep& lhs, reference<D2, U2>);
 #endif
+
+  friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
+  friend void /*Use `q / (1 * r)` rather than `q / r`.*/ operator/(Quantity auto, reference) = delete;
 };
 
 template<Reference R1, Reference R2>

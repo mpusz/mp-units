@@ -55,41 +55,42 @@ concept invalid_operations = requires {
   requires !requires { s - s; };
   requires !requires { s + 1_q_s; };
   requires !requires { s - 1_q_s; };
+  requires !requires { s * 1_q_s; };
+  requires !requires { s / 1_q_s; };
   requires !requires { 1_q_s + s; };
   requires !requires { 1_q_s - s; };
+  requires !requires { 1_q_s * s; };
+  requires !requires { 1_q_s / s; };
 };
 static_assert(invalid_operations<s>);
 
-static_assert(2_q_m / s == 2_q_m_per_s);
-static_assert(2 * m / s == 2_q_m_per_s);
-static_assert(2 / s * m == 2_q_m_per_s);
+static_assert(2_q_m / (1 * s) == 2_q_m_per_s);
 static_assert(2 * (m / s) == 2_q_m_per_s);
+static_assert(2 / (s / m) == 2_q_m_per_s);
 
-#if !(UNITS_COMP_GCC == 10 && UNITS_COMP_GCC_MINOR == 1)
+#if !(UNITS_COMP_GCC == 10 && UNITS_COMP_GCC_MINOR == 1)  // GCC 10.1.0 ICEs
 constexpr auto m_per_s = m / s;
 static_assert(2 * ::m_per_s == 2_q_m_per_s);
 #endif
 
 static_assert(120 * km / (2 * h) == 60_q_km_per_h);
-static_assert(120 * km / 2 / h == 60_q_km_per_h);
 static_assert([] {
   const auto length{120};
   const auto duration{2};
   return length * km / (duration * h);
 }() == 60_q_km_per_h);
 static_assert(is_same_v<decltype(std::int64_t{120} * km / (2 * h)), decltype(60_q_km_per_h)>);
-static_assert(is_same_v<decltype(std::int64_t{120} * km / 2 / h), decltype(60_q_km_per_h)>);
-static_assert(is_same_v<decltype(120.L * km / 2 / h), decltype(60._q_km_per_h)>);
+static_assert(is_same_v<decltype(120.L * km / (2 * h)), decltype(60._q_km_per_h)>);
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
 constexpr bool test_hiding() {
-  Speed auto v0 = 10 * m / s;
-  signed s = 2;  // hides  ^
+  Speed auto v0 = 10 * (m / s);
+  signed s = 2;  // hides   ^
   Length auto v = 20 * m / s;
-  /*      */ v0 = 10 * m / ::s;
+  /*      */ v0 = 10 * (m / ::s);
   return !is_same_v<decltype(v0), decltype(v)>;
 }
 

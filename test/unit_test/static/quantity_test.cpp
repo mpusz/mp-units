@@ -324,9 +324,9 @@ concept invalid_compound_assignments = requires() {
   requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, double>(2); };
 
   // TODO: accept non-truncating argument
-  requires !requires(length<Kilometre, int> l) { l *= 1 * km / m; };
-  requires !requires(length<Kilometre, int> l) { l /= 1 * km / m; };
-  requires !requires(length<Kilometre, int> l) { l %= 1 * km / m; };
+  requires !requires(length<Kilometre, int> l) { l *= 1 * (km / m); };
+  requires !requires(length<Kilometre, int> l) { l /= 1 * (km / m); };
+  requires !requires(length<Kilometre, int> l) { l %= 1 * (km / m); };
 
   // only quantities can be added or subtracted
   requires !requires(length<Metre, int> l) { l += 2; };
@@ -559,8 +559,8 @@ static_assert((10_q_s * 2_q_kHz).count() == 20);
 
 // unit constants
 
-static_assert(2_q_m * m == (2_q_m2));
-static_assert(2_q_m2 / m == (2_q_m));
+static_assert(2_q_m * (1 * m) == (2_q_m2));
+static_assert(2_q_m2 / (1 * m) == (2_q_m));
 
 
 // dimensionless
@@ -601,8 +601,8 @@ static_assert((quantity{std::uint8_t(0)} - quantity{std::uint8_t(1)}).count() ==
 static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} % quantity{std::uint8_t(0)}).count()),
                         decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
-static_assert(quantity{2} * m == 2_q_m);
-static_assert(quantity{2} / m == 2 / 1_q_m);
+static_assert(quantity{2} * (1 * m) == 2_q_m);
+static_assert(quantity{2} / (1 * m) == 2 / 1_q_m);
 
 
 ///////////////////////
