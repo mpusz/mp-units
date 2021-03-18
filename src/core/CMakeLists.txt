@@ -46,7 +46,7 @@ target_include_directories(mp-units-core INTERFACE
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     if(UNITS_LIBCXX)
-        find_package(range-v3)
+        find_package(range-v3 CONFIG REQUIRED)
         target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
