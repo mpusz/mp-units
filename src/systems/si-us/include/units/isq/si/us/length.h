@@ -53,12 +53,12 @@ constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto ft = reference<si::dim_length, us::foot>{};
 inline constexpr auto fathom = reference<si::dim_length, us::fathom>{};
 inline constexpr auto mi = reference<si::dim_length, us::mile>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::us

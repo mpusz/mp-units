@@ -145,7 +145,7 @@ constexpr auto operator"" _q_YPa(long double l) { return pressure<yottapascal, l
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto Pa = reference<dim_pressure, pascal>{};
 inline constexpr auto yPa = reference<dim_pressure, yoctopascal>{};
@@ -169,6 +169,6 @@ inline constexpr auto EPa = reference<dim_pressure, exapascal>{};
 inline constexpr auto ZPa = reference<dim_pressure, zettapascal>{};
 inline constexpr auto YPa = reference<dim_pressure, yottapascal>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

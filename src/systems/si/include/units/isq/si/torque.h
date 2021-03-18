@@ -45,10 +45,10 @@ constexpr auto operator"" _q_Nm_per_rad(long double l) { return torque<newton_me
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto Nm_per_rad = reference<dim_torque, newton_metre_per_radian>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

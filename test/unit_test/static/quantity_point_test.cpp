@@ -34,7 +34,7 @@ namespace {
 
 using namespace units;
 using namespace isq::si;
-using namespace unit_constants;
+using namespace references;
 using namespace std::chrono_literals;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 

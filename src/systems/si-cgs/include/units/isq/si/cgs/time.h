@@ -38,10 +38,10 @@ using si::literals::operator"" _q_s;
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
-using si::unit_constants::s;
+using si::references::s;
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::cgs

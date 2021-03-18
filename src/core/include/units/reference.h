@@ -58,7 +58,7 @@ using reference_divide = detail::reference_divide_impl<
  * This type is intended to be used in the unit constants definition:
  *
  * @code{.cpp}
- * namespace unit_constants {
+ * namespace references {
  * 
  * inline constexpr auto m = reference<dim_length, metre>{};
  * inline constexpr auto km = reference<dim_length, kilometre>{};
@@ -69,7 +69,7 @@ using reference_divide = detail::reference_divide_impl<
  * Unit constants simplify quantity creation:
  * 
  * @code{.cpp}
- * using namespace units::isq::si::unit_constants;
+ * using namespace units::isq::si::references;
  *
  * auto d = 123 * m;
  * auto v = 70 * km / h;

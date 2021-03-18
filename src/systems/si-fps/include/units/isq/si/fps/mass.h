@@ -91,7 +91,7 @@ constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long do
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto gr = reference<dim_mass, grain>{};
 inline constexpr auto dr = reference<dim_mass, dram>{};
@@ -103,6 +103,6 @@ inline constexpr auto cwt = reference<dim_mass, hundredweight>{};
 inline constexpr auto ston = reference<dim_mass, short_ton>{};
 inline constexpr auto lton = reference<dim_mass, long_ton>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::fps

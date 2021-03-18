@@ -149,7 +149,7 @@ constexpr auto operator"" _q_ha(long double l) { return area<hectare, long doubl
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto m2 = reference<dim_area, square_metre>{};
 inline constexpr auto ym2 = reference<dim_area, square_yoctometre>{};
@@ -174,6 +174,6 @@ inline constexpr auto Zm2 = reference<dim_area, square_zettametre>{};
 inline constexpr auto Ym2 = reference<dim_area, square_yottametre>{};
 inline constexpr auto ha = reference<dim_area, hectare>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

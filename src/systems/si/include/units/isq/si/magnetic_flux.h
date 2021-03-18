@@ -125,7 +125,7 @@ constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottawebe
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto Wb = reference<dim_magnetic_flux, weber>{};
 inline constexpr auto yWb = reference<dim_magnetic_flux, yoctoweber>{};
@@ -145,6 +145,6 @@ inline constexpr auto EWb = reference<dim_magnetic_flux, exaweber>{};
 inline constexpr auto ZWb = reference<dim_magnetic_flux, zettaweber>{};
 inline constexpr auto YWb = reference<dim_magnetic_flux, yottaweber>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

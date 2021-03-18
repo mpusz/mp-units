@@ -145,7 +145,7 @@ constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, 
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto F = reference<dim_capacitance, farad>{};
 inline constexpr auto yF = reference<dim_capacitance, yoctofarad>{};
@@ -169,6 +169,6 @@ inline constexpr auto EF = reference<dim_capacitance, exafarad>{};
 inline constexpr auto ZF = reference<dim_capacitance, zettafarad>{};
 inline constexpr auto YF = reference<dim_capacitance, yottafarad>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

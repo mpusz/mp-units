@@ -72,7 +72,7 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto b = reference<dim_information, bit>{};
 inline constexpr auto Kib = reference<dim_information, kibibit>{};
@@ -88,6 +88,6 @@ inline constexpr auto GiB = reference<dim_information, gibibyte>{};
 inline constexpr auto TiB = reference<dim_information, tebibyte>{};
 inline constexpr auto PiB = reference<dim_information, pebibyte>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::data

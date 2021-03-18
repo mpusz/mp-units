@@ -39,7 +39,7 @@
 using namespace units;
 using namespace units::isq;
 using namespace units::isq::si;
-using namespace units::isq::si::unit_constants;
+using namespace units::isq::si::references;
 
 static_assert(2 * m == 2_q_m);
 static_assert(2 * s == 2_q_s);

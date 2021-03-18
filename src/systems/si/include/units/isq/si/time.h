@@ -99,7 +99,7 @@ constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l)
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto ys = reference<dim_time, yoctosecond>{};
 inline constexpr auto zs = reference<dim_time, zeptosecond>{};
@@ -114,6 +114,6 @@ inline constexpr auto min = reference<dim_time, minute>{};
 inline constexpr auto h = reference<dim_time, hour>{};
 inline constexpr auto d = reference<dim_time, day>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

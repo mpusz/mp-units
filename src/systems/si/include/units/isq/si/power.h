@@ -124,7 +124,7 @@ constexpr auto operator"" _q_YW(long double l) { return power<yottawatt, long do
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto W = reference<dim_power, watt>{};
 inline constexpr auto yW = reference<dim_power, yoctowatt>{};
@@ -144,6 +144,6 @@ inline constexpr auto EW = reference<dim_power, exawatt>{};
 inline constexpr auto ZW = reference<dim_power, zettawatt>{};
 inline constexpr auto YW = reference<dim_power, yottawatt>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

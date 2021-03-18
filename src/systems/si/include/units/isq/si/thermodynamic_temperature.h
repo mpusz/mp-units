@@ -43,10 +43,10 @@ constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto K = reference<dim_thermodynamic_temperature, kelvin>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

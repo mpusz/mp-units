@@ -42,10 +42,10 @@ constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto g = reference<dim_mass, gram>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::cgs

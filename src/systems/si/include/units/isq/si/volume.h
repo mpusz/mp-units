@@ -249,7 +249,7 @@ constexpr auto operator"" _q_Yl(long double l) { return volume<yottalitre, long 
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto m3 = reference<dim_volume, cubic_metre>{};
 inline constexpr auto ym3 = reference<dim_volume, cubic_yoctometre>{};
@@ -294,6 +294,6 @@ inline constexpr auto El = reference<dim_volume, exalitre>{};
 inline constexpr auto Zl = reference<dim_volume, zettalitre>{};
 inline constexpr auto Yl = reference<dim_volume, yottalitre>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

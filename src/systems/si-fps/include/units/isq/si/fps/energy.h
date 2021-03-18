@@ -55,11 +55,11 @@ constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_fo
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto ft_pdl = reference<dim_energy, foot_poundal>{};
 inline constexpr auto ft_lbf = reference<dim_energy, foot_pound_force>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::fps

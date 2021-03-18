@@ -36,7 +36,7 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 int main()
 {
   using namespace units::isq::si::literals;
-  using namespace units::isq::si::unit_constants;
+  using namespace units::isq::si::references;
 
   constexpr Speed auto v1 = 110 * km / h;
   constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
