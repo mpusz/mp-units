@@ -27,6 +27,31 @@
 
 namespace units {
 
+template<Dimension D, UnitOf<D> U>
+struct reference;
+
+namespace detail {
+
+template<typename D, typename D1, typename U1, typename D2, typename U2>
+using reference_multiply_impl = reference<D, downcast_unit<D,
+  (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
+
+template<typename D, typename D1, typename U1, typename D2, typename U2>
+using reference_divide_impl = reference<D, downcast_unit<D,
+  (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
+
+}  // namespace detail
+
+template<Reference R1, Reference R2>
+using reference_multiply = detail::reference_multiply_impl<
+  dimension_multiply<typename R1::dimension, typename R2::dimension>,
+  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+
+template<Reference R1, Reference R2>
+using reference_divide = detail::reference_divide_impl<
+  dimension_divide<typename R1::dimension, typename R2::dimension>,
+  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+
 /**
  * @brief The type for unit constants
  *
@@ -63,36 +88,18 @@ template<Dimension D, UnitOf<D> U>
 struct reference {
   using dimension = D;
   using unit = U;
+
+  template<typename QuantityOrQuantityValue, typename D2, typename U2>
+    requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
+  friend constexpr Quantity auto operator*(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
+
+  template<typename QuantityOrQuantityValue, typename D2, typename U2>
+    requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
+  friend constexpr Quantity auto operator/(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
 };
-
-namespace detail {
-
-template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_multiply_impl = reference<D, downcast_unit<D,
-  (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
-
-}  // namespace detail
-
-template<Reference R1, Reference R2>
-using reference_multiply = detail::reference_multiply_impl<
-  dimension_multiply<typename R1::dimension, typename R2::dimension>,
-  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
 
 template<Reference R1, Reference R2>
 [[nodiscard]] constexpr reference_multiply<R1, R2> operator*(R1, R2) { return {}; }
-
-namespace detail {
-
-template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_divide_impl = reference<D, downcast_unit<D,
-  (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
-
-}  // namespace detail
-
-template<Reference R1, Reference R2>
-using reference_divide = detail::reference_divide_impl<
-  dimension_divide<typename R1::dimension, typename R2::dimension>,
-  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
 
 template<Reference R1, Reference R2>
 [[nodiscard]] constexpr reference_divide<R1, R2> operator/(R1, R2) { return {}; }
