@@ -34,9 +34,9 @@ namespace units {
 namespace detail {
 
 template<Kind K>
-inline constexpr auto make_quantity_kind_fn = [](auto q) {
-  using Q = decltype(q);
-  return quantity_kind<K, typename Q::unit, typename Q::rep>(std::move(q));
+inline constexpr auto make_quantity_kind_fn = [](auto&& q) {
+  using Q = std::remove_reference_t<decltype(q)>;
+  return quantity_kind<K, typename Q::unit, typename Q::rep>(std::forward<decltype(q)>(q));
 };
 
 template<QuantityKind QK>
