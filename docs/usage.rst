@@ -198,7 +198,7 @@ defined by the library. To do so you should use *CMakeLists.txt* file from the *
 
     add_subdirectory(<path_to_units_folder>/src)
     # ...
-    target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
+    target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
 
 .. important::
 
@@ -244,8 +244,8 @@ library release the following steps may be performed:
 
   .. code-block:: cmake
 
-      target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
-      target_compile_features(<your_target> PUBLIC|PRIVATE|INTERFACE cxx_std_20)
+      target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
+      target_compile_features(<your_target> <PUBLIC|PRIVATE|INTERFACE> cxx_std_20)
 
   .. important::
 
