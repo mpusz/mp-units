@@ -36,7 +36,7 @@ namespace units {
 
 namespace detail {
 
-template<Reference R>  // Replace with `v * R{}` pending https://github.com/BobSteagall/wg21/issues/58.
+template<Reference R>  // TODO: Replace with `v * R{}` pending https://github.com/BobSteagall/wg21/issues/58.
 inline constexpr auto make_quantity = [](auto v) {
   using Rep = decltype(v);
   return quantity<typename R::dimension, typename R::unit, Rep>(std::move(v));
