@@ -104,8 +104,8 @@ With the above our code can look as follows::
 
 .. important::
 
-    ``km * 3`` or ``s / 4`` syntax is not allowed.
-    Neither is ``70 * km / h``, but ``70 * (km / h)`` is.
+    The following syntaxes are not allowed:
+    ``2 / s``, ``km * 3``, ``s / 4``, ``70 * km / h``.
 
 It is also allowed to easily define custom quantity references from existing ones::
 

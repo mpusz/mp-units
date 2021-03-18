@@ -45,6 +45,7 @@ static_assert(2 * m == 2_q_m);
 static_assert(2 * s == 2_q_s);
 template<auto& s>
 concept invalid_operations = requires {
+  requires !requires { 2 / s; };
   requires !requires { s / 2; };
   requires !requires { s * 2; };
   requires !requires { s + 2; };
@@ -66,7 +67,6 @@ static_assert(invalid_operations<s>);
 
 static_assert(2_q_m / (1 * s) == 2_q_m_per_s);
 static_assert(2 * (m / s) == 2_q_m_per_s);
-static_assert(2 / (s / m) == 2_q_m_per_s);
 
 #if !(UNITS_COMP_GCC == 10 && UNITS_COMP_GCC_MINOR == 1)  // GCC 10.1.0 ICEs
 constexpr auto m_per_s = m / s;
