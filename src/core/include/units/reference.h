@@ -89,6 +89,7 @@ struct reference {
   using dimension = D;
   using unit = U;
 
+#if !UNITS_COMP_MSVC
   template<typename QuantityOrQuantityValue, typename D2, typename U2>
     requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
   friend constexpr Quantity auto operator*(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
@@ -96,6 +97,7 @@ struct reference {
   template<typename QuantityOrQuantityValue, typename D2, typename U2>
     requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
   friend constexpr Quantity auto operator/(const QuantityOrQuantityValue& lhs, reference<D2, U2>);
+#endif
 };
 
 template<Reference R1, Reference R2>
