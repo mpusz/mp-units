@@ -86,6 +86,7 @@ using reference_divide = detail::reference_divide_impl<
  * @endcode
  * 
  * `km * 3` or `s / 4` syntax is not allowed for quantity creation.
+ * Neither is `70 * km / h`, but `70 * (km / h)` is.
  */
 template<Dimension D, UnitOf<D> U>
 struct reference {
