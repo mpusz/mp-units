@@ -578,28 +578,28 @@ static_assert(same(width<metre, double>(2. * m) / quantity_kind<downcast_kind<wi
                    width<metre, double>(2. / 3 * m)));
 
 static_assert(same(2 / quantity_kind<time_kind, second, int>(3 * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
 static_assert(same(2 / quantity_kind<time_kind, second, double>(3. * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 static_assert(same(2. / quantity_kind<time_kind, second, int>(3 * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
 static_assert(same(quantity(2) / quantity_kind<time_kind, second, int>(3 * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
 static_assert(same(quantity(2) / quantity_kind<time_kind, second, double>(3. * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 static_assert(same(quantity(2.) / quantity_kind<time_kind, second, int>(3 * s),
-                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+                   quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
 static_assert(
   same(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) / quantity_kind<time_kind, second, int>(3 * s),
-       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / s)));
+       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
 static_assert(
   same(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) / quantity_kind<time_kind, second, double>(3. * s),
-       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 static_assert(
   same(quantity_kind<downcast_kind<time_kind, dim_one>, one, double>(2.) / quantity_kind<time_kind, second, int>(3 * s),
-       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / s)));
+       quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
 static_assert(same(height<metre, int>(2 * m) / (3 * s), rate_of_climb<metre_per_second, int>(0 * (m / s))));
 static_assert(same(height<metre, int>(2 * m) / (3. * s), rate_of_climb<metre_per_second, double>(2 / 3. * (m / s))));

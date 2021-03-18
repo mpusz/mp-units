@@ -85,8 +85,8 @@ using reference_divide = detail::reference_divide_impl<
  * constexpr auto mph = mi / h;
  * @endcode
  * 
- * `km * 3` or `s / 4` syntax is not allowed for quantity creation.
- * Neither is `70 * km / h`, but `70 * (km / h)` is.
+ * The following syntaxes are not allowed:
+ * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
 template<Dimension D, UnitOf<D> U>
 struct reference {
@@ -108,14 +108,7 @@ struct reference {
     return quantity<D, U, Rep>(lhs);
   }
 
-  template<QuantityValue Rep>
-  [[nodiscard]] friend constexpr Quantity auto operator/(const Rep& lhs, reference)
-  {
-    return lhs / quantity<D, U, Rep>::one();
-  }
-
   friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
-  friend void /*Use `q / (1 * r)` rather than `q / r`.*/ operator/(Quantity auto, reference) = delete;
 };
 
 // type traits
