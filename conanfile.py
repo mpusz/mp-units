@@ -138,7 +138,5 @@ class UnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-        if compiler == "gcc":
-            self.cpp_info.cxxflags = ["-Wno-non-template-friend"]
-        elif compiler == "Visual Studio":
+        if compiler == "Visual Studio":
             self.cpp_info.cxxflags = ["/utf-8"]
