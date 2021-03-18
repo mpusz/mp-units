@@ -53,9 +53,9 @@ using reference_divide = detail::reference_divide_impl<
   typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
 
 /**
- * @brief The type for unit constants
+ * @brief The type for quantity references
  *
- * This type is intended to be used in the unit constants definition:
+ * This type is intended to be used in the quantity references definition:
  *
  * @code{.cpp}
  * namespace references {
@@ -66,7 +66,7 @@ using reference_divide = detail::reference_divide_impl<
  * }
  * @endcode
  * 
- * Unit constants simplify quantity creation:
+ * Quantity references simplify quantity creation:
  * 
  * @code{.cpp}
  * using namespace units::isq::si::references;
@@ -75,7 +75,7 @@ using reference_divide = detail::reference_divide_impl<
  * auto v = 70 * km / h;
  * @endcode
  *
- * Also, it is allowed to define custom unit constants from existing ones:
+ * Also, it is allowed to define custom quantity references from existing ones:
  * 
  * @code{.cpp}
  * constexpr auto Nm = N * m;
