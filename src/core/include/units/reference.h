@@ -27,6 +27,9 @@
 
 namespace units {
 
+template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+class quantity;
+
 template<Dimension D, UnitOf<D> U>
 struct reference;
 
@@ -92,23 +95,27 @@ struct reference {
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
 
-#if !UNITS_COMP_MSVC
-  template<QuantityValue Rep, typename D2, typename U2>
-  friend constexpr Quantity auto operator*(const Rep& lhs, reference<D2, U2>);
+  template<Reference R2>
+  [[nodiscard]] friend constexpr reference_multiply<reference, R2> operator*(reference, R2) { return {}; }
 
-  template<QuantityValue Rep, typename D2, typename U2>
-  friend constexpr Quantity auto operator/(const Rep& lhs, reference<D2, U2>);
-#endif
+  template<Reference R2>
+  [[nodiscard]] friend constexpr reference_divide<reference, R2> operator/(reference, R2) { return {}; }
+
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
+  {
+    return quantity<D, U, Rep>(lhs);
+  }
+
+  template<QuantityValue Rep>
+  [[nodiscard]] friend constexpr Quantity auto operator/(const Rep& lhs, reference)
+  {
+    return lhs / quantity<D, U, Rep>::one();
+  }
 
   friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
   friend void /*Use `q / (1 * r)` rather than `q / r`.*/ operator/(Quantity auto, reference) = delete;
 };
-
-template<Reference R1, Reference R2>
-[[nodiscard]] constexpr reference_multiply<R1, R2> operator*(R1, R2) { return {}; }
-
-template<Reference R1, Reference R2>
-[[nodiscard]] constexpr reference_divide<R1, R2> operator/(R1, R2) { return {}; }
 
 // type traits
 namespace detail {
