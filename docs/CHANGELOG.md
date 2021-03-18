@@ -8,7 +8,7 @@
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
   - feat: quantity (point) kind support added (thanks [@johelegp](https://github.com/johelegp))
-  - feat: unit constants support added (thanks [@johelegp](https://github.com/johelegp))
+  - feat: quantity references support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
   - perf: preconditions check do not influence the runtime performance of a Release build
