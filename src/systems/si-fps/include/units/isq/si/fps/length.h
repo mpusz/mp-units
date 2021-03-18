@@ -93,7 +93,7 @@ constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mil
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto thou = reference<dim_length, thousandth>{};
 inline constexpr auto mil = thou;
@@ -106,6 +106,6 @@ inline constexpr auto kyd = reference<dim_length, kiloyard>{};
 inline constexpr auto mile = reference<dim_length, fps::mile>{};
 inline constexpr auto naut_mi = reference<dim_length, nautical_mile>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::fps

@@ -124,7 +124,7 @@ constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto S = reference<dim_conductance, siemens>{};
 inline constexpr auto yS = reference<dim_conductance, yoctosiemens>{};
@@ -144,7 +144,7 @@ inline constexpr auto ES = reference<dim_conductance, exasiemens>{};
 inline constexpr auto ZS = reference<dim_conductance, zettasiemens>{};
 inline constexpr auto YS = reference<dim_conductance, yottasiemens>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si
 

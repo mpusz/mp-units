@@ -38,10 +38,10 @@ namespace {
 using namespace units;
 namespace si = isq::si;
 using namespace si;
-using namespace unit_constants;
+using namespace references;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 
-constexpr auto cgs_cm = cgs::unit_constants::cm;
+constexpr auto cgs_cm = cgs::references::cm;
 
 using namespace std::chrono_literals;
 

@@ -56,10 +56,10 @@ constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long 
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto hp = reference<dim_power, horse_power>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::fps

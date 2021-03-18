@@ -52,12 +52,12 @@ constexpr auto operator"" _q_angstrom(long double l) { return si::length<angstro
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto ly = reference<si::dim_length, light_year>{};
 inline constexpr auto pc = reference<si::dim_length, parsec>{};
 inline constexpr auto angstrom = reference<si::dim_length, iau::angstrom>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si::iau

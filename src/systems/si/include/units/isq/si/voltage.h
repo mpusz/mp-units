@@ -145,7 +145,7 @@ constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long 
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto V = reference<dim_voltage, volt>{};
 inline constexpr auto yV = reference<dim_voltage, yoctovolt>{};
@@ -169,6 +169,6 @@ inline constexpr auto EV = reference<dim_voltage, exavolt>{};
 inline constexpr auto ZV = reference<dim_voltage, zettavolt>{};
 inline constexpr auto YV = reference<dim_voltage, yottavolt>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si

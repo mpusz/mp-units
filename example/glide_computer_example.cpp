@@ -31,7 +31,7 @@ using namespace glide_computer;
 
 auto get_gliders()
 {
-  using namespace si::unit_constants;
+  using namespace si::references;
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {
@@ -45,7 +45,7 @@ UNITS_DIAGNOSTIC_POP
 
 auto get_weather_conditions()
 {
-  using namespace si::unit_constants;
+  using namespace si::references;
   static const std::array weather_conditions = {
       std::pair("Good", weather{height(1900 * m), rate_of_climb(4.3 * m / s)}),
       std::pair("Medium", weather{height(1550 * m), rate_of_climb(2.8 * m / s)}),
@@ -56,7 +56,7 @@ auto get_weather_conditions()
 auto get_waypoints()
 {
   using namespace geographic::literals;
-  using namespace units::isq::si::international::unit_constants;
+  using namespace units::isq::si::international::references;
   static const std::array waypoints = {
       waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude(16 * ft)},    // N54°14'51.8" E18°40'28.2"
       waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude(115 * ft)}   // N53°31'27.9" E18°50'58.1"
@@ -140,7 +140,7 @@ void print(const aircraft_tow& tow)
 
 void example()
 {
-  using namespace si::unit_constants;
+  using namespace si::references;
 
   const safety sfty = {height(300 * m)};
   const auto gliders = get_gliders();

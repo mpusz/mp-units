@@ -56,7 +56,7 @@ constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { gsl_ExpectsAudit(
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto b_per_s = reference<dim_bitrate, bit_per_second>{};
 inline constexpr auto Kib_per_s = reference<dim_bitrate, kibibit_per_second>{};
@@ -65,6 +65,6 @@ inline constexpr auto Gib_per_s = reference<dim_bitrate, gibibit_per_second>{};
 inline constexpr auto Tib_per_s = reference<dim_bitrate, tebibit_per_second>{};
 inline constexpr auto Pib_per_s = reference<dim_bitrate, pebibit_per_second>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::data

@@ -151,7 +151,7 @@ constexpr auto operator"" _q_U(long double l) { return catalytic_activity<enzyme
 
 }  // namespace literals
 
-namespace unit_constants {
+namespace references {
 
 inline constexpr auto kat = reference<dim_catalytic_activity, katal>{};
 inline constexpr auto ykat = reference<dim_catalytic_activity, yoctokatal>{};
@@ -176,7 +176,7 @@ inline constexpr auto Zkat = reference<dim_catalytic_activity, zettakatal>{};
 inline constexpr auto Ykat = reference<dim_catalytic_activity, yottakatal>{};
 inline constexpr auto U = reference<dim_catalytic_activity, enzyme_unit>{};
 
-}  // namespace unit_constants
+}  // namespace references
 
 }  // namespace units::isq::si
 
