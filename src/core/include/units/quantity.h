@@ -404,23 +404,11 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   return ret(ret(lhs).count() - ret(rhs).count());
 }
 
-template<QuantityValue Rep, typename D, typename U>
-[[nodiscard]] constexpr Quantity auto operator*(const Rep& lhs, reference<D, U>)
-{
-  return quantity<D, U, Rep>(lhs);
-}
-
 template<Quantity Q1, Quantity Q2>
   requires quantity_value_for_<std::multiplies<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
   return detail::make_quantity<Q1::reference * Q2::reference>(lhs.count() * rhs.count());
-}
-
-template<QuantityValue Rep, typename D, typename U>
-[[nodiscard]] constexpr Quantity auto operator/(const Rep& lhs, reference<D, U>)
-{
-  return lhs / quantity<D, U, Rep>::one();
 }
 
 template<Quantity Q1, Quantity Q2>
