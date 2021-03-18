@@ -52,12 +52,12 @@ add_library(unit_tests_static
     kind_test.cpp
     math_test.cpp
     ratio_test.cpp
+    references.cpp
     si_test.cpp
     si_cgs_test.cpp
     si_fps_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
-    unit_constants.cpp
     unit_test.cpp
     us_test.cpp
 )
