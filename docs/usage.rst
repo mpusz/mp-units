@@ -230,14 +230,15 @@ library release the following steps may be performed:
       mp-units/0.6.0
 
       [generators]
-      cmake_find_package_multi
+      CMakeToolchain
+      CMakeDeps
 
 2. Import **mp-units** and its dependencies definitions to your project's build procedure
    with ``find_package``:
 
   .. code-block:: cmake
 
-      find_package(mp-units)
+      find_package(mp-units CONFIG REQUIRED)
 
 3. Link your CMake targets with **mp-units**:
 
@@ -251,7 +252,7 @@ library release the following steps may be performed:
     Unfortunately, packages distributed via Conan-Center cannot force the minimum version
     of the C++ language used for your build process. This is why it is important to specify
     it in `Conan profile file <Conan Quick Intro>`_ and with ``target_compile_features`` command
-    for each CMake target in your project.
+    for each CMake target directly linking with `mp-units::mp-units` in your project.
 
 4. Download, build, and install Conan dependencies before running CMake configuration step:
 
@@ -259,7 +260,7 @@ library release the following steps may be performed:
 
       mkdir build && cd build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-      cmake .. -DCMAKE_BUILD_TYPE=Release
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       cmake --build .
 
 
