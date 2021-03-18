@@ -404,14 +404,10 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   return ret(ret(lhs).count() - ret(rhs).count());
 }
 
-template<typename QuantityOrQuantityValue, typename D, typename U>
-  requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
-[[nodiscard]] constexpr Quantity auto operator*(const QuantityOrQuantityValue& lhs, reference<D, U>)
+template<QuantityValue Rep, typename D, typename U>
+[[nodiscard]] constexpr Quantity auto operator*(const Rep& lhs, reference<D, U>)
 {
-  if constexpr (Quantity<QuantityOrQuantityValue>)
-    return lhs * quantity<D, U, typename QuantityOrQuantityValue::rep>::one();
-  else
-    return quantity<D, U, QuantityOrQuantityValue>(lhs);
+  return quantity<D, U, Rep>(lhs);
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -421,14 +417,10 @@ template<Quantity Q1, Quantity Q2>
   return detail::make_quantity<Q1::reference * Q2::reference>(lhs.count() * rhs.count());
 }
 
-template<typename QuantityOrQuantityValue, typename D, typename U>
-  requires Quantity<QuantityOrQuantityValue> || QuantityValue<QuantityOrQuantityValue>
-[[nodiscard]] constexpr Quantity auto operator/(const QuantityOrQuantityValue& lhs, reference<D, U>)
+template<QuantityValue Rep, typename D, typename U>
+[[nodiscard]] constexpr Quantity auto operator/(const Rep& lhs, reference<D, U>)
 {
-  if constexpr (Quantity<QuantityOrQuantityValue>)
-    return lhs / quantity<D, U, typename QuantityOrQuantityValue::rep>::one();
-  else
-    return lhs / quantity<D, U, QuantityOrQuantityValue>::one();
+  return lhs / quantity<D, U, Rep>::one();
 }
 
 template<Quantity Q1, Quantity Q2>

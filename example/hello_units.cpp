@@ -38,7 +38,7 @@ int main()
   using namespace units::isq::si::literals;
   using namespace units::isq::si::references;
 
-  constexpr Speed auto v1 = 110 * km / h;
+  constexpr Speed auto v1 = 110 * (km / h);
   constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
   constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
 #if UNITS_DOWNCAST_MODE == 0

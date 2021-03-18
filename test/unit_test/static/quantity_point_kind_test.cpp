@@ -283,7 +283,7 @@ static_assert(construct_from_only<abscissa<metre, double>>(quantity_point(1.0 * 
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1 * mm)));
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1.0 * m)));
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1.0 * km)));
-static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * m * m)));
+static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * (m * m))));
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * s)));
 
 // clang-format off
@@ -508,7 +508,7 @@ concept invalid_equality = requires(quantity_point_kind<Abscissa, metre, int> x)
   requires !requires { x == width<kilometre, double>(1.0 * km); };
   requires !requires { x != height<metre, int>(1 * m); };
   requires !requires { x == height<kilometre, double>(1.0 * km); };
-  requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * km / h); };
+  requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
   requires !requires { x != quantity_point(1 * m); };
   requires !requires { x == quantity_point(1.0 * mm); };
   requires !requires { x != quantity_point(quantity(1)); };
@@ -543,7 +543,7 @@ concept invalid_relational = requires(quantity_point_kind<Abscissa, metre, int> 
   requires !requires { x > width<kilometre, double>(1.0 * km); };
   requires !requires { x <=> height<metre, int>(1 * m); };
   requires !requires { x < height<kilometre, double>(1.0 * km); };
-  requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * km / h); };
+  requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
   requires !requires { x >= quantity_point(1 * m); };
   requires !requires { x > quantity_point(1.0 * mm); };
   requires !requires { x <=> quantity_point(quantity(1)); };

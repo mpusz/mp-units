@@ -35,10 +35,10 @@ auto get_gliders()
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {
-      glider{"SZD-30 Pirat", {velocity(83 * km / h), rate_of_climb(-0.7389 * m / s)}},
-      glider{"SZD-51 Junior", {velocity(80 * km / h), rate_of_climb(-0.6349 * m / s)}},
-      glider{"SZD-48 Jantar Std 3", {velocity(110 * km / h), rate_of_climb(-0.77355 * m / s)}},
-      glider{"SZD-56 Diana", {velocity(110 * km / h), rate_of_climb(-0.63657 * m / s)}}};
+      glider{"SZD-30 Pirat", {velocity(83 * (km / h)), rate_of_climb(-0.7389 * (m / s))}},
+      glider{"SZD-51 Junior", {velocity(80 * (km / h)), rate_of_climb(-0.6349 * (m / s))}},
+      glider{"SZD-48 Jantar Std 3", {velocity(110 * (km / h)), rate_of_climb(-0.77355 * (m / s))}},
+      glider{"SZD-56 Diana", {velocity(110 * (km / h)), rate_of_climb(-0.63657 * (m / s))}}};
 UNITS_DIAGNOSTIC_POP
   return gliders;
 }
@@ -47,9 +47,9 @@ auto get_weather_conditions()
 {
   using namespace si::references;
   static const std::array weather_conditions = {
-      std::pair("Good", weather{height(1900 * m), rate_of_climb(4.3 * m / s)}),
-      std::pair("Medium", weather{height(1550 * m), rate_of_climb(2.8 * m / s)}),
-      std::pair("Bad", weather{height(850 * m), rate_of_climb(1.8 * m / s)})};
+      std::pair("Good", weather{height(1900 * m), rate_of_climb(4.3 * (m / s))}),
+      std::pair("Medium", weather{height(1550 * m), rate_of_climb(2.8 * (m / s))}),
+      std::pair("Bad", weather{height(850 * m), rate_of_climb(1.8 * (m / s))})};
   return weather_conditions;
 }
 
@@ -147,7 +147,7 @@ void example()
   const auto waypoints = get_waypoints();
   const auto weather_conditions = get_weather_conditions();
   const task t = {waypoints[0], waypoints[1], waypoints[0]};
-  const aircraft_tow tow = {height(400 * m), rate_of_climb(1.6 * m / s)};
+  const aircraft_tow tow = {height(400 * m), rate_of_climb(1.6 * (m / s))};
   // TODO use C++20 date library when available
   // set `start_time` to 11:00 am today
   const timestamp start_time(std::chrono::system_clock::now());
