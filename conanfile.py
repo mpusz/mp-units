@@ -103,7 +103,8 @@ class UnitsConan(ConanFile):
     #         del self.options.build_docs
 
     def requirements(self):
-        if self.settings.compiler == "clang" and self.settings.compiler.libcxx == "libc++":
+        compiler = self.settings.compiler
+        if compiler == "clang" and compiler.libcxx == "libc++":
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
@@ -138,10 +139,15 @@ class UnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-        if compiler == "Visual Studio":
-            self.cpp_info.cxxflags = ["/utf-8"]
 
+        # core
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        if compiler == "Visual Studio":
+            self.cpp_info.components["core"].cxxflags = ["/utf-8"]
+        elif compiler == "clang" and compiler.libcxx == "libc++":
+            self.cpp_info.components["core"].requires = ["range-v3/range-v3"]
+
+        # rest
         self.cpp_info.components["core-io"].requires = ["core"]
         self.cpp_info.components["core-fmt"].requires = ["core", "fmt::fmt"]
         self.cpp_info.components["data"].requires = ["core"]
