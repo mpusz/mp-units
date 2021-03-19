@@ -20,9 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/data/data.h>
-#include <units/quantity_io.h>
 #include <catch2/catch.hpp>
+#include <units/data/data.h>
+#include <units/format.h>
+#include <units/quantity_io.h>
 #include <sstream>
 
 using namespace units::data;
@@ -60,5 +61,17 @@ TEST_CASE("operator<< on a data quantity", "[text][ostream]")
       stream << 32_q_kb;
       REQUIRE(stream.str() == "32 kb");
     }
+  }
+}
+
+TEST_CASE("fmt::format on data unit symbols", "[text][fmt]")
+{
+  SECTION("symbolrate") 
+  {
+    CHECK(fmt::format("{}", 1_q_Bd) == "1 Bd");
+    CHECK(fmt::format("{}", 1_q_kBd) == "1 kBd");
+    CHECK(fmt::format("{}", 1_q_MBd) == "1 MBd");
+    CHECK(fmt::format("{}", 1_q_GBd) == "1 GBd");
+    CHECK(fmt::format("{}", 1_q_TBd) == "1 TBd");
   }
 }
