@@ -81,12 +81,12 @@ jobs:
           mkdir build && cd build
           conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
       - name: Configure CMake
+        working-directory: build
         run: |
-          cd build
           cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Generate documentation
+        working-directory: build
         run: |
-          cd build
           cmake --build . --target documentation --config Release
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'

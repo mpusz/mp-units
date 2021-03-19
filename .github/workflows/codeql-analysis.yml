@@ -88,6 +88,5 @@ jobs:
         mkdir _lgtm_build_dir && cd _lgtm_build_dir
         conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -o mp-units:build_docs=False -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
         conan build ..
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
