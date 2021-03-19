@@ -110,8 +110,18 @@ jobs:
         run: |
           sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
+        # TODO Find a proper syntax to make the below work
+        # if: !matrix.config.docker_image
+        shell: bash
         run: |
-          sudo apt install -y ninja-build
+          if [ $RUNNER_OS == 'Linux' ]; then
+            sudo apt install -y ninja-build
+          elif [ $RUNNER_OS == 'Windows' ]; then
+            choco install ninja
+          else
+            echo "'$RUNNER_OS' not supported"
+            exit 1
+          fi
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
