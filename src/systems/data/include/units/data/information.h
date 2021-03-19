@@ -24,6 +24,7 @@
 
 #include <units/reference.h>
 #include <units/base_dimension.h>
+#include <units/isq/si/prefixes.h>
 #include <units/data/prefixes.h>
 #include <units/unit.h>
 #include <units/quantity.h>
@@ -36,6 +37,13 @@ struct mebibit : prefixed_unit<mebibit, mebi, bit> {};
 struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
 struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
 struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
+
+struct si_bit : alias_unit<bit, "b", isq::si::prefix> {};
+struct kilobit : prefixed_unit<kilobit, isq::si::kilo, si_bit> {};
+struct megabit : prefixed_unit<megabit, isq::si::mega, si_bit> {};
+struct gigabit : prefixed_unit<gigabit, isq::si::giga, si_bit> {};
+struct terabit : prefixed_unit<terabit, isq::si::tera, si_bit> {};
+struct petabit : prefixed_unit<petabit, isq::si::peta, si_bit> {};
 
 struct byte : named_scaled_unit<byte, "B", prefix, ratio(8), bit> {};
 struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
@@ -62,6 +70,13 @@ constexpr auto operator"" _q_Gib(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_Tib(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<tebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_Pib(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<pebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
 
+// bits (SI)
+constexpr auto operator"" _q_kb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<kilobit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<megabit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<gigabit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<terabit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<petabit, std::int64_t>(static_cast<std::int64_t>(l)); }
+
 // bytes
 constexpr auto operator"" _q_B(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<byte, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_KiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return information<kibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
@@ -75,11 +90,18 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 namespace references {
 
 inline constexpr auto b = reference<dim_information, bit>{};
+
 inline constexpr auto Kib = reference<dim_information, kibibit>{};
 inline constexpr auto Mib = reference<dim_information, mebibit>{};
 inline constexpr auto Gib = reference<dim_information, gibibit>{};
 inline constexpr auto Tib = reference<dim_information, tebibit>{};
 inline constexpr auto Pib = reference<dim_information, pebibit>{};
+
+inline constexpr auto kb = reference<dim_information, kilobit>{};
+inline constexpr auto Mb = reference<dim_information, megabit>{};
+inline constexpr auto Gb = reference<dim_information, gigabit>{};
+inline constexpr auto Tb = reference<dim_information, terabit>{};
+inline constexpr auto Pb = reference<dim_information, petabit>{};
 
 inline constexpr auto B = reference<dim_information, byte>{};
 inline constexpr auto KiB = reference<dim_information, kibibyte>{};

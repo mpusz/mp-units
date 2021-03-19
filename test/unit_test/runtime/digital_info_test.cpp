@@ -56,5 +56,9 @@ TEST_CASE("operator<< on a data quantity", "[text][ostream]")
       stream << 8_q_Kib * 8_q_Kib / 2_q_b;
       REQUIRE(stream.str() == "32 Mib");
     }
+    SECTION("prefixed coherent unit (SI)") {
+      stream << 32_q_kb;
+      REQUIRE(stream.str() == "32 kb");
+    }
   }
 }
