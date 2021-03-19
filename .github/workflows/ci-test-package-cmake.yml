@@ -129,6 +129,7 @@ jobs:
         with:
           python-version: '3.8'
       - name: Install Conan
+        shell: bash
         run: |
           pip install -U conan
       - name: Configure Conan
@@ -149,27 +150,33 @@ jobs:
         run: |
           sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
+        shell: bash
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
           conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
+        shell: bash
+        working-directory: build/${{ matrix.build_type }}
         run: |
-          cd build/${{ matrix.build_type }}
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Install mp-units
+        shell: bash
+        working-directory: build/${{ matrix.build_type }}
         run: |
-          cd build/${{ matrix.build_type }}
           cmake --install . --prefix test_package
       - name: Configure test_package CMake
+        shell: bash
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../..
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
+        shell: bash
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cd test_package/build/${{ matrix.build_type }}
           cmake --build .
       - name: Run test_package
+        shell: bash
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cd test_package/build/${{ matrix.build_type }}
           ./test_package
