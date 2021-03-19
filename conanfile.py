@@ -145,7 +145,7 @@ class UnitsConan(ConanFile):
         if compiler == "Visual Studio":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
         elif compiler == "clang" and compiler.libcxx == "libc++":
-            self.cpp_info.components["core"].requires = ["range-v3/range-v3"]
+            self.cpp_info.components["core"].requires.append("range-v3/range-v3")
 
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]
