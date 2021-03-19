@@ -44,11 +44,11 @@ add_library(unit_tests_static
     concepts_test.cpp
     custom_rep_test_min_expl.cpp
     custom_unit_test.cpp
-    data_test.cpp
     dimension_op_test.cpp
     dimensions_concepts_test.cpp
     fixed_string_test.cpp
     fps_test.cpp
+    iec80000_test.cpp
     kind_test.cpp
     math_test.cpp
     ratio_test.cpp

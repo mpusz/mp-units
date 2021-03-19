@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "units/format.h"
+#include "units/isq/iec80000/iec80000.h"
 #include "units/isq/si/si.h"
 #include "units/isq/si/iau/iau.h"
 #include "units/isq/si/imperial/imperial.h"
@@ -30,11 +31,13 @@
 #include <catch2/catch.hpp>
 
 using namespace units::isq::si;
+using namespace units::isq::si::references;
 using namespace units::isq::si::international;
 using namespace units::isq::si::us;
 using namespace units::isq::si::iau;
 using namespace units::isq::si::imperial;
 using namespace units::isq::si::typographic;
+using namespace units::isq::iec80000::references;
 
 TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 {
@@ -97,8 +100,8 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("density")
   {
-      CHECK(fmt::format("{}", 1_q_kg_per_m3) == "1 kg/m³");
-      CHECK(fmt::format("{:%Q %Aq}", 1_q_kg_per_m3) == "1 kg/m^3");
+    CHECK(fmt::format("{}", 1_q_kg_per_m3) == "1 kg/m³");
+    CHECK(fmt::format("{:%Q %Aq}", 1_q_kg_per_m3) == "1 kg/m^3");
   }
 
   SECTION("resistance")
@@ -116,13 +119,13 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("voltage")
   {
-     CHECK(fmt::format("{}", 1_q_V) == "1 V");
-     CHECK(fmt::format("{}", 1_q_mV) == "1 mV");
-     CHECK(fmt::format("{}", 1_q_uV) == "1 µV");
-     CHECK(fmt::format("{}", 1_q_nV) == "1 nV");
-     CHECK(fmt::format("{}", 1_q_pV) == "1 pV");
+    CHECK(fmt::format("{}", 1_q_V) == "1 V");
+    CHECK(fmt::format("{}", 1_q_mV) == "1 mV");
+    CHECK(fmt::format("{}", 1_q_uV) == "1 µV");
+    CHECK(fmt::format("{}", 1_q_nV) == "1 nV");
+    CHECK(fmt::format("{}", 1_q_pV) == "1 pV");
 
-     CHECK(fmt::format("{:%Q %Aq}", 1_q_uV) == "1 uV");
+    CHECK(fmt::format("{:%Q %Aq}", 1_q_uV) == "1 uV");
   }
 
   SECTION("volume")
@@ -308,6 +311,37 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
   SECTION("torque")
   {
     CHECK(fmt::format("{}", 1_q_Nm_per_rad) == "1 N ⋅ m/rad");
+  }
+
+  SECTION("storage_capacity")
+  {
+    CHECK(fmt::format("{}", 1 * bit) == "1 bit");
+    CHECK(fmt::format("{}", 1 * kbit) == "1 kbit");
+    CHECK(fmt::format("{}", 1 * Tibit) == "1 Tibit");
+    CHECK(fmt::format("{}", 1 * B) == "1 B");
+    CHECK(fmt::format("{}", 1 * kB) == "1 kB");
+    CHECK(fmt::format("{}", 1 * TiB) == "1 TiB");
+  }
+
+  SECTION("transfer_rate")
+  {
+    CHECK(fmt::format("{}", 1 * (B / s)) == "1 B/s");
+    CHECK(fmt::format("{}", 1 * (kB / s)) == "1 kB/s");
+    CHECK(fmt::format("{}", 1 * (TB / s)) == "1 TB/s");
+  }
+
+  SECTION("traffic_intesity") 
+  {
+    CHECK(fmt::format("{}", 1 * E) == "1 E");
+  }
+
+  SECTION("modulation_rate")
+  {
+    using namespace units::isq::iec80000;
+    CHECK(fmt::format("{}", 1 * Bd) == "1 Bd");
+    CHECK(fmt::format("{}", 1 * kBd) == "1 kBd");
+    CHECK(fmt::format("{}", 1 * TBd) == "1 TBd");
+    CHECK(fmt::format("{}", quantity_cast<baud>(4 / (2 * s))) == "2 Bd");
   }
 
   SECTION("incoherent units with powers")

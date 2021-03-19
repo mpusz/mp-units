@@ -20,31 +20,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/data/data.h>
+#pragma once
 
-/* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
+#include <units/base_dimension.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/unit.h>
 
-namespace {
+namespace units::isq::iec80000 {
 
-using namespace units::data;
+struct erlang : named_unit<erlang, "E", no_prefix> {};
 
-// information
+struct dim_traffic_intensity : base_dimension<"A", erlang> {};
 
-static_assert(1_q_B == 8_q_b);
-static_assert(1024_q_b == 1_q_Kib);
-static_assert(1024_q_B == 1_q_KiB);
-static_assert(8 * 1024_q_b == 1_q_KiB);
-static_assert(8 * 1_q_Kib == 1_q_KiB);
+template<typename T>
+concept TrafficIntensity = QuantityOf<T, dim_traffic_intensity>;
 
-static_assert(1_q_kb == 1000_q_b);
-static_assert(2000_q_Mib == 2097152_q_kb);
+template<UnitOf<dim_traffic_intensity> U, Representation Rep = double>
+using traffic_intensity = quantity<dim_traffic_intensity, U, Rep>;
 
-static_assert(1_q_Kib == 1024_q_b);
-static_assert(1_q_Mib == 1024_q_Kib);
-static_assert(1_q_Gib == 1024_q_Mib);
-static_assert(1_q_Tib == 1024_q_Gib);
-static_assert(1_q_Pib == 1024_q_Tib);
+inline namespace literals {
 
-// bitrate
+constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return traffic_intensity<erlang, std::int64_t>(static_cast<std::int64_t>(l)); }
 
-}
+}  // namespace literals
+
+namespace references {
+
+inline constexpr auto E = reference<dim_traffic_intensity, erlang>{};
+
+}  // namespace references
+
+}  // namespace units::isq::iec80000

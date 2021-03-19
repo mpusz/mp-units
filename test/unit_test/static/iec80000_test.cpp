@@ -20,9 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include <units/isq/iec80000/iec80000.h>
 
-#include <units/data/information.h>
-#include <units/data/bitrate.h>
-#include <units/data/symbolrate.h>
-#include <units/data/prefixes.h>
+/* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
+
+namespace {
+
+using namespace units::isq::si::references;
+using namespace units::isq::iec80000::references;
+
+// information
+
+static_assert(1 * B == 8 * bit);
+static_assert(1024 * bit == 1 * Kibit);
+static_assert(1024 * B == 1 * KiB);
+static_assert(8 * 1024 * bit == 1 * KiB);
+static_assert(8 * 1 * Kibit == 1 * KiB);
+
+static_assert(1 * kbit == 1000 * bit);
+static_assert(2000 * Mibit == 2097152 * kbit);
+
+static_assert(1 * Kibit == 1024 * bit);
+static_assert(1 * Mibit == 1024 * Kibit);
+static_assert(1 * Gibit == 1024 * Mibit);
+static_assert(1 * Tibit == 1024 * Gibit);
+static_assert(1 * Pibit == 1024 * Tibit);
+static_assert(1 * Eibit == 1024 * Pibit);
+
+// transfer rate
+
+static_assert(16 * B / (2 * s) == 8 * (B / s));
+static_assert(120 * kB / (2 * min) == 1000 * (B / s));
+
+// modulation rate
+
+static_assert(12 / (2 * s) == 6 * Bd);
+static_assert(6000 / (3 * s) == 2 * kBd);
+
+}

@@ -5,6 +5,7 @@
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
   - (!) refactor: Refactored the library file tree
   - (!) refactor: `quantity::count()` renamed to `quantity::number()`
+  - (!) refactor: `data` system renamed to `isq::iec80000` (quantity names renamed too)
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
@@ -12,6 +13,8 @@
   - feat: quantity references support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
+  - feat: `modulation_rate` support added (thanks [@go2sh](https://github.com/go2sh))
+  - feat: SI prefixes for `isq::iec80000` support added (thanks [@go2sh](https://github.com/go2sh))
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`

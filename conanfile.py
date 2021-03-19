@@ -150,7 +150,6 @@ class UnitsConan(ConanFile):
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]
         self.cpp_info.components["core-fmt"].requires = ["core", "fmt::fmt"]
-        self.cpp_info.components["data"].requires = ["core"]
         self.cpp_info.components["isq"].requires = ["core"]
         self.cpp_info.components["isq-natural"].requires = ["isq"]
         self.cpp_info.components["si"].requires = ["isq"]
@@ -161,4 +160,5 @@ class UnitsConan(ConanFile):
         self.cpp_info.components["si-international"].requires = ["si"]
         self.cpp_info.components["si-typographic"].requires = ["si"]
         self.cpp_info.components["si-us"].requires = ["si"]
-        self.cpp_info.components["systems"].requires = ["data", "isq", "isq-natural", "si", "si-cgs", "si-fps", "si-iau", "si-imperial", "si-international", "si-typographic", "si-us"]
+        self.cpp_info.components["isq-iec80000"].requires = ["si"]
+        self.cpp_info.components["systems"].requires = ["isq", "isq-natural", "si", "si-cgs", "si-fps", "si-iau", "si-imperial", "si-international", "si-typographic", "si-us", "isq-iec80000"]

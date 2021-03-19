@@ -26,7 +26,6 @@ find_package(Catch2 CONFIG REQUIRED)
 
 add_executable(unit_tests_runtime
     catch_main.cpp
-    digital_info_test.cpp
     math_test.cpp
     fmt_test.cpp
     fmt_units_test.cpp

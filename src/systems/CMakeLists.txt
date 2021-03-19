@@ -23,8 +23,8 @@
 cmake_minimum_required(VERSION 3.15)
 
 # systems
-add_subdirectory(data)
 add_subdirectory(isq)
+add_subdirectory(isq-iec80000)
 add_subdirectory(isq-natural)
 add_subdirectory(si)
 add_subdirectory(si-cgs)
@@ -38,8 +38,8 @@ add_subdirectory(si-us)
 # wrapper for all the systems
 add_library(mp-units-systems INTERFACE)
 target_link_libraries(mp-units-systems INTERFACE
-    mp-units::data
     mp-units::isq
+    mp-units::isq-iec80000
     mp-units::isq-natural
     mp-units::si
     mp-units::si-cgs

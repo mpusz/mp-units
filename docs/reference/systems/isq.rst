@@ -6,6 +6,7 @@ International System of Quantities (ISQ)
 
     isq/dimensions_and_concepts
     isq/si
+    isq/iec80000
     isq/si_cgs
     isq/si_international
     isq/si_us

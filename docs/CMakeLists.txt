@@ -114,17 +114,19 @@ set(unitsSphinxDocs
 
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems.rst"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data/bitrate.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data/information.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/data/prefixes.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/angle.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/dimensionless.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/unknown.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq.rst"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/binary_prefixes.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/modulation_rate.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/storage_capacity.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/traffic_intensity.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/transfer_rate.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/constants.rst"
