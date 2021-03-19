@@ -100,13 +100,13 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
 TEST_CASE("numeric_limits functions", "[limits]")
 {
   SECTION ("'epsilon' works as expected using default floating type") {
-    REQUIRE(epsilon<decltype(1._q_m)>().count() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1._q_m)>().number() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using integers") {
-    REQUIRE(epsilon<decltype(1_q_m)>().count() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().number() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using mixed Rep types") {
-    REQUIRE(epsilon<decltype(1_q_m)>().count() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().number() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
 }
 

@@ -34,7 +34,7 @@ namespace detail {
 template<typename CharT, class Traits, typename D, typename U, typename Rep>
 void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
 {
-  os << q.count();
+  os << q.number();
   constexpr auto symbol = detail::unit_text<D, U>();
   if constexpr (!symbol.standard().empty()) {
     os << " " << symbol.standard();
@@ -45,7 +45,7 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>&
 
 template<typename CharT, typename Traits, typename D, typename U, typename Rep>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
-  requires requires { os << q.count(); }
+  requires requires { os << q.number(); }
 {
   if(os.width()) {
     // std::setw() applies to the whole quantity output so it has to be first put into std::string

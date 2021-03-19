@@ -167,8 +167,8 @@ static_assert(width<metre, double>::zero().common() == 0 * m);
 static_assert(width<metre, double>::one().common() == 1 * m);
 static_assert(width<metre, unsigned>::min().common() == 0 * m);
 static_assert(width<metre, unsigned>::max().common() == std::numeric_limits<unsigned>::max() * m);
-static_assert(width<metre, double>::min().common().count() == std::numeric_limits<double>::lowest());
-static_assert(width<metre, double>::max().common().count() == std::numeric_limits<double>::max());
+static_assert(width<metre, double>::min().common().number() == std::numeric_limits<double>::lowest());
+static_assert(width<metre, double>::max().common().number() == std::numeric_limits<double>::max());
 
 
 ////////////////////////
@@ -204,8 +204,8 @@ static_assert(same(quantity_kind(rate_of_climb<kilometre_per_hour, double>(0.01 
 
 static_assert(construct_from_only<apples<one, int>>(1).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(1.0).common() == 1);
-static_assert(construct_from_only<apples<percent, int>>(1ULL).common().count() == 1);
-static_assert(construct_from_only<apples<percent, double>>(1.0L).common().count() == 1);
+static_assert(construct_from_only<apples<percent, int>>(1ULL).common().number() == 1);
+static_assert(construct_from_only<apples<percent, double>>(1.0L).common().number() == 1);
 static_assert(!constructible_or_convertible_from<apples<one, int>>(1.0));
 static_assert(!constructible_or_convertible_from<apples<percent, int>>(1.0));
 static_assert(!constructible_or_convertible_from<width<metre, double>>(1.0));
@@ -248,20 +248,20 @@ static_assert(construct_from_only<width<metre, short>>(1 * m).common() == 1 * m)
 
 static_assert(construct_from_only<apples<one, int>>(quantity(1)).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(dimensionless<percent>(1)).common() == 0.01);
-static_assert(construct_from_only<apples<percent, double>>(quantity(1.0)).common().count() == 100);
-static_assert(construct_from_only<apples<percent, double>>(dimensionless<percent>(1)).common().count() == 1);
+static_assert(construct_from_only<apples<percent, double>>(quantity(1.0)).common().number() == 100);
+static_assert(construct_from_only<apples<percent, double>>(dimensionless<percent>(1)).common().number() == 1);
 static_assert(construct_from_only<apples<one, double>>(quantity(1.0)).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(quantity(1.0f)).common() == 1);
 static_assert(construct_from_only<apples<one, float>>(quantity(1.0)).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(quantity(1)).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(quantity(short{1})).common() == 1);
 static_assert(construct_from_only<apples<one, short>>(quantity(1)).common() == 1);
-static_assert(construct_from_only<apples<percent, double>>(quantity(1.0)).common().count() == 1e2);
-static_assert(construct_from_only<apples<percent, double>>(quantity(1.0f)).common().count() == 1e2);
-static_assert(construct_from_only<apples<percent, float>>(quantity(1.0)).common().count() == 1e2f);
-static_assert(construct_from_only<apples<percent, double>>(quantity(1)).common().count() == 1e2);
-static_assert(construct_from_only<apples<percent, double>>(quantity(short{1})).common().count() == 1e2);
-static_assert(construct_from_only<apples<percent, short>>(quantity(1)).common().count() == 1e2);
+static_assert(construct_from_only<apples<percent, double>>(quantity(1.0)).common().number() == 1e2);
+static_assert(construct_from_only<apples<percent, double>>(quantity(1.0f)).common().number() == 1e2);
+static_assert(construct_from_only<apples<percent, float>>(quantity(1.0)).common().number() == 1e2f);
+static_assert(construct_from_only<apples<percent, double>>(quantity(1)).common().number() == 1e2);
+static_assert(construct_from_only<apples<percent, double>>(quantity(short{1})).common().number() == 1e2);
+static_assert(construct_from_only<apples<percent, short>>(quantity(1)).common().number() == 1e2);
 
 static_assert(!constructible_or_convertible_from<dimensionless<one, double>>(apples<one, double>{}));
 static_assert(!constructible_or_convertible_from<dimensionless<one, double>>(apples<one, float>{}));
@@ -471,12 +471,12 @@ static_assert(same(width<metre, double>(2. * m) - width<metre, int>(3 * m), widt
 static_assert(same(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().count()), int>);
+  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()), int>);
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().count()), int>);
-static_assert((width<metre, std::uint8_t>(128 * m) + width<metre, std::uint8_t>(128 * m)).common().count() ==
+  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().number()), int>);
+static_assert((width<metre, std::uint8_t>(128 * m) + width<metre, std::uint8_t>(128 * m)).common().number() ==
   std::uint8_t(128) + std::uint8_t(128));
-static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 * m)).common().count() ==
+static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 * m)).common().number() ==
   std::uint8_t(0) - std::uint8_t(1));
 
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, double>);
@@ -641,7 +641,7 @@ static_assert(same(width<metre, int>(2 * m) % 3, width<metre, int>(2 * m)));
 static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<metre, int>(1 * m)));
 
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().count()),
+  decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().number()),
   decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
 static_assert(!std::is_invocable_v<std::multiplies<>, reference<dim_length, metre>, width<metre>>);

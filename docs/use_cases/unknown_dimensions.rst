@@ -64,7 +64,7 @@ Operations On Unknown Dimensions And Their Units
 For some cases we can eliminate the need to predefine a specific dimension and just use
 the `unknown_dimension` instead. Let's play with the previous example a bit::
 
-    static_assert(result.count() == 72);
+    static_assert(result.number() == 72);
 
 As we can see the value stored in this quantity can be easily obtained and contains a
 correct result. However, if we try to print its value to the text output we will get::

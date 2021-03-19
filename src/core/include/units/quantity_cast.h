@@ -121,17 +121,17 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
   constexpr auto c_ratio = detail::cast_ratio<quantity<D, U, Rep>, To>;
 
   if constexpr (treat_as_floating_point<rep_type>) {
-    return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+    return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
                               (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) / static_cast<ratio_type>(c_ratio.den))));
   }
   else {
     if constexpr (c_ratio.exp > 0) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
                               (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
                               static_cast<ratio_type>(c_ratio.den)));
     }
     else {
-      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.count()) *
+      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
                               static_cast<ratio_type>(c_ratio.num) /
                               (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
     }

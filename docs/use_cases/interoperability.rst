@@ -11,7 +11,7 @@ provide the following:
     - ``dimension`` mapping the source with target dimension type
     - ``unit`` mapping the source with target unit type
     - ``rep`` mapping the source with target representation type
-- a static member function ``count(T)`` that returns the raw value/magnitude of the quantity.
+- a static member function ``number(T)`` that returns the raw value/magnitude of the quantity.
 
 For example, to provide support for the ``std::chrono::duration`` it is enough to define::
 
@@ -26,7 +26,7 @@ For example, to provide support for the ``std::chrono::duration`` it is enough t
       using dimension = isq::si::dim_time;
       using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
       using rep = Rep;
-      [[nodiscard]] static constexpr rep count(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
+      [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
     };
 
     } // namespace units
@@ -56,7 +56,7 @@ such an explicit conversion::
 
 For external quantity point-like types, `quantity_point_like_traits` is also provided.
 It works just like `quantity_like_traits`, except that
-``count(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value.
+``number(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value.
 
 Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_kind_point`
 provide a deduction guide from `QuantityPointLike`::

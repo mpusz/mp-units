@@ -272,7 +272,7 @@ namespace units {
         rep_format_specs const & rspecs, unit_format_specs const & uspecs,
         LocaleRef lc
       ):
-        out(o), val(q.count()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), loc(lc)
+        out(o), val(q.number()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), loc(lc)
       {
       }
 
@@ -491,7 +491,7 @@ public:
     // deal with quantity content
     if(begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.count(), rep_specs, ctx.locale());
+      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.number(), rep_specs, ctx.locale());
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.standard().size()) {
         *to_quantity_buffer++ = CharT(' ');

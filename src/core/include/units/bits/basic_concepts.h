@@ -414,7 +414,7 @@ template<typename T>
     requires Dimension<typename quantity_like_traits<T>::dimension>;
     requires Unit<typename quantity_like_traits<T>::unit>;
     requires QuantityValue<typename quantity_like_traits<T>::rep>;
-    { quantity_like_traits<T>::count(q) } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+    { quantity_like_traits<T>::number(q) } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
   }
 inline constexpr bool is_quantity_like<T> = true;
 

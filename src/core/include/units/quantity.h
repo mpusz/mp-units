@@ -149,31 +149,31 @@ public:
   quantity(const Value& v) : value_(v) {}
 
   template<safe_castable_to_<quantity> Q>
-  constexpr explicit(false) quantity(const Q& q) : value_(quantity_cast<quantity>(q).count()) {}
+  constexpr explicit(false) quantity(const Q& q) : value_(quantity_cast<quantity>(q).number()) {}
 
   template<QuantityLike Q>
     requires safe_castable_to_<quantity_like_type<Q>, quantity>
-  constexpr explicit quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::count(q))) {}
+  constexpr explicit quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::number(q))) {}
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
   // data access
-  [[nodiscard]] constexpr rep count() const noexcept { return value_; }
+  [[nodiscard]] constexpr rep number() const noexcept { return value_; }
 
   // member unary operators
   [[nodiscard]] constexpr Quantity auto operator+() const
     requires requires(rep v) { { +v } -> std::common_with<rep>; }
   {
-    using ret = quantity<D, U, decltype(+count())>;
-    return ret(+count());
+    using ret = quantity<D, U, decltype(+number())>;
+    return ret(+number());
   }
 
   [[nodiscard]] constexpr Quantity auto operator-() const
     requires std::regular_invocable<std::negate<>, rep>
   {
-    using ret = quantity<D, U, decltype(-count())>;
-    return ret(-count());
+    using ret = quantity<D, U, decltype(-number())>;
+    return ret(-number());
   }
 
   constexpr quantity& operator++()
@@ -205,14 +205,14 @@ public:
   constexpr quantity& operator+=(const quantity& q)
     requires requires(rep a, rep b) { { a += b } -> std::same_as<rep&>; }
   {
-    value_ += q.count();
+    value_ += q.number();
     return *this;
   }
 
   constexpr quantity& operator-=(const quantity& q)
     requires requires(rep a, rep b) { { a -= b } -> std::same_as<rep&>; }
   {
-    value_ -= q.count();
+    value_ -= q.number();
     return *this;
   }
 
@@ -227,7 +227,7 @@ public:
   constexpr quantity& operator*=(const dimensionless<units::one, Rep2>& rhs)
     requires requires(rep a, const Rep2 b) { { a *= b } -> std::same_as<rep&>; }
   {
-    value_ *= rhs.count();
+    value_ *= rhs.number();
     return *this;
   }
 
@@ -243,8 +243,8 @@ public:
   constexpr quantity& operator/=(const dimensionless<units::one, Rep2>& rhs)
     requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
   {
-    gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
-    value_ /= rhs.count();
+    gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
+    value_ /= rhs.number();
     return *this;
   }
 
@@ -263,8 +263,8 @@ public:
     requires (!floating_point_<rep>) && (!floating_point_<Rep2>) &&
              requires(rep a, const Rep2 b) { { a %= b } -> std::same_as<rep&>; }
   {
-    gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
-    value_ %= rhs.count();
+    gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
+    value_ %= rhs.number();
     return *this;
   }
 
@@ -272,8 +272,8 @@ public:
     requires (!floating_point_<rep>) &&
              requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }
   {
-    gsl_ExpectsAudit(q.count() != quantity_values<rep>::zero());
-    value_ %= q.count();
+    gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
+    value_ %= q.number();
     return *this;
   }
 
@@ -284,14 +284,14 @@ public:
     requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
           requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>; }         // when Clang catches up.
   {
-    return units::quantity(lhs.count() + rhs);
+    return units::quantity(lhs.number() + rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
     requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
           requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>; }         // when Clang catches up.
   {
-    return units::quantity(lhs + rhs.count());
+    return units::quantity(lhs + rhs.number());
   }
 
   template<typename Value>
@@ -299,14 +299,14 @@ public:
     requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
           requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>; }        // when Clang catches up.
   {
-    return units::quantity(lhs.count() - rhs);
+    return units::quantity(lhs.number() - rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
     requires requires { requires !Quantity<Value>; requires is_same_v<unit, units::one>;  // TODO: Simplify
           requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>; }        // when Clang catches up.
   {
-    return units::quantity(lhs - rhs.count());
+    return units::quantity(lhs - rhs.number());
   }
 
   template<typename Value>
@@ -315,7 +315,7 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, rep, Value>>;
-    return ret(q.count() * v);
+    return ret(q.number() * v);
   }
 
   template<typename Value>
@@ -324,7 +324,7 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, Value, rep>>;
-    return ret(v * q.count());
+    return ret(v * q.number());
   }
 
   template<typename Value>
@@ -334,7 +334,7 @@ public:
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     using ret = quantity<D, U, std::invoke_result_t<std::divides<>, rep, Value>>;
-    return ret(q.count() / v);
+    return ret(q.number() / v);
   }
 
   template<typename Value>
@@ -342,11 +342,11 @@ public:
           invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    gsl_ExpectsAudit(q.count() != quantity_values<rep>::zero());
+    gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
     using dim = dim_invert<D>;
     using ret_unit = downcast_unit<dim, inverse(U::ratio)>;
     using ret = quantity<dim, ret_unit, std::invoke_result_t<std::divides<>, Value, rep>>;
-    return ret(v / q.count());
+    return ret(v / q.number());
   }
 
   template<typename Value>
@@ -356,15 +356,15 @@ public:
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, Value>>;
-    return ret(q.count() % v);
+    return ret(q.number() % v);
   }
 
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity& rhs)
     requires (!floating_point_<rep>) && is_same_v<unit, units::one> &&
             invoke_result_convertible_to_<rep, std::modulus<>, rep, rep>
   {
-    gsl_ExpectsAudit(rhs.count() != quantity_values<rep>::zero());
-    return units::quantity(lhs.count() % rhs.count());
+    gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
+    return units::quantity(lhs.number() % rhs.number());
   }
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)
@@ -373,7 +373,7 @@ public:
   = default;
 #else
   {
-    return lhs.count() <=> rhs.count();
+    return lhs.number() <=> rhs.number();
   }
 #endif
 
@@ -393,7 +393,7 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
   using ret = common_quantity_for<std::plus<>, Q1, Q2>;
-  return ret(ret(lhs).count() + ret(rhs).count());
+  return ret(ret(lhs).number() + ret(rhs).number());
 }
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
@@ -401,22 +401,22 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
   using ret = common_quantity_for<std::minus<>, Q1, Q2>;
-  return ret(ret(lhs).count() - ret(rhs).count());
+  return ret(ret(lhs).number() - ret(rhs).number());
 }
 
 template<Quantity Q1, Quantity Q2>
   requires quantity_value_for_<std::multiplies<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
-  return detail::make_quantity<Q1::reference * Q2::reference>(lhs.count() * rhs.count());
+  return detail::make_quantity<Q1::reference * Q2::reference>(lhs.number() * rhs.number());
 }
 
 template<Quantity Q1, Quantity Q2>
   requires quantity_value_for_<std::divides<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator/(const Q1& lhs, const Q2& rhs)
 {
-  gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q2::rep>::zero());
-  return detail::make_quantity<Q1::reference / Q2::reference>(lhs.count() / rhs.count());
+  gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
+  return detail::make_quantity<Q1::reference / Q2::reference>(lhs.number() / rhs.number());
 }
 
 template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>
@@ -424,10 +424,10 @@ template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>
           quantity_value_for_<std::modulus<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator%(const quantity<D1, U1, Rep1>& lhs, const quantity<dim_one, U2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.count() != quantity_values<Rep2>::zero());
+  gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
   using unit = downcast_unit<D1, U1::ratio * U2::ratio>;
   using ret = quantity<D1, unit, std::invoke_result_t<std::modulus<>, Rep1, Rep2>>;
-  return ret(lhs.count() % rhs.count());
+  return ret(lhs.number() % rhs.number());
 }
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
@@ -435,9 +435,9 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
           quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {
-  gsl_ExpectsAudit(rhs.count() != quantity_values<typename Q2::rep>::zero());
+  gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
   using ret = common_quantity_for<std::modulus<>, Q1, Q2>;
-  return ret(ret(lhs).count() % ret(rhs).count());
+  return ret(ret(lhs).number() % ret(rhs).number());
 }
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
@@ -445,7 +445,7 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
   using cq = common_quantity<Q1, Q2>;
-  return cq(lhs).count() <=> cq(rhs).count();
+  return cq(lhs).number() <=> cq(rhs).number();
 }
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
@@ -453,7 +453,7 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
   using cq = common_quantity<Q1, Q2>;
-  return cq(lhs).count() == cq(rhs).count();
+  return cq(lhs).number() == cq(rhs).number();
 }
 
 // type traits

@@ -336,7 +336,7 @@ will print ``50 %`` to the console output.
 
 Again, according to the ISO definition "such quantities convey more information than a
 number". This is exactly what we observe in the above example. The value stored inside
-the quantity, the text output, and the value returned by the `quantity::count()` member
+the quantity, the text output, and the value returned by the `quantity::number()` member
 function is ``50`` rather than ``0.5``. It means that dimensionless quantities behave
 like all other quantities and store the value in terms of a ratio of a coherent unit.
 This allows us to not loose precision when we divide quantities of the same dimensions

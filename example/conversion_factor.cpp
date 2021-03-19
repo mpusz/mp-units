@@ -35,7 +35,7 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
   typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
   typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
   typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
-  return target{source{1}}.count();
+  return target{source{1}}.number();
 }
 
 }  // namespace
@@ -55,6 +55,6 @@ int main()
   std::cout << fmt::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
 
   std::cout << fmt::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n", lengthA, lengthB)
-            << fmt::format("lengthB.count( {} ) == lengthA.count( {} ) * conversion_factor( {} )\n",
-                           lengthB.count(), lengthA.count(), conversion_factor(lengthB, lengthA));
+            << fmt::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
+                           lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
 }

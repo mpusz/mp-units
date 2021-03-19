@@ -36,7 +36,7 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
   typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
   typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
   typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
-  return target{source{1}}.count();
+  return target{source{1}}.number();
 }
 
 }  // namespace
@@ -58,6 +58,6 @@ int main()
 
   std::cout << "conversion factor from lengthA::unit of "
             << units_str(lengthA).standard() << " to lengthB::unit of " << units_str(lengthB).standard() << " :\n\n"
-            << "lengthB.count( " << lengthB.count() << " ) == lengthA.count( " << lengthA.count()
+            << "lengthB.number( " << lengthB.number() << " ) == lengthA.number( " << lengthA.number()
             << " ) * conversion_factor( " << conversion_factor(lengthB, lengthA) << " )\n";
 }

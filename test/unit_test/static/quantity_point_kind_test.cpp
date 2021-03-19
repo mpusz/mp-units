@@ -179,8 +179,8 @@ static_assert(same(abscissa<metre>{}.relative(), width<metre>{}));
 
 static_assert(abscissa<metre, unsigned>::min().relative().common() == 0 * m);
 static_assert(abscissa<metre, unsigned>::max().relative().common() == std::numeric_limits<unsigned>::max() * m);
-static_assert(abscissa<metre, double>::min().relative().common().count() == std::numeric_limits<double>::lowest());
-static_assert(abscissa<metre, double>::max().relative().common().count() == std::numeric_limits<double>::max());
+static_assert(abscissa<metre, double>::min().relative().common().number() == std::numeric_limits<double>::lowest());
+static_assert(abscissa<metre, double>::max().relative().common().number() == std::numeric_limits<double>::max());
 
 
 ////////////////////////
@@ -220,8 +220,8 @@ static_assert(construct_from_only<nth_apple<one, double>>(1).relative().common()
 static_assert(construct_from_only<nth_apple<one, double>>(short{1}).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, short>>(1).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, int>>(1).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().count() == 1);
-static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().number() == 1);
+static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(1.0));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(1.0));
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(1.0));
@@ -256,8 +256,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(1s));
 static_assert(construct_from_only<nth_apple<one, int>>(quantity(1)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(dimensionless<percent>(1)).relative().common() == 0.01);
 static_assert(construct_from_only<nth_apple<one, double>>(dimensionless<percent>(1)).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, double>>(dimensionless<percent>(1)).relative().common().count() == 1);
-static_assert(construct_from_only<nth_apple<percent, double>>(quantity(1)).relative().common().count() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(dimensionless<percent>(1)).relative().common().number() == 1);
+static_assert(construct_from_only<nth_apple<percent, double>>(quantity(1)).relative().common().number() == 100);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(dimensionless<percent>(1)));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity(1.0)));
@@ -293,8 +293,8 @@ static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(1)).rel
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(dimensionless<percent, int>(1))).relative().common() == 0.01);
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(1.0)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(dimensionless<percent, double>(1.0))).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, int>>(quantity_point(1)).relative().common().count() == 100);
-static_assert(construct_from_only<nth_apple<percent, double>>(quantity_point(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(quantity_point(1)).relative().common().number() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(quantity_point(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity_point(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity_point(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_point(1.0)));
@@ -327,8 +327,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(abscissa_
 
 static_assert(construct_from_only<nth_apple<one, int>>(apples<one, int>(1)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, int>>(apples<one, int>(1)).relative().common().count() == 100);
-static_assert(construct_from_only<nth_apple<percent, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(apples<one, int>(1)).relative().common().number() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples<one, double>(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples<percent, double>(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(apples<one, double>(1.0)));
@@ -354,8 +354,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_
 
 static_assert(construct_and_convert_from<nth_apple<one, int>>(nth_apple<one, int>(1)).relative().common() == 1);
 static_assert(construct_and_convert_from<nth_apple<one, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common() == 0.01);
-static_assert(construct_and_convert_from<nth_apple<percent, int>>(nth_apple<one, int>(1)).relative().common().count() == 100);
-static_assert(construct_and_convert_from<nth_apple<percent, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_and_convert_from<nth_apple<percent, int>>(nth_apple<one, int>(1)).relative().common().number() == 100);
+static_assert(construct_and_convert_from<nth_apple<percent, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(nth_apple<one, double>(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(nth_apple<percent, double>(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(nth_apple<one, double>(1.0)));

@@ -33,7 +33,7 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   using dimension = isq::si::dim_time;
   using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;
-  [[nodiscard]] static constexpr rep count(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
+  [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
 
 template<typename C, typename Rep, typename Period>

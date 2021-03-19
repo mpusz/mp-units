@@ -41,7 +41,7 @@ namespace units {
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
   requires detail::non_zero<Den>
-[[nodiscard]] inline auto pow(const Q& q) noexcept requires requires { std::pow(q.count(), 1.0); }
+[[nodiscard]] inline auto pow(const Q& q) noexcept requires requires { std::pow(q.number(), 1.0); }
 {
   using rep = TYPENAME Q::rep;
   if constexpr (Num == 0) {
@@ -50,7 +50,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
     using dim = dimension_pow<typename Q::dimension, Num, Den>;
     using unit = downcast_unit<dim, pow<Num, Den>(Q::unit::ratio)>;
     return quantity<dim, unit, rep>(
-        static_cast<rep>(std::pow(q.count(), static_cast<double>(Num) / static_cast<double>(Den))));
+        static_cast<rep>(std::pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
 
@@ -64,12 +64,12 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
  */
 template<Quantity Q>
 [[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
-  requires requires { std::sqrt(q.count()); }
+  requires requires { std::sqrt(q.number()); }
 {
   using dim = dimension_pow<typename Q::dimension, 1, 2>;
   using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
   using rep = TYPENAME Q::rep;
-  return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.count())));
+  return quantity<dim, unit, rep>(static_cast<rep>(std::sqrt(q.number())));
 }
 
 /**
@@ -82,12 +82,12 @@ template<Quantity Q>
  */
 template<Quantity Q>
 [[nodiscard]] inline Quantity auto cbrt(const Q& q) noexcept
-  requires requires { std::cbrt(q.count()); }
+  requires requires { std::cbrt(q.number()); }
 {
   using dim = dimension_pow<typename Q::dimension, 1, 3>;
   using unit = downcast_unit<dim, cbrt(Q::unit::ratio)>;
   using rep = TYPENAME Q::rep;
-  return quantity<dim, unit, rep>(static_cast<rep>(std::cbrt(q.count())));
+  return quantity<dim, unit, rep>(static_cast<rep>(std::cbrt(q.number())));
 }
 
 /**
@@ -101,7 +101,7 @@ template<Quantity Q>
 template<typename U, typename Rep>
 [[nodiscard]] inline dimensionless<U, Rep> exp(const dimensionless<U, Rep>& q)
 {
-  return quantity_cast<U>(dimensionless<one, Rep>(std::exp(quantity_cast<one>(q).count())));
+  return quantity_cast<U>(dimensionless<one, Rep>(std::exp(quantity_cast<one>(q).number())));
 }
 
 /**
@@ -112,9 +112,9 @@ template<typename U, typename Rep>
  */
 template<typename D, typename U, typename Rep>
 [[nodiscard]] inline quantity<D, U, Rep> abs(const quantity<D, U, Rep>& q) noexcept
-  requires requires { std::abs(q.count()); }
+  requires requires { std::abs(q.number()); }
 {
-  return quantity<D, U, Rep>(std::abs(q.count()));
+  return quantity<D, U, Rep>(std::abs(q.number()));
 }
 
 /**

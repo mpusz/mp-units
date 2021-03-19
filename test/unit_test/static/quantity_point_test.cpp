@@ -99,11 +99,11 @@ static_assert([]() { quantity_point<dim_length, metre, int> l1(1_q_m), l2{}; ret
 
 // static member functions
 
-static_assert(quantity_point<dim_length, metre, int>::min().relative().count() == std::numeric_limits<int>::lowest());
-static_assert(quantity_point<dim_length, metre, int>::max().relative().count() == std::numeric_limits<int>::max());
-static_assert(quantity_point<dim_length, metre, double>::min().relative().count() ==
+static_assert(quantity_point<dim_length, metre, int>::min().relative().number() == std::numeric_limits<int>::lowest());
+static_assert(quantity_point<dim_length, metre, int>::max().relative().number() == std::numeric_limits<int>::max());
+static_assert(quantity_point<dim_length, metre, double>::min().relative().number() ==
               std::numeric_limits<double>::lowest());
-static_assert(quantity_point<dim_length, metre, double>::max().relative().count() ==
+static_assert(quantity_point<dim_length, metre, double>::max().relative().number() ==
               std::numeric_limits<double>::max());
 
 // unary member operators
@@ -127,8 +127,8 @@ static_assert([](auto v) {
 
 // compound assignment
 
-static_assert((quantity_point(1_q_m) += 1_q_m).relative().count() == 2);
-static_assert((quantity_point(2_q_m) -= 1_q_m).relative().count() == 1);
+static_assert((quantity_point(1_q_m) += 1_q_m).relative().number() == 2);
+static_assert((quantity_point(2_q_m) -= 1_q_m).relative().number() == 1);
 
 // non-member arithmetic operators
 
@@ -151,10 +151,10 @@ static_assert(
     compare<decltype(quantity_point<dim_length, kilometre, double>() - quantity_point<dim_length, metre, int>()),
                    length<metre, double>>);
 
-static_assert((1_q_m + km).relative().count() == 1001);
-static_assert((quantity_point(1_q_m) + 1_q_km).relative().count() == 1001);
-static_assert((km - 1_q_m).relative().count() == 999);
-static_assert((quantity_point(1_q_km) - quantity_point(1_q_m)).count() == 999);
+static_assert((1_q_m + km).relative().number() == 1001);
+static_assert((quantity_point(1_q_m) + 1_q_km).relative().number() == 1001);
+static_assert((km - 1_q_m).relative().number() == 999);
+static_assert((quantity_point(1_q_km) - quantity_point(1_q_m)).number() == 999);
 
 // comparators
 
@@ -221,19 +221,19 @@ static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), dec
 
 // quantity_cast
 
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2_q_km)).relative().count() ==
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2_q_km)).relative().number() ==
               2000);
 static_assert(
-    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23_q_m)).relative().count() ==
+    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23_q_m)).relative().number() ==
               1);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2_q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).relative().count() == 1);
-static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().count() == 1);
-static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().count() == 2);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2_q_km)).relative().number() == 2000);
+static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).relative().number() == 1);
+static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().number() == 2000);
+static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().number() == 1);
+static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().number() == 2);
 
 // time
 

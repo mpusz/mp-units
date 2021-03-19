@@ -179,7 +179,7 @@ code will not compile::
 
 To make it compile fine we have to either explicitly get the value stored in the quantity::
 
-    auto v = std::exp(quantity_cast<one>(10_q_m / 5_q_m).count());
+    auto v = std::exp(quantity_cast<one>(10_q_m / 5_q_m).number());
 
 or use a mathematical wrapper function from `units` namespace::
 
@@ -188,4 +188,4 @@ or use a mathematical wrapper function from `units` namespace::
 .. important::
 
     Always remember to explicitly cast the quantity to the destination unit with `quantity_cast` before
-    calling `quantity::count()`!
+    calling `quantity::number()`!
