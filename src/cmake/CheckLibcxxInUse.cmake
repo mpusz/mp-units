@@ -27,8 +27,8 @@ function(check_libcxx_in_use variable)
         message(CHECK_START "Checking if libc++ is being used")
         list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-        include(CheckSymbolExists)
-        check_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
+        include(CheckCXXSymbolExists)
+        check_cxx_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
         set(${variable} ${${variable}} PARENT_SCOPE)
 
         list(POP_BACK CMAKE_MESSAGE_INDENT)
