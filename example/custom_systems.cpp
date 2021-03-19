@@ -33,7 +33,7 @@ struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 }  // namespace fps
@@ -45,7 +45,7 @@ struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
 struct dim_length : base_dimension<"L", metre> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
@@ -55,7 +55,7 @@ struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 }  // namespace fps

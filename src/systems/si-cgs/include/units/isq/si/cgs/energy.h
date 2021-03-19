@@ -33,7 +33,7 @@ struct erg : named_unit<erg, "erg", si::prefix> {};
 
 struct dim_energy : isq::dim_energy<dim_energy, erg, dim_force, dim_length> {};
 
-template<UnitOf<dim_energy> U, QuantityValue Rep = double>
+template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
 inline namespace literals {

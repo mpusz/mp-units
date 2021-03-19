@@ -54,7 +54,7 @@ struct gauss : named_scaled_unit<gauss, "G", prefix, ratio(1, 10'000), tesla> {}
 
 struct dim_magnetic_induction : isq::dim_magnetic_induction<dim_magnetic_induction, tesla, dim_voltage, dim_time, dim_length> {};
 
-template<UnitOf<dim_magnetic_induction> U, QuantityValue Rep = double>
+template<UnitOf<dim_magnetic_induction> U, Representation Rep = double>
 using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 
 inline namespace literals {

@@ -64,21 +64,21 @@ struct nth_orange_kind : point_kind<nth_orange_kind, orange> {};
 struct time_kind : kind<time_kind, dim_time> {};
 struct time_point_kind : point_kind<time_point_kind, time_kind> {};
 
-template <Unit U, QuantityValue Rep = double> using width = quantity_kind<width_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using height = quantity_kind<height_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using abscissa = quantity_point_kind<abscissa_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using ordinate = quantity_point_kind<ordinate_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using abscissa = quantity_point_kind<abscissa_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using ordinate = quantity_point_kind<ordinate_kind, U, Rep>;
 
-template <Unit U, QuantityValue Rep = double> using distance = quantity_kind<distance_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using cgs_height = quantity_kind<cgs_height_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using altitude = quantity_point_kind<altitude_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using distance = quantity_kind<distance_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using cgs_height = quantity_kind<cgs_height_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using altitude = quantity_point_kind<altitude_kind, U, Rep>;
 
-template <Unit U = one, QuantityValue Rep = double> using apples = quantity_kind<apple, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using oranges = quantity_kind<orange, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using nth_apple = quantity_point_kind<nth_apple_kind, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using nth_orange = quantity_point_kind<nth_orange_kind, U, Rep>;
+template <Unit U = one, Representation Rep = double> using apples = quantity_kind<apple, U, Rep>;
+template <Unit U = one, Representation Rep = double> using oranges = quantity_kind<orange, U, Rep>;
+template <Unit U = one, Representation Rep = double> using nth_apple = quantity_point_kind<nth_apple_kind, U, Rep>;
+template <Unit U = one, Representation Rep = double> using nth_orange = quantity_point_kind<nth_orange_kind, U, Rep>;
 
 /////////////
 // concepts

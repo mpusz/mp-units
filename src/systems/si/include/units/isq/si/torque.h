@@ -34,7 +34,7 @@ struct newton_metre_per_radian : unit<newton_metre_per_radian> {};
 
 struct dim_torque : isq::dim_torque<dim_torque, newton_metre_per_radian, dim_force, dim_length, dim_angle<>> {};
 
-template<UnitOf<dim_torque> U, QuantityValue Rep = double>
+template<UnitOf<dim_torque> U, Representation Rep = double>
 using torque = quantity<dim_torque, U, Rep>;
 
 inline namespace literals {

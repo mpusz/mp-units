@@ -53,7 +53,7 @@ struct yottacandela : prefixed_unit<yottacandela, yotta, candela> {};
 
 struct dim_luminous_intensity : isq::dim_luminous_intensity<candela> {};
 
-template<UnitOf<dim_luminous_intensity> U, QuantityValue Rep = double>
+template<UnitOf<dim_luminous_intensity> U, Representation Rep = double>
 using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 
 inline namespace literals {

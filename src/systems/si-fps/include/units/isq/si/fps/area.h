@@ -32,7 +32,7 @@ struct square_foot : unit<square_foot> {};
 struct dim_area : isq::dim_area<dim_area, square_foot, dim_length> {};
 
 
-template<UnitOf<dim_area> U, QuantityValue Rep = double>
+template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
 inline namespace literals {

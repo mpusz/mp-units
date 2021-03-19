@@ -44,7 +44,7 @@ struct day : named_scaled_unit<day, "d", no_prefix, ratio(24), hour> {};
 
 struct dim_time : isq::dim_time<second> {};
 
-template<UnitOf<dim_time> U, QuantityValue Rep = double>
+template<UnitOf<dim_time> U, Representation Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
 inline namespace literals {

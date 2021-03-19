@@ -37,10 +37,10 @@ type to ``double`` by default::
 
     namespace si {
 
-    template<Unit U, QuantityValue Rep = double>
+    template<Unit U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
-    template<Unit U, QuantityValue Rep = double>
+    template<Unit U, Representation Rep = double>
     using speed = quantity<dim_speed, U, Rep>;
 
     }
@@ -208,7 +208,7 @@ be used::
     All instances of `quantity` class always match the `Quantity` concept.
     All other regular types that are not quantities are called
     :term:`scalable numbers <scalable number>` by the library and match the
-    `QuantityValue` concept.
+    `Representation` concept.
 
 However, the above is not the most important usage of those concepts. Let's
 assume that the user wants to implement an ``avg_speed`` function that will
@@ -318,7 +318,7 @@ are provided::
     template<typename T>
     concept Dimensionless = QuantityOf<T, dim_one>;
 
-    template<Unit U, QuantityValue Rep = double>
+    template<Unit U, Representation Rep = double>
     using dimensionless = quantity<dim_one, U, Rep>;
 
 There are two special units provided for usage with such a quantity:

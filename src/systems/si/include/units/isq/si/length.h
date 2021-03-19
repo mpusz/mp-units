@@ -55,7 +55,7 @@ struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix,
 
 struct dim_length : isq::dim_length<metre> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {

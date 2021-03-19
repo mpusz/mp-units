@@ -36,14 +36,14 @@ using namespace units::isq::si;
 struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
 struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
 
-template<UnitOf<dim_power_spectral_density> U, QuantityValue Rep = double>
+template<UnitOf<dim_power_spectral_density> U, Representation Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
 // amplitude spectral density
 struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
 struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>, units::exponent<dim_frequency, -1, 2>> {};
 
-template<UnitOf<dim_amplitude_spectral_density> U, QuantityValue Rep = double>
+template<UnitOf<dim_amplitude_spectral_density> U, Representation Rep = double>
 using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, Rep>;
 
 }

@@ -33,7 +33,7 @@ struct farad_per_metre : unit<farad_per_metre> {};
 
 struct dim_permittivity : isq::dim_permittivity<dim_permittivity, farad_per_metre, dim_capacitance, dim_length> {};
 
-template<UnitOf<dim_permittivity> U, QuantityValue Rep = double>
+template<UnitOf<dim_permittivity> U, Representation Rep = double>
 using permittivity = quantity<dim_permittivity, U, Rep>;
 
 inline namespace literals {

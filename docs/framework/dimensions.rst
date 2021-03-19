@@ -79,8 +79,8 @@ you can use a quantity argument instead of a quantity kind.
     struct height_kind : kind<height_kind, dim_length> {};
     struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
 
-    template <Unit U, QuantityValue Rep = double> using height = quantity_kind<height_kind, U, Rep>;
-    template <Unit U, QuantityValue Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
+    template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
+    template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
 
     height h{100 * m};
     rate_of_climb rate = h / (25 * s);
@@ -92,8 +92,8 @@ you can use a quantity argument instead of a quantity kind.
     struct width_kind : kind<width_kind, dim_length> {};
     struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
 
-    template <Unit U, QuantityValue Rep = double> using width = quantity_kind<width_kind, U, Rep>;
-    template <Unit U, QuantityValue Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
+    template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
+    template <Unit U, Representation Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
 
     width w{5 * m};
     horizontal_area area1 = w * w;

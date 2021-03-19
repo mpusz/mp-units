@@ -33,7 +33,7 @@ struct watt_per_metre_kelvin : unit<watt_per_metre_kelvin> {};
 
 struct dim_thermal_conductivity : isq::dim_thermal_conductivity<dim_thermal_conductivity, watt_per_metre_kelvin, dim_power, dim_length, dim_thermodynamic_temperature> {};
 
-template<UnitOf<dim_thermal_conductivity> U, QuantityValue Rep = double>
+template<UnitOf<dim_thermal_conductivity> U, Representation Rep = double>
 using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
 
 inline namespace literals {

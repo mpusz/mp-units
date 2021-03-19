@@ -28,16 +28,16 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity_point;
 
-template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
+template<Kind K, UnitOf<typename K::dimension> U, Representation Rep>
 class quantity_kind;
 
-template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep>
+template<PointKind PK, UnitOf<typename PK::dimension> U, Representation Rep>
 class quantity_point_kind;
 
 namespace detail {
@@ -73,7 +73,7 @@ struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep>
 
 }  // namespace detail
 
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2, QuantityValue Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2, Representation Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
 using common_quantity = TYPENAME detail::common_quantity_impl<Q1, Q2, Rep>::type;
 
 template<QuantityPoint QP1, QuantityPointEquivalentTo<QP1> QP2>

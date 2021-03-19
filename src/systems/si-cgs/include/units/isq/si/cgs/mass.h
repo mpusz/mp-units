@@ -31,7 +31,7 @@ using si::gram;
 
 struct dim_mass : isq::dim_mass<gram> {};
 
-template<UnitOf<dim_mass> U, QuantityValue Rep = double>
+template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
 inline namespace literals {

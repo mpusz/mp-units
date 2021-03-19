@@ -38,7 +38,7 @@ namespace units {
  * @tparam U the measurement unit of the quantity point kind
  * @tparam Rep the type to be used to represent values of the quantity point kind
  */
-template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep = double>
+template<PointKind PK, UnitOf<typename PK::dimension> U, Representation Rep = double>
 class quantity_point_kind {
 public:
   using point_kind_type = PK;

@@ -1,7 +1,7 @@
 # Release notes
 
 - **0.7.0 WIP**
-  - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
+  - (!) refactor: `ScalableNumber` renamed to `Representation`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
   - (!) refactor: Refactored the library file tree
   - (!) refactor: `quantity::count()` renamed to `quantity::number()`

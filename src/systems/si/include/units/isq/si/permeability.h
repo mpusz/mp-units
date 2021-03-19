@@ -33,7 +33,7 @@ struct henry_per_metre : unit<henry_per_metre> {};
 
 struct dim_permeability : isq::dim_permeability<dim_permeability, henry_per_metre, dim_inductance, dim_length> {};
 
-template<UnitOf<dim_permeability> U, QuantityValue Rep = double>
+template<UnitOf<dim_permeability> U, Representation Rep = double>
 using permeability = quantity<dim_permeability, U, Rep>;
 
 inline namespace literals {

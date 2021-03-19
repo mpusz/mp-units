@@ -68,7 +68,7 @@ Concepts
     satisfy :expr:`Quantity<typename T::value_type> || QuantityLike<typename T::value_type>` recursively
     (i.e. ``std::optional<si::length<si::metre>>``).
 
-.. concept:: template<typename T> QuantityValue
+.. concept:: template<typename T> Representation
 
     A concept matching types that can be used as a `Quantity` representation type. Satisfied
     by types that match ``(!Quantity<T>) && (!QuantityLike<T>) && (!WrappedQuantity<T>) && std::regular<T>``

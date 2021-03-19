@@ -33,7 +33,7 @@ struct mole : named_unit<mole, "mol", prefix> {};
 
 struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 
-template<UnitOf<dim_amount_of_substance> U, QuantityValue Rep = double>
+template<UnitOf<dim_amount_of_substance> U, Representation Rep = double>
 using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 
 inline namespace literals {

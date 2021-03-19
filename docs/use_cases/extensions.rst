@@ -121,7 +121,7 @@ coherent unit::
     struct desk_per_hour : deduced_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
 
     // a quantity of our dimension
-    template<UnitOf<dim_desk_rate> U, QuantityValue Rep = double>
+    template<UnitOf<dim_desk_rate> U, Representation Rep = double>
     using desk_rate = quantity<dim_desk_rate, U, Rep>;
 
     // a concept matching the above quantity
@@ -150,7 +150,7 @@ define a new base dimension, its units, quantity helper, concept, and UDLs::
     struct person : named_unit<person, "person", no_prefix> {};
     struct dim_people : base_dimension<"people", person> {};
 
-    template<UnitOf<dim_people> U, QuantityValue Rep = double>
+    template<UnitOf<dim_people> U, Representation Rep = double>
     using people = quantity<dim_people, U, Rep>;
 
     template<typename T>
@@ -169,7 +169,7 @@ With the above we can now define a new derived dimension::
 
     struct person_per_desk : deduced_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 
-    template<UnitOf<dim_occupancy_rate> U, QuantityValue Rep = double>
+    template<UnitOf<dim_occupancy_rate> U, Representation Rep = double>
     using occupancy_rate = quantity<dim_occupancy_rate, U, Rep>;
 
     template<typename T>
@@ -216,7 +216,7 @@ Such units do not share their references with base units of other systems:
 
     struct dim_length : base_dimension<"L", foot> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     }  // namespace fps
@@ -236,7 +236,7 @@ different systems:
 
     struct dim_length : base_dimension<"L", metre> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     namespace fps {
@@ -246,7 +246,7 @@ different systems:
 
     struct dim_length : base_dimension<"L", foot> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     }  // namespace fps

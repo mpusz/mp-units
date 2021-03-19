@@ -34,7 +34,7 @@ struct gigabaud : prefixed_alias_unit<isq::si::gigahertz, isq::si::giga, baud> {
 struct terabaud : prefixed_alias_unit<isq::si::terahertz, isq::si::tera, baud> {};
 struct petabaud : prefixed_alias_unit<isq::si::petahertz, isq::si::peta, baud> {};
 
-template<UnitOf<isq::si::dim_frequency> U, QuantityValue Rep = double>
+template<UnitOf<isq::si::dim_frequency> U, Representation Rep = double>
 using symbolrate = quantity<isq::si::dim_frequency, U, Rep>;
 
 inline namespace literals {

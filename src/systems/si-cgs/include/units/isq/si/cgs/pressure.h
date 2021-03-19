@@ -34,7 +34,7 @@ struct barye : named_unit<barye, "Ba", si::prefix> {};
 
 struct dim_pressure : isq::dim_pressure<dim_pressure, barye, dim_force, dim_area> {};
 
-template<UnitOf<dim_pressure> U, QuantityValue Rep = double>
+template<UnitOf<dim_pressure> U, Representation Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
 inline namespace literals {

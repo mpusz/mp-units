@@ -54,7 +54,7 @@ struct yottavolt : prefixed_unit<yottavolt, yotta, volt> {};
 
 struct dim_voltage : isq::dim_voltage<dim_voltage, volt, dim_power, dim_electric_current> {};
 
-template<UnitOf<dim_voltage> U, QuantityValue Rep = double>
+template<UnitOf<dim_voltage> U, Representation Rep = double>
 using voltage = quantity<dim_voltage, U, Rep>;
 
 inline namespace literals {

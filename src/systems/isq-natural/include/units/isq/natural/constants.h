@@ -26,7 +26,7 @@
 
 namespace units::isq::natural {
 
-template<QuantityValue Rep = double>
+template<Representation Rep = double>
 inline constexpr auto speed_of_light = speed<one, Rep>(1);
 
 }  // namespace units::isq::natural

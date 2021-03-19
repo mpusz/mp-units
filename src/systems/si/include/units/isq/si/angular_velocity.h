@@ -34,7 +34,7 @@ struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω",
 
 struct dim_angular_velocity : isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};
 
-template<UnitOf<dim_angular_velocity> U, QuantityValue Rep = double>
+template<UnitOf<dim_angular_velocity> U, Representation Rep = double>
 using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 
 inline namespace literals {

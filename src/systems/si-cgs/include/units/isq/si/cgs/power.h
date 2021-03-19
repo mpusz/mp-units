@@ -33,7 +33,7 @@ struct erg_per_second : unit<erg_per_second> {};
 
 struct dim_power : isq::dim_power<dim_power, erg_per_second, dim_energy, dim_time> {};
 
-template<UnitOf<dim_power> U, QuantityValue Rep = double>
+template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {

@@ -49,7 +49,7 @@ struct yottawatt : prefixed_unit<yottawatt, yotta, watt> {};
 
 struct dim_power : isq::dim_power<dim_power, watt, dim_energy, dim_time> {};
 
-template<UnitOf<dim_power> U, QuantityValue Rep = double>
+template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {

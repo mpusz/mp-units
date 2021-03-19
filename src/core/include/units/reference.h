@@ -27,7 +27,7 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
 template<Dimension D, UnitOf<D> U>
@@ -102,7 +102,7 @@ struct reference {
   template<Reference R2>
   [[nodiscard]] friend constexpr reference_divide<reference, R2> operator/(reference, R2) { return {}; }
 
-  template<QuantityValue Rep>
+  template<Representation Rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
   {
     return quantity<D, U, Rep>(lhs);

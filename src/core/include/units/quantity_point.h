@@ -37,7 +37,7 @@ namespace units {
  * @tparam U a measurement unit of the quantity point
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-template<Dimension D, UnitOf<D> U, QuantityValue Rep = double>
+template<Dimension D, UnitOf<D> U, Representation Rep = double>
 class quantity_point {
 public:
   using quantity_type = quantity<D, U, Rep>;
@@ -180,8 +180,8 @@ public:
 
 };
 
-template<QuantityValue V>
-explicit(false) quantity_point(V) -> quantity_point<dim_one, one, V>;
+template<Representation Rep>
+explicit(false) quantity_point(Rep) -> quantity_point<dim_one, one, Rep>;
 
 template<QuantityLike Q>
 quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,

@@ -51,7 +51,7 @@ struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, r
 
 struct dim_length : isq::dim_length<foot> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {

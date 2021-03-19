@@ -72,7 +72,7 @@ concept QuantityKindRelatedTo = QuantityKind<QK1> && QuantityKind<QK2> &&
  * @tparam U the measurement unit of the quantity kind
  * @tparam Rep the type to be used to represent values of the quantity kind
  */
-template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep = double>
+template<Kind K, UnitOf<typename K::dimension> U, Representation Rep = double>
 class quantity_kind {
 public:
   using kind_type = K;
@@ -239,21 +239,21 @@ public:
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only
-  template<QuantityValue Value>
+  template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const quantity_kind& qk, const Value& v)
     requires requires(quantity_type q) { { q * v } -> Quantity; }
   {
     return detail::make_quantity_kind<quantity_kind>(qk.common() * v);
   }
 
-  template<QuantityValue Value>
+  template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const Value& v, const quantity_kind& qk)
     requires requires(quantity_type q) { { v * q } -> Quantity; }
   {
     return detail::make_quantity_kind<quantity_kind>(v * qk.common());
   }
 
-  template<QuantityValue Value>
+  template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const quantity_kind& qk, const Value& v)
     requires requires(quantity_type q) { { q / v } -> Quantity; }
   {
@@ -261,7 +261,7 @@ public:
     return detail::make_quantity_kind<quantity_kind>(qk.common() / v);
   }
 
-  template<QuantityValue Value>
+  template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const Value& v, const quantity_kind& qk)
     requires requires(quantity_type q) { { v / q } -> Quantity; }
   {
@@ -269,7 +269,7 @@ public:
     return detail::downcasted_kind<quantity_kind>(v / qk.common());
   }
 
-  template<QuantityValue Value>
+  template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator%(const quantity_kind& qk, const Value& v)
     requires requires(quantity_type q) { q % v; }
   {

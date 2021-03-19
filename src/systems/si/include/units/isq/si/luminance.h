@@ -32,7 +32,7 @@ namespace units::isq::si {
 struct candela_per_metre_sq : unit<candela_per_metre_sq> {};
 struct dim_luminance : isq::dim_luminance<dim_luminance, candela_per_metre_sq, dim_luminous_intensity, dim_length> {};
 
-template<UnitOf<dim_luminance> U, QuantityValue Rep = double>
+template<UnitOf<dim_luminance> U, Representation Rep = double>
 using luminance = quantity<dim_luminance, U, Rep>;
 
 inline namespace literals {

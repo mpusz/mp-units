@@ -32,7 +32,7 @@ namespace units::isq::si {
 struct joule_per_metre_cub : unit<joule_per_metre_cub> {};
 struct dim_energy_density : isq::dim_energy_density<dim_energy_density, joule_per_metre_cub, dim_energy, dim_volume> {};
 
-template<UnitOf<dim_energy_density> U, QuantityValue Rep = double>
+template<UnitOf<dim_energy_density> U, Representation Rep = double>
 using energy_density = quantity<dim_energy_density, U, Rep>;
 
 inline namespace literals {

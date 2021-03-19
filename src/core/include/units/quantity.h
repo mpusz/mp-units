@@ -73,11 +73,11 @@ concept safe_castable_to_ = // exposition only
 template<typename Func, typename T, typename U>
 concept quantity_value_for_ =
   std::regular_invocable<Func, T, U> &&
-  QuantityValue<std::invoke_result_t<Func, T, U>>;
+  Representation<std::invoke_result_t<Func, T, U>>;
 
 template<typename T, typename Func, typename U, typename V>
 concept invoke_result_convertible_to_ =
-  QuantityValue<T> &&
+  Representation<T> &&
   quantity_value_for_<Func, U, V> &&
   safe_convertible_to_<T, std::invoke_result_t<Func, U, V>>;
 
@@ -104,7 +104,7 @@ using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension,
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<Dimension D, UnitOf<D> U, QuantityValue Rep = double>
+template<Dimension D, UnitOf<D> U, Representation Rep = double>
 class quantity {
   Rep number_;
 public:
@@ -381,8 +381,8 @@ public:
 };
 
 // CTAD
-template<QuantityValue V>
-explicit(false) quantity(V) -> quantity<dim_one, one, V>;
+template<Representation Rep>
+explicit(false) quantity(Rep) -> quantity<dim_one, one, Rep>;
 
 template<QuantityLike Q>
 explicit quantity(Q) -> quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;

@@ -53,7 +53,7 @@ struct yottagray : prefixed_unit<yottagray, yotta, gray> {};
 
 struct dim_absorbed_dose : isq::dim_absorbed_dose<dim_absorbed_dose, gray, dim_energy, dim_mass> {};
 
-template<UnitOf<dim_absorbed_dose> U, QuantityValue Rep = double>
+template<UnitOf<dim_absorbed_dose> U, Representation Rep = double>
 using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 
 inline namespace literals {

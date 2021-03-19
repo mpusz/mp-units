@@ -32,7 +32,7 @@ namespace units::isq::si::cgs {
 struct centimetre_per_second : unit<centimetre_per_second> {};
 struct dim_speed : isq::dim_speed<dim_speed, centimetre_per_second, dim_length, dim_time> {};
 
-template<UnitOf<dim_speed> U, QuantityValue Rep = double>
+template<UnitOf<dim_speed> U, Representation Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
 inline namespace literals {

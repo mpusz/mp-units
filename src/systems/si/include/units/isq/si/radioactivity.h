@@ -52,7 +52,7 @@ struct yottabecquerel : prefixed_unit<yottabecquerel, yotta, becquerel> {};
 
 struct dim_radioactivity : isq::dim_radioactivity<dim_radioactivity, becquerel, dim_time> {};
 
-template<UnitOf<dim_radioactivity> U, QuantityValue Rep = double>
+template<UnitOf<dim_radioactivity> U, Representation Rep = double>
 using radioactivity = quantity<dim_radioactivity, U, Rep>;
 
 inline namespace literals {

@@ -31,7 +31,7 @@ namespace units::isq::si {
 struct volt_per_metre : unit<volt_per_metre> {};
 struct dim_electric_field_strength : isq::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
 
-template<UnitOf<dim_electric_field_strength> U, QuantityValue Rep = double>
+template<UnitOf<dim_electric_field_strength> U, Representation Rep = double>
 using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
 
 inline namespace literals {

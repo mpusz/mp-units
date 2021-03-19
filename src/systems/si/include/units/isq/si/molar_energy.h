@@ -34,7 +34,7 @@ struct joule_per_mole : unit<joule_per_mole> {};
 
 struct dim_molar_energy : isq::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_amount_of_substance> {};
 
-template<UnitOf<dim_molar_energy> U, QuantityValue Rep = double>
+template<UnitOf<dim_molar_energy> U, Representation Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;
 
 inline namespace literals {

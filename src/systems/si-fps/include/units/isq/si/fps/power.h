@@ -37,7 +37,7 @@ struct foot_pound_force_per_second : deduced_unit<foot_pound_force_per_second, d
 
 struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio(550), foot_pound_force_per_second> {};
 
-template<UnitOf<dim_power> U, QuantityValue Rep = double>
+template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
 inline namespace literals {

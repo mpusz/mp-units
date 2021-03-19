@@ -53,7 +53,7 @@ struct yottaampere : prefixed_unit<yottaampere, yotta, ampere> {};
 
 struct dim_electric_current : isq::dim_electric_current<ampere> {};
 
-template<UnitOf<dim_electric_current> U, QuantityValue Rep = double>
+template<UnitOf<dim_electric_current> U, Representation Rep = double>
 using electric_current = quantity<dim_electric_current, U, Rep>;
 
 inline namespace literals {

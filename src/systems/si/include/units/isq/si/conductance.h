@@ -49,7 +49,7 @@ struct yottasiemens : prefixed_unit<yottasiemens, yotta, siemens> {};
 
 struct dim_conductance : isq::dim_conductance<dim_conductance, siemens, dim_resistance> {};
 
-template<UnitOf<dim_conductance> U, QuantityValue Rep = double>
+template<UnitOf<dim_conductance> U, Representation Rep = double>
 using conductance = quantity<dim_conductance, U, Rep>;
 
 inline namespace literals {

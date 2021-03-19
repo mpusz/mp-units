@@ -39,7 +39,7 @@ struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound
 
 
 
-template<UnitOf<dim_energy> U, QuantityValue Rep = double>
+template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
 

@@ -18,7 +18,7 @@ For example the speed of light constant in :term:`SI` is defined as::
 
     namespace si::si2019 {
 
-    template<QuantityValue Rep = double>
+    template<Representation Rep = double>
     inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299792458);
 
     }
@@ -27,7 +27,7 @@ The same constant defined for natural units may be provided as::
 
     namespace natural {
 
-    template<QuantityValue Rep = double>
+    template<Representation Rep = double>
     inline constexpr auto speed_of_light = speed<one, Rep>(1);
 
     }

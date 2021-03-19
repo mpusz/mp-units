@@ -34,7 +34,7 @@ struct dyne : named_unit<dyne, "dyn", si::prefix> {};
 
 struct dim_force : isq::dim_force<dim_force, dyne, dim_mass, dim_acceleration> {};
 
-template<UnitOf<dim_force> U, QuantityValue Rep = double>
+template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
 inline namespace literals {

@@ -337,7 +337,7 @@ concept QuantityLike = detail::is_quantity_like<T>;
 template<typename T>
 concept QuantityPointLike = detail::is_quantity_point_like<T>;
 
-// QuantityValue
+// Representation
 
 template<typename T, typename U>
 concept common_type_with_ = // exposition only
@@ -397,7 +397,7 @@ concept wrapped_quantity_ = // exposition only
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept QuantityValue =
+concept Representation =
   (!Quantity<T>) &&
   (!QuantityLike<T>) &&
   (!wrapped_quantity_<T>) &&
@@ -413,7 +413,7 @@ template<typename T>
     typename quantity_like_traits<T>::rep;
     requires Dimension<typename quantity_like_traits<T>::dimension>;
     requires Unit<typename quantity_like_traits<T>::unit>;
-    requires QuantityValue<typename quantity_like_traits<T>::rep>;
+    requires Representation<typename quantity_like_traits<T>::rep>;
     { quantity_like_traits<T>::number(q) } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
   }
 inline constexpr bool is_quantity_like<T> = true;
@@ -425,7 +425,7 @@ template<typename T>
     typename quantity_point_like_traits<T>::rep;
     requires Dimension<typename quantity_point_like_traits<T>::dimension>;
     requires Unit<typename quantity_point_like_traits<T>::unit>;
-    requires QuantityValue<typename quantity_point_like_traits<T>::rep>;
+    requires Representation<typename quantity_point_like_traits<T>::rep>;
     { quantity_point_like_traits<T>::relative(q) } -> QuantityLike;
   }
 inline constexpr bool is_quantity_point_like<T> = true;

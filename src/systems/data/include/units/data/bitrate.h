@@ -47,7 +47,7 @@ struct petabit_per_second : deduced_unit<petabit_per_second, dim_bitrate, petabi
 template<typename T>
 concept Bitrate = QuantityOf<T, dim_bitrate>;
 
-template<UnitOf<dim_bitrate> U, QuantityValue Rep = double>
+template<UnitOf<dim_bitrate> U, Representation Rep = double>
 using bitrate = quantity<dim_bitrate, U, Rep>;
 
 inline namespace literals {

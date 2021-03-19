@@ -40,7 +40,7 @@ struct dim_one : derived_dimension<dim_one, one> {};
 template<typename T>
 concept Dimensionless = QuantityOf<T, dim_one>;
 
-template<UnitOf<dim_one> U, QuantityValue Rep = double>
+template<UnitOf<dim_one> U, Representation Rep = double>
 using dimensionless = quantity<dim_one, U, Rep>;
 
 }  // namespace units

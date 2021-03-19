@@ -48,7 +48,7 @@ struct yottahertz : prefixed_unit<yottahertz, yotta, hertz> {};
 
 struct dim_frequency : isq::dim_frequency<dim_frequency, hertz, dim_time> {};
 
-template<UnitOf<dim_frequency> U, QuantityValue Rep = double>
+template<UnitOf<dim_frequency> U, Representation Rep = double>
 using frequency = quantity<dim_frequency, U, Rep>;
 
 inline namespace literals {

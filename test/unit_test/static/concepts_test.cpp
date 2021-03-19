@@ -93,14 +93,14 @@ static_assert(UnitOf<si::kilometre, si::dim_length>);
 static_assert(UnitOf<si::fps::mile, si::dim_length>);
 static_assert(!UnitOf<si::second, si::dim_length>);
 
-// QuantityValue
+// Representation
 
-static_assert(QuantityValue<int>);
-static_assert(QuantityValue<std::complex<double>>);
-static_assert(!QuantityValue<si::length<si::metre>>);
-static_assert(!QuantityValue<std::optional<si::length<si::metre>>>);
-static_assert(!QuantityValue<std::mutex>);
-static_assert(!QuantityValue<std::string>);
+static_assert(Representation<int>);
+static_assert(Representation<std::complex<double>>);
+static_assert(!Representation<si::length<si::metre>>);
+static_assert(!Representation<std::optional<si::length<si::metre>>>);
+static_assert(!Representation<std::mutex>);
+static_assert(!Representation<std::string>);
 
 // Quantity
 

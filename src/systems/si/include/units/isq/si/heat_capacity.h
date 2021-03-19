@@ -39,13 +39,13 @@ struct dim_heat_capacity : isq::dim_heat_capacity<dim_heat_capacity, joule_per_k
 struct dim_specific_heat_capacity : isq::dim_specific_heat_capacity<dim_specific_heat_capacity, joule_per_kilogram_kelvin, dim_heat_capacity, dim_mass> {};
 struct dim_molar_heat_capacity : isq::dim_molar_heat_capacity<dim_molar_heat_capacity, joule_per_mole_kelvin, dim_heat_capacity, dim_amount_of_substance> {};
 
-template<UnitOf<dim_heat_capacity> U, QuantityValue Rep = double>
+template<UnitOf<dim_heat_capacity> U, Representation Rep = double>
 using heat_capacity = quantity<dim_heat_capacity, U, Rep>;
 
-template<UnitOf<dim_specific_heat_capacity> U, QuantityValue Rep = double>
+template<UnitOf<dim_specific_heat_capacity> U, Representation Rep = double>
 using specific_heat_capacity = quantity<dim_specific_heat_capacity, U, Rep>;
 
-template<UnitOf<dim_molar_heat_capacity> U, QuantityValue Rep = double>
+template<UnitOf<dim_molar_heat_capacity> U, Representation Rep = double>
 using molar_heat_capacity = quantity<dim_molar_heat_capacity, U, Rep>;
 
 inline namespace literals {

@@ -31,7 +31,7 @@ using si::centimetre;
 
 struct dim_length : isq::dim_length<centimetre> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 inline namespace literals {

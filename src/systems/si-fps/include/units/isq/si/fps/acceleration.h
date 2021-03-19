@@ -31,7 +31,7 @@ namespace units::isq::si::fps {
 struct foot_per_second_sq : unit<foot_per_second_sq> {};
 struct dim_acceleration : isq::dim_acceleration<dim_acceleration, foot_per_second_sq, dim_length, dim_time> {};
 
-template<UnitOf<dim_acceleration> U, QuantityValue Rep = double>
+template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
 inline namespace literals {

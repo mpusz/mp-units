@@ -62,8 +62,8 @@ namespace {
 using namespace units;
 using namespace units::isq::si;
 
-static_assert(QuantityValue<min_impl<int>>);
-static_assert(QuantityValue<min_impl<double>>);
+static_assert(Representation<min_impl<int>>);
+static_assert(Representation<min_impl<double>>);
 
 // construction from a value
 static_assert(std::constructible_from<length<metre, min_impl<int>>, min_impl<int>>);

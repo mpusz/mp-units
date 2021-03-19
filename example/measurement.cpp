@@ -120,7 +120,7 @@ private:
 
 namespace {
 
-static_assert(units::QuantityValue<measurement<double>>);
+static_assert(units::Representation<measurement<double>>);
 
 void example()
 {

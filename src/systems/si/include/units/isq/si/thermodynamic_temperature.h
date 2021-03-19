@@ -32,7 +32,7 @@ struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
 struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin> {};
 
-template<UnitOf<dim_thermodynamic_temperature> U, QuantityValue Rep = double>
+template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double>
 using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
 inline namespace literals {

@@ -33,7 +33,7 @@ struct coulomb : named_unit<coulomb, "C", prefix> {};
 
 struct dim_electric_charge : isq::dim_electric_charge<dim_electric_charge, coulomb, dim_time, dim_electric_current> {};
 
-template<UnitOf<dim_electric_charge> U, QuantityValue Rep = double>
+template<UnitOf<dim_electric_charge> U, Representation Rep = double>
 using electric_charge = quantity<dim_electric_charge, U, Rep>;
 
 inline namespace literals {

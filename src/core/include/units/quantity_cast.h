@@ -36,16 +36,16 @@
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, QuantityValue Rep>
+template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity_point;
 
-template<Kind K, UnitOf<typename K::dimension> U, QuantityValue Rep>
+template<Kind K, UnitOf<typename K::dimension> U, Representation Rep>
 class quantity_kind;
 
-template<PointKind PK, UnitOf<typename PK::dimension> U, QuantityValue Rep>
+template<PointKind PK, UnitOf<typename PK::dimension> U, Representation Rep>
 class quantity_point_kind;
 
 namespace detail {
@@ -211,7 +211,7 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<QuantityValue ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
+template<Representation ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
   requires std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {

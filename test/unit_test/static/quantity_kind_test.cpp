@@ -58,17 +58,17 @@ struct time_kind : kind<time_kind, dim_time> {};
 
 struct cgs_width_kind : kind<cgs_width_kind, cgs::dim_length> {};
 
-template <Unit U, QuantityValue Rep = double> using radius = quantity_kind<radius_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using width = quantity_kind<width_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using height = quantity_kind<height_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using radius = quantity_kind<radius_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
 
-template <Unit U, QuantityValue Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
 
-template <Unit U = one, QuantityValue Rep = double> using apples = quantity_kind<apple, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using oranges = quantity_kind<orange, U, Rep>;
+template <Unit U = one, Representation Rep = double> using apples = quantity_kind<apple, U, Rep>;
+template <Unit U = one, Representation Rep = double> using oranges = quantity_kind<orange, U, Rep>;
 
-template <Unit U, QuantityValue Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
 
 /////////////
 // concepts
