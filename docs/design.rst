@@ -13,4 +13,5 @@ Design Deep Dive
 
     design/directories
     design/quantity
+    design/quantity_kind
     design/downcasting
