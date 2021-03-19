@@ -106,7 +106,7 @@ using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension,
  */
 template<Dimension D, UnitOf<D> U, QuantityValue Rep = double>
 class quantity {
-  Rep value_;
+  Rep number_;
 public:
   // member types and values
   using dimension = D;
@@ -146,10 +146,10 @@ public:
 
   template<safe_convertible_to_<rep> Value>
   constexpr explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
-  quantity(const Value& v) : value_(v) {}
+  quantity(const Value& v) : number_(v) {}
 
   template<safe_castable_to_<quantity> Q>
-  constexpr explicit(false) quantity(const Q& q) : value_(quantity_cast<quantity>(q).number()) {}
+  constexpr explicit(false) quantity(const Q& q) : number_(quantity_cast<quantity>(q).number()) {}
 
   template<QuantityLike Q>
     requires safe_castable_to_<quantity_like_type<Q>, quantity>
@@ -159,7 +159,7 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // data access
-  [[nodiscard]] constexpr rep number() const noexcept { return value_; }
+  [[nodiscard]] constexpr rep number() const noexcept { return number_; }
 
   // member unary operators
   [[nodiscard]] constexpr Quantity auto operator+() const
@@ -179,40 +179,40 @@ public:
   constexpr quantity& operator++()
     requires requires(rep v) { { ++v } -> std::same_as<rep&>; }
   {
-    ++value_;
+    ++number_;
     return *this;
   }
 
   [[nodiscard]] constexpr quantity operator++(int)
     requires requires(rep v) { { v++ } -> std::same_as<rep>; }
   {
-    return quantity(value_++);
+    return quantity(number_++);
   }
 
   constexpr quantity& operator--()
     requires requires(rep v) { { --v } -> std::same_as<rep&>; }
   {
-    --value_;
+    --number_;
     return *this;
   }
 
   [[nodiscard]] constexpr quantity operator--(int)
     requires requires(rep v) { { v-- } -> std::same_as<rep>; }
   {
-    return quantity(value_--);
+    return quantity(number_--);
   }
 
   constexpr quantity& operator+=(const quantity& q)
     requires requires(rep a, rep b) { { a += b } -> std::same_as<rep&>; }
   {
-    value_ += q.number();
+    number_ += q.number();
     return *this;
   }
 
   constexpr quantity& operator-=(const quantity& q)
     requires requires(rep a, rep b) { { a -= b } -> std::same_as<rep&>; }
   {
-    value_ -= q.number();
+    number_ -= q.number();
     return *this;
   }
 
@@ -220,14 +220,14 @@ public:
   constexpr quantity& operator*=(const Rep2& rhs)
     requires requires(rep a, const Rep2 b) { { a *= b } -> std::same_as<rep&>; }
   {
-    value_ *= rhs;
+    number_ *= rhs;
     return *this;
   }
   template<typename Rep2>
   constexpr quantity& operator*=(const dimensionless<units::one, Rep2>& rhs)
     requires requires(rep a, const Rep2 b) { { a *= b } -> std::same_as<rep&>; }
   {
-    value_ *= rhs.number();
+    number_ *= rhs.number();
     return *this;
   }
 
@@ -236,7 +236,7 @@ public:
     requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
-    value_ /= rhs;
+    number_ /= rhs;
     return *this;
   }
   template<typename Rep2>
@@ -244,7 +244,7 @@ public:
     requires requires(rep a, const Rep2 b) { { a /= b } -> std::same_as<rep&>; }
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
-    value_ /= rhs.number();
+    number_ /= rhs.number();
     return *this;
   }
 
@@ -254,7 +254,7 @@ public:
              requires(rep a, const Rep2 b) { { a %= b } -> std::same_as<rep&>; }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
-    value_ %= rhs;
+    number_ %= rhs;
     return *this;
   }
 
@@ -264,7 +264,7 @@ public:
              requires(rep a, const Rep2 b) { { a %= b } -> std::same_as<rep&>; }
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
-    value_ %= rhs.number();
+    number_ %= rhs.number();
     return *this;
   }
 
@@ -273,7 +273,7 @@ public:
              requires(rep a, rep b) { { a %= b } -> std::same_as<rep&>; }
   {
     gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
-    value_ %= q.number();
+    number_ %= q.number();
     return *this;
   }
 
