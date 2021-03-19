@@ -34,6 +34,9 @@ on:
     - 'example/**'
     - 'test/**'
 
+env:
+  CMAKE_GENERATOR: Ninja
+
 jobs:
   test_package:
     name: ${{ matrix.config.name }} ${{ matrix.build_type }}
@@ -79,10 +82,6 @@ jobs:
         #     docker_image: conanio/gcc10
         #   }
         build_type: [ "Release", "Debug" ]
-    env:
-      CC: ${{ matrix.config.compiler.cc }}
-      CXX: ${{ matrix.config.compiler.cxx }}
-      CMAKE_GENERATOR: Ninja
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
@@ -132,6 +131,10 @@ jobs:
       - name: Configure Conan
         shell: bash
         run: |
+          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            export CC=${{ matrix.config.compiler.cc }}
+            export CXX=${{ matrix.config.compiler.cxx }}
+          fi
           conan config init
           conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
           conan profile update settings.build_type=${{ matrix.build_type }} default
@@ -140,6 +143,12 @@ jobs:
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
+      - name: Add support for clang-12 to Conan's settings.yml
+        # TODO Remove when Conan will support clang-12 (after clang-12 release)
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        run: |
+          sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
