@@ -252,7 +252,7 @@ library release the following steps may be performed:
     Unfortunately, packages distributed via Conan-Center cannot force the minimum version
     of the C++ language used for your build process. This is why it is important to specify
     it in `Conan profile file <Conan Quick Intro>`_ and with ``target_compile_features`` command
-    for each CMake target directly linking with `mp-units::mp-units` in your project.
+    for each CMake target directly linking with ``mp-units::mp-units`` in your project.
 
 4. Download, build, and install Conan dependencies before running CMake configuration step:
 
