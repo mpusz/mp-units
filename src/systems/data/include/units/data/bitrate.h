@@ -38,6 +38,12 @@ struct gibibit_per_second : deduced_unit<gibibit_per_second, dim_bitrate, gibibi
 struct tebibit_per_second : deduced_unit<tebibit_per_second, dim_bitrate, tebibit, isq::si::second> {};
 struct pebibit_per_second : deduced_unit<pebibit_per_second, dim_bitrate, pebibit, isq::si::second> {};
 
+struct kilobit_per_second : deduced_unit<kilobit_per_second, dim_bitrate, kilobit, isq::si::second> {};
+struct megabit_per_second : deduced_unit<megabit_per_second, dim_bitrate, megabit, isq::si::second> {};
+struct gigabit_per_second : deduced_unit<gigabit_per_second, dim_bitrate, gigabit, isq::si::second> {};
+struct terabit_per_second : deduced_unit<terabit_per_second, dim_bitrate, terabit, isq::si::second> {};
+struct petabit_per_second : deduced_unit<petabit_per_second, dim_bitrate, petabit, isq::si::second> {};
+
 template<typename T>
 concept Bitrate = QuantityOf<T, dim_bitrate>;
 
@@ -54,6 +60,12 @@ constexpr auto operator"" _q_Gib_per_s(unsigned long long l) { gsl_ExpectsAudit(
 constexpr auto operator"" _q_Tib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<tebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_Pib_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<pebibit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 
+constexpr auto operator"" _q_kb_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<kilobit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mb_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<megabit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gb_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<gigabit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tb_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<terabit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pb_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return bitrate<petabit_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+
 }  // namespace literals
 
 namespace references {
@@ -64,6 +76,12 @@ inline constexpr auto Mib_per_s = reference<dim_bitrate, mebibit_per_second>{};
 inline constexpr auto Gib_per_s = reference<dim_bitrate, gibibit_per_second>{};
 inline constexpr auto Tib_per_s = reference<dim_bitrate, tebibit_per_second>{};
 inline constexpr auto Pib_per_s = reference<dim_bitrate, pebibit_per_second>{};
+
+inline constexpr auto kb_per_s = reference<dim_bitrate, kilobit_per_second>{};
+inline constexpr auto Mb_per_s = reference<dim_bitrate, megabit_per_second>{};
+inline constexpr auto Gb_per_s = reference<dim_bitrate, gigabit_per_second>{};
+inline constexpr auto Tb_per_s = reference<dim_bitrate, terabit_per_second>{};
+inline constexpr auto Pb_per_s = reference<dim_bitrate, petabit_per_second>{};
 
 }  // namespace references
 
