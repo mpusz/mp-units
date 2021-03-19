@@ -130,23 +130,20 @@ jobs:
         run: |
           pip install -U conan
       - name: Configure Conan
+        shell: bash
         run: |
           conan config init
           conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
+          conan profile update settings.build_type=${{ matrix.build_type }} default
+          conan profile update settings.compiler.cppstd=20 default
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
-      - name: Add support for clang-12 to Conan's settings.yml
-        # TODO Remove when Conan will support clang-12 (after clang-12 release)
-        if: matrix.config.compiler.type == 'CLANG'
-        shell: bash
-        run: |
-          sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
-          conan install ../.. -s compiler.cppstd=20 -s build_type=${{ matrix.build_type }} -b outdated -u
+          conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
         run: |
           cd build/${{ matrix.build_type }}
@@ -158,7 +155,7 @@ jobs:
       - name: Configure test_package CMake
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
-          conan install ../../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }}
+          conan install ../../..
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
         run: |
