@@ -34,19 +34,55 @@ on:
     - 'example/**'
     - 'test/**'
 
-env:
-  CC: gcc-10
-  CXX: g++-10
-  CMAKE_GENERATOR: Ninja
-
 jobs:
   test_package:
-    name: CMake test_package (${{ matrix.build_type }})
-    runs-on: ubuntu-20.04
+    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
+        config:
+        - {
+            name: "Windows MSVC 2019",
+            os: windows-latest,
+            compiler: { type: VISUAL, version: 16, cc: "cl", cxx: "cl" }
+          }
+        - {
+            name: "Ubuntu GCC 10.1.0",
+            os: ubuntu-18.04,
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu GCC 10.2.0",
+            os: ubuntu-20.04,
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libstdc++11",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libc++",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libc++"
+          }
+        # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
+        # - {
+        #     name: "Ubuntu GCC 10.2.0",
+        #     os: ubuntu-20.04,
+        #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+        #     docker_image: conanio/gcc10
+        #   }
         build_type: [ "Release", "Debug" ]
+    env:
+      CC: ${{ matrix.config.compiler.cc }}
+      CXX: ${{ matrix.config.compiler.cxx }}
+      CMAKE_GENERATOR: Ninja
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
@@ -60,6 +96,19 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - name: Install Clang
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        working-directory: ${{ env.HOME }}
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+      - name: Install Libc++
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        shell: bash
+        run: |
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
         run: |
           sudo apt install -y ninja-build
@@ -74,14 +123,24 @@ jobs:
         run: |
           conan config init
           conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
+          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
+          fi
+          conan profile show default
+      - name: Add support for clang-12 to Conan's settings.yml
+        # TODO Remove when Conan will support clang-12 (after clang-12 release)
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        run: |
+          sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
-          conan install ../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }} -b outdated -u
+          conan install ../.. -s compiler.cppstd=20 -s build_type=${{ matrix.build_type }} -b outdated -u
       - name: Configure mp-units CMake
         run: |
           cd build/${{ matrix.build_type }}
-          cmake ../../src -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Install mp-units
         run: |
           cd build/${{ matrix.build_type }}
@@ -90,7 +149,7 @@ jobs:
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }}
-          cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
         run: |
           cd test_package/build/${{ matrix.build_type }}
