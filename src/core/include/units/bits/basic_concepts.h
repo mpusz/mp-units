@@ -28,7 +28,6 @@
 #include <units/customization_points.h>
 #include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
-#include <functional>
 #include <cstdint>
 #include <utility>
 
