@@ -42,10 +42,10 @@ template<Representation Rep = double>
 inline constexpr auto elementary_charge = electric_charge<coulomb, Rep>(1.602176634e-19);
 
 template<Representation Rep = double>
-inline constexpr auto boltzmann_constant = energy<joule, Rep>(1.380649e-23) / temperature<kelvin, Rep>(1);
+inline constexpr auto boltzmann_constant = energy<joule, Rep>(1.380649e-23) / thermodynamic_temperature<kelvin, Rep>(1);
 
 template<Representation Rep = double>
-inline constexpr auto avogadro_constant = Rep(6.02214076e23) / substance<mole, Rep>(1);
+inline constexpr auto avogadro_constant = Rep(6.02214076e23) / amount_of_substance<mole, Rep>(1);
 
 template<Representation Rep = double>
 inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
