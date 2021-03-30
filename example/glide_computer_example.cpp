@@ -85,7 +85,7 @@ void print(const R& gliders)
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar)
-      fmt::print("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v, quantity_cast<units::one>(glide_ratio(g.polar[0])));
+      fmt::print("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v, units::quantity_cast<units::one>(glide_ratio(g.polar[0])));
     std::cout << "\n";
   }
 }
