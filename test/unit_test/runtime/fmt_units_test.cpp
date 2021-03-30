@@ -21,11 +21,6 @@
 // SOFTWARE.
 
 #include <units/bits/external/hacks.h> // IWYU pragma: keep
-
-#if defined(UNITS_COMP_MSVC)
-#pragma warning( disable : 4459 ) // Disable shadowing warning.
-#endif
-
 #include <units/format.h>
 #include <units/isq/iec80000/iec80000.h>
 #include <units/isq/si/iau/iau.h>

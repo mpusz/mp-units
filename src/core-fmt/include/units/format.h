@@ -26,21 +26,14 @@
 #include <units/quantity.h>
 #include <string_view>
 
-#ifdef _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4702) // C4702: unreachable code
-#endif //_MSC_VER
-
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
 // IWYU pragma: begin_exports
 #include <fmt/format.h>
 #include <fmt/locale.h>
 // IWYU pragma: end_exports
-
-// #include <string>
-
-#ifdef _MSC_VER
-#pragma warning (pop)
-#endif //_MSC_VER
+UNITS_DIAGNOSTIC_POP
 
 // Grammar
 // 

@@ -24,7 +24,12 @@
 
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
+
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 #include <fmt/format.h>
+UNITS_DIAGNOSTIC_POP
+
 #include <limits>
 #include <ostream>
 

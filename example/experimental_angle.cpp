@@ -21,17 +21,18 @@
 // SOFTWARE.
 
 #include <units/bits/external/hacks.h> // IWYU pragma: keep
+
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <units/generic/angle.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/force.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/torque.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
-#include <iostream>
+UNITS_DIAGNOSTIC_POP
 
-#if defined(UNITS_COMP_MSVC)
-#pragma warning( disable : 4459 ) // Disable shadowing warning.
-#endif
+#include <iostream>
 
 int main()
 {

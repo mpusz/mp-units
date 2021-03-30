@@ -25,7 +25,12 @@
 #include <units/chrono.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/si/international/length.h>
+
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 #include <fmt/format.h>
+UNITS_DIAGNOSTIC_POP
+
 #include <array>
 #include <exception>
 #include <iostream>

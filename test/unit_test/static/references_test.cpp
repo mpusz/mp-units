@@ -27,10 +27,6 @@
 #include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
 
-#if defined(UNITS_COMP_MSVC)
-#pragma warning( disable : 4459 ) // Disable shadowing warning.
-#endif
-
 using namespace units;
 using namespace units::isq;
 using namespace units::isq::si;
