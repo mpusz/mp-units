@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h> // IWYU pragma: keep
+
 // IWYU pragma: begin_exports
 #include <cstdlib>
 #include <compare>
