@@ -51,6 +51,7 @@ if(NOT UNITS_LIBCXX)
         glide_computer_example.cpp
     )
     target_link_libraries(glide_computer PRIVATE mp-units::core-fmt mp-units::si mp-units::si-international)
+    target_include_directories(glide_computer PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
     find_package(linear_algebra CONFIG REQUIRED)
     add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
