@@ -1,0 +1,7 @@
+[
+  { include: ["<functional>", "public", "<algorithm>", "public"] },
+  { include: ["<string>", "public", "<fmt/format.h>", "public"] },
+  { include: ["<memory>", "public", "<catch2/catch.hpp>", "public"] },
+  { include: ["<initializer_list>", "public", "<linear_algebra.hpp>", "public"] },
+  { symbol: ["abs", "private", "<cmath>", public]}
+]

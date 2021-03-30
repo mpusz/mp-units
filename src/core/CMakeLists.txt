@@ -39,7 +39,7 @@ target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE
     gsl::gsl-lite
 )
-target_include_directories(mp-units-core INTERFACE
+target_include_directories(mp-units-core ${units_as_system} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )

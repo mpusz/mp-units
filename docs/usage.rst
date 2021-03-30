@@ -159,6 +159,16 @@ UNITS_DOWNCAST_MODE
 Equivalent to `downcast_mode`_.
 
 
+UNITS_AS_SYSTEM_HEADERS
++++++++++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``OFF``
+
+Exports library as system headers.
+
+
 UNITS_BUILD_DOCS
 ++++++++++++++++
 
@@ -167,6 +177,17 @@ UNITS_BUILD_DOCS
 **Defaulted to**: ``ON``
 
 Enables project documentation generation.
+
+
+UNITS_IWYU
+++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``OFF``
+
+Enables include-what-you-use when compiling with a clang compiler.
+Additionally turns on `UNITS_AS_SYSTEM_HEADERS`.
 
 
 Installation and Reuse

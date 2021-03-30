@@ -34,9 +34,23 @@ set_warnings()
 # set all contracts checking in a Debug build
 add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 
-# enable static analysis
+# enable include-what-you-use
+option(UNITS_IWYU "Enables include-what-you-use" OFF)
+if(UNITS_IWYU)
+    include(include-what-you-use)
+    set_iwyu(
+        MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
+        NO_FORWARD_DECLARATIONS
+        QUOTED_INCLUDES_FIRST
+        MAX_LINE_LENGTH 120
+        NO_COMMENTS
+    )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(UNITS_AS_SYSTEM_HEADERS ON)
+    endif()
+endif()
+
 #enable_clang_tidy()
-#enable_iwyu()
 
 # add project code
 add_subdirectory(src)

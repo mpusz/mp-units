@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.3)
 
 macro(enable_clang_tidy)
     find_program(clang_tidy_cmd NAMES "clang-tidy")
@@ -31,15 +31,5 @@ macro(enable_clang_tidy)
             message(FATAL_ERROR "'${CMAKE_SOURCE_DIR}/.clang-tidy' configuration file not found!")
         endif()
         set(CMAKE_CXX_CLANG_TIDY "${clang_tidy_cmd}")
-    endif()
-endmacro()
-
-
-macro(enable_iwyu)
-    find_program(iwyu_cmd NAMES "include-what-you-use")
-    if(NOT iwyu_cmd)
-        message(WARNING "include-what-you-use not found!")
-    else()
-        set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${iwyu_cmd}")
     endif()
 endmacro()

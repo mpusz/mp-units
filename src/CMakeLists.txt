@@ -26,6 +26,11 @@ project(mp-units
     LANGUAGES CXX
 )
 
+option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+if(UNITS_AS_SYSTEM_HEADERS)
+    set(units_as_system SYSTEM)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
