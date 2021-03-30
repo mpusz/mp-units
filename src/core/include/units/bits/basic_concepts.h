@@ -32,6 +32,7 @@
 // IWYU pragma: end_exports
 
 #include <cstdint>
+#include <functional>
 #include <utility>
 
 namespace units {

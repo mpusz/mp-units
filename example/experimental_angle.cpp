@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/bits/external/hacks.h> // IWYU pragma: keep
 #include <units/generic/angle.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/force.h>
@@ -27,6 +28,10 @@
 #include <units/isq/si/torque.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
 #include <iostream>
+
+#if defined(UNITS_COMP_MSVC)
+#pragma warning( disable : 4459 ) // Disable shadowing warning.
+#endif
 
 int main()
 {
