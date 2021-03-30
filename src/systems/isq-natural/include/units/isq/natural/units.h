@@ -22,8 +22,12 @@
 
 #pragma once
 
-#include <units/unit.h>
+// IWYU pragma: begin_exports
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/prefixes.h>
+#include <units/unit.h>
 
 namespace units::isq::natural {
 

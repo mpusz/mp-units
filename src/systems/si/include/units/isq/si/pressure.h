@@ -22,11 +22,17 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/pressure.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/area.h>
 #include <units/isq/si/force.h>
 #include <units/isq/si/prefixes.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 

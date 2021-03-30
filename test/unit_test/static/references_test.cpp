@@ -20,17 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/bits/external/hacks.h"
-#include "units/isq/dimensions/length.h"
-#include "units/isq/dimensions/speed.h"
-#include "units/isq/si/length.h"
-#include "units/isq/si/mass.h"
-#include "units/isq/si/time.h"
-#include "units/isq/si/area.h"
-#include "units/isq/si/speed.h"
-#include <cassert>
-#include <cstdint>
-#include <type_traits>
+#include <units/bits/external/hacks.h>
+#include <units/bits/external/type_traits.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
 #if defined(UNITS_COMP_MSVC)
 #pragma warning( disable : 4459 ) // Disable shadowing warning.

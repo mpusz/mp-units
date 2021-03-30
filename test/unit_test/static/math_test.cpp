@@ -20,12 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/math.h"
 #include "test_tools.h"
-#include "units/isq/si/area.h"
-#include "units/isq/si/volume.h"
-#include "units/isq/si/international/area.h"
-#include "units/isq/si/international/volume.h"
+#include <units/math.h> // IWYU pragma: keep
+#include <units/isq/si/length.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/volume.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/international/area.h>
+#include <units/isq/si/international/volume.h>
 
 namespace {
 

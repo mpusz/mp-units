@@ -22,10 +22,15 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/dynamic_viscosity.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/time.h>
 #include <units/isq/si/pressure.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 
@@ -42,12 +47,6 @@ constexpr auto operator"" _q_Pa_s(unsigned long long l) { gsl_ExpectsAudit(std::
 constexpr auto operator"" _q_Pa_s(long double l) { return dynamic_viscosity<pascal_second, long double>(l); }
 
 }  // namespace literals
-
-namespace references {
-
-inline constexpr auto Pa_s = reference<dim_dynamic_viscosity, pascal_second>{};
-
-}  // namespace references
 
 }  // namespace units::isq::si
 

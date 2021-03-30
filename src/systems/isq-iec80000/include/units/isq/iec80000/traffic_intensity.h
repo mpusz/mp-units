@@ -23,9 +23,13 @@
 #pragma once
 
 #include <units/base_dimension.h>
+#include <units/unit.h>
+
+// IWYU pragma: begin_exports
 #include <units/quantity.h>
 #include <units/reference.h>
-#include <units/unit.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
 namespace units::isq::iec80000 {
 

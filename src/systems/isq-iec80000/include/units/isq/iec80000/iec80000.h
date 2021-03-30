@@ -22,7 +22,9 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/iec80000/modulation_rate.h>
 #include <units/isq/iec80000/storage_capacity.h>
 #include <units/isq/iec80000/traffic_intensity.h>
 #include <units/isq/iec80000/transfer_rate.h>
+// IWYU pragma: end_exports

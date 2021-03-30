@@ -29,7 +29,10 @@
 #include <units/bits/dim_unpack.h>
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/type_list.h>
+
+// IWYU pragma: begin_exports
 #include <units/exponent.h>
+// IWYU pragma: end_exports
 
 namespace units {
 

@@ -24,16 +24,7 @@
 #include <units/isq/si/area.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/force.h>
-#include <units/isq/si/fps/acceleration.h>
-#include <units/isq/si/fps/area.h>
-#include <units/isq/si/fps/energy.h>
-#include <units/isq/si/fps/force.h>
-#include <units/isq/si/fps/length.h>
-#include <units/isq/si/fps/mass.h>
-#include <units/isq/si/fps/power.h>
-#include <units/isq/si/fps/pressure.h>
-#include <units/isq/si/fps/speed.h>
-#include <units/isq/si/fps/time.h>
+#include <units/isq/si/fps/fps.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>

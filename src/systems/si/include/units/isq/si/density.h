@@ -22,11 +22,16 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/density.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/mass.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/prefixes.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 

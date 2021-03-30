@@ -22,11 +22,16 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/torque.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/energy.h>
 #include <units/generic/angle.h>
 #include <units/isq/si/prefixes.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 
@@ -44,11 +49,5 @@ constexpr auto operator"" _q_Nm_per_rad(unsigned long long l) { gsl_ExpectsAudit
 constexpr auto operator"" _q_Nm_per_rad(long double l) { return torque<newton_metre_per_radian, long double>(l); }
 
 }  // namespace literals
-
-namespace references {
-
-inline constexpr auto Nm_per_rad = reference<dim_torque, newton_metre_per_radian>{};
-
-}  // namespace references
 
 }  // namespace units::isq::si

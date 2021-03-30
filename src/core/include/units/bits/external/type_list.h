@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <units/bits/external/type_traits.h>
+#include <cstddef>
 
 #ifdef _MSC_VER
 #pragma warning (push)

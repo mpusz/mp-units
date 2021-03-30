@@ -20,12 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "test_tools.h"
-#include "units/generic/angle.h"
-#include "units/kind.h"
-#include "units/isq/si/length.h"
-#include "units/isq/si/area.h"
-#include "units/isq/si/speed.h"
+#include <units/bits/equivalent.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/type_traits.h>
+#include <units/generic/angle.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/kind.h>
+#include <type_traits>
 
 using namespace units;
 using namespace isq::si;

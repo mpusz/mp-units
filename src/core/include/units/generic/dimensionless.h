@@ -22,6 +22,10 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/quantity_cast.h>
 
 namespace units {

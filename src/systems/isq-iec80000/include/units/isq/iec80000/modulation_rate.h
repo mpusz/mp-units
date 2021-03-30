@@ -23,7 +23,14 @@
 #pragma once
 
 #include <units/isq/si/frequency.h>
+#include <units/isq/si/prefixes.h>
+#include <units/unit.h>
+
+// IWYU pragma: begin_exports
 #include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
 namespace units::isq::iec80000 {
 

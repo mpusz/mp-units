@@ -20,8 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/speed.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
+#include <exception>
 #include <iostream>
 
 namespace {

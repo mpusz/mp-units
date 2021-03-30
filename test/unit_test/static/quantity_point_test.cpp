@@ -20,14 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/quantity_point.h"
+#include <units/quantity_point.h>
 #include "test_tools.h"
-#include "units/chrono.h"
-#include "units/math.h"
-#include "units/isq/si/area.h"
-#include "units/isq/si/speed.h"
-#include "units/isq/si/volume.h"
-#include "units/isq/si/us/length.h"
+#include <units/bits/common_quantity.h>
+#include <units/bits/external/type_traits.h>
+#include <units/chrono.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/us/length.h>
+#include <units/isq/si/volume.h>
+#include <limits>
+#include <type_traits>
 #include <utility>
 
 namespace {

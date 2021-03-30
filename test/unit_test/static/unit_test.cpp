@@ -21,9 +21,12 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include "units/unit.h"
-#include "units/bits/equivalent.h"
-#include "units/isq/si/prefixes.h"
+#include <units/base_dimension.h>
+#include <units/bits/equivalent.h>
+#include <units/bits/external/downcasting.h>
+#include <units/derived_dimension.h>
+#include <units/isq/si/prefixes.h>
+#include <units/unit.h>
 
 namespace {
 

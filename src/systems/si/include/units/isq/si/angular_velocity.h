@@ -22,11 +22,15 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/angular_velocity.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/generic/angle.h>
 #include <units/isq/si/time.h>
-
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 

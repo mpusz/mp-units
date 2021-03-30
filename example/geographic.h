@@ -22,10 +22,15 @@
 
 #pragma once
 
-#include <units/format.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
+#include <fmt/format.h>
+#include <limits>
+#include <ostream>
+
+// IWYU pragma: begin_exports
 #include <compare>
+// IWYU pragma: end_exports
 
 namespace geographic {
 

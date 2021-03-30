@@ -22,9 +22,12 @@
 
 #pragma once
 
-#include <units/bits/external/hacks.h>
+// IWYU pragma: begin_exports
 #include <cstdlib>
 #include <compare>
+// IWYU pragma: end_exports
+
+#include <cstddef>
 
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 

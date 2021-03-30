@@ -22,15 +22,16 @@
 
 #pragma once
 
-#include <units/bits/external/hacks.h>
+// IWYU pragma: begin_exports
 #include <units/bits/math_concepts.h>
-#include <units/bits/ratio_maths.h>
 #include <units/bits/pow.h>
+#include <units/bits/ratio_maths.h>
 #include <units/bits/root.h>
 #include <cstdint>
+// IWYU pragma: end_exports
+
+#include <array>
 #include <numeric>
-#include <type_traits>
-#include <tuple>
 #include <gsl/gsl-lite.hpp>
 
 namespace units {

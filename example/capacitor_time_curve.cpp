@@ -20,11 +20,13 @@
     physical_quantities
 */
 
+#include <units/generic/dimensionless.h>
+#include <units/isq/dimensions/electric_current.h>
 #include <units/isq/si/capacitance.h>
 #include <units/isq/si/resistance.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/voltage.h>
-#include <units/math.h>
+#include <units/math.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
 #include <iostream>
 

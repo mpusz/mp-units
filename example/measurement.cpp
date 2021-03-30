@@ -21,9 +21,12 @@
 // SOFTWARE.
 
 #include <units/isq/si/acceleration.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <cmath>
-#include <compare>
+#include <exception>
 #include <iostream>
 
 namespace {

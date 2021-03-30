@@ -24,8 +24,10 @@
 
 #include <units/bits/external/downcasting.h>
 #include <units/bits/basic_concepts.h>
+// IWYU pragma: begin_exports
 #include <units/ratio.h>
 #include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
 namespace units {
 

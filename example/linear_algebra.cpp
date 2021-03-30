@@ -20,9 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/speed.h>
+#include <units/isq/si/energy.h> // IWYU pragma: keep
 #include <units/isq/si/force.h>
-#include <units/isq/si/energy.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h> // IWYU pragma: keep
 #include <units/format.h>
 #include <units/quantity_io.h>
 #include <linear_algebra.hpp>

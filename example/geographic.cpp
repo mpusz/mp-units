@@ -23,6 +23,7 @@
 #include "geographic.h"
 #include <cmath>
 #include <numbers>
+#include <type_traits>
 
 namespace {
 

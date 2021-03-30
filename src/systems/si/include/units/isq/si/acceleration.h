@@ -22,9 +22,14 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/acceleration.h>
-#include <units/isq/si/speed.h>
 #include <units/quantity.h>
+#include <units/symbol_text.h>
+#include <units/unit.h>
+// IWYU pragma: end_exports
+
+#include <units/isq/si/speed.h>
 
 namespace units::isq::si {
 

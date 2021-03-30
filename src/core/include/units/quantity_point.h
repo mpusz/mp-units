@@ -23,8 +23,13 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/quantity.h>
 #include <compare>
+// IWYU pragma: end_exports
+
+#include <units/customization_points.h>
+#include <units/generic/dimensionless.h>
 
 namespace units {
 

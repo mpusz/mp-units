@@ -21,13 +21,24 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
+#include <units/bits/external/hacks.h>
 #include <units/chrono.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/international/length.h>
+#include <fmt/format.h>
 #include <array>
+#include <exception>
 #include <iostream>
+#include <iterator>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace {
 
 using namespace glide_computer;
+
+using namespace units::isq;
 
 auto get_gliders()
 {
@@ -74,7 +85,7 @@ void print(const R& gliders)
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar)
-      fmt::print("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v, quantity_cast<one>(glide_ratio(g.polar[0])));
+      fmt::print("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v, quantity_cast<units::one>(glide_ratio(g.polar[0])));
     std::cout << "\n";
   }
 }

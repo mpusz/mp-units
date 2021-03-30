@@ -21,15 +21,8 @@
 // SOFTWARE.
 
 #include <units/isq/si/fps/fps.h>
+#include <units/bits/basic_concepts.h>
 #include <units/isq/si/acceleration.h>
-#include <units/isq/si/area.h>
-#include <units/isq/si/energy.h>
-#include <units/isq/si/force.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/mass.h>
-#include <units/isq/si/power.h>
-#include <units/isq/si/pressure.h>
-#include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
 
 namespace {

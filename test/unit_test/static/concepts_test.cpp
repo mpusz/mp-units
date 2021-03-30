@@ -20,16 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/isq/si/cgs/speed.h"
-#include "units/isq/si/speed.h"
-#include "units/isq/si/fps/speed.h"
-#include "units/quantity_point.h"
-#include "units/chrono.h"
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/cgs/speed.h> // IWYU pragma: keep
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/fps/speed.h> // IWYU pragma: keep
+#include <units/isq/si/length.h> // IWYU pragma: keep
+#include <units/isq/si/prefixes.h>
+#include <units/isq/si/speed.h>
+#include <units/quantity_point.h>
+#include <units/chrono.h>
 #include <chrono>
 #include <complex>
 #include <mutex>
 #include <optional>
+#include <ratio>
 #include <string>
+#include <utility>
 
 namespace {
 

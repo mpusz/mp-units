@@ -22,8 +22,16 @@
 
 #pragma once
 
-#include <units/isq/si/volume.h>
+// IWYU pragma: begin_exports
+#include <units/isq/dimensions/volume.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/international/length.h>
+#include <units/isq/si/volume.h>
+#include <units/unit.h>
 
 namespace units::isq::si::international {
 

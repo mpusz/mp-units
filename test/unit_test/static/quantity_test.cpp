@@ -21,18 +21,21 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include "units/math.h"
-#include "units/isq/si/cgs/speed.h"
-#include "units/isq/si/area.h"
-#include "units/isq/si/frequency.h"
-#include "units/isq/si/speed.h"
-#include "units/isq/si/volume.h"
-#include "units/isq/si/fps/speed.h"
-#include <chrono>
-#include <complex>
-#include <cstdint>
-#include <mutex>
-#include <string>
+#include <units/bits/dimension_op.h>
+#include <units/bits/external/type_traits.h>
+#include <units/exponent.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/frequency.h>
+#include <units/isq/si/prefixes.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/volume.h>
+#include <units/unit.h>
+#include <limits>
+#include <type_traits>
 #include <utility>
 
 namespace {

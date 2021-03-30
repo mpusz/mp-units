@@ -20,10 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/cgs/speed.h>
-#include <units/isq/si/international/speed.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/cgs/speed.h> // IWYU pragma: keep
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/international/speed.h> // IWYU pragma: keep
+#include <units/isq/si/length.h> // IWYU pragma: keep
+#include <units/isq/si/time.h>
 #include <units/isq/si/speed.h>
 #include <units/quantity_io.h>
+#include <exception>
 #include <iostream>
 
 namespace {

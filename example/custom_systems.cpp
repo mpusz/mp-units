@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/quantity_io.h>
+#include <units/base_dimension.h>
 #include <units/isq/si/prefixes.h>
+#include <units/quantity.h>
+#include <units/quantity_io.h>
+#include <units/unit.h>
 #include <iostream>
+#include <type_traits>
 
 using namespace units;
 

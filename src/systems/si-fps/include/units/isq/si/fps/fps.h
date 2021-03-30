@@ -22,6 +22,7 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/si/fps/length.h>
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/time.h>
@@ -35,3 +36,4 @@
 #include <units/isq/si/fps/pressure.h>
 #include <units/isq/si/fps/speed.h>
 #include <units/isq/si/fps/volume.h>
+// IWYU pragma: end_exports

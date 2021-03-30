@@ -22,8 +22,15 @@
 
 #pragma once
 
-#include <units/isq/si/length.h>
+// IWYU pragma: begin_exports
+#include <units/isq/dimensions/length.h>
 #include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
+#include <units/isq/si/length.h>
+#include <units/unit.h>
 
 namespace units::isq::si::fps {
 
@@ -46,8 +53,6 @@ struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio(5'280), foot> {};
 
 struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio(2'000), yard> {};
-
-
 
 struct dim_length : isq::dim_length<foot> {};
 

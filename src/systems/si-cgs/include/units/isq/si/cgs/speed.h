@@ -22,10 +22,15 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/speed.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/cgs/length.h>
 #include <units/isq/si/cgs/time.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si::cgs {
 

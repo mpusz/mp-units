@@ -20,23 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
 #include <units/generic/angle.h>
-#include <units/isq/si/length.h>
 #include <units/isq/si/energy.h>
-#include <units/isq/si/torque.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/torque.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
 #include <iostream>
 
-using namespace units;
-using namespace units::isq::si::literals;
-
 int main()
 {
-  auto torque = 20.0_q_Nm_per_rad;
-  auto energy = 20.0_q_J;
+  using namespace units::references;
+  using namespace units::isq;
+  using namespace units::isq::si::references;
 
-  Angle auto angle = energy / torque;
+  Torque auto torque = 20.0 * (N * m / rad);
+  Energy auto energy = 20.0 * J;
+
+  units::Angle auto angle = energy / torque;
 
   std::cout << angle << '\n';
 }

@@ -22,4 +22,6 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/si/iau/length.h>
+// IWYU pragma: end_exports

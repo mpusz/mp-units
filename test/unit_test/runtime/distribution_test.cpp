@@ -20,10 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <numeric>
 #include <units/random.h>
 #include <units/isq/si/length.h>
+#include <array>
 #include <catch2/catch.hpp>
+#include <initializer_list>
+#include <random>
+#include <vector>
+
 
 using namespace units;
 using namespace units::isq::si;

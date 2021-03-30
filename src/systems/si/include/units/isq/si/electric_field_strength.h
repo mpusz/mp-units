@@ -22,9 +22,14 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/electric_field_strength.h>
-#include <units/isq/si/voltage.h>
 #include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
+#include <units/isq/si/voltage.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 

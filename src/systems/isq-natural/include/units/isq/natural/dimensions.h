@@ -22,9 +22,11 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions.h>
-#include <units/isq/natural/bits/units.h>
+#include <units/isq/natural/units.h>
 #include <units/quantity.h>
+// IWYU pragma: end_exports
 
 namespace units::isq::natural {
 

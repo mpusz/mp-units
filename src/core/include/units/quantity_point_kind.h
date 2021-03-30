@@ -23,9 +23,11 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/quantity_kind.h>
 #include <units/quantity_point.h>
 #include <compare>
+// IWYU pragma: end_exports
 
 namespace units {
 

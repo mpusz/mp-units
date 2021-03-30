@@ -23,8 +23,10 @@
 #pragma once
 
 #include <units/customization_points.h>
+// IWYU pragma: begin_exports
 #include <units/isq/si/time.h>
 #include <chrono>
+// IWYU pragma: end_exports
 
 namespace units {
 

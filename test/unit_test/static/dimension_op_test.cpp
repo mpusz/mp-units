@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/bits/dimension_op.h"
-#include "units/unit.h"
-#include <utility>
+#include <units/bits/dimension_op.h>
+#include <units/base_dimension.h>
+#include <units/bits/dim_unpack.h>
+#include <units/derived_dimension.h>
+#include <units/unit.h>
 
 using namespace units;
 
@@ -43,9 +45,6 @@ static_assert(is_same_v<exponent_invert<units::exponent<d0, 2>>, units::exponent
 static_assert(is_same_v<exponent_invert<units::exponent<d1, -2>>, units::exponent<d1, 2>>);
 
 // dim_unpack
-
-template<typename T>
-struct typeinfo;
 
 template<typename... Ts>
 using dim_unpack = TYPENAME detail::dim_unpack<Ts...>::type;

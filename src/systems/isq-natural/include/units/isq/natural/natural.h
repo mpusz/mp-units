@@ -22,9 +22,8 @@
 
 #pragma once
 
-#define MP_UNITS_SYSTEM_NATURAL
-
-#include "bits/dimensions.h"
-#include "bits/units.h"
-
+// IWYU pragma: begin_exports
+#include "dimensions.h"
+#include "units.h"
 #include "constants.h"
+// IWYU pragma: end_exports

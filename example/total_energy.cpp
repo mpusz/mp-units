@@ -20,13 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/natural/constants.h>
+#include <units/isq/natural/natural.h>
 #include <units/isq/si/energy.h>
+#include <units/isq/si/mass.h>
 #include <units/isq/si/momentum.h>
-#include <units/isq/si/speed.h>
+#include <units/isq/si/speed.h> // IWYU pragma: keep
 #include <units/isq/si/constants.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
+#include <exception>
 #include <iostream>
 
 namespace {

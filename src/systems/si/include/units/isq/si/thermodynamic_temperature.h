@@ -22,9 +22,14 @@
 
 #pragma once
 
-#include <units/reference.h>
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/thermodynamic_temperature.h>
 #include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
+#include <units/unit.h>
 
 namespace units::isq::si {
 

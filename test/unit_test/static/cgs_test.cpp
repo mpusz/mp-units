@@ -20,17 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/concepts.h>
 #include <units/isq/si/cgs/cgs.h>
-#include <units/isq/si/acceleration.h>
-#include <units/isq/si/area.h>
-#include <units/isq/si/energy.h>
-#include <units/isq/si/force.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/mass.h>
-#include <units/isq/si/power.h>
-#include <units/isq/si/pressure.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
+#include <units/unit.h>
 
 namespace {
 

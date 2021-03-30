@@ -20,21 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/concepts.h>
 #include <units/format.h>
 #include <units/isq/si/fps/density.h>
 #include <units/isq/si/fps/length.h>
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
 #include <units/isq/si/fps/speed.h>
-#include <units/isq/si/fps/volume.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
 #include <units/isq/si/speed.h>
 #include <units/isq/si/volume.h>
-#include <units/quantity.h>
 #include <iostream>
+#include <string_view>
 
 using namespace units::isq;
 

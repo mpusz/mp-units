@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/isq/natural/bits/dimensions.h>
+#include <units/isq/natural/dimensions.h>
 
 namespace units::isq::natural {
 

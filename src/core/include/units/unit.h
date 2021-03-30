@@ -23,15 +23,15 @@
 #pragma once
 
 #include <units/bits/deduced_symbol_text.h>
-#include <units/bits/deduced_unit.h>
 #include <units/bits/external/downcasting.h>
+
+// IWYU pragma: begin_exports
+#include <units/bits/deduced_unit.h> 
 #include <units/bits/external/fixed_string.h>
-#include <units/bits/external/text_tools.h>
-#include <units/bits/external/type_traits.h>
-#include <units/derived_dimension.h>
-#include <units/prefix.h>
+#include <units/prefix.h> 
 #include <units/ratio.h>
 #include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
 namespace units {
 

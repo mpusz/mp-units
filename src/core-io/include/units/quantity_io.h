@@ -23,9 +23,12 @@
 
 #pragma once
 
-#include <units/bits/external/fixed_string_io.h>
 #include <units/quantity.h>
+
+// IWYU pragma: begin_exports
+#include <units/bits/external/fixed_string_io.h>
 #include <sstream>
+// IWYU pragma: end_exports
 
 namespace units {
 

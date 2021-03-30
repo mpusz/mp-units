@@ -24,12 +24,16 @@
 #pragma once
 
 #include <units/bits/common_quantity.h>
-#include <units/bits/pow.h>
-#include <units/bits/unit_text.h>
 #include <units/generic/dimensionless.h>
+
+// IWYU pragma: begin_exports
+#include <units/bits/unit_text.h>
 #include <units/quantity_cast.h>
-#include <units/reference.h>
+#include <units/ratio.h>
 #include <compare>
+// IWYU pragma: end_exports
+
+#include <units/reference.h>
 #include <utility>
 
 namespace units {

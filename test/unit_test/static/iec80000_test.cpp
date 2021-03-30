@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <units/isq/iec80000/iec80000.h>
+#include <units/isq/si/time.h>
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 

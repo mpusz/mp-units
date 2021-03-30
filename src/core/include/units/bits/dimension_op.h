@@ -22,6 +22,11 @@
 
 #pragma once
 
+#include <units/bits/derived_dimension_base.h>
+#include <units/bits/dim_consolidate.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/hacks.h>
+#include <units/bits/external/type_list.h>
 #include <units/derived_dimension.h>
 #include <units/unit.h>
 

@@ -21,8 +21,11 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/isq/si/international/speed.h>
-#include <units/isq/si/speed.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/international/speed.h> // IWYU pragma: keep
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <iostream>
 

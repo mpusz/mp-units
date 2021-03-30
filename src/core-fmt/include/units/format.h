@@ -31,8 +31,12 @@
 #pragma warning (disable:4702) // C4702: unreachable code
 #endif //_MSC_VER
 
+// IWYU pragma: begin_exports
 #include <fmt/format.h>
 #include <fmt/locale.h>
+// IWYU pragma: end_exports
+
+// #include <string>
 
 #ifdef _MSC_VER
 #pragma warning (pop)

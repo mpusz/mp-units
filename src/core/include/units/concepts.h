@@ -22,5 +22,7 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/bits/basic_concepts.h>
 #include <units/bits/quantity_of.h>
+// IWYU pragma: end_exports

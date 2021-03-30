@@ -22,8 +22,15 @@
 
 #pragma once
 
-#include <units/isq/si/time.h>
+// IWYU pragma: begin_exports
+#include <units/isq/dimensions/time.h>
 #include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
+#include <units/isq/si/time.h>
+#include <units/unit.h>
 
 namespace units::isq::si::fps {
 

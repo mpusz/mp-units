@@ -22,10 +22,15 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/energy.h>
+#include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/fps/force.h>
 #include <units/isq/si/prefixes.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si::fps {
 
@@ -37,11 +42,8 @@ struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_force, dim_len
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
 struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
 
-
-
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
-
 
 inline namespace literals {
 
@@ -54,12 +56,5 @@ constexpr auto operator"" _q_ft_lbf(unsigned long long l) { gsl_ExpectsAudit(std
 constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_force, long double>(l); }
 
 }  // namespace literals
-
-namespace references {
-
-inline constexpr auto ft_pdl = reference<dim_energy, foot_poundal>{};
-inline constexpr auto ft_lbf = reference<dim_energy, foot_pound_force>{};
-
-}  // namespace references
 
 }  // namespace units::isq::si::fps

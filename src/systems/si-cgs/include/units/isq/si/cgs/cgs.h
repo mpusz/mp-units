@@ -22,6 +22,7 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/si/cgs/length.h>
 #include <units/isq/si/cgs/mass.h>
 #include <units/isq/si/cgs/time.h>
@@ -33,3 +34,4 @@
 #include <units/isq/si/cgs/power.h>
 #include <units/isq/si/cgs/pressure.h>
 #include <units/isq/si/cgs/speed.h>
+// IWYU pragma: end_exports

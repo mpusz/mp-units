@@ -22,9 +22,17 @@
 
 #pragma once
 
-#include <units/concepts.h>
+#include <units/bits/dimension_op.h>
+#include <units/bits/external/hacks.h>
+#include <units/generic/dimensionless.h>
 #include <units/quantity.h>
+#include <units/unit.h>
+
+// IWYU pragma: begin_exports
 #include <cmath>
+#include <cstdint>
+// IWYU pragma: end_exports
+
 #include <limits>
 
 namespace units {

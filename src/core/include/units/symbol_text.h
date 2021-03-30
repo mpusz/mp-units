@@ -22,10 +22,14 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/bits/external/fixed_string.h>
-#include <units/bits/external/hacks.h>
-#include <gsl/gsl-lite.hpp>
 #include <compare>
+#include <cstdint>
+#include <cstddef>
+// IWYU pragma: end_exports
+
+#include <gsl/gsl-lite.hpp>
 
 namespace units {
 

@@ -21,11 +21,14 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/isq/si/mass.h>
-#include <units/isq/si/voltage.h>
-#include <units/isq/si/time.h>
+#include <units/bits/dimension_op.h>
+#include <units/derived_dimension.h>
 #include <units/isq/si/frequency.h>
-#include <units/math.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/voltage.h>
+#include <units/math.h> // IWYU pragma: keep
+#include <units/unit.h>
 
 namespace {
 

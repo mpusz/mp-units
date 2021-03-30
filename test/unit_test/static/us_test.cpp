@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/speed.h>
+#include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h>
-#include <utility>
+#include <units/isq/si/length.h>
+#include <units/isq/si/time.h>
+#include <units/unit.h>
 
 namespace {
 

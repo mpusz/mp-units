@@ -21,25 +21,16 @@
 // SOFTWARE.
 
 #include <units/isq/si/acceleration.h>
-#include <units/isq/si/area.h>
-#include <units/isq/si/cgs/acceleration.h>
-#include <units/isq/si/cgs/area.h>
-#include <units/isq/si/cgs/energy.h>
-#include <units/isq/si/cgs/force.h>
-#include <units/isq/si/cgs/length.h>
-#include <units/isq/si/cgs/mass.h>
-#include <units/isq/si/cgs/power.h>
-#include <units/isq/si/cgs/pressure.h>
-#include <units/isq/si/cgs/speed.h>
-#include <units/isq/si/cgs/time.h>
+#include <units/isq/si/area.h> // IWYU pragma: keep
+#include <units/isq/si/cgs/cgs.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/force.h>
-#include <units/isq/si/length.h>
+#include <units/isq/si/length.h> // IWYU pragma: keep
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
 #include <units/isq/si/pressure.h>
 #include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
+#include <units/isq/si/time.h> // IWYU pragma: keep
 
 namespace {
 

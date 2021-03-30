@@ -23,8 +23,11 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/kind.h>
 #include <units/quantity.h>
+// IWYU pragma: end_exports
+
 #include <concepts>
 #include <type_traits>
 #include <utility>

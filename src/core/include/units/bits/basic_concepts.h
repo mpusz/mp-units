@@ -22,12 +22,15 @@
 
 #pragma once
 
-#include <units/bits/external/downcasting.h>
-#include <units/bits/external/fixed_string.h>
 #include <units/bits/external/hacks.h>
+
+// IWYU pragma: begin_exports
+#include <units/bits/external/fixed_string.h>
 #include <units/customization_points.h>
 #include <units/ratio.h>
 #include <units/bits/external/type_traits.h>
+// IWYU pragma: end_exports
+
 #include <cstdint>
 #include <utility>
 

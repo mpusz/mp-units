@@ -22,8 +22,13 @@
 
 #pragma once
 
-#include <units/isq/si/prefixes.h>
+// IWYU pragma: begin_exports
 #include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
+#include <units/isq/si/prefixes.h>
 
 namespace units {
 
@@ -46,7 +51,7 @@ constexpr auto operator"" _q_rad(long double l) { return angle<radian, long doub
 
 }  // namespace literals
 
-inline namespace references {
+namespace references {
 
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
 

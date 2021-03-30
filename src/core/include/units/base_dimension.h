@@ -22,8 +22,11 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/basic_concepts.h>
+// IWYU pragma: end_exports
+
 #include <type_traits>
 
 namespace units {

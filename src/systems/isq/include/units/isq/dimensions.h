@@ -22,6 +22,7 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/absorbed_dose.h>
 #include <units/isq/dimensions/acceleration.h>
 #include <units/isq/dimensions/amount_of_substance.h>
@@ -68,3 +69,4 @@
 #include <units/isq/dimensions/torque.h>
 #include <units/isq/dimensions/voltage.h>
 #include <units/isq/dimensions/volume.h>
+// IWYU pragma: end_exports

@@ -25,7 +25,12 @@
 #include <units/derived_dimension.h>
 #include <units/isq/iec80000/storage_capacity.h>
 #include <units/isq/si/time.h>
+#include <units/unit.h>
+
+// IWYU pragma: begin_exports
 #include <units/quantity.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
 namespace units::isq::iec80000 {
 

@@ -22,6 +22,7 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/si/electric_current.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/luminous_intensity.h>
@@ -72,3 +73,4 @@
 
 #include <units/isq/si/constants.h>
 #include <units/isq/si/prefixes.h>
+// IWYU pragma: end_exports

@@ -22,12 +22,24 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include "geographic.h"
-#include <units/format.h>
-#include <units/math.h>
+#include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
-#include <units/isq/si/international/length.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_point_kind.h>
+// IWYU pragma: end_exports
+
+#include <units/format.h>
+#include <units/math.h> // IWYU pragma: keep
+#include <algorithm>
+#include <array>
+#include <initializer_list>
+#include <iterator>
+#include <ostream>
+#include <ranges>
+#include <string> // IWYU pragma: keep
+#include <vector>
 
 // An example of a really simplified tactical glide computer
 // Simplifications:
@@ -43,9 +55,6 @@
 // - no ground obstacles (i.e. mountains) to pass
 // - flight path exactly on a shortest possible line to destination
 
-using namespace units;
-using namespace units::isq;
-
 template<units::QuantityKind QK>
 struct fmt::formatter<QK> : formatter<typename QK::quantity_type> {
   template<typename FormatContext>
@@ -57,8 +66,8 @@ struct fmt::formatter<QK> : formatter<typename QK::quantity_type> {
 
 namespace glide_computer {
 
-template<QuantityKind QK1, QuantityKind QK2>
-constexpr Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
+template<units::QuantityKind QK1, units::QuantityKind QK2>
+constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
   requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common();}
 {
   return lhs.common() / rhs.common();
@@ -66,24 +75,24 @@ constexpr Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
 
 // kinds
 using horizontal_kind = geographic::horizontal_kind;
-struct vertical_kind : kind<vertical_kind, si::dim_length> {};
-struct vertical_point_kind : point_kind<vertical_point_kind, vertical_kind> {};
-struct velocity_kind : derived_kind<velocity_kind, horizontal_kind, si::dim_speed> {};
-struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, vertical_kind, si::dim_speed> {};
+struct vertical_kind : units::kind<vertical_kind, units::isq::si::dim_length> {};
+struct vertical_point_kind : units::point_kind<vertical_point_kind, vertical_kind> {};
+struct velocity_kind : units::derived_kind<velocity_kind, horizontal_kind, units::isq::si::dim_speed> {};
+struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, vertical_kind, units::isq::si::dim_speed> {};
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
 // length
-using distance = quantity_kind<horizontal_kind, si::kilometre>;
-using height = quantity_kind<vertical_kind, si::metre>;
-using altitude = quantity_point_kind<vertical_point_kind, si::metre>;
+using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
+using height = units::quantity_kind<vertical_kind, units::isq::si::metre>;
+using altitude = units::quantity_point_kind<vertical_point_kind, units::isq::si::metre>;
 
 // time
-using duration = si::time<si::second>;
-using timestamp = quantity_point<si::dim_time, si::second>;
+using duration = units::isq::si::time<units::isq::si::second>;
+using timestamp = units::quantity_point<units::isq::si::dim_time, units::isq::si::second>;
 
 // speed
-using velocity = quantity_kind<velocity_kind, si::kilometre_per_hour>;
-using rate_of_climb = quantity_kind<rate_of_climb_kind, si::metre_per_second>;
+using velocity = units::quantity_kind<velocity_kind, units::isq::si::kilometre_per_hour>;
+using rate_of_climb = units::quantity_kind<rate_of_climb_kind, units::isq::si::metre_per_second>;
 
 // text output
 template<class CharT, class Traits>
@@ -117,7 +126,7 @@ struct glider {
   std::array<polar_point, 1> polar;
 };
 
-constexpr Dimensionless auto glide_ratio(const glider::polar_point& polar) { return polar.v / -polar.climb; }
+constexpr units::Dimensionless auto glide_ratio(const glider::polar_point& polar) { return polar.v / -polar.climb; }
 
 struct weather {
   height cloud_base;
@@ -160,10 +169,10 @@ public:
 
   distance get_length() const { return length_; }
 
-  distance get_leg_dist_offset(size_t leg_index) const { return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1]; }
-  size_t get_leg_index(distance dist) const
+  distance get_leg_dist_offset(std::size_t leg_index) const { return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1]; }
+  std::size_t get_leg_index(distance dist) const
   {
-    return static_cast<size_t>(std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
+    return static_cast<std::size_t>(std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
   }
 
 private:
@@ -188,7 +197,7 @@ struct aircraft_tow {
 struct flight_point {
   timestamp ts;
   altitude alt;
-  size_t leg_idx = 0;
+  std::size_t leg_idx = 0;
   distance dist{};
 };
 
@@ -196,7 +205,7 @@ altitude terrain_level_alt(const task& t, const flight_point& pos);
 
 constexpr height agl(altitude glider_alt, altitude terrain_level) { return glider_alt - terrain_level; }
 
-inline si::length<si::kilometre> length_3d(distance dist, height h)
+inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist, height h)
 {
   // TODO support for hypot(q, q)
   return sqrt(pow<2>(dist.common()) + pow<2>(h.common()));

@@ -21,8 +21,12 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
+#include <numeric>
+#include <string_view>
 
 namespace glide_computer {
+
+using namespace units::isq;
 
 task::legs task::make_legs(const waypoints& wpts)
 {

@@ -22,10 +22,16 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <units/isq/dimensions/magnetic_flux.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
+
 #include <units/isq/si/magnetic_induction.h>
 #include <units/isq/si/area.h>
-#include <units/quantity.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 
