@@ -26,14 +26,16 @@
 #include <units/quantity.h>
 #include <string_view>
 
+// IWYU pragma: begin_exports
+#include <units/bits/unit_text.h>
+
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
-// IWYU pragma: begin_exports
 #include <fmt/format.h>
 #include <fmt/locale.h>
-// IWYU pragma: end_exports
 UNITS_DIAGNOSTIC_POP
+// IWYU pragma: end_exports
 
 // Grammar
 // 

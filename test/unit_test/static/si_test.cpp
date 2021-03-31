@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/bits/unit_text.h>
 #include <units/generic/angle.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/si/si.h>

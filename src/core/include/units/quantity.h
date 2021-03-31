@@ -27,7 +27,6 @@
 #include <units/generic/dimensionless.h>
 
 // IWYU pragma: begin_exports
-#include <units/bits/unit_text.h>
 #include <units/quantity_cast.h>
 #include <units/ratio.h>
 #include <compare>

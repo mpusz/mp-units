@@ -20,9 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/fps/fps.h>
 #include <units/bits/basic_concepts.h>
+#include <units/bits/unit_text.h>
 #include <units/isq/si/acceleration.h>
+#include <units/isq/si/fps/fps.h>
 #include <units/isq/si/time.h>
 
 namespace {
