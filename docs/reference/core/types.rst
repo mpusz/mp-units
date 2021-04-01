@@ -12,5 +12,5 @@ Types
     types/dimensions
     types/units
     types/prefixes
-    types/representation
+    types/reference
     types/utilities

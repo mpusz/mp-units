@@ -1,4 +1,4 @@
 Dimensions
 ==========
 
-.. doxygenfile:: natural/bits/dimensions.h
+.. doxygenfile:: natural/dimensions.h

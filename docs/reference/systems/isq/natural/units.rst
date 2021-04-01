@@ -1,4 +1,4 @@
 Units
 =====
 
-.. doxygenfile:: natural/bits/units.h
+.. doxygenfile:: natural/units.h
