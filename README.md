@@ -30,27 +30,30 @@ Here is a small example of possible operations:
 ```cpp
 #include <units/isq/si/area.h>
 #include <units/isq/si/frequency.h>
+#include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
-using namespace units::isq::si;
+using namespace units::isq::si::references;
 
 // simple numeric operations
-static_assert(10_q_km / 2 == 5_q_km);
+static_assert(10 * km / 2 == 5 * km);
 
 // unit conversions
-static_assert(1_q_h == 3600_q_s);
-static_assert(1_q_km + 1_q_m == 1001_q_m);
+static_assert(1 * h == 3600 * s);
+static_assert(1 * km + 1 * m == 1001 * m);
 
 // dimension conversions
-static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);
-static_assert(2_q_km_per_h * 2_q_h == 4_q_km);
-static_assert(2_q_km / 2_q_km_per_h == 1_q_h);
+inline constexpr auto kmph = km / h;
+static_assert(1 * km / (1 * s) == 1000 * (m / s));
+static_assert(2 * kmph * (2 * h) == 4 * km);
+static_assert(2 * km / (2 * kmph) == 1 * h);
 
-static_assert(2_q_m * 3_q_m == 6_q_m2);
+static_assert(2 * m * (3 * m) == 6 * m2);
 
-static_assert(10_q_km / 5_q_km == 2);
+static_assert(10 * km / (5 * km) == 2);
 
-static_assert(1000 / 1_q_s == 1_q_kHz);
+static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
 _Try it on the [Compiler Explorer](https://godbolt.org/z/shcohY)._
@@ -61,8 +64,13 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
+#define UNITS_UDLS 1
+
 #include <units/format.h>
+#include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h>
 #include <units/quantity_io.h>
 #include <iostream>
@@ -82,9 +90,9 @@ int main()
   constexpr Speed auto v1 = 110 * (km / h);
   constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
   constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
-  constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
-  constexpr Speed auto v5 = quantity_cast<si::metre_per_second>(v3);
-  constexpr Speed auto v6 = quantity_cast<int>(v5);
+  constexpr Speed auto v4 = units::quantity_cast<si::speed<si::metre_per_second>>(v2);
+  constexpr Speed auto v5 = units::quantity_cast<si::metre_per_second>(v3);
+  constexpr Speed auto v6 = units::quantity_cast<int>(v5);
 
   std::cout << v1 << '\n';                                  // 110 km/h
   std::cout << fmt::format("{}", v2) << '\n';               // 110 km/h
