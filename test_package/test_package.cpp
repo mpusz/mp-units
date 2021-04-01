@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
@@ -34,6 +36,6 @@ constexpr auto avg_speed(Length d, Time t)
 
 int main()
 {
-  using namespace units::isq::si::literals;
-  std::cout << "Average speed = " << avg_speed(240._q_km, 2_q_h) << '\n';
+  using namespace units::isq::si::references;
+  std::cout << "Average speed = " << avg_speed(240 * km, 2 * h) << '\n';
 }
