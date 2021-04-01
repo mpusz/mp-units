@@ -63,6 +63,8 @@ struct dim_capacitance : isq::dim_capacitance<dim_capacitance, farad, dim_electr
 template<UnitOf<dim_capacitance> U, Representation Rep = double>
 using capacitance = quantity<dim_capacitance, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // F
@@ -150,6 +152,8 @@ constexpr auto operator"" _q_YF(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

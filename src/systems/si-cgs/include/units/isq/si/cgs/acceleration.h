@@ -40,6 +40,8 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, gal, dim_lengt
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Gal
@@ -47,6 +49,8 @@ constexpr auto operator"" _q_Gal(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

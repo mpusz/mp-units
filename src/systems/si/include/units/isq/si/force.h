@@ -63,6 +63,8 @@ struct dim_force : isq::dim_force<dim_force, newton, dim_mass, dim_acceleration>
 template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // N
@@ -150,6 +152,8 @@ constexpr auto operator"" _q_YN(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

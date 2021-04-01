@@ -42,6 +42,8 @@ struct dim_current_density : isq::dim_current_density<dim_current_density, amper
 template<UnitOf<dim_current_density> U, Representation Rep = double>
 using current_density = quantity<dim_current_density, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // A / m²
@@ -49,5 +51,7 @@ constexpr auto operator"" _q_A_per_m2(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<ampere_per_metre_sq, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

@@ -53,6 +53,8 @@ using specific_heat_capacity = quantity<dim_specific_heat_capacity, U, Rep>;
 template<UnitOf<dim_molar_heat_capacity> U, Representation Rep = double>
 using molar_heat_capacity = quantity<dim_molar_heat_capacity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // J/K
@@ -68,6 +70,8 @@ constexpr auto operator"" _q_J_per_mol_K(unsigned long long l) { gsl_ExpectsAudi
 constexpr auto operator"" _q_J_per_mol_K(long double l) { return molar_heat_capacity<joule_per_mole_kelvin, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si
 

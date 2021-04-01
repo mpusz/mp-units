@@ -43,6 +43,8 @@ concept Angle = QuantityOfT<T, dim_angle>;
 template<UnitOf<dim_angle<>> U, Representation Rep = double>
 using angle = quantity<dim_angle<>, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // rad
@@ -50,6 +52,8 @@ constexpr auto operator"" _q_rad(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_rad(long double l) { return angle<radian, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

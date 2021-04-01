@@ -39,6 +39,8 @@ struct dim_electric_field_strength : isq::dim_electric_field_strength<dim_electr
 template<UnitOf<dim_electric_field_strength> U, Representation Rep = double>
 using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // V/m
@@ -46,5 +48,7 @@ constexpr auto operator"" _q_V_per_m(unsigned long long l) { gsl_ExpectsAudit(st
 constexpr auto operator"" _q_V_per_m(long double l) { return electric_field_strength<volt_per_metre, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

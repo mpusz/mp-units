@@ -42,6 +42,8 @@ struct dim_molar_energy : isq::dim_molar_energy<dim_molar_energy, joule_per_mole
 template<UnitOf<dim_molar_energy> U, Representation Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // J/mol
@@ -49,5 +51,7 @@ constexpr auto operator"" _q_J_per_mol(unsigned long long l) { gsl_ExpectsAudit(
 constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joule_per_mole, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

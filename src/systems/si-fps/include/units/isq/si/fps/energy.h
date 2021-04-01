@@ -45,6 +45,8 @@ struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // foot poundal
@@ -56,5 +58,7 @@ constexpr auto operator"" _q_ft_lbf(unsigned long long l) { gsl_ExpectsAudit(std
 constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_force, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si::fps

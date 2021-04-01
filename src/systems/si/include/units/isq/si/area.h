@@ -63,6 +63,8 @@ struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // m2
@@ -154,6 +156,8 @@ constexpr auto operator"" _q_ha(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_ha(long double l) { return area<hectare, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

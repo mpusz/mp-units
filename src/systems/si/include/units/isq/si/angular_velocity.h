@@ -41,6 +41,8 @@ struct dim_angular_velocity : isq::dim_angular_velocity<dim_angular_velocity, ra
 template<UnitOf<dim_angular_velocity> U, Representation Rep = double>
 using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // rad / s
@@ -48,5 +50,7 @@ constexpr auto operator"" _q_rad_per_s(unsigned long long l) { gsl_ExpectsAudit(
 constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<radian_per_second, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

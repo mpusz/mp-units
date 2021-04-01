@@ -41,6 +41,8 @@ struct dim_length : isq::dim_length<centimetre> {};
 template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // cm
@@ -48,6 +50,8 @@ constexpr auto operator"" _q_cm(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -46,6 +46,8 @@ struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio(550),
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // foot pound force per second
@@ -61,6 +63,8 @@ constexpr auto operator"" _q_hp(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

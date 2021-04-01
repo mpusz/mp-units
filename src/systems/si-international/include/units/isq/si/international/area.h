@@ -37,6 +37,8 @@ namespace units::isq::si::international {
 
 struct square_foot : deduced_unit<square_foot, si::dim_area, si::international::foot> {};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ft2
@@ -44,6 +46,8 @@ constexpr auto operator"" _q_ft2(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_ft2(long double l) { return si::area<square_foot, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

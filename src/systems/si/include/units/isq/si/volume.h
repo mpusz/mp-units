@@ -83,6 +83,8 @@ struct yottalitre : prefixed_unit<yottalitre, yotta, litre> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // m3
@@ -254,6 +256,8 @@ constexpr auto operator"" _q_Yl(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_Yl(long double l) { return volume<yottalitre, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

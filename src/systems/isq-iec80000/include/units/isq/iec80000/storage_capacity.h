@@ -79,6 +79,8 @@ concept StorageCapacity = QuantityOf<T, dim_storage_capacity>;
 template<UnitOf<dim_storage_capacity> U, Representation Rep = double>
 using storage_capacity = quantity<dim_storage_capacity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // bits
@@ -120,6 +122,8 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 // constexpr auto operator"" _q_EiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<exbibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

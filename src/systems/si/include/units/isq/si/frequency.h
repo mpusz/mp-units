@@ -57,6 +57,8 @@ struct dim_frequency : isq::dim_frequency<dim_frequency, hertz, dim_time> {};
 template<UnitOf<dim_frequency> U, Representation Rep = double>
 using frequency = quantity<dim_frequency, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Hz
@@ -128,6 +130,8 @@ constexpr auto operator"" _q_YHz(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

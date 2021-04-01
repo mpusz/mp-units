@@ -65,6 +65,8 @@ struct dim_catalytic_activity : isq::dim_catalytic_activity<dim_catalytic_activi
 template<UnitOf<dim_catalytic_activity> U, Representation Rep = double>
 using catalytic_activity = quantity<dim_catalytic_activity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // kat
@@ -156,6 +158,8 @@ constexpr auto operator"" _q_U(unsigned long long l) { gsl_ExpectsAudit(std::in_
 constexpr auto operator"" _q_U(long double l) { return catalytic_activity<enzyme_unit, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -39,6 +39,8 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, metre_per_seco
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // m/s2
@@ -46,5 +48,7 @@ constexpr auto operator"" _q_m_per_s2(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_m_per_s2(long double l) { return acceleration<metre_per_second_sq, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

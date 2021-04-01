@@ -59,6 +59,8 @@ struct dim_inductance : isq::dim_inductance<dim_inductance, henry, dim_magnetic_
 template<UnitOf<dim_inductance> U, Representation Rep = double>
 using inductance = quantity<dim_inductance, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // H
@@ -130,6 +132,8 @@ constexpr auto operator"" _q_YH(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

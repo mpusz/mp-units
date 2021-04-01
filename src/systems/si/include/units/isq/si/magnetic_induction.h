@@ -63,6 +63,8 @@ struct dim_magnetic_induction : isq::dim_magnetic_induction<dim_magnetic_inducti
 template<UnitOf<dim_magnetic_induction> U, Representation Rep = double>
 using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // T
@@ -138,6 +140,8 @@ constexpr auto operator"" _q_G(unsigned long long l) { gsl_ExpectsAudit(std::in_
 constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

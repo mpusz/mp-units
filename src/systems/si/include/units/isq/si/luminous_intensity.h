@@ -61,6 +61,8 @@ struct dim_luminous_intensity : isq::dim_luminous_intensity<candela> {};
 template<UnitOf<dim_luminous_intensity> U, Representation Rep = double>
 using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // cd
@@ -148,6 +150,8 @@ constexpr auto operator"" _q_Ycd(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_Ycd(long double l) { return luminous_intensity<yottacandela, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

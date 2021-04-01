@@ -52,6 +52,8 @@ concept TransferRate = QuantityOf<T, dim_transfer_rate>;
 template<UnitOf<dim_transfer_rate> U, Representation Rep = double>
 using transfer_rate = quantity<dim_transfer_rate, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 constexpr auto operator"" _q_B_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return transfer_rate<byte_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
@@ -65,5 +67,7 @@ constexpr auto operator"" _q_ZB_per_s(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_YB_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return transfer_rate<yottabyte_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::iec80000

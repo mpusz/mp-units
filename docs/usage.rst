@@ -123,6 +123,15 @@ It also runs unit tests during Conan build.
 Conan Options
 ^^^^^^^^^^^^^
 
+udls
+++++
+
+**Values**: ``True``/``False``
+
+**Defaulted to**: ``True``
+
+Determines if library should provide User Defined Literals (UDLs) for quantities of various units.
+
 downcast_mode
 +++++++++++++
 
@@ -148,6 +157,16 @@ Additionally, enables project documentation generation when the project is being
 
 CMake Options
 ^^^^^^^^^^^^^
+
+UNITS_UDLS
++++++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Equivalent to `udls`_.
+
 
 UNITS_DOWNCAST_MODE
 +++++++++++++++++++

@@ -27,14 +27,19 @@ project(mp-units
 )
 
 option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-if(UNITS_AS_SYSTEM_HEADERS)
-    set(units_as_system SYSTEM)
-endif()
+option(UNITS_UDLS "Enables definitions of User Defined Literals (UDLs) provided for quantities of various units" ON)
+
+message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
+message(STATUS "UNITS_UDLS: ${UNITS_UDLS}")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
 include(GNUInstallDirs)
+
+if(UNITS_AS_SYSTEM_HEADERS)
+    set(units_as_system SYSTEM)
+endif()
 
 add_subdirectory(core)
 add_subdirectory(core-fmt)

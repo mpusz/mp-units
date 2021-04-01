@@ -42,6 +42,8 @@ struct cubic_yard : deduced_unit<cubic_yard, dim_volume, yard> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ft3
@@ -53,6 +55,8 @@ constexpr auto operator"" _q_yd3(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -41,6 +41,8 @@ struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 template<UnitOf<dim_amount_of_substance> U, Representation Rep = double>
 using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // mol
@@ -48,6 +50,8 @@ constexpr auto operator"" _q_mol(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mole, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -59,6 +59,8 @@ struct dim_length : isq::dim_length<foot> {};
 template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Thousandth
@@ -97,6 +99,8 @@ constexpr auto operator"" _q_naut_mi(unsigned long long l) { gsl_ExpectsAudit(st
 constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mile, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -40,6 +40,8 @@ struct dim_speed : isq::dim_speed<dim_speed, centimetre_per_second, dim_length, 
 template<UnitOf<dim_speed> U, Representation Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // cm/s
@@ -47,5 +49,7 @@ constexpr auto operator"" _q_cm_per_s(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_cm_per_s(long double l) { return speed<centimetre_per_second, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si::cgs

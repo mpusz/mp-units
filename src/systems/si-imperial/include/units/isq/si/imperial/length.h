@@ -40,6 +40,8 @@ struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio(22, 1), si::inter
 // https://en.wikipedia.org/wiki/Rod_(unit)
 struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ch
@@ -51,6 +53,8 @@ constexpr auto operator"" _q_rd(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

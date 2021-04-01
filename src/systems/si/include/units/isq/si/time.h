@@ -52,6 +52,8 @@ struct dim_time : isq::dim_time<second> {};
 template<UnitOf<dim_time> U, Representation Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ys
@@ -103,6 +105,8 @@ constexpr auto operator"" _q_d(unsigned long long l) { gsl_ExpectsAudit(std::in_
 constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

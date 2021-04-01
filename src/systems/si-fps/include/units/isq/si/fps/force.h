@@ -52,6 +52,8 @@ struct dim_force : isq::dim_force<dim_force, poundal, dim_mass, dim_acceleration
 template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // poundal
@@ -67,6 +69,8 @@ constexpr auto operator"" _q_klbf(unsigned long long l) { gsl_ExpectsAudit(std::
 constexpr auto operator"" _q_klbf(long double l) { return force<kilopound_force, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

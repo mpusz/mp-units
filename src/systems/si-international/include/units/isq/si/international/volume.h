@@ -37,6 +37,8 @@ namespace units::isq::si::international {
 
 struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, si::international::foot> {};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ft3
@@ -44,6 +46,8 @@ constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

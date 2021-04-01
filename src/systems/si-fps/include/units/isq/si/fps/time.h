@@ -41,11 +41,15 @@ using si::hour;
 using si::dim_time;
 using si::time;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 using si::literals::operator"" _q_s;
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -45,6 +45,8 @@ struct fathom : named_scaled_unit<fathom, "fathom(us)", no_prefix, ratio(6), foo
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
 struct mile : named_scaled_unit<mile, "mi(us)", no_prefix, ratio(5280), foot> {};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ft
@@ -60,6 +62,8 @@ constexpr auto operator"" _q_mi_us(unsigned long long l) { gsl_ExpectsAudit(std:
 constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq::si::us::mile, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

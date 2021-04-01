@@ -40,6 +40,8 @@ struct dim_surface_tension : isq::dim_surface_tension<dim_surface_tension, newto
 template<UnitOf<dim_surface_tension> U, Representation Rep = double>
 using surface_tension = quantity<dim_surface_tension, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // N/m
@@ -47,5 +49,7 @@ constexpr auto operator"" _q_N_per_m(unsigned long long l) { gsl_ExpectsAudit(st
 constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<newton_per_metre, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

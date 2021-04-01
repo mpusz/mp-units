@@ -59,6 +59,8 @@ struct dim_resistance : isq::dim_resistance<dim_resistance, ohm, dim_voltage, di
 template<UnitOf<dim_resistance> U, Representation Rep = double>
 using resistance = quantity<dim_resistance, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // R
@@ -130,6 +132,8 @@ constexpr auto operator"" _q_YR(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

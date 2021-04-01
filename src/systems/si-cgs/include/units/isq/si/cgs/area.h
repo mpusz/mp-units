@@ -42,6 +42,8 @@ struct dim_area : isq::dim_area<dim_area, square_centimetre, dim_length> {};
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // cm2
@@ -49,6 +51,8 @@ constexpr auto operator"" _q_cm2(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

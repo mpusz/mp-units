@@ -47,6 +47,8 @@ using charge_density = quantity<dim_charge_density, U, Rep>;
 template<UnitOf<dim_surface_charge_density> U, Representation Rep = double>
 using surface_charge_density = quantity<dim_surface_charge_density, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // C/m³
@@ -58,5 +60,7 @@ constexpr auto operator"" _q_C_per_m2(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_density<coulomb_per_metre_sq, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

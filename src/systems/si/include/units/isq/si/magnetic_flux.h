@@ -59,6 +59,8 @@ struct dim_magnetic_flux : isq::dim_magnetic_flux<dim_magnetic_flux, weber, dim_
 template<UnitOf<dim_magnetic_flux> U, Representation Rep = double>
 using magnetic_flux = quantity<dim_magnetic_flux, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Wb
@@ -130,6 +132,8 @@ constexpr auto operator"" _q_YWb(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottaweber, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

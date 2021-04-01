@@ -36,6 +36,8 @@ namespace units::isq::si::international {
 
 struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // mi/h
@@ -43,5 +45,7 @@ constexpr auto operator"" _q_mi_per_h(unsigned long long l) { gsl_ExpectsAudit(s
 constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per_hour, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si::international

@@ -50,6 +50,8 @@ using dim_modulation_rate = si::dim_frequency;
 template<UnitOf<dim_modulation_rate> U, Representation Rep = double>
 using modulation_rate = quantity<dim_modulation_rate, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 constexpr auto operator"" _q_Bd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return modulation_rate<baud, std::int64_t>(static_cast<std::int64_t>(l)); }
@@ -63,6 +65,8 @@ constexpr auto operator"" _q_ZBd(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YBd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return modulation_rate<yottabaud, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

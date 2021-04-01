@@ -58,6 +58,8 @@ struct short_ton : named_scaled_unit<short_ton, "ton (short)", no_prefix, ratio(
 
 struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, ratio(2'240, 1), pound>{};
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Grain
@@ -97,6 +99,8 @@ constexpr auto operator"" _q_lton(unsigned long long l) { gsl_ExpectsAudit(std::
 constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

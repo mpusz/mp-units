@@ -61,6 +61,8 @@ struct dim_radioactivity : isq::dim_radioactivity<dim_radioactivity, becquerel, 
 template<UnitOf<dim_radioactivity> U, Representation Rep = double>
 using radioactivity = quantity<dim_radioactivity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Bq
@@ -148,6 +150,8 @@ constexpr auto operator"" _q_YBq(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YBq(long double l) { return radioactivity<yottabecquerel, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

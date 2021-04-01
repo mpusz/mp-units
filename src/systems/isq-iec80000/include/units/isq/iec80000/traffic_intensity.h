@@ -43,11 +43,15 @@ concept TrafficIntensity = QuantityOf<T, dim_traffic_intensity>;
 template<UnitOf<dim_traffic_intensity> U, Representation Rep = double>
 using traffic_intensity = quantity<dim_traffic_intensity, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return traffic_intensity<erlang, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

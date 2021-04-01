@@ -40,6 +40,8 @@ struct dim_momentum : isq::dim_momentum<dim_momentum, kilogram_metre_per_second,
 template<UnitOf<dim_momentum> U, Representation Rep = double>
 using momentum = quantity<dim_momentum, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // kg*m/s
@@ -47,5 +49,7 @@ constexpr auto operator"" _q_kg_m_per_s(unsigned long long l) { gsl_ExpectsAudit
 constexpr auto operator"" _q_kg_m_per_s(long double l) { return momentum<kilogram_metre_per_second, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si

@@ -63,6 +63,8 @@ struct dim_voltage : isq::dim_voltage<dim_voltage, volt, dim_power, dim_electric
 template<UnitOf<dim_voltage> U, Representation Rep = double>
 using voltage = quantity<dim_voltage, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // V
@@ -150,6 +152,8 @@ constexpr auto operator"" _q_YV(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

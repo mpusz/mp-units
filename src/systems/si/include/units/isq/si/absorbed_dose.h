@@ -62,6 +62,8 @@ struct dim_absorbed_dose : isq::dim_absorbed_dose<dim_absorbed_dose, gray, dim_e
 template<UnitOf<dim_absorbed_dose> U, Representation Rep = double>
 using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Gy
@@ -149,6 +151,8 @@ constexpr auto operator"" _q_YGy(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

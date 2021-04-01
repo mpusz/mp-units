@@ -58,6 +58,8 @@ struct dim_conductance : isq::dim_conductance<dim_conductance, siemens, dim_resi
 template<UnitOf<dim_conductance> U, Representation Rep = double>
 using conductance = quantity<dim_conductance, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // R
@@ -129,6 +131,8 @@ constexpr auto operator"" _q_YS(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

@@ -42,6 +42,8 @@ struct dim_energy : isq::dim_energy<dim_energy, erg, dim_force, dim_length> {};
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // erg
@@ -49,6 +51,8 @@ constexpr auto operator"" _q_erg(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

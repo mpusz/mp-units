@@ -43,6 +43,8 @@ struct dim_pressure : isq::dim_pressure<dim_pressure, barye, dim_force, dim_area
 template<UnitOf<dim_pressure> U, Representation Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Ba
@@ -50,6 +52,8 @@ constexpr auto operator"" _q_Ba(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_Ba(long double l) { return pressure<barye, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

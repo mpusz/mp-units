@@ -48,6 +48,8 @@ struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_s
 struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // ft/s
@@ -63,6 +65,8 @@ constexpr auto operator"" _q_knot(unsigned long long l) { gsl_ExpectsAudit(std::
 constexpr auto operator"" _q_knot(long double l) { return speed<knot, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 

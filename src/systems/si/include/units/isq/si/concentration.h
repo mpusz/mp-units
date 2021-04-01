@@ -40,6 +40,8 @@ struct dim_concentration : isq::dim_concentration<dim_concentration, mol_per_met
 template<UnitOf<dim_concentration> U, Representation Rep = double>
 using concentration = quantity<dim_concentration, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // mol/m³
@@ -47,6 +49,8 @@ constexpr auto operator"" _q_mol_per_m3(unsigned long long l) { gsl_ExpectsAudit
 constexpr auto operator"" _q_mol_per_m3(long double l) { return concentration<mol_per_metre_cub, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 }  // namespace units::isq::si
 

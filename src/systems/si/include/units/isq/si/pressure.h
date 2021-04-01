@@ -63,6 +63,8 @@ struct dim_pressure : isq::dim_pressure<dim_pressure, pascal, dim_force, dim_are
 template<UnitOf<dim_pressure> U, Representation Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
+#if UNITS_UDLS
+
 inline namespace literals {
 
 // Pa
@@ -150,6 +152,8 @@ constexpr auto operator"" _q_YPa(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_YPa(long double l) { return pressure<yottapascal, long double>(l); }
 
 }  // namespace literals
+
+#endif // UNITS_UDLS
 
 namespace references {
 
