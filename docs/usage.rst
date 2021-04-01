@@ -188,16 +188,6 @@ UNITS_AS_SYSTEM_HEADERS
 Exports library as system headers.
 
 
-UNITS_BUILD_DOCS
-++++++++++++++++
-
-**Values**: ``ON``/``OFF``
-
-**Defaulted to**: ``ON``
-
-Enables project documentation generation.
-
-
 UNITS_IWYU
 ++++++++++
 
@@ -206,7 +196,17 @@ UNITS_IWYU
 **Defaulted to**: ``OFF``
 
 Enables include-what-you-use when compiling with a clang compiler.
-Additionally turns on `UNITS_AS_SYSTEM_HEADERS`.
+Additionally turns on `UNITS_AS_SYSTEM_HEADERS`_.
+
+
+UNITS_BUILD_DOCS
+++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Enables project documentation generation.
 
 
 Installation and Reuse
