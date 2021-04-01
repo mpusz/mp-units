@@ -6,6 +6,7 @@
   - (!) refactor: Refactored the library file tree
   - (!) refactor: `quantity::count()` renamed to `quantity::number()`
   - (!) refactor: `data` system renamed to `isq::iec80000` (quantity names renamed too)
+  - (!) refactor: quantity UDLs support has to be enabled with `UNITS_UDLS` preprocessor define
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
