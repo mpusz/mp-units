@@ -1,5 +1,5 @@
-US
-==
+US (based on SI)
+================
 
 .. toctree::
     :maxdepth: 2

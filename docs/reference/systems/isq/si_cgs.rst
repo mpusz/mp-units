@@ -1,5 +1,5 @@
-CGS
-===
+CGS (based on SI)
+=================
 
 .. toctree::
     :maxdepth: 2

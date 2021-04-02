@@ -1,5 +1,5 @@
-FPS
-===
+FPS (based on SI)
+=================
 
 .. toctree::
     :maxdepth: 2

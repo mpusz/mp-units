@@ -1,5 +1,5 @@
-IAU
-===
+IAU (based on SI)
+=================
 
 .. toctree::
     :maxdepth: 2

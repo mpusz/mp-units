@@ -1,5 +1,5 @@
-Typographic
-===========
+Typographic (based on SI)
+=========================
 
 .. toctree::
     :maxdepth: 2
