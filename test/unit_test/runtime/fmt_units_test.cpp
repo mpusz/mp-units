@@ -37,6 +37,7 @@ using namespace units::isq::si::international;
 using namespace units::isq::si::us;
 using namespace units::isq::si::iau;
 using namespace units::isq::si::imperial;
+using namespace units::isq::si::imperial::references;
 using namespace units::isq::si::typographic;
 using namespace units::isq::iec80000::references;
 
@@ -56,7 +57,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
     CHECK(fmt::format("{}", 1_q_mm) == "1 mm");
     CHECK(fmt::format("{}", 1_q_cm) == "1 cm");
     CHECK(fmt::format("{}", 1_q_km) == "1 km");
-    CHECK(fmt::format("{}", 1_q_ft) == "1 ft");
+    CHECK(fmt::format("{}", 1 * ft) == "1 ft");
     CHECK(fmt::format("{}", 1_q_ft_us) == "1 ft(us)");
     CHECK(fmt::format("{}", 1_q_yd) == "1 yd");
     CHECK(fmt::format("{}", 1_q_in) == "1 in");

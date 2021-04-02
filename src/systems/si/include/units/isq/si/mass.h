@@ -190,8 +190,8 @@ constexpr auto operator"" _q_at(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_at(long double l) { return mass<attotonne, long double>(l); }
 
 // ft
-/*constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }*/
+constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }
 
 // pt
 constexpr auto operator"" _q_pt(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<picotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
