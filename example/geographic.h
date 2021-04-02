@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
 

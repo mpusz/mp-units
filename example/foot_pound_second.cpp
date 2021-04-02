@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/isq/si/fps/density.h>
+#include <units/isq/si/fps/density.h> // IWYU pragma: keep
 #include <units/isq/si/fps/length.h>
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
@@ -31,6 +31,7 @@
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
 #include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
 #include <iostream>
 #include <string_view>
