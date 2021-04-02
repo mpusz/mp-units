@@ -28,11 +28,11 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
 
     introduction
     quick_start
-    usage
     framework
     use_cases
     design
     examples
+    usage
     faq
 
 .. toctree::

@@ -1,5 +1,5 @@
-Usage
-=====
+Installation And Usage
+======================
 
 .. note::
 
