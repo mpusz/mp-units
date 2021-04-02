@@ -43,10 +43,11 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
 int main()
 {
   using namespace units::isq::si;
+  using namespace units::isq::si::references;
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA = 2.0_q_m;
+  constexpr length<metre> lengthA = 2.0 * m;
   constexpr length<millimetre> lengthB = lengthA;
 
   std::cout << fmt::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)

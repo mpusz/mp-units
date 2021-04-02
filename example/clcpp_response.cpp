@@ -29,55 +29,54 @@
 
 namespace {
 
-using namespace units;
-
 void simple_quantities()
 {
-  using namespace units::isq::si;
-  using namespace units::isq::si::international;
+  using namespace units::isq;
+  using namespace units::isq::si::references;
+  using namespace units::isq::si::international::references;
 
-  using distance = length<metre>;
-  using duration = isq::si::time<second>;
+  using distance = si::length<si::metre>;
+  using duration = si::time<si::second>;
 
-  constexpr distance km = 1.0_q_km;
-  constexpr distance miles = 1.0_q_mi;
+  constexpr distance kilometers = 1.0 * km;
+  constexpr distance miles = 1.0 * mi;
 
-  constexpr duration sec = 1_q_s;
-  constexpr duration min = 1_q_min;
-  constexpr duration hr = 1_q_h;
+  constexpr duration seconds = 1 * s;
+  constexpr duration minutes = 1 * min;
+  constexpr duration hours = 1 * h;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
-  std::cout << km << '\n';
+  std::cout << kilometers << '\n';
   std::cout << miles << '\n';
-  std::cout << sec << '\n';
-  std::cout << min << '\n';
-  std::cout << hr << "\n\n";
+  std::cout << seconds << '\n';
+  std::cout << minutes << '\n';
+  std::cout << hours << "\n\n";
 }
 
 void quantities_with_typed_units()
 {
   using namespace units::isq;
-  using namespace units::isq::si;
-  using namespace units::isq::si::international;
+  using namespace units::isq::si::references;
+  using namespace units::isq::si::international::references;
 
-  constexpr length<kilometre> km = 1.0_q_km;
-  constexpr length<mile> miles = 1.0_q_mi;
+  constexpr si::length<si::kilometre> kilometers = 1.0 * km;
+  constexpr si::length<si::international::mile> miles = 1.0 * mi;
 
   std::cout.precision(6);
 
-  constexpr si::time<second> sec = 1_q_s;
-  constexpr si::time<minute> min = 1_q_min;
-  constexpr si::time<hour> hr = 1_q_h;
+  constexpr si::time<si::second> seconds = 1 * s;
+  constexpr si::time<si::minute> minutes = 1 * min;
+  constexpr si::time<si::hour> hours = 1 * h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
-  std::cout << km << '\n';
+  std::cout << kilometers << '\n';
   std::cout << miles << '\n';
-  std::cout << sec << '\n';
-  std::cout << min << '\n';
-  std::cout << hr << "\n\n";
+  std::cout << seconds << '\n';
+  std::cout << minutes << '\n';
+  std::cout << hours << "\n\n";
 
-  constexpr length<metre> meter = 1_q_m;
+  constexpr si::length<si::metre> meter = 1 * m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
@@ -105,34 +104,35 @@ void quantities_with_typed_units()
 
 void calcs_comparison()
 {
-  using namespace units::isq::si;
+  using namespace units::isq;
+  using namespace units::isq::si::references;
 
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  length<femtometre, float> L1A = 2._q_fm;
-  length<femtometre, float> L2A = 3._q_fm;
-  length<femtometre, float> LrA = L1A + L2A;
+  si::length<si::femtometre, float> L1A = 2. * fm;
+  si::length<si::femtometre, float> L2A = 3. * fm;
+  si::length<si::femtometre, float> LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  length<metre, float> L1B = L1A;
-  length<metre, float> L2B = L2A;
-  length<metre, float> LrB = L1B + L2B;
+  si::length<si::metre, float> L1B = L1A;
+  si::length<si::metre, float> L2B = L2A;
+  si::length<si::metre, float> LrB = L1B + L2B;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
-  area<square_femtometre, float> ArA = L1A * L2A;
+  si::area<si::square_femtometre, float> ArA = L1A * L2A;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
-  area<square_metre, float> ArB = L1B * L2B;
+  si::area<si::square_metre, float> ArB = L1B * L2B;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 

@@ -128,7 +128,7 @@ udls
 
 **Values**: ``True``/``False``
 
-**Defaulted to**: ``True``
+**Defaulted to**: ``False``
 
 Determines if library should provide User Defined Literals (UDLs) for quantities of various units.
 
@@ -163,7 +163,7 @@ UNITS_UDLS
 
 **Values**: ``ON``/``OFF``
 
-**Defaulted to**: ``ON``
+**Defaulted to**: ``OFF``
 
 Equivalent to `udls`_.
 

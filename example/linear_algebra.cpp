@@ -60,7 +60,7 @@ std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
 namespace {
 
 using namespace units::isq;
-using namespace units::isq::si::literals;
+using namespace units::isq::si::references;
 
 template<typename Rep = double>
 using vector = std::math::fs_vector<Rep, 3>;
@@ -73,9 +73,9 @@ void vector_of_quantity_add()
 {
   std::cout << "\nvector_of_quantity_add:\n";
 
-  vector<si::length<si::metre>> v = { 1_q_m, 2_q_m, 3_q_m };
-  vector<si::length<si::metre>> u = { 3_q_m, 2_q_m, 1_q_m };
-  vector<si::length<si::kilometre>> t = { 3_q_km, 2_q_km, 1_q_km };
+  vector<si::length<si::metre>> v = { 1 * m, 2 * m, 3 * m };
+  vector<si::length<si::metre>> u = { 3 * m, 2 * m, 1 * m };
+  vector<si::length<si::kilometre>> t = { 3 * km, 2 * km, 1 * km };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -90,28 +90,28 @@ void vector_of_quantity_multiply_same()
 {
   std::cout << "\nvector_of_quantity_multiply_same:\n";
 
-  vector<si::length<si::metre>> v = { 1_q_m, 2_q_m, 3_q_m };
-  vector<si::length<si::metre>> u = { 3_q_m, 2_q_m, 1_q_m };
+  vector<si::length<si::metre>> v = { 1 * m, 2 * m, 3 * m };
+  vector<si::length<si::metre>> u = { 3 * m, 2 * m, 1 * m };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2_q_m * v = " << 2._q_m * v << "\n";
+  std::cout << "2 * m * v = " << 2. * m * v << "\n";
 }
 
 void vector_of_quantity_multiply_different()
 {
   std::cout << "\nvector_of_quantity_multiply_different:\n";
 
-  vector<si::force<si::newton>> v = { 1_q_N, 2_q_N, 3_q_N };
-  vector<si::length<si::metre>> u = { 3_q_m, 2_q_m, 1_q_m };
+  vector<si::force<si::newton>> v = { 1 * N, 2 * N, 3 * N };
+  vector<si::length<si::metre>> u = { 3 * m, 2 * m, 1 * m };
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2_q_N * u = " << 2._q_N * u << "\n";
+  std::cout << "2 * N * u = " << 2. * N * u << "\n";
   std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
@@ -119,12 +119,12 @@ void vector_of_quantity_divide_by_scalar()
 {
   std::cout << "\nvector_of_quantity_divide_by_scalar:\n";
 
-  vector<si::length<si::metre>> v = { 4_q_m, 8_q_m, 12_q_m };
+  vector<si::length<si::metre>> v = { 4 * m, 8 * m, 12 * m };
 
   std::cout << "v = " << v << "\n";
 
   // TODO Uncomment when bug in the LA is fixed
-  // std::cout << "v / 2_q_s = " << v / 2_q_s << "\n";
+  // std::cout << "v / (2 * s) = " << v / (2 * s) << "\n";
   // std::cout << "v / 2 = " << v / 2 << "\n";
 }
 
@@ -140,9 +140,9 @@ void matrix_of_quantity_add()
 {
   std::cout << "\nmatrix_of_quantity_add:\n";
 
-  matrix<si::length<si::metre>> v = {{ 1_q_m, 2_q_m, 3_q_m }, { 4_q_m, 5_q_m, 6_q_m }, { 7_q_m, 8_q_m, 9_q_m }};
-  matrix<si::length<si::metre>> u = {{ 3_q_m, 2_q_m, 1_q_m }, { 3_q_m, 2_q_m, 1_q_m }, { 3_q_m, 2_q_m, 1_q_m }};
-  matrix<si::length<si::millimetre>> t = {{ 3_q_mm, 2_q_mm, 1_q_mm }, { 3_q_mm, 2_q_mm, 1_q_mm }, { 3_q_mm, 2_q_mm, 1_q_mm }};
+  matrix<si::length<si::metre>> v = {{ 1 * m, 2 * m, 3 * m }, { 4 * m, 5 * m, 6 * m }, { 7 * m, 8 * m, 9 * m }};
+  matrix<si::length<si::metre>> u = {{ 3 * m, 2 * m, 1 * m }, { 3 * m, 2 * m, 1 * m }, { 3 * m, 2 * m, 1 * m }};
+  matrix<si::length<si::millimetre>> t = {{ 3 * mm, 2 * mm, 1 * mm }, { 3 * mm, 2 * mm, 1 * mm }, { 3 * mm, 2 * mm, 1 * mm }};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -159,28 +159,28 @@ void matrix_of_quantity_multiply_same()
 {
   std::cout << "\nmatrix_of_quantity_multiply_same:\n";
   
-  matrix<si::length<si::metre>> v = {{ 1_q_m, 2_q_m, 3_q_m }, { 4_q_m, 5_q_m, 6_q_m }, { 7_q_m, 8_q_m, 9_q_m }};
-  vector<si::length<si::metre>> u = { 3_q_m, 2_q_m, 1_q_m };
+  matrix<si::length<si::metre>> v = {{ 1 * m, 2 * m, 3 * m }, { 4 * m, 5 * m, 6 * m }, { 7 * m, 8 * m, 9 * m }};
+  vector<si::length<si::metre>> u = { 3 * m, 2 * m, 1 * m };
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2_q_m * u =\n" << 2._q_m * u << "\n";
+  std::cout << "2 * m * u =\n" << 2. * m * u << "\n";
 }
 
 void matrix_of_quantity_multiply_different()
 {
   std::cout << "\nmatrix_of_quantity_multiply_different:\n";
 
-  vector<si::force<si::newton>> v = { 1_q_N, 2_q_N, 3_q_N };
-  matrix<si::length<si::metre>> u = {{ 1_q_m, 2_q_m, 3_q_m }, { 4_q_m, 5_q_m, 6_q_m }, { 7_q_m, 8_q_m, 9_q_m }};
+  vector<si::force<si::newton>> v = { 1 * N, 2 * N, 3 * N };
+  matrix<si::length<si::metre>> u = {{ 1 * m, 2 * m, 3 * m }, { 4 * m, 5 * m, 6 * m }, { 7 * m, 8 * m, 9 * m }};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2_q_N * u =\n" << 2._q_N * u << "\n";
+  std::cout << "2 * N * u =\n" << 2. * N * u << "\n";
   std::cout << "2 * u =\n" << 2 * u << "\n";
 }
 
@@ -188,12 +188,12 @@ void matrix_of_quantity_divide_by_scalar()
 {
   std::cout << "\nmatrix_of_quantity_divide_by_scalar:\n";
 
-  matrix<si::length<si::metre>> v = {{ 2_q_m, 4_q_m, 6_q_m }, { 4_q_m, 6_q_m, 8_q_m }, { 8_q_m, 4_q_m, 2_q_m }};
+  matrix<si::length<si::metre>> v = {{ 2 * m, 4 * m, 6 * m }, { 4 * m, 6 * m, 8 * m }, { 8 * m, 4 * m, 2 * m }};
 
   std::cout << "v =\n" << v << "\n";
 
   // TODO Uncomment when bug in the LA is fixed
-  // std::cout << "v / 2_q_s =\n" << v / 2_q_s << "\n";
+  // std::cout << "v / (2 * s) =\n" << v / (2 * s) << "\n";
   // std::cout << "v / 2 =\n" << v / 2 << "\n";
 }
 
@@ -239,7 +239,7 @@ void quantity_of_vector_multiply_same()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2_q_m * v = " << 2._q_m * v << "\n";
+  std::cout << "2 * m * v = " << 2. * m * v << "\n";
 }
 
 void quantity_of_vector_multiply_different()
@@ -253,7 +253,7 @@ void quantity_of_vector_multiply_different()
   std::cout << "u = " << u << "\n";
 
   std::cout << "v * u    = " << v * u << "\n";
-  std::cout << "2_q_N * u = " << 2._q_N * u << "\n";
+  std::cout << "2 * N * u = " << 2. * N * u << "\n";
   std::cout << "2 * u    = " << 2 * u << "\n";
 }
 
@@ -266,7 +266,7 @@ void quantity_of_vector_divide_by_scalar()
   std::cout << "v = " << v << "\n";
 
   // TODO Uncomment when bug in the LA is fixed
-  // std::cout << "v / 2_q_s = " << v / 2_q_s << "\n";
+  // std::cout << "v / 2 * s = " << v / 2 * s << "\n";
   // std::cout << "v / 2 = " << v / 2 << "\n";
 }
 
@@ -311,7 +311,7 @@ void quantity_of_matrix_multiply_same()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2_q_m * u =\n" << 2._q_m * u << "\n";
+  std::cout << "2 * m * u =\n" << 2. * m * u << "\n";
 }
 
 void quantity_of_matrix_multiply_different()
@@ -325,7 +325,7 @@ void quantity_of_matrix_multiply_different()
   std::cout << "u =\n" << u << "\n";
 
   std::cout << "v * u =\n" << v * u << "\n";
-  std::cout << "2_q_N * u =\n" << 2._q_N * u << "\n";
+  std::cout << "2 * N * u =\n" << 2. * N * u << "\n";
   std::cout << "2 * u =\n" << 2 * u << "\n";
 }
 
@@ -338,7 +338,7 @@ void quantity_of_matrix_divide_by_scalar()
   std::cout << "v =\n" << v << "\n";
 
   // TODO Uncomment when bug in the LA is fixed
-  // std::cout << "v / 2_q_s =\n" << v / 2_q_s << "\n";
+  // std::cout << "v / (2 * s) =\n" << v / (2 * s) << "\n";
   // std::cout << "v / 2 =\n" << v / 2 << "\n";
 }
 

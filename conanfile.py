@@ -46,7 +46,7 @@ class UnitsConan(ConanFile):
         "build_docs": [True, False]
     }
     default_options = {
-        "udls": True,
+        "udls": False,
         "downcast_mode": "on",
         "build_docs": True
     }

@@ -26,6 +26,7 @@
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
 #include <units/isq/si/fps/speed.h>
+#include <units/isq/si/fps/volume.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
@@ -62,8 +63,8 @@ auto fmt_line(const Q a)
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
-  using namespace units::isq::si::fps::literals;
-  const auto waterDensity = 62.4_q_lb_per_ft3;
+  using namespace units::isq::si::fps::references;
+  const auto waterDensity = 62.4 * (lb / ft3);
   std::cout << fmt::format("{}\n", description);
   std::cout << fmt::format("{:20} : {}\n", "length",    fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
             << fmt::format("{:20} : {}\n", "draft",     fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
@@ -79,17 +80,18 @@ void print_details(std::string_view description, const Ship& ship)
 
 int main()
 {
-  using namespace units::isq::si::literals;
-  using namespace units::isq::si::fps::literals;
+  using namespace units::isq::si::references;
+  using namespace units::isq::si::fps::references;
+  using units::isq::si::fps::references::ft;  // collides with si::femtotonne (alias unit of mass)
   
   // KMS Bismark, using the units the Germans would use, taken from Wiki
-  auto bismark = Ship{.length{251._q_m}, .draft{9.3_q_m}, .beam{36_q_m}, .speed{56_q_km_per_h}, .mass{50'300_q_t}, .mainGuns{380_q_mm}, .shellMass{800_q_kg}, .shellSpeed{820._q_m_per_s}, .power{110.45_q_kW}};
+  auto bismark = Ship{.length{251. * m}, .draft{9.3 * m}, .beam{36 * m}, .speed{56 * (km / h)}, .mass{50'300 * t}, .mainGuns{380 * mm}, .shellMass{800 * kg}, .shellSpeed{820. * (m / s)}, .power{110.45 * kW}};
 
   // USS Iowa, using units from the foot-pound-second system
-  auto iowa = Ship{.length{860._q_ft}, .draft{37._q_ft + 2._q_in}, .beam{108._q_ft + 2._q_in}, .speed{33_q_knot}, .mass{57'540_q_lton}, .mainGuns{16_q_in}, .shellMass{2700_q_lb}, .shellSpeed{2690._q_ft_per_s}, .power{212'000_q_hp}};
+  auto iowa = Ship{.length{860. * ft}, .draft{37. * ft + 2. * in}, .beam{108. * ft + 2. * in}, .speed{33 * knot}, .mass{57'540 * lton}, .mainGuns{16 * in}, .shellMass{2700 * lb}, .shellSpeed{2690. * (ft / s)}, .power{212'000 * hp}};
 
   // HMS King George V, using units from the foot-pound-second system
-  auto kgv = Ship{.length{745.1_q_ft}, .draft{33._q_ft + 7.5_q_in}, .beam{103.2_q_ft + 2.5_q_in}, .speed{28.3_q_knot}, .mass{42'245_q_lton}, .mainGuns{14_q_in}, .shellMass{1'590_q_lb}, .shellSpeed{2483._q_ft_per_s}, .power{110'000_q_hp}};
+  auto kgv = Ship{.length{745.1 * ft}, .draft{33. * ft + 7.5 * in}, .beam{103.2 * ft + 2.5 * in}, .speed{28.3 * knot}, .mass{42'245 * lton}, .mainGuns{14 * in}, .shellMass{1'590 * lb}, .shellSpeed{2483. * (ft / s)}, .power{110'000 * hp}};
 
   print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);
   std::cout << "\n\n";

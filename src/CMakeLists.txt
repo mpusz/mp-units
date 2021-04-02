@@ -27,7 +27,7 @@ project(mp-units
 )
 
 option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-option(UNITS_UDLS "Enables definitions of User Defined Literals (UDLs) provided for quantities of various units" ON)
+option(UNITS_UDLS "Enables definitions of User Defined Literals (UDLs) provided for quantities of various units" OFF)
 
 message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
 message(STATUS "UNITS_UDLS: ${UNITS_UDLS}")

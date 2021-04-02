@@ -34,27 +34,28 @@ int main()
 {
   using namespace units::isq;
   using namespace units::isq::si;
+  using namespace units::isq::si::references;
 
   std::cout << "mp-units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = 0.47_q_uF;
-  constexpr auto V0 = 5.0_q_V;
-  constexpr auto R = 4.7_q_kR;
+  constexpr auto C = 0.47 * uF;
+  constexpr auto V0 = 5.0 * V;
+  constexpr auto R = 4.7 * kR;
 
-  for (auto t = 0_q_ms; t <= 50_q_ms; ++t) {
+  for (auto t = 0 * ms; t <= 50 * ms; ++t) {
     const Voltage auto Vt = V0 * units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
-    if (Vt >= 1_q_V)
+    if (Vt >= 1 * V)
       std::cout << Vt;
-    else if (Vt >= 1_q_mV)
+    else if (Vt >= 1 * mV)
       std::cout << quantity_cast<millivolt>(Vt);
-    else if (Vt >= 1_q_uV)
+    else if (Vt >= 1 * uV)
       std::cout << quantity_cast<microvolt>(Vt);
-    else if (Vt >= 1_q_nV)
+    else if (Vt >= 1 * nV)
       std::cout << quantity_cast<nanovolt>(Vt);
     else
       std::cout << quantity_cast<picovolt>(Vt);
