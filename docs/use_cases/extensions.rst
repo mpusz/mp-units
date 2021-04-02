@@ -130,7 +130,7 @@ coherent unit::
 
 With the above we can now check what is the production rate::
 
-    DeskRate auto rate = quantity_cast<desk_per_hour>(3._d / 20_q_min);
+    DeskRate auto rate = quantity_cast<desk_per_hour>(3._d / (20 * min));
     std::cout << "Desk rate: " << rate << '\n';  // prints 'Desk rate: 9 desk/h'
 
 and how much wood is being consumed over a unit of time::

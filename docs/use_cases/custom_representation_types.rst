@@ -92,7 +92,7 @@ representation types we have to obey similar rules::
 This also applies when we want to create a quantity with a custom representation type
 from a regular quantity value::
 
-    Length auto d = 123_q_m;
+    Length auto d = 123 * m;
     si::length<si::metre, impl> d1(d);                      // OK
     si::length<si::metre, expl> d2(d);                      // Compile-time error
     si::length<si::metre, expl> d3(quantity_cast<expl>(d)); // OK

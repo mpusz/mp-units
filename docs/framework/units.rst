@@ -388,9 +388,9 @@ and user should not instantiate it by him/her-self. However the user can sometim
 observe this type in case an unit/dimension conversion expression will end up with an
 unknown/undefined unit type like in the below example::
 
-    using namespace units::isq::si::literals;
+    using namespace units::isq::si::references;
 
-    Length auto l = 100_q_km_per_h * 10_q_s;
+    Length auto l = 100 * (km / h) * (10 * s);
 
 The type of ``l`` above will be
 ``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused

@@ -38,9 +38,9 @@ such an explicit conversion::
 
     using namespace std::chrono_literals;
 
-    static_assert(quantity{1s} + 1_q_s == 2_q_s);
-    static_assert(quantity{1s} + 1_q_min == 61_q_s);
-    static_assert(10_q_m / quantity{2s} == 5_q_m_per_s);
+    static_assert(quantity{1s} + 1 * s == 2 * s);
+    static_assert(quantity{1s} + 1 * min == 61 * s);
+    static_assert(10 * m / quantity{2s} == 5 * (m / s));
 
 .. note::
 
@@ -63,4 +63,4 @@ provide a deduction guide from `QuantityPointLike`::
 
     using namespace std::chrono_literals;
 
-    static_assert(quantity_point{std::chrono::sys_seconds{1s}} + 1_q_s == quantity_point{2s});
+    static_assert(quantity_point{std::chrono::sys_seconds{1s}} + 1 * s == quantity_point{2s});

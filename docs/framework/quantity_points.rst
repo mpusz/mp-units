@@ -14,7 +14,7 @@ Construction
 To create the quantity point object from a `quantity` we just have to pass
 the value to the `quantity_point` class template explicit constructor::
 
-    quantity_point<si::dim_length, si::kilometre, double> d(123_q_km);
+    quantity_point<si::dim_length, si::kilometre, double> d(123 * km);
 
 .. note::
 
@@ -25,7 +25,7 @@ the value to the `quantity_point` class template explicit constructor::
     `copy initialization <https://en.cppreference.com/w/cpp/language/copy_initialization>`_
     **does not compile**::
 
-        quantity_point<si::dim_length, si::kilometre, double> d = 123_q_km;  // ERROR
+        quantity_point<si::dim_length, si::kilometre, double> d = 123 * km;  // ERROR
 
 
 Differences To Quantity

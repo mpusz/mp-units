@@ -50,12 +50,44 @@ Thanks to that, the above example can be rewritten as follows::
     si::length<si::kilometre> d(123);
     si::speed<si::kilometre_per_hour, int> v(70);
 
+Quantity References
++++++++++++++++++++
+
+Quantity References provide an alternative and simplified way to create quantities.
+They are defined using the `reference` class template::
+
+    namespace references {
+
+    inline constexpr auto km = reference<dim_length, kilometre>{};
+    inline constexpr auto h = reference<dim_time, hour>{};
+
+    }
+
+With the above our code can look as follows::
+
+    using namespace units::isq::si::references;
+    auto d = 123. * km;       // si::length<si::kilometre, double>
+    auto v = 70 * (km / h);   // si::speed<si::kilometre_per_hour, int>
+
+.. important::
+
+    The following syntaxes are not allowed:
+    ``2 / s``, ``km * 3``, ``s / 4``, ``70 * km / h``.
+
+It is also possible to easily define custom quantity references from existing ones::
+
+    inline constexpr auto Nm = N * m;
+    inline constexpr auto km_per_h = km / h;
+    inline constexpr auto mph = mi / h;
+
+
 User Defined Literals
 +++++++++++++++++++++
+    
+Alternatively, to construct quantities with compile-time known values the library provides
+:abbr:`UDL (User Defined Literal)` s for each :term:`unit` of every :term:`dimension`::
 
-To further simplify construction of quantities with compile-time known
-values the library provides :abbr:`UDL (User Defined Literal)` s for each
-:term:`unit` of every :term:`dimension`::
+    #if UNITS_UDLS
 
     inline namespace literals {
 
@@ -67,7 +99,11 @@ values the library provides :abbr:`UDL (User Defined Literal)` s for each
 
     }
 
+    #endif // UNITS_UDLS
+
 Thanks to them the same code can be as simple as::
+
+    #define UNITS_UDLS 1
 
     using namespace units::isq::si::literals;
     auto d = 123._q_km;     // si::length<si::kilometre, long double>
@@ -82,37 +118,13 @@ Thanks to them the same code can be as simple as::
     ``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
     ``_q_`` prefix was consistently applied to all the UDLs.
 
-
-Quantity References
-+++++++++++++++++++
-
-Quantity References provide an alternative way to simplify quantities creation.
-They are defined using the `reference` class template::
-
-    namespace references {
-
-    inline constexpr auto km = reference<dim_length, kilometre>{};
-    inline constexpr auto h = reference<dim_time, hour>{};
-
-    }
-
-With the above our code can look as follows::
-
-    using namespace units::isq::si::references;
-    auto d = 123. * km;     // si::length<si::kilometre, double>
-    auto v = 70 * (km / h);   // si::speed<si::kilometre_per_hour, int>
-
 .. important::
 
-    The following syntaxes are not allowed:
-    ``2 / s``, ``km * 3``, ``s / 4``, ``70 * km / h``.
+    As one can read in the next section UDLs, are considered to be inferior to `Quantity References`_
+    and their definition affects compile-time performance a lot. This is why they are an opt-in feature
+    of the library and in order to use them one has to provide a `UNITS_UDL` preprocessor definition.
 
-It is also allowed to easily define custom quantity references from existing ones::
-
-    inline constexpr auto Nm = N * m;
-    inline constexpr auto km_per_h = km / h;
-    inline constexpr auto mph = mi / h;
-
+    
 UDLs vs Quantity References
 +++++++++++++++++++++++++++
 
@@ -161,7 +173,10 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
        auto d1 = 123._q_km;   // si::length<si::kilometre, long double>
        auto d2 = 123_q_km;    // si::length<si::kilometre, std::int64_t>
 
-     No possibility to obtain any other representation type.
+     No possibility to obtain any other representation type. Additionally this gets contagious
+     as the result of every arithmetic expression on quantities is always expanded to the common
+     type of its arguments. For example `si::length<si::metre, int>(1) + 1_q_m` results in a
+     `si::length<si::metre, int64_t>` type.
 
    - Quantity References::
 
@@ -183,7 +198,8 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
    - Quantity References:
    
      - one reference per unit
-     - unnamed derived units constructed from base references (i.e. ``km / h``)
+     - unnamed derived units are constructed from base references so no explicit
+       definition is required (i.e. ``km / h``)
 
 5. Typical UDL definition for quantities when compiled with a ``-Wsign-conversion``
    flag results in a compilation warning. This warning could be silenced with a
@@ -191,6 +207,24 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
    and security issues could be silently introduced.
    Quantity References, on the opposite, always use the exact representation type provided
    by the user so there is no chance for a truncating conversion on a quantity construction.
+
+6. UDLs take long to compile
+   
+   - UDLs:
+  
+     Every unit requires two UDLs to be defined which in turns requires two instantiations
+     of "heavy" `quantity` class template. Those are then not often used by non-UDL construction
+     as most users instantiate `quantity` class template with `int` or `double` which
+     again have to be separately instantiated. This has a significant impact on the compile-time
+     performance.
+
+   - Quantity References:
+
+     `reference` class template is "cheaper" to instantiate. Additionally, every unit requires
+     only one instantiation of a `reference` class template. Such pre-defined reference instance
+     is then shared among all the instantiations of `quantity` class template for this specific
+     unit (no matter of its representation type). With this approach we end up with much less class
+     template instantiations in the application.
 
 
 Dimension-specific Concepts
@@ -200,8 +234,8 @@ In case the user does not care about the specific unit and representation but
 requires quantity of a concrete dimension than dimension-specific concepts can
 be used::
 
-    using namespace units::isq::si::literals;
-    constexpr Length auto d = 123_q_km;  // si::length<si::kilometre, std::int64_t>
+    using namespace units::isq::si::references;
+    constexpr Length auto d = 123 * km;  // si::length<si::kilometre, int>
 
 .. note::
 
@@ -215,10 +249,10 @@ assume that the user wants to implement an ``avg_speed`` function that will
 be calculating the average speed based on provided distance and duration
 quantities. The usage of such a function can look as follows::
 
-    using namespace units::isq::si::literals;
-    using namespace units::isq::si::international::literals;
-    constexpr Speed auto v1 = avg_speed(220_q_km, 2_q_h);
-    constexpr Speed auto v2 = avg_speed(140_q_mi, 2_q_h);
+    using namespace units::isq::si::references;
+    using namespace units::isq::si::international::references;
+    constexpr Speed auto v1 = avg_speed(220 * km, 2 * h);
+    constexpr Speed auto v2 = avg_speed(140 * mi, 2 * h);
 
 In this and all other physical units libraries such a function can be
 implemented as::
@@ -276,7 +310,7 @@ but often we would like to know a specific type too. We have two options here:
 
 - query the actual dimension, unit, and representation types::
 
-    constexpr Speed auto v = avg_speed(220_q_km, 2_q_h);
+    constexpr Speed auto v = avg_speed(220 * km, 2 * h);
     using quantity_type = decltype(v);
     using dimension_type = quantity_type::dimension;
     using unit_type = quantity_type::unit;
@@ -284,7 +318,7 @@ but often we would like to know a specific type too. We have two options here:
 
 - convert or cast to a desired quantity type::
 
-    constexpr Speed auto v1 = avg_speed(220._q_km, 2_q_h);
+    constexpr Speed auto v1 = avg_speed(220. * km, 2 * h);
     constexpr si::speed<si::metre_per_second> v2 = v1;
     constexpr Speed auto v3 = quantity_cast<si::speed<si::metre_per_second>(v1);
 
@@ -300,8 +334,8 @@ Dimensionless Quantities
 Whenever we divide two quantities of the same dimension we end up with a
 :term:`dimensionless quantity` otherwise known as :term:`quantity of dimension one`::
 
-    static_assert(10_q_km / 5_q_km == 2);
-    static_assert(std::is_same_v<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);
+    static_assert(10 * km / (5 * km) == 2);
+    static_assert(std::is_same_v<decltype(10 * km / (5 * km)), quantity<dim_one, one, int>>);
 
 According to the official ISO definition `dim_one` is a dimension "for which all the
 exponents of the factors corresponding to the base quantities in its quantity dimension
@@ -330,7 +364,7 @@ There are two special units provided for usage with such a quantity:
 
 For example the following code::
 
-    std::cout << quantity_cast<percent>(50._q_m / 100._q_m) << '\n';
+    std::cout << quantity_cast<percent>(50. * m / (100. * m)) << '\n';
 
 will print ``50 %`` to the console output.
 

@@ -25,8 +25,9 @@ The same applies to the resulting unit. For example:
     #include <units/isq/si/si.h>
 
     using namespace units::isq::si;
+    using namespace units::isq::si::references;
 
-    constexpr auto result = 144_q_km / 2_q_h;
+    constexpr auto result = 144 * km / (2 * h);
     static_assert(std::is_same_v<decltype(result)::dimension,
                                  dim_speed>);
     static_assert(std::is_same_v<decltype(result)::unit,
@@ -45,8 +46,9 @@ dimensions used in the division operation:
     #include <units/isq/si/time.h>
 
     using namespace units::isq::si;
+    using namespace units::isq::si::references;
 
-    constexpr auto result = 144_q_km / 2_q_h;
+    constexpr auto result = 144 * km / (2 * h);
     static_assert(std::is_same_v<decltype(result)::dimension,
                                  unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
     static_assert(std::is_same_v<decltype(result)::unit,
@@ -103,10 +105,10 @@ in your program. A typical example here are temporary results of a long calculat
     {
       Speed auto s1 = avg_speed(d, t);
 
-      auto temp1 = s1 * 200_q_km;      // intermediate unknown dimension
+      auto temp1 = s1 * (200 * km);      // intermediate unknown dimension
 
-      Speed auto s2 = temp1 / 50_q_km; // back to known dimensions again
-      Length auto d2 = s2 * 4_q_h;
+      Speed auto s2 = temp1 / (50 * km); // back to known dimensions again
+      Length auto d2 = s2 * (4 * h);
 
       // ...
     }
