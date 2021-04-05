@@ -136,7 +136,7 @@ jobs:
         shell: bash
         run: |
           conan config init
-          conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
+          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           conan profile update settings.build_type=${{ matrix.build_type }} default
           conan profile update settings.compiler.cppstd=20 default
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then

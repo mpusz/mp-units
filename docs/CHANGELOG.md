@@ -29,6 +29,7 @@
   - fix: ambiguous case for empty type list resolved
   - fix: downcasting facility for non-default-constructible types
   - fix: restore user-warnings within the library implementation
+  - (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4

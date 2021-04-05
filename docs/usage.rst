@@ -325,7 +325,7 @@ differences:
 
   .. code-block:: shell
 
-      conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
+      conan remote add conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
 
 2. In your Conan configuration file provide package identifier of the ``mpusz/testing`` stream:
 
@@ -343,7 +343,7 @@ differences:
 
     The identifiers of the latest packages can always be found in
     `the project's README file <https://github.com/mpusz/units/blob/master/README.md>`_ or on
-    `the project's Bintray <https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz>`_.
+    `the project's Artifactory <https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units>`_.
 
 3. Force Conan to check for updated recipes ``-u`` and to build outdated packages ``-b outdated``:
 

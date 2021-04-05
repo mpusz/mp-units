@@ -132,7 +132,7 @@ jobs:
         env:
           CONAN_USERNAME: mpusz
           CONAN_OPTIONS: mp-units:build_docs=False,mp-units:downcast_mode=${{ matrix.downcast_mode }}
-          CONAN_UPLOAD: https://api.bintray.com/conan/mpusz/conan-mpusz
+          CONAN_UPLOAD: https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_CMAKE_GENERATOR: Ninja
