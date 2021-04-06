@@ -28,7 +28,3 @@ add_subdirectory(references)
 
 add_executable(hello_units hello_units.cpp)
 target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
-target_compile_definitions(hello_units PRIVATE
-    UNITS_REFERENCES
-    UNITS_LITERALS
-)

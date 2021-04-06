@@ -28,6 +28,8 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
+#define UNITS_REFERENCES
+
 #include <units/isq/si/area.h>
 #include <units/isq/si/frequency.h>
 #include <units/isq/si/length.h>
@@ -64,6 +66,9 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
+#define UNITS_REFERENCES
+#define UNITS_LITERALS
+
 #include <units/format.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>

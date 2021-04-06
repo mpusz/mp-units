@@ -3,6 +3,8 @@ Quick Start
 
 Here is a small example of possible operations::
 
+    #define UNITS_REFERENCES
+
     #include <units/isq/si/area.h>
     #include <units/isq/si/frequency.h>
     #include <units/isq/si/length.h>
@@ -39,6 +41,9 @@ This library requires some C++20 features (concepts, classes as
 but still easy to use interface where all unit conversions and dimensional analysis can be
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
+
+    #define UNITS_REFERENCES
+    #define UNITS_LITERALS
 
     #include <units/format.h>
     #include <units/isq/si/length.h>
