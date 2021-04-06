@@ -22,40 +22,13 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-#
-# add_example(target <depependencies>...)
-#
-function(add_example target)
-    add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE ${ARGN})
-endfunction()
-
-add_example(avg_speed mp-units::core-io mp-units::si mp-units::si-cgs mp-units::si-international)
-add_example(box_example mp-units::core-fmt mp-units::si)
-add_example(capacitor_time_curve mp-units::core-io mp-units::si)
-add_example(clcpp_response mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-iau mp-units::si-imperial mp-units::si-international mp-units::si-typographic mp-units::si-us)
-add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
-add_example(custom_systems mp-units::core-io mp-units::si)
-add_example(experimental_angle mp-units::core-fmt mp-units::core-io mp-units::si)
-add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
-add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
-add_example(kalman_filter-alpha_beta_filter_example2 mp-units::core-fmt mp-units::si)
-add_example(measurement mp-units::core-io mp-units::si)
-add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
-add_example(unknown_dimension mp-units::core-io mp-units::si)
-
-if(NOT UNITS_LIBCXX)
-    add_executable(glide_computer
-        geographic.cpp geographic.h
-        glide_computer.cpp glide_computer.h
-        glide_computer_example.cpp
-    )
-    target_link_libraries(glide_computer PRIVATE mp-units::core-fmt mp-units::si mp-units::si-international)
-    target_include_directories(glide_computer PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-
-    find_package(linear_algebra CONFIG REQUIRED)
-    add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
-    target_link_libraries(linear_algebra PRIVATE linear_algebra::linear_algebra)
-endif()
-
 add_subdirectory(alternative_namespaces)
+add_subdirectory(literals)
+add_subdirectory(references)
+
+add_executable(hello_units hello_units.cpp)
+target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
+target_compile_definitions(hello_units PRIVATE
+    UNITS_REFERENCES
+    UNITS_LITERALS
+)

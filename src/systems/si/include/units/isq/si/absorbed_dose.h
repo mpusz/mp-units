@@ -154,6 +154,8 @@ constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto Gy = reference<dim_absorbed_dose, gray>{};
@@ -179,5 +181,7 @@ inline constexpr auto ZGy = reference<dim_absorbed_dose, zettagray>{};
 inline constexpr auto YGy = reference<dim_absorbed_dose, yottagray>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

@@ -153,6 +153,8 @@ constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaam
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto A = reference<dim_electric_current, ampere>{};
@@ -178,5 +180,7 @@ inline constexpr auto ZA = reference<dim_electric_current, zettaampere>{};
 inline constexpr auto YA = reference<dim_electric_current, yottaampere>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

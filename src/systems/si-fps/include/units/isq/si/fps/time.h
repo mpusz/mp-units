@@ -51,10 +51,14 @@ using si::literals::operator"" _q_s;
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 using si::references::s;
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps

@@ -49,10 +49,14 @@ constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, 
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto ft3 = reference<si::dim_volume, cubic_foot>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::international

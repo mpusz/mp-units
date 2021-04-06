@@ -155,6 +155,8 @@ constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long 
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto N = reference<dim_force, newton>{};
@@ -180,5 +182,7 @@ inline constexpr auto ZN = reference<dim_force, zettanewton>{};
 inline constexpr auto YN = reference<dim_force, yottanewton>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

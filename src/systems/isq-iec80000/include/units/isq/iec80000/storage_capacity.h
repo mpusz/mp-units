@@ -125,6 +125,8 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 // bits
@@ -166,5 +168,7 @@ inline constexpr auto PiB = reference<dim_storage_capacity, pebibyte>{};
 // inline constexpr auto EiB = reference<dim_storage_capacity, exbibyte>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000

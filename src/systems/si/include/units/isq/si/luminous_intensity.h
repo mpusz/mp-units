@@ -153,6 +153,8 @@ constexpr auto operator"" _q_Ycd(long double l) { return luminous_intensity<yott
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto cd = reference<dim_luminous_intensity, candela>{};
@@ -178,5 +180,7 @@ inline constexpr auto Zcd = reference<dim_luminous_intensity, zettacandela>{};
 inline constexpr auto Ycd = reference<dim_luminous_intensity, yottacandela>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

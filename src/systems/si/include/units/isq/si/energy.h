@@ -145,6 +145,8 @@ constexpr auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto J = reference<dim_energy, joule>{};
@@ -168,5 +170,7 @@ inline constexpr auto eV = reference<dim_energy, electronvolt>{};
 inline constexpr auto GeV = reference<dim_energy, gigaelectronvolt>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

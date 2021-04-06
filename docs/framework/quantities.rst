@@ -56,12 +56,16 @@ Quantity References
 Quantity References provide an alternative and simplified way to create quantities.
 They are defined using the `reference` class template::
 
+    #ifdef UNITS_REFERENCES
+
     namespace references {
 
     inline constexpr auto km = reference<dim_length, kilometre>{};
     inline constexpr auto h = reference<dim_time, hour>{};
 
     }
+
+    #endif // UNITS_REFERENCES
 
 With the above our code can look as follows::
 
@@ -103,8 +107,6 @@ Alternatively, to construct quantities with compile-time known values the librar
 
 Thanks to them the same code can be as simple as::
 
-    #define UNITS_LITERALS
-
     using namespace units::isq::si::literals;
     auto d = 123._q_km;     // si::length<si::kilometre, long double>
     auto v = 70_q_km_per_h; // si::speed<si::kilometre_per_hour, std::int64_t>
@@ -122,7 +124,7 @@ Thanks to them the same code can be as simple as::
 
     As one can read in the next section UDLs, are considered to be inferior to `Quantity References`_
     and their definition affects compile-time performance a lot. This is why they are an opt-in feature
-    of the library and in order to use them one has to provide a `UNITS_UDL` preprocessor definition.
+    of the library and in order to use them one has to provide a `UNITS_LITERALS` preprocessor definition.
 
     
 UDLs vs Quantity References

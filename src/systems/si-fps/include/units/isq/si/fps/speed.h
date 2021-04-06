@@ -68,11 +68,15 @@ constexpr auto operator"" _q_knot(long double l) { return speed<knot, long doubl
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto mph = reference<dim_speed, mile_per_hour>{};
 inline constexpr auto knot = reference<dim_speed, fps::knot>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps

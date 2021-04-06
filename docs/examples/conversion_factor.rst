@@ -1,7 +1,7 @@
 conversion_factor
 =================
 
-.. literalinclude:: ../../example/conversion_factor.cpp
+.. literalinclude:: ../../example/references/conversion_factor.cpp
   :caption: conversion_factor.cpp
   :start-at: #include
   :linenos:

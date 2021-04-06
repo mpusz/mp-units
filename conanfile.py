@@ -41,11 +41,13 @@ class UnitsConan(ConanFile):
         "gsl-lite/0.37.0"
     )
     options = {
+        "references": [True, False],
         "literals": [True, False],
         "downcast_mode": ["off", "on", "auto"],
         "build_docs": [True, False]
     }
     default_options = {
+        "references": True,
         "literals": False,
         "downcast_mode": "on",
         "build_docs": True
@@ -118,7 +120,8 @@ class UnitsConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["UNITS_LITERALS"] = self.options.udls
+        tc.variables["UNITS_REFERENCES"] = self.options.references
+        tc.variables["UNITS_LITERALS"] = self.options.literals
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
         tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs

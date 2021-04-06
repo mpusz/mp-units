@@ -53,10 +53,14 @@ constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mol
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto mol = reference<dim_amount_of_substance, mole>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

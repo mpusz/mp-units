@@ -52,10 +52,14 @@ constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto K = reference<dim_thermodynamic_temperature, kelvin>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

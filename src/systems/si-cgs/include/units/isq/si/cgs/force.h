@@ -55,10 +55,14 @@ constexpr auto operator"" _q_dyn(long double l) { return force<dyne, long double
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto dyn = reference<dim_force, dyne>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs

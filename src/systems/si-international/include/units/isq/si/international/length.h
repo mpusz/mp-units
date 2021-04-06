@@ -106,6 +106,8 @@ constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long do
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto yd = reference<si::dim_length, yard>{};
@@ -118,5 +120,7 @@ inline constexpr auto thou = reference<si::dim_length, international::thou>{};
 inline constexpr auto mil = reference<si::dim_length, international::mil>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::international

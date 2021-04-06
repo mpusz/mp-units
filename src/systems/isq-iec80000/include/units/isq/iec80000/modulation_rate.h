@@ -68,6 +68,8 @@ constexpr auto operator"" _q_YBd(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto Bd = reference<dim_modulation_rate, baud>{};
@@ -81,5 +83,7 @@ inline constexpr auto ZBd = reference<dim_modulation_rate, zettabaud>{};
 inline constexpr auto YBd = reference<dim_modulation_rate, yottabaud>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000

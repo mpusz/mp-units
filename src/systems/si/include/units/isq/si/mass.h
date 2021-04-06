@@ -189,9 +189,10 @@ constexpr auto operator"" _q_zt(long double l) { return mass<zeptotonne, long do
 constexpr auto operator"" _q_at(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<attotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
 constexpr auto operator"" _q_at(long double l) { return mass<attotonne, long double>(l); }
 
+// TODO Collides with foot
 // ft
-constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }
+// constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<femtotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
+// constexpr auto operator"" _q_ft(long double l) { return mass<femtotonne, long double>(l); }
 
 // pt
 constexpr auto operator"" _q_pt(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<picotonne, std::int64_t>(static_cast<std::int64_t>(l)); }
@@ -265,6 +266,8 @@ constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto g = reference<dim_mass, gram>{};
@@ -312,5 +315,7 @@ inline constexpr auto Yt = reference<dim_mass, yottatonne>{};
 inline constexpr auto Da = reference<dim_mass, dalton>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

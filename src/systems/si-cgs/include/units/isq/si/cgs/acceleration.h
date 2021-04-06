@@ -52,10 +52,14 @@ constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long 
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto Gal = reference<dim_acceleration, gal>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs

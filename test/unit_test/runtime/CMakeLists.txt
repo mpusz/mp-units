@@ -35,7 +35,10 @@ target_link_libraries(unit_tests_runtime PRIVATE
     mp-units::mp-units
     Catch2::Catch2
 )
-target_compile_definitions(unit_tests_runtime PRIVATE UNITS_LITERALS)
+target_compile_definitions(unit_tests_runtime PRIVATE
+    UNITS_REFERENCES
+    UNITS_LITERALS
+)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(unit_tests_runtime PRIVATE

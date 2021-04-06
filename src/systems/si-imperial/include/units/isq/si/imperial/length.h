@@ -56,11 +56,15 @@ constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long dou
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto ch = reference<si::dim_length, chain>{};
 inline constexpr auto rd = reference<si::dim_length, rod>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::imperial

@@ -55,10 +55,14 @@ constexpr auto operator"" _q_rad(long double l) { return angle<radian, long doub
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units

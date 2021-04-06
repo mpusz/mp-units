@@ -58,11 +58,15 @@ constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto ft3 = reference<dim_volume, cubic_foot>{};
 inline constexpr auto yd3 = reference<dim_volume, cubic_yard>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps

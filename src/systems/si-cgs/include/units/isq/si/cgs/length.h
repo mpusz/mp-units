@@ -53,10 +53,14 @@ constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long 
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto cm = reference<dim_length, centimetre>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs

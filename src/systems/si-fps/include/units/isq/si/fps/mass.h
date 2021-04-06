@@ -102,6 +102,8 @@ constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long do
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto gr = reference<dim_mass, grain>{};
@@ -115,5 +117,7 @@ inline constexpr auto ston = reference<dim_mass, short_ton>{};
 inline constexpr auto lton = reference<dim_mass, long_ton>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps

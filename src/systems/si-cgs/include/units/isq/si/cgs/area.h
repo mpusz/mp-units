@@ -54,10 +54,14 @@ constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre,
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto cm2 = reference<dim_area, square_centimetre>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs

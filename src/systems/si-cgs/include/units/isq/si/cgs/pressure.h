@@ -55,10 +55,14 @@ constexpr auto operator"" _q_Ba(long double l) { return pressure<barye, long dou
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto Ba = reference<dim_pressure, barye>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs

@@ -64,8 +64,6 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#define UNITS_LITERALS
-
 #include <units/format.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>

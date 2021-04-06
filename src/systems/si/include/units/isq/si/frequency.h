@@ -133,6 +133,8 @@ constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, l
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto Hz = reference<dim_frequency, hertz>{};
@@ -154,5 +156,7 @@ inline constexpr auto ZHz = reference<dim_frequency, zettahertz>{};
 inline constexpr auto YHz = reference<dim_frequency, yottahertz>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si

@@ -123,6 +123,15 @@ It also runs unit tests during Conan build.
 Conan Options
 ^^^^^^^^^^^^^
 
+references
+++++++++++
+
+**Values**: ``True``/``False``
+
+**Defaulted to**: ``True``
+
+Determines if library should provide Quantity References for quantities of various units.
+
 literals
 ++++++++
 
@@ -157,6 +166,16 @@ Additionally, enables project documentation generation when the project is being
 
 CMake Options
 ^^^^^^^^^^^^^
+
+UNITS_REFERENCES
+++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Equivalent to `references`_.
+
 
 UNITS_LITERALS
 ++++++++++++++

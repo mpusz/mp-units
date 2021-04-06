@@ -53,10 +53,14 @@ constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto E = reference<dim_traffic_intensity, erlang>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000

@@ -1,7 +1,7 @@
 measurement
 ===========
 
-.. literalinclude:: ../../example/measurement.cpp
+.. literalinclude:: ../../example/references/measurement.cpp
   :caption: measurement.cpp
   :start-at: #include
   :linenos:

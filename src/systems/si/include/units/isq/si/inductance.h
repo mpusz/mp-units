@@ -135,6 +135,8 @@ constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, l
 
 #endif // UNITS_LITERALS
 
+#ifdef UNITS_REFERENCES
+
 namespace references {
 
 inline constexpr auto H = reference<dim_inductance, henry>{};
@@ -156,5 +158,7 @@ inline constexpr auto ZH = reference<dim_inductance, zettahenry>{};
 inline constexpr auto YH = reference<dim_inductance, yottahenry>{};
 
 }  // namespace references
+
+#endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
