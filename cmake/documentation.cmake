@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-find_package(Doxygen REQUIRED)
+find_package(Doxygen MODULE REQUIRED)  # TODO Switch to CONFIG when Conan will start supporting imported executables in CMakeDeps
 find_package(Sphinx REQUIRED)
 
 #
