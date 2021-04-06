@@ -38,7 +38,7 @@ class UnitsConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "fmt/7.1.3",
-        "gsl-lite/0.37.0"
+        "gsl-lite/0.38.0"
     )
     options = {
         "downcast_mode": ["off", "on", "auto"],
