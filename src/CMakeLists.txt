@@ -27,12 +27,7 @@ project(mp-units
 )
 
 option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-option(UNITS_REFERENCES "Enables definitions of Quantity References provided for quantities of various units" ON)
-option(UNITS_LITERALS "Enables definitions of User Defined Literals (UDLs) provided for quantities of various units" OFF)
-
 message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
-message(STATUS "UNITS_REFERENCES: ${UNITS_REFERENCES}")
-message(STATUS "UNITS_LITERALS: ${UNITS_LITERALS}")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 

@@ -38,15 +38,3 @@ function(add_units_module name)
     install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
     install(DIRECTORY include/units TYPE INCLUDE)
 endfunction()
-
-
-#
-# add_units_systems(ModuleName <depependencies>...)
-#
-function(add_units_system name)
-    add_units_module(${name} ${ARGN})
-    target_compile_definitions(mp-units-${name} INTERFACE
-        $<$<BOOL:${UNITS_REFERENCES}>:UNITS_REFERENCES>
-        $<$<BOOL:${UNITS_LITERALS}>:UNITS_LITERALS>
-    )
-endfunction()

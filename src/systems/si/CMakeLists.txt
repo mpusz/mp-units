@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-add_units_system(si mp-units::isq)
+add_units_module(si mp-units::isq)

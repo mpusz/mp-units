@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-add_units_system(isq-natural mp-units::isq)
+add_units_module(isq-natural mp-units::isq)

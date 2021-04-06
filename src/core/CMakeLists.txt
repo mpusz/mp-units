@@ -55,11 +55,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-target_compile_definitions(mp-units-core INTERFACE
-    $<$<BOOL:${UNITS_REFERENCES}>:UNITS_REFERENCES>
-    $<$<BOOL:${UNITS_LITERALS}>:UNITS_LITERALS>
-)
-
 if(DEFINED UNITS_DOWNCAST_MODE)
     set(downcast_mode_options OFF ON AUTO)
     list(FIND downcast_mode_options "${UNITS_DOWNCAST_MODE}" downcast_mode)

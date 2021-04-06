@@ -123,24 +123,6 @@ It also runs unit tests during Conan build.
 Conan Options
 ^^^^^^^^^^^^^
 
-references
-++++++++++
-
-**Values**: ``True``/``False``
-
-**Defaulted to**: ``True``
-
-Determines if library should provide Quantity References for quantities of various units.
-
-literals
-++++++++
-
-**Values**: ``True``/``False``
-
-**Defaulted to**: ``False``
-
-Determines if library should provide User Defined Literals (UDLs) for quantities of various units.
-
 downcast_mode
 +++++++++++++
 
@@ -166,26 +148,6 @@ Additionally, enables project documentation generation when the project is being
 
 CMake Options
 ^^^^^^^^^^^^^
-
-UNITS_REFERENCES
-++++++++++++++++
-
-**Values**: ``ON``/``OFF``
-
-**Defaulted to**: ``ON``
-
-Equivalent to `references`_.
-
-
-UNITS_LITERALS
-++++++++++++++
-
-**Values**: ``ON``/``OFF``
-
-**Defaulted to**: ``OFF``
-
-Equivalent to `literals`_.
-
 
 UNITS_DOWNCAST_MODE
 +++++++++++++++++++
