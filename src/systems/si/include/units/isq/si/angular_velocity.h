@@ -41,7 +41,7 @@ struct dim_angular_velocity : isq::dim_angular_velocity<dim_angular_velocity, ra
 template<UnitOf<dim_angular_velocity> U, Representation Rep = double>
 using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,6 +51,6 @@ constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si

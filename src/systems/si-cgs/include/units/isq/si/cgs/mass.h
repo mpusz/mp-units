@@ -41,7 +41,7 @@ struct dim_mass : isq::dim_mass<gram> {};
 template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,7 +51,7 @@ constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

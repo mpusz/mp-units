@@ -63,7 +63,7 @@ struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -157,7 +157,7 @@ constexpr auto operator"" _q_ha(long double l) { return area<hectare, long doubl
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

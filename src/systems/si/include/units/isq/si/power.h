@@ -58,7 +58,7 @@ struct dim_power : isq::dim_power<dim_power, watt, dim_energy, dim_time> {};
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -132,7 +132,7 @@ constexpr auto operator"" _q_YW(long double l) { return power<yottawatt, long do
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

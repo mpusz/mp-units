@@ -63,7 +63,7 @@ struct dim_length : isq::dim_length<metre> {};
 template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -157,7 +157,7 @@ constexpr auto operator"" _q_au(long double l) { return length<astronomical_unit
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

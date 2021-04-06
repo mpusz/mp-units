@@ -42,7 +42,7 @@ struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometr
 template<UnitOf<dim_speed> U, Representation Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -56,6 +56,6 @@ constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_pe
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si

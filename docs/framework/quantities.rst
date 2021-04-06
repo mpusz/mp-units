@@ -87,7 +87,7 @@ User Defined Literals
 Alternatively, to construct quantities with compile-time known values the library provides
 :abbr:`UDL (User Defined Literal)` s for each :term:`unit` of every :term:`dimension`::
 
-    #if UNITS_UDLS
+    #ifdef UNITS_LITERALS
 
     inline namespace literals {
 
@@ -99,11 +99,11 @@ Alternatively, to construct quantities with compile-time known values the librar
 
     }
 
-    #endif // UNITS_UDLS
+    #endif // UNITS_LITERALS
 
 Thanks to them the same code can be as simple as::
 
-    #define UNITS_UDLS 1
+    #define UNITS_LITERALS
 
     using namespace units::isq::si::literals;
     auto d = 123._q_km;     // si::length<si::kilometre, long double>

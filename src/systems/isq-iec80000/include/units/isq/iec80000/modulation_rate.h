@@ -50,7 +50,7 @@ using dim_modulation_rate = si::dim_frequency;
 template<UnitOf<dim_modulation_rate> U, Representation Rep = double>
 using modulation_rate = quantity<dim_modulation_rate, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -66,7 +66,7 @@ constexpr auto operator"" _q_YBd(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

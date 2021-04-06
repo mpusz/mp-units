@@ -79,7 +79,7 @@ concept StorageCapacity = QuantityOf<T, dim_storage_capacity>;
 template<UnitOf<dim_storage_capacity> U, Representation Rep = double>
 using storage_capacity = quantity<dim_storage_capacity, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -123,7 +123,7 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

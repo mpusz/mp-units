@@ -123,8 +123,8 @@ It also runs unit tests during Conan build.
 Conan Options
 ^^^^^^^^^^^^^
 
-udls
-++++
+literals
+++++++++
 
 **Values**: ``True``/``False``
 
@@ -158,14 +158,14 @@ Additionally, enables project documentation generation when the project is being
 CMake Options
 ^^^^^^^^^^^^^
 
-UNITS_UDLS
-+++++++++++++++++++
+UNITS_LITERALS
+++++++++++++++
 
 **Values**: ``ON``/``OFF``
 
 **Defaulted to**: ``OFF``
 
-Equivalent to `udls`_.
+Equivalent to `literals`_.
 
 
 UNITS_DOWNCAST_MODE

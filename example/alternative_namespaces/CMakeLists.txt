@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.2)
 function(add_example target)
     add_executable(${target}_alt ${target}.cpp)
     target_link_libraries(${target}_alt PRIVATE mp-units::mp-units)
-    target_compile_definitions(${target}_alt PRIVATE UNITS_UDLS=1)
+    target_compile_definitions(${target}_alt PRIVATE UNITS_LITERALS)
 endfunction()
 
 add_example(box_example mp-units::si)

@@ -66,7 +66,7 @@ struct thou : named_scaled_unit<thou, "thou", no_prefix, ratio(1, 1000), inch> {
 // https://en.wikipedia.org/wiki/Thousandth_of_an_inch
 using mil = thou;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -104,7 +104,7 @@ constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long do
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

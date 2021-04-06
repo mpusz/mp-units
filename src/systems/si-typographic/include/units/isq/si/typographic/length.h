@@ -41,7 +41,7 @@ struct pica_prn : named_scaled_unit<pica_prn, "pica(prn)", no_prefix, ratio(2108
 struct point_comp : named_scaled_unit<point_comp, "point(comp)", no_prefix, ratio(1763889, 500000, -4), si::metre> {};
 struct point_prn : named_scaled_unit<point_prn, "point(prn)", no_prefix, ratio(1757299, 500000, -4), si::metre> {};
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -63,7 +63,7 @@ constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

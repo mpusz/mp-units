@@ -46,7 +46,7 @@ struct horse_power : named_scaled_unit<horse_power, "hp", no_prefix, ratio(550),
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -64,7 +64,7 @@ constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long 
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

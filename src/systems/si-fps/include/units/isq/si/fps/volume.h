@@ -42,7 +42,7 @@ struct cubic_yard : deduced_unit<cubic_yard, dim_volume, yard> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -56,7 +56,7 @@ constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

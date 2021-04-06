@@ -48,7 +48,7 @@ struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_s
 struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -66,7 +66,7 @@ constexpr auto operator"" _q_knot(long double l) { return speed<knot, long doubl
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

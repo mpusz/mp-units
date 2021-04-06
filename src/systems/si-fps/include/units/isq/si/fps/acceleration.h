@@ -39,7 +39,7 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, foot_per_secon
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -49,6 +49,6 @@ constexpr auto operator"" _q_ft_per_s2(long double l) { return acceleration<foot
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps

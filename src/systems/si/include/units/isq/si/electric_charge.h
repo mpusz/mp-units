@@ -42,7 +42,7 @@ struct dim_electric_charge : isq::dim_electric_charge<dim_electric_charge, coulo
 template<UnitOf<dim_electric_charge> U, Representation Rep = double>
 using electric_charge = quantity<dim_electric_charge, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -52,7 +52,7 @@ constexpr auto operator"" _q_C(long double l) { return electric_charge<coulomb, 
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

@@ -85,7 +85,7 @@ struct dim_mass : isq::dim_mass<kilogram> {};
 template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -263,7 +263,7 @@ constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

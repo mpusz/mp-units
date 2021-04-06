@@ -41,7 +41,7 @@ struct dim_area : isq::dim_area<dim_area, square_foot, dim_length> {};
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,7 +51,7 @@ constexpr auto operator"" _q_ft2(long double l) { return area<square_foot, long 
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

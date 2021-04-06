@@ -40,7 +40,7 @@ but still easy to use interface where all unit conversions and dimensional analy
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
 
-    #define UNITS_UDLS 1
+    #define UNITS_LITERALS
 
     #include <units/format.h>
     #include <units/isq/si/length.h>

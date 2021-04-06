@@ -41,7 +41,7 @@ struct dim_density : isq::dim_density<dim_density, pound_per_foot_cub, dim_mass,
 template<UnitOf<dim_density> U, Representation Rep = double>
 using density = quantity<dim_density, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,6 +51,6 @@ constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_pe
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps

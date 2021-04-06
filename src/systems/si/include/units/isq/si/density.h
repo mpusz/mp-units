@@ -42,7 +42,7 @@ struct dim_density : isq::dim_density<dim_density, kilogram_per_metre_cub, dim_m
 template<UnitOf<dim_density> U, Representation Rep = double>
 using density = quantity<dim_density, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -52,6 +52,6 @@ constexpr auto operator"" _q_kg_per_m3(long double l) { return density<kilogram_
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si

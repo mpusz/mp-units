@@ -41,7 +41,7 @@ struct dim_permittivity : isq::dim_permittivity<dim_permittivity, farad_per_metr
 template<UnitOf<dim_permittivity> U, Representation Rep = double>
 using permittivity = quantity<dim_permittivity, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,7 +51,7 @@ constexpr auto operator"" _q_F_per_m(long double l) { return permittivity<farad_
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
 

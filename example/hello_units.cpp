@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define UNITS_UDLS 1
+#define UNITS_LITERALS
 
 #include <units/format.h>
 #include <units/isq/si/international/length.h>

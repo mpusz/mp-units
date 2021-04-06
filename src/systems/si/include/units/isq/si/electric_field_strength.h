@@ -39,7 +39,7 @@ struct dim_electric_field_strength : isq::dim_electric_field_strength<dim_electr
 template<UnitOf<dim_electric_field_strength> U, Representation Rep = double>
 using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -49,6 +49,6 @@ constexpr auto operator"" _q_V_per_m(long double l) { return electric_field_stre
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si

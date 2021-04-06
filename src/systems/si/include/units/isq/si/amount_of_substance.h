@@ -41,7 +41,7 @@ struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 template<UnitOf<dim_amount_of_substance> U, Representation Rep = double>
 using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -51,7 +51,7 @@ constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mol
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 

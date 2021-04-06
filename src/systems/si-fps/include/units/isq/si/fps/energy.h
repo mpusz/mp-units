@@ -45,7 +45,7 @@ struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -59,6 +59,6 @@ constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_fo
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps

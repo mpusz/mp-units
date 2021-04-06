@@ -49,7 +49,7 @@ struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi
 
 struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 
-#if UNITS_UDLS
+#ifdef UNITS_LITERALS
 
 inline namespace literals {
 
@@ -67,7 +67,7 @@ constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_for
 
 }  // namespace literals
 
-#endif // UNITS_UDLS
+#endif // UNITS_LITERALS
 
 namespace references {
 
