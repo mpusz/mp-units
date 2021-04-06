@@ -38,17 +38,17 @@ type to ``double`` by default::
     namespace si {
 
     template<Unit U, Representation Rep = double>
-    using length = quantity<dim_length, U, Rep>;
+    using q_length = quantity<dim_length, U, Rep>;
 
     template<Unit U, Representation Rep = double>
-    using speed = quantity<dim_speed, U, Rep>;
+    using q_speed = quantity<dim_speed, U, Rep>;
 
     }
 
 Thanks to that, the above example can be rewritten as follows::
 
-    si::length<si::kilometre> d(123);
-    si::speed<si::kilometre_per_hour, int> v(70);
+    si::q_length<si::kilometre> d(123);
+    si::q_speed<si::kilometre_per_hour, int> v(70);
 
 Quantity References
 +++++++++++++++++++
