@@ -22,16 +22,12 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_executable(hello_units hello_units.cpp)
-target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
-
-add_executable(custom_systems custom_systems.cpp)
-target_link_libraries(custom_systems PRIVATE mp-units::core-io mp-units::si)
-
-if(NOT UNITS_LIBCXX)
-    add_subdirectory(glide_computer)
-endif()
-
-add_subdirectory(alternative_namespaces)
-add_subdirectory(literals)
-add_subdirectory(references)
+add_library(glide_computer STATIC
+    geographic.cpp include/geographic.h
+    glide_computer.cpp include/glide_computer.h
+)
+target_link_libraries(glide_computer
+    PRIVATE mp-units::core-fmt
+    PUBLIC mp-units::si
+)
+target_include_directories(glide_computer PUBLIC include)

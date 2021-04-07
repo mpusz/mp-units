@@ -44,14 +44,8 @@ add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
 if(NOT UNITS_LIBCXX)
-    add_executable(glide_computer-references
-        geographic.cpp geographic.h
-        glide_computer.cpp glide_computer.h
-        glide_computer_example.cpp
-    )
-    target_link_libraries(glide_computer-references PRIVATE mp-units::core-fmt mp-units::si mp-units::si-international)
-    target_include_directories(glide_computer-references PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-    target_compile_definitions(glide_computer-references PRIVATE UNITS_REFERENCES)
+    add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
+    target_compile_definitions(glide_computer_example-references PRIVATE UNITS_REFERENCES)
 
     find_package(linear_algebra CONFIG REQUIRED)
     add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
