@@ -22,9 +22,12 @@
 
 cmake_minimum_required(VERSION 3.2)
 
+add_executable(hello_units hello_units.cpp)
+target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
+
+add_executable(custom_systems custom_systems.cpp)
+target_link_libraries(custom_systems PRIVATE mp-units::core-io mp-units::si)
+
 add_subdirectory(alternative_namespaces)
 add_subdirectory(literals)
 add_subdirectory(references)
-
-add_executable(hello_units hello_units.cpp)
-target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
