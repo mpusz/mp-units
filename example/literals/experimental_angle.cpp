@@ -22,21 +22,17 @@
 
 #include <units/generic/angle.h>
 #include <units/isq/si/energy.h>
-#include <units/isq/si/force.h>
-#include <units/isq/si/length.h>
 #include <units/isq/si/torque.h>
 #include <units/quantity_io.h>
-
 #include <iostream>
 
 int main()
 {
-  using namespace units::literals;
   using namespace units::isq;
   using namespace units::isq::si::literals;
 
-  Torque auto torque = 20.0_q_Nm_per_rad;
-  Energy auto energy = 20.0_q_J;
+  const auto torque = 20.0_q_N_m_per_rad;
+  const auto energy = 20.0_q_J;
 
   units::Angle auto angle = energy / torque;
 

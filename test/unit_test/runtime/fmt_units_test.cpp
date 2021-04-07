@@ -312,7 +312,7 @@ TEST_CASE("fmt::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("torque")
   {
-    CHECK(fmt::format("{}", 1_q_Nm_per_rad) == "1 N ⋅ m/rad");
+    CHECK(fmt::format("{}", 1_q_N_m_per_rad) == "1 N ⋅ m/rad");
   }
 
   SECTION("storage_capacity")
