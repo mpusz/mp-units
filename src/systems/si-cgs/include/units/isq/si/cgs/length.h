@@ -55,9 +55,15 @@ constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long 
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto cm = reference<dim_length, centimetre>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

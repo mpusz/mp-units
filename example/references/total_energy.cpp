@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include <units/isq/natural/natural.h>
+#include <units/isq/si/constants.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/momentum.h>
 #include <units/isq/si/speed.h> // IWYU pragma: keep
-#include <units/isq/si/constants.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
 #include <exception>
@@ -43,7 +43,7 @@ Energy auto total_energy(Momentum auto p, Mass auto m, Speed auto c)
 void si_example()
 {
   using namespace units::isq::si;
-  using namespace units::isq::si::references;
+  using namespace units::isq::si::energy_references;
 
   constexpr Speed auto c = si2019::speed_of_light<>;
 

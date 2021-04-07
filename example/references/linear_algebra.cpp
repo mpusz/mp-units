@@ -60,14 +60,14 @@ std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
 namespace {
 
 using namespace units::isq;
-using namespace units::isq::si::references;
+using namespace units::isq::si::length_references;
+using namespace units::isq::si::force_references;
 
 template<typename Rep = double>
 using vector = std::math::fs_vector<Rep, 3>;
 
 template<typename Rep = double>
 using matrix = std::math::fs_matrix<Rep, 3, 3>;
-
 
 void vector_of_quantity_add()
 {

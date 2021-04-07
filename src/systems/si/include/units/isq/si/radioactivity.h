@@ -155,7 +155,7 @@ constexpr auto operator"" _q_YBq(long double l) { return radioactivity<yottabecq
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace radioactivity_references {
 
 inline constexpr auto Bq = reference<dim_radioactivity, becquerel>{};
 inline constexpr auto yBq = reference<dim_radioactivity, yoctobecquerel>{};
@@ -178,6 +178,12 @@ inline constexpr auto PBq = reference<dim_radioactivity, petabecquerel>{};
 inline constexpr auto EBq = reference<dim_radioactivity, exabecquerel>{};
 inline constexpr auto ZBq = reference<dim_radioactivity, zettabecquerel>{};
 inline constexpr auto YBq = reference<dim_radioactivity, yottabecquerel>{};
+
+}  // namespace radioactivity_references
+
+namespace references {
+
+using namespace radioactivity_references;
 
 }  // namespace references
 

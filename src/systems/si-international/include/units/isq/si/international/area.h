@@ -51,9 +51,15 @@ constexpr auto operator"" _q_ft2(long double l) { return si::area<square_foot, l
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace area_references {
 
 inline constexpr auto ft2 = reference<si::dim_area, square_foot>{};
+
+}  // namespace area_references
+
+namespace references {
+
+using namespace area_references;
 
 }  // namespace references
 

@@ -137,7 +137,7 @@ constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottawebe
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace magnetic_flux_references {
 
 inline constexpr auto Wb = reference<dim_magnetic_flux, weber>{};
 inline constexpr auto yWb = reference<dim_magnetic_flux, yoctoweber>{};
@@ -156,6 +156,12 @@ inline constexpr auto PWb = reference<dim_magnetic_flux, petaweber>{};
 inline constexpr auto EWb = reference<dim_magnetic_flux, exaweber>{};
 inline constexpr auto ZWb = reference<dim_magnetic_flux, zettaweber>{};
 inline constexpr auto YWb = reference<dim_magnetic_flux, yottaweber>{};
+
+}  // namespace magnetic_flux_references
+
+namespace references {
+
+using namespace magnetic_flux_references;
 
 }  // namespace references
 

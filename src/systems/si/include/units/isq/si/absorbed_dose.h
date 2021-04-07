@@ -156,7 +156,7 @@ constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace absorbed_dose_references {
 
 inline constexpr auto Gy = reference<dim_absorbed_dose, gray>{};
 inline constexpr auto yGy = reference<dim_absorbed_dose, yoctogray>{};
@@ -179,6 +179,12 @@ inline constexpr auto PGy = reference<dim_absorbed_dose, petagray>{};
 inline constexpr auto EGy = reference<dim_absorbed_dose, exagray>{};
 inline constexpr auto ZGy = reference<dim_absorbed_dose, zettagray>{};
 inline constexpr auto YGy = reference<dim_absorbed_dose, yottagray>{};
+
+}  // namespace absorbed_dose_references
+
+namespace references {
+
+using namespace absorbed_dose_references;
 
 }  // namespace references
 

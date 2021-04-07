@@ -66,11 +66,17 @@ constexpr auto operator"" _q_angstrom(long double l) { return si::length<angstro
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto ly = reference<si::dim_length, light_year>{};
 inline constexpr auto pc = reference<si::dim_length, parsec>{};
 inline constexpr auto angstrom = reference<si::dim_length, iau::angstrom>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

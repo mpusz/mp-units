@@ -57,9 +57,15 @@ constexpr auto operator"" _q_dyn(long double l) { return force<dyne, long double
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace force_references {
 
 inline constexpr auto dyn = reference<dim_force, dyne>{};
+
+}  // namespace force_references
+
+namespace references {
+
+using namespace force_references;
 
 }  // namespace references
 

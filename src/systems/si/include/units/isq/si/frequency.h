@@ -135,7 +135,7 @@ constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, l
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace frequency_references {
 
 inline constexpr auto Hz = reference<dim_frequency, hertz>{};
 inline constexpr auto yHz = reference<dim_frequency, yoctohertz>{};
@@ -154,6 +154,12 @@ inline constexpr auto PHz = reference<dim_frequency, petahertz>{};
 inline constexpr auto EHz = reference<dim_frequency, exahertz>{};
 inline constexpr auto ZHz = reference<dim_frequency, zettahertz>{};
 inline constexpr auto YHz = reference<dim_frequency, yottahertz>{};
+
+}  // namespace frequency_references
+
+namespace references {
+
+using namespace frequency_references;
 
 }  // namespace references
 

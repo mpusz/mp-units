@@ -24,21 +24,21 @@
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <units/isq/si/force.h>
+UNITS_DIAGNOSTIC_POP
+
 #include <units/generic/angle.h>
 #include <units/isq/si/energy.h>
-#include <units/isq/si/force.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/torque.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
-UNITS_DIAGNOSTIC_POP
-
 #include <iostream>
 
 int main()
 {
-  using namespace units::references;
   using namespace units::isq;
   using namespace units::isq::si::references;
+  using namespace units::references;
 
   Torque auto torque = 20.0 * (N * m / rad);
   Energy auto energy = 20.0 * J;

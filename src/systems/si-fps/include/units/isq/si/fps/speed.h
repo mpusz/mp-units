@@ -70,10 +70,16 @@ constexpr auto operator"" _q_knot(long double l) { return speed<knot, long doubl
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace speed_references {
 
 inline constexpr auto mph = reference<dim_speed, mile_per_hour>{};
 inline constexpr auto knot = reference<dim_speed, fps::knot>{};
+
+}  // namespace speed_references
+
+namespace references {
+
+using namespace speed_references;
 
 }  // namespace references
 

@@ -54,9 +54,15 @@ constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long 
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace acceleration_references {
 
 inline constexpr auto Gal = reference<dim_acceleration, gal>{};
+
+}  // namespace acceleration_references
+
+namespace references {
+
+using namespace acceleration_references;
 
 }  // namespace references
 

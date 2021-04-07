@@ -68,9 +68,15 @@ constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long 
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace power_references {
 
 inline constexpr auto hp = reference<dim_power, horse_power>{};
+
+}  // namespace power_references
+
+namespace references {
+
+using namespace power_references;
 
 }  // namespace references
 

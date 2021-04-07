@@ -51,9 +51,15 @@ constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, 
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace volume_references {
 
 inline constexpr auto ft3 = reference<si::dim_volume, cubic_foot>{};
+
+}  // namespace volume_references
+
+namespace references {
+
+using namespace volume_references;
 
 }  // namespace references
 

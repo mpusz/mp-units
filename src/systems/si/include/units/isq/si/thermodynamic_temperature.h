@@ -54,9 +54,15 @@ constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace thermodynamic_temperature_references {
 
 inline constexpr auto K = reference<dim_thermodynamic_temperature, kelvin>{};
+
+}  // namespace thermodynamic_temperature_references
+
+namespace references {
+
+using namespace thermodynamic_temperature_references;
 
 }  // namespace references
 

@@ -61,10 +61,16 @@ using reference_divide = detail::reference_divide_impl<
  * This type is intended to be used in the quantity references definition:
  *
  * @code{.cpp}
- * namespace references {
+ * namespace length_references {
  * 
  * inline constexpr auto m = reference<dim_length, metre>{};
  * inline constexpr auto km = reference<dim_length, kilometre>{};
+ * 
+ * }
+ * 
+ * namespace references {
+ * 
+ * using namespace length_references;
  * 
  * }
  * @endcode

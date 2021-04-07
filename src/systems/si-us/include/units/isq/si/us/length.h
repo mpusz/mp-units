@@ -67,11 +67,17 @@ constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto ft = reference<si::dim_length, us::foot>{};
 inline constexpr auto fathom = reference<si::dim_length, us::fathom>{};
 inline constexpr auto mi = reference<si::dim_length, us::mile>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

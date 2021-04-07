@@ -58,10 +58,16 @@ constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long dou
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto ch = reference<si::dim_length, chain>{};
 inline constexpr auto rd = reference<si::dim_length, rod>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

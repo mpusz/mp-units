@@ -56,9 +56,15 @@ constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace energy_references {
 
 inline constexpr auto erg = reference<dim_energy, cgs::erg>{};
+
+}  // namespace energy_references
+
+namespace references {
+
+using namespace energy_references;
 
 }  // namespace references
 

@@ -71,10 +71,16 @@ constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_for
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace pressure_references {
 
 inline constexpr auto psi = reference<dim_pressure, pound_force_per_inch_sq>{};
 inline constexpr auto kpsi = reference<dim_pressure, kilopound_force_per_inch_sq>{};
+
+}  // namespace pressure_references
+
+namespace references {
+
+using namespace pressure_references;
 
 }  // namespace references
 

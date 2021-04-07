@@ -57,9 +57,15 @@ constexpr auto operator"" _q_Ba(long double l) { return pressure<barye, long dou
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace pressure_references {
 
 inline constexpr auto Ba = reference<dim_pressure, barye>{};
+
+}  // namespace pressure_references
+
+namespace references {
+
+using namespace pressure_references;
 
 }  // namespace references
 

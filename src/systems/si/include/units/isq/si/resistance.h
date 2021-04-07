@@ -137,7 +137,7 @@ constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, lon
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace resistance_references {
 
 inline constexpr auto R = reference<dim_resistance, ohm>{};
 inline constexpr auto yR = reference<dim_resistance, yoctoohm>{};
@@ -156,6 +156,12 @@ inline constexpr auto PR = reference<dim_resistance, petaohm>{};
 inline constexpr auto ER = reference<dim_resistance, exaohm>{};
 inline constexpr auto ZR = reference<dim_resistance, zettaohm>{};
 inline constexpr auto YR = reference<dim_resistance, yottaohm>{};
+
+}  // namespace resistance_references
+
+namespace references {
+
+using namespace resistance_references;
 
 }  // namespace references
 

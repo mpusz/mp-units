@@ -268,7 +268,7 @@ constexpr auto operator"" _q_Da(long double l) { return mass<dalton, long double
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace mass_references {
 
 inline constexpr auto g = reference<dim_mass, gram>{};
 inline constexpr auto yg = reference<dim_mass, yoctogram>{};
@@ -313,6 +313,12 @@ inline constexpr auto Et = reference<dim_mass, exatonne>{};
 inline constexpr auto Zt = reference<dim_mass, zettatonne>{};
 inline constexpr auto Yt = reference<dim_mass, yottatonne>{};
 inline constexpr auto Da = reference<dim_mass, dalton>{};
+
+}  // namespace mass_references
+
+namespace references {
+
+using namespace mass_references;
 
 }  // namespace references
 

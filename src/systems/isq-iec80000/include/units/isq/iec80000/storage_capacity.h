@@ -127,7 +127,7 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace storage_capacity_references {
 
 // bits
 inline constexpr auto bit = reference<dim_storage_capacity, iec80000::bit>{};
@@ -166,6 +166,12 @@ inline constexpr auto GiB = reference<dim_storage_capacity, gibibyte>{};
 inline constexpr auto TiB = reference<dim_storage_capacity, tebibyte>{};
 inline constexpr auto PiB = reference<dim_storage_capacity, pebibyte>{};
 // inline constexpr auto EiB = reference<dim_storage_capacity, exbibyte>{};
+
+}  // namespace storage_capacity_references
+
+namespace references {
+
+using namespace storage_capacity_references;
 
 }  // namespace references
 

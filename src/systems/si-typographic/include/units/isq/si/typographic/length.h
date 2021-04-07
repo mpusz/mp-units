@@ -67,12 +67,18 @@ constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto pica_comp = reference<si::dim_length, typographic::pica_comp>{};
 inline constexpr auto pica_prn = reference<si::dim_length, typographic::pica_prn>{};
 inline constexpr auto point_comp = reference<si::dim_length, typographic::point_comp>{};
 inline constexpr auto point_prn = reference<si::dim_length, typographic::point_prn>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

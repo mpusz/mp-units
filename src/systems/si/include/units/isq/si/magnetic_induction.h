@@ -145,7 +145,7 @@ constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss,
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace magnetic_induction_references {
 
 inline constexpr auto T = reference<dim_magnetic_induction, tesla>{};
 inline constexpr auto yT = reference<dim_magnetic_induction, yoctotesla>{};
@@ -165,6 +165,12 @@ inline constexpr auto ET = reference<dim_magnetic_induction, exatesla>{};
 inline constexpr auto ZT = reference<dim_magnetic_induction, zettatesla>{};
 inline constexpr auto YT = reference<dim_magnetic_induction, yottatesla>{};
 inline constexpr auto G = reference<dim_magnetic_induction, gauss>{};
+
+}  // namespace magnetic_induction_references
+
+namespace references {
+
+using namespace magnetic_induction_references;
 
 }  // namespace references
 

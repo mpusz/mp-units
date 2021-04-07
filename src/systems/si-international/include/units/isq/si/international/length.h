@@ -108,7 +108,7 @@ constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long do
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto yd = reference<si::dim_length, yard>{};
 inline constexpr auto ft = reference<si::dim_length, foot>{};
@@ -118,6 +118,12 @@ inline constexpr auto mi = reference<si::dim_length, mile>{};
 inline constexpr auto mi_naut = reference<si::dim_length, nautical_mile>{};
 inline constexpr auto thou = reference<si::dim_length, international::thou>{};
 inline constexpr auto mil = reference<si::dim_length, international::mil>{};
+
+}  // namespace length_references
+
+namespace references {
+
+using namespace length_references;
 
 }  // namespace references
 

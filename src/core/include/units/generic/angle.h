@@ -57,9 +57,15 @@ constexpr auto operator"" _q_rad(long double l) { return angle<radian, long doub
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace angle_references {
 
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
+
+}  // namespace angle_references
+
+namespace references {
+
+using namespace angle_references;
 
 }  // namespace references
 

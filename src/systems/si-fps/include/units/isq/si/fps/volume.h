@@ -60,10 +60,16 @@ constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace volume_references {
 
 inline constexpr auto ft3 = reference<dim_volume, cubic_foot>{};
 inline constexpr auto yd3 = reference<dim_volume, cubic_yard>{};
+
+}  // namespace volume_references
+
+namespace references {
+
+using namespace volume_references;
 
 }  // namespace references
 

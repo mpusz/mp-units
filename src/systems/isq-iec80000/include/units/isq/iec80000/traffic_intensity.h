@@ -55,9 +55,15 @@ constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace traffic_intensity_references {
 
 inline constexpr auto E = reference<dim_traffic_intensity, erlang>{};
+
+}  // namespace traffic_intensity_references
+
+namespace references {
+
+using namespace traffic_intensity_references;
 
 }  // namespace references
 

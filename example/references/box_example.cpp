@@ -39,11 +39,11 @@
 namespace {
 
 using namespace units::isq;
-using namespace si::references;
+using namespace si::mass_references;
+using namespace si::volume_references;
 
 inline constexpr Acceleration auto g = si::si2019::standard_gravity<>;
 inline constexpr Density auto air_density = 1.225 * (kg / m3);
-
 
 class Box {
   si::area<si::square_metre> base_;
@@ -82,6 +82,8 @@ public:
 int main()
 {
   using namespace units;
+  using namespace si::length_references;
+  using namespace si::time_references;
 
   const si::length<si::metre> height = 200.0 * mm;
   auto box = Box(1000.0 * mm, 500.0 * mm, height);

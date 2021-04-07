@@ -55,9 +55,15 @@ constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace mass_references {
 
 inline constexpr auto g = reference<dim_mass, gram>{};
+
+}  // namespace mass_references
+
+namespace references {
+
+using namespace mass_references;
 
 }  // namespace references
 

@@ -136,7 +136,7 @@ constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace conductance_references {
 
 inline constexpr auto S = reference<dim_conductance, siemens>{};
 inline constexpr auto yS = reference<dim_conductance, yoctosiemens>{};
@@ -155,6 +155,12 @@ inline constexpr auto PS = reference<dim_conductance, petasiemens>{};
 inline constexpr auto ES = reference<dim_conductance, exasiemens>{};
 inline constexpr auto ZS = reference<dim_conductance, zettasiemens>{};
 inline constexpr auto YS = reference<dim_conductance, yottasiemens>{};
+
+}  // namespace conductance_references
+
+namespace references {
+
+using namespace conductance_references;
 
 }  // namespace references
 

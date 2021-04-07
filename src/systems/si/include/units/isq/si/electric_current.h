@@ -155,7 +155,7 @@ constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaam
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace electric_current_references {
 
 inline constexpr auto A = reference<dim_electric_current, ampere>{};
 inline constexpr auto yA = reference<dim_electric_current, yoctoampere>{};
@@ -178,6 +178,12 @@ inline constexpr auto PA = reference<dim_electric_current, petaampere>{};
 inline constexpr auto EA = reference<dim_electric_current, exaampere>{};
 inline constexpr auto ZA = reference<dim_electric_current, zettaampere>{};
 inline constexpr auto YA = reference<dim_electric_current, yottaampere>{};
+
+}  // namespace electric_current_references
+
+namespace references {
+
+using namespace electric_current_references;
 
 }  // namespace references
 

@@ -157,7 +157,7 @@ constexpr auto operator"" _q_YF(long double l) { return capacitance<yottafarad, 
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace capacitance_references {
 
 inline constexpr auto F = reference<dim_capacitance, farad>{};
 inline constexpr auto yF = reference<dim_capacitance, yoctofarad>{};
@@ -180,6 +180,12 @@ inline constexpr auto PF = reference<dim_capacitance, petafarad>{};
 inline constexpr auto EF = reference<dim_capacitance, exafarad>{};
 inline constexpr auto ZF = reference<dim_capacitance, zettafarad>{};
 inline constexpr auto YF = reference<dim_capacitance, yottafarad>{};
+
+}  // namespace capacitance_references
+
+namespace references {
+
+using namespace capacitance_references;
 
 }  // namespace references
 

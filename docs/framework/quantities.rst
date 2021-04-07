@@ -58,12 +58,18 @@ They are defined using the `reference` class template::
 
     #ifdef UNITS_REFERENCES
 
-    namespace references {
+    namespace length_references {
 
     inline constexpr auto km = reference<dim_length, kilometre>{};
     inline constexpr auto h = reference<dim_time, hour>{};
 
-    }
+    }  // namespace length_references
+
+    namespace references {
+
+    using namespace length_references;
+
+    }  // namespace references
 
     #endif // UNITS_REFERENCES
 

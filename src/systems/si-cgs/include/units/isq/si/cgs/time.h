@@ -49,9 +49,15 @@ using si::literals::operator"" _q_s;
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace time_references {
 
 using si::references::s;
+
+}  // namespace time_references
+
+namespace references {
+
+using namespace time_references;
 
 }  // namespace references
 

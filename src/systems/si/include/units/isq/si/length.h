@@ -161,7 +161,7 @@ constexpr auto operator"" _q_au(long double l) { return length<astronomical_unit
 
 #ifdef UNITS_REFERENCES
 
-namespace references {
+namespace length_references {
 
 inline constexpr auto m = reference<dim_length, metre>{};
 inline constexpr auto ym = reference<dim_length, yoctometre>{};
@@ -185,6 +185,12 @@ inline constexpr auto Em = reference<dim_length, exametre>{};
 inline constexpr auto Zm = reference<dim_length, zettametre>{};
 inline constexpr auto Ym = reference<dim_length, yottametre>{};
 inline constexpr auto au = reference<dim_length, astronomical_unit>{};
+
+}  // namespace length_references
+
+namespace references { 
+
+using namespace length_references;
 
 }  // namespace references
 
