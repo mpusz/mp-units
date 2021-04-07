@@ -22,11 +22,17 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_executable(hello_units hello_units.cpp)
-target_link_libraries(hello_units PRIVATE mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
+#
+# add_example(target <depependencies>...)
+#
+function(add_example target)
+    add_executable(${target} ${target}.cpp)
+    target_link_libraries(${target} PRIVATE ${ARGN})
+endfunction()
 
-add_executable(custom_systems custom_systems.cpp)
-target_link_libraries(custom_systems PRIVATE mp-units::core-io mp-units::si)
+add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
+add_example(custom_systems mp-units::core-io mp-units::si)
+add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
 
 if(NOT UNITS_LIBCXX)
     add_subdirectory(glide_computer)
