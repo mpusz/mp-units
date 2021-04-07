@@ -60,14 +60,14 @@ void quantities_with_typed_units()
   using namespace units::isq::si::references;
   using namespace units::isq::si::international::references;
 
-  constexpr si::length<si::kilometre> kilometers = 1.0 * km;
-  constexpr si::length<si::international::mile> miles = 1.0 * mi;
+  constexpr auto kilometers = 1.0 * km;
+  constexpr auto miles = 1.0 * mi;
 
   std::cout.precision(6);
 
-  constexpr si::time<si::second> seconds = 1 * s;
-  constexpr si::time<si::minute> minutes = 1 * min;
-  constexpr si::time<si::hour> hours = 1 * h;
+  constexpr auto seconds = 1 * s;
+  constexpr auto minutes = 1 * min;
+  constexpr auto hours = 1 * h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << kilometers << '\n';
@@ -76,7 +76,7 @@ void quantities_with_typed_units()
   std::cout << minutes << '\n';
   std::cout << hours << "\n\n";
 
-  constexpr si::length<si::metre> meter = 1 * m;
+  constexpr auto meter = 1 * m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
@@ -111,28 +111,28 @@ void calcs_comparison()
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  si::length<si::femtometre, float> L1A = 2. * fm;
-  si::length<si::femtometre, float> L2A = 3. * fm;
-  si::length<si::femtometre, float> LrA = L1A + L2A;
+  const auto L1A = 2.f * fm;
+  const auto L2A = 3.f * fm;
+  const Length auto LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  si::length<si::metre, float> L1B = L1A;
-  si::length<si::metre, float> L2B = L2A;
-  si::length<si::metre, float> LrB = L1B + L2B;
+  const auto L1B = quantity_cast<si::metre>(L1A);
+  const auto L2B = quantity_cast<si::metre>(L2A);
+  const Length auto LrB = L1B + L2B;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
-  si::area<si::square_femtometre, float> ArA = L1A * L2A;
+  const Area auto ArA = L1A * L2A;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
-  si::area<si::square_metre, float> ArB = L1B * L2B;
+  const Area auto ArB = L1B * L2B;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 

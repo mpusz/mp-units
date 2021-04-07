@@ -47,8 +47,8 @@ int main()
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA = 2.0 * m;
-  constexpr length<millimetre> lengthB = lengthA;
+  constexpr auto lengthA = 2.0 * m;
+  constexpr auto lengthB = quantity_cast<millimetre>(lengthA);
 
   std::cout << fmt::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";

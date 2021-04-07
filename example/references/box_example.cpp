@@ -82,10 +82,11 @@ public:
 int main()
 {
   using namespace units;
-  using namespace si::length_references;
-  using namespace si::time_references;
+  using namespace units::isq::si;
+  using namespace length_references;
+  using namespace time_references;
 
-  const si::length<si::metre> height = 200.0 * mm;
+  const auto height = quantity_cast<metre>(200.0 * mm);
   auto box = Box(1000.0 * mm, 500.0 * mm, height);
   box.set_contents_density(1000.0 * (kg / m3));
 

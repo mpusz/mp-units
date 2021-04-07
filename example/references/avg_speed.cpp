@@ -74,8 +74,8 @@ void example()
   // SI (int)
   {
     using namespace units::isq::si::references;
-    constexpr Length auto distance = 220 * km;     // constructed from a reference
-    constexpr si::time<si::hour, int> duration(2); // constructed from a value
+    constexpr auto distance = 220 * km;
+    constexpr auto duration = 2 * h;
 
     std::cout << "SI units with 'int' as representation\n";
 
@@ -88,8 +88,8 @@ void example()
   // SI (double)
   {
     using namespace units::isq::si::references;
-    constexpr Length auto distance = 220. * km; // constructed from a reference
-    constexpr si::time<si::hour> duration(2);   // constructed from a value
+    constexpr auto distance = 220. * km;
+    constexpr auto duration = 2. * h;
 
     std::cout << "\nSI units with 'double' as representation\n";
 
@@ -103,9 +103,10 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::isq::si::international::references;
-    constexpr Length auto distance = 140 * mi;     // constructed from a reference
-    constexpr si::time<si::hour, int> duration(2); // constructed from a value
+    using namespace units::isq::si::time_references;
+    using namespace units::isq::si::international::length_references;
+    constexpr auto distance = 140 * mi;
+    constexpr auto duration = 2 * h;
 
     std::cout << "\nUS Customary Units with 'int' as representation\n";
 
@@ -119,9 +120,10 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::isq::si::international::references;
-    constexpr Length auto distance = 140. * mi; // constructed from a reference
-    constexpr si::time<si::hour> duration(2);   // constructed from a value
+    using namespace units::isq::si::time_references;
+    using namespace units::isq::si::international::length_references;
+    constexpr auto distance = 140. * mi;
+    constexpr auto duration = 2. * h;
 
     std::cout << "\nUS Customary Units with 'double' as representation\n";
 
@@ -137,9 +139,10 @@ void example()
 
   // CGS (int)
   {
-    using namespace units::isq::si::cgs::references;
-    constexpr Length auto distance = 22'000'000 * cm;     // constructed from a reference
-    constexpr si::cgs::time<si::hour, int> duration(2);   // constructed from a value
+    using namespace units::isq::si::time_references;
+    using namespace units::isq::si::cgs::length_references;
+    constexpr auto distance = 22'000'000 * cm;
+    constexpr auto duration = 2 * h;
 
     std::cout << "\nCGS units with 'int' as representation\n";
 
@@ -156,9 +159,10 @@ void example()
 
   // CGS (double)
   {
-    using namespace units::isq::si::cgs::references;
-    constexpr Length auto distance = 22'000'000. * cm; // constructed from a reference
-    constexpr si::cgs::time<si::hour> duration(2);     // constructed from a value
+    using namespace units::isq::si::time_references;
+    using namespace units::isq::si::cgs::length_references;
+    constexpr auto distance = 22'000'000. * cm;
+    constexpr auto duration = 2. * h;
 
     std::cout << "\nCGS units with 'double' as representation\n";
 
