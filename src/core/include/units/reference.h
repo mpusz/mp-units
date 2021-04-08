@@ -115,6 +115,11 @@ struct reference {
   }
 
   friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
+
+  template<Reference R2>
+  [[nodiscard]] friend constexpr bool operator==(reference, R2) { return false; }
+
+  [[nodiscard]] friend constexpr bool operator==(reference, reference) { return true; }
 };
 
 // type traits
