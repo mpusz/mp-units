@@ -24,7 +24,7 @@
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <units/isq/si/force.h>
+#include <units/isq/si/force.h>   // 'N' (Newton) shadows a template parameter traditionally used as a size of the array
 UNITS_DIAGNOSTIC_POP
 
 #include <units/generic/angle.h>
