@@ -66,7 +66,6 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#define UNITS_UDLS 1
 #define UNITS_REFERENCES
 #define UNITS_LITERALS
 
@@ -107,4 +106,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/a956fb64o)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/7sshE7o58)._
