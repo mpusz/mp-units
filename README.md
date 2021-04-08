@@ -66,6 +66,7 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
+#define UNITS_UDLS 1
 #define UNITS_REFERENCES
 #define UNITS_LITERALS
 
