@@ -34,7 +34,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/ToTaoxKPa>`_
+    `Example #1 <https://godbolt.org/z/53bTahKd8>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -42,6 +42,7 @@ but still easy to use interface where all unit conversions and dimensional analy
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
 
+    #define UNITS_UDLS 1
     #define UNITS_REFERENCES
     #define UNITS_LITERALS
 
@@ -83,7 +84,7 @@ of basic library features::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #2 <https://godbolt.org/z/YodshMKac>`_
+    `Example #2 <https://godbolt.org/z/a956fb64o>`_
 
 .. seealso::
 
