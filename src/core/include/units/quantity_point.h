@@ -49,7 +49,7 @@ public:
   using dimension = typename quantity_type::dimension;
   using unit = typename quantity_type::unit;
   using rep = typename quantity_type::rep;
-  static constexpr units::reference<D, U> reference{};
+  static constexpr units::reference<dimension, unit> reference{};
 
 private:
   quantity_type q_{};

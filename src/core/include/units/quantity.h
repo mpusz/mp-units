@@ -115,7 +115,7 @@ public:
   using dimension = D;
   using unit = U;
   using rep = Rep;
-  static constexpr units::reference<D, U> reference{};
+  static constexpr units::reference<dimension, unit> reference{};
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
