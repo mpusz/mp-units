@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <units/format.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/dimensions/time.h>
@@ -73,6 +74,13 @@ public:
   kalman::state<QQP, QQPs...> state;   // TODO extend kalman functions to work with this variadic patermater list
   uncertainty_type uncertainty;
 };
+
+#if UNITS_COMP_CLANG == 12
+
+template<QuantityOrQuantityPoint QQP, units::Quantity U>
+estimation(state<QQP>, U) -> estimation<QQP>;
+
+#endif
 
 // kalman gain
 template<units::Quantity Q>

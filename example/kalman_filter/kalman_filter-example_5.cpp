@@ -63,11 +63,11 @@ int main()
 
   print_header(initial);
   estimation next = predict(initial);
-  for(int index = 1; const auto& m : measurements) {
+  for(int index = 1; const auto& measured : measurements) {
     const auto& previous = next;
     const auto gain = kalman_gain(previous.uncertainty, measurement_uncertainty);
-    const estimation current = update(previous, m, gain);
+    const estimation current = update(previous, measured, gain);
     next = predict(current);
-    print(index++, gain, m, current, next);
+    print(index++, gain, measured, current, next);
   }
 }
