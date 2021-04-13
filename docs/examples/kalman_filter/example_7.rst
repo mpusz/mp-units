@@ -1,4 +1,4 @@
-Example 7 - Estimating the temperature of the heaing liquid I
+Example 7 - Estimating the temperature of the heating liquid I
 =============================================================
 
 Implementation of: https://www.kalmanfilter.net/kalman1d.html#ex7
