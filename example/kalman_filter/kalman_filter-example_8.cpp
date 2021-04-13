@@ -25,8 +25,8 @@
 #include <units/format.h>
 #include <units/math.h>
 #include <units/quantity_point.h>
+#include <units/unit.h>
 #include <array>
-#include <iostream>
 
 // TODO Fix when Celsius is properly supported (#232)
 namespace units::isq::si {

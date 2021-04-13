@@ -25,8 +25,8 @@
 #include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
 #include <units/format.h>
+#include <units/generic/dimensionless.h>
 #include <array>
-#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex2
 

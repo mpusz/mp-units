@@ -25,7 +25,6 @@
 #include <units/format.h>
 #include <units/math.h>
 #include <array>
-#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex5
 

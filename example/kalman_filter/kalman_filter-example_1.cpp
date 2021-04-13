@@ -23,8 +23,8 @@
 #include "kalman.h"
 #include <units/isq/si/mass.h>
 #include <units/format.h>
+#include <units/generic/dimensionless.h>
 #include <array>
-#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex1
 
