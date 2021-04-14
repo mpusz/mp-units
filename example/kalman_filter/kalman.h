@@ -151,26 +151,53 @@ constexpr Q covariance_extrapolation(Q uncertainty, Q process_noise_variance)
 }  // namespace kalman
 
 template<typename... Qs>
-struct fmt::formatter<kalman::state<Qs...>> : formatter<std::string> {
+struct fmt::formatter<kalman::state<Qs...>> {
+  constexpr auto parse(format_parse_context& ctx)
+  {
+    detail::dynamic_specs_handler<format_parse_context> handler(specs, ctx);
+    return detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
+  }
+
   template<typename FormatContext>
   auto format(const kalman::state<Qs...>& s, FormatContext& ctx)
   {
-    std::string txt = [&]{
+    memory_buffer value_buffer;
+    auto to_value_buffer = std::back_inserter(value_buffer);
+    if (specs.precision != -1) {
       if constexpr(sizeof...(Qs) == 1)
-        return fmt::format("{1:%.{0}Q %q}", precision, kalman::get<0>(s));
+        format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
       else if constexpr(sizeof...(Qs) == 2)
-        return fmt::format("{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", precision, kalman::get<0>(s), kalman::get<1>(s));
+        format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s));
       else
-        return fmt::format("{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
-    }();
-    return formatter<std::string>::format(txt, ctx);
+        format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+    }
+    else {
+      if constexpr(sizeof...(Qs) == 1)
+        format_to(to_value_buffer, "{}", kalman::get<0>(s));
+      else if constexpr(sizeof...(Qs) == 2)
+        format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
+      else
+        format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+    }
+
+    basic_memory_buffer<char> global_format_buffer;
+    units::detail::global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
+    units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
+
+    return format_to(ctx.out(), to_string(global_format_buffer), to_string(value_buffer));
   }
 private:
-  int precision = 1;  // TODO find the easiest way to parse it from context
+  detail::dynamic_format_specs<char> specs;
 };
 
 template<typename Q>
-struct fmt::formatter<kalman::estimation<Q>> : formatter<std::string> {
+struct fmt::formatter<kalman::estimation<Q>> {
+  constexpr auto parse(format_parse_context& ctx)
+  {
+    detail::dynamic_specs_handler<format_parse_context> handler(specs, ctx);
+    return detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
+  }
+
   template<typename FormatContext>
   auto format(kalman::estimation<Q> e, FormatContext& ctx)
   {
@@ -180,9 +207,22 @@ struct fmt::formatter<kalman::estimation<Q>> : formatter<std::string> {
       else
         return t.relative();
     }(kalman::get<0>(e.state));
-    std::string txt = fmt::format("{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty), precision);
-    return formatter<std::string>::format(txt, ctx);
+
+    memory_buffer value_buffer;
+    auto to_value_buffer = std::back_inserter(value_buffer);
+    if (specs.precision != -1) {
+      format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty), specs.precision);
+    }
+    else {
+      format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
+    }
+
+    basic_memory_buffer<char> global_format_buffer;
+    units::detail::global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
+    units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
+
+    return format_to(ctx.out(), to_string(global_format_buffer), to_string(value_buffer));
   }
 private:
-  int precision = 3;  // TODO find the easiest way to parse it from context
+  detail::dynamic_format_specs<char> specs;
 };

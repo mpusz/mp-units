@@ -40,7 +40,7 @@ void print_header(kalman::estimation<Q> initial)
 template<Quantity Q, Dimensionless K>
 void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, kalman::estimation<Q> next)
 {
-  fmt::print("{:2} | {:5%.2Q} | {:8} | {:16} | {:16}\n", iteration, gain, measured, current, next);
+  fmt::print("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured, current, next);
 }
 
 int main()

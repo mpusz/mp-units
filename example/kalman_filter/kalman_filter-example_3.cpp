@@ -35,12 +35,12 @@ using namespace units;
 void print_header(const kalman::State auto& initial)
 {
   fmt::print("Initial: {}\n", initial);
-  fmt::print("{:>2} | {:>8} | {:>23} | {:>23}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
+  fmt::print("{:>2} | {:>8} | {:>24} | {:>24}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
 }
 
 void print(auto iteration, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
 {
-  fmt::print("{:2} | {:8} | {} | {}\n", iteration, measured, current, next);
+  fmt::print("{:2} | {:8} | {:>24.1} | {:>24.1}\n", iteration, measured, current, next);
 }
 
 int main()

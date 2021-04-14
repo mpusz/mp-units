@@ -41,7 +41,7 @@ void print_header(const kalman::State auto& initial)
 
 void print(auto iteration, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
 {
-  fmt::print("{:2} | {:8} | {:>35} | {:>35}\n", iteration, measured, current, next);
+  fmt::print("{:2} | {:8} | {:>35.1} | {:>35.1}\n", iteration, measured, current, next);
 }
 
 int main()
