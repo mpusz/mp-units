@@ -84,7 +84,7 @@ namespace units {
   namespace detail {
 
     // Holds specs about the whole object
-    template <typename CharT>
+    template<typename CharT>
     struct global_format_specs
     {
       fmt::detail::fill_t<CharT> fill;
@@ -254,6 +254,34 @@ namespace units {
         return format_to(out, loc.template get<std::locale>(), fmt::to_string(buffer), val);
       }
       return format_to(out, fmt::to_string(buffer), val);
+    }
+
+    // Creates a global format string
+    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
+    template<typename CharT, typename OutputIt>
+    inline OutputIt format_global_buffer(OutputIt out, const global_format_specs<CharT>& specs)
+    {
+      format_to(out, "{{:");
+      if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
+        format_to(out, "{}", specs.fill.data());
+      }
+      switch (specs.align) {
+      case fmt::align_t::left:
+        format_to(out, "<");
+        break;
+      case fmt::align_t::right:
+        format_to(out, ">");
+        break;
+      case fmt::align_t::center:
+        format_to(out, "^");
+        break;
+      default:
+        break;
+      }
+      if (specs.width >= 1) {
+        format_to(out, "{}", specs.width);
+      }
+      return format_to(out, "}}");
     }
 
     template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename LocaleRef, typename CharT>
@@ -452,34 +480,6 @@ public:
     fmt::detail::handle_dynamic_spec<fmt::detail::width_checker>(global_specs.width, width_ref, ctx);
     fmt::detail::handle_dynamic_spec<fmt::detail::precision_checker>(rep_specs.precision, precision_ref, ctx);
 
-    // In `global_format_buffer` we will create a global format string
-    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
-    fmt::basic_memory_buffer<CharT> global_format_buffer;
-    auto to_gfb = std::back_inserter(global_format_buffer);
-    format_to(to_gfb, "{{:");
-    if (global_specs.fill.size() != 1 || global_specs.fill[0] != ' ') {
-      format_to(to_gfb, "{}", global_specs.fill.data());
-    }
-    if (auto align = global_specs.align; align != fmt::align_t::none) {
-      switch (align) {
-      case fmt::align_t::left:
-        format_to(to_gfb, "<");
-        break;
-      case fmt::align_t::right:
-        format_to(to_gfb, ">");
-        break;
-      case fmt::align_t::center:
-        format_to(to_gfb, "^");
-        break;
-      default:
-        break;
-      }
-    }
-    if (auto width = global_specs.width; width >= 1) {
-      format_to(to_gfb, "{}", width);
-    }
-    format_to(to_gfb, "}}");
-
     // In `quantity_buffer` we will have the representation and the unit formatted according to their
     //  specification, ignoring global specifiers
     //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "1.2_m"
@@ -502,6 +502,12 @@ public:
       units::detail::units_formatter f(to_quantity_buffer, q, global_specs, rep_specs, unit_specs, ctx.locale());
       parse_units_format(begin, end, f);
     }
+
+    // In `global_format_buffer` we will create a global format string
+    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
+    fmt::basic_memory_buffer<CharT> global_format_buffer;
+    units::detail::format_global_buffer<CharT>(std::back_inserter(global_format_buffer), global_specs);
+
     // Format the `quantity buffer` using specs from `global_format_buffer`
     // In the example, equivalent to fmt::format("{:*^10}", "1.2_m")
     return format_to(ctx.out(), fmt::to_string(global_format_buffer), fmt::to_string(quantity_buffer));
