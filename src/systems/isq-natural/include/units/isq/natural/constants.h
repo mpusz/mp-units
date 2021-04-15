@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/isq/natural/dimensions.h>
+#include <units/isq/natural/speed.h>
 
 namespace units::isq::natural {
 

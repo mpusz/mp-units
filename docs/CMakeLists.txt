@@ -138,8 +138,15 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/transfer_rate.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/acceleration.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/constants.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/dimensions.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/energy.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/force.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/length.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/mass.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/momentum.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/speed.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/time.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/units.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_cgs.rst"

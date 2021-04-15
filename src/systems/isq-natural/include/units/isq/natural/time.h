@@ -23,14 +23,44 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <units/isq/natural/acceleration.h>
-#include <units/isq/natural/constants.h>
-#include <units/isq/natural/energy.h>
-#include <units/isq/natural/force.h>
-#include <units/isq/natural/length.h>
-#include <units/isq/natural/mass.h>
-#include <units/isq/natural/momentum.h>
-#include <units/isq/natural/natural.h>
-#include <units/isq/natural/speed.h>
-#include <units/isq/natural/time.h>
+#include <units/isq/dimensions/time.h>
+#include <units/isq/natural/units.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
 // IWYU pragma: end_exports
+
+namespace units::isq::natural {
+
+struct dim_time : isq::dim_time<inverted_gigaelectronvolt> {};
+
+template<UnitOf<dim_time> U, Representation Rep = double>
+using time = quantity<dim_time, U, Rep>;
+
+#ifdef UNITS_REFERENCES
+
+namespace time_references {
+
+inline constexpr auto inv_GeV = reference<dim_time, inverted_gigaelectronvolt>{};
+
+}  // namespace time_references
+
+namespace references { 
+
+using namespace time_references;
+
+}  // namespace references
+
+#endif // UNITS_REFERENCES
+
+}  // namespace units::isq::natural
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::natural::inline time {
+
+template<Representation Rep = double> using inv_GeV = units::isq::natural::time<units::isq::natural::inverted_gigaelectronvolt, Rep>;
+
+}  // namespace units::aliases::isq::natural::inline time
+
+#endif // UNITS_ALIASES

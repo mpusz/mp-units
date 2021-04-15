@@ -22,15 +22,48 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <units/isq/natural/acceleration.h>
-#include <units/isq/natural/constants.h>
-#include <units/isq/natural/energy.h>
-#include <units/isq/natural/force.h>
 #include <units/isq/natural/length.h>
-#include <units/isq/natural/mass.h>
-#include <units/isq/natural/momentum.h>
-#include <units/isq/natural/natural.h>
-#include <units/isq/natural/speed.h>
 #include <units/isq/natural/time.h>
+
+// IWYU pragma: begin_exports
+#include <units/isq/dimensions/acceleration.h>
+#include <units/isq/natural/units.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
 // IWYU pragma: end_exports
+
+namespace units::isq::natural {
+
+struct dim_acceleration : isq::dim_acceleration<dim_acceleration, gigaelectronvolt, dim_length, dim_time> {};
+
+template<UnitOf<dim_acceleration> U, Representation Rep = double>
+using acceleration = quantity<dim_acceleration, U, Rep>;
+
+#ifdef UNITS_REFERENCES
+
+namespace acceleration_references {
+
+inline constexpr auto GeV = reference<dim_acceleration, gigaelectronvolt>{};
+
+}  // namespace acceleration_references
+
+namespace references { 
+
+using namespace acceleration_references;
+
+}  // namespace references
+
+#endif // UNITS_REFERENCES
+
+}  // namespace units::isq::natural
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::natural::inline acceleration {
+
+template<Representation Rep = double> using GeV = units::isq::natural::acceleration<units::isq::natural::gigaelectronvolt, Rep>;
+
+}  // namespace units::aliases::isq::natural::inline acceleration
+
+#endif // UNITS_ALIASES

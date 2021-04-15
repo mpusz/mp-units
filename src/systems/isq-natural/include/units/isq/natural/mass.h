@@ -23,14 +23,44 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <units/isq/natural/acceleration.h>
-#include <units/isq/natural/constants.h>
-#include <units/isq/natural/energy.h>
-#include <units/isq/natural/force.h>
-#include <units/isq/natural/length.h>
-#include <units/isq/natural/mass.h>
-#include <units/isq/natural/momentum.h>
-#include <units/isq/natural/natural.h>
-#include <units/isq/natural/speed.h>
-#include <units/isq/natural/time.h>
+#include <units/isq/dimensions/mass.h>
+#include <units/isq/natural/units.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
 // IWYU pragma: end_exports
+
+namespace units::isq::natural {
+
+struct dim_mass : isq::dim_mass<gigaelectronvolt> {};
+
+template<UnitOf<dim_mass> U, Representation Rep = double>
+using mass = quantity<dim_mass, U, Rep>;
+
+#ifdef UNITS_REFERENCES
+
+namespace mass_references {
+
+inline constexpr auto GeV = reference<dim_mass, gigaelectronvolt>{};
+
+}  // namespace mass_references
+
+namespace references { 
+
+using namespace mass_references;
+
+}  // namespace references
+
+#endif // UNITS_REFERENCES
+
+}  // namespace units::isq::natural
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::natural::inline mass {
+
+template<Representation Rep = double> using GeV = units::isq::natural::mass<units::isq::natural::gigaelectronvolt, Rep>;
+
+}  // namespace units::aliases::isq::natural::inline mass
+
+#endif // UNITS_ALIASES
