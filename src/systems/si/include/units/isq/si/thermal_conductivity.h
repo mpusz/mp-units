@@ -54,3 +54,13 @@ constexpr auto operator"" _q_W_per_m_K(long double l) { return thermal_conductiv
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline thermal_conductivity {
+
+template<Representation Rep = double> using W_per_m_K = units::isq::si::thermal_conductivity<units::isq::si::watt_per_metre_kelvin, Rep>;
+
+}  // namespace units::aliases::isq::si::inline thermal_conductivity
+
+#endif // UNITS_ALIASES

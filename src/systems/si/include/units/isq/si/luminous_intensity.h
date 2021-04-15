@@ -190,3 +190,33 @@ using namespace luminous_intensity_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::luminous_intensity {
+
+template<Representation Rep = double> using cd = units::isq::si::luminous_intensity<units::isq::si::candela, Rep>;
+template<Representation Rep = double> using ycd = units::isq::si::luminous_intensity<units::isq::si::yoctocandela, Rep>;
+template<Representation Rep = double> using zcd = units::isq::si::luminous_intensity<units::isq::si::zeptocandela, Rep>;
+template<Representation Rep = double> using acd = units::isq::si::luminous_intensity<units::isq::si::attocandela, Rep>;
+template<Representation Rep = double> using fcd = units::isq::si::luminous_intensity<units::isq::si::femtocandela, Rep>;
+template<Representation Rep = double> using pcd = units::isq::si::luminous_intensity<units::isq::si::picocandela, Rep>;
+template<Representation Rep = double> using ncd = units::isq::si::luminous_intensity<units::isq::si::nanocandela, Rep>;
+template<Representation Rep = double> using ucd = units::isq::si::luminous_intensity<units::isq::si::microcandela, Rep>;
+template<Representation Rep = double> using mcd = units::isq::si::luminous_intensity<units::isq::si::millicandela, Rep>;
+template<Representation Rep = double> using ccd = units::isq::si::luminous_intensity<units::isq::si::centicandela, Rep>;
+template<Representation Rep = double> using dcd = units::isq::si::luminous_intensity<units::isq::si::decicandela, Rep>;
+template<Representation Rep = double> using dacd = units::isq::si::luminous_intensity<units::isq::si::decacandela, Rep>;
+template<Representation Rep = double> using hcd = units::isq::si::luminous_intensity<units::isq::si::hectocandela, Rep>;
+template<Representation Rep = double> using kcd = units::isq::si::luminous_intensity<units::isq::si::kilocandela, Rep>;
+template<Representation Rep = double> using Mcd = units::isq::si::luminous_intensity<units::isq::si::megacandela, Rep>;
+template<Representation Rep = double> using Gcd = units::isq::si::luminous_intensity<units::isq::si::gigacandela, Rep>;
+template<Representation Rep = double> using Tcd = units::isq::si::luminous_intensity<units::isq::si::teracandela, Rep>;
+template<Representation Rep = double> using Pcd = units::isq::si::luminous_intensity<units::isq::si::petacandela, Rep>;
+template<Representation Rep = double> using Ecd = units::isq::si::luminous_intensity<units::isq::si::exacandela, Rep>;
+template<Representation Rep = double> using Zcd = units::isq::si::luminous_intensity<units::isq::si::zettacandela, Rep>;
+template<Representation Rep = double> using Ycd = units::isq::si::luminous_intensity<units::isq::si::yottacandela, Rep>;
+
+}  // namespace units::aliases::isq::si::luminous_intensity
+
+#endif // UNITS_ALIASES

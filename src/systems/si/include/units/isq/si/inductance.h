@@ -168,3 +168,29 @@ using namespace inductance_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline inductance {
+
+template<Representation Rep = double> using H = units::isq::si::inductance<units::isq::si::henry, Rep>;
+template<Representation Rep = double> using yH = units::isq::si::inductance<units::isq::si::yoctohenry, Rep>;
+template<Representation Rep = double> using zH = units::isq::si::inductance<units::isq::si::zeptohenry, Rep>;
+template<Representation Rep = double> using aH = units::isq::si::inductance<units::isq::si::attohenry, Rep>;
+template<Representation Rep = double> using fH = units::isq::si::inductance<units::isq::si::femtohenry, Rep>;
+template<Representation Rep = double> using pH = units::isq::si::inductance<units::isq::si::picohenry, Rep>;
+template<Representation Rep = double> using nH = units::isq::si::inductance<units::isq::si::nanohenry, Rep>;
+template<Representation Rep = double> using uH = units::isq::si::inductance<units::isq::si::microhenry, Rep>;
+template<Representation Rep = double> using mH = units::isq::si::inductance<units::isq::si::millihenry, Rep>;
+template<Representation Rep = double> using kH = units::isq::si::inductance<units::isq::si::kilohenry, Rep>;
+template<Representation Rep = double> using MH = units::isq::si::inductance<units::isq::si::megahenry, Rep>;
+template<Representation Rep = double> using GH = units::isq::si::inductance<units::isq::si::gigahenry, Rep>;
+template<Representation Rep = double> using TH = units::isq::si::inductance<units::isq::si::terahenry, Rep>;
+template<Representation Rep = double> using PH = units::isq::si::inductance<units::isq::si::petahenry, Rep>;
+template<Representation Rep = double> using EH = units::isq::si::inductance<units::isq::si::exahenry, Rep>;
+template<Representation Rep = double> using ZH = units::isq::si::inductance<units::isq::si::zettahenry, Rep>;
+template<Representation Rep = double> using YH = units::isq::si::inductance<units::isq::si::yottahenry, Rep>;
+
+}  // namespace units::aliases::isq::si::inline inductance
+
+#endif // UNITS_ALIASES

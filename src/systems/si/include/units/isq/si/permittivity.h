@@ -55,3 +55,12 @@ constexpr auto operator"" _q_F_per_m(long double l) { return permittivity<farad_
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline permittivity {
+
+template<Representation Rep = double> using F_per_m = units::isq::si::permittivity<units::isq::si::farad_per_metre, Rep>;
+
+}  // namespace units::aliases::isq::si::inline permittivity
+
+#endif // UNITS_ALIASES

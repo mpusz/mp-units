@@ -71,3 +71,13 @@ using namespace area_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline area {
+
+template<Representation Rep = double> using cm2 = units::isq::si::cgs::area<units::isq::si::cgs::square_centimetre, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline area
+
+#endif // UNITS_ALIASES

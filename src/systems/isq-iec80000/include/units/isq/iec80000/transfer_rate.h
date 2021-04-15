@@ -71,3 +71,21 @@ constexpr auto operator"" _q_YB_per_s(unsigned long long l) { gsl_ExpectsAudit(s
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::iec80000
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::iec80000::inline transfer_rate {
+
+template<Representation Rep = double> using B_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::byte_per_second, Rep>;
+template<Representation Rep = double> using kB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::kilobyte_per_second, Rep>;
+template<Representation Rep = double> using MB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::megabyte_per_second, Rep>;
+template<Representation Rep = double> using GB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::gigabyte_per_second, Rep>;
+template<Representation Rep = double> using TB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::terabyte_per_second, Rep>;
+template<Representation Rep = double> using PB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::petabyte_per_second, Rep>;
+template<Representation Rep = double> using EB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::exabyte_per_second, Rep>;
+template<Representation Rep = double> using ZB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::zettabyte_per_second, Rep>;
+template<Representation Rep = double> using YB_per_s = units::isq::iec80000::transfer_rate<units::isq::iec80000::yottabyte_per_second, Rep>;
+
+}  // namespace units::aliases::isq::iec80000::inline transfer_rate
+
+#endif // UNITS_ALIASES

@@ -178,3 +178,49 @@ using namespace storage_capacity_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::iec80000::inline storage_capacity {
+
+// bits
+template<Representation Rep = double> using bit = units::isq::iec80000::storage_capacity<units::isq::iec80000::bit, Rep>;
+
+template<Representation Rep = double> using kbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobit, Rep>;
+template<Representation Rep = double> using Mbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabit, Rep>;
+template<Representation Rep = double> using Gbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabit, Rep>;
+template<Representation Rep = double> using Tbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabit, Rep>;
+template<Representation Rep = double> using Pbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabit, Rep>;
+template<Representation Rep = double> using Ebit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabit, Rep>;
+template<Representation Rep = double> using Zbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabit, Rep>;
+template<Representation Rep = double> using Ybit = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabit, Rep>;
+
+template<Representation Rep = double> using Kibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibit, Rep>;
+template<Representation Rep = double> using Mibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibit, Rep>;
+template<Representation Rep = double> using Gibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibit, Rep>;
+template<Representation Rep = double> using Tibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibit, Rep>;
+template<Representation Rep = double> using Pibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibit, Rep>;
+template<Representation Rep = double> using Eibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibit, Rep>;
+
+// bytes
+template<Representation Rep = double> using B = units::isq::iec80000::storage_capacity<units::isq::iec80000::byte, Rep>;
+
+template<Representation Rep = double> using kB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobyte, Rep>;
+template<Representation Rep = double> using MB = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabyte, Rep>;
+template<Representation Rep = double> using GB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabyte, Rep>;
+template<Representation Rep = double> using TB = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabyte, Rep>;
+template<Representation Rep = double> using PB = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabyte, Rep>;
+template<Representation Rep = double> using EB = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabyte, Rep>;
+template<Representation Rep = double> using ZB = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabyte, Rep>;
+template<Representation Rep = double> using YB = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabyte, Rep>;
+
+template<Representation Rep = double> using KiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibyte, Rep>;
+template<Representation Rep = double> using MiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibyte, Rep>;
+template<Representation Rep = double> using GiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibyte, Rep>;
+template<Representation Rep = double> using TiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibyte, Rep>;
+template<Representation Rep = double> using PiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibyte, Rep>;
+// template<Representation Rep = double> using EiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibyte, Rep>;
+
+}  // namespace units::aliases::isq::iec80000::inline storage_capacity
+
+#endif // UNITS_ALIASES

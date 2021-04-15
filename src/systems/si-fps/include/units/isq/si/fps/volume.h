@@ -76,3 +76,14 @@ using namespace volume_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline volume {
+
+template<Representation Rep = double> using ft3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_foot, Rep>;
+template<Representation Rep = double> using yd3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_yard, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline volume
+
+#endif // UNITS_ALIASES

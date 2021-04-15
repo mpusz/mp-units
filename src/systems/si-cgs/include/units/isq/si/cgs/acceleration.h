@@ -69,3 +69,13 @@ using namespace acceleration_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline acceleration {
+
+template<Representation Rep = double> using Gal = units::isq::si::cgs::acceleration<units::isq::si::cgs::gal, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline acceleration
+
+#endif // UNITS_ALIASES

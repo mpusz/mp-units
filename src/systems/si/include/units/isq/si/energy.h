@@ -181,3 +181,32 @@ using namespace energy_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline energy {
+
+template<Representation Rep = double> using J = units::isq::si::energy<units::isq::si::joule, Rep>;
+template<Representation Rep = double> using yJ = units::isq::si::energy<units::isq::si::yoctojoule, Rep>;
+template<Representation Rep = double> using zJ = units::isq::si::energy<units::isq::si::zeptojoule, Rep>;
+template<Representation Rep = double> using aJ = units::isq::si::energy<units::isq::si::attojoule, Rep>;
+template<Representation Rep = double> using fJ = units::isq::si::energy<units::isq::si::femtojoule, Rep>;
+template<Representation Rep = double> using pJ = units::isq::si::energy<units::isq::si::picojoule, Rep>;
+template<Representation Rep = double> using nJ = units::isq::si::energy<units::isq::si::nanojoule, Rep>;
+template<Representation Rep = double> using uJ = units::isq::si::energy<units::isq::si::microjoule, Rep>;
+template<Representation Rep = double> using mJ = units::isq::si::energy<units::isq::si::millijoule, Rep>;
+template<Representation Rep = double> using kJ = units::isq::si::energy<units::isq::si::kilojoule, Rep>;
+template<Representation Rep = double> using MJ = units::isq::si::energy<units::isq::si::megajoule, Rep>;
+template<Representation Rep = double> using GJ = units::isq::si::energy<units::isq::si::gigajoule, Rep>;
+template<Representation Rep = double> using TJ = units::isq::si::energy<units::isq::si::terajoule, Rep>;
+template<Representation Rep = double> using PJ = units::isq::si::energy<units::isq::si::petajoule, Rep>;
+template<Representation Rep = double> using EJ = units::isq::si::energy<units::isq::si::exajoule, Rep>;
+template<Representation Rep = double> using ZJ = units::isq::si::energy<units::isq::si::zettajoule, Rep>;
+template<Representation Rep = double> using YJ = units::isq::si::energy<units::isq::si::yottajoule, Rep>;
+
+template<Representation Rep = double> using eV = units::isq::si::energy<units::isq::si::electronvolt, Rep>;
+template<Representation Rep = double> using GeV = units::isq::si::energy<units::isq::si::gigaelectronvolt, Rep>;
+
+}  // namespace units::aliases::isq::si::inline energy
+
+#endif // UNITS_ALIASES

@@ -39,7 +39,7 @@ if(NOT UNITS_LIBCXX)
     add_subdirectory(glide_computer)
 endif()
 
-add_subdirectory(alternative_namespaces)
+add_subdirectory(aliases)
 add_subdirectory(kalman_filter)
 add_subdirectory(literals)
 add_subdirectory(references)

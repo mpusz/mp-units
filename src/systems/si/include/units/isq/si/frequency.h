@@ -166,3 +166,29 @@ using namespace frequency_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline frequency {
+
+template<Representation Rep = double> using Hz = units::isq::si::frequency<units::isq::si::hertz, Rep>;
+template<Representation Rep = double> using yHz = units::isq::si::frequency<units::isq::si::yoctohertz, Rep>;
+template<Representation Rep = double> using zHz = units::isq::si::frequency<units::isq::si::zeptohertz, Rep>;
+template<Representation Rep = double> using aHz = units::isq::si::frequency<units::isq::si::attohertz, Rep>;
+template<Representation Rep = double> using fHz = units::isq::si::frequency<units::isq::si::femtohertz, Rep>;
+template<Representation Rep = double> using pHz = units::isq::si::frequency<units::isq::si::picohertz, Rep>;
+template<Representation Rep = double> using nHz = units::isq::si::frequency<units::isq::si::nanohertz, Rep>;
+template<Representation Rep = double> using uHz = units::isq::si::frequency<units::isq::si::microhertz, Rep>;
+template<Representation Rep = double> using mHz = units::isq::si::frequency<units::isq::si::millihertz, Rep>;
+template<Representation Rep = double> using kHz = units::isq::si::frequency<units::isq::si::kilohertz, Rep>;
+template<Representation Rep = double> using MHz = units::isq::si::frequency<units::isq::si::megahertz, Rep>;
+template<Representation Rep = double> using GHz = units::isq::si::frequency<units::isq::si::gigahertz, Rep>;
+template<Representation Rep = double> using THz = units::isq::si::frequency<units::isq::si::terahertz, Rep>;
+template<Representation Rep = double> using PHz = units::isq::si::frequency<units::isq::si::petahertz, Rep>;
+template<Representation Rep = double> using EHz = units::isq::si::frequency<units::isq::si::exahertz, Rep>;
+template<Representation Rep = double> using ZHz = units::isq::si::frequency<units::isq::si::zettahertz, Rep>;
+template<Representation Rep = double> using YHz = units::isq::si::frequency<units::isq::si::yottahertz, Rep>;
+
+}  // namespace units::aliases::isq::si::inline frequency
+
+#endif // UNITS_ALIASES

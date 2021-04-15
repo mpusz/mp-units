@@ -111,28 +111,28 @@ void calcs_comparison()
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  length<femtometre, float> L1A = 2._q_fm;
-  length<femtometre, float> L2A = 3._q_fm;
-  length<femtometre, float> LrA = L1A + L2A;
+  const length<femtometre, float> L1A = 2._q_fm;
+  const length<femtometre, float> L2A = 3._q_fm;
+  const length<femtometre, float> LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  length<metre, float> L1B = L1A;
-  length<metre, float> L2B = L2A;
-  length<metre, float> LrB = L1B + L2B;
+  const length<metre, float> L1B = L1A;
+  const length<metre, float> L2B = L2A;
+  const length<metre, float> LrB = L1B + L2B;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
-  area<square_femtometre, float> ArA = L1A * L2A;
+  const area<square_femtometre, float> ArA = L1A * L2A;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
-  area<square_metre, float> ArB = L1B * L2B;
+  const area<square_metre, float> ArB = L1B * L2B;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 

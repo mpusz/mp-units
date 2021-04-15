@@ -192,3 +192,33 @@ using namespace pressure_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline pressure {
+
+template<Representation Rep = double> using Pa = units::isq::si::pressure<units::isq::si::pascal, Rep>;
+template<Representation Rep = double> using yPa = units::isq::si::pressure<units::isq::si::yoctopascal, Rep>;
+template<Representation Rep = double> using zPa = units::isq::si::pressure<units::isq::si::zeptopascal, Rep>;
+template<Representation Rep = double> using aPa = units::isq::si::pressure<units::isq::si::attopascal, Rep>;
+template<Representation Rep = double> using fPa = units::isq::si::pressure<units::isq::si::femtopascal, Rep>;
+template<Representation Rep = double> using pPa = units::isq::si::pressure<units::isq::si::picopascal, Rep>;
+template<Representation Rep = double> using nPa = units::isq::si::pressure<units::isq::si::nanopascal, Rep>;
+template<Representation Rep = double> using uPa = units::isq::si::pressure<units::isq::si::micropascal, Rep>;
+template<Representation Rep = double> using mPa = units::isq::si::pressure<units::isq::si::millipascal, Rep>;
+template<Representation Rep = double> using cPa = units::isq::si::pressure<units::isq::si::centipascal, Rep>;
+template<Representation Rep = double> using dPa = units::isq::si::pressure<units::isq::si::decipascal, Rep>;
+template<Representation Rep = double> using daPa = units::isq::si::pressure<units::isq::si::decapascal, Rep>;
+template<Representation Rep = double> using hPa = units::isq::si::pressure<units::isq::si::hectopascal, Rep>;
+template<Representation Rep = double> using kPa = units::isq::si::pressure<units::isq::si::kilopascal, Rep>;
+template<Representation Rep = double> using MPa = units::isq::si::pressure<units::isq::si::megapascal, Rep>;
+template<Representation Rep = double> using GPa = units::isq::si::pressure<units::isq::si::gigapascal, Rep>;
+template<Representation Rep = double> using TPa = units::isq::si::pressure<units::isq::si::terapascal, Rep>;
+template<Representation Rep = double> using PPa = units::isq::si::pressure<units::isq::si::petapascal, Rep>;
+template<Representation Rep = double> using EPa = units::isq::si::pressure<units::isq::si::exapascal, Rep>;
+template<Representation Rep = double> using ZPa = units::isq::si::pressure<units::isq::si::zettapascal, Rep>;
+template<Representation Rep = double> using YPa = units::isq::si::pressure<units::isq::si::yottapascal, Rep>;
+
+}  // namespace units::aliases::isq::si::inline pressure
+
+#endif // UNITS_ALIASES

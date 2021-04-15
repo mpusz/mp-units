@@ -192,3 +192,33 @@ using namespace voltage_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline voltage {
+
+template<Representation Rep = double> using V = units::isq::si::voltage<units::isq::si::volt, Rep>;
+template<Representation Rep = double> using yV = units::isq::si::voltage<units::isq::si::yoctovolt, Rep>;
+template<Representation Rep = double> using zV = units::isq::si::voltage<units::isq::si::zeptovolt, Rep>;
+template<Representation Rep = double> using aV = units::isq::si::voltage<units::isq::si::attovolt, Rep>;
+template<Representation Rep = double> using fV = units::isq::si::voltage<units::isq::si::femtovolt, Rep>;
+template<Representation Rep = double> using pV = units::isq::si::voltage<units::isq::si::picovolt, Rep>;
+template<Representation Rep = double> using nV = units::isq::si::voltage<units::isq::si::nanovolt, Rep>;
+template<Representation Rep = double> using uV = units::isq::si::voltage<units::isq::si::microvolt, Rep>;
+template<Representation Rep = double> using mV = units::isq::si::voltage<units::isq::si::millivolt, Rep>;
+template<Representation Rep = double> using cV = units::isq::si::voltage<units::isq::si::centivolt, Rep>;
+template<Representation Rep = double> using dV = units::isq::si::voltage<units::isq::si::decivolt, Rep>;
+template<Representation Rep = double> using daV = units::isq::si::voltage<units::isq::si::decavolt, Rep>;
+template<Representation Rep = double> using hV = units::isq::si::voltage<units::isq::si::hectovolt, Rep>;
+template<Representation Rep = double> using kV = units::isq::si::voltage<units::isq::si::kilovolt, Rep>;
+template<Representation Rep = double> using MV = units::isq::si::voltage<units::isq::si::megavolt, Rep>;
+template<Representation Rep = double> using GV = units::isq::si::voltage<units::isq::si::gigavolt, Rep>;
+template<Representation Rep = double> using TV = units::isq::si::voltage<units::isq::si::teravolt, Rep>;
+template<Representation Rep = double> using PV = units::isq::si::voltage<units::isq::si::petavolt, Rep>;
+template<Representation Rep = double> using EV = units::isq::si::voltage<units::isq::si::exavolt, Rep>;
+template<Representation Rep = double> using ZV = units::isq::si::voltage<units::isq::si::zettavolt, Rep>;
+template<Representation Rep = double> using YV = units::isq::si::voltage<units::isq::si::yottavolt, Rep>;
+
+}  // namespace units::aliases::isq::si::inline voltage
+
+#endif // UNITS_ALIASES

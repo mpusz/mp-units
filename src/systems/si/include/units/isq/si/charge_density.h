@@ -64,3 +64,14 @@ constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_den
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline charge_density {
+
+template<Representation Rep = double> using C_per_m3 = units::isq::si::charge_density<units::isq::si::coulomb_per_metre_cub, Rep>;
+template<Representation Rep = double> using C_per_m2 = units::isq::si::surface_charge_density<units::isq::si::coulomb_per_metre_sq, Rep>;
+
+}  // namespace units::aliases::isq::si::inline charge_density
+
+#endif // UNITS_ALIASES

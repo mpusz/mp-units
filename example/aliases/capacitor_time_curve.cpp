@@ -20,42 +20,44 @@
     physical_quantities
 */
 
+#include <units/generic/dimensionless.h>
+#include <units/isq/dimensions/electric_current.h>
 #include <units/isq/si/capacitance.h>
 #include <units/isq/si/resistance.h>
 #include <units/isq/si/time.h>
-#include <units/math.h>
+#include <units/isq/si/voltage.h>
+#include <units/math.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
-#include "./voltage.h"
 #include <iostream>
-
-using namespace units::experimental;
-using namespace units::isq::si::literals;
 
 int main()
 {
-  std::cout << "mpusz/units capacitor time curve example...\n";
+  using namespace units::isq;
+  using namespace units::aliases::isq::si;
+
+  std::cout << "mp-units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = 0.47_q_uF;
-  constexpr auto V0 = 5.0_q_V;
-  constexpr auto R = 4.7_q_kR;
+  constexpr auto C = capacitance::uF<>(0.47);
+  constexpr auto V0 = voltage::V<>(5.0);
+  constexpr auto R = resistance::kR<>(4.7);
 
-  for (auto t = 0_q_ms; t <= 50_q_ms; ++t) {
-    const auto Vt = V0 * units::exp(-t / (R * C));
+  for (auto t = ms<int>(0); t <= ms<int>(50); ++t) {
+    const Voltage auto Vt = V0 * units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
-    if (Vt >= 1_q_V)
+    if (Vt >= V<>(1))
       std::cout << Vt;
-    else if (Vt >= 1_q_mV)
-      std::cout << voltage::mV<>{Vt};
-    else if (Vt >= 1_q_uV)
-      std::cout << voltage::uV<>{Vt};
-    else if (Vt >= 1_q_nV)
-      std::cout << voltage::nV<>{Vt};
+    else if (Vt >= mV<>(1))
+      std::cout << mV<>(Vt);
+    else if (Vt >= uV<>(1))
+      std::cout << uV<>(Vt);
+    else if (Vt >= nV<>(1))
+      std::cout << nV<>(Vt);
     else
-      std::cout << voltage::pV<>{Vt};
+      std::cout << pV<>(Vt);
     std::cout << "\n";
   }
 }

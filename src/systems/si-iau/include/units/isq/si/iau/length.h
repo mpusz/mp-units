@@ -83,3 +83,15 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::iau
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::iau::inline length {
+
+template<Representation Rep = double> using ly = units::isq::si::length<units::isq::si::iau::light_year, Rep>;
+template<Representation Rep = double> using pc = units::isq::si::length<units::isq::si::iau::parsec, Rep>;
+template<Representation Rep = double> using angstrom = units::isq::si::length<units::isq::si::iau::angstrom, Rep>;
+
+}  // namespace units::aliases::isq::si::iau
+
+#endif // UNITS_ALIASES

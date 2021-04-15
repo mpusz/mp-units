@@ -136,3 +136,24 @@ using namespace time_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline time {
+
+template<Representation Rep = double> using ys = units::isq::si::time<units::isq::si::yoctosecond, Rep>;
+template<Representation Rep = double> using zs = units::isq::si::time<units::isq::si::zeptosecond, Rep>;
+template<Representation Rep = double> using as = units::isq::si::time<units::isq::si::attosecond, Rep>;
+template<Representation Rep = double> using fs = units::isq::si::time<units::isq::si::femtosecond, Rep>;
+template<Representation Rep = double> using ps = units::isq::si::time<units::isq::si::picosecond, Rep>;
+template<Representation Rep = double> using ns = units::isq::si::time<units::isq::si::nanosecond, Rep>;
+template<Representation Rep = double> using us = units::isq::si::time<units::isq::si::microsecond, Rep>;
+template<Representation Rep = double> using ms = units::isq::si::time<units::isq::si::millisecond, Rep>;
+template<Representation Rep = double> using s = units::isq::si::time<units::isq::si::second, Rep>;
+template<Representation Rep = double> using min = units::isq::si::time<units::isq::si::minute, Rep>;
+template<Representation Rep = double> using h = units::isq::si::time<units::isq::si::hour, Rep>;
+template<Representation Rep = double> using d = units::isq::si::time<units::isq::si::day, Rep>;
+
+}  // namespace units::aliases::isq::si::inline time
+
+#endif // UNITS_ALIASES

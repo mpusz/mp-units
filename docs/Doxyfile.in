@@ -101,4 +101,5 @@ QUIET                  = YES
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 PREDEFINED             = UNITS_REFERENCES \
-                         UNITS_LITERALS
+                         UNITS_LITERALS \
+                         UNITS_ALIASES

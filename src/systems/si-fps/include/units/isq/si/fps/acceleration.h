@@ -52,3 +52,13 @@ constexpr auto operator"" _q_ft_per_s2(long double l) { return acceleration<foot
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline acceleration {
+
+template<Representation Rep = double> using ft_per_s2 = units::isq::si::fps::acceleration<units::isq::si::fps::foot_per_second_sq, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline acceleration
+
+#endif // UNITS_ALIASES

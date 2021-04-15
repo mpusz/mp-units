@@ -168,3 +168,28 @@ using namespace conductance_references;
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline conductance {
+
+template<Representation Rep = double> using S = units::isq::si::conductance<units::isq::si::siemens, Rep>;
+template<Representation Rep = double> using yS = units::isq::si::conductance<units::isq::si::yoctosiemens, Rep>;
+template<Representation Rep = double> using zS = units::isq::si::conductance<units::isq::si::zeptosiemens, Rep>;
+template<Representation Rep = double> using aS = units::isq::si::conductance<units::isq::si::attosiemens, Rep>;
+template<Representation Rep = double> using fS = units::isq::si::conductance<units::isq::si::femtosiemens, Rep>;
+template<Representation Rep = double> using pS = units::isq::si::conductance<units::isq::si::picosiemens, Rep>;
+template<Representation Rep = double> using nS = units::isq::si::conductance<units::isq::si::nanosiemens, Rep>;
+template<Representation Rep = double> using uS = units::isq::si::conductance<units::isq::si::microsiemens, Rep>;
+template<Representation Rep = double> using mS = units::isq::si::conductance<units::isq::si::millisiemens, Rep>;
+template<Representation Rep = double> using kS = units::isq::si::conductance<units::isq::si::kilosiemens, Rep>;
+template<Representation Rep = double> using MS = units::isq::si::conductance<units::isq::si::megasiemens, Rep>;
+template<Representation Rep = double> using GS = units::isq::si::conductance<units::isq::si::gigasiemens, Rep>;
+template<Representation Rep = double> using TS = units::isq::si::conductance<units::isq::si::terasiemens, Rep>;
+template<Representation Rep = double> using PS = units::isq::si::conductance<units::isq::si::petasiemens, Rep>;
+template<Representation Rep = double> using ES = units::isq::si::conductance<units::isq::si::exasiemens, Rep>;
+template<Representation Rep = double> using ZS = units::isq::si::conductance<units::isq::si::zettasiemens, Rep>;
+template<Representation Rep = double> using YS = units::isq::si::conductance<units::isq::si::yottasiemens, Rep>;
+
+}  // namespace units::aliases::isq::si::inline conductance
+
+#endif // UNITS_ALIASES

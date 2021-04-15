@@ -12,6 +12,7 @@
   - refactor: `abs()` definition refactored to be more explicit about the return type
   - feat: quantity (point) kind support added (thanks [@johelegp](https://github.com/johelegp))
   - feat: quantity references support added (thanks [@johelegp](https://github.com/johelegp))
+  - feat: quantity aliases support addded
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
   - feat: `modulation_rate` support added (thanks [@go2sh](https://github.com/go2sh))

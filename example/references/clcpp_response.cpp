@@ -32,49 +32,52 @@ namespace {
 void simple_quantities()
 {
   using namespace units::isq;
+  using namespace units::isq::si;
   using namespace units::isq::si::references;
   using namespace units::isq::si::international::references;
 
   using distance = si::length<si::metre>;
   using duration = si::time<si::second>;
 
-  constexpr distance kilometers = 1.0 * km;
+  constexpr distance km = 1.0 * references::km;
   constexpr distance miles = 1.0 * mi;
 
-  constexpr duration seconds = 1 * s;
-  constexpr duration minutes = 1 * min;
-  constexpr duration hours = 1 * h;
+  constexpr duration sec = 1 * s;
+  constexpr duration min = 1 * references::min;
+  constexpr duration hr = 1 * h;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
-  std::cout << kilometers << '\n';
+  std::cout << km << '\n';
   std::cout << miles << '\n';
-  std::cout << seconds << '\n';
-  std::cout << minutes << '\n';
-  std::cout << hours << "\n\n";
+  std::cout << sec << '\n';
+  std::cout << min << '\n';
+  std::cout << hr << "\n\n";
 }
 
 void quantities_with_typed_units()
 {
   using namespace units::isq;
+  using namespace units::isq::si;
   using namespace units::isq::si::references;
+  using namespace units::isq::si::international;
   using namespace units::isq::si::international::references;
 
-  constexpr auto kilometers = 1.0 * km;
-  constexpr auto miles = 1.0 * mi;
+  constexpr length<kilometre> km = 1.0 * si::references::km;
+  constexpr length<mile> miles = 1.0 * mi;
 
   std::cout.precision(6);
 
-  constexpr auto seconds = 1 * s;
-  constexpr auto minutes = 1 * min;
-  constexpr auto hours = 1 * h;
+  constexpr si::time<second> sec = 1 * s;
+  constexpr si::time<minute> min = 1 * si::references::min;
+  constexpr si::time<hour> hr = 1 * h;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
-  std::cout << kilometers << '\n';
+  std::cout << km << '\n';
   std::cout << miles << '\n';
-  std::cout << seconds << '\n';
-  std::cout << minutes << '\n';
-  std::cout << hours << "\n\n";
+  std::cout << sec << '\n';
+  std::cout << min << '\n';
+  std::cout << hr << "\n\n";
 
   constexpr auto meter = 1 * m;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
@@ -104,35 +107,35 @@ void quantities_with_typed_units()
 
 void calcs_comparison()
 {
-  using namespace units::isq;
+  using namespace units::isq::si;
   using namespace units::isq::si::references;
 
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  const auto L1A = 2.f * fm;
-  const auto L2A = 3.f * fm;
-  const Length auto LrA = L1A + L2A;
+  const length<femtometre, float> L1A = 2.f * fm;
+  const length<femtometre, float> L2A = 3.f * fm;
+  const length<femtometre, float> LrA = L1A + L2A;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  const auto L1B = quantity_cast<si::metre>(L1A);
-  const auto L2B = quantity_cast<si::metre>(L2A);
-  const Length auto LrB = L1B + L2B;
+  const length<metre, float> L1B = L1A;
+  const length<metre, float> L2B = L2A;
+  const length<metre, float> LrB = L1B + L2B;
   fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
-  const Area auto ArA = L1A * L2A;
+  const area<square_femtometre, float> ArA = L1A * L2A;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
-  const Area auto ArB = L1B * L2B;
+  const area<square_metre, float> ArB = L1B * L2B;
   fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 

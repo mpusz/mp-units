@@ -53,3 +53,13 @@ constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<new
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline surface_tension {
+
+template<Representation Rep = double> using N_per_m = units::isq::si::surface_tension<units::isq::si::newton_per_metre, Rep>;
+
+}  // namespace units::aliases::isq::si::inline surface_tension
+
+#endif // UNITS_ALIASES

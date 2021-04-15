@@ -188,7 +188,7 @@ inline constexpr auto Zkat = reference<dim_catalytic_activity, zettakatal>{};
 inline constexpr auto Ykat = reference<dim_catalytic_activity, yottakatal>{};
 inline constexpr auto U = reference<dim_catalytic_activity, enzyme_unit>{};
 
-}
+}  // namespace catalytic_activity_references
 
 namespace references {
 
@@ -199,3 +199,34 @@ using namespace catalytic_activity_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline catalytic_activity {
+
+template<Representation Rep = double> using kat = units::isq::si::catalytic_activity<units::isq::si::katal, Rep>;
+template<Representation Rep = double> using ykat = units::isq::si::catalytic_activity<units::isq::si::yoctokatal, Rep>;
+template<Representation Rep = double> using zkat = units::isq::si::catalytic_activity<units::isq::si::zeptokatal, Rep>;
+template<Representation Rep = double> using akat = units::isq::si::catalytic_activity<units::isq::si::attokatal, Rep>;
+template<Representation Rep = double> using fkat = units::isq::si::catalytic_activity<units::isq::si::femtokatal, Rep>;
+template<Representation Rep = double> using pkat = units::isq::si::catalytic_activity<units::isq::si::picokatal, Rep>;
+template<Representation Rep = double> using nkat = units::isq::si::catalytic_activity<units::isq::si::nanokatal, Rep>;
+template<Representation Rep = double> using ukat = units::isq::si::catalytic_activity<units::isq::si::microkatal, Rep>;
+template<Representation Rep = double> using mkat = units::isq::si::catalytic_activity<units::isq::si::millikatal, Rep>;
+template<Representation Rep = double> using ckat = units::isq::si::catalytic_activity<units::isq::si::centikatal, Rep>;
+template<Representation Rep = double> using dkat = units::isq::si::catalytic_activity<units::isq::si::decikatal, Rep>;
+template<Representation Rep = double> using dakat = units::isq::si::catalytic_activity<units::isq::si::decakatal, Rep>;
+template<Representation Rep = double> using hkat = units::isq::si::catalytic_activity<units::isq::si::hectokatal, Rep>;
+template<Representation Rep = double> using kkat = units::isq::si::catalytic_activity<units::isq::si::kilokatal, Rep>;
+template<Representation Rep = double> using Mkat = units::isq::si::catalytic_activity<units::isq::si::megakatal, Rep>;
+template<Representation Rep = double> using Gkat = units::isq::si::catalytic_activity<units::isq::si::gigakatal, Rep>;
+template<Representation Rep = double> using Tkat = units::isq::si::catalytic_activity<units::isq::si::terakatal, Rep>;
+template<Representation Rep = double> using Pkat = units::isq::si::catalytic_activity<units::isq::si::petakatal, Rep>;
+template<Representation Rep = double> using Ekat = units::isq::si::catalytic_activity<units::isq::si::exakatal, Rep>;
+template<Representation Rep = double> using Zkat = units::isq::si::catalytic_activity<units::isq::si::zettakatal, Rep>;
+template<Representation Rep = double> using Ykat = units::isq::si::catalytic_activity<units::isq::si::yottakatal, Rep>;
+template<Representation Rep = double> using U = units::isq::si::catalytic_activity<units::isq::si::enzyme_unit, Rep>;
+
+}  // namespace units::aliases::isq::si::inline catalytic_activity
+
+#endif // UNITS_ALIASES

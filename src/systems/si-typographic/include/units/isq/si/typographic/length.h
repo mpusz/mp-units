@@ -85,3 +85,16 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::typographic
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::typographic::inline length {
+
+template<Representation Rep = double> using pica_comp = units::isq::si::length<units::isq::si::typographic::pica_comp, Rep>;
+template<Representation Rep = double> using pica_prn = units::isq::si::length<units::isq::si::typographic::pica_prn, Rep>;
+template<Representation Rep = double> using point_comp = units::isq::si::length<units::isq::si::typographic::point_comp, Rep>;
+template<Representation Rep = double> using point_prn = units::isq::si::length<units::isq::si::typographic::point_prn, Rep>;
+
+}  // namespace units::aliases::isq::si::typographic::inline length
+
+#endif // UNITS_ALIASES

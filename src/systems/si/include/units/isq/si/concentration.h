@@ -54,3 +54,12 @@ constexpr auto operator"" _q_mol_per_m3(long double l) { return concentration<mo
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline concentration {
+
+template<Representation Rep = double> using mol_per_m3 = units::isq::si::concentration<units::isq::si::mol_per_metre_cub, Rep>;
+
+}  // namespace units::aliases::isq::si::inline concentration
+
+#endif // UNITS_ALIASES

@@ -54,3 +54,13 @@ constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline angular_velocity {
+
+template<Representation Rep = double> using rad_per_s = units::isq::si::angular_velocity<units::isq::si::radian_per_second, Rep>;
+
+}  // namespace units::aliases::isq::si::inline angular_velocity
+
+#endif // UNITS_ALIASES

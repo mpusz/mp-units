@@ -83,3 +83,15 @@ using namespace power_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline power {
+
+template<Representation Rep = double> using ft_pdl_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_poundal_per_second, Rep>;
+template<Representation Rep = double> using ft_lbf_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_pound_force_per_second, Rep>;
+template<Representation Rep = double> using hp = units::isq::si::fps::power<units::isq::si::fps::horse_power, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline power
+
+#endif // UNITS_ALIASES

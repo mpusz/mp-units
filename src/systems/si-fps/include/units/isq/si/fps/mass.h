@@ -127,3 +127,21 @@ using namespace mass_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline mass {
+
+template<Representation Rep = double> using gr = units::isq::si::fps::mass<units::isq::si::fps::grain, Rep>;
+template<Representation Rep = double> using dr = units::isq::si::fps::mass<units::isq::si::fps::dram, Rep>;
+template<Representation Rep = double> using oz = units::isq::si::fps::mass<units::isq::si::fps::ounce, Rep>;
+template<Representation Rep = double> using lb = units::isq::si::fps::mass<units::isq::si::fps::pound, Rep>;
+template<Representation Rep = double> using st = units::isq::si::fps::mass<units::isq::si::fps::stone, Rep>;
+template<Representation Rep = double> using qr = units::isq::si::fps::mass<units::isq::si::fps::quarter, Rep>;
+template<Representation Rep = double> using cwt = units::isq::si::fps::mass<units::isq::si::fps::hundredweight, Rep>;
+template<Representation Rep = double> using ston = units::isq::si::fps::mass<units::isq::si::fps::short_ton, Rep>;
+template<Representation Rep = double> using lton = units::isq::si::fps::mass<units::isq::si::fps::long_ton, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline mass
+
+#endif // UNITS_ALIASES

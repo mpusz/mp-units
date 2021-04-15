@@ -70,3 +70,13 @@ using namespace traffic_intensity_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::iec80000::inline traffic_intensity {
+
+template<Representation Rep = double> using E = units::isq::iec80000::traffic_intensity<units::isq::iec80000::erlang, Rep>;
+
+}  // namespace units::aliases::isq::iec80000::inline traffic_intensity
+
+#endif // UNITS_ALIASES

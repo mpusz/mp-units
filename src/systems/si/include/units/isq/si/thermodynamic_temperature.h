@@ -69,3 +69,13 @@ using namespace thermodynamic_temperature_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline thermodynamic_temperature {
+
+template<Representation Rep = double> using K = units::isq::si::thermodynamic_temperature<units::isq::si::kelvin, Rep>;
+
+}  // namespace units::aliases::isq::si::inline thermodynamic_temperature
+
+#endif // UNITS_ALIASES

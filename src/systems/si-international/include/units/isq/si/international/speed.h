@@ -49,3 +49,13 @@ constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::international
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::international::inline speed {
+
+template<Representation Rep = double> using mi_per_h = units::isq::si::speed<units::isq::si::international::mile_per_hour, Rep>;
+
+}  // namespace units::aliases::isq::si::international::inline speed
+
+#endif // UNITS_ALIASES

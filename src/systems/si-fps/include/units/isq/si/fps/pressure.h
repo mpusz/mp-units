@@ -87,3 +87,15 @@ using namespace pressure_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline pressure {
+
+template<Representation Rep = double> using pdl_per_ft2 = units::isq::si::fps::pressure<units::isq::si::fps::poundal_per_foot_sq, Rep>;
+template<Representation Rep = double> using psi = units::isq::si::fps::pressure<units::isq::si::fps::pound_force_per_inch_sq, Rep>;
+template<Representation Rep = double> using kpsi = units::isq::si::fps::pressure<units::isq::si::fps::kilopound_force_per_inch_sq, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline pressure
+
+#endif // UNITS_ALIASES

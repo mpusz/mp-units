@@ -70,3 +70,13 @@ using namespace mass_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline mass {
+
+template<Representation Rep = double> using g = units::isq::si::cgs::mass<units::isq::si::cgs::gram, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline mass
+
+#endif // UNITS_ALIASES

@@ -53,3 +53,13 @@ constexpr auto operator"" _q_cm_per_s(long double l) { return speed<centimetre_p
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline speed {
+
+template<Representation Rep = double> using cm_per_s = units::isq::si::cgs::speed<units::isq::si::cgs::centimetre_per_second, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline speed
+
+#endif // UNITS_ALIASES

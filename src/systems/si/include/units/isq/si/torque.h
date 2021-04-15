@@ -55,3 +55,13 @@ constexpr auto operator"" _q_N_m_per_rad(long double l) { return torque<newton_m
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline torque {
+
+template<Representation Rep = double> using N_m_per_rad = units::isq::si::torque<units::isq::si::newton_metre_per_radian, Rep>;
+
+}  // namespace units::aliases::isq::si::inline torque
+
+#endif // UNITS_ALIASES

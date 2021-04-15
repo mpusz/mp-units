@@ -70,3 +70,13 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline length {
+
+template<Representation Rep = double> using cm = units::isq::si::cgs::length<units::isq::si::cgs::centimetre, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline length
+
+#endif // UNITS_ALIASES

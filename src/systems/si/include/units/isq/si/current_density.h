@@ -55,3 +55,13 @@ constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<am
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline current_density {
+
+template<Representation Rep = double> using A_per_m2 = units::isq::si::current_density<units::isq::si::ampere_per_metre_sq, Rep>;
+
+}  // namespace units::aliases::isq::si::inline current_density
+
+#endif // UNITS_ALIASES

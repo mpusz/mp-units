@@ -52,3 +52,13 @@ constexpr auto operator"" _q_V_per_m(long double l) { return electric_field_stre
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline electric_field_strength {
+
+template<Representation Rep = double> using V_per_m = units::isq::si::electric_field_strength<units::isq::si::volt_per_metre, Rep>;
+
+}  // namespace units::aliases::isq::si::inline electric_field_strength
+
+#endif // UNITS_ALIASES

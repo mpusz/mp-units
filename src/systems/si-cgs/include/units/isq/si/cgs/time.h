@@ -64,3 +64,13 @@ using namespace time_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline time {
+
+using namespace units::aliases::isq::si::time;
+
+}  // namespace units::aliases::isq::si::cgs::inline time
+
+#endif // UNITS_ALIASES

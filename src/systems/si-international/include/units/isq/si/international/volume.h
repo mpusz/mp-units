@@ -66,3 +66,13 @@ using namespace volume_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::international
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::international::inline volume {
+
+template<Representation Rep = double> using ft3 = units::isq::si::volume<units::isq::si::international::cubic_foot, Rep>;
+
+}  // namespace units::aliases::isq::si::international::inline volume
+
+#endif // UNITS_ALIASES

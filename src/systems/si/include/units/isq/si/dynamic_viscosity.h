@@ -54,3 +54,12 @@ constexpr auto operator"" _q_Pa_s(long double l) { return dynamic_viscosity<pasc
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline dynamic_viscosity {
+
+template<Representation Rep = double> using Pa_s = units::isq::si::dynamic_viscosity<units::isq::si::pascal_second, Rep>;
+
+}  // namespace units::aliases::isq::si::inline dynamic_viscosity
+
+#endif // UNITS_ALIASES

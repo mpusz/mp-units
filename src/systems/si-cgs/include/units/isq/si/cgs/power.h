@@ -54,3 +54,13 @@ constexpr auto operator"" _q_erg_per_s(long double l) { return power<erg_per_sec
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline power {
+
+template<Representation Rep = double> using erg_per_s = units::isq::si::cgs::power<units::isq::si::cgs::erg_per_second, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline power
+
+#endif // UNITS_ALIASES

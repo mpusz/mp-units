@@ -192,3 +192,33 @@ using namespace capacitance_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline capacitance {
+
+template<Representation Rep = double> using F = units::isq::si::capacitance<units::isq::si::farad, Rep>;
+template<Representation Rep = double> using yF = units::isq::si::capacitance<units::isq::si::yoctofarad, Rep>;
+template<Representation Rep = double> using zF = units::isq::si::capacitance<units::isq::si::zeptofarad, Rep>;
+template<Representation Rep = double> using aF = units::isq::si::capacitance<units::isq::si::attofarad, Rep>;
+template<Representation Rep = double> using fF = units::isq::si::capacitance<units::isq::si::femtofarad, Rep>;
+template<Representation Rep = double> using pF = units::isq::si::capacitance<units::isq::si::picofarad, Rep>;
+template<Representation Rep = double> using nF = units::isq::si::capacitance<units::isq::si::nanofarad, Rep>;
+template<Representation Rep = double> using uF = units::isq::si::capacitance<units::isq::si::microfarad, Rep>;
+template<Representation Rep = double> using mF = units::isq::si::capacitance<units::isq::si::millifarad, Rep>;
+template<Representation Rep = double> using cF = units::isq::si::capacitance<units::isq::si::centifarad, Rep>;
+template<Representation Rep = double> using dF = units::isq::si::capacitance<units::isq::si::decifarad, Rep>;
+template<Representation Rep = double> using daF = units::isq::si::capacitance<units::isq::si::decafarad, Rep>;
+template<Representation Rep = double> using hF = units::isq::si::capacitance<units::isq::si::hectofarad, Rep>;
+template<Representation Rep = double> using kF = units::isq::si::capacitance<units::isq::si::kilofarad, Rep>;
+template<Representation Rep = double> using MF = units::isq::si::capacitance<units::isq::si::megafarad, Rep>;
+template<Representation Rep = double> using GF = units::isq::si::capacitance<units::isq::si::gigafarad, Rep>;
+template<Representation Rep = double> using TF = units::isq::si::capacitance<units::isq::si::terafarad, Rep>;
+template<Representation Rep = double> using PF = units::isq::si::capacitance<units::isq::si::petafarad, Rep>;
+template<Representation Rep = double> using EF = units::isq::si::capacitance<units::isq::si::exafarad, Rep>;
+template<Representation Rep = double> using ZF = units::isq::si::capacitance<units::isq::si::zettafarad, Rep>;
+template<Representation Rep = double> using YF = units::isq::si::capacitance<units::isq::si::yottafarad, Rep>;
+
+}  // namespace units::aliases::isq::si::inline capacitance
+
+#endif // UNITS_ALIASES

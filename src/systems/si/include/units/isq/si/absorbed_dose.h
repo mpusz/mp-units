@@ -191,3 +191,33 @@ using namespace absorbed_dose_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline absorbed_dose {
+
+template<Representation Rep = double> using Gy = units::isq::si::absorbed_dose<units::isq::si::gray, Rep>;
+template<Representation Rep = double> using yGy = units::isq::si::absorbed_dose<units::isq::si::yoctogray, Rep>;
+template<Representation Rep = double> using zGy = units::isq::si::absorbed_dose<units::isq::si::zeptogray, Rep>;
+template<Representation Rep = double> using aGy = units::isq::si::absorbed_dose<units::isq::si::attogray, Rep>;
+template<Representation Rep = double> using fGy = units::isq::si::absorbed_dose<units::isq::si::femtogray, Rep>;
+template<Representation Rep = double> using pGy = units::isq::si::absorbed_dose<units::isq::si::picogray, Rep>;
+template<Representation Rep = double> using nGy = units::isq::si::absorbed_dose<units::isq::si::nanogray, Rep>;
+template<Representation Rep = double> using uGy = units::isq::si::absorbed_dose<units::isq::si::microgray, Rep>;
+template<Representation Rep = double> using mGy = units::isq::si::absorbed_dose<units::isq::si::milligray, Rep>;
+template<Representation Rep = double> using cGy = units::isq::si::absorbed_dose<units::isq::si::centigray, Rep>;
+template<Representation Rep = double> using dGy = units::isq::si::absorbed_dose<units::isq::si::decigray, Rep>;
+template<Representation Rep = double> using daGy = units::isq::si::absorbed_dose<units::isq::si::decagray, Rep>;
+template<Representation Rep = double> using hGy = units::isq::si::absorbed_dose<units::isq::si::hectogray, Rep>;
+template<Representation Rep = double> using kGy = units::isq::si::absorbed_dose<units::isq::si::kilogray, Rep>;
+template<Representation Rep = double> using MGy = units::isq::si::absorbed_dose<units::isq::si::megagray, Rep>;
+template<Representation Rep = double> using GGy = units::isq::si::absorbed_dose<units::isq::si::gigagray, Rep>;
+template<Representation Rep = double> using TGy = units::isq::si::absorbed_dose<units::isq::si::teragray, Rep>;
+template<Representation Rep = double> using PGy = units::isq::si::absorbed_dose<units::isq::si::petagray, Rep>;
+template<Representation Rep = double> using EGy = units::isq::si::absorbed_dose<units::isq::si::exagray, Rep>;
+template<Representation Rep = double> using ZGy = units::isq::si::absorbed_dose<units::isq::si::zettagray, Rep>;
+template<Representation Rep = double> using YGy = units::isq::si::absorbed_dose<units::isq::si::yottagray, Rep>;
+
+}  // namespace units::aliases::isq::si::inline absorbed_dose
+
+#endif // UNITS_ALIASES

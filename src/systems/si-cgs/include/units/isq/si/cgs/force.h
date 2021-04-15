@@ -72,3 +72,13 @@ using namespace force_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline force {
+
+template<Representation Rep = double> using dyn = units::isq::si::cgs::force<units::isq::si::cgs::dyne, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline force
+
+#endif // UNITS_ALIASES

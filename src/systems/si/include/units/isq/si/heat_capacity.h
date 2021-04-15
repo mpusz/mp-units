@@ -75,3 +75,14 @@ constexpr auto operator"" _q_J_per_mol_K(long double l) { return molar_heat_capa
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::heat_capacity {
+
+template<Representation Rep = double> using J_per_K = units::isq::si::heat_capacity<units::isq::si::joule_per_kelvin, Rep>;
+template<Representation Rep = double> using J_per_kg_K = units::isq::si::specific_heat_capacity<units::isq::si::joule_per_kilogram_kelvin, Rep>;
+template<Representation Rep = double> using J_per_mol_K = units::isq::si::molar_heat_capacity<units::isq::si::joule_per_mole_kelvin, Rep>;
+
+}  // namespace units::aliases::isq::si::heat_capacity
+
+#endif // UNITS_ALIASES

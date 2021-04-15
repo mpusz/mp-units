@@ -184,6 +184,7 @@ inline constexpr auto Pm2 = reference<dim_area, square_petametre>{};
 inline constexpr auto Em2 = reference<dim_area, square_exametre>{};
 inline constexpr auto Zm2 = reference<dim_area, square_zettametre>{};
 inline constexpr auto Ym2 = reference<dim_area, square_yottametre>{};
+
 inline constexpr auto ha = reference<dim_area, hectare>{};
 
 }  // namespace area_references
@@ -197,3 +198,35 @@ using namespace area_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline area {
+
+template<Representation Rep = double> using m2 = units::isq::si::area<units::isq::si::square_metre, Rep>;
+template<Representation Rep = double> using ym2 = units::isq::si::area<units::isq::si::square_yoctometre, Rep>;
+template<Representation Rep = double> using zm2 = units::isq::si::area<units::isq::si::square_zeptometre, Rep>;
+template<Representation Rep = double> using am2 = units::isq::si::area<units::isq::si::square_attometre, Rep>;
+template<Representation Rep = double> using fm2 = units::isq::si::area<units::isq::si::square_femtometre, Rep>;
+template<Representation Rep = double> using pm2 = units::isq::si::area<units::isq::si::square_picometre, Rep>;
+template<Representation Rep = double> using nm2 = units::isq::si::area<units::isq::si::square_nanometre, Rep>;
+template<Representation Rep = double> using um2 = units::isq::si::area<units::isq::si::square_micrometre, Rep>;
+template<Representation Rep = double> using mm2 = units::isq::si::area<units::isq::si::square_millimetre, Rep>;
+template<Representation Rep = double> using cm2 = units::isq::si::area<units::isq::si::square_centimetre, Rep>;
+template<Representation Rep = double> using dm2 = units::isq::si::area<units::isq::si::square_decimetre, Rep>;
+template<Representation Rep = double> using dam2 = units::isq::si::area<units::isq::si::square_decametre, Rep>;
+template<Representation Rep = double> using hm2 = units::isq::si::area<units::isq::si::square_hectometre, Rep>;
+template<Representation Rep = double> using km2 = units::isq::si::area<units::isq::si::square_kilometre, Rep>;
+template<Representation Rep = double> using Mm2 = units::isq::si::area<units::isq::si::square_megametre, Rep>;
+template<Representation Rep = double> using Gm2 = units::isq::si::area<units::isq::si::square_gigametre, Rep>;
+template<Representation Rep = double> using Tm2 = units::isq::si::area<units::isq::si::square_terametre, Rep>;
+template<Representation Rep = double> using Pm2 = units::isq::si::area<units::isq::si::square_petametre, Rep>;
+template<Representation Rep = double> using Em2 = units::isq::si::area<units::isq::si::square_exametre, Rep>;
+template<Representation Rep = double> using Zm2 = units::isq::si::area<units::isq::si::square_zettametre, Rep>;
+template<Representation Rep = double> using Ym2 = units::isq::si::area<units::isq::si::square_yottametre, Rep>;
+
+template<Representation Rep = double> using ha = units::isq::si::area<units::isq::si::hectare, Rep>;
+
+}  // namespace units::aliases::isq::si::inline area
+
+#endif // UNITS_ALIASES

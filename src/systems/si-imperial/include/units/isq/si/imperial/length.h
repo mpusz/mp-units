@@ -74,3 +74,14 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::imperial
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::imperial::inline length {
+
+template<Representation Rep = double> using ch = units::isq::si::length<units::isq::si::imperial::chain, Rep>;
+template<Representation Rep = double> using rd = units::isq::si::length<units::isq::si::imperial::rod, Rep>;
+
+}  // namespace units::aliases::isq::si::imperial::inline length
+
+#endif // UNITS_ALIASES

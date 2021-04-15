@@ -71,3 +71,13 @@ using namespace electric_charge_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline electric_charge {
+
+template<Representation Rep = double> using C = units::isq::si::electric_charge<units::isq::si::coulomb, Rep>;
+
+}  // namespace units::aliases::isq::si::inline electric_charge
+
+#endif // UNITS_ALIASES

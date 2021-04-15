@@ -54,3 +54,12 @@ constexpr auto operator"" _q_cd_per_m2(long double l) { return luminance<candela
 
 }  // namespace units::isq::si
 
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline luminance {
+
+template<Representation Rep = double> using cd_per_m2 = units::isq::si::luminance<units::isq::si::candela_per_metre_sq, Rep>;
+
+}  // namespace units::aliases::isq::si::inline luminance
+
+#endif // UNITS_ALIASES

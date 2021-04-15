@@ -130,3 +130,20 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::international
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::international::inline length {
+
+template<Representation Rep = double> using yd = units::isq::si::length<units::isq::si::international::yard, Rep>;
+template<Representation Rep = double> using ft = units::isq::si::length<units::isq::si::international::foot, Rep>;
+template<Representation Rep = double> using fathom = units::isq::si::length<units::isq::si::international::fathom, Rep>;
+template<Representation Rep = double> using in = units::isq::si::length<units::isq::si::international::inch, Rep>;
+template<Representation Rep = double> using mi = units::isq::si::length<units::isq::si::international::mile, Rep>;
+template<Representation Rep = double> using mi_naut = units::isq::si::length<units::isq::si::international::nautical_mile, Rep>;
+template<Representation Rep = double> using thou = units::isq::si::length<units::isq::si::international::thou, Rep>;
+template<Representation Rep = double> using mil = units::isq::si::length<units::isq::si::international::mil, Rep>;
+
+}  // namespace units::aliases::isq::si::international::inline length
+
+#endif // UNITS_ALIASES

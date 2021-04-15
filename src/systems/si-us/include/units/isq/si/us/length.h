@@ -84,3 +84,15 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::us
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::us::inline length {
+
+template<Representation Rep = double> using ft = units::isq::si::length<units::isq::si::us::foot, Rep>;
+template<Representation Rep = double> using fathom = units::isq::si::length<units::isq::si::us::fathom, Rep>;
+template<Representation Rep = double> using mi = units::isq::si::length<units::isq::si::us::mile, Rep>;
+
+}  // namespace units::aliases::isq::si::us::inline length
+
+#endif // UNITS_ALIASES

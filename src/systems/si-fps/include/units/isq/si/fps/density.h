@@ -54,3 +54,13 @@ constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_pe
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline density {
+
+template<Representation Rep = double> using lb_per_ft3 = units::isq::si::fps::density<units::isq::si::fps::pound_per_foot_cub, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline density
+
+#endif // UNITS_ALIASES

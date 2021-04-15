@@ -128,3 +128,22 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline length {
+
+template<Representation Rep = double> using thou = units::isq::si::fps::length<units::isq::si::fps::thousandth, Rep>;
+template<Representation Rep = double> using mil = thou<Rep>;
+
+template<Representation Rep = double> using in = units::isq::si::fps::length<units::isq::si::fps::inch, Rep>;
+template<Representation Rep = double> using ft = units::isq::si::fps::length<units::isq::si::fps::foot, Rep>;
+template<Representation Rep = double> using yd = units::isq::si::fps::length<units::isq::si::fps::yard, Rep>;
+template<Representation Rep = double> using ftm = units::isq::si::fps::length<units::isq::si::fps::fathom, Rep>;
+template<Representation Rep = double> using kyd = units::isq::si::fps::length<units::isq::si::fps::kiloyard, Rep>;
+template<Representation Rep = double> using mile = units::isq::si::fps::length<units::isq::si::fps::mile, Rep>;
+template<Representation Rep = double> using naut_mi = units::isq::si::fps::length<units::isq::si::fps::nautical_mile, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline length
+
+#endif // UNITS_ALIASES

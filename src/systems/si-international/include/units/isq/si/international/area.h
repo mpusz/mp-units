@@ -66,3 +66,13 @@ using namespace area_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::international
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::international::inline area {
+
+template<Representation Rep = double> using ft2 = units::isq::si::area<units::isq::si::international::square_foot, Rep>;
+
+}  // namespace units::aliases::isq::si::international::inline area
+
+#endif // UNITS_ALIASES

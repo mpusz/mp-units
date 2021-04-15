@@ -55,3 +55,13 @@ constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joul
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline molar_energy {
+
+template<Representation Rep = double> using J_per_mol = units::isq::si::molar_energy<units::isq::si::joule_per_mole, Rep>;
+
+}  // namespace units::aliases::isq::si::inline molar_energy
+
+#endif // UNITS_ALIASES

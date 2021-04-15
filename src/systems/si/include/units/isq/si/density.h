@@ -55,3 +55,13 @@ constexpr auto operator"" _q_kg_per_m3(long double l) { return density<kilogram_
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline density {
+
+template<Representation Rep = double> using kg_per_m3 = units::isq::si::density<units::isq::si::kilogram_per_metre_cub, Rep>;
+
+}  // namespace units::aliases::isq::si::inline density
+
+#endif // UNITS_ALIASES

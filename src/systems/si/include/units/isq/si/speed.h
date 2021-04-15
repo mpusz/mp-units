@@ -59,3 +59,14 @@ constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_pe
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline speed {
+
+template<Representation Rep = double> using m_per_s = units::isq::si::speed<units::isq::si::metre_per_second, Rep>;
+template<Representation Rep = double> using km_per_h = units::isq::si::speed<units::isq::si::kilometre_per_hour, Rep>;
+
+}  // namespace units::aliases::isq::si::inline speed
+
+#endif // UNITS_ALIASES

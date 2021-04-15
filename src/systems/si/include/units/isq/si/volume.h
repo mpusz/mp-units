@@ -284,6 +284,7 @@ inline constexpr auto Pm3 = reference<dim_volume, cubic_petametre>{};
 inline constexpr auto Em3 = reference<dim_volume, cubic_exametre>{};
 inline constexpr auto Zm3 = reference<dim_volume, cubic_zettametre>{};
 inline constexpr auto Ym3 = reference<dim_volume, cubic_yottametre>{};
+
 inline constexpr auto l = reference<dim_volume, litre>{};
 inline constexpr auto yl = reference<dim_volume, yoctolitre>{};
 inline constexpr auto zl = reference<dim_volume, zeptolitre>{};
@@ -317,3 +318,55 @@ using namespace volume_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline volume {
+
+template<Representation Rep = double> using m3 = units::isq::si::volume<units::isq::si::cubic_metre, Rep>;
+template<Representation Rep = double> using ym3 = units::isq::si::volume<units::isq::si::cubic_yoctometre, Rep>;
+template<Representation Rep = double> using zm3 = units::isq::si::volume<units::isq::si::cubic_zeptometre, Rep>;
+template<Representation Rep = double> using am3 = units::isq::si::volume<units::isq::si::cubic_attometre, Rep>;
+template<Representation Rep = double> using fm3 = units::isq::si::volume<units::isq::si::cubic_femtometre, Rep>;
+template<Representation Rep = double> using pm3 = units::isq::si::volume<units::isq::si::cubic_picometre, Rep>;
+template<Representation Rep = double> using nm3 = units::isq::si::volume<units::isq::si::cubic_nanometre, Rep>;
+template<Representation Rep = double> using um3 = units::isq::si::volume<units::isq::si::cubic_micrometre, Rep>;
+template<Representation Rep = double> using mm3 = units::isq::si::volume<units::isq::si::cubic_millimetre, Rep>;
+template<Representation Rep = double> using cm3 = units::isq::si::volume<units::isq::si::cubic_centimetre, Rep>;
+template<Representation Rep = double> using dm3 = units::isq::si::volume<units::isq::si::cubic_decimetre, Rep>;
+template<Representation Rep = double> using dam3 = units::isq::si::volume<units::isq::si::cubic_decametre, Rep>;
+template<Representation Rep = double> using hm3 = units::isq::si::volume<units::isq::si::cubic_hectometre, Rep>;
+template<Representation Rep = double> using km3 = units::isq::si::volume<units::isq::si::cubic_kilometre, Rep>;
+template<Representation Rep = double> using Mm3 = units::isq::si::volume<units::isq::si::cubic_megametre, Rep>;
+template<Representation Rep = double> using Gm3 = units::isq::si::volume<units::isq::si::cubic_gigametre, Rep>;
+template<Representation Rep = double> using Tm3 = units::isq::si::volume<units::isq::si::cubic_terametre, Rep>;
+template<Representation Rep = double> using Pm3 = units::isq::si::volume<units::isq::si::cubic_petametre, Rep>;
+template<Representation Rep = double> using Em3 = units::isq::si::volume<units::isq::si::cubic_exametre, Rep>;
+template<Representation Rep = double> using Zm3 = units::isq::si::volume<units::isq::si::cubic_zettametre, Rep>;
+template<Representation Rep = double> using Ym3 = units::isq::si::volume<units::isq::si::cubic_yottametre, Rep>;
+
+template<Representation Rep = double> using l = units::isq::si::volume<units::isq::si::litre, Rep>;
+template<Representation Rep = double> using yl = units::isq::si::volume<units::isq::si::yoctolitre, Rep>;
+template<Representation Rep = double> using zl = units::isq::si::volume<units::isq::si::zeptolitre, Rep>;
+template<Representation Rep = double> using al = units::isq::si::volume<units::isq::si::attolitre, Rep>;
+template<Representation Rep = double> using fl = units::isq::si::volume<units::isq::si::femtolitre, Rep>;
+template<Representation Rep = double> using pl = units::isq::si::volume<units::isq::si::picolitre, Rep>;
+template<Representation Rep = double> using nl = units::isq::si::volume<units::isq::si::nanolitre, Rep>;
+template<Representation Rep = double> using ul = units::isq::si::volume<units::isq::si::microlitre, Rep>;
+template<Representation Rep = double> using ml = units::isq::si::volume<units::isq::si::millilitre, Rep>;
+template<Representation Rep = double> using cl = units::isq::si::volume<units::isq::si::centilitre, Rep>;
+template<Representation Rep = double> using dl = units::isq::si::volume<units::isq::si::decilitre, Rep>;
+template<Representation Rep = double> using dal = units::isq::si::volume<units::isq::si::decalitre, Rep>;
+template<Representation Rep = double> using hl = units::isq::si::volume<units::isq::si::hectolitre, Rep>;
+template<Representation Rep = double> using kl = units::isq::si::volume<units::isq::si::kilolitre, Rep>;
+template<Representation Rep = double> using Ml = units::isq::si::volume<units::isq::si::megalitre, Rep>;
+template<Representation Rep = double> using Gl = units::isq::si::volume<units::isq::si::gigalitre, Rep>;
+template<Representation Rep = double> using Tl = units::isq::si::volume<units::isq::si::teralitre, Rep>;
+template<Representation Rep = double> using Pl = units::isq::si::volume<units::isq::si::petalitre, Rep>;
+template<Representation Rep = double> using El = units::isq::si::volume<units::isq::si::exalitre, Rep>;
+template<Representation Rep = double> using Zl = units::isq::si::volume<units::isq::si::zettalitre, Rep>;
+template<Representation Rep = double> using Yl = units::isq::si::volume<units::isq::si::yottalitre, Rep>;
+
+}  // namespace units::aliases::isq::si::inline volume
+
+#endif // UNITS_ALIASES

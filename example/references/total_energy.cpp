@@ -74,10 +74,11 @@ void si_example()
 void natural_example()
 {
   using namespace units::isq::natural;
+  using namespace units::isq::natural::references;
 
   constexpr Speed auto c = speed_of_light<>;
-  const momentum<gigaelectronvolt> p(4);
-  const mass<gigaelectronvolt> m(3);
+  const auto p = 4. * momentum_references::GeV;
+  const auto m = 3. * mass_references::GeV;
   const Energy auto E = total_energy(p, m, c);
 
   std::cout << "\n*** Natural units (c = " << c << ") ***\n"

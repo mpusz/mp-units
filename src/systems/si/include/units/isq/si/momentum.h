@@ -53,3 +53,13 @@ constexpr auto operator"" _q_kg_m_per_s(long double l) { return momentum<kilogra
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline momentum {
+
+template<Representation Rep = double> using kg_m_per_s = units::isq::si::momentum<units::isq::si::kilogram_metre_per_second, Rep>;
+
+}  // namespace units::aliases::isq::si::inline momentum
+
+#endif // UNITS_ALIASES

@@ -168,3 +168,29 @@ using namespace resistance_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline resistance {
+
+template<Representation Rep = double> using R = units::isq::si::resistance<units::isq::si::ohm, Rep>;
+template<Representation Rep = double> using yR = units::isq::si::resistance<units::isq::si::yoctoohm, Rep>;
+template<Representation Rep = double> using zR = units::isq::si::resistance<units::isq::si::zeptoohm, Rep>;
+template<Representation Rep = double> using aR = units::isq::si::resistance<units::isq::si::attoohm, Rep>;
+template<Representation Rep = double> using fR = units::isq::si::resistance<units::isq::si::femtoohm, Rep>;
+template<Representation Rep = double> using pR = units::isq::si::resistance<units::isq::si::picoohm, Rep>;
+template<Representation Rep = double> using nR = units::isq::si::resistance<units::isq::si::nanoohm, Rep>;
+template<Representation Rep = double> using uR = units::isq::si::resistance<units::isq::si::microohm, Rep>;
+template<Representation Rep = double> using mR = units::isq::si::resistance<units::isq::si::milliohm, Rep>;
+template<Representation Rep = double> using kR = units::isq::si::resistance<units::isq::si::kiloohm, Rep>;
+template<Representation Rep = double> using MR = units::isq::si::resistance<units::isq::si::megaohm, Rep>;
+template<Representation Rep = double> using GR = units::isq::si::resistance<units::isq::si::gigaohm, Rep>;
+template<Representation Rep = double> using TR = units::isq::si::resistance<units::isq::si::teraohm, Rep>;
+template<Representation Rep = double> using PR = units::isq::si::resistance<units::isq::si::petaohm, Rep>;
+template<Representation Rep = double> using ER = units::isq::si::resistance<units::isq::si::exaohm, Rep>;
+template<Representation Rep = double> using ZR = units::isq::si::resistance<units::isq::si::zettaohm, Rep>;
+template<Representation Rep = double> using YR = units::isq::si::resistance<units::isq::si::yottaohm, Rep>;
+
+}  // namespace units::aliases::isq::si::inline resistance
+
+#endif // UNITS_ALIASES

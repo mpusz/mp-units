@@ -93,3 +93,21 @@ using namespace modulation_rate_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::iec80000
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::iec80000::inline modulation_rate {
+
+template<Representation Rep = double> using Bd = units::isq::iec80000::modulation_rate<units::isq::iec80000::baud, Rep>;
+template<Representation Rep = double> using kBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::kilobaud, Rep>;
+template<Representation Rep = double> using MBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::megabaud, Rep>;
+template<Representation Rep = double> using GBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::gigabaud, Rep>;
+template<Representation Rep = double> using TBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::terabaud, Rep>;
+template<Representation Rep = double> using PBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::petabaud, Rep>;
+template<Representation Rep = double> using EBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::exabaud, Rep>;
+template<Representation Rep = double> using ZBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::zettabaud, Rep>;
+template<Representation Rep = double> using YBd = units::isq::iec80000::modulation_rate<units::isq::iec80000::yottabaud, Rep>;
+
+}  // namespace units::aliases::isq::iec80000::inline modulation_rate
+
+#endif // UNITS_ALIASES

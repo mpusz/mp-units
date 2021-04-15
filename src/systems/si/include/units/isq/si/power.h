@@ -167,3 +167,29 @@ using namespace power_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline power {
+
+template<Representation Rep = double> using W = units::isq::si::power<units::isq::si::watt, Rep>;
+template<Representation Rep = double> using yW = units::isq::si::power<units::isq::si::yoctowatt, Rep>;
+template<Representation Rep = double> using zW = units::isq::si::power<units::isq::si::zeptowatt, Rep>;
+template<Representation Rep = double> using aW = units::isq::si::power<units::isq::si::attowatt, Rep>;
+template<Representation Rep = double> using fW = units::isq::si::power<units::isq::si::femtowatt, Rep>;
+template<Representation Rep = double> using pW = units::isq::si::power<units::isq::si::picowatt, Rep>;
+template<Representation Rep = double> using nW = units::isq::si::power<units::isq::si::nanowatt, Rep>;
+template<Representation Rep = double> using uW = units::isq::si::power<units::isq::si::microwatt, Rep>;
+template<Representation Rep = double> using mW = units::isq::si::power<units::isq::si::milliwatt, Rep>;
+template<Representation Rep = double> using kW = units::isq::si::power<units::isq::si::kilowatt, Rep>;
+template<Representation Rep = double> using MW = units::isq::si::power<units::isq::si::megawatt, Rep>;
+template<Representation Rep = double> using GW = units::isq::si::power<units::isq::si::gigawatt, Rep>;
+template<Representation Rep = double> using TW = units::isq::si::power<units::isq::si::terawatt, Rep>;
+template<Representation Rep = double> using PW = units::isq::si::power<units::isq::si::petawatt, Rep>;
+template<Representation Rep = double> using EW = units::isq::si::power<units::isq::si::exawatt, Rep>;
+template<Representation Rep = double> using ZW = units::isq::si::power<units::isq::si::zettawatt, Rep>;
+template<Representation Rep = double> using YW = units::isq::si::power<units::isq::si::yottawatt, Rep>;
+
+}  // namespace units::aliases::isq::si::inline power
+
+#endif // UNITS_ALIASES

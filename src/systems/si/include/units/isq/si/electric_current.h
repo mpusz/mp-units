@@ -190,3 +190,33 @@ using namespace electric_current_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline electric_current {
+
+template<Representation Rep = double> using A = units::isq::si::electric_current<units::isq::si::ampere, Rep>;
+template<Representation Rep = double> using yA = units::isq::si::electric_current<units::isq::si::yoctoampere, Rep>;
+template<Representation Rep = double> using zA = units::isq::si::electric_current<units::isq::si::zeptoampere, Rep>;
+template<Representation Rep = double> using aA = units::isq::si::electric_current<units::isq::si::attoampere, Rep>;
+template<Representation Rep = double> using fA = units::isq::si::electric_current<units::isq::si::femtoampere, Rep>;
+template<Representation Rep = double> using pA = units::isq::si::electric_current<units::isq::si::picoampere, Rep>;
+template<Representation Rep = double> using nA = units::isq::si::electric_current<units::isq::si::nanoampere, Rep>;
+template<Representation Rep = double> using uA = units::isq::si::electric_current<units::isq::si::microampere, Rep>;
+template<Representation Rep = double> using mA = units::isq::si::electric_current<units::isq::si::milliampere, Rep>;
+template<Representation Rep = double> using cA = units::isq::si::electric_current<units::isq::si::centiampere, Rep>;
+template<Representation Rep = double> using dA = units::isq::si::electric_current<units::isq::si::deciampere, Rep>;
+template<Representation Rep = double> using daA = units::isq::si::electric_current<units::isq::si::decaampere, Rep>;
+template<Representation Rep = double> using hA = units::isq::si::electric_current<units::isq::si::hectoampere, Rep>;
+template<Representation Rep = double> using kA = units::isq::si::electric_current<units::isq::si::kiloampere, Rep>;
+template<Representation Rep = double> using MA = units::isq::si::electric_current<units::isq::si::megaampere, Rep>;
+template<Representation Rep = double> using GA = units::isq::si::electric_current<units::isq::si::gigaampere, Rep>;
+template<Representation Rep = double> using TA = units::isq::si::electric_current<units::isq::si::teraampere, Rep>;
+template<Representation Rep = double> using PA = units::isq::si::electric_current<units::isq::si::petaampere, Rep>;
+template<Representation Rep = double> using EA = units::isq::si::electric_current<units::isq::si::exaampere, Rep>;
+template<Representation Rep = double> using ZA = units::isq::si::electric_current<units::isq::si::zettaampere, Rep>;
+template<Representation Rep = double> using YA = units::isq::si::electric_current<units::isq::si::yottaampere, Rep>;
+
+}  // namespace units::aliases::isq::si::inline electric_current
+
+#endif // UNITS_ALIASES

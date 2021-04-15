@@ -190,3 +190,33 @@ using namespace radioactivity_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline radioactivity {
+
+template<Representation Rep = double> using Bq = units::isq::radioactivity<units::isq::becquerel, Rep>;
+template<Representation Rep = double> using yBq = units::isq::radioactivity<units::isq::yoctobecquerel, Rep>;
+template<Representation Rep = double> using zBq = units::isq::radioactivity<units::isq::zeptobecquerel, Rep>;
+template<Representation Rep = double> using aBq = units::isq::radioactivity<units::isq::attobecquerel, Rep>;
+template<Representation Rep = double> using fBq = units::isq::radioactivity<units::isq::femtobecquerel, Rep>;
+template<Representation Rep = double> using pBq = units::isq::radioactivity<units::isq::picobecquerel, Rep>;
+template<Representation Rep = double> using nBq = units::isq::radioactivity<units::isq::nanobecquerel, Rep>;
+template<Representation Rep = double> using uBq = units::isq::radioactivity<units::isq::microbecquerel, Rep>;
+template<Representation Rep = double> using mBq = units::isq::radioactivity<units::isq::millibecquerel, Rep>;
+template<Representation Rep = double> using cBq = units::isq::radioactivity<units::isq::centibecquerel, Rep>;
+template<Representation Rep = double> using dBq = units::isq::radioactivity<units::isq::decibecquerel, Rep>;
+template<Representation Rep = double> using daBq = units::isq::radioactivity<units::isq::decabecquerel, Rep>;
+template<Representation Rep = double> using hBq = units::isq::radioactivity<units::isq::hectobecquerel, Rep>;
+template<Representation Rep = double> using kBq = units::isq::radioactivity<units::isq::kilobecquerel, Rep>;
+template<Representation Rep = double> using MBq = units::isq::radioactivity<units::isq::megabecquerel, Rep>;
+template<Representation Rep = double> using GBq = units::isq::radioactivity<units::isq::gigabecquerel, Rep>;
+template<Representation Rep = double> using TBq = units::isq::radioactivity<units::isq::terabecquerel, Rep>;
+template<Representation Rep = double> using PBq = units::isq::radioactivity<units::isq::petabecquerel, Rep>;
+template<Representation Rep = double> using EBq = units::isq::radioactivity<units::isq::exabecquerel, Rep>;
+template<Representation Rep = double> using ZBq = units::isq::radioactivity<units::isq::zettabecquerel, Rep>;
+template<Representation Rep = double> using YBq = units::isq::radioactivity<units::isq::yottabecquerel, Rep>;
+
+}  // namespace units::aliases::isq::si::inline radioactivity
+
+#endif // UNITS_ALIASES

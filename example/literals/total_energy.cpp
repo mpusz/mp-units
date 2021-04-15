@@ -43,7 +43,6 @@ Energy auto total_energy(Momentum auto p, Mass auto m, Speed auto c)
 void si_example()
 {
   using namespace units::isq::si;
-  using GeV = gigaelectronvolt;
 
   constexpr Speed auto c = si2019::speed_of_light<>;
 
@@ -68,17 +67,19 @@ void si_example()
             << "E = " << E_si << "\n";
 
   std::cout << "\n[converted from SI units back to GeV]\n"
-            << "E = " << quantity_cast<GeV>(E_si) << "\n";
+            << "E = " << quantity_cast<gigaelectronvolt>(E_si) << "\n";
 }
 
 void natural_example()
 {
   using namespace units::isq::natural;
-  using GeV = gigaelectronvolt;
+
+  // TODO Typical UDLs will not work here as the same units are reused by many quantities.
+  // Should we define some strange ones (i.e. _q_mass_GeV)?
 
   constexpr Speed auto c = speed_of_light<>;
-  const momentum<GeV> p(4);
-  const mass<GeV> m(3);
+  const momentum<gigaelectronvolt> p(4);
+  const mass<gigaelectronvolt> m(3);
   const Energy auto E = total_energy(p, m, c);
 
   std::cout << "\n*** Natural units (c = " << c << ") ***\n"

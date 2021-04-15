@@ -192,3 +192,33 @@ using namespace force_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline force {
+
+template<Representation Rep = double> using N = units::isq::si::force<units::isq::si::newton, Rep>;
+template<Representation Rep = double> using yN = units::isq::si::force<units::isq::si::yoctonewton, Rep>;
+template<Representation Rep = double> using zN = units::isq::si::force<units::isq::si::zeptonewton, Rep>;
+template<Representation Rep = double> using aN = units::isq::si::force<units::isq::si::attonewton, Rep>;
+template<Representation Rep = double> using fN = units::isq::si::force<units::isq::si::femtonewton, Rep>;
+template<Representation Rep = double> using pN = units::isq::si::force<units::isq::si::piconewton, Rep>;
+template<Representation Rep = double> using nN = units::isq::si::force<units::isq::si::nanonewton, Rep>;
+template<Representation Rep = double> using uN = units::isq::si::force<units::isq::si::micronewton, Rep>;
+template<Representation Rep = double> using mN = units::isq::si::force<units::isq::si::millinewton, Rep>;
+template<Representation Rep = double> using cN = units::isq::si::force<units::isq::si::centinewton, Rep>;
+template<Representation Rep = double> using dN = units::isq::si::force<units::isq::si::decinewton, Rep>;
+template<Representation Rep = double> using daN = units::isq::si::force<units::isq::si::decanewton, Rep>;
+template<Representation Rep = double> using hN = units::isq::si::force<units::isq::si::hectonewton, Rep>;
+template<Representation Rep = double> using kN = units::isq::si::force<units::isq::si::kilonewton, Rep>;
+template<Representation Rep = double> using MN = units::isq::si::force<units::isq::si::meganewton, Rep>;
+template<Representation Rep = double> using GN = units::isq::si::force<units::isq::si::giganewton, Rep>;
+template<Representation Rep = double> using TN = units::isq::si::force<units::isq::si::teranewton, Rep>;
+template<Representation Rep = double> using PN = units::isq::si::force<units::isq::si::petanewton, Rep>;
+template<Representation Rep = double> using EN = units::isq::si::force<units::isq::si::exanewton, Rep>;
+template<Representation Rep = double> using ZN = units::isq::si::force<units::isq::si::zettanewton, Rep>;
+template<Representation Rep = double> using YN = units::isq::si::force<units::isq::si::yottanewton, Rep>;
+
+}  // namespace units::aliases::isq::si::inline force
+
+#endif // UNITS_ALIASES

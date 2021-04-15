@@ -91,3 +91,15 @@ using namespace force_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline force {
+
+template<Representation Rep = double> using pdl = units::isq::si::fps::force<units::isq::si::fps::poundal, Rep>;
+template<Representation Rep = double> using lbf = units::isq::si::fps::force<units::isq::si::fps::pound_force, Rep>;
+template<Representation Rep = double> using klbf = units::isq::si::fps::force<units::isq::si::fps::kilopound_force, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline force
+
+#endif // UNITS_ALIASES

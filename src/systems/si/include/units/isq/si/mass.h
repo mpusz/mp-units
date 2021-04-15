@@ -291,6 +291,7 @@ inline constexpr auto Pg = reference<dim_mass, petagram>{};
 inline constexpr auto Eg = reference<dim_mass, exagram>{};
 inline constexpr auto Zg = reference<dim_mass, zettagram>{};
 inline constexpr auto Yg = reference<dim_mass, yottagram>{};
+
 inline constexpr auto t = reference<dim_mass, tonne>{};
 inline constexpr auto yt = reference<dim_mass, yoctotonne>{};
 inline constexpr auto zt = reference<dim_mass, zeptotonne>{};
@@ -325,3 +326,56 @@ using namespace mass_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline mass {
+
+template<Representation Rep = double> using g = units::isq::si::mass<units::isq::si::gram, Rep>;
+template<Representation Rep = double> using yg = units::isq::si::mass<units::isq::si::yoctogram, Rep>;
+template<Representation Rep = double> using zg = units::isq::si::mass<units::isq::si::zeptogram, Rep>;
+template<Representation Rep = double> using ag = units::isq::si::mass<units::isq::si::attogram, Rep>;
+template<Representation Rep = double> using fg = units::isq::si::mass<units::isq::si::femtogram, Rep>;
+template<Representation Rep = double> using pg = units::isq::si::mass<units::isq::si::picogram, Rep>;
+template<Representation Rep = double> using ng = units::isq::si::mass<units::isq::si::nanogram, Rep>;
+template<Representation Rep = double> using ug = units::isq::si::mass<units::isq::si::microgram, Rep>;
+template<Representation Rep = double> using mg = units::isq::si::mass<units::isq::si::milligram, Rep>;
+template<Representation Rep = double> using cg = units::isq::si::mass<units::isq::si::centigram, Rep>;
+template<Representation Rep = double> using dg = units::isq::si::mass<units::isq::si::decigram, Rep>;
+template<Representation Rep = double> using dag = units::isq::si::mass<units::isq::si::decagram, Rep>;
+template<Representation Rep = double> using hg = units::isq::si::mass<units::isq::si::hectogram, Rep>;
+template<Representation Rep = double> using kg = units::isq::si::mass<units::isq::si::kilogram, Rep>;
+template<Representation Rep = double> using Mg = units::isq::si::mass<units::isq::si::megagram, Rep>;
+template<Representation Rep = double> using Gg = units::isq::si::mass<units::isq::si::gigagram, Rep>;
+template<Representation Rep = double> using Tg = units::isq::si::mass<units::isq::si::teragram, Rep>;
+template<Representation Rep = double> using Pg = units::isq::si::mass<units::isq::si::petagram, Rep>;
+template<Representation Rep = double> using Eg = units::isq::si::mass<units::isq::si::exagram, Rep>;
+template<Representation Rep = double> using Zg = units::isq::si::mass<units::isq::si::zettagram, Rep>;
+template<Representation Rep = double> using Yg = units::isq::si::mass<units::isq::si::yottagram, Rep>;
+
+template<Representation Rep = double> using t = units::isq::si::mass<units::isq::si::tonne, Rep>;
+template<Representation Rep = double> using yt = units::isq::si::mass<units::isq::si::yoctotonne, Rep>;
+template<Representation Rep = double> using zt = units::isq::si::mass<units::isq::si::zeptotonne, Rep>;
+template<Representation Rep = double> using at = units::isq::si::mass<units::isq::si::attotonne, Rep>;
+template<Representation Rep = double> using ft = units::isq::si::mass<units::isq::si::femtotonne, Rep>;
+template<Representation Rep = double> using pt = units::isq::si::mass<units::isq::si::picotonne, Rep>;
+template<Representation Rep = double> using nt = units::isq::si::mass<units::isq::si::nanotonne, Rep>;
+template<Representation Rep = double> using ut = units::isq::si::mass<units::isq::si::microtonne, Rep>;
+template<Representation Rep = double> using mt = units::isq::si::mass<units::isq::si::millitonne, Rep>;
+template<Representation Rep = double> using ct = units::isq::si::mass<units::isq::si::centitonne, Rep>;
+template<Representation Rep = double> using dt = units::isq::si::mass<units::isq::si::decitonne, Rep>;
+template<Representation Rep = double> using dat = units::isq::si::mass<units::isq::si::decatonne, Rep>;
+template<Representation Rep = double> using ht = units::isq::si::mass<units::isq::si::hectotonne, Rep>;
+template<Representation Rep = double> using kt = units::isq::si::mass<units::isq::si::kilotonne, Rep>;
+template<Representation Rep = double> using Mt = units::isq::si::mass<units::isq::si::megatonne, Rep>;
+template<Representation Rep = double> using Gt = units::isq::si::mass<units::isq::si::gigatonne, Rep>;
+template<Representation Rep = double> using Tt = units::isq::si::mass<units::isq::si::teratonne, Rep>;
+template<Representation Rep = double> using Pt = units::isq::si::mass<units::isq::si::petatonne, Rep>;
+template<Representation Rep = double> using Et = units::isq::si::mass<units::isq::si::exatonne, Rep>;
+template<Representation Rep = double> using Zt = units::isq::si::mass<units::isq::si::zettatonne, Rep>;
+template<Representation Rep = double> using Yt = units::isq::si::mass<units::isq::si::yottatonne, Rep>;
+template<Representation Rep = double> using Da = units::isq::si::mass<units::isq::si::dalton, Rep>;
+
+}  // namespace units::aliases::isq::si::inline mass
+
+#endif // UNITS_ALIASES

@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define UNITS_REFERENCES
+#define UNITS_ALIASES
 #define UNITS_LITERALS
+#define UNITS_REFERENCES
 
 #include <units/format.h>
 #include <units/isq/si/international/length.h>
@@ -43,23 +44,26 @@ int main()
 {
   using namespace units::isq::si::literals;
   using namespace units::isq::si::references;
+  using namespace units::aliases::isq::si::international;
 
   constexpr Speed auto v1 = 110 * (km / h);
-  constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
-  constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
+  constexpr Speed auto v2 = mi_per_h<>(70.);
+  constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
+  constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
 #if UNITS_DOWNCAST_MODE == 0
-  constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
-  constexpr Speed auto v5 = quantity_cast<si::dim_speed, si::metre_per_second>(v3);
+  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
+  constexpr Speed auto v6 = quantity_cast<si::dim_speed, si::metre_per_second>(v4);
 #else
-  constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
-  constexpr Speed auto v5 = quantity_cast<si::metre_per_second>(v3);
+  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
+  constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
 #endif
-  constexpr Speed auto v6 = quantity_cast<int>(v5);
+  constexpr Speed auto v7 = quantity_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';               // 110 km/h
-  std::cout << fmt::format("{:*^14}", v3) << '\n';          // ***70 mi/h****
-  std::cout << fmt::format("{:%Q in %q}", v4) << '\n';      // 30.5556 in m/s
-  std::cout << fmt::format("{0:%Q} in {0:%q}", v5) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v6) << '\n';            // 31
+  std::cout << v2 << '\n';                                  // 70 mi/h
+  std::cout << fmt::format("{}", v3) << '\n';               // 110 km/h
+  std::cout << fmt::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
+  std::cout << fmt::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
+  std::cout << fmt::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
+  std::cout << fmt::format("{:%Q}", v7) << '\n';            // 31
 }

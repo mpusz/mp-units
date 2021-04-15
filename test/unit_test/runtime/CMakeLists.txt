@@ -38,6 +38,7 @@ target_link_libraries(unit_tests_runtime PRIVATE
 target_compile_definitions(unit_tests_runtime PRIVATE
     UNITS_REFERENCES
     UNITS_LITERALS
+    UNITS_ALIASES
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

@@ -47,7 +47,6 @@ struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_s
 
 struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
-
 #ifdef UNITS_LITERALS
 
 inline namespace literals {
@@ -86,3 +85,15 @@ using namespace speed_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline speed {
+
+template<Representation Rep = double> using ft_per_s = units::isq::si::fps::speed<units::isq::si::fps::foot_per_second, Rep>;
+template<Representation Rep = double> using mph = units::isq::si::fps::speed<units::isq::si::fps::mile_per_hour, Rep>;
+template<Representation Rep = double> using knot = units::isq::si::fps::speed<units::isq::si::fps::knot, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline speed
+
+#endif // UNITS_ALIASES

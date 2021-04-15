@@ -62,3 +62,14 @@ constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_fo
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline energy {
+
+template<Representation Rep = double> using ft_pdl = units::isq::si::fps::energy<units::isq::si::fps::foot_poundal, Rep>;
+template<Representation Rep = double> using ft_lbf = units::isq::si::fps::energy<units::isq::si::fps::foot_pound_force, Rep>;
+
+}  // namespace units::aliases::isq::si::fps::inline energy
+
+#endif // UNITS_ALIASES

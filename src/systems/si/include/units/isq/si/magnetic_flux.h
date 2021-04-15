@@ -168,3 +168,29 @@ using namespace magnetic_flux_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline magnetic_flux {
+
+template<Representation Rep = double> using Wb = units::isq::si::magnetic_flux<units::isq::si::weber, Rep>;
+template<Representation Rep = double> using yWb = units::isq::si::magnetic_flux<units::isq::si::yoctoweber, Rep>;
+template<Representation Rep = double> using zWb = units::isq::si::magnetic_flux<units::isq::si::zeptoweber, Rep>;
+template<Representation Rep = double> using aWb = units::isq::si::magnetic_flux<units::isq::si::attoweber, Rep>;
+template<Representation Rep = double> using fWb = units::isq::si::magnetic_flux<units::isq::si::femtoweber, Rep>;
+template<Representation Rep = double> using pWb = units::isq::si::magnetic_flux<units::isq::si::picoweber, Rep>;
+template<Representation Rep = double> using nWb = units::isq::si::magnetic_flux<units::isq::si::nanoweber, Rep>;
+template<Representation Rep = double> using uWb = units::isq::si::magnetic_flux<units::isq::si::microweber, Rep>;
+template<Representation Rep = double> using mWb = units::isq::si::magnetic_flux<units::isq::si::milliweber, Rep>;
+template<Representation Rep = double> using kWb = units::isq::si::magnetic_flux<units::isq::si::kiloweber, Rep>;
+template<Representation Rep = double> using MWb = units::isq::si::magnetic_flux<units::isq::si::megaweber, Rep>;
+template<Representation Rep = double> using GWb = units::isq::si::magnetic_flux<units::isq::si::gigaweber, Rep>;
+template<Representation Rep = double> using TWb = units::isq::si::magnetic_flux<units::isq::si::teraweber, Rep>;
+template<Representation Rep = double> using PWb = units::isq::si::magnetic_flux<units::isq::si::petaweber, Rep>;
+template<Representation Rep = double> using EWb = units::isq::si::magnetic_flux<units::isq::si::exaweber, Rep>;
+template<Representation Rep = double> using ZWb = units::isq::si::magnetic_flux<units::isq::si::zettaweber, Rep>;
+template<Representation Rep = double> using YWb = units::isq::si::magnetic_flux<units::isq::si::yottaweber, Rep>;
+
+}  // namespace units::aliases::isq::si::inline magnetic_flux
+
+#endif // UNITS_ALIASES

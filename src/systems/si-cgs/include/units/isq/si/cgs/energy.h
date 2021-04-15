@@ -71,3 +71,13 @@ using namespace energy_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline energy {
+
+template<Representation Rep = double> using erg = units::isq::si::cgs::energy<units::isq::si::cgs::erg, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline energy
+
+#endif // UNITS_ALIASES

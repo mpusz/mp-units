@@ -176,4 +176,31 @@ using namespace magnetic_induction_references;
 
 #endif // UNITS_REFERENCES
 
-} // namespace units
+} // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline magnetic_induction {
+
+template<Representation Rep = double> using T = units::isq::si::magnetic_induction<units::isq::si::tesla, Rep>;
+template<Representation Rep = double> using yT = units::isq::si::magnetic_induction<units::isq::si::yoctotesla, Rep>;
+template<Representation Rep = double> using zT = units::isq::si::magnetic_induction<units::isq::si::zeptotesla, Rep>;
+template<Representation Rep = double> using aT = units::isq::si::magnetic_induction<units::isq::si::attotesla, Rep>;
+template<Representation Rep = double> using fT = units::isq::si::magnetic_induction<units::isq::si::femtotesla, Rep>;
+template<Representation Rep = double> using pT = units::isq::si::magnetic_induction<units::isq::si::picotesla, Rep>;
+template<Representation Rep = double> using nT = units::isq::si::magnetic_induction<units::isq::si::nanotesla, Rep>;
+template<Representation Rep = double> using uT = units::isq::si::magnetic_induction<units::isq::si::microtesla, Rep>;
+template<Representation Rep = double> using mT = units::isq::si::magnetic_induction<units::isq::si::millitesla, Rep>;
+template<Representation Rep = double> using kT = units::isq::si::magnetic_induction<units::isq::si::kilotesla, Rep>;
+template<Representation Rep = double> using MT = units::isq::si::magnetic_induction<units::isq::si::megatesla, Rep>;
+template<Representation Rep = double> using GT = units::isq::si::magnetic_induction<units::isq::si::gigatesla, Rep>;
+template<Representation Rep = double> using TT = units::isq::si::magnetic_induction<units::isq::si::teratesla, Rep>;
+template<Representation Rep = double> using PT = units::isq::si::magnetic_induction<units::isq::si::petatesla, Rep>;
+template<Representation Rep = double> using ET = units::isq::si::magnetic_induction<units::isq::si::exatesla, Rep>;
+template<Representation Rep = double> using ZT = units::isq::si::magnetic_induction<units::isq::si::zettatesla, Rep>;
+template<Representation Rep = double> using YT = units::isq::si::magnetic_induction<units::isq::si::yottatesla, Rep>;
+template<Representation Rep = double> using G = units::isq::si::magnetic_induction<units::isq::si::gauss, Rep>;
+
+}  // namespace units::aliases::isq::si::inline magnetic_induction
+
+#endif // UNITS_ALIASES

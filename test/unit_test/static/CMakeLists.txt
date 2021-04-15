@@ -40,6 +40,7 @@ target_compile_options(unit_tests_static_truncating PRIVATE
 target_compile_definitions(unit_tests_static_truncating PRIVATE
     UNITS_REFERENCES
     UNITS_LITERALS
+    UNITS_ALIASES
 )
 
 add_library(unit_tests_static
@@ -80,4 +81,5 @@ target_link_libraries(unit_tests_static PRIVATE
 target_compile_definitions(unit_tests_static PRIVATE
     UNITS_REFERENCES
     UNITS_LITERALS
+    UNITS_ALIASES
 )

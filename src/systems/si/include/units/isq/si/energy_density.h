@@ -53,3 +53,13 @@ constexpr auto operator"" _q_J_per_m3(long double l) { return energy_density<jou
 #endif // UNITS_LITERALS
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline energy_density {
+
+template<Representation Rep = double> using J_per_m3 = units::isq::si::energy_density<units::isq::si::joule_per_metre_cub, Rep>;
+
+}  // namespace units::aliases::isq::si::inline energy_density
+
+#endif // UNITS_ALIASES

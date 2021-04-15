@@ -72,3 +72,13 @@ using namespace pressure_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::cgs
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::cgs::inline pressure {
+
+template<Representation Rep = double> using Ba = units::isq::si::cgs::pressure<units::isq::si::cgs::barye, Rep>;
+
+}  // namespace units::aliases::isq::si::cgs::inline pressure
+
+#endif // UNITS_ALIASES

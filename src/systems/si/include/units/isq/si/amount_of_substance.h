@@ -70,3 +70,13 @@ using namespace amount_of_substance_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline amount_of_substance {
+
+template<Representation Rep = double> using mol = units::isq::si::amount_of_substance<units::isq::si::mole, Rep>;
+
+}  // namespace units::aliases::isq::si::inline amount_of_substance
+
+#endif // UNITS_ALIASES

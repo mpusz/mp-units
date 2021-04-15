@@ -68,3 +68,13 @@ using namespace time_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si::fps
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::fps::inline time {
+
+using namespace units::aliases::isq::si::time;
+
+}  // namespace units::aliases::isq::si::fps::inline time
+
+#endif // UNITS_ALIASES

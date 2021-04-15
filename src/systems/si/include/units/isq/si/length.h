@@ -197,3 +197,34 @@ using namespace length_references;
 #endif // UNITS_REFERENCES
 
 }  // namespace units::isq::si
+
+#ifdef UNITS_ALIASES
+
+namespace units::aliases::isq::si::inline length {
+
+template<Representation Rep = double> using m = units::isq::si::length<units::isq::si::metre, Rep>;
+template<Representation Rep = double> using ym = units::isq::si::length<units::isq::si::yoctometre, Rep>;
+template<Representation Rep = double> using zm = units::isq::si::length<units::isq::si::zeptometre, Rep>;
+template<Representation Rep = double> using am = units::isq::si::length<units::isq::si::attometre, Rep>;
+template<Representation Rep = double> using fm = units::isq::si::length<units::isq::si::femtometre, Rep>;
+template<Representation Rep = double> using pm = units::isq::si::length<units::isq::si::picometre, Rep>;
+template<Representation Rep = double> using nm = units::isq::si::length<units::isq::si::nanometre, Rep>;
+template<Representation Rep = double> using um = units::isq::si::length<units::isq::si::micrometre, Rep>;
+template<Representation Rep = double> using mm = units::isq::si::length<units::isq::si::millimetre, Rep>;
+template<Representation Rep = double> using cm = units::isq::si::length<units::isq::si::centimetre, Rep>;
+template<Representation Rep = double> using dm = units::isq::si::length<units::isq::si::decimetre, Rep>;
+template<Representation Rep = double> using dam = units::isq::si::length<units::isq::si::decametre, Rep>;
+template<Representation Rep = double> using hm = units::isq::si::length<units::isq::si::hectometre, Rep>;
+template<Representation Rep = double> using km = units::isq::si::length<units::isq::si::kilometre, Rep>;
+template<Representation Rep = double> using Mm = units::isq::si::length<units::isq::si::megametre, Rep>;
+template<Representation Rep = double> using Gm = units::isq::si::length<units::isq::si::gigametre, Rep>;
+template<Representation Rep = double> using Tm = units::isq::si::length<units::isq::si::terametre, Rep>;
+template<Representation Rep = double> using Pm = units::isq::si::length<units::isq::si::petametre, Rep>;
+template<Representation Rep = double> using Em = units::isq::si::length<units::isq::si::exametre, Rep>;
+template<Representation Rep = double> using Zm = units::isq::si::length<units::isq::si::zettametre, Rep>;
+template<Representation Rep = double> using Ym = units::isq::si::length<units::isq::si::yottametre, Rep>;
+template<Representation Rep = double> using au = units::isq::si::length<units::isq::si::astronomical_unit, Rep>;
+
+}  // namespace units::aliases::isq::si::inline length
+
+#endif // UNITS_ALIASES
