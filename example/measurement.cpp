@@ -31,13 +31,6 @@
 
 namespace {
 
-// root sum of squares
-template<typename T>
-T rss(const T& v1, const T& v2)
-{
-  return std::sqrt(std::pow(v1, 2) + std::pow(v2, 2));
-}
-
 template<class T>
 class measurement {
 public:
@@ -46,9 +39,11 @@ public:
   measurement() = default;
 
   constexpr explicit measurement(const value_type& val, const value_type& err = {}) :
-      value_(val),
-      uncertainty_(std::abs(err))
+      value_(val)
   {
+    // it sucks that using declaration cannot be provided for a constructor initializer list
+    using namespace std;
+    uncertainty_ = abs(err);
   }
 
   constexpr const value_type& value() const { return value_; }
@@ -62,18 +57,21 @@ public:
 
   [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
   {
-    return measurement(lhs.value() + rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+    using namespace std;
+    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
   {
-    return measurement(lhs.value() - rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+    using namespace std;
+    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
-    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    using namespace std;
+    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
@@ -91,7 +89,8 @@ public:
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() / rhs.value();
-    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    using namespace std;
+    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)

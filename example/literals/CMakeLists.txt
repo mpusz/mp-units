@@ -37,7 +37,6 @@ add_example(capacitor_time_curve mp-units::core-io mp-units::si)
 add_example(clcpp_response mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-iau mp-units::si-imperial mp-units::si-international mp-units::si-typographic mp-units::si-us)
 add_example(experimental_angle mp-units::core-fmt mp-units::core-io mp-units::si)
 add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
-add_example(measurement mp-units::core-io mp-units::si)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
