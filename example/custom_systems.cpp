@@ -65,11 +65,21 @@ using length = quantity<dim_length, U, Rep>;
 }  // namespace fps
 }  // namespace si
 
+template<typename Q, typename U>
+concept castable_to = Quantity<Q> && Unit<U> &&
+  requires (Q q) {
+    quantity_cast<U>(q);
+  };
+
 void conversions()
 {
-  // constexpr auto fps_yard = fps::length<fps::yard>(1.);
-  // std::cout << quantity_cast<si::kilometre>(fps_yard) << "\n";
+  // fps::yard is not defined in terms of SI units (or vice-versa)
+  // so the conversion between FPS and SI is not possible
+  static_assert(!castable_to<fps::length<fps::yard>, si::kilometre>);
 
+  // si::fps::yard is defined in terms of SI units
+  // so the conversion between FPS and SI is possible
+  static_assert(castable_to<si::fps::length<si::fps::yard>, si::kilometre>);
   constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
   std::cout << quantity_cast<si::kilometre>(si_fps_yard) << "\n";
 }
