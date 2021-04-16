@@ -39,12 +39,15 @@ void simple_quantities()
   using distance = si::length<si::metre>;
   using duration = si::time<si::second>;
 
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
   constexpr distance km = 1.0 * references::km;
   constexpr distance miles = 1.0 * mi;
 
   constexpr duration sec = 1 * s;
   constexpr duration min = 1 * references::min;
   constexpr duration hr = 1 * h;
+UNITS_DIAGNOSTIC_POP
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -63,6 +66,8 @@ void quantities_with_typed_units()
   using namespace units::isq::si::international;
   using namespace units::isq::si::international::references;
 
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
   constexpr length<kilometre> km = 1.0 * si::references::km;
   constexpr length<mile> miles = 1.0 * mi;
 
@@ -71,6 +76,7 @@ void quantities_with_typed_units()
   constexpr si::time<second> sec = 1 * s;
   constexpr si::time<minute> min = 1 * si::references::min;
   constexpr si::time<hour> hr = 1 * h;
+UNITS_DIAGNOSTIC_POP
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
