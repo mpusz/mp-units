@@ -26,6 +26,7 @@
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
 #include <units/isq/si/fps/speed.h>
+#include <units/isq/si/fps/time.h>
 #include <units/isq/si/fps/volume.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>

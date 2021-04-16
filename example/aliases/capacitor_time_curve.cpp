@@ -21,7 +21,6 @@
 */
 
 #include <units/generic/dimensionless.h>
-#include <units/isq/dimensions/electric_current.h>
 #include <units/isq/si/capacitance.h>
 #include <units/isq/si/resistance.h>
 #include <units/isq/si/time.h>
