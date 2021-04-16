@@ -54,15 +54,29 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/design/quantity_kind.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/examples.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/avg_speed.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/box_example.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/capacitor_time_curve.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/clcpp_response.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/conversion_factor.rst"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/avg_speed.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/box_example.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/capacitor_time_curve.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/clcpp_response.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/experimental_angle.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/foot_pound_second.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/glide_computer.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/hello_units.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/total_energy.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/unknown_dimension.rst"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation/linear_algebra.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation/measurement.rst"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_systems.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/foot_pound_second.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/glide_computer.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/hello_units.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_systems/custom_systems.rst"
+
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_utilities.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_utilities/conversion_factor.rst"
+
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_1.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_2.rst"
@@ -73,10 +87,6 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_7.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_8.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/kalman.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/linear_algebra.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/measurement.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/total_energy.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/examples/unknown_dimension.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/faq.rst"
 

@@ -1,7 +1,9 @@
-custom_systems
+Custom Systems
 ==============
 
-.. literalinclude:: ../../example/custom_systems.cpp
-  :caption: custom_systems.cpp
-  :start-at: #include
-  :linenos:
+The following examples show how to define custom systems of units and quantities.
+
+.. toctree::
+    :maxdepth: 1
+
+    custom_systems/custom_systems
