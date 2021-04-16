@@ -30,7 +30,6 @@
 #include <units/isq/natural/length.h>
 #include <units/isq/natural/mass.h>
 #include <units/isq/natural/momentum.h>
-#include <units/isq/natural/natural.h>
 #include <units/isq/natural/speed.h>
 #include <units/isq/natural/time.h>
 // IWYU pragma: end_exports
