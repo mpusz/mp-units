@@ -33,7 +33,7 @@ add_subdirectory(si-iau)
 add_subdirectory(si-imperial)
 add_subdirectory(si-international)
 add_subdirectory(si-typographic)
-add_subdirectory(si-us)
+add_subdirectory(si-uscs)
 
 # wrapper for all the systems
 add_library(mp-units-systems INTERFACE)
@@ -48,7 +48,7 @@ target_link_libraries(mp-units-systems INTERFACE
     mp-units::si-imperial
     mp-units::si-international
     mp-units::si-typographic
-    mp-units::si-us
+    mp-units::si-uscs
 )
 add_library(mp-units::systems ALIAS mp-units-systems)
 install(TARGETS mp-units-systems EXPORT mp-unitsTargets)

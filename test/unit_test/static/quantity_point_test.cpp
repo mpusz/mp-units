@@ -27,7 +27,7 @@
 #include <units/chrono.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
-#include <units/isq/si/us/length.h>
+#include <units/isq/si/uscs/length.h>
 #include <units/isq/si/volume.h>
 #include <limits>
 #include <type_traits>
@@ -215,7 +215,7 @@ static_assert(compare<common_quantity_point<quantity_point<dim_length, kilometre
 
 // common_type
 
-using namespace units::isq::si::us::literals;
+using namespace units::isq::si::uscs::literals;
 
 static_assert(std::equality_comparable<decltype(quantity_point(1_q_m))>);
 static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_km))>);

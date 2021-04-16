@@ -32,7 +32,7 @@
 #include <units/isq/si/length.h>
 #include <units/unit.h>
 
-namespace units::isq::si::us {
+namespace units::isq::si::uscs {
 
 // https://en.wikipedia.org/wiki/Foot_(unit)#US_survey_foot
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
@@ -50,16 +50,16 @@ struct mile : named_scaled_unit<mile, "mi(us)", no_prefix, ratio(5280), foot> {}
 inline namespace literals {
 
 // ft
-constexpr auto operator"" _q_ft_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::us::foot, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ft_us(long double l) { return si::length<units::isq::si::us::foot, long double>(l); }
+constexpr auto operator"" _q_ft_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::uscs::foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_us(long double l) { return si::length<units::isq::si::uscs::foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" _q_fathom_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::us::fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_fathom_us(long double l) { return si::length<units::isq::si::us::fathom, long double>(l); }
+constexpr auto operator"" _q_fathom_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::uscs::fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fathom_us(long double l) { return si::length<units::isq::si::uscs::fathom, long double>(l); }
 
 // mi
-constexpr auto operator"" _q_mi_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::us::mile, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq::si::us::mile, long double>(l); }
+constexpr auto operator"" _q_mi_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<units::isq::si::uscs::mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq::si::uscs::mile, long double>(l); }
 
 }  // namespace literals
 
@@ -69,9 +69,9 @@ constexpr auto operator"" _q_mi_us(long double l) { return si::length<units::isq
 
 namespace length_references {
 
-inline constexpr auto ft = reference<si::dim_length, us::foot>{};
-inline constexpr auto fathom = reference<si::dim_length, us::fathom>{};
-inline constexpr auto mi = reference<si::dim_length, us::mile>{};
+inline constexpr auto ft = reference<si::dim_length, uscs::foot>{};
+inline constexpr auto fathom = reference<si::dim_length, uscs::fathom>{};
+inline constexpr auto mi = reference<si::dim_length, uscs::mile>{};
 
 }  // namespace length_references
 
@@ -83,16 +83,16 @@ using namespace length_references;
 
 #endif // UNITS_REFERENCES
 
-}  // namespace units::isq::si::us
+}  // namespace units::isq::si::uscs
 
 #ifdef UNITS_ALIASES
 
-namespace units::aliases::isq::si::us::inline length {
+namespace units::aliases::isq::si::uscs::inline length {
 
-template<Representation Rep = double> using ft = units::isq::si::length<units::isq::si::us::foot, Rep>;
-template<Representation Rep = double> using fathom = units::isq::si::length<units::isq::si::us::fathom, Rep>;
-template<Representation Rep = double> using mi = units::isq::si::length<units::isq::si::us::mile, Rep>;
+template<Representation Rep = double> using ft = units::isq::si::length<units::isq::si::uscs::foot, Rep>;
+template<Representation Rep = double> using fathom = units::isq::si::length<units::isq::si::uscs::fathom, Rep>;
+template<Representation Rep = double> using mi = units::isq::si::length<units::isq::si::uscs::mile, Rep>;
 
-}  // namespace units::aliases::isq::si::us::inline length
+}  // namespace units::aliases::isq::si::uscs::inline length
 
 #endif // UNITS_ALIASES

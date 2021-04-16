@@ -159,6 +159,6 @@ class UnitsConan(ConanFile):
         self.cpp_info.components["si-imperial"].requires = ["si"]
         self.cpp_info.components["si-international"].requires = ["si"]
         self.cpp_info.components["si-typographic"].requires = ["si"]
-        self.cpp_info.components["si-us"].requires = ["si"]
+        self.cpp_info.components["si-uscs"].requires = ["si"]
         self.cpp_info.components["isq-iec80000"].requires = ["si"]
-        self.cpp_info.components["systems"].requires = ["isq", "isq-natural", "si", "si-cgs", "si-fps", "si-iau", "si-imperial", "si-international", "si-typographic", "si-us", "isq-iec80000"]
+        self.cpp_info.components["systems"].requires = ["isq", "isq-natural", "si", "si-cgs", "si-fps", "si-iau", "si-imperial", "si-international", "si-typographic", "si-uscs", "isq-iec80000"]

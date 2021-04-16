@@ -28,13 +28,13 @@
 #include <units/isq/si/international/international.h>
 #include <units/isq/si/si.h>
 #include <units/isq/si/typographic/typographic.h>
-#include <units/isq/si/us/us.h>
+#include <units/isq/si/uscs/uscs.h>
 #include <catch2/catch.hpp>
 
 using namespace units::isq::si;
 using namespace units::isq::si::references;
 using namespace units::isq::si::international;
-using namespace units::isq::si::us;
+using namespace units::isq::si::uscs;
 using namespace units::isq::si::iau;
 using namespace units::isq::si::imperial;
 using namespace units::isq::si::imperial::references;

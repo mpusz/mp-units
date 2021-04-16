@@ -23,7 +23,7 @@
 #include <units/isq/si/length.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/typographic/length.h>
-#include <units/isq/si/us/length.h>
+#include <units/isq/si/uscs/length.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
@@ -89,9 +89,9 @@ void quantities_with_typed_units()
   std::cout << " = " << quantity_cast<si::iau::angstrom>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::imperial::chain>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::international::fathom>(meter) << '\n';
-  std::cout << " = " << quantity_cast<si::us::fathom>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::uscs::fathom>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::international::foot>(meter) << '\n';
-  std::cout << " = " << quantity_cast<si::us::foot>(meter) << '\n';
+  std::cout << " = " << quantity_cast<si::uscs::foot>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::international::inch>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::iau::light_year>(meter) << '\n';
   std::cout << " = " << quantity_cast<si::international::mile>(meter) << '\n';

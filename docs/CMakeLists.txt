@@ -238,8 +238,8 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_typographic.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/typographic/length.rst"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_us.rst"
-    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/us/length.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_uscs.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/uscs/length.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/references.rst"
 

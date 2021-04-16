@@ -18,7 +18,7 @@ Systems of Units based on the SI
 
     isq/si_cgs
     isq/si_international
-    isq/si_us
+    isq/si_uscs
     isq/si_imperial
     isq/si_fps
     isq/si_iau

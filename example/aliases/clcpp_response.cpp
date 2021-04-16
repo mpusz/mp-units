@@ -23,7 +23,7 @@
 #include <units/isq/si/length.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/typographic/length.h>
-#include <units/isq/si/us/length.h>
+#include <units/isq/si/uscs/length.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
@@ -88,9 +88,9 @@ void quantities_with_typed_units()
   std::cout << " = " << iau::angstrom<>(meter) << '\n';
   std::cout << " = " << imperial::ch<>(meter) << '\n';
   std::cout << " = " << international::fathom<>(meter) << '\n';
-  std::cout << " = " << quantity_cast<units::isq::si::us::fathom>(meter) << '\n'; // `us` system namespace collides with a microsecond (si::time::us)
+  std::cout << " = " << quantity_cast<units::isq::si::uscs::fathom>(meter) << '\n'; // `us` system namespace collides with a microsecond (si::time::uscs)
   std::cout << " = " << international::ft<>(meter) << '\n';
-  std::cout << " = " << quantity_cast<units::isq::si::us::foot>(meter) << '\n'; // `us` system namespace collides with a microsecond (si::time::us)
+  std::cout << " = " << quantity_cast<units::isq::si::uscs::foot>(meter) << '\n'; // `us` system namespace collides with a microsecond (si::time::uscs)
   std::cout << " = " << international::in<>(meter) << '\n';
   std::cout << " = " << iau::ly<>(meter) << '\n';
   std::cout << " = " << international::mi<>(meter) << '\n';
