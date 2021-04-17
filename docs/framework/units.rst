@@ -259,17 +259,17 @@ complete list of all the :term:`SI` prefixes supported by the library::
 Alternative hierarchy of prefixes is the one used in data information
 domain::
 
-    namespace data {
-
-    struct prefix : prefix_family {};
-
-    struct kibi : units::prefix<kibi, prefix, "Ki", ratio(                    1'024)> {};
-    struct mebi : units::prefix<mebi, prefix, "Mi", ratio(                1'048'576)> {};
-    struct gibi : units::prefix<gibi, prefix, "Gi", ratio(            1'073'741'824)> {};
-    struct tebi : units::prefix<tebi, prefix, "Ti", ratio(        1'099'511'627'776)> {};
-    struct pebi : units::prefix<pebi, prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
-    struct exbi : units::prefix<exbi, prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
-
+    namespace iec80000 {
+    
+    struct binary_prefix : prefix_family {};
+    
+    struct kibi : units::prefix<kibi, binary_prefix, "Ki", ratio(                    1'024)> {};
+    struct mebi : units::prefix<mebi, binary_prefix, "Mi", ratio(                1'048'576)> {};
+    struct gibi : units::prefix<gibi, binary_prefix, "Gi", ratio(            1'073'741'824)> {};
+    struct tebi : units::prefix<tebi, binary_prefix, "Ti", ratio(        1'099'511'627'776)> {};
+    struct pebi : units::prefix<pebi, binary_prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
+    struct exbi : units::prefix<exbi, binary_prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
+    
     }
 
 With the definitions like above we can easily define prefixed unit. For
