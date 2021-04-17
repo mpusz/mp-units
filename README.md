@@ -72,9 +72,9 @@ the below example for a quick preview of basic library features:
 
 #include <units/format.h>
 #include <units/isq/si/international/length.h>
-#include <units/isq/si/international/speed.h> // IWYU pragma: keep
+#include <units/isq/si/international/speed.h>
 #include <units/isq/si/length.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <iostream>
@@ -115,4 +115,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/WP39WvE6M)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/jKnPPPEx6)._
