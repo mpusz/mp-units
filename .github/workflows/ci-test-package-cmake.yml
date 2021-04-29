@@ -151,6 +151,7 @@ jobs:
           conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
         working-directory: build/${{ matrix.build_type }}
         run: |
           conanvcvars.bat
@@ -173,6 +174,7 @@ jobs:
           conan install ../../..
       - name: Configure test_package CMake
         if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           conanvcvars.bat
