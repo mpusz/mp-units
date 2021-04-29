@@ -45,7 +45,7 @@ jobs:
         - {
             name: "Windows MSVC 2019",
             os: windows-latest,
-            compiler: { type: MSVC, version: 16, cc: "", cxx: "" }
+            compiler: { type: VISUAL, version: 16, cc: "", cxx: "" }
           }
         - {
             name: "Ubuntu GCC 10.1.0",
@@ -153,7 +153,7 @@ jobs:
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
-          if [[ "${{ matrix.config.compiler.type }}" == "MSVC" ]]; then
+          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
             conanvcvars.bat
           fi
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
@@ -167,7 +167,7 @@ jobs:
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../..
-          if [[ "${{ matrix.config.compiler.type }}" == "MSVC" ]]; then
+          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
             conanvcvars.bat
           fi
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
