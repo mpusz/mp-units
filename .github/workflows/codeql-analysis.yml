@@ -80,8 +80,6 @@ jobs:
         python-version: '3.8'
     - name: Conan build
       if: matrix.language == 'cpp'
-      env:
-        CONAN_CMAKE_GENERATOR: Ninja
       run: |
         pip install -U conan
         conan config init
