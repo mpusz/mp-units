@@ -173,12 +173,14 @@ jobs:
           conan install ../../..
       - name: Configure test_package CMake
         if: matrix.config.compiler.type == 'VISUAL'
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           conanvcvars.bat
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Configure test_package CMake
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
