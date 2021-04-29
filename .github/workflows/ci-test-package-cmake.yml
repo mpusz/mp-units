@@ -84,6 +84,7 @@ jobs:
       CC: ${{ matrix.config.compiler.cc }}
       CXX: ${{ matrix.config.compiler.cxx }}
       CMAKE_GENERATOR: Ninja
+      CONAN_CMAKE_GENERATOR: Ninja
 
     steps:
       - uses: actions/checkout@v2

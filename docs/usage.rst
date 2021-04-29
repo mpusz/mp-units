@@ -92,7 +92,6 @@ in *~/.conan/profiles* directory. An example profile can look as follows:
     [env]
     CC=/usr/bin/gcc-10
     CXX=/usr/bin/g++-10
-    CONAN_CMAKE_GENERATOR=Ninja
 
 .. tip::
 

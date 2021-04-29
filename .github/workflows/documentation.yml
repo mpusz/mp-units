@@ -40,6 +40,7 @@ env:
   CC: gcc-10
   CXX: g++-10
   CMAKE_GENERATOR: Ninja
+  CONAN_CMAKE_GENERATOR: Ninja
 
 jobs:
   docs:

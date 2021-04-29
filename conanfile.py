@@ -102,7 +102,7 @@ class UnitsConan(ConanFile):
     #         del self.options.build_docs
 
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
         tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
