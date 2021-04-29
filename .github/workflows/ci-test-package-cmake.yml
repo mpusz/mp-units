@@ -154,7 +154,7 @@ jobs:
         shell: cmd
         working-directory: build/${{ matrix.build_type }}
         run: |
-          conanvcvars.bat
+          call conanvcvars.bat
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type != 'VISUAL'
@@ -177,7 +177,7 @@ jobs:
         shell: cmd
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          conanvcvars.bat
+          call conanvcvars.bat
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Configure test_package CMake
         if: matrix.config.compiler.type != 'VISUAL'
