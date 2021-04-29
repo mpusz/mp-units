@@ -41,7 +41,7 @@ jobs:
         - {
             name: "Windows MSVC 2019",
             os: windows-latest,
-            compiler: { type: VISUAL, version: 16, cc: "cl", cxx: "cl" }
+            compiler: { type: MSVC, version: 16, cc: "cl", cxx: "cl" }
           }
         - {
             name: "Ubuntu GCC 10.1.0",
