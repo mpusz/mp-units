@@ -22,7 +22,7 @@
 
 # Based on https://github.com/lefticus/cpp_starter_project/blob/master/cmake/CompilerWarnings.cmake
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.15)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
@@ -90,8 +90,6 @@ macro(_set_flags)
     endif()
 
     if(MSVC)
-        string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" PARENT_SCOPE)
         set(flags ${MSVC_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         set(flags ${CLANG_WARNINGS})
