@@ -150,26 +150,36 @@ jobs:
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
           conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        working-directory: build/${{ matrix.build_type }}
+        run: |
+          conanvcvars.bat
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      - name: Configure mp-units CMake
+        if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
-          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
-            ./conanvcvars.bat
-          fi
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Install mp-units
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
           cmake --install . --prefix test_package
-      - name: Configure test_package CMake
+      - name: Install dependencies for test_package
         shell: bash
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../..
-          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
-            ./conanvcvars.bat
-          fi
+      - name: Configure test_package CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        run: |
+          conanvcvars.bat
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+      - name: Configure test_package CMake
+        if: matrix.config.compiler.type != 'VISUAL'
+        shell: bash
+        run: |
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
         shell: bash
