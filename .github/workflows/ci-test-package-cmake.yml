@@ -153,6 +153,9 @@ jobs:
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
+          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
+            conanvcvars.bat
+          fi
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Install mp-units
         shell: bash
@@ -164,6 +167,9 @@ jobs:
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../..
+          if [[ "${{ matrix.config.compiler.type }}" == "VISUAL" ]]; then
+            conanvcvars.bat
+          fi
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
       - name: Build test_package
         shell: bash
