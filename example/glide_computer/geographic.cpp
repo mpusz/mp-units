@@ -53,8 +53,8 @@ distance spherical_distance(position from, position to)
     return distance(earth_radius * central_angle);
   } else {
     // the haversine formula
-    const auto sin_lat = sin(lat2 - lat1) / 2;
-    const auto sin_lon = sin(lon2 - lon1) / 2;
+    const auto sin_lat = sin((lat2 - lat1) / 2);
+    const auto sin_lon = sin((lon2 - lon1) / 2);
     const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(lat1) * cos(lat2) * sin_lon * sin_lon));
     return distance(earth_radius * central_angle);
   }
