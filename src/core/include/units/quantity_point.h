@@ -59,29 +59,33 @@ public:
   quantity_point(const quantity_point&) = default;
   quantity_point(quantity_point&&) = default;
 
-  template<safe_convertible_to_<rep> Value>
-    requires is_same_v<dimension, dim_one> && std::is_constructible_v<quantity_type, Value>
-  constexpr explicit quantity_point(const Value& v) : q_(v) {}
+  template<typename Value>
+    requires std::same_as<dimension, dim_one> &&
+      safe_convertible_to_<std::remove_cvref_t<Value>, rep> &&
+      std::constructible_from<quantity_type, Value>
+  constexpr explicit quantity_point(Value&& v) : q_(std::forward<Value>(v)) {}
 
-  constexpr explicit quantity_point(const quantity_type& q) : q_{q} {}
+  template<typename Q>
+    requires (Quantity<std::remove_cvref_t<Q>> || QuantityLike<std::remove_cvref_t<Q>>) &&
+      std::constructible_from<quantity_type, Q>
+  constexpr explicit quantity_point(Q&& q) : q_(std::forward<Q>(q)) {}
 
-  template<QuantityLike Q>
-    requires std::is_constructible_v<quantity_type, Q>
-  constexpr explicit quantity_point(const Q& q) : q_{q} {}
+  template<QuantityPoint QP2>
+    requires std::convertible_to<typename QP2::quantity_type, quantity_type>
+  constexpr explicit(false) quantity_point(const QP2& qp) : q_(qp.relative()) {}
 
   template<QuantityPointLike QP>
   constexpr explicit quantity_point(const QP& qp)
     requires std::is_constructible_v<quantity_type, decltype(quantity_point_like_traits<QP>::relative(qp))>
-    : q_{quantity_point_like_traits<QP>::relative(qp)} {}
-
-  template<QuantityPoint QP2>
-    requires std::is_convertible_v<typename QP2::quantity_type, quantity_type>
-  constexpr explicit(false) quantity_point(const QP2& qp) : q_{qp.relative()} {}
+    : q_(quantity_point_like_traits<QP>::relative(qp)) {}
 
   quantity_point& operator=(const quantity_point&) = default;
   quantity_point& operator=(quantity_point&&) = default;
 
-  [[nodiscard]] constexpr quantity_type relative() const noexcept { return q_; }
+  [[nodiscard]] constexpr quantity_type& relative() & noexcept { return q_; }
+  [[nodiscard]] constexpr const quantity_type& relative() const & noexcept { return q_; }
+  [[nodiscard]] constexpr quantity_type&& relative() && noexcept { return std::move(q_); }
+  [[nodiscard]] constexpr const quantity_type&& relative() const && noexcept { return std::move(q_); }
 
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { quantity_type::min(); }
@@ -183,14 +187,16 @@ public:
   {
     return lhs.relative() == rhs.relative();
   }
-
 };
 
 template<Representation Rep>
-explicit(false) quantity_point(Rep) -> quantity_point<dim_one, one, Rep>;
+explicit quantity_point(Rep) -> quantity_point<dim_one, one, Rep>;
+
+template<Quantity Q>
+explicit quantity_point(Q) -> quantity_point<typename Q::dimension, typename Q::unit, typename Q::rep>;
 
 template<QuantityLike Q>
-quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,
+explicit quantity_point(Q) -> quantity_point<typename quantity_like_traits<Q>::dimension,
   typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
 
 template<QuantityPointLike QP>

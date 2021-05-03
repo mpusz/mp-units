@@ -147,9 +147,10 @@ public:
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
-  template<safe_convertible_to_<rep> Value>
-  constexpr explicit(!(is_same_v<dimension, dim_one> && is_same_v<unit, ::units::one>))
-  quantity(const Value& v) : number_(v) {}
+  template<typename Value>
+    requires safe_convertible_to_<std::remove_cvref_t<Value>, rep>
+  constexpr explicit(!(std::same_as<dimension, dim_one> && std::same_as<unit, ::units::one>))
+  quantity(Value&& v) : number_(std::forward<Value>(v)) {}
 
   template<safe_castable_to_<quantity> Q>
   constexpr explicit(false) quantity(const Q& q) : number_(quantity_cast<quantity>(q).number()) {}
@@ -162,7 +163,10 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // data access
-  [[nodiscard]] constexpr rep number() const noexcept { return number_; }
+  [[nodiscard]] constexpr rep& number() & noexcept { return number_; }
+  [[nodiscard]] constexpr const rep& number() const & noexcept { return number_; }
+  [[nodiscard]] constexpr rep&& number() && noexcept { return std::move(number_); }
+  [[nodiscard]] constexpr const rep&& number() const && noexcept { return std::move(number_); }
 
   // member unary operators
   [[nodiscard]] constexpr Quantity auto operator+() const

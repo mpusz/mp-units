@@ -60,32 +60,28 @@ public:
   quantity_point_kind(const quantity_point_kind&) = default;
   quantity_point_kind(quantity_point_kind&&) = default;
 
-  template<safe_convertible_to_<rep> Value>
-    requires std::is_constructible_v<quantity_kind_type, Value>
-  constexpr explicit quantity_point_kind(const Value& v) : qk_(v) {}
+  template<typename T>
+    requires std::constructible_from<quantity_kind_type, T>
+  constexpr explicit quantity_point_kind(T&& t) : qk_(std::forward<T>(t)) {}
 
-  constexpr explicit quantity_point_kind(const quantity_type& q) : qk_{q} {}
-
-  template<QuantityLike Q>
-    requires std::is_constructible_v<quantity_type, Q>
-  constexpr explicit quantity_point_kind(const Q& q) : qk_{q} {}
+  constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep>& qp) : qk_(qp.relative()) {}
+  constexpr explicit quantity_point_kind(quantity_point<dimension, U, Rep>&& qp) : qk_(std::move(qp).relative()) {}
 
   template<QuantityPointLike QP>
-    requires std::is_constructible_v<quantity_point<dimension, U, Rep>, QP>
-  constexpr explicit quantity_point_kind(const QP& qp) : qk_{quantity_point_like_traits<QP>::relative(qp)} {}
-
-  constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep>& qp) : qk_{qp.relative()} {}
-
-  constexpr explicit quantity_point_kind(const quantity_kind_type& qk) : qk_{qk} {}
+    requires std::constructible_from<quantity_point<dimension, U, Rep>, QP>
+  constexpr explicit quantity_point_kind(const QP& qp) : qk_(quantity_point_like_traits<QP>::relative(qp)) {}
 
   template<QuantityPointKindEquivalentTo<quantity_point_kind> QPK2>
-    requires std::is_convertible_v<typename QPK2::quantity_kind_type, quantity_kind_type>
-  constexpr explicit(false) quantity_point_kind(const QPK2& qpk) : qk_{qpk.relative()} {}
+    requires std::convertible_to<typename QPK2::quantity_kind_type, quantity_kind_type>
+  constexpr explicit(false) quantity_point_kind(const QPK2& qpk) : qk_(qpk.relative()) {}
 
   quantity_point_kind& operator=(const quantity_point_kind&) = default;
   quantity_point_kind& operator=(quantity_point_kind&&) = default;
 
-  [[nodiscard]] constexpr quantity_kind_type relative() const noexcept { return qk_; }
+  [[nodiscard]] constexpr quantity_kind_type& relative() & noexcept { return qk_; }
+  [[nodiscard]] constexpr const quantity_kind_type& relative() const & noexcept { return qk_; }
+  [[nodiscard]] constexpr quantity_kind_type&& relative() && noexcept { return std::move(qk_); }
+  [[nodiscard]] constexpr const quantity_kind_type&& relative() const && noexcept { return std::move(qk_); }
 
   [[nodiscard]] static constexpr quantity_point_kind min() noexcept
     requires requires { quantity_kind_type::min(); }

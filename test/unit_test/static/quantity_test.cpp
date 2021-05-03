@@ -269,7 +269,7 @@ static_assert([](auto v) { auto vv = ++v; return std::pair(v, vv); }(123_q_m) ==
 static_assert([](auto v) { auto vv = v--; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 123_q_m));
 static_assert([](auto v) { auto vv = --v; return std::pair(v, vv); }(123_q_m) == std::pair(122_q_m, 122_q_m));
 
-static_assert(is_same_v<decltype((+(short{0} * m)).number()), int>);
+static_assert(is_same_v<decltype((+(short{0} * m)).number()), int&&>);
 
 
 ////////////////////////
@@ -406,13 +406,13 @@ static_assert(compare<decltype(1 / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(quantity{1} / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1_q_s), frequency<scaled_unit<ratio(1, 100), hertz>, std::int64_t>>);
 
-static_assert(is_same_v<decltype((std::uint8_t(0) * m + std::uint8_t(0) * m).number()), int>);
-static_assert(is_same_v<decltype((std::uint8_t(0) * m - std::uint8_t(0) * m).number()), int>);
+static_assert(is_same_v<decltype((std::uint8_t(0) * m + std::uint8_t(0) * m).number()), int&&>);
+static_assert(is_same_v<decltype((std::uint8_t(0) * m - std::uint8_t(0) * m).number()), int&&>);
 static_assert((std::uint8_t(128) * m + std::uint8_t(128) * m).number() == std::uint8_t(128) + std::uint8_t(128));
 static_assert((std::uint8_t(0) * m - std::uint8_t(1) * m).number() == std::uint8_t(0) - std::uint8_t(1));
 
 static_assert(is_same_v<decltype(((std::uint8_t(0) * m) % (std::uint8_t(0) * m)).number()),
-                        decltype(std::uint8_t(0) % std::uint8_t(0))>);
+                        decltype(std::uint8_t(0) % std::uint8_t(0))&&>);
 
 // different representation types
 static_assert(is_same_v<decltype(1_q_m + 1._q_m), length<metre, long double>>);
@@ -595,14 +595,14 @@ static_assert(quantity(1) - 2.3 == quantity(1 - 2.3));
 static_assert(1.2 + quantity(3) == quantity(1.2 + 3));
 static_assert(1.2 - quantity(3) == quantity(1.2 - 3));
 
-static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} + quantity{std::uint8_t(0)}).number()), int>);
-static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} - quantity{std::uint8_t(0)}).number()), int>);
+static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} + quantity{std::uint8_t(0)}).number()), int&&>);
+static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} - quantity{std::uint8_t(0)}).number()), int&&>);
 static_assert((quantity{std::uint8_t(128)} + quantity{std::uint8_t(128)}).number() ==
               std::uint8_t(128) + std::uint8_t(128));
 static_assert((quantity{std::uint8_t(0)} - quantity{std::uint8_t(1)}).number() == std::uint8_t(0) - std::uint8_t(1));
 
 static_assert(is_same_v<decltype((quantity{std::uint8_t(0)} % quantity{std::uint8_t(0)}).number()),
-                        decltype(std::uint8_t(0) % std::uint8_t(0))>);
+                        decltype(std::uint8_t(0) % std::uint8_t(0))&&>);
 
 static_assert(quantity{2} * (1 * m) == 2_q_m);
 static_assert(quantity{2} / (1 * m) == 2 / 1_q_m);

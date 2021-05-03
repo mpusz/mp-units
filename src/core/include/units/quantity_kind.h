@@ -93,22 +93,28 @@ public:
   quantity_kind(const quantity_kind&) = default;
   quantity_kind(quantity_kind&&) = default;
 
-  template<safe_convertible_to_<rep> Value>
-    requires is_same_v<dimension, dim_one> && std::is_constructible_v<quantity_type, Value>
-  constexpr explicit quantity_kind(const Value& v) : q_(v) {}
+  template<typename Value>
+    requires std::same_as<dimension, dim_one> && 
+      safe_convertible_to_<std::remove_cvref_t<Value>, rep> &&
+      std::constructible_from<quantity_type, Value>
+  constexpr explicit quantity_kind(Value&& v) : q_(std::forward<Value>(v)) {}
 
   template<typename Q>
-    requires (Quantity<Q> || QuantityLike<Q>) && std::is_constructible_v<quantity_type, Q>
-  constexpr explicit quantity_kind(const Q& q) : q_{q} {}
+    requires (Quantity<std::remove_cvref_t<Q>> || QuantityLike<std::remove_cvref_t<Q>>) &&
+      std::constructible_from<quantity_type, Q>
+  constexpr explicit quantity_kind(Q&& q) : q_(std::forward<Q>(q)) {}
 
   template<QuantityKindEquivalentTo<quantity_kind> QK2>
-    requires std::is_convertible_v<typename QK2::quantity_type, quantity_type>
-  constexpr explicit(false) quantity_kind(const QK2& qk) : q_{qk.common()} {}
+    requires std::convertible_to<typename QK2::quantity_type, quantity_type>
+  constexpr explicit(false) quantity_kind(const QK2& qk) : q_(qk.common()) {}
 
   quantity_kind& operator=(const quantity_kind&) = default;
   quantity_kind& operator=(quantity_kind&&) = default;
 
-  [[nodiscard]] constexpr quantity_type common() const noexcept { return q_; }
+  [[nodiscard]] constexpr quantity_type& common() & noexcept { return q_; }
+  [[nodiscard]] constexpr const quantity_type& common() const & noexcept { return q_; }
+  [[nodiscard]] constexpr quantity_type&& common() && noexcept { return std::move(q_); }
+  [[nodiscard]] constexpr const quantity_type&& common() const && noexcept { return std::move(q_); }
 
   [[nodiscard]] static constexpr quantity_kind zero() noexcept
     requires requires { quantity_type::zero(); }

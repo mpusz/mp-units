@@ -23,6 +23,7 @@
   - perf: value initialization for quantity value removed (left with a default initialization)
   - perf: limited the `equivalent` trait usage
   - perf: limited the C++ Standard Library headers usage
+  - perf: rvalue references support added for constructors and getters
   - (!) fix: `exp()` has sense only for dimensionless quantities
   - (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) + default unit name change
   - fix: quantity's operators fixed to behave like the underlying types do

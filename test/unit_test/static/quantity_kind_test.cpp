@@ -475,9 +475,9 @@ static_assert(same(width<metre, double>(2. * m) - width<metre, int>(3 * m), widt
 static_assert(same(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()), int>);
+  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()), int&&>);
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().number()), int>);
+  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().number()), int&&>);
 static_assert((width<metre, std::uint8_t>(128 * m) + width<metre, std::uint8_t>(128 * m)).common().number() ==
   std::uint8_t(128) + std::uint8_t(128));
 static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 * m)).common().number() ==
@@ -646,7 +646,7 @@ static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<me
 
 static_assert(is_same_v<
   decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().number()),
-  decltype(std::uint8_t(0) % std::uint8_t(0))>);
+  decltype(std::uint8_t(0) % std::uint8_t(0))&&>);
 
 static_assert(!std::is_invocable_v<std::multiplies<>, reference<dim_length, metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, width<metre>, height<metre>>);
