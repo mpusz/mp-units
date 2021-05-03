@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
         # dependencies
         remotes = [
-            ("https://api.bintray.com/conan/twonington/public-conan", True, "linear-algebra")
+            # ("https://api.bintray.com/conan/twonington/public-conan", True, "linear-algebra")
         ],
         build_policy = ["mp-units", "outdated"],
         upload_dependencies = "all",
