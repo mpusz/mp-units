@@ -13,7 +13,7 @@ This example presents the usage of:
 - quantities text output formatting,
 - cooperation with `std::chrono`.
 
-.. literalinclude:: ../../example/glide_computer/include/glide_computer.h
+.. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
   :start-at: #include
   :end-before: using namespace units;
@@ -35,7 +35,7 @@ For example we have 3 for a quantity of length:
 - ``height`` - a relative altitude difference between 2 points in the air
 - ``altitude`` - an absolute altitude value measured form the mean sea level (AMSL).
 
-.. literalinclude:: ../../example/glide_computer/include/glide_computer.h
+.. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
   :start-at: using namespace units;
   :end-before: // text output
@@ -44,7 +44,7 @@ For example we have 3 for a quantity of length:
 
 Next a custom text output is provided both for C++ output streams and the text formatting facility.
 
-.. literalinclude:: ../../example/glide_computer/include/glide_computer.h
+.. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
   :start-at: // text output
   :end-before: // definition of glide computer databases and utilities
@@ -58,13 +58,13 @@ convert it to the one required by the engine interface.
 The glide calculator takes task created as a list of waypoints, glider performance data, weather conditions,
 safety constraints, and a towing height.
 
-.. literalinclude:: ../../example/glide_computer/include/glide_computer.h
+.. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
   :start-at: // definition of glide computer databases and utilities
   :linenos:
   :lineno-match:
 
-.. literalinclude:: ../../example/references/glide_computer_example.cpp
+.. literalinclude:: ../../../example/references/glide_computer_example.cpp
   :caption: glide_computer_example.cpp
   :start-at: #include
   :linenos:
@@ -74,7 +74,7 @@ Having all of that it estimates the number of flight phases (towing, circling, g
 needed to finish a task. As an output it provides the duration needed to finish the task while
 flying a selected glider in the specific weather conditions.
 
-.. literalinclude:: ../../example/glide_computer/glide_computer.cpp
+.. literalinclude:: ../../../example/glide_computer/glide_computer.cpp
   :caption: glide_computer.cpp
   :start-at: #include
   :linenos:
