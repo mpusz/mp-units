@@ -348,7 +348,7 @@ in **mp-units** repository, you should:
 
 .. code-block:: shell
 
-    conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
+    conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     mkdir build && cd build

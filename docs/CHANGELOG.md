@@ -32,6 +32,7 @@
   - fix: downcasting facility for non-default-constructible types
   - fix: restore user-warnings within the library implementation
   - (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
+  - (!) build: Linear Algebra is now hosted on its [Artifactory](https://api.bintray.com/conan/twonington/public-conan)
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
