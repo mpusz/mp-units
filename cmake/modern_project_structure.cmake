@@ -20,51 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
-project(mp-units-dev
-    LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.4)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-
-# make sure that the file is being used as an entry point
-include(modern_project_structure)
-ensure_entry_point()
-
-# set restrictive compilation warnings
-include(warnings)
-set_warnings()
-
-# set all contracts checking in a Debug build
-add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
-
-# enable include-what-you-use
-option(UNITS_IWYU "Enables include-what-you-use" OFF)
-if(UNITS_IWYU)
-    include(include-what-you-use)
-    set_iwyu(
-        MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
-        NO_FORWARD_DECLARATIONS
-        QUOTED_INCLUDES_FIRST
-        MAX_LINE_LENGTH 120
-        NO_COMMENTS
-    )
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(UNITS_AS_SYSTEM_HEADERS ON)
-    endif()
-endif()
-
-#enable_clang_tidy()
-
-# add project code
-add_subdirectory(src)
-
-# add usage example
-add_subdirectory(example)
-
-# generate project documentation
-add_subdirectory(docs)
-
-# add unit tests
-enable_testing()
-add_subdirectory(test)
+function(ensure_entry_point)
+  if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+      message(FATAL_ERROR "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
+              "as a CMake entry point and should not be included from other CMake files. "
+              "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMaskeLists.txt' directly instead.")
+  endif()
+endfunction()
