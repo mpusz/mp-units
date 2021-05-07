@@ -42,7 +42,7 @@ add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 option(UNITS_IWYU "Enables include-what-you-use" OFF)
 if(UNITS_IWYU)
     include(include-what-you-use)
-    set_iwyu(
+    enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
         NO_FORWARD_DECLARATIONS
         QUOTED_INCLUDES_FIRST
