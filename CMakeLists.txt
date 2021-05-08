@@ -31,6 +31,10 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include(modern_project_structure)
 ensure_entry_point()
 
+# use ccache if available
+include(ccache)
+enable_ccache_if_possible()
+
 # set restrictive compilation warnings
 include(warnings)
 set_warnings()
