@@ -82,7 +82,7 @@ jobs:
         if: runner.os == 'Linux'
         with:
           key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
-          max-size: 100M
+          max-size: 50M
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
