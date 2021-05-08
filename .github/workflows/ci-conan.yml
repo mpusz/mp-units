@@ -81,7 +81,7 @@ jobs:
       - uses: hendrikmuhs/ccache-action@v1
         if: runner.os == 'Linux'
         with:
-          key: ${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.build_type }}
+          key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}
           max-size: 100M
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
