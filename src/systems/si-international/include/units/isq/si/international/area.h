@@ -37,7 +37,7 @@ namespace units::isq::si::international {
 
 struct square_foot : deduced_unit<square_foot, si::dim_area, si::international::foot> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -47,9 +47,9 @@ constexpr auto operator"" _q_ft2(long double l) { return si::area<square_foot, l
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace area_references {
 
@@ -63,11 +63,11 @@ using namespace area_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::international::inline area {
 
@@ -75,4 +75,4 @@ template<Representation Rep = double> using ft2 = units::isq::si::area<units::is
 
 }  // namespace units::aliases::isq::si::international::inline area
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

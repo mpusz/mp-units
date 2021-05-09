@@ -40,7 +40,7 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, gal, dim_lengt
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,9 +50,9 @@ constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace acceleration_references {
 
@@ -66,11 +66,11 @@ using namespace acceleration_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::cgs::inline acceleration {
 
@@ -78,4 +78,4 @@ template<Representation Rep = double> using Gal = units::isq::si::cgs::accelerat
 
 }  // namespace units::aliases::isq::si::cgs::inline acceleration
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

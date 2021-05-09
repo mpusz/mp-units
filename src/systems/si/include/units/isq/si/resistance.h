@@ -59,7 +59,7 @@ struct dim_resistance : isq::dim_resistance<dim_resistance, ohm, dim_voltage, di
 template<UnitOf<dim_resistance> U, Representation Rep = double>
 using resistance = quantity<dim_resistance, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -133,9 +133,9 @@ constexpr auto operator"" _q_YR(long double l) { return resistance<yottaohm, lon
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace resistance_references {
 
@@ -165,11 +165,11 @@ using namespace resistance_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline resistance {
 
@@ -193,4 +193,4 @@ template<Representation Rep = double> using YR = units::isq::si::resistance<unit
 
 }  // namespace units::aliases::isq::si::inline resistance
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

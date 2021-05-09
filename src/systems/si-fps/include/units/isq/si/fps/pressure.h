@@ -49,7 +49,7 @@ struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi
 
 struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -67,9 +67,9 @@ constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_for
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace pressure_references {
 
@@ -84,11 +84,11 @@ using namespace pressure_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline pressure {
 
@@ -98,4 +98,4 @@ template<Representation Rep = double> using kpsi = units::isq::si::fps::pressure
 
 }  // namespace units::aliases::isq::si::fps::inline pressure
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

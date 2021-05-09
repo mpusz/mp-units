@@ -6,7 +6,6 @@
   - (!) refactor: Refactored the library file tree
   - (!) refactor: `quantity::count()` renamed to `quantity::number()`
   - (!) refactor: `data` system renamed to `isq::iec80000` (quantity names renamed too)
-  - (!) refactor: quantity UDLs support has to be enabled with `UNITS_LITERALS` preprocessor define
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
@@ -17,6 +16,7 @@
   - feat: CTAD for dimensionless quantity added
   - feat: `modulation_rate` support added (thanks [@go2sh](https://github.com/go2sh))
   - feat: SI prefixes for `isq::iec80000` support added (thanks [@go2sh](https://github.com/go2sh))
+  - feat: a possibility to disable quantity UDLs support with `UNITS_NO_LITERALS` preprocessor define
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`

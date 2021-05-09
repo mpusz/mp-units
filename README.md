@@ -28,8 +28,6 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
-#define UNITS_REFERENCES
-
 #include <units/isq/si/area.h>
 #include <units/isq/si/frequency.h>
 #include <units/isq/si/length.h>
@@ -58,7 +56,7 @@ static_assert(10 * km / (5 * km) == 2);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/53bTahKd8)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/5dvY8Woh1)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -66,10 +64,6 @@ and dimensional analysis can be performed without sacrificing on accuracy. Pleas
 the below example for a quick preview of basic library features:
 
 ```cpp
-#define UNITS_ALIASES
-#define UNITS_LITERALS
-#define UNITS_REFERENCES
-
 #include <units/format.h>
 #include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h>
@@ -115,4 +109,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/jKnPPPEx6)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/9fnzfbhb6)._

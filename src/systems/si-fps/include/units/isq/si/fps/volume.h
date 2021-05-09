@@ -42,7 +42,7 @@ struct cubic_yard : deduced_unit<cubic_yard, dim_volume, yard> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -56,9 +56,9 @@ constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace volume_references {
 
@@ -73,11 +73,11 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline volume {
 
@@ -86,4 +86,4 @@ template<Representation Rep = double> using yd3 = units::isq::si::fps::volume<un
 
 }  // namespace units::aliases::isq::si::fps::inline volume
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

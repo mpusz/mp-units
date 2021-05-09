@@ -40,7 +40,7 @@ struct dim_dynamic_viscosity : isq::dim_dynamic_viscosity<dim_dynamic_viscosity,
 template<UnitOf<dim_dynamic_viscosity> U, Representation Rep = double>
 using dynamic_viscosity = quantity<dim_dynamic_viscosity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,11 +50,11 @@ constexpr auto operator"" _q_Pa_s(long double l) { return dynamic_viscosity<pasc
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline dynamic_viscosity {
 
@@ -62,4 +62,4 @@ template<Representation Rep = double> using Pa_s = units::isq::si::dynamic_visco
 
 }  // namespace units::aliases::isq::si::inline dynamic_viscosity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

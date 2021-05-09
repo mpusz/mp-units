@@ -40,7 +40,7 @@ struct dim_surface_tension : isq::dim_surface_tension<dim_surface_tension, newto
 template<UnitOf<dim_surface_tension> U, Representation Rep = double>
 using surface_tension = quantity<dim_surface_tension, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,11 +50,11 @@ constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<new
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline surface_tension {
 
@@ -62,4 +62,4 @@ template<Representation Rep = double> using N_per_m = units::isq::si::surface_te
 
 }  // namespace units::aliases::isq::si::inline surface_tension
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

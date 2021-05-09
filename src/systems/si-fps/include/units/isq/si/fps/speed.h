@@ -47,7 +47,7 @@ struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_s
 
 struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -65,9 +65,9 @@ constexpr auto operator"" _q_knot(long double l) { return speed<knot, long doubl
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace speed_references {
 
@@ -82,11 +82,11 @@ using namespace speed_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline speed {
 
@@ -96,4 +96,4 @@ template<Representation Rep = double> using knot = units::isq::si::fps::speed<un
 
 }  // namespace units::aliases::isq::si::fps::inline speed
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

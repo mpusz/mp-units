@@ -42,7 +42,7 @@ struct dim_current_density : isq::dim_current_density<dim_current_density, amper
 template<UnitOf<dim_current_density> U, Representation Rep = double>
 using current_density = quantity<dim_current_density, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -52,11 +52,11 @@ constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<am
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline current_density {
 
@@ -64,4 +64,4 @@ template<Representation Rep = double> using A_per_m2 = units::isq::si::current_d
 
 }  // namespace units::aliases::isq::si::inline current_density
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

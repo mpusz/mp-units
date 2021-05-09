@@ -65,7 +65,7 @@ struct dim_catalytic_activity : isq::dim_catalytic_activity<dim_catalytic_activi
 template<UnitOf<dim_catalytic_activity> U, Representation Rep = double>
 using catalytic_activity = quantity<dim_catalytic_activity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -159,9 +159,9 @@ constexpr auto operator"" _q_U(long double l) { return catalytic_activity<enzyme
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace catalytic_activity_references {
 
@@ -196,11 +196,11 @@ using namespace catalytic_activity_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline catalytic_activity {
 
@@ -229,4 +229,4 @@ template<Representation Rep = double> using U = units::isq::si::catalytic_activi
 
 }  // namespace units::aliases::isq::si::inline catalytic_activity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

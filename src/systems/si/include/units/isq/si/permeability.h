@@ -41,7 +41,7 @@ struct dim_permeability : isq::dim_permeability<dim_permeability, henry_per_metr
 template<UnitOf<dim_permeability> U, Representation Rep = double>
 using permeability = quantity<dim_permeability, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,11 +51,11 @@ constexpr auto operator"" _q_H_per_m(long double l) { return permeability<henry_
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline permeability {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using H_per_m = units::isq::si::permeabili
 
 }  // namespace units::aliases::isq::si::inline permeability
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

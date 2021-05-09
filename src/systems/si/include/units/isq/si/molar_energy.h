@@ -42,7 +42,7 @@ struct dim_molar_energy : isq::dim_molar_energy<dim_molar_energy, joule_per_mole
 template<UnitOf<dim_molar_energy> U, Representation Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -52,11 +52,11 @@ constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joul
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline molar_energy {
 
@@ -64,4 +64,4 @@ template<Representation Rep = double> using J_per_mol = units::isq::si::molar_en
 
 }  // namespace units::aliases::isq::si::inline molar_energy
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

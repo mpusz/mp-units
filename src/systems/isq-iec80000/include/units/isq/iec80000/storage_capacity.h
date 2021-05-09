@@ -79,7 +79,7 @@ concept StorageCapacity = QuantityOf<T, dim_storage_capacity>;
 template<UnitOf<dim_storage_capacity> U, Representation Rep = double>
 using storage_capacity = quantity<dim_storage_capacity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -123,9 +123,9 @@ constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::i
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace storage_capacity_references {
 
@@ -175,11 +175,11 @@ using namespace storage_capacity_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::iec80000
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::iec80000::inline storage_capacity {
 
@@ -223,4 +223,4 @@ template<Representation Rep = double> using PiB = units::isq::iec80000::storage_
 
 }  // namespace units::aliases::isq::iec80000::inline storage_capacity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

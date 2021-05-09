@@ -40,7 +40,7 @@ struct dim_momentum : isq::dim_momentum<dim_momentum, gigaelectronvolt, dim_mass
 template<UnitOf<dim_momentum> U, Representation Rep = double>
 using momentum = quantity<dim_momentum, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace momentum_references {
 
@@ -54,11 +54,11 @@ using namespace momentum_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline momentum {
 
@@ -66,4 +66,4 @@ template<Representation Rep = double> using GeV = units::isq::natural::momentum<
 
 }  // namespace units::aliases::isq::natural::inline momentum
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

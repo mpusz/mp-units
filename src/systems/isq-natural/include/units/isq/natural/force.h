@@ -40,7 +40,7 @@ struct dim_force : isq::dim_force<dim_force, square_gigaelectronvolt, dim_mass, 
 template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace force_references {
 
@@ -54,11 +54,11 @@ using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline force {
 
@@ -66,4 +66,4 @@ template<Representation Rep = double> using GeV2 = units::isq::natural::force<un
 
 }  // namespace units::aliases::isq::natural::inline force
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

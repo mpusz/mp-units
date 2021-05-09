@@ -39,7 +39,7 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, metre_per_seco
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -49,11 +49,11 @@ constexpr auto operator"" _q_m_per_s2(long double l) { return acceleration<metre
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline acceleration {
 
@@ -61,4 +61,4 @@ template<Representation Rep = double> using m_per_s2 = units::isq::si::accelerat
 
 }  // namespace units::aliases::isq::si::inline acceleration
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

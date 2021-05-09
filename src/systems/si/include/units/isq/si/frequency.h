@@ -57,7 +57,7 @@ struct dim_frequency : isq::dim_frequency<dim_frequency, hertz, dim_time> {};
 template<UnitOf<dim_frequency> U, Representation Rep = double>
 using frequency = quantity<dim_frequency, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -131,9 +131,9 @@ constexpr auto operator"" _q_YHz(long double l) { return frequency<yottahertz, l
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace frequency_references {
 
@@ -163,11 +163,11 @@ using namespace frequency_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline frequency {
 
@@ -191,4 +191,4 @@ template<Representation Rep = double> using YHz = units::isq::si::frequency<unit
 
 }  // namespace units::aliases::isq::si::inline frequency
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

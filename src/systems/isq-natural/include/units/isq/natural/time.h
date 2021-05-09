@@ -37,7 +37,7 @@ struct dim_time : isq::dim_time<inverted_gigaelectronvolt> {};
 template<UnitOf<dim_time> U, Representation Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace time_references {
 
@@ -51,11 +51,11 @@ using namespace time_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline time {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using inv_GeV = units::isq::natural::time<
 
 }  // namespace units::aliases::isq::natural::inline time
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

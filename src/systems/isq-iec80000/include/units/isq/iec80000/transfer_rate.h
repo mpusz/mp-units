@@ -52,7 +52,7 @@ concept TransferRate = QuantityOf<T, dim_transfer_rate>;
 template<UnitOf<dim_transfer_rate> U, Representation Rep = double>
 using transfer_rate = quantity<dim_transfer_rate, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -68,11 +68,11 @@ constexpr auto operator"" _q_YB_per_s(unsigned long long l) { gsl_ExpectsAudit(s
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::iec80000
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::iec80000::inline transfer_rate {
 
@@ -88,4 +88,4 @@ template<Representation Rep = double> using YB_per_s = units::isq::iec80000::tra
 
 }  // namespace units::aliases::isq::iec80000::inline transfer_rate
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

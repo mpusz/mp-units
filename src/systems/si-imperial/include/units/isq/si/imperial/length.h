@@ -40,7 +40,7 @@ struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio(22, 1), si::inter
 // https://en.wikipedia.org/wiki/Rod_(unit)
 struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -54,9 +54,9 @@ constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long dou
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace length_references {
 
@@ -71,11 +71,11 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::imperial
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::imperial::inline length {
 
@@ -84,4 +84,4 @@ template<Representation Rep = double> using rd = units::isq::si::length<units::i
 
 }  // namespace units::aliases::isq::si::imperial::inline length
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

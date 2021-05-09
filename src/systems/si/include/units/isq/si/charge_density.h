@@ -47,7 +47,7 @@ using charge_density = quantity<dim_charge_density, U, Rep>;
 template<UnitOf<dim_surface_charge_density> U, Representation Rep = double>
 using surface_charge_density = quantity<dim_surface_charge_density, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -61,11 +61,11 @@ constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_den
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline charge_density {
 
@@ -74,4 +74,4 @@ template<Representation Rep = double> using C_per_m2 = units::isq::si::surface_c
 
 }  // namespace units::aliases::isq::si::inline charge_density
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

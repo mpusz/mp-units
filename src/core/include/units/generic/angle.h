@@ -43,7 +43,7 @@ concept Angle = QuantityOfT<T, dim_angle>;
 template<UnitOf<dim_angle<>> U, Representation Rep = double>
 using angle = quantity<dim_angle<>, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -53,9 +53,9 @@ constexpr auto operator"" _q_rad(long double l) { return angle<radian, long doub
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace angle_references {
 
@@ -69,6 +69,6 @@ using namespace angle_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units

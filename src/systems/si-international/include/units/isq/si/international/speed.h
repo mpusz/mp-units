@@ -36,7 +36,7 @@ namespace units::isq::si::international {
 
 struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -46,11 +46,11 @@ constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::international
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::international::inline speed {
 
@@ -58,4 +58,4 @@ template<Representation Rep = double> using mi_per_h = units::isq::si::speed<uni
 
 }  // namespace units::aliases::isq::si::international::inline speed
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

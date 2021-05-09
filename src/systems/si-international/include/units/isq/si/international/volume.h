@@ -37,7 +37,7 @@ namespace units::isq::si::international {
 
 struct cubic_foot : deduced_unit<cubic_foot, si::dim_volume, si::international::foot> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -47,9 +47,9 @@ constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace volume_references {
 
@@ -63,11 +63,11 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::international::inline volume {
 
@@ -75,4 +75,4 @@ template<Representation Rep = double> using ft3 = units::isq::si::volume<units::
 
 }  // namespace units::aliases::isq::si::international::inline volume
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -52,7 +52,7 @@ struct dim_force : isq::dim_force<dim_force, poundal, dim_mass, dim_acceleration
 template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -70,9 +70,9 @@ constexpr auto operator"" _q_klbf(long double l) { return force<kilopound_force,
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace force_references {
 
@@ -88,11 +88,11 @@ using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline force {
 
@@ -102,4 +102,4 @@ template<Representation Rep = double> using klbf = units::isq::si::fps::force<un
 
 }  // namespace units::aliases::isq::si::fps::inline force
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

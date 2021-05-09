@@ -43,7 +43,7 @@ struct dim_force : isq::dim_force<dim_force, dyne, dim_mass, dim_acceleration> {
 template<UnitOf<dim_force> U, Representation Rep = double>
 using force = quantity<dim_force, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -53,9 +53,9 @@ constexpr auto operator"" _q_dyn(long double l) { return force<dyne, long double
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace force_references {
 
@@ -69,11 +69,11 @@ using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::cgs::inline force {
 
@@ -81,4 +81,4 @@ template<Representation Rep = double> using dyn = units::isq::si::cgs::force<uni
 
 }  // namespace units::aliases::isq::si::cgs::inline force
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

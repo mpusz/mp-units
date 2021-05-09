@@ -58,7 +58,7 @@ struct short_ton : named_scaled_unit<short_ton, "ton (short)", no_prefix, ratio(
 
 struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, ratio(2'240, 1), pound>{};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -100,9 +100,9 @@ constexpr auto operator"" _q_lton(long double l) { return mass<long_ton, long do
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace mass_references {
 
@@ -124,11 +124,11 @@ using namespace mass_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline mass {
 
@@ -144,4 +144,4 @@ template<Representation Rep = double> using lton = units::isq::si::fps::mass<uni
 
 }  // namespace units::aliases::isq::si::fps::inline mass
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

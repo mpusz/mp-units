@@ -61,7 +61,7 @@ struct dim_luminous_intensity : isq::dim_luminous_intensity<candela> {};
 template<UnitOf<dim_luminous_intensity> U, Representation Rep = double>
 using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -151,9 +151,9 @@ constexpr auto operator"" _q_Ycd(long double l) { return luminous_intensity<yott
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace luminous_intensity_references {
 
@@ -187,11 +187,11 @@ using namespace luminous_intensity_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::luminous_intensity {
 
@@ -219,4 +219,4 @@ template<Representation Rep = double> using Ycd = units::isq::si::luminous_inten
 
 }  // namespace units::aliases::isq::si::luminous_intensity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -63,7 +63,7 @@ struct dim_voltage : isq::dim_voltage<dim_voltage, volt, dim_power, dim_electric
 template<UnitOf<dim_voltage> U, Representation Rep = double>
 using voltage = quantity<dim_voltage, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -153,9 +153,9 @@ constexpr auto operator"" _q_YV(long double l) { return voltage<yottavolt, long 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace voltage_references {
 
@@ -189,11 +189,11 @@ using namespace voltage_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline voltage {
 
@@ -221,4 +221,4 @@ template<Representation Rep = double> using YV = units::isq::si::voltage<units::
 
 }  // namespace units::aliases::isq::si::inline voltage
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

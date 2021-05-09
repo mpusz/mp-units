@@ -52,7 +52,7 @@ struct dim_time : isq::dim_time<second> {};
 template<UnitOf<dim_time> U, Representation Rep = double>
 using time = quantity<dim_time, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -106,9 +106,9 @@ constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l)
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace time_references {
 
@@ -133,11 +133,11 @@ using namespace time_references;
 
 } // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline time {
 
@@ -156,4 +156,4 @@ template<Representation Rep = double> using d = units::isq::si::time<units::isq:
 
 }  // namespace units::aliases::isq::si::inline time
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

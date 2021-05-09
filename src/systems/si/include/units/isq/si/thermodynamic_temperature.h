@@ -40,7 +40,7 @@ struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin
 template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double>
 using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,9 +50,9 @@ constexpr auto operator"" _q_K(long double l) { return thermodynamic_temperature
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace thermodynamic_temperature_references {
 
@@ -66,11 +66,11 @@ using namespace thermodynamic_temperature_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline thermodynamic_temperature {
 
@@ -78,4 +78,4 @@ template<Representation Rep = double> using K = units::isq::si::thermodynamic_te
 
 }  // namespace units::aliases::isq::si::inline thermodynamic_temperature
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

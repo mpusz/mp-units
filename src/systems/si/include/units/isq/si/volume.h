@@ -83,7 +83,7 @@ struct yottalitre : prefixed_unit<yottalitre, yotta, litre> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -257,9 +257,9 @@ constexpr auto operator"" _q_Yl(long double l) { return volume<yottalitre, long 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace volume_references {
 
@@ -315,11 +315,11 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline volume {
 
@@ -369,4 +369,4 @@ template<Representation Rep = double> using Yl = units::isq::si::volume<units::i
 
 }  // namespace units::aliases::isq::si::inline volume
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES
