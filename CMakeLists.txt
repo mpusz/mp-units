@@ -33,7 +33,7 @@ ensure_entry_point()
 
 # use ccache if available
 include(ccache)
-enable_ccache_if_possible()
+enable_ccache()
 
 # set restrictive compilation warnings
 include(warnings)
