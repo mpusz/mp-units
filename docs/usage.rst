@@ -278,7 +278,7 @@ library release the following steps may be performed:
 
   .. code-block:: shell
 
-      mkdir build && cd build
+      mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
       cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       cmake --build .
@@ -329,10 +329,25 @@ differences:
 
   .. code-block:: shell
 
-      mkdir build && cd build
+      mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
       cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       cmake --build .
+
+
+Install
+^^^^^^^
+
+In case you don't want to use Conan in your project and just want to install the **mp-units**
+library on your file system and use it via ``find_package(mp-units)`` from another repository
+to find it, it is enough to perform the following steps:
+
+.. code-block:: shell
+
+    mkdir units/build && cd units/build
+    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+    cmake ../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake --install . --prefix <install_dir>
 
 
 Contributing (or just building all the tests, examples, and documentation)
@@ -351,7 +366,7 @@ in **mp-units** repository, you should:
     conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    mkdir build && cd build
+    mkdir units/build && cd units/build
     conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
     conan build ..
 
