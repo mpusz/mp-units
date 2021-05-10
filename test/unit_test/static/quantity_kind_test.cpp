@@ -52,8 +52,8 @@ struct radius_kind : kind<radius_kind, dim_length> {};
 struct width_kind : kind<width_kind, dim_length> {};
 struct height_kind : kind<height_kind, dim_length> {};
 
-struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
-struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+struct horizontal_area_kind : derived_kind<horizontal_area_kind, dim_area, width_kind> {};
+struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 
 struct apple : kind<apple, dim_one> {};
 struct orange : kind<orange, dim_one> {};

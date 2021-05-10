@@ -77,7 +77,7 @@ you can use a quantity argument instead of a quantity kind.
     :emphasize-lines: 8-9
 
     struct height_kind : kind<height_kind, dim_length> {};
-    struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+    struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 
     template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
     template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
@@ -90,7 +90,7 @@ you can use a quantity argument instead of a quantity kind.
     :emphasize-lines: 8-12
 
     struct width_kind : kind<width_kind, dim_length> {};
-    struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
+    struct horizontal_area_kind : derived_kind<horizontal_area_kind, dim_area, width_kind> {};
 
     template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
     template <Unit U, Representation Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;

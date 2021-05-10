@@ -151,7 +151,7 @@ static_assert(!equivalent<abscissa::_point_kind_base, horizontal_velocity>);
 
 struct height : kind<height, dim_length> {};
 
-struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};    // program-defined derived kind
+struct rate_of_climb : derived_kind<rate_of_climb, dim_speed, height> {};    // program-defined derived kind
 struct velocity_of_climb : point_kind<velocity_of_climb, rate_of_climb> {};  // program-defined derived point kind
 
 static_assert(Kind<rate_of_climb>);

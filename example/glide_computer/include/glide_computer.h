@@ -77,8 +77,8 @@ constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
 using horizontal_kind = geographic::horizontal_kind;
 struct vertical_kind : units::kind<vertical_kind, units::isq::si::dim_length> {};
 struct vertical_point_kind : units::point_kind<vertical_point_kind, vertical_kind> {};
-struct velocity_kind : units::derived_kind<velocity_kind, horizontal_kind, units::isq::si::dim_speed> {};
-struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, vertical_kind, units::isq::si::dim_speed> {};
+struct velocity_kind : units::derived_kind<velocity_kind, units::isq::si::dim_speed, horizontal_kind> {};
+struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, units::isq::si::dim_speed, vertical_kind> {};
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
 // length

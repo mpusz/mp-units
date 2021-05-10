@@ -54,7 +54,7 @@ using downcast_point_kind = downcast<detail::_point_kind_base<K>>;
 template<typename K, Dimension D>
 struct kind : downcast_dispatch<K, detail::_kind_base<K, D>> {};
 
-template<typename DK, Kind BK, Dimension D>
+template<typename DK, Dimension D, Kind BK>
   requires std::same_as<BK, typename BK::base_kind>
 struct derived_kind : downcast_dispatch<DK, detail::_kind_base<BK, D>> {};
 

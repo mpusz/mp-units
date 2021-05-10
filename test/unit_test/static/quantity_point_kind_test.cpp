@@ -54,7 +54,7 @@ struct ordinate_kind : point_kind<ordinate_kind, height_kind> {};
 struct distance_kind : kind<distance_kind, dim_length> {};
 struct cgs_width_kind : kind<cgs_width_kind, cgs::dim_length> {};
 struct cgs_height_kind : kind<cgs_height_kind, cgs::dim_length> {};
-struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 struct altitude_kind : point_kind<altitude_kind, cgs_height_kind> {};
 
 struct apple : kind<apple, dim_one> {};
