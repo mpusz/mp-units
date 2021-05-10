@@ -38,6 +38,7 @@
 /cmake-build-*/
 /build/
 /out/
+_build/
 
 # Conan
 *.pyc
