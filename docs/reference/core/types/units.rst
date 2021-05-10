@@ -19,9 +19,6 @@ Units
 .. doxygenstruct:: units::derived_unit
    :members:
 
-.. doxygenstruct:: units::noble_derived_unit
-   :members:
-
 .. doxygenstruct:: units::named_derived_unit
    :members:
 

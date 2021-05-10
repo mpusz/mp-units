@@ -37,10 +37,10 @@ namespace units::isq::si::fps {
 // https://en.wikipedia.org/wiki/Foot-poundal
 struct foot_poundal : unit<foot_poundal> {};
 
-struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_force, dim_length> {};
+struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_length, dim_force> {};
 
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
-struct foot_pound_force : noble_derived_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+ struct foot_pound_force : derived_unit<foot_pound_force, dim_energy, foot, pound_force> {};
 
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;

@@ -7,6 +7,7 @@
   - (!) refactor: `quantity::count()` renamed to `quantity::number()`
   - (!) refactor: `data` system renamed to `isq::iec80000` (quantity names renamed too)
   - (!) refactor: `*deduced_unit` renamed to `*derived_unit`
+  - (!) refactor: got rid of a `noble_derived_unit`
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
@@ -32,6 +33,7 @@
   - fix: ambiguous case for empty type list resolved
   - fix: downcasting facility for non-default-constructible types
   - fix: restore user-warnings within the library implementation
+  - fix: the text symbol of `foot_pound_force` and `foot_pound_force_per_second`
   - (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
   - (!) build: Linear Algebra is now hosted on its [Artifactory](https://twonington.jfrog.io/artifactory/api/conan/conan-oss)
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`

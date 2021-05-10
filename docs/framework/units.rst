@@ -315,15 +315,13 @@ does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     }
 
-In case the scaled derived unit should serve as a named one we can use either
+In case the scaled derived unit should serve as a named one we can use
 a `named_derived_unit` where the user is able to provide a symbol for the unit
-by him/her-self or `noble_derived_unit` where the symbol is the deduced name
-based on the ingredients::
+by him/her-self::
 
     namespace si::fps {
 
     struct knot : named_derived_unit<knot, dim_speed, "knot", no_prefix, nautical_mile, hour> {};
-    struct foot_pound_force : noble_derived_unit<foot_pound_force, dim_energy, pound_force, foot> {};
 
     }
 
@@ -380,7 +378,6 @@ of a `scaled_unit` class template:
     [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[derived_unit<Child, Dimension, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[noble_derived_unit<Child, Dimension, Unit, Unit...>]
     [scaled_unit<UnitRatio, Unit>]<:-[named_derived_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
     [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
