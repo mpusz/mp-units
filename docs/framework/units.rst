@@ -8,7 +8,7 @@ compare quantities of the same dimension a notion of a :term:`measurement unit`
 was introduced. Units are designated by conventionally assigned names and
 symbols. Thanks to them it is possible to compare two quantities of the
 same dimension and express the ratio of the second quantity to the first
-one as a number. For example ``10s`` is ``10`` times more than ``1s``.
+one as a number. For example ``10 s`` is ``10`` times more than ``1 s``.
 
 Base quantities are expressed in terms of :term:`base units <base unit>`
 (i.e. ``m`` (meter), ``s`` (second)), while derived quantities are expressed
@@ -94,97 +94,14 @@ knows how to convert ``si::metre`` to ``si::centimetre`` and vice versa).
     :ref:`use_cases/extensions:Custom Systems` chapter.
 
 
-Derived Units
--------------
-
-Derived units can be either named or unnamed.
-
-Derived Named Units
-^^^^^^^^^^^^^^^^^^^
-
-Derived named units have a unique symbol (i.e. ``N`` (newton) or ``Pa``
-(pascal)) and they are defined in the same way as base units (which
-always have to be a named unit)::
-
-    namespace si {
-
-    struct newton : named_unit<newton, "N", prefix> {};
-
-    }
-
-
-Derived Unnamed Units
-^^^^^^^^^^^^^^^^^^^^^
-
-Derived unnamed units are the units where the symbol is derived from the
-base quantities symbols and the expression of the dependence of the derived
-quantity on the base quantities (i.e. ``m/s`` (metre per second), ``m²``
-(square metre)). To support such use cases a library introduced a notion of
-:term:`derived dimension recipe` which stores the information about the
-order, exponents, and types of dimensions used to defined this particular
-derived dimension. For example each of the below ``momentum`` definitions
-will result in a different unnamed unit symbol:
-
-.. code-block::
-    :emphasize-lines: 2-4, 6-8, 10-12
-
-    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exponent<si::dim_mass, 1>,
-                                            exponent<si::dim_length, 1>,
-                                            exponent<si::dim_time, -1>> {};    // kg ⋅ m/s
-    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exponent<si::dim_length, 1>,
-                                            exponent<si::dim_mass, 1>,
-                                            exponent<si::dim_time, -1>> {};    // m ⋅ kg/s
-    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exponent<si::dim_time, -1>,
-                                            exponent<si::dim_length, 1>,
-                                            exponent<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
-
-where ``kilogram_metre_per_second`` is defined as::
-
-    struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
-
-However, the easiest way to define momentum is just to use the
-``si::dim_speed`` derived dimension in the recipe:
-
-.. code-block::
-    :emphasize-lines: 3
-
-    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
-                                            exponent<si::dim_mass, 1>,
-                                            exponent<si::dim_speed, 1>> {}; // kg ⋅ m/s
-
-In such a case the library will do its magic and will automatically
-unpack a provided derived dimension to its base dimensions in order to
-end up with a :term:`normalized derived dimension` for a parent entity.
-
-
-The need to support a derived dimension in the recipe is not just a
-syntactic sugar that allows us to do less typing. It is worth to notice
-here that some of the derived unnamed units are defined in terms of other
-derived named units (i.e. surface tension quantity is measured in terms
-of ``N/m``):
-
-.. code-block::
-    :emphasize-lines: 2
-
-    struct dim_surface_tension : derived_dimension<dim_surface_tension, newton_per_metre,
-                                                   exponent<si::dim_force, 1>,
-                                                   exponent<si::dim_length, -1>> {}; // N/m
-
-If we defined the above in terms of base units we would end up with
-a ``kg/s²`` derived unit symbol.
-
-
 Scaled Units
 ------------
 
-Until now we talked mostly about
-:term:`coherent units <coherent derived unit>` which are units used to
-define dimensions and thus, in their system of units, have proportionality
-factor/ratio equals one. However quantities of each dimension can also use
-other units of measurement to describe their magnitude (numerical value).
+Described above base units (in case of base quantities) and
+:term:`coherent units <coherent derived unit>` (in case of derived quantities),
+in their system of units, have proportionality factor/ratio equal to one.
+However, quantities of such dimensions can also use units of measurement
+with other ratios to describe their magnitude (numerical value).
 
 
 Named Scaled Units
@@ -289,13 +206,99 @@ example we can define ``si::kilometre`` as::
     as ``km²`` would be invalid).
 
 
-Deduced Units
-^^^^^^^^^^^^^
+Derived Units
+-------------
+
+:term:`Derived units <derived unit>` are the units used to measure
+:term:`derived quantities <derived quantity>`. They can either have their own unique
+names (i.e. ``N`` (newton)) or can be composed from the names of units of quantities
+used to define thier derived quantity (i.e. ``km/h``).
+
+
+Derived Named Units
+^^^^^^^^^^^^^^^^^^^
+
+Derived named units have a unique symbol (i.e. ``N`` (newton) or ``Pa``
+(pascal)) and they are defined in the same way as base units (which
+always have to be a named unit)::
+
+    namespace si {
+
+    struct newton : named_unit<newton, "N", prefix> {};
+
+    }
+
+
+Derived Unnamed Units
+^^^^^^^^^^^^^^^^^^^^^
+
+Derived unnamed units are the units where the symbol is derived from the
+base quantities symbols and the expression of the dependence of the derived
+quantity on the base quantities (i.e. ``m/s`` (metre per second), ``m²``
+(square metre)). To support such use cases a library introduced a notion of
+:term:`derived dimension recipe` which stores the information about the
+order, exponents, and types of dimensions used to define this particular
+derived dimension. For example each of the below ``momentum`` definitions
+will result in a different unnamed unit symbol:
+
+.. code-block::
+    :emphasize-lines: 2-4, 6-8, 10-12
+
+    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_time, -1>> {};    // kg ⋅ m/s
+    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_time, -1>> {};    // m ⋅ kg/s
+    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
+                                            exponent<si::dim_time, -1>,
+                                            exponent<si::dim_length, 1>,
+                                            exponent<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
+
+where ``kilogram_metre_per_second`` is defined as::
+
+    struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+
+However, the easiest way to define momentum is just to use the
+``si::dim_speed`` derived dimension in the recipe:
+
+.. code-block::
+    :emphasize-lines: 3
+
+    struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
+                                            exponent<si::dim_mass, 1>,
+                                            exponent<si::dim_speed, 1>> {}; // kg ⋅ m/s
+
+In such a case the library will do its magic and will automatically
+unpack a provided derived dimension to its base dimensions in order to
+end up with a :term:`normalized derived dimension` for a parent entity.
+
+The need to support a derived dimension in the recipe is not just a
+syntactic sugar that allows us to do less typing. It is worth to notice
+here that some of the derived unnamed units are defined in terms of other
+derived named units (i.e. surface tension quantity is measured in terms
+of ``N/m``):
+
+.. code-block::
+    :emphasize-lines: 2
+
+    struct dim_surface_tension : derived_dimension<dim_surface_tension, newton_per_metre,
+                                                   exponent<si::dim_force, 1>,
+                                                   exponent<si::dim_length, -1>> {}; // N/m
+
+If we defined the above in terms of base units we would end up with
+a ``kg/s²`` derived unit symbol.
+
+
+Derived Scaled Units
+^^^^^^^^^^^^^^^^^^^^
 
 For some units determining of a correct scaling ratio may not be trivial,
 and even if done correctly, may be a pain to maintain. For a simple example
 let's take a "kilometre per hour" unit. What is the easiest to maintain
-ratio in reference to "metre per second":
+ratio in reference to the "metre per second":
 
 - ``1000/3600``
 - ``10/36``
@@ -303,30 +306,29 @@ ratio in reference to "metre per second":
 
 Whichever, we choose there will always be someone not happy with our choice.
 
-Thanks to a `deduced_unit` class template provided by the library this problem
+Thanks to a `derived_unit` class template provided by the library this problem
 does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     namespace si {
 
-    struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+    struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
     }
 
-In case the deduced unit should served as a named one we can use ether a
-`named_deduced_unit` where the user is able to provide a symbol for the unit
-by him/her-self or `noble_deduced_unit` where the symbol is the deduced name
+In case the scaled derived unit should serve as a named one we can use either
+a `named_derived_unit` where the user is able to provide a symbol for the unit
+by him/her-self or `noble_derived_unit` where the symbol is the deduced name
 based on the ingredients::
 
     namespace si::fps {
 
-    struct nautical_mile_per_hour : named_deduced_unit<nautical_mile_per_hour, dim_speed,
-                                                       "knot", no_prefix, nautical_mile, hour>{};
-    struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+    struct knot : named_derived_unit<knot, dim_speed, "knot", no_prefix, nautical_mile, hour> {};
+    struct foot_pound_force : noble_derived_unit<foot_pound_force, dim_energy, pound_force, foot> {};
 
     }
 
-Please note that deduced units are the only unit-related class template that
-take a dimension as its parameter. This derived dimension provides a :term:`recipe`
+Please note that the dervided scaled units are the only unit-related class templates
+that take a dimension as its parameter. This derived dimension provides a :term:`recipe`
 used for its definition. Based on the information stored in the recipe
 (order, type, and exponents of composite dimensions) and the ratios of units
 provided in the template parameter list after the derived dimension parameter,
@@ -377,9 +379,9 @@ of a `scaled_unit` class template:
     [scaled_unit<UnitRatio, Unit>]<:-[named_unit<Child, Symbol, PrefixFamily>]
     [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
-    [scaled_unit<UnitRatio, Unit>]<:-[deduced_unit<Child, Dimension, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[noble_deduced_unit<Child, Dimension, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_deduced_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[derived_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[noble_derived_unit<Child, Dimension, Unit, Unit...>]
+    [scaled_unit<UnitRatio, Unit>]<:-[named_derived_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
     [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
     [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
 

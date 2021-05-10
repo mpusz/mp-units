@@ -37,14 +37,14 @@ namespace units::isq::iec80000 {
 struct byte_per_second : unit<byte_per_second> {};
 struct dim_transfer_rate : derived_dimension<dim_transfer_rate, byte_per_second, exponent<dim_storage_capacity, 1>, exponent<si::dim_time, -1>> {};
 
-struct kilobyte_per_second : deduced_unit<kilobyte_per_second, dim_transfer_rate, kilobyte, si::second> {};
-struct megabyte_per_second : deduced_unit<megabyte_per_second, dim_transfer_rate, megabyte, si::second> {};
-struct gigabyte_per_second : deduced_unit<gigabyte_per_second, dim_transfer_rate, gigabyte, si::second> {};
-struct terabyte_per_second : deduced_unit<terabyte_per_second, dim_transfer_rate, terabyte, si::second> {};
-struct petabyte_per_second : deduced_unit<petabyte_per_second, dim_transfer_rate, petabyte, si::second> {};
-struct exabyte_per_second : deduced_unit<exabyte_per_second, dim_transfer_rate, exabyte, si::second> {};
-struct zettabyte_per_second : deduced_unit<zettabyte_per_second, dim_transfer_rate, zettabyte, si::second> {};
-struct yottabyte_per_second : deduced_unit<yottabyte_per_second, dim_transfer_rate, yottabyte, si::second> {};
+struct kilobyte_per_second : derived_unit<kilobyte_per_second, dim_transfer_rate, kilobyte, si::second> {};
+struct megabyte_per_second : derived_unit<megabyte_per_second, dim_transfer_rate, megabyte, si::second> {};
+struct gigabyte_per_second : derived_unit<gigabyte_per_second, dim_transfer_rate, gigabyte, si::second> {};
+struct terabyte_per_second : derived_unit<terabyte_per_second, dim_transfer_rate, terabyte, si::second> {};
+struct petabyte_per_second : derived_unit<petabyte_per_second, dim_transfer_rate, petabyte, si::second> {};
+struct exabyte_per_second : derived_unit<exabyte_per_second, dim_transfer_rate, exabyte, si::second> {};
+struct zettabyte_per_second : derived_unit<zettabyte_per_second, dim_transfer_rate, zettabyte, si::second> {};
+struct yottabyte_per_second : derived_unit<yottabyte_per_second, dim_transfer_rate, yottabyte, si::second> {};
 
 template<typename T>
 concept TransferRate = QuantityOf<T, dim_transfer_rate>;

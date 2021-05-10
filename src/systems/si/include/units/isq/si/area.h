@@ -37,26 +37,26 @@ namespace units::isq::si {
 struct square_metre : unit<square_metre> {};
 struct dim_area : isq::dim_area<dim_area, square_metre, dim_length> {};
 
-struct square_yoctometre : deduced_unit<square_yoctometre, dim_area, yoctometre> {};
-struct square_zeptometre : deduced_unit<square_zeptometre, dim_area, zeptometre> {};
-struct square_attometre : deduced_unit<square_attometre, dim_area, attometre> {};
-struct square_femtometre : deduced_unit<square_femtometre, dim_area, femtometre> {};
-struct square_picometre : deduced_unit<square_picometre, dim_area, picometre> {};
-struct square_nanometre : deduced_unit<square_nanometre, dim_area, nanometre> {};
-struct square_micrometre : deduced_unit<square_micrometre, dim_area, micrometre> {};
-struct square_millimetre : deduced_unit<square_millimetre, dim_area, millimetre> {};
-struct square_centimetre : deduced_unit<square_centimetre, dim_area, centimetre> {};
-struct square_decimetre : deduced_unit<square_decimetre, dim_area, decimetre> {};
-struct square_decametre : deduced_unit<square_decametre, dim_area, decametre> {};
-struct square_hectometre : deduced_unit<square_hectometre, dim_area, hectometre> {};
-struct square_kilometre : deduced_unit<square_kilometre, dim_area, kilometre> {};
-struct square_megametre : deduced_unit<square_megametre, dim_area, megametre> {};
-struct square_gigametre : deduced_unit<square_gigametre, dim_area, gigametre> {};
-struct square_terametre : deduced_unit<square_terametre, dim_area, terametre> {};
-struct square_petametre : deduced_unit<square_petametre, dim_area, petametre> {};
-struct square_exametre : deduced_unit<square_exametre, dim_area, exametre> {};
-struct square_zettametre : deduced_unit<square_zettametre, dim_area, zettametre> {};
-struct square_yottametre : deduced_unit<square_yottametre, dim_area, yottametre> {};
+struct square_yoctometre : derived_unit<square_yoctometre, dim_area, yoctometre> {};
+struct square_zeptometre : derived_unit<square_zeptometre, dim_area, zeptometre> {};
+struct square_attometre : derived_unit<square_attometre, dim_area, attometre> {};
+struct square_femtometre : derived_unit<square_femtometre, dim_area, femtometre> {};
+struct square_picometre : derived_unit<square_picometre, dim_area, picometre> {};
+struct square_nanometre : derived_unit<square_nanometre, dim_area, nanometre> {};
+struct square_micrometre : derived_unit<square_micrometre, dim_area, micrometre> {};
+struct square_millimetre : derived_unit<square_millimetre, dim_area, millimetre> {};
+struct square_centimetre : derived_unit<square_centimetre, dim_area, centimetre> {};
+struct square_decimetre : derived_unit<square_decimetre, dim_area, decimetre> {};
+struct square_decametre : derived_unit<square_decametre, dim_area, decametre> {};
+struct square_hectometre : derived_unit<square_hectometre, dim_area, hectometre> {};
+struct square_kilometre : derived_unit<square_kilometre, dim_area, kilometre> {};
+struct square_megametre : derived_unit<square_megametre, dim_area, megametre> {};
+struct square_gigametre : derived_unit<square_gigametre, dim_area, gigametre> {};
+struct square_terametre : derived_unit<square_terametre, dim_area, terametre> {};
+struct square_petametre : derived_unit<square_petametre, dim_area, petametre> {};
+struct square_exametre : derived_unit<square_exametre, dim_area, exametre> {};
+struct square_zettametre : derived_unit<square_zettametre, dim_area, zettametre> {};
+struct square_yottametre : derived_unit<square_yottametre, dim_area, yottametre> {};
 
 struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
 

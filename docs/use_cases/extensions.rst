@@ -118,7 +118,7 @@ coherent unit::
                                              exponent<si::dim_area, 1>, exponent<si::dim_time, -1>> {};
 
     // our unit of interest for a new derived dimension
-    struct desk_per_hour : deduced_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
+    struct desk_per_hour : derived_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
 
     // a quantity of our dimension
     template<UnitOf<dim_desk_rate> U, Representation Rep = double>
@@ -167,7 +167,7 @@ With the above we can now define a new derived dimension::
                                                   exponent<dim_people, 1>,
                                                   exponent<si::dim_area, -1>> {};
 
-    struct person_per_desk : deduced_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
+    struct person_per_desk : derived_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 
     template<UnitOf<dim_occupancy_rate> U, Representation Rep = double>
     using occupancy_rate = quantity<dim_occupancy_rate, U, Rep>;

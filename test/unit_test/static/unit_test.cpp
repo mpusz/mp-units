@@ -52,7 +52,7 @@ static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct
 
 struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exponent<dim_length, 1>, units::exponent<dim_time, -1>> {};
-struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
 static_assert(equivalent<metre::named_unit, metre>);
 static_assert(equivalent<metre::scaled_unit, metre>);

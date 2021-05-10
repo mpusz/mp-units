@@ -34,7 +34,7 @@
 
 namespace units::isq::si::international {
 
-struct mile_per_hour : deduced_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
+struct mile_per_hour : derived_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
 
 #ifndef UNITS_NO_LITERALS
 

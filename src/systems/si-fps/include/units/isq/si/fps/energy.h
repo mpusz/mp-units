@@ -40,7 +40,7 @@ struct foot_poundal : unit<foot_poundal> {};
 struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_force, dim_length> {};
 
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
-struct foot_pound_force : noble_deduced_unit<foot_pound_force, dim_energy, pound_force, foot> {};
+struct foot_pound_force : noble_derived_unit<foot_pound_force, dim_energy, pound_force, foot> {};
 
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
