@@ -1,6 +1,6 @@
 # Release notes
 
-- **0.7.0 WIP**
+- **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
   - (!) refactor: Refactored the library file tree
