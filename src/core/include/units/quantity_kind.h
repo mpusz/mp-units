@@ -228,19 +228,14 @@ public:
     q_ %= rhs;
     return *this;
   }
-  template<typename Rep2>
-  constexpr quantity_kind& operator%=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
-    requires requires(quantity_type q) { q %= rhs.common(); }
+  
+  template<QuantityKind QK>
+  constexpr quantity_kind& operator%=(const QK& rhs)
+    requires (QuantityKindEquivalentTo<QK, quantity_kind> || std::same_as<typename QK::kind_type, downcast_kind<K, dim_one>>) &&
+      requires(quantity_type q) { q %= rhs.common(); }
   {
+    gsl_ExpectsAudit(rhs.common().number() != quantity_values<typename QK::rep>::zero());
     q_ %= rhs.common();
-    return *this;
-  }
-
-  constexpr quantity_kind& operator%=(const quantity_kind& qk)
-    requires requires(quantity_type q) { q %= qk.common(); }
-  {
-    gsl_ExpectsAudit(qk.common().number() != quantity_values<rep>::zero());
-    q_ %= qk.common();
     return *this;
   }
 
