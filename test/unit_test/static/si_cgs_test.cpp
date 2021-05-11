@@ -107,8 +107,8 @@ namespace cgs_test {
 
 // addition
 
-// static_assert(100_q_cm + si::length<si::metre>(1) == si::length<si::metre>(2)); // should not compile (different dimensions)
-// static_assert(si::length<si::metre>(1) + 100_q_cm == si::length<si::metre>(2)); // should not compile (different dimensions)
+static_assert(100_q_cm + si::length<si::metre>(1) == si::length<si::metre>(2));
+static_assert(si::length<si::metre>(1) + 100_q_cm == si::length<si::metre>(2));
 static_assert(quantity_cast<si::length<si::metre>>(100_q_cm) + si::length<si::metre>(1) == si::length<si::metre>(2));
 static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(100_q_cm) == si::length<si::metre>(2));
 static_assert(100_q_cm + quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) == 200_q_cm);
@@ -116,8 +116,8 @@ static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si:
 
 // substraction
 
-// static_assert(500_q_cm - si::length<si::metre>(1) == si::length<si::metre>(4)); // should not compile (different dimensions)
-// static_assert(si::length<si::metre>(5) - 100_q_cm == si::length<si::metre>(4)); // should not compile (different dimensions)
+static_assert(500_q_cm - si::length<si::metre>(1) == si::length<si::metre>(4));
+static_assert(si::length<si::metre>(5) - 100_q_cm == si::length<si::metre>(4));
 static_assert(quantity_cast<si::length<si::metre>>(500_q_cm) - si::length<si::metre>(1) == si::length<si::metre>(4));
 static_assert(si::length<si::metre>(5) - quantity_cast<si::length<si::metre>>(100_q_cm) == si::length<si::metre>(4));
 static_assert(500_q_cm - quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) == 400_q_cm);
@@ -125,7 +125,7 @@ static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si:
 
 // multiplication
 
-// static_assert(200_q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // should not compile (unknown dimension)
+// static_assert(200_q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // TODO Add support for comparing of an unknown_dimension
 
 static_assert(quantity_cast<si::dim_length>(200._q_cm) * si::length<si::metre>(2) == si::area<si::square_metre>(4));
 static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metre>(2)) == 40'000_q_cm2);
@@ -138,7 +138,7 @@ static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metr
 
 // division
 
-// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // should not compile (unknown dimension)
+// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // TODO Add support for comparing of an unknown_dimension
 
 static_assert(si::area<si::square_metre>(4) / quantity_cast<si::length<si::metre>>(200_q_cm) == si::length<si::metre>(2));
 static_assert(quantity_cast<si::cgs::area<si::cgs::square_centimetre>>(si::area<si::square_metre>(4)) / 200._q_cm == 200_q_cm);
