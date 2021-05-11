@@ -93,16 +93,13 @@ public:
   quantity_kind(const quantity_kind&) = default;
   quantity_kind(quantity_kind&&) = default;
 
-  template<typename Value>
-    requires std::same_as<dimension, dim_one> && 
-      safe_convertible_to_<std::remove_cvref_t<Value>, rep> &&
-      std::constructible_from<quantity_type, Value>
-  constexpr explicit quantity_kind(Value&& v) : q_(std::forward<Value>(v)) {}
-
-  template<typename Q>
-    requires (Quantity<std::remove_cvref_t<Q>> || QuantityLike<std::remove_cvref_t<Q>>) &&
-      std::constructible_from<quantity_type, Q>
-  constexpr explicit quantity_kind(Q&& q) : q_(std::forward<Q>(q)) {}
+  template<typename T>
+    requires 
+      (Quantity<std::remove_cvref_t<T>> ||
+       QuantityLike<std::remove_cvref_t<T>> ||
+       (Dimensionless<quantity_type> && !Quantity<std::remove_cvref_t<T>>)) &&
+      std::constructible_from<quantity_type, T>
+  constexpr explicit quantity_kind(T&& t) : q_(std::forward<T>(t)) {}
 
   template<QuantityKindEquivalentTo<quantity_kind> QK2>
     requires std::convertible_to<typename QK2::quantity_type, quantity_type>
