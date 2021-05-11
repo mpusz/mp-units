@@ -367,11 +367,12 @@ public:
   }
 
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity& rhs)
-    requires (!floating_point_<rep>) && is_same_v<unit, units::one> &&
+    requires (!floating_point_<rep>) &&
             invoke_result_convertible_to_<rep, std::modulus<>, rep, rep>
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
-    return units::quantity(lhs.number() % rhs.number());
+    using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, rep>>;
+    return ret(lhs.number() % rhs.number());
   }
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)
