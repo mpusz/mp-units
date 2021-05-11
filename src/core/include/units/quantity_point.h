@@ -59,16 +59,9 @@ public:
   quantity_point(const quantity_point&) = default;
   quantity_point(quantity_point&&) = default;
 
-  template<typename Value>
-    requires std::same_as<dimension, dim_one> &&
-      safe_convertible_to_<std::remove_cvref_t<Value>, rep> &&
-      std::constructible_from<quantity_type, Value>
-  constexpr explicit quantity_point(Value&& v) : q_(std::forward<Value>(v)) {}
-
-  template<typename Q>
-    requires (Quantity<std::remove_cvref_t<Q>> || QuantityLike<std::remove_cvref_t<Q>>) &&
-      std::constructible_from<quantity_type, Q>
-  constexpr explicit quantity_point(Q&& q) : q_(std::forward<Q>(q)) {}
+  template<typename T>
+    requires std::constructible_from<quantity_type, T>
+  constexpr explicit quantity_point(T&& t) : q_(std::forward<T>(t)) {}
 
   template<QuantityPoint QP2>
     requires std::convertible_to<typename QP2::quantity_type, quantity_type>
