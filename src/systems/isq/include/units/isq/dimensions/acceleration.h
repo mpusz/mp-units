@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_acceleration;
+
 template<typename Child, Unit U, DimensionOfT<dim_length> L, DimensionOfT<dim_time> T>
-struct dim_acceleration : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -2>> {};
+struct dim_acceleration<Child, U, L, T> : derived_dimension<Child, U, exponent<L, 1>, exponent<T, -2>> {};
 
 template<typename T>
 concept Acceleration = QuantityOfT<T, dim_acceleration>;

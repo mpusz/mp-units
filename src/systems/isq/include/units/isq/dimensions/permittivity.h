@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_permittivity;
+
 template<typename Child, Unit U, DimensionOfT<dim_capacitance> C, DimensionOfT<dim_length> L>
-struct dim_permittivity : derived_dimension<Child, U, exponent<C, 1>, exponent<L, -1>> {};
+struct dim_permittivity<Child, U, C, L> : derived_dimension<Child, U, exponent<C, 1>, exponent<L, -1>> {};
 
 template<typename T>
 concept Permittivity = QuantityOfT<T, dim_permittivity>;

@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_radioactivity;
+
 template<typename Child, Unit U, DimensionOfT<dim_time> T>
-struct dim_radioactivity : derived_dimension<Child, U, exponent<T, -1>> {};
+struct dim_radioactivity<Child, U, T> : derived_dimension<Child, U, exponent<T, -1>> {};
 
 template<typename T>
 concept Radioactivity = QuantityOfT<T, dim_radioactivity>;

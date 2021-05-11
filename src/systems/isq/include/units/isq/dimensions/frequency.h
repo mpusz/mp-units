@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_frequency;
+
 template<typename Child, Unit U, DimensionOfT<dim_time> T>
-struct dim_frequency : derived_dimension<Child, U, exponent<T, -1>> {};
+struct dim_frequency<Child, U, T> : derived_dimension<Child, U, exponent<T, -1>> {};
 
 template<typename T>
 concept Frequency = QuantityOfT<T, dim_frequency>;

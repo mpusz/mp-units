@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_pressure;
+
 template<typename Child, Unit U, DimensionOfT<dim_force> F, DimensionOfT<dim_area> A>
-struct dim_pressure : derived_dimension<Child, U, exponent<F, 1>, exponent<A, -1>> {};
+struct dim_pressure<Child, U, F, A> : derived_dimension<Child, U, exponent<F, 1>, exponent<A, -1>> {};
 
 template<typename T>
 concept Pressure = QuantityOfT<T, dim_pressure>;

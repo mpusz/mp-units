@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_molar_energy;
+
 template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_amount_of_substance> M>
-struct dim_molar_energy : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
+struct dim_molar_energy<Child, U, E, M> : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
 
 template<typename T>
 concept MolarEnergy = QuantityOfT<T, dim_molar_energy>;

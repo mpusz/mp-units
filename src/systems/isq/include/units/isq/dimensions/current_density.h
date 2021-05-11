@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_current_density;
+
 template<typename Child, Unit U, DimensionOfT<dim_electric_current> I, DimensionOfT<dim_length> L>
-struct dim_current_density : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
+struct dim_current_density<Child, U, I, L> : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
 
 template<typename T>
 concept CurrentDensity = QuantityOfT<T, dim_current_density>;

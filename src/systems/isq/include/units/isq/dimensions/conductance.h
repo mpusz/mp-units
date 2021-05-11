@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_conductance;
+
 template<typename Child, Unit U, DimensionOfT<dim_resistance> R>
-struct dim_conductance : derived_dimension<Child, U, exponent<R, -1>> {};
+struct dim_conductance<Child, U, R> : derived_dimension<Child, U, exponent<R, -1>> {};
 
 template<typename T>
 concept Conductance = QuantityOfT<T, dim_conductance>;

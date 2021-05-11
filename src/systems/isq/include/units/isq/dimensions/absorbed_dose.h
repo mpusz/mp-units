@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_absorbed_dose;
+
 template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_mass> M>
-struct dim_absorbed_dose : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
+struct dim_absorbed_dose<Child, U, E, M> : derived_dimension<Child, U, exponent<E, 1>, exponent<M, -1>> {};
 
 template<typename T>
 concept AbsorbedDose = QuantityOfT<T, dim_absorbed_dose>;

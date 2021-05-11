@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_momentum;
+
 template<typename Child, Unit U, DimensionOfT<dim_mass> M, DimensionOfT<dim_speed> V>
-struct dim_momentum : derived_dimension<Child, U, exponent<M, 1>, exponent<V, 1>> {};
+struct dim_momentum<Child, U, M, V> : derived_dimension<Child, U, exponent<M, 1>, exponent<V, 1>> {};
 
 template<typename T>
 concept Momentum = QuantityOfT<T, dim_momentum>;

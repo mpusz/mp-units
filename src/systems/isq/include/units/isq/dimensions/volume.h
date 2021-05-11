@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_volume;
+
 template<typename Child, Unit U, DimensionOfT<dim_length> L>
-struct dim_volume : derived_dimension<Child, U, exponent<L, 3>> {};
+struct dim_volume<Child, U, L> : derived_dimension<Child, U, exponent<L, 3>> {};
 
 template<typename T>
 concept Volume = QuantityOfT<T, dim_volume>;

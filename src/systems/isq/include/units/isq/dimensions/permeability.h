@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_permeability;
+
 template<typename Child, Unit U, DimensionOfT<dim_inductance> H, DimensionOfT<dim_length> L>
-struct dim_permeability : derived_dimension<Child, U, exponent<H, 1>, exponent<L, -1>> {};
+struct dim_permeability<Child, U, H, L> : derived_dimension<Child, U, exponent<H, 1>, exponent<L, -1>> {};
 
 template<typename T>
 concept Permeability = QuantityOfT<T, dim_permeability>;

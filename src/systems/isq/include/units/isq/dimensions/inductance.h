@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_inductance;
+
 template<typename Child, Unit U, DimensionOfT<dim_magnetic_flux> F, DimensionOfT<dim_electric_current> I>
-struct dim_inductance : derived_dimension<Child, U, exponent<F, 1>, exponent<I, -1>> {};
+struct dim_inductance<Child, U, F, I> : derived_dimension<Child, U, exponent<F, 1>, exponent<I, -1>> {};
 
 template<typename T>
 concept Inductance = QuantityOfT<T, dim_inductance>;

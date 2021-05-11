@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_angular_velocity;
+
 template<typename Child, Unit U, DimensionOfT<dim_angle> A, DimensionOfT<dim_time> T>
-struct dim_angular_velocity : derived_dimension<Child, U, exponent<A, 1>, exponent<T, -1>> {};
+struct dim_angular_velocity<Child, U, A, T> : derived_dimension<Child, U, exponent<A, 1>, exponent<T, -1>> {};
 
 template <typename T>
 concept AngularVelocity = QuantityOfT<T, dim_angular_velocity>;

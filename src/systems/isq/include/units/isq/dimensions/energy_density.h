@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_energy_density;
+
 template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_volume> V>
-struct dim_energy_density : derived_dimension<Child, U, exponent<E, 1>, exponent<V, -1>> {};
+struct dim_energy_density<Child, U, E, V> : derived_dimension<Child, U, exponent<E, 1>, exponent<V, -1>> {};
 
 template<typename T>
 concept EnergyDensity = QuantityOfT<T, dim_energy_density>;

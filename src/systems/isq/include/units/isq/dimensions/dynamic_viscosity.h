@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_dynamic_viscosity;
+
 template<typename Child, Unit U, DimensionOfT<dim_pressure> P, DimensionOfT<dim_time> T>
-struct dim_dynamic_viscosity : derived_dimension<Child, U, exponent<P, 1>, exponent<T, 1>> {};
+struct dim_dynamic_viscosity<Child, U, P, T> : derived_dimension<Child, U, exponent<P, 1>, exponent<T, 1>> {};
 
 template<typename T>
 concept DynamicViscosity = QuantityOfT<T, dim_dynamic_viscosity>;

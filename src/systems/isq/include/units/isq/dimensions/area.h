@@ -27,8 +27,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_area;
+
 template<typename Child, Unit U, DimensionOfT<dim_length> L>
-struct dim_area : derived_dimension<Child, U, exponent<L, 2>> {};
+struct dim_area<Child, U, L> : derived_dimension<Child, U, exponent<L, 2>> {};
 
 template<typename T>
 concept Area = QuantityOfT<T, dim_area>;

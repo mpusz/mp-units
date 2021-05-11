@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_electric_charge;
+
 template<typename Child, Unit U, DimensionOfT<dim_time> T, DimensionOfT<dim_electric_current> C>
-struct dim_electric_charge : derived_dimension<Child, U, exponent<T, 1>, exponent<C, 1>> {};
+struct dim_electric_charge<Child, U, T, C> : derived_dimension<Child, U, exponent<T, 1>, exponent<C, 1>> {};
 
 template<typename T>
 concept ElectricCharge = QuantityOfT<T, dim_electric_charge>;
