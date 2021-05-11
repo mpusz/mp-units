@@ -399,7 +399,7 @@ static_assert(is_same_v<decltype(1_q_m % 1_q_m), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m * dimensionless<percent, std::int64_t>(1)), length<centimetre, std::int64_t>>);
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) * 1_q_m), length<centimetre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / dimensionless<percent, std::int64_t>(1)), length<hectometre, std::int64_t>>);
-static_assert(compare<decltype(1_q_m % dimensionless<percent, std::int64_t>(1)), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % dimensionless<percent, std::int64_t>(1)), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m * 1_q_m), area<square_metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / 1_q_m), dimensionless<one, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_s), frequency<hertz, std::int64_t>>);
@@ -433,7 +433,7 @@ static_assert(compare<decltype(quantity{1} / 1._q_s), frequency<hertz, long doub
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1._q_s), frequency<scaled_unit<ratio(1, 100), hertz>, long double>>);
 static_assert(compare<decltype(1_q_m % short(1)), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m % quantity{short(1)}), length<metre, std::int64_t>>);
-static_assert(compare<decltype(1_q_m % dimensionless<percent, short>(1)), length<centimetre, std::int64_t>>);
+static_assert(compare<decltype(1_q_m % dimensionless<percent, short>(1)), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m % length<metre, short>(1)), length<metre, std::int64_t>>);
 
 static_assert(is_same_v<decltype(1._q_m + 1_q_m), length<metre, long double>>);
@@ -475,7 +475,7 @@ static_assert(is_same_v<decltype(1_q_km - 1._q_m), length<metre, long double>>);
 static_assert(is_same_v<decltype(1._q_km - 1._q_m), length<metre, long double>>);
 
 static_assert(is_same_v<decltype(1_q_m % 1_q_km), length<metre, std::int64_t>>);
-static_assert(is_same_v<decltype(1_q_km % 1_q_m), length<metre, std::int64_t>>);
+static_assert(is_same_v<decltype(1_q_km % 1_q_m), length<kilometre, std::int64_t>>);
 
 // different dimensions
 static_assert(compare<decltype(1_q_m_per_s * 1_q_s), length<metre, std::int64_t>>);
@@ -545,7 +545,7 @@ static_assert((7_q_m % 2).number() == 1);
 static_assert((7_q_m % quantity{2}).number() == 1);
 static_assert((7_q_m % dimensionless<percent, int>(2)).number() == 1);
 static_assert((7_q_m % 2_q_m).number() == 1);
-static_assert((7_q_km % 2000_q_m).number() == 1000);
+static_assert((7_q_km % 2000_q_m).number() == 7);
 
 static_assert((10_q_km2 * 10_q_km2) / 50_q_km2 == 2_q_km2);
 
@@ -560,8 +560,7 @@ static_assert(quantity_cast<one>(10_q_km / 5_q_m).number() == 2000);
 
 static_assert((10_q_s * 2_q_kHz).number() == 20);
 
-// unit constants
-
+// quantity references
 static_assert(2_q_m * (1 * m) == (2_q_m2));
 static_assert(2_q_m2 / (1 * m) == (2_q_m));
 
@@ -786,5 +785,63 @@ static_assert(is_same_v<decltype(10_q_m / 5_q_s), speed<metre_per_second, std::i
 static_assert(is_same_v<decltype(1_q_mm + 1_q_km), length<millimetre, std::int64_t>>);
 
 #endif
+
+// modulo arithmetics
+
+constexpr auto quotient_remainder_theorem(auto q1, auto q2)
+{
+  auto quotient = q1 / q2;
+  auto reminder = q1 % q2;
+  auto q = quotient * q2 + reminder;
+  return q;
+}
+
+constexpr auto qr1 = quotient_remainder_theorem(3'000 * m, 400 * m);
+static_assert(qr1 == 3'000 * m);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr1)>, decltype(3'000 * m)>);
+
+constexpr auto qr2 = quotient_remainder_theorem(3 * km, 400 * m);
+static_assert(qr2 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr2)>, decltype(3 * km)>);
+
+constexpr auto qr3 = quotient_remainder_theorem(3 * km, 2 * m);
+static_assert(qr3 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr2)>, decltype(3 * km)>);
+
+constexpr auto qr4 = quotient_remainder_theorem(3 * km, 400'000 * mm);
+static_assert(qr4 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr4)>, decltype(3 * km)>);
+
+constexpr auto qr5 = quotient_remainder_theorem(3 * km, 2'000 * mm);
+static_assert(qr5 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr5)>, decltype(3 * km)>);
+
+constexpr auto qr6 = quotient_remainder_theorem(3 * km, 400 * mm);
+static_assert(qr6 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr6)>, decltype(3 * km)>);
+
+constexpr auto qr7 = quotient_remainder_theorem(3 * km, 2 * mm);
+static_assert(qr7 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr7)>, decltype(3 * km)>);
+
+constexpr auto qr8 = quotient_remainder_theorem(3'000 * m, 400);
+static_assert(qr8 == 3'000 * m);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr8)>, decltype(3'000 * m)>);
+
+constexpr auto qr9 = quotient_remainder_theorem(3'000 * m, quantity(400));
+static_assert(qr9 == 3'000 * m);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr9)>, decltype(3'000 * m)>);
+
+constexpr auto qr10 = quotient_remainder_theorem(3 * km, quantity(400));
+static_assert(qr10 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr10)>, decltype(3 * km)>);
+
+constexpr auto qr11 = quotient_remainder_theorem(3 * km, quantity(2));
+static_assert(qr11 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr11)>, decltype(3 * km)>);
+
+constexpr auto qr12 = quotient_remainder_theorem(3 * km, dimensionless<scaled_unit<ratio(1, 1000), one>, int>(400));
+static_assert(qr12 == 3 * km);
+static_assert(is_same_v<std::remove_cvref_t<decltype(qr12)>, decltype(3 * km)>);
 
 }  // namespace

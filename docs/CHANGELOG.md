@@ -34,6 +34,7 @@
   - fix: downcasting facility for non-default-constructible types
   - fix: restore user-warnings within the library implementation
   - fix: the text symbol of `foot_pound_force` and `foot_pound_force_per_second`
+  - fix: quantity modulo arithmetics fixed
   - (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
   - (!) build: Linear Algebra is now hosted on its [Artifactory](https://twonington.jfrog.io/artifactory/api/conan/conan-oss)
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`

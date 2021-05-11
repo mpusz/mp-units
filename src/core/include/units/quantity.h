@@ -426,25 +426,15 @@ template<Quantity Q1, Quantity Q2>
   return detail::make_quantity<Q1::reference / Q2::reference>(lhs.number() / rhs.number());
 }
 
-template<typename D1, typename U1, typename Rep1, typename U2, typename Rep2>
-  requires (!floating_point_<Rep1>) && (!floating_point_<Rep2>) &&
-          quantity_value_for_<std::modulus<>, Rep1, Rep2>
-[[nodiscard]] constexpr Quantity auto operator%(const quantity<D1, U1, Rep1>& lhs, const quantity<dim_one, U2, Rep2>& rhs)
-{
-  gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
-  using unit = downcast_unit<D1, U1::ratio * U2::ratio>;
-  using ret = quantity<D1, unit, std::invoke_result_t<std::modulus<>, Rep1, Rep2>>;
-  return ret(lhs.number() % rhs.number());
-}
-
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<Quantity Q1, Quantity Q2>
   requires (!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
+          (QuantityEquivalentTo<Q2, Q1> || Dimensionless<Q2>) &&
           quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {
   gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
-  using ret = common_quantity_for<std::modulus<>, Q1, Q2>;
-  return ret(ret(lhs).number() % ret(rhs).number());
+  using ret = quantity<typename Q1::dimension, typename Q1::unit, std::invoke_result_t<std::modulus<>, typename Q1::rep, typename Q2::rep>>;
+  return ret(lhs.number() % rhs.number());
 }
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>

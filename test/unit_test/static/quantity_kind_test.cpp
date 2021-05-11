@@ -612,7 +612,7 @@ static_assert(same(height<metre, double>(2. * m) / (3 * s), rate_of_climb<metre_
 static_assert(same(width<metre, int>(2 * m) * dimensionless<percent, int>(3), width<centimetre, int>(6 * cm)));
 static_assert(same(dimensionless<percent, int>(2) * width<metre, int>(3 * m), width<centimetre, int>(6 * cm)));
 static_assert(same(width<metre, int>(2 * m) / dimensionless<percent, double>(3), width<hectometre, double>(2. / 3 * hm)));
-static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<centimetre, int>(2 * cm)));
+static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<metre, int>(2 * m)));
 
 static_assert(same(height<metre, int>(2 * m) / (3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
