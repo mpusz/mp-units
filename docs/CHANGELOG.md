@@ -1,5 +1,8 @@
 # Release notes
 
+- **0.8.0 WIP**
+
+
 - **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
@@ -46,6 +49,7 @@
   - build: Conan generator switched to `cmake_find_package_multi`
   - build: Conan CMakeToolchain support added
   - build: CMake scripts cleanup
+  - build: ccache support added
   - ci: CI switched from Travis CI to GitHub Actions
 
 - **0.6.0 September 13, 2020**

@@ -247,7 +247,7 @@ library release the following steps may be performed:
       :caption: conanfile.txt
 
       [requires]
-      mp-units/0.6.0
+      mp-units/0.7.0
 
       [generators]
       CMakeToolchain
@@ -313,7 +313,7 @@ differences:
       :caption: conanfile.txt
 
       [requires]
-      mp-units/0.7.0@mpusz/testing
+      mp-units/0.8.0@mpusz/testing
 
       [generators]
       CMakeToolchain
@@ -401,4 +401,4 @@ Uploading **mp-units** Package to the Conan Server
 
 .. code-block:: shell
 
-    conan upload -r <remote-name> --all mp-units/0.7.0@<user>/<channel>
+    conan upload -r <remote-name> --all mp-units/0.8.0@<user>/<channel>
