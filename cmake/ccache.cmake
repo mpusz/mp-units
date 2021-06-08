@@ -33,7 +33,7 @@ endmacro()
 # enable_ccache([PROGRAM]                                                    # ccache by default
 #               [QUIET] [REQUIRED]
 #               [MODE DIRECT_PREPROCESSOR|DIRECT_DEPEND|PREPROCESSOR|DEPEND] # DIRECT_PREPROCESSOR by default
-#               [BASE_DIR dir]                                               # ${CMAKE_SOURCE_DIR} by default
+#               [BASE_DIR dir]
 #               [ACCOUNT_FOR_COMPILE_TIME_HEADER_CHANGES]
 #               [ACCOUNT_FOR_PCH]
 #               [ACCOUNT_FOR_MODULES]
@@ -154,8 +154,6 @@ function(enable_ccache)
             message(FATAL_ERROR "Base directory '${_enable_ccache_BASE_DIR}' does not exist")
         endif()
         list(APPEND _ccacheEnv "CCACHE_BASEDIR=${_enable_ccache_BASE_DIR}")
-    else()
-        list(APPEND _ccacheEnv "CCACHE_BASEDIR=${CMAKE_SOURCE_DIR}")
     endif()
 
     if(_enable_ccache_PREFIXES)
