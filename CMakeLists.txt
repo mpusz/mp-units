@@ -33,7 +33,7 @@ ensure_entry_point()
 
 # use ccache if available
 include(ccache)
-enable_ccache()
+enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 
 # set restrictive compilation warnings
 include(warnings)
