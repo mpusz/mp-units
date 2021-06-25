@@ -77,7 +77,7 @@ class UnitsConan(ConanFile):
             self.build_requires("catch2/2.13.4")
             self.build_requires("linear_algebra/0.7.0@conan-oss/stable")
             if self.options.build_docs:
-                self.build_requires("doxygen/1.8.20")
+                self.build_requires("doxygen/1.9.1")
 
     def validate(self):
         compiler = self.settings.compiler
