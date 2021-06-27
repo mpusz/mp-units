@@ -106,8 +106,9 @@ Quantity Points
 +++++++++++++++
 
 Quantity points have a more restricted set of operations.
-Quantity can be added to or subtracted from a quantity point.
-The result will always be a quantity point of the same dimension:
+Quantity can be added to or subtracted
+from a quantity point of the same origin.
+The result will always be a quantity point of the same origin:
 
 .. code-block::
     :emphasize-lines: 3-5
@@ -132,9 +133,10 @@ The result is a relative quantity of the same dimension:
 
     It is not allowed to:
 
-    - add quantity points
-    - subtract a quantity point from a quantity:
-    - multiply nor divide quantity points with anything else.
+    - add quantity points,
+    - subtract a quantity point from a quantity,
+    - multiply nor divide quantity points with anything else, and
+    - mix quantity points with different origins:
 
     .. code-block::
         :emphasize-lines: 3-5
@@ -144,6 +146,8 @@ The result is a relative quantity of the same dimension:
         auto res1 = quantity_point{dist1} + quantity_point{dist2};  // ERROR
         auto res2 = dist1 - quantity_point{dist2};                  // ERROR
         auto res3 = quantity_point{dist1} / (2 * s);                // ERROR
+        auto res4 = quantity_point{std::chrono::utc_second{1s}} +
+                    quantity_point{std::chrono::sys_second{1s}};    // ERROR
 
 Quantity Point Kinds
 ++++++++++++++++++++

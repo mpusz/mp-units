@@ -34,7 +34,7 @@ namespace units {
 /**
  * @brief A quantity point kind
  *
- * An absolute quantity kind with respect to zero (which represents some origin).
+ * An absolute quantity kind measured from an origin.
  *
  * @tparam PK the point kind of quantity point
  * @tparam U the measurement unit of the quantity point kind
@@ -45,6 +45,7 @@ class quantity_point_kind {
 public:
   using point_kind_type = PK;
   using kind_type = typename PK::base_kind;
+  using origin = typename point_kind_type::origin;
   using quantity_kind_type = quantity_kind<kind_type, U, Rep>;
   using quantity_type = typename quantity_kind_type::quantity_type;
   using dimension = typename quantity_type::dimension;
@@ -64,14 +65,14 @@ public:
     requires std::constructible_from<quantity_kind_type, T>
   constexpr explicit quantity_point_kind(T&& t) : qk_(std::forward<T>(t)) {}
 
-  constexpr explicit quantity_point_kind(const quantity_point<dimension, U, Rep>& qp) : qk_(qp.relative()) {}
-  constexpr explicit quantity_point_kind(quantity_point<dimension, U, Rep>&& qp) : qk_(std::move(qp).relative()) {}
+  constexpr explicit quantity_point_kind(const quantity_point<origin, U, Rep>& qp) : qk_(qp.relative()) {}
+  constexpr explicit quantity_point_kind(quantity_point<origin, U, Rep>&& qp) : qk_(std::move(qp).relative()) {}
 
   template<QuantityPointLike QP>
-    requires std::constructible_from<quantity_point<dimension, U, Rep>, QP>
+    requires std::constructible_from<quantity_point<origin, U, Rep>, QP>
   constexpr explicit quantity_point_kind(const QP& qp) : qk_(quantity_point_like_traits<QP>::relative(qp)) {}
 
-  template<QuantityPointKindEquivalentTo<quantity_point_kind> QPK2>
+  template<QuantityPointKindOf<point_kind_type> QPK2>
     requires std::convertible_to<typename QPK2::quantity_kind_type, quantity_kind_type>
   constexpr explicit(false) quantity_point_kind(const QPK2& qpk) : qk_(qpk.relative()) {}
 
@@ -159,20 +160,21 @@ public:
     return units::quantity_point_kind(lhs.relative() - rhs);
   }
 
-  [[nodiscard]] friend constexpr QuantityKind auto operator-(const quantity_point_kind& lhs, const quantity_point_kind& rhs)
+  template<QuantityPointKindOf<point_kind_type> QPK>
+  [[nodiscard]] friend constexpr QuantityKind auto operator-(const quantity_point_kind& lhs, const QPK& rhs)
     requires requires(quantity_kind_type qk) { qk - qk; }
   {
     return lhs.relative() - rhs.relative();
   }
 
-  template<QuantityPointKind QPK>
+  template<QuantityPointKindOf<point_kind_type> QPK>
     requires std::three_way_comparable_with<quantity_kind_type, typename QPK::quantity_kind_type>
   [[nodiscard]] friend constexpr auto operator<=>(const quantity_point_kind& lhs, const QPK& rhs)
   {
     return lhs.relative() <=> rhs.relative();
   }
 
-  template<QuantityPointKind QPK>
+  template<QuantityPointKindOf<point_kind_type> QPK>
     requires std::equality_comparable_with<quantity_kind_type, typename QPK::quantity_kind_type>
   [[nodiscard]] friend constexpr bool operator==(const quantity_point_kind& lhs, const QPK& rhs)
   {

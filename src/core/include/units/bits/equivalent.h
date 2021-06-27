@@ -81,28 +81,47 @@ template<Unit U1, Dimension D1, Unit U2, Dimension D2>
 struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
                                           std::bool_constant<U1::ratio / dimension_unit<D1>::ratio == U2::ratio / dimension_unit<D2>::ratio>> {};
 
+// point origins
+
+template<PointOrigin T, PointOrigin U>
+struct equivalent_impl<T, U> : std::bool_constant<requires {  // TODO: Simplify when Clang catches up.
+  requires RebindablePointOriginFor<T, typename U::dimension> && RebindablePointOriginFor<U, typename T::dimension> &&
+    std::same_as<T, rebind_point_origin_dimension<U, typename T::dimension>> &&
+    std::same_as<U, rebind_point_origin_dimension<T, typename U::dimension>>;
+  } && equivalent_impl<typename T::dimension, typename U::dimension>::value> {};
+
 
 // (point) kinds
 
-template<typename T, typename U>
-  requires (Kind<T> && Kind<U>) || (PointKind<T> && PointKind<U>)
+template<Kind T, Kind U>
 struct equivalent_impl<T, U> :
   std::conjunction<std::is_same<typename T::base_kind, typename U::base_kind>,
                    equivalent_impl<typename T::dimension, typename U::dimension>> {};
 
+template<PointKind T, PointKind U>
+struct equivalent_impl<T, U> :
+  std::conjunction<equivalent_impl<typename T::base_kind, typename U::base_kind>,
+                   equivalent_impl<typename T::origin, typename U::origin>> {};
+
 
 // quantities, quantity points, quantity (point) kinds
 
-template<typename Q1, typename Q2>
-  requires (Quantity<Q1> && Quantity<Q2>) || (QuantityPoint<Q1> && QuantityPoint<Q2>)
+template<Quantity Q1, Quantity Q2>
 struct equivalent_impl<Q1, Q2> : std::conjunction<equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
                                                                   equivalent_unit<typename Q1::unit, typename Q1::dimension,
                                                                                   typename Q2::unit, typename Q2::dimension>> {};
 
-template<typename QK1, typename QK2>
-  requires (QuantityKind<QK1> && QuantityKind<QK2>) || (QuantityPointKind<QK1> && QuantityPointKind<QK2>)
+template<QuantityPoint QP1, QuantityPoint QP2>
+struct equivalent_impl<QP1, QP2> : std::conjunction<equivalent_impl<typename QP1::quantity_type, typename QP2::quantity_type>,
+                                                    equivalent_impl<typename QP1::origin, typename QP2::origin>> {};
+
+template<QuantityKind QK1, QuantityKind QK2>
 struct equivalent_impl<QK1, QK2> : std::conjunction<equivalent_impl<typename QK1::kind_type, typename QK2::kind_type>,
                                                     equivalent_impl<typename QK1::quantity_type, typename QK2::quantity_type>> {};
+
+template<QuantityPointKind QPK1, QuantityPointKind QPK2>
+struct equivalent_impl<QPK1, QPK2> : std::conjunction<equivalent_impl<typename QPK1::quantity_kind_type, typename QPK2::quantity_kind_type>,
+                                                      equivalent_impl<typename QPK1::origin, typename QPK2::origin>> {};
 
 }  // namespace detail
 

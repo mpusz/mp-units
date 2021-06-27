@@ -205,6 +205,52 @@ concept UnitOf =
   Dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
+// PointOrigin
+
+template<Dimension D>
+struct point_origin;
+
+/**
+ * @brief A concept matching a point origin
+ *
+ * Satisfied by types derived from an specialization of @c point_origin.
+ */
+template<typename T>
+concept PointOrigin = is_derived_from_specialization_of<T, point_origin> &&
+  requires {
+    typename T::dimension;
+    requires Dimension<typename T::dimension>;
+    typename T::point_origin;
+    requires std::same_as<typename T::point_origin, point_origin<typename T::dimension>>;
+    requires !std::same_as<T, point_origin<typename T::dimension>>;
+  };
+
+// RebindablePointOriginFor
+
+namespace detail {
+
+template<typename O, typename D>
+struct rebind_point_origin_dimension_impl {
+  using type = typename O::template rebind<D>;
+};
+
+}  // namespace detail
+
+template<PointOrigin O, Dimension D>
+using rebind_point_origin_dimension = typename conditional<is_same_v<typename O::dimension, D>, std::type_identity<O>,
+                                                           detail::rebind_point_origin_dimension_impl<O, D>>::type;
+
+/**
+ * @brief A concept predicating the possibility of changing an origin's dimension
+ *
+ * Satisfied by point origins whose dimension can be made to be `D`.
+ */
+template<typename T, typename D>
+concept RebindablePointOriginFor =
+  requires { typename rebind_point_origin_dimension<T, D>; } &&
+  PointOrigin<rebind_point_origin_dimension<T, D>> &&
+  std::same_as<D, typename rebind_point_origin_dimension<T, D>::dimension>;
+
 // Kind
 namespace detail {
 
@@ -216,7 +262,7 @@ struct _kind_base;
 template<typename T, template<typename...> typename Base>
 concept kind_impl_ =
   is_derived_from_specialization_of<T, Base> &&
-  requires(T* t) {
+  requires {
     typename T::base_kind;
     typename T::dimension;
     requires Dimension<typename T::dimension>;
@@ -236,7 +282,7 @@ concept Kind =
 // PointKind
 namespace detail {
 
-template<Kind>
+template<Kind, PointOrigin>
 struct _point_kind_base;
 
 }  // namespace detail
@@ -247,7 +293,12 @@ struct _point_kind_base;
  * Satisfied by all point kind types derived from an specialization of @c point_kind.
  */
 template<typename T>
-concept PointKind = kind_impl_<T, detail::_point_kind_base>;
+concept PointKind =
+  kind_impl_<T, detail::_point_kind_base> &&
+  requires { typename T::origin; } &&
+  PointOrigin<typename T::origin> &&
+  std::same_as<typename T::dimension, typename T::base_kind::dimension> &&
+  std::same_as<typename T::dimension, typename T::origin::dimension>;
 
 // Reference
 namespace detail {

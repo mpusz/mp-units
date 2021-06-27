@@ -28,6 +28,7 @@
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
 #include <units/kind.h>
+#include <units/quantity_point.h>
 #include <type_traits>
 
 using namespace units;
@@ -97,7 +98,6 @@ static_assert(PointKind<radial_point>);
 
 static_assert(is_same_v<radial_point::base_kind, radius>);
 static_assert(is_same_v<radial_point::dimension, dim_length>);
-static_assert(is_same_v<radial_point, detail::_point_kind_base<radius>>);
 static_assert(is_same_v<radial_point, downcast_point_kind<radius>>);
 
 static_assert(equivalent<radial_point, radial_point>);
@@ -137,7 +137,6 @@ static_assert(PointKind<horizontal_velocity>);
 
 static_assert(is_same_v<horizontal_velocity::base_kind, horizontal_speed>);
 static_assert(is_same_v<horizontal_velocity::dimension, dim_speed>);
-static_assert(is_same_v<horizontal_velocity, detail::_point_kind_base<horizontal_speed>>);
 static_assert(is_same_v<horizontal_velocity, downcast_point_kind<horizontal_speed>>);
 
 static_assert(equivalent<horizontal_velocity, horizontal_velocity>);

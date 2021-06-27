@@ -30,6 +30,7 @@
 #include <units/quantity_point_kind.h>
 // IWYU pragma: end_exports
 
+#include <units/chrono.h>
 #include <units/format.h>
 #include <units/math.h> // IWYU pragma: keep
 #include <algorithm>
@@ -88,7 +89,7 @@ using altitude = units::quantity_point_kind<vertical_point_kind, units::isq::si:
 
 // time
 using duration = units::isq::si::time<units::isq::si::second>;
-using timestamp = units::quantity_point<units::isq::si::dim_time, units::isq::si::second>;
+using timestamp = units::quantity_point<units::clock_origin<std::chrono::system_clock>, units::isq::si::second>;
 
 // speed
 using velocity = units::quantity_kind<velocity_kind, units::isq::si::kilometre_per_hour>;
