@@ -3,9 +3,20 @@
 Quantity Points
 ===============
 
-A quantity point is an absolute quantity with respect to zero
-(which represents some origin) and is represented in the library with a
-`quantity_point` class template.
+A quantity point is an absolute quantity with respect to an origin
+and is represented in the library with a `quantity_point` class template.
+
+Point Origins
+-------------
+
+We need a `point_origin` to represent the origin of a quantity point::
+
+    struct mean_sea_level : point_origin<si::dim_length> {};
+
+Quantities points with this origin represent a point from the mean sea level.
+
+The library offers a `dynamic_origin<Dimension>`
+for quantity points whose origin is not specified in the type system.
 
 
 Construction
@@ -14,7 +25,7 @@ Construction
 To create the quantity point object from a `quantity` we just have to pass
 the value to the `quantity_point` class template explicit constructor::
 
-    quantity_point<si::dim_length, si::kilometre, double> d(123 * km);
+    quantity_point<dynamic_origin<si::dim_length>, si::kilometre, double> d(123 * km);
 
 .. note::
 
@@ -25,7 +36,7 @@ the value to the `quantity_point` class template explicit constructor::
     `copy initialization <https://en.cppreference.com/w/cpp/language/copy_initialization>`_
     **does not compile**::
 
-        quantity_point<si::dim_length, si::kilometre, double> d = 123 * km;  // ERROR
+        quantity_point<dynamic_origin<si::dim_length>, si::kilometre, double> d = 123 * km;  // ERROR
 
 
 Differences To Quantity

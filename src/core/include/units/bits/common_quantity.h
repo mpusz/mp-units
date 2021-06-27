@@ -31,7 +31,7 @@ namespace units {
 template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, Representation Rep>
+template<PointOrigin O, UnitOf<typename O::dimension> U, Representation Rep>
 class quantity_point;
 
 template<Kind K, UnitOf<typename K::dimension> U, Representation Rep>
@@ -99,7 +99,8 @@ template<units::QuantityPoint QP1, units::QuantityPointEquivalentTo<QP1> QP2>
   requires requires { typename common_type_t<typename QP1::rep, typename QP2::rep>; }
 struct common_type<QP1, QP2> {
   using type = units::quantity_point<
-    typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::dimension,
+    units::rebind_point_origin_dimension<typename QP1::origin,
+      typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::dimension>,
     typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::unit,
     typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::rep>;
 };

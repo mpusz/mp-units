@@ -56,11 +56,12 @@ such an explicit conversion::
 
 For external quantity point-like types, `quantity_point_like_traits` is also provided.
 It works just like `quantity_like_traits`, except that
-``number(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value.
+``number(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value
+and ``dimension`` is replaced with ``origin``.
 
 Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_kind_point`
 provide a deduction guide from `QuantityPointLike`::
 
     using namespace std::chrono_literals;
 
-    static_assert(quantity_point{std::chrono::sys_seconds{1s}} + 1 * s == quantity_point{2s});
+    static_assert((quantity_point{std::chrono::sys_seconds{1s}} + 1 * s).relative() == 2s);

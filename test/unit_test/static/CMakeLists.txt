@@ -51,6 +51,7 @@ add_library(unit_tests_static
     iec80000_test.cpp
     kind_test.cpp
     math_test.cpp
+    point_origin_test.cpp
     ratio_test.cpp
     references_test.cpp
     si_test.cpp

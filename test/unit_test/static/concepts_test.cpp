@@ -27,7 +27,7 @@
 #include <units/isq/si/length.h> // IWYU pragma: keep
 #include <units/isq/si/prefixes.h>
 #include <units/isq/si/speed.h>
-#include <units/quantity_point.h>
+#include <units/quantity_point_kind.h>
 #include <units/chrono.h>
 #include <chrono>
 #include <complex>
@@ -112,11 +112,11 @@ static_assert(!Representation<std::string>);
 
 static_assert(Quantity<si::length<si::metre>>);
 static_assert(!Quantity<std::chrono::seconds>);
-static_assert(!Quantity<quantity_point<si::dim_length, si::metre>>);
+static_assert(!Quantity<quantity_point<dynamic_origin<si::dim_length>, si::metre>>);
 
 // QuantityPoint
 
-static_assert(QuantityPoint<quantity_point<si::dim_length, si::metre>>);
+static_assert(QuantityPoint<quantity_point<dynamic_origin<si::dim_length>, si::metre>>);
 static_assert(!QuantityPoint<si::length<si::metre>>);
 static_assert(!QuantityPoint<std::chrono::seconds>);
 
@@ -140,5 +140,10 @@ static_assert(QuantityOf<si::cgs::length<si::cgs::centimetre>, si::dim_length>);
 static_assert(QuantityOf<si::cgs::length<si::metre>, si::dim_length>);
 static_assert(QuantityOf<si::cgs::length<si::cgs::centimetre>, si::fps::dim_length>);
 static_assert(!QuantityOf<si::cgs::length<si::cgs::centimetre>, si::dim_time>);
+
+static_assert(QuantityPointOf<quantity_point<dynamic_origin<si::dim_time>, si::second, int>, dynamic_origin<si::dim_time>>);
+static_assert(QuantityPointOf<quantity_point<clock_origin<std::chrono::system_clock>, si::second, int>, clock_origin<std::chrono::system_clock>>);
+static_assert(!QuantityPointOf<quantity_point<dynamic_origin<si::dim_time>, si::second, int>, clock_origin<std::chrono::system_clock>>);
+static_assert(!QuantityPointOf<quantity_point<clock_origin<std::chrono::system_clock>, si::second, int>, dynamic_origin<si::dim_time>>);
 
 }  // namespace
