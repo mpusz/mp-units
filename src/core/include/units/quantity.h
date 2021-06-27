@@ -465,6 +465,17 @@ namespace detail {
 template<typename D, typename U, typename Rep>
 inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
 
+template<typename T>
+requires units::is_derived_from_specialization_of<T, units::quantity> &&
+        requires {
+    typename T::dimension;
+    typename T::unit;
+    typename T::rep;
+    requires Dimension<typename T::dimension>;
+    requires Unit<typename T::unit>;
+    requires Representation<typename T::rep>; }
+inline constexpr bool is_quantity<T> = true;
+
 }  // namespace detail
 
 }  // namespace units

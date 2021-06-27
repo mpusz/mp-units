@@ -234,6 +234,18 @@ static_assert(length<kilometre, int>(2_q_km).number() == 2);
 static_assert(length<metre, int>(2_q_km).number() == 2000);
 static_assert(length<kilometre>(1500_q_m).number() == 1.5);
 
+///////////////////////////////////////
+// derived quantities
+///////////////////////////////////////
+
+template<Representation Rep, units::Quantity Q, const units::basic_fixed_string additional_nttp_argument>
+struct derived_quantity : quantity<typename Q::dimension, typename Q::unit, Rep> {
+    using dimension = typename Q::dimension;
+    using unit = typename Q::unit;
+    using rep = Rep;
+};
+
+static_assert(units::detail::is_quantity<derived_quantity<double, si::length<metre>, "NTTP type description">>);
 
 /////////
 // CTAD

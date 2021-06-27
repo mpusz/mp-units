@@ -269,7 +269,7 @@ concept Reference = detail::is_reference<T>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_quantity = requires { typename T::dimension;  typename T::unit;  typename T::rep;};
+inline constexpr bool is_quantity = false;
 
 template<typename T>
 inline constexpr bool is_quantity_point = false;
