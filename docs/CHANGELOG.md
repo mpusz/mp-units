@@ -1,6 +1,8 @@
 # Release notes
 
 - **0.8.0 WIP**
+  - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
+  - fix: account for different dimensions in `quantity_point_cast`'s constraint
   - build: doxygen updated to 1.9.1
   - build: linear_algebra updated to 0.7.1
 
