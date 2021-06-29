@@ -33,6 +33,7 @@ namespace si = isq::si;
 namespace {
 
 struct width : kind<width, si::dim_length> {};
+struct abscissa : point_kind<abscissa, width> {};
 
 struct ones_viewpoint1 : point_origin<si::dim_length> {
   template<typename D>
@@ -47,7 +48,7 @@ struct ones_viewpoint2 : point_origin<si::cgs::dim_length> {
 static_assert(PointOrigin<dynamic_origin<si::dim_length>>);
 static_assert(!PointOrigin<point_origin<si::dim_length>>);
 static_assert(!PointOrigin<width>);
-static_assert(!PointOrigin<point_kind<struct abscissa, width>>);
+static_assert(!PointOrigin<abscissa>);
 
 static_assert(RebindablePointOriginFor<dynamic_origin<si::dim_length>, si::dim_length>);
 static_assert(is_same_v<rebind_point_origin_dimension<dynamic_origin<si::dim_length>, si::dim_length>,
