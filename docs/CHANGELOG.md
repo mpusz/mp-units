@@ -2,6 +2,7 @@
 
 - **0.8.0 WIP**
   - build: doxygen updated to 1.9.1
+  - build: linear_algebra updated to 0.7.1
 
 - **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
