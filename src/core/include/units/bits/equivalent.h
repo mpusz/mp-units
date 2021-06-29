@@ -83,12 +83,15 @@ struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
 
 // point origins
 
+template<typename T, typename U>
+concept EquivalentPointOrigins =
+  RebindablePointOriginFor<T, typename U::dimension> && RebindablePointOriginFor<U, typename T::dimension> &&
+  std::same_as<T, rebind_point_origin_dimension<U, typename T::dimension>> &&
+  std::same_as<U, rebind_point_origin_dimension<T, typename U::dimension>>;
+
 template<PointOrigin T, PointOrigin U>
-struct equivalent_impl<T, U> : std::bool_constant<requires {  // TODO: Simplify when Clang catches up.
-  requires RebindablePointOriginFor<T, typename U::dimension> && RebindablePointOriginFor<U, typename T::dimension> &&
-    std::same_as<T, rebind_point_origin_dimension<U, typename T::dimension>> &&
-    std::same_as<U, rebind_point_origin_dimension<T, typename U::dimension>>;
-  } && equivalent_impl<typename T::dimension, typename U::dimension>::value> {};
+struct equivalent_impl<T, U> : std::bool_constant<
+  EquivalentPointOrigins<T, U> && equivalent_impl<typename T::dimension, typename U::dimension>::value> {};
 
 
 // (point) kinds
