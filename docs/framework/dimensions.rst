@@ -77,7 +77,7 @@ you can use a quantity argument instead of a quantity kind.
     :emphasize-lines: 8-9
 
     struct height_kind : kind<height_kind, dim_length> {};
-    struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+    struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 
     template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
     template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
@@ -90,7 +90,7 @@ you can use a quantity argument instead of a quantity kind.
     :emphasize-lines: 8-12
 
     struct width_kind : kind<width_kind, dim_length> {};
-    struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
+    struct horizontal_area_kind : derived_kind<horizontal_area_kind, dim_area, width_kind> {};
 
     template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
     template <Unit U, Representation Rep = double> using horizontal_area = quantity_kind<horizontal_area_kind, U, Rep>;
@@ -106,8 +106,9 @@ Quantity Points
 +++++++++++++++
 
 Quantity points have a more restricted set of operations.
-Quantity can be added to or subtracted from a quantity point.
-The result will always be a quantity point of the same dimension:
+Quantity can be added to or subtracted
+from a quantity point of the same origin.
+The result will always be a quantity point of the same origin:
 
 .. code-block::
     :emphasize-lines: 3-5
@@ -132,9 +133,10 @@ The result is a relative quantity of the same dimension:
 
     It is not allowed to:
 
-    - add quantity points
-    - subtract a quantity point from a quantity:
-    - multiply nor divide quantity points with anything else.
+    - add quantity points,
+    - subtract a quantity point from a quantity,
+    - multiply nor divide quantity points with anything else, and
+    - mix quantity points with different origins:
 
     .. code-block::
         :emphasize-lines: 3-5
@@ -144,6 +146,8 @@ The result is a relative quantity of the same dimension:
         auto res1 = quantity_point{dist1} + quantity_point{dist2};  // ERROR
         auto res2 = dist1 - quantity_point{dist2};                  // ERROR
         auto res3 = quantity_point{dist1} / (2 * s);                // ERROR
+        auto res4 = quantity_point{std::chrono::utc_second{1s}} +
+                    quantity_point{std::chrono::sys_second{1s}};    // ERROR
 
 Quantity Point Kinds
 ++++++++++++++++++++

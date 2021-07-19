@@ -28,7 +28,10 @@ cmake_minimum_required(VERSION 3.2)
 function(add_example target)
     add_executable(${target}-literals ${target}.cpp)
     target_link_libraries(${target}-literals PRIVATE ${ARGN})
-    target_compile_definitions(${target}-literals PRIVATE UNITS_LITERALS)
+    target_compile_definitions(${target}-literals PRIVATE
+        UNITS_NO_REFERENCES
+        UNITS_NO_ALIASES
+    )
 endfunction()
 
 add_example(avg_speed mp-units::core-io mp-units::si mp-units::si-cgs mp-units::si-international)
@@ -42,7 +45,10 @@ add_example(unknown_dimension mp-units::core-io mp-units::si)
 
 if(NOT UNITS_LIBCXX)
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
-    target_compile_definitions(glide_computer_example-literals PRIVATE UNITS_LITERALS)
+    target_compile_definitions(glide_computer_example-literals PRIVATE
+        UNITS_NO_REFERENCES
+        UNITS_NO_ALIASES
+    )
 
     find_package(linear_algebra CONFIG REQUIRED)
     add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)

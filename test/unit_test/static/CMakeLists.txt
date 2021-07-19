@@ -37,11 +37,6 @@ target_link_libraries(unit_tests_static_truncating PRIVATE
 target_compile_options(unit_tests_static_truncating PRIVATE
     $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
-target_compile_definitions(unit_tests_static_truncating PRIVATE
-    UNITS_REFERENCES
-    UNITS_LITERALS
-    UNITS_ALIASES
-)
 
 add_library(unit_tests_static
     cgs_test.cpp
@@ -56,6 +51,7 @@ add_library(unit_tests_static
     iec80000_test.cpp
     kind_test.cpp
     math_test.cpp
+    point_origin_test.cpp
     ratio_test.cpp
     references_test.cpp
     si_test.cpp
@@ -77,9 +73,4 @@ endif()
 target_link_libraries(unit_tests_static PRIVATE
     unit_tests_static_truncating
     mp-units::mp-units
-)
-target_compile_definitions(unit_tests_static PRIVATE
-    UNITS_REFERENCES
-    UNITS_LITERALS
-    UNITS_ALIASES
 )

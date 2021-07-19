@@ -41,7 +41,7 @@ struct dim_thermal_conductivity : isq::dim_thermal_conductivity<dim_thermal_cond
 template<UnitOf<dim_thermal_conductivity> U, Representation Rep = double>
 using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,11 +51,11 @@ constexpr auto operator"" _q_W_per_m_K(long double l) { return thermal_conductiv
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline thermal_conductivity {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using W_per_m_K = units::isq::si::thermal_
 
 }  // namespace units::aliases::isq::si::inline thermal_conductivity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -63,7 +63,7 @@ struct dim_magnetic_induction : isq::dim_magnetic_induction<dim_magnetic_inducti
 template<UnitOf<dim_magnetic_induction> U, Representation Rep = double>
 using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -141,9 +141,9 @@ constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss,
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace magnetic_induction_references {
 
@@ -174,11 +174,11 @@ using namespace magnetic_induction_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 } // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline magnetic_induction {
 
@@ -203,4 +203,4 @@ template<Representation Rep = double> using G = units::isq::si::magnetic_inducti
 
 }  // namespace units::aliases::isq::si::inline magnetic_induction
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

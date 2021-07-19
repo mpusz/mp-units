@@ -42,7 +42,7 @@ struct dim_torque : isq::dim_torque<dim_torque, newton_metre_per_radian, dim_for
 template<UnitOf<dim_torque> U, Representation Rep = double>
 using torque = quantity<dim_torque, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -52,11 +52,11 @@ constexpr auto operator"" _q_N_m_per_rad(long double l) { return torque<newton_m
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline torque {
 
@@ -64,4 +64,4 @@ template<Representation Rep = double> using N_m_per_rad = units::isq::si::torque
 
 }  // namespace units::aliases::isq::si::inline torque
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

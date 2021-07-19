@@ -42,7 +42,7 @@ struct dim_energy : isq::dim_energy<dim_energy, erg, dim_force, dim_length> {};
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -52,9 +52,9 @@ constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace energy_references {
 
@@ -68,11 +68,11 @@ using namespace energy_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::cgs::inline energy {
 
@@ -80,4 +80,4 @@ template<Representation Rep = double> using erg = units::isq::si::cgs::energy<un
 
 }  // namespace units::aliases::isq::si::cgs::inline energy
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

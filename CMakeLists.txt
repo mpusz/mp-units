@@ -27,6 +27,14 @@ project(mp-units-dev
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
+# make sure that the file is being used as an entry point
+include(modern_project_structure)
+ensure_entry_point()
+
+# use ccache if available
+include(ccache)
+enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
+
 # set restrictive compilation warnings
 include(warnings)
 set_warnings()
@@ -38,7 +46,7 @@ add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 option(UNITS_IWYU "Enables include-what-you-use" OFF)
 if(UNITS_IWYU)
     include(include-what-you-use)
-    set_iwyu(
+    enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
         NO_FORWARD_DECLARATIONS
         QUOTED_INCLUDES_FIRST

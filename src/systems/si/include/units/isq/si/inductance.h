@@ -59,7 +59,7 @@ struct dim_inductance : isq::dim_inductance<dim_inductance, henry, dim_magnetic_
 template<UnitOf<dim_inductance> U, Representation Rep = double>
 using inductance = quantity<dim_inductance, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -133,9 +133,9 @@ constexpr auto operator"" _q_YH(long double l) { return inductance<yottahenry, l
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace inductance_references {
 
@@ -165,11 +165,11 @@ using namespace inductance_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline inductance {
 
@@ -193,4 +193,4 @@ template<Representation Rep = double> using YH = units::isq::si::inductance<unit
 
 }  // namespace units::aliases::isq::si::inline inductance
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

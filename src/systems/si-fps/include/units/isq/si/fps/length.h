@@ -59,7 +59,7 @@ struct dim_length : isq::dim_length<foot> {};
 template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -100,9 +100,9 @@ constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mil
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace length_references {
 
@@ -125,11 +125,11 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline length {
 
@@ -146,4 +146,4 @@ template<Representation Rep = double> using naut_mi = units::isq::si::fps::lengt
 
 }  // namespace units::aliases::isq::si::fps::inline length
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

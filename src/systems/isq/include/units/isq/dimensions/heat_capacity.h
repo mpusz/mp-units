@@ -30,14 +30,23 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_heat_capacity;
+
 template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_thermodynamic_temperature> T>
-struct dim_heat_capacity : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
+struct dim_heat_capacity<Child, U, E, T> : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
+
+template<typename Child, Unit U, typename...>
+struct dim_specific_heat_capacity;
 
 template<typename Child, Unit U, DimensionOfT<dim_heat_capacity> C, DimensionOfT<dim_mass> M>
-struct dim_specific_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
+struct dim_specific_heat_capacity<Child, U, C, M> : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
+
+template<typename Child, Unit U, typename...>
+struct dim_molar_heat_capacity;
 
 template<typename Child, Unit U, DimensionOfT<dim_heat_capacity> C, DimensionOfT<dim_amount_of_substance> M>
-struct dim_molar_heat_capacity : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
+struct dim_molar_heat_capacity<Child, U, C, M> : derived_dimension<Child, U, exponent<C, 1>, exponent<M, -1>> {};
 
 template<typename T>
 concept HeatCapacity = QuantityOfT<T, dim_heat_capacity>;

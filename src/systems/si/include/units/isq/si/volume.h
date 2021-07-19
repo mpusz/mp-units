@@ -37,26 +37,26 @@ namespace units::isq::si {
 struct cubic_metre : unit<cubic_metre> {};
 struct dim_volume : isq::dim_volume<dim_volume, cubic_metre, dim_length> {};
 
-struct cubic_yoctometre : deduced_unit<cubic_yoctometre, dim_volume, yoctometre> {};
-struct cubic_zeptometre : deduced_unit<cubic_zeptometre, dim_volume, zeptometre> {};
-struct cubic_attometre : deduced_unit<cubic_attometre, dim_volume, attometre> {};
-struct cubic_femtometre : deduced_unit<cubic_femtometre, dim_volume, femtometre> {};
-struct cubic_picometre : deduced_unit<cubic_picometre, dim_volume, picometre> {};
-struct cubic_nanometre : deduced_unit<cubic_nanometre, dim_volume, nanometre> {};
-struct cubic_micrometre : deduced_unit<cubic_micrometre, dim_volume, micrometre> {};
-struct cubic_millimetre : deduced_unit<cubic_millimetre, dim_volume, millimetre> {};
-struct cubic_centimetre : deduced_unit<cubic_centimetre, dim_volume, centimetre> {};
-struct cubic_decimetre : deduced_unit<cubic_decimetre, dim_volume, decimetre> {};
-struct cubic_decametre : deduced_unit<cubic_decametre, dim_volume, decametre> {};
-struct cubic_hectometre : deduced_unit<cubic_hectometre, dim_volume, hectometre> {};
-struct cubic_kilometre : deduced_unit<cubic_kilometre, dim_volume, kilometre> {};
-struct cubic_megametre : deduced_unit<cubic_megametre, dim_volume, megametre> {};
-struct cubic_gigametre : deduced_unit<cubic_gigametre, dim_volume, gigametre> {};
-struct cubic_terametre : deduced_unit<cubic_terametre, dim_volume, terametre> {};
-struct cubic_petametre : deduced_unit<cubic_petametre, dim_volume, petametre> {};
-struct cubic_exametre : deduced_unit<cubic_exametre, dim_volume, exametre> {};
-struct cubic_zettametre : deduced_unit<cubic_zettametre, dim_volume, zettametre> {};
-struct cubic_yottametre : deduced_unit<cubic_yottametre, dim_volume, yottametre> {};
+struct cubic_yoctometre : derived_unit<cubic_yoctometre, dim_volume, yoctometre> {};
+struct cubic_zeptometre : derived_unit<cubic_zeptometre, dim_volume, zeptometre> {};
+struct cubic_attometre : derived_unit<cubic_attometre, dim_volume, attometre> {};
+struct cubic_femtometre : derived_unit<cubic_femtometre, dim_volume, femtometre> {};
+struct cubic_picometre : derived_unit<cubic_picometre, dim_volume, picometre> {};
+struct cubic_nanometre : derived_unit<cubic_nanometre, dim_volume, nanometre> {};
+struct cubic_micrometre : derived_unit<cubic_micrometre, dim_volume, micrometre> {};
+struct cubic_millimetre : derived_unit<cubic_millimetre, dim_volume, millimetre> {};
+struct cubic_centimetre : derived_unit<cubic_centimetre, dim_volume, centimetre> {};
+struct cubic_decimetre : derived_unit<cubic_decimetre, dim_volume, decimetre> {};
+struct cubic_decametre : derived_unit<cubic_decametre, dim_volume, decametre> {};
+struct cubic_hectometre : derived_unit<cubic_hectometre, dim_volume, hectometre> {};
+struct cubic_kilometre : derived_unit<cubic_kilometre, dim_volume, kilometre> {};
+struct cubic_megametre : derived_unit<cubic_megametre, dim_volume, megametre> {};
+struct cubic_gigametre : derived_unit<cubic_gigametre, dim_volume, gigametre> {};
+struct cubic_terametre : derived_unit<cubic_terametre, dim_volume, terametre> {};
+struct cubic_petametre : derived_unit<cubic_petametre, dim_volume, petametre> {};
+struct cubic_exametre : derived_unit<cubic_exametre, dim_volume, exametre> {};
+struct cubic_zettametre : derived_unit<cubic_zettametre, dim_volume, zettametre> {};
+struct cubic_yottametre : derived_unit<cubic_yottametre, dim_volume, yottametre> {};
 
 struct litre : alias_unit<cubic_decimetre, "l", prefix> {};
 struct yoctolitre : prefixed_alias_unit<cubic_nanometre, yocto, litre> {};
@@ -83,7 +83,7 @@ struct yottalitre : prefixed_unit<yottalitre, yotta, litre> {};
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -257,9 +257,9 @@ constexpr auto operator"" _q_Yl(long double l) { return volume<yottalitre, long 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace volume_references {
 
@@ -315,11 +315,11 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline volume {
 
@@ -369,4 +369,4 @@ template<Representation Rep = double> using Yl = units::isq::si::volume<units::i
 
 }  // namespace units::aliases::isq::si::inline volume
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

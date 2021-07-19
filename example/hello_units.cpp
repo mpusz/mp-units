@@ -20,10 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#define UNITS_ALIASES
-#define UNITS_LITERALS
-#define UNITS_REFERENCES
-
 #include <units/format.h>
 #include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h> // IWYU pragma: keep

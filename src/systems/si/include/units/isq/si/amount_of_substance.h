@@ -41,7 +41,7 @@ struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 template<UnitOf<dim_amount_of_substance> U, Representation Rep = double>
 using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,9 +51,9 @@ constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mol
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace amount_of_substance_references {
 
@@ -67,11 +67,11 @@ using namespace amount_of_substance_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline amount_of_substance {
 
@@ -79,4 +79,4 @@ template<Representation Rep = double> using mol = units::isq::si::amount_of_subs
 
 }  // namespace units::aliases::isq::si::inline amount_of_substance
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

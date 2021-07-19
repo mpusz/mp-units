@@ -28,6 +28,7 @@
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
 #include <units/kind.h>
+#include <units/quantity_point.h>
 #include <type_traits>
 
 using namespace units;
@@ -97,7 +98,6 @@ static_assert(PointKind<radial_point>);
 
 static_assert(is_same_v<radial_point::base_kind, radius>);
 static_assert(is_same_v<radial_point::dimension, dim_length>);
-static_assert(is_same_v<radial_point, detail::_point_kind_base<radius>>);
 static_assert(is_same_v<radial_point, downcast_point_kind<radius>>);
 
 static_assert(equivalent<radial_point, radial_point>);
@@ -137,7 +137,6 @@ static_assert(PointKind<horizontal_velocity>);
 
 static_assert(is_same_v<horizontal_velocity::base_kind, horizontal_speed>);
 static_assert(is_same_v<horizontal_velocity::dimension, dim_speed>);
-static_assert(is_same_v<horizontal_velocity, detail::_point_kind_base<horizontal_speed>>);
 static_assert(is_same_v<horizontal_velocity, downcast_point_kind<horizontal_speed>>);
 
 static_assert(equivalent<horizontal_velocity, horizontal_velocity>);
@@ -151,7 +150,7 @@ static_assert(!equivalent<abscissa::_point_kind_base, horizontal_velocity>);
 
 struct height : kind<height, dim_length> {};
 
-struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};    // program-defined derived kind
+struct rate_of_climb : derived_kind<rate_of_climb, dim_speed, height> {};    // program-defined derived kind
 struct velocity_of_climb : point_kind<velocity_of_climb, rate_of_climb> {};  // program-defined derived point kind
 
 static_assert(Kind<rate_of_climb>);

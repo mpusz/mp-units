@@ -43,7 +43,7 @@ concept TrafficIntensity = QuantityOf<T, dim_traffic_intensity>;
 template<UnitOf<dim_traffic_intensity> U, Representation Rep = double>
 using traffic_intensity = quantity<dim_traffic_intensity, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,9 +51,9 @@ constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace traffic_intensity_references {
 
@@ -67,11 +67,11 @@ using namespace traffic_intensity_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::iec80000
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::iec80000::inline traffic_intensity {
 
@@ -79,4 +79,4 @@ template<Representation Rep = double> using E = units::isq::iec80000::traffic_in
 
 }  // namespace units::aliases::isq::iec80000::inline traffic_intensity
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

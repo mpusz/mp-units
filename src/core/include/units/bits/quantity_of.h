@@ -85,21 +85,20 @@ template<typename Q1, typename Q2>
 concept QuantityEquivalentTo = Quantity<Q1> && QuantityOf<Q2, typename Q1::dimension>;
 
 /**
- * @brief A concept matching all quantity points with provided dimension
+ * @brief A concept matching all quantity points of the provided origin
  *
- * Satisfied by all quantity points with a dimension being the instantiation derived from
- * the provided dimension type.
+ * Satisfied by all quantity points with an origin equivalent to the provided one.
  */
-template<typename QP, typename Dim>
-concept QuantityPointOf = QuantityPoint<QP> && Dimension<Dim> && equivalent<typename QP::dimension, Dim>;
+template<typename QP, typename Orig>
+concept QuantityPointOf = QuantityPoint<QP> && PointOrigin<Orig> && equivalent<typename QP::origin, Orig>;
 
 /**
  * @brief A concept matching two equivalent quantity points
  *
- * Satisfied by quantity points having equivalent dimensions.
+ * Satisfied by quantity points having equivalent origins.
  */
 template<typename QP1, typename QP2>
-concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::dimension>;
+concept QuantityPointEquivalentTo = QuantityPoint<QP1> && QuantityPointOf<QP2, typename QP1::origin>;
 
 /**
  * @brief A concept matching only quantity kinds of a specific kind.

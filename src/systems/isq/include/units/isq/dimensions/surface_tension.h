@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_surface_tension;
+
 template<typename Child, Unit U, DimensionOfT<dim_force> F, DimensionOfT<dim_length> L>
-struct dim_surface_tension : derived_dimension<Child, U, exponent<F, 1>, exponent<L, -1>> {};
+struct dim_surface_tension<Child, U, F, L> : derived_dimension<Child, U, exponent<F, 1>, exponent<L, -1>> {};
 
 template<typename T>
 concept SurfaceTension = QuantityOfT<T, dim_surface_tension>;

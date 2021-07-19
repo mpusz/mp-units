@@ -84,6 +84,9 @@ static_assert(10_q_pdl * 10_q_ft == 100_q_ft_pdl);
 static_assert(100_q_ft_pdl / 10_q_ft == 10_q_pdl);
 static_assert(100_q_ft_pdl / 10_q_pdl == 10_q_ft);
 
+static_assert(detail::unit_text<dim_energy, foot_poundal>() == basic_symbol_text("ft ⋅ pdl", "ft pdl"));
+static_assert(detail::unit_text<dim_energy, foot_pound_force>() == basic_symbol_text("ft ⋅ lbf", "ft lbf"));
+
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
 // power
@@ -92,6 +95,7 @@ static_assert(10_q_ft_pdl / 10_q_s == 1_q_ft_pdl_per_s);
 static_assert(1_q_ft_pdl_per_s * 10_q_s == 10_q_ft_pdl);
 static_assert(10_q_ft_pdl / 1_q_ft_pdl_per_s == 10_q_s);
 
-// static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == "ft_lbf/s");
+static_assert(detail::unit_text<dim_power, foot_poundal_per_second>() == basic_symbol_text("ft ⋅ pdl/s", "ft pdl/s"));
+static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == basic_symbol_text("ft ⋅ lbf/s", "ft lbf/s"));
 
 }

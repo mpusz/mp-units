@@ -40,7 +40,7 @@ struct dim_acceleration : isq::dim_acceleration<dim_acceleration, gigaelectronvo
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
 using acceleration = quantity<dim_acceleration, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace acceleration_references {
 
@@ -54,11 +54,11 @@ using namespace acceleration_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline acceleration {
 
@@ -66,4 +66,4 @@ template<Representation Rep = double> using GeV = units::isq::natural::accelerat
 
 }  // namespace units::aliases::isq::natural::inline acceleration
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

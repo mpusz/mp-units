@@ -28,11 +28,17 @@
 
 namespace units::isq {
 
-template<typename Child, Unit U, DimensionOfT<dim_electric_charge> Q, DimensionOfT<dim_length> L>
-struct dim_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -3>> {};
+template<typename Child, Unit U, typename...>
+struct dim_charge_density;
 
 template<typename Child, Unit U, DimensionOfT<dim_electric_charge> Q, DimensionOfT<dim_length> L>
-struct dim_surface_charge_density : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -2>> {};
+struct dim_charge_density<Child, U, Q, L> : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -3>> {};
+
+template<typename Child, Unit U, typename...>
+struct dim_surface_charge_density;
+
+template<typename Child, Unit U, DimensionOfT<dim_electric_charge> Q, DimensionOfT<dim_length> L>
+struct dim_surface_charge_density<Child, U, Q, L> : derived_dimension<Child, U, exponent<Q, 1>, exponent<L, -2>> {};
 
 template<typename T>
 concept ChargeDensity = QuantityOfT<T, dim_charge_density>;

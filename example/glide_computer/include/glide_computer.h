@@ -30,6 +30,7 @@
 #include <units/quantity_point_kind.h>
 // IWYU pragma: end_exports
 
+#include <units/chrono.h>
 #include <units/format.h>
 #include <units/math.h> // IWYU pragma: keep
 #include <algorithm>
@@ -77,8 +78,8 @@ constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
 using horizontal_kind = geographic::horizontal_kind;
 struct vertical_kind : units::kind<vertical_kind, units::isq::si::dim_length> {};
 struct vertical_point_kind : units::point_kind<vertical_point_kind, vertical_kind> {};
-struct velocity_kind : units::derived_kind<velocity_kind, horizontal_kind, units::isq::si::dim_speed> {};
-struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, vertical_kind, units::isq::si::dim_speed> {};
+struct velocity_kind : units::derived_kind<velocity_kind, units::isq::si::dim_speed, horizontal_kind> {};
+struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, units::isq::si::dim_speed, vertical_kind> {};
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
 // length
@@ -88,7 +89,7 @@ using altitude = units::quantity_point_kind<vertical_point_kind, units::isq::si:
 
 // time
 using duration = units::isq::si::time<units::isq::si::second>;
-using timestamp = units::quantity_point<units::isq::si::dim_time, units::isq::si::second>;
+using timestamp = units::quantity_point<units::clock_origin<std::chrono::system_clock>, units::isq::si::second>;
 
 // speed
 using velocity = units::quantity_kind<velocity_kind, units::isq::si::kilometre_per_hour>;

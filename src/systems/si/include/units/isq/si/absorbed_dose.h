@@ -62,7 +62,7 @@ struct dim_absorbed_dose : isq::dim_absorbed_dose<dim_absorbed_dose, gray, dim_e
 template<UnitOf<dim_absorbed_dose> U, Representation Rep = double>
 using absorbed_dose = quantity<dim_absorbed_dose, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -152,9 +152,9 @@ constexpr auto operator"" _q_YGy(long double l) { return absorbed_dose<yottagray
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace absorbed_dose_references {
 
@@ -188,11 +188,11 @@ using namespace absorbed_dose_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline absorbed_dose {
 
@@ -220,4 +220,4 @@ template<Representation Rep = double> using YGy = units::isq::si::absorbed_dose<
 
 }  // namespace units::aliases::isq::si::inline absorbed_dose
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

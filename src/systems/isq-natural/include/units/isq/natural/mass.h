@@ -37,7 +37,7 @@ struct dim_mass : isq::dim_mass<gigaelectronvolt> {};
 template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace mass_references {
 
@@ -51,11 +51,11 @@ using namespace mass_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline mass {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using GeV = units::isq::natural::mass<unit
 
 }  // namespace units::aliases::isq::natural::inline mass
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

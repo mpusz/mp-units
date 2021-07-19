@@ -41,7 +41,7 @@ struct dim_area : isq::dim_area<dim_area, square_foot, dim_length> {};
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,9 +51,9 @@ constexpr auto operator"" _q_ft2(long double l) { return area<square_foot, long 
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace area_references {
 
@@ -67,11 +67,11 @@ using namespace area_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::fps::inline area {
 
@@ -79,4 +79,4 @@ template<Representation Rep = double> using ft2 = units::isq::si::fps::area<unit
 
 }  // namespace units::aliases::isq::si::fps::inlipne area
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

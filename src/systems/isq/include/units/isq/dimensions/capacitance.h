@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_capacitance;
+
 template<typename Child, Unit U, DimensionOfT<dim_electric_charge> C, DimensionOfT<dim_voltage> V>
-struct dim_capacitance : derived_dimension<Child, U, exponent<C, 1>, exponent<V, -1>> {};
+struct dim_capacitance<Child, U, C, V> : derived_dimension<Child, U, exponent<C, 1>, exponent<V, -1>> {};
 
 template<typename T>
 concept Capacitance = QuantityOfT<T, dim_capacitance>;

@@ -40,7 +40,7 @@ struct dim_energy : isq::dim_energy<dim_energy, gigaelectronvolt, dim_force, dim
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace energy_references {
 
@@ -54,11 +54,11 @@ using namespace energy_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline energy {
 
@@ -66,4 +66,4 @@ template<Representation Rep = double> using GeV = units::isq::natural::energy<un
 
 }  // namespace units::aliases::isq::natural::inline energy
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

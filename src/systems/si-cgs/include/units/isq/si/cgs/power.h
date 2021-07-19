@@ -41,7 +41,7 @@ struct dim_power : isq::dim_power<dim_power, erg_per_second, dim_energy, dim_tim
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -51,11 +51,11 @@ constexpr auto operator"" _q_erg_per_s(long double l) { return power<erg_per_sec
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::cgs
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::cgs::inline power {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using erg_per_s = units::isq::si::cgs::pow
 
 }  // namespace units::aliases::isq::si::cgs::inline power
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

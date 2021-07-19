@@ -22,19 +22,35 @@
 
 #pragma once
 
-#include <units/concepts.h>
-#include <units/isq/dimensions/inductance.h>
-#include <units/isq/dimensions/length.h>
+#include <units/derived_dimension.h>
 
-namespace units::isq {
+namespace units::detail {
 
-template<typename Child, Unit U, typename...>
-struct dim_permeability;
+// same_scaled_units
+template<typename ExpList, Unit... Us>
+inline constexpr bool same_scaled_units = false;
 
-template<typename Child, Unit U, DimensionOfT<dim_inductance> H, DimensionOfT<dim_length> L>
-struct dim_permeability<Child, U, H, L> : derived_dimension<Child, U, exponent<H, 1>, exponent<L, -1>> {};
+template<typename... Es, Unit... Us>
+inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
-template<typename T>
-concept Permeability = QuantityOfT<T, dim_permeability>;
+// derived_unit
 
-}  // namespace units::isq
+template<Exponent E>
+constexpr ratio inverse_if_negative(const ratio& r)
+{
+  if constexpr(E::num * E::den > 0)
+    return r;
+  else
+    return inverse(r);
+}
+
+template<Unit... Us, typename... Es>
+constexpr ratio derived_ratio(exponent_list<Es...>)
+{
+  return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio) / dimension_unit<typename Es::dimension>::ratio));
+}
+
+template<DerivedDimension D, Unit... Us>
+using derived_unit = scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
+
+}  // namespace units::detail

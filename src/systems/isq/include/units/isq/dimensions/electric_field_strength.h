@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_electric_field_strength;
+
 template<typename Child, Unit U, DimensionOfT<dim_voltage> V, DimensionOfT<dim_length> L>
-struct dim_electric_field_strength : derived_dimension<Child, U, exponent<V, 1>, exponent<L, -1>> {};
+struct dim_electric_field_strength<Child, U, V, L> : derived_dimension<Child, U, exponent<V, 1>, exponent<L, -1>> {};
 
 template<typename T>
 concept ElectricFieldStrength = QuantityOfT<T, dim_electric_field_strength>;

@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_torque;
+
 template<typename Child, Unit U, DimensionOfT<dim_force> F, DimensionOfT<dim_length> L, DimensionOfT<dim_angle> A>
-struct dim_torque : derived_dimension<Child, U, exponent<F, 1>, exponent<L, 1>, exponent<A, -1>> {};
+struct dim_torque<Child, U, F, L, A> : derived_dimension<Child, U, exponent<F, 1>, exponent<L, 1>, exponent<A, -1>> {};
 
 template<typename T>
 concept Torque = QuantityOfT<T, dim_torque>;

@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <units/bits/deduced_symbol_text.h>
+#include <units/bits/derived_symbol_text.h>
 #include <units/bits/external/downcasting.h>
 
 // IWYU pragma: begin_exports
-#include <units/bits/deduced_unit.h> 
+#include <units/bits/derived_unit.h> 
 #include <units/bits/external/fixed_string.h>
 #include <units/prefix.h> 
 #include <units/ratio.h>
@@ -155,36 +155,11 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio,
 template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
            (U::is_named && (URest::is_named && ... && true))
-struct deduced_unit : downcast_dispatch<Child, detail::deduced_unit<Dim, U, URest...>> {
+struct derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
-  static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
+  static constexpr auto symbol = detail::derived_symbol_text<Dim, U, URest...>();
   using prefix_family = no_prefix;
 };
-
-
-/**
- * @brief A unit with a deduced ratio and symbol that can be used as a named unit for children 
- *
- * Defines a new unit with a deduced ratio and symbol based on the recipe from the provided
- * derived dimension. The number and order of provided units should match the recipe of the
- * derived dimension. All of the units provided should also be a named ones so it is possible
- * to create a deduced symbol text.
- *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam Dim a derived dimension recipe to use for deduction
- * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
- * @tparam URest the units for the rest of dimensions from the recipe
- */
-template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
-  requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
-           (U::is_named && (URest::is_named && ... && true))
-// TODO - 'noble' is placeholder to sort of mean can pass its name on to other deduced units
-struct noble_deduced_unit : downcast_dispatch<Child, detail::deduced_unit<Dim, U, URest...>> {
-  static constexpr bool is_named = true;
-  static constexpr auto symbol = detail::deduced_symbol_text<Dim, U, URest...>();
-  using prefix_family = no_prefix;
-};
-
 
 /**
  * @brief A named unit with a deduced ratio 
@@ -203,7 +178,7 @@ struct noble_deduced_unit : downcast_dispatch<Child, detail::deduced_unit<Dim, U
  */
 template<typename Child, DerivedDimension Dim, basic_symbol_text Symbol, PrefixFamily PF, Unit U, Unit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...>
-struct named_deduced_unit : downcast_dispatch<Child, detail::deduced_unit<Dim, U, URest...>> {
+struct named_derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;

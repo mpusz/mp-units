@@ -61,7 +61,7 @@ struct dim_electric_current : isq::dim_electric_current<ampere> {};
 template<UnitOf<dim_electric_current> U, Representation Rep = double>
 using electric_current = quantity<dim_electric_current, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -151,9 +151,9 @@ constexpr auto operator"" _q_YA(long double l) { return electric_current<yottaam
 
 } // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace electric_current_references {
 
@@ -187,11 +187,11 @@ using namespace electric_current_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline electric_current {
 
@@ -219,4 +219,4 @@ template<Representation Rep = double> using YA = units::isq::si::electric_curren
 
 }  // namespace units::aliases::isq::si::inline electric_current
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -124,8 +124,8 @@ using namespace units::isq::si::fps::references;
 
 // addition
 
-// static_assert(si::length<si::metre>(1) + 1 * ft == si::length<si::metre>(1.3048)); // should not compile (different dimensions)
-// static_assert(1 * ft / 0.3048 + si::length<si::metre>(1) == si::length<si::metre>(1.3048)); // should not compile (different dimensions)
+static_assert(si::length<si::metre>(1) + 1 * ft == si::length<si::metre>(1.3048));
+static_assert(1 * ft + si::length<si::metre>(1) == si::length<si::metre>(1.3048));
 static_assert(quantity_cast<si::length<si::metre>>(1. * ft / 0.3048) + si::length<si::metre>(1) == si::length<si::metre>(2));   // 1 m in ft + 1 m
 static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(1. * ft / 0.3048) == si::length<si::metre>(2));   // 1 m + 1 m in ft
 static_assert(1 * ft + quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre>(0.3048)) == 2 * ft);                 // 1 ft + 1 ft in m
@@ -133,8 +133,8 @@ static_assert(quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre
 
 // substraction
 
-// static_assert(1 * ft - si::length<si::metre>(1) == -si::length<si::metre>(0.6952)); // should not compile (different dimensions)
-// static_assert(si::length<si::metre>(1) - 1 * ft == si::length<si::metre>(0.6952)); // should not compile (different dimensions)
+static_assert(1 * ft - si::length<si::metre>(1) == -si::length<si::metre>(0.6952));
+static_assert(si::length<si::metre>(1) - 1 * ft == si::length<si::metre>(0.6952));
 static_assert(quantity_cast<si::length<si::metre>>(6. * ft) - si::length<si::metre>(1) > si::length<si::metre>(0.8287) &&
               quantity_cast<si::length<si::metre>>(6. * ft) - si::length<si::metre>(1) < si::length<si::metre>(0.8289));       // 6 ft in m - 1 m  = ... m
 static_assert(si::length<si::metre>(5) - quantity_cast<si::length<si::metre>>(6 * ft) == si::length<si::metre>(3.1712));       // 5 m - 6 ft in m  = ...
@@ -143,14 +143,14 @@ static_assert(quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre
 
 // multiplication
 
-// static_assert(2 * ft * si::length<si::metre>(2) == si::area<si::square_metre>(1.2192)); // should not compile (unknown dimension)
-// static_assert(quantity_cast<si::length<si::metre>>(2. * ft) * si::length<si::metre>(2) == si::area<si::square_metre>(1.2192)); 
+// static_assert(2 * ft * si::length<si::metre>(2) == si::area<si::square_metre>(1.2192)); // TODO Add support for comparing of an unknown_dimension
+static_assert(quantity_cast<si::length<si::metre>>(2. * ft) * si::length<si::metre>(2) == si::area<si::square_metre>(1.2192)); 
 static_assert(quantity_cast<si::length<si::metre>>(2. * ft) * si::length<si::metre>(0.6096) == si::area<si::square_metre>(0.371612160));  // 2 ft * 2 ft == 4 sq ft
 static_assert(2. * ft * quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre>(0.6096)) == 4._q_ft2);
 
 // division
 
-// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // should not compile (unknown dimension)
+// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // TODO Add support for comparing of an unknown_dimension
 static_assert(si::area<si::square_metre>(1.48644864) / quantity_cast<si::length<si::metre>>(4 * ft) == si::length<si::metre>(1.2192)); // 16 ft2 / 4 ft = 4 ft
 static_assert(quantity_cast<si::fps::area<si::fps::square_foot>>(si::area<si::square_metre>(1.48644864)) / (4. * ft) == 4. * ft);      // 16 ft2 / 4 ft = 4 ft
 

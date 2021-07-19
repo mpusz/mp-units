@@ -30,53 +30,82 @@ endif()
 
 set(IWYU_VERBOSITY_LEVEL 3 CACHE STRING "IWYU verbosity level (the higher the level, the more output)")
 
-macro(_find_iwyu)
-    find_program(_iwyu_path NAMES "include-what-you-use")
-    if(NOT _iwyu_path)
-        message(WARNING "'include-what-you-use' executable not found!")
-        return()
-    endif()
-endmacro()
-
 macro(_iwyu_args_append arg)
     list(APPEND _iwyu_args "-Xiwyu" "${arg}")
 endmacro()
 
 macro(_iwyu_args_append_if_present option arg)
-    if(_set_iwyu_${option})
+    if(_enable_iwyu_${option})
         _iwyu_args_append("${arg}")
     endif()
 endmacro()
 
-macro(_process_iwyu_arguments offset)
-    set(_options NO_DEFAULT_MAPPINGS PCH_IN_CODE TRANSITIVE_INCLUDES_ONLY NO_COMMENTS NO_FORWARD_DECLARATIONS CXX17_NAMESPACES QUOTED_INCLUDES_FIRST)
-    set(_one_value_args MAPPING_FILE MAX_LINE_LENGTH)
+macro(_enable_iwyu_failed log_postfix)
+    if(NOT _enable_iwyu_QUIET)
+        message(STATUS "Enabling include-what-you-use${log_postfix} - failed")
+    endif()
+    return()
+endmacro()
+
+macro(_process_iwyu_arguments offset log_postfix)
+    set(_options QUIET REQUIRED NO_DEFAULT_MAPPINGS PCH_IN_CODE TRANSITIVE_INCLUDES_ONLY NO_COMMENTS NO_FORWARD_DECLARATIONS CXX17_NAMESPACES QUOTED_INCLUDES_FIRST)
+    set(_one_value_args PROGRAM MAPPING_FILE MAX_LINE_LENGTH)
     set(_multi_value_args KEEP)
-    cmake_parse_arguments(PARSE_ARGV ${offset} _set_iwyu "${_options}" "${_one_value_args}" "${_multi_value_args}")
+    cmake_parse_arguments(PARSE_ARGV ${offset} _enable_iwyu "${_options}" "${_one_value_args}" "${_multi_value_args}")
 
     # validate and process arguments
-    if(${prefix}_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Invalid arguments '${${prefix}_UNPARSED_ARGUMENTS}'")
+    if(_enable_iwyu_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Invalid arguments '${_enable_iwyu_UNPARSED_ARGUMENTS}'")
     endif()
 
-    if(_set_iwyu_KEEP)
-        foreach(_pattern ${_set_iwyu_KEEP})
+    if(_enable_iwyu_KEYWORDS_MISSING_VALUES)
+        message(FATAL_ERROR "No value provided for '${_enable_iwyu_KEYWORDS_MISSING_VALUES}'")
+    endif()
+
+    if(NOT _enable_iwyu_QUIET)
+        message(STATUS "Enabling include-what-you-use${log_postfix}")
+    endif()
+
+    if(${_enable_iwyu_REQUIRED})
+        set(_error_log_level FATAL_ERROR)
+    elseif(NOT _enable_iwyu_QUIET)
+        set(_error_log_level STATUS)
+    endif()
+
+    if(NOT DEFINED _enable_iwyu_PROGRAM)
+        set(_enable_iwyu_PROGRAM include-what-you-use)
+    endif()
+
+    find_program(IWYU_PATH ${_enable_iwyu_PROGRAM})
+    if(IWYU_PATH)
+        if(NOT _enable_iwyu_QUIET)
+            message(STATUS "  Executable: ${IWYU_PATH}")
+        endif()
+    else()
+        if(DEFINED _error_log_level)
+            message(${_error_log_level} "  '${_enable_iwyu_PROGRAM}' executable was not found")
+        endif()
+        _enable_iwyu_failed("${log_postfix}")
+    endif()
+
+    if(_enable_iwyu_KEEP)
+        foreach(_pattern ${_enable_iwyu_KEEP})
             _iwyu_args_append("--keep=${_pattern}")
         endforeach()
     endif()
 
-    if(_set_iwyu_MAPPING_FILE)
-        if(NOT EXISTS ${_set_iwyu_MAPPING_FILE})
-            message(FATAL_ERROR "IWYU: Mapping file '${_set_iwyu_MAPPING_FILE}' does not exist")
+    if(_enable_iwyu_MAPPING_FILE)
+        if(NOT EXISTS ${_enable_iwyu_MAPPING_FILE})
+            message(FATAL_ERROR "IWYU: Mapping file '${_enable_iwyu_MAPPING_FILE}' does not exist")
         endif()
-        _iwyu_args_append("--mapping_file=${_set_iwyu_MAPPING_FILE}")
+        _iwyu_args_append("--mapping_file=${_enable_iwyu_MAPPING_FILE}")
     endif()
 
-    if(_set_iwyu_MAX_LINE_LENGTH)
-        if(NOT _set_iwyu_MAX_LINE_LENGTH GREATER 0)
-            message(FATAL_ERROR "IWYU: Invalid MAX_LINE_LENGTH value = '${_set_iwyu_MAX_LINE_LENGTH}")
+    if(_enable_iwyu_MAX_LINE_LENGTH)
+        if(NOT _enable_iwyu_MAX_LINE_LENGTH GREATER 0)
+            message(FATAL_ERROR "IWYU: Invalid MAX_LINE_LENGTH value = '${_enable_iwyu_MAX_LINE_LENGTH}")
         endif()
-        _iwyu_args_append("--max_line_length=${_set_iwyu_MAX_LINE_LENGTH}")
+        _iwyu_args_append("--max_line_length=${_enable_iwyu_MAX_LINE_LENGTH}")
     endif()
 
     _iwyu_args_append_if_present(NO_DEFAULT_MAPPINGS "--no_default_mappings")
@@ -88,55 +117,50 @@ macro(_process_iwyu_arguments offset)
     _iwyu_args_append_if_present(QUOTED_INCLUDES_FIRST "--quoted_includes_first")
 
     _iwyu_args_append("--verbose=${IWYU_VERBOSITY_LEVEL}")
+
+    if(NOT _enable_iwyu_QUIET)
+        message(STATUS "  Arguments: ${_iwyu_args}")
+        message(STATUS "Enabling include-what-you-use${log_postfix} - done")
+    endif()
 endmacro()
 
 #
-# set_target_iwyu(TargetName
-#                 [KEEP pattern...]
-#                 [MAPPING_FILE file]
-#                 [NO_DEFAULT_MAPPINGS]
-#                 [PCH_IN_CODE]
-#                 [TRANSITIVE_INCLUDES_ONLY]
-#                 [MAX_LINE_LENGTH length]
-#                 [NO_COMMENTS]
-#                 [NO_FORWARD_DECLARATIONS]
-#                 [CXX17_NAMESPACES]
-#                 [QUOTED_INCLUDES_FIRST])
+# enable_iwyu([PROGRAM]                     # include-what-you-use by default
+#             [QUIET] [REQUIRED]
+#             [KEEP patterns...]
+#             [MAPPING_FILE file]
+#             [NO_DEFAULT_MAPPINGS]
+#             [PCH_IN_CODE]
+#             [TRANSITIVE_INCLUDES_ONLY]
+#             [MAX_LINE_LENGTH length]
+#             [NO_COMMENTS]
+#             [NO_FORWARD_DECLARATIONS]
+#             [CXX17_NAMESPACES]
+#             [QUOTED_INCLUDES_FIRST])
 #
-function(set_target_iwyu target)
-    _find_iwyu()
-    _process_iwyu_arguments(1)
-
-    message(STATUS "Setting include-what-you-use for '${target}'")
-    message(STATUS "  Path: ${_iwyu_path}")
-    message(STATUS "  Arguments: ${_iwyu_args}")
-    message(STATUS "Setting include-what-you-use for '${target}' - done")
-
-    set_target_properties(${target} PROPERTIES
-        CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}"
-    )
+function(enable_iwyu)
+    _process_iwyu_arguments(0 "")
+    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}" PARENT_SCOPE)
 endfunction()
 
 #
-# set_target_iwyu([KEEP patterns...]
-#                 [MAPPING_FILE file]
-#                 [NO_DEFAULT_MAPPINGS]
-#                 [PCH_IN_CODE]
-#                 [TRANSITIVE_INCLUDES_ONLY]
-#                 [MAX_LINE_LENGTH length]
-#                 [NO_COMMENTS]
-#                 [NO_FORWARD_DECLARATIONS]
-#                 [CXX17_NAMESPACES]
-#                 [QUOTED_INCLUDES_FIRST])
+# enable_target_iwyu(TargetName
+#                    [PROGRAM]                     # include-what-you-use by default
+#                    [QUIET] [REQUIRED]
+#                    [KEEP pattern...]
+#                    [MAPPING_FILE file]
+#                    [NO_DEFAULT_MAPPINGS]
+#                    [PCH_IN_CODE]
+#                    [TRANSITIVE_INCLUDES_ONLY]
+#                    [MAX_LINE_LENGTH length]
+#                    [NO_COMMENTS]
+#                    [NO_FORWARD_DECLARATIONS]
+#                    [CXX17_NAMESPACES]
+#                    [QUOTED_INCLUDES_FIRST])
 #
-function(set_iwyu)
-    _find_iwyu()
-    _process_iwyu_arguments(0)
-
-    message(STATUS "Setting include-what-you-use")
-    message(STATUS "  Path: ${_iwyu_path}")
-    message(STATUS "  Arguments: ${_iwyu_args}")
-    message(STATUS "Setting include-what-you-use - done")
-
-    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}" PARENT_SCOPE)
+function(enable_target_iwyu target)
+    _process_iwyu_arguments(1 " for '${target}'")
+    set_target_properties(${target} PROPERTIES
+        CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}"
+    )
 endfunction()

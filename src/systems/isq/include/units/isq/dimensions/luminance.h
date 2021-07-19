@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_luminance;
+
 template<typename Child, Unit U, DimensionOfT<dim_luminous_intensity> I, DimensionOfT<dim_length> L>
-struct dim_luminance : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
+struct dim_luminance<Child, U, I, L> : derived_dimension<Child, U, exponent<I, 1>, exponent<L, -2>> {};
 
 template<typename T>
 concept Luminance = QuantityOfT<T, dim_luminance>;

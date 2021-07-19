@@ -40,7 +40,7 @@ struct dim_luminance : isq::dim_luminance<dim_luminance, candela_per_metre_sq, d
 template<UnitOf<dim_luminance> U, Representation Rep = double>
 using luminance = quantity<dim_luminance, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,11 +50,11 @@ constexpr auto operator"" _q_cd_per_m2(long double l) { return luminance<candela
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline luminance {
 
@@ -62,4 +62,4 @@ template<Representation Rep = double> using cd_per_m2 = units::isq::si::luminanc
 
 }  // namespace units::aliases::isq::si::inline luminance
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -37,7 +37,7 @@ struct dim_length : isq::dim_length<inverted_gigaelectronvolt> {};
 template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace length_references {
 
@@ -51,11 +51,11 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::natural::inline length {
 
@@ -63,4 +63,4 @@ template<Representation Rep = double> using inv_GeV = units::isq::natural::lengt
 
 }  // namespace units::aliases::isq::natural::inline length
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

@@ -22,35 +22,13 @@
 
 #pragma once
 
-#include <units/derived_dimension.h>
+#include <units/bits/basic_concepts.h>
 
-namespace units::detail {
+namespace units {
 
-// same_scaled_units
-template<typename ExpList, Unit... Us>
-inline constexpr bool same_scaled_units = false;
+template<Dimension D>
+struct point_origin {
+  using dimension = D;
+};
 
-template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
-
-// deduced_unit
-
-template<Exponent E>
-constexpr ratio inverse_if_negative(const ratio& r)
-{
-  if constexpr(E::num * E::den > 0)
-    return r;
-  else
-    return inverse(r);
-}
-
-template<Unit... Us, typename... Es>
-constexpr ratio derived_ratio(exponent_list<Es...>)
-{
-  return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio) / dimension_unit<typename Es::dimension>::ratio));
-}
-
-template<DerivedDimension D, Unit... Us>
-using deduced_unit = scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
-
-}  // namespace units::detail
+}  // namespace units

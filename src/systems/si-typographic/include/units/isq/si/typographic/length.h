@@ -41,7 +41,7 @@ struct pica_prn : named_scaled_unit<pica_prn, "pica(prn)", no_prefix, ratio(2108
 struct point_comp : named_scaled_unit<point_comp, "point(comp)", no_prefix, ratio(1763889, 500000, -4), si::metre> {};
 struct point_prn : named_scaled_unit<point_prn, "point(prn)", no_prefix, ratio(1757299, 500000, -4), si::metre> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -63,9 +63,9 @@ constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace length_references {
 
@@ -82,11 +82,11 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::typographic
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::typographic::inline length {
 
@@ -97,4 +97,4 @@ template<Representation Rep = double> using point_prn = units::isq::si::length<u
 
 }  // namespace units::aliases::isq::si::typographic::inline length
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

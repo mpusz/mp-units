@@ -39,7 +39,7 @@ namespace units {
 template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
-template<Dimension D, UnitOf<D> U, Representation Rep>
+template<PointOrigin O, UnitOf<typename O::dimension> U, Representation Rep>
 class quantity_point;
 
 template<Kind K, UnitOf<typename K::dimension> U, Representation Rep>
@@ -234,10 +234,12 @@ template<Representation ToRep, typename D, typename U, scalable_with_<ToRep> Rep
  *
  * @tparam CastSpec a target quantity point type to cast to or anything that works for quantity_cast
  */
-template<typename CastSpec, typename D, typename U, typename Rep>
-  requires is_specialization_of<CastSpec, quantity_point> ||
-           requires(quantity<D, U, Rep> q) { quantity_cast<CastSpec>(q); }
-[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& qp)
+template<typename CastSpec, typename O, typename U, typename Rep>
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<O, U, Rep>& qp)
+  requires requires { requires is_specialization_of<CastSpec, quantity_point>;
+                      requires requires { quantity_cast<typename CastSpec::quantity_type>(qp.relative()); };
+                      requires equivalent<O, typename CastSpec::origin>; } ||  // TODO: Simplify when Clang catches up.
+           requires { quantity_cast<CastSpec>(qp.relative()); }
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point>)
     return quantity_point(quantity_cast<typename CastSpec::quantity_type>(qp.relative()));
@@ -261,11 +263,11 @@ template<typename CastSpec, typename D, typename U, typename Rep>
  * @tparam ToD a dimension type to use for a target quantity
  * @tparam ToU a unit type to use for a target quantity
  */
-template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
-  requires equivalent<ToD, D> && UnitOf<ToU, ToD>
-[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<D, U, Rep>& q)
+template<Dimension ToD, Unit ToU, typename O, typename U, typename Rep>
+  requires equivalent<ToD, typename O::dimension> && UnitOf<ToU, ToD> && RebindablePointOriginFor<O, ToD>
+[[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<O, U, Rep>& q)
 {
-  return quantity_point_cast<quantity_point<ToD, ToU, Rep>>(q);
+  return quantity_point_cast<quantity_point<rebind_point_origin_dimension<O, ToD>, ToU, Rep>>(q);
 }
 
 /**
@@ -347,7 +349,8 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
 template<typename CastSpec, typename PK, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep>& qpk)
   requires requires { requires is_specialization_of<CastSpec, quantity_point_kind>;
-              requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); }; } ||
+                      requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); };
+                      requires equivalent<typename PK::origin, typename CastSpec::point_kind_type::origin>; } ||
            requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
            requires { quantity_kind_cast<CastSpec>(qpk.relative()); }  // TODO: Simplify when Clang catches up.
 {

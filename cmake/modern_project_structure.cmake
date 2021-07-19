@@ -20,27 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.4)
 
-find_package(Catch2 CONFIG REQUIRED)
-
-add_executable(unit_tests_runtime
-    catch_main.cpp
-    math_test.cpp
-    fmt_test.cpp
-    fmt_units_test.cpp
-    distribution_test.cpp
-)
-target_link_libraries(unit_tests_runtime PRIVATE
-    mp-units::mp-units
-    Catch2::Catch2
-)
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(unit_tests_runtime PRIVATE
-        /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
-    )
-endif()
-
-include(Catch)
-catch_discover_tests(unit_tests_runtime)
+function(ensure_entry_point)
+  if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+      message(FATAL_ERROR "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
+              "as a CMake entry point and should not be included from other CMake files. "
+              "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMaskeLists.txt' directly instead.")
+  endif()
+endfunction()

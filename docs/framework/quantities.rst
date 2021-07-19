@@ -70,7 +70,7 @@ Unit-Specific Aliases (Experimental)
 Additionally to the dimension-specific aliases there are also ones provided for
 each and every :term:`unit` in the library::
 
-    #ifdef UNITS_ALIASES
+    #ifndef UNITS_NO_ALIASES
 
     namespace units::aliases::isq::si::inline length {
 
@@ -86,7 +86,7 @@ each and every :term:`unit` in the library::
     
     }
 
-    #endif // UNITS_ALIASES
+    #endif // UNITS_NO_ALIASES
 
 Using the above our code can look as follows::
 
@@ -116,7 +116,7 @@ Quantity References (Experimental)
 Quantity References provide an alternative and simplified way to create quantities.
 They are defined using the `reference` class template::
 
-    #ifdef UNITS_REFERENCES
+    #ifndef UNITS_NO_REFERENCES
 
     namespace length_references {
 
@@ -131,7 +131,7 @@ They are defined using the `reference` class template::
 
     }  // namespace references
 
-    #endif // UNITS_REFERENCES
+    #endif // UNITS_NO_REFERENCES
 
 With the above our code can look as follows::
 
@@ -157,7 +157,7 @@ User Defined Literals (Experimental)
 Alternatively, to construct quantities with compile-time known values the library provides
 :abbr:`UDL (User Defined Literal)` s for each :term:`unit` of every :term:`dimension`::
 
-    #ifdef UNITS_LITERALS
+    #ifndef UNITS_NO_LITERALS
 
     inline namespace literals {
 
@@ -169,7 +169,7 @@ Alternatively, to construct quantities with compile-time known values the librar
 
     }
 
-    #endif // UNITS_LITERALS
+    #endif // UNITS_NO_LITERALS
 
 Thanks to them the same code can be as simple as::
 
@@ -185,13 +185,6 @@ Thanks to them the same code can be as simple as::
     language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
     ``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
     ``_q_`` prefix was consistently applied to all the UDLs.
-
-.. important::
-
-    As one can read in the next section UDLs, are considered to be inferior to `Quantity References`_
-    and their definition affects compile-time performance a lot. This is why they are an opt-in feature
-    of the library and in order to use them one has to provide a `UNITS_LITERALS` preprocessor definition.
-
     
 UDLs vs Quantity References
 +++++++++++++++++++++++++++
@@ -471,6 +464,19 @@ Summary
 +-----------------------------------------------+-------------+------------+---------------+
 | Compile-time performance                      | **Fastest** | Medium     | Slowest       |
 +-----------------------------------------------+-------------+------------+---------------+
+
+
+Don't pay for what you don't use (compile-time performance)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+As noted in the previous chapter, each quantity creation helper has a different impact on the compile-time
+performance. Aliases tend to be the fastest to compile but even their definition can be expensive for some
+if it is not used in the source code. This is why it is possible to opt-out from each or every quantity
+creation helper with the following preprocessor defines::
+
+    #define UNITS_NO_ALIASES
+    #define UNITS_NO_REFERENCES
+    #define UNITS_NO_LITERALS
 
 
 Dimension-specific Concepts

@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_catalytic_activity;
+
 template<typename Child, Unit U, DimensionOfT<dim_time> T, DimensionOfT<dim_amount_of_substance> M>
-struct dim_catalytic_activity : derived_dimension<Child, U, exponent<T, -1>, exponent<M, 1>> {};
+struct dim_catalytic_activity<Child, U, T, M> : derived_dimension<Child, U, exponent<T, -1>, exponent<M, 1>> {};
 
 template<typename T>
 concept CatalyticActivity = QuantityOfT<T, dim_catalytic_activity>;

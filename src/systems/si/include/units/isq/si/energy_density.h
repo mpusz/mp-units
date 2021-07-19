@@ -40,7 +40,7 @@ struct dim_energy_density : isq::dim_energy_density<dim_energy_density, joule_pe
 template<UnitOf<dim_energy_density> U, Representation Rep = double>
 using energy_density = quantity<dim_energy_density, U, Rep>;
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -50,11 +50,11 @@ constexpr auto operator"" _q_J_per_m3(long double l) { return energy_density<jou
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline energy_density {
 
@@ -62,4 +62,4 @@ template<Representation Rep = double> using J_per_m3 = units::isq::si::energy_de
 
 }  // namespace units::aliases::isq::si::inline energy_density
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

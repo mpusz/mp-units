@@ -16,13 +16,10 @@ Units
 .. doxygenstruct:: units::prefixed_unit
    :members:
 
-.. doxygenstruct:: units::deduced_unit
+.. doxygenstruct:: units::derived_unit
    :members:
 
-.. doxygenstruct:: units::noble_deduced_unit
-   :members:
-
-.. doxygenstruct:: units::named_deduced_unit
+.. doxygenstruct:: units::named_derived_unit
    :members:
 
 .. doxygenstruct:: units::alias_unit

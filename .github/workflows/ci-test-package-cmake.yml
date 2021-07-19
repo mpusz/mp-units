@@ -84,6 +84,7 @@ jobs:
       CC: ${{ matrix.config.compiler.cc }}
       CXX: ${{ matrix.config.compiler.cxx }}
       CMAKE_GENERATOR: Ninja
+      CONAN_CMAKE_GENERATOR: Ninja
 
     steps:
       - uses: actions/checkout@v2
@@ -143,18 +144,20 @@ jobs:
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
-      - name: Add support for clang-12 to Conan's settings.yml
-        # TODO Remove when Conan will support clang-12 (after clang-12 release)
-        if: matrix.config.compiler.type == 'CLANG'
-        shell: bash
-        run: |
-          sed -i -e 's/"8", "9", "10", "11"]/"8", "9", "10", "11", "12"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
         shell: bash
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
           conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
+        working-directory: build/${{ matrix.build_type }}
+        run: |
+          call conanvcvars.bat
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      - name: Configure mp-units CMake
+        if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
@@ -164,16 +167,25 @@ jobs:
         working-directory: build/${{ matrix.build_type }}
         run: |
           cmake --install . --prefix test_package
-      - name: Configure test_package CMake
+      - name: Install dependencies for test_package
         shell: bash
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
           conan install ../../..
+      - name: Build test_package CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
+        working-directory: test_package/build/${{ matrix.build_type }}
+        run: |
+          call conanvcvars.bat
           cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
-      - name: Build test_package
+          cmake --build .
+      - name: Build test_package CMake
+        if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Run test_package
         shell: bash

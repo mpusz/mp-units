@@ -44,7 +44,7 @@ struct parsec : named_scaled_unit<parsec, "pc", si::prefix, ratio(30'856'775'814
 // https://en.wikipedia.org/wiki/Angstrom
 struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio(1, 1, -10), si::metre> {};
 
-#ifdef UNITS_LITERALS
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -62,9 +62,9 @@ constexpr auto operator"" _q_angstrom(long double l) { return si::length<angstro
 
 }  // namespace literals
 
-#endif // UNITS_LITERALS
+#endif // UNITS_NO_LITERALS
 
-#ifdef UNITS_REFERENCES
+#ifndef UNITS_NO_REFERENCES
 
 namespace length_references {
 
@@ -80,11 +80,11 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_REFERENCES
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::iau
 
-#ifdef UNITS_ALIASES
+#ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::iau::inline length {
 
@@ -94,4 +94,4 @@ template<Representation Rep = double> using angstrom = units::isq::si::length<un
 
 }  // namespace units::aliases::isq::si::iau
 
-#endif // UNITS_ALIASES
+#endif // UNITS_NO_ALIASES

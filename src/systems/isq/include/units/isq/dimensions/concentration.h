@@ -28,8 +28,11 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_concentration;
+
 template<typename Child, Unit U, DimensionOfT<dim_amount_of_substance> M, DimensionOfT<dim_length> L>
-struct dim_concentration : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
+struct dim_concentration<Child, U, M, L> : derived_dimension<Child, U, exponent<M, 1>, exponent<L, -3>> {};
 
 template<typename T>
 concept Concentration = QuantityOfT<T, dim_concentration>;

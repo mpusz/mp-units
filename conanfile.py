@@ -22,7 +22,7 @@
 
 from conans import ConanFile, tools
 from conans.tools import Version, check_min_cppstd
-from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
@@ -58,27 +58,26 @@ class UnitsConan(ConanFile):
     # }
     generators = "cmake_paths"
 
-    _cmake = None
-
     @property
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
-
-    def _configure_cmake(self):
-        if not self._cmake:
-            self._cmake = CMake(self)
-            if self._run_tests:
-                # developer's mode (unit tests, examples, documentation, restrictive compilation warnings, ...)
-                self._cmake.configure()
-            else:
-                # consumer's mode (library sources only)
-                self._cmake.configure(source_folder="src")
-        return self._cmake
 
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
         self.version = version.strip()
+
+    def requirements(self):
+        compiler = self.settings.compiler
+        if compiler == "clang" and compiler.libcxx == "libc++":
+            self.requires("range-v3/0.11.0")
+
+    def build_requirements(self):
+        if self._run_tests:
+            self.build_requires("catch2/2.13.4")
+            self.build_requires("linear_algebra/0.7.1@conan-oss/stable")
+            if self.options.build_docs:
+                self.build_requires("doxygen/1.9.1")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -102,20 +101,8 @@ class UnitsConan(ConanFile):
     #         # build_docs has sense only in a development or CI build
     #         del self.options.build_docs
 
-    def requirements(self):
-        compiler = self.settings.compiler
-        if compiler == "clang" and compiler.libcxx == "libc++":
-            self.requires("range-v3/0.11.0")
-
-    def build_requirements(self):
-        if self._run_tests:
-            self.build_requires("catch2/2.13.4")
-            self.build_requires("linear_algebra/0.7.0@public-conan/stable")
-            if self.options.build_docs:
-                self.build_requires("doxygen/1.8.20")
-
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
         tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
@@ -124,14 +111,16 @@ class UnitsConan(ConanFile):
         deps.generate()
 
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure(source_folder=None if self._run_tests else "src")
         cmake.build()
         if self._run_tests:
             cmake.test(output_on_failure=True)
 
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure(source_folder=None if self._run_tests else "src")
         cmake.install()
 
     def package_id(self):

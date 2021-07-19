@@ -28,8 +28,14 @@
 
 namespace units::isq {
 
+template<typename Child, Unit U, typename...>
+struct dim_power;
+
 template<typename Child, Unit U, DimensionOfT<dim_energy> E, DimensionOfT<dim_time> T>
-struct dim_power : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
+struct dim_power<Child, U, E, T> : derived_dimension<Child, U, exponent<E, 1>, exponent<T, -1>> {};
+
+template<typename Child, Unit U, DimensionOfT<dim_length> L, DimensionOfT<dim_force> F, DimensionOfT<dim_time> T>
+struct dim_power<Child, U, L, F, T> : derived_dimension<Child, U, exponent<L, 1>, exponent<F, 1>, exponent<T, -1>> {};
 
 template<typename T>
 concept Power = QuantityOfT<T, dim_power>;

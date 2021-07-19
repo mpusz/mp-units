@@ -194,7 +194,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
-  SECTION("quantity with a deduced unit")
+  SECTION("quantity with a derived unit")
   {
     SECTION("coherent derived unit")
     {
@@ -287,7 +287,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        struct newton_per_centimetre : deduced_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
+        struct newton_per_centimetre : derived_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
         const surface_tension<newton_per_centimetre> q(123);
         os << q;
 

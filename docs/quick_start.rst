@@ -3,8 +3,6 @@ Quick Start
 
 Here is a small example of possible operations::
 
-    #define UNITS_REFERENCES
-
     #include <units/isq/si/area.h>
     #include <units/isq/si/frequency.h>
     #include <units/isq/si/length.h>
@@ -34,7 +32,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/53bTahKd8>`_
+    `Example #1 <https://godbolt.org/z/5dvY8Woh1>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -42,10 +40,6 @@ but still easy to use interface where all unit conversions and dimensional analy
 performed without sacrificing on accuracy. Please see the below example for a quick preview
 of basic library features::
 
-    #define UNITS_ALIASES
-    #define UNITS_LITERALS
-    #define UNITS_REFERENCES
-    
     #include <units/format.h>
     #include <units/isq/si/international/length.h>
     #include <units/isq/si/international/speed.h>
@@ -92,7 +86,7 @@ of basic library features::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #2 <https://godbolt.org/z/jKnPPPEx6>`_
+    `Example #2 <https://godbolt.org/z/9fnzfbhb6>`_
 
 .. seealso::
 

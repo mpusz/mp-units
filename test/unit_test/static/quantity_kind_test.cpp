@@ -52,8 +52,8 @@ struct radius_kind : kind<radius_kind, dim_length> {};
 struct width_kind : kind<width_kind, dim_length> {};
 struct height_kind : kind<height_kind, dim_length> {};
 
-struct horizontal_area_kind : derived_kind<horizontal_area_kind, width_kind, dim_area> {};
-struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+struct horizontal_area_kind : derived_kind<horizontal_area_kind, dim_area, width_kind> {};
+struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 
 struct apple : kind<apple, dim_one> {};
 struct orange : kind<orange, dim_one> {};
@@ -82,16 +82,16 @@ static_assert(QuantityKind<width<metre>>);
 static_assert(QuantityKind<rate_of_climb<metre_per_second>>);
 static_assert(!QuantityKind<double>);
 static_assert(!QuantityKind<length<metre>>);
-static_assert(!QuantityKind<quantity_point<dim_length, metre>>);
+static_assert(!QuantityKind<quantity_point<dynamic_origin<dim_length>, metre>>);
 
 static_assert(QuantityKindOf<width<metre>, width_kind>);
 static_assert(!QuantityKindOf<width<metre>, height_kind>);
 static_assert(!QuantityKindOf<width<metre>, metre>);
 static_assert(!QuantityKindOf<length<metre>, width_kind>);
 static_assert(!QuantityKindOf<length<metre>, metre>);
-static_assert(!QuantityKindOf<quantity_point<dim_length, metre>, width_kind>);
-static_assert(!QuantityKindOf<quantity_point<dim_length, metre>, dim_length>);
-static_assert(!QuantityKindOf<quantity_point<dim_length, metre>, metre>);
+static_assert(!QuantityKindOf<quantity_point<dynamic_origin<dim_length>, metre>, width_kind>);
+static_assert(!QuantityKindOf<quantity_point<dynamic_origin<dim_length>, metre>, dim_length>);
+static_assert(!QuantityKindOf<quantity_point<dynamic_origin<dim_length>, metre>, metre>);
 
 
 ///////////////
@@ -105,7 +105,7 @@ template<typename Width>
 concept invalid_types = requires {
   requires !requires { typename quantity_kind<Width, second, int>; };  // unit of a different dimension
   requires !requires { typename quantity_kind<Width, metre, length<metre>>; };  // quantity used as Rep
-  requires !requires { typename quantity_kind<Width, metre, quantity_point<dim_length, metre>>; };  // quantity point used as Rep
+  requires !requires { typename quantity_kind<Width, metre, quantity_point<dynamic_origin<dim_length>, metre>>; };  // quantity point used as Rep
   requires !requires { typename quantity_kind<Width, metre, width<metre>>; };  // quantity kind used as Rep
   requires !requires { typename quantity_kind<metre, Width, double>; };  // reordered arguments
   requires !requires { typename quantity_kind<metre, double, Width>; };  // reordered arguments
@@ -454,7 +454,7 @@ concept invalid_compound_assignments = requires(quantity_kind<Width, metre, int>
   requires invalid_compound_assignments_<Width, metre, length<metre, int>>;
   requires invalid_compound_assignments_<Width, metre, height<metre, int>>;
   requires invalid_compound_assignments_<Width, metre, horizontal_area<square_metre, int>>;
-  requires invalid_compound_assignments_<Width, metre, quantity_point<dim_length, metre, int>>;
+  requires invalid_compound_assignments_<Width, metre, quantity_point<dynamic_origin<dim_length>, metre, int>>;
   requires invalid_compound_assignments_<Width, metre, std::chrono::seconds>;
 };
 static_assert(invalid_compound_assignments<width_kind>);
@@ -475,9 +475,9 @@ static_assert(same(width<metre, double>(2. * m) - width<metre, int>(3 * m), widt
 static_assert(same(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()), int>);
+  decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()), int&&>);
 static_assert(is_same_v<
-  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().number()), int>);
+  decltype((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(0 * m)).common().number()), int&&>);
 static_assert((width<metre, std::uint8_t>(128 * m) + width<metre, std::uint8_t>(128 * m)).common().number() ==
   std::uint8_t(128) + std::uint8_t(128));
 static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 * m)).common().number() ==
@@ -485,12 +485,12 @@ static_assert((width<metre, std::uint8_t>(0 * m) - width<metre, std::uint8_t>(1 
 
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, double>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, length<metre>>);
-static_assert(!std::is_invocable_v<std::plus<>, width<metre>, quantity_point<dim_length, metre>>);
+static_assert(!std::is_invocable_v<std::plus<>, width<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, width<metre>, reference<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, double>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, length<metre>>);
-static_assert(!std::is_invocable_v<std::minus<>, width<metre>, quantity_point<dim_length, metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, width<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, reference<dim_length, metre>>);
 
@@ -612,7 +612,7 @@ static_assert(same(height<metre, double>(2. * m) / (3 * s), rate_of_climb<metre_
 static_assert(same(width<metre, int>(2 * m) * dimensionless<percent, int>(3), width<centimetre, int>(6 * cm)));
 static_assert(same(dimensionless<percent, int>(2) * width<metre, int>(3 * m), width<centimetre, int>(6 * cm)));
 static_assert(same(width<metre, int>(2 * m) / dimensionless<percent, double>(3), width<hectometre, double>(2. / 3 * hm)));
-static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<centimetre, int>(2 * cm)));
+static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<metre, int>(2 * m)));
 
 static_assert(same(height<metre, int>(2 * m) / (3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
@@ -646,21 +646,21 @@ static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<me
 
 static_assert(is_same_v<
   decltype((width<metre, std::uint8_t>(0 * m) % width<metre, std::uint8_t>(0 * m)).common().number()),
-  decltype(std::uint8_t(0) % std::uint8_t(0))>);
+  decltype(std::uint8_t(0) % std::uint8_t(0))&&>);
 
 static_assert(!std::is_invocable_v<std::multiplies<>, reference<dim_length, metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, width<metre>, height<metre>>);
-static_assert(!std::is_invocable_v<std::multiplies<>, height<metre>, quantity_point<dim_length, metre>>);
-static_assert(!std::is_invocable_v<std::multiplies<>, quantity_point<dim_length, metre>, height<metre>>);
+static_assert(!std::is_invocable_v<std::multiplies<>, height<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
+static_assert(!std::is_invocable_v<std::multiplies<>, quantity_point<dynamic_origin<dim_length>, metre>, height<metre>>);
 
 static_assert(!std::is_invocable_v<std::divides<>, reference<dim_length, metre>, width<metre>>);
 static_assert(!std::is_invocable_v<std::divides<>, width<metre>, height<metre>>);
-static_assert(!std::is_invocable_v<std::divides<>, height<metre>, quantity_point<dim_length, metre>>);
-static_assert(!std::is_invocable_v<std::divides<>, quantity_point<dim_length, metre>, height<metre>>);
+static_assert(!std::is_invocable_v<std::divides<>, height<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
+static_assert(!std::is_invocable_v<std::divides<>, quantity_point<dynamic_origin<dim_length>, metre>, height<metre>>);
 
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, reference<dim_length, metre>>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, length<metre, int>>);
-static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, quantity_point<dim_length, metre, int>>);
+static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, quantity_point<dynamic_origin<dim_length>, metre, int>>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, double>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, width<metre, double>>);
 
@@ -801,8 +801,8 @@ concept invalid_cast = requires {
   requires !requires { quantity_kind_cast<dimensionless<one>>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<square_metre>(quantity_kind<Width, metre, int>(1 * m)); };
   requires !requires { quantity_kind_cast<second>(quantity_kind<Width, metre, int>(1 * m)); };
-  requires !requires { quantity_kind_cast<quantity_point<dim_length, metre, int>>(quantity_kind<Width, metre, int>(1 * m)); };
-  requires !requires { quantity_kind_cast<quantity_point<dim_one, one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, int>>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<quantity_point<dynamic_origin<dim_one>, one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
 };
 static_assert(invalid_cast<width_kind>);
 

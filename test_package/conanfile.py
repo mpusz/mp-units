@@ -22,12 +22,13 @@
 
 from conans import ConanFile, tools, RunEnvironment
 from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps
+import os
 
 class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
