@@ -1,6 +1,8 @@
 # Release notes
 
 - **0.8.0 WIP**
+  - (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`, `common_quantity_kind`, and `common_quantity_point_kind` removed
+  - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
   - build: doxygen updated to 1.9.1

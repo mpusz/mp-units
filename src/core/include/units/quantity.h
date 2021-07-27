@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <units/bits/common_quantity.h>
+#include <units/bits/common_type.h>
 #include <units/generic/dimensionless.h>
 
 // IWYU pragma: begin_exports
@@ -89,10 +89,6 @@ concept have_quantity_for_ =
   Quantity<Q> &&
   (!Quantity<V>) &&
   quantity_value_for_<Func, typename Q::rep, V>;
-
-template<typename Func, Quantity Q1, QuantityEquivalentTo<Q1> Q2>
-  requires quantity_value_for_<Func, typename Q1::rep, typename Q2::rep>
-using common_quantity_for = common_quantity<Q1, Q2, std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 template<QuantityLike Q>
 using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
@@ -400,7 +396,8 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   requires quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
-  using ret = common_quantity_for<std::plus<>, Q1, Q2>;
+  using ref = detail::common_quantity_reference<Q1, Q2>;
+  using ret = quantity<typename ref::dimension, typename ref::unit, decltype(lhs.number() + rhs.number())>;
   return ret(ret(lhs).number() + ret(rhs).number());
 }
 
@@ -408,7 +405,8 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   requires quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
-  using ret = common_quantity_for<std::minus<>, Q1, Q2>;
+  using ref = detail::common_quantity_reference<Q1, Q2>;
+  using ret = quantity<typename ref::dimension, typename ref::unit, decltype(lhs.number() - rhs.number())>;
   return ret(ret(lhs).number() - ret(rhs).number());
 }
 
@@ -442,7 +440,7 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   requires std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
-  using cq = common_quantity<Q1, Q2>;
+  using cq = std::common_type_t<Q1, Q2>;
   return cq(lhs).number() <=> cq(rhs).number();
 }
 
@@ -450,7 +448,7 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   requires std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
-  using cq = common_quantity<Q1, Q2>;
+  using cq = std::common_type_t<Q1, Q2>;
   return cq(lhs).number() == cq(rhs).number();
 }
 

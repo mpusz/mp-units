@@ -22,7 +22,7 @@
 
 #include <units/quantity_point.h>
 #include "test_tools.h"
-#include <units/bits/common_quantity.h>
+#include <units/bits/common_type.h>
 #include <units/bits/external/type_traits.h>
 #include <units/chrono.h>
 #include <units/isq/si/length.h>
@@ -233,17 +233,17 @@ static_assert(2_q_dm3 + quantity_point(2_q_cm3) == quantity_point(2002_q_ml));
 
 static_assert(QuantityPoint<quantity_point<dynamic_origin<dim_length>, millimetre, int>>);
 
-// common_quantity_point
+// common_type
 
-static_assert(compare<
-              common_quantity_point<quantity_point<dynamic_origin<dim_length>, metre, int>, quantity_point<dynamic_origin<dim_length>, kilometre, int>>,
-              quantity_point<dynamic_origin<dim_length>, metre, int>>);
-static_assert(compare<common_quantity_point<quantity_point<dynamic_origin<dim_length>, kilometre, long long>,
-                                                   quantity_point<dynamic_origin<dim_length>, metre, int>>,
-                             quantity_point<dynamic_origin<dim_length>, metre, long long>>);
-static_assert(compare<common_quantity_point<quantity_point<dynamic_origin<dim_length>, kilometre, long long>,
-                                                   quantity_point<dynamic_origin<dim_length>, millimetre, double>>,
-                             quantity_point<dynamic_origin<dim_length>, millimetre, double>>);
+static_assert(compare<std::common_type_t<quantity_point<dynamic_origin<dim_length>, metre, int>,
+                                         quantity_point<dynamic_origin<dim_length>, kilometre, int>>,
+                      quantity_point<dynamic_origin<dim_length>, metre, int>>);
+static_assert(compare<std::common_type_t<quantity_point<dynamic_origin<dim_length>, kilometre, long long>,
+                                         quantity_point<dynamic_origin<dim_length>, metre, int>>,
+                      quantity_point<dynamic_origin<dim_length>, metre, long long>>);
+static_assert(compare<std::common_type_t<quantity_point<dynamic_origin<dim_length>, kilometre, long long>,
+                                         quantity_point<dynamic_origin<dim_length>, millimetre, double>>,
+                      quantity_point<dynamic_origin<dim_length>, millimetre, double>>);
 
 // common_type
 
