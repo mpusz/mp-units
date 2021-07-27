@@ -28,6 +28,9 @@
 
 namespace units {
 
+template<Dimension D, UnitOf<D> U>
+struct reference;
+
 template<Dimension D, UnitOf<D> U, Representation Rep>
 class quantity;
 
@@ -42,49 +45,42 @@ class quantity_point_kind;
 
 namespace detail {
 
-template<typename Q1, typename Q2, typename Rep>
-struct common_quantity_impl;
+template<typename R1, typename R2>
+struct common_quantity_reference_impl;
 
-template<typename D, typename U, typename Rep1, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D, U, Rep1>, quantity<D, U, Rep2>, Rep> {
-  using type = quantity<D, U, Rep>;
+template<typename D, typename U>
+struct common_quantity_reference_impl<reference<D, U>, reference<D, U>> {
+  using type = reference<D, U>;
 };
 
-template<typename D, typename U1, typename Rep1, typename U2, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D, U1, Rep1>, quantity<D, U2, Rep2>, Rep> {
-  using type = quantity<D, downcast_unit<D, common_ratio(U1::ratio, U2::ratio)>, Rep>;
+template<typename D, typename U1, typename U2>
+struct common_quantity_reference_impl<reference<D, U1>, reference<D, U2>> {
+  using type = reference<D, downcast_unit<D, common_ratio(U1::ratio, U2::ratio)>>;
 };
 
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
+template<typename D1, typename U1, typename D2, typename U2>
   requires same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value
-struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
-  using type = quantity<D1, downcast_unit<D1, common_ratio(U1::ratio, U2::ratio)>, Rep>;
+struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
+  using type = reference<D1, downcast_unit<D1, common_ratio(U1::ratio, U2::ratio)>>;
 };
 
-template<typename D1, typename U1, typename Rep1, typename D2, typename U2, typename Rep2, typename Rep>
-struct common_quantity_impl<quantity<D1, U1, Rep1>, quantity<D2, U2, Rep2>, Rep> {
+template<typename D1, typename U1, typename D2, typename U2>
+struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
   using dimension = conditional<is_specialization_of<D1, unknown_dimension>, D2, D1>;
   static constexpr ratio r1 = D1::base_units_ratio * U1::ratio;
   static constexpr ratio r2 = D2::base_units_ratio * U2::ratio;
   static constexpr ratio cr = common_ratio(r1, r2);
   using unit = downcast_unit<dimension, cr / dimension::base_units_ratio>;
-  using type = quantity<dimension, unit, Rep>;
+  using type = reference<dimension, unit>;
 };
 
+
+template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+using common_quantity_reference =
+  TYPENAME detail::common_quantity_reference_impl <
+  std::remove_const_t<decltype(Q1::reference)>, std::remove_const_t<decltype(Q2::reference)>>::type;
+
 }  // namespace detail
-
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2, Representation Rep = std::common_type_t<typename Q1::rep, typename Q2::rep>>
-using common_quantity = TYPENAME detail::common_quantity_impl<Q1, Q2, Rep>::type;
-
-template<QuantityPoint QP1, QuantityPointEquivalentTo<QP1> QP2>
-using common_quantity_point = std::common_type_t<QP1, QP2>;
-
-template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
-using common_quantity_kind = std::common_type_t<QK1, QK2>;
-
-template<QuantityPointKind QPK1, QuantityPointKindEquivalentTo<QPK1> QPK2>
-using common_quantity_point_kind = std::common_type_t<QPK1, QPK2>;
-
 }  // namespace units
 
 namespace std {
@@ -92,7 +88,10 @@ namespace std {
 template<units::Quantity Q1, units::QuantityEquivalentTo<Q1> Q2>
   requires requires { typename common_type_t<typename Q1::rep, typename Q2::rep>; }
 struct common_type<Q1, Q2> {
-  using type = units::common_quantity<Q1, Q2>;
+private:
+  using ref = units::detail::common_quantity_reference<Q1, Q2>;
+public:
+  using type = units::quantity<typename ref::dimension, typename ref::unit, common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 
 template<units::QuantityPoint QP1, units::QuantityPointEquivalentTo<QP1> QP2>
