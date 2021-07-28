@@ -74,8 +74,8 @@ class UnitsConan(ConanFile):
 
     def build_requirements(self):
         if self._run_tests:
-            self.build_requires("catch2/2.13.4")
-            self.build_requires("linear_algebra/0.7.1@conan-oss/stable")
+            self.build_requires("catch2/2.13.4", force_host_context=True)
+            self.build_requires("linear_algebra/0.7.1@conan-oss/stable", force_host_context=True)
             if self.options.build_docs:
                 self.build_requires("doxygen/1.9.1")
 
