@@ -53,6 +53,7 @@ struct exajoule : prefixed_unit<exajoule, exa, joule> {};
 struct zettajoule : prefixed_unit<zettajoule, zetta, joule> {};
 struct yottajoule : prefixed_unit<yottajoule, yotta, joule> {};
 
+// N.B. electron charge (and eV) is an exact constant: https://www.bipm.org/documents/20126/41483022/SI-Brochure-9.pdf#page=147
 struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {};
 
@@ -60,6 +61,21 @@ struct dim_energy : isq::dim_energy<dim_energy, joule, dim_force, dim_length> {}
 
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
+
+namespace hep {
+struct feV : prefixed_unit<feV, femto, electronvolt> {};
+struct peV : prefixed_unit<peV, pico, electronvolt> {};
+struct neV : prefixed_unit<neV, nano, electronvolt> {};
+struct ueV : prefixed_unit<ueV, micro, electronvolt> {};
+struct meV : prefixed_unit<meV, milli, electronvolt> {};
+struct keV : prefixed_unit<keV, kilo, electronvolt> {};
+struct MeV : prefixed_unit<MeV, mega, electronvolt> {};
+using GeV = gigaelectronvolt;
+struct TeV : prefixed_unit<TeV, tera, electronvolt> {};
+struct PeV : prefixed_unit<PeV, peta, electronvolt> {};
+struct EeV : prefixed_unit<EeV, exa, electronvolt> {};
+struct YeV : prefixed_unit<YeV, yotta, electronvolt> {};
+}
 
 #ifndef UNITS_NO_LITERALS
 
@@ -142,6 +158,38 @@ constexpr auto operator"" _q_GeV(unsigned long long l) { gsl_ExpectsAudit(std::i
 constexpr auto operator"" _q_GeV(long double l) { return energy<gigaelectronvolt, long double>(l); }
 
 }  // namespace literals
+
+namespace hep::literals {
+
+constexpr auto operator"" _q_feV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<feV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_feV(long double l) { return energy<feV, long double>(l); }
+constexpr auto operator"" _q_peV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<peV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_peV(long double l) { return energy<peV, long double>(l); }
+constexpr auto operator"" _q_neV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<neV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_neV(long double l) { return energy<ueV, long double>(l); }
+constexpr auto operator"" _q_ueV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<neV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ueV(long double l) { return energy<ueV, long double>(l); }
+constexpr auto operator"" _q_meV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<meV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_meV(long double l) { return energy<meV, long double>(l); }
+
+constexpr auto operator"" _q_eV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<electronvolt, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_eV(long double l) { return energy<electronvolt, long double>(l); }
+
+constexpr auto operator"" _q_keV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<keV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_keV(long double l) { return energy<keV, long double>(l); }
+constexpr auto operator"" _q_MeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<MeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MeV(long double l) { return energy<MeV, long double>(l); }
+constexpr auto operator"" _q_GeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<GeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GeV(long double l) { return energy<GeV, long double>(l); }
+constexpr auto operator"" _q_TeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<TeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TeV(long double l) { return energy<TeV, long double>(l); }
+constexpr auto operator"" _q_PeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<PeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PeV(long double l) { return energy<PeV, long double>(l); }
+constexpr auto operator"" _q_EeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<EeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EeV(long double l) { return energy<EeV, long double>(l); }
+constexpr auto operator"" _q_YeV(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<YeV, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YeV(long double l) { return energy<YeV, long double>(l); }
+}   // hep::literals
 
 #endif // UNITS_NO_LITERALS
 
