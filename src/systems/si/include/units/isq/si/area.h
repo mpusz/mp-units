@@ -59,21 +59,9 @@ struct square_zettametre : derived_unit<square_zettametre, dim_area, zettametre>
 struct square_yottametre : derived_unit<square_yottametre, dim_area, yottametre> {};
 
 struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
-struct barn : named_scaled_unit<barn, "b", prefix, ratio(1, 1, -28), square_metre> {};
 
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
-
-namespace hep {
-struct yocto_barn : prefixed_unit<yocto_barn, yocto, barn> {};
-struct zepto_barn : prefixed_unit<zepto_barn, zepto, barn> {};
-struct atto_barn : prefixed_unit<atto_barn, atto, barn> {};
-struct femto_barn : prefixed_unit<femto_barn, femto, barn> {};
-struct pico_barn : prefixed_unit<pico_barn, pico, barn> {};
-struct nano_barn : prefixed_unit<nano_barn, nano, barn> {};
-struct micro_barn : prefixed_unit<micro_barn, micro, barn> {};
-struct milli_barn : prefixed_unit<milli_barn, milli, barn> {};
-}
 
 #ifndef UNITS_NO_LITERALS
 
@@ -168,27 +156,6 @@ constexpr auto operator"" _q_ha(unsigned long long l) { gsl_ExpectsAudit(std::in
 constexpr auto operator"" _q_ha(long double l) { return area<hectare, long double>(l); }
 
 }  // namespace literals
-
-namespace hep::literals {
-constexpr auto operator"" _q_yb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<yocto_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_yb(long double l) { return area<yocto_barn, long double>(l); }
-constexpr auto operator"" _q_zb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<zepto_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_zb(long double l) { return area<zepto_barn, long double>(l); }
-constexpr auto operator"" _q_ab(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<atto_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ab(long double l) { return area<atto_barn, long double>(l); }
-constexpr auto operator"" _q_fb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<femto_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_fb(long double l) { return area<femto_barn, long double>(l); }
-constexpr auto operator"" _q_pb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<pico_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_pb(long double l) { return area<pico_barn, long double>(l); }
-constexpr auto operator"" _q_nb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<nano_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_nb(long double l) { return area<nano_barn, long double>(l); }
-constexpr auto operator"" _q_ub(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<micro_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ub(long double l) { return area<micro_barn, long double>(l); }
-constexpr auto operator"" _q_mb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<milli_barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_mb(long double l) { return area<milli_barn, long double>(l); }
-constexpr auto operator"" _q_b(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<barn, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_b(long double l) { return area<barn, long double>(l); }
-} // namespace hep::literals
 
 #endif // UNITS_NO_LITERALS
 
