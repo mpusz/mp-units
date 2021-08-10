@@ -111,7 +111,7 @@ jobs:
         if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
         shell: bash
         run: |
-          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
