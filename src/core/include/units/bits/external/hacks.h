@@ -66,15 +66,22 @@
 
 #endif
 
-#if UNITS_COMP_CLANG == 12 && UNITS_LIBCXX
+#if UNITS_LIBCXX
 
-#include <concepts/compare.hpp>
+#if UNITS_COMP_CLANG == 12
+
 #include <concepts/concepts.hpp>
 #include <range/v3/functional/comparisons.hpp>
 #include <range/v3/iterator.hpp>
 #include <range/v3/range/concepts.hpp>
 #include <range/v3/algorithm/lower_bound.hpp>
 #include <range/v3/algorithm/transform.hpp>
+
+#elif UNITS_COMP_CLANG == 13
+
+#include <range/v3/functional/comparisons.hpp>
+
+#endif
 
 #endif
 
@@ -99,7 +106,9 @@ namespace std {
 template<class T>
 concept default_constructible = constructible_from<T>;
 
-#elif UNITS_COMP_CLANG && UNITS_LIBCXX
+#elif UNITS_LIBCXX
+
+#if UNITS_COMP_CLANG == 12
 
 // concepts
 using concepts::common_with;
@@ -208,6 +217,14 @@ constexpr bool in_range(T t) noexcept
   return std::cmp_greater_equal(t, std::numeric_limits<R>::min()) &&
         std::cmp_less_equal(t, std::numeric_limits<R>::max());
 }
+
+#elif UNITS_COMP_CLANG == 13
+
+using concepts::three_way_comparable;
+using concepts::three_way_comparable_with;
+using ::ranges::compare_three_way;
+
+#endif
 
 #endif
 
