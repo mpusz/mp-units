@@ -47,9 +47,6 @@ struct nano_barn : prefixed_unit<nano_barn, nano, barn> {};
 struct micro_barn : prefixed_unit<micro_barn, micro, barn> {};
 struct milli_barn : prefixed_unit<milli_barn, milli, barn> {};
 
-//template<UnitOf<dim_area> U, Representation Rep = double>
-//  using area = quantity<dim_area, U, Rep>;
-
 #ifndef UNITS_NO_LITERALS
 
 inline namespace literals {

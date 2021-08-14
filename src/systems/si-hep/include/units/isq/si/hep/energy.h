@@ -32,9 +32,7 @@
 #include <units/unit.h>
 
 namespace units::isq::si::hep {
-
-// N.B. electron charge (and eV) is an exact constant: https://www.bipm.org/documents/20126/41483022/SI-Brochure-9.pdf#page=147
-struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix, ratio(1'602'176'634, 1'000'000'000, -19), ::units::isq::si::joule> {};
+using units::isq::si::electronvolt;
 
 struct yeV : prefixed_unit<yeV, yocto, electronvolt> {}; // N.B. very rarely used
 struct zeV : prefixed_unit<zeV, zepto, electronvolt> {}; // N.B. very rarely used
@@ -47,7 +45,7 @@ struct meV : prefixed_unit<meV, milli, electronvolt> {};
 using eV = electronvolt;
 struct keV : prefixed_unit<keV, kilo, electronvolt> {};
 struct MeV : prefixed_unit<MeV, mega, electronvolt> {};
-struct GeV : prefixed_unit<MeV, giga, electronvolt> {};
+struct GeV : prefixed_unit<GeV, giga, electronvolt> {};
 struct TeV : prefixed_unit<TeV, tera, electronvolt> {};
 struct PeV : prefixed_unit<PeV, peta, electronvolt> {};
 struct EeV : prefixed_unit<EeV, exa, electronvolt> {}; // N.B. very rarely used
