@@ -65,6 +65,12 @@ jobs:
             compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
             lib: "libc++"
           }
+        - {
+            name: "Ubuntu Clang 13.0.0 + libc++",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13" },
+            lib: "libc++"
+          }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
         #     name: "Ubuntu GCC 10.2.0",
@@ -105,7 +111,7 @@ jobs:
         if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
         shell: bash
         run: |
-          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
@@ -138,6 +144,12 @@ jobs:
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
+      - name: Add support for clang-13 to Conan's settings.yml
+        # TODO Remove when Conan will support clang-13
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        run: |
+          sed -i -e 's/"8", "9", "10", "11", "12"]/"8", "9", "10", "11", "12", "13"]/' ~/.conan/settings.yml
       - name: Install Conan dependencies
         shell: bash
         run: |

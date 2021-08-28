@@ -121,13 +121,19 @@ They are defined using the `reference` class template::
     namespace length_references {
 
     inline constexpr auto km = reference<dim_length, kilometre>{};
-    inline constexpr auto h = reference<dim_time, hour>{};
 
     }  // namespace length_references
+
+    namespace time_references {
+
+    inline constexpr auto h = reference<dim_time, hour>{};
+
+    }  // namespace time_references
 
     namespace references {
 
     using namespace length_references;
+    using namespace time_references;
 
     }  // namespace references
 
