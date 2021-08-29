@@ -5,7 +5,7 @@
   - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
-  - build: doxygen updated to 1.9.1
+  - build: doxygen updated to 1.9.2
   - build: linear_algebra updated to 0.7.1
 
 - **0.7.0 May 11, 2021**
