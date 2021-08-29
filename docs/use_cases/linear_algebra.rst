@@ -85,4 +85,4 @@ output:
 .. seealso::
 
     For more examples of Linear Algebra definition and operations please refer to
-    the :ref:`examples/linear_algebra:linear_algebra` example.
+    the :ref:`examples/custom_representation/linear_algebra:linear_algebra` example.

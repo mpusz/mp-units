@@ -553,7 +553,7 @@ units like CGS.
 
 .. seealso::
 
-    Please refer to :ref:`examples/avg_speed:avg_speed` example for more
+    Please refer to :ref:`examples/basics/avg_speed:avg_speed` example for more
     information on different kinds of interfaces supported by the library.
 
 

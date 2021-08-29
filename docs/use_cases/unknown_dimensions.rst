@@ -87,7 +87,7 @@ following::
 .. seealso::
 
     Another good example of unknown dimension usage can be found in the
-    :ref:`examples/box_example:box_example`::
+    :ref:`examples/basics/box_example:box_example`::
 
         std::cout << "float rise rate = " << box.fill_level(measured_mass) / fill_time << '\n';
 

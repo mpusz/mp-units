@@ -305,4 +305,4 @@ representation types with::
 
     For more examples of custom representation types usage please refer to the
     :ref:`use_cases/linear_algebra:Linear Algebra vs. Quantities` chapter and the
-    :ref:`examples/measurement:measurement` example.
+    :ref:`examples/custom_representation/measurement:measurement` example.
