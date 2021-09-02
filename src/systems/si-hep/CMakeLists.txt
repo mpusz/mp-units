@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 #
-# Copyright (c) 2018 Mateusz Pusz
+# Copyright (c) 2021 Mateusz Pusz
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,35 +22,4 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-# systems
-add_subdirectory(isq)
-add_subdirectory(isq-iec80000)
-add_subdirectory(isq-natural)
-add_subdirectory(si)
-add_subdirectory(si-cgs)
-add_subdirectory(si-fps)
-add_subdirectory(si-hep)
-add_subdirectory(si-iau)
-add_subdirectory(si-imperial)
-add_subdirectory(si-international)
-add_subdirectory(si-typographic)
-add_subdirectory(si-uscs)
-
-# wrapper for all the systems
-add_library(mp-units-systems INTERFACE)
-target_link_libraries(mp-units-systems INTERFACE
-    mp-units::isq
-    mp-units::isq-iec80000
-    mp-units::isq-natural
-    mp-units::si
-    mp-units::si-cgs
-    mp-units::si-fps
-    mp-units::si-hep
-    mp-units::si-iau
-    mp-units::si-imperial
-    mp-units::si-international
-    mp-units::si-typographic
-    mp-units::si-uscs
-)
-add_library(mp-units::systems ALIAS mp-units-systems)
-install(TARGETS mp-units-systems EXPORT mp-unitsTargets)
+add_units_module(si-hep mp-units::si)

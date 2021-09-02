@@ -57,6 +57,7 @@ add_library(unit_tests_static
     si_test.cpp
     si_cgs_test.cpp
     si_fps_test.cpp
+    si_hep_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
     unit_test.cpp
