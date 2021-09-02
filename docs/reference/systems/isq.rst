@@ -22,4 +22,5 @@ Systems of Units based on the SI
     isq/si_imperial
     isq/si_fps
     isq/si_iau
+    isq/si_hep
     isq/si_typographic
