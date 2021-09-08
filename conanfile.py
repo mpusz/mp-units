@@ -74,8 +74,8 @@ class UnitsConan(ConanFile):
 
     def build_requirements(self):
         if self._run_tests:
-            self.build_requires("catch2/2.13.4", force_host_context=True)
-            self.build_requires("linear_algebra/0.7.1@conan-oss/stable", force_host_context=True)
+            self.build_requires("catch2/2.13.4", force_host_context=True)                         # TODO replace with test_requires in Conan 2.0
+            self.build_requires("linear_algebra/0.7.1@conan-oss/stable", force_host_context=True) # TODO replace with test_requires in Conan 2.0
             if self.options.build_docs:
                 self.build_requires("doxygen/1.9.2")
 
@@ -120,7 +120,6 @@ class UnitsConan(ConanFile):
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
         cmake = CMake(self)
-        cmake.configure(source_folder=None if self._run_tests else "src")
         cmake.install()
 
     def package_id(self):
