@@ -89,6 +89,9 @@ in *~/.conan/profiles* directory. An example profile can look as follows:
     [options]
     [build_requires]
 
+    [conf]
+    tools.cmake.cmaketoolchain:generator=Ninja
+
     [env]
     CC=/usr/bin/gcc-10
     CXX=/usr/bin/g++-10
