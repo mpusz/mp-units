@@ -101,6 +101,9 @@ class UnitsConan(ConanFile):
     #         # build_docs has sense only in a development or CI build
     #         del self.options.build_docs
 
+    def layout(self):
+        self.folders.source="." if self._run_tests else "src"
+
     def generate(self):
         tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
@@ -112,7 +115,7 @@ class UnitsConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_folder=None if self._run_tests else "src")
+        cmake.configure()
         cmake.build()
         if self._run_tests:
             cmake.test(output_on_failure=True)
