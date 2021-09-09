@@ -8,7 +8,7 @@
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
   - build: Minimum Conan version changed to 1.40
   - build: doxygen updated to 1.9.2
-  - build: linear_algebra updated to 0.7.1
+  - build: linear algebra switched to wg21-linear_algebra/0.7.2
 
 - **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
