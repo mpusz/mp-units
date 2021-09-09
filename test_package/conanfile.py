@@ -28,7 +28,7 @@ class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     
     def generate(self):
-        tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
+        tc = CMakeToolchain(self)
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
