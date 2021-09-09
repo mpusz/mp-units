@@ -84,7 +84,6 @@ jobs:
       CC: ${{ matrix.config.compiler.cc }}
       CXX: ${{ matrix.config.compiler.cxx }}
       CMAKE_GENERATOR: Ninja
-      CONAN_CMAKE_GENERATOR: Ninja
 
     steps:
       - uses: actions/checkout@v2
@@ -143,6 +142,7 @@ jobs:
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
+          conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
           conan profile show default
       - name: Add support for clang-13 to Conan's settings.yml
         # TODO Remove when Conan will support clang-13
