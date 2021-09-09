@@ -240,31 +240,32 @@ static_assert(length<kilometre>(1500_q_m).number() == 1.5);
 
 template<Representation Rep, Quantity Q, const basic_fixed_string additional_nttp_argument>
 struct derived_quantity : quantity<typename Q::dimension, typename Q::unit, Rep> {
-    using dimension = typename Q::dimension;
-    using unit = typename Q::unit;
-    using rep = Rep;
-    using R = quantity<dimension, unit, Rep>;
+  using dimension = typename Q::dimension;
+  using unit = typename Q::unit;
+  using rep = Rep;
+  using R = quantity<dimension, unit, Rep>;
 
-    constexpr derived_quantity() : R(){};
-    constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(const R& t) : R(t) {}
-    constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(R&& t) : R(std::move(t)) {}
+  derived_quantity() = default;
+  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(const R& t) : R(t) {}
+  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(R&& t) : R(std::move(t)) {}
 
-    constexpr derived_quantity& operator=(const R& t) { R::operator=(t); return *this; }
-    constexpr derived_quantity& operator=(R&& t) { R::operator=(std::move(t)); return *this; }
+  constexpr derived_quantity& operator=(const R& t) { R::operator=(t); return *this; }
+  constexpr derived_quantity& operator=(R&& t) { R::operator=(std::move(t)); return *this; }
 
-    constexpr operator R&() & noexcept { return *this; }
-    constexpr operator const R&() const & noexcept { return *this; }
-    constexpr operator R&&() && noexcept { return *this; }
-    constexpr operator const R&&() const && noexcept { return *this; }
+  constexpr operator R&() & noexcept { return *this; }
+  constexpr operator const R&() const & noexcept { return *this; }
+  constexpr operator R&&() && noexcept { return *this; }
+  constexpr operator const R&&() const && noexcept { return *this; }
 };
 
 static_assert(detail::is_quantity<derived_quantity<double, si::length<metre>, "NTTP type description">>);
-constexpr isq::Length auto get_length_derived_quantity() noexcept {
-    derived_quantity<double, si::length<metre>, "NTTP type description"> a;
-    a += 1_q_m;
-    a = a + 1_q_m;
-    a *= 0.5;
-    return a;
+constexpr isq::Length auto get_length_derived_quantity() noexcept
+{
+  derived_quantity<double, si::length<metre>, "NTTP type description"> a{};
+  a += 1_q_m;
+  a = a + 1_q_m;
+  a *= 0.5;
+  return a;
 }
 static_assert(get_length_derived_quantity() == 1_q_m);
 
