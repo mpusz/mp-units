@@ -6,6 +6,7 @@
   - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
+  - build: Minimum Conan version changed to 1.40
   - build: doxygen updated to 1.9.2
   - build: linear_algebra updated to 0.7.1
 

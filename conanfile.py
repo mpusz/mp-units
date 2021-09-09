@@ -26,7 +26,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
-required_conan_version = ">=1.33.0"
+required_conan_version = ">=1.40.0"
 
 class UnitsConan(ConanFile):
     name = "mp-units"
