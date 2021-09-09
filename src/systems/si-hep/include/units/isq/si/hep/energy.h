@@ -45,7 +45,7 @@ struct meV : prefixed_unit<meV, milli, electronvolt> {};
 using eV = electronvolt;
 struct keV : prefixed_unit<keV, kilo, electronvolt> {};
 struct MeV : prefixed_unit<MeV, mega, electronvolt> {};
-struct GeV : prefixed_unit<GeV, giga, electronvolt> {};
+using GeV = gigaelectronvolt;
 struct TeV : prefixed_unit<TeV, tera, electronvolt> {};
 struct PeV : prefixed_unit<PeV, peta, electronvolt> {};
 struct EeV : prefixed_unit<EeV, exa, electronvolt> {}; // N.B. very rarely used

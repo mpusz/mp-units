@@ -94,7 +94,7 @@ using namespace area_references;
 
 namespace units::aliases::isq::si::hep::inline area {
 
-template<Representation Rep = double> using barn = units::isq::si::hep::area<units::isq::si::hep::barn, Rep>;
+template<Representation Rep = double> using barn = units::isq::si::area<units::isq::si::hep::barn, Rep>;
 
 }  // namespace units::aliases::isq::si::hep::inline area
 
