@@ -126,12 +126,12 @@ jobs:
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
-      - name: Add support for clang-13 to Conan's settings.yml
-        # TODO Remove when Conan will support clang-13
-        if: matrix.config.compiler.type == 'CLANG'
-        shell: bash
-        run: |
-          sed -i -e 's/"8", "9", "10", "11", "12"]/"8", "9", "10", "11", "12", "13"]/' ~/.conan/settings.yml
+      # - name: Add support for clang-13 to Conan's settings.yml
+      #   # TODO Remove when Conan will support clang-13
+      #   if: matrix.config.compiler.type == 'CLANG'
+      #   shell: bash
+      #   run: |
+      #     sed -i -e 's/"8", "9", "10", "11", "12"]/"8", "9", "10", "11", "12", "13"]/' ~/.conan/settings.yml
       - name: Run Conan Package Tools
         shell: bash
         env:
