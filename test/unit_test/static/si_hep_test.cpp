@@ -61,7 +61,7 @@ static_assert(si::hep::mass<si::hep::eV_per_c2>(1'000'000) == 1_q_MeV_per_c2);
 static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000) == 1_q_keV_per_c);
 static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000'000) == 1_q_MeV_per_c);
 
-static_assert(si::area<si::square_metre, long double>(1e-28L) == 1_q_b);
+// static_assert(si::area<si::square_metre, long double>(1e-28L) == 1_q_b); // numeric rounding issues on some platforms
 //static_assert(si::hep::area<si::square_yoctometre, long double>(1e-4L) == 1_q_b); // numeric rounding issues on some platforms
 static_assert(si::area<si::square_metre>(1e-43) == 1_q_fb);
 
