@@ -77,7 +77,7 @@
 #include <range/v3/algorithm/lower_bound.hpp>
 #include <range/v3/algorithm/transform.hpp>
 
-#elif UNITS_COMP_CLANG == 13
+#elif UNITS_COMP_CLANG == 13 || UNITS_COMP_CLANG == 14
 
 #include <range/v3/functional/comparisons.hpp>
 
@@ -218,10 +218,15 @@ constexpr bool in_range(T t) noexcept
         std::cmp_less_equal(t, std::numeric_limits<R>::max());
 }
 
-#elif UNITS_COMP_CLANG == 13
+#elif UNITS_COMP_CLANG == 13 || UNITS_COMP_CLANG == 14
+
+#if UNITS_COMP_CLANG == 13
 
 using concepts::three_way_comparable;
 using concepts::three_way_comparable_with;
+
+#endif
+
 using ::ranges::compare_three_way;
 
 #endif
