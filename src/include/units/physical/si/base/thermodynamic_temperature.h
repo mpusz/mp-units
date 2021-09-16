@@ -115,8 +115,8 @@ namespace units {
 
 /** \brief Take a quantity of in a standard conventional temperature unit and re-interpret it as a quantity point
  *
- * A \c quantity represents "distances" between "points" along a "dimension" scale. However, colloquially, temperature
- * units are double-used to also represent a "point" directly, to be interpreted as a distance to an implicit reference point.
+ * A \c quantity represents a "difference" between "points" along a "dimension" scale. However, colloquially, temperature
+ * units are double-used to also represent a "point" directly, to be interpreted as a difference to an implicit reference point.
  *
  * This function performs this tasks of identifying and adding that implicit reference point.
  *

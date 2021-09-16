@@ -34,6 +34,8 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [quantity_point_kind<PointKind, Unit, Rep, Orig>]
     ]
 
+    [<abstract>PointOrigin]<-[QuantityPoint]
+
     [<abstract>Unit]<-[Dimension]
     [Dimension]<-[Quantity]
     [Unit]<-[Quantity]
@@ -47,7 +49,6 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [Kind]<-[PointKind]
     [QuantityKind]<-[QuantityPointKind]
 
-    [<abstract>PointOrigin]<-[QuantityPoint]
     [PointOrigin]<-[QuantityPointKind]
 
 `Unit` is a basic building block of the library. Every dimension works with
