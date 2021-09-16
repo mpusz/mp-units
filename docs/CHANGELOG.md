@@ -7,6 +7,7 @@
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
   - build: Minimum Conan version changed to 1.40
+  - build: fmt updated to 8.0.1
   - build: gsl-lite updated to 0.38.1
   - build: catch2 updated to 2.13.7
   - build: doxygen updated to 1.9.2

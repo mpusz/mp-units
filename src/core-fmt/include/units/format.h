@@ -33,7 +33,6 @@ UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <fmt/format.h>
-#include <fmt/locale.h>
 UNITS_DIAGNOSTIC_POP
 // IWYU pragma: end_exports
 
@@ -251,9 +250,9 @@ namespace units {
       }
       fmt::format_to(to_buffer, "}}");
       if (rep_specs.use_locale and static_cast<bool>(loc)) {
-        return format_to(out, loc.template get<std::locale>(), fmt::to_string(buffer), val);
+        return format_to(out, loc.template get<std::locale>(), fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
       }
-      return format_to(out, fmt::to_string(buffer), val);
+      return format_to(out, fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
     }
 
     // Creates a global format string
@@ -510,6 +509,6 @@ public:
 
     // Format the `quantity buffer` using specs from `global_format_buffer`
     // In the example, equivalent to fmt::format("{:*^10}", "1.2_m")
-    return format_to(ctx.out(), fmt::to_string(global_format_buffer), fmt::to_string(quantity_buffer));
+    return format_to(ctx.out(), fmt::runtime(std::basic_string_view<CharT>(global_format_buffer.data(), global_format_buffer.size())), std::string_view(quantity_buffer.data(), quantity_buffer.size()));
   }
 };
