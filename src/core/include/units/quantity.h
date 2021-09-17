@@ -312,18 +312,16 @@ public:
     return units::quantity(lhs - rhs.number());
   }
 
-  template<typename Value>
-    requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::multiplies<>, rep, const Value&>
+  template<Representation Value>
+    requires invoke_result_convertible_to_<rep, std::multiplies<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, rep, Value>>;
     return ret(q.number() * v);
   }
 
-  template<typename Value>
-    requires (!Quantity<Value>) &&
-          invoke_result_convertible_to_<rep, std::multiplies<>, const Value&, rep>
+  template<Representation Value>
+    requires invoke_result_convertible_to_<rep, std::multiplies<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
     using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, Value, rep>>;
