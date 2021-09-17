@@ -24,6 +24,8 @@
 
 #include <units/customization_points.h>
 #include <units/quantity.h>
+
+#include <algorithm>
 #include <string_view>
 
 // IWYU pragma: begin_exports
