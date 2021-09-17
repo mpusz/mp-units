@@ -50,6 +50,12 @@ jobs:
             lib: "libstdc++11"
           }
         - {
+            name: "Ubuntu GCC 11.1.0",
+            os: ubuntu-20.04,
+            compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11" },
+            lib: "libstdc++11"
+          }
+        - {
             name: "Ubuntu Clang 12.0.0 + libstdc++11",
             os: ubuntu-20.04,
             compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
@@ -83,6 +89,11 @@ jobs:
         with:
           key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
           max-size: 50M
+      - name: Install gcc-11
+        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '11'
+        shell: bash
+        run: |
+          sudo apt install -y g++-${{ matrix.config.compiler.version }}
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
