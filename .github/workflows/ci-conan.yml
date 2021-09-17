@@ -46,12 +46,26 @@ jobs:
         - {
             name: "Ubuntu GCC 10.1.0",
             os: ubuntu-18.04,
-            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
           }
         - {
             name: "Ubuntu GCC 10.2.0",
             os: ubuntu-20.04,
-            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" }
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libstdc++11",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libc++",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libc++"
           }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
@@ -64,6 +78,24 @@ jobs:
         downcast_mode: [ "on", "auto" ]
     steps:
       - uses: actions/checkout@v2
+      - uses: hendrikmuhs/ccache-action@v1
+        if: runner.os == 'Linux'
+        with:
+          key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
+          max-size: 50M
+      - name: Install Clang
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        working-directory: ${{ env.HOME }}
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+      - name: Install Libc++
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        shell: bash
+        run: |
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
@@ -84,16 +116,14 @@ jobs:
       - name: Install Conan Package Tools
         run: |
           pip install -U conan_package_tools
-      - name: Set Conan default profile
+      - name: Configure Conan
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
         shell: bash
         run: |
-          conan profile new --detect default
-          if [ ${{ matrix.config.compiler.type }} == 'GCC' ]; then
-            conan profile update settings.compiler.libcxx=libstdc++11 default
-          elif [ ${{ matrix.config.compiler.type }} == 'CLANG' ]; then
-            conan profile update settings.compiler.libcxx=libc++ default
+          conan config init
+          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
           conan profile show default
       - name: Run Conan Package Tools
@@ -101,7 +131,7 @@ jobs:
         env:
           CONAN_USERNAME: mpusz
           CONAN_OPTIONS: mp-units:build_docs=False,mp-units:downcast_mode=${{ matrix.downcast_mode }}
-          CONAN_UPLOAD: https://api.bintray.com/conan/mpusz/conan-mpusz
+          CONAN_UPLOAD: https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
           CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
           CONAN_CMAKE_GENERATOR: Ninja

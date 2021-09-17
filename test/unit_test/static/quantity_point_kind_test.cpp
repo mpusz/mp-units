@@ -21,28 +21,33 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include "units/chrono.h"
-#include "units/physical/si/cgs/derived/speed.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/frequency.h"
-#include "units/physical/si/derived/speed.h"
-#include "units/physical/si/fps/derived/speed.h"
-#include "units/quantity_point.h"
-#include "units/quantity_point_kind.h"
+#include <units/bits/external/type_traits.h>
+#include <units/chrono.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/speed.h>
+#include <units/quantity_point_kind.h>
 #include <cassert>
-#include <concepts>
 #include <functional>
+#include <limits>
+#include <type_traits>
 
 namespace {
 
 using namespace units;
-namespace si = physical::si;
+namespace si = isq::si;
 using namespace si;
+<<<<<<< HEAD
 using namespace unit_constants;
 using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
+=======
+using namespace references;
+>>>>>>> v0.7.0
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 
-constexpr auto cgs_cm = cgs::unit_constants::cm;
+constexpr auto cgs_cm = cgs::references::cm;
 
 using namespace std::chrono_literals;
 
@@ -54,7 +59,7 @@ struct ordinate_kind : point_kind<ordinate_kind, height_kind> {};
 struct distance_kind : kind<distance_kind, dim_length> {};
 struct cgs_width_kind : kind<cgs_width_kind, cgs::dim_length> {};
 struct cgs_height_kind : kind<cgs_height_kind, cgs::dim_length> {};
-struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, height_kind, dim_speed> {};
+struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 struct altitude_kind : point_kind<altitude_kind, cgs_height_kind> {};
 
 struct apple : kind<apple, dim_one> {};
@@ -65,21 +70,21 @@ struct nth_orange_kind : point_kind<nth_orange_kind, orange> {};
 struct time_kind : kind<time_kind, dim_time> {};
 struct time_point_kind : point_kind<time_point_kind, time_kind> {};
 
-template <Unit U, QuantityValue Rep = double> using width = quantity_kind<width_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using height = quantity_kind<height_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using abscissa = quantity_point_kind<abscissa_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using ordinate = quantity_point_kind<ordinate_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using abscissa = quantity_point_kind<abscissa_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using ordinate = quantity_point_kind<ordinate_kind, U, Rep>;
 
-template <Unit U, QuantityValue Rep = double> using distance = quantity_kind<distance_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using cgs_height = quantity_kind<cgs_height_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
-template <Unit U, QuantityValue Rep = double> using altitude = quantity_point_kind<altitude_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using distance = quantity_kind<distance_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using cgs_width = quantity_kind<cgs_width_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using cgs_height = quantity_kind<cgs_height_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
+template <Unit U, Representation Rep = double> using altitude = quantity_point_kind<altitude_kind, U, Rep>;
 
-template <Unit U = one, QuantityValue Rep = double> using apples = quantity_kind<apple, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using oranges = quantity_kind<orange, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using nth_apple = quantity_point_kind<nth_apple_kind, U, Rep>;
-template <Unit U = one, QuantityValue Rep = double> using nth_orange = quantity_point_kind<nth_orange_kind, U, Rep>;
+template <Unit U = one, Representation Rep = double> using apples = quantity_kind<apple, U, Rep>;
+template <Unit U = one, Representation Rep = double> using oranges = quantity_kind<orange, U, Rep>;
+template <Unit U = one, Representation Rep = double> using nth_apple = quantity_point_kind<nth_apple_kind, U, Rep>;
+template <Unit U = one, Representation Rep = double> using nth_orange = quantity_point_kind<nth_orange_kind, U, Rep>;
 
 /////////////
 // concepts
@@ -180,8 +185,8 @@ static_assert(same(abscissa<metre>{}.relative(), width<metre>{}));
 
 static_assert(abscissa<metre, unsigned>::min().relative().common() == 0 * m);
 static_assert(abscissa<metre, unsigned>::max().relative().common() == std::numeric_limits<unsigned>::max() * m);
-static_assert(abscissa<metre, double>::min().relative().common().count() == std::numeric_limits<double>::lowest());
-static_assert(abscissa<metre, double>::max().relative().common().count() == std::numeric_limits<double>::max());
+static_assert(abscissa<metre, double>::min().relative().common().number() == std::numeric_limits<double>::lowest());
+static_assert(abscissa<metre, double>::max().relative().common().number() == std::numeric_limits<double>::max());
 
 
 ////////////////////////
@@ -189,7 +194,7 @@ static_assert(abscissa<metre, double>::max().relative().common().count() == std:
 ////////////////////////
 
 // default initialization
-#if !defined(COMP_MSVC)
+#if !defined(UNITS_COMP_MSVC)
 static_assert([] {
   const auto read_uninitialized_quantity = [] {
     abscissa<metre> w;
@@ -221,11 +226,8 @@ static_assert(construct_from_only<nth_apple<one, double>>(1).relative().common()
 static_assert(construct_from_only<nth_apple<one, double>>(short{1}).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, short>>(1).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, int>>(1).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, double>>(one_rep{}).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, int>>(one_rep{}).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<one, short>>(one_rep{}).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().count() == 1);
-static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().number() == 1);
+static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(1.0));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(1.0));
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(1.0));
@@ -260,8 +262,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(1s));
 static_assert(construct_from_only<nth_apple<one, int>>(quantity(1)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(dimensionless<percent>(1)).relative().common() == 0.01);
 static_assert(construct_from_only<nth_apple<one, double>>(dimensionless<percent>(1)).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, double>>(dimensionless<percent>(1)).relative().common().count() == 1);
-static_assert(construct_from_only<nth_apple<percent, double>>(quantity(1)).relative().common().count() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(dimensionless<percent>(1)).relative().common().number() == 1);
+static_assert(construct_from_only<nth_apple<percent, double>>(quantity(1)).relative().common().number() == 100);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(dimensionless<percent>(1)));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity(1.0)));
@@ -287,7 +289,7 @@ static_assert(construct_from_only<abscissa<metre, double>>(quantity_point(1.0 * 
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1 * mm)));
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1.0 * m)));
 static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_point(1.0 * km)));
-static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * m * m)));
+static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * (m * m))));
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * s)));
 
 // clang-format off
@@ -297,8 +299,8 @@ static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(1)).rel
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(dimensionless<percent, int>(1))).relative().common() == 0.01);
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(1.0)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(quantity_point(dimensionless<percent, double>(1.0))).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, int>>(quantity_point(1)).relative().common().count() == 100);
-static_assert(construct_from_only<nth_apple<percent, double>>(quantity_point(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(quantity_point(1)).relative().common().number() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(quantity_point(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity_point(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(quantity_point(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_point(1.0)));
@@ -331,8 +333,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(abscissa_
 
 static_assert(construct_from_only<nth_apple<one, int>>(apples<one, int>(1)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common() == 0.01);
-static_assert(construct_from_only<nth_apple<percent, int>>(apples<one, int>(1)).relative().common().count() == 100);
-static_assert(construct_from_only<nth_apple<percent, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(apples<one, int>(1)).relative().common().number() == 100);
+static_assert(construct_from_only<nth_apple<percent, double>>(apples<percent, double>(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples<one, double>(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(apples<percent, double>(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(apples<one, double>(1.0)));
@@ -358,8 +360,8 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_
 
 static_assert(construct_and_convert_from<nth_apple<one, int>>(nth_apple<one, int>(1)).relative().common() == 1);
 static_assert(construct_and_convert_from<nth_apple<one, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common() == 0.01);
-static_assert(construct_and_convert_from<nth_apple<percent, int>>(nth_apple<one, int>(1)).relative().common().count() == 100);
-static_assert(construct_and_convert_from<nth_apple<percent, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common().count() == 1);
+static_assert(construct_and_convert_from<nth_apple<percent, int>>(nth_apple<one, int>(1)).relative().common().number() == 100);
+static_assert(construct_and_convert_from<nth_apple<percent, double>>(nth_apple<percent, double>(dimensionless<percent>(1))).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(nth_apple<one, double>(1.0)));
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(nth_apple<percent, double>(dimensionless<percent>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(nth_apple<one, double>(1.0)));
@@ -397,10 +399,10 @@ static_assert(!std::is_assignable_v<abscissa<metre, int>, abscissa<millimetre, i
 // member operators
 /////////////////////
 
-#if !defined(COMP_MSVC) || defined(NDEBUG)
+#if !defined(UNITS_COMP_MSVC) || defined(NDEBUG)
 static_assert([]() {
   const width<metre, int> w(1 * m);
-  quantity_point_kind x(w);
+  [[maybe_unused]] quantity_point_kind x(w);
   assert(&++x == &x && x.relative().common() == 2 * m);
   assert(&--x == &x && x.relative().common() == 1 * m);
   assert((x++).relative().common() == 1 * m && x.relative().common() == 2 * m);
@@ -512,7 +514,7 @@ concept invalid_equality = requires(quantity_point_kind<Abscissa, metre, int> x)
   requires !requires { x == width<kilometre, double>(1.0 * km); };
   requires !requires { x != height<metre, int>(1 * m); };
   requires !requires { x == height<kilometre, double>(1.0 * km); };
-  requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * km / h); };
+  requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
   requires !requires { x != quantity_point(1 * m); };
   requires !requires { x == quantity_point(1.0 * mm); };
   requires !requires { x != quantity_point(quantity(1)); };
@@ -547,7 +549,7 @@ concept invalid_relational = requires(quantity_point_kind<Abscissa, metre, int> 
   requires !requires { x > width<kilometre, double>(1.0 * km); };
   requires !requires { x <=> height<metre, int>(1 * m); };
   requires !requires { x < height<kilometre, double>(1.0 * km); };
-  requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * km / h); };
+  requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
   requires !requires { x >= quantity_point(1 * m); };
   requires !requires { x > quantity_point(1.0 * mm); };
   requires !requires { x <=> quantity_point(quantity(1)); };
@@ -606,7 +608,6 @@ static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cg
 // clang-format on
 template<typename Int>
 concept invalid_cast = requires(Int i) {
-  requires !requires { quantity_point_kind_cast<abscissa<metre, one_rep>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<apples<one, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<rate_of_climb<metre_per_second, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<apple>(abscissa<metre, Int>(i * m)); };
@@ -621,7 +622,6 @@ concept invalid_cast = requires(Int i) {
   requires !requires { quantity_point_kind_cast<dimensionless<one>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<square_metre>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<second>(abscissa<metre, Int>(i * m)); };
-  requires !requires { quantity_point_kind_cast<one_rep>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<quantity_point<dim_length, metre, Int>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<quantity_point<dim_one, one, Int>>(abscissa<metre, Int>(i * m)); };
 };
@@ -634,8 +634,8 @@ static_assert(invalid_cast<int>);
 
 namespace mylib {
 
-struct width_kind : kind<width_kind, units::physical::si::dim_length> {};
-struct height_kind : kind<height_kind, units::physical::si::dim_length> {};
+struct width_kind : kind<width_kind, units::isq::si::dim_length> {};
+struct height_kind : kind<height_kind, units::isq::si::dim_length> {};
 struct abscissa_kind : point_kind<abscissa_kind, width_kind> {};
 struct ordinate_kind : point_kind<ordinate_kind, height_kind> {};
 

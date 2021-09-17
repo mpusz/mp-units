@@ -2,21 +2,10 @@ Examples
 ========
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
-    examples/hello_units
-    examples/avg_speed
-    examples/box_example
-    examples/temperature
-    examples/unknown_dimension
-    examples/measurement
-    examples/linear_algebra
-    examples/foot_pound_second
+    examples/basics
+    examples/kalman_filter
+    examples/custom_representation
     examples/custom_systems
-    examples/glide_computer
-
-    examples/capacitor_time_curve
-    examples/clcpp_response
-    examples/conversion_factor
-    examples/kalman_filter-alpha_beta_filter_example2
-    examples/total_energy
+    examples/custom_utilities

@@ -21,29 +21,32 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/physical/si/base/mass.h>
-#include <units/physical/si/derived/voltage.h>
-#include <units/physical/si/base/time.h>
-#include <units/physical/si/derived/frequency.h>
-#include <units/math.h>
+#include <units/bits/dimension_op.h>
+#include <units/derived_dimension.h>
+#include <units/isq/si/frequency.h>
+#include <units/isq/si/mass.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/voltage.h>
+#include <units/math.h> // IWYU pragma: keep
+#include <units/unit.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // power spectral density
 struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
 struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
 
-template<UnitOf<dim_power_spectral_density> U, QuantityValue Rep = double>
+template<UnitOf<dim_power_spectral_density> U, Representation Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
 // amplitude spectral density
 struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
 struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>, units::exponent<dim_frequency, -1, 2>> {};
 
-template<UnitOf<dim_amplitude_spectral_density> U, QuantityValue Rep = double>
+template<UnitOf<dim_amplitude_spectral_density> U, Representation Rep = double>
 using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, Rep>;
 
 }
@@ -62,7 +65,7 @@ namespace {
 
 struct kilogram_per_second : unit<kilogram_per_second> {};
 struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {};
-struct kilogram_per_hour : deduced_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
-constexpr auto a = 1_q_kg / 1_q_h;
+struct kilogram_per_hour : derived_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
+[[maybe_unused]] constexpr auto a = 1_q_kg / 1_q_h;
 
 }

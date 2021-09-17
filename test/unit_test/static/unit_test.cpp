@@ -21,14 +21,17 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include "units/unit.h"
-#include "units/bits/equivalent.h"
-#include "units/physical/si/prefixes.h"
+#include <units/base_dimension.h>
+#include <units/bits/equivalent.h>
+#include <units/bits/external/downcasting.h>
+#include <units/derived_dimension.h>
+#include <units/isq/si/prefixes.h>
+#include <units/unit.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
@@ -43,13 +46,13 @@ struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
 
-#if !COMP_MSVC
+#if !UNITS_COMP_MSVC
 static_assert([]<Prefix P>(P) { return !requires { typename prefixed_unit<struct kilokelvin, P, kelvin>; }; }(si::kilo{})); // no prefix allowed
 #endif
 
 struct metre_per_second : unit<metre_per_second> {};
 struct dim_speed : derived_dimension<dim_speed, metre_per_second, units::exponent<dim_length, 1>, units::exponent<dim_time, -1>> {};
-struct kilometre_per_hour : deduced_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
 static_assert(equivalent<metre::named_unit, metre>);
 static_assert(equivalent<metre::scaled_unit, metre>);
@@ -59,7 +62,7 @@ static_assert(compare<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.de
 static_assert(compare<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
 static_assert(compare<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
 
-#if !COMP_MSVC
+#if !UNITS_COMP_MSVC
 static_assert([]<ratio R>() { return !requires { typename scaled_unit<R, metre>; }; }.template operator()<ratio(-1, 1)>()); // negative unit ratio
 #endif
 

@@ -20,13 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <numeric>
 #include <units/random.h>
-#include <units/physical/si/base/length.h>
+#include <units/isq/si/length.h>
+#include <array>
 #include <catch2/catch.hpp>
+#include <initializer_list>
+#include <random>
+#include <vector>
+
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 TEST_CASE("uniform_int_distribution")
 {
@@ -531,7 +535,7 @@ TEST_CASE("piecewise_constant_distribution")
     std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist = units::piecewise_constant_distribution<q>(intervals_qty, [](q qty) { return qty.count(); });
+    auto units_dist = units::piecewise_constant_distribution<q>(intervals_qty, [](q qty) { return qty.number(); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -543,7 +547,7 @@ TEST_CASE("piecewise_constant_distribution")
     constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
     
     auto stl_dist = std::piecewise_constant_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
-    auto units_dist = units::piecewise_constant_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.count(); });
+    auto units_dist = units::piecewise_constant_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.number(); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -589,7 +593,7 @@ TEST_CASE("piecewise_linear_distribution")
     std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
     
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist = units::piecewise_linear_distribution<q>(intervals_qty, [](q qty) { return qty.count(); });
+    auto units_dist = units::piecewise_linear_distribution<q>(intervals_qty, [](q qty) { return qty.number(); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -601,7 +605,7 @@ TEST_CASE("piecewise_linear_distribution")
     constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
     
     auto stl_dist = std::piecewise_linear_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
-    auto units_dist = units::piecewise_linear_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.count(); });
+    auto units_dist = units::piecewise_linear_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.number(); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());

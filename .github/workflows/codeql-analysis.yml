@@ -21,8 +21,6 @@ on:
     branches: [ master ]
     paths-ignore:
     - 'docs/**'
-  schedule:
-    - cron: '24 2 * * 6'
 
 jobs:
   analyze:
@@ -85,11 +83,10 @@ jobs:
       run: |
         pip install -U conan
         conan config init
-        conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
-        conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
+        conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+        conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
         mkdir _lgtm_build_dir && cd _lgtm_build_dir
         conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -o mp-units:build_docs=False -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
         conan build ..
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

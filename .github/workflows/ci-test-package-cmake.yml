@@ -34,19 +34,58 @@ on:
     - 'example/**'
     - 'test/**'
 
-env:
-  CC: gcc-10
-  CXX: g++-10
-  CMAKE_GENERATOR: Ninja
-
 jobs:
   test_package:
-    name: CMake test_package (${{ matrix.build_type }})
-    runs-on: ubuntu-20.04
+    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
+        config:
+        - {
+            name: "Windows MSVC 2019",
+            os: windows-latest,
+            compiler: { type: VISUAL, version: 16, cc: "", cxx: "" }
+          }
+        - {
+            name: "Ubuntu GCC 10.1.0",
+            os: ubuntu-18.04,
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu GCC 10.2.0",
+            os: ubuntu-20.04,
+            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libstdc++11",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libstdc++11"
+          }
+        - {
+            name: "Ubuntu Clang 12.0.0 + libc++",
+            os: ubuntu-20.04,
+            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+            lib: "libc++"
+          }
+        # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
+        # - {
+        #     name: "Ubuntu GCC 10.2.0",
+        #     os: ubuntu-20.04,
+        #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+        #     docker_image: conanio/gcc10
+        #   }
         build_type: [ "Release", "Debug" ]
+
+    env:
+      CC: ${{ matrix.config.compiler.cc }}
+      CXX: ${{ matrix.config.compiler.cxx }}
+      CMAKE_GENERATOR: Ninja
+      CONAN_CMAKE_GENERATOR: Ninja
+
     steps:
       - uses: actions/checkout@v2
       - name: Cache Conan data
@@ -60,42 +99,96 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-      - name: Install Ninja
+      - name: Install Clang
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        working-directory: ${{ env.HOME }}
         run: |
-          sudo apt install -y ninja-build
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+      - name: Install Libc++
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        shell: bash
+        run: |
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev
+      - name: Install Ninja
+        # TODO Find a proper syntax to make the below work
+        # if: !matrix.config.docker_image
+        shell: bash
+        run: |
+          if [ $RUNNER_OS == 'Linux' ]; then
+            sudo apt install -y ninja-build
+          elif [ $RUNNER_OS == 'Windows' ]; then
+            choco install ninja
+          else
+            echo "'$RUNNER_OS' not supported"
+            exit 1
+          fi
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
       - name: Install Conan
+        shell: bash
         run: |
           pip install -U conan
       - name: Configure Conan
+        shell: bash
         run: |
           conan config init
-          conan remote add upload https://api.bintray.com/conan/mpusz/conan-mpusz
+          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan profile update settings.build_type=${{ matrix.build_type }} default
+          conan profile update settings.compiler.cppstd=20 default
+          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
+          fi
+          conan profile show default
       - name: Install Conan dependencies
+        shell: bash
         run: |
           mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
-          conan install ../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }} -b outdated -u
+          conan install ../.. -b outdated -u
       - name: Configure mp-units CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
+        working-directory: build/${{ matrix.build_type }}
         run: |
-          cd build/${{ matrix.build_type }}
-          cmake ../../src -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          call conanvcvars.bat
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      - name: Configure mp-units CMake
+        if: matrix.config.compiler.type != 'VISUAL'
+        shell: bash
+        working-directory: build/${{ matrix.build_type }}
+        run: |
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       - name: Install mp-units
+        shell: bash
+        working-directory: build/${{ matrix.build_type }}
         run: |
-          cd build/${{ matrix.build_type }}
           cmake --install . --prefix test_package
-      - name: Configure test_package CMake
+      - name: Install dependencies for test_package
+        shell: bash
         run: |
           mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
-          conan install ../../.. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -s build_type=${{ matrix.build_type }}
-          cmake ../.. -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
-      - name: Build test_package
+          conan install ../../..
+      - name: Build test_package CMake
+        if: matrix.config.compiler.type == 'VISUAL'
+        shell: cmd
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cd test_package/build/${{ matrix.build_type }}
+          call conanvcvars.bat
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+          cmake --build .
+      - name: Build test_package CMake
+        if: matrix.config.compiler.type != 'VISUAL'
+        shell: bash
+        working-directory: test_package/build/${{ matrix.build_type }}
+        run: |
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Run test_package
+        shell: bash
+        working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cd test_package/build/${{ matrix.build_type }}
           ./test_package

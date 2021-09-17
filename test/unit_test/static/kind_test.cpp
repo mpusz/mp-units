@@ -20,15 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "test_tools.h"
-#include "units/generic/angle.h"
-#include "units/kind.h"
-#include "units/physical/si/base/length.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/speed.h"
+#include <units/bits/equivalent.h>
+#include <units/bits/external/downcasting.h>
+#include <units/bits/external/type_traits.h>
+#include <units/generic/angle.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/kind.h>
+#include <type_traits>
 
 using namespace units;
-using namespace physical::si;
+using namespace isq::si;
 
 namespace {
 
@@ -106,7 +109,7 @@ static_assert(!equivalent<radius, radial_area>);
 static_assert(!equivalent<radius, radial_point>);
 
 
-struct width : kind<width, units::physical::si::dim_length> {};
+struct width : kind<width, units::isq::si::dim_length> {};
 using horizontal_speed = downcast_kind<width, dim_speed>;
 
 struct abscissa : point_kind<abscissa, width> {};                                  // program-defined base point kind
@@ -148,7 +151,7 @@ static_assert(!equivalent<abscissa::_point_kind_base, horizontal_velocity>);
 
 struct height : kind<height, dim_length> {};
 
-struct rate_of_climb : derived_kind<rate_of_climb, height, dim_speed> {};    // program-defined derived kind
+struct rate_of_climb : derived_kind<rate_of_climb, dim_speed, height> {};    // program-defined derived kind
 struct velocity_of_climb : point_kind<velocity_of_climb, rate_of_climb> {};  // program-defined derived point kind
 
 static_assert(Kind<rate_of_climb>);

@@ -26,7 +26,7 @@ Construction by constructor
 To create the quantity point object from a `quantity` we just have to pass
 the value to the `quantity_point` class template explicit constructor::
 
-    quantity_point<si::dim_length, si::kilometre, double> d(123_q_km);
+    quantity_point<si::dim_length, si::kilometre, double> d(123 * km);
 
 In this case, a default abstract origin will be created, which is the same for all `quantity_point`s with default
 constructed origin of the same dimension, and unrelated to all other origins in the library.
@@ -49,7 +49,7 @@ Alternatively, a custom origin may be specified::
     `copy initialization <https://en.cppreference.com/w/cpp/language/copy_initialization>`_
     **does not compile**::
 
-        quantity_point<si::dim_length, si::kilometre, double> d = 123_q_km;  // ERROR
+        quantity_point<si::dim_length, si::kilometre, double> d = 123 * km;  // ERROR
 
 Construction by origin constant
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

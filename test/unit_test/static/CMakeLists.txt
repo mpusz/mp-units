@@ -24,16 +24,18 @@ cmake_minimum_required(VERSION 3.2)
 
 add_library(unit_tests_static_truncating
     quantity_test.cpp
-    quantity_kind_test.cpp
-    quantity_point_kind_test.cpp
 )
-target_link_libraries(unit_tests_static_truncating
-    PRIVATE
-        mp-units::mp-units
+if(NOT UNITS_LIBCXX)
+    target_sources(unit_tests_static_truncating PRIVATE
+        quantity_kind_test.cpp
+        quantity_point_kind_test.cpp
+    )
+endif()
+target_link_libraries(unit_tests_static_truncating PRIVATE
+    mp-units::mp-units
 )
-target_compile_options(unit_tests_static_truncating
-    PRIVATE
-        $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+target_compile_options(unit_tests_static_truncating PRIVATE
+    $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
 
 add_library(unit_tests_static
@@ -41,28 +43,33 @@ add_library(unit_tests_static
     chrono_test.cpp
     concepts_test.cpp
     custom_rep_test_min_expl.cpp
-    custom_rep_test_min_impl.cpp
     custom_unit_test.cpp
-    data_test.cpp
     dimension_op_test.cpp
     dimensions_concepts_test.cpp
     fixed_string_test.cpp
     fps_test.cpp
+    iec80000_test.cpp
     kind_test.cpp
     math_test.cpp
-    quantity_point_test.cpp
     ratio_test.cpp
+    references_test.cpp
     si_test.cpp
     si_cgs_test.cpp
     si_fps_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
-    unit_constants.cpp
     unit_test.cpp
     us_test.cpp
 )
-target_link_libraries(unit_tests_static
-    PRIVATE
-        unit_tests_static_truncating
-        mp-units::mp-units
+
+if(NOT UNITS_LIBCXX)
+    target_sources(unit_tests_static PRIVATE
+        custom_rep_test_min_impl.cpp
+        quantity_point_test.cpp
+    )
+endif()
+
+target_link_libraries(unit_tests_static PRIVATE
+    unit_tests_static_truncating
+    mp-units::mp-units
 )

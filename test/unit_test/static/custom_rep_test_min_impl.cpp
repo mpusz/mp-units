@@ -20,11 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/math.h"
-#include "units/physical/si/base/length.h"
-#include <chrono>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/length.h>
 #include <type_traits>
-#include <utility>
 
 namespace {
 
@@ -60,10 +58,10 @@ struct std::common_type<U, min_impl<T>> : std::common_type<T, U> {};
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
-static_assert(QuantityValue<min_impl<int>>);
-static_assert(QuantityValue<min_impl<double>>);
+static_assert(Representation<min_impl<int>>);
+static_assert(Representation<min_impl<double>>);
 
 // construction from a value
 static_assert(std::constructible_from<length<metre, min_impl<int>>, min_impl<int>>);

@@ -20,22 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/quantity_point.h"
+#include <units/quantity_point.h>
 #include "test_tools.h"
-#include "units/chrono.h"
 #include "units/math.h"
-#include "units/zero_rep.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/speed.h"
-#include "units/physical/si/derived/volume.h"
-#include "units/physical/si/us/base/length.h"
+#include <units/bits/common_quantity.h>
+#include <units/bits/external/type_traits.h>
+#include <units/chrono.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/uscs/length.h>
+#include <units/isq/si/volume.h>
+#include <limits>
+#include <type_traits>
 #include <utility>
 
 namespace {
 
 using namespace units;
-using namespace physical::si;
-using namespace unit_constants;
+using namespace isq::si;
+using namespace references;
 using namespace std::chrono_literals;
 using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
@@ -49,10 +52,6 @@ struct ZRH_ground_level : point_origin<ZRH_ground_level, metre> {
   using reference_origin = mean_sea_level;
   static constexpr auto offset_to_reference = 432 * m;
 };
-
-inline constexpr auto zp_mean_sea_level = quantity_point<dim_length, metre, zero_rep, mean_sea_level>{};
-inline constexpr auto zp_local_ground_level = quantity_point<dim_length, metre, zero_rep, local_ground_level>{};
-inline constexpr auto zp_ZRH_ground_level = quantity_point<dim_length, metre, zero_rep, ZRH_ground_level>{};
 
 // class invariants
 
@@ -112,9 +111,7 @@ static_assert(!std::is_constructible_v<quantity_point<dim_length, kilometre, int
 
 // construction with explicit origin
 static_assert(quantity_point<dim_length, metre, int, mean_sea_level>(1000_q_m).relative() == km.relative());
-static_assert((zp_ZRH_ground_level + 1_q_km).relative() == 1_q_km);
-static_assert(zp_ZRH_ground_level + 1_q_km == absolute<ZRH_ground_level>(1_q_km));
-static_assert(is_same_v<decltype(zp_ZRH_ground_level + 1_q_km)::origin, ZRH_ground_level>);
+static_assert(quantity_point<dim_length, metre, int, ZRH_ground_level>(1_q_km) == absolute<ZRH_ground_level>(1_q_km));
 static_assert(!std::is_constructible_v<quantity_point<dim_length, metre, int, mean_sea_level>,
               quantity_point<dim_time, second, int, local_ground_level>>);  // different unrelated origins
 
@@ -124,11 +121,11 @@ static_assert([]() { quantity_point<dim_length, metre, int> l1(1_q_m), l2{}; ret
 
 // static member functions
 
-static_assert(quantity_point<dim_length, metre, int>::min().relative().count() == std::numeric_limits<int>::lowest());
-static_assert(quantity_point<dim_length, metre, int>::max().relative().count() == std::numeric_limits<int>::max());
-static_assert(quantity_point<dim_length, metre, double>::min().relative().count() ==
+static_assert(quantity_point<dim_length, metre, int>::min().relative().number() == std::numeric_limits<int>::lowest());
+static_assert(quantity_point<dim_length, metre, int>::max().relative().number() == std::numeric_limits<int>::max());
+static_assert(quantity_point<dim_length, metre, double>::min().relative().number() ==
               std::numeric_limits<double>::lowest());
-static_assert(quantity_point<dim_length, metre, double>::max().relative().count() ==
+static_assert(quantity_point<dim_length, metre, double>::max().relative().number() ==
               std::numeric_limits<double>::max());
 
 // unary member operators
@@ -152,8 +149,8 @@ static_assert([](auto v) {
 
 // compound assignment
 
-static_assert((quantity_point(1_q_m) += 1_q_m).relative().count() == 2);
-static_assert((quantity_point(2_q_m) -= 1_q_m).relative().count() == 1);
+static_assert((quantity_point(1_q_m) += 1_q_m).relative().number() == 2);
+static_assert((quantity_point(2_q_m) -= 1_q_m).relative().number() == 1);
 
 // non-member arithmetic operators
 
@@ -181,10 +178,10 @@ static_assert(
     compare<decltype(quantity_point<dim_length, kilometre, double, mean_sea_level>() - quantity_point<dim_length, metre, int, mean_sea_level>()),
                    length<metre, double>>);
 
-static_assert((1_q_m + km).relative().count() == 1001);
-static_assert((quantity_point(1_q_m) + 1_q_km).relative().count() == 1001);
-static_assert((km - 1_q_m).relative().count() == 999);
-static_assert((quantity_point(1_q_km) - quantity_point(1_q_m)).count() == 999);
+static_assert((1_q_m + km).relative().number() == 1001);
+static_assert((quantity_point(1_q_m) + 1_q_km).relative().number() == 1001);
+static_assert((km - 1_q_m).relative().number() == 999);
+static_assert((quantity_point(1_q_km) - quantity_point(1_q_m)).number() == 999);
 
 // comparators
 
@@ -243,7 +240,7 @@ static_assert(compare<common_quantity_point<quantity_point<dim_length, kilometre
 
 // common_type
 
-using namespace units::physical::si::us::literals;
+using namespace units::isq::si::uscs::literals;
 
 static_assert(std::equality_comparable<decltype(quantity_point(1_q_m))>);
 static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), decltype(quantity_point(1_q_km))>);
@@ -252,20 +249,19 @@ static_assert(std::equality_comparable_with<decltype(quantity_point(1_q_m)), dec
 
 // quantity_cast
 
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2_q_km)).relative().count() ==
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(2_q_km)).relative().number() ==
               2000);
 static_assert(
-    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23_q_m)).relative().count() ==
+    quantity_point_cast<quantity_point<dim_length, kilometre, int>>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<quantity_point<dim_length, metre, int>>(quantity_point(1.23_q_m)).relative().number() ==
               1);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2_q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).relative().count() == 1);
-static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().count() == 2000);
-static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().count() == 2);
-static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().count() == 1);
-static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().count() == 2);
-static_assert(quantity_point_cast<mean_sea_level>(quantity_point(zp_ZRH_ground_level + 2 * m)).relative().count() == 432+2);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(2_q_km)).relative().number() == 2000);
+static_assert(quantity_point_cast<length<kilometre, int>>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).relative().number() == 1);
+static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().number() == 2000);
+static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().number() == 2);
+static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().number() == 1);
+static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().number() == 2);
 
 // time
 

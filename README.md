@@ -1,9 +1,9 @@
 [![GitHub license](https://img.shields.io/github/license/mpusz/units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
-[![Conan CI](https://img.shields.io/github/workflow/status/mpusz/units/Conan%20CI/master?label=Conan)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
-[![CMake CI](https://img.shields.io/github/workflow/status/mpusz/units/CMake%20Test%20Package%20CI/master?label=CMake)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
-[![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=Documentation)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
-[![Conan stable](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg?version=0.6.0%3Astable)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/0.6.0%3Astable/link)
-[![Conan testing](https://api.bintray.com/packages/mpusz/conan-mpusz/mp-units%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz/_latestVersion)
+[![Conan CI](https://img.shields.io/github/workflow/status/mpusz/units/Conan%20CI/master?label=Conan%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
+[![CMake CI](https://img.shields.io/github/workflow/status/mpusz/units/CMake%20Test%20Package%20CI/master?label=CMake%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
+[![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=Documentation%20CI)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
+[![Conan stable](https://img.shields.io/badge/ConanCenter-0.6.0%3Astable-blue)](https://conan.io/center/mp-units)
+[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-0.7.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/0.7.0)
 
 # `mp-units` - A Units Library for C++
 
@@ -28,32 +28,35 @@ analysis and unit/quantity manipulation. The basic idea and design heavily bases
 Here is a small example of possible operations:
 
 ```cpp
-#include <units/physical/si/derived/area.h>
-#include <units/physical/si/derived/frequency.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/frequency.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 
-using namespace units::physical::si;
+using namespace units::isq::si::references;
 
 // simple numeric operations
-static_assert(10_q_km / 2 == 5_q_km);
+static_assert(10 * km / 2 == 5 * km);
 
 // unit conversions
-static_assert(1_q_h == 3600_q_s);
-static_assert(1_q_km + 1_q_m == 1001_q_m);
+static_assert(1 * h == 3600 * s);
+static_assert(1 * km + 1 * m == 1001 * m);
 
 // dimension conversions
-static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);
-static_assert(2_q_km_per_h * 2_q_h == 4_q_km);
-static_assert(2_q_km / 2_q_km_per_h == 1_q_h);
+inline constexpr auto kmph = km / h;
+static_assert(1 * km / (1 * s) == 1000 * (m / s));
+static_assert(2 * kmph * (2 * h) == 4 * km);
+static_assert(2 * km / (2 * kmph) == 1 * h);
 
-static_assert(2_q_m * 3_q_m == 6_q_m2);
+static_assert(2 * m * (3 * m) == 6 * m2);
 
-static_assert(10_q_km / 5_q_km == 2);
+static_assert(10 * km / (5 * km) == 2);
 
-static_assert(1000 / 1_q_s == 1_q_kHz);
+static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/YWch6d)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/5dvY8Woh1)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -62,12 +65,15 @@ the below example for a quick preview of basic library features:
 
 ```cpp
 #include <units/format.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/international/derived/speed.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/international/speed.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
-using namespace units::physical;
+using namespace units::isq;
 
 constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
@@ -76,23 +82,31 @@ constexpr Speed auto avg_speed(Length auto d, Time auto t)
 
 int main()
 {
-  using namespace units::physical::si::literals;
-  using namespace units::physical::si::unit_constants;
+  using namespace units::isq::si::literals;
+  using namespace units::isq::si::references;
+  using namespace units::aliases::isq::si::international;
 
-  constexpr Speed auto v1 = 110 * km / h;
-  constexpr Speed auto v2 = avg_speed(220_q_km, 2_q_h);
-  constexpr Speed auto v3 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
-  constexpr Speed auto v4 = quantity_cast<si::speed<si::metre_per_second>>(v2);
-  constexpr Speed auto v5 = quantity_cast<si::metre_per_second>(v3);
-  constexpr Speed auto v6 = quantity_cast<int>(v5);
+  constexpr Speed auto v1 = 110 * (km / h);
+  constexpr Speed auto v2 = mi_per_h(70.);
+  constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
+  constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
+#if UNITS_DOWNCAST_MODE == 0
+  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
+  constexpr Speed auto v6 = quantity_cast<si::dim_speed, si::metre_per_second>(v4);
+#else
+  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
+  constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
+#endif
+  constexpr Speed auto v7 = quantity_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
-  std::cout << fmt::format("{}", v2) << '\n';               // 110 km/h
-  std::cout << fmt::format("{:*^14}", v3) << '\n';          // ***70 mi/h****
-  std::cout << fmt::format("{:%Q in %q}", v4) << '\n';      // 30.5556 in m/s
-  std::cout << fmt::format("{0:%Q} in {0:%q}", v5) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v6) << '\n';            // 31
+  std::cout << v2 << '\n';                                  // 70 mi/h
+  std::cout << fmt::format("{}", v3) << '\n';               // 110 km/h
+  std::cout << fmt::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
+  std::cout << fmt::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
+  std::cout << fmt::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
+  std::cout << fmt::format("{:%Q}", v7) << '\n';            // 31
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/eca49d)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/9fnzfbhb6)._

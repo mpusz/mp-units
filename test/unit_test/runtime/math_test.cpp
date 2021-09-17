@@ -20,13 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/math.h"
-#include "units/physical/si/derived/area.h"
-#include "units/physical/si/derived/volume.h"
+#include <units/math.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/volume.h>
 #include <catch2/catch.hpp>
+#include <limits>
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // classical
 
@@ -73,7 +75,7 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
       REQUIRE(abs(-1_q_m) == 1_q_m);
     }
 
-#ifndef COMP_MSVC
+#ifndef UNITS_COMP_MSVC
     SECTION ("floating-point representation")
     {
       REQUIRE(abs(-1._q_m) == 1_q_m);
@@ -88,7 +90,7 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
       REQUIRE(abs(1_q_m) == 1_q_m);
     }
 
-#ifndef COMP_MSVC
+#ifndef UNITS_COMP_MSVC
     SECTION ("floating-point representation")
     {
       REQUIRE(abs(1._q_m) == 1_q_m);
@@ -100,13 +102,13 @@ TEST_CASE("absolute functions on quantity returns the absolute value", "[math][a
 TEST_CASE("numeric_limits functions", "[limits]")
 {
   SECTION ("'epsilon' works as expected using default floating type") {
-    REQUIRE(epsilon<decltype(1._q_m)>().count() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1._q_m)>().number() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using integers") {
-    REQUIRE(epsilon<decltype(1_q_m)>().count() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().number() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
   }
   SECTION ("'epsilon' works as expected using mixed Rep types") {
-    REQUIRE(epsilon<decltype(1_q_m)>().count() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
+    REQUIRE(epsilon<decltype(1_q_m)>().number() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
 }
 

@@ -20,8 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/base/length.h"
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/prefixes.h>
 #include <ostream>
+#include <type_traits>
 
 namespace {
 
@@ -29,10 +32,10 @@ namespace {
  * @brief Representation type meeting minimum requirements
  * 
  * This type with a default Mode = 0 provides the minimum set of requirements to
- * satisfy @c QuantityValue concept which is used for quantity's representation type.
+ * satisfy @c Representation concept which is used for quantity's representation type.
  * 
  * In case of Mode != 0 only one of mandatory operation is removed which should
- * result in @c QuantityValue concept not being satisfied.
+ * result in @c Representation concept not being satisfied.
  * 
  * @tparam Mode a flag to disable specific type's operations
  */
@@ -44,7 +47,7 @@ public:
   min_expl() requires (Mode != 1) = default;
 
   // construction from std::int64_t
-  explicit constexpr min_expl(std::intmax_t v) noexcept requires (Mode != 2) : value_(v) {}
+  constexpr explicit min_expl(std::intmax_t v) noexcept requires (Mode != 2) : value_(v) {}
 
   // copy construction
   min_expl(const min_expl&) requires (Mode != 3) = default;
@@ -82,7 +85,7 @@ struct std::common_type<min_expl<Mode>, std::intmax_t> : std::type_identity<min_
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 // quantity explicitly constructible (not convertible) from the representation type
 static_assert(std::constructible_from<length<metre, min_expl<>>, min_expl<>>);
@@ -140,20 +143,20 @@ static_assert(!std::constructible_from<length<metre, int>, dimensionless<one, mi
 static_assert(!std::convertible_to<dimensionless<one, min_expl<>>, length<metre, int>>);
 
 // all operations needed to satisfy concept
-static_assert(QuantityValue<min_expl<>>);
-static_assert(!QuantityValue<min_expl<1>>);
-static_assert(!QuantityValue<min_expl<2>>);
-static_assert(!QuantityValue<min_expl<3>>);
-#if !defined(COMP_GCC) || COMP_GCC > 10 || COMP_GCC_MINOR > 1
-static_assert(!QuantityValue<min_expl<4>>);
+static_assert(Representation<min_expl<>>);
+static_assert(!Representation<min_expl<1>>);
+static_assert(!Representation<min_expl<2>>);
+static_assert(!Representation<min_expl<3>>);
+#if !defined(UNITS_COMP_GCC) || UNITS_COMP_GCC > 10 || UNITS_COMP_GCC_MINOR > 1
+static_assert(!Representation<min_expl<4>>);
 #endif
-static_assert(!QuantityValue<min_expl<5>>);
-#if !defined(COMP_GCC) || COMP_GCC > 10 || COMP_GCC_MINOR > 1
-static_assert(!QuantityValue<min_expl<6>>);
+static_assert(!Representation<min_expl<5>>);
+#if !defined(UNITS_COMP_GCC) || UNITS_COMP_GCC > 10 || UNITS_COMP_GCC_MINOR > 1
+static_assert(!Representation<min_expl<6>>);
 #endif
-static_assert(!QuantityValue<min_expl<7>>);
-static_assert(!QuantityValue<min_expl<8>>);
-static_assert(!QuantityValue<min_expl<9>>);
+static_assert(!Representation<min_expl<7>>);
+static_assert(!Representation<min_expl<8>>);
+static_assert(!Representation<min_expl<9>>);
 
 // quantity's operators should mirror the representation type capabilities
 template<typename Rep>

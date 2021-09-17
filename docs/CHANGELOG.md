@@ -1,32 +1,48 @@
 # Release notes
 
-- **0.7.0 WIP**
-  - (!) refactor: `ScalableNumber` renamed to `QuantityValue`
+- **0.7.0 May 11, 2021**
+  - (!) refactor: `ScalableNumber` renamed to `Representation`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
+  - (!) refactor: Refactored the library file tree
+  - (!) refactor: `quantity::count()` renamed to `quantity::number()`
+  - (!) refactor: `data` system renamed to `isq::iec80000` (quantity names renamed too)
+  - (!) refactor: `*deduced_unit` renamed to `*derived_unit`
+  - (!) refactor: got rid of a `noble_derived_unit`
   - refactor: quantity (kind) point updated to reflect latest changes to `quantity`
   - refactor: basic concepts, `quantity` and `quantity_cast` refactored
   - refactor: `abs()` definition refactored to be more explicit about the return type
   - feat: quantity (point) kind support added (thanks [@johelegp](https://github.com/johelegp))
-  - feat: unit constants support added (thanks [@johelegp](https://github.com/johelegp))
+  - feat: quantity references support added (thanks [@johelegp](https://github.com/johelegp))
+  - feat: quantity aliases support addded
   - feat: interoperability with `std::chrono::duration` and other units libraries
   - feat: CTAD for dimensionless quantity added
+  - feat: `modulation_rate` support added (thanks [@go2sh](https://github.com/go2sh))
+  - feat: SI prefixes for `isq::iec80000` support added (thanks [@go2sh](https://github.com/go2sh))
+  - feat: a possibility to disable quantity UDLs support with `UNITS_NO_LITERALS` preprocessor define
+  - feat: a support to define ISQ derived dimensions in terms of different number or order of components
   - perf: preconditions check do not influence the runtime performance of a Release build
   - perf: `quantity_cast()` generates less assembly instructions
   - perf: temporary string creation removed from `quantity::op<<()`
   - perf: value initialization for quantity value removed (left with a default initialization)
   - perf: limited the `equivalent` trait usage
   - perf: limited the C++ Standard Library headers usage
+  - perf: rvalue references support added for constructors and getters
   - (!) fix: `exp()` has sense only for dimensionless quantities
   - (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) + default unit name change
   - fix: quantity's operators fixed to behave like the underlying types do
   - fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
   - fix: ambiguous case for empty type list resolved
   - fix: downcasting facility for non-default-constructible types
+  - fix: restore user-warnings within the library implementation
+  - fix: the text symbol of `foot_pound_force` and `foot_pound_force_per_second`
+  - fix: quantity modulo arithmetics fixed
+  - (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
+  - (!) build: Linear Algebra is now hosted on its [Artifactory](https://twonington.jfrog.io/artifactory/api/conan/conan-oss)
   - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
   - build: doxygen updated to 1.8.20
   - build: catch2 updated to 2.13.4
   - build: fmt updated to 7.1.3
-  - build: ms-gsl replaced with gsl-lite
+  - build: ms-gsl replaced with gsl-lite/0.38.0
   - build: Conan generator switched to `cmake_find_package_multi`
   - build: Conan CMakeToolchain support added
   - build: CMake scripts cleanup

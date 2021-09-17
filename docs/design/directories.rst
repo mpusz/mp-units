@@ -8,9 +8,10 @@ Library Directories Structure
     units
     ├── bits
     │   └── external
-    ├── data
     ├── generic
-    └── physical
+    └── isq
+        ├── dimensions
+        ├── iec80000
         ├── natural
         └── si
             ├── cgs
@@ -43,16 +44,13 @@ Library Directories Structure
   - Provides quantity types not related to any :term:`system of quantities`
     (e.g. `dimensionless`, `angle`).
 
-- *./units/physical*
+- *./units/isq*
 
-  - Contains the definition of physical units dimensions.
+  - Contains the definition of quantity dimensions of International System of Quantities
+    (:term:`ISQ`).
   - Its subfolders provide the definitions of various
-    :term:`systems of units <system of units>` with :term:`SI` being the most popular
-    one.
-
-- *./units/data*
-
-  - Provides data information system and its dimensions (i.e. `data::bitrate`).
+    :term:`systems of units <system of units>` with International System of Units (:term:`SI`)
+    being the most popular one.
 
 .. seealso::
 
@@ -63,4 +61,4 @@ Library Directories Structure
 
     While working with predefined systems please always include a header file with all
     the definitions for the current system to limit the possibility of an ODR violation
-    (e.g. *units/physical/si/si.h*).
+    (e.g. *units/isq/si/si.h*).

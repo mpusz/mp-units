@@ -1,10 +1,14 @@
-Usage
-=====
+Installation And Usage
+======================
 
 .. note::
 
-    This library targets C++23 and extensively uses C++20 features that is why, as of now, it compiles correctly
-    only with gcc-10, Visual Studio 16.7, and newer.
+  This library targets C++23/26 and extensively uses C++20 features. This is why it requires the latest C++
+  compilers. The following compilers (or newer) are supported:
+
+  - gcc-10
+  - clang-12
+  - Visual Studio 16.9
 
 Repository Structure and Dependencies
 -------------------------------------
@@ -19,6 +23,7 @@ This repository contains three independent CMake-based projects:
 
     - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
     - `gsl-lite <https://github.com/gsl-lite/gsl-lite>`_ to verify runtime contracts with the ``gsl_Expects`` macro.
+    - [only for clang-12 with libc++] `range-v3 <https://github.com/ericniebler/range-v3>`_ to provide needed C++20 concepts and utilities.
 
 - *.*
 
@@ -87,7 +92,6 @@ in *~/.conan/profiles* directory. An example profile can look as follows:
     [env]
     CC=/usr/bin/gcc-10
     CXX=/usr/bin/g++-10
-    CONAN_CMAKE_GENERATOR=Ninja
 
 .. tip::
 
@@ -154,6 +158,27 @@ UNITS_DOWNCAST_MODE
 Equivalent to `downcast_mode`_.
 
 
+UNITS_AS_SYSTEM_HEADERS
++++++++++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``OFF``
+
+Exports library as system headers.
+
+
+UNITS_IWYU
+++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``OFF``
+
+Enables include-what-you-use when compiling with a clang compiler.
+Additionally turns on `UNITS_AS_SYSTEM_HEADERS`_.
+
+
 UNITS_BUILD_DOCS
 ++++++++++++++++
 
@@ -193,7 +218,7 @@ defined by the library. To do so you should use *CMakeLists.txt* file from the *
 
     add_subdirectory(<path_to_units_folder>/src)
     # ...
-    target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
+    target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
 
 .. important::
 
@@ -225,36 +250,37 @@ library release the following steps may be performed:
       mp-units/0.6.0
 
       [generators]
-      cmake_find_package_multi
+      CMakeToolchain
+      CMakeDeps
 
 2. Import **mp-units** and its dependencies definitions to your project's build procedure
    with ``find_package``:
 
   .. code-block:: cmake
 
-      find_package(mp-units)
+      find_package(mp-units CONFIG REQUIRED)
 
 3. Link your CMake targets with **mp-units**:
 
   .. code-block:: cmake
 
-      target_link_libraries(<your_target> PUBLIC|PRIVATE|INTERFACE mp-units::mp-units)
-      target_compile_features(<your_target> PUBLIC|PRIVATE|INTERFACE cxx_std_20)
+      target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
+      target_compile_features(<your_target> <PUBLIC|PRIVATE|INTERFACE> cxx_std_20)
 
   .. important::
 
     Unfortunately, packages distributed via Conan-Center cannot force the minimum version
     of the C++ language used for your build process. This is why it is important to specify
     it in `Conan profile file <Conan Quick Intro>`_ and with ``target_compile_features`` command
-    for each CMake target in your project.
+    for each CMake target directly linking with ``mp-units::mp-units`` in your project.
 
 4. Download, build, and install Conan dependencies before running CMake configuration step:
 
   .. code-block:: shell
 
-      mkdir build && cd build
+      mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-      cmake .. -DCMAKE_BUILD_TYPE=Release
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       cmake --build .
 
 
@@ -279,7 +305,7 @@ differences:
 
   .. code-block:: shell
 
-      conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
+      conan remote add conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
 
 2. In your Conan configuration file provide package identifier of the ``mpusz/testing`` stream:
 
@@ -290,22 +316,38 @@ differences:
       mp-units/0.7.0@mpusz/testing
 
       [generators]
-      cmake_find_package_multi
+      CMakeToolchain
+      CMakeDeps
 
   .. tip::
 
     The identifiers of the latest packages can always be found in
     `the project's README file <https://github.com/mpusz/units/blob/master/README.md>`_ or on
-    `the project's Bintray <https://bintray.com/mpusz/conan-mpusz/mp-units%3Ampusz>`_.
+    `the project's Artifactory <https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units>`_.
 
 3. Force Conan to check for updated recipes ``-u`` and to build outdated packages ``-b outdated``:
 
   .. code-block:: shell
 
-      mkdir build && cd build
+      mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
-      cmake --build . --config Release
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake --build .
+
+
+Install
+^^^^^^^
+
+In case you don't want to use Conan in your project and just want to install the **mp-units**
+library on your file system and use it via ``find_package(mp-units)`` from another repository
+to find it, it is enough to perform the following steps:
+
+.. code-block:: shell
+
+    mkdir units/build && cd units/build
+    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+    cmake ../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake --install . --prefix <install_dir>
 
 
 Contributing (or just building all the tests, examples, and documentation)
@@ -321,10 +363,10 @@ in **mp-units** repository, you should:
 
 .. code-block:: shell
 
-    conan remote add linear-algebra https://api.bintray.com/conan/twonington/public-conan
+    conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    mkdir build && cd build
+    mkdir units/build && cd units/build
     conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
     conan build ..
 
@@ -337,8 +379,8 @@ step with the CMake build:
 .. code-block:: shell
 
     # ...
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
-    cmake --build . --config Release
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake --build .
     ctest
 
 

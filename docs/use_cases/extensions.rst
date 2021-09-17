@@ -57,7 +57,7 @@ Enabling a Unit for Prefixing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In case I decide it is reasonable to express my desks with SI prefixes the only thing I have
-to change in the above code is to replace `no_prefix` with `physical::si::prefix`::
+to change in the above code is to replace `no_prefix` with `isq::si::prefix`::
 
     struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio(3, 10), si::square_metre> {};
 
@@ -118,10 +118,10 @@ coherent unit::
                                              exponent<si::dim_area, 1>, exponent<si::dim_time, -1>> {};
 
     // our unit of interest for a new derived dimension
-    struct desk_per_hour : deduced_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
+    struct desk_per_hour : derived_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
 
     // a quantity of our dimension
-    template<UnitOf<dim_desk_rate> U, QuantityValue Rep = double>
+    template<UnitOf<dim_desk_rate> U, Representation Rep = double>
     using desk_rate = quantity<dim_desk_rate, U, Rep>;
 
     // a concept matching the above quantity
@@ -130,7 +130,7 @@ coherent unit::
 
 With the above we can now check what is the production rate::
 
-    DeskRate auto rate = quantity_cast<desk_per_hour>(3._d / 20_q_min);
+    DeskRate auto rate = quantity_cast<desk_per_hour>(3._d / (20 * min));
     std::cout << "Desk rate: " << rate << '\n';  // prints 'Desk rate: 9 desk/h'
 
 and how much wood is being consumed over a unit of time::
@@ -150,7 +150,7 @@ define a new base dimension, its units, quantity helper, concept, and UDLs::
     struct person : named_unit<person, "person", no_prefix> {};
     struct dim_people : base_dimension<"people", person> {};
 
-    template<UnitOf<dim_people> U, QuantityValue Rep = double>
+    template<UnitOf<dim_people> U, Representation Rep = double>
     using people = quantity<dim_people, U, Rep>;
 
     template<typename T>
@@ -167,9 +167,9 @@ With the above we can now define a new derived dimension::
                                                   exponent<dim_people, 1>,
                                                   exponent<si::dim_area, -1>> {};
 
-    struct person_per_desk : deduced_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
+    struct person_per_desk : derived_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 
-    template<UnitOf<dim_occupancy_rate> U, QuantityValue Rep = double>
+    template<UnitOf<dim_occupancy_rate> U, Representation Rep = double>
     using occupancy_rate = quantity<dim_occupancy_rate, U, Rep>;
 
     template<typename T>
@@ -216,7 +216,7 @@ Such units do not share their references with base units of other systems:
 
     struct dim_length : base_dimension<"L", foot> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     }  // namespace fps
@@ -231,12 +231,12 @@ different systems:
 
     namespace si {
 
-    struct metre : named_unit<metre, "m", units::physical::si::prefix> {};
-    struct kilometre : prefixed_unit<kilometre, units::physical::si::kilo, metre> {};
+    struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+    struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
     struct dim_length : base_dimension<"L", metre> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     namespace fps {
@@ -246,7 +246,7 @@ different systems:
 
     struct dim_length : base_dimension<"L", foot> {};
 
-    template<UnitOf<dim_length> U, QuantityValue Rep = double>
+    template<UnitOf<dim_length> U, Representation Rep = double>
     using length = quantity<dim_length, U, Rep>;
 
     }  // namespace fps

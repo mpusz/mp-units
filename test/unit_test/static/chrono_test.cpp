@@ -20,16 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "test_tools.h"
+#include <units/bits/external/type_traits.h>
 #include <units/chrono.h>
-#include <units/physical/si/derived/speed.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
 #include <units/quantity_point.h>
+#include <ratio>
 
 namespace {
 
 using namespace units;
-using namespace units::physical;
-using namespace units::physical::si::literals;
+using namespace units::isq;
+using namespace units::isq::si::literals;
 using namespace std::chrono_literals;
 using sys_clock_origin = chrono_clock_point_origin<std::chrono::system_clock>;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;

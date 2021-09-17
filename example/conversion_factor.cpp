@@ -15,10 +15,10 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/physical/si/base/length.h>
 #include <units/format.h>
-#include <units/quantity_io.h>
+#include <units/isq/si/length.h>
 #include <iostream>
+#include <type_traits>
 
 /*
   get conversion factor from one dimensionally equivalent
@@ -35,18 +35,18 @@ inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> 
   typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
   typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
   typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
-  return target{source{1}}.count();
+  return target{source{1}}.number();
 }
 
 }  // namespace
 
 int main()
 {
-  using namespace units::physical::si;
+  using namespace units::isq::si;
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA = 2.0_q_m;
+  constexpr length<metre> lengthA(2.0);
   constexpr length<millimetre> lengthB = lengthA;
 
   std::cout << fmt::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
@@ -55,6 +55,6 @@ int main()
   std::cout << fmt::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
 
   std::cout << fmt::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n", lengthA, lengthB)
-            << fmt::format("lengthB.count( {} ) == lengthA.count( {} ) * conversion_factor( {} )\n",
-                           lengthB.count(), lengthA.count(), conversion_factor(lengthB, lengthA));
+            << fmt::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
+                           lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
 }

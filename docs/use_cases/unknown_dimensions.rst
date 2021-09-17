@@ -22,11 +22,12 @@ The same applies to the resulting unit. For example:
 .. code-block::
     :emphasize-lines: 1,7,9
 
-    #include <units/physical/si/si.h>
+    #include <units/isq/si/si.h>
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
+    using namespace units::isq::si::references;
 
-    constexpr auto result = 144_q_km / 2_q_h;
+    constexpr auto result = 144 * km / (2 * h);
     static_assert(std::is_same_v<decltype(result)::dimension,
                                  dim_speed>);
     static_assert(std::is_same_v<decltype(result)::unit,
@@ -41,12 +42,13 @@ dimensions used in the division operation:
 .. code-block::
     :emphasize-lines: 1-2,8,10
 
-    #include <units/physical/si/base/length.h>
-    #include <units/physical/si/base/time.h>
+    #include <units/isq/si/length.h>
+    #include <units/isq/si/time.h>
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
+    using namespace units::isq::si::references;
 
-    constexpr auto result = 144_q_km / 2_q_h;
+    constexpr auto result = 144 * km / (2 * h);
     static_assert(std::is_same_v<decltype(result)::dimension,
                                  unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
     static_assert(std::is_same_v<decltype(result)::unit,
@@ -55,7 +57,7 @@ dimensions used in the division operation:
 .. important::
 
     To limit the possibility of an ODR violation please always include a header file
-    with all the definitions for the current system (e.g. *units/physical/si/si.h*).
+    with all the definitions for the current system (e.g. *units/isq/si/si.h*).
 
 
 Operations On Unknown Dimensions And Their Units
@@ -64,7 +66,7 @@ Operations On Unknown Dimensions And Their Units
 For some cases we can eliminate the need to predefine a specific dimension and just use
 the `unknown_dimension` instead. Let's play with the previous example a bit::
 
-    static_assert(result.count() == 72);
+    static_assert(result.number() == 72);
 
 As we can see the value stored in this quantity can be easily obtained and contains a
 correct result. However, if we try to print its value to the text output we will get::
@@ -103,10 +105,10 @@ in your program. A typical example here are temporary results of a long calculat
     {
       Speed auto s1 = avg_speed(d, t);
 
-      auto temp1 = s1 * 200_q_km;      // intermediate unknown dimension
+      auto temp1 = s1 * (200 * km);      // intermediate unknown dimension
 
-      Speed auto s2 = temp1 / 50_q_km; // back to known dimensions again
-      Length auto d2 = s2 * 4_q_h;
+      Speed auto s2 = temp1 / (50 * km); // back to known dimensions again
+      Length auto d2 = s2 * (4 * h);
 
       // ...
     }

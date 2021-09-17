@@ -10,7 +10,7 @@ Kinds
 
 The first template parameter of ``quantity_kind`` is a ``Kind``.
 
-``Kind``s, by themselves:
+``Kind`` s, by themselves:
 
     * Wrap a ``Dimension``, and
     * opt into the downcasting facility.
@@ -34,7 +34,7 @@ Quantity kinds
 
 ``quantity_kind`` wraps a ``quantity`` and layers over its dimensional analysis.
 While all properties of the ``quantity`` apply transparently,
-results are always ``quantity_kind``s related to the kind(s) of the argument(s).
+results are always ``quantity_kind`` s related to the kind(s) of the argument(s).
 
 One of the arguments to the dimensional analysis operators can also be ``Quantity``.
 

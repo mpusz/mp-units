@@ -20,37 +20,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/derived/acceleration.h>
-#include <units/physical/si/derived/area.h>
-#include <units/physical/si/cgs/derived/acceleration.h>
-#include <units/physical/si/cgs/derived/area.h>
-#include <units/physical/si/cgs/derived/energy.h>
-#include <units/physical/si/cgs/derived/force.h>
-#include <units/physical/si/cgs/base/length.h>
-#include <units/physical/si/cgs/base/mass.h>
-#include <units/physical/si/cgs/derived/power.h>
-#include <units/physical/si/cgs/derived/pressure.h>
-#include <units/physical/si/cgs/derived/speed.h>
-#include <units/physical/si/cgs/base/time.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/force.h>
-#include <units/physical/si/base/length.h>
-#include <units/physical/si/base/mass.h>
-#include <units/physical/si/derived/power.h>
-#include <units/physical/si/derived/pressure.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/base/time.h>
+#include <units/isq/si/acceleration.h>
+#include <units/isq/si/area.h> // IWYU pragma: keep
+#include <units/isq/si/cgs/cgs.h>
+#include <units/isq/si/energy.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/length.h> // IWYU pragma: keep
+#include <units/isq/si/mass.h>
+#include <units/isq/si/power.h>
+#include <units/isq/si/pressure.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h> // IWYU pragma: keep
 
 namespace {
 
-using namespace units::physical;
+using namespace units::isq;
 
-static_assert(units::detail::quantity_ratio(si::length<si::metre>(1)) == units::ratio(1));
-static_assert(units::detail::quantity_ratio(si::cgs::length<si::cgs::centimetre>(1)) == units::ratio(1, 100));
-static_assert(units::detail::quantity_ratio(si::speed<si::metre_per_second>(1)) == units::ratio(1));
-static_assert(units::detail::quantity_ratio(si::cgs::speed<si::cgs::centimetre_per_second>(1)) == units::ratio(1, 100));
-static_assert(units::detail::quantity_ratio(si::force<si::newton>(1)) == units::ratio(1000));   // defined in terms of kilogram that are 1000 * gram
-static_assert(units::detail::quantity_ratio(si::cgs::force<si::cgs::dyne>(1)) == units::ratio(1, 100)); // defined in terms of gram so only centimetre ratio counts here
+static_assert(units::detail::quantity_ratio<si::length<si::metre>> == units::ratio(1));
+static_assert(units::detail::quantity_ratio<si::cgs::length<si::cgs::centimetre>> == units::ratio(1, 100));
+static_assert(units::detail::quantity_ratio<si::speed<si::metre_per_second>> == units::ratio(1));
+static_assert(units::detail::quantity_ratio<si::cgs::speed<si::cgs::centimetre_per_second>> == units::ratio(1, 100));
+static_assert(units::detail::quantity_ratio<si::force<si::newton>> == units::ratio(1000));   // defined in terms of kilogram that are 1000 * gram
+static_assert(units::detail::quantity_ratio<si::cgs::force<si::cgs::dyne>> == units::ratio(1, 100)); // defined in terms of gram so only centimetre ratio counts here
 
 static_assert(si::cgs::length<si::cgs::centimetre>(100) == si::length<si::metre>(1));
 static_assert(si::cgs::mass<si::cgs::gram>(1'000) == si::mass<si::kilogram>(1));
@@ -65,7 +56,7 @@ static_assert(si::cgs::pressure<si::cgs::barye>(10) == si::pressure<si::pascal>(
 
 namespace si_test {
 
-using namespace units::physical::si::literals;
+using namespace units::isq::si::literals;
 
 static_assert(si::cgs::length<si::cgs::centimetre>(100) == 1_q_m);
 static_assert(si::cgs::mass<si::cgs::gram>(1'000) == 1_q_kg);
@@ -81,7 +72,7 @@ static_assert(si::cgs::pressure<si::cgs::barye>(10) == 1_q_Pa);
 
 namespace cgs_test {
 
-using namespace units::physical::si::cgs::literals;
+using namespace units::isq::si::cgs::literals;
 
 static_assert(100_q_cm == si::length<si::metre>(1));
 static_assert(1'000_q_g == si::mass<si::kilogram>(1));
@@ -97,8 +88,8 @@ static_assert(10_q_Ba == si::pressure<si::pascal>(1));
 
 namespace both_test {
 
-using namespace units::physical::si::literals;
-using namespace units::physical::si::cgs::literals;
+using namespace units::isq::si::literals;
+using namespace units::isq::si::cgs::literals;
 
 // static_assert(100_q_cm == 1_q_m);   // ambiguous
 // static_assert(1'000_q_g == 1_q_kg); // ambiguous
@@ -116,8 +107,8 @@ namespace cgs_test {
 
 // addition
 
-// static_assert(100_q_cm + si::length<si::metre>(1) == si::length<si::metre>(2)); // should not compile (different dimensions)
-// static_assert(si::length<si::metre>(1) + 100_q_cm == si::length<si::metre>(2)); // should not compile (different dimensions)
+static_assert(100_q_cm + si::length<si::metre>(1) == si::length<si::metre>(2));
+static_assert(si::length<si::metre>(1) + 100_q_cm == si::length<si::metre>(2));
 static_assert(quantity_cast<si::length<si::metre>>(100_q_cm) + si::length<si::metre>(1) == si::length<si::metre>(2));
 static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(100_q_cm) == si::length<si::metre>(2));
 static_assert(100_q_cm + quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) == 200_q_cm);
@@ -125,8 +116,8 @@ static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si:
 
 // substraction
 
-// static_assert(500_q_cm - si::length<si::metre>(1) == si::length<si::metre>(4)); // should not compile (different dimensions)
-// static_assert(si::length<si::metre>(5) - 100_q_cm == si::length<si::metre>(4)); // should not compile (different dimensions)
+static_assert(500_q_cm - si::length<si::metre>(1) == si::length<si::metre>(4));
+static_assert(si::length<si::metre>(5) - 100_q_cm == si::length<si::metre>(4));
 static_assert(quantity_cast<si::length<si::metre>>(500_q_cm) - si::length<si::metre>(1) == si::length<si::metre>(4));
 static_assert(si::length<si::metre>(5) - quantity_cast<si::length<si::metre>>(100_q_cm) == si::length<si::metre>(4));
 static_assert(500_q_cm - quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) == 400_q_cm);
@@ -134,7 +125,7 @@ static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si:
 
 // multiplication
 
-// static_assert(200_q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // should not compile (unknown dimension)
+// static_assert(200_q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // TODO Add support for comparing of an unknown_dimension
 
 static_assert(quantity_cast<si::dim_length>(200._q_cm) * si::length<si::metre>(2) == si::area<si::square_metre>(4));
 static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metre>(2)) == 40'000_q_cm2);
@@ -147,7 +138,7 @@ static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metr
 
 // division
 
-// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // should not compile (unknown dimension)
+// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // TODO Add support for comparing of an unknown_dimension
 
 static_assert(si::area<si::square_metre>(4) / quantity_cast<si::length<si::metre>>(200_q_cm) == si::length<si::metre>(2));
 static_assert(quantity_cast<si::cgs::area<si::cgs::square_centimetre>>(si::area<si::square_metre>(4)) / 200._q_cm == 200_q_cm);

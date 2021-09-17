@@ -20,14 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "test_tools.h"
-#include <units/math.h>
-#include <units/physical/si/si.h>
+#include <units/bits/unit_text.h>
+#include <units/generic/angle.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/si.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si;
+using namespace units::isq::si;
 
 /* ************** BASE DIMENSIONS **************** */
 
@@ -105,7 +106,7 @@ static_assert(120 / 1_q_min == 2_q_Hz);
 static_assert(1000 / 1_q_s == 1_q_kHz);
 static_assert(1 / 1_q_ms == 1_q_kHz);
 static_assert(3.2_q_GHz == 3'200'000'000_q_Hz);
-static_assert((10_q_Hz * 1_q_min).count() == 10);
+static_assert((10_q_Hz * 1_q_min).number() == 10);
 static_assert(10_q_Hz * 1_q_min == dimensionless<scaled_unit<ratio(60), one>>(10));
 static_assert(10_q_Hz * 1_q_min == dimensionless<one>(600));
 static_assert(2 / 1_q_Hz == 2_q_s);
@@ -245,17 +246,17 @@ static_assert(kilogray::symbol == "kGy");
 static_assert(10_q_m / 5_q_s == 2_q_m_per_s);
 static_assert(10 / 5_q_s * 1_q_m == 2_q_m_per_s);
 static_assert(1_q_km / 1_q_s == 1000_q_m_per_s);
-// static_assert(1_q_km / 1_q_h == 1_q_km_per_h);  // should not compile
+static_assert(1_q_km / 1_q_h == 1_q_km_per_h);
 static_assert(1.0_q_km / 1_q_h == 1_q_km_per_h);
 static_assert(1000.0_q_m / 3600.0_q_s == 1_q_km_per_h);
 
 static_assert(2_q_km_per_h * 2_q_h == 4_q_km);
-// static_assert(2_q_km_per_h * 15_q_min == 500_q_m); // should not compile
+static_assert(2_q_km_per_h * 15_q_min == 500_q_m);
 static_assert(2_q_km_per_h * 15.0_q_min == 500_q_m);
 static_assert(2.0_q_km_per_h * 15_q_min == 500_q_m);
 
 static_assert(2_q_km / 2_q_km_per_h == 1_q_h);
-// static_assert(2000_q_m / 2_q_km_per_h == 1_q_h); // should not compile
+static_assert(2000_q_m / 2_q_km_per_h == 1_q_h);
 static_assert(quantity_cast<kilometre>(2000_q_m) / 2_q_km_per_h == 1_q_h);
 
 static_assert(detail::unit_text<dim_speed, metre_per_second>() == "m/s");
@@ -381,6 +382,8 @@ static_assert(1_q_J_per_mol * 1_q_mol_per_m3 * 1_q_m3 == 1_q_N * 1_q_m);
 static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
 
 // angular velocity
+
 static_assert(1_q_rad / 1_q_s == 1_q_rad_per_s);
 static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == basic_symbol_text("ω", "w"));
+
 }  // namespace

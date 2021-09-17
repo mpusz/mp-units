@@ -20,18 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/customization_points.h>
 #include <units/format.h>
-#include <units/math.h>
-#include <units/physical/si/si.h>
-#include <units/physical/si/cgs/cgs.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/cgs/cgs.h>
+#include <units/isq/si/si.h>
+#include <units/math.h> // IWYU pragma: keep
 #include <units/quantity_io.h>
 #include <catch2/catch.hpp>
 #include <iomanip>
-#include <sstream>
+#include <limits>
+#include <locale>
 
 using namespace units;
-using namespace units::physical;
-using namespace units::physical::si;
+using namespace units::isq;
+using namespace units::isq::si;
 using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
@@ -191,7 +194,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
-  SECTION("quantity with a deduced unit")
+  SECTION("quantity with a derived unit")
   {
     SECTION("coherent derived unit")
     {
@@ -284,7 +287,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        struct newton_per_centimetre : deduced_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
+        struct newton_per_centimetre : derived_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
         const surface_tension<newton_per_centimetre> q(123);
         os << q;
 
@@ -1001,7 +1004,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q %q}", 1.2345_q_m) == "1 m");
     CHECK(fmt::format("{:%.1Q %q}", 1.2345_q_m) == "1.2 m");
     CHECK(fmt::format("{:%.2Q %q}", 1.2345_q_m) == "1.23 m");
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.234 m");
 #else
     CHECK(fmt::format("{:%.3Q %q}", 1.2345_q_m) == "1.235 m");
@@ -1016,7 +1019,7 @@ TEST_CASE("precision specification", "[text][fmt]")
     CHECK(fmt::format("{:%.0Q}", 1.2345_q_m) == "1");
     CHECK(fmt::format("{:%.1Q}", 1.2345_q_m) == "1.2");
     CHECK(fmt::format("{:%.2Q}", 1.2345_q_m) == "1.23");
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.234");
 #else
     CHECK(fmt::format("{:%.3Q}", 1.2345_q_m) == "1.235");
@@ -1051,7 +1054,7 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ %q}", 42_q_m) == "2a m");
     CHECK(fmt::format("{:%XQ %q}", 42_q_m) == "2A m");
 
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%aQ %q}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
     CHECK(fmt::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x1.3c1p+0 m");
     CHECK(fmt::format("{:%AQ %q}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
@@ -1085,7 +1088,7 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(fmt::format("{:%xQ}", 42_q_m) == "2a");
     CHECK(fmt::format("{:%XQ}", 42_q_m) == "2A");
 
-#ifdef COMP_MSVC
+#ifdef UNITS_COMP_MSVC
     CHECK(fmt::format("{:%aQ}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0");
     CHECK(fmt::format("{:%.3aQ}", 1.2345678_q_m) == "0x1.3c1p+0");
     CHECK(fmt::format("{:%AQ}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0");

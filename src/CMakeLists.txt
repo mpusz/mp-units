@@ -21,76 +21,48 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-
 project(mp-units
     VERSION 0.7.0
     LANGUAGES CXX
 )
 
-set(UNITS_DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
+option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
 
-# set path to custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-find_package(fmt CONFIG REQUIRED)
-find_package(gsl-lite CONFIG REQUIRED)
-
-# library definition
-add_library(mp-units INTERFACE)
-target_compile_features(mp-units INTERFACE cxx_std_20)
-target_link_libraries(mp-units
-    INTERFACE
-        fmt::fmt
-        gsl::gsl-lite
-)
-target_include_directories(mp-units
-    INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_link_libraries(mp-units
-        INTERFACE
-            range-v3::range-v3
-    )
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(mp-units
-        INTERFACE
-            -Wno-non-template-friend
-    )
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(mp-units
-        INTERFACE
-            /utf-8  # Specifies both the source character set and the execution character set as UTF-8
-    )
-endif()
-
-if(DEFINED UNITS_DOWNCAST_MODE)
-    set(downcast_mode_options OFF ON AUTO)
-    list(FIND downcast_mode_options "${UNITS_DOWNCAST_MODE}" downcast_mode)
-    if(downcast_mode EQUAL -1)
-        message(FATAL_ERROR "'${UNITS_DOWNCAST_MODE}' is an invalid UNITS_DOWNCAST_MODE value")
-    else()
-        message(STATUS "Configuring UNITS_DOWNCAST_MODE=${UNITS_DOWNCAST_MODE}")
-        target_compile_definitions(mp-units INTERFACE UNITS_DOWNCAST_MODE=${downcast_mode})
-    endif()
-endif()
-
-add_library(mp-units::mp-units ALIAS mp-units)
-
-# installation info
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
-
+include(AddUnitsModule)
 include(GNUInstallDirs)
+
+if(UNITS_AS_SYSTEM_HEADERS)
+    set(units_as_system SYSTEM)
+endif()
+
+add_subdirectory(core)
+add_subdirectory(core-fmt)
+add_subdirectory(core-io)
+add_subdirectory(systems)
+
+# project-wide wrapper
+add_library(mp-units INTERFACE)
+target_link_libraries(mp-units INTERFACE
+    mp-units::core
+    mp-units::core-io
+    mp-units::core-fmt
+    mp-units::systems
+)
+add_library(mp-units::mp-units ALIAS mp-units)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
+
+# installation
 install(EXPORT mp-unitsTargets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     NAMESPACE mp-units::
 )
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
+
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )
-install(DIRECTORY include/units TYPE INCLUDE)

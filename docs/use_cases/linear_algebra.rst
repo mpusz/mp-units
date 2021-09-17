@@ -11,7 +11,7 @@ enough to be used with other Linear Algebra libraries existing on the market.
     All of the examples provided in this chapter refer to the official proposal of the
     Linear Algebra Library for the C++23 defined in `P1385 <https://wg21.link/P1385>`_
     and its latest implementation from `GitHub <https://github.com/BobSteagall/wg21>`_
-    or `Conan <https://bintray.com/twonington/public-conan/linear_algebra%3Apublic-conan>`_.
+    or `Conan <https://twonington.jfrog.io/artifactory/api/conan/conan-oss>`_.
     Also, to simplify the examples all of them assume::
 
         using namespace std::math;
@@ -27,9 +27,9 @@ The official :term:`quantity` definition states:
 
 So the most common use case would be to create a vector or matrix of quantities::
 
-    fs_vector<si::length<si::metre>, 3> v = { 1_q_m, 2_q_m, 3_q_m };
-    fs_vector<si::length<si::metre>, 3> u = { 3_q_m, 2_q_m, 1_q_m };
-    fs_vector<si::length<si::kilometre>, 3> t = { 3_q_km, 2_q_km, 1_q_km };
+    fs_vector<si::length<si::metre>, 3> v = { 1 * m, 2 * m, 3 * m };
+    fs_vector<si::length<si::metre>, 3> u = { 3 * m, 2 * m, 1 * m };
+    fs_vector<si::length<si::kilometre>, 3> t = { 3 * km, 2 * km, 1 * km };
 
 Having such definitions we can perform full dimensional analysis operations for the operations
 allowed by the Linear Algebra rules. For example::
@@ -38,7 +38,7 @@ allowed by the Linear Algebra rules. For example::
     std::cout << "v + t     = " << v + t << "\n";
     std::cout << "t[m]      = " << fs_vector<si::length<si::metre>, 3>(t) << "\n";
     std::cout << "v * u     = " << v * u << "\n";
-    std::cout << "2_q_m * v = " << 2_q_m * v << "\n";
+    std::cout << "2 * m * v = " << 2 * m * v << "\n";
 
 The above code works as expected and produces the following output:
 
@@ -48,7 +48,7 @@ The above code works as expected and produces the following output:
     v + t     = |    3001 m    2002 m    1003 m |
     t[m]      = |    3000 m    2000 m    1000 m |
     v * u     = 10 m²
-    2_q_m * v = |     2 m²     4 m²     6 m² |
+    2 * m * v = |     2 m²     4 m²     6 m² |
 
 
 Quantities of Linear Algebra Types
@@ -79,7 +79,7 @@ output:
     v + t     = |      3001      2002      1003 | m
     t[m]      = |      3000      2000      1000 | m
     v * u     = 10 m²
-    2_q_m * v = |         2         4         6 | m²
+    2 * m * v = |         2         4         6 | m²
 
 
 .. seealso::

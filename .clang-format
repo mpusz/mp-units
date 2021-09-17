@@ -4,52 +4,59 @@ BasedOnStyle:  Google
 Language:        Cpp
 AccessModifierOffset: -2
 # AlignAfterOpenBracket: Align
-# AlignConsecutiveAssignments: false
-# AlignConsecutiveDeclarations: false
-# AlignConsecutiveMacros: false
+# AlignConsecutiveMacros: None
+# AlignConsecutiveAssignments: None
+# AlignConsecutiveBitFields: None
+# AlignConsecutiveDeclarations: None
 # AlignEscapedNewlines: Left
-# AlignOperands:   true
+# AlignOperands:   Align
 # AlignTrailingComments: true
 # AllowAllArgumentsOnNextLine: true
 # AllowAllConstructorInitializersOnNextLine: true
 # AllowAllParametersOfDeclarationOnNextLine: true
+# AllowShortEnumsOnASingleLine: true
 # AllowShortBlocksOnASingleLine: Never
 # AllowShortCaseLabelsOnASingleLine: false
 # AllowShortFunctionsOnASingleLine: All
-# AllowShortIfStatementsOnASingleLine: WithoutElse
 # AllowShortLambdasOnASingleLine: All
+# AllowShortIfStatementsOnASingleLine: WithoutElse
 # AllowShortLoopsOnASingleLine: true
 # AlwaysBreakAfterDefinitionReturnType: None
 # AlwaysBreakAfterReturnType: None
 # AlwaysBreakBeforeMultilineStrings: true
 # AlwaysBreakTemplateDeclarations: Yes
+# AttributeMacros:
+#   - __capability
 # BinPackArguments: true
 # BinPackParameters: true
 BraceWrapping:
 #   AfterCaseLabel:  false
-  AfterClass:      false
-#   AfterControlStatement: false
+#   AfterClass:      false
+#   AfterControlStatement: Never
 #   AfterEnum:       false
   AfterFunction:   true
 #   AfterNamespace:  false
 #   AfterObjCDeclaration: false
-  AfterStruct:     false
+#   AfterStruct:     false
 #   AfterUnion:      false
 #   AfterExternBlock: false
 #   BeforeCatch:     false
 #   BeforeElse:      false
+#   BeforeLambdaBody: false
+#   BeforeWhile:     false
 #   IndentBraces:    false
 #   SplitEmptyFunction: true
-#   SplitEmptyRecord: true
+  SplitEmptyRecord: false
 #   SplitEmptyNamespace: true
-# BreakAfterJavaFieldAnnotations: false
 # BreakBeforeBinaryOperators: None
+# BreakBeforeConceptDeclarations: true
 BreakBeforeBraces: Custom
 # BreakBeforeInheritanceComma: false
-# BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: AfterColon
-BreakConstructorInitializersBeforeComma: true
 BreakInheritanceList: AfterColon
+# BreakBeforeTernaryOperators: true
+BreakConstructorInitializersBeforeComma: true
+BreakConstructorInitializers: AfterColon
+# BreakAfterJavaFieldAnnotations: false
 # BreakStringLiterals: true
 ColumnLimit:     120
 CommentPragmas:  '^ NOLINT'
@@ -58,8 +65,10 @@ CommentPragmas:  '^ NOLINT'
 # ConstructorInitializerIndentWidth: 4
 # ContinuationIndentWidth: 4
 # Cpp11BracedListStyle: true
+DeriveLineEnding: false
 DerivePointerAlignment: false
 # DisableFormat:   false
+EmptyLineBeforeAccessModifier: Leave
 # ExperimentalAutoDetectBinPacking: false
 # FixNamespaceComments: true
 ForEachMacros:
@@ -70,6 +79,8 @@ ForEachMacros:
   - GIVEN
   - WHEN
   - THEN
+# StatementAttributeLikeMacros:
+#   - Q_EMIT
 IncludeBlocks:   Merge
 IncludeCategories: 
   - Regex:           '^".*'
@@ -82,12 +93,17 @@ IncludeCategories:
     Priority:        4
   - Regex:           '^<.*'
     Priority:        5
-# IncludeIsMainRegex: '([-_](test)(_.+)?)?$'
+# IncludeIsMainRegex: '([-_](test|unittest))?$'
+# IncludeIsMainSourceRegex: ''
 # IndentCaseLabels: true
+# IndentCaseBlocks: false
 # IndentGotoLabels: true
 # IndentPPDirectives: None
+# IndentExternBlock: AfterExternBlock
+IndentRequires:  true
 # IndentWidth:     2
 # IndentWrappedFunctionNames: false
+# InsertTrailingCommas: None
 # JavaScriptQuotes: Leave
 # JavaScriptWrapImports: true
 # KeepEmptyLinesAtTheStartOfBlocks: false
@@ -97,6 +113,7 @@ IncludeCategories:
 # NamespaceIndentation: None
 # ObjCBinPackProtocolList: Never
 # ObjCBlockIndentWidth: 2
+# ObjCBreakBeforeNestedBlockParam: true
 # ObjCSpaceAfterProperty: false
 # ObjCSpaceBeforeProtocolList: true
 # PenaltyBreakAssignment: 2
@@ -107,6 +124,7 @@ IncludeCategories:
 # PenaltyBreakTemplateDeclaration: 10
 # PenaltyExcessCharacter: 1000000
 # PenaltyReturnTypeOnItsOwnLine: 200
+# PenaltyIndentedWhitespace: 0
 # PointerAlignment: Left
 # RawStringFormats:
 #   - Language:        Cpp
@@ -134,32 +152,47 @@ IncludeCategories:
 #       - PARSE_TEXT_PROTO
 #       - ParseTextOrDie
 #       - ParseTextProtoOrDie
+#       - ParseTestProto
+#       - ParsePartialTestProto
 #     CanonicalDelimiter: ''
 #     BasedOnStyle:    google
 # ReflowComments:  true
 # SortIncludes:    true
+# SortJavaStaticImport: Before
 # SortUsingDeclarations: true
 # SpaceAfterCStyleCast: false
 # SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
 # SpaceBeforeAssignmentOperators: true
+# SpaceBeforeCaseColon: false
 # SpaceBeforeCpp11BracedList: false
 # SpaceBeforeCtorInitializerColon: true
 # SpaceBeforeInheritanceColon: true
 # SpaceBeforeParens: ControlStatements
+# SpaceAroundPointerQualifiers: Default
 # SpaceBeforeRangeBasedForLoopColon: true
 # SpaceInEmptyBlock: false
 # SpaceInEmptyParentheses: false
 # SpacesBeforeTrailingComments: 2
 # SpacesInAngles:  false
-# SpacesInCStyleCastParentheses: false
+# SpacesInConditionalStatement: false
 # SpacesInContainerLiterals: true
+# SpacesInCStyleCastParentheses: false
 # SpacesInParentheses: false
 # SpacesInSquareBrackets: false
+# SpaceBeforeSquareBrackets: false
+# BitFieldColonSpacing: Both
 Standard: Latest
 # StatementMacros:
 #   - Q_UNUSED
 #   - QT_REQUIRE_VERSION
 # TabWidth:        8
+# UseCRLF:         false
 # UseTab:          Never
+# WhitespaceSensitiveMacros:
+#   - STRINGIZE
+#   - PP_STRINGIZE
+#   - BOOST_PP_STRINGIZE
+#   - NS_SWIFT_NAME
+#   - CF_SWIFT_NAME
 # ...

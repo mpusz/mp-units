@@ -45,7 +45,7 @@ The library provides:
 
 - no kinds, such as ``radius`` or ``width``, therefore
 
-    * no UDLs or unit constants,
+    * no UDLs or quantity references,
     * no kind-specific concepts, such as ``Radius``,
       (there's the generic `QuantityKind` and kind-specifiable `QuantityKindOf`),
 

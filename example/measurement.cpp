@@ -20,20 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/derived/acceleration.h>
+#include <units/isq/si/acceleration.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <cmath>
-#include <compare>
+#include <exception>
 #include <iostream>
 
 namespace {
-
-// root sum of squares
-template<typename T>
-T rss(const T& v1, const T& v2)
-{
-  return std::sqrt(std::pow(v1, 2) + std::pow(v2, 2));
-}
 
 template<class T>
 class measurement {
@@ -43,9 +39,11 @@ public:
   measurement() = default;
 
   constexpr explicit measurement(const value_type& val, const value_type& err = {}) :
-      value_(val),
-      uncertainty_(std::abs(err))
+      value_(val)
   {
+    // it sucks that using declaration cannot be provided for a constructor initializer list
+    using namespace std;
+    uncertainty_ = abs(err);
   }
 
   constexpr const value_type& value() const { return value_; }
@@ -59,18 +57,21 @@ public:
 
   [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
   {
-    return measurement(lhs.value() + rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+    using namespace std;
+    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
   {
-    return measurement(lhs.value() - rhs.value(), rss(lhs.uncertainty(), rhs.uncertainty()));
+    using namespace std;
+    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
-    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    using namespace std;
+    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
@@ -88,7 +89,8 @@ public:
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() / rhs.value();
-    return measurement(val, val * rss(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    using namespace std;
+    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
@@ -120,11 +122,11 @@ private:
 
 namespace {
 
-static_assert(units::QuantityValue<measurement<double>>);
+static_assert(units::Representation<measurement<double>>);
 
 void example()
 {
-  using namespace units::physical;
+  using namespace units::isq;
 
   const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
   const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));

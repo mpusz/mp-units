@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/base_dimension.h>
+#include <units/isq/si/prefixes.h>
+#include <units/quantity.h>
 #include <units/quantity_io.h>
-#include <units/physical/si/prefixes.h>
+#include <units/unit.h>
 #include <iostream>
+#include <type_traits>
 
 using namespace units;
 
@@ -33,19 +37,19 @@ struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 }  // namespace fps
 
 namespace si {
 
-struct metre : named_unit<metre, "m", units::physical::si::prefix> {};
-struct kilometre : prefixed_unit<kilometre, units::physical::si::kilo, metre> {};
+struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
 struct dim_length : base_dimension<"L", metre> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
@@ -55,17 +59,27 @@ struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
-template<UnitOf<dim_length> U, QuantityValue Rep = double>
+template<UnitOf<dim_length> U, Representation Rep = double>
 using length = quantity<dim_length, U, Rep>;
 
 }  // namespace fps
 }  // namespace si
 
+template<typename Q, typename U>
+concept castable_to = Quantity<Q> && Unit<U> &&
+  requires (Q q) {
+    quantity_cast<U>(q);
+  };
+
 void conversions()
 {
-  // constexpr auto fps_yard = fps::length<fps::yard>(1.);
-  // std::cout << quantity_cast<si::kilometre>(fps_yard) << "\n";
+  // fps::yard is not defined in terms of SI units (or vice-versa)
+  // so the conversion between FPS and SI is not possible
+  static_assert(!castable_to<fps::length<fps::yard>, si::kilometre>);
 
+  // si::fps::yard is defined in terms of SI units
+  // so the conversion between FPS and SI is possible
+  static_assert(castable_to<si::fps::length<si::fps::yard>, si::kilometre>);
   constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
   std::cout << quantity_cast<si::kilometre>(si_fps_yard) << "\n";
 }

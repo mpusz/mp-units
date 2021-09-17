@@ -20,22 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/physical/si/cgs/cgs.h>
-#include <units/physical/si/derived/acceleration.h>
-#include <units/physical/si/derived/area.h>
-#include <units/physical/si/derived/energy.h>
-#include <units/physical/si/derived/force.h>
-#include <units/physical/si/base/length.h>
-#include <units/physical/si/base/mass.h>
-#include <units/physical/si/derived/power.h>
-#include <units/physical/si/derived/pressure.h>
-#include <units/physical/si/derived/speed.h>
-#include <units/physical/si/base/time.h>
+#include <units/bits/unit_text.h>
+#include <units/concepts.h>
+#include <units/isq/si/cgs/cgs.h>
+#include <units/unit.h>
 
 namespace {
 
 using namespace units;
-using namespace units::physical::si::cgs;
+using namespace units::isq::si::cgs;
 
 /* ************** BASE DIMENSIONS **************** */
 
@@ -51,8 +44,8 @@ static_assert(centimetre::symbol == "cm");
 
 // speed
 
-static_assert((10_q_cm / 5_q_s).count() == 2);
-static_assert((2_q_cm_per_s).count() == 2);
+static_assert((10_q_cm / 5_q_s).number() == 2);
+static_assert((2_q_cm_per_s).number() == 2);
 static_assert(10_q_cm / 5_q_s == 2_q_cm_per_s);
 static_assert(10_q_cm / 2_q_cm_per_s == 5_q_s);
 static_assert(10_q_cm == 2_q_cm_per_s * 5_q_s);
@@ -62,11 +55,11 @@ static_assert(detail::unit_text<dim_speed, centimetre_per_second>() == "cm/s");
 // area
 static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1));
 
-static_assert((1_q_cm * 1_q_cm).count() == 1);
-static_assert((1_q_cm2).count() == 1);
+static_assert((1_q_cm * 1_q_cm).number() == 1);
+static_assert((1_q_cm2).number() == 1);
 static_assert(1_q_cm * 1_q_cm == 1_q_cm2);
-static_assert(100_q_cm * 100_q_cm == area<physical::si::square_metre>(1));
-static_assert(100_q_cm * 100_q_cm == length<physical::si::metre>(1) * length<physical::si::metre>(1));
+static_assert(100_q_cm * 100_q_cm == area<isq::si::square_metre>(1));
+static_assert(100_q_cm * 100_q_cm == length<isq::si::metre>(1) * length<isq::si::metre>(1));
 static_assert(100_q_cm2 / 10_q_cm == 10_q_cm);
 
 static_assert(detail::unit_text<dim_area, square_centimetre>() == basic_symbol_text("cm²", "cm^2"));

@@ -20,21 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "units/physical/si/cgs/derived/speed.h"
-#include "units/physical/si/derived/speed.h"
-#include "units/physical/si/fps/derived/speed.h"
-#include "units/quantity_point.h"
-#include "units/chrono.h"
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/cgs/speed.h> // IWYU pragma: keep
+#include <units/isq/si/fps/length.h>
+#include <units/isq/si/fps/speed.h> // IWYU pragma: keep
+#include <units/isq/si/length.h> // IWYU pragma: keep
+#include <units/isq/si/prefixes.h>
+#include <units/isq/si/speed.h>
+#include <units/quantity_point.h>
+#include <units/chrono.h>
 #include <chrono>
 #include <complex>
 #include <mutex>
 #include <optional>
+#include <ratio>
 #include <string>
+#include <utility>
 
 namespace {
 
 using namespace units;
-using namespace units::physical;
+using namespace units::isq;
 
 // Prefix family
 
@@ -93,14 +99,14 @@ static_assert(UnitOf<si::kilometre, si::dim_length>);
 static_assert(UnitOf<si::fps::mile, si::dim_length>);
 static_assert(!UnitOf<si::second, si::dim_length>);
 
-// QuantityValue
+// Representation
 
-static_assert(QuantityValue<int>);
-static_assert(QuantityValue<std::complex<double>>);
-static_assert(!QuantityValue<si::length<si::metre>>);
-static_assert(!QuantityValue<std::optional<si::length<si::metre>>>);
-static_assert(!QuantityValue<std::mutex>);
-static_assert(!QuantityValue<std::string>);
+static_assert(Representation<int>);
+static_assert(Representation<std::complex<double>>);
+static_assert(!Representation<si::length<si::metre>>);
+static_assert(!Representation<std::optional<si::length<si::metre>>>);
+static_assert(!Representation<std::mutex>);
+static_assert(!Representation<std::string>);
 
 // Quantity
 

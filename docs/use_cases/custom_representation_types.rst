@@ -9,11 +9,11 @@ its own custom logic for it (i.e. use a complex number or a measurement class th
 not only a value but also a measurement error).
 
 
-A `QuantityValue` concept
+A `Representation` concept
 --------------------------
 
 To support a minimum set of `quantity` operations all custom representation types have to
-satisfy at least the `QuantityValue` concept. Which means that they:
+satisfy at least the `Representation` concept. Which means that they:
 
 - cannot be quantities by themselves,
 - cannot be wrappers over the `quantity` type (i.e. ``std::optional<si::length<si::metre>>``),
@@ -36,7 +36,7 @@ The simplest representation type that fulfills the above requirements can look a
       std::intmax_t value_;
     public:
       my_rep() = default;
-      explicit constexpr my_rep(std::intmax_t v) noexcept : value_(v) {}
+      constexpr explicit my_rep(std::intmax_t v) noexcept : value_(v) {}
 
       [[nodiscard]] bool operator==(my_rep) const = default;
 
@@ -92,7 +92,7 @@ representation types we have to obey similar rules::
 This also applies when we want to create a quantity with a custom representation type
 from a regular quantity value::
 
-    Length auto d = 123_q_m;
+    Length auto d = 123 * m;
     si::length<si::metre, impl> d1(d);                      // OK
     si::length<si::metre, expl> d2(d);                      // Compile-time error
     si::length<si::metre, expl> d3(quantity_cast<expl>(d)); // OK
@@ -103,7 +103,7 @@ The only difference here is that in this case we have to explicitly cast the `qu
 Additional Requirements
 -----------------------
 
-As noted in the previous chapter, the `QuantityValue` concept guarantees us the possibility
+As noted in the previous chapter, the `Representation` concept guarantees us the possibility
 to construct quantities, convert between the units of the same dimension, and compare them
 for equality. To provide additional `quantity` operations the custom representation type
 have to satisfy more requirements.
@@ -202,7 +202,7 @@ The `quantity` class template has a few static member functions: `quantity::zero
 representation type. The default implementation is provided through the `quantity_values` class
 template::
 
-    template<QuantityValue Rep>
+    template<Representation Rep>
     struct quantity_values {
       static constexpr Rep zero() noexcept { return Rep(0); }
       static constexpr Rep one() noexcept { return Rep(1); }
@@ -223,7 +223,7 @@ types differently than the integral ones. This behavior can also be extended to 
 representation types with `treat_as_floating_point` customization point which default
 definition is::
 
-    template<QuantityValue Rep>
+    template<Representation Rep>
     inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
 If our representation type should have a floating-point semantics or if it is a class
