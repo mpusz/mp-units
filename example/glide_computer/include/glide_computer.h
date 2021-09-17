@@ -110,7 +110,7 @@ struct fmt::formatter<glide_computer::altitude> : formatter<units::isq::si::leng
   auto format(glide_computer::altitude a, FormatContext& ctx)
   {
     formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
-    return format_to(ctx.out(), " AMSL");
+    return fmt::format_to(ctx.out(), " AMSL");
   }
 };
 
