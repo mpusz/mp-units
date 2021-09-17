@@ -1,5 +1,5 @@
 Example 8 - Estimating the temperature of the heating liquid II
-==============================================================
+===============================================================
 
 Implementation of: https://www.kalmanfilter.net/kalman1d.html#ex8
 

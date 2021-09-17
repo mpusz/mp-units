@@ -26,7 +26,6 @@
 #include <units/isq/dimensions/thermodynamic_temperature.h>
 #include <units/quantity.h>
 #include <units/quantity_point.h>
-#include <units/origin.h>
 #include <units/reference.h>
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
@@ -44,25 +43,43 @@ struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin
 template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double>
 using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
-template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double,
-         PointOrigin Orig = default_point_origin<typename dimension_unit<dim_thermodynamic_temperature>::reference>>
-using thermodynamic_temperature_point = quantity_point<dim_thermodynamic_temperature, U, Rep, Orig>;
-
-struct kelvin_temperature_origin : point_origin<kelvin_temperature_origin, kelvin> {};
+struct kelvin_temperature_origin : base_point_origin<dim_thermodynamic_temperature> {
+  using reference_point_origin = kelvin_temperature_origin;
+};
 
 template<UnitOf<dim_thermodynamic_temperature> U = kelvin, Representation Rep = double>
-using kelvin_temperature_point = thermodynamic_temperature_point<U, Rep, kelvin_temperature_origin>;
+using kelvin_temperature_point = quantity_point<kelvin_temperature_origin, U, Rep>;
 
 
 struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {};
 
-struct celsius_temperature_origin : point_origin<celsius_temperature_origin, kelvin> {
-  using reference_origin = kelvin_temperature_origin;
+struct celsius_temperature_origin : base_point_origin<dim_thermodynamic_temperature> {
+  using reference_point_origin = kelvin_temperature_origin;
   static constexpr auto offset_to_reference = thermodynamic_temperature<millikelvin, long int>(273150);
 };
 
 template<UnitOf<dim_thermodynamic_temperature> U = degree_celsius, Representation Rep = double>
-using celsius_temperature_point = thermodynamic_temperature_point<U, Rep, celsius_temperature_origin>;
+using celsius_temperature_point = quantity_point<celsius_temperature_origin, U, Rep>;
+
+} // units::isq::si
+
+namespace units::detail {
+
+template <> struct customary_origin_spec_for_unit<units::isq::si::kelvin> {
+  using type = units::isq::si::kelvin_temperature_origin;
+};
+// TODO: automate assignment of prefix units
+template <> struct customary_origin_spec_for_unit<units::isq::si::millikelvin> {
+  using type = units::isq::si::kelvin_temperature_origin;
+};
+template <> struct customary_origin_spec_for_unit<units::isq::si::degree_celsius> {
+  using type = units::isq::si::celsius_temperature_origin;
+};
+
+} // namespace detail
+
+
+namespace units::isq::si {
 
 #ifndef UNITS_NO_LITERALS
 

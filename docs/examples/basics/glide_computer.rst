@@ -16,7 +16,7 @@ This example presents the usage of:
 .. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
   :start-at: #include
-  :end-before: using namespace units;
+  :end-at: // - flight path exactly on a shortest possible line to destination
   :linenos:
   :lineno-match:
 
@@ -37,7 +37,7 @@ For example we have 3 for a quantity of length:
 
 .. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
-  :start-at: using namespace units;
+  :start-after: // - flight path exactly on a shortest possible line to destination
   :end-before: // text output
   :linenos:
   :lineno-match:

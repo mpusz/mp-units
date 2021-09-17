@@ -25,5 +25,7 @@ Until then, please code alike what is there already:
 
 ## Backward Compatibility
 
-Before submission, please remember to check if the code compiles fine on all the supported compilers
-(gcc-10 and Visual Studio 16 so far).
+Before submission, please remember to check if the code compiles fine on the supported compilers.
+The CI will check it anyway but it is good to check at least some of the configurations before pushing changes.
+Especially older compilers can be tricky as those do not support all the C++20 features well enough. The official
+list of supported compilers can be always found on our [Usage page](https://mpusz.github.io/units/usage.html).

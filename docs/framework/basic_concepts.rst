@@ -23,7 +23,7 @@ The most important concepts in the library are `Unit`, `Dimension`,
     ]
 
     [<abstract>QuantityPoint|
-    [quantity_point<Dimension, Unit, Rep, Orig>]
+    [quantity_point<PointOrigin, Unit, Rep>]
     ]
 
     [<abstract>QuantityKind|
@@ -40,6 +40,10 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [Dimension]<-[Quantity]
     [Unit]<-[Quantity]
     [Quantity]<-[QuantityPoint]
+
+    [<abstract>PointOrigin]<-[QuantityPoint]
+    [Dimension]<-[PointOrigin]
+    [PointOrigin]<-[PointKind]
 
     [<abstract>Kind]<-[QuantityKind]
     [Dimension]<-[Kind]
@@ -64,7 +68,7 @@ derived dimensions. Examples: ``si::dim_time``, ``si::dim_length``, ``si::dim_sp
 specific representation. Examples: ``quantity<si::dim_time, si::second, int>``,
 ``si::length<si::metre, int>``, ``si::speed<si::kilometre_per_hour>``.
 
-`QuantityPoint` is an absolute `Quantity` with respect to some origin.
+`QuantityPoint` is an absolute `Quantity` with respect to an origin.
 Examples: timestamp (as opposed to duration), absolute temperature
 (as opposed to temperature difference).
 
@@ -72,6 +76,6 @@ Examples: timestamp (as opposed to duration), absolute temperature
 distance (``horizonal_kind``) and height (``vertical_kind``) are different kinds
 of a length quantity.
 
-`QuantityPointKind` is an absolute `QuantityKind` with respect to some origin.
+`QuantityPointKind` is an absolute `QuantityKind` with respect to an origin.
 Examples: altitude is a quantity point of ``vertical_kind`` (as opposed to
 height).

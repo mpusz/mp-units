@@ -30,31 +30,37 @@ namespace units {
 namespace detail {
 
 template<PointOrigin Orig>
-struct reference_origin {
-  using type = TYPENAME Orig::reference_origin;
+struct reference_point_origin {
+  using type = typename Orig::reference_point_origin;
 };
 
 template<PointOrigin Orig>
-using reference_origin_t =
-  TYPENAME std::conditional_t<DerivedPointOrigin<Orig>, reference_origin<Orig>, std::type_identity<Orig>>::type;
+using reference_point_origin_t =
+  typename reference_point_origin<Orig>::type;
 
 template<PointOrigin Orig>
 struct ultimate_reference_origin {
   using type =
-    TYPENAME std::conditional_t<DerivedPointOrigin<Orig>, ultimate_reference_origin<reference_origin_t<Orig>>, std::type_identity<Orig>>::type;
+    typename std::conditional_t<
+      std::is_same_v<reference_point_origin_t<Orig>,Orig>,
+      std::type_identity<Orig>,
+      ultimate_reference_origin<reference_point_origin_t<Orig>>
+    >::type;
 };
 
 template<PointOrigin Orig>
-using ultimate_reference_origin_t = TYPENAME ultimate_reference_origin<Orig>::type;
+using ultimate_reference_origin_t = typename ultimate_reference_origin<Orig>::type;
 
 template <Quantity Q, PointOrigin Orig>
 struct offset_to_ultimate_reference_origin {
-  static constexpr auto value = Q::zero();
-};
-
-template <Quantity Q, DerivedPointOrigin Orig>
-struct offset_to_ultimate_reference_origin<Q, Orig> {
-  static constexpr auto value = Orig::offset_to_reference + offset_to_ultimate_reference_origin<Q, typename Orig::reference_origin>::value;
+  static constexpr auto value = [](){
+    using RefOrig = reference_point_origin_t<Orig>;
+    if constexpr(std::is_same_v<RefOrig,Orig>) {
+      return Q::zero();
+    } else {
+      return offset_to_ultimate_reference_origin<Q,RefOrig>::value + Orig::offset_to_reference;
+    }
+  }();
 };
 
 template <Quantity Q, PointOrigin Orig>

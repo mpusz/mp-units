@@ -63,7 +63,7 @@ CommentPragmas:  '^ NOLINT'
 # CompactNamespaces: false
 # ConstructorInitializerAllOnOneLineOrOnePerLine: true
 # ConstructorInitializerIndentWidth: 4
-# ContinuationIndentWidth: 4
+ContinuationIndentWidth: 2
 # Cpp11BracedListStyle: true
 DeriveLineEnding: false
 DerivePointerAlignment: false
@@ -109,7 +109,7 @@ IndentRequires:  true
 # KeepEmptyLinesAtTheStartOfBlocks: false
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
-# MaxEmptyLinesToKeep: 1
+MaxEmptyLinesToKeep: 2
 # NamespaceIndentation: None
 # ObjCBinPackProtocolList: Never
 # ObjCBlockIndentWidth: 2

@@ -62,6 +62,18 @@ struct cgs_height_kind : kind<cgs_height_kind, cgs::dim_length> {};
 struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 struct altitude_kind : point_kind<altitude_kind, cgs_height_kind> {};
 
+struct sea_level_origin : point_origin<dim_length> {};
+struct sea_level_altitude_kind : point_kind<sea_level_altitude_kind, height_kind, sea_level_origin> {};
+
+template<Dimension D>
+struct screen_origin : point_origin<D> {
+  template<Dimension D2>
+  using rebind = screen_origin<D2>;
+};
+struct screen_si_width_kind : point_kind<screen_si_width_kind, width_kind, screen_origin<dim_length>> {};
+struct screen_si_cgs_width_kind :
+    point_kind<screen_si_cgs_width_kind, cgs_width_kind, screen_origin<cgs::dim_length>> {};
+
 struct apple : kind<apple, dim_one> {};
 struct orange : kind<orange, dim_one> {};
 struct nth_apple_kind : point_kind<nth_apple_kind, apple> {};
@@ -69,6 +81,8 @@ struct nth_orange_kind : point_kind<nth_orange_kind, orange> {};
 
 struct time_kind : kind<time_kind, dim_time> {};
 struct time_point_kind : point_kind<time_point_kind, time_kind> {};
+
+struct sys_time_point_kind : point_kind<time_point_kind, time_kind, clock_origin<std::chrono::system_clock>> {};
 
 template <Unit U, Representation Rep = double> using width = quantity_kind<width_kind, U, Rep>;
 template <Unit U, Representation Rep = double> using height = quantity_kind<height_kind, U, Rep>;
@@ -80,6 +94,13 @@ template <Unit U, Representation Rep = double> using cgs_width = quantity_kind<c
 template <Unit U, Representation Rep = double> using cgs_height = quantity_kind<cgs_height_kind, U, Rep>;
 template <Unit U, Representation Rep = double> using rate_of_climb = quantity_kind<rate_of_climb_kind, U, Rep>;
 template <Unit U, Representation Rep = double> using altitude = quantity_point_kind<altitude_kind, U, Rep>;
+
+template<Unit U, Representation Rep = double>
+using sea_level_altitude = quantity_point_kind<sea_level_altitude_kind, U, Rep>;
+template<Unit U, Representation Rep = double>
+using screen_si_width = quantity_point_kind<screen_si_width_kind, U, Rep>;
+template<Unit U, Representation Rep = double>
+using screen_si_cgs_width = quantity_point_kind<screen_si_cgs_width_kind, U, Rep>;
 
 template <Unit U = one, Representation Rep = double> using apples = quantity_kind<apple, U, Rep>;
 template <Unit U = one, Representation Rep = double> using oranges = quantity_kind<orange, U, Rep>;
@@ -94,7 +115,7 @@ static_assert(QuantityPointKind<abscissa<metre>>);
 static_assert(QuantityPointKind<nth_apple<one>>);
 static_assert(!QuantityPointKind<double>);
 static_assert(!QuantityPointKind<length<metre>>);
-static_assert(!QuantityPointKind<quantity_point<dim_length, metre>>);
+static_assert(!QuantityPointKind<quantity_point<unspecified_origin<dim_length>, metre>>);
 static_assert(!QuantityPointKind<width<metre>>);
 
 static_assert(QuantityPointKindOf<abscissa<metre>, abscissa_kind>);
@@ -105,9 +126,12 @@ static_assert(!QuantityPointKindOf<length<metre>, metre>);
 static_assert(!QuantityPointKindOf<width<metre>, abscissa_kind>);
 static_assert(!QuantityPointKindOf<width<metre>, width_kind>);
 static_assert(!QuantityPointKindOf<width<metre>, metre>);
-static_assert(!QuantityPointKindOf<quantity_point<dim_length, metre>, width_kind>);
-static_assert(!QuantityPointKindOf<quantity_point<dim_length, metre>, dim_length>);
-static_assert(!QuantityPointKindOf<quantity_point<dim_length, metre>, metre>);
+static_assert(!QuantityPointKindOf<abscissa<metre>, sea_level_altitude_kind>);
+static_assert(!QuantityPointKindOf<altitude<metre>, sea_level_altitude_kind>);
+static_assert(!QuantityPointKindOf<quantity_point<unspecified_origin<dim_length>, metre>, width_kind>);
+static_assert(!QuantityPointKindOf<quantity_point<unspecified_origin<dim_length>, metre>, dim_length>);
+static_assert(!QuantityPointKindOf<quantity_point<unspecified_origin<dim_length>, metre>, unspecified_origin<dim_length>>);
+static_assert(!QuantityPointKindOf<quantity_point<unspecified_origin<dim_length>, metre>, metre>);
 
 
 ///////////////
@@ -122,7 +146,7 @@ concept invalid_types = requires {
   requires !requires { typename quantity_point_kind<Width, metre, int>; };      // width_kind is not a point kind
   requires !requires { typename quantity_point_kind<Abscissa, second, int>; };  // unit of a different dimension
   requires !requires { typename quantity_point_kind<Abscissa, metre, length<metre>>; };  // quantity used as Rep
-  requires !requires { typename quantity_point_kind<Abscissa, metre, quantity_point<dim_length, metre>>; };  // quantity point used as Rep
+  requires !requires { typename quantity_point_kind<Abscissa, metre, quantity_point<unspecified_origin<dim_length>, metre>>; };  // quantity point used as Rep
   requires !requires { typename quantity_point_kind<Abscissa, metre, width<metre>>; };  // quantity kind used as Rep
   requires !requires { typename quantity_point_kind<Abscissa, metre, abscissa<metre>>; };  // quantity point kind used as Rep
   requires !requires { typename quantity_point_kind<metre, Abscissa, double, default_point_origin<metre>>; };  // reordered arguments
@@ -165,6 +189,7 @@ static_assert(!std::is_aggregate_v<abscissa<metre>>);
 
 static_assert(is_same_v<abscissa<metre>::point_kind_type, abscissa_kind>);
 static_assert(is_same_v<abscissa<metre>::kind_type, width_kind>);
+static_assert(is_same_v<abscissa<metre>::origin, unspecified_origin<dim_length>>);
 static_assert(is_same_v<abscissa<metre>::quantity_kind_type, width<metre>>);
 static_assert(is_same_v<abscissa<metre>::quantity_type, length<metre>>);
 static_assert(is_same_v<abscissa<metre>::dimension, dim_length>);
@@ -292,6 +317,14 @@ static_assert(!constructible_or_convertible_from<abscissa<metre, int>>(quantity_
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * (m * m))));
 static_assert(!constructible_or_convertible_from<abscissa<metre, double>>(quantity_point(1.0 * s)));
 
+static_assert(construct_from_only<screen_si_width<metre>>(quantity_point<screen_origin<dim_length>, metre>(1 * m))
+                .relative()
+                .common() == 1 * m);
+static_assert(construct_from_only<screen_si_width<metre>>(quantity_point<screen_origin<cgs::dim_length>, metre>(1 * m))
+                .relative()
+                .common() == 1 * m);
+static_assert(!constructible_or_convertible_from<sea_level_altitude<metre, double>>(quantity_point(1.0 * m)));
+
 // clang-format off
 static_assert(construct_from_only<nth_apple<one, short>>(quantity_point(1)).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, int>>(quantity_point(1)).relative().common() == 1);
@@ -308,8 +341,16 @@ static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_p
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(quantity_point(dimensionless<percent, double>(1))));
 static_assert(!constructible_or_convertible_from<nth_apple<one, double>>(quantity_point(1.0 * s)));
 
+<<<<<<< HEAD
 static_assert(construct_from_only<quantity_point_kind<time_point_kind, second, int, sys_clock_origin>>(sys_seconds{42s}).relative().common() == 42 * s);
+=======
+>>>>>>> origin/master
 // clang-format on
+static_assert(
+  construct_from_only<quantity_point_kind<sys_time_point_kind, second, int>>(sys_seconds{42s}).relative().common() ==
+  42 * s);
+static_assert(!constructible_or_convertible_from<quantity_point_kind<time_point_kind, second, int>>(sys_seconds{42s}),
+              "no implicit conversion to/from unspecified_origin");
 
 
 //////////////////////////////////////
@@ -370,6 +411,15 @@ static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(nth_orange
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(abscissa<metre, int>(1 * m)));
 // clang-format on
 
+static_assert(!constructible_or_convertible_from<quantity_point_kind<sys_time_point_kind, second, int>>(
+                quantity_point_kind<time_point_kind, second, int>{}),
+              "no implicit conversion to/from unspecified_origin");
+static_assert(!constructible_or_convertible_from<quantity_point_kind<time_point_kind, second, int>>(
+                quantity_point_kind<sys_time_point_kind, second, int>{}),
+              "no implicit conversion to/from unspecified_origin");
+static_assert(!constructible_or_convertible_from<screen_si_width<metre>>(screen_si_cgs_width<metre>(1 * m)),
+              "base kinds are not the same (required by equivalent<Kind, Kind>)");
+
 
 //////////////////////
 // other conversions
@@ -380,7 +430,7 @@ static_assert(!std::is_convertible_v<abscissa<metre, int>, dimensionless<one, in
 static_assert(!std::is_convertible_v<abscissa<metre, int>, length<metre, int>>);
 static_assert(!std::is_convertible_v<abscissa<metre, int>, width<metre, int>>);
 static_assert(!std::is_convertible_v<abscissa<metre, int>, height<metre, int>>);
-static_assert(!std::is_convertible_v<abscissa<metre, int>, quantity_point<dim_length, metre, int>>);
+static_assert(!std::is_convertible_v<abscissa<metre, int>, quantity_point<unspecified_origin<dim_length>, metre, int>>);
 
 
 ////////////////////////
@@ -425,7 +475,7 @@ concept invalid_compound_assignments = requires(quantity_point_kind<Abscissa, me
   requires invalid_compound_assignments_<Abscissa, metre, length<metre, int>>;
   requires invalid_compound_assignments_<Abscissa, metre, height<metre, int>>;
   requires invalid_compound_assignments_<Abscissa, metre, rate_of_climb<metre_per_second, int>>;
-  requires invalid_compound_assignments_<Abscissa, metre, quantity_point<dim_length, metre, int>>;
+  requires invalid_compound_assignments_<Abscissa, metre, quantity_point<unspecified_origin<dim_length>, metre, int>>;
   requires invalid_compound_assignments_<Abscissa, metre, std::chrono::seconds>;
 };
 static_assert(invalid_compound_assignments<abscissa_kind>);
@@ -452,13 +502,13 @@ static_assert(same(width<kilometre, int>(2 * km) + abscissa<metre, double>(3e3 *
 static_assert(same(width<metre, double>(2e3 * m) + abscissa<kilometre, int>(3 * km), abscissa<metre, double>(5e3 * m)));
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, double>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, length<metre>>);
-static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, quantity_point<dim_length, metre>>);
+static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, quantity_point<unspecified_origin<dim_length>, metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, abscissa<kilometre>>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<kilometre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, height<metre>, abscissa<metre>>);
-static_assert(!std::is_invocable_v<std::plus<>, quantity_point<dim_length, metre>, abscissa<metre>>);
+static_assert(!std::is_invocable_v<std::plus<>, quantity_point<unspecified_origin<dim_length>, metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, length<metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, double, abscissa<metre>>);
 
@@ -474,14 +524,15 @@ static_assert(same(abscissa<kilometre, int>(2 * km) - abscissa<metre, double>(3e
 static_assert(same(abscissa<metre, double>(2e3 * m) - abscissa<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, double>);
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, length<metre>>);
-static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, quantity_point<dim_length, metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, quantity_point<unspecified_origin<dim_length>, metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, ordinate<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, ordinate<metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, height<metre>, abscissa<metre>>);
-static_assert(!std::is_invocable_v<std::minus<>, quantity_point<dim_length, metre>, abscissa<metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, quantity_point<unspecified_origin<dim_length>, metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, length<metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, double, abscissa<metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, screen_si_width<metre>, screen_si_cgs_width<metre>>);
 // clang-format on
 
 
@@ -501,8 +552,8 @@ static_assert(std::equality_comparable_with<abscissa<nanometre, int>, abscissa<k
 static_assert(std::equality_comparable_with<abscissa<cgs::centimetre, int>, abscissa<millimetre, double>>);
 static_assert(std::equality_comparable_with<abscissa<metre>, abscissa<cgs::centimetre>>);
 // clang-format on
-template<typename Abscissa>
-concept invalid_equality = requires(quantity_point_kind<Abscissa, metre, int> x) {
+template<typename Int>
+concept invalid_equality = requires(quantity_point_kind<abscissa_kind, metre, Int> x, Int i) {
   requires !requires { x == 1; };
   requires !requires { x != 1.0; };
   requires !requires { x == 1 * m; };
@@ -521,8 +572,9 @@ concept invalid_equality = requires(quantity_point_kind<Abscissa, metre, int> x)
   requires !requires { x == quantity_point(dimensionless<percent>(1.0)); };
   requires !requires { x != quantity_point_kind(cgs_width<metre, int>(1 * m)); };
   requires !requires { x == ordinate<metre, int>(1 * m); };
+  requires !requires { screen_si_width<metre, Int>{} != screen_si_cgs_width<metre, Int>{}; };
 };
-static_assert(invalid_equality<abscissa_kind>);
+static_assert(invalid_equality<int>);
 
 // clang-format off
 static_assert(abscissa<metre, int>(1 * m) < abscissa<metre, int>(2 * m));
@@ -536,8 +588,8 @@ static_assert(std::three_way_comparable_with<abscissa<nanometre, int>, abscissa<
 static_assert(std::three_way_comparable_with<abscissa<cgs::centimetre, int>, abscissa<millimetre, double>>);
 static_assert(std::three_way_comparable_with<abscissa<metre>, abscissa<cgs::centimetre>>);
 // clang-format on
-template<typename Abscissa>
-concept invalid_relational = requires(quantity_point_kind<Abscissa, metre, int> x) {
+template<typename Int>
+concept invalid_relational = requires(quantity_point_kind<abscissa_kind, metre, Int> x, Int i) {
   requires !requires { x < 1; };
   requires !requires { x <= 1.0; };
   requires !requires { x >= 1 * m; };
@@ -556,8 +608,9 @@ concept invalid_relational = requires(quantity_point_kind<Abscissa, metre, int> 
   requires !requires { x < quantity_point(dimensionless<percent>(1.0)); };
   requires !requires { x <= quantity_point_kind(cgs_width<metre, int>(1 * m)); };
   requires !requires { x >= ordinate<metre, int>(1 * m); };
+  requires !requires { screen_si_width<metre, Int>{} > screen_si_cgs_width<metre, Int>{}; };
 };
-static_assert(invalid_relational<abscissa_kind>);
+static_assert(invalid_relational<int>);
 
 
 /////////////////////////////
@@ -605,6 +658,7 @@ static_assert(same(quantity_point_kind_cast<length<kilometre, int>>(abscissa<met
 static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, int>(1 * m)), abscissa<centimetre, int>(100 * cm)));
 static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, double>(0.01 * m)), abscissa<centimetre, int>(1 * cm)));
 static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cgs::centimetre, int>(1 * cgs_cm)), abscissa<cgs::centimetre, int>(1 * cgs_cm)));
+static_assert(same(quantity_point_kind_cast<screen_si_cgs_width<metre, int>>(screen_si_width<metre, int>(1 * m)), screen_si_cgs_width<metre, int>(1 * m)));
 // clang-format on
 template<typename Int>
 concept invalid_cast = requires(Int i) {
@@ -622,8 +676,9 @@ concept invalid_cast = requires(Int i) {
   requires !requires { quantity_point_kind_cast<dimensionless<one>>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<square_metre>(abscissa<metre, Int>(i * m)); };
   requires !requires { quantity_point_kind_cast<second>(abscissa<metre, Int>(i * m)); };
-  requires !requires { quantity_point_kind_cast<quantity_point<dim_length, metre, Int>>(abscissa<metre, Int>(i * m)); };
-  requires !requires { quantity_point_kind_cast<quantity_point<dim_one, one, Int>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<quantity_point<unspecified_origin<dim_length>, metre, Int>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<quantity_point<unspecified_origin<dim_one>, one, Int>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<quantity_point<unspecified_origin<dim_length>, metre, Int>>(screen_si_width<metre, Int>(i * m)); };
 };
 static_assert(invalid_cast<int>);
 

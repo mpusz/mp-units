@@ -51,11 +51,13 @@ add_library(unit_tests_static
     iec80000_test.cpp
     kind_test.cpp
     math_test.cpp
+    point_origin_test.cpp
     ratio_test.cpp
     references_test.cpp
     si_test.cpp
     si_cgs_test.cpp
     si_fps_test.cpp
+    si_hep_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
     unit_test.cpp

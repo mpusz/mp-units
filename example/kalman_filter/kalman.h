@@ -75,7 +75,7 @@ public:
   uncertainty_type uncertainty;
 };
 
-#if UNITS_COMP_CLANG == 12 || UNITS_COMP_MSVC
+#if UNITS_COMP_CLANG <= 13 || UNITS_COMP_MSVC
 
 template<QuantityOrQuantityPoint QQP, units::Quantity U>
 estimation(state<QQP>, U) -> estimation<QQP>;

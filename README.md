@@ -2,8 +2,8 @@
 [![Conan CI](https://img.shields.io/github/workflow/status/mpusz/units/Conan%20CI/master?label=Conan%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
 [![CMake CI](https://img.shields.io/github/workflow/status/mpusz/units/CMake%20Test%20Package%20CI/master?label=CMake%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
 [![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=Documentation%20CI)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
-[![Conan stable](https://img.shields.io/badge/ConanCenter-0.6.0%3Astable-blue)](https://conan.io/center/mp-units)
-[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-0.7.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/0.7.0)
+[![Conan stable](https://img.shields.io/badge/ConanCenter-0.7.0%3Astable-blue)](https://conan.io/center/mp-units)
+[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-0.8.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/0.8.0)
 
 # `mp-units` - A Units Library for C++
 

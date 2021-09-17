@@ -1,5 +1,17 @@
 # Release notes
 
+- **0.8.0 WIP**
+  - (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`, `common_quantity_kind`, and `common_quantity_point_kind` removed
+  - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
+  - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))
+  - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
+  - fix: account for different dimensions in `quantity_point_cast`'s constraint
+  - build: Minimum Conan version changed to 1.40
+  - build: gsl-lite updated to 0.38.1
+  - build: catch2 updated to 2.13.7
+  - build: doxygen updated to 1.9.2
+  - build: linear algebra switched to wg21-linear_algebra/0.7.2
+
 - **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
   - (!) refactor: output stream operators moved to the `units/quantity_io.h` header file
@@ -46,6 +58,7 @@
   - build: Conan generator switched to `cmake_find_package_multi`
   - build: Conan CMakeToolchain support added
   - build: CMake scripts cleanup
+  - build: ccache support added
   - ci: CI switched from Travis CI to GitHub Actions
 
 - **0.6.0 September 13, 2020**

@@ -26,7 +26,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
-required_conan_version = ">=1.33.0"
+required_conan_version = ">=1.40.0"
 
 class UnitsConan(ConanFile):
     name = "mp-units"
@@ -38,7 +38,7 @@ class UnitsConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "fmt/7.1.3",
-        "gsl-lite/0.38.0"
+        "gsl-lite/0.38.1"
     )
     options = {
         "downcast_mode": ["off", "on", "auto"],
@@ -74,10 +74,10 @@ class UnitsConan(ConanFile):
 
     def build_requirements(self):
         if self._run_tests:
-            self.build_requires("catch2/2.13.4")
-            self.build_requires("linear_algebra/0.7.0@conan-oss/stable")
+            self.build_requires("catch2/2.13.7", force_host_context=True)              # TODO replace with test_requires in Conan 2.0
+            self.build_requires("wg21-linear_algebra/0.7.2", force_host_context=True)  # TODO replace with test_requires in Conan 2.0
             if self.options.build_docs:
-                self.build_requires("doxygen/1.8.20")
+                self.build_requires("doxygen/1.9.2")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -102,7 +102,7 @@ class UnitsConan(ConanFile):
     #         del self.options.build_docs
 
     def generate(self):
-        tc = CMakeToolchain(self, generator=os.getenv("CONAN_CMAKE_GENERATOR"))
+        tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
         tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
@@ -112,7 +112,7 @@ class UnitsConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_folder=None if self._run_tests else "src")
+        cmake.configure(build_script_folder=None if self._run_tests else "src")
         cmake.build()
         if self._run_tests:
             cmake.test(output_on_failure=True)
@@ -120,7 +120,6 @@ class UnitsConan(ConanFile):
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
         cmake = CMake(self)
-        cmake.configure(source_folder=None if self._run_tests else "src")
         cmake.install()
 
     def package_id(self):
@@ -144,10 +143,11 @@ class UnitsConan(ConanFile):
         self.cpp_info.components["si"].requires = ["isq"]
         self.cpp_info.components["si-cgs"].requires = ["si"]
         self.cpp_info.components["si-fps"].requires = ["si"]
+        self.cpp_info.components["si-hep"].requires = ["si"]
         self.cpp_info.components["si-iau"].requires = ["si"]
         self.cpp_info.components["si-imperial"].requires = ["si"]
         self.cpp_info.components["si-international"].requires = ["si"]
         self.cpp_info.components["si-typographic"].requires = ["si"]
         self.cpp_info.components["si-uscs"].requires = ["si"]
         self.cpp_info.components["isq-iec80000"].requires = ["si"]
-        self.cpp_info.components["systems"].requires = ["isq", "isq-natural", "si", "si-cgs", "si-fps", "si-iau", "si-imperial", "si-international", "si-typographic", "si-uscs", "isq-iec80000"]
+        self.cpp_info.components["systems"].requires = ["isq", "isq-natural", "si", "si-cgs", "si-fps", "si-hep", "si-iau", "si-imperial", "si-international", "si-typographic", "si-uscs", "isq-iec80000"]

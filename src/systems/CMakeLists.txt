@@ -29,6 +29,7 @@ add_subdirectory(isq-natural)
 add_subdirectory(si)
 add_subdirectory(si-cgs)
 add_subdirectory(si-fps)
+add_subdirectory(si-hep)
 add_subdirectory(si-iau)
 add_subdirectory(si-imperial)
 add_subdirectory(si-international)
@@ -44,6 +45,7 @@ target_link_libraries(mp-units-systems INTERFACE
     mp-units::si
     mp-units::si-cgs
     mp-units::si-fps
+    mp-units::si-hep
     mp-units::si-iau
     mp-units::si-imperial
     mp-units::si-international

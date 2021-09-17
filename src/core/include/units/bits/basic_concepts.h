@@ -205,6 +205,77 @@ concept UnitOf =
   Dimension<D> &&
   std::same_as<typename U::reference, typename dimension_unit<D>::reference>;
 
+// PointOrigin
+
+template<Dimension D>
+struct base_point_origin;
+
+/**
+ * @brief A concept matching a point origin
+ *
+ * Satisfied by types derived from an specialization of @c base_point_origin.
+ */
+template<typename T>
+concept PointOrigin = is_derived_from_specialization_of<T, base_point_origin> &&
+  requires {
+    typename T::dimension;
+    requires Dimension<typename T::dimension>;
+    requires std::derived_from<T, base_point_origin<typename T::dimension>>;
+    typename T::base_point_origin;
+    requires std::same_as<typename T::base_point_origin, base_point_origin<typename T::dimension>>;
+    requires !std::same_as<T, base_point_origin<typename T::dimension>>;
+    requires !requires {typename T::reference_point_origin;} || requires {
+      // actually, reference_point_origin needs to satisfy all of the PointOrigin requirements, but we're not checking
+      // that here, so we don't have to deal with a recursive concept.
+      requires std::derived_from<typename T::reference_point_origin, base_point_origin<typename T::dimension>>;
+      requires std::same_as<T, typename T::reference_point_origin> || requires { T::offset_to_reference; };
+    };
+  };
+
+/**
+* @brief A concept matching all point origin types which have a fixed offset from the reference origin
+*
+ */
+template<typename T, typename O>
+concept PointOriginWithFixedOffsetFrom =
+  PointOrigin<T> && PointOrigin<O> &&
+  std::same_as<typename T::reference_point_origin, typename O::reference_point_origin> &&
+  requires {
+    T::offset_to_reference;
+    O::offset_to_reference;
+  };
+
+// RebindablePointOriginFor
+
+namespace detail {
+
+template<typename O, typename D>
+struct rebind_point_origin_dimension_impl {};
+
+template<typename O, typename D> requires requires { typename O::template rebind<D>; }
+struct rebind_point_origin_dimension_impl<O,D> {
+  using type = typename O::template rebind<D>;
+};
+
+}  // namespace detail
+
+template<PointOrigin O, Dimension D>
+using rebind_point_origin_dimension = typename conditional<is_same_v<typename O::dimension, D>, std::type_identity<O>,
+                                                           detail::rebind_point_origin_dimension_impl<O, D>>::type;
+
+/**
+ * @brief A concept predicating the possibility of changing an origin's dimension
+ *
+ * Satisfied by point origins whose dimension can be made to be `D`.
+ */
+template<typename T, typename D>
+concept RebindablePointOriginFor =
+  requires { typename rebind_point_origin_dimension<T, D>; } &&
+  PointOrigin<rebind_point_origin_dimension<T, D>> &&
+  std::same_as<D, typename rebind_point_origin_dimension<T, D>::dimension>;
+
+
+
 // Kind
 namespace detail {
 
@@ -216,7 +287,7 @@ struct _kind_base;
 template<typename T, template<typename...> typename Base>
 concept kind_impl_ =
   is_derived_from_specialization_of<T, Base> &&
-  requires(T* t) {
+  requires {
     typename T::base_kind;
     typename T::dimension;
     requires Dimension<typename T::dimension>;
@@ -236,7 +307,7 @@ concept Kind =
 // PointKind
 namespace detail {
 
-template<Kind>
+template<Kind, PointOrigin>
 struct _point_kind_base;
 
 }  // namespace detail
@@ -247,7 +318,12 @@ struct _point_kind_base;
  * Satisfied by all point kind types derived from an specialization of @c point_kind.
  */
 template<typename T>
-concept PointKind = kind_impl_<T, detail::_point_kind_base>;
+concept PointKind =
+  kind_impl_<T, detail::_point_kind_base> &&
+  requires { typename T::origin; } &&
+  PointOrigin<typename T::origin> &&
+  std::same_as<typename T::dimension, typename T::base_kind::dimension> &&
+  std::same_as<typename T::dimension, typename T::origin::dimension>;
 
 // Reference
 namespace detail {
@@ -340,44 +416,6 @@ concept QuantityLike = detail::is_quantity_like<T>;
 template<typename T>
 concept QuantityPointLike = detail::is_quantity_point_like<T>;
 
-// PointOrigin
-namespace detail {
-
-template <typename, Unit>
-struct _origin_base;
-
-template <typename T>
-concept has_different_reference_origin_ =
-requires() {
-  typename T::reference_origin;
-} && !std::same_as<T, typename T::reference_origin>;
-
-template<typename T, template<typename...> typename Base>
-concept origin_impl_ =
-  is_derived_from_specialization_of<T, Base> &&
-  requires() {
-    typename T::base_origin;
-  } && (!has_different_reference_origin_<T>
-        || (std::same_as<typename T::reference_unit, typename T::reference_origin::reference_unit> &&
-            requires {
-              T::offset_to_reference;
-            } &&
-            Quantity<std::remove_cvref_t<decltype(T::offset_to_reference)>> &&
-            std::same_as<typename dimension_unit<typename decltype(T::offset_to_reference)::dimension>::reference, typename T::reference_unit>));
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all point origin types
- *
- * Satisfied by all point origin types derived from a specialization of @c point_origin.
- */
-template<typename T>
-concept PointOrigin =
-  detail::origin_impl_<T, detail::_origin_base> &&
-  detail::origin_impl_<typename T::base_origin, detail::_origin_base> &&
-  std::same_as<typename T::base_origin, typename T::base_origin::base_origin>;
-
 // Representation
 
 template<typename T, typename U>
@@ -445,16 +483,6 @@ concept Representation =
   std::regular<T> &&
   scalable_<T>;
 
-// DerivedPointOrigin
-/**
- * @brief A concept matching all point origin types which have a fixed offset from a "reference origin
- *
- * Satisfied by all PointOrigins which have a nested member type reference_origin
- * and constant quantity member offset_to_reference.
- */
-template<typename T>
-concept DerivedPointOrigin =
-  PointOrigin<T> && detail::has_different_reference_origin_<T>;
 
 namespace detail {
 

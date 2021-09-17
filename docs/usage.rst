@@ -89,6 +89,9 @@ in *~/.conan/profiles* directory. An example profile can look as follows:
     [options]
     [build_requires]
 
+    [conf]
+    tools.cmake.cmaketoolchain:generator=Ninja
+
     [env]
     CC=/usr/bin/gcc-10
     CXX=/usr/bin/g++-10
@@ -247,7 +250,7 @@ library release the following steps may be performed:
       :caption: conanfile.txt
 
       [requires]
-      mp-units/0.6.0
+      mp-units/0.7.0
 
       [generators]
       CMakeToolchain
@@ -313,7 +316,7 @@ differences:
       :caption: conanfile.txt
 
       [requires]
-      mp-units/0.7.0@mpusz/testing
+      mp-units/0.8.0@mpusz/testing
 
       [generators]
       CMakeToolchain
@@ -363,7 +366,6 @@ in **mp-units** repository, you should:
 
 .. code-block:: shell
 
-    conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     mkdir units/build && cd units/build
@@ -401,4 +403,4 @@ Uploading **mp-units** Package to the Conan Server
 
 .. code-block:: shell
 
-    conan upload -r <remote-name> --all mp-units/0.7.0@<user>/<channel>
+    conan upload -r <remote-name> --all mp-units/0.8.0@<user>/<channel>

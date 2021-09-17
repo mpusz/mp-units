@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 Yves Delley
+// Copyright (c) 2021 Mateusz Pusz
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,9 @@
 
 #pragma once
 
-#include <units/bits/basic_concepts.h>
-#include <units/bits/external/downcasting.h>
-
-namespace units {
-
-namespace detail {
-
-template<typename Orig, Unit U>
-struct _origin_base : downcast_base<_origin_base<Orig, U>> {
-  using base_origin = Orig;
-  using reference_unit = U;
-};
-
-}  // namespace detail
-
-template<PointOrigin Orig, Unit U>
-  requires PointOrigin<downcast<detail::_origin_base<typename Orig::base_origin, U>>>
-using downcast_origin = downcast<detail::_origin_base<typename Orig::base_origin, U>>;
-
-template<typename Orig, Unit U>
-struct point_origin : downcast_dispatch<Orig, detail::_origin_base<Orig, U>> {};
-
-/**
- * @brief A "default" point origin for scales associated with the base unit of a dimension
- *
- * This is mostly used as a fall-back so code that does not explicitly specify an origin still works.
- *
- * @tparam U the base unit for measurements with respect to this origin.
- */
-template <Unit U>
-struct default_point_origin : point_origin<default_point_origin<U>, U> {};
-
-}  // namespace units
+// IWYU pragma: begin_exports
+#include <units/isq/si/hep/area.h>
+#include <units/isq/si/hep/energy.h>
+#include <units/isq/si/hep/mass.h>
+#include <units/isq/si/hep/momentum.h>
+// IWYU pragma: end_exports

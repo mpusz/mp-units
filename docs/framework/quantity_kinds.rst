@@ -73,5 +73,5 @@ Now ``x`` coordinates can be constructed::
 
 .. seealso::
 
-    Please refer to :ref:`examples/glide_computer:glide_computer` example for more
+    Please refer to :ref:`examples/basics/glide_computer:glide_computer` example for more
     information on the quantity kinds usage.

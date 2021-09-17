@@ -23,9 +23,9 @@
 #pragma once
 
 #include <units/customization_points.h>
-#include <units/origin.h>
 // IWYU pragma: begin_exports
 #include <units/isq/si/time.h>
+#include <units/point_origin.h>
 #include <chrono>
 // IWYU pragma: end_exports
 
@@ -39,19 +39,25 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
 
-template <typename C>
-struct chrono_clock_point_origin : point_origin<chrono_clock_point_origin<C>, typename dimension_unit<isq::si::dim_time>::reference> {};
+template<typename C>
+struct clock_origin : base_point_origin<isq::si::dim_time> { };
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
-  using dimension = isq::si::dim_time;
-  using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
+  using origin = clock_origin<C>;
+  using unit = downcast_unit<typename origin::dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;
-  using origin = chrono_clock_point_origin<typename std::chrono::time_point<C, std::chrono::duration<Rep, Period>>::clock>;
   [[nodiscard]] static constexpr auto relative(
     const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp) {
     return qp.time_since_epoch();
   }
 };
+
+namespace detail {
+
+template<typename C, typename Rep, typename Period>
+inline constexpr bool is_quantity_point_like<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> = true;
+
+}  // namespace detail
 
 } // namespace units

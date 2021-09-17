@@ -27,6 +27,9 @@
 
 namespace units {
 
+template<Dimension D>
+struct unspecified_origin;
+
 namespace detail {
 
 template<typename K, Dimension D>
@@ -35,10 +38,11 @@ struct _kind_base : downcast_base<_kind_base<K, D>> {
   using dimension = D;
 };
 
-template<Kind K>
-struct _point_kind_base : downcast_base<_point_kind_base<K>> {
+template<Kind K, PointOrigin O>
+struct _point_kind_base : downcast_base<_point_kind_base<K, O>> {
   using base_kind = K;
   using dimension = typename K::dimension;
+  using origin = O;
 };
 
 }  // namespace detail
@@ -47,9 +51,9 @@ template<Kind K, Dimension D>
   requires Kind<downcast<detail::_kind_base<typename K::base_kind, D>>>
 using downcast_kind = downcast<detail::_kind_base<typename K::base_kind, D>>;
 
-template<Kind K>
-  requires PointKind<downcast<detail::_point_kind_base<K>>>
-using downcast_point_kind = downcast<detail::_point_kind_base<K>>;
+template<Kind K, PointOrigin O = unspecified_origin<typename K::dimension>>
+  requires PointKind<downcast<detail::_point_kind_base<K, O>>>
+using downcast_point_kind = downcast<detail::_point_kind_base<K, O>>;
 
 template<typename K, Dimension D>
 struct kind : downcast_dispatch<K, detail::_kind_base<K, D>> {};
@@ -58,7 +62,7 @@ template<typename DK, Dimension D, Kind BK>
   requires std::same_as<BK, typename BK::base_kind>
 struct derived_kind : downcast_dispatch<DK, detail::_kind_base<BK, D>> {};
 
-template<typename DPK, Kind BK>
-struct point_kind : downcast_dispatch<DPK, detail::_point_kind_base<BK>> {};
+template<typename DPK, Kind BK, PointOrigin O = unspecified_origin<typename BK::dimension>>
+struct point_kind : downcast_dispatch<DPK, detail::_point_kind_base<BK, O>> {};
 
 }  // namespace units
