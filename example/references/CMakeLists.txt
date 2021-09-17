@@ -50,7 +50,9 @@ if(NOT UNITS_LIBCXX)
         UNITS_NO_ALIASES
     )
 
-    find_package(wg21_linear_algebra CONFIG REQUIRED)
-    add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
-    target_link_libraries(linear_algebra-references PRIVATE wg21_linear_algebra::wg21_linear_algebra)
+    if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "11.1.0"))
+        find_package(wg21_linear_algebra CONFIG REQUIRED)
+        add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
+        target_link_libraries(linear_algebra-references PRIVATE wg21_linear_algebra::wg21_linear_algebra)
+    endif()
 endif()
