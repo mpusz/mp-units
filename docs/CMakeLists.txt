@@ -43,8 +43,6 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_2.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/units.png"
 
-    "${CMAKE_CURRENT_SOURCE_DIR}/_themes/sphinx_rtd_theme.zip"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/design.rst"

@@ -10,6 +10,7 @@
 """
 
 import re
+import sphinx_rtd_theme
 
 from pygments.lexer import RegexLexer, include, bygroups, using, \
     this, inherit, default, words
@@ -272,6 +273,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.githubpages',
     'sphinx.ext.graphviz',
+    'sphinx_rtd_theme',
     'recommonmark',
     'breathe'
 ]
@@ -322,11 +324,6 @@ cpp_index_common_prefix = ['units::']
 
 
 # -- Options for HTML output -------------------------------------------------
-
-# A list of paths that contain custom themes, either as subdirectories or as
-# zip files. Relative paths are taken as relative to the configuration directory.
-
-html_theme_path = ["_themes", ]
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
