@@ -165,26 +165,26 @@ struct fmt::formatter<kalman::state<Qs...>> {
     auto to_value_buffer = std::back_inserter(value_buffer);
     if (specs.precision != -1) {
       if constexpr(sizeof...(Qs) == 1)
-        format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
+        fmt::format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
       else if constexpr(sizeof...(Qs) == 2)
-        format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s));
+        fmt::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s));
       else
-        format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+        fmt::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
     }
     else {
       if constexpr(sizeof...(Qs) == 1)
-        format_to(to_value_buffer, "{}", kalman::get<0>(s));
+        fmt::format_to(to_value_buffer, "{}", kalman::get<0>(s));
       else if constexpr(sizeof...(Qs) == 2)
-        format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
+        fmt::format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
       else
-        format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+        fmt::format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
     }
 
     basic_memory_buffer<char> global_format_buffer;
     units::detail::global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
     units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return format_to(ctx.out(), fmt::runtime(std::string_view(global_format_buffer.data(), global_format_buffer.size())),
+    return fmt::format_to(ctx.out(), fmt::runtime(std::string_view(global_format_buffer.data(), global_format_buffer.size())),
       std::string_view(value_buffer.data(), value_buffer.size()));
   }
 private:
@@ -212,17 +212,17 @@ struct fmt::formatter<kalman::estimation<Q>> {
     memory_buffer value_buffer;
     auto to_value_buffer = std::back_inserter(value_buffer);
     if (specs.precision != -1) {
-      format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty), specs.precision);
+      fmt::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty), specs.precision);
     }
     else {
-      format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
+      fmt::format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
     }
 
     basic_memory_buffer<char> global_format_buffer;
     units::detail::global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
     units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return format_to(ctx.out(), fmt::runtime(std::string_view(global_format_buffer.data(), global_format_buffer.size())),
+    return fmt::format_to(ctx.out(), fmt::runtime(std::string_view(global_format_buffer.data(), global_format_buffer.size())),
       std::string_view(value_buffer.data(), value_buffer.size()));
   }
 private:

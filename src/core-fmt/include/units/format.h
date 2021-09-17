@@ -224,37 +224,37 @@ namespace units {
       case fmt::sign::none:
         break;
       case fmt::sign::plus:
-        format_to(to_buffer, "+");
+        fmt::format_to(to_buffer, "+");
         break;
       case fmt::sign::minus:
-        format_to(to_buffer, "-");
+        fmt::format_to(to_buffer, "-");
         break;
       case fmt::sign::space:
-        format_to(to_buffer, " ");
+        fmt::format_to(to_buffer, " ");
         break;
       }
 
       if (rep_specs.alt) {
-        format_to(to_buffer, "#");
+        fmt::format_to(to_buffer, "#");
       }
       auto type = rep_specs.type;
       if (auto precision = rep_specs.precision; precision >= 0) {
-        format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
+        fmt::format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
       } else if constexpr (treat_as_floating_point<Rep>) {
-        format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
+        fmt::format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
       } else {
         if (type != '\0') {
-          format_to(to_buffer, "{}", type);
+          fmt::format_to(to_buffer, "{}", type);
         }
       }
       if (rep_specs.use_locale) {
-        format_to(to_buffer, "L");
+        fmt::format_to(to_buffer, "L");
       }
       fmt::format_to(to_buffer, "}}");
       if (rep_specs.use_locale and static_cast<bool>(loc)) {
-        return format_to(out, loc.template get<std::locale>(), fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
+        return fmt::format_to(out, loc.template get<std::locale>(), fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
       }
-      return format_to(out, fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
+      return fmt::format_to(out, fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
     }
 
     // Creates a global format string
@@ -262,27 +262,27 @@ namespace units {
     template<typename CharT, typename OutputIt>
     inline OutputIt format_global_buffer(OutputIt out, const global_format_specs<CharT>& specs)
     {
-      format_to(out, "{{:");
+      fmt::format_to(out, "{{:");
       if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
-        format_to(out, "{}", specs.fill.data());
+        fmt::format_to(out, "{}", specs.fill.data());
       }
       switch (specs.align) {
       case fmt::align_t::left:
-        format_to(out, "<");
+        fmt::format_to(out, "<");
         break;
       case fmt::align_t::right:
-        format_to(out, ">");
+        fmt::format_to(out, ">");
         break;
       case fmt::align_t::center:
-        format_to(out, "^");
+        fmt::format_to(out, "^");
         break;
       default:
         break;
       }
       if (specs.width >= 1) {
-        format_to(out, "{}", specs.width);
+        fmt::format_to(out, "{}", specs.width);
       }
-      return format_to(out, "}}");
+      return fmt::format_to(out, "}}");
     }
 
     template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename LocaleRef, typename CharT>
@@ -319,10 +319,10 @@ namespace units {
       {
         auto txt = unit_text<Dimension, Unit>();
         if(unit_specs.modifier == 'A') {
-          format_to(out, "{}", txt.ascii().c_str());
+          fmt::format_to(out, "{}", txt.ascii().c_str());
         }
         else {
-          format_to(out, "{}", txt.standard().c_str());
+          fmt::format_to(out, "{}", txt.standard().c_str());
         }
       }
     };
@@ -495,7 +495,7 @@ public:
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
       if(symbol.standard().size()) {
         *to_quantity_buffer++ = CharT(' ');
-        format_to(to_quantity_buffer, "{}", symbol.standard().c_str());
+        fmt::format_to(to_quantity_buffer, "{}", symbol.standard().c_str());
       }
     }
     else {
@@ -511,6 +511,6 @@ public:
 
     // Format the `quantity buffer` using specs from `global_format_buffer`
     // In the example, equivalent to fmt::format("{:*^10}", "1.2_m")
-    return format_to(ctx.out(), fmt::runtime(std::basic_string_view<CharT>(global_format_buffer.data(), global_format_buffer.size())), std::string_view(quantity_buffer.data(), quantity_buffer.size()));
+    return fmt::format_to(ctx.out(), fmt::runtime(std::basic_string_view<CharT>(global_format_buffer.data(), global_format_buffer.size())), std::string_view(quantity_buffer.data(), quantity_buffer.size()));
   }
 };

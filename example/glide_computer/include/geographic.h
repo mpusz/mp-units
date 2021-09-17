@@ -110,7 +110,7 @@ struct fmt::formatter<geographic::latitude> : formatter<geographic::latitude::va
   template<typename FormatContext>
   auto format(geographic::latitude lat, FormatContext& ctx)
   {
-    format_to(ctx.out(), fmt::runtime(lat.value() > 0 ? "N" : "S"));
+    fmt::format_to(ctx.out(), fmt::runtime(lat.value() > 0 ? "N" : "S"));
     return formatter<geographic::latitude::value_type>::format(lat.value() > 0 ? lat.value() : -lat.value(), ctx);
   }
 };
@@ -120,7 +120,7 @@ struct fmt::formatter<geographic::longitude> : formatter<geographic::longitude::
   template<typename FormatContext>
   auto format(geographic::longitude lon, FormatContext& ctx)
   {
-    format_to(ctx.out(), fmt::runtime(lon.value() > 0 ? "E" : "W"));
+    fmt::format_to(ctx.out(), fmt::runtime(lon.value() > 0 ? "E" : "W"));
     return formatter<geographic::longitude::value_type>::format(lon.value() > 0 ? lon.value() : -lon.value(), ctx);
   }
 };
