@@ -248,7 +248,7 @@ template<typename CastSpec, typename O, typename U, typename Rep>
            requires { quantity_cast<CastSpec>(qp.relative()); }
 {
   if constexpr (QuantityPoint<CastSpec>) {
-    using FromQ = quantity<O, U, Rep>;
+    using FromQ = quantity<typename O::dimension, U, Rep>;
     using ToQ = typename CastSpec::quantity_type;
     using Q = std::common_type_t<FromQ, ToQ>;
     using ToOrig = typename CastSpec::origin;

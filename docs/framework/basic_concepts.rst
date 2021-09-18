@@ -23,7 +23,7 @@ The most important concepts in the library are `Unit`, `Dimension`,
     ]
 
     [<abstract>QuantityPoint|
-    [quantity_point<PointOrigin, Unit, Rep>]
+    [quantity_point<Dimension, Unit, Rep>]
     ]
 
     [<abstract>QuantityKind|
@@ -31,19 +31,13 @@ The most important concepts in the library are `Unit`, `Dimension`,
     ]
 
     [<abstract>QuantityPointKind|
-    [quantity_point_kind<PointKind, Unit, Rep, Orig>]
+    [quantity_point_kind<PointKind, Unit, Rep>]
     ]
-
-    [<abstract>PointOrigin]<-[QuantityPoint]
 
     [<abstract>Unit]<-[Dimension]
     [Dimension]<-[Quantity]
     [Unit]<-[Quantity]
     [Quantity]<-[QuantityPoint]
-
-    [<abstract>PointOrigin]<-[QuantityPoint]
-    [Dimension]<-[PointOrigin]
-    [PointOrigin]<-[PointKind]
 
     [<abstract>Kind]<-[QuantityKind]
     [Dimension]<-[Kind]
@@ -53,29 +47,20 @@ The most important concepts in the library are `Unit`, `Dimension`,
     [Kind]<-[PointKind]
     [QuantityKind]<-[QuantityPointKind]
 
-    [PointOrigin]<-[QuantityPointKind]
-
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and
-often a few scaled versions of it. Examples: ``second``, ``metre``, ``kilometre_per_hour``.
+often a few scaled versions of it.
 
 `Dimension` concept matches a dimension of either a base or derived quantity.
 `base_dimension` is instantiated with a unique symbol identifier and a base
 unit. `derived_dimension` is a list of exponents of either base or other
-derived dimensions. Examples: ``si::dim_time``, ``si::dim_length``, ``si::dim_speed``.
+derived dimensions.
 
 `Quantity` is a concrete amount of a unit for a specified dimension with a
-specific representation. Examples: ``quantity<si::dim_time, si::second, int>``,
-``si::length<si::metre, int>``, ``si::speed<si::kilometre_per_hour>``.
+specific representation.
 
-`QuantityPoint` is an absolute `Quantity` with respect to an origin.
-Examples: timestamp (as opposed to duration), absolute temperature
-(as opposed to temperature difference).
+`QuantityPoint` is an absolute `Quantity` with respect to some origin.
 
-`QuantityKind` is a `Quantity` with more specific usage. Examples:
-distance (``horizonal_kind``) and height (``vertical_kind``) are different kinds
-of a length quantity.
+`QuantityKind` is a `Quantity` with more specific usage.
 
-`QuantityPointKind` is an absolute `QuantityKind` with respect to an origin.
-Examples: altitude is a quantity point of ``vertical_kind`` (as opposed to
-height).
+`QuantityPointKind` is an absolute `QuantityKind` with respect to some origin.

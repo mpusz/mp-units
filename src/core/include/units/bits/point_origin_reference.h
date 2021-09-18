@@ -31,8 +31,14 @@ namespace detail {
 
 template<PointOrigin Orig>
 struct reference_point_origin {
+  using type = Orig;
+};
+
+template<PointOrigin Orig> requires requires {typename Orig::reference_point_origin; }
+struct reference_point_origin<Orig> {
   using type = typename Orig::reference_point_origin;
 };
+
 
 template<PointOrigin Orig>
 using reference_point_origin_t =
@@ -42,10 +48,10 @@ template<PointOrigin Orig>
 struct ultimate_reference_origin {
   using type =
     typename std::conditional_t<
-      std::is_same_v<reference_point_origin_t<Orig>,Orig>,
+      std::same_as<reference_point_origin_t<Orig>,Orig>,
       std::type_identity<Orig>,
       ultimate_reference_origin<reference_point_origin_t<Orig>>
-    >::type;
+      >::type;
 };
 
 template<PointOrigin Orig>
@@ -68,10 +74,19 @@ inline constexpr auto offset_to_ultimate_reference_origin_v = offset_to_ultimate
 
 }  // namespace detail
 
-template <PointOrigin Orig1, PointOrigin Orig2>
-inline constexpr bool fixed_known_offset = equivalent<detail::ultimate_reference_origin_t<Orig1>, detail::ultimate_reference_origin_t<Orig2>>;
+// PointOriginWithFixedOffsetFrom
 
-template <Quantity Q, PointOrigin To, PointOrigin From> requires fixed_known_offset<To, From>
+/**
+* @brief A concept matching all point origin types which have a fixed offset from the reference origin
+*
+ */
+template<typename T, typename O>
+concept PointOriginWithFixedOffsetFrom =
+  PointOrigin<T> && PointOrigin<O> &&
+  equivalent<detail::ultimate_reference_origin_t<T>, detail::ultimate_reference_origin_t<O>>;
+
+
+template <Quantity Q, PointOrigin To, PointOriginWithFixedOffsetFrom<To> From>
 inline constexpr auto offset_between_origins = detail::offset_to_ultimate_reference_origin_v<Q, To> - detail::offset_to_ultimate_reference_origin_v<Q, From>;
 
 } // namespace units

@@ -35,18 +35,18 @@ namespace {
 struct width : kind<width, si::dim_length> {};
 struct abscissa : point_kind<abscissa, width> {};
 
-struct ones_viewpoint1 : base_point_origin<si::dim_length> {
+struct ones_viewpoint1 : point_origin<si::dim_length> {
   template<typename D>
   using rebind = ones_viewpoint1;
 };
 
-struct ones_viewpoint2 : base_point_origin<si::cgs::dim_length> {
+struct ones_viewpoint2 : point_origin<si::cgs::dim_length> {
   template<typename D>
   using rebind = ones_viewpoint1;
 };
 
 static_assert(PointOrigin<unspecified_origin<si::dim_length>>);
-static_assert(!PointOrigin<base_point_origin<si::dim_length>>);
+static_assert(!PointOrigin<point_origin<si::dim_length>>);
 static_assert(!PointOrigin<width>);
 static_assert(!PointOrigin<abscissa>);
 

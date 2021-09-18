@@ -208,42 +208,38 @@ concept UnitOf =
 // PointOrigin
 
 template<Dimension D>
-struct base_point_origin;
+struct point_origin;
 
 /**
  * @brief A concept matching a point origin
  *
- * Satisfied by types derived from an specialization of @c base_point_origin.
+ * Satisfied by types derived from an specialization of @c point_origin.
+ *
+ * A point-origin can further be made fixed offset with respect to another origin if a nested
+ * type `reference_point_origin` is present, which also needs to be a PointOrigin.
+ * Then a nested static constant `offset_to_reference` needs to be present as-well,
+ * unless `referende_point_origin` is the same type as the parent origin.
  */
 template<typename T>
-concept PointOrigin = is_derived_from_specialization_of<T, base_point_origin> &&
+concept PointOrigin = is_derived_from_specialization_of<T, point_origin> &&
   requires {
     typename T::dimension;
     requires Dimension<typename T::dimension>;
-    requires std::derived_from<T, base_point_origin<typename T::dimension>>;
-    typename T::base_point_origin;
-    requires std::same_as<typename T::base_point_origin, base_point_origin<typename T::dimension>>;
-    requires !std::same_as<T, base_point_origin<typename T::dimension>>;
-    requires !requires {typename T::reference_point_origin;} || requires {
+    requires std::derived_from<T, point_origin<typename T::dimension>>;
+//    typename T::point_origin;
+//    requires std::same_as<typename T::point_origin, point_origin<typename T::dimension>>;
+    requires !std::same_as<T, point_origin<typename T::dimension>>;
+    requires requires{
+      requires !requires {typename T::reference_point_origin;};
+      requires !requires {typename T::offset_to_reference;};
+    } || requires {
       // actually, reference_point_origin needs to satisfy all of the PointOrigin requirements, but we're not checking
       // that here, so we don't have to deal with a recursive concept.
-      requires std::derived_from<typename T::reference_point_origin, base_point_origin<typename T::dimension>>;
+      requires std::derived_from<typename T::reference_point_origin, point_origin<typename T::dimension>>;
       requires std::same_as<T, typename T::reference_point_origin> || requires { T::offset_to_reference; };
     };
   };
 
-/**
-* @brief A concept matching all point origin types which have a fixed offset from the reference origin
-*
- */
-template<typename T, typename O>
-concept PointOriginWithFixedOffsetFrom =
-  PointOrigin<T> && PointOrigin<O> &&
-  std::same_as<typename T::reference_point_origin, typename O::reference_point_origin> &&
-  requires {
-    T::offset_to_reference;
-    O::offset_to_reference;
-  };
 
 // RebindablePointOriginFor
 

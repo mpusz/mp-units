@@ -100,7 +100,7 @@ concept QuantityPointOf = QuantityPoint<QP> && PointOrigin<Orig> && equivalent<t
  * reference of the requested origin point.
  */
 template<typename QP, typename Orig>
-concept QuantityPointReferableTo = QuantityPoint<QP> && PointOrigin<Orig> && fixed_known_offset<typename QP::origin, Orig>;
+concept QuantityPointReferableTo = QuantityPoint<QP> && PointOriginWithFixedOffsetFrom<Orig, typename QP::origin>;
 
 /**
  * @brief A concept matching two equivalent quantity points
@@ -143,6 +143,6 @@ concept QuantityPointKindOf = QuantityPointKind<QPK> && PointKind<PK> && equival
  */
 template<typename QPK1, typename QPK2>
 concept QuantityPointKindEquivalentTo =
-  QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>  && std::is_same_v<typename QPK2::origin, typename QPK1::origin>;
+  QuantityPointKind<QPK1> && QuantityPointKindOf<QPK2, typename QPK1::point_kind_type>  && equivalent<typename QPK2::origin, typename QPK1::origin>;
 
 }  // namespace units

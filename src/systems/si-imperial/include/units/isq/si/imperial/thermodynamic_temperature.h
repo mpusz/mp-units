@@ -22,11 +22,16 @@
 
 #pragma once
 
-#include <units/one_rep.h>
-#include <units/zero_rep.h>
-#include <units/physical/si/base/thermodynamic_temperature.h>
+// IWYU pragma: begin_exports
+#include <units/isq/dimensions/thermodynamic_temperature.h>
+#include <units/quantity.h>
+#include <units/quantity_point.h>
+#include <units/reference.h>
+#include <units/symbol_text.h>
+// IWYU pragma: end_exports
 
-namespace units::physical::si::imperial {
+
+namespace units::isq::si::imperial {
 
 struct degree_fahrenheit : named_scaled_unit<degree_fahrenheit, basic_symbol_text{"\u00b0F", "`F"}, no_prefix, ratio(5, 9), kelvin> {};
 
@@ -36,16 +41,28 @@ struct zero_fahrenheit_abs_temperature_ : scaled_unit<ratio(27315 * 9 - 5 * 3200
 
 }  // namespace detail
 
-struct fahrenheit_temperature_origin : point_origin<fahrenheit_temperature_origin, kelvin> {
-  using reference_origin = kelvin_temperature_origin;
-  // TODO: We should really use \c one_rep here instead! However, for that we'd require it to be fully arithmetic; pity it isn't.
+struct fahrenheit_temperature_origin : point_origin<dim_thermodynamic_temperature> {
+  using reference_point_origin = kelvin_temperature_origin;
   static constexpr auto offset_to_reference =
       si::thermodynamic_temperature<imperial::detail::zero_fahrenheit_abs_temperature_, int>(1);
 };
 
-template<UnitOf<si::dim_thermodynamic_temperature> U = degree_fahrenheit, QuantityValue Rep = double>
-using fahrenheit_temperature_point =
-  si::thermodynamic_temperature_point<U, Rep, fahrenheit_temperature_origin>;
+template<UnitOf<dim_thermodynamic_temperature> U = degree_fahrenheit, Representation Rep = double>
+using fahrenheit_temperature_point = quantity_point<fahrenheit_temperature_origin, U, Rep>;
+
+} // units::isq::si::imperial
+
+namespace units::detail {
+
+template <> struct customary_origin_spec_for_unit<units::isq::si::imperial::degree_fahrenheit> {
+  using type = units::isq::si::imperial::fahrenheit_temperature_origin;
+};
+
+} // namespace detail
+
+namespace units::isq::si::imperial {
+
+#ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
@@ -62,21 +79,42 @@ constexpr auto operator"" _qp_deg_F(long double l) {
 
 }  // namespace literals
 
-namespace unit_constants {
+#endif // UNITS_NO_LITERALS
 
-inline constexpr auto deg_F = thermodynamic_temperature<degree_fahrenheit, one_rep>{};
+#ifndef UNITS_NO_REFERENCES
 
-inline constexpr auto zp_deg_fahrenheit = thermodynamic_temperature_point<degree_fahrenheit, zero_rep, fahrenheit_temperature_origin>{};
+namespace thermodynamic_temperature_references {
 
-}  // namespace unit_constants
+inline constexpr auto deg_F =  reference<dim_thermodynamic_temperature, degree_fahrenheit>{};
+
+}  // namespace thermodynamic_temperature_references
+
+namespace references {
+
+using namespace thermodynamic_temperature_references;
+
+}  // namespace references
+
+#endif // UNITS_NO_REFERENCES
 
 }  // namespace units::physical::si::imperial
 
+#ifndef UNITS_NO_ALIASES
+
+namespace units::aliases::isq::si::imperial::inline thermodynamic_temperature {
+
+template<Representation Rep = double> using deg_F = units::isq::si::thermodynamic_temperature<units::isq::si::imperial::degree_fahrenheit, Rep>;
+
+}  // namespace units::aliases::isq::si::inline thermodynamic_temperature
+
+#endif // UNITS_NO_ALIASES
+
 namespace units {
 
-template <QuantityValue Rep>
-inline constexpr auto interpret_as_temperature_point(const units::physical::si::thermodynamic_temperature<units::physical::si::imperial::degree_fahrenheit, Rep> &t) {
-  return units::physical::si::imperial::fahrenheit_temperature_point<units::physical::si::imperial::degree_fahrenheit, Rep>(t);
+template <Representation Rep>
+inline constexpr auto interpret_as_temperature_point(const units::isq::si::thermodynamic_temperature<units::isq::si::imperial::degree_fahrenheit, Rep> &t) {
+  return units::isq::si::imperial::fahrenheit_temperature_point<units::isq::si::imperial::degree_fahrenheit, Rep>(t);
 }
+
 
 }  // namespace units

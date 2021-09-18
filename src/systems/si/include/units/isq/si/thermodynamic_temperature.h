@@ -43,7 +43,7 @@ struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin
 template<UnitOf<dim_thermodynamic_temperature> U, Representation Rep = double>
 using thermodynamic_temperature = quantity<dim_thermodynamic_temperature, U, Rep>;
 
-struct kelvin_temperature_origin : base_point_origin<dim_thermodynamic_temperature> {
+struct kelvin_temperature_origin : point_origin<dim_thermodynamic_temperature> {
   using reference_point_origin = kelvin_temperature_origin;
 };
 
@@ -53,7 +53,7 @@ using kelvin_temperature_point = quantity_point<kelvin_temperature_origin, U, Re
 
 struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"\u00b0C", "`C"}, no_prefix> {};
 
-struct celsius_temperature_origin : base_point_origin<dim_thermodynamic_temperature> {
+struct celsius_temperature_origin : point_origin<dim_thermodynamic_temperature> {
   using reference_point_origin = kelvin_temperature_origin;
   static constexpr auto offset_to_reference = thermodynamic_temperature<millikelvin, long int>(273150);
 };
@@ -127,7 +127,7 @@ namespace thermodynamic_temperature_references {
 
 inline constexpr auto K = reference<dim_thermodynamic_temperature, kelvin>{};
 inline constexpr auto mK = reference<dim_thermodynamic_temperature, millikelvin>{};
-inline constexpr auto deg_C =  reference<dim_thermodynamic_temperature, degree_celsius>{};;
+inline constexpr auto deg_C =  reference<dim_thermodynamic_temperature, degree_celsius>{};
 
 }  // namespace thermodynamic_temperature_references
 

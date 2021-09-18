@@ -40,7 +40,7 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
 };
 
 template<typename C>
-struct clock_origin : base_point_origin<isq::si::dim_time> { };
+struct clock_origin : point_origin<isq::si::dim_time> { };
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {

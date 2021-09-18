@@ -81,7 +81,7 @@ template<Unit U1, Dimension D1, Unit U2, Dimension D2>
 struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
                                           std::bool_constant<U1::ratio / dimension_unit<D1>::ratio == U2::ratio / dimension_unit<D2>::ratio>> {};
 
-// point origins [JohelEGP]
+// point origins
 
 template<typename T, typename U>
 concept EquivalentPointOrigins =
@@ -130,5 +130,6 @@ struct equivalent_impl<QPK1, QPK2> : std::conjunction<equivalent_impl<typename Q
 
 template<typename T, typename U>
 inline constexpr bool equivalent = detail::equivalent_impl<T, U>::value;
+
 
 }  // namespace units

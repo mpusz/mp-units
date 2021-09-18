@@ -20,31 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/origin.h>
-#include <units/physical/si/base/thermodynamic_temperature.h>
-#include <units/physical/si/imperial/base/thermodynamic_temperature.h>
-#include <units/physical/si/prefixes.h>
+#include <units/point_origin.h>
+#include <units/isq/si/thermodynamic_temperature.h>
+#include <units/isq/si/imperial/thermodynamic_temperature.h>
+#include <units/isq/si/prefixes.h>
 #include <units/quantity_io.h>
 #include <units/quantity_point.h>
 #include <iostream>
 
 using namespace units;
 
-namespace si = units::physical::si;
-namespace imperial = units::physical::si::imperial;
+namespace si = units::isq::si;
+namespace imperial = units::isq::si::imperial;
 
-using namespace si::literals;
-using namespace si::unit_constants;
-using namespace imperial::unit_constants;
+using namespace units::isq::si::literals;
+using namespace units::isq::si::references;
+using namespace units::isq::si::imperial::references;
 
 template <typename QP>
 void print_typical_temperatures() {
   // Highlighting different methods to construct a thermodynamic_temperature_point:
-  static constexpr auto absolute = zp_kelvin + 0*K;
-  static constexpr auto really_cold = zp_deg_fahrenheit + 0*deg_F;
+  static constexpr auto absolute = units::absolute<si::kelvin_temperature_origin>(0*K);
+  static constexpr auto really_cold = units::absolute<imperial::fahrenheit_temperature_origin>(0*deg_F);
   static constexpr auto freezing = 0_qp_deg_C;
   static constexpr auto human_body = interpret_as_temperature_point(98*deg_F);
-  static constexpr auto boiling = zp_deg_celsius + 100*deg_C;
+  static constexpr auto boiling =  units::absolute<si::celsius_temperature_origin>(100_q_deg_C);
 
   std::cout << "Absolute zero: " << quantity_point_cast<QP>(absolute).relative();
   std::cout << ", really cold: " << quantity_point_cast<QP>(really_cold).relative();

@@ -29,7 +29,7 @@
 namespace units {
 
 template<Dimension D>
-struct base_point_origin {
+struct point_origin {
   using dimension = D;
 };
 
@@ -43,7 +43,7 @@ struct base_point_origin {
  * @tparam D a dimension of the quantity point (can be either a BaseDimension or a DerivedDimension)
  */
 template<Dimension D>
-struct unspecified_origin : base_point_origin<D> {
+struct unspecified_origin : point_origin<D> {
   template<Dimension D2> requires equivalent<D,D2>
   using rebind = unspecified_origin<D2>;
 };
@@ -56,7 +56,7 @@ template <Unit U> struct customary_origin_spec_for_unit {};
 } // namespace detail
 
 template <Unit U> requires requires { typename detail::customary_origin_spec_for_unit<U>::type; }
-struct customary_origin_for_unit : base_point_origin<typename detail::customary_origin_spec_for_unit<U>::type::dimension> {
+struct customary_origin_for_unit : point_origin<typename detail::customary_origin_spec_for_unit<U>::type::dimension> {
   // equivalence of instantiations of customary_unit_origin is determined by equality of canonical_point_origin
   using canonical_point_origin = typename detail::customary_origin_spec_for_unit<U>::type;
   using reference_point_origin = typename canonical_point_origin::reference_point_origin;
