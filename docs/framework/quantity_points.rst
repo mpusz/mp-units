@@ -57,11 +57,11 @@ Alternatively, a "default" origin can be selected using CTAD::
     QuantityPoint d(32 * deg_F);
 
 In this case, if the library is aware of a specific customary origin that is implied by the unit, it will select
-the corresponding `customaery_origin_for_unit<Unit>`. Otherwise it will select the `unspecified_origin<Dimension>`.
+the corresponding `customary_origin_for_unit<Unit>`. Otherwise it will select the `unspecified_origin<Dimension>`.
 
 .. warning::
    Be very careful with that machinery in generic code! Normally, generic code does not need to care about the units
-   of it's arguments. Arithmetic summation for exampel will produce the same physically correct result (up to rounding),
+   of it's arguments. Arithmetic summation for example will produce the same physically correct result (up to rounding),
    no matter what units each of the arguments is supplied in, as the library takes care of that.
 
    Here on the other hand, the machinery may select a physically different origin depending on the supplied unit,
@@ -85,19 +85,19 @@ Construction by origin constant
 
 The library provides origin constants for the three most common temperature references:
 
- - `units::physical::si::zp_kelvin`: The point of 0 K.
- - `units::physical::si::zp_deg_celsius`: The point of 0 °C.
- - `units::physical::si::imperial::zp_deg_fahrenheit`: The point of 0 °F.
+ - `units::isq::si::zeroth_K`: The point of 0 K.
+ - `units::isq::si::zeroth_deg_C`: The point of 0 °C.
+ - `units::isq::si::imperial::zeroth_deg_F`: The point of 0 °F.
 
 Those can be added to instances of :class:`quantity` to create a :class:`quantity_point`::
 
-    using namespace units::physical::si;
+    using namespace units::isq::si;
 
-    celsius_temperature_point hot_chocolate = zp_deg_celsius + 55 * deg_C;
+    celsius_temperature_point hot_chocolate = zeroth_deg_C + 55 * deg_C;
 
 For a custom origin point, the corresponding point constant can be defined as follows::
 
-    inline constexp auto zp_mean_sea_level = quantity_point<si::dim_length, si::kilometre, zero_rep, mean_sea_level>{};
+    inline constexp auto zeroth_mean_sea_level = quantity_point<si::dim_length, si::kilometre, zero_rep, mean_sea_level>{};
 
 Construction by UDL
 ^^^^^^^^^^^^^^^^^^^
@@ -117,6 +117,7 @@ Unlike `quantity` and with the exception of temperatures, the library provides:
 - no origin constants,
 - no dimension-specific concepts, such as ``LengthPoint``
   (there's the dimension-agnostic `QuantityPoint`),
-- a more limited set of operations on quantity points
+- the set of operations on quantity points is more limited than on quantities on purpose,
+  excluding physically ill-defined operations
   (see the :ref:`framework/dimensions:Quantity Points` chapter)
 

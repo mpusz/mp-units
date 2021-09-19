@@ -164,7 +164,7 @@ namespace units {
  * WARNING: The returned value's physical meaning depends on the unit of the input quantity, which has no physical relevance on it's own.
  * That is, 1 Kelvin and 1 degree Celsius are physically equivalent quantities (as differences between thermodynamic temperatures),
  * yet the returned temperature points are physically different. This is in stark contrast to the usual behaviour of
- * this library, where unit conversions. For example, for the following holds:
+ * this library, where unit conversions are mostly transparent and interchangeable. For example, the following holds:
  * @code{.cpp}
  *   auto f = [](auto x) { return 2 * x; }
  *   assert( quantity_cast<si::degree_celsius>(f(3 * deg_F)) == f( quantity_cast<si::degree_celsius>(3 * deg_F) ) );

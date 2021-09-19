@@ -385,7 +385,7 @@ Quantity References vs Unit-specific Aliases
    - Quantity References
 
      The syntax for references uses ``*`` operator which has some predefined precedence. This operator
-     always takes a magnitude or a reference as ``lhs`` and a reference as ``rhs``. All other comibnations
+     always takes a magnitude or a reference as ``lhs`` and a reference as ``rhs``. All other combinations
      are not allowed. It means that in order to satisfy the operators precedence sometimes quite a lot
      of parenthesis have to be sprinkled in the code in order for the code to compile::
 
@@ -399,7 +399,7 @@ Quantity References vs Unit-specific Aliases
 
    - Quantity References
 
-     References have only to be defined for named units. Also for the user's conveniance references are
+     References have only to be defined for named units. Also for the user's convenience references are
      predefined for units raised to a specific power (e.g. ``m2``, ``km3``, etc). All other derived units
      can be constructed using the provided ones already even if they do not correspond to any predefined
      dimension::
