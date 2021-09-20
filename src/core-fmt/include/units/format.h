@@ -126,7 +126,7 @@ constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool trea
     if (treat_as_floating_point) {
       begin = parse_precision(begin, end, handler);
     } else
-      handler.on_error("precision not allowed for integral quantity representation");
+      throw STD_FMT::format_error("precision not allowed for integral quantity representation");
     if (begin == end) return begin;
   }
 
@@ -264,8 +264,7 @@ OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<C
   return STD_FMT::format_to(out, "}}");
 }
 
-template<typename Dimension, typename Unit, typename Rep, typename Locale, typename CharT,
-         typename OutputIt>
+template<typename Dimension, typename Unit, typename Rep, typename Locale, typename CharT, typename OutputIt>
 struct quantity_formatter {
   OutputIt out;
   Rep val;
@@ -317,7 +316,6 @@ private:
     formatter& f;
     STD_FMT::basic_format_parse_context<CharT>& context;
 
-    void on_error(const char* msg) { throw STD_FMT::format_error(msg); }
     constexpr void on_fill(std::basic_string_view<CharT> fill) { f.specs.global.fill = fill; }
     constexpr void on_align(units::detail::fmt_align align) { f.specs.global.align = align; }
     constexpr void on_width(int width) { f.specs.global.width = width; }
@@ -332,7 +330,7 @@ private:
       if (valid_rep_types.find(type) != std::string_view::npos) {
         f.specs.rep.type = type;
       } else {
-        on_error("invalid quantity type specifier");
+        throw STD_FMT::format_error("invalid quantity type specifier");
       }
     }
 
@@ -342,7 +340,7 @@ private:
       if (valid_modifiers.find(mod) != std::string_view::npos) {
         f.specs.unit.ascii_only = true;
       } else {
-        on_error("invalid unit modifier specified");
+        throw STD_FMT::format_error("invalid unit modifier specified");
       }
     }
 

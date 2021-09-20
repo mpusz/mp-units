@@ -164,7 +164,8 @@ template<typename CharT>
 template<class Handler, typename FormatContext>
 [[nodiscard]] constexpr int get_dynamic_spec(int index, FormatContext& ctx)
 {
-  const unsigned long long value = STD_FMT::visit_format_arg(Handler{}, ctx.arg(FMT_TO_ARG_ID(static_cast<size_t>(index))));
+  const unsigned long long value =
+    STD_FMT::visit_format_arg(Handler{}, ctx.arg(FMT_TO_ARG_ID(static_cast<size_t>(index))));
   if (value > static_cast<unsigned long long>(std::numeric_limits<int>::max())) {
     throw STD_FMT::format_error("number is too big");
   }
@@ -173,8 +174,8 @@ template<class Handler, typename FormatContext>
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
-[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, IDHandler&& handler, size_t& value) noexcept
+template<std::forward_iterator It, std::sentinel_for<It> S>
+[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, size_t& value)
 {
   gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
   constexpr auto max_int = static_cast<unsigned>(std::numeric_limits<int>::max());
@@ -190,16 +191,16 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
     ++begin;
   } while (begin != end && '0' <= *begin && *begin <= '9');
 
-  if (value > max_int) handler.on_error("Number is too big");
+  if (value > max_int) throw STD_FMT::format_error("Number is too big");
 
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
-[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, IDHandler&& handler, int& value) noexcept
+template<std::forward_iterator It, std::sentinel_for<It> S>
+[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, int& value)
 {
   size_t val_unsigned = 0;
-  begin = parse_nonnegative_int(begin, end, handler, val_unsigned);
+  begin = parse_nonnegative_int(begin, end, val_unsigned);
   // Never invalid because parse_nonnegative_integer throws an error for values that don't fit in signed integers
   value = static_cast<int>(val_unsigned);
   return begin;
@@ -213,17 +214,16 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
   if (c >= '0' && c <= '9') {
     size_t index = 0;
     if (c != '0')
-      begin = parse_nonnegative_int(begin, end, handler, index);
+      begin = parse_nonnegative_int(begin, end, index);
     else
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
-      handler.on_error("invalid format string");
+      throw STD_FMT::format_error("invalid format string");
     else
       handler(index);
     return begin;
   }
-  handler.on_error("invalid format string");
-  return begin;
+  throw STD_FMT::format_error("invalid format string");
 }
 
 template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
@@ -265,24 +265,20 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
     Handler& handler;
     constexpr void operator()() { handler.on_dynamic_width(auto_id{}); }
     constexpr void operator()(size_t id) { handler.on_dynamic_width(id); }
-    constexpr void on_error(const char* message)
-    {
-      if (message) handler.on_error(message);
-    }
   };
 
   gsl_Expects(begin != end);
   if ('0' <= *begin && *begin <= '9') {
     int width = 0;
-    begin = parse_nonnegative_int(begin, end, handler, width);
+    begin = parse_nonnegative_int(begin, end, width);
     if (width != -1)
       handler.on_width(width);
     else
-      handler.on_error("number is too big");
+      throw STD_FMT::format_error("number is too big");
   } else if (*begin == '{') {
     ++begin;
     if (begin != end) begin = parse_arg_id(begin, end, width_adapter{handler});
-    if (begin == end || *begin != '}') return handler.on_error("invalid format string"), begin;
+    if (begin == end || *begin != '}') throw STD_FMT::format_error("invalid format string");
     ++begin;
   }
   return begin;
@@ -295,27 +291,23 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
     Handler& handler;
     constexpr void operator()() { handler.on_dynamic_precision(auto_id{}); }
     constexpr void operator()(size_t id) { handler.on_dynamic_precision(id); }
-    constexpr void on_error(const char* message)
-    {
-      if (message) handler.on_error(message);
-    }
   };
 
   ++begin;
   auto c = begin != end ? *begin : std::iter_value_t<It>();
   if ('0' <= c && c <= '9') {
     auto precision = 0;
-    begin = parse_nonnegative_int(begin, end, handler, precision);
+    begin = parse_nonnegative_int(begin, end, precision);
     if (precision != -1)
       handler.on_precision(precision);
     else
-      handler.on_error("number is too big");
+      throw STD_FMT::format_error("number is too big");
   } else if (c == '{') {
     ++begin;
     if (begin != end) begin = parse_arg_id(begin, end, precision_adapter{handler});
-    if (begin == end || *begin++ != '}') return handler.on_error("invalid format string"), begin;
+    if (begin == end || *begin++ != '}') throw STD_FMT::format_error("invalid format string");
   } else {
-    return handler.on_error("missing precision specifier"), begin;
+    throw STD_FMT::format_error("missing precision specifier");
   }
   return begin;
 }
@@ -359,7 +351,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
     if (align != fmt_align::none) {
       if (p != begin) {
         auto c = *begin;
-        if (c == '{') return handler.on_error("invalid fill character '{'"), begin;
+        if (c == '{') throw STD_FMT::format_error("invalid fill character '{'");
         handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(begin, static_cast<size_t>(p - begin)));
         begin = p + 1;
       } else
@@ -463,9 +455,6 @@ public:
   {
     specs_.dynamic_precision_index = on_dynamic_arg(t, context_);
   }
-
-  constexpr void on_error(const char* message) { context_.on_error(message); }
-
 private:
   dynamic_format_specs<char_type>& specs_;
   ParseContext& context_;
