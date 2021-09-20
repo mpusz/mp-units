@@ -151,14 +151,14 @@ struct dynamic_format_specs : basic_format_specs<Char> {
 template<typename CharT>
 [[nodiscard]] constexpr int on_dynamic_arg(size_t arg_id, STD_FMT::basic_format_parse_context<CharT>& context)
 {
-  context.check_arg_id(FMT_ARG_ID(arg_id));
+  context.check_arg_id(FMT_TO_ARG_ID(arg_id));
   return verify_dynamic_arg_index_in_range(arg_id);
 }
 
 template<typename CharT>
 [[nodiscard]] constexpr int on_dynamic_arg(auto_id, STD_FMT::basic_format_parse_context<CharT>& context)
 {
-  return verify_dynamic_arg_index_in_range(context.next_arg_id());
+  return verify_dynamic_arg_index_in_range(FMT_FROM_ARG_ID(context.next_arg_id()));
 }
 
 template<class Handler, typename FormatContext>
@@ -173,25 +173,36 @@ template<class Handler, typename FormatContext>
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<std::forward_iterator It, std::sentinel_for<It> S>
-[[nodiscard]] constexpr int parse_nonnegative_int(It& begin, S end, int error_value) noexcept
+template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
+[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, IDHandler&& handler, size_t& value) noexcept
 {
   gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
-  unsigned value = 0, prev = 0;
-  auto p = begin;
+  constexpr auto max_int = static_cast<unsigned>(std::numeric_limits<int>::max());
+  constexpr auto big_int = max_int / 10u;
+  value = 0;
+
   do {
-    prev = value;
-    value = value * 10 + unsigned(*p - '0');
-    ++p;
-  } while (p != end && '0' <= *p && *p <= '9');
-  auto num_digits = p - begin;
-  begin = p;
-  if (num_digits <= std::numeric_limits<int>::digits10) return static_cast<int>(value);
-  // Check for overflow.
-  const unsigned max = static_cast<unsigned>(std::numeric_limits<int>::max());
-  return num_digits == std::numeric_limits<int>::digits10 + 1 && prev * 10ull + unsigned(p[-1] - '0') <= max
-           ? static_cast<int>(value)
-           : error_value;
+    if (value > big_int) {
+      value = max_int + 1;
+      break;
+    }
+    value = value * 10 + static_cast<unsigned int>(*begin - '0');
+    ++begin;
+  } while (begin != end && '0' <= *begin && *begin <= '9');
+
+  if (value > max_int) handler.on_error("Number is too big");
+
+  return begin;
+}
+
+template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
+[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, IDHandler&& handler, int& value) noexcept
+{
+  size_t val_unsigned = 0;
+  begin = parse_nonnegative_int(begin, end, handler, val_unsigned);
+  // Never invalid because parse_nonnegative_integer throws an error for values that don't fit in signed integers
+  value = static_cast<int>(val_unsigned);
+  return begin;
 }
 
 template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
@@ -200,9 +211,9 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
   gsl_Expects(begin != end);
   auto c = *begin;
   if (c >= '0' && c <= '9') {
-    int index = 0;
+    size_t index = 0;
     if (c != '0')
-      index = parse_nonnegative_int(begin, end, std::numeric_limits<int>::max());
+      begin = parse_nonnegative_int(begin, end, handler, index);
     else
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
@@ -253,7 +264,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   struct width_adapter {
     Handler& handler;
     constexpr void operator()() { handler.on_dynamic_width(auto_id{}); }
-    constexpr void operator()(int id) { handler.on_dynamic_width(id); }
+    constexpr void operator()(size_t id) { handler.on_dynamic_width(id); }
     constexpr void on_error(const char* message)
     {
       if (message) handler.on_error(message);
@@ -262,7 +273,8 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
 
   gsl_Expects(begin != end);
   if ('0' <= *begin && *begin <= '9') {
-    int width = parse_nonnegative_int(begin, end, -1);
+    int width = 0;
+    begin = parse_nonnegative_int(begin, end, handler, width);
     if (width != -1)
       handler.on_width(width);
     else
@@ -282,7 +294,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   struct precision_adapter {
     Handler& handler;
     constexpr void operator()() { handler.on_dynamic_precision(auto_id{}); }
-    constexpr void operator()(int id) { handler.on_dynamic_precision(id); }
+    constexpr void operator()(size_t id) { handler.on_dynamic_precision(id); }
     constexpr void on_error(const char* message)
     {
       if (message) handler.on_error(message);
@@ -292,7 +304,8 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   ++begin;
   auto c = begin != end ? *begin : std::iter_value_t<It>();
   if ('0' <= c && c <= '9') {
-    auto precision = parse_nonnegative_int(begin, end, -1);
+    auto precision = 0;
+    begin = parse_nonnegative_int(begin, end, handler, precision);
     if (precision != -1)
       handler.on_precision(precision);
     else
