@@ -240,7 +240,7 @@ template<typename CharT, typename Rep, typename OutputIt, typename Locale>
 
 // Creates a global format string
 //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
-template<typename CharT, std::output_iterator<CharT> OutputIt>
+template<typename CharT, typename OutputIt>
 OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<CharT>& specs)
 {
   STD_FMT::format_to(out, "{{:");
@@ -265,7 +265,7 @@ OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<C
 }
 
 template<typename Dimension, typename Unit, typename Rep, typename Locale, typename CharT,
-         std::output_iterator<CharT> OutputIt>
+         typename OutputIt>
 struct quantity_formatter {
   OutputIt out;
   Rep val;
@@ -371,7 +371,7 @@ private:
     }
   };
 
-  [[nodiscard]] constexpr std::ranges::subrange<iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr std::pair<iterator, iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto begin = ctx.begin();
     auto end = ctx.end();
@@ -399,7 +399,7 @@ private:
     return {begin, end};
   }
 
-  template<std::output_iterator<CharT> OutputIt, typename FormatContext>
+  template<typename OutputIt, typename FormatContext>
   OutputIt format_quantity_content(OutputIt out, const quantity& q, FormatContext& ctx)
   {
     auto begin = format_str.begin();
@@ -409,7 +409,7 @@ private:
       // default format should print value followed by the unit separated with 1 space
       out = units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
       constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
-      if constexpr (symbol.standard().size()) {
+      if constexpr (symbol.standard().size() > 0) {
         *out++ = CharT(' ');
         STD_FMT::format_to(out, "{}", symbol.standard().c_str());
       }
@@ -425,8 +425,8 @@ public:
   [[nodiscard]] constexpr auto parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    format_str = std::basic_string_view<CharT>(range.begin(), range.end());
-    return range.end();
+    format_str = std::basic_string_view<CharT>(range.first, static_cast<size_t>(range.second - range.first));
+    return range.second;
   }
 
   template<typename FormatContext>

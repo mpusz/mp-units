@@ -71,11 +71,12 @@
 #if UNITS_COMP_CLANG == 12
 
 #include <concepts/concepts.hpp>
-#include <range/v3/functional/comparisons.hpp>
-#include <range/v3/iterator.hpp>
-#include <range/v3/range/concepts.hpp>
 #include <range/v3/algorithm/lower_bound.hpp>
 #include <range/v3/algorithm/transform.hpp>
+#include <range/v3/functional/comparisons.hpp>
+#include <range/v3/iterator.hpp>
+#include <range/v3/iterator/concepts.hpp>
+#include <range/v3/range/concepts.hpp>
 
 #elif UNITS_COMP_CLANG == 13 || UNITS_COMP_CLANG == 14
 
@@ -126,6 +127,10 @@ using concepts::three_way_comparable_with;
 using concepts::totally_ordered;
 
 using ranges::compare_three_way;
+
+using ranges::forward_iterator;
+using ranges::sentinel_for;
+using ranges::iter_value_t;
 
 namespace ranges {
 

@@ -164,7 +164,7 @@ template<typename CharT>
 template<class Handler, typename FormatContext>
 [[nodiscard]] constexpr int get_dynamic_spec(int index, FormatContext& ctx)
 {
-  const unsigned long long value = STD_FMT::visit_format_arg(Handler{}, ctx.arg(static_cast<size_t>(index)));
+  const unsigned long long value = STD_FMT::visit_format_arg(Handler{}, ctx.arg(FMT_TO_ARG_ID(static_cast<size_t>(index))));
   if (value > static_cast<unsigned long long>(std::numeric_limits<int>::max())) {
     throw STD_FMT::format_error("number is too big");
   }
@@ -360,7 +360,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
       if (p != begin) {
         auto c = *begin;
         if (c == '{') return handler.on_error("invalid fill character '{'"), begin;
-        handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(begin, p));
+        handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(begin, static_cast<size_t>(p - begin)));
         begin = p + 1;
       } else
         ++begin;
