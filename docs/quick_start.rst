@@ -77,11 +77,11 @@ of basic library features::
     
       std::cout << v1 << '\n';                                  // 110 km/h
       std::cout << v2 << '\n';                                  // 70 mi/h
-      std::cout << fmt::format("{}", v3) << '\n';               // 110 km/h
-      std::cout << fmt::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
-      std::cout << fmt::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
-      std::cout << fmt::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
-      std::cout << fmt::format("{:%Q}", v7) << '\n';            // 31
+      std::cout << std::format("{}", v3) << '\n';               // 110 km/h
+      std::cout << std::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
+      std::cout << std::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
+      std::cout << std::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
+      std::cout << std::format("{:%Q}", v7) << '\n';            // 31
     }
 
 .. admonition:: Try it on Compiler Explorer

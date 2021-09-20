@@ -28,6 +28,7 @@
 #include <units/format.h>
 #include <units/generic/dimensionless.h>
 #include <array>
+#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex4
 
@@ -35,13 +36,13 @@ using namespace units;
 
 void print_header(const kalman::State auto& initial)
 {
-  fmt::print("Initial: {}\n", initial);
-  fmt::print("{:>2} | {:>8} | {:>35} | {:>35}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
+  std::cout << STD_FMT::format("Initial: {}\n", initial);
+  std::cout << STD_FMT::format("{:>2} | {:>8} | {:>35} | {:>35}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
 }
 
 void print(auto iteration, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
 {
-  fmt::print("{:2} | {:8} | {:>35.1} | {:>35.1}\n", iteration, measured, current, next);
+  std::cout << STD_FMT::format("{:2} | {:8} | {:>35.1} | {:>35.1}\n", iteration, measured, current, next);
 }
 
 int main()

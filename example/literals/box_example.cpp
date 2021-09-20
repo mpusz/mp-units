@@ -105,9 +105,9 @@ int main()
   const Time auto fill_time_left = (height / fill_level - 1) * fill_time;
 
   std::cout << "mp-units box example...\n";
-  std::cout << fmt::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_percent);
-  std::cout << fmt::format("spare_capacity at {} = {}\n", fill_time, spare_capacity);
-  std::cout << fmt::format("input flow rate after {} = {}\n", fill_time, input_flow_rate);
-  std::cout << fmt::format("float rise rate = {}\n", float_rise_rate);
-  std::cout << fmt::format("box full E.T.A. at current flow rate = {}\n", fill_time_left);
+  std::cout << STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_percent);
+  std::cout << STD_FMT::format("spare_capacity at {} = {}\n", fill_time, spare_capacity);
+  std::cout << STD_FMT::format("input flow rate after {} = {}\n", fill_time, input_flow_rate);
+  std::cout << STD_FMT::format("float rise rate = {}\n", float_rise_rate);
+  std::cout << STD_FMT::format("box full E.T.A. at current flow rate = {}\n", fill_time_left);
 }

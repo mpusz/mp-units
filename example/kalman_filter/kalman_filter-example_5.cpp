@@ -25,6 +25,7 @@
 #include <units/format.h>
 #include <units/math.h>
 #include <array>
+#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex5
 
@@ -33,14 +34,14 @@ using namespace units;
 template<Quantity Q>
 void print_header(kalman::estimation<Q> initial)
 {
-  fmt::print("Initial: {}\n", initial);
-  fmt::print("{:>2} | {:>5} | {:>8} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate", "Next Estimate");
+  std::cout << STD_FMT::format("Initial: {}\n", initial);
+  std::cout << STD_FMT::format("{:>2} | {:>5} | {:>8} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate", "Next Estimate");
 }
 
 template<Quantity Q, Dimensionless K>
 void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, kalman::estimation<Q> next)
 {
-  fmt::print("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured, current, next);
+  std::cout << STD_FMT::format("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured, current, next);
 }
 
 int main()

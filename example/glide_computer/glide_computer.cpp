@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
+#include <iostream>
 #include <numeric>
 #include <string_view>
 
@@ -136,8 +137,8 @@ namespace glide_computer {
 
 void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s, const aircraft_tow& at)
 {
-  fmt::print("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance", "Height");
-  fmt::print("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
+  std::cout << STD_FMT::format("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance", "Height");
+  std::cout << STD_FMT::format("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
 
   // ready to takeoff
   flight_point pos = takeoff(start_ts, t);

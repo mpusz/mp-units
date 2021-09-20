@@ -22,14 +22,9 @@
 
 #pragma once
 
-#include <units/bits/external/hacks.h>
+#include <units/bits/fmt_hacks.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
-
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-#include <fmt/format.h>
-UNITS_DIAGNOSTIC_POP
 
 #include <limits>
 #include <ostream>
@@ -106,21 +101,21 @@ class std::numeric_limits<geographic::longitude> : public numeric_limits<geograp
 };
 
 template<>
-struct fmt::formatter<geographic::latitude> : formatter<geographic::latitude::value_type> {
+struct STD_FMT::formatter<geographic::latitude> : formatter<geographic::latitude::value_type> {
   template<typename FormatContext>
   auto format(geographic::latitude lat, FormatContext& ctx)
   {
-    fmt::format_to(ctx.out(), fmt::runtime(lat.value() > 0 ? "N" : "S"));
+    STD_FMT::format_to(ctx.out(), FMT_RUNTIME(lat.value() > 0 ? "N" : "S"));
     return formatter<geographic::latitude::value_type>::format(lat.value() > 0 ? lat.value() : -lat.value(), ctx);
   }
 };
 
 template<>
-struct fmt::formatter<geographic::longitude> : formatter<geographic::longitude::value_type> {
+struct STD_FMT::formatter<geographic::longitude> : formatter<geographic::longitude::value_type> {
   template<typename FormatContext>
   auto format(geographic::longitude lon, FormatContext& ctx)
   {
-    fmt::format_to(ctx.out(), fmt::runtime(lon.value() > 0 ? "E" : "W"));
+    STD_FMT::format_to(ctx.out(), FMT_RUNTIME(lon.value() > 0 ? "E" : "W"));
     return formatter<geographic::longitude::value_type>::format(lon.value() > 0 ? lon.value() : -lon.value(), ctx);
   }
 };

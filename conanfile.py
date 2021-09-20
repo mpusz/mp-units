@@ -37,7 +37,6 @@ class UnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
     requires = (
-        "fmt/8.0.1",
         "gsl-lite/0.38.1"
     )
     options = {
@@ -62,6 +61,12 @@ class UnitsConan(ConanFile):
     def _run_tests(self):
         return tools.get_env("CONAN_RUN_TESTS", False)
 
+    @property
+    def _use_libfmt(self):
+        # compiler = self.settings.compiler
+        # return compiler != "Visual Studio" and compiler != "msvc"  # TODO Enable when VS std::format_to(ctx.out, ...) is fixed
+        return True
+
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
@@ -69,6 +74,9 @@ class UnitsConan(ConanFile):
 
     def requirements(self):
         compiler = self.settings.compiler
+        if self._use_libfmt:
+            self.requires("fmt/8.0.1")
+
         if compiler == "clang" and compiler.libcxx == "libc++":
             self.requires("range-v3/0.11.0")
 
@@ -105,7 +113,8 @@ class UnitsConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
-        tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs
+        tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs == "True"
+        tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()

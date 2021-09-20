@@ -22,24 +22,18 @@
 
 #pragma once
 
+#include <units/bits/fmt.h>
 #include <units/customization_points.h>
 #include <units/quantity.h>
-
 #include <algorithm>
-#include <string_view>
+#include <cstdint>
 
 // IWYU pragma: begin_exports
 #include <units/bits/unit_text.h>
-
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
-UNITS_DIAGNOSTIC_POP
 // IWYU pragma: end_exports
 
 // Grammar
-// 
+//
 // units-format-spec   ::=  [fill-and-align] [width] [units-specs]
 // units-specs         ::=  conversion-spec
 //                          units-specs conversion-spec
@@ -60,457 +54,412 @@ UNITS_DIAGNOSTIC_POP
 // -   Add the new symbol in the `units_types` variable in the `parse_units_format` function
 // -   Add a new case in the `if` following the format_error in `parse_units_format` function;
 //     this should invoke `handler.on_[...]`
-// -   Edit `fmt::formatter`:
+// -   Edit `STD_FMT::formatter`:
 //     - Add a new field for the flag/specs
-//     - Add to the `fmt::formatter::spec_handler` a `on_[...]` function that set the flag/specs if needed
-// -   Edit `units_formatter`:
+//     - Add to the `STD_FMT::formatter::spec_handler` a `on_[...]` function that set the flag/specs if needed
+// -   Edit `quantity_formatter`:
 //     - Add a new field for the flag/specs
 //     - write a `on_[...]` function that writes to the `out` iterator the correct output
-// 
+//
 // If you want to add a new `units-rep-type`:
 // -   Add the new symbol in the `valid_rep_types` variable (which is in the
-//         fmt::formatter::spec_handler::on_type member function)
+//         STD_FMT::formatter::spec_handler::on_type member function)
 //     NB: currently this function forward the modifier to the value that must be formatted;
-//         if the symbol has no meaning for fmt::formatter<Rep>, this behavior should be disabled manually
+//         if the symbol has no meaning for STD_FMT::formatter<Rep>, this behavior should be disabled manually
 //         (as is done for '\0')
 // -   Implement the effect of the new flag in `format_units_quantity_value`
-// 
+//
 // If you want to add a new `units-unit-modifier`:
 // -   Add the new symbol in the `valid_modifiers` variable (which is in the
-//         fmt::formatter::spec_handler::on_modifier member function)
-// -   Implement the effect of the new flag in the `units_formatter::on_quantity_unit` member function
+//         STD_FMT::formatter::spec_handler::on_unit_modifier member function)
+// -   Implement the effect of the new flag in the `quantity_formatter::on_quantity_unit` member function
 
-namespace units {
+namespace units::detail {
 
-  namespace detail {
+// Holds specs about the whole object
+template<typename CharT>
+struct quantity_global_format_specs {
+  fill_t<CharT> fill;
+  fmt_align align = fmt_align::none;
+  int width = 0;
+  int dynamic_width_index = -1;
+};
 
-    // Holds specs about the whole object
-    template<typename CharT>
-    struct global_format_specs
-    {
-      fmt::detail::fill_t<CharT> fill;
-      fmt::align_t align = fmt::align_t::none;
-      int width = 0;
-    };
+// Holds specs about the representation (%[specs]Q)
+struct quantity_rep_format_specs {
+  fmt_sign sign = fmt_sign::none;
+  int precision = -1;
+  int dynamic_precision_index = -1;
+  char type = '\0';
+  bool alt = false;
+  bool localized = false;
+};
 
-    // Holds specs about the representation (%[specs]Q)
-    struct rep_format_specs
-    {
-      fmt::sign_t sign = fmt::sign_t::none;
-      int precision = -1;
-      char type = '\0';
-      bool alt = false;
-      bool use_locale = false;
-    };
+// Holds specs about the unit (%[specs]q)
+struct quantity_unit_format_specs {
+  bool ascii_only = false;
+};
 
-    // Holds specs about the unit (%[specs]q)
-    struct unit_format_specs
-    {
-      char modifier = '\0';
-    };
+template<typename CharT>
+struct quantity_format_specs {
+  quantity_global_format_specs<CharT> global;
+  quantity_rep_format_specs rep;
+  quantity_unit_format_specs unit;
+};
 
-    // Parse a `units-rep-modifier`
-    template <typename CharT, typename Handler>
-    constexpr const CharT* parse_units_rep(const CharT* begin, const CharT* end, Handler&& handler, bool treat_as_floating_point)
-    {
-      // parse sign
-      switch(static_cast<char>(*begin)) {
-      case '+':
-        handler.on_plus();
-        ++begin;
-        break;
-      case '-':
-        handler.on_minus();
-        ++begin;
-        break;
-      case ' ':
-        handler.on_space();
-        ++begin;
-        break;
-      }
-      if(begin == end)
-        return begin;
+// Parse a `units-rep-modifier`
+template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool treat_as_floating_point)
+{
+  // parse sign
+  begin = parse_sign(begin, end, handler);
+  if (begin == end) return begin;
 
-      // parse #
-      if (*begin == '#') {
-        handler.on_alt();
-        if (++begin == end) return begin;
-      }
+  // parse #
+  if (*begin == '#') {
+    handler.on_hash();
+    if (++begin == end) return begin;
+  }
 
-      // parse precision if a floating point
-      if(*begin == '.') {
-        if (treat_as_floating_point)
-          begin = fmt::detail::parse_precision(begin, end, handler);
-        else
-          handler.on_error("precision not allowed for integral quantity representation");
-      }
+  // parse precision if a floating point
+  if (*begin == '.') {
+    if (treat_as_floating_point) {
+      begin = parse_precision(begin, end, handler);
+    } else
+      handler.on_error("precision not allowed for integral quantity representation");
+    if (begin == end) return begin;
+  }
 
-      // parse L to enable the locale-specific form
-      if (*begin == 'L') {
-        handler.on_locale();
-        ++begin;
-      }
+  // parse L to enable the locale-specific form
+  if (*begin == 'L') {
+    handler.on_localized();
+    ++begin;
+  }
 
-      if(begin != end && *begin != '}' && *begin != '%') {
-        handler.on_type(*begin++);
-      }
-      return begin;
+  if (begin != end && *begin != '}' && *begin != '%') {
+    handler.on_type(*begin++);
+  }
+  return begin;
+}
+
+// parse units-specs
+template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+constexpr It parse_units_format(It begin, S end, Handler&& handler)
+{
+  auto ptr = begin;
+  while (ptr != end) {
+    auto c = *ptr;
+    if (c == '}') break;
+    if (c != '%') {
+      ++ptr;
+      continue;
     }
+    if (begin != ptr) handler.on_text(begin, ptr);
+    begin = ++ptr;  // consume '%'
+    if (ptr == end) throw STD_FMT::format_error("invalid format");
+    c = *ptr++;
 
-    // parse units-specs
-    template<typename CharT, typename Handler>
-    constexpr const CharT* parse_units_format(const CharT* begin, const CharT* end, Handler&& handler)
-    {
-      auto ptr = begin;
-      while(ptr != end) {
-        auto c = *ptr;
-        if(c == '}')
-          break;
-        if(c != '%') {
-          ++ptr;
-          continue;
-        }
-        if(begin != ptr)
-          handler.on_text(begin, ptr);
-        begin = ++ptr;  // consume '%'
-        if(ptr == end)
-          throw fmt::format_error("invalid format");
-        c = *ptr++;
-
-        switch(c) {
-        // units-type
-        case '%':
-          handler.on_text(ptr - 1, ptr);
-          break;
-        case 'n': {
-          const char newline[] = "\n";
-          handler.on_text(newline, newline + 1);
-          break;
-        }
-        case 't': {
-          const char tab[] = "\t";
-          handler.on_text(tab, tab + 1);
-          break;
-        }
-        default:
-          constexpr auto units_types = std::string_view{"Qq"};
-          auto const new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
-          if (new_end == end) {
-            throw fmt::format_error("invalid format");
-          }
-          if (*new_end == 'Q') {
-            handler.on_quantity_value(begin, new_end); // Edit `on_quantity_value` to add rep modifiers
-          } else {
-            handler.on_quantity_unit(*begin);          // Edit `on_quantity_unit` to add an unit modifier
-          }
-          ptr = new_end + 1;
-        }
-        begin = ptr;
-      }
-      if(begin != ptr)
-        handler.on_text(begin, ptr);
-      return ptr;
-    }
-
-    // build the 'representation' as requested in the format string, applying only units-rep-modifiers
-    template<typename CharT, typename Rep, typename OutputIt, typename LocaleRef>
-    inline OutputIt format_units_quantity_value(OutputIt out, const Rep& val, const rep_format_specs& rep_specs, LocaleRef loc)
-    {
-      fmt::basic_memory_buffer<CharT> buffer;
-      auto to_buffer = std::back_inserter(buffer);
-
-      fmt::format_to(to_buffer, "{{:");
-      switch(rep_specs.sign) {
-      case fmt::sign::none:
+    switch (c) {
+      // units-type
+      case '%':
+        handler.on_text(ptr - 1, ptr);
         break;
-      case fmt::sign::plus:
-        fmt::format_to(to_buffer, "+");
-        break;
-      case fmt::sign::minus:
-        fmt::format_to(to_buffer, "-");
-        break;
-      case fmt::sign::space:
-        fmt::format_to(to_buffer, " ");
+      case 'n': {
+        const char newline[] = "\n";
+        handler.on_text(newline, newline + 1);
         break;
       }
-
-      if (rep_specs.alt) {
-        fmt::format_to(to_buffer, "#");
-      }
-      auto type = rep_specs.type;
-      if (auto precision = rep_specs.precision; precision >= 0) {
-        fmt::format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
-      } else if constexpr (treat_as_floating_point<Rep>) {
-        fmt::format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
-      } else {
-        if (type != '\0') {
-          fmt::format_to(to_buffer, "{}", type);
-        }
-      }
-      if (rep_specs.use_locale) {
-        fmt::format_to(to_buffer, "L");
-      }
-      fmt::format_to(to_buffer, "}}");
-      if (rep_specs.use_locale and static_cast<bool>(loc)) {
-        return fmt::format_to(out, loc.template get<std::locale>(), fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
-      }
-      return fmt::format_to(out, fmt::runtime(std::string_view(buffer.data(), buffer.size())), val);
-    }
-
-    // Creates a global format string
-    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
-    template<typename CharT, typename OutputIt>
-    inline OutputIt format_global_buffer(OutputIt out, const global_format_specs<CharT>& specs)
-    {
-      fmt::format_to(out, "{{:");
-      if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
-        fmt::format_to(out, "{}", specs.fill.data());
-      }
-      switch (specs.align) {
-      case fmt::align_t::left:
-        fmt::format_to(out, "<");
+      case 't': {
+        const char tab[] = "\t";
+        handler.on_text(tab, tab + 1);
         break;
-      case fmt::align_t::right:
-        fmt::format_to(out, ">");
-        break;
-      case fmt::align_t::center:
-        fmt::format_to(out, "^");
-        break;
+      }
       default:
-        break;
-      }
-      if (specs.width >= 1) {
-        fmt::format_to(out, "{}", specs.width);
-      }
-      return fmt::format_to(out, "}}");
+        constexpr auto units_types = std::string_view{"Qq"};
+        auto const new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
+        if (new_end == end) throw STD_FMT::format_error("invalid format");
+        if (*new_end == 'Q') {
+          handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
+        } else {
+          handler.on_quantity_unit(*begin);  // Edit `on_quantity_unit` to add an unit modifier
+        }
+        ptr = new_end + 1;
     }
+    begin = ptr;
+  }
+  if (begin != ptr) handler.on_text(begin, ptr);
+  return ptr;
+}
 
-    template<typename OutputIt, typename Dimension, typename Unit, typename Rep, typename LocaleRef, typename CharT>
-    struct units_formatter {
-      OutputIt out;
-      Rep val;
-      global_format_specs<CharT> const & global_specs;
-      rep_format_specs const & rep_specs;
-      unit_format_specs const & unit_specs;
-      LocaleRef loc;
+// build the 'representation' as requested in the format string, applying only units-rep-modifiers
+template<typename CharT, typename Rep, typename OutputIt, typename Locale>
+[[nodiscard]] OutputIt format_units_quantity_value(OutputIt out, const Rep& val,
+                                                   const quantity_rep_format_specs& rep_specs, const Locale& loc)
+{
+  std::basic_string<CharT> buffer;
+  auto to_buffer = std::back_inserter(buffer);
 
-      explicit units_formatter(
-        OutputIt o, quantity<Dimension, Unit, Rep> q,
-        global_format_specs<CharT> const & gspecs,
-        rep_format_specs const & rspecs, unit_format_specs const & uspecs,
-        LocaleRef lc
-      ):
-        out(o), val(q.number()), global_specs(gspecs), rep_specs(rspecs), unit_specs(uspecs), loc(lc)
-      {
-      }
+  STD_FMT::format_to(to_buffer, "{{:");
+  switch (rep_specs.sign) {
+    case fmt_sign::none:
+      break;
+    case fmt_sign::plus:
+      STD_FMT::format_to(to_buffer, "+");
+      break;
+    case fmt_sign::minus:
+      STD_FMT::format_to(to_buffer, "-");
+      break;
+    case fmt_sign::space:
+      STD_FMT::format_to(to_buffer, " ");
+      break;
+  }
 
-      template<typename CharT2>
-      void on_text(const CharT2* begin, const CharT2* end)
-      {
-        std::copy(begin, end, out);
-      }
+  if (rep_specs.alt) {
+    STD_FMT::format_to(to_buffer, "#");
+  }
+  auto type = rep_specs.type;
+  if (auto precision = rep_specs.precision; precision >= 0) {
+    STD_FMT::format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
+  } else if constexpr (treat_as_floating_point<Rep>) {
+    STD_FMT::format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
+  } else {
+    if (type != '\0') {
+      STD_FMT::format_to(to_buffer, "{}", type);
+    }
+  }
+  if (rep_specs.localized) {
+    STD_FMT::format_to(to_buffer, "L");
+  }
 
-      void on_quantity_value([[maybe_unused]] const CharT*, [[maybe_unused]] const CharT*)
-      {
-        out = format_units_quantity_value<CharT>(out, val, rep_specs, loc);
-      }
+  STD_FMT::format_to(to_buffer, "}}");
+  if (rep_specs.localized) {
+    return STD_FMT::format_to(out, FMT_LOCALE(loc), FMT_RUNTIME(buffer), val);
+  }
+  return STD_FMT::format_to(out, FMT_RUNTIME(buffer), val);
+}
 
-      void on_quantity_unit([[maybe_unused]] const CharT)
-      {
-        auto txt = unit_text<Dimension, Unit>();
-        if(unit_specs.modifier == 'A') {
-          fmt::format_to(out, "{}", txt.ascii().c_str());
-        }
-        else {
-          fmt::format_to(out, "{}", txt.standard().c_str());
-        }
-      }
-    };
+// Creates a global format string
+//  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
+template<typename CharT, std::output_iterator<CharT> OutputIt>
+OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<CharT>& specs)
+{
+  STD_FMT::format_to(out, "{{:");
+  if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
+    STD_FMT::format_to(out, "{}", specs.fill.data());
+  }
+  switch (specs.align) {
+    case fmt_align::left:
+      STD_FMT::format_to(out, "<");
+      break;
+    case fmt_align::right:
+      STD_FMT::format_to(out, ">");
+      break;
+    case fmt_align::center:
+      STD_FMT::format_to(out, "^");
+      break;
+    default:
+      break;
+  }
+  if (specs.width >= 1) STD_FMT::format_to(out, "{}", specs.width);
+  return STD_FMT::format_to(out, "}}");
+}
 
-  }  // namespace detail
+template<typename Dimension, typename Unit, typename Rep, typename Locale, typename CharT,
+         std::output_iterator<CharT> OutputIt>
+struct quantity_formatter {
+  OutputIt out;
+  Rep val;
+  const quantity_format_specs<CharT>& specs;
+  Locale loc;
 
-}  // namespace units
+  explicit quantity_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, const quantity_format_specs<CharT>& fspecs,
+                              Locale lc) :
+      out(o), val(std::move(q).number()), specs(fspecs), loc(std::move(lc))
+  {}
+
+  template<std::forward_iterator It, std::sentinel_for<It> S>
+  void on_text(It begin, S end)
+  {
+    std::copy(begin, end, out);
+  }
+
+  template<std::forward_iterator It, std::sentinel_for<It> S>
+  void on_quantity_value([[maybe_unused]] It, [[maybe_unused]] S)
+  {
+    out = format_units_quantity_value<CharT>(out, val, specs.rep, loc);
+  }
+
+  void on_quantity_unit([[maybe_unused]] CharT)
+  {
+    auto txt = unit_text<Dimension, Unit>();
+    if (specs.unit.ascii_only) {
+      STD_FMT::format_to(out, "{}", txt.ascii().c_str());
+    } else {
+      STD_FMT::format_to(out, "{}", txt.standard().c_str());
+    }
+  }
+};
+
+}  // namespace units::detail
 
 template<typename Dimension, typename Unit, typename Rep, typename CharT>
-struct fmt::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
+struct STD_FMT::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
-  using iterator = TYPENAME fmt::basic_format_parse_context<CharT>::iterator;
-  using arg_ref_type = fmt::detail::arg_ref<CharT>;
+  using iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::iterator;
 
-  units::detail::global_format_specs<CharT> global_specs;
-  units::detail::rep_format_specs  rep_specs;
-  units::detail::unit_format_specs unit_specs;
   bool quantity_value = false;
   bool quantity_unit = false;
-  bool quantity_unit_ascii_only = false;
-  arg_ref_type width_ref;
-  arg_ref_type precision_ref;
-  fmt::basic_string_view<CharT> format_str;
+  units::detail::quantity_format_specs<CharT> specs;
+  std::basic_string_view<CharT> format_str;
 
   struct spec_handler {
     formatter& f;
-    fmt::basic_format_parse_context<CharT>& context;
-    fmt::basic_string_view<CharT> format_str;
+    STD_FMT::basic_format_parse_context<CharT>& context;
 
-    template<typename Id>
-    constexpr arg_ref_type make_arg_ref(Id arg_id)
-    {
-      context.check_arg_id(arg_id);
-      return arg_ref_type(arg_id);
-    }
+    void on_error(const char* msg) { throw STD_FMT::format_error(msg); }
+    constexpr void on_fill(std::basic_string_view<CharT> fill) { f.specs.global.fill = fill; }
+    constexpr void on_align(units::detail::fmt_align align) { f.specs.global.align = align; }
+    constexpr void on_width(int width) { f.specs.global.width = width; }
+    constexpr void on_sign(units::detail::fmt_sign s) { f.specs.rep.sign = s; }
+    constexpr void on_hash() { f.specs.rep.alt = true; }
+    constexpr void on_precision(int precision) { f.specs.rep.precision = precision; }
+    constexpr void on_localized() { f.specs.rep.localized = true; }
 
-    constexpr arg_ref_type make_arg_ref(fmt::basic_string_view<CharT> arg_id)
-    {
-      context.check_arg_id(arg_id);
-      return arg_ref_type(arg_id);
-    }
-
-    constexpr arg_ref_type make_arg_ref(fmt::detail::auto_id)
-    {
-      return arg_ref_type(context.next_arg_id());
-    }
-
-    void on_error(const char* msg) { throw fmt::format_error(msg); }
-    constexpr void on_fill(basic_string_view<CharT> fill) { f.global_specs.fill = fill; }    // global
-    constexpr void on_align(align_t align)                { f.global_specs.align = align; }  // global
-    constexpr void on_width(int width)                    { f.global_specs.width = width; }  // global
-    constexpr void on_plus()  { f.rep_specs.sign = fmt::sign::plus; }     // rep
-    constexpr void on_minus() { f.rep_specs.sign = fmt::sign::minus; }    // rep
-    constexpr void on_space() { f.rep_specs.sign = fmt::sign::space; }    // rep
-    constexpr void on_alt()   { f.rep_specs.alt  = true; }                // rep
-    constexpr void on_precision(int precision) { f.rep_specs.precision = precision; } // rep
-    constexpr void on_locale() { f.rep_specs.use_locale = true; }         // rep
-    constexpr void on_type(char type)                                     // rep
+    constexpr void on_type(char type)
     {
       constexpr auto valid_rep_types = std::string_view{"aAbBdeEfFgGoxX"};
       if (valid_rep_types.find(type) != std::string_view::npos) {
-        f.rep_specs.type = type;
+        f.specs.rep.type = type;
       } else {
         on_error("invalid quantity type specifier");
       }
     }
-    constexpr void on_modifier(char mod) {
+
+    constexpr void on_unit_modifier(char mod)
+    {
       constexpr auto valid_modifiers = std::string_view{"A"};
       if (valid_modifiers.find(mod) != std::string_view::npos) {
-        f.unit_specs.modifier = mod;
+        f.specs.unit.ascii_only = true;
       } else {
         on_error("invalid unit modifier specified");
       }
-    } // unit
-    constexpr void end_precision() {}
-
-    template<typename Id>
-    constexpr void on_dynamic_width(Id arg_id)
-    {
-      f.width_ref = make_arg_ref(arg_id);
     }
 
-    template<typename Id>
-    constexpr void on_dynamic_precision(Id arg_id)
+    template<typename T>
+    constexpr void on_dynamic_width(T t)
     {
-      f.precision_ref = make_arg_ref(arg_id);
+      f.specs.global.dynamic_width_index = units::detail::on_dynamic_arg(t, context);
+    }
+
+    template<typename T>
+    constexpr void on_dynamic_precision(T t)
+    {
+      f.specs.rep.dynamic_precision_index = units::detail::on_dynamic_arg(t, context);
     }
 
     constexpr void on_text(const CharT*, const CharT*) {}
     constexpr void on_quantity_value(const CharT* begin, const CharT* end)
     {
-      if (begin != end) {
-        units::detail::parse_units_rep(begin, end, *this, units::treat_as_floating_point<Rep>);
-      }
+      if (begin != end) units::detail::parse_units_rep(begin, end, *this, units::treat_as_floating_point<Rep>);
       f.quantity_value = true;
     }
-    constexpr void on_quantity_unit(const CharT mod)
+    constexpr void on_quantity_unit(CharT mod)
     {
-      if (mod != 'q') {
-        f.unit_specs.modifier = mod;
-      }
+      if (mod != 'q') on_unit_modifier(mod);
       f.quantity_unit = true;
     }
-
   };
 
-  struct parse_range {
-    iterator begin;
-    iterator end;
-  };
-
-  constexpr parse_range do_parse(fmt::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr std::ranges::subrange<iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
-    auto begin = ctx.begin(), end = ctx.end();
-    if(begin == end || *begin == '}')
-      return {begin, begin};
+    auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    if (begin == end || *begin == '}') return {begin, begin};
 
     // handler to assign parsed data to formatter data members
-    spec_handler handler{*this, ctx, format_str};
+    spec_handler handler{*this, ctx};
 
     // parse alignment
-    begin = fmt::detail::parse_align(begin, end, handler);
-    if(begin == end)
-      return {begin, begin};
+    begin = units::detail::parse_align(begin, end, handler);
+    if (begin == end) return {begin, begin};
 
     // parse width
-    begin = fmt::detail::parse_width(begin, end, handler);
-    if(begin == end)
-      return {begin, begin};
+    begin = units::detail::parse_width(begin, end, handler);
+    if (begin == end) return {begin, begin};
 
     // parse units-specific specification
     end = units::detail::parse_units_format(begin, end, handler);
 
-    if(global_specs.align == fmt::align_t::none && (!quantity_unit || quantity_value))
+    if (specs.global.align == units::detail::fmt_align::none && (!quantity_unit || quantity_value))
       // quantity values should behave like numbers (by default aligned to right)
-      global_specs.align = fmt::align_t::right;
+      specs.global.align = units::detail::fmt_align::right;
 
     return {begin, end};
   }
 
+  template<std::output_iterator<CharT> OutputIt, typename FormatContext>
+  OutputIt format_quantity_content(OutputIt out, const quantity& q, FormatContext& ctx)
+  {
+    auto begin = format_str.begin();
+    auto end = format_str.end();
+
+    if (begin == end || *begin == '}') {
+      // default format should print value followed by the unit separated with 1 space
+      out = units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
+      constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
+      if constexpr (symbol.standard().size()) {
+        *out++ = CharT(' ');
+        STD_FMT::format_to(out, "{}", symbol.standard().c_str());
+      }
+    } else {
+      // user provided format
+      units::detail::quantity_formatter f(out, q, specs, ctx.locale());
+      units::detail::parse_units_format(begin, end, f);
+    }
+    return out;
+  }
+
 public:
-  constexpr auto parse(fmt::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr auto parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    format_str = fmt::basic_string_view<CharT>(&*range.begin, fmt::detail::to_unsigned(range.end - range.begin));
-    return range.end;
+    format_str = std::basic_string_view<CharT>(range.begin(), range.end());
+    return range.end();
   }
 
   template<typename FormatContext>
-  auto format(const units::quantity<Dimension, Unit, Rep>& q, FormatContext& ctx)
+  auto format(const quantity& q, FormatContext& ctx)
   {
-    auto begin = format_str.begin(), end = format_str.end();
-
     // process dynamic width and precision
-    fmt::detail::handle_dynamic_spec<fmt::detail::width_checker>(global_specs.width, width_ref, ctx);
-    fmt::detail::handle_dynamic_spec<fmt::detail::precision_checker>(rep_specs.precision, precision_ref, ctx);
+    if (specs.global.dynamic_width_index >= 0)
+      specs.global.width =
+        units::detail::get_dynamic_spec<units::detail::width_checker>(specs.global.dynamic_width_index, ctx);
+    if (specs.rep.dynamic_precision_index >= 0)
+      specs.rep.precision =
+        units::detail::get_dynamic_spec<units::detail::precision_checker>(specs.rep.dynamic_precision_index, ctx);
 
-    // In `quantity_buffer` we will have the representation and the unit formatted according to their
-    //  specification, ignoring global specifiers
-    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "1.2_m"
-    // TODO Avoid extra copying if width is not specified
-    fmt::basic_memory_buffer<CharT> quantity_buffer;
-    auto to_quantity_buffer = std::back_inserter(quantity_buffer);
+    if (specs.global.width == 0) {
+      // Avoid extra copying if width is not specified
+      return format_quantity_content(ctx.out(), q, ctx);
+    } else {
+      // In `quantity_buffer` we will have the representation and the unit formatted according to their
+      //  specification, ignoring global specifiers
+      //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "1.2_m"
+      std::basic_string<CharT> quantity_buffer;
 
-    // deal with quantity content
-    if(begin == end || *begin == '}') {
-      // default format should print value followed by the unit separated with 1 space
-      to_quantity_buffer = units::detail::format_units_quantity_value<CharT>(to_quantity_buffer, q.number(), rep_specs, ctx.locale());
-      constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
-      if(symbol.standard().size()) {
-        *to_quantity_buffer++ = CharT(' ');
-        fmt::format_to(to_quantity_buffer, "{}", symbol.standard().c_str());
-      }
+      // deal with quantity content
+      format_quantity_content(std::back_inserter(quantity_buffer), q, ctx);
+
+      // In `global_format_buffer` we will create a global format string
+      //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
+      std::basic_string<CharT> global_format_buffer;
+      units::detail::format_global_buffer<CharT>(std::back_inserter(global_format_buffer), specs.global);
+
+      // Format the `quantity buffer` using specs from `global_format_buffer`
+      // In the example, equivalent to STD_FMT::format("{:*^10}", "1.2_m")
+      return STD_FMT::format_to(ctx.out(), FMT_RUNTIME(global_format_buffer), quantity_buffer);
     }
-    else {
-      // user provided format
-      units::detail::units_formatter f(to_quantity_buffer, q, global_specs, rep_specs, unit_specs, ctx.locale());
-      parse_units_format(begin, end, f);
-    }
-
-    // In `global_format_buffer` we will create a global format string
-    //  e.g. "{:*^10%.1Q_%q}, 1.23_q_m" => "{:*^10}"
-    fmt::basic_memory_buffer<CharT> global_format_buffer;
-    units::detail::format_global_buffer<CharT>(std::back_inserter(global_format_buffer), global_specs);
-
-    // Format the `quantity buffer` using specs from `global_format_buffer`
-    // In the example, equivalent to fmt::format("{:*^10}", "1.2_m")
-    return fmt::format_to(ctx.out(), fmt::runtime(std::basic_string_view<CharT>(global_format_buffer.data(), global_format_buffer.size())), std::string_view(quantity_buffer.data(), quantity_buffer.size()));
   }
 };
