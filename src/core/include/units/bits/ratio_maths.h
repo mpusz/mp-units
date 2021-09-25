@@ -174,7 +174,7 @@ constexpr void normalize(std::intmax_t& num, std::intmax_t& den, std::intmax_t& 
   }
 }
 
-[[nodiscard]] static constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
+[[nodiscard]] constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
 {
   constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
 
