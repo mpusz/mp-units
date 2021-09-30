@@ -10,25 +10,25 @@ tasks:
     init: |
       gp sync-await conan-update
       mkdir -p build/GCC-11 && cd build/GCC-11
-      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan build ../..
   - name: gcc-11 Debug
     init: |
       gp sync-await conan-update
       mkdir -p build/GCC-11 && cd build/GCC-11
-      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -s build_type=Debug -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -s build_type=Debug -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan build ../..
   - name: clang-13 Release
     init: |
       gp sync-await conan-update
       mkdir -p build/Clang-13 && cd build/Clang-13
-      conan install ../.. -pr clang13 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+      conan install ../.. -pr clang13 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan build ../..
   - name: clang-13 Debug
     init: |
       gp sync-await conan-update
       mkdir -p build/Clang-13 && cd build/Clang-13
-      conan install ../.. -pr clang13 -s compiler.cppstd=20 -s build_type=Debug -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+      conan install ../.. -pr clang13 -s compiler.cppstd=20 -s build_type=Debug -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan build ../..
 
 vscode:
