@@ -11,9 +11,13 @@ tasks:
       conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
       conan remote add -i 0 conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       pushd /workspace/.conan/profiles
+      cp default gcc10
       cp default gcc11
       cp default clang13
       popd
+      conan profile update settings.compiler.version=10 gcc10
+      conan profile update env.CXX=/usr/bin/g++-10 gcc10
+      conan profile update env.CC=/usr/bin/gcc-10 gcc10
       conan profile update settings.compiler=clang clang13
       conan profile update settings.compiler.version=13 clang13
       conan profile update settings.compiler.libcxx=libc++ clang13
@@ -21,6 +25,17 @@ tasks:
       conan profile update env.CC=/usr/bin/clang-13 clang13
       gp sync-done conan-init
       exit
+  - name: gcc-10
+    init: |
+      gp sync-await conan-init
+      mkdir -p build/GCC-10 && cd build/GCC-10
+      conan install ../.. -pr gcc10 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      conan install ../.. -pr gcc10 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
+      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/x86_64-linux-gnu-gcc-10 -DCMAKE_CXX_COMPILER=/bin/x86_64-linux-gnu-g++-10
+      cmake --build . --config Release -j
+      cmake --build . --config Debug -j
+      ctest -C Release
+      ctest -C Debug
   - name: gcc-11
     init: |
       gp sync-await conan-init
