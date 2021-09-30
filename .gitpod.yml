@@ -14,12 +14,12 @@ tasks:
       conan build ../..
   - name: clang-13 Release
     init: |
-      mkdir -p build/GCC-11 && cd build/Clang-13
+      mkdir -p build/Clang-13 && cd build/Clang-13
       conan install ../.. -pr clang13 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
       conan build ../..
   - name: clang-13 Debug
     init: |
-      mkdir -p build/GCC-11 && cd build/Clang-13
+      mkdir -p build/Clang-13 && cd build/Clang-13
       conan install ../.. -pr clang13 -s compiler.cppstd=20 -s build_type=Debug -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
       conan build ../..
 
