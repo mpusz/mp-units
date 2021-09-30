@@ -1,18 +1,32 @@
-image: trainiteu/gitpod-cpp
+image: trainiteu/gitpod-cpp-base
 
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
-  - name: Conan update
+  - name: conan
     before: |
       sudo pip3 install -U conan
-      gp sync-done conan-update
+      conan config init
+      conan profile update settings.compiler.libcxx=libstdc++11 default
+      conan profile update settings.compiler.cppstd=20 default
+      conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
+      conan remote add -i 0 conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+      pushd /workspace/.conan/profiles
+      cp default gcc11
+      cp default clang13
+      popd
+      conan profile update settings.compiler=clang clang13
+      conan profile update settings.compiler.version=13 clang13
+      conan profile update settings.compiler.libcxx=libc++ clang13
+      conan profile update env.CXX=/usr/bin/clang++-13 clang13
+      conan profile update env.CC=/usr/bin/clang-13 clang13
+      gp sync-done conan-init
       exit
   - name: gcc-11
     init: |
-      gp sync-await conan-update
+      gp sync-await conan-init
       mkdir -p build/GCC-11 && cd build/GCC-11
-      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
-      conan install ../.. -pr gcc11 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
+      conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
       cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/x86_64-linux-gnu-gcc-11 -DCMAKE_CXX_COMPILER=/bin/x86_64-linux-gnu-g++-11
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
@@ -20,10 +34,10 @@ tasks:
       ctest -C Debug
   - name: clang-13
     init: |
-      gp sync-await conan-update
+      gp sync-await conan-init
       mkdir -p build/Clang-13 && cd build/Clang-13
-      conan install ../.. -pr clang13 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
-      conan install ../.. -pr clang13 -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
+      conan install ../.. -pr clang13 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      conan install ../.. -pr clang13 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
       cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/clang-13 -DCMAKE_CXX_COMPILER=/bin/clang++-13
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
