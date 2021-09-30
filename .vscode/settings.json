@@ -1,0 +1,7 @@
+{
+  "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitVendor}-${buildKitVersionMajor}",
+  "cmake.configureArgs": [
+    "-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake"
+  ],
+  "cmake.generator": "Ninja Multi-Config"
+}
