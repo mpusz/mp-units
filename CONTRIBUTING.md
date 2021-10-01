@@ -2,9 +2,17 @@
 
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
 
+## Gitpod
+
+The easiest way to start coding is to jump streight into [Gitpod](https://www.gitpod.io). You can either click the button
+below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ...) in your web browser with `gitpod.io/#`
+(i.e. https://gitpod.io/#https://github.com/mpusz/units).
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/units)
+
 ## Download, Build, Install
 
-Please refer to our official docs for [download, build, and install instructions](https://mpusz.github.io/units/usage.html).
+Alternatively, please refer to our official docs for [download, build, and install instructions](https://mpusz.github.io/units/usage.html) if you want to setup a development environemnt on your local machine.
 
 ## Where to start?
 
