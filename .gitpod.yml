@@ -2,6 +2,20 @@ image: trainiteu/gitpod-cpp
 
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
+  - name: vscode settings
+    init: |
+      mkdir -p "$PWD/.vscode";
+      cat << 'EOF' > "$PWD/.vscode/settings.json"
+      {
+        "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitVendor}-${buildKitVersionMajor}",
+        "cmake.configureArgs": [
+          "-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake"
+        ],
+        "cmake.generator": "Ninja Multi-Config"
+      }
+
+      EOF
+      exit
   - name: conan
     before: |
       sudo pip3 install -U conan
