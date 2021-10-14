@@ -26,10 +26,8 @@
 #include <units/bits/external/type_traits.h>
 #include <cstddef>
 
-#ifdef _MSC_VER
-#pragma warning (push)
-#pragma warning (disable:4296) // warning C4296: '<': expression is always false
-#endif //_MSC_VER
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
 
 namespace units {
 
@@ -223,6 +221,4 @@ using type_list_sort = TYPENAME detail::type_list_sort_impl<List, Pred>::type;
 
 }  // namespace units
 
-#ifdef _MSC_VER
-#pragma warning (pop)
-#endif //_MSC_VER
+UNITS_DIAGNOSTIC_POP
