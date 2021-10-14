@@ -35,9 +35,6 @@ if __name__ == "__main__":
         stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
 
         # dependencies
-        remotes = [
-            ("https://twonington.jfrog.io/artifactory/api/conan/conan-oss", True, "linear-algebra")
-        ],
         build_policy = ["mp-units", "outdated"],
         upload_dependencies = "all",
         pip_install = ["sphinx", "recommonmark", "breathe"],
