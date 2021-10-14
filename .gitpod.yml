@@ -11,7 +11,9 @@ tasks:
         "cmake.configureArgs": [
           "-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake"
         ],
-        "cmake.generator": "Ninja Multi-Config"
+        "cmake.generator": "Ninja Multi-Config",
+        "restructuredtext.preview.scrollEditorWithPreview": false,
+        "restructuredtext.preview.scrollPreviewWithEditor": false
       }
 
       EOF
