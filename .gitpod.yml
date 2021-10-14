@@ -1,6 +1,45 @@
 image: trainiteu/gitpod-cpp
 
-# List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
+# --------------------------------------------------------
+# exposing ports for liveserve
+ports:
+  - port: 5500
+
+# --------------------------------------------------------
+# using prebuilds for the container
+github:
+  prebuilds:
+    # enable for the default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a check to pull requests (defaults to true)
+    addCheck: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
+    addComment: true
+    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
+    addBadge: false
+
+# --------------------------------------------------------
+# some useful extensions to have
+vscode:
+  extensions:
+    - twxs.cmake
+    - ms-vscode.cmake-tools
+    - streetsidesoftware.code-spell-checker
+    - vivaxy.vscode-conventional-commits
+    - github.vscode-pull-request-github
+    - lextudio.restructuredtext
+    - hbenl.vscode-test-explorer
+    - matepek.vscode-catch2-test-adapter
+    - ritwickdey.liveserver
+
+# --------------------------------------------------------
+# VSCode setup, Conan installation, and build of all the targets
 tasks:
   - name: vscode settings
     init: |
@@ -13,7 +52,8 @@ tasks:
         ],
         "cmake.generator": "Ninja Multi-Config",
         "restructuredtext.preview.scrollEditorWithPreview": false,
-        "restructuredtext.preview.scrollPreviewWithEditor": false
+        "restructuredtext.preview.scrollPreviewWithEditor": false,
+        "liveServer.settings.root": "/build/docs/docs/sphinx/"
       }
 
       EOF
@@ -52,17 +92,20 @@ tasks:
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
+      echo "🛠️ gcc-10 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
   - name: gcc-11
     init: |
       gp sync-await conan-init
       mkdir -p build/GCC-11 && cd build/GCC-11
       conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      gp sync-done conan-gcc-install
       conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
       cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/x86_64-linux-gnu-gcc-11 -DCMAKE_CXX_COMPILER=/bin/x86_64-linux-gnu-g++-11
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
+      echo "🛠️ gcc-11 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-13
     init: |
       gp sync-await conan-init
@@ -74,30 +117,15 @@ tasks:
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
-
-vscode:
-  extensions:
-    - twxs.cmake
-    - ms-vscode.cmake-tools
-    - streetsidesoftware.code-spell-checker
-    - vivaxy.vscode-conventional-commits
-    - github.vscode-pull-request-github
-    - lextudio.restructuredtext
-    - matepek.vscode-catch2-test-adapter
-
-github:
-  prebuilds:
-    # enable for the default branch (defaults to true)
-    master: true
-    # enable for all branches in this repo (defaults to false)
-    branches: true
-    # enable for pull requests coming from this repo (defaults to true)
-    pullRequests: true
-    # enable for pull requests coming from forks (defaults to false)
-    pullRequestsFromForks: true
-    # add a check to pull requests (defaults to true)
-    addCheck: true
-    # add a "Review in Gitpod" button as a comment to pull requests (defaults to false)
-    addComment: true
-    # add a "Review in Gitpod" button to the pull request's description (defaults to false)
-    addBadge: false
+      echo "🛠️ clang-13 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
+  - name: documentation
+    init: |
+      gp sync-await conan-init
+      sudo pip3 install -U sphinx sphinx-autobuild rstcheck
+      sudo pip3 install -Ur docs/requirements.txt
+      mkdir -p build/docs && cd build/docs
+      gp sync-await conan-gcc-install
+      conan install ../.. -e mp-units:CONAN_RUN_TESTS=True -b outdated
+      cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake --build . --target documentation --config Release -j
+      echo "📚 Documentation pre-build complete! You can open it by clicking on "Go Live" in the VSCode status bar. 📚"
