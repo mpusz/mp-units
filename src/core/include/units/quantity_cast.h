@@ -29,12 +29,8 @@
 #include <units/bits/pow.h>
 #include <cassert>
 
-#define UNITS_PRAGMA(X) _Pragma(#X)
-#ifdef _MSC_VER
-#define UNITS_DIAGNOSTIC_PUSH UNITS_PRAGMA(warning(push))
-#define UNITS_DIAGNOSTIC_IGNORE_LOSSY_CONVERSION UNITS_PRAGMA(warning(disable : 4244))
-// warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
-#endif //_MSC_VER
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE(4244) // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
 
 namespace units {
 
@@ -388,6 +384,4 @@ template<PointKind ToPK, Unit ToU, typename PK, typename U, typename Rep>
 
 }  // namespace units
 
-#ifdef _MSC_VER
-#pragma warning (pop)
-#endif //_MSC_VER
+UNITS_DIAGNOSTIC_POP
