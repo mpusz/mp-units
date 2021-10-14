@@ -1,7 +1,7 @@
 image: trainiteu/gitpod-cpp
 
 # --------------------------------------------------------
-# exposing ports for liveserve
+# exposing ports for VSCode Live Server
 ports:
   - port: 5500
 
@@ -92,7 +92,7 @@ tasks:
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
-      echo "🛠️ gcc-10 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
+      echo "🛠️ gcc-10 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: gcc-11
     init: |
       gp sync-await conan-init
@@ -105,7 +105,7 @@ tasks:
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
-      echo "🛠️ gcc-11 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
+      echo "🛠️ gcc-11 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-13
     init: |
       gp sync-await conan-init
@@ -117,7 +117,7 @@ tasks:
       cmake --build . --config Debug -j
       ctest -C Release
       ctest -C Debug
-      echo "🛠️ clang-13 pre-build done! You can close this terminal and use "Build" button in the VSCode status bar for incremental builds. 🛠️"
+      echo "🛠️ clang-13 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |
       gp sync-await conan-init
@@ -128,4 +128,4 @@ tasks:
       conan install ../.. -e mp-units:CONAN_RUN_TESTS=True -b outdated
       cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
       cmake --build . --target documentation --config Release -j
-      echo "📚 Documentation pre-build complete! You can open it by clicking on "Go Live" in the VSCode status bar. 📚"
+      echo "📚 Documentation pre-build complete! You can open it by clicking on 'Go Live' in the VSCode status bar. 📚"
