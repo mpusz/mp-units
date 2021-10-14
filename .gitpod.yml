@@ -81,6 +81,7 @@ vscode:
     - vivaxy.vscode-conventional-commits
     - github.vscode-pull-request-github
     - lextudio.restructuredtext
+    - matepek.vscode-catch2-test-adapter
 
 github:
   prebuilds:
