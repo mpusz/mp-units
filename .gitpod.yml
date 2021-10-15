@@ -33,9 +33,10 @@ vscode:
     - streetsidesoftware.code-spell-checker
     - vivaxy.vscode-conventional-commits
     - github.vscode-pull-request-github
-    - lextudio.restructuredtext
     - hbenl.vscode-test-explorer
     - matepek.vscode-catch2-test-adapter
+    - trond-snekvik.simple-rst
+    - lextudio.restructuredtext
     - ritwickdey.liveserver
 
 # --------------------------------------------------------
