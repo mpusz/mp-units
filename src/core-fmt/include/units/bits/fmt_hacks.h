@@ -29,6 +29,10 @@
 
 #include <units/bits/external/hacks.h>
 
+#ifndef UNITS_USE_LIBFMT
+#define UNITS_USE_LIBFMT 1
+#endif
+
 #if UNITS_USE_LIBFMT
 
 UNITS_DIAGNOSTIC_PUSH

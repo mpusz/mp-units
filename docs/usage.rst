@@ -151,16 +151,6 @@ Additionally, enables project documentation generation when the project is being
 CMake Options
 ^^^^^^^^^^^^^
 
-UNITS_DOWNCAST_MODE
-+++++++++++++++++++
-
-**Values**: ``OFF``/``ON``/``AUTO``
-
-**Defaulted to**: ``ON``
-
-Equivalent to `downcast_mode`_.
-
-
 UNITS_AS_SYSTEM_HEADERS
 +++++++++++++++++++++++
 
@@ -169,6 +159,26 @@ UNITS_AS_SYSTEM_HEADERS
 **Defaulted to**: ``OFF``
 
 Exports library as system headers.
+
+
+UNITS_BUILD_DOCS
+++++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Enables project documentation generation.
+
+
+UNITS_DOWNCAST_MODE
++++++++++++++++++++
+
+**Values**: ``OFF``/``ON``/``AUTO``
+
+**Defaulted to**: ``ON``
+
+Equivalent to `downcast_mode`_.
 
 
 UNITS_IWYU
@@ -182,14 +192,14 @@ Enables include-what-you-use when compiling with a clang compiler.
 Additionally turns on `UNITS_AS_SYSTEM_HEADERS`_.
 
 
-UNITS_BUILD_DOCS
+UNITS_USE_LIBFMT
 ++++++++++++++++
 
 **Values**: ``ON``/``OFF``
 
 **Defaulted to**: ``ON``
 
-Enables project documentation generation.
+Enables usage of `{fmt} <https://github.com/fmtlib/fmt>`_ library instead of the C++20 Standard Library feature.
 
 
 Installation and Reuse
