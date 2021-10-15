@@ -138,7 +138,6 @@ using ::ranges::begin;
 using ::ranges::end;
 using ::ranges::distance;
 
-using ::ranges::forward_range;
 using ::ranges::input_range;
 using ::ranges::range_value_t;
 

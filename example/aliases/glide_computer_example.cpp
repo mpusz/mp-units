@@ -75,7 +75,7 @@ auto get_waypoints()
   return waypoints;
 }
 
-template<std::ranges::forward_range R>
+template<std::ranges::input_range R>
   requires std::same_as<std::ranges::range_value_t<R>, glider>
 void print(const R& gliders)
 {
@@ -90,7 +90,7 @@ void print(const R& gliders)
   }
 }
 
-template<std::ranges::forward_range R>
+template<std::ranges::input_range R>
   requires std::same_as<std::ranges::range_value_t<R>, std::pair<const char*, weather>>
 void print(const R& conditions)
 {
@@ -105,7 +105,7 @@ void print(const R& conditions)
   }
 }
 
-template<std::ranges::forward_range R>
+template<std::ranges::input_range R>
   requires std::same_as<std::ranges::range_value_t<R>, waypoint>
 void print(const R& waypoints)
 {
