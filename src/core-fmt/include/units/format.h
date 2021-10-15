@@ -108,7 +108,7 @@ struct quantity_format_specs {
 };
 
 // Parse a `units-rep-modifier`
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool treat_as_floating_point)
 {
   // parse sign
@@ -143,7 +143,7 @@ constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool trea
 }
 
 // parse units-specs
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 constexpr It parse_units_format(It begin, S end, Handler&& handler)
 {
   auto ptr = begin;
@@ -276,13 +276,13 @@ struct quantity_formatter {
       out(o), val(std::move(q).number()), specs(fspecs), loc(std::move(lc))
   {}
 
-  template<std::forward_iterator It, std::sentinel_for<It> S>
+  template<std::input_iterator It, std::sentinel_for<It> S>
   void on_text(It begin, S end)
   {
     std::copy(begin, end, out);
   }
 
-  template<std::forward_iterator It, std::sentinel_for<It> S>
+  template<std::input_iterator It, std::sentinel_for<It> S>
   void on_quantity_value([[maybe_unused]] It, [[maybe_unused]] S)
   {
     out = format_units_quantity_value<CharT>(out, val, specs.rep, loc);

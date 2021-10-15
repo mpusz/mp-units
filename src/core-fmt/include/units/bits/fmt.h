@@ -174,7 +174,7 @@ template<class Handler, typename FormatContext>
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<std::forward_iterator It, std::sentinel_for<It> S>
+template<std::input_iterator It, std::sentinel_for<It> S>
 [[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, size_t& value)
 {
   gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
@@ -196,7 +196,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S>
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S>
+template<std::input_iterator It, std::sentinel_for<It> S>
 [[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, int& value)
 {
   size_t val_unsigned = 0;
@@ -206,7 +206,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S>
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
 [[nodiscard]] constexpr It do_parse_arg_id(It begin, S end, IDHandler&& handler)
 {
   gsl_Expects(begin != end);
@@ -226,7 +226,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
   throw STD_FMT::format_error("invalid format string");
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
 [[nodiscard]] constexpr It parse_arg_id(It begin, S end, IDHandler&& handler)
 {
   auto c = *begin;
@@ -235,7 +235,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename IDHandler>
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 [[nodiscard]] constexpr It parse_sign(It begin, S end, Handler&& handler)
 {
   gsl_Expects(begin != end);
@@ -258,7 +258,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 [[nodiscard]] constexpr It parse_width(It begin, S end, Handler&& handler)
 {
   struct width_adapter {
@@ -284,7 +284,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   return begin;
 }
 
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 [[nodiscard]] constexpr It parse_precision(It begin, S end, Handler&& handler)
 {
   struct precision_adapter {
@@ -312,7 +312,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
   return begin;
 }
 
-template<std::forward_iterator It>
+template<std::input_iterator It>
 constexpr int code_point_length(It begin)
 {
   if constexpr (sizeof(std::iter_value_t<It>) != 1) return 1;
@@ -327,7 +327,7 @@ constexpr int code_point_length(It begin)
 }
 
 // Parses fill and alignment.
-template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
 [[nodiscard]] constexpr It parse_align(It begin, S end, Handler&& handler)
 {
   gsl_Expects(begin != end);
@@ -368,7 +368,7 @@ template<std::forward_iterator It, std::sentinel_for<It> S, typename Handler>
 
 // Parses standard format specifiers and sends notifications about parsed
 // components to handler.
-template<std::forward_iterator It, std::sentinel_for<It> S, typename SpecHandler>
+template<std::input_iterator It, std::sentinel_for<It> S, typename SpecHandler>
 [[nodiscard]] constexpr It parse_format_specs(It begin, S end, SpecHandler&& handler)
 {
   if (begin + 1 < end && begin[1] == '}' && is_ascii_letter(*begin) && *begin != 'L') {
