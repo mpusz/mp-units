@@ -128,7 +128,7 @@ using concepts::totally_ordered;
 
 using ranges::compare_three_way;
 
-using ranges::forward_iterator;
+using ranges::input_iterator;
 using ranges::sentinel_for;
 using ranges::iter_value_t;
 
