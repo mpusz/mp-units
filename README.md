@@ -92,13 +92,8 @@ int main()
   constexpr Speed auto v2 = mi_per_h(70.);
   constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
   constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
-#if UNITS_DOWNCAST_MODE == 0
-  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
-  constexpr Speed auto v6 = quantity_cast<si::dim_speed, si::metre_per_second>(v4);
-#else
   constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
   constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
-#endif
   constexpr Speed auto v7 = quantity_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
@@ -111,4 +106,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/9fnzfbhb6)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/bcb87Kvea)._
