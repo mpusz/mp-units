@@ -273,8 +273,10 @@ static_assert(get_length_derived_quantity() == 1_q_m);
 // CTAD
 /////////
 
+#if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 13
 static_assert(std::is_same_v<decltype(units::aliases::isq::si::m(123))::rep, int>);
 static_assert(std::is_same_v<decltype(units::aliases::isq::si::m(123.))::rep, double>);
+#endif
 
 static_assert(is_same_v<decltype(quantity{length<metre, int>(123)}), length<metre, int>>);
 static_assert(is_same_v<decltype(quantity{speed<metre_per_second>(123)}), speed<metre_per_second>>);

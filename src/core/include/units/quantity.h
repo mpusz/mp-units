@@ -383,8 +383,10 @@ public:
 };
 
 // CTAD
+#if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 13
 template<typename D, typename U, typename Rep>
 explicit(false) quantity(Rep&&) -> quantity<D, U, Rep>;
+#endif
 
 template<Representation Rep>
 explicit(false) quantity(Rep) -> quantity<dim_one, one, Rep>;
