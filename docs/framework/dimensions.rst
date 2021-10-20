@@ -10,7 +10,7 @@ dimensions.
 
 .. raw:: html
 
-    <object data="/_static/img/dimensions.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
+    <object data="../_images/dimensions.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
 
 .. 
     https://www.planttext.com

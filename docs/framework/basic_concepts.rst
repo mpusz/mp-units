@@ -9,7 +9,7 @@ The most important concepts in the library are `Unit`, `Dimension`,
 
 .. raw:: html
 
-    <object data="/_static/img/concepts.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
+    <object data="../_images/concepts.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
 
 ..
     https://www.planttext.com

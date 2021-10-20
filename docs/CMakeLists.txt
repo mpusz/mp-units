@@ -275,3 +275,7 @@ add_documentation(documentation ALL
     CODE_DEPENDS ${unitsPublicHeaders}
     DOCS_DEPENDS ${unitsSphinxDocs}
 )
+
+add_custom_command(TARGET documentation POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/_static/img/*.svg ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_images
+)
