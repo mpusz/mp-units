@@ -17,6 +17,7 @@ Framework Basics
     framework/quantity_kinds
     framework/dimensions
     framework/units
+    framework/arithmetics
     framework/constants
     framework/conversions_and_casting
     framework/text_output

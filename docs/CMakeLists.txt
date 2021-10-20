@@ -89,6 +89,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/faq.rst"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/framework.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/framework/arithmetics.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/basic_concepts.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/constants.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/conversions_and_casting.rst"
