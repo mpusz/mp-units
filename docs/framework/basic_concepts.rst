@@ -6,50 +6,71 @@ Basic Concepts
 The most important concepts in the library are `Unit`, `Dimension`,
 `Quantity`, `QuantityPoint`, `QuantityKind`, and `QuantityPointKind`:
 
-.. image:: /_static/img/concepts.png
-    :align: center
+
+.. raw:: html
+
+    <object data="/_static/img/concepts.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
 
 ..
-    http://www.nomnoml.com
+    https://www.planttext.com
+    
+    @startuml
 
-    [<abstract>Dimension|
-    [base_dimension<Symbol, Unit>]<-[exponent<Dimension, Num, Den>]
-    [derived_dimension<Child, Unit, Exponent...>]<-[exponent<Dimension, Num, Den>]
-    [exponent<Dimension, Num, Den>]<-[derived_dimension<Child, Unit, Exponent...>]
-    ]
+    skinparam monochrome true
+    skinparam shadowing false
+    skinparam backgroundColor #fcfcfc
 
-    [<abstract>Quantity|
-    [quantity<Dimension, Unit, Rep>]
-    ]
+    hide circle
+    hide members
+    show class methods
 
-    [<abstract>QuantityPoint|
-    [quantity_point<PointOrigin, Unit, Rep>]
-    ]
+    package Unit <<Frame>> [[../../framework/units.html]] {
+    }
 
-    [<abstract>QuantityKind|
-    [quantity_kind<Kind, Unit, Rep>]
-    ]
+    package Dimension <<Frame>> [[../../framework/dimensions.html]] {
+    }
 
-    [<abstract>QuantityPointKind|
-    [quantity_point_kind<PointKind, Unit, Rep>]
-    ]
+    abstract kind<Dimension> [[../../framework/quantity_kinds.html#kind-creation]]
+    abstract point_kind<Kind, PointOrigin> [[../../framework/quantity_kinds.html#quantity-point-kinds]]
+    abstract point_origin<Dimension> [[../../framework/quantity_points.html#point-origins]]
 
-    [<abstract>Unit]<-[Dimension]
-    [Dimension]<-[Quantity]
-    [Unit]<-[Quantity]
-    [Quantity]<-[QuantityPoint]
+    class quantity<Dimension, Unit, Rep> [[../../framework/quantities.html]] {
+    rep number()
+    }
+    class quantity_point<PointOrigin, Unit, Rep> [[../../framework/quantity_points.html#construction]] {
+    quantity relative()
+    }
+    class quantity_kind<Kind, Unit, Rep> [[../../framework/quantity_kinds.html#construction]] {
+    quantity common()
+    }
+    class quantity_point_kind<PointKind, Unit, Rep> [[../../framework/quantity_kinds.html#quantity-point-kinds]] {
+    quantity_kind relative()
+    }
 
-    [<abstract>PointOrigin]<-[QuantityPoint]
-    [Dimension]<-[PointOrigin]
-    [PointOrigin]<-[PointKind]
 
-    [<abstract>Kind]<-[QuantityKind]
-    [Dimension]<-[Kind]
-    [Quantity]<-[QuantityKind]
+    Unit <.. Dimension
 
-    [<abstract>PointKind]<-[QuantityPointKind]
-    [Kind]<-[PointKind]
-    [QuantityKind]<-[QuantityPointKind]
+    Dimension <.. quantity
+    Unit <.. quantity
+
+    Dimension <.. kind
+    Dimension <.. point_origin
+    point_origin <.. point_kind
+    kind <.. point_kind
+
+    Unit <.. quantity_point
+    point_origin <.. quantity_point
+    quantity --* quantity_point
+
+    Unit <.. quantity_kind
+    kind <.. quantity_kind
+    quantity --* quantity_kind
+
+    Unit <.. quantity_point_kind
+    point_kind <.. quantity_point_kind
+    quantity_kind --* quantity_point_kind
+
+    @enduml
 
 `Unit` is a basic building block of the library. Every dimension works with
 a concrete hierarchy of units. Such hierarchy defines a reference unit and

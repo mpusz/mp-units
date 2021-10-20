@@ -15,6 +15,85 @@ Base quantities are expressed in terms of :term:`base units <base unit>`
 in terms of :term:`derived units <derived unit>`.
 
 
+Class Hierarchy
+---------------
+
+All of the described here class templates to produce unit types inherit from some instance
+of a `scaled_unit` class template:
+
+.. raw:: html
+
+    <object data="/_static/img/units.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
+
+.. 
+    https://www.planttext.com
+
+    @startuml
+
+    skinparam monochrome true
+    skinparam shadowing false
+    skinparam backgroundColor #fcfcfc
+
+    hide members
+    hide circle
+
+    left to right direction
+
+    package Unit <<Frame>> [[../../framework/units.html]] {
+    abstract prefix_family [[../../framework/units.html#prefixed-unit]]
+    abstract no_prefix [[../../framework/units.html#named-scaled-units]]
+    abstract prefix<PrefixFamily, Symbol, Ratio> [[../../framework/units.html#prefixed-unit]]
+
+    prefix_family <|-- no_prefix
+    prefix_family <.. prefix
+
+    '  prefix_family <.. named_unit
+    '  prefix_family <.. named_scaled_unit
+    '  prefix_family <.. named_derived_unit
+    '  prefix_family <.. alias_unit
+
+    '  prefix <.. prefixed_unit
+    '  prefix <.. prefixed_alias_unit
+
+    abstract scaled_unit<UnitRatio, Unit>
+
+    abstract prefixed_alias_unit<Unit, Prefix, AliasUnit> [[../../framework/units.html#aliased-units]]
+    abstract alias_unit<Unit, Symbol, PrefixFamily> [[../../framework/units.html#aliased-units]]
+    abstract named_derived_unit<Dimension, Symbol, PrefixFamily, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract derived_unit<Dimension, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract prefixed_unit<Prefix, Unit> [[../../framework/units.html#prefixed-unit]]
+    abstract named_scaled_unit<Symbol, PrefixFamily, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
+    abstract named_unit<Symbol, PrefixFamily> [[../../framework/units.html#base-units]]
+    abstract unit [[../../framework/units.html#derived-unnamed-units]]
+    
+    scaled_unit <|-- unit
+    scaled_unit <|-- named_unit
+    scaled_unit <|-- named_scaled_unit
+    scaled_unit <|-- prefixed_unit
+    scaled_unit <|-- derived_unit
+    scaled_unit <|-- named_derived_unit
+    scaled_unit <|-- alias_unit
+    scaled_unit <|-- prefixed_alias_unit
+    }
+
+    @enduml
+
+`scaled_unit` is a class template used exclusively by the library's framework
+and user should not instantiate it by him/her-self. However the user can sometimes
+observe this type in case an unit/dimension conversion expression will end up with an
+unknown/undefined unit type like in the below example::
+
+    using namespace units::isq::si::references;
+
+    Length auto l = 100 * (km / h) * (10 * s);
+
+The type of ``l`` above will be
+``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused
+by the fact that the library does not define a unit of a length quantity that has the
+ratio ``10/36`` of a ``si::metre``. If such a unit was predefined we would see its concrete
+type here instead.
+
+
 Base Units
 ----------
 
@@ -358,44 +437,6 @@ class template::
 
     }
 
-
-Class Hierarchy
----------------
-
-All of the above class templates to produce unit types inherit from some instance
-of a `scaled_unit` class template:
-
-.. image:: /_static/img/units.png
-    :align: center
-
-.. 
-    http://www.nomnoml.com
-
-    #direction: right
-
-    [scaled_unit<UnitRatio, Unit>]<:-[unit<Child>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_unit<Child, Symbol, PrefixFamily>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
-    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
-    [scaled_unit<UnitRatio, Unit>]<:-[derived_unit<Child, Dimension, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_derived_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
-    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
-
-`scaled_unit` is a class template used exclusively by the library's framework
-and user should not instantiate it by him/her-self. However the user can sometimes
-observe this type in case an unit/dimension conversion expression will end up with an
-unknown/undefined unit type like in the below example::
-
-    using namespace units::isq::si::references;
-
-    Length auto l = 100 * (km / h) * (10 * s);
-
-The type of ``l`` above will be
-``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused
-by the fact that the library does not define a unit of a length quantity that has the
-ratio ``10/36`` of a ``si::metre``. If such a unit was predefined we would see its concrete
-type here instead.
 
 .. seealso::
 

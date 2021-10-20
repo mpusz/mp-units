@@ -8,6 +8,14 @@ In the previous chapter we briefly introduced the notion of a physical
 Length, time, speed, area, energy are only a few examples of physical
 dimensions.
 
+.. raw:: html
+
+    <object data="/_static/img/dimensions.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
+
+.. 
+    https://www.planttext.com
+
+
 Base Dimensions
 ---------------
 
