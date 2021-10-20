@@ -122,8 +122,8 @@ tasks:
   - name: documentation
     init: |
       gp sync-await conan-init
-      sudo pip3 install -U sphinx sphinx-autobuild rstcheck
-      sudo pip3 install -Ur docs/requirements.txt
+      pip3 install -U sphinx sphinx-autobuild rstcheck
+      pip3 install -Ur docs/requirements.txt
       mkdir -p build/docs && cd build/docs
       gp sync-await conan-gcc-install
       conan install ../.. -e mp-units:CONAN_RUN_TESTS=True -b outdated
