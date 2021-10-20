@@ -38,10 +38,11 @@ file(GLOB_RECURSE unitsPublicHeaders "${PROJECT_SOURCE_DIR}/src/*.h")
 # Sphinx documentation dependencies
 set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/css/custom.css"
-    "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/concepts.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/concepts.svg"
+    "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/dimensions.svg"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_1.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_2.png"
-    "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/units.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/units.svg"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md"
 
