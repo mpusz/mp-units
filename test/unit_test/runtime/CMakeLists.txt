@@ -33,7 +33,7 @@ add_executable(unit_tests_runtime
 )
 target_link_libraries(unit_tests_runtime PRIVATE
     mp-units::mp-units
-    Catch2::Catch2
+    catch2::catch2
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
