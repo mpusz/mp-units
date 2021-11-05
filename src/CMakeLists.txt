@@ -37,7 +37,7 @@ include(AddUnitsModule)
 include(GNUInstallDirs)
 
 if(${projectPrefix}AS_SYSTEM_HEADERS)
-    set(units_as_system SYSTEM)
+    set(unitsAsSystem SYSTEM)
 endif()
 
 add_subdirectory(core)
