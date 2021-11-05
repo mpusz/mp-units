@@ -27,6 +27,8 @@ project(mp-units-dev
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
+set(projectPrefix UNITS_)
+
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
 ensure_entry_point()
@@ -43,8 +45,8 @@ set_warnings()
 add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 
 # enable include-what-you-use
-option(UNITS_IWYU "Enables include-what-you-use" OFF)
-if(UNITS_IWYU)
+option(${projectPrefix}IWYU "Enables include-what-you-use" OFF)
+if(${projectPrefix}IWYU)
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
@@ -54,7 +56,7 @@ if(UNITS_IWYU)
         NO_COMMENTS
     )
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(UNITS_AS_SYSTEM_HEADERS ON)
+        set(${projectPrefix}AS_SYSTEM_HEADERS ON)
     endif()
 endif()
 

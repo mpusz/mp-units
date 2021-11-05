@@ -29,8 +29,8 @@ function(add_example target)
     add_executable(${target}-literals ${target}.cpp)
     target_link_libraries(${target}-literals PRIVATE ${ARGN})
     target_compile_definitions(${target}-literals PRIVATE
-        UNITS_NO_REFERENCES
-        UNITS_NO_ALIASES
+        ${projectPrefix}NO_REFERENCES
+        ${projectPrefix}NO_ALIASES
     )
 endfunction()
 
@@ -43,11 +43,11 @@ add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
-if(NOT UNITS_LIBCXX)
+if(NOT ${projectPrefix}LIBCXX)
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
     target_compile_definitions(glide_computer_example-literals PRIVATE
-        UNITS_NO_REFERENCES
-        UNITS_NO_ALIASES
+        ${projectPrefix}NO_REFERENCES
+        ${projectPrefix}NO_ALIASES
     )
 
     find_package(wg21-linear_algebra CONFIG REQUIRED)

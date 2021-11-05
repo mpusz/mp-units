@@ -22,14 +22,15 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-option(UNITS_BUILD_DOCS "Generate project documentation" ON)
-message(STATUS "UNITS_BUILD_DOCS: ${UNITS_BUILD_DOCS}")
+option(${projectPrefix}BUILD_DOCS "Generate project documentation" ON)
+message(STATUS "${projectPrefix}BUILD_DOCS: ${${projectPrefix}BUILD_DOCS}")
 
-if(NOT UNITS_BUILD_DOCS)
+if(NOT ${projectPrefix}BUILD_DOCS)
     return()
 endif()
 
 # set paths to Conan packages (needed for doxygen)
+# TODO: remove when Conan will learn how to properly create imported build tools targets
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
 
 # Find all the public headers

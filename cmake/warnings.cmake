@@ -24,7 +24,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(${projectPrefix}WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 macro(_set_flags)
     set(MSVC_WARNINGS
@@ -83,7 +83,7 @@ macro(_set_flags)
         -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
     )
 
-    if(WARNINGS_AS_ERRORS)
+    if(${projectPrefix}WARNINGS_AS_ERRORS)
         set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
         set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
         set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
@@ -106,7 +106,7 @@ function(set_warnings)
     _set_flags()
 
     message(STATUS "Setting restrictive compilation warnings")
-    message(STATUS "  Treat warnings as errors: ${WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting restrictive compilation warnings - done")
 
@@ -123,7 +123,7 @@ function(set_target_warnings target scope)
     _set_flags()
 
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}'")
-    message(STATUS "  Treat warnings as errors: ${WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}' - done")
 

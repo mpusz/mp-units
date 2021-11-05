@@ -35,7 +35,7 @@ add_example(custom_systems mp-units::core-io mp-units::si)
 add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
 add_example(measurement mp-units::core-io mp-units::si)
 
-if(NOT UNITS_LIBCXX)
+if(NOT ${projectPrefix}LIBCXX)
     add_subdirectory(glide_computer)
 endif()
 

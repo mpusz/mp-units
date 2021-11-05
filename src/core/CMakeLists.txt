@@ -23,15 +23,15 @@
 cmake_minimum_required(VERSION 3.15)
 
 # core library options
-set(UNITS_DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE UNITS_DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
+set(${ProjectPrefix}DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
+set_property(CACHE ${ProjectPrefix}DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
 
 # find dependencies
 find_package(gsl-lite CONFIG REQUIRED)
 
 # check if libc++ is being used
 include(CheckLibcxxInUse)
-check_libcxx_in_use(UNITS_LIBCXX)
+check_libcxx_in_use(${ProjectPrefix}LIBCXX)
 
 # core library definition
 add_library(mp-units-core INTERFACE)
@@ -45,7 +45,7 @@ target_include_directories(mp-units-core ${units_as_system} INTERFACE
 )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    if(UNITS_LIBCXX)
+    if(${ProjectPrefix}LIBCXX)
         find_package(range-v3 CONFIG REQUIRED)
         target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)
     endif()
@@ -55,14 +55,14 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-if(DEFINED UNITS_DOWNCAST_MODE)
+if(DEFINED ${ProjectPrefix}DOWNCAST_MODE)
     set(downcast_mode_options OFF ON AUTO)
-    list(FIND downcast_mode_options "${UNITS_DOWNCAST_MODE}" downcast_mode)
+    list(FIND downcast_mode_options "${${ProjectPrefix}DOWNCAST_MODE}" downcast_mode)
     if(downcast_mode EQUAL -1)
-        message(FATAL_ERROR "'UNITS_DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${UNITS_DOWNCAST_MODE}' received)")
+        message(FATAL_ERROR "'${ProjectPrefix}DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${${ProjectPrefix}DOWNCAST_MODE}' received)")
     else()
-        message(STATUS "UNITS_DOWNCAST_MODE: ${UNITS_DOWNCAST_MODE}")
-        target_compile_definitions(mp-units-core INTERFACE UNITS_DOWNCAST_MODE=${downcast_mode})
+        message(STATUS "${ProjectPrefix}DOWNCAST_MODE: ${${ProjectPrefix}DOWNCAST_MODE}")
+        target_compile_definitions(mp-units-core INTERFACE ${ProjectPrefix}DOWNCAST_MODE=${downcast_mode})
     endif()
 endif()
 

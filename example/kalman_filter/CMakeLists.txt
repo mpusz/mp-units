@@ -29,8 +29,8 @@ function(add_example target)
     add_executable(${target} ${target}.cpp)
     target_link_libraries(${target} PRIVATE ${ARGN})
     target_compile_definitions(${target} PRIVATE
-        UNITS_NO_LITERALS
-        UNITS_NO_ALIASES
+        ${projectPrefix}NO_LITERALS
+        ${projectPrefix}NO_ALIASES
     )
 endfunction()
 

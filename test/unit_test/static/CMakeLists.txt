@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.2)
 add_library(unit_tests_static_truncating
     quantity_test.cpp
 )
-if(NOT UNITS_LIBCXX)
+if(NOT ${projectPrefix}LIBCXX)
     target_sources(unit_tests_static_truncating PRIVATE
         quantity_kind_test.cpp
         quantity_point_kind_test.cpp
@@ -64,7 +64,7 @@ add_library(unit_tests_static
     us_test.cpp
 )
 
-if(NOT UNITS_LIBCXX)
+if(NOT ${projectPrefix}LIBCXX)
     target_sources(unit_tests_static PRIVATE
         custom_rep_test_min_impl.cpp
         quantity_point_test.cpp

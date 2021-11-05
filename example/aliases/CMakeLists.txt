@@ -29,8 +29,8 @@ function(add_example target)
     add_executable(${target}-aliases ${target}.cpp)
     target_link_libraries(${target}-aliases PRIVATE ${ARGN})
     target_compile_definitions(${target}-aliases PRIVATE
-        UNITS_NO_LITERALS
-        UNITS_NO_REFERENCES
+        ${projectPrefix}NO_LITERALS
+        ${projectPrefix}NO_REFERENCES
     )
 endfunction()
 
@@ -44,11 +44,11 @@ add_example(measurement mp-units::core-io mp-units::si)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
-if(NOT UNITS_LIBCXX)
+if(NOT ${projectPrefix}LIBCXX)
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
     target_compile_definitions(glide_computer_example-aliases PRIVATE
-        UNITS_NO_LITERALS
-        UNITS_NO_REFERENCES
+        ${projectPrefix}NO_LITERALS
+        ${projectPrefix}NO_REFERENCES
     )
 
     find_package(wg21-linear_algebra CONFIG REQUIRED)

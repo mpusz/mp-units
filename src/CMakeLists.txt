@@ -26,15 +26,17 @@ project(mp-units
     LANGUAGES CXX
 )
 
-option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
+set(projectPrefix UNITS_)
+
+option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
 include(GNUInstallDirs)
 
-if(UNITS_AS_SYSTEM_HEADERS)
+if(${projectPrefix}AS_SYSTEM_HEADERS)
     set(units_as_system SYSTEM)
 endif()
 
