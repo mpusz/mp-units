@@ -119,8 +119,6 @@ function(add_documentation targetName)
 
     if(_args_INSTALL_DIR)
       # Add an install step to install the docs
-      install(DIRECTORY ${_sphinx_docs_dir}
-              DESTINATION ${CMAKE_INSTALL_DOCDIR}
-      )
+      install(DIRECTORY ${_sphinx_docs_dir} TYPE DOC)
     endif()
 endfunction()
