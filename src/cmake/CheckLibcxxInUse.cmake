@@ -32,7 +32,7 @@ function(check_libcxx_in_use variable)
         set(${variable} ${${variable}} PARENT_SCOPE)
 
         list(POP_BACK CMAKE_MESSAGE_INDENT)
-        if(${projectPrefix}LIBCXX)
+        if(${variable})
             message(CHECK_PASS "found")
         else()
             message(CHECK_FAIL "not found")
