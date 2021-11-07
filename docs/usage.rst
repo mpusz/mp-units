@@ -32,7 +32,7 @@ This repository contains three independent CMake-based projects:
   - additionally to the dependencies of *./src* project, it uses:
 
     - `Catch2 <https://github.com/catchorg/Catch2>`_ library as a unit tests framework.
-    - `linear algebra <https://github.com/BobSteagall/wg21/tree/master/linear_algebra/code>`_
+    - `linear algebra <https://github.com/BobSteagall/wg21/tree/master/include>`_
       library based on proposal `P1385 <https://wg21.link/P1385>`_ used in some examples
       and tests.
     - `Doxygen <http://www.doxygen.nl>`_ to extract C++ entities information from the source
