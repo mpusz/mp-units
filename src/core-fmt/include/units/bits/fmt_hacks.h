@@ -42,7 +42,6 @@ UNITS_DIAGNOSTIC_IGNORE_SHADOW
 UNITS_DIAGNOSTIC_POP
 
 #define STD_FMT fmt
-#define FMT_RUNTIME(arg) fmt::runtime(arg)
 #define FMT_LOCALE(loc) (loc).template get<std::locale>()
 #define FMT_TO_ARG_ID(arg) static_cast<int>(arg)
 #define FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
@@ -56,7 +55,6 @@ UNITS_DIAGNOSTIC_POP
 #include <format>
 
 #define STD_FMT std
-#define FMT_RUNTIME(arg) arg
 #define FMT_LOCALE(loc) loc
 #define FMT_TO_ARG_ID(arg) arg
 #define FMT_FROM_ARG_ID(arg) arg

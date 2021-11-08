@@ -105,7 +105,7 @@ struct STD_FMT::formatter<geographic::latitude> : formatter<geographic::latitude
   template<typename FormatContext>
   auto format(geographic::latitude lat, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), FMT_RUNTIME(lat.value() > 0 ? "N" : "S"));
+    STD_FMT::vformat_to(ctx.out(), lat.value() > 0 ? "N" : "S", {});
     return formatter<geographic::latitude::value_type>::format(lat.value() > 0 ? lat.value() : -lat.value(), ctx);
   }
 };
@@ -115,7 +115,7 @@ struct STD_FMT::formatter<geographic::longitude> : formatter<geographic::longitu
   template<typename FormatContext>
   auto format(geographic::longitude lon, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), FMT_RUNTIME(lon.value() > 0 ? "E" : "W"));
+    STD_FMT::vformat_to(ctx.out(), lon.value() > 0 ? "E" : "W", {});
     return formatter<geographic::longitude::value_type>::format(lon.value() > 0 ? lon.value() : -lon.value(), ctx);
   }
 };

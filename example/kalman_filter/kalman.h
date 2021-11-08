@@ -184,7 +184,7 @@ struct STD_FMT::formatter<kalman::state<Qs...>> {
     units::detail::quantity_global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
     units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return STD_FMT::format_to(ctx.out(), FMT_RUNTIME(global_format_buffer), value_buffer);
+    return STD_FMT::vformat_to(ctx.out(), global_format_buffer, STD_FMT::make_format_args(value_buffer));
   }
 private:
   units::detail::dynamic_format_specs<char> specs;
@@ -221,7 +221,7 @@ struct STD_FMT::formatter<kalman::estimation<Q>> {
     units::detail::quantity_global_format_specs<char> global_specs = { specs.fill, specs.align, specs.width };
     units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return STD_FMT::format_to(ctx.out(), FMT_RUNTIME(global_format_buffer), value_buffer);
+    return STD_FMT::vformat_to(ctx.out(), global_format_buffer, STD_FMT::make_format_args(value_buffer));
   }
 private:
   units::detail::dynamic_format_specs<char> specs;

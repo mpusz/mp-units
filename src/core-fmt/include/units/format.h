@@ -233,9 +233,9 @@ template<typename CharT, typename Rep, typename OutputIt, typename Locale>
 
   STD_FMT::format_to(to_buffer, "}}");
   if (rep_specs.localized) {
-    return STD_FMT::format_to(out, FMT_LOCALE(loc), FMT_RUNTIME(buffer), val);
+    return STD_FMT::vformat_to(out, FMT_LOCALE(loc), buffer, STD_FMT::make_format_args(val));
   }
-  return STD_FMT::format_to(out, FMT_RUNTIME(buffer), val);
+  return STD_FMT::vformat_to(out, buffer, STD_FMT::make_format_args(val));
 }
 
 // Creates a global format string
@@ -457,7 +457,7 @@ public:
 
       // Format the `quantity buffer` using specs from `global_format_buffer`
       // In the example, equivalent to STD_FMT::format("{:*^10}", "1.2_m")
-      return STD_FMT::format_to(ctx.out(), FMT_RUNTIME(global_format_buffer), quantity_buffer);
+      return STD_FMT::vformat_to(ctx.out(), global_format_buffer, STD_FMT::make_format_args(quantity_buffer));
     }
   }
 };

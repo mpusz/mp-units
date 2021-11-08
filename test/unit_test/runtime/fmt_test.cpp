@@ -1034,12 +1034,12 @@ TEST_CASE("precision specification for integral representation should throw", "[
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(STD_FMT::format(FMT_RUNTIME("{:%.1Q %q}"), 1_q_m), STD_FMT::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::format("{:%.1Q %q}", 1_q_m), STD_FMT::format_error, Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(STD_FMT::format(FMT_RUNTIME("{:%.1Q}"), 1_q_m), STD_FMT::format_error, Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::format("{:%.1Q}", 1_q_m), STD_FMT::format_error, Message("precision not allowed for integral quantity representation"));
   }
 }
 
