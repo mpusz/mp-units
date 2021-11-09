@@ -90,20 +90,4 @@ static_assert(10_q_m / quantity{2s} == 5_q_m_per_s);
 static_assert(quantity_point{sys_seconds{1s}} + 1_q_s == time_point<std::chrono::system_clock, si::second>{2_q_s});
 static_assert(quantity_point{sys_seconds{1s}} + 1_q_min == time_point<std::chrono::system_clock, si::second>{61_q_s});
 
-// floor
-template <typename To, typename T>
-[[nodiscard]] constexpr decltype(auto) floor(T v)
-{
-  auto t = quantity_cast<To>(v);
-  if (t > v)
-    return t - decltype(t){1};
-  return t;
-}
-
-static_assert(floor<si::second>(1000_q_ms) == 1_q_s);
-static_assert(floor<si::second>(1001_q_ms) == 1_q_s);
-static_assert(floor<si::second>(1999_q_ms) == 1_q_s);
-static_assert(floor<si::second>(-1 * 1000_q_ms) == -1 * 1_q_s);
-static_assert(floor<si::second>(-1 * 999_q_ms) == -1 * 1_q_s);
-
 }  // namespace

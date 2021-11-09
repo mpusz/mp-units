@@ -104,9 +104,9 @@ template<Quantity Q>
 
 /**
  * @brief Computes Euler's raised to the given power
- * 
+ *
  * @note Such an operation has sense only for a dimensionless quantity.
- * 
+ *
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
@@ -120,7 +120,7 @@ template<typename U, typename Rep>
 
 /**
  * @brief Computes the absolute value of a quantity
- * 
+ *
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
@@ -134,9 +134,9 @@ template<typename D, typename U, typename Rep>
 
 /**
  * @brief Returns the epsilon of the quantity
- * 
+ *
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
- * 
+ *
  * @tparam Q Quantity type being the base of the operation
  * @return Quantity The epsilon value for quantity's representation type
  */
@@ -145,6 +145,23 @@ template<Quantity Q>
 [[nodiscard]] constexpr Quantity auto epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
+}
+
+/**
+ * @brief Returns the greatest quantity that is representable in Unit To that is less or equal to q.
+ *
+ * The returned value is rounded down to a quantity with unit type To
+ *
+ * @tparam q Quantity type being the base of the operation
+ * @return Quantity The rounded quantity with unit type To
+ */
+template<Unit To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
+{
+  auto res = quantity_cast<To>(q);
+  if (res > q)
+    return res - decltype(res)::one();
+  return res;
 }
 
 }  // namespace units
