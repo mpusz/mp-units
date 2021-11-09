@@ -157,11 +157,33 @@ template<Quantity Q>
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
+  requires (!treat_as_floating_point<Rep>) ||
+    requires { floor(q.number()); } ||
+    requires { std::floor(q.number()); }
 {
-  auto res = quantity_cast<To>(q);
-  if (res > q)
-    return res - decltype(res)::one();
-  return res;
+  if constexpr(treat_as_floating_point<Rep>) {
+    using std::floor;
+    if constexpr(std::is_same_v<To, U>) {
+      return quantity<D, To, Rep>(floor(q.number()));
+    }
+    else {
+      auto res = quantity<D, To, Rep>(floor(quantity_cast<To>(q).number()));
+      if (res > q)
+        return res - decltype(res)::one();
+      return res;
+    }
+  }
+  else {
+    if constexpr(std::is_same_v<To, U>) {
+      return q;
+    }
+    else {
+      auto res = quantity_cast<To>(q);
+      if (res > q)
+        return res - decltype(res)::one();
+      return res;
+    }
+  }
 }
 
 }  // namespace units
