@@ -161,16 +161,19 @@ template<Unit To, typename D, typename U, typename Rep>
     requires { floor(q.number()); } ||
     requires { std::floor(q.number()); }
 {
+  auto handle_signed_results = [&q](auto&& res) constexpr
+  {
+    if (res > q)
+      return res - std::remove_reference_t<decltype(res)>::one();
+    return res;
+  };
   if constexpr(treat_as_floating_point<Rep>) {
     using std::floor;
     if constexpr(std::is_same_v<To, U>) {
       return quantity<D, To, Rep>(floor(q.number()));
     }
     else {
-      auto res = quantity<D, To, Rep>(floor(quantity_cast<To>(q).number()));
-      if (res > q)
-        return res - decltype(res)::one();
-      return res;
+      return handle_signed_results(quantity<D, To, Rep>(floor(quantity_cast<To>(q).number())));
     }
   }
   else {
@@ -178,10 +181,7 @@ template<Unit To, typename D, typename U, typename Rep>
       return q;
     }
     else {
-      auto res = quantity_cast<To>(q);
-      if (res > q)
-        return res - decltype(res)::one();
-      return res;
+      return handle_signed_results(quantity_cast<To>(q));
     }
   }
 }
