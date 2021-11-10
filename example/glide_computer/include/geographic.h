@@ -45,11 +45,11 @@ private:
   value_type value_;
 };
 
-struct latitude : coordinate<struct latitude_, double> {
+struct latitude : coordinate<latitude, double> {
   using coordinate::coordinate;
 };
 
-struct longitude : coordinate<struct longitude_, double> {
+struct longitude : coordinate<longitude, double> {
   using coordinate::coordinate;
 };
 
