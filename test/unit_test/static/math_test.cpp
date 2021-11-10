@@ -57,7 +57,7 @@ static_assert(compare<decltype(pow<1, 4>(4_q_m2)), decltype(sqrt(2_q_m))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_km2)), decltype(sqrt(2_q_km))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_ft2)), decltype(sqrt(2_q_ft))>);
 
-#if UNITS_COMP_GCC  // TODO remove once std::floor is constexpr for all compilers
+#if __cpp_lib_constexpr_cmath  // TODO remove once std::floor is constexpr for all compilers
 // floor
 // integral types
 static_assert(compare<decltype(floor<si::second>(1_q_s)), decltype(1_q_s)>);
