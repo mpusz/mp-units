@@ -35,7 +35,7 @@
 
 namespace geographic {
 
-template<typename Derived, typename Rep>
+template<typename Rep>
 struct coordinate {
   using value_type = Rep;
   constexpr explicit coordinate(value_type v) : value_(v) {}
@@ -45,11 +45,11 @@ private:
   value_type value_;
 };
 
-struct latitude : coordinate<latitude, double> {
+struct latitude : coordinate<double> {
   using coordinate::coordinate;
 };
 
-struct longitude : coordinate<longitude, double> {
+struct longitude : coordinate<double> {
   using coordinate::coordinate;
 };
 
