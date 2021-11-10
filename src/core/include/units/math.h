@@ -148,11 +148,9 @@ template<Quantity Q>
 }
 
 /**
- * @brief Returns the greatest quantity that is representable in Unit To that is less or equal to q.
+ * @brief Computes the largest quantity with integer representation and unit type To with its number not greater than q
  *
- * The returned value is rounded down to a quantity with unit type To
- *
- * @tparam q Quantity type being the base of the operation
+ * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
  */
 template<Unit To, typename D, typename U, typename Rep>
@@ -161,7 +159,7 @@ template<Unit To, typename D, typename U, typename Rep>
     requires { floor(q.number()); } ||
     requires { std::floor(q.number()); }
 {
-  auto handle_signed_results = [&q](auto&& res) constexpr
+  auto handle_signed_results = [&q](const auto& res)
   {
     if (res > q)
       return res - std::remove_reference_t<decltype(res)>::one();
