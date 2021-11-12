@@ -159,10 +159,9 @@ template<Unit To, typename D, typename U, typename Rep>
     requires { floor(q.number()); } ||
     requires { std::floor(q.number()); }
 {
-  auto handle_signed_results = [&q](const auto& res)
-  {
+  auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q)
-      return res - std::remove_reference_t<decltype(res)>::one();
+      return res - T::one();
     return res;
   };
   if constexpr(treat_as_floating_point<Rep>) {
