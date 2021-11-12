@@ -159,7 +159,7 @@ template<Unit To, typename D, typename U, typename Rep>
     requires { floor(q.number()); } ||
     requires { std::floor(q.number()); }
 {
-  auto handle_signed_results = [&]<typename T>(const T& res) {
+  const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q)
       return res - T::one();
     return res;
