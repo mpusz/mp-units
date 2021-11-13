@@ -133,7 +133,7 @@ TEST_CASE("floor functions", "[floor]")
   SECTION ("floor 1.3 seconds with target unit second should be 1 second") {
     REQUIRE(floor<si::second>(1.3_q_s) == 1_q_s);
   }
-  SECTION ("floor -1.3 seconds with target unit second should be -1 second") {
+  SECTION ("floor -1.3 seconds with target unit second should be -2 seconds") {
     REQUIRE(floor<si::second>(-1.3_q_s) == -2_q_s);
   }
   SECTION ("floor 1001. milliseconds with target unit second should be 1 second") {
@@ -147,6 +147,47 @@ TEST_CASE("floor functions", "[floor]")
   }
   SECTION ("floor -999. milliseconds with target unit second should be -1 second") {
     REQUIRE(floor<si::second>(-999._q_ms) == -1_q_s);
+  }
+}
+
+TEST_CASE("ceil functions", "[ceil]")
+{
+  SECTION ("ceil 1 second with target unit second should be 1 second") {
+    REQUIRE(ceil<si::second>(1_q_s) == 1_q_s);
+  }
+  SECTION ("ceil 1000 milliseconds with target unit second should be 1 second") {
+    REQUIRE(ceil<si::second>(1000_q_ms) == 1_q_s);
+  }
+  SECTION ("ceil 1001 milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(ceil<si::second>(1001_q_ms) == 2_q_s);
+  }
+  SECTION ("ceil 1999 milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(ceil<si::second>(1999_q_ms) == 2_q_s);
+  }
+  SECTION ("ceil -1000 milliseconds with target unit second should be -1 second") {
+    REQUIRE(ceil<si::second>(-1000_q_ms) == -1_q_s);
+  }
+  SECTION ("ceil -999 milliseconds with target unit second should be 0 seconds") {
+    REQUIRE(ceil<si::second>(-999_q_ms) == 0_q_s);
+  }
+  SECTION ("ceil 1.3 seconds with target unit second should be 2 seconds") {
+    REQUIRE(ceil<si::second>(1.3_q_s) == 2_q_s);
+  }
+  SECTION ("ceil -1.3 seconds with target unit second should be -1 second") {
+    REQUIRE(ceil<si::second>(-1.3_q_s) == -1_q_s);
+  }
+  SECTION ("ceil 1001. milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(ceil<si::second>(1001._q_ms) == 2_q_s);
+  }
+  SECTION ("ceil 1999. milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(ceil<si::second>(1999._q_ms) == 2_q_s);
+  }
+// TODO does not work, probably due to a bug in fpow10() see #311
+//   SECTION ("ceil -1000. milliseconds with target unit second should be -1 second") {
+//     REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
+//   }
+  SECTION ("ceil -999. milliseconds with target unit second should be 0 seconds") {
+    REQUIRE(ceil<si::second>(-999._q_ms) == 0_q_s);
   }
 }
 
