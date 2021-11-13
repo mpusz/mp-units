@@ -188,6 +188,21 @@ template<Unit To, typename D, typename U, typename Rep>
 }
 
 /**
+ * @brief Overload of @c ::units::floor<Unit>() using the unit type of To
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type of quantity To
+ */
+template<Quantity To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> floor(const quantity<D, U, Rep>& q) noexcept
+  requires requires {
+      ::units::floor<typename To::unit>(q);
+    }
+{
+  return ::units::floor<typename To::unit>(q);
+}
+
+/**
  * @brief Computes the smallest quantity with integer representation and unit type To with its number not less than q
  *
  * @tparam q Quantity being the base of the operation
@@ -225,6 +240,21 @@ template<Unit To, typename D, typename U, typename Rep>
       return handle_signed_results(quantity_cast<To>(q));
     }
   }
+}
+
+/**
+ * @brief Overload of @c ::units::ceil<Unit>() using the unit type of To
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type of quantity To
+ */
+template<Quantity To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
+  requires requires {
+      ::units::ceil<typename To::unit>(q);
+    }
+{
+  return ::units::ceil<typename To::unit>(q);
 }
 
 }  // namespace units
