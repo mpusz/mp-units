@@ -261,4 +261,44 @@ template<Quantity To, typename D, typename U, typename Rep>
   return ::units::ceil<typename To::unit>(q);
 }
 
+/**
+ * @brief Computes the nearest quantity with integer representation and unit type To to q
+ *
+ * Rounding halfway cases away from zero, regardless of the current rounding mode.
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type To
+ */
+template<Unit To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, To, Rep> round(const quantity<D, U, Rep>& q) noexcept
+  requires (!treat_as_floating_point<Rep>) ||
+    requires { round(q.number()); } ||
+    requires { std::round(q.number()); }
+    // TODO add require for units::floor
+{
+  if constexpr(std::is_same_v<To, U>) {
+    if constexpr(treat_as_floating_point<Rep>) {
+      using std::round;
+      return quantity<D, To, Rep>(round(q.number()));
+    }
+    else {
+      return q;
+    }
+  }
+  else {
+    const auto res_low = units::floor<To>(q);
+    const auto res_high = res_low + decltype(res_low)::one();
+    const auto diff0 = q - res_low;
+    const auto diff1 = res_high - q;
+    if (diff0 == diff1) {
+      if (static_cast<int>(res_low.number()) & 1)
+        return res_high;
+      return res_low;
+    } else if (diff0 < diff1) {
+      return res_low;
+    }
+    return res_high;
+  }
+}
+
 }  // namespace units
