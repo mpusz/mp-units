@@ -24,10 +24,12 @@
 #include <units/isq/si/area.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/volume.h>
+#include <units/isq/si/time.h>
 #include <catch2/catch.hpp>
 #include <limits>
 
 using namespace units;
+using namespace units::isq;
 using namespace units::isq::si;
 
 // classical
@@ -105,6 +107,46 @@ TEST_CASE("numeric_limits functions", "[limits]")
   }
   SECTION ("'epsilon' works as expected using mixed Rep types") {
     REQUIRE(epsilon<decltype(1_q_m)>().number() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
+  }
+}
+
+TEST_CASE("floor functions", "[floor]")
+{
+  SECTION ("floor 1 second with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1_q_s) == 1_q_s);
+  }
+  SECTION ("floor 1000 milliseconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1000_q_ms) == 1_q_s);
+  }
+  SECTION ("floor 1001 milliseconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1001_q_ms) == 1_q_s);
+  }
+  SECTION ("floor 1999 milliseconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1999_q_ms) == 1_q_s);
+  }
+  SECTION ("floor -1000 milliseconds with target unit second should be -1 second") {
+    REQUIRE(floor<si::second>(-1000_q_ms) == -1_q_s);
+  }
+  SECTION ("floor -999 milliseconds with target unit second should be -1 second") {
+    REQUIRE(floor<si::second>(-999_q_ms) == -1_q_s);
+  }
+  SECTION ("floor 1.3 seconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1.3_q_s) == 1_q_s);
+  }
+  SECTION ("floor -1.3 seconds with target unit second should be -1 second") {
+    REQUIRE(floor<si::second>(-1.3_q_s) == -2_q_s);
+  }
+  SECTION ("floor 1001. milliseconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1001._q_ms) == 1_q_s);
+  }
+  SECTION ("floor 1999. milliseconds with target unit second should be 1 second") {
+    REQUIRE(floor<si::second>(1999._q_ms) == 1_q_s);
+  }
+  SECTION ("floor -1000. milliseconds with target unit second should be -1 second") {
+    REQUIRE(floor<si::second>(-1000._q_ms) == -1_q_s);
+  }
+  SECTION ("floor -999. milliseconds with target unit second should be -1 second") {
+    REQUIRE(floor<si::second>(-999._q_ms) == -1_q_s);
   }
 }
 

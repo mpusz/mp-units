@@ -104,9 +104,9 @@ template<Quantity Q>
 
 /**
  * @brief Computes Euler's raised to the given power
- * 
+ *
  * @note Such an operation has sense only for a dimensionless quantity.
- * 
+ *
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
@@ -120,7 +120,7 @@ template<typename U, typename Rep>
 
 /**
  * @brief Computes the absolute value of a quantity
- * 
+ *
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
@@ -134,9 +134,9 @@ template<typename D, typename U, typename Rep>
 
 /**
  * @brief Returns the epsilon of the quantity
- * 
+ *
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
- * 
+ *
  * @tparam Q Quantity type being the base of the operation
  * @return Quantity The epsilon value for quantity's representation type
  */
@@ -145,6 +145,42 @@ template<Quantity Q>
 [[nodiscard]] constexpr Quantity auto epsilon() noexcept
 {
   return Q(std::numeric_limits<typename Q::rep>::epsilon());
+}
+
+/**
+ * @brief Computes the largest quantity with integer representation and unit type To with its number not greater than q
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type To
+ */
+template<Unit To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
+  requires (!treat_as_floating_point<Rep>) ||
+    requires { floor(q.number()); } ||
+    requires { std::floor(q.number()); }
+{
+  const auto handle_signed_results = [&]<typename T>(const T& res) {
+    if (res > q)
+      return res - T::one();
+    return res;
+  };
+  if constexpr(treat_as_floating_point<Rep>) {
+    using std::floor;
+    if constexpr(std::is_same_v<To, U>) {
+      return quantity<D, To, Rep>(floor(q.number()));
+    }
+    else {
+      return handle_signed_results(quantity<D, To, Rep>(floor(quantity_cast<To>(q).number())));
+    }
+  }
+  else {
+    if constexpr(std::is_same_v<To, U>) {
+      return q;
+    }
+    else {
+      return handle_signed_results(quantity_cast<To>(q));
+    }
+  }
 }
 
 }  // namespace units

@@ -25,6 +25,7 @@
 #include <units/isq/si/length.h>
 #include <units/isq/si/area.h>
 #include <units/isq/si/volume.h>
+#include <units/isq/si/time.h>
 #include <units/isq/si/international/length.h>
 #include <units/isq/si/international/area.h>
 #include <units/isq/si/international/volume.h>
@@ -32,6 +33,7 @@
 namespace {
 
 using namespace units;
+using namespace units::isq;
 using namespace units::isq::si::literals;
 using namespace units::isq::si::international::literals;
 
@@ -54,5 +56,27 @@ static_assert(compare<decltype(pow<1, 4>(4_q_ft2 * 4_q_ft2)), decltype(2_q_ft)>)
 static_assert(compare<decltype(pow<1, 4>(4_q_m2)), decltype(sqrt(2_q_m))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_km2)), decltype(sqrt(2_q_km))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_ft2)), decltype(sqrt(2_q_ft))>);
+
+#if __cpp_lib_constexpr_cmath  // TODO remove once std::floor is constexpr for all compilers
+// floor
+// integral types
+static_assert(compare<decltype(floor<si::second>(1_q_s)), decltype(1_q_s)>);
+
+static_assert(compare<decltype(floor<si::second>(1000_q_ms)), decltype(1_q_s)>);
+static_assert(compare<decltype(floor<si::second>(1001_q_ms)), decltype(1_q_s)>);
+static_assert(compare<decltype(floor<si::second>(1999_q_ms)), decltype(1_q_s)>);
+static_assert(compare<decltype(floor<si::second>(-1000_q_ms)), decltype(-1_q_s)>);
+static_assert(compare<decltype(floor<si::second>(-999_q_ms)), decltype(-1_q_s)>);
+
+// floating-point
+static_assert(floor<si::second>(1.3_q_s) == 1_q_s);
+static_assert(floor<si::second>(-1.3_q_s) == -2_q_s);
+
+// static_assert(floor<si::second>(1000._q_ms) == 1_q_s);  // does not work due to a bug in fpow10() see #311
+static_assert(floor<si::second>(1001._q_ms) == 1_q_s);
+static_assert(floor<si::second>(1999._q_ms) == 1_q_s);
+static_assert(floor<si::second>(-1000._q_ms) == -1_q_s);
+static_assert(floor<si::second>(-999._q_ms) == -1_q_s);
+#endif
 
 }  // namespace
