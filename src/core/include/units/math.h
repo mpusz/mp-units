@@ -155,9 +155,13 @@ template<Quantity Q>
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires (!treat_as_floating_point<Rep>) ||
+  requires ((!treat_as_floating_point<Rep>) ||
     requires { floor(q.number()); } ||
-    requires { std::floor(q.number()); }
+    requires { std::floor(q.number()); }) &&
+    (std::same_as<To, U> || requires {
+      ::units::quantity_cast<To>(q);
+      quantity<D, To, Rep>::one();
+    })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q)
@@ -191,9 +195,13 @@ template<Unit To, typename D, typename U, typename Rep>
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires (!treat_as_floating_point<Rep>) ||
+  requires ((!treat_as_floating_point<Rep>) ||
     requires { ceil(q.number()); } ||
-    requires { std::ceil(q.number()); }
+    requires { std::ceil(q.number()); }) &&
+    (std::same_as<To, U> || requires {
+      ::units::quantity_cast<To>(q);
+      quantity<D, To, Rep>::one();
+    })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res < q)
