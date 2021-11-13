@@ -271,10 +271,13 @@ template<Quantity To, typename D, typename U, typename Rep>
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> round(const quantity<D, U, Rep>& q) noexcept
-  requires (!treat_as_floating_point<Rep>) ||
+  requires ((!treat_as_floating_point<Rep>) ||
     requires { round(q.number()); } ||
-    requires { std::round(q.number()); }
-    // TODO add require for units::floor
+    requires { std::round(q.number()); }) &&
+    (std::same_as<To, U> || requires {
+      ::units::floor<To>(q);
+      quantity<D, To, Rep>::one();
+    })
 {
   if constexpr(std::is_same_v<To, U>) {
     if constexpr(treat_as_floating_point<Rep>) {
