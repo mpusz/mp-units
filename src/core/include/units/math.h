@@ -195,7 +195,9 @@ template<Unit To, typename D, typename U, typename Rep>
  */
 template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires requires {
+  requires std::same_as<typename To::dimension, D> &&
+    std::same_as<typename To::rep, Rep> &&
+    requires {
       ::units::floor<typename To::unit>(q);
     }
 {
@@ -250,7 +252,9 @@ template<Unit To, typename D, typename U, typename Rep>
  */
 template<Quantity To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires requires {
+  requires std::same_as<typename To::dimension, D> &&
+    std::same_as<typename To::rep, Rep> &&
+    requires {
       ::units::ceil<typename To::unit>(q);
     }
 {
