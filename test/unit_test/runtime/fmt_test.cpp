@@ -1055,10 +1055,17 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(STD_FMT::format("{:%XQ %q}", 42_q_m) == "2A m");
 
 #ifdef UNITS_COMP_MSVC
+#if USE_LIBFMT
     CHECK(STD_FMT::format("{:%aQ %q}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
     CHECK(STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x1.3c1p+0 m");
     CHECK(STD_FMT::format("{:%AQ %q}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
     CHECK(STD_FMT::format("{:%.3AQ %q}", 1.2345678_q_m) == "0X1.3C1P+0 m");
+#else
+    CHECK(STD_FMT::format("{:%aQ %q}",   1.2345678_q_m) == "1.3c0ca2a5b1d5dp+0 m");
+    CHECK(STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "1.3c1p+0 m");
+    CHECK(STD_FMT::format("{:%AQ %q}",   1.2345678_q_m) == "1.3C0CA2A5B1D5DP+0 m");
+    CHECK(STD_FMT::format("{:%.3AQ %q}", 1.2345678_q_m) == "1.3C1P+0 m");
+#endif // USE_LIBFMT
 #else
     CHECK(STD_FMT::format("{:%aQ %q}",   1.2345678_q_m) == "0x9.e065152d8eae841p-3 m");
     CHECK(STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x9.e06p-3 m");
@@ -1089,10 +1096,17 @@ TEST_CASE("type specification", "[text][fmt]")
     CHECK(STD_FMT::format("{:%XQ}", 42_q_m) == "2A");
 
 #ifdef UNITS_COMP_MSVC
+#if USE_LIBFMT
     CHECK(STD_FMT::format("{:%aQ}",   1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0");
     CHECK(STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "0x1.3c1p+0");
     CHECK(STD_FMT::format("{:%AQ}",   1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0");
     CHECK(STD_FMT::format("{:%.3AQ}", 1.2345678_q_m) == "0X1.3C1P+0");
+#else
+    CHECK(STD_FMT::format("{:%aQ}",   1.2345678_q_m) == "1.3c0ca2a5b1d5dp+0");
+    CHECK(STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "1.3c1p+0");
+    CHECK(STD_FMT::format("{:%AQ}",   1.2345678_q_m) == "1.3C0CA2A5B1D5DP+0");
+    CHECK(STD_FMT::format("{:%.3AQ}", 1.2345678_q_m) == "1.3C1P+0");
+#endif // USE_LIBFMT
 #else
     CHECK(STD_FMT::format("{:%aQ}",   1.2345678_q_m) == "0x9.e065152d8eae841p-3");
     CHECK(STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "0x9.e06p-3");
