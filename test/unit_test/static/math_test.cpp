@@ -78,6 +78,9 @@ static_assert(floor<si::second>(1999._q_ms) == 1_q_s);
 static_assert(floor<si::second>(-1000._q_ms) == -1_q_s);
 static_assert(floor<si::second>(-999._q_ms) == -1_q_s);
 
+// floor with quantity
+static_assert(compare<decltype(floor<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
+
 // ceil
 // integral types
 static_assert(compare<decltype(ceil<si::second>(1_q_s)), decltype(1_q_s)>);
@@ -97,6 +100,9 @@ static_assert(ceil<si::second>(1001._q_ms) == 2_q_s);
 static_assert(ceil<si::second>(1999._q_ms) == 2_q_s);
 static_assert(ceil<si::second>(-1000._q_ms) == -1_q_s);
 static_assert(ceil<si::second>(-999._q_ms) == 0_q_s);
+
+// ceil with quantity
+static_assert(compare<decltype(ceil<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
 #endif
 
 }  // namespace
