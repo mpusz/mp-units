@@ -66,12 +66,12 @@ struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr basic_symbol_text(char s) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_char(s); }
-  constexpr basic_symbol_text(StandardCharT s, char a) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_char(a); }
-  constexpr basic_symbol_text(const char (&s)[N + 1]) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_string<N>(s); }
-  constexpr basic_symbol_text(const basic_fixed_string<char, N>& s) noexcept: standard_(s), ascii_(s) { detail::validate_ascii_string<N>(s.data_); }
-  constexpr basic_symbol_text(const StandardCharT (&s)[N + 1], const char (&a)[M + 1]) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_string<M>(a); }
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& s, const basic_fixed_string<char, M>& a) noexcept: standard_(s), ascii_(a) { detail::validate_ascii_string<M>(a.data_); }
+  constexpr basic_symbol_text(char std) noexcept: standard_(std), ascii_(std) { detail::validate_ascii_char(std); }
+  constexpr basic_symbol_text(StandardCharT std, char a) noexcept: standard_(std), ascii_(a) { detail::validate_ascii_char(a); }
+  constexpr basic_symbol_text(const char (&std)[N + 1]) noexcept: standard_(std), ascii_(std) { detail::validate_ascii_string<N>(std); }
+  constexpr basic_symbol_text(const basic_fixed_string<char, N>& std) noexcept: standard_(std), ascii_(std) { detail::validate_ascii_string<N>(std.data_); }
+  constexpr basic_symbol_text(const StandardCharT (&std)[N + 1], const char (&a)[M + 1]) noexcept: standard_(std), ascii_(a) { detail::validate_ascii_string<M>(a); }
+  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& std, const basic_fixed_string<char, M>& a) noexcept: standard_(std), ascii_(a) { detail::validate_ascii_string<M>(a.data_); }
 
   [[nodiscard]] constexpr auto& standard() { return standard_; }
   [[nodiscard]] constexpr const auto& standard() const { return standard_; }

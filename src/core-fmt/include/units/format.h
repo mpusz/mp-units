@@ -319,7 +319,7 @@ private:
     constexpr void on_fill(std::basic_string_view<CharT> fill) { f.specs.global.fill = fill; }
     constexpr void on_align(units::detail::fmt_align align) { f.specs.global.align = align; }
     constexpr void on_width(int width) { f.specs.global.width = width; }
-    constexpr void on_sign(units::detail::fmt_sign s) { f.specs.rep.sign = s; }
+    constexpr void on_sign(units::detail::fmt_sign sign) { f.specs.rep.sign = sign; }
     constexpr void on_hash() { f.specs.rep.alt = true; }
     constexpr void on_precision(int precision) { f.specs.rep.precision = precision; }
     constexpr void on_localized() { f.specs.rep.localized = true; }
