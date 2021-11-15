@@ -149,7 +149,8 @@ TEST_CASE("floor functions", "[floor]")
     REQUIRE(floor<si::second>(-999._q_ms) == -1_q_s);
   }
   SECTION ("floor 1 second with target quantity with unit type second should be 1 second") {
-    REQUIRE(floor<si::time<si::second, long int>>(1_q_s) == 1_q_s);
+    using showtime = si::time<si::second, int>;
+    REQUIRE(floor<showtime>(showtime::one()) == showtime::one());
   }
 }
 
@@ -193,7 +194,8 @@ TEST_CASE("ceil functions", "[ceil]")
     REQUIRE(ceil<si::second>(-999._q_ms) == 0_q_s);
   }
   SECTION ("ceil 1 second with target quantity with unit type second should be 1 second") {
-    REQUIRE(ceil<si::time<si::second, long int>>(1_q_s) == 1_q_s);
+    using showtime = si::time<si::second, int>;
+    REQUIRE(ceil<showtime>(showtime::one()) == showtime::one());
   }
 }
 
