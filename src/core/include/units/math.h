@@ -164,8 +164,9 @@ template<Unit To, typename D, typename U, typename Rep>
     })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res > q)
+    if (res > q) {
       return res - T::one();
+    }
     return res;
   };
   if constexpr(treat_as_floating_point<Rep>) {
@@ -221,8 +222,9 @@ template<Unit To, typename D, typename U, typename Rep>
     })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res < q)
+    if (res < q) {
       return res + T::one();
+    }
     return res;
   };
   if constexpr(treat_as_floating_point<Rep>) {
@@ -294,10 +296,12 @@ template<Unit To, typename D, typename U, typename Rep>
     const auto diff0 = q - res_low;
     const auto diff1 = res_high - q;
     if (diff0 == diff1) {
-      if (static_cast<int>(res_low.number()) & 1)
+      if (static_cast<int>(res_low.number()) & 1) {
         return res_high;
+      }
       return res_low;
-    } else if (diff0 < diff1) {
+    }
+    if (diff0 < diff1) {
       return res_low;
     }
     return res_high;
