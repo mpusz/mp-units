@@ -103,7 +103,7 @@ class UnitsConan(ConanFile):
             if version < "16":
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
         elif compiler == "msvc":
-            if version < "19.28":
+            if version != "19.3" and version < "19.28":
                 raise ConanInvalidConfiguration("mp-units requires at least MSVC 19.28")
         else:
             raise ConanInvalidConfiguration("Unsupported compiler")
