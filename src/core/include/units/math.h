@@ -304,4 +304,21 @@ template<Unit To, typename D, typename U, typename Rep>
   }
 }
 
+/**
+ * @brief Overload of @c ::units::round<Unit>() using the unit type of To
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type of quantity To
+ */
+template<Quantity To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> round(const quantity<D, U, Rep>& q) noexcept
+  requires std::same_as<typename To::dimension, D> &&
+    std::same_as<typename To::rep, Rep> &&
+    requires {
+      ::units::round<typename To::unit>(q);
+    }
+{
+  return ::units::round<typename To::unit>(q);
+}
+
 }  // namespace units

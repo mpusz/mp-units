@@ -135,6 +135,9 @@ static_assert(compare<decltype(round<si::second>(-1001._q_ms)), decltype(-1_q_s)
 static_assert(compare<decltype(round<si::second>(-1499._q_ms)), decltype(-1_q_s)>);
 static_assert(compare<decltype(round<si::second>(-1500._q_ms)), decltype(-2_q_s)>);
 static_assert(compare<decltype(round<si::second>(-1999._q_ms)), decltype(-2_q_s)>);
+
+// round with quantity
+static_assert(compare<decltype(round<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
 #endif
 
 }  // namespace

@@ -264,6 +264,10 @@ TEST_CASE("round functions", "[round]")
   SECTION ("round -1999. milliseconds with target unit second should be -2 seconds") {
     REQUIRE(round<si::second>(-1999._q_ms) == -2_q_s);
   }
+  SECTION ("round 1 second with target quantity with unit type second should be 1 second") {
+    using showtime = si::time<si::second, int>;
+    REQUIRE(round<showtime>(showtime::one()) == showtime::one());
+  }
 }
 
 TEMPLATE_TEST_CASE_SIG("pow<N>() implementation exponentiates values to power N", "[math][pow][exp]",
