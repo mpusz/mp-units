@@ -63,9 +63,12 @@ class UnitsConan(ConanFile):
 
     @property
     def _use_libfmt(self):
-        # compiler = self.settings.compiler
-        # return compiler != "Visual Studio" and compiler != "msvc"  # TODO Enable when VS std::format_to(ctx.out, ...) is fixed
-        return True
+        compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
+        std_support = \
+            (compiler == "Visual Studio" and version >= "17" and compiler.cppstd == 23) or \
+            (compiler == "msvc" and (version == "19.3" or version >= "19.30") and compiler.cppstd == 23)
+        return not std_support
 
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
