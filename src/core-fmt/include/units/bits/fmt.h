@@ -352,7 +352,7 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
       if (p != begin) {
         auto c = *begin;
         if (c == '{') throw STD_FMT::format_error("invalid fill character '{'");
-        handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(begin, static_cast<size_t>(p - begin)));
+        handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(&*begin, static_cast<size_t>(p - begin)));
         begin = p + 1;
       } else
         ++begin;

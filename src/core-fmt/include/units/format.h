@@ -305,7 +305,7 @@ template<typename Dimension, typename Unit, typename Rep, typename CharT>
 struct STD_FMT::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
-  using iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::iterator;
+  using const_iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::const_iterator;
 
   bool quantity_value = false;
   bool quantity_unit = false;
@@ -356,12 +356,16 @@ private:
       f.specs.rep.dynamic_precision_index = units::detail::on_dynamic_arg(t, context);
     }
 
-    constexpr void on_text(const CharT*, const CharT*) {}
-    constexpr void on_quantity_value(const CharT* begin, const CharT* end)
+    template<std::input_iterator It, std::sentinel_for<It> S>
+    constexpr void on_text(It, S) {}
+
+    template<std::input_iterator It, std::sentinel_for<It> S>
+    constexpr void on_quantity_value(It begin, S end)
     {
       if (begin != end) units::detail::parse_units_rep(begin, end, *this, units::treat_as_floating_point<Rep>);
       f.quantity_value = true;
     }
+    
     constexpr void on_quantity_unit(CharT mod)
     {
       if (mod != 'q') on_unit_modifier(mod);
@@ -369,7 +373,7 @@ private:
     }
   };
 
-  [[nodiscard]] constexpr std::pair<iterator, iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr std::pair<const_iterator, const_iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto begin = ctx.begin();
     auto end = ctx.end();
@@ -423,7 +427,7 @@ public:
   [[nodiscard]] constexpr auto parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    format_str = std::basic_string_view<CharT>(range.first, static_cast<size_t>(range.second - range.first));
+    format_str = std::basic_string_view<CharT>(&*range.first, static_cast<size_t>(range.second - range.first));
     return range.second;
   }
 
