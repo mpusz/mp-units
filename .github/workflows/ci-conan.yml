@@ -39,41 +39,43 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows MSVC 19.29",
+            name: "Windows MSVC-19.29",
             os: windows-2019,
-            compiler: { type: MSVC, version: 19.29, std: 20 }
+            compiler: { type: MSVC, version: 19.29, std: 20 },
+            vs_version: 16
           }
         - {
-            name: "Windows MSVC 19.30",
+            name: "Windows MSVC-19.30",
             os: windows-2019,
-            compiler: { type: MSVC, version: 19.30, std: 23 }
+            compiler: { type: MSVC, version: 19.30, std: 23 },
+            vs_version: 16
           }
         - {
-            name: "Ubuntu GCC 10.3.0",
+            name: "Ubuntu GCC-10",
             os: ubuntu-20.04,
             compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10", std: 20 },
             lib: "libstdc++11"
           }
         - {
-            name: "Ubuntu GCC 11.1.0",
+            name: "Ubuntu GCC-11",
             os: ubuntu-20.04,
             compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11", std: 20 },
             lib: "libstdc++11"
           }
         - {
-            name: "Ubuntu Clang 12.0.0 + libstdc++11",
+            name: "Ubuntu Clang-12 + libstdc++11",
             os: ubuntu-20.04,
             compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12", std: 20 },
             lib: "libstdc++11"
           }
         - {
-            name: "Ubuntu Clang 12.0.0 + libc++",
+            name: "Ubuntu Clang-12 + libc++",
             os: ubuntu-20.04,
             compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12", std: 20 },
             lib: "libc++"
           }
         - {
-            name: "Ubuntu Clang 13.0.0 + libc++",
+            name: "Ubuntu Clang-13 + libc++",
             os: ubuntu-20.04,
             compiler: { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13", std: 20 },
             lib: "libc++"
@@ -144,6 +146,10 @@ jobs:
           conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
           conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
           conan profile show default
+      - name: Set Visual Studio version that provides required MSVC toolchain
+        if: matrix.config.compiler.type == 'MSVC'
+        run: |
+          conan profile update conf.tools.microsoft.msbuild:vs_version=${{ matrix.config.vs_version }} default
       # - name: Add support for clang-13 to Conan's settings.yml
       #   # TODO Remove when Conan will support clang-13
       #   if: matrix.config.compiler.type == 'CLANG'
