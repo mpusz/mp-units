@@ -194,13 +194,9 @@ template<Unit To, typename D, typename U, typename Rep>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type of quantity To
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires std::same_as<typename To::dimension, D> &&
-    std::same_as<typename To::rep, Rep> &&
-    requires {
-      ::units::floor<typename To::unit>(q);
-    }
+  requires requires { ::units::floor<typename To::unit>(q); }
 {
   return ::units::floor<typename To::unit>(q);
 }
@@ -252,13 +248,9 @@ template<Unit To, typename D, typename U, typename Rep>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type of quantity To
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires std::same_as<typename To::dimension, D> &&
-    std::same_as<typename To::rep, Rep> &&
-    requires {
-      ::units::ceil<typename To::unit>(q);
-    }
+  requires requires { ::units::ceil<typename To::unit>(q); }
 {
   return ::units::ceil<typename To::unit>(q);
 }
@@ -314,13 +306,9 @@ template<Unit To, typename D, typename U, typename Rep>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type of quantity To
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> round(const quantity<D, U, Rep>& q) noexcept
-  requires std::same_as<typename To::dimension, D> &&
-    std::same_as<typename To::rep, Rep> &&
-    requires {
-      ::units::round<typename To::unit>(q);
-    }
+  requires requires { ::units::round<typename To::unit>(q); }
 {
   return ::units::round<typename To::unit>(q);
 }
