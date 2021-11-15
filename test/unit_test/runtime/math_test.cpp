@@ -199,6 +199,77 @@ TEST_CASE("ceil functions", "[ceil]")
   }
 }
 
+TEST_CASE("round functions", "[round]")
+{
+  SECTION ("round 1 second with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1_q_s) == 1_q_s);
+  }
+  SECTION ("round 1000 milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1000_q_ms) == 1_q_s);
+  }
+  SECTION ("round 1001 milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1001_q_ms) == 1_q_s);
+  }
+  SECTION ("round 1499 milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1499_q_ms) == 1_q_s);
+  }
+  SECTION ("round 1500 milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(round<si::second>(1500_q_ms) == 2_q_s);
+  }
+  SECTION ("round 1999 milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(round<si::second>(1999_q_ms) == 2_q_s);
+  }
+  SECTION ("round -1000 milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1000_q_ms) == -1_q_s);
+  }
+  SECTION ("round -1001 milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1001_q_ms) == -1_q_s);
+  }
+  SECTION ("round -1499 milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1499_q_ms) == -1_q_s);
+  }
+  SECTION ("round -1500 milliseconds with target unit second should be -2 seconds") {
+    REQUIRE(round<si::second>(-1500_q_ms) == -2_q_s);
+  }
+  SECTION ("round -1999 milliseconds with target unit second should be -2 seconds") {
+    REQUIRE(round<si::second>(-1999_q_ms) == -2_q_s);
+  }
+  SECTION ("round 1000. milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1000._q_ms) == 1_q_s);
+  }
+  SECTION ("round 1001. milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1001._q_ms) == 1_q_s);
+  }
+  SECTION ("round 1499. milliseconds with target unit second should be 1 second") {
+    REQUIRE(round<si::second>(1499._q_ms) == 1_q_s);
+  }
+  SECTION ("round 1500. milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(round<si::second>(1500._q_ms) == 2_q_s);
+  }
+  SECTION ("round 1999. milliseconds with target unit second should be 2 seconds") {
+    REQUIRE(round<si::second>(1999._q_ms) == 2_q_s);
+  }
+  SECTION ("round -1000. milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1000._q_ms) == -1_q_s);
+  }
+  SECTION ("round -1001. milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1001._q_ms) == -1_q_s);
+  }
+  SECTION ("round -1499. milliseconds with target unit second should be -1 second") {
+    REQUIRE(round<si::second>(-1499._q_ms) == -1_q_s);
+  }
+  SECTION ("round -1500. milliseconds with target unit second should be -2 seconds") {
+    REQUIRE(round<si::second>(-1500._q_ms) == -2_q_s);
+  }
+  SECTION ("round -1999. milliseconds with target unit second should be -2 seconds") {
+    REQUIRE(round<si::second>(-1999._q_ms) == -2_q_s);
+  }
+  SECTION ("round 1 second with target quantity with unit type second should be 1 second") {
+    using showtime = si::time<si::second, int>;
+    REQUIRE(round<showtime>(showtime::one()) == showtime::one());
+  }
+}
+
 TEMPLATE_TEST_CASE_SIG("pow<N>() implementation exponentiates values to power N", "[math][pow][exp]",
                        (std::intmax_t N, N), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25)
 {

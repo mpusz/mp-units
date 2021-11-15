@@ -164,8 +164,9 @@ template<Unit To, typename D, typename U, typename Rep>
     })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res > q)
+    if (res > q) {
       return res - T::one();
+    }
     return res;
   };
   if constexpr(treat_as_floating_point<Rep>) {
@@ -193,13 +194,9 @@ template<Unit To, typename D, typename U, typename Rep>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type of quantity To
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires std::same_as<typename To::dimension, D> &&
-    std::same_as<typename To::rep, Rep> &&
-    requires {
-      ::units::floor<typename To::unit>(q);
-    }
+  requires requires { ::units::floor<typename To::unit>(q); }
 {
   return ::units::floor<typename To::unit>(q);
 }
@@ -221,8 +218,9 @@ template<Unit To, typename D, typename U, typename Rep>
     })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res < q)
+    if (res < q) {
       return res + T::one();
+    }
     return res;
   };
   if constexpr(treat_as_floating_point<Rep>) {
@@ -250,15 +248,69 @@ template<Unit To, typename D, typename U, typename Rep>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type of quantity To
  */
-template<Quantity To, typename D, typename U, typename Rep>
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
 [[nodiscard]] constexpr quantity<D, typename To::unit, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires std::same_as<typename To::dimension, D> &&
-    std::same_as<typename To::rep, Rep> &&
-    requires {
-      ::units::ceil<typename To::unit>(q);
-    }
+  requires requires { ::units::ceil<typename To::unit>(q); }
 {
   return ::units::ceil<typename To::unit>(q);
+}
+
+/**
+ * @brief Computes the nearest quantity with integer representation and unit type To to q
+ *
+ * Rounding halfway cases away from zero, regardless of the current rounding mode.
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type To
+ */
+template<Unit To, typename D, typename U, typename Rep>
+[[nodiscard]] constexpr quantity<D, To, Rep> round(const quantity<D, U, Rep>& q) noexcept
+  requires ((!treat_as_floating_point<Rep>) ||
+    requires { round(q.number()); } ||
+    requires { std::round(q.number()); }) &&
+    (std::same_as<To, U> || requires {
+      ::units::floor<To>(q);
+      quantity<D, To, Rep>::one();
+    })
+{
+  if constexpr(std::is_same_v<To, U>) {
+    if constexpr(treat_as_floating_point<Rep>) {
+      using std::round;
+      return quantity<D, To, Rep>(round(q.number()));
+    }
+    else {
+      return q;
+    }
+  }
+  else {
+    const auto res_low = units::floor<To>(q);
+    const auto res_high = res_low + decltype(res_low)::one();
+    const auto diff0 = q - res_low;
+    const auto diff1 = res_high - q;
+    if (diff0 == diff1) {
+      if (static_cast<int>(res_low.number()) & 1) {
+        return res_high;
+      }
+      return res_low;
+    }
+    if (diff0 < diff1) {
+      return res_low;
+    }
+    return res_high;
+  }
+}
+
+/**
+ * @brief Overload of @c ::units::round<Unit>() using the unit type of To
+ *
+ * @tparam q Quantity being the base of the operation
+ * @return Quantity The rounded quantity with unit type of quantity To
+ */
+template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
+[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> round(const quantity<D, U, Rep>& q) noexcept
+  requires requires { ::units::round<typename To::unit>(q); }
+{
+  return ::units::round<typename To::unit>(q);
 }
 
 }  // namespace units
