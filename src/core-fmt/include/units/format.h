@@ -305,7 +305,7 @@ template<typename Dimension, typename Unit, typename Rep, typename CharT>
 struct STD_FMT::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
 private:
   using quantity = units::quantity<Dimension, Unit, Rep>;
-  using const_iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::const_iterator;
+  using iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::iterator;
 
   bool quantity_value = false;
   bool quantity_unit = false;
@@ -373,7 +373,7 @@ private:
     }
   };
 
-  [[nodiscard]] constexpr std::pair<const_iterator, const_iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr std::pair<iterator, iterator> do_parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto begin = ctx.begin();
     auto end = ctx.end();
