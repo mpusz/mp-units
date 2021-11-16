@@ -427,7 +427,8 @@ public:
   [[nodiscard]] constexpr auto parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    format_str = std::basic_string_view<CharT>(&*range.first, static_cast<size_t>(range.second - range.first));
+    if(range.first != range.second)
+      format_str = std::basic_string_view<CharT>(&*range.first, static_cast<size_t>(range.second - range.first));
     return range.second;
   }
 
