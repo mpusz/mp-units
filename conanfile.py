@@ -152,7 +152,9 @@ class UnitsConan(ConanFile):
 
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]
-        self.cpp_info.components["core-fmt"].requires = ["core", "fmt::fmt"]
+        self.cpp_info.components["core-fmt"].requires = ["core"]
+        if self._use_libfmt:
+            self.cpp_info.components["core-fmt"].requires.append("fmt::fmt")
         self.cpp_info.components["isq"].requires = ["core"]
         self.cpp_info.components["isq-natural"].requires = ["isq"]
         self.cpp_info.components["si"].requires = ["isq"]
