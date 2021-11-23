@@ -58,6 +58,36 @@ namespace detail {
 template<typename C, typename Rep, typename Period>
 inline constexpr bool is_quantity_point_like<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> = true;
 
+constexpr std::intmax_t pow_10(std::intmax_t v)
+{
+  gsl_Expects(v > 0);
+  std::intmax_t res = 1;
+  for(std::intmax_t i = 0; i < v; i++)
+    res *= 10;
+  return res;
+}
+
+template<ratio R>
+constexpr auto to_std_ratio_impl()
+{
+  if constexpr(R.exp == 0)
+    return std::ratio<R.num, R.den>{};
+  else if constexpr(R.exp > 0)
+    return std::ratio<R.num * pow_10(R.exp), R.den>{};
+  else
+    return std::ratio<R.num, R.den * pow_10(-R.exp)>{};
+}
+
 }  // namespace detail
+
+// TODO ICE below on gcc-11 when `ratio` is used instead of `auto`
+template<auto R>
+using to_std_ratio = decltype(detail::to_std_ratio_impl<R>());
+
+template<QuantityOf<isq::si::dim_time> Q>
+constexpr auto to_std_duration(const Q& q)
+{
+  return std::chrono::duration<typename Q::rep, to_std_ratio<Q::unit::ratio>>(q.number());
+}
 
 } // namespace units

@@ -65,3 +65,26 @@ provide a deduction guide from `QuantityPointLike`::
     using namespace std::chrono_literals;
 
     static_assert((quantity_point{std::chrono::sys_seconds{1s}} + 1 * s).relative() == 2s);
+
+
+Interoperability with the C++ Standard Library
+----------------------------------------------
+
+The above ``std::chrono``-specific customization points are already predefined in the ``mp-units``
+library for both ``std::chrono::duration`` as well as ``std::chrono::time_point``.
+They are provided in a dedicated header file::
+
+    #include <units/chrono.h>
+
+The same header file provides additional conversion helpers from ``mp-units`` to
+the C++ Standard Library types:
+
+- an explicit conversion of `quantity` to ``std::chrono::duration``::
+
+    template<QuantityOf<isq::si::dim_time> Q>
+    constexpr auto to_std_duration(const Q& q);
+
+- an alias that provides a conversion from `ratio` to ``std::ratio``::
+
+    template<ratio R>
+    using to_std_ratio = /* ... */

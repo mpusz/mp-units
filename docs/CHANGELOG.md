@@ -5,6 +5,7 @@
   - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
   - feat: `std::format` support for compliant compilers added
   - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))
+  - feat: conversion helpers from `mp-units` to `std::chrono` types added
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
   - build: Minimum Conan version changed to 1.40
