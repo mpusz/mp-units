@@ -47,8 +47,7 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
   using origin = clock_origin<C>;
   using unit = downcast_unit<typename origin::dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;
-  [[nodiscard]] static constexpr auto relative(
-    const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp) {
+  [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp) {
     return qp.time_since_epoch();
   }
 };
@@ -84,10 +83,17 @@ constexpr auto to_std_ratio_impl()
 template<auto R>
 using to_std_ratio = decltype(detail::to_std_ratio_impl<R>());
 
-template<QuantityOf<isq::si::dim_time> Q>
-constexpr auto to_std_duration(const Q& q)
+template<typename U, typename Rep>
+[[nodiscard]] constexpr auto to_std_duration(const quantity<isq::si::dim_time, U, Rep>& q)
 {
-  return std::chrono::duration<typename Q::rep, to_std_ratio<Q::unit::ratio>>(q.number());
+  return std::chrono::duration<Rep, to_std_ratio<U::ratio>>(q.number());
+}
+
+template<typename C, typename U, typename Rep>
+[[nodiscard]] constexpr auto to_std_time_point(const quantity_point<clock_origin<C>, U, Rep>& qp)
+{
+  using ret_type = std::chrono::time_point<C, std::chrono::duration<Rep, to_std_ratio<U::ratio>>>;
+  return ret_type(to_std_duration(qp.relative()));
 }
 
 } // namespace units

@@ -90,12 +90,19 @@ static_assert(10_q_m / quantity{2s} == 5_q_m_per_s);
 static_assert(quantity_point{sys_seconds{1s}} + 1_q_s == time_point<std::chrono::system_clock, si::second>{2_q_s});
 static_assert(quantity_point{sys_seconds{1s}} + 1_q_min == time_point<std::chrono::system_clock, si::second>{61_q_s});
 
-// to_duration
+// to_std_duration
 static_assert(to_std_duration(1_q_s) == 1s);
 static_assert(to_std_duration(2_q_h) == 2h);
 static_assert(to_std_duration(3_q_ns) == 3ns);
+static_assert(to_std_duration(quantity{1s}) == 1s);
+static_assert(to_std_duration(quantity{2h}) == 2h);
+static_assert(to_std_duration(quantity{3ns}) == 3ns);
 static_assert(is_same_v<decltype(to_std_duration(1_q_s))::period, std::ratio<1>>);
 static_assert(is_same_v<decltype(to_std_duration(2_q_h))::period, std::ratio<3600>>);
 static_assert(is_same_v<decltype(to_std_duration(3_q_ns))::period, std::nano>);
+
+// to_std_time_point
+static_assert(to_std_time_point(quantity_point{sys_seconds{1s}}) == sys_seconds{1s});
+static_assert(to_std_time_point(quantity_point{sys_days{sys_days::duration{1}}}) == sys_days{sys_days::duration{1}});
 
 }  // namespace

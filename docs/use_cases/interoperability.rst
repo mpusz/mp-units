@@ -79,12 +79,47 @@ They are provided in a dedicated header file::
 The same header file provides additional conversion helpers from ``mp-units`` to
 the C++ Standard Library types:
 
-- an explicit conversion of `quantity` to ``std::chrono::duration``::
-
-    template<QuantityOf<isq::si::dim_time> Q>
-    constexpr auto to_std_duration(const Q& q);
-
 - an alias that provides a conversion from `ratio` to ``std::ratio``::
 
     template<ratio R>
     using to_std_ratio = /* ... */
+
+- an explicit conversion of `quantity` of `isq::si::dim_time` to ``std::chrono::duration``::
+
+    template<typename U, typename Rep>
+    [[nodiscard]] constexpr auto to_std_duration(const quantity<isq::si::dim_time, U, Rep>& q)
+
+- an explicit conversion of `quantity_point` that previously originated from ``std::chrono``
+  to ``std::chrono::time_point``::
+
+    template<typename C, typename U, typename Rep>
+    [[nodiscard]] constexpr auto to_std_time_point(const quantity_point<clock_origin<C>, U, Rep>& qp)
+
+.. note::
+
+    Only `quantity_point` that was created from a ``std::chrono::time_point`` of a specific
+    ``std::chrono`` clock can be converted back to ``std::chrono`` domain::
+
+        const auto qp1 = quantity_point{sys_seconds{1s}};
+        const auto tp1 = to_std_time_point(qp1);  // OK
+
+        conat auto qp2 = quantity_point{1 * s};
+        const auto tp2 = to_std_time_point(qp2);  // Compile-time Error
+
+Here is an example of how interoperatibility described in this chapter can be used in practice::
+
+    using namespace units::aliases::isq::si;
+    using timestamp = quantity_point<clock_origin<std::chrono::system_clock>, si::second>;
+
+    const auto start_time = timestamp(std::chrono::system_clock::now());  // std::chrono -> units
+    const auto velocity = speed::km_per_h<>(825);
+    const auto distance = length::km<>(8111);
+    const auto flight_time = distance / velocity;
+    const auto exp_end_time = start_time + flight_time;
+
+    const auto tp = to_std_time_point(exp_end_time);                      // units -> std::chrono
+    const auto tp_sec = std::chrono::floor<std::chrono::seconds>(tp);
+    const auto tp_days = std::chrono::floor<std::chrono::days>(tp_sec);
+    const auto ymd = std::chrono::year_month_day(tp_days);
+    const auto tod = tp_sec - tp_days;
+    const auto hms = std::chrono::hh_mm_ss(tod);
