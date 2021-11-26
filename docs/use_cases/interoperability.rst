@@ -103,7 +103,7 @@ the C++ Standard Library types:
         const auto qp1 = quantity_point{sys_seconds{1s}};
         const auto tp1 = to_std_time_point(qp1);  // OK
 
-        conat auto qp2 = quantity_point{1 * s};
+        const auto qp2 = quantity_point{1 * s};
         const auto tp2 = to_std_time_point(qp2);  // Compile-time Error
 
 Here is an example of how interoperatibility described in this chapter can be used in practice::
