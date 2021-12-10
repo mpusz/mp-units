@@ -56,14 +56,17 @@ target_link_libraries(mp-units INTERFACE
 add_library(mp-units::mp-units ALIAS mp-units)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
 
+# local build
+export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
+configure_file("mp-unitsConfig.cmake" "." COPYONLY)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
+
 # installation
 install(EXPORT mp-unitsTargets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     NAMESPACE mp-units::
 )
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
