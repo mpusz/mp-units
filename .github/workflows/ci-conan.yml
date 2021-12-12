@@ -39,14 +39,14 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows VS 2019",
+            name: "Windows MSVC 14.2",
             os: windows-2019,
-            compiler: { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" }
+            compiler: { type: MSVC, version: 192, std: 20, cc: "cl", cxx: "cl" }
           }
         - {
-            name: "Windows VS 2022",
+            name: "Windows MSVC 14.3",
             os: windows-2022,
-            compiler: { type: MSVC, version: 19.30, std: 23, cc: "cl", cxx: "cl" }
+            compiler: { type: MSVC, version: 193, std: 23, cc: "cl", cxx: "cl" }
           }
         - {
             name: "Ubuntu GCC-10",
