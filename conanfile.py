@@ -77,10 +77,11 @@ class UnitsConan(ConanFile):
 
     def requirements(self):
         compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
         if self._use_libfmt:
             self.requires("fmt/8.0.1")
 
-        if compiler == "clang" and compiler.libcxx == "libc++":
+        if compiler == "clang" and compiler.libcxx == "libc++" and version < "14.0":
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
