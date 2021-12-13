@@ -41,7 +41,7 @@ jobs:
         - {
             name: "Windows MSVC 14.2",
             os: windows-2019,
-            compiler: { type: MSVC, version: 192, std: 20, cc: "cl", cxx: "cl" }
+            compiler: { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" }
           }
         - {
             name: "Windows MSVC 14.3",
