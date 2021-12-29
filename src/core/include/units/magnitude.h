@@ -24,6 +24,7 @@
 
 #include <units/ratio.h>
 #include <cstdint>
+#include <numbers>
 
 namespace units::mag
 {
@@ -32,6 +33,21 @@ namespace units::mag
 // rational powers.
 template <typename... base_powers>
 struct magnitude;
+
+template <typename base, ratio power = ratio{1}>
+struct base_power;
+
+template <typename T>
+struct is_magnitude;
+template <typename T>
+inline constexpr bool is_magnitude_v = is_magnitude<T>::value;
+template <typename T>
+concept Magnitude = is_magnitude_v<T>;
+
+template <std::intmax_t n>
+struct int_base : std::integral_constant<std::intmax_t, n> {};
+template <std::intmax_t n, std::intmax_t num = 1, std::intmax_t den = 1>
+using int_base_power = base_power<int_base<n>, ratio{num, den}>;
 
 template <typename mag_t>
 struct inverse;
@@ -54,6 +70,17 @@ template <std::intmax_t n>
 using prime_factorization_t = typename prime_factorization<n>::type;
 } // namespace detail
 
+template <std::intmax_t num = 1, std::intmax_t den = 1>
+using ratio_t = quotient_t<detail::prime_factorization_t<num>, detail::prime_factorization_t<den>>;
+
+struct pi {
+  static inline constexpr long double value = std::numbers::pi_v<long double>;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Implementation details below.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template <typename... base_powers>
 struct magnitude {
   bool operator==(magnitude) const { return true; }
@@ -62,23 +89,31 @@ struct magnitude {
   bool operator==(magnitude<other_base_powers...>) const { return false; }
 };
 
-template <std::intmax_t num = 1, std::intmax_t den = 1>
-using ratio_t = quotient_t<detail::prime_factorization_t<num>, detail::prime_factorization_t<den>>;
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Implementation details below.
-////////////////////////////////////////////////////////////////////////////////////////////////////
+// Magnitude concept implementation.
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Base powers.
+template <typename T>
+struct is_magnitude: std::false_type {};
 
-template <typename base, ratio power = ratio{1}>
-struct base_power;
+// Check whether a tuple of (possibly heterogeneously typed) values are strictly increasing.
+template <typename... Ts>
+constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
+  // Carefully handle different sizes, avoiding unsigned integer underflow.
+  constexpr auto num_comparisons = [](auto num_elements) {
+    return (num_elements > 1) ? (num_elements - 1) : 0;
+  }(sizeof...(Ts));
 
-template <std::intmax_t n>
-struct int_base : std::integral_constant<std::intmax_t, n> {};
-template <std::intmax_t n, std::intmax_t num = 1, std::intmax_t den = 1>
-using int_base_power = base_power<int_base<n>, ratio{num, den}>;
+  // Compare zero or more pairs of neighbours as needed.
+  return [&ts]<std::size_t... Is>(std::integer_sequence<std::size_t, Is...>) {
+    return ((std::get<Is>(ts) < std::get<Is + 1>(ts)) && ...);
+  }(std::make_index_sequence<num_comparisons>());
+}
+
+template <typename... bases, ratio... powers>
+struct is_magnitude<magnitude<base_power<bases, powers>...>>
+  : std::bool_constant<(
+      strictly_increasing(std::make_tuple(bases::value...))
+      && ((powers.num != 0) && ...))> {};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inverse implementation.

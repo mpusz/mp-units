@@ -115,6 +115,65 @@ TEST_CASE("Magnitude supports products")
   }
 }
 
+TEST_CASE("is_magnitude detects well formed magnitudes")
+{
+  SECTION ("Arbitrary other types are not magnitudes")
+  {
+    CHECK(!is_magnitude_v<void>);
+    CHECK(!is_magnitude_v<int>);
+    CHECK(!is_magnitude_v<int_base_power<3, 1, 4>>);
+  }
+
+  SECTION ("Null magnitude is magnitude")
+  {
+    CHECK(is_magnitude_v<magnitude<>>);
+  }
+
+  SECTION ("Single-base magnitude is magnitude")
+  {
+    CHECK(is_magnitude_v<magnitude<int_base_power<3, 1, 4>>>);
+  }
+
+  SECTION ("Out-of-order bases disqualify magnitudes")
+  {
+    CHECK(!is_magnitude_v<magnitude<int_base_power<3>, int_base_power<2>>>);
+  }
+
+  SECTION ("Repeated bases disqualify magnitudes")
+  {
+    CHECK(!is_magnitude_v<magnitude<int_base_power<2, 1>, int_base_power<2, 2>>>);
+  }
+
+  SECTION ("Mixed base types are magnitudes if sorted")
+  {
+    CHECK(is_magnitude_v<magnitude<int_base_power<2>, base_power<pi>>>);
+    CHECK(is_magnitude_v<magnitude<int_base_power<3>, base_power<pi>>>);
+    CHECK(!is_magnitude_v<magnitude<int_base_power<5>, base_power<pi>>>);
+  }
+}
+
+TEST_CASE("strictly_increasing")
+{
+  SECTION ("Empty tuple is sorted")
+  {
+    CHECK(strictly_increasing(std::make_tuple()));
+  }
+
+  SECTION ("Single-element tuple is sorted")
+  {
+    CHECK(strictly_increasing(std::make_tuple(3)));
+    CHECK(strictly_increasing(std::make_tuple(15.42)));
+    CHECK(strictly_increasing(std::make_tuple('c')));
+  }
+
+  SECTION ("Multi-element tuples compare correctly")
+  {
+    CHECK(strictly_increasing(std::make_tuple(3, 3.14)));
+    CHECK(!strictly_increasing(std::make_tuple(3, 3.0)));
+    CHECK(!strictly_increasing(std::make_tuple(4, 3.0)));
+  }
+}
+
 // TEST_CASE("Ratio shortcut performs prime factorization")
 // {
 //   // CHECK(std::is_same_v<ratio<>, magnitude<>>);
