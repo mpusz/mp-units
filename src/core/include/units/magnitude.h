@@ -49,18 +49,18 @@ struct int_base : std::integral_constant<std::intmax_t, n> {};
 template <std::intmax_t n, std::intmax_t num = 1, std::intmax_t den = 1>
 using int_base_power = base_power<int_base<n>, ratio{num, den}>;
 
-template <typename mag_t>
+template <Magnitude M>
 struct inverse;
-template <typename mag_t>
-using inverse_t = typename inverse<mag_t>::type;
+template <Magnitude M>
+using inverse_t = typename inverse<M>::type;
 
-template <typename... mags>
+template <Magnitude... Mags>
 struct product;
-template <typename... mags>
-using product_t = typename product<mags...>::type;
+template <Magnitude... Mags>
+using product_t = typename product<Mags...>::type;
 
-template <typename mag1, typename mag2>
-using quotient_t = product_t<mag1, inverse_t<mag2>>;
+template <Magnitude T, Magnitude U>
+using quotient_t = product_t<T, inverse_t<U>>;
 
 namespace detail
 {
@@ -129,10 +129,10 @@ struct inverse<magnitude<base_power<bases, powers>...>> {
 // Convenience utility to prepend a base_power to a magnitude.
 //
 // Assumes that the prepended power has a smaller base than every base power in the magnitude.
-template <typename new_base, typename mag_t>
+template <typename new_base, Magnitude M>
 struct prepend_base;
-template <typename new_base, typename mag_t>
-using prepend_base_t = typename prepend_base<new_base, mag_t>::type;
+template <typename new_base, Magnitude M>
+using prepend_base_t = typename prepend_base<new_base, M>::type;
 template <typename new_base, typename... old_bases>
 struct prepend_base<new_base, magnitude<old_bases...>> {
   using type = magnitude<new_base, old_bases...>;
@@ -143,12 +143,12 @@ template <>
 struct product<> { using type = magnitude<>; };
 
 // Unary case.
-template <typename mag_t>
-struct product<mag_t> { using type = mag_t; };
+template <Magnitude M>
+struct product<M> { using type = M; };
 
 // Binary case, where right argument is null magnitude.
-template <typename mag_t>
-struct product<mag_t, magnitude<>> { using type = mag_t; };
+template <Magnitude M>
+struct product<M, magnitude<>> { using type = M; };
 
 // Binary case, where left argument is null magnitude, and right is non-null.
 template <typename head, typename... tail>
@@ -187,10 +187,10 @@ struct product<magnitude<base_power<base, pow1>, tail1...>,
 };
 
 // N-ary case (N > 2).
-template <typename mag_a, typename mag_b, typename... tail>
-struct product<mag_a, mag_b, tail...>
+template <Magnitude T, Magnitude U, typename... tail>
+struct product<T, U, tail...>
 {
-  using type = product_t<product_t<mag_a, mag_b>, tail...>;
+  using type = product_t<product_t<T, U>, tail...>;
 };
 
 } // namespace units::mag
