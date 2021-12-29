@@ -60,6 +60,27 @@ struct ratio {
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
+  [[nodiscard]] friend constexpr ratio operator-(const ratio& r)
+  {
+    return ratio(-r.num, r.den, r.exp);
+  }
+
+  [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
+  {
+    // First, get the inputs into a common exponent.
+    const auto common_exp = std::min(lhs.exp, rhs.exp);
+    auto commonify = [common_exp](ratio &r) {
+      while (r.exp > common_exp) {
+        r.num *= 10;
+        --r.exp;
+      }
+    };
+    commonify(lhs);
+    commonify(rhs);
+
+    return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den, common_exp};
+  }
+
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {
     const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);

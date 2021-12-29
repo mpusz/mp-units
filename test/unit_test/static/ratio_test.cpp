@@ -40,6 +40,13 @@ static_assert(ratio(4) * ratio(1, 2) == ratio(2));
 static_assert(ratio(1, 8) * ratio(2) == ratio(1, 4));
 static_assert(ratio(1, 2) * ratio(8) == ratio(4));
 
+// ratio negation
+static_assert(-ratio(3, 8) == ratio(-3, 8));
+
+// ratio addition
+static_assert(ratio(1, 2) + ratio(1, 3) == ratio(5, 6));
+static_assert(ratio(1, 3, 2) + ratio(11, 6) == ratio(211, 6)); // 100/3 + 11/6
+
 // multiply with exponents
 static_assert(ratio(1, 8, 2) * ratio(2, 1, 4) == ratio(1, 4, 6));
 static_assert(ratio(1, 2, -4) * ratio(8, 1, 3) == ratio(4, 1, -1));
