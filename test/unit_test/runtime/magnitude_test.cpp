@@ -28,6 +28,9 @@
 namespace units::mag
 {
 
+template<std::intmax_t N, std::intmax_t Num = 1, std::intmax_t Den = 1>
+using int_base_power = base_power<prime_base<N>, ratio{Num, Den}>;
+
 TEST_CASE("Magnitude is invertible")
 {
   CHECK(std::is_same_v<inverse_t<magnitude<>>, magnitude<>>);
@@ -138,12 +141,6 @@ TEST_CASE("is_base_power detects well formed base powers")
     CHECK(is_base_power_v<base_power<pi, ratio{-2, 3}>>);
   }
 
-  SECTION ("base_power disqualified by negative or zero base")
-  {
-    CHECK(!is_base_power_v<int_base_power<0>>);
-    CHECK(!is_base_power_v<int_base_power<-1>>);
-  }
-
   SECTION ("base_power disqualified by base without value")
   {
     CHECK(!is_base_power_v<base_power<int>>);
@@ -238,8 +235,8 @@ TEST_CASE("make_magnitude handles arbitrary bases")
 {
   SECTION("Equivalent to std::integral_constant for integer bases")
   {
-    CHECK(make_base_power<int_base<2>>() == make_ratio<2>());
-    CHECK(make_base_power<int_base<7>>() == make_ratio<7>());
+    CHECK(make_base_power<prime_base<2>>() == make_ratio<2>());
+    CHECK(make_base_power<prime_base<7>>() == make_ratio<7>());
   }
 
   SECTION("Handles non-integer bases")
@@ -345,6 +342,35 @@ TEST_CASE("Prime factorization")
     CHECK(std::is_same_v<
         prime_factorization_t<792>,
         magnitude<int_base_power<2, 3>, int_base_power<3, 2>, int_base_power<11>>>);
+  }
+}
+
+TEST_CASE("is_prime detects primes")
+{
+  SECTION("Non-positive numbers are not prime")
+  {
+    CHECK(!is_prime(-1328));
+    CHECK(!is_prime(-1));
+    CHECK(!is_prime(0));
+  }
+
+  SECTION("1 is not prime")
+  {
+    CHECK(!is_prime(1));
+  }
+
+  SECTION("Discriminates between primes and non-primes")
+  {
+    CHECK(is_prime(2));
+    CHECK(is_prime(3));
+    CHECK(!is_prime(4));
+    CHECK(is_prime(5));
+    CHECK(!is_prime(6));
+    CHECK(is_prime(7));
+    CHECK(!is_prime(8));
+    CHECK(!is_prime(9));
+
+    CHECK(is_prime(7919));
   }
 }
 
