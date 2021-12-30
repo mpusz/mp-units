@@ -85,6 +85,11 @@ constexpr auto make_ratio() {
   return quotient_t<detail::prime_factorization_t<N>, detail::prime_factorization_t<D>>{};
 }
 
+template <typename T, std::intmax_t N = 1, std::intmax_t D = 1>
+constexpr auto make_base_power() {
+  return magnitude<base_power<T, ratio{N, D}>>{};
+}
+
 struct pi {
   static inline constexpr long double value = std::numbers::pi_v<long double>;
 };

@@ -234,6 +234,22 @@ TEST_CASE("make_ratio performs prime factorization correctly")
   }
 }
 
+TEST_CASE("make_magnitude handles arbitrary bases")
+{
+  SECTION("Equivalent to std::integral_constant for integer bases")
+  {
+    CHECK(make_base_power<int_base<2>>() == make_ratio<2>());
+    CHECK(make_base_power<int_base<7>>() == make_ratio<7>());
+  }
+
+  SECTION("Handles non-integer bases")
+  {
+    CHECK(make_base_power<pi>() == magnitude<base_power<pi>>{});
+    CHECK(make_base_power<pi, -3>() == magnitude<base_power<pi, ratio{-3}>>{});
+    CHECK(make_base_power<pi, -3, 7>() == magnitude<base_power<pi, ratio{-3, 7}>>{});
+  }
+}
+
 TEST_CASE("Equality works for magnitudes")
 {
   SECTION("Equivalent ratios are equal")
@@ -266,6 +282,14 @@ TEST_CASE("Multiplication works for magnitudes")
   SECTION("Products work as expected")
   {
     CHECK(make_ratio<4, 5>() * make_ratio<4, 3>() == make_ratio<16, 15>());
+  }
+
+  SECTION("Products handle pi correctly")
+  {
+    CHECK(
+        make_base_power<pi>() * make_ratio<2, 3>() * make_base_power<pi, -1, 2>() ==
+        magnitude<int_base_power<2>, int_base_power<3, -1>, base_power<pi, ratio{1, 2}>>{});
+
   }
 
   SECTION("Supports constexpr")
