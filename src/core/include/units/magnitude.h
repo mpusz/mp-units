@@ -54,10 +54,10 @@ inline constexpr bool is_magnitude_v = is_magnitude<T>::value;
 template <typename T>
 concept Magnitude = is_magnitude_v<T>;
 
-template <std::intmax_t n>
-struct int_base : std::integral_constant<std::intmax_t, n> {};
-template <std::intmax_t n, std::intmax_t num = 1, std::intmax_t den = 1>
-using int_base_power = base_power<int_base<n>, ratio{num, den}>;
+template <std::intmax_t N>
+struct int_base : std::integral_constant<std::intmax_t, N> {};
+template <std::intmax_t N, std::intmax_t num = 1, std::intmax_t den = 1>
+using int_base_power = base_power<int_base<N>, ratio{num, den}>;
 
 template <Magnitude M>
 struct inverse;
@@ -74,10 +74,10 @@ using quotient_t = product_t<T, inverse_t<U>>;
 
 namespace detail
 {
-template <std::intmax_t n>
+template <std::intmax_t N>
 struct prime_factorization;
-template <std::intmax_t n>
-using prime_factorization_t = typename prime_factorization<n>::type;
+template <std::intmax_t N>
+using prime_factorization_t = typename prime_factorization<N>::type;
 } // namespace detail
 
 template <std::intmax_t num = 1, std::intmax_t den = 1>
