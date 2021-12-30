@@ -25,8 +25,8 @@
 #include <catch2/catch.hpp>
 #include <type_traits>
 
-using namespace units;
-using namespace units::mag;
+namespace units::mag
+{
 
 TEST_CASE("Magnitude is invertible")
 {
@@ -211,16 +211,74 @@ TEST_CASE("strictly_increasing")
   }
 }
 
-// TEST_CASE("Ratio shortcut performs prime factorization")
-// {
-//   // CHECK(std::is_same_v<ratio<>, magnitude<>>);
-//   // CHECK(std::is_same_v<ratio<2>, magnitude<int_base_power<2>>>);
-// }
-// 
-// TEST_CASE("Equality works for ratios")
-// {
-//   CHECK(ratio<>{} == ratio<>{});
-//   CHECK(ratio<3>{} == ratio<3>{});
-// 
-//   // CHECK(ratio<3>{} != ratio<4>{});
-// }
+TEST_CASE("make_ratio performs prime factorization correctly")
+{
+  SECTION("Performs prime factorization when denominator is 1")
+  {
+    CHECK(std::is_same_v<decltype(make_ratio<1>()), magnitude<>>);
+    CHECK(std::is_same_v<decltype(make_ratio<2>()), magnitude<int_base_power<2>>>);
+    CHECK(std::is_same_v<decltype(make_ratio<3>()), magnitude<int_base_power<3>>>);
+    CHECK(std::is_same_v<decltype(make_ratio<4>()), magnitude<int_base_power<2, 2>>>);
+
+    CHECK(std::is_same_v<
+        decltype(make_ratio<792>()),
+        magnitude<int_base_power<2, 3>, int_base_power<3, 2>, int_base_power<11>>>);
+  }
+
+  SECTION("Reduces fractions to lowest terms")
+  {
+    CHECK(std::is_same_v<decltype(make_ratio<8, 8>()), magnitude<>>);
+    CHECK(std::is_same_v<
+        decltype(make_ratio<50, 80>()),
+        magnitude<int_base_power<2, -3>, int_base_power<5>>>);
+  }
+}
+
+TEST_CASE("Equality works for magnitudes")
+{
+  SECTION("Equivalent ratios are equal")
+  {
+    CHECK(make_ratio<1>() == make_ratio<1>());
+    CHECK(make_ratio<3>() == make_ratio<3>());
+    CHECK(make_ratio<3, 4>() == make_ratio<9, 12>());
+  }
+
+  SECTION("Different ratios are unequal")
+  {
+    CHECK(make_ratio<3>() != make_ratio<5>());
+    CHECK(make_ratio<3>() != make_ratio<3, 2>());
+  }
+}
+
+namespace detail
+{
+
+TEST_CASE("Prime factorization")
+{
+  SECTION ("1 factors into the null magnitude")
+  {
+    CHECK(std::is_same_v<prime_factorization_t<1>, magnitude<>>);
+  }
+
+  SECTION ("Prime numbers factor into themselves")
+  {
+    CHECK(std::is_same_v<prime_factorization_t<2>, magnitude<int_base_power<2>>>);
+    CHECK(std::is_same_v<prime_factorization_t<3>, magnitude<int_base_power<3>>>);
+    CHECK(std::is_same_v<prime_factorization_t<5>, magnitude<int_base_power<5>>>);
+    CHECK(std::is_same_v<prime_factorization_t<7>, magnitude<int_base_power<7>>>);
+    CHECK(std::is_same_v<prime_factorization_t<11>, magnitude<int_base_power<11>>>);
+
+    CHECK(std::is_same_v<prime_factorization_t<41>, magnitude<int_base_power<41>>>);
+  }
+
+  SECTION("Prime factorization finds factors and multiplicities")
+  {
+    CHECK(std::is_same_v<
+        prime_factorization_t<792>,
+        magnitude<int_base_power<2, 3>, int_base_power<3, 2>, int_base_power<11>>>);
+  }
+}
+
+} // namespace detail
+
+} // namespace units::mag

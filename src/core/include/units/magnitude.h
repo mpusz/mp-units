@@ -80,8 +80,10 @@ template <std::intmax_t N>
 using prime_factorization_t = typename prime_factorization<N>::type;
 } // namespace detail
 
-template <std::intmax_t num = 1, std::intmax_t den = 1>
-using ratio_t = quotient_t<detail::prime_factorization_t<num>, detail::prime_factorization_t<den>>;
+template <std::intmax_t N, std::intmax_t D = 1>
+auto make_ratio() {
+  return quotient_t<detail::prime_factorization_t<N>, detail::prime_factorization_t<D>>{};
+}
 
 struct pi {
   static inline constexpr long double value = std::numbers::pi_v<long double>;
@@ -207,4 +209,62 @@ struct product<T, U, Tail...>
   using type = product_t<product_t<T, U>, Tail...>;
 };
 
+namespace detail
+{
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Prime factorization implementation.
+
+// Find the smallest prime factor of `n`.
+constexpr std::intmax_t find_first_factor(std::intmax_t n)
+{
+  for (std::intmax_t f = 2; f * f <= n; f += 1 + (f % 2))
+  {
+    if (n % f == 0) { return f; }
+  }
+  return n;
+}
+
+// The exponent of `factor` in the prime factorization of `n`.
+constexpr std::intmax_t multiplicity(std::intmax_t factor, std::intmax_t n)
+{
+  std::intmax_t m = 0;
+  while (n % factor == 0)
+  {
+    n /= factor;
+    ++m;
+  }
+  return m;
+}
+
+// Divide a number by a given base raised to some power.
+//
+// Undefined unless base > 1, pow >= 0, and (base ^ pow) evenly divides n.
+constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std::intmax_t n)
+{
+  while (pow-- > 0)
+  {
+    n /= base;
+  }
+  return n;
+}
+
+// Specialization for the prime factorization of 1 (base case).
+template <>
+struct prime_factorization<1> { using type = magnitude<>; };
+
+// Specialization for the prime factorization of larger numbers (recursive case).
+template <std::intmax_t N>
+struct prime_factorization {
+  static_assert(N > 1, "Can only factor positive integers.");
+
+  static inline constexpr std::intmax_t first_base = find_first_factor(N);
+  static inline constexpr std::intmax_t first_power = multiplicity(first_base, N);
+  static inline constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
+
+  using type = product_t<
+    magnitude<int_base_power<first_base, first_power>>, prime_factorization_t<remainder>>;
+};
+
+} // namespace detail
 } // namespace units::mag
