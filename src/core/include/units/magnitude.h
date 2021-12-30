@@ -81,7 +81,7 @@ using prime_factorization_t = typename prime_factorization<N>::type;
 } // namespace detail
 
 template <std::intmax_t N, std::intmax_t D = 1>
-auto make_ratio() {
+constexpr auto make_ratio() {
   return quotient_t<detail::prime_factorization_t<N>, detail::prime_factorization_t<D>>{};
 }
 
@@ -95,10 +95,14 @@ struct pi {
 
 template <BasePower... Bs>
 struct magnitude {
-  bool operator==(magnitude) const { return true; }
+  template <Magnitude M>
+  constexpr bool operator==(M) const { return std::is_same_v<magnitude, M>; }
 
-  template <BasePower... OtherBs>
-  bool operator==(magnitude<OtherBs...>) const { return false; }
+  template <Magnitude M>
+  constexpr friend auto operator*(magnitude, M) { return product_t<magnitude, M>{}; }
+
+  template <Magnitude M>
+  constexpr friend auto operator/(magnitude, M) { return quotient_t<magnitude, M>{}; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

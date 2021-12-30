@@ -248,6 +248,51 @@ TEST_CASE("Equality works for magnitudes")
     CHECK(make_ratio<3>() != make_ratio<5>());
     CHECK(make_ratio<3>() != make_ratio<3, 2>());
   }
+
+  SECTION("Supports constexpr")
+  {
+    constexpr auto eq = make_ratio<4, 5>() == make_ratio<4, 3>();
+    CHECK(!eq);
+  }
+}
+
+TEST_CASE("Multiplication works for magnitudes")
+{
+  SECTION("Reciprocals reduce to null magnitude")
+  {
+    CHECK(make_ratio<3, 4>() * make_ratio<4, 3>() == make_ratio<1>());
+  }
+
+  SECTION("Products work as expected")
+  {
+    CHECK(make_ratio<4, 5>() * make_ratio<4, 3>() == make_ratio<16, 15>());
+  }
+
+  SECTION("Supports constexpr")
+  {
+    constexpr auto p = make_ratio<4, 5>() * make_ratio<4, 3>();
+    CHECK(p == make_ratio<16, 15>());
+  }
+}
+
+TEST_CASE("Division works for magnitudes")
+{
+  SECTION("Dividing anything by itself reduces to null magnitude")
+  {
+    CHECK(make_ratio<3, 4>() / make_ratio<3, 4>() == make_ratio<1>());
+    CHECK(make_ratio<15>() / make_ratio<15>() == make_ratio<1>());
+  }
+
+  SECTION("Quotients work as expected")
+  {
+    CHECK(make_ratio<4, 5>() / make_ratio<4, 3>() == make_ratio<3, 5>());
+  }
+
+  SECTION("Supports constexpr")
+  {
+    constexpr auto q = make_ratio<4, 5>() / make_ratio<4, 3>();
+    CHECK(q == make_ratio<3, 5>());
+  }
 }
 
 namespace detail
