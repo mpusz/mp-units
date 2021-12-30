@@ -115,6 +115,43 @@ TEST_CASE("Magnitude supports products")
   }
 }
 
+TEST_CASE("is_base_power detects well formed base powers")
+{
+  SECTION ("Arbitrary other types are not base powers")
+  {
+    CHECK(!is_base_power_v<void>);
+    CHECK(!is_base_power_v<int>);
+    CHECK(!is_base_power_v<magnitude<int_base_power<3, 1, 4>>>);
+  }
+
+  SECTION ("int_base_power forms base powers")
+  {
+    CHECK(is_base_power_v<int_base_power<2>>);
+    CHECK(is_base_power_v<int_base_power<2, -1>>);
+    CHECK(is_base_power_v<int_base_power<2, -1, 8>>);
+  }
+
+  SECTION ("base_power forms base powers with pi and ratio")
+  {
+    CHECK(is_base_power_v<base_power<pi>>);
+    CHECK(is_base_power_v<base_power<pi, ratio{2}>>);
+    CHECK(is_base_power_v<base_power<pi, ratio{-2, 3}>>);
+  }
+
+  SECTION ("base_power disqualified by negative or zero base")
+  {
+    CHECK(!is_base_power_v<int_base_power<0>>);
+    CHECK(!is_base_power_v<int_base_power<-1>>);
+  }
+
+  SECTION ("base_power disqualified by base without value")
+  {
+    CHECK(!is_base_power_v<base_power<int>>);
+    CHECK(!is_base_power_v<base_power<int, ratio{2}>>);
+    CHECK(!is_base_power_v<base_power<int, ratio{-2, 3}>>);
+  }
+}
+
 TEST_CASE("is_magnitude detects well formed magnitudes")
 {
   SECTION ("Arbitrary other types are not magnitudes")

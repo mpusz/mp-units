@@ -29,13 +29,23 @@
 namespace units::mag
 {
 
+template <typename base_, ratio power_ = ratio{1}>
+struct base_power {
+  using base = base_;
+  static inline constexpr ratio power = power_;
+};
+
+template <typename T>
+struct is_base_power;
+template <typename T>
+inline constexpr bool is_base_power_v = is_base_power<T>::value;
+template <typename T>
+concept BasePower = is_base_power_v<T>;
+
 // A `magnitude` represents a positive real number in a format which optimizes taking products and
 // rational powers.
-template <typename... base_powers>
+template <BasePower... base_powers>
 struct magnitude;
-
-template <typename base, ratio power = ratio{1}>
-struct base_power;
 
 template <typename T>
 struct is_magnitude;
@@ -81,13 +91,24 @@ struct pi {
 // Implementation details below.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename... base_powers>
+template <BasePower... Bs>
 struct magnitude {
   bool operator==(magnitude) const { return true; }
 
-  template <typename... other_base_powers>
-  bool operator==(magnitude<other_base_powers...>) const { return false; }
+  template <BasePower... OtherBs>
+  bool operator==(magnitude<OtherBs...>) const { return false; }
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// BasePower concept implementation.
+
+template <typename T>
+struct is_base_power: std::false_type {};
+
+template <typename B, ratio E>
+  requires requires() { B::value; }
+struct is_base_power<base_power<B, E>>
+  : std::bool_constant<(B::value > 0)> {};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude concept implementation.
@@ -109,18 +130,21 @@ constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
   }(std::make_index_sequence<num_comparisons>());
 }
 
-template <typename... bases, ratio... powers>
-struct is_magnitude<magnitude<base_power<bases, powers>...>>
+template <BasePower... Bs>
+struct is_magnitude<magnitude<Bs...>>
   : std::bool_constant<(
-      strictly_increasing(std::make_tuple(bases::value...))
-      && ((powers.num != 0) && ...))> {};
+      strictly_increasing(std::make_tuple(Bs::base::value...))
+      && ((Bs::power.num != 0) && ...))> {};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inverse implementation.
 
-template <typename... bases, ratio... powers>
-struct inverse<magnitude<base_power<bases, powers>...>> {
-  using type = magnitude<base_power<bases, -powers>...>;
+template<BasePower B>
+using base_power_inverse = base_power<typename B::base, -B::power>;
+
+template <BasePower... Bs>
+struct inverse<magnitude<Bs...>> {
+  using type = magnitude<base_power_inverse<Bs>...>;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,13 +153,13 @@ struct inverse<magnitude<base_power<bases, powers>...>> {
 // Convenience utility to prepend a base_power to a magnitude.
 //
 // Assumes that the prepended power has a smaller base than every base power in the magnitude.
-template <typename new_base, Magnitude M>
+template <BasePower B, Magnitude M>
 struct prepend_base;
-template <typename new_base, Magnitude M>
-using prepend_base_t = typename prepend_base<new_base, M>::type;
-template <typename new_base, typename... old_bases>
-struct prepend_base<new_base, magnitude<old_bases...>> {
-  using type = magnitude<new_base, old_bases...>;
+template <BasePower B, Magnitude M>
+using prepend_base_t = typename prepend_base<B, M>::type;
+template <BasePower B, BasePower... Bs>
+struct prepend_base<B, magnitude<Bs...>> {
+  using type = magnitude<B, Bs...>;
 };
 
 // Nullary case.
@@ -151,46 +175,36 @@ template <Magnitude M>
 struct product<M, magnitude<>> { using type = M; };
 
 // Binary case, where left argument is null magnitude, and right is non-null.
-template <typename head, typename... tail>
-struct product<magnitude<>, magnitude<head, tail...>> { using type = magnitude<head, tail...>; };
+template <BasePower B, BasePower... Bs>
+struct product<magnitude<>, magnitude<B, Bs...>> { using type = magnitude<B, Bs...>; };
 
-// Binary case, with distinct heads.
-template <
-  typename base1,
-  ratio pow1,
-  typename... tail1,
-  typename base2,
-  ratio pow2,
-  typename... tail2>
-struct product<magnitude<base_power<base1, pow1>, tail1...>,
-               magnitude<base_power<base2, pow2>, tail2...>>
+// Binary case, with distinct and non-null heads.
+template <BasePower Head1, BasePower... Tail1, BasePower Head2, BasePower... Tail2>
+struct product<magnitude<Head1, Tail1...>, magnitude<Head2, Tail2...>>
 {
-  using mag1 = magnitude<base_power<base1, pow1>, tail1...>;
-  using mag2 = magnitude<base_power<base2, pow2>, tail2...>;
-
   using type = std::conditional_t<
-    (base1::value < base2::value),
-    prepend_base_t<base_power<base1, pow1>, product_t<magnitude<tail1...>, mag2>>,
-    prepend_base_t<base_power<base2, pow2>, product_t<mag1, magnitude<tail2...>>>>;
+    (Head1::base::value < Head2::base::value),
+    prepend_base_t<Head1, product_t<magnitude<Tail1...>, magnitude<Head2, Tail2...>>>,
+    prepend_base_t<Head2, product_t<magnitude<Head1, Tail1...>, magnitude<Tail2...>>>>;
 };
 
 // Binary case, same head.
-template <typename base, ratio pow1, ratio pow2, typename... tail1, typename... tail2>
-struct product<magnitude<base_power<base, pow1>, tail1...>,
-               magnitude<base_power<base, pow2>, tail2...>>
+template <typename Base, ratio Pow1, ratio Pow2, BasePower... Tail1, BasePower... Tail2>
+struct product<magnitude<base_power<Base, Pow1>, Tail1...>,
+               magnitude<base_power<Base, Pow2>, Tail2...>>
 {
-  using tail_product = product_t<magnitude<tail1...>, magnitude<tail2...>>;
+  using tail_product = product_t<magnitude<Tail1...>, magnitude<Tail2...>>;
   using type = std::conditional_t<
-    ((pow1 + pow2).num == 0),
+    ((Pow1 + Pow2).num == 0),
     tail_product,
-    prepend_base_t<base_power<base, pow1 + pow2>, tail_product>>;
+    prepend_base_t<base_power<Base, Pow1 + Pow2>, tail_product>>;
 };
 
 // N-ary case (N > 2).
-template <Magnitude T, Magnitude U, typename... tail>
-struct product<T, U, tail...>
+template <Magnitude T, Magnitude U, Magnitude... Tail>
+struct product<T, U, Tail...>
 {
-  using type = product_t<product_t<T, U>, tail...>;
+  using type = product_t<product_t<T, U>, Tail...>;
 };
 
 } // namespace units::mag
