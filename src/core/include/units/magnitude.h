@@ -42,7 +42,7 @@ namespace units::mag
 template<typename Base, ratio Power = ratio{1}>
 struct base_power {
   using base = Base;
-  static inline constexpr ratio power = Power;
+  static constexpr ratio power = Power;
 };
 
 /**
@@ -147,7 +147,7 @@ constexpr auto make_base_power() {
  * @brief  A base to represent pi.
  */
 struct pi {
-  static inline constexpr long double value = std::numbers::pi_v<long double>;
+  static constexpr long double value = std::numbers::pi_v<long double>;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,7 +261,7 @@ struct product<magnitude<base_power<Base, Pow1>, Tail1...>,
                magnitude<base_power<Base, Pow2>, Tail2...>>
 {
   using tail_product = product_t<magnitude<Tail1...>, magnitude<Tail2...>>;
-  static inline constexpr auto Pow = Pow1 + Pow2;
+  static constexpr auto Pow = Pow1 + Pow2;
   using type = std::conditional_t<
     Pow.num == 0,
     tail_product,
@@ -318,9 +318,9 @@ template<std::intmax_t N>
 struct prime_factorization {
   static_assert(N > 1, "Can only factor positive integers.");
 
-  static inline constexpr std::intmax_t first_base = find_first_factor(N);
-  static inline constexpr std::intmax_t first_power = multiplicity(first_base, N);
-  static inline constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
+  static constexpr std::intmax_t first_base = find_first_factor(N);
+  static constexpr std::intmax_t first_power = multiplicity(first_base, N);
+  static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
   using type = product_t<
     magnitude<base_power<prime_base<first_base>, ratio{first_power}>>, prime_factorization_t<remainder>>;
