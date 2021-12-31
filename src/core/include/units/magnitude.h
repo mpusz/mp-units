@@ -261,10 +261,11 @@ struct product<magnitude<base_power<Base, Pow1>, Tail1...>,
                magnitude<base_power<Base, Pow2>, Tail2...>>
 {
   using tail_product = product_t<magnitude<Tail1...>, magnitude<Tail2...>>;
+  static inline constexpr auto Pow = Pow1 + Pow2;
   using type = std::conditional_t<
-    ((Pow1 + Pow2).num == 0),
+    Pow.num == 0,
     tail_product,
-    prepend_base_t<base_power<Base, Pow1 + Pow2>, tail_product>>;
+    prepend_base_t<base_power<Base, Pow>, tail_product>>;
 };
 
 // N-ary case (N > 2).
