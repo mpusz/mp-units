@@ -186,18 +186,23 @@ struct is_base_power<base_power<B, E>>
 template<typename T>
 struct is_magnitude: std::false_type {};
 
-// Check whether a tuple of (possibly heterogeneously typed) values are strictly increasing.
-template<typename... Ts>
-constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
+template<typename Predicate, typename... Ts>
+constexpr bool pairwise_all(const std::tuple<Ts...> &ts, const Predicate &pred) {
   // Carefully handle different sizes, avoiding unsigned integer underflow.
   constexpr auto num_comparisons = [](auto num_elements) {
     return (num_elements > 1) ? (num_elements - 1) : 0;
   }(sizeof...(Ts));
 
   // Compare zero or more pairs of neighbours as needed.
-  return [&ts]<std::size_t... Is>(std::integer_sequence<std::size_t, Is...>) {
-    return ((std::get<Is>(ts) < std::get<Is + 1>(ts)) && ...);
+  return [&ts, &pred]<std::size_t... Is>(std::integer_sequence<std::size_t, Is...>) {
+    return (pred(std::get<Is>(ts), std::get<Is + 1>(ts)) && ...);
   }(std::make_index_sequence<num_comparisons>());
+}
+
+// Check whether a tuple of (possibly heterogeneously typed) values are strictly increasing.
+template<typename... Ts>
+constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
+  return pairwise_all(ts, std::less{});
 }
 
 // To be a valid magnitude, one must be a magnitude<...> of BasePowers with nonzero exponents, sorted by increasing base

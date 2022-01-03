@@ -374,6 +374,30 @@ TEST_CASE("is_prime detects primes")
   }
 }
 
+TEST_CASE("pairwise_all evaluates all pairs")
+{
+  SECTION("always true for empty tuples")
+  {
+    CHECK(pairwise_all(std::make_tuple(), [](auto a, auto b){ return true; }));
+    CHECK(pairwise_all(std::make_tuple(), [](auto a, auto b){ return false; }));
+  }
+
+  SECTION("always true for single-element tuples")
+  {
+    CHECK(pairwise_all(std::make_tuple(1), [](auto a, auto b){ return true; }));
+    CHECK(pairwise_all(std::make_tuple(3.14), [](auto a, auto b){ return false; }));
+    CHECK(pairwise_all(std::make_tuple('x'), [](auto a, auto b){ return true; }));
+  }
+
+  SECTION("true for longer tuples iff true for all neighbouring pairs")
+  {
+    CHECK(pairwise_all(std::make_tuple(1, 1.5), std::less{}));
+    CHECK(pairwise_all(std::make_tuple(1, 1.5, 2), std::less{}));
+    CHECK(!pairwise_all(std::make_tuple(1, 2.0, 2), std::less{}));
+    CHECK(!pairwise_all(std::make_tuple(1, 2.5, 2), std::less{}));
+  }
+}
+
 } // namespace detail
 
 } // namespace units::mag
