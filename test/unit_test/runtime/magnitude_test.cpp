@@ -28,8 +28,19 @@
 namespace units::mag
 {
 
+// Convenience utility to create an integral base power.  For unit tests only.
+template<std::intmax_t N, std::intmax_t Num, std::intmax_t Den>
+struct IntBasePower
+{
+  // This setup is more complicated than might appear necessary in the hopes of appeasing a
+  // (possibly spurious) MSVC 14 compiler error.
+  static constexpr std::intmax_t num = Num;
+  static constexpr std::intmax_t den = Den;
+  static constexpr ratio power = ratio{num, den};
+  using type = base_power<prime_base<N>, power>;
+};
 template<std::intmax_t N, std::intmax_t Num = 1, std::intmax_t Den = 1>
-using int_base_power = base_power<prime_base<N>, ratio{Num, Den}>;
+using int_base_power = typename IntBasePower<N, Num, Den>::type;
 
 TEST_CASE("Magnitude is invertible")
 {
