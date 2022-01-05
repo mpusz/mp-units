@@ -103,8 +103,10 @@ namespace detail
 {
 // Helpers to perform prime factorization at compile time.
 template<std::intmax_t N>
+  requires requires { N > 0; }
 struct prime_factorization;
 template<std::intmax_t N>
+  requires requires { N > 0; }
 using prime_factorization_t = typename prime_factorization<N>::type;
 
 // A way to check whether a number is prime at compile time.
@@ -115,9 +117,8 @@ constexpr bool is_prime(std::intmax_t n);
  * @brief  A template to represent prime number bases.
  */
 template<std::intmax_t N>
-struct prime_base : std::integral_constant<std::intmax_t, N> {
-  static_assert(detail::is_prime(N));
-};
+  requires requires { detail::is_prime(N); }
+struct prime_base : std::integral_constant<std::intmax_t, N> {};
 
 /**
  * @brief  Make a Magnitude that is a rational number.
@@ -320,9 +321,8 @@ struct prime_factorization<1> { using type = magnitude<>; };
 
 // Specialization for the prime factorization of larger numbers (recursive case).
 template<std::intmax_t N>
+  requires requires { N > 0; }
 struct prime_factorization {
-  static_assert(N > 1, "Can only factor positive integers.");
-
   static constexpr std::intmax_t first_base = find_first_factor(N);
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
