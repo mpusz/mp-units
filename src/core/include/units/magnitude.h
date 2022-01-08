@@ -29,76 +29,6 @@
 namespace units::mag
 {
 
-/**
- * @brief  A basis vector in our magnitude representation, raised to some rational power.
- *
- * The set of basis vectors must be linearly independent: that is, no product of basis powers can ever equal 1, unless
- * all exponents are zero.  To achieve this, we use arbitrarily many prime numbers as basis vectors, and also various
- * irrational numbers such as pi.
- *
- * @tparam Base  A type representing the basis vector.  Must have a numeric static `value` member.
- * @tparam Power  The rational power to which the base is raised.
- */
-template<typename Base, ratio Power = ratio{1}>
-struct base_power {
-  using base = Base;
-  static constexpr ratio power = Power;
-};
-
-/**
- * @brief  A type trait and concept to detect whether something is a valid "base power".
- */
-template<typename T>
-struct is_base_power;
-template<typename T>
-inline constexpr bool is_base_power_v = is_base_power<T>::value;
-template<typename T>
-concept BasePower = is_base_power_v<T>;
-
-/**
- * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
- *
- * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
- * for equality using this value API.
- */
-template<BasePower... BasePowers>
-struct magnitude;
-
-/**
- * @brief  A type trait and concept to detect whether something is a valid magnitude.
- *
- * In particular, these traits check for canonicalized forms: the base powers must be sorted by increasing base value,
- * and all exponents must be nonzero.
- */
-template<typename T>
-struct is_magnitude;
-template<typename T>
-inline constexpr bool is_magnitude_v = is_magnitude<T>::value;
-template<typename T>
-concept Magnitude = is_magnitude_v<T>;
-
-/**
- * @brief  Compute the inverse of a Magnitude.
- */
-template<Magnitude M>
-struct inverse;
-template<Magnitude M>
-using inverse_t = typename inverse<M>::type;
-
-/**
- * @brief  Compute the product of 0 or more Magnitudes.
- */
-template<Magnitude... Mags>
-struct product;
-template<Magnitude... Mags>
-using product_t = typename product<Mags...>::type;
-
-/**
- * @brief  Compute the quotient of 2 Magnitudes.
- */
-template<Magnitude T, Magnitude U>
-using quotient_t = product_t<T, inverse_t<U>>;
-
 namespace detail
 {
 // Helpers to perform prime factorization at compile time.
@@ -106,19 +36,119 @@ template<std::intmax_t N>
   requires requires { N > 0; }
 struct prime_factorization;
 template<std::intmax_t N>
-  requires requires { N > 0; }
-using prime_factorization_t = typename prime_factorization<N>::type;
+static constexpr auto prime_factorization_v = prime_factorization<N>::value;
 
 // A way to check whether a number is prime at compile time.
 constexpr bool is_prime(std::intmax_t n);
 } // namespace detail
 
+// Integer rep is for prime numbers; long double is for any irrational base we permit.
+template<typename T>
+concept BaseRep = std::is_same_v<T, int> || std::is_same_v<T, long double>;
+
 /**
- * @brief  A template to represent prime number bases.
+ * @brief  A basis vector in our magnitude representation, raised to some rational power.
+ *
+ * The set of basis vectors must be linearly independent: that is, no product of basis powers can ever equal 1, unless
+ * all exponents are zero.  To achieve this, we use the following kinds of basis vectors.
+ *   - Prime numbers.  (These are the only allowable values for `int` base.)
+ *   - Certain selected irrational numbers, such as pi.
+ *
+ * Before allowing a new irrational base, make sure that it _cannot_ be represented as the product of rational powers of
+ * _existing_ bases, including both prime numbers and any other irrational bases.  For example, even though sqrt(2) is
+ * irrational, we must not ever use it as a base
  */
-template<std::intmax_t N>
-  requires requires { detail::is_prime(N); }
-struct prime_base : std::integral_constant<std::intmax_t, N> {};
+template<BaseRep T>
+struct base_power {
+  // The value of the basis vector.
+  T base;
+
+  // The rational power to which the base is raised.
+  ratio power{1};
+};
+
+template<BaseRep T, std::convertible_to<ratio> U>
+base_power(T, U) -> base_power<T>;
+
+template<BaseRep T>
+base_power(T) -> base_power<T>;
+
+template<typename T, typename U>
+constexpr bool operator==(base_power<T> t, base_power<U> u) {
+  return std::is_same_v<T, U> && (t.base == u.base) && (t.power == u.power);
+}
+
+template<BaseRep T>
+constexpr auto inverse(base_power<T> bp) {
+  bp.power = -bp.power;
+  return bp;
+}
+
+namespace detail
+{
+template<BaseRep T>
+constexpr bool is_valid_base_power(const base_power<T> &bp) {
+  if (bp.power == 0) { return false; }
+
+  if constexpr (std::is_same_v<T, int>) { return is_prime(bp.base); }
+  else if constexpr (std::is_same_v<T, long double>) { return bp.base > 0; }
+  else { return false; }  // Unreachable.
+}
+} // namespace detail
+
+template<typename T>
+concept BasePower = std::is_same_v<T, base_power<int>> || std::is_same_v<T, base_power<long double>>;
+
+/**
+ * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ *
+ * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
+ * for equality using this value API.
+ */
+template<BasePower auto... BasePowers>
+  requires requires {
+    // (is_valid_base_power(BasePowers) && ... && strictly_increasing(std::make_tuple(BasePowers.base...)));
+    (detail::is_valid_base_power(BasePowers) && ...);
+  }
+struct magnitude {};
+
+template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
+constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) { return ((LeftBPs == RightBPs) && ...); }
+
+template<BasePower auto... BasePowers>
+constexpr auto inverse(magnitude<BasePowers...>) { return magnitude<inverse(BasePowers)...>{}; }
+
+constexpr auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
+
+template<BasePower auto... BPs>
+constexpr auto operator*(magnitude<>, magnitude<BPs...> m) { return m; }
+
+template<BasePower auto... BPs>
+constexpr auto operator*(magnitude<BPs...> m, magnitude<>) { return m; }
+
+template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
+constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
+  // Shortcut for prepending, which makes it easier to implement some of the other cases.
+  if constexpr ((sizeof...(T1) == 0) && H1.base < H2.base) { return magnitude<H1, H2, T2...>{}; }
+
+  if constexpr (H1.base == H2.base) {
+    constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
+    constexpr base_power new_head{H1.base, (H1.power + H2.power)};
+
+    if constexpr (new_head.power == 0) {
+      return partial_product;
+    } else {
+      return magnitude<new_head>{} * partial_product;
+    }
+  } else if constexpr(H1.base < H2.base){
+    return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
+  } else { // We know H2.base < H1.base
+    return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
+  }
+}
+
+template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
+constexpr auto operator/(magnitude<LeftBPs...> l, magnitude<RightBPs...> r) { return l * inverse(r); }
 
 /**
  * @brief  Make a Magnitude that is a rational number.
@@ -127,65 +157,24 @@ struct prime_base : std::integral_constant<std::intmax_t, N> {};
  * manually adding base powers.
  */
 template<std::intmax_t N, std::intmax_t D = 1>
-constexpr auto make_ratio() {
-  return quotient_t<detail::prime_factorization_t<N>, detail::prime_factorization_t<D>>{};
-}
-
-/**
- * @brief  Make a Magnitude from a single base raised to a particular power.
- *
- * This should handle all of the remaining use cases which can't be captured by make_ratio(), i.e., any irrational
- * magnitudes.  For example:
- *   - `make_base_power<pi>()`                  to represent pi
- *   - `make_base_power<prime_base<2>, 1, 2>()` to represent sqrt(2)
- */
-template<typename T, std::intmax_t N = 1, std::intmax_t D = 1>
-constexpr auto make_base_power() {
-  return magnitude<base_power<T, ratio{N, D}>>{};
-}
+constexpr auto make_ratio() { return detail::prime_factorization_v<N> / detail::prime_factorization_v<D>; }
 
 /**
  * @brief  A base to represent pi.
  */
-struct pi {
-  static constexpr long double value = std::numbers::pi_v<long double>;
-};
+template<ratio Power>
+  requires requires { Power != 0; }
+constexpr auto pi_power() { return base_power{std::numbers::pi_v<long double>, Power}; }
+
+template<ratio Power>
+constexpr auto pi_to_the() { return magnitude<pi_power<Power>()>{}; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Implementation details below.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template<BasePower... Bs>
-struct magnitude {
-  template<Magnitude M>
-  constexpr bool operator==(M) const { return std::is_same_v<magnitude, M>; }
-
-  template<Magnitude M>
-  constexpr friend auto operator*(magnitude, M) { return product_t<magnitude, M>{}; }
-
-  template<Magnitude M>
-  constexpr friend auto operator/(magnitude, M) { return quotient_t<magnitude, M>{}; }
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// BasePower concept implementation.
-
-// Default implementation: most things are not base powers.
-template<typename T>
-struct is_base_power: std::false_type {};
-
-// To be a valid base power, one must be a base_power<B, E>, where B has a static value member which is positive.
-template<typename B, ratio E>
-  requires requires() { B::value; }
-struct is_base_power<base_power<B, E>>
-  : std::bool_constant<(B::value > 0)> {};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude concept implementation.
-
-// Default implementation: most things are not magnitudes.
-template<typename T>
-struct is_magnitude: std::false_type {};
 
 template<typename Predicate, typename... Ts>
 constexpr bool pairwise_all(const std::tuple<Ts...> &ts, const Predicate &pred) {
@@ -205,78 +194,6 @@ template<typename... Ts>
 constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
   return pairwise_all(ts, std::less{});
 }
-
-// To be a valid magnitude, one must be a magnitude<...> of BasePowers with nonzero exponents, sorted by increasing base
-// value.
-template<BasePower... Bs>
-struct is_magnitude<magnitude<Bs...>>
-  : std::bool_constant<(strictly_increasing(std::make_tuple(Bs::base::value...)) && ((Bs::power.num != 0) && ...))> {};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inverse implementation.
-
-// To invert a BasePower, negate all exponents.
-template<BasePower B>
-using base_power_inverse = base_power<typename B::base, -B::power>;
-
-template<BasePower... Bs>
-struct inverse<magnitude<Bs...>> { using type = magnitude<base_power_inverse<Bs>...>; };
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Product implementation.
-
-// Convenience utility to prepend a base_power to a magnitude.
-//
-// Assumes that the prepended power has a smaller base than every base power in the magnitude.
-template<BasePower B, Magnitude M>
-struct prepend_base;
-template<BasePower B, Magnitude M>
-using prepend_base_t = typename prepend_base<B, M>::type;
-template<BasePower B, BasePower... Bs>
-struct prepend_base<B, magnitude<Bs...>> { using type = magnitude<B, Bs...>; };
-
-// Nullary case.
-template<>
-struct product<> { using type = magnitude<>; };
-
-// Unary case.
-template<Magnitude M>
-struct product<M> { using type = M; };
-
-// Binary case, where right argument is null magnitude.
-template<Magnitude M>
-struct product<M, magnitude<>> { using type = M; };
-
-// Binary case, where left argument is null magnitude, and right is non-null.
-template<BasePower B, BasePower... Bs>
-struct product<magnitude<>, magnitude<B, Bs...>> { using type = magnitude<B, Bs...>; };
-
-// Binary case, with distinct and non-null heads.
-template<BasePower Head1, BasePower... Tail1, BasePower Head2, BasePower... Tail2>
-struct product<magnitude<Head1, Tail1...>, magnitude<Head2, Tail2...>>
-{
-  using type = std::conditional_t<
-    (Head1::base::value < Head2::base::value),
-    prepend_base_t<Head1, product_t<magnitude<Tail1...>, magnitude<Head2, Tail2...>>>,
-    prepend_base_t<Head2, product_t<magnitude<Head1, Tail1...>, magnitude<Tail2...>>>>;
-};
-
-// Binary case, same head.
-template<typename Base, ratio Pow1, ratio Pow2, BasePower... Tail1, BasePower... Tail2>
-struct product<magnitude<base_power<Base, Pow1>, Tail1...>,
-               magnitude<base_power<Base, Pow2>, Tail2...>>
-{
-  using tail_product = product_t<magnitude<Tail1...>, magnitude<Tail2...>>;
-  static constexpr auto Pow = Pow1 + Pow2;
-  using type = std::conditional_t<
-    Pow.num == 0,
-    tail_product,
-    prepend_base_t<base_power<Base, Pow>, tail_product>>;
-};
-
-// N-ary case (N > 2).
-template<Magnitude T, Magnitude U, Magnitude... Tail>
-struct product<T, U, Tail...> { using type = product_t<product_t<T, U>, Tail...>; };
 
 namespace detail
 {
@@ -317,18 +234,18 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
 
 // Specialization for the prime factorization of 1 (base case).
 template<>
-struct prime_factorization<1> { using type = magnitude<>; };
+struct prime_factorization<1> { static constexpr magnitude<> value{}; };
 
 // Specialization for the prime factorization of larger numbers (recursive case).
 template<std::intmax_t N>
   requires requires { N > 0; }
 struct prime_factorization {
-  static constexpr std::intmax_t first_base = find_first_factor(N);
+  static constexpr int first_base = find_first_factor(N);
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
-  using type = product_t<
-    magnitude<base_power<prime_base<first_base>, ratio{first_power}>>, prime_factorization_t<remainder>>;
+  static constexpr auto value = magnitude<base_power{first_base, first_power}>{}
+      * prime_factorization_v<remainder>;
 };
 
 constexpr bool is_prime(std::intmax_t n) { return (n > 1) && (find_first_factor(n) == n); }
