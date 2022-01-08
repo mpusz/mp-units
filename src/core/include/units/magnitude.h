@@ -170,7 +170,7 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
 
 // Helpers to perform prime factorization at compile time.
 template<std::intmax_t N>
-  requires requires { N > 0; }
+  requires (N > 0)
 struct prime_factorization;
 
 template<std::intmax_t N>
@@ -248,7 +248,7 @@ concept Magnitude = detail::is_magnitude<T>::value;
  * manually adding base powers.
  */
 template<ratio R>
-  requires requires { R.num > 0; }
+  requires (R.num > 0)
 constexpr Magnitude auto as_magnitude();
 
 /**
@@ -328,7 +328,7 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * invers
 // `as_magnitude()` implementation.
 
 template<ratio R>
-  requires requires { R.num > 0; }
+  requires (R.num > 0)
 constexpr Magnitude auto as_magnitude() {
   return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
@@ -337,7 +337,7 @@ namespace detail
 {
 // Default implementation.
 template<std::intmax_t N>
-  requires requires { N > 0; }
+  requires (N > 0)
 struct prime_factorization {
   static constexpr int first_base = find_first_factor(N);
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
