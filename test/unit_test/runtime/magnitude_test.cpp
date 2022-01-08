@@ -32,6 +32,8 @@ namespace units::mag
 struct noninteger_base { static constexpr long double value = 1.234L; };
 struct noncanonical_two_base { static constexpr long double value = 2.0L; };
 struct other_noncanonical_two_base { static constexpr long double value = 2.0L; };
+struct invalid_zero_base { static constexpr long double value = 0.0L; };
+struct invalid_negative_base { static constexpr long double value = -1.234L; };
 
 TEST_CASE("base_power")
 {
@@ -182,6 +184,30 @@ TEST_CASE("Division works for magnitudes")
 namespace detail
 {
 
+TEST_CASE("Prime helper functions")
+{
+  SECTION("find_first_factor()") {
+    CHECK(find_first_factor(1) == 1);
+    CHECK(find_first_factor(2) == 2);
+    CHECK(find_first_factor(4) == 2);
+    CHECK(find_first_factor(6) == 2);
+    CHECK(find_first_factor(15) == 3);
+    CHECK(find_first_factor(17) == 17);
+  }
+
+  SECTION("multiplicity") {
+    CHECK(multiplicity(2, 8) == 3);
+    CHECK(multiplicity(2, 1024) == 10);
+    CHECK(multiplicity(11, 6655) == 3);
+  }
+
+  SECTION("remove_power()") {
+    CHECK(remove_power(17, 0, 5) == 5);
+    CHECK(remove_power(2, 3, 24) == 3);
+    CHECK(remove_power(11, 3, 6655) == 5);
+  }
+}
+
 TEST_CASE("Prime factorization")
 {
   SECTION ("1 factors into the null magnitude")
@@ -233,6 +259,36 @@ TEST_CASE("is_prime detects primes")
     CHECK(!is_prime(9));
 
     CHECK(is_prime(7919));
+  }
+}
+
+TEST_CASE("is_valid_base_power")
+{
+  SECTION("0 power is invalid") {
+    REQUIRE(is_valid_base_power(base_power{2}));
+    CHECK(!is_valid_base_power(base_power{2, 0}));
+
+    REQUIRE(is_valid_base_power(base_power{41}));
+    CHECK(!is_valid_base_power(base_power{41, 0}));
+
+    REQUIRE(is_valid_base_power(base_power<pi_base>{}));
+    CHECK(!is_valid_base_power(base_power<pi_base>{0}));
+  }
+
+  SECTION("non-prime integers are invalid") {
+    CHECK(!is_valid_base_power(base_power{-8}));
+    CHECK(!is_valid_base_power(base_power{0}));
+    CHECK(!is_valid_base_power(base_power{1}));
+
+    CHECK(is_valid_base_power(base_power{2}));
+    CHECK(is_valid_base_power(base_power{3}));
+
+    CHECK(!is_valid_base_power(base_power{4}));
+  }
+
+  SECTION("non-positive floating point bases are invalid") {
+    CHECK(!is_valid_base_power(base_power<invalid_zero_base>{}));
+    CHECK(!is_valid_base_power(base_power<invalid_negative_base>{}));
   }
 }
 
