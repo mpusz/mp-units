@@ -103,9 +103,9 @@ base_power(T) -> base_power<int>;
 // Implementation for BasePower concept (below).
 namespace detail {
 template<typename T>
-struct is_base_power : std::false_type {};
+static constexpr bool is_base_power = false;
 template<BaseRep T>
-struct is_base_power<base_power<T>> : std::true_type {};
+static constexpr bool is_base_power<base_power<T>> = true;
 } // namespace detail
 
 /**
@@ -115,7 +115,7 @@ struct is_base_power<base_power<T>> : std::true_type {};
  * `magnitude<...>`.  We will defer that second check to the constraints on the `magnitude` template.
  */
 template<typename T>
-concept BasePower = detail::is_base_power<T>::value;
+concept BasePower = detail::is_base_power<T>;
 
 /**
  * @brief  Equality detection for two base powers.
@@ -230,16 +230,16 @@ struct magnitude {};
 // Implementation for Magnitude concept (below).
 namespace detail {
 template<typename T>
-struct is_magnitude : std::false_type {};
+static constexpr bool is_magnitude = false;
 template<BasePower auto... BPs>
-struct is_magnitude<magnitude<BPs...>> : std::true_type {};
+static constexpr bool is_magnitude<magnitude<BPs...>> = true;
 } // namespace detail
 
 /**
  * @brief  Concept to detect whether T is a valid Magnitude.
  */
 template<typename T>
-concept Magnitude = detail::is_magnitude<T>::value;
+concept Magnitude = detail::is_magnitude<T>;
 
 /**
  * @brief  Convert any positive integer to a Magnitude.
