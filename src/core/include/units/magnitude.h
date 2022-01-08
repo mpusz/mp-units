@@ -170,19 +170,13 @@ concept Magnitude = detail::is_magnitude<T>::value;
 
 /**
  * @brief  Convert any positive integer to a Magnitude.
- */
-template<std::integral auto N>
-  requires requires { N > 0; }
-constexpr Magnitude auto as_magnitude();
-
-/**
- * @brief  Make a Magnitude that is a rational number.
  *
  * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
  * manually adding base powers.
  */
-template<std::intmax_t N, std::intmax_t D = 1>
-constexpr auto make_ratio() { return as_magnitude<N>() / as_magnitude<D>(); }
+template<ratio R>
+  requires requires { R.num > 0; }
+constexpr Magnitude auto as_magnitude();
 
 /**
  * @brief  A base to represent pi.
@@ -358,8 +352,10 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * invers
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
 
-template<std::integral auto N>
-  requires requires { N > 0; }
-constexpr Magnitude auto as_magnitude() { return detail::prime_factorization_v<N>; }
+template<ratio R>
+  requires requires { R.num > 0; }
+constexpr Magnitude auto as_magnitude() {
+  return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
+}
 
 } // namespace units::mag

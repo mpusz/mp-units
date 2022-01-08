@@ -32,18 +32,17 @@ TEST_CASE("make_ratio performs prime factorization correctly")
 {
   SECTION("Performs prime factorization when denominator is 1")
   {
-    CHECK(make_ratio<1>() == magnitude<>{});
-    CHECK(make_ratio<2>() == magnitude<base_power{2}>{});
-    CHECK(make_ratio<3>() == magnitude<base_power{3}>{});
-    CHECK(make_ratio<4>() == magnitude<base_power{2, 2}>{});
+    CHECK(as_magnitude<1>() == magnitude<>{});
+    CHECK(as_magnitude<2>() == magnitude<base_power{2}>{});
+    CHECK(as_magnitude<3>() == magnitude<base_power{3}>{});
+    CHECK(as_magnitude<4>() == magnitude<base_power{2, 2}>{});
 
-    CHECK(make_ratio<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+    CHECK(as_magnitude<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
   }
 
-  SECTION("Reduces fractions to lowest terms")
+  SECTION("Supports fractions")
   {
-    CHECK(make_ratio<8, 8>() == magnitude<>{});
-    CHECK(make_ratio<50, 80>() == magnitude<base_power{2, -3}, base_power{5}>{});
+    CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{});
   }
 }
 
@@ -51,20 +50,20 @@ TEST_CASE("Equality works for magnitudes")
 {
   SECTION("Equivalent ratios are equal")
   {
-    CHECK(make_ratio<1>() == make_ratio<1>());
-    CHECK(make_ratio<3>() == make_ratio<3>());
-    CHECK(make_ratio<3, 4>() == make_ratio<9, 12>());
+    CHECK(as_magnitude<1>() == as_magnitude<1>());
+    CHECK(as_magnitude<3>() == as_magnitude<3>());
+    CHECK(as_magnitude<ratio{3, 4}>() == as_magnitude<ratio{9, 12}>());
   }
 
   SECTION("Different ratios are unequal")
   {
-    CHECK(make_ratio<3>() != make_ratio<5>());
-    CHECK(make_ratio<3>() != make_ratio<3, 2>());
+    CHECK(as_magnitude<3>() != as_magnitude<5>());
+    CHECK(as_magnitude<3>() != as_magnitude<ratio{3, 2}>());
   }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto eq = (make_ratio<4, 5>() == make_ratio<4, 3>());
+    constexpr auto eq = (as_magnitude<ratio{4, 5}>() == as_magnitude<ratio{4, 3}>());
     CHECK(!eq);
   }
 }
@@ -73,25 +72,25 @@ TEST_CASE("Multiplication works for magnitudes")
 {
   SECTION("Reciprocals reduce to null magnitude")
   {
-    CHECK(make_ratio<3, 4>() * make_ratio<4, 3>() == make_ratio<1>());
+    CHECK(as_magnitude<ratio{3, 4}>() * as_magnitude<ratio{4, 3}>() == as_magnitude<1>());
   }
 
   SECTION("Products work as expected")
   {
-    CHECK(make_ratio<4, 5>() * make_ratio<4, 3>() == make_ratio<16, 15>());
+    CHECK(as_magnitude<ratio{4, 5}>() * as_magnitude<ratio{4, 3}>() == as_magnitude<ratio{16, 15}>());
   }
 
   SECTION("Products handle pi correctly")
   {
      CHECK(
-         pi_to_the<1>() * make_ratio<2, 3>() * pi_to_the<ratio{-1, 2}>() ==
+         pi_to_the<1>() * as_magnitude<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
          magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
   }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto p = make_ratio<4, 5>() * make_ratio<4, 3>();
-    CHECK(p == make_ratio<16, 15>());
+    constexpr auto p = as_magnitude<ratio{4, 5}>() * as_magnitude<ratio{4, 3}>();
+    CHECK(p == as_magnitude<ratio{16, 15}>());
   }
 }
 
@@ -99,19 +98,19 @@ TEST_CASE("Division works for magnitudes")
 {
   SECTION("Dividing anything by itself reduces to null magnitude")
   {
-    CHECK(make_ratio<3, 4>() / make_ratio<3, 4>() == make_ratio<1>());
-    CHECK(make_ratio<15>() / make_ratio<15>() == make_ratio<1>());
+    CHECK(as_magnitude<ratio{3, 4}>() / as_magnitude<ratio{3, 4}>() == as_magnitude<1>());
+    CHECK(as_magnitude<15>() / as_magnitude<15>() == as_magnitude<1>());
   }
 
   SECTION("Quotients work as expected")
   {
-    CHECK(make_ratio<4, 5>() / make_ratio<4, 3>() == make_ratio<3, 5>());
+    CHECK(as_magnitude<ratio{4, 5}>() / as_magnitude<ratio{4, 3}>() == as_magnitude<ratio{3, 5}>());
   }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto q = make_ratio<4, 5>() / make_ratio<4, 3>();
-    CHECK(q == make_ratio<3, 5>());
+    constexpr auto q = as_magnitude<ratio{4, 5}>() / as_magnitude<ratio{4, 3}>();
+    CHECK(q == as_magnitude<ratio{3, 5}>());
   }
 }
 
