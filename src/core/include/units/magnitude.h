@@ -176,23 +176,31 @@ constexpr auto pi_to_the() { return magnitude<pi_power<Power>()>{}; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude concept implementation.
 
-template<typename Predicate, typename... Ts>
-constexpr bool pairwise_all(const std::tuple<Ts...> &ts, const Predicate &pred) {
-  // Carefully handle different sizes, avoiding unsigned integer underflow.
-  constexpr auto num_comparisons = [](auto num_elements) {
-    return (num_elements > 1) ? (num_elements - 1) : 0;
-  }(sizeof...(Ts));
+template<typename Predicate>
+struct pairwise_all {
+  Predicate predicate;
 
-  // Compare zero or more pairs of neighbours as needed.
-  return [&ts, &pred]<std::size_t... Is>(std::integer_sequence<std::size_t, Is...>) {
-    return (pred(std::get<Is>(ts), std::get<Is + 1>(ts)) && ...);
-  }(std::make_index_sequence<num_comparisons>());
-}
+  template<typename... Ts>
+  constexpr bool operator()(Ts&&... ts) const {
+    // Carefully handle different sizes, avoiding unsigned integer underflow.
+    constexpr auto num_comparisons = [](auto num_elements) {
+      return (num_elements > 1) ? (num_elements - 1) : 0;
+    }(sizeof...(Ts));
+
+    // Compare zero or more pairs of neighbours as needed.
+    return [this]<std::size_t... Is>(std::tuple<Ts...> &&t, std::index_sequence<Is...>) {
+      return (predicate(std::get<Is>(t), std::get<Is + 1>(t)) && ...);
+    }(std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
+  }
+};
+
+template<typename T>
+pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a tuple of (possibly heterogeneously typed) values are strictly increasing.
 template<typename... Ts>
-constexpr bool strictly_increasing(const std::tuple<Ts...> &ts) {
-  return pairwise_all(ts, std::less{});
+constexpr bool strictly_increasing(Ts&&... ts) {
+  return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
 
 namespace detail

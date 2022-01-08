@@ -30,23 +30,23 @@ namespace units::mag
 
 TEST_CASE("strictly_increasing")
 {
-  SECTION ("Empty tuple is sorted")
+  SECTION ("Empty input is sorted")
   {
-    CHECK(strictly_increasing(std::make_tuple()));
+    CHECK(strictly_increasing());
   }
 
-  SECTION ("Single-element tuple is sorted")
+  SECTION ("Single-element input is sorted")
   {
-    CHECK(strictly_increasing(std::make_tuple(3)));
-    CHECK(strictly_increasing(std::make_tuple(15.42)));
-    CHECK(strictly_increasing(std::make_tuple('c')));
+    CHECK(strictly_increasing(3));
+    CHECK(strictly_increasing(15.42));
+    CHECK(strictly_increasing('c'));
   }
 
-  SECTION ("Multi-element tuples compare correctly")
+  SECTION ("Multi-value inputs compare correctly")
   {
-    CHECK(strictly_increasing(std::make_tuple(3, 3.14)));
-    CHECK(!strictly_increasing(std::make_tuple(3, 3.0)));
-    CHECK(!strictly_increasing(std::make_tuple(4, 3.0)));
+    CHECK(strictly_increasing(3, 3.14));
+    CHECK(!strictly_increasing(3, 3.0));
+    CHECK(!strictly_increasing(4, 3.0));
   }
 }
 
@@ -94,9 +94,6 @@ TEST_CASE("strictly_increasing")
 //   }
 // }
 
-template<double x>
-using double_v = 2 * x;
-
 TEST_CASE("Multiplication works for magnitudes")
 {
   SECTION("Reciprocals reduce to null magnitude")
@@ -107,7 +104,6 @@ TEST_CASE("Multiplication works for magnitudes")
   SECTION("Products work as expected")
   {
     CHECK(make_ratio<4, 5>() * make_ratio<4, 3>() == make_ratio<16, 15>());
-    CHECK(double_v<1.5> == 3.0);
   }
 
   //SECTION("Products handle pi correctly")
@@ -205,23 +201,23 @@ TEST_CASE("pairwise_all evaluates all pairs")
 {
   SECTION("always true for empty tuples")
   {
-    CHECK(pairwise_all(std::make_tuple(), [](auto, auto){ return true; }));
-    CHECK(pairwise_all(std::make_tuple(), [](auto, auto){ return false; }));
+    CHECK(pairwise_all{[](auto, auto){ return true; }}());
+    CHECK(pairwise_all{[](auto, auto){ return false; }}());
   }
 
   SECTION("always true for single-element tuples")
   {
-    CHECK(pairwise_all(std::make_tuple(1), [](auto, auto){ return true; }));
-    CHECK(pairwise_all(std::make_tuple(3.14), [](auto, auto){ return false; }));
-    CHECK(pairwise_all(std::make_tuple('x'), [](auto, auto){ return true; }));
+    CHECK(pairwise_all{[](auto, auto){ return true; }}(1));
+    CHECK(pairwise_all{[](auto, auto){ return false; }}(3.14));
+    CHECK(pairwise_all{[](auto, auto){ return true; }}('x'));
   }
 
   SECTION("true for longer tuples iff true for all neighbouring pairs")
   {
-    CHECK(pairwise_all(std::make_tuple(1, 1.5), std::less{}));
-    CHECK(pairwise_all(std::make_tuple(1, 1.5, 2), std::less{}));
-    CHECK(!pairwise_all(std::make_tuple(1, 2.0, 2), std::less{}));
-    CHECK(!pairwise_all(std::make_tuple(1, 2.5, 2), std::less{}));
+    CHECK(pairwise_all{std::less{}}(1, 1.5));
+    CHECK(pairwise_all{std::less{}}(1, 1.5, 2));
+    CHECK(!pairwise_all{std::less{}}(1, 2.0, 2));
+    CHECK(!pairwise_all{std::less{}}(1, 2.5, 2));
   }
 }
 
