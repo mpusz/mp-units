@@ -50,49 +50,46 @@ TEST_CASE("strictly_increasing")
   }
 }
 
-// TEST_CASE("make_ratio performs prime factorization correctly")
-// {
-//   SECTION("Performs prime factorization when denominator is 1")
-//   {
-//     CHECK(std::is_same_v<decltype(make_ratio<1>()), magnitude<>>);
-//     CHECK(std::is_same_v<decltype(make_ratio<2>()), magnitude<base_power{2}>>);
-//     CHECK(std::is_same_v<decltype(make_ratio<3>()), magnitude<base_power{3}>>);
-//     CHECK(std::is_same_v<decltype(make_ratio<4>()), magnitude<base_power{2, 2}>>);
-// 
-//     CHECK(std::is_same_v<
-//         decltype(make_ratio<792>()),
-//         magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>>);
-//   }
-// 
-//   SECTION("Reduces fractions to lowest terms")
-//   {
-//     CHECK(std::is_same_v<decltype(make_ratio<8, 8>()), magnitude<>>);
-//     CHECK(std::is_same_v<
-//         decltype(make_ratio<50, 80>()), magnitude<base_power{2, -3}, base_power{5}>>);
-//   }
-// }
+TEST_CASE("make_ratio performs prime factorization correctly")
+{
+  SECTION("Performs prime factorization when denominator is 1")
+  {
+    CHECK(make_ratio<1>() == magnitude<>{});
+    CHECK(make_ratio<2>() == magnitude<base_power{2}>{});
+    CHECK(make_ratio<3>() == magnitude<base_power{3}>{});
+    CHECK(make_ratio<4>() == magnitude<base_power{2, 2}>{});
 
-// TEST_CASE("Equality works for magnitudes")
-// {
-//   SECTION("Equivalent ratios are equal")
-//   {
-//     CHECK(make_ratio<1>() == make_ratio<1>());
-//     CHECK(make_ratio<3>() == make_ratio<3>());
-//     CHECK(make_ratio<3, 4>() == make_ratio<9, 12>());
-//   }
-// 
-//   SECTION("Different ratios are unequal")
-//   {
-//     CHECK(make_ratio<3>() != make_ratio<5>());
-//     CHECK(make_ratio<3>() != make_ratio<3, 2>());
-//   }
-// 
-//   SECTION("Supports constexpr")
-//   {
-//     constexpr auto eq = (make_ratio<4, 5>() == make_ratio<4, 3>());
-//     CHECK(!eq);
-//   }
-// }
+    CHECK(make_ratio<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+  }
+
+  SECTION("Reduces fractions to lowest terms")
+  {
+    CHECK(make_ratio<8, 8>() == magnitude<>{});
+    CHECK(make_ratio<50, 80>() == magnitude<base_power{2, -3}, base_power{5}>{});
+  }
+}
+
+TEST_CASE("Equality works for magnitudes")
+{
+  SECTION("Equivalent ratios are equal")
+  {
+    CHECK(make_ratio<1>() == make_ratio<1>());
+    CHECK(make_ratio<3>() == make_ratio<3>());
+    CHECK(make_ratio<3, 4>() == make_ratio<9, 12>());
+  }
+
+  SECTION("Different ratios are unequal")
+  {
+    CHECK(make_ratio<3>() != make_ratio<5>());
+    CHECK(make_ratio<3>() != make_ratio<3, 2>());
+  }
+
+  SECTION("Supports constexpr")
+  {
+    constexpr auto eq = (make_ratio<4, 5>() == make_ratio<4, 3>());
+    CHECK(!eq);
+  }
+}
 
 TEST_CASE("Multiplication works for magnitudes")
 {
@@ -106,12 +103,12 @@ TEST_CASE("Multiplication works for magnitudes")
     CHECK(make_ratio<4, 5>() * make_ratio<4, 3>() == make_ratio<16, 15>());
   }
 
-  //SECTION("Products handle pi correctly")
-  //{
-  //   CHECK(
-  //       pi_to_the<1>() * make_ratio<2, 3>() * pi_to_the<ratio{-1, 2}>() ==
-  //       magnitude<base_power{2}, base_power{3, -1}, pi_power<ratio{1, 2}>()>{});
-  //}
+  SECTION("Products handle pi correctly")
+  {
+     CHECK(
+         pi_to_the<1>() * make_ratio<2, 3>() * pi_to_the<ratio{-1, 2}>() ==
+         magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
+  }
 
   SECTION("Supports constexpr")
   {

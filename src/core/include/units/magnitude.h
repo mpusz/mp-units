@@ -44,7 +44,7 @@ constexpr bool is_prime(std::intmax_t n);
 
 // Integer rep is for prime numbers; long double is for any irrational base we permit.
 template<typename T>
-concept BaseRep = std::is_same_v<T, int> || std::is_same_v<T::value, long double>;
+concept BaseRep = std::is_same_v<T, int> || std::is_same_v<std::remove_cvref_t<decltype(T::value)>, long double>;
 
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
@@ -85,7 +85,7 @@ base_power(T) -> base_power<T>;
 
 template<typename T, typename U>
 constexpr bool operator==(base_power<T> t, base_power<U> u) {
-  return std::is_same_v<T, U> && (t.base == u.base) && (t.power == u.power);
+  return std::is_same_v<T, U> && (t.get_base() == u.get_base()) && (t.power == u.power);
 }
 
 template<BaseRep T>
@@ -100,8 +100,8 @@ template<BaseRep T>
 constexpr bool is_valid_base_power(const base_power<T> &bp) {
   if (bp.power == 0) { return false; }
 
-  if constexpr (std::is_same_v<T, int>) { return is_prime(bp.base); }
-  else if constexpr (std::is_same_v<T, long double>) { return bp.base > 0; }
+  if constexpr (std::is_same_v<T, int>) { return is_prime(bp.get_base()); }
+  else if constexpr (std::is_same_v<T, long double>) { return bp.get_base() > 0; }
   else { return false; }  // Unreachable.
 }
 
@@ -114,24 +114,29 @@ struct is_base_power<base_power<T>> : std::true_type {};
 template<typename T>
 concept BasePower = detail::is_base_power<T>::value;
 
+template<typename... Ts>
+constexpr bool strictly_increasing(Ts&&... ts);
+
 /**
  * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
  *
  * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
  * for equality using this value API.
  */
-template<BasePower auto... BasePowers>
+template<BasePower auto... BPs>
   requires requires {
-    // (is_valid_base_power(BasePowers) && ... && strictly_increasing(BasePowers.base...));
-    (detail::is_valid_base_power(BasePowers) && ...);
+    (detail::is_valid_base_power(BPs) && ... && strictly_increasing(BPs.get_base()...));
   }
 struct magnitude {};
 
 template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
-constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) { return ((LeftBPs == RightBPs) && ...); }
+constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) {
+  if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) { return ((LeftBPs == RightBPs) && ...); }
+  else { return false; }
+}
 
-template<BasePower auto... BasePowers>
-constexpr auto inverse(magnitude<BasePowers...>) { return magnitude<inverse(BasePowers)...>{}; }
+template<BasePower auto... BPs>
+constexpr auto inverse(magnitude<BPs...>) { return magnitude<inverse(BPs)...>{}; }
 
 constexpr auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
 
@@ -144,20 +149,25 @@ constexpr auto operator*(magnitude<BPs...> m, magnitude<>) { return m; }
 template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
 constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
   // Shortcut for prepending, which makes it easier to implement some of the other cases.
-  if constexpr ((sizeof...(T1) == 0) && H1.base < H2.base) { return magnitude<H1, H2, T2...>{}; }
+  if constexpr ((sizeof...(T1) == 0) && H1.get_base() < H2.get_base()) { return magnitude<H1, H2, T2...>{}; }
 
-  if constexpr (H1.base == H2.base) {
+  if constexpr (H1.get_base() == H2.get_base()) {
     constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
-    constexpr base_power new_head{H1.base, (H1.power + H2.power)};
+
+    // Make a new base_power with the common base of H1 and H2, whose power is their powers' sum.
+    constexpr auto new_head = [&](auto head) {
+      head.power = H1.power + H2.power;
+      return head;
+    }(H1);
 
     if constexpr (new_head.power == 0) {
       return partial_product;
     } else {
       return magnitude<new_head>{} * partial_product;
     }
-  } else if constexpr(H1.base < H2.base){
+  } else if constexpr(H1.get_base() < H2.get_base()){
     return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
-  } else { // We know H2.base < H1.base
+  } else { // We know H2.get_base() < H1.get_base()
     return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
   }
 }
@@ -177,12 +187,12 @@ constexpr auto make_ratio() { return detail::prime_factorization_v<N> / detail::
 /**
  * @brief  A base to represent pi.
  */
-template<ratio Power>
-  requires requires { Power != 0; }
-constexpr auto pi_power() { return base_power{std::numbers::pi_v<long double>, Power}; }
+struct pi_base {
+  static constexpr long double value = std::numbers::pi_v<long double>;
+};
 
 template<ratio Power>
-constexpr auto pi_to_the() { return magnitude<pi_power<Power>()>{}; }
+constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Implementation details below.
