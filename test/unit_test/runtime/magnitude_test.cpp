@@ -28,6 +28,71 @@
 namespace units::mag
 {
 
+// A set of non-standard bases for testing purposes.
+struct noninteger_base { static constexpr long double value = 1.234L; };
+struct noncanonical_two_base { static constexpr long double value = 2.0L; };
+struct other_noncanonical_two_base { static constexpr long double value = 2.0L; };
+
+TEST_CASE("base_power")
+{
+  SECTION("base rep deducible for integral base")
+  {
+    CHECK(base_power{2} == base_power<int>{2, ratio{1}});
+    CHECK(base_power{2, 3} == base_power<int>{2, ratio{3}});
+    CHECK(base_power{2, ratio{3, 4}} == base_power<int>{2, ratio{3, 4}});
+  }
+
+  SECTION("get_base retrieves base for integral base")
+  {
+    CHECK(base_power{2}.get_base() == 2);
+    CHECK(base_power{3, 5}.get_base() == 3);
+    CHECK(base_power{5, ratio{1, 3}}.get_base() == 5);
+  }
+
+  SECTION("get_base retrieves member value for non-integer base")
+  {
+    CHECK(base_power<noninteger_base>{}.get_base() == 1.234L);
+    CHECK(base_power<noninteger_base>{2}.get_base() == 1.234L);
+    CHECK(base_power<noninteger_base>{ratio{5, 8}}.get_base() == 1.234L);
+  }
+
+  SECTION("same-base values not equal if types are different")
+  {
+    const auto a = base_power<noncanonical_two_base>{};
+    const auto b = base_power{2};
+    const auto c = base_power<other_noncanonical_two_base>{};
+
+    REQUIRE(a.get_base() == b.get_base());
+    CHECK(a != b);
+
+    REQUIRE(a.get_base() == c.get_base());
+    CHECK(a != c);
+  }
+
+  SECTION("same-type values not equal if bases are different")
+  {
+    CHECK(base_power{2} != base_power{3});
+    CHECK(base_power{2, ratio{5, 4}} != base_power{3, ratio{5, 4}});
+  }
+
+  SECTION("same-type, same-base values not equal if powers are different")
+  {
+    CHECK(base_power{2} != base_power{2, 2});
+    CHECK(base_power<pi_base>{} != base_power<pi_base>{ratio{1, 3}});
+  }
+
+  SECTION("product with inverse equals identity")
+  {
+    auto check_product_with_inverse_is_identity = [] (auto x) {
+      CHECK(x * inverse(x) == as_magnitude<1>());
+    };
+
+    check_product_with_inverse_is_identity(as_magnitude<3>());
+    check_product_with_inverse_is_identity(as_magnitude<ratio{4, 17}>());
+    check_product_with_inverse_is_identity(pi_to_the<ratio{-22, 7}>());
+  }
+}
+
 TEST_CASE("make_ratio performs prime factorization correctly")
 {
   SECTION("Performs prime factorization when denominator is 1")
