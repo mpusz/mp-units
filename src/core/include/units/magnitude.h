@@ -134,69 +134,8 @@ constexpr auto inverse(BP bp) {
   return bp;
 }
 
-// Implementation helpers for `magnitude<...>` constraints (below).
+// A variety of implementation detail helpers.
 namespace detail {
-constexpr bool is_valid_base_power(const BasePower auto &bp);
-
-template<typename... Ts>
-constexpr bool strictly_increasing(Ts&&... ts);
-} // namespace detail
-
-/**
- * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
- *
- * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
- * for equality.
- */
-template<BasePower auto... BPs>
-  requires requires {
-    (detail::is_valid_base_power(BPs) && ... && detail::strictly_increasing(BPs.get_base()...));
-  }
-struct magnitude {};
-
-// Implementation for Magnitude concept (below).
-namespace detail {
-template<typename T>
-struct is_magnitude : std::false_type {};
-template<BasePower auto... BPs>
-struct is_magnitude<magnitude<BPs...>> : std::true_type {};
-} // namespace detail
-
-/**
- * @brief  Concept to detect whether T is a valid Magnitude.
- */
-template<typename T>
-concept Magnitude = detail::is_magnitude<T>::value;
-
-/**
- * @brief  Convert any positive integer to a Magnitude.
- *
- * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
- * manually adding base powers.
- */
-template<ratio R>
-  requires requires { R.num > 0; }
-constexpr Magnitude auto as_magnitude();
-
-/**
- * @brief  A base to represent pi.
- */
-struct pi_base {
-  static constexpr long double value = std::numbers::pi_v<long double>;
-};
-
-/**
- * @brief  A simple way to create a Magnitude representing a rational power of pi.
- */
-template<ratio Power>
-constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Implementation details below.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace detail
-{
 
 // Find the smallest prime factor of `n`.
 constexpr std::intmax_t find_first_factor(std::intmax_t n)
@@ -232,21 +171,10 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
 // Helpers to perform prime factorization at compile time.
 template<std::intmax_t N>
   requires requires { N > 0; }
-struct prime_factorization {
-  static constexpr int first_base = find_first_factor(N);
-  static constexpr std::intmax_t first_power = multiplicity(first_base, N);
-  static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
-
-  static constexpr auto value = magnitude<base_power{first_base, first_power}>{}
-      * prime_factorization<remainder>::value;
-};
+struct prime_factorization;
 
 template<std::intmax_t N>
 static constexpr auto prime_factorization_v = prime_factorization<N>::value;
-
-// Specialization for the prime factorization of 1 (base case).
-template<>
-struct prime_factorization<1> { static constexpr magnitude<> value{}; };
 
 // A way to check whether a number is prime at compile time.
 constexpr bool is_prime(std::intmax_t n) { return (n > 1) && (find_first_factor(n) == n); }
@@ -288,6 +216,53 @@ constexpr bool strictly_increasing(Ts&&... ts) {
 }
 
 } // namespace detail
+
+/**
+ * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ *
+ * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
+ * for equality.
+ */
+template<BasePower auto... BPs>
+  requires ((detail::is_valid_base_power(BPs) && ... && detail::strictly_increasing(BPs.get_base()...)))
+struct magnitude {};
+
+// Implementation for Magnitude concept (below).
+namespace detail {
+template<typename T>
+struct is_magnitude : std::false_type {};
+template<BasePower auto... BPs>
+struct is_magnitude<magnitude<BPs...>> : std::true_type {};
+} // namespace detail
+
+/**
+ * @brief  Concept to detect whether T is a valid Magnitude.
+ */
+template<typename T>
+concept Magnitude = detail::is_magnitude<T>::value;
+
+/**
+ * @brief  Convert any positive integer to a Magnitude.
+ *
+ * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
+ * manually adding base powers.
+ */
+template<ratio R>
+  requires requires { R.num > 0; }
+constexpr Magnitude auto as_magnitude();
+
+/**
+ * @brief  A base to represent pi.
+ */
+struct pi_base {
+  static constexpr long double value = std::numbers::pi_v<long double>;
+};
+
+/**
+ * @brief  A simple way to create a Magnitude representing a rational power of pi.
+ */
+template<ratio Power>
+constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
@@ -357,5 +332,24 @@ template<ratio R>
 constexpr Magnitude auto as_magnitude() {
   return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
+
+namespace detail
+{
+// Default implementation.
+template<std::intmax_t N>
+  requires requires { N > 0; }
+struct prime_factorization {
+  static constexpr int first_base = find_first_factor(N);
+  static constexpr std::intmax_t first_power = multiplicity(first_base, N);
+  static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
+
+  static constexpr auto value = magnitude<base_power{first_base, first_power}>{}
+      * prime_factorization<remainder>::value;
+};
+
+// Specialization for the prime factorization of 1 (base case).
+template<>
+struct prime_factorization<1> { static constexpr magnitude<> value{}; };
+} // namespace detail
 
 } // namespace units::mag
