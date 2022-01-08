@@ -28,28 +28,6 @@
 namespace units::mag
 {
 
-TEST_CASE("strictly_increasing")
-{
-  SECTION ("Empty input is sorted")
-  {
-    CHECK(strictly_increasing());
-  }
-
-  SECTION ("Single-element input is sorted")
-  {
-    CHECK(strictly_increasing(3));
-    CHECK(strictly_increasing(15.42));
-    CHECK(strictly_increasing('c'));
-  }
-
-  SECTION ("Multi-value inputs compare correctly")
-  {
-    CHECK(strictly_increasing(3, 3.14));
-    CHECK(!strictly_increasing(3, 3.0));
-    CHECK(!strictly_increasing(4, 3.0));
-  }
-}
-
 TEST_CASE("make_ratio performs prime factorization correctly")
 {
   SECTION("Performs prime factorization when denominator is 1")
@@ -215,6 +193,28 @@ TEST_CASE("pairwise_all evaluates all pairs")
     CHECK(pairwise_all{std::less{}}(1, 1.5, 2));
     CHECK(!pairwise_all{std::less{}}(1, 2.0, 2));
     CHECK(!pairwise_all{std::less{}}(1, 2.5, 2));
+  }
+}
+
+TEST_CASE("strictly_increasing")
+{
+  SECTION ("Empty input is sorted")
+  {
+    CHECK(strictly_increasing());
+  }
+
+  SECTION ("Single-element input is sorted")
+  {
+    CHECK(strictly_increasing(3));
+    CHECK(strictly_increasing(15.42));
+    CHECK(strictly_increasing('c'));
+  }
+
+  SECTION ("Multi-value inputs compare correctly")
+  {
+    CHECK(strictly_increasing(3, 3.14));
+    CHECK(!strictly_increasing(3, 3.0));
+    CHECK(!strictly_increasing(4, 3.0));
   }
 }
 
