@@ -44,7 +44,7 @@ constexpr bool is_prime(std::intmax_t n);
 
 // Integer rep is for prime numbers; long double is for any irrational base we permit.
 template<typename T>
-concept BaseRep = std::is_same_v<T, int> || std::is_same_v<T, long double>;
+concept BaseRep = std::is_same_v<T, int> || std::is_same_v<T::value, long double>;
 
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
@@ -60,11 +60,21 @@ concept BaseRep = std::is_same_v<T, int> || std::is_same_v<T, long double>;
  */
 template<BaseRep T>
 struct base_power {
-  // The value of the basis vector.
-  T base;
+  // The rational power to which the base is raised.
+  ratio power{1};
+
+  constexpr long double get_base() const { return T::value; }
+};
+
+template<>
+struct base_power<int> {
+  // The value of the basis "vector".
+  int base;
 
   // The rational power to which the base is raised.
   ratio power{1};
+
+  constexpr int get_base() const { return base; }
 };
 
 template<BaseRep T, std::convertible_to<ratio> U>
@@ -94,10 +104,15 @@ constexpr bool is_valid_base_power(const base_power<T> &bp) {
   else if constexpr (std::is_same_v<T, long double>) { return bp.base > 0; }
   else { return false; }  // Unreachable.
 }
+
+template<typename T>
+struct is_base_power : std::false_type {};
+template<BaseRep T>
+struct is_base_power<base_power<T>> : std::true_type {};
 } // namespace detail
 
 template<typename T>
-concept BasePower = std::is_same_v<T, base_power<int>> || std::is_same_v<T, base_power<long double>>;
+concept BasePower = detail::is_base_power<T>::value;
 
 /**
  * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
@@ -107,7 +122,7 @@ concept BasePower = std::is_same_v<T, base_power<int>> || std::is_same_v<T, base
  */
 template<BasePower auto... BasePowers>
   requires requires {
-    // (is_valid_base_power(BasePowers) && ... && strictly_increasing(std::make_tuple(BasePowers.base...)));
+    // (is_valid_base_power(BasePowers) && ... && strictly_increasing(BasePowers.base...));
     (detail::is_valid_base_power(BasePowers) && ...);
   }
 struct magnitude {};
