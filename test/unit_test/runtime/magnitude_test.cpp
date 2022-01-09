@@ -86,12 +86,19 @@ TEST_CASE("base_power")
   SECTION("product with inverse equals identity")
   {
     auto check_product_with_inverse_is_identity = [] (auto x) {
-      CHECK(x * inverse(x) == as_magnitude<1>());
+      CHECK(x * pow<-1>(x) == as_magnitude<1>());
     };
 
     check_product_with_inverse_is_identity(as_magnitude<3>());
     check_product_with_inverse_is_identity(as_magnitude<ratio{4, 17}>());
     check_product_with_inverse_is_identity(pi_to_the<ratio{-22, 7}>());
+  }
+
+  SECTION("pow() multiplies exponent")
+  {
+    CHECK(pow<0>(base_power{2}) == base_power{2, 0});
+    CHECK(pow<ratio{-1, 2}>(base_power{2, 3}) == base_power{2, ratio{-3, 2}});
+    CHECK(pow<ratio{1, 3}>(base_power<pi_base>{ratio{3, 2}}) == base_power<pi_base>{ratio{1, 2}});
   }
 }
 
@@ -110,6 +117,13 @@ TEST_CASE("make_ratio performs prime factorization correctly")
   SECTION("Supports fractions")
   {
     CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{});
+  }
+
+  SECTION("Supports nonzero exp")
+  {
+    constexpr ratio r{3, 1, 2};
+    REQUIRE(r.exp == 2);
+    CHECK(as_magnitude<r>() == as_magnitude<300>());
   }
 }
 
@@ -195,6 +209,10 @@ TEST_CASE("Can raise Magnitudes to rational powers")
     CHECK(pow<1>(as_magnitude<123>()) == as_magnitude<123>());
     CHECK(pow<1>(as_magnitude<ratio{3, 4}>()) == as_magnitude<ratio{3, 4}>());
     CHECK(pow<1>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{-1, 2}>());
+  }
+
+  SECTION("Can raise to arbitrary rational power") {
+    CHECK(pow<ratio{-8, 3}>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{4, 3}>());
   }
 }
 
