@@ -181,6 +181,23 @@ TEST_CASE("Division works for magnitudes")
   }
 }
 
+TEST_CASE("Can raise Magnitudes to rational powers")
+{
+  SECTION("Anything to the 0 is 1") {
+    CHECK(pow<0>(as_magnitude<1>()) == as_magnitude<1>());
+    CHECK(pow<0>(as_magnitude<123>()) == as_magnitude<1>());
+    CHECK(pow<0>(as_magnitude<ratio{3, 4}>()) == as_magnitude<1>());
+    CHECK(pow<0>(pi_to_the<ratio{-1, 2}>()) == as_magnitude<1>());
+  }
+
+  SECTION("Anything to the 1 is itself") {
+    CHECK(pow<1>(as_magnitude<1>()) == as_magnitude<1>());
+    CHECK(pow<1>(as_magnitude<123>()) == as_magnitude<123>());
+    CHECK(pow<1>(as_magnitude<ratio{3, 4}>()) == as_magnitude<ratio{3, 4}>());
+    CHECK(pow<1>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{-1, 2}>());
+  }
+}
+
 namespace detail
 {
 

@@ -126,11 +126,11 @@ constexpr bool operator==(T t, U u) {
 }
 
 /**
- * @brief  The (multiplicative) inverse of a BasePower.
+ * @brief  A BasePower, raised to a rational power E.
  */
-template<BasePower BP>
-constexpr auto inverse(BP bp) {
-  bp.power = -bp.power;
+template<ratio E>
+constexpr auto pow(BasePower auto bp) {
+  bp.power = bp.power * E;
   return bp;
 }
 
@@ -220,8 +220,8 @@ constexpr bool strictly_increasing(Ts&&... ts) {
 /**
  * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
  *
- * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, and compare
- * for equality.
+ * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
+ * rational powers, and compare for equality.
  */
 template<BasePower auto... BPs>
   requires ((detail::is_valid_base_power(BPs) && ... && detail::strictly_increasing(BPs.get_base()...)))
@@ -274,10 +274,13 @@ constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Magnitude inverse implementation.
+// Magnitude rational powers implementation.
 
-template<BasePower auto... BPs>
-constexpr auto inverse(magnitude<BPs...>) { return magnitude<inverse(BPs)...>{}; }
+template<ratio E, BasePower auto... BPs>
+constexpr auto pow(magnitude<BPs...>) {
+  if constexpr (E == 0) { return magnitude<>{}; }
+  else { return magnitude<pow<E>(BPs)...>{}; }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
@@ -322,7 +325,7 @@ constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude quotient implementation.
 
-constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * inverse(r); }
+constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1>(r); }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
