@@ -211,6 +211,7 @@ pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a sequence of (possibly heterogeneously typed) values are strictly increasing.
 template<typename... Ts>
+  requires ((std::is_signed_v<Ts> && ...))
 constexpr bool strictly_increasing(Ts&&... ts) {
   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
