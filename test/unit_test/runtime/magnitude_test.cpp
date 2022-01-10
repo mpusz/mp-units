@@ -25,8 +25,7 @@
 #include <catch2/catch.hpp>
 #include <type_traits>
 
-namespace units::mag
-{
+namespace units {
 
 // A set of non-standard bases for testing purposes.
 struct noninteger_base { static constexpr long double value = 1.234L; };
@@ -216,8 +215,7 @@ TEST_CASE("Can raise Magnitudes to rational powers")
   }
 }
 
-namespace detail
-{
+namespace detail {
 
 TEST_CASE("Prime helper functions")
 {
@@ -375,4 +373,4 @@ TEST_CASE("strictly_increasing")
 
 } // namespace detail
 
-} // namespace units::mag
+} // namespace units

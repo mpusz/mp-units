@@ -26,7 +26,7 @@
 #include <cstdint>
 #include <numbers>
 
-namespace units::mag {
+namespace units {
 
 /**
  * @brief  Any type which can be used as a basis vector in a BasePower.
@@ -339,8 +339,7 @@ constexpr Magnitude auto as_magnitude() {
     / detail::prime_factorization_v<R.den>;
 }
 
-namespace detail
-{
+namespace detail {
 // Default implementation.
 template<std::intmax_t N>
   requires (N > 0)
@@ -358,4 +357,4 @@ template<>
 struct prime_factorization<1> { static constexpr magnitude<> value{}; };
 } // namespace detail
 
-} // namespace units::mag
+} // namespace units
