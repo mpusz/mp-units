@@ -245,12 +245,12 @@ TEST_CASE("Prime helper functions")
 
 TEST_CASE("Prime factorization")
 {
-  SECTION ("1 factors into the null magnitude")
+  SECTION("1 factors into the null magnitude")
   {
     CHECK(prime_factorization_v<1> == magnitude<>{});
   }
 
-  SECTION ("Prime numbers factor into themselves")
+  SECTION("Prime numbers factor into themselves")
   {
     CHECK(prime_factorization_v<2> == magnitude<base_power{2}>{});
     CHECK(prime_factorization_v<3> == magnitude<base_power{3}>{});
@@ -353,19 +353,19 @@ TEST_CASE("pairwise_all evaluates all pairs")
 
 TEST_CASE("strictly_increasing")
 {
-  SECTION ("Empty input is sorted")
+  SECTION("Empty input is sorted")
   {
     CHECK(strictly_increasing());
   }
 
-  SECTION ("Single-element input is sorted")
+  SECTION("Single-element input is sorted")
   {
     CHECK(strictly_increasing(3));
     CHECK(strictly_increasing(15.42));
     CHECK(strictly_increasing('c'));
   }
 
-  SECTION ("Multi-value inputs compare correctly")
+  SECTION("Multi-value inputs compare correctly")
   {
     CHECK(strictly_increasing(3, 3.14));
     CHECK(!strictly_increasing(3, 3.0));
