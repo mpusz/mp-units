@@ -331,14 +331,6 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
 
-template<ratio R>
-  requires (R.num > 0)
-constexpr Magnitude auto as_magnitude() {
-  return pow<R.exp>(detail::prime_factorization_v<10>)
-    * detail::prime_factorization_v<R.num>
-    / detail::prime_factorization_v<R.den>;
-}
-
 namespace detail {
 // Default implementation.
 template<std::intmax_t N>
@@ -356,5 +348,13 @@ struct prime_factorization {
 template<>
 struct prime_factorization<1> { static constexpr magnitude<> value{}; };
 } // namespace detail
+
+template<ratio R>
+  requires (R.num > 0)
+constexpr Magnitude auto as_magnitude() {
+  return pow<R.exp>(detail::prime_factorization_v<10>)
+    * detail::prime_factorization_v<R.num>
+    / detail::prime_factorization_v<R.den>;
+}
 
 } // namespace units
