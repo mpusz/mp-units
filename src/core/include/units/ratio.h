@@ -52,13 +52,34 @@ struct ratio {
   std::intmax_t den;
   std::intmax_t exp;
 
-  constexpr explicit ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
+  constexpr explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
   {
     gsl_Expects(den != 0);
     detail::normalize(num, den, exp);
   }
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
+
+  [[nodiscard]] friend constexpr ratio operator-(const ratio& r)
+  {
+    return ratio(-r.num, r.den, r.exp);
+  }
+
+  [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
+  {
+    // First, get the inputs into a common exponent.
+    const auto common_exp = std::min(lhs.exp, rhs.exp);
+    auto commonify = [common_exp](ratio &r) {
+      while (r.exp > common_exp) {
+        r.num *= 10;
+        --r.exp;
+      }
+    };
+    commonify(lhs);
+    commonify(rhs);
+
+    return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den, common_exp};
+  }
 
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {
