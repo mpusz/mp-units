@@ -98,9 +98,9 @@ TEST_CASE("base_power")
 
   SECTION("pow() multiplies exponent")
   {
-    CHECK(pow<0>(base_power{2}) == base_power{2, 0});
-    CHECK(pow<ratio{-1, 2}>(base_power{2, 3}) == base_power{2, ratio{-3, 2}});
-    CHECK(pow<ratio{1, 3}>(base_power<pi_base>{ratio{3, 2}}) == base_power<pi_base>{ratio{1, 2}});
+    CHECK(pow(base_power{2}, 0) == base_power{2, 0});
+    CHECK(pow(base_power{2, 3}, ratio{-1, 2}) == base_power{2, ratio{-3, 2}});
+    CHECK(pow(base_power<pi_base>{ratio{3, 2}}, ratio{1, 3}) == base_power<pi_base>{ratio{1, 2}});
   }
 }
 

@@ -128,9 +128,8 @@ constexpr bool operator==(T t, U u) {
 /**
  * @brief  A BasePower, raised to a rational power E.
  */
-template<ratio E>
-constexpr auto pow(BasePower auto bp) {
-  bp.power = bp.power * E;
+constexpr auto pow(BasePower auto bp, ratio p) {
+  bp.power = bp.power * p;
   return bp;
 }
 
@@ -274,7 +273,7 @@ constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) {
 template<ratio E, BasePower auto... BPs>
 constexpr auto pow(magnitude<BPs...>) {
   if constexpr (E == 0) { return magnitude<>{}; }
-  else { return magnitude<pow<E>(BPs)...>{}; }
+  else { return magnitude<pow(BPs, E)...>{}; }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
