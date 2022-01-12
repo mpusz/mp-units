@@ -167,14 +167,6 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
   return n;
 }
 
-// Helpers to perform prime factorization at compile time.
-template<std::intmax_t N>
-  requires (N > 0)
-struct prime_factorization;
-
-template<std::intmax_t N>
-static constexpr auto prime_factorization_v = prime_factorization<N>::value;
-
 // A way to check whether a number is prime at compile time.
 constexpr bool is_prime(std::intmax_t n) { return (n > 1) && (find_first_factor(n) == n); }
 
@@ -325,7 +317,7 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 // `as_magnitude()` implementation.
 
 namespace detail {
-// Default implementation.
+// Helper to perform prime factorization at compile time.
 template<std::intmax_t N>
   requires (N > 0)
 struct prime_factorization {
@@ -340,6 +332,9 @@ struct prime_factorization {
 // Specialization for the prime factorization of 1 (base case).
 template<>
 struct prime_factorization<1> { static constexpr magnitude<> value{}; };
+
+template<std::intmax_t N>
+static constexpr auto prime_factorization_v = prime_factorization<N>::value;
 } // namespace detail
 
 template<ratio R>
