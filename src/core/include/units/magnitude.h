@@ -290,6 +290,16 @@ constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
   // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
   if constexpr ((sizeof...(T1) == 0) && H1.get_base() < H2.get_base()) { return magnitude<H1, H2, T2...>{}; }
 
+  // Case for when H1 has the smaller base.
+  if constexpr(H1.get_base() < H2.get_base()){
+    return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
+  }
+
+  // Case for when H2 has the smaller base.
+  if constexpr(H1.get_base() > H2.get_base()){
+    return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
+  }
+
   // "Same leading base" case.
   if constexpr (H1.get_base() == H2.get_base()) {
     constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
@@ -305,16 +315,6 @@ constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
     } else {
       return magnitude<new_head>{} * partial_product;
     }
-  }
-
-  // Case for when H1 has the smaller base.
-  if constexpr(H1.get_base() < H2.get_base()){
-    return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
-  }
-
-  // Case for when H2 has the smaller base.
-  if constexpr(H1.get_base() > H2.get_base()){
-    return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
   }
 }
 
