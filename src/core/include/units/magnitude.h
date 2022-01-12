@@ -259,12 +259,6 @@ struct pi_base {
   static constexpr long double value = std::numbers::pi_v<long double>;
 };
 
-/**
- * @brief  A simple way to create a Magnitude representing a rational power of pi.
- */
-template<ratio Power>
-constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 

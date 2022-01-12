@@ -34,6 +34,9 @@ struct other_noncanonical_two_base { static constexpr long double value = 2.0L; 
 struct invalid_zero_base { static constexpr long double value = 0.0L; };
 struct invalid_negative_base { static constexpr long double value = -1.234L; };
 
+template<ratio Power>
+constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
+
 TEST_CASE("base_power")
 {
   SECTION("base rep deducible for integral base")
