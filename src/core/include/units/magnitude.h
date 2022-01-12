@@ -207,6 +207,14 @@ constexpr bool strictly_increasing(Ts&&... ts) {
   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
 
+template<BasePower auto... BPs>
+static constexpr bool all_base_powers_valid = (is_valid_base_power(BPs) && ...);
+
+template<BasePower auto... BPs>
+static constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...);
+
+template<BasePower auto... BPs>
+static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
 } // namespace detail
 
 /**
@@ -216,7 +224,7 @@ constexpr bool strictly_increasing(Ts&&... ts) {
  * rational powers, and compare for equality.
  */
 template<BasePower auto... BPs>
-  requires ((detail::is_valid_base_power(BPs) && ... && detail::strictly_increasing(BPs.get_base()...)))
+  requires (detail::is_base_power_pack_valid<BPs...>)
 struct magnitude {};
 
 // Implementation for Magnitude concept (below).
