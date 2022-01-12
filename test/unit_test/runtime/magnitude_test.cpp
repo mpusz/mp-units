@@ -330,25 +330,33 @@ TEST_CASE("is_valid_base_power")
 
 TEST_CASE("pairwise_all evaluates all pairs")
 {
+  const auto all_pairs_return_true = pairwise_all{[](auto, auto){ return true; }};
+  const auto all_pairs_return_false = pairwise_all{[](auto, auto){ return false; }};
+  const auto all_increasing = pairwise_all{std::less{}};
+
   SECTION("always true for empty tuples")
   {
-    CHECK(pairwise_all{[](auto, auto){ return true; }}());
-    CHECK(pairwise_all{[](auto, auto){ return false; }}());
+    CHECK(all_pairs_return_true());
+    CHECK(all_pairs_return_false());
   }
 
   SECTION("always true for single-element tuples")
   {
-    CHECK(pairwise_all{[](auto, auto){ return true; }}(1));
-    CHECK(pairwise_all{[](auto, auto){ return false; }}(3.14));
-    CHECK(pairwise_all{[](auto, auto){ return true; }}('x'));
+    CHECK(all_pairs_return_true(1));
+    CHECK(all_pairs_return_false(3.14));
+    CHECK(all_pairs_return_true('x'));
   }
 
   SECTION("true for longer tuples iff true for all neighbouring pairs")
   {
-    CHECK(pairwise_all{std::less{}}(1, 1.5));
-    CHECK(pairwise_all{std::less{}}(1, 1.5, 2));
-    CHECK(!pairwise_all{std::less{}}(1, 2.0, 2));
-    CHECK(!pairwise_all{std::less{}}(1, 2.5, 2));
+    CHECK(all_increasing(1, 1.5));
+    CHECK(all_increasing(1, 1.5, 2));
+
+    CHECK(!all_increasing(1, 2.0, 2));
+    CHECK(!all_increasing(1, 2.5, 2));
+
+    CHECK(all_pairs_return_true('c', 1, 8.9, 42u));
+    CHECK(!all_pairs_return_false('c', 1, 8.9, 42u));
   }
 }
 
