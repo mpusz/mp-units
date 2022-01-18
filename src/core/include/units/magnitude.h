@@ -242,16 +242,6 @@ template<typename T>
 concept Magnitude = detail::is_magnitude<T>;
 
 /**
- * @brief  Convert any positive integer to a Magnitude.
- *
- * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
- * manually adding base powers.
- */
-template<ratio R>
-  requires (R.num > 0)
-constexpr Magnitude auto as_magnitude();
-
-/**
  * @brief  A base to represent pi.
  */
 struct pi_base {
@@ -349,6 +339,12 @@ template<std::intmax_t N>
 static constexpr auto prime_factorization_v = prime_factorization<N>::value;
 } // namespace detail
 
+/**
+ * @brief  Convert any positive integer to a Magnitude.
+ *
+ * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
+ * manually adding base powers.
+ */
 template<ratio R>
   requires (R.num > 0)
 constexpr Magnitude auto as_magnitude() {
