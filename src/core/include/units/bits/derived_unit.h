@@ -47,7 +47,7 @@ constexpr ratio inverse_if_negative(const ratio& r)
 template<Unit... Us, typename... Es>
 constexpr ratio derived_ratio(exponent_list<Es...>)
 {
-  return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio) / dimension_unit<typename Es::dimension>::ratio));
+  return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio / dimension_unit<typename Es::dimension>::ratio)));
 }
 
 template<DerivedDimension D, Unit... Us>
