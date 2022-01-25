@@ -59,6 +59,10 @@ static_assert(100_q_ft2 / 10_q_ft == 10_q_ft);
 
 static_assert(detail::unit_text<dim_area, square_foot>() == basic_symbol_text("ft²", "ft^2"));
 
+// volume
+static_assert(1_q_yd * 1_q_yd * 1_q_yd == 1_q_yd3);
+static_assert(cubic_yard::ratio / cubic_foot::ratio == ratio(27));
+
 /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 
 // acceleration
