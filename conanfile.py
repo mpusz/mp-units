@@ -70,6 +70,12 @@ class UnitsConan(ConanFile):
             (compiler == "msvc" and (version == "19.3" or version >= "19.30") and compiler.cppstd == 23)
         return not std_support
 
+    @property
+    def _use_range_v3(self):
+        compiler = self.settings.compiler
+        version = Version(self.settings.compiler.version)
+        return ("clang" in compiler and compiler.libcxx == "libc++" and version < "14.0")
+
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
@@ -81,7 +87,7 @@ class UnitsConan(ConanFile):
         if self._use_libfmt:
             self.requires("fmt/8.0.1")
 
-        if compiler == "clang" and compiler.libcxx == "libc++" and version < "14.0":
+        if self._use_range_v3:
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
@@ -100,6 +106,9 @@ class UnitsConan(ConanFile):
         elif compiler == "clang":
             if version < "12":
                 raise ConanInvalidConfiguration("mp-units requires at least clang++-12")
+        elif compiler == "apple-clang":
+            if version < "13":
+                raise ConanInvalidConfiguration("mp-units requires at least AppleClang 13")
         elif compiler == "Visual Studio":
             if version < "16":
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
@@ -148,7 +157,7 @@ class UnitsConan(ConanFile):
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
         if compiler == "Visual Studio":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
-        elif compiler == "clang" and compiler.libcxx == "libc++":
+        if self._use_range_v3:
             self.cpp_info.components["core"].requires.append("range-v3::range-v3")
 
         # rest
