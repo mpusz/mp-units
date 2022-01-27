@@ -85,7 +85,7 @@ class UnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if self._use_libfmt:
-            self.requires("fmt/8.0.1")
+            self.requires("fmt/8.1.1")
 
         if self._use_range_v3:
             self.requires("range-v3/0.11.0")
