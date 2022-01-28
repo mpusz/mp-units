@@ -163,15 +163,17 @@ TEST_CASE("magnitude converts to numerical value")
 
   SECTION("pi to arbitrary power performs computations in most accurate type at compile time")
   {
-    constexpr auto pi_cubed = pi_to_the<3>();
+    if constexpr (sizeof(float) < sizeof(long double)) {
+      constexpr auto pi_cubed = pi_to_the<3>();
 
-    auto cube = [](auto x) { return x * x * x; };
-    constexpr auto via_float = cube(std::numbers::pi_v<float>);
-    constexpr auto via_long_double = static_cast<float>(cube(std::numbers::pi_v<long double>));
+      auto cube = [](auto x) { return x * x * x; };
+      constexpr auto via_float = cube(std::numbers::pi_v<float>);
+      constexpr auto via_long_double = static_cast<float>(cube(std::numbers::pi_v<long double>));
 
-    constexpr auto pi_cubed_value = pi_cubed.value<float>;
-    REQUIRE(pi_cubed_value != via_float);
-    CHECK(pi_cubed_value == via_long_double);
+      constexpr auto pi_cubed_value = pi_cubed.value<float>;
+      REQUIRE(pi_cubed_value != via_float);
+      CHECK(pi_cubed_value == via_long_double);
+    }
   }
 
   SECTION("Impossible requests are prevented at compile time")
