@@ -55,7 +55,7 @@ if(${projectPrefix}IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(${projectPrefix}AS_SYSTEM_HEADERS ON)
     endif()
 endif()
