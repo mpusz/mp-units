@@ -295,10 +295,12 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
       CHECK(is_integral(m));
       CHECK(is_rational(m));
     };
+    check_rational_and_integral(magnitude<>{});
     check_rational_and_integral(as_magnitude<1>());
     check_rational_and_integral(as_magnitude<3>());
     check_rational_and_integral(as_magnitude<8>());
     check_rational_and_integral(as_magnitude<412>());
+    check_rational_and_integral(as_magnitude<ratio{1, 1}>());
   }
 
   SECTION("Fractional magnitudes are rational, but not integral")
