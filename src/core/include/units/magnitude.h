@@ -328,14 +328,16 @@ template<BasePower auto... BPs>
   requires (detail::is_base_power_pack_valid<BPs...>)
 struct magnitude {
   // Whether this magnitude represents an integer.
-  friend constexpr bool is_integral(magnitude) { return (detail::is_integral(BPs) && ...); }
+  static constexpr bool is_magnitude_integral = (detail::is_integral(BPs) && ...);
+  friend constexpr bool is_integral(magnitude) { return is_magnitude_integral; }
 
   // Whether this magnitude represents a rational number.
-  friend constexpr bool is_rational(magnitude) { return (detail::is_rational(BPs) && ...); }
+  static constexpr bool is_magnitude_rational = (detail::is_rational(BPs) && ...);
+  friend constexpr bool is_rational(magnitude) { return is_magnitude_rational; }
 
   // The value of this magnitude, expressed in a given type.
   template<typename T>
-    requires (is_integral(magnitude{}) || std::is_floating_point_v<T>)
+    requires is_magnitude_integral || std::is_floating_point_v<T>
   static constexpr T value = detail::checked_static_cast<T>(
       (detail::compute_base_power<T>(BPs) * ...));
 };
