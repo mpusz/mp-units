@@ -339,6 +339,11 @@ struct magnitude {
     requires (std::is_floating_point_v<T> || (detail::is_integral(BPs) && ...))
   static constexpr T value = detail::checked_static_cast<T>(
       (detail::compute_base_power<T>(BPs) * ...));
+
+  // Trying to satisfy MSVC 14...
+  template<typename T>
+    requires (std::is_floating_point_v<T> || (detail::is_integral(BPs) && ...))
+  constexpr T get_value() const { return magnitude::value<T>; }
 };
 
 // Implementation for Magnitude concept (below).
