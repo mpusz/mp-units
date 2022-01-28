@@ -25,6 +25,7 @@
 #include <units/ratio.h>
 #include <cstdint>
 #include <numbers>
+#include <stdexcept>
 
 namespace units {
 
@@ -116,6 +117,98 @@ static constexpr bool is_base_power<base_power<T>> = true;
  */
 template<typename T>
 concept BasePower = detail::is_base_power<T>;
+
+namespace detail
+{
+constexpr auto inverse(BasePower auto bp) {
+  bp.power.num *= -1;
+  return bp;
+}
+
+// `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
+template<typename T> requires std::is_arithmetic_v<T>
+using widen_t = std::conditional_t<
+  std::is_floating_point_v<T>,
+  long double,
+  std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
+
+// Raise an arbitrary arithmetic type to a positive integer power at compile time.
+template<typename T> requires std::is_arithmetic_v<T>
+consteval T int_power(T base, std::integral auto exp){
+  if (exp < 0) { throw std::invalid_argument{"int_power only supports positive integer powers"}; }
+
+  // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
+  // template parameter, rather than a function parameter.
+
+  if (exp == 0) {
+    return 1;
+  }
+
+  if (exp % 2 == 1) {
+    return base * int_power(base, exp - 1);
+  }
+
+  const auto square_root = int_power(base, exp / 2);
+  const auto result = square_root * square_root;
+
+  if constexpr(std::is_unsigned_v<T>) {
+    // As this function can only be called at compile time, the exception functions as a
+    // "parameter-compatible static_assert", and does not result in exceptions at runtime.
+    if (result / square_root != square_root) { throw std::overflow_error{"Unsigned wraparound"}; }
+  }
+
+  return result;
+}
+
+
+template<typename T> requires std::is_arithmetic_v<T>
+consteval widen_t<T> compute_base_power(BasePower auto bp)
+{
+  // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
+  // need to write a custom function.
+  //
+  // Note that since this function can only be called at compile time, the point of these exceptions
+  // is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
+  if (bp.power.den != 1) { throw std::invalid_argument{"Rational powers not yet supported"}; }
+  if (bp.power.exp < 0) { throw std::invalid_argument{"Unsupported exp value"}; }
+
+  if (bp.power.num < 0) {
+    if constexpr (std::is_integral_v<T>) {
+      throw std::invalid_argument{"Cannot represent reciprocal as integer"};
+    } else {
+      return 1 / compute_base_power<T>(inverse(bp));
+    }
+  }
+
+  auto power = bp.power.num * int_power(10, bp.power.exp);
+  return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
+}
+
+// A converter for the value member variable of magnitude (below).
+//
+// The input is the desired result, but in a (wider) intermediate type.  The point of this function
+// is to cast to the desired type, but avoid overflow in doing so.
+template<typename To, typename From>
+  requires std::is_arithmetic_v<To>
+    && std::is_arithmetic_v<From>
+    && (std::is_integral_v<To> == std::is_integral_v<From>)
+consteval To checked_static_cast(From x) {
+  // This function can only ever be called at compile time.  The purpose of these exceptions is to
+  // produce compiler errors, because we cannot `static_assert` on function arguments.
+  if constexpr (std::is_integral_v<To>) {
+    if (std::cmp_less(x, std::numeric_limits<To>::min()) ||
+        std::cmp_greater(x, std::numeric_limits<To>::max())) {
+      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+    }
+  } else {
+    if (x < std::numeric_limits<To>::min() || x > std::numeric_limits<To>::max()) {
+      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+    }
+  }
+
+  return static_cast<To>(x);
+}
+} // namespace detail
 
 /**
  * @brief  Equality detection for two base powers.
@@ -215,6 +308,14 @@ static constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...
 
 template<BasePower auto... BPs>
 static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
+
+constexpr bool is_rational(BasePower auto bp) {
+  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
+}
+
+constexpr bool is_integral(BasePower auto bp) {
+  return is_rational(bp) && bp.power.num > 0;
+}
 } // namespace detail
 
 /**
@@ -225,7 +326,19 @@ static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> &
  */
 template<BasePower auto... BPs>
   requires (detail::is_base_power_pack_valid<BPs...>)
-struct magnitude {};
+struct magnitude {
+  // Whether this magnitude represents an integer.
+  friend constexpr bool is_integral(magnitude) { return (detail::is_integral(BPs) && ...); }
+
+  // Whether this magnitude represents a rational number.
+  friend constexpr bool is_rational(magnitude) { return (detail::is_rational(BPs) && ...); }
+
+  // The value of this magnitude, expressed in a given type.
+  template<typename T>
+    requires (is_integral(magnitude{}) || std::is_floating_point_v<T>)
+  static constexpr T value = detail::checked_static_cast<T>(
+      (detail::compute_base_power<T>(BPs) * ...));
+};
 
 // Implementation for Magnitude concept (below).
 namespace detail {

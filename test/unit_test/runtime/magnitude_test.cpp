@@ -37,6 +37,12 @@ struct invalid_negative_base { static constexpr long double value = -1.234L; };
 template<ratio Power>
 constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
 
+template<typename T, typename U>
+void check_same_type_and_value(T actual, U expected) {
+  CHECK(std::is_same_v<T, U>);
+  CHECK(actual == expected);
+}
+
 TEST_CASE("base_power")
 {
   SECTION("base rep deducible for integral base")
@@ -129,6 +135,69 @@ TEST_CASE("make_ratio performs prime factorization correctly")
   }
 }
 
+TEST_CASE("magnitude converts to numerical value")
+{
+  SECTION("Positive integer powers of integer bases give integer values")
+  {
+    constexpr auto mag_412 = as_magnitude<412>();
+    check_same_type_and_value(mag_412.value<int>, 412);
+    check_same_type_and_value(mag_412.value<std::size_t>, std::size_t{412});
+    check_same_type_and_value(mag_412.value<float>, 412.0f);
+    check_same_type_and_value(mag_412.value<double>, 412.0);
+  }
+
+  SECTION("Negative integer powers of integer bases compute correct values")
+  {
+    constexpr auto mag_0p125 = as_magnitude<ratio{1, 8}>();
+    check_same_type_and_value(mag_0p125.value<float>, 0.125f);
+    check_same_type_and_value(mag_0p125.value<double>, 0.125);
+  }
+
+  SECTION("pi to the 1 supplies correct values")
+  {
+    constexpr auto pi = pi_to_the<1>();
+    check_same_type_and_value(pi.value<float>, std::numbers::pi_v<float>);
+    check_same_type_and_value(pi.value<double>, std::numbers::pi_v<double>);
+    check_same_type_and_value(pi.value<long double>, std::numbers::pi_v<long double>);
+  }
+
+  SECTION("pi to arbitrary power performs computations in most accurate type at compile time")
+  {
+    constexpr auto pi_cubed = pi_to_the<3>();
+
+    auto cube = [](auto x) { return x * x * x; };
+    constexpr auto via_float = cube(std::numbers::pi_v<float>);
+    constexpr auto via_long_double = static_cast<float>(cube(std::numbers::pi_v<long double>));
+
+    constexpr auto pi_cubed_value = pi_cubed.value<float>;
+    REQUIRE(pi_cubed_value != via_float);
+    CHECK(pi_cubed_value == via_long_double);
+  }
+
+  SECTION("Impossible requests are prevented at compile time")
+  {
+    // Naturally, we cannot actually write a test to verify a compiler error.  But any of these can
+    // be uncommented if desired to verify that it breaks the build.
+
+    // (void)as_magnitude<412>().value<int8_t>;
+
+    // Would work for pow<62>:
+    // (void)pow<63>(as_magnitude<2>()).value<int64_t>;
+
+    // Would work for pow<63>:
+    // (void)pow<64>(as_magnitude<2>()).value<uint64_t>;
+
+    (void)pow<308>(as_magnitude<10>()).value<double>; // Compiles, correctly.
+    // (void)pow<309>(as_magnitude<10>()).value<double>;
+    // (void)pow<3099>(as_magnitude<10>()).value<double>;
+    // (void)pow<3099999>(as_magnitude<10>()).value<double>;
+
+    auto sqrt_2 = pow<ratio{1, 2}>(as_magnitude<2>());
+    CHECK(!is_integral(sqrt_2));
+    // (void)sqrt_2.value<int>;
+  }
+}
+
 TEST_CASE("Equality works for magnitudes")
 {
   SECTION("Equivalent ratios are equal")
@@ -218,7 +287,49 @@ TEST_CASE("Can raise Magnitudes to rational powers")
   }
 }
 
+TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
+{
+  SECTION("Integer magnitudes are integral and rational")
+  {
+    auto check_rational_and_integral = [](Magnitude auto m) {
+      CHECK(is_integral(m));
+      CHECK(is_rational(m));
+    };
+    check_rational_and_integral(as_magnitude<1>());
+    check_rational_and_integral(as_magnitude<3>());
+    check_rational_and_integral(as_magnitude<8>());
+    check_rational_and_integral(as_magnitude<412>());
+  }
+
+  SECTION("Fractional magnitudes are rational, but not integral")
+  {
+    auto check_rational_but_not_integral = [](Magnitude auto m) {
+      CHECK(!is_integral(m));
+      CHECK(is_rational(m));
+    };
+    check_rational_but_not_integral(as_magnitude<ratio{1, 2}>());
+    check_rational_but_not_integral(as_magnitude<ratio{5, 8}>());
+  }
+}
+
 namespace detail {
+
+TEST_CASE("int_power computes integer powers") {
+  SECTION("handles floating point") {
+    check_same_type_and_value(int_power(0.123L, 0), 1.0L);
+    check_same_type_and_value(int_power(0.246f, 1), 0.246f);
+    check_same_type_and_value(int_power(0.5f, 3), 0.125f);
+    check_same_type_and_value(int_power(2.5, 4), 39.0625);
+
+    CHECK(std::is_same_v<long double, decltype(compute_base_power<double>(base_power{10, 20}))>);
+  }
+
+  SECTION("handles integral") {
+    check_same_type_and_value(int_power(8, 0), 1);
+    check_same_type_and_value(int_power(9L, 1), 9L);
+    check_same_type_and_value(int_power(2, 10), 1024);
+  }
+}
 
 TEST_CASE("Prime helper functions")
 {
