@@ -196,8 +196,7 @@ constexpr To checked_static_cast(From x) {
   // This function should only ever be called at compile time.  The purpose of these exceptions is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
-    if (std::cmp_less(x, std::numeric_limits<To>::min()) ||
-        std::cmp_greater(x, std::numeric_limits<To>::max())) {
+    if (!std::in_range<To>(x)) {
       throw std::invalid_argument{"Cannot represent magnitude in this type"};
     }
   } else {
