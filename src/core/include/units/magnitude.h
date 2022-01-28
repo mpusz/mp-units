@@ -134,7 +134,9 @@ using widen_t = std::conditional_t<
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
 template<typename T> requires std::is_arithmetic_v<T>
-consteval T int_power(T base, std::integral auto exp){
+constexpr T int_power(T base, std::integral auto exp){
+  // As this function should only be called at compile time, the exceptions herein function as
+  // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
   if (exp < 0) { throw std::invalid_argument{"int_power only supports positive integer powers"}; }
 
   // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
@@ -152,8 +154,6 @@ consteval T int_power(T base, std::integral auto exp){
   const auto result = square_root * square_root;
 
   if constexpr(std::is_unsigned_v<T>) {
-    // As this function can only be called at compile time, the exception functions as a
-    // "parameter-compatible static_assert", and does not result in exceptions at runtime.
     if (result / square_root != square_root) { throw std::overflow_error{"Unsigned wraparound"}; }
   }
 
@@ -162,13 +162,13 @@ consteval T int_power(T base, std::integral auto exp){
 
 
 template<typename T> requires std::is_arithmetic_v<T>
-consteval widen_t<T> compute_base_power(BasePower auto bp)
+constexpr widen_t<T> compute_base_power(BasePower auto bp)
 {
   // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
   // need to write a custom function.
   //
-  // Note that since this function can only be called at compile time, the point of these exceptions
-  // is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
+  // Note that since this function should only be called at compile time, the point of these
+  // exceptions is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
   if (bp.power.den != 1) { throw std::invalid_argument{"Rational powers not yet supported"}; }
   if (bp.power.exp < 0) { throw std::invalid_argument{"Unsupported exp value"}; }
 
@@ -192,9 +192,9 @@ template<typename To, typename From>
   requires std::is_arithmetic_v<To>
     && std::is_arithmetic_v<From>
     && (std::is_integral_v<To> == std::is_integral_v<From>)
-consteval To checked_static_cast(From x) {
-  // This function can only ever be called at compile time.  The purpose of these exceptions is to
-  // produce compiler errors, because we cannot `static_assert` on function arguments.
+constexpr To checked_static_cast(From x) {
+  // This function should only ever be called at compile time.  The purpose of these exceptions is
+  // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (std::cmp_less(x, std::numeric_limits<To>::min()) ||
         std::cmp_greater(x, std::numeric_limits<To>::max())) {
