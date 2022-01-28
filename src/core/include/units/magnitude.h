@@ -337,7 +337,7 @@ struct magnitude {
 
   // The value of this magnitude, expressed in a given type.
   template<typename T>
-    requires is_magnitude_integral || std::is_floating_point_v<T>
+    requires (magnitude::is_magnitude_integral || std::is_floating_point_v<T>)
   static constexpr T value = detail::checked_static_cast<T>(
       (detail::compute_base_power<T>(BPs) * ...));
 };
