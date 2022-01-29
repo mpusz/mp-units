@@ -37,14 +37,14 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 add_library(mp-units-core INTERFACE)
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE
-    gsl-lite::gsl-lite
+    gsl::gsl-lite
 )
 target_include_directories(mp-units-core ${unitsAsSystem} INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(${projectPrefix}LIBCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
         find_package(range-v3 CONFIG REQUIRED)
         target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)

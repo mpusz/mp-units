@@ -63,18 +63,13 @@
 #define UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE UNITS_DIAGNOSTIC_IGNORE(4702)
 #endif
 
-#if UNITS_COMP_CLANG
-
-#include <ciso646>
 #if _LIBCPP_VERSION
 #define UNITS_LIBCXX _LIBCPP_VERSION
 #endif
 
-#endif
-
 #if UNITS_LIBCXX
 
-#if UNITS_COMP_CLANG == 12
+#if UNITS_LIBCXX < 13000
 
 #include <concepts/concepts.hpp>
 #include <range/v3/algorithm/lower_bound.hpp>
@@ -84,7 +79,7 @@
 #include <range/v3/iterator/concepts.hpp>
 #include <range/v3/range/concepts.hpp>
 
-#elif UNITS_COMP_CLANG == 13
+#elif UNITS_LIBCXX < 14000
 
 #include <range/v3/functional/comparisons.hpp>
 
@@ -115,7 +110,7 @@ concept default_constructible = constructible_from<T>;
 
 #elif UNITS_LIBCXX
 
-#if UNITS_COMP_CLANG == 12
+#if UNITS_LIBCXX < 13000
 
 // concepts
 using concepts::common_with;
@@ -228,7 +223,7 @@ constexpr bool in_range(T t) noexcept
         std::cmp_less_equal(t, std::numeric_limits<R>::max());
 }
 
-#elif UNITS_COMP_CLANG == 13
+#elif UNITS_LIBCXX < 14000
 
 using concepts::three_way_comparable;
 using concepts::three_way_comparable_with;

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 function(__check_libcxx_in_use variable)
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         message(CHECK_START "Checking if libc++ is being used")
         list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
@@ -43,7 +43,7 @@ find_dependency(fmt)
 find_dependency(gsl-lite)
 
 # add range-v3 dependency only for clang + libc++
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     __check_libcxx_in_use(__units_libcxx)
     if(__units_libcxx AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
         find_dependency(range-v3)

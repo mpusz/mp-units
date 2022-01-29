@@ -9,6 +9,7 @@ Installation And Usage
   - gcc-10
   - clang-12
   - Visual Studio 16.9
+  - Apple clang 13
 
 Repository Structure and Dependencies
 -------------------------------------

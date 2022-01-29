@@ -21,6 +21,7 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     - gcc-10
     - clang-12
     - Visual Studio 16.9
+    - Apple clang 13
 
 .. toctree::
     :maxdepth: 2
