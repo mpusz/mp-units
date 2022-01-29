@@ -77,6 +77,11 @@ jobs:
             compiler: { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13" },
             lib: "libc++"
           }
+        - {
+            name: "MacOS Apple Clang 13",
+            os: macos-11,
+            compiler: { type: APPLE_CLANG, version: 13, cc: "clang", cxx: "clang++" }
+          }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
         #     name: "Ubuntu GCC 10.2.0",
@@ -131,6 +136,9 @@ jobs:
             sudo apt install -y ninja-build
           elif [ $RUNNER_OS == 'Windows' ]; then
             choco install ninja
+          elif [ $RUNNER_OS == 'macOS' ]; then
+            brew update
+            brew install ninja
           else
             echo "'$RUNNER_OS' not supported"
             exit 1
