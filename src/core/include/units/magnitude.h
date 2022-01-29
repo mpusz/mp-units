@@ -363,7 +363,7 @@ concept Magnitude = detail::is_magnitude<T>;
  * Can avoid the need for an unsightly `.template` keyword.
  */
 template<typename T>
-T get_value(Magnitude auto m) { return m.template value<T>; }
+T get_value(Magnitude auto m) { return decltype(m)::template value<T>; }
 
 /**
  * @brief  A base to represent pi.
