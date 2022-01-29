@@ -80,7 +80,7 @@ jobs:
         - {
             name: "MacOS Apple Clang 13",
             os: macos-11,
-            compiler: { type: APPLE_CLANG, version: 13, cc: "clang", cxx: "clang++" }
+            compiler: { type: APPLE_CLANG, version: "13.0", cc: "clang", cxx: "clang++" }
           }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
@@ -127,6 +127,11 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
+      - name: Select Xcode 13.0
+        if: matrix.config.compiler.type == 'APPLE_CLANG' && matrix.config.compiler.version == '13.0'
+        shell: bash
+        run: |
+          sudo xcode-select -s "/Applications/Xcode_13.0.app"
       - name: Install Ninja
         # TODO Find a proper syntax to make the below work
         # if: !matrix.config.docker_image
