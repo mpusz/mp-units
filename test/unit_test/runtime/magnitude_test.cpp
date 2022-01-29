@@ -140,25 +140,25 @@ TEST_CASE("magnitude converts to numerical value")
   SECTION("Positive integer powers of integer bases give integer values")
   {
     constexpr auto mag_412 = as_magnitude<412>();
-    check_same_type_and_value(mag_412.get_value<int>(), 412);
-    check_same_type_and_value(mag_412.get_value<std::size_t>(), std::size_t{412});
-    check_same_type_and_value(mag_412.get_value<float>(), 412.0f);
-    check_same_type_and_value(mag_412.get_value<double>(), 412.0);
+    check_same_type_and_value(get_value<int>(mag_412), 412);
+    check_same_type_and_value(get_value<std::size_t>(mag_412), std::size_t{412});
+    check_same_type_and_value(get_value<float>(mag_412), 412.0f);
+    check_same_type_and_value(get_value<double>(mag_412), 412.0);
   }
 
   SECTION("Negative integer powers of integer bases compute correct values")
   {
     constexpr auto mag_0p125 = as_magnitude<ratio{1, 8}>();
-    check_same_type_and_value(mag_0p125.get_value<float>(), 0.125f);
-    check_same_type_and_value(mag_0p125.get_value<double>(), 0.125);
+    check_same_type_and_value(get_value<float>(mag_0p125), 0.125f);
+    check_same_type_and_value(get_value<double>(mag_0p125), 0.125);
   }
 
   SECTION("pi to the 1 supplies correct values")
   {
     constexpr auto pi = pi_to_the<1>();
-    check_same_type_and_value(pi.get_value<float>(), std::numbers::pi_v<float>);
-    check_same_type_and_value(pi.get_value<double>(), std::numbers::pi_v<double>);
-    check_same_type_and_value(pi.get_value<long double>(), std::numbers::pi_v<long double>);
+    check_same_type_and_value(get_value<float>(pi), std::numbers::pi_v<float>);
+    check_same_type_and_value(get_value<double>(pi), std::numbers::pi_v<double>);
+    check_same_type_and_value(get_value<long double>(pi), std::numbers::pi_v<long double>);
   }
 
   SECTION("pi to arbitrary power performs computations in most accurate type at compile time")
@@ -170,7 +170,7 @@ TEST_CASE("magnitude converts to numerical value")
       constexpr auto via_float = cube(std::numbers::pi_v<float>);
       constexpr auto via_long_double = static_cast<float>(cube(std::numbers::pi_v<long double>));
 
-      constexpr auto pi_cubed_value = pi_cubed.get_value<float>();
+      constexpr auto pi_cubed_value = pi_cubed.value<float>;
       REQUIRE(pi_cubed_value != via_float);
       CHECK(pi_cubed_value == via_long_double);
     }
@@ -181,22 +181,22 @@ TEST_CASE("magnitude converts to numerical value")
     // Naturally, we cannot actually write a test to verify a compiler error.  But any of these can
     // be uncommented if desired to verify that it breaks the build.
 
-    // (void)as_magnitude<412>().get_value<int8_t>();
+    // (void)as_magnitude<412>().value<int8_t>;
 
     // Would work for pow<62>:
-    // (void)pow<63>(as_magnitude<2>()).get_value<int64_t>();
+    // (void)pow<63>(as_magnitude<2>()).value<int64_t>;
 
     // Would work for pow<63>:
-    // (void)pow<64>(as_magnitude<2>()).get_value<uint64_t>();
+    // (void)pow<64>(as_magnitude<2>()).value<uint64_t>;
 
-    (void)pow<308>(as_magnitude<10>()).get_value<double>(); // Compiles, correctly.
-    // (void)pow<309>(as_magnitude<10>()).get_value<double>();
-    // (void)pow<3099>(as_magnitude<10>()).get_value<double>();
-    // (void)pow<3099999>(as_magnitude<10>()).get_value<double>();
+    (void)pow<308>(as_magnitude<10>()).value<double>; // Compiles, correctly.
+    // (void)pow<309>(as_magnitude<10>()).value<double>;
+    // (void)pow<3099>(as_magnitude<10>()).value<double>;
+    // (void)pow<3099999>(as_magnitude<10>()).value<double>;
 
     auto sqrt_2 = pow<ratio{1, 2}>(as_magnitude<2>());
     CHECK(!is_integral(sqrt_2));
-    // (void)sqrt_2.get_value<int>();
+    // (void)sqrt_2.value<int>;
   }
 }
 

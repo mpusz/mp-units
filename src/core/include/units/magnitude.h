@@ -336,14 +336,9 @@ struct magnitude {
 
   // The value of this magnitude, expressed in a given type.
   template<typename T>
-    requires (std::is_floating_point_v<T> || (detail::is_integral(BPs) && ...))
+    requires (std::is_floating_point_v<T> || (std::is_integral_v<T> && is_magnitude_integral))
   static constexpr T value = detail::checked_static_cast<T>(
       (detail::compute_base_power<T>(BPs) * ...));
-
-  // Trying to satisfy MSVC 14...
-  template<typename T>
-    requires (std::is_floating_point_v<T> || (detail::is_integral(BPs) && ...))
-  constexpr T get_value() const { return magnitude::value<T>; }
 };
 
 // Implementation for Magnitude concept (below).
@@ -359,6 +354,14 @@ static constexpr bool is_magnitude<magnitude<BPs...>> = true;
  */
 template<typename T>
 concept Magnitude = detail::is_magnitude<T>;
+
+/**
+ * @brief  Free-function access to the value of a Magnitude in a desired type.
+ *
+ * Can avoid the need for an unsightly `.template` keyword.
+ */
+template<typename T>
+T get_value(Magnitude auto m) { return m.template value<T>; }
 
 /**
  * @brief  Convert any positive integer to a Magnitude.
