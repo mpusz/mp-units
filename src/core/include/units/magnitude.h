@@ -139,6 +139,14 @@ constexpr T int_power(T base, std::integral auto exp){
   // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
   if (exp < 0) { throw std::invalid_argument{"int_power only supports positive integer powers"}; }
 
+  constexpr auto checked_multiply = [] (auto a, auto b) {
+    const auto result = a * b;
+    if (result / a != b) { throw std::overflow_error{"Wraparound detected"}; }
+    return result;
+  };
+
+  constexpr auto checked_square = [checked_multiply] (auto a) { return checked_multiply(a, a); };
+
   // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
   // template parameter, rather than a function parameter.
 
@@ -147,17 +155,10 @@ constexpr T int_power(T base, std::integral auto exp){
   }
 
   if (exp % 2 == 1) {
-    return base * int_power(base, exp - 1);
+    return checked_multiply(base, int_power(base, exp - 1));
   }
 
-  const auto square_root = int_power(base, exp / 2);
-  const auto result = square_root * square_root;
-
-  if constexpr(std::is_unsigned_v<T>) {
-    if (result / square_root != square_root) { throw std::overflow_error{"Unsigned wraparound"}; }
-  }
-
-  return result;
+  return checked_square(int_power(base, exp / 2));
 }
 
 
@@ -331,14 +332,6 @@ struct magnitude {
 
   // Whether this magnitude represents a rational number.
   friend constexpr bool is_rational(const magnitude&) { return (detail::is_rational(BPs) && ...); }
-
-  // The value of this magnitude, expressed in a given type.
-  template<typename T>
-    requires (
-        std::is_floating_point_v<T>
-        || (std::is_integral_v<T> && (detail::is_integral(BPs) && ...)))
-  static constexpr T value = detail::checked_static_cast<T>(
-      (detail::compute_base_power<T>(BPs) * ...));
 };
 
 // Implementation for Magnitude concept (below).
@@ -356,12 +349,16 @@ template<typename T>
 concept Magnitude = detail::is_magnitude<T>;
 
 /**
- * @brief  Free-function access to the value of a Magnitude in a desired type.
- *
- * Can avoid the need for an unsightly `.template` keyword.
+ * @brief  The value of a Magnitude in a desired type T.
  */
-template<typename T>
-constexpr T get_value(Magnitude auto m) { return decltype(m)::template value<T>; }
+template<typename T, BasePower auto... BPs>
+  requires (std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{})))
+constexpr T get_value(const magnitude<BPs...> &) {
+  // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
+  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ...));
+
+  return result;
+}
 
 /**
  * @brief  A base to represent pi.

@@ -170,7 +170,7 @@ TEST_CASE("magnitude converts to numerical value")
       constexpr auto via_float = cube(std::numbers::pi_v<float>);
       constexpr auto via_long_double = static_cast<float>(cube(std::numbers::pi_v<long double>));
 
-      constexpr auto pi_cubed_value = pi_cubed.value<float>;
+      constexpr auto pi_cubed_value = get_value<float>(pi_cubed);
       REQUIRE(pi_cubed_value != via_float);
       CHECK(pi_cubed_value == via_long_double);
     }
@@ -181,22 +181,22 @@ TEST_CASE("magnitude converts to numerical value")
     // Naturally, we cannot actually write a test to verify a compiler error.  But any of these can
     // be uncommented if desired to verify that it breaks the build.
 
-    // (void)as_magnitude<412>().value<int8_t>;
+    // get_value<int8_t>(as_magnitude<412>());
 
     // Would work for pow<62>:
-    // (void)pow<63>(as_magnitude<2>()).value<int64_t>;
+    // get_value<int64_t>(pow<63>(as_magnitude<2>()));
 
     // Would work for pow<63>:
-    // (void)pow<64>(as_magnitude<2>()).value<uint64_t>;
+    // get_value<uint64_t>(pow<64>(as_magnitude<2>()));
 
-    (void)pow<308>(as_magnitude<10>()).value<double>; // Compiles, correctly.
-    // (void)pow<309>(as_magnitude<10>()).value<double>;
-    // (void)pow<3099>(as_magnitude<10>()).value<double>;
-    // (void)pow<3099999>(as_magnitude<10>()).value<double>;
+    get_value<double>(pow<308>(as_magnitude<10>())); // Compiles, correctly.
+    // get_value<double>(pow<309>(as_magnitude<10>()));
+    // get_value<double>(pow<3099>(as_magnitude<10>()));
+    // get_value<double>(pow<3099999>(as_magnitude<10>()));
 
     auto sqrt_2 = pow<ratio{1, 2}>(as_magnitude<2>());
     CHECK(!is_integral(sqrt_2));
-    // (void)sqrt_2.value<int>;
+    // get_value<int>(sqrt_2);
   }
 }
 
