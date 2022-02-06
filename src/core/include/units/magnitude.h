@@ -327,12 +327,10 @@ template<BasePower auto... BPs>
   requires (detail::is_base_power_pack_valid<BPs...>)
 struct magnitude {
   // Whether this magnitude represents an integer.
-  static constexpr bool is_magnitude_integral = (detail::is_integral(BPs) && ...);
-  friend constexpr bool is_integral(magnitude) { return is_magnitude_integral; }
+  friend constexpr bool is_integral(const magnitude&) { return (detail::is_integral(BPs) && ...); }
 
   // Whether this magnitude represents a rational number.
-  static constexpr bool is_magnitude_rational = (detail::is_rational(BPs) && ...);
-  friend constexpr bool is_rational(magnitude) { return is_magnitude_rational; }
+  friend constexpr bool is_rational(const magnitude&) { return (detail::is_rational(BPs) && ...); }
 
   // The value of this magnitude, expressed in a given type.
   template<typename T>
@@ -363,7 +361,7 @@ concept Magnitude = detail::is_magnitude<T>;
  * Can avoid the need for an unsightly `.template` keyword.
  */
 template<typename T>
-T get_value(Magnitude auto m) { return decltype(m)::template value<T>; }
+constexpr T get_value(Magnitude auto m) { return decltype(m)::template value<T>; }
 
 /**
  * @brief  A base to represent pi.
