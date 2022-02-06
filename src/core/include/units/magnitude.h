@@ -295,7 +295,7 @@ pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a sequence of (possibly heterogeneously typed) values are strictly increasing.
 template<typename... Ts>
-  requires ((std::is_signed_v<Ts> && ...))
+  requires (std::is_signed_v<Ts> && ...)
 constexpr bool strictly_increasing(Ts&&... ts) {
   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
@@ -325,7 +325,7 @@ constexpr bool is_integral(BasePower auto bp) {
  * rational powers, and compare for equality.
  */
 template<BasePower auto... BPs>
-  requires (detail::is_base_power_pack_valid<BPs...>)
+  requires detail::is_base_power_pack_valid<BPs...>
 struct magnitude {
   // Whether this magnitude represents an integer.
   friend constexpr bool is_integral(const magnitude&) { return (detail::is_integral(BPs) && ...); }
@@ -352,7 +352,7 @@ concept Magnitude = detail::is_magnitude<T>;
  * @brief  The value of a Magnitude in a desired type T.
  */
 template<typename T, BasePower auto... BPs>
-  requires (std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{})))
+  requires std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{}))
 constexpr T get_value(const magnitude<BPs...> &) {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
   constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ...));
