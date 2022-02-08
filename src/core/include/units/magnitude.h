@@ -25,6 +25,7 @@
 #include <units/ratio.h>
 #include <cstdint>
 #include <numbers>
+#include <stdexcept>
 
 namespace units {
 
@@ -117,6 +118,98 @@ static constexpr bool is_base_power<base_power<T>> = true;
 template<typename T>
 concept BasePower = detail::is_base_power<T>;
 
+namespace detail
+{
+constexpr auto inverse(BasePower auto bp) {
+  bp.power.num *= -1;
+  return bp;
+}
+
+// `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
+template<typename T> requires std::is_arithmetic_v<T>
+using widen_t = std::conditional_t<
+  std::is_floating_point_v<T>,
+  long double,
+  std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
+
+// Raise an arbitrary arithmetic type to a positive integer power at compile time.
+template<typename T> requires std::is_arithmetic_v<T>
+constexpr T int_power(T base, std::integral auto exp){
+  // As this function should only be called at compile time, the exceptions herein function as
+  // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
+  if (exp < 0) { throw std::invalid_argument{"int_power only supports positive integer powers"}; }
+
+  constexpr auto checked_multiply = [] (auto a, auto b) {
+    const auto result = a * b;
+    if (result / a != b) { throw std::overflow_error{"Wraparound detected"}; }
+    return result;
+  };
+
+  constexpr auto checked_square = [checked_multiply] (auto a) { return checked_multiply(a, a); };
+
+  // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
+  // template parameter, rather than a function parameter.
+
+  if (exp == 0) {
+    return 1;
+  }
+
+  if (exp % 2 == 1) {
+    return checked_multiply(base, int_power(base, exp - 1));
+  }
+
+  return checked_square(int_power(base, exp / 2));
+}
+
+
+template<typename T> requires std::is_arithmetic_v<T>
+constexpr widen_t<T> compute_base_power(BasePower auto bp)
+{
+  // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
+  // need to write a custom function.
+  //
+  // Note that since this function should only be called at compile time, the point of these
+  // exceptions is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
+  if (bp.power.den != 1) { throw std::invalid_argument{"Rational powers not yet supported"}; }
+  if (bp.power.exp < 0) { throw std::invalid_argument{"Unsupported exp value"}; }
+
+  if (bp.power.num < 0) {
+    if constexpr (std::is_integral_v<T>) {
+      throw std::invalid_argument{"Cannot represent reciprocal as integer"};
+    } else {
+      return 1 / compute_base_power<T>(inverse(bp));
+    }
+  }
+
+  auto power = bp.power.num * int_power(10, bp.power.exp);
+  return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
+}
+
+// A converter for the value member variable of magnitude (below).
+//
+// The input is the desired result, but in a (wider) intermediate type.  The point of this function
+// is to cast to the desired type, but avoid overflow in doing so.
+template<typename To, typename From>
+  requires std::is_arithmetic_v<To>
+    && std::is_arithmetic_v<From>
+    && (std::is_integral_v<To> == std::is_integral_v<From>)
+constexpr To checked_static_cast(From x) {
+  // This function should only ever be called at compile time.  The purpose of these exceptions is
+  // to produce compiler errors, because we cannot `static_assert` on function arguments.
+  if constexpr (std::is_integral_v<To>) {
+    if (!std::in_range<To>(x)) {
+      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+    }
+  } else {
+    if (x < std::numeric_limits<To>::min() || x > std::numeric_limits<To>::max()) {
+      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+    }
+  }
+
+  return static_cast<To>(x);
+}
+} // namespace detail
+
 /**
  * @brief  Equality detection for two base powers.
  */
@@ -202,7 +295,7 @@ pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a sequence of (possibly heterogeneously typed) values are strictly increasing.
 template<typename... Ts>
-  requires ((std::is_signed_v<Ts> && ...))
+  requires (std::is_signed_v<Ts> && ...)
 constexpr bool strictly_increasing(Ts&&... ts) {
   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
@@ -215,6 +308,14 @@ static constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...
 
 template<BasePower auto... BPs>
 static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
+
+constexpr bool is_rational(BasePower auto bp) {
+  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
+}
+
+constexpr bool is_integral(BasePower auto bp) {
+  return is_rational(bp) && bp.power.num > 0;
+}
 } // namespace detail
 
 /**
@@ -224,8 +325,14 @@ static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> &
  * rational powers, and compare for equality.
  */
 template<BasePower auto... BPs>
-  requires (detail::is_base_power_pack_valid<BPs...>)
-struct magnitude {};
+  requires detail::is_base_power_pack_valid<BPs...>
+struct magnitude {
+  // Whether this magnitude represents an integer.
+  friend constexpr bool is_integral(const magnitude&) { return (detail::is_integral(BPs) && ...); }
+
+  // Whether this magnitude represents a rational number.
+  friend constexpr bool is_rational(const magnitude&) { return (detail::is_rational(BPs) && ...); }
+};
 
 // Implementation for Magnitude concept (below).
 namespace detail {
@@ -240,6 +347,18 @@ static constexpr bool is_magnitude<magnitude<BPs...>> = true;
  */
 template<typename T>
 concept Magnitude = detail::is_magnitude<T>;
+
+/**
+ * @brief  The value of a Magnitude in a desired type T.
+ */
+template<typename T, BasePower auto... BPs>
+  requires std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{}))
+constexpr T get_value(const magnitude<BPs...> &) {
+  // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
+  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ...));
+
+  return result;
+}
 
 /**
  * @brief  A base to represent pi.
