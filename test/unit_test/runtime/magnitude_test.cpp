@@ -63,6 +63,18 @@ void check_same_type_and_value(T actual, U expected)
   CHECK(actual == expected);
 }
 
+template<ratio R>
+void check_ratio_round_trip_is_identity()
+{
+  constexpr Magnitude auto m = as_magnitude<R>();
+  constexpr ratio round_trip = ratio{
+    get_value<std::intmax_t>(numerator(m)),
+    get_value<std::intmax_t>(denominator(m)),
+  };
+  CHECK(round_trip == R);
+}
+
+
 TEST_CASE("base_power")
 {
   SECTION("base rep deducible for integral base")
@@ -154,6 +166,15 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     // This was taken from a case which failed when we used `int` for our base to store prime numbers.
     // The failure was due to a prime factor which is larger than 2^31.
     as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
+  }
+
+  SECTION("Can handle prime number which would exceed GCC iteration limit")
+  {
+    // GCC 10 has a constexpr loop iteration limit of 262144.  A naive algorithm, which performs trial division on 2 and
+    // all odd numbers up to sqrt(N), will exceed this limit for the following prime.  Thus, for this test to pass, we
+    // need to be using a more efficient algorithm.  (We could increase the limit, but we don't want users to have to
+    // mess with compiler flags just to compile the code.)
+    as_magnitude<334'524'384'739>();
   }
 
   SECTION("Can bypass computing primes by providing known_first_factor<N>")
@@ -351,6 +372,35 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
   }
 }
 
+TEST_CASE("Constructing ratio from rational magnitude")
+{
+  SECTION("Round trip is identity")
+  {
+    // Note that not every Magnitude can be represented as a ratio.  However, if we _start_ with a
+    // ratio, we must guarantee to recover the same ratio in a round trip.
+    check_ratio_round_trip_is_identity<1>();
+    check_ratio_round_trip_is_identity<9>();
+    check_ratio_round_trip_is_identity<ratio{5, 8}>();
+  }
+
+  SECTION("Rational magnitude implicitly converts to ratio")
+  {
+    constexpr ratio r = as_magnitude<ratio{22, 7}>();
+    CHECK(r == ratio{22, 7});
+  }
+
+  SECTION("Irrational magnitude does not convert to ratio")
+  {
+    // The following code should not compile.
+    // constexpr ratio radical = pow<ratio{1, 2}>(as_magnitude<2>());
+    // (void)radical;
+
+    // The following code should not compile.
+    // constexpr ratio degrees_per_radian = as_magnitude<180>() / pi_to_the<1>();
+    // (void)degrees_per_radian;
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Detail function tests below.
 
@@ -371,6 +421,34 @@ TEST_CASE("int_power computes integer powers")
     check_same_type_and_value(int_power(8, 0), 1);
     check_same_type_and_value(int_power(9L, 1), 9L);
     check_same_type_and_value(int_power(2, 10), 1024);
+  }
+}
+
+TEST_CASE("integer_part picks out integer part of single-basis magnitude")
+{
+  SECTION("integer_part of non-integer base is identity magnitude")
+  {
+    CHECK(integer_part(pi_to_the<1>()) == magnitude<>{});
+    CHECK(integer_part(pi_to_the<-8>()) == magnitude<>{});
+    CHECK(integer_part(pi_to_the<ratio{3, 4}>()) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to negative power is identity magnitude")
+  {
+    CHECK(integer_part(magnitude<base_power{2, -8}>{}) == magnitude<>{});
+    CHECK(integer_part(magnitude<base_power{11, -1}>{}) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to fractional power is identity magnitude")
+  {
+    CHECK(integer_part(magnitude<base_power{2, ratio{1, 2}}>{}) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to power at least one takes integer part")
+  {
+    CHECK(integer_part(magnitude<base_power{2, 1}>{}) == magnitude<base_power{2, 1}>{});
+    CHECK(integer_part(magnitude<base_power{2, ratio{19, 10}}>{}) == magnitude<base_power{2, 1}>{});
+    CHECK(integer_part(magnitude<base_power{11, ratio{97, 9}}>{}) == magnitude<base_power{11, 10}>{});
   }
 }
 

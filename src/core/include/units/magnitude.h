@@ -368,6 +368,9 @@ struct magnitude {
 
   // Whether this magnitude represents a rational number.
   friend constexpr bool is_rational(const magnitude&) { return (detail::is_rational(BPs) && ...); }
+
+  // Implicit conversion to ratio.
+  constexpr explicit(false) operator ratio() const;
 };
 
 // Implementation for Magnitude concept (below).
@@ -392,7 +395,7 @@ template<typename T, BasePower auto... BPs>
 constexpr T get_value(const magnitude<BPs...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ...));
+  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ... * 1));
 
   return result;
 }
@@ -479,6 +482,53 @@ constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
 // Magnitude quotient implementation.
 
 constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1>(r); }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Magnitude numerator and denominator implementation.
+
+namespace detail {
+
+// The largest integer which can be extracted from any magnitude with only a single basis vector.
+template<BasePower auto BP>
+constexpr auto integer_part(magnitude<BP>)
+{
+  constexpr auto power_num = numerator(BP.power);
+  constexpr auto power_den = denominator(BP.power);
+
+  if constexpr (std::is_integral_v<decltype(BP.get_base())> && (power_num >= power_den)) {
+    constexpr auto largest_integer_power = [power_num, power_den](BasePower auto bp) {
+      bp.power = (power_num / power_den);  // Note: integer division intended.
+      return bp;
+    }(BP);  // Note: lambda is immediately invoked.
+
+    return magnitude<largest_integer_power>{};
+  } else {
+    return magnitude<>{};
+  }
+}
+
+}  // namespace detail
+
+template<BasePower auto... BPs>
+constexpr auto numerator(magnitude<BPs...>)
+{
+  return (detail::integer_part(magnitude<BPs>{}) * ... * magnitude<>{});
+}
+
+constexpr auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
+
+// Implementation of implicit conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
+template<BasePower auto... BPs>
+constexpr magnitude<BPs...>::operator ratio() const
+{
+  static_assert(is_rational(magnitude<BPs...>{}));
+
+  return ratio{
+    get_value<std::intmax_t>(numerator(*this)),
+    get_value<std::intmax_t>(denominator(*this)),
+  };
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
