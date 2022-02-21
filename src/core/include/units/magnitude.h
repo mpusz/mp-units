@@ -34,7 +34,7 @@ namespace units {
  *
  * We have two categories.
  *
- * The first is just an `int`.  This is for prime number bases.  These can always be used directly as NTTPs.
+ * The first is just an `std::intmax_t`.  This is for prime number bases.  These can always be used directly as NTTPs.
  *
  * The second category is a _custom type_, which has a static member variable of type `long double` that holds its
  * value.  We choose `long double` to get the greatest degree of precision; users who need a different type can convert
@@ -45,13 +45,13 @@ namespace units {
  * GCC 10) which don't yet permit floating point NTTPs.
  */
 template<typename T>
-concept BaseRep = std::is_same_v<T, int> || std::is_same_v<std::remove_cvref_t<decltype(T::value)>, long double>;
+concept BaseRep = std::is_same_v<T, std::intmax_t> || std::is_same_v<std::remove_cvref_t<decltype(T::value)>, long double>;
 
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
  *
  * The public API is that there is a `power` member variable (of type `ratio`), and a `get_base()` member function (of
- * type either `int` or `long double`, as appropriate), for any specialization.
+ * type either `std::intmax_t` or `long double`, as appropriate), for any specialization.
  *
  * These types exist to be used as NTTPs for the variadic `magnitude<...>` template.  We represent a magnitude (which is
  * a positive real number) as the product of rational powers of "basis vectors", where each "basis vector" is a positive
@@ -64,7 +64,7 @@ concept BaseRep = std::is_same_v<T, int> || std::is_same_v<std::remove_cvref_t<d
  * As in any vector space, the set of basis vectors must be linearly independent: that is, no product of basis powers
  * can ever give the null vector (which in this case represents the number 1), unless all scalars (again, in this case,
  * _powers_) are zero.  To achieve this, we use the following kinds of basis vectors.
- *   - Prime numbers.  (These are the only allowable values for `int` base.)
+ *   - Prime numbers.  (These are the only allowable values for `std::intmax_t` base.)
  *   - Certain selected irrational numbers, such as pi.
  *
  * Before allowing a new irrational base, make sure that it _cannot_ be represented as the product of rational powers of
@@ -83,23 +83,23 @@ struct base_power {
  * @brief  Specialization for prime number bases.
  */
 template<>
-struct base_power<int> {
+struct base_power<std::intmax_t> {
   // The value of the basis "vector".  Must be prime to be used with `magnitude` (below).
-  int base;
+  std::intmax_t base;
 
   // The rational power to which the base is raised.
   ratio power{1};
 
-  constexpr int get_base() const { return base; }
+  constexpr std::intmax_t get_base() const { return base; }
 };
 
 /**
  * @brief  Deduction guides for base_power: only permit deducing integral bases.
  */
 template<std::integral T, std::convertible_to<ratio> U>
-base_power(T, U) -> base_power<int>;
+base_power(T, U) -> base_power<std::intmax_t>;
 template<std::integral T>
-base_power(T) -> base_power<int>;
+base_power(T) -> base_power<std::intmax_t>;
 
 // Implementation for BasePower concept (below).
 namespace detail {
@@ -266,7 +266,7 @@ constexpr bool is_prime(std::intmax_t n) { return (n > 1) && (find_first_factor(
 constexpr bool is_valid_base_power(const BasePower auto &bp) {
   if (bp.power == 0) { return false; }
 
-  if constexpr (std::is_same_v<decltype(bp.get_base()), int>) { return is_prime(bp.get_base()); }
+  if constexpr (std::is_same_v<decltype(bp.get_base()), std::intmax_t>) { return is_prime(bp.get_base()); }
   else { return bp.get_base() > 0; }
 }
 
@@ -442,7 +442,7 @@ namespace detail {
 template<std::intmax_t N>
   requires (N > 0)
 struct prime_factorization {
-  static constexpr int first_base = find_first_factor(N);
+  static constexpr std::intmax_t first_base = find_first_factor(N);
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
