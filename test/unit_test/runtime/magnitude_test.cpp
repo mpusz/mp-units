@@ -134,8 +134,10 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     CHECK(as_magnitude<r>() == as_magnitude<300>());
   }
 
-  SECTION("Can support exp which would be large enough to cause overflow")
+  SECTION("Can handle prime factor which would be large enough to overflow int")
   {
+    // This was taken from a case which failed when we used `int` for our base to store prime numbers.
+    // The failure was due to a prime factor which is larger than 2^31.
     as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
   }
 }
