@@ -51,7 +51,7 @@ if(NOT ${projectPrefix}LIBCXX)
         ${projectPrefix}NO_REFERENCES
     )
 
-    find_package(wg21-linear_algebra CONFIG REQUIRED)
+    find_package(wg21_linear_algebra CONFIG REQUIRED)
     add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
-    target_link_libraries(linear_algebra-aliases PRIVATE wg21-linear_algebra::wg21-linear_algebra)
+    target_link_libraries(linear_algebra-aliases PRIVATE wg21_linear_algebra::wg21_linear_algebra)
 endif()
