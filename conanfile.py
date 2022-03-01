@@ -26,7 +26,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
-required_conan_version = ">=1.40.0"
+required_conan_version = ">=1.43.0"
 
 class UnitsConan(ConanFile):
     name = "mp-units"
@@ -92,8 +92,8 @@ class UnitsConan(ConanFile):
 
     def build_requirements(self):
         if self._run_tests:
-            self.build_requires("catch2/2.13.7", force_host_context=True)              # TODO replace with test_requires in Conan 2.0
-            self.build_requires("wg21-linear_algebra/0.7.2", force_host_context=True)  # TODO replace with test_requires in Conan 2.0
+            self.test_requires("catch2/2.13.7")
+            self.test_requires("wg21-linear_algebra/0.7.2")
             if self.options.build_docs:
                 self.build_requires("doxygen/1.9.2")
 
