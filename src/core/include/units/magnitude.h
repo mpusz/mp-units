@@ -104,9 +104,9 @@ base_power(T) -> base_power<int>;
 // Implementation for BasePower concept (below).
 namespace detail {
 template<typename T>
-static constexpr bool is_base_power = false;
+inline constexpr bool is_base_power = false;
 template<BaseRep T>
-static constexpr bool is_base_power<base_power<T>> = true;
+inline constexpr bool is_base_power<base_power<T>> = true;
 } // namespace detail
 
 /**
@@ -301,13 +301,13 @@ constexpr bool strictly_increasing(Ts&&... ts) {
 }
 
 template<BasePower auto... BPs>
-static constexpr bool all_base_powers_valid = (is_valid_base_power(BPs) && ...);
+inline constexpr bool all_base_powers_valid = (is_valid_base_power(BPs) && ...);
 
 template<BasePower auto... BPs>
-static constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...);
+inline constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...);
 
 template<BasePower auto... BPs>
-static constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
+inline constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
 
 constexpr bool is_rational(BasePower auto bp) {
   return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
@@ -337,9 +337,9 @@ struct magnitude {
 // Implementation for Magnitude concept (below).
 namespace detail {
 template<typename T>
-static constexpr bool is_magnitude = false;
+inline constexpr bool is_magnitude = false;
 template<BasePower auto... BPs>
-static constexpr bool is_magnitude<magnitude<BPs...>> = true;
+inline constexpr bool is_magnitude<magnitude<BPs...>> = true;
 } // namespace detail
 
 /**
@@ -455,7 +455,7 @@ template<>
 struct prime_factorization<1> { static constexpr magnitude<> value{}; };
 
 template<std::intmax_t N>
-static constexpr auto prime_factorization_v = prime_factorization<N>::value;
+inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
 } // namespace detail
 
 /**
