@@ -24,6 +24,7 @@
 
 #include <units/ratio.h>
 #include <units/bits/prime.h>
+#include <concepts>
 #include <cstdint>
 #include <numbers>
 #include <stdexcept>
