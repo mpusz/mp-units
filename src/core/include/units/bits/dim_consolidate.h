@@ -24,7 +24,7 @@
 
 #include <units/bits/external/type_list.h>
 #include <units/exponent.h>
-#include <ratio>  // TODO remove this dependency with #11
+#include <ratio>
 
 namespace units::detail {
 
@@ -56,7 +56,6 @@ struct dim_consolidate<exponent_list<E1, ERest...>> {
 
 template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
 struct dim_consolidate<exponent_list<exponent<Dim, Num1, Den1>, exponent<Dim, Num2, Den2>, ERest...>> {
-  // TODO: we have ration_add now, but dim_consolidate etc, now need to cope with our new ratio
   using r1 = std::ratio<Num1, Den1>;
   using r2 = std::ratio<Num2, Den2>;
   using r = std::ratio_add<r1, r2>;
