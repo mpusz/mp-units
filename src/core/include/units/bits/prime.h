@@ -131,6 +131,8 @@ struct WheelFactorizer {
         if (const auto k = first_factor_maybe(n, wheel + p)) { return *k; }
       }
     }
+
+    return n;
   }
 
   static constexpr bool is_prime(std::size_t n) {
