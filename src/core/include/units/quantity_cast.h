@@ -27,7 +27,6 @@
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/pow.h>
-#include <cassert>
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
