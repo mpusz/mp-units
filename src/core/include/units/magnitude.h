@@ -23,11 +23,17 @@
 #pragma once
 
 #include <units/ratio.h>
+#include <units/bits/prime.h>
 #include <cstdint>
 #include <numbers>
 #include <stdexcept>
 
 namespace units {
+namespace detail
+{
+// Higher numbers use fewer trial divisions, at the price of more storage space.
+using Factorizer = WheelFactorizer<3>;
+} // namespace detail
 
 /**
  * @brief  Any type which can be used as a basis vector in a BasePower.
@@ -229,16 +235,6 @@ constexpr auto pow(BasePower auto bp, ratio p) {
 // A variety of implementation detail helpers.
 namespace detail {
 
-// Find the smallest prime factor of `n`.
-constexpr std::intmax_t find_first_factor(std::intmax_t n)
-{
-  for (std::intmax_t f = 2; f * f <= n; f += 1 + (f % 2))
-  {
-    if (n % f == 0) { return f; }
-  }
-  return n;
-}
-
 // The exponent of `factor` in the prime factorization of `n`.
 constexpr std::intmax_t multiplicity(std::intmax_t factor, std::intmax_t n)
 {
@@ -261,7 +257,9 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
 }
 
 // A way to check whether a number is prime at compile time.
-constexpr bool is_prime(std::intmax_t n) { return (n > 1) && (find_first_factor(n) == n); }
+constexpr bool is_prime(std::intmax_t n) {
+  return (n >= 0) && Factorizer::is_prime(static_cast<std::size_t>(n));
+}
 
 constexpr bool is_valid_base_power(const BasePower auto &bp) {
   if (bp.power == 0) { return false; }
@@ -442,7 +440,7 @@ namespace detail {
 template<std::intmax_t N>
   requires (N > 0)
 struct prime_factorization {
-  static constexpr std::intmax_t first_base = find_first_factor(N);
+  static constexpr std::intmax_t first_base = Factorizer::find_first_factor(N);
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
