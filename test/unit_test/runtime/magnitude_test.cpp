@@ -47,9 +47,9 @@ TEST_CASE("base_power")
 {
   SECTION("base rep deducible for integral base")
   {
-    CHECK(base_power{2} == base_power<int>{2, ratio{1}});
-    CHECK(base_power{2, 3} == base_power<int>{2, ratio{3}});
-    CHECK(base_power{2, ratio{3, 4}} == base_power<int>{2, ratio{3, 4}});
+    CHECK(base_power{2} == base_power<std::intmax_t>{2, ratio{1}});
+    CHECK(base_power{2, 3} == base_power<std::intmax_t>{2, ratio{3}});
+    CHECK(base_power{2, ratio{3, 4}} == base_power<std::intmax_t>{2, ratio{3, 4}});
   }
 
   SECTION("get_base retrieves base for integral base")
@@ -132,6 +132,13 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     constexpr ratio r{3, 1, 2};
     REQUIRE(r.exp == 2);
     CHECK(as_magnitude<r>() == as_magnitude<300>());
+  }
+
+  SECTION("Can handle prime factor which would be large enough to overflow int")
+  {
+    // This was taken from a case which failed when we used `int` for our base to store prime numbers.
+    // The failure was due to a prime factor which is larger than 2^31.
+    as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
   }
 }
 
