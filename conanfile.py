@@ -26,7 +26,7 @@ from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
-required_conan_version = ">=1.43.0"
+required_conan_version = ">=1.44.0"
 
 class UnitsConan(ConanFile):
     name = "mp-units"
@@ -82,8 +82,6 @@ class UnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
-        compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
         if self._use_libfmt:
             self.requires("fmt/8.1.1")
 
@@ -95,7 +93,7 @@ class UnitsConan(ConanFile):
             self.test_requires("catch2/2.13.7")
             self.test_requires("wg21-linear_algebra/0.7.2")
             if self.options.build_docs:
-                self.build_requires("doxygen/1.9.2")
+                self.tool_requires("doxygen/1.9.2")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -140,15 +138,16 @@ class UnitsConan(ConanFile):
         cmake.configure(build_script_folder=None if self._run_tests else "src")
         cmake.build()
         if self._run_tests:
-            cmake.test(output_on_failure=True)
+            cmake.test()
+
+    def package_id(self):
+        self.info.header_only()
 
     def package(self):
         self.copy(pattern="LICENSE.md", dst="licenses")
         cmake = CMake(self)
         cmake.install()
-
-    def package_id(self):
-        self.info.header_only()
+        tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
         compiler = self.settings.compiler
