@@ -42,6 +42,11 @@ static_assert(some_primes[1] == 11);
 static_assert(some_primes[2] == 13);
 static_assert(some_primes[3] == 17);
 
+static_assert(WheelFactorizer<1>::primes_in_first_wheel.size() == 0);
+static_assert(WheelFactorizer<2>::primes_in_first_wheel.size() == 1);
+static_assert(WheelFactorizer<3>::primes_in_first_wheel.size() == 7);
+static_assert(WheelFactorizer<4>::primes_in_first_wheel.size() == 42);
+
 static_assert(!WheelFactorizer<1>::is_prime(0));
 static_assert(!WheelFactorizer<1>::is_prime(1));
 static_assert(WheelFactorizer<1>::is_prime(2));
