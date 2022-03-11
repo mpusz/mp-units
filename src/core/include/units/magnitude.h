@@ -33,7 +33,7 @@ namespace units {
 namespace detail
 {
 // Higher numbers use fewer trial divisions, at the price of more storage space.
-using Factorizer = WheelFactorizer<3>;
+using Factorizer = WheelFactorizer<4>;
 } // namespace detail
 
 /**
