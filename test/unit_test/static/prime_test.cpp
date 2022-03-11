@@ -35,17 +35,30 @@ constexpr bool check_primes(std::index_sequence<Is...>) {
 
 static_assert(check_primes<2>(std::make_index_sequence<122>{}));
 
-constexpr auto some_primes = primes_between<7, 19>(); // 7, 11, 13, 17
-static_assert(std::is_same_v<std::remove_cvref_t<decltype(some_primes)>, std::array<std::size_t, 4>>);
-static_assert(some_primes[0] == 7);
-static_assert(some_primes[1] == 11);
-static_assert(some_primes[2] == 13);
-static_assert(some_primes[3] == 17);
+// This is the smallest number that can catch the bug where we use only _prime_ numbers in the first wheel, rather than
+// numbers which are _coprime to the basis_.
+//
+// The basis for N = 4 is {2, 3, 5, 7}, so the wheel size is 210.  11 * 11 = 121 is within the first wheel.  It is
+// coprime with every element of the basis, but it is _not_ prime.  If we keep only prime numbers, then we will neglect
+// using numbers of the form (210 * n + 121) as trial divisors, which is a problem if any are prime.  For n = 1, we have
+// a divisor of (210 + 121 = 331), which happens to be prime but will not be used.  Thus, (331 * 331 = 109561) is a
+// composite number which could wrongly appear prime if we skip over 331.
+static_assert(WheelFactorizer<4>::is_prime(109561) == is_prime_by_trial_division(109561));
 
-static_assert(WheelFactorizer<1>::primes_in_first_wheel.size() == 0);
-static_assert(WheelFactorizer<2>::primes_in_first_wheel.size() == 1);
-static_assert(WheelFactorizer<3>::primes_in_first_wheel.size() == 7);
-static_assert(WheelFactorizer<4>::primes_in_first_wheel.size() == 42);
+static_assert(WheelFactorizer<1>::coprimes_in_first_wheel.size() == 1);
+static_assert(WheelFactorizer<2>::coprimes_in_first_wheel.size() == 2);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel.size() == 8);
+static_assert(WheelFactorizer<4>::coprimes_in_first_wheel.size() == 48);
+static_assert(WheelFactorizer<5>::coprimes_in_first_wheel.size() == 480);
+
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[0] == 1);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[1] == 7);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[2] == 11);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[3] == 13);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[4] == 17);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[5] == 19);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[6] == 23);
+static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[7] == 29);
 
 static_assert(!WheelFactorizer<1>::is_prime(0));
 static_assert(!WheelFactorizer<1>::is_prime(1));

@@ -26,6 +26,7 @@
 #include <cassert>
 #include <cstddef>
 #include <optional>
+#include <tuple>
 
 namespace units::detail
 {
@@ -35,32 +36,6 @@ constexpr bool is_prime_by_trial_division(std::size_t n) {
     if (n % f == 0) { return false; }
   }
   return true;
-}
-
-constexpr std::size_t num_primes_between(std::size_t start, std::size_t end) {
-  std::size_t n = 0;
-
-  for (auto k = start; k < end; ++k) {
-    if (is_prime_by_trial_division(k)) { ++n; }
-  }
-
-  return n;
-}
-
-template<std::size_t Start, std::size_t End>
-constexpr auto primes_between() {
-  std::array<std::size_t, num_primes_between(Start, End)> results;
-  auto iter = std::begin(results);
-
-  for (auto k = Start; k < End; ++k) {
-    if (is_prime_by_trial_division(k)) {
-      *iter = k;
-      ++iter;
-    }
-  }
-
-  assert(iter == std::end(results));
-  return results;
 }
 
 // Return the first factor of n, as long as it is either k or n.
@@ -83,6 +58,34 @@ constexpr std::array<std::size_t, N> first_n_primes() {
   return primes;
 }
 
+template<std::size_t N, typename Callable>
+constexpr void call_for_coprimes_up_to(std::size_t n, const std::array<std::size_t, N> &basis, Callable &&call) {
+  for (std::size_t i = 0u; i < n; ++i) {
+    if (std::apply([&i](auto... primes) { return ((i % primes != 0) && ...); }, basis)) {
+      call(i);
+    }
+  }
+}
+
+template<std::size_t N>
+constexpr std::size_t num_coprimes_up_to(std::size_t n, const std::array<std::size_t, N> &basis) {
+  std::size_t count = 0u;
+  call_for_coprimes_up_to(n, basis, [&count](auto) { ++count; });
+  return count;
+}
+
+template<std::size_t ResultSize, std::size_t N>
+constexpr auto coprimes_up_to(std::size_t n, const std::array<std::size_t, N> &basis) {
+  std::array<std::size_t, ResultSize> coprimes;
+  std::size_t i = 0u;
+
+  call_for_coprimes_up_to(n, basis, [&coprimes, &i](std::size_t cp) { coprimes[i++] = cp; });
+
+  assert (i == N);
+
+  return coprimes;
+}
+
 template<std::size_t N>
 constexpr std::size_t product(const std::array<std::size_t, N> &values) {
   std::size_t product = 1;
@@ -93,41 +96,42 @@ constexpr std::size_t product(const std::array<std::size_t, N> &values) {
 // A configurable instantiation of the "wheel factorization" algorithm [1] for prime numbers.
 //
 // Instantiate with N to use a "basis" of the first N prime numbers.  Higher values of N use fewer trial divisions, at
-// the cost of additional space.  The amount of space consumed is roughly the total number of prime numbers that are
-// less than the _product_ of the first N prime numbers.  This means it grows rapidly with N.  Consider this approximate
-// chart:
+// the cost of additional space.  The amount of space consumed is roughly the total number of numbers that are a) less
+// than the _product_ of the basis elements (first N primes), and b) coprime with every element of the basis.  This
+// means it grows rapidly with N.  Consider this approximate chart:
 //
-//   N | Num primes stored | Trial divisions needed ~= (stored + 1 - N) / product(basis)
-//   --+-------------------+-----------------------
-//   1 |                 1 |                 50.0 %
-//   2 |                 3 |                 33.3 %
-//   3 |                10 |                 26.7 %
-//   4 |                46 |                 20.5 %
-//   5 |               343 |                 14.7 %
+//   N | Num coprimes | Trial divisions needed
+//   --+--------------+-----------------------
+//   1 |            1 |                 50.0 %
+//   2 |            2 |                 33.3 %
+//   3 |            8 |                 26.7 %
+//   4 |           48 |                 22.9 %
+//   5 |          480 |                 20.8 %
 //
-// Consider this behaviour when choosing the value of N most appropriate for your needs, and watch out for diminishing
-// returns.
+// Note the diminishing returns, and the rapidly escalating costs.  Consider this behaviour when choosing the value of N
+// most appropriate for your needs.
 //
 // [1] https://en.wikipedia.org/wiki/Wheel_factorization
 template<std::size_t BasisSize>
 struct WheelFactorizer {
   static constexpr auto basis = first_n_primes<BasisSize>();
   static constexpr std::size_t wheel_size = product(basis);
-  static constexpr auto primes_in_first_wheel = primes_between<basis.back() + 1, wheel_size>();
+  static constexpr auto coprimes_in_first_wheel =
+    coprimes_up_to<num_coprimes_up_to(wheel_size, basis)>(wheel_size, basis);
 
   static constexpr std::size_t find_first_factor(std::size_t n) {
     for (const auto& p : basis) {
       if (const auto k = first_factor_maybe(n, p)) { return *k; }
     }
 
-    for (const auto& p : primes_in_first_wheel) {
-      if (const auto k = first_factor_maybe(n, p)) { return *k; }
+    for (auto it = std::next(std::begin(coprimes_in_first_wheel)); it != std::end(coprimes_in_first_wheel); ++it) {
+      if (const auto k = first_factor_maybe(n, *it)) { return *k; }
     }
 
     for (std::size_t wheel = wheel_size; wheel < n; wheel += wheel_size) {
       if (const auto k = first_factor_maybe(n, wheel + 1)) { return *k; }
 
-      for (const auto &p : primes_in_first_wheel) {
+      for (const auto &p : coprimes_in_first_wheel) {
         if (const auto k = first_factor_maybe(n, wheel + p)) { return *k; }
       }
     }
