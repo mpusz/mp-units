@@ -82,8 +82,6 @@ constexpr auto coprimes_up_to(std::size_t n, const std::array<std::size_t, N> &b
 
   call_for_coprimes_up_to(n, basis, [&coprimes, &i](std::size_t cp) { coprimes[i++] = cp; });
 
-  assert (i == N);
-
   return coprimes;
 }
 
