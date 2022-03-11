@@ -441,7 +441,7 @@ namespace detail {
 template<std::intmax_t N>
   requires (N > 0)
 struct prime_factorization {
-  static constexpr std::intmax_t first_base = Factorizer::find_first_factor(N);
+  static constexpr std::intmax_t first_base = static_cast<std::intmax_t>(Factorizer::find_first_factor(N));
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
