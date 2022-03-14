@@ -67,7 +67,7 @@ class UnitsConan(ConanFile):
         version = Version(self.settings.compiler.version)
         std_support = \
             (compiler == "Visual Studio" and version >= "17" and compiler.cppstd == 23) or \
-            (compiler == "msvc" and (version == "19.3" or version >= "19.30") and compiler.cppstd == 23)
+            (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
         return not std_support
 
     @property
@@ -75,6 +75,14 @@ class UnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         return ("clang" in compiler and compiler.libcxx == "libc++" and version < "14.0")
+
+    @property
+    def _msvc_version(self):
+        compiler = self.settings.compiler
+        if (compiler.update):
+            return int(f"{compiler.version}{compiler.update}")
+        else:
+            return int(f"{compiler.version}0")
 
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
@@ -111,7 +119,7 @@ class UnitsConan(ConanFile):
             if version < "16":
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
         elif compiler == "msvc":
-            if version < "1928":
+            if self._msvc_version < 1928:
                 raise ConanInvalidConfiguration("mp-units requires at least MSVC 19.28")
         else:
             raise ConanInvalidConfiguration("Unsupported compiler")
