@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>
 #include <units/ratio.h>
 #include <cstdint>
 #include <numbers>
