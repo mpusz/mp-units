@@ -33,7 +33,7 @@ namespace units::detail {
 
 template<std::intmax_t N, typename F>
   requires gt_zero<N>
-[[nodiscard]] constexpr std::intmax_t iroot_impl(std::intmax_t v, F const& pow_function) noexcept
+[[nodiscard]] constexpr std::intmax_t iroot_impl(std::intmax_t v, const F& pow_function) noexcept
 {
   if constexpr (N == 1) {
     return v;

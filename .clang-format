@@ -1,9 +1,13 @@
+########################################################################################
+# NOTE: At least clang-format-15 is needed to format the code of this project correctly
+########################################################################################
 ---
 BasedOnStyle:  Google
 ---
 Language:        Cpp
 AccessModifierOffset: -2
 # AlignAfterOpenBracket: Align
+# AlignArrayOfStructures: None
 # AlignConsecutiveMacros: None
 # AlignConsecutiveAssignments: None
 # AlignConsecutiveBitFields: None
@@ -12,7 +16,6 @@ AccessModifierOffset: -2
 # AlignOperands:   Align
 # AlignTrailingComments: true
 # AllowAllArgumentsOnNextLine: true
-# AllowAllConstructorInitializersOnNextLine: true
 # AllowAllParametersOfDeclarationOnNextLine: true
 # AllowShortEnumsOnASingleLine: true
 # AllowShortBlocksOnASingleLine: Never
@@ -49,7 +52,7 @@ BraceWrapping:
   SplitEmptyRecord: false
 #   SplitEmptyNamespace: true
 # BreakBeforeBinaryOperators: None
-# BreakBeforeConceptDeclarations: true
+# BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
 # BreakBeforeInheritanceComma: false
 BreakInheritanceList: AfterColon
@@ -60,27 +63,28 @@ BreakConstructorInitializers: AfterColon
 # BreakStringLiterals: true
 ColumnLimit:     120
 CommentPragmas:  '^ NOLINT'
+# CommentPragmas:  '^ IWYU pragma:'
+QualifierAlignment: Left
 # CompactNamespaces: false
-# ConstructorInitializerAllOnOneLineOrOnePerLine: true
 # ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 2
 # Cpp11BracedListStyle: true
 DeriveLineEnding: false
 DerivePointerAlignment: false
 # DisableFormat:   false
+# EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Leave
 # ExperimentalAutoDetectBinPacking: false
+# PackConstructorInitializers: NextLine
+# ConstructorInitializerAllOnOneLineOrOnePerLine: false
+# AllowAllConstructorInitializersOnNextLine: true
 # FixNamespaceComments: true
-ForEachMacros:
-  - foreach
-  - Q_FOREACH
-  - BOOST_FOREACH
-  - SECTION
-  - GIVEN
-  - WHEN
-  - THEN
-# StatementAttributeLikeMacros:
-#   - Q_EMIT
+# ForEachMacros:
+#   - foreach
+#   - Q_FOREACH
+#   - BOOST_FOREACH
+# IfMacros:
+#   - KJ_IF_MAYBE
 IncludeBlocks:   Merge
 IncludeCategories: 
   - Regex:           '^".*'
@@ -95,18 +99,21 @@ IncludeCategories:
     Priority:        5
 # IncludeIsMainRegex: '([-_](test|unittest))?$'
 # IncludeIsMainSourceRegex: ''
+# IndentAccessModifiers: false
 # IndentCaseLabels: true
 # IndentCaseBlocks: false
 # IndentGotoLabels: true
 # IndentPPDirectives: None
 # IndentExternBlock: AfterExternBlock
-IndentRequires:  true
+# IndentRequiresClause: true
 # IndentWidth:     2
 # IndentWrappedFunctionNames: false
+# InsertBraces:    false
 # InsertTrailingCommas: None
 # JavaScriptQuotes: Leave
 # JavaScriptWrapImports: true
 # KeepEmptyLinesAtTheStartOfBlocks: false
+# LambdaBodyIndentation: Signature
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 2
@@ -120,12 +127,14 @@ MaxEmptyLinesToKeep: 2
 # PenaltyBreakBeforeFirstCallParameter: 1
 # PenaltyBreakComment: 300
 # PenaltyBreakFirstLessLess: 120
+# PenaltyBreakOpenParenthesis: 0
 # PenaltyBreakString: 1000
 # PenaltyBreakTemplateDeclaration: 10
 # PenaltyExcessCharacter: 1000000
 # PenaltyReturnTypeOnItsOwnLine: 200
 # PenaltyIndentedWhitespace: 0
 # PointerAlignment: Left
+# PPIndentWidth:   -1
 # RawStringFormats:
 #   - Language:        Cpp
 #     Delimiters:
@@ -154,10 +163,15 @@ MaxEmptyLinesToKeep: 2
 #       - ParseTextProtoOrDie
 #       - ParseTestProto
 #       - ParsePartialTestProto
-#     CanonicalDelimiter: ''
+#     CanonicalDelimiter: pb
 #     BasedOnStyle:    google
+# ReferenceAlignment: Pointer
 # ReflowComments:  true
-# SortIncludes:    true
+# RemoveBracesLLVM: false
+# RequiresClausePosition: OwnLine
+# SeparateDefinitionBlocks: Leave
+# ShortNamespaceLines: 1
+# SortIncludes:    CaseSensitive
 # SortJavaStaticImport: Before
 # SortUsingDeclarations: true
 # SpaceAfterCStyleCast: false
@@ -169,20 +183,35 @@ SpaceAfterTemplateKeyword: false
 # SpaceBeforeCtorInitializerColon: true
 # SpaceBeforeInheritanceColon: true
 # SpaceBeforeParens: ControlStatements
+SpaceBeforeParensOptions:
+#   AfterControlStatements: true
+#   AfterForeachMacros: true
+#   AfterFunctionDefinitionName: false
+#   AfterFunctionDeclarationName: false
+#   AfterIfMacros:   true
+#   AfterOverloadedOperator: false
+  AfterRequiresInClause: true
+#   AfterRequiresInExpression: false
+#   BeforeNonEmptyParentheses: false
 # SpaceAroundPointerQualifiers: Default
 # SpaceBeforeRangeBasedForLoopColon: true
 # SpaceInEmptyBlock: false
 # SpaceInEmptyParentheses: false
 # SpacesBeforeTrailingComments: 2
-# SpacesInAngles:  false
+# SpacesInAngles:  Never
 # SpacesInConditionalStatement: false
 # SpacesInContainerLiterals: true
 # SpacesInCStyleCastParentheses: false
+# SpacesInLineCommentPrefix:
+#   Minimum:         1
+#   Maximum:         -1
 # SpacesInParentheses: false
 # SpacesInSquareBrackets: false
 # SpaceBeforeSquareBrackets: false
 # BitFieldColonSpacing: Both
 Standard: Latest
+# StatementAttributeLikeMacros:
+#   - Q_EMIT
 # StatementMacros:
 #   - Q_UNUSED
 #   - QT_REQUIRE_VERSION

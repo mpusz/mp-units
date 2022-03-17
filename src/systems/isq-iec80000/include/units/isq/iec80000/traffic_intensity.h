@@ -47,11 +47,15 @@ using traffic_intensity = quantity<dim_traffic_intensity, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator"" _q_E(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return traffic_intensity<erlang, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_E(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return traffic_intensity<erlang, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -67,7 +71,7 @@ using namespace traffic_intensity_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::iec80000
 
@@ -75,8 +79,9 @@ using namespace traffic_intensity_references;
 
 namespace units::aliases::isq::iec80000::inline traffic_intensity {
 
-template<Representation Rep = double> using E = units::isq::iec80000::traffic_intensity<units::isq::iec80000::erlang, Rep>;
+template<Representation Rep = double>
+using E = units::isq::iec80000::traffic_intensity<units::isq::iec80000::erlang, Rep>;
 
 }  // namespace units::aliases::isq::iec80000::inline traffic_intensity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

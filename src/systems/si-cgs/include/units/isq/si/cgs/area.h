@@ -47,12 +47,16 @@ using area = quantity<dim_area, U, Rep>;
 inline namespace literals {
 
 // cm2
-constexpr auto operator"" _q_cm2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return area<square_centimetre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cm2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<square_centimetre, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_cm2(long double l) { return area<square_centimetre, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -68,7 +72,7 @@ using namespace area_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -76,8 +80,9 @@ using namespace area_references;
 
 namespace units::aliases::isq::si::cgs::inline area {
 
-template<Representation Rep = double> using cm2 = units::isq::si::cgs::area<units::isq::si::cgs::square_centimetre, Rep>;
+template<Representation Rep = double>
+using cm2 = units::isq::si::cgs::area<units::isq::si::cgs::square_centimetre, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline area
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

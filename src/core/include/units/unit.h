@@ -26,9 +26,9 @@
 #include <units/bits/external/downcasting.h>
 
 // IWYU pragma: begin_exports
-#include <units/bits/derived_unit.h> 
+#include <units/bits/derived_unit.h>
 #include <units/bits/external/fixed_string.h>
-#include <units/prefix.h> 
+#include <units/prefix.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
@@ -41,7 +41,7 @@ namespace units {
  * A unit is an entity defined and adopted by convention, with which any other quantity of
  * the same kind can be compared to express the ratio of the second quantity to the first
  * one as a number.
- * 
+ *
  * All units of the same dimension can be convereted between each other. To allow this all of
  * them are expressed as different ratios of the same one proprietary chosen reference unit
  * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
@@ -162,7 +162,7 @@ struct derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URes
 };
 
 /**
- * @brief A named unit with a deduced ratio 
+ * @brief A named unit with a deduced ratio
  *
  * Defines a new unit with a deduced ratio and the given symbol based on the recipe from the provided
  * derived dimension. The number and order of provided units should match the recipe of the
@@ -229,7 +229,7 @@ struct prefixed_alias_unit : U {
 
 /**
  * @brief Unknown unit
- * 
+ *
  * Used as a coherent unit of an unknown dimension.
  */
 struct unknown_coherent_unit : unit<unknown_coherent_unit> {};

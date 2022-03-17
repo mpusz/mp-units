@@ -34,7 +34,8 @@
 namespace units::isq::si {
 
 struct volt_per_metre : unit<volt_per_metre> {};
-struct dim_electric_field_strength : isq::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
+struct dim_electric_field_strength :
+    isq::dim_electric_field_strength<dim_electric_field_strength, volt_per_metre, dim_voltage, dim_length> {};
 
 template<UnitOf<dim_electric_field_strength> U, Representation Rep = double>
 using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
@@ -44,12 +45,16 @@ using electric_field_strength = quantity<dim_electric_field_strength, U, Rep>;
 inline namespace literals {
 
 // V/m
-constexpr auto operator"" _q_V_per_m(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return electric_field_strength<volt_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_V_per_m(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return electric_field_strength<volt_per_metre, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_V_per_m(long double l) { return electric_field_strength<volt_per_metre, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -57,8 +62,9 @@ constexpr auto operator"" _q_V_per_m(long double l) { return electric_field_stre
 
 namespace units::aliases::isq::si::inline electric_field_strength {
 
-template<Representation Rep = double> using V_per_m = units::isq::si::electric_field_strength<units::isq::si::volt_per_metre, Rep>;
+template<Representation Rep = double>
+using V_per_m = units::isq::si::electric_field_strength<units::isq::si::volt_per_metre, Rep>;
 
 }  // namespace units::aliases::isq::si::inline electric_field_strength
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

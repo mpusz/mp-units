@@ -20,25 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <catch2/catch.hpp>
 #include <units/magnitude.h>
 #include <units/ratio.h>
-#include <catch2/catch.hpp>
 #include <type_traits>
 
 namespace units {
 
 // A set of non-standard bases for testing purposes.
-struct noninteger_base { static constexpr long double value = 1.234L; };
-struct noncanonical_two_base { static constexpr long double value = 2.0L; };
-struct other_noncanonical_two_base { static constexpr long double value = 2.0L; };
-struct invalid_zero_base { static constexpr long double value = 0.0L; };
-struct invalid_negative_base { static constexpr long double value = -1.234L; };
+struct noninteger_base {
+  static constexpr long double value = 1.234L;
+};
+struct noncanonical_two_base {
+  static constexpr long double value = 2.0L;
+};
+struct other_noncanonical_two_base {
+  static constexpr long double value = 2.0L;
+};
+struct invalid_zero_base {
+  static constexpr long double value = 0.0L;
+};
+struct invalid_negative_base {
+  static constexpr long double value = -1.234L;
+};
 
 template<ratio Power>
-constexpr auto pi_to_the() { return magnitude<base_power<pi_base>{Power}>{}; }
+constexpr auto pi_to_the()
+{
+  return magnitude<base_power<pi_base>{Power}>{};
+}
 
 template<typename T, typename U>
-void check_same_type_and_value(T actual, U expected) {
+void check_same_type_and_value(T actual, U expected)
+{
   CHECK(std::is_same_v<T, U>);
   CHECK(actual == expected);
 }
@@ -93,9 +107,7 @@ TEST_CASE("base_power")
 
   SECTION("product with inverse equals identity")
   {
-    auto check_product_with_inverse_is_identity = [] (auto x) {
-      CHECK(x * pow<-1>(x) == as_magnitude<1>());
-    };
+    auto check_product_with_inverse_is_identity = [](auto x) { CHECK(x * pow<-1>(x) == as_magnitude<1>()); };
 
     check_product_with_inverse_is_identity(as_magnitude<3>());
     check_product_with_inverse_is_identity(as_magnitude<ratio{4, 17}>());
@@ -122,10 +134,7 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     CHECK(as_magnitude<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
   }
 
-  SECTION("Supports fractions")
-  {
-    CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{});
-  }
+  SECTION("Supports fractions") { CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
 
   SECTION("Supports nonzero exp")
   {
@@ -196,7 +205,7 @@ TEST_CASE("magnitude converts to numerical value")
     // Would work for pow<63>:
     // get_value<uint64_t>(pow<64>(as_magnitude<2>()));
 
-    get_value<double>(pow<308>(as_magnitude<10>())); // Compiles, correctly.
+    get_value<double>(pow<308>(as_magnitude<10>()));  // Compiles, correctly.
     // get_value<double>(pow<309>(as_magnitude<10>()));
     // get_value<double>(pow<3099>(as_magnitude<10>()));
     // get_value<double>(pow<3099999>(as_magnitude<10>()));
@@ -243,9 +252,8 @@ TEST_CASE("Multiplication works for magnitudes")
 
   SECTION("Products handle pi correctly")
   {
-     CHECK(
-         pi_to_the<1>() * as_magnitude<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
-         magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
+    CHECK(pi_to_the<1>() * as_magnitude<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
+          magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
   }
 
   SECTION("Supports constexpr")
@@ -277,21 +285,24 @@ TEST_CASE("Division works for magnitudes")
 
 TEST_CASE("Can raise Magnitudes to rational powers")
 {
-  SECTION("Anything to the 0 is 1") {
+  SECTION("Anything to the 0 is 1")
+  {
     CHECK(pow<0>(as_magnitude<1>()) == as_magnitude<1>());
     CHECK(pow<0>(as_magnitude<123>()) == as_magnitude<1>());
     CHECK(pow<0>(as_magnitude<ratio{3, 4}>()) == as_magnitude<1>());
     CHECK(pow<0>(pi_to_the<ratio{-1, 2}>()) == as_magnitude<1>());
   }
 
-  SECTION("Anything to the 1 is itself") {
+  SECTION("Anything to the 1 is itself")
+  {
     CHECK(pow<1>(as_magnitude<1>()) == as_magnitude<1>());
     CHECK(pow<1>(as_magnitude<123>()) == as_magnitude<123>());
     CHECK(pow<1>(as_magnitude<ratio{3, 4}>()) == as_magnitude<ratio{3, 4}>());
     CHECK(pow<1>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{-1, 2}>());
   }
 
-  SECTION("Can raise to arbitrary rational power") {
+  SECTION("Can raise to arbitrary rational power")
+  {
     CHECK(pow<ratio{-8, 3}>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{4, 3}>());
   }
 }
@@ -325,8 +336,10 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
 
 namespace detail {
 
-TEST_CASE("int_power computes integer powers") {
-  SECTION("handles floating point") {
+TEST_CASE("int_power computes integer powers")
+{
+  SECTION("handles floating point")
+  {
     check_same_type_and_value(int_power(0.123L, 0), 1.0L);
     check_same_type_and_value(int_power(0.246f, 1), 0.246f);
     check_same_type_and_value(int_power(0.5f, 3), 0.125f);
@@ -335,7 +348,8 @@ TEST_CASE("int_power computes integer powers") {
     CHECK(std::is_same_v<long double, decltype(compute_base_power<double>(base_power{10, 20}))>);
   }
 
-  SECTION("handles integral") {
+  SECTION("handles integral")
+  {
     check_same_type_and_value(int_power(8, 0), 1);
     check_same_type_and_value(int_power(9L, 1), 9L);
     check_same_type_and_value(int_power(2, 10), 1024);
@@ -344,7 +358,8 @@ TEST_CASE("int_power computes integer powers") {
 
 TEST_CASE("Prime helper functions")
 {
-  SECTION("find_first_factor()") {
+  SECTION("find_first_factor()")
+  {
     CHECK(find_first_factor(1) == 1);
     CHECK(find_first_factor(2) == 2);
     CHECK(find_first_factor(4) == 2);
@@ -353,13 +368,15 @@ TEST_CASE("Prime helper functions")
     CHECK(find_first_factor(17) == 17);
   }
 
-  SECTION("multiplicity") {
+  SECTION("multiplicity")
+  {
     CHECK(multiplicity(2, 8) == 3);
     CHECK(multiplicity(2, 1024) == 10);
     CHECK(multiplicity(11, 6655) == 3);
   }
 
-  SECTION("remove_power()") {
+  SECTION("remove_power()")
+  {
     CHECK(remove_power(17, 0, 5) == 5);
     CHECK(remove_power(2, 3, 24) == 3);
     CHECK(remove_power(11, 3, 6655) == 5);
@@ -368,10 +385,7 @@ TEST_CASE("Prime helper functions")
 
 TEST_CASE("Prime factorization")
 {
-  SECTION("1 factors into the null magnitude")
-  {
-    CHECK(prime_factorization_v<1> == magnitude<>{});
-  }
+  SECTION("1 factors into the null magnitude") { CHECK(prime_factorization_v<1> == magnitude<>{}); }
 
   SECTION("Prime numbers factor into themselves")
   {
@@ -386,8 +400,7 @@ TEST_CASE("Prime factorization")
 
   SECTION("Prime factorization finds factors and multiplicities")
   {
-    CHECK(prime_factorization_v<792> ==
-          magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+    CHECK(prime_factorization_v<792> == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
   }
 }
 
@@ -400,10 +413,7 @@ TEST_CASE("is_prime detects primes")
     CHECK(!is_prime(0));
   }
 
-  SECTION("1 is not prime")
-  {
-    CHECK(!is_prime(1));
-  }
+  SECTION("1 is not prime") { CHECK(!is_prime(1)); }
 
   SECTION("Discriminates between primes and non-primes")
   {
@@ -422,7 +432,8 @@ TEST_CASE("is_prime detects primes")
 
 TEST_CASE("is_valid_base_power")
 {
-  SECTION("0 power is invalid") {
+  SECTION("0 power is invalid")
+  {
     REQUIRE(is_valid_base_power(base_power{2}));
     CHECK(!is_valid_base_power(base_power{2, 0}));
 
@@ -433,7 +444,8 @@ TEST_CASE("is_valid_base_power")
     CHECK(!is_valid_base_power(base_power<pi_base>{0}));
   }
 
-  SECTION("non-prime integers are invalid") {
+  SECTION("non-prime integers are invalid")
+  {
     CHECK(!is_valid_base_power(base_power{-8}));
     CHECK(!is_valid_base_power(base_power{0}));
     CHECK(!is_valid_base_power(base_power{1}));
@@ -444,7 +456,8 @@ TEST_CASE("is_valid_base_power")
     CHECK(!is_valid_base_power(base_power{4}));
   }
 
-  SECTION("non-positive floating point bases are invalid") {
+  SECTION("non-positive floating point bases are invalid")
+  {
     CHECK(!is_valid_base_power(base_power<invalid_zero_base>{}));
     CHECK(!is_valid_base_power(base_power<invalid_negative_base>{}));
   }
@@ -452,8 +465,8 @@ TEST_CASE("is_valid_base_power")
 
 TEST_CASE("pairwise_all evaluates all pairs")
 {
-  const auto all_pairs_return_true = pairwise_all{[](auto, auto){ return true; }};
-  const auto all_pairs_return_false = pairwise_all{[](auto, auto){ return false; }};
+  const auto all_pairs_return_true = pairwise_all{[](auto, auto) { return true; }};
+  const auto all_pairs_return_false = pairwise_all{[](auto, auto) { return false; }};
   const auto all_increasing = pairwise_all{std::less{}};
 
   SECTION("always true for empty tuples")
@@ -484,10 +497,7 @@ TEST_CASE("pairwise_all evaluates all pairs")
 
 TEST_CASE("strictly_increasing")
 {
-  SECTION("Empty input is sorted")
-  {
-    CHECK(strictly_increasing());
-  }
+  SECTION("Empty input is sorted") { CHECK(strictly_increasing()); }
 
   SECTION("Single-element input is sorted")
   {
@@ -504,6 +514,6 @@ TEST_CASE("strictly_increasing")
   }
 }
 
-} // namespace detail
+}  // namespace detail
 
-} // namespace units
+}  // namespace units

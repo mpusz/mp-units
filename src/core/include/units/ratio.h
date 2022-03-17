@@ -30,9 +30,9 @@
 #include <cstdint>
 // IWYU pragma: end_exports
 
+#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <numeric>
-#include <gsl/gsl-lite.hpp>
 
 namespace units {
 
@@ -52,7 +52,7 @@ struct ratio {
   std::intmax_t den;
   std::intmax_t exp;
 
-  constexpr explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0): num(n), den(d), exp(e)
+  constexpr explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1, std::intmax_t e = 0) : num(n), den(d), exp(e)
   {
     gsl_Expects(den != 0);
     detail::normalize(num, den, exp);
@@ -60,16 +60,13 @@ struct ratio {
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
-  [[nodiscard]] friend constexpr ratio operator-(const ratio& r)
-  {
-    return ratio(-r.num, r.den, r.exp);
-  }
+  [[nodiscard]] friend constexpr ratio operator-(const ratio& r) { return ratio(-r.num, r.den, r.exp); }
 
   [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
   {
     // First, get the inputs into a common exponent.
     const auto common_exp = std::min(lhs.exp, rhs.exp);
-    auto commonify = [common_exp](ratio &r) {
+    auto commonify = [common_exp](ratio& r) {
       while (r.exp > common_exp) {
         r.num *= 10;
         --r.exp;
@@ -86,24 +83,17 @@ struct ratio {
     const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);
     const std::intmax_t gcd2 = std::gcd(rhs.num, lhs.den);
     return ratio(detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),
-                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1),
-                 lhs.exp + rhs.exp);
+                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1), lhs.exp + rhs.exp);
   }
 
-  [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs)
-  {
-    return lhs * inverse(rhs);
-  }
+  [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs) { return lhs * inverse(rhs); }
 };
 
-[[nodiscard]] constexpr ratio inverse(const ratio& r)
-{
-  return ratio(r.den, r.num, -r.exp);
-}
+[[nodiscard]] constexpr ratio inverse(const ratio& r) { return ratio(r.den, r.num, -r.exp); }
 
 [[nodiscard]] constexpr bool is_integral(const ratio& r)
 {
-  if(r.exp < 0) {
+  if (r.exp < 0) {
     return false;
   } else {
     return detail::gcdpow(r.num, r.exp, r.den) == r.den;

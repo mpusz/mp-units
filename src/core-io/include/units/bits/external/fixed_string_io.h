@@ -28,7 +28,8 @@
 namespace units {
 
 template<typename CharT, class Traits, std::size_t N>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const basic_fixed_string<CharT, N>& txt)
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                              const basic_fixed_string<CharT, N>& txt)
 {
   return os << txt.c_str();
 }

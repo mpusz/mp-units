@@ -76,25 +76,31 @@ public:
 
   template<typename T>
     requires std::constructible_from<quantity_type, T>
-  constexpr explicit quantity_point(T&& t) : q_(std::forward<T>(t)) {}
+  constexpr explicit quantity_point(T&& t) : q_(std::forward<T>(t))
+  {
+  }
 
   template<QuantityPointOf<origin> QP2>
     requires std::convertible_to<typename QP2::quantity_type, quantity_type>
-  constexpr explicit(false) quantity_point(const QP2& qp) : q_(qp.relative()) {}
+  constexpr explicit(false) quantity_point(const QP2& qp) : q_(qp.relative())
+  {
+  }
 
   template<QuantityPointLike QP>
   constexpr explicit quantity_point(const QP& qp)
     requires std::is_constructible_v<quantity_type, decltype(quantity_point_like_traits<QP>::relative(qp))> &&
-      equivalent<origin, typename quantity_point_like_traits<QP>::origin>
-    : q_(quantity_point_like_traits<QP>::relative(qp)) {}
+             equivalent<origin, typename quantity_point_like_traits<QP>::origin>
+  : q_(quantity_point_like_traits<QP>::relative(qp))
+  {
+  }
 
   quantity_point& operator=(const quantity_point&) = default;
   quantity_point& operator=(quantity_point&&) = default;
 
   [[nodiscard]] constexpr quantity_type& relative() & noexcept { return q_; }
-  [[nodiscard]] constexpr const quantity_type& relative() const & noexcept { return q_; }
+  [[nodiscard]] constexpr const quantity_type& relative() const& noexcept { return q_; }
   [[nodiscard]] constexpr quantity_type&& relative() && noexcept { return std::move(q_); }
-  [[nodiscard]] constexpr const quantity_type&& relative() const && noexcept { return std::move(q_); }
+  [[nodiscard]] constexpr const quantity_type&& relative() const&& noexcept { return std::move(q_); }
 
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { quantity_type::min(); }
@@ -207,13 +213,14 @@ template<Quantity Q>
 explicit quantity_point(Q) -> quantity_point<dynamic_origin<typename Q::dimension>, typename Q::unit, typename Q::rep>;
 
 template<QuantityLike Q>
-explicit quantity_point(Q) -> quantity_point<dynamic_origin<typename quantity_like_traits<Q>::dimension>,
-  typename quantity_like_traits<Q>::unit, typename quantity_like_traits<Q>::rep>;
+explicit quantity_point(Q)
+  -> quantity_point<dynamic_origin<typename quantity_like_traits<Q>::dimension>, typename quantity_like_traits<Q>::unit,
+                    typename quantity_like_traits<Q>::rep>;
 
 template<QuantityPointLike QP>
-explicit quantity_point(QP) -> quantity_point<typename quantity_point_like_traits<QP>::origin,
-                                              typename quantity_point_like_traits<QP>::unit,
-                                              typename quantity_point_like_traits<QP>::rep>;
+explicit quantity_point(QP)
+  -> quantity_point<typename quantity_point_like_traits<QP>::origin, typename quantity_point_like_traits<QP>::unit,
+                    typename quantity_point_like_traits<QP>::rep>;
 
 namespace detail {
 

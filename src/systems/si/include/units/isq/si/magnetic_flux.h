@@ -29,8 +29,8 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/magnetic_induction.h>
 #include <units/isq/si/area.h>
+#include <units/isq/si/magnetic_induction.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
@@ -64,76 +64,144 @@ using magnetic_flux = quantity<dim_magnetic_flux, U, Rep>;
 inline namespace literals {
 
 // Wb
-constexpr auto operator"" _q_Wb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<weber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Wb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<weber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Wb(long double l) { return magnetic_flux<weber, long double>(l); }
 
 // yWb
-constexpr auto operator"" _q_yWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<yoctoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<yoctoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yWb(long double l) { return magnetic_flux<yoctoweber, long double>(l); }
 
 // zWb
-constexpr auto operator"" _q_zWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<zeptoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<zeptoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zWb(long double l) { return magnetic_flux<zeptoweber, long double>(l); }
 
 // aWb
-constexpr auto operator"" _q_aWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<attoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<attoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_aWb(long double l) { return magnetic_flux<attoweber, long double>(l); }
 
 // fWb
-constexpr auto operator"" _q_fWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<femtoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<femtoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fWb(long double l) { return magnetic_flux<femtoweber, long double>(l); }
 
 // pWb
-constexpr auto operator"" _q_pWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<picoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<picoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pWb(long double l) { return magnetic_flux<picoweber, long double>(l); }
 
 // nWb
-constexpr auto operator"" _q_nWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<nanoweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<nanoweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_nWb(long double l) { return magnetic_flux<nanoweber, long double>(l); }
 
 // µWb
-constexpr auto operator"" _q_uWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<microweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<microweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_uWb(long double l) { return magnetic_flux<microweber, long double>(l); }
 
 // mWb
-constexpr auto operator"" _q_mWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<milliweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<milliweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mWb(long double l) { return magnetic_flux<milliweber, long double>(l); }
 
 // kWb
-constexpr auto operator"" _q_kWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<kiloweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<kiloweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kWb(long double l) { return magnetic_flux<kiloweber, long double>(l); }
 
 // MWb
-constexpr auto operator"" _q_MWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<megaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<megaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MWb(long double l) { return magnetic_flux<megaweber, long double>(l); }
 
 // GWb
-constexpr auto operator"" _q_GWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<gigaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<gigaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GWb(long double l) { return magnetic_flux<gigaweber, long double>(l); }
 
 // TWb
-constexpr auto operator"" _q_TWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<teraweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<teraweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TWb(long double l) { return magnetic_flux<teraweber, long double>(l); }
 
 // PWb
-constexpr auto operator"" _q_PWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<petaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<petaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PWb(long double l) { return magnetic_flux<petaweber, long double>(l); }
 
 // EWb
-constexpr auto operator"" _q_EWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<exaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<exaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_EWb(long double l) { return magnetic_flux<exaweber, long double>(l); }
 
 // ZWb
-constexpr auto operator"" _q_ZWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<zettaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<zettaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ZWb(long double l) { return magnetic_flux<zettaweber, long double>(l); }
 
 // YWb
-constexpr auto operator"" _q_YWb(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_flux<yottaweber, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YWb(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_flux<yottaweber, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YWb(long double l) { return magnetic_flux<yottaweber, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -165,7 +233,7 @@ using namespace magnetic_flux_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -173,24 +241,41 @@ using namespace magnetic_flux_references;
 
 namespace units::aliases::isq::si::inline magnetic_flux {
 
-template<Representation Rep = double> using Wb = units::isq::si::magnetic_flux<units::isq::si::weber, Rep>;
-template<Representation Rep = double> using yWb = units::isq::si::magnetic_flux<units::isq::si::yoctoweber, Rep>;
-template<Representation Rep = double> using zWb = units::isq::si::magnetic_flux<units::isq::si::zeptoweber, Rep>;
-template<Representation Rep = double> using aWb = units::isq::si::magnetic_flux<units::isq::si::attoweber, Rep>;
-template<Representation Rep = double> using fWb = units::isq::si::magnetic_flux<units::isq::si::femtoweber, Rep>;
-template<Representation Rep = double> using pWb = units::isq::si::magnetic_flux<units::isq::si::picoweber, Rep>;
-template<Representation Rep = double> using nWb = units::isq::si::magnetic_flux<units::isq::si::nanoweber, Rep>;
-template<Representation Rep = double> using uWb = units::isq::si::magnetic_flux<units::isq::si::microweber, Rep>;
-template<Representation Rep = double> using mWb = units::isq::si::magnetic_flux<units::isq::si::milliweber, Rep>;
-template<Representation Rep = double> using kWb = units::isq::si::magnetic_flux<units::isq::si::kiloweber, Rep>;
-template<Representation Rep = double> using MWb = units::isq::si::magnetic_flux<units::isq::si::megaweber, Rep>;
-template<Representation Rep = double> using GWb = units::isq::si::magnetic_flux<units::isq::si::gigaweber, Rep>;
-template<Representation Rep = double> using TWb = units::isq::si::magnetic_flux<units::isq::si::teraweber, Rep>;
-template<Representation Rep = double> using PWb = units::isq::si::magnetic_flux<units::isq::si::petaweber, Rep>;
-template<Representation Rep = double> using EWb = units::isq::si::magnetic_flux<units::isq::si::exaweber, Rep>;
-template<Representation Rep = double> using ZWb = units::isq::si::magnetic_flux<units::isq::si::zettaweber, Rep>;
-template<Representation Rep = double> using YWb = units::isq::si::magnetic_flux<units::isq::si::yottaweber, Rep>;
+template<Representation Rep = double>
+using Wb = units::isq::si::magnetic_flux<units::isq::si::weber, Rep>;
+template<Representation Rep = double>
+using yWb = units::isq::si::magnetic_flux<units::isq::si::yoctoweber, Rep>;
+template<Representation Rep = double>
+using zWb = units::isq::si::magnetic_flux<units::isq::si::zeptoweber, Rep>;
+template<Representation Rep = double>
+using aWb = units::isq::si::magnetic_flux<units::isq::si::attoweber, Rep>;
+template<Representation Rep = double>
+using fWb = units::isq::si::magnetic_flux<units::isq::si::femtoweber, Rep>;
+template<Representation Rep = double>
+using pWb = units::isq::si::magnetic_flux<units::isq::si::picoweber, Rep>;
+template<Representation Rep = double>
+using nWb = units::isq::si::magnetic_flux<units::isq::si::nanoweber, Rep>;
+template<Representation Rep = double>
+using uWb = units::isq::si::magnetic_flux<units::isq::si::microweber, Rep>;
+template<Representation Rep = double>
+using mWb = units::isq::si::magnetic_flux<units::isq::si::milliweber, Rep>;
+template<Representation Rep = double>
+using kWb = units::isq::si::magnetic_flux<units::isq::si::kiloweber, Rep>;
+template<Representation Rep = double>
+using MWb = units::isq::si::magnetic_flux<units::isq::si::megaweber, Rep>;
+template<Representation Rep = double>
+using GWb = units::isq::si::magnetic_flux<units::isq::si::gigaweber, Rep>;
+template<Representation Rep = double>
+using TWb = units::isq::si::magnetic_flux<units::isq::si::teraweber, Rep>;
+template<Representation Rep = double>
+using PWb = units::isq::si::magnetic_flux<units::isq::si::petaweber, Rep>;
+template<Representation Rep = double>
+using EWb = units::isq::si::magnetic_flux<units::isq::si::exaweber, Rep>;
+template<Representation Rep = double>
+using ZWb = units::isq::si::magnetic_flux<units::isq::si::zettaweber, Rep>;
+template<Representation Rep = double>
+using YWb = units::isq::si::magnetic_flux<units::isq::si::yottaweber, Rep>;
 
 }  // namespace units::aliases::isq::si::inline magnetic_flux
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

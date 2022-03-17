@@ -32,19 +32,16 @@ namespace units::detail {
 template<bool Divide, std::size_t NegativeExpCount, std::size_t Idx>
 constexpr auto operator_text()
 {
-  if constexpr(Idx == 0) {
-    if constexpr(Divide && NegativeExpCount == 1) {
+  if constexpr (Idx == 0) {
+    if constexpr (Divide && NegativeExpCount == 1) {
       return basic_fixed_string("1/");
-    }
-    else {
+    } else {
       return basic_fixed_string("");
     }
-  }
-  else {
-    if constexpr(Divide && NegativeExpCount == 1) {
+  } else {
+    if constexpr (Divide && NegativeExpCount == 1) {
       return basic_fixed_string("/");
-    }
-    else {
+    } else {
       return basic_symbol_text(" ⋅ ", " ");
     }
   }
@@ -54,24 +51,21 @@ template<typename E, basic_symbol_text Symbol, std::size_t NegativeExpCount, std
 constexpr auto exp_text()
 {
   // get calculation operator + symbol
-  const auto txt = operator_text<E::num < 0, NegativeExpCount, Idx>() + Symbol;
-  if constexpr(E::den != 1) {
+  const auto txt = operator_text<(E::num < 0), NegativeExpCount, Idx>() + Symbol;
+  if constexpr (E::den != 1) {
     // add root part
-    return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() + basic_fixed_string(")");
-  }
-  else if constexpr(E::num != 1) {
+    return txt + basic_fixed_string("^(") + regular<abs(E::num)>() + basic_fixed_string("/") + regular<E::den>() +
+           basic_fixed_string(")");
+  } else if constexpr (E::num != 1) {
     // add exponent part
-    if constexpr(NegativeExpCount > 1) {  // no '/' sign here (only negative exponents)
+    if constexpr (NegativeExpCount > 1) {  // no '/' sign here (only negative exponents)
       return txt + superscript<E::num>();
-    }
-    else if constexpr(E::num != -1) {  // -1 is replaced with '/' sign here
+    } else if constexpr (E::num != -1) {  // -1 is replaced with '/' sign here
       return txt + superscript<abs(E::num)>();
-    }
-    else {
+    } else {
       return txt;
     }
-  }
-  else {
+  } else {
     return txt;
   }
 }

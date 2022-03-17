@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/generic/angle.h>
 #include <units/concepts.h>
+#include <units/generic/angle.h>
 #include <units/isq/dimensions/energy.h>
 
 namespace units::isq {

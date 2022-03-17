@@ -36,24 +36,26 @@ struct reference;
 namespace detail {
 
 template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_multiply_impl = reference<D, downcast_unit<D,
-  (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
+using reference_multiply_impl =
+  reference<D, downcast_unit<D, (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) *
+                                  dimension_unit<D>::ratio>>;
 
 template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_divide_impl = reference<D, downcast_unit<D,
-  (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) * dimension_unit<D>::ratio>>;
+using reference_divide_impl =
+  reference<D, downcast_unit<D, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) *
+                                  dimension_unit<D>::ratio>>;
 
 }  // namespace detail
 
 template<Reference R1, Reference R2>
-using reference_multiply = detail::reference_multiply_impl<
-  dimension_multiply<typename R1::dimension, typename R2::dimension>,
-  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+using reference_multiply =
+  detail::reference_multiply_impl<dimension_multiply<typename R1::dimension, typename R2::dimension>,
+                                  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
 
 template<Reference R1, Reference R2>
-using reference_divide = detail::reference_divide_impl<
-  dimension_divide<typename R1::dimension, typename R2::dimension>,
-  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+using reference_divide =
+  detail::reference_divide_impl<dimension_divide<typename R1::dimension, typename R2::dimension>,
+                                typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
 
 /**
  * @brief The type for quantity references
@@ -62,21 +64,21 @@ using reference_divide = detail::reference_divide_impl<
  *
  * @code{.cpp}
  * namespace length_references {
- * 
+ *
  * inline constexpr auto m = reference<dim_length, metre>{};
  * inline constexpr auto km = reference<dim_length, kilometre>{};
- * 
+ *
  * }
- * 
+ *
  * namespace references {
- * 
+ *
  * using namespace length_references;
- * 
+ *
  * }
  * @endcode
- * 
+ *
  * Quantity references simplify quantity creation:
- * 
+ *
  * @code{.cpp}
  * using namespace units::isq::si::references;
  *
@@ -85,12 +87,12 @@ using reference_divide = detail::reference_divide_impl<
  * @endcode
  *
  * Also, it is allowed to define custom quantity references from existing ones:
- * 
+ *
  * @code{.cpp}
  * constexpr auto Nm = N * m;
  * constexpr auto mph = mi / h;
  * @endcode
- * 
+ *
  * The following syntaxes are not allowed:
  * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
@@ -103,10 +105,16 @@ struct reference {
   // Below friend functions are to be found via argument-dependent lookup only
 
   template<Reference R2>
-  [[nodiscard]] friend constexpr reference_multiply<reference, R2> operator*(reference, R2) { return {}; }
+  [[nodiscard]] friend constexpr reference_multiply<reference, R2> operator*(reference, R2)
+  {
+    return {};
+  }
 
   template<Reference R2>
-  [[nodiscard]] friend constexpr reference_divide<reference, R2> operator/(reference, R2) { return {}; }
+  [[nodiscard]] friend constexpr reference_divide<reference, R2> operator/(reference, R2)
+  {
+    return {};
+  }
 
   template<Representation Rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
@@ -117,7 +125,10 @@ struct reference {
   friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
 
   template<Reference R2>
-  [[nodiscard]] friend constexpr bool operator==(reference, R2) { return false; }
+  [[nodiscard]] friend constexpr bool operator==(reference, R2)
+  {
+    return false;
+  }
 
   [[nodiscard]] friend constexpr bool operator==(reference, reference) { return true; }
 };

@@ -28,11 +28,11 @@
 
 namespace units::isq {
 
-template <typename Child, Unit U, typename...>
+template<typename Child, Unit U, typename...>
 struct dim_resistance;
 
-template <typename Child, Unit U, DimensionOfT<dim_voltage> V, DimensionOfT<dim_electric_current> C>
-struct dim_resistance<Child, U, V, C> : derived_dimension<Child,U, exponent<V, 1>, exponent<C, -1>> {};
+template<typename Child, Unit U, DimensionOfT<dim_voltage> V, DimensionOfT<dim_electric_current> C>
+struct dim_resistance<Child, U, V, C> : derived_dimension<Child, U, exponent<V, 1>, exponent<C, -1>> {};
 
 template<typename T>
 concept Resistance = QuantityOfT<T, dim_resistance>;

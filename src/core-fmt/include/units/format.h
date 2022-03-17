@@ -176,7 +176,7 @@ constexpr It parse_units_format(It begin, S end, Handler&& handler)
       }
       default:
         constexpr auto units_types = std::string_view{"Qq"};
-        auto const new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
+        const auto new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
         if (new_end == end) throw STD_FMT::format_error("invalid format");
         if (*new_end == 'Q') {
           handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
@@ -274,7 +274,8 @@ struct quantity_formatter {
   explicit quantity_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, const quantity_format_specs<CharT>& fspecs,
                               Locale lc) :
       out(o), val(std::move(q).number()), specs(fspecs), loc(std::move(lc))
-  {}
+  {
+  }
 
   template<std::input_iterator It, std::sentinel_for<It> S>
   void on_text(It begin, S end)
@@ -357,7 +358,9 @@ private:
     }
 
     template<std::input_iterator It, std::sentinel_for<It> S>
-    constexpr void on_text(It, S) {}
+    constexpr void on_text(It, S)
+    {
+    }
 
     template<std::input_iterator It, std::sentinel_for<It> S>
     constexpr void on_quantity_value(It begin, S end)
@@ -365,7 +368,7 @@ private:
       if (begin != end) units::detail::parse_units_rep(begin, end, *this, units::treat_as_floating_point<Rep>);
       f.quantity_value = true;
     }
-    
+
     constexpr void on_quantity_unit(CharT mod)
     {
       if (mod != 'q') on_unit_modifier(mod);
@@ -427,7 +430,7 @@ public:
   [[nodiscard]] constexpr auto parse(STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
-    if(range.first != range.second)
+    if (range.first != range.second)
       format_str = std::basic_string_view<CharT>(&*range.first, static_cast<size_t>(range.second - range.first));
     return range.second;
   }

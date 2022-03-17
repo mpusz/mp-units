@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/bits/external/downcasting.h>
 #include <units/bits/basic_concepts.h>
+#include <units/bits/external/downcasting.h>
 // IWYU pragma: begin_exports
 #include <units/ratio.h>
 #include <units/symbol_text.h>
@@ -72,7 +72,7 @@ struct prefix_base : downcast_base<prefix_base<PF, R>> {
  * @tparam R factor to be used to scale a unit
  */
 template<typename Child, PrefixFamily PF, basic_symbol_text Symbol, ratio R>
-  requires (!std::same_as<PF, no_prefix>)
+  requires(!std::same_as<PF, no_prefix>)
 struct prefix : downcast_dispatch<Child, detail::prefix_base<PF, R>, downcast_mode::on> {
   static constexpr auto symbol = Symbol;
 };

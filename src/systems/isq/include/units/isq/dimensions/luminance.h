@@ -23,8 +23,8 @@
 #pragma once
 
 #include <units/concepts.h>
-#include <units/isq/dimensions/luminous_intensity.h>
 #include <units/isq/dimensions/length.h>
+#include <units/isq/dimensions/luminous_intensity.h>
 
 namespace units::isq {
 

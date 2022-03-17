@@ -60,7 +60,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
     using unit = downcast_unit<dim, pow<Num, Den>(Q::unit::ratio)>;
     using std::pow;
     return quantity<dim, unit, rep>(
-        static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
+      static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
 
@@ -74,7 +74,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
  */
 template<Quantity Q>
 [[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
-  requires requires { sqrt(q.number()); }  ||  requires { std::sqrt(q.number()); }
+  requires requires { sqrt(q.number()); } || requires { std::sqrt(q.number()); }
 {
   using dim = dimension_pow<typename Q::dimension, 1, 2>;
   using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
@@ -126,7 +126,7 @@ template<typename U, typename Rep>
  */
 template<typename D, typename U, typename Rep>
 [[nodiscard]] inline quantity<D, U, Rep> abs(const quantity<D, U, Rep>& q) noexcept
-  requires requires { abs(q.number()); } ||  requires { std::abs(q.number()); }
+  requires requires { abs(q.number()); } || requires { std::abs(q.number()); }
 {
   using std::abs;
   return quantity<D, U, Rep>(abs(q.number()));
@@ -155,13 +155,12 @@ template<Quantity Q>
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires ((!treat_as_floating_point<Rep>) ||
-    requires { floor(q.number()); } ||
-    requires { std::floor(q.number()); }) &&
-    (std::same_as<To, U> || requires {
-      ::units::quantity_cast<To>(q);
-      quantity<D, To, Rep>::one();
-    })
+  requires((!treat_as_floating_point<Rep>) || requires { floor(q.number()); } ||
+           requires { std::floor(q.number()); }) &&
+          (std::same_as<To, U> || requires {
+                                    ::units::quantity_cast<To>(q);
+                                    quantity<D, To, Rep>::one();
+                                  })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q) {
@@ -169,20 +168,17 @@ template<Unit To, typename D, typename U, typename Rep>
     }
     return res;
   };
-  if constexpr(treat_as_floating_point<Rep>) {
+  if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
-    if constexpr(std::is_same_v<To, U>) {
+    if constexpr (std::is_same_v<To, U>) {
       return quantity<D, To, Rep>(floor(q.number()));
-    }
-    else {
+    } else {
       return handle_signed_results(quantity<D, To, Rep>(floor(quantity_cast<To>(q).number())));
     }
-  }
-  else {
-    if constexpr(std::is_same_v<To, U>) {
+  } else {
+    if constexpr (std::is_same_v<To, U>) {
       return q;
-    }
-    else {
+    } else {
       return handle_signed_results(quantity_cast<To>(q));
     }
   }
@@ -209,13 +205,11 @@ template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::s
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires ((!treat_as_floating_point<Rep>) ||
-    requires { ceil(q.number()); } ||
-    requires { std::ceil(q.number()); }) &&
-    (std::same_as<To, U> || requires {
-      ::units::quantity_cast<To>(q);
-      quantity<D, To, Rep>::one();
-    })
+  requires((!treat_as_floating_point<Rep>) || requires { ceil(q.number()); } || requires { std::ceil(q.number()); }) &&
+          (std::same_as<To, U> || requires {
+                                    ::units::quantity_cast<To>(q);
+                                    quantity<D, To, Rep>::one();
+                                  })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res < q) {
@@ -223,20 +217,17 @@ template<Unit To, typename D, typename U, typename Rep>
     }
     return res;
   };
-  if constexpr(treat_as_floating_point<Rep>) {
+  if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
-    if constexpr(std::is_same_v<To, U>) {
+    if constexpr (std::is_same_v<To, U>) {
       return quantity<D, To, Rep>(ceil(q.number()));
-    }
-    else {
+    } else {
       return handle_signed_results(quantity<D, To, Rep>(ceil(quantity_cast<To>(q).number())));
     }
-  }
-  else {
-    if constexpr(std::is_same_v<To, U>) {
+  } else {
+    if constexpr (std::is_same_v<To, U>) {
       return q;
-    }
-    else {
+    } else {
       return handle_signed_results(quantity_cast<To>(q));
     }
   }
@@ -265,24 +256,21 @@ template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::s
  */
 template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> round(const quantity<D, U, Rep>& q) noexcept
-  requires ((!treat_as_floating_point<Rep>) ||
-    requires { round(q.number()); } ||
-    requires { std::round(q.number()); }) &&
-    (std::same_as<To, U> || requires {
-      ::units::floor<To>(q);
-      quantity<D, To, Rep>::one();
-    })
+  requires((!treat_as_floating_point<Rep>) || requires { round(q.number()); } ||
+           requires { std::round(q.number()); }) &&
+          (std::same_as<To, U> || requires {
+                                    ::units::floor<To>(q);
+                                    quantity<D, To, Rep>::one();
+                                  })
 {
-  if constexpr(std::is_same_v<To, U>) {
-    if constexpr(treat_as_floating_point<Rep>) {
+  if constexpr (std::is_same_v<To, U>) {
+    if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
       return quantity<D, To, Rep>(round(q.number()));
-    }
-    else {
+    } else {
       return q;
     }
-  }
-  else {
+  } else {
     const auto res_low = units::floor<To>(q);
     const auto res_high = res_low + decltype(res_low)::one();
     const auto diff0 = q - res_low;

@@ -46,12 +46,16 @@ using permeability = quantity<dim_permeability, U, Rep>;
 inline namespace literals {
 
 // H/m
-constexpr auto operator"" _q_H_per_m(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return permeability<henry_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_H_per_m(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return permeability<henry_per_metre, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_H_per_m(long double l) { return permeability<henry_per_metre, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -59,8 +63,9 @@ constexpr auto operator"" _q_H_per_m(long double l) { return permeability<henry_
 
 namespace units::aliases::isq::si::inline permeability {
 
-template<Representation Rep = double> using H_per_m = units::isq::si::permeability<units::isq::si::henry_per_metre, Rep>;
+template<Representation Rep = double>
+using H_per_m = units::isq::si::permeability<units::isq::si::henry_per_metre, Rep>;
 
 }  // namespace units::aliases::isq::si::inline permeability
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

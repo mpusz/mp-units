@@ -36,12 +36,16 @@ template<typename Dim, template<typename...> typename DimTemplate>
 inline constexpr bool same_exponents_of = false;
 
 template<Exponent... Es, template<typename...> typename DimTemplate>
-inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> = requires { typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>; } && std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>::recipe>;
+inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> =
+  requires { typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit, typename Es::dimension...>; } &&
+  std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit,
+                                                          typename Es::dimension...>::recipe>;
 
-} // namespace detail
+}  // namespace detail
 
 template<typename Dim, template<typename...> typename DimTemplate>
-concept EquivalentUnknownDimensionOfT = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> && detail::same_exponents_of<Dim, DimTemplate>;
+concept EquivalentUnknownDimensionOfT = Dimension<Dim> && is_derived_from_specialization_of<Dim, unknown_dimension> &&
+                                        detail::same_exponents_of<Dim, DimTemplate>;
 
 #endif
 
@@ -56,7 +60,7 @@ concept DimensionOfT = Dimension<Dim> && (is_derived_from_specialization_of<Dim,
 #if UNITS_DOWNCAST_MODE == 0
                                           || EquivalentUnknownDimensionOfT<Dim, DimTemplate>
 #endif
-);
+                                         );
 
 /**
  * @brief A concept matching all quantities with provided dimension class template

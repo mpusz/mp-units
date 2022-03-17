@@ -29,11 +29,12 @@
 namespace units::detail {
 
 template<Exponent E>
-  requires (E::den == 1 || E::den == 2) // TODO provide support for any den
+  requires(E::den == 1 || E::den == 2)  // TODO provide support for any den
 constexpr ratio exp_ratio()
 {
   const ratio base_ratio = E::dimension::base_unit::ratio;
-  const ratio positive_ratio = E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
+  const ratio positive_ratio =
+    E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
   const std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
   const ratio ratio_pow = pow<N>(positive_ratio);
   return E::den == 2 ? sqrt(ratio_pow) : ratio_pow;

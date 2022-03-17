@@ -45,12 +45,16 @@ using momentum = quantity<dim_momentum, U, Rep>;
 inline namespace literals {
 
 // kg*m/s
-constexpr auto operator"" _q_kg_m_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<kilogram_metre_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kg_m_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<kilogram_metre_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kg_m_per_s(long double l) { return momentum<kilogram_metre_per_second, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -58,8 +62,9 @@ constexpr auto operator"" _q_kg_m_per_s(long double l) { return momentum<kilogra
 
 namespace units::aliases::isq::si::inline momentum {
 
-template<Representation Rep = double> using kg_m_per_s = units::isq::si::momentum<units::isq::si::kilogram_metre_per_second, Rep>;
+template<Representation Rep = double>
+using kg_m_per_s = units::isq::si::momentum<units::isq::si::kilogram_metre_per_second, Rep>;
 
 }  // namespace units::aliases::isq::si::inline momentum
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

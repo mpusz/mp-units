@@ -48,13 +48,13 @@ inline constexpr auto GeV = reference<dim_acceleration, gigaelectronvolt>{};
 
 }  // namespace acceleration_references
 
-namespace references { 
+namespace references {
 
 using namespace acceleration_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
@@ -62,8 +62,9 @@ using namespace acceleration_references;
 
 namespace units::aliases::isq::natural::inline acceleration {
 
-template<Representation Rep = double> using GeV = units::isq::natural::acceleration<units::isq::natural::gigaelectronvolt, Rep>;
+template<Representation Rep = double>
+using GeV = units::isq::natural::acceleration<units::isq::natural::gigaelectronvolt, Rep>;
 
 }  // namespace units::aliases::isq::natural::inline acceleration
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

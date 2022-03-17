@@ -45,13 +45,13 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>&
   }
 }
 
-} //  namespace detail
+}  //  namespace detail
 
 template<typename CharT, typename Traits, typename D, typename U, typename Rep>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
   requires requires { os << q.number(); }
 {
-  if(os.width()) {
+  if (os.width()) {
     // std::setw() applies to the whole quantity output so it has to be first put into std::string
     std::basic_ostringstream<CharT, Traits> s;
     s.flags(os.flags());

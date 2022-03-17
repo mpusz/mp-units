@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/isq/dimensions/acceleration.h>
 #include <units/concepts.h>
+#include <units/isq/dimensions/acceleration.h>
 #include <units/isq/dimensions/mass.h>
 
 namespace units::isq {
