@@ -4,7 +4,7 @@
 
 ## Gitpod
 
-The easiest way to start coding is to jump streight into [Gitpod](https://www.gitpod.io). You can either click the button
+The easiest way to start coding is to jump straight into [Gitpod](https://www.gitpod.io). You can either click the button
 below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ...) in your web browser with `gitpod.io/#`
 (i.e. https://gitpod.io/#https://github.com/mpusz/units).
 
@@ -12,11 +12,12 @@ below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ..
 
 ## Download, Build, Install
 
-Alternatively, please refer to our official docs for [download, build, and install instructions](https://mpusz.github.io/units/usage.html) if you want to setup a development environemnt on your local machine.
+Alternatively, please refer to our official docs for [download, build, and install instructions](https://mpusz.github.io/units/usage.html) if you want to setup a development environment on your local machine.
 
 ## Where to start?
 
 If you are looking for a good issue to start with, please check the following:
+
 - [good first issue](https://github.com/mpusz/units/labels/good%20first%20issue) - issues that should be pretty simple to implement.
 - [help wanted](https://github.com/mpusz/units/labels/help%20wanted) - issues that typically are a bit more involved than beginner issues.
 - [high priority](https://github.com/mpusz/units/labels/high%20priority) - things to fix ASAP but often of higher complexity.
@@ -26,6 +27,7 @@ If you are looking for a good issue to start with, please check the following:
 We intend to use `clang-format` when it finally learns what a C++ concept is :wink:.
 
 Until then, please code alike what is there already:
+
 - 2 spaces for indentation
 - no indentation for namespaces
 - types, functions, variables naming in a `standard_case`
