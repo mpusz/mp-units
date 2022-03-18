@@ -83,9 +83,10 @@ template<typename From, typename To>
 
 template<typename From, typename To>
   requires(!common_type_with_<std::common_type_t<From, To>, std::intmax_t> &&
-          scalable_number_<std::common_type_t<From, To>,
-                           std::intmax_t>&& requires { typename std::common_type_t<From, To>::value_type; } &&
-  common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>) struct cast_traits<From, To> {
+           scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
+           requires { typename std::common_type_t<From, To>::value_type; } &&
+           common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>)
+struct cast_traits<From, To> {
   using ratio_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
   using rep_type = std::common_type_t<From, To>;
 };
