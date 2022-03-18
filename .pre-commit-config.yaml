@@ -1,0 +1,19 @@
+default_stages: [commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+  # - repo: https://github.com/pocc/pre-commit-hooks
+  #   rev: v1.3.5
+  #   hooks:
+  #     - id: clang-format
+  # - repo: https://github.com/cheshirekow/cmake-format-precommit
+  #   rev: v0.6.13
+  #   hooks:
+  #     - id: cmake-format
+  #       additional_dependencies: ["cmakelang"]
+  #     - id: cmake-lint
+  #       additional_dependencies: ["cmakelang"]
