@@ -144,11 +144,11 @@ Concepts
 .. concept:: template<typename QK1, typename QK2> QuantityKindEquivalentTo
 
     A concept matching two equivalent quantity kinds. Satisfied by quantity kinds having equivalent kinds.
- 
+
 .. concept:: template<typename QPK, typename PK> QuantityPointKindOf
- 
+
     A concept matching only quantity point kinds of a specific point kind.
- 
+
     :tparam QPK: Quantity point kind to verify.
     :tparam PK: Point kind type to use for verification.
 

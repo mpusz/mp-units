@@ -36,7 +36,7 @@
 
 using namespace units::aliases::isq;
 
-// Some basic specs for the warship   
+// Some basic specs for the warship
 struct Ship {
   si::fps::length::ft<> length;
   si::fps::length::ft<> draft;
@@ -45,7 +45,7 @@ struct Ship {
   si::fps::speed::ft_per_s<> speed;
   si::fps::mass::lb<> mass;
 
-  si::fps::length::in<> mainGuns; 
+  si::fps::length::in<> mainGuns;
   si::fps::mass::lb<> shellMass;
   si::fps::speed::ft_per_s<> shellSpeed;
   si::fps::power::ft_pdl_per_s<> power;
@@ -80,7 +80,7 @@ int main()
   using namespace units::aliases::isq::si;
   using namespace units::aliases::isq::si::fps;
   using units::aliases::isq::si::fps::length::ft;  // to disambiguate from si::femptotonne
-  
+
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{m<>(251.)}, .draft{m<>(9.3)}, .beam{m<>(36)}, .speed{km_per_h<>(56)}, .mass{t<>(50'300)}, .mainGuns{mm<>(380)}, .shellMass{kg<>(800)}, .shellSpeed{m_per_s<>(820.)}, .power{kW<>(110.45)}};
 

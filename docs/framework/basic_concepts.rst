@@ -13,7 +13,7 @@ The most important concepts in the library are `Unit`, `Dimension`,
 
 ..
     https://www.planttext.com
-    
+
     @startuml
 
     skinparam monochrome true

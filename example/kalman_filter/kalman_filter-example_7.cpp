@@ -73,7 +73,7 @@ int main()
 
   const auto process_noise_variance = 0.0001 * (deg_C * deg_C);
   const estimation initial = { state{ quantity_point(10. * deg_C) }, pow<2>(100. * deg_C) };
-  const std::array measurements = { 
+  const std::array measurements = {
     quantity_point(50.45 * deg_C),
     quantity_point(50.967 * deg_C),
     quantity_point(51.6 * deg_C),

@@ -12,7 +12,7 @@ International System of Quantities (ISQ)
 
 Systems of Units based on the SI
 --------------------------------
-    
+
 .. toctree::
     :maxdepth: 2
 

@@ -12,7 +12,7 @@ dimensions.
 
     <object data="../_images/dimensions.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
 
-.. 
+..
     https://www.planttext.com
 
 
