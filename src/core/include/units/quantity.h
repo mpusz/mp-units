@@ -331,11 +331,11 @@ public:
   // Below friend functions are to be found via argument-dependent lookup only
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
-    requires requires {
+    requires requires {  // TODO: Simplify when Clang catches up.
                requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;  // TODO: Simplify
+               requires is_same_v<unit, units::one>;
                requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>;
-             }  // when Clang catches up.
+             }
   {
     return units::quantity(lhs.number() + rhs);
   }
