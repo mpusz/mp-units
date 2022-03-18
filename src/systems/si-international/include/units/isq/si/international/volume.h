@@ -42,12 +42,16 @@ struct cubic_foot : derived_unit<cubic_foot, si::dim_volume, si::international::
 inline namespace literals {
 
 // ft3
-constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft3(long double l) { return si::volume<cubic_foot, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -63,7 +67,7 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
@@ -71,8 +75,9 @@ using namespace volume_references;
 
 namespace units::aliases::isq::si::international::inline volume {
 
-template<Representation Rep = double> using ft3 = units::isq::si::volume<units::isq::si::international::cubic_foot, Rep>;
+template<Representation Rep = double>
+using ft3 = units::isq::si::volume<units::isq::si::international::cubic_foot, Rep>;
 
 }  // namespace units::aliases::isq::si::international::inline volume
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -41,12 +41,16 @@ struct mile_per_hour : derived_unit<mile_per_hour, si::dim_speed, si::internatio
 inline namespace literals {
 
 // mi/h
-constexpr auto operator"" _q_mi_per_h(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mi_per_h(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per_hour, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::international
 
@@ -54,8 +58,9 @@ constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per
 
 namespace units::aliases::isq::si::international::inline speed {
 
-template<Representation Rep = double> using mi_per_h = units::isq::si::speed<units::isq::si::international::mile_per_hour, Rep>;
+template<Representation Rep = double>
+using mi_per_h = units::isq::si::speed<units::isq::si::international::mile_per_hour, Rep>;
 
 }  // namespace units::aliases::isq::si::international::inline speed
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -47,12 +47,16 @@ using electric_charge = quantity<dim_electric_charge, U, Rep>;
 inline namespace literals {
 
 // C
-constexpr auto operator"" _q_C(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return electric_charge<coulomb, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_C(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return electric_charge<coulomb, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_C(long double l) { return electric_charge<coulomb, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -68,7 +72,7 @@ using namespace electric_charge_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -76,8 +80,9 @@ using namespace electric_charge_references;
 
 namespace units::aliases::isq::si::inline electric_charge {
 
-template<Representation Rep = double> using C = units::isq::si::electric_charge<units::isq::si::coulomb, Rep>;
+template<Representation Rep = double>
+using C = units::isq::si::electric_charge<units::isq::si::coulomb, Rep>;
 
 }  // namespace units::aliases::isq::si::inline electric_charge
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -45,13 +45,13 @@ inline constexpr auto inv_GeV = reference<dim_time, inverted_gigaelectronvolt>{}
 
 }  // namespace time_references
 
-namespace references { 
+namespace references {
 
 using namespace time_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
@@ -59,8 +59,9 @@ using namespace time_references;
 
 namespace units::aliases::isq::natural::inline time {
 
-template<Representation Rep = double> using inv_GeV = units::isq::natural::time<units::isq::natural::inverted_gigaelectronvolt, Rep>;
+template<Representation Rep = double>
+using inv_GeV = units::isq::natural::time<units::isq::natural::inverted_gigaelectronvolt, Rep>;
 
 }  // namespace units::aliases::isq::natural::inline time
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -27,7 +27,7 @@
 #include <units/isq/si/mass.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/voltage.h>
-#include <units/math.h> // IWYU pragma: keep
+#include <units/math.h>  // IWYU pragma: keep
 #include <units/unit.h>
 
 namespace {
@@ -37,35 +37,43 @@ using namespace units::isq::si;
 
 // power spectral density
 struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
-struct dim_power_spectral_density : derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>, units::exponent<dim_frequency, -1>> {};
+struct dim_power_spectral_density :
+    derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>,
+                      units::exponent<dim_frequency, -1>> {};
 
 template<UnitOf<dim_power_spectral_density> U, Representation Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
 // amplitude spectral density
 struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
-struct dim_amplitude_spectral_density : derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>, units::exponent<dim_frequency, -1, 2>> {};
+struct dim_amplitude_spectral_density :
+    derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>,
+                      units::exponent<dim_frequency, -1, 2>> {};
 
 template<UnitOf<dim_amplitude_spectral_density> U, Representation Rep = double>
 using amplitude_spectral_density = quantity<dim_amplitude_spectral_density, U, Rep>;
 
-}
+}  // namespace
 
 namespace {
 
 static_assert(compare<dimension_sqrt<dim_power_spectral_density>, dim_amplitude_spectral_density>);
 static_assert(compare<dimension_pow<dim_amplitude_spectral_density, 2>, dim_power_spectral_density>);
 
-static_assert(compare<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))), decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
-static_assert(compare<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))), decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
+static_assert(compare<decltype(pow<2>(amplitude_spectral_density<volt_per_sqrt_hertz>(4))),
+                      decltype(power_spectral_density<sq_volt_per_hertz>(16))>);
+static_assert(compare<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16))),
+                      decltype(amplitude_spectral_density<volt_per_sqrt_hertz>(4))>);
 
-}
+}  // namespace
 
 namespace {
 
 struct kilogram_per_second : unit<kilogram_per_second> {};
-struct dim_mass_rate : derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {};
+struct dim_mass_rate :
+    derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {
+};
 struct kilogram_per_hour : derived_unit<kilogram_per_hour, dim_mass_rate, kilogram, hour> {};
 [[maybe_unused]] constexpr auto a = 1_q_kg / 1_q_h;
 
-}
+}  // namespace

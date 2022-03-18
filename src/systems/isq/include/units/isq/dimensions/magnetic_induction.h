@@ -29,11 +29,12 @@
 
 namespace units::isq {
 
-template <typename Child, Unit U, typename...>
+template<typename Child, Unit U, typename...>
 struct dim_magnetic_induction;
 
-template <typename Child, Unit U, DimensionOfT<dim_voltage> V, DimensionOfT<dim_time> T, DimensionOfT<dim_length> L>
-struct dim_magnetic_induction<Child, U, V, T, L> : derived_dimension<Child, U, exponent<V, 1>, exponent<T, 1>, exponent<L, -2>> {};
+template<typename Child, Unit U, DimensionOfT<dim_voltage> V, DimensionOfT<dim_time> T, DimensionOfT<dim_length> L>
+struct dim_magnetic_induction<Child, U, V, T, L> :
+    derived_dimension<Child, U, exponent<V, 1>, exponent<T, 1>, exponent<L, -2>> {};
 
 template<typename T>
 concept MagneticInduction = QuantityOfT<T, dim_magnetic_induction>;

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/isq/dimensions/area.h>
 #include <units/concepts.h>
+#include <units/isq/dimensions/area.h>
 #include <units/isq/dimensions/force.h>
 
 namespace units::isq {

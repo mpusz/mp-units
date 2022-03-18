@@ -45,13 +45,13 @@ inline constexpr auto GeV = reference<dim_mass, gigaelectronvolt>{};
 
 }  // namespace mass_references
 
-namespace references { 
+namespace references {
 
 using namespace mass_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
@@ -59,8 +59,9 @@ using namespace mass_references;
 
 namespace units::aliases::isq::natural::inline mass {
 
-template<Representation Rep = double> using GeV = units::isq::natural::mass<units::isq::natural::gigaelectronvolt, Rep>;
+template<Representation Rep = double>
+using GeV = units::isq::natural::mass<units::isq::natural::gigaelectronvolt, Rep>;
 
 }  // namespace units::aliases::isq::natural::inline mass
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

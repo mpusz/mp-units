@@ -63,7 +63,7 @@ inline constexpr auto& downcasted_kind = downcasted_kind_fn<typename QK::kind_ty
  */
 template<typename QK1, typename QK2>
 concept QuantityKindRelatedTo = QuantityKind<QK1> && QuantityKind<QK2> &&
-  equivalent<typename QK1::kind_type::base_kind, typename QK2::kind_type::base_kind>;
+                                equivalent<typename QK1::kind_type::base_kind, typename QK2::kind_type::base_kind>;
 
 /**
  * @brief A quantity kind
@@ -94,24 +94,26 @@ public:
   quantity_kind(quantity_kind&&) = default;
 
   template<typename T>
-    requires 
-      (Quantity<std::remove_cvref_t<T>> ||
-       QuantityLike<std::remove_cvref_t<T>> ||
-       (Dimensionless<quantity_type> && !Quantity<std::remove_cvref_t<T>>)) &&
-      std::constructible_from<quantity_type, T>
-  constexpr explicit quantity_kind(T&& t) : q_(std::forward<T>(t)) {}
+    requires(Quantity<std::remove_cvref_t<T>> || QuantityLike<std::remove_cvref_t<T>> ||
+             (Dimensionless<quantity_type> && !Quantity<std::remove_cvref_t<T>>)) &&
+            std::constructible_from<quantity_type, T>
+  constexpr explicit quantity_kind(T&& t) : q_(std::forward<T>(t))
+  {
+  }
 
   template<QuantityKindEquivalentTo<quantity_kind> QK2>
     requires std::convertible_to<typename QK2::quantity_type, quantity_type>
-  constexpr explicit(false) quantity_kind(const QK2& qk) : q_(qk.common()) {}
+  constexpr explicit(false) quantity_kind(const QK2& qk) : q_(qk.common())
+  {
+  }
 
   quantity_kind& operator=(const quantity_kind&) = default;
   quantity_kind& operator=(quantity_kind&&) = default;
 
   [[nodiscard]] constexpr quantity_type& common() & noexcept { return q_; }
-  [[nodiscard]] constexpr const quantity_type& common() const & noexcept { return q_; }
+  [[nodiscard]] constexpr const quantity_type& common() const& noexcept { return q_; }
   [[nodiscard]] constexpr quantity_type&& common() && noexcept { return std::move(q_); }
-  [[nodiscard]] constexpr const quantity_type&& common() const && noexcept { return std::move(q_); }
+  [[nodiscard]] constexpr const quantity_type&& common() const&& noexcept { return std::move(q_); }
 
   [[nodiscard]] static constexpr quantity_kind zero() noexcept
     requires requires { quantity_type::zero(); }
@@ -222,17 +224,18 @@ public:
 
   template<typename Rep2>
   constexpr quantity_kind& operator%=(const Rep2& rhs)
-    requires (!Quantity<Rep2> || Dimensionless<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
+    requires(!Quantity<Rep2> || Dimensionless<Rep2>) && requires(quantity_type q, const Rep2 r) { q %= r; }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     q_ %= rhs;
     return *this;
   }
-  
+
   template<QuantityKind QK>
   constexpr quantity_kind& operator%=(const QK& rhs)
-    requires (QuantityKindEquivalentTo<QK, quantity_kind> || std::same_as<typename QK::kind_type, downcast_kind<K, dim_one>>) &&
-      requires(quantity_type q) { q %= rhs.common(); }
+    requires(QuantityKindEquivalentTo<QK, quantity_kind> ||
+             std::same_as<typename QK::kind_type, downcast_kind<K, dim_one>>) &&
+            requires(quantity_type q) { q %= rhs.common(); }
   {
     gsl_ExpectsAudit(rhs.common().number() != quantity_values<typename QK::rep>::zero());
     q_ %= rhs.common();
@@ -243,21 +246,33 @@ public:
   // Below friend functions are to be found via argument-dependent lookup only
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const quantity_kind& qk, const Value& v)
-    requires requires(quantity_type q) { { q * v } -> Quantity; }
+    requires requires(quantity_type q) {
+               {
+                 q* v
+                 } -> Quantity;
+             }
   {
     return detail::make_quantity_kind<quantity_kind>(qk.common() * v);
   }
 
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const Value& v, const quantity_kind& qk)
-    requires requires(quantity_type q) { { v * q } -> Quantity; }
+    requires requires(quantity_type q) {
+               {
+                 v* q
+                 } -> Quantity;
+             }
   {
     return detail::make_quantity_kind<quantity_kind>(v * qk.common());
   }
 
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const quantity_kind& qk, const Value& v)
-    requires requires(quantity_type q) { { q / v } -> Quantity; }
+    requires requires(quantity_type q) {
+               {
+                 q / v
+                 } -> Quantity;
+             }
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     return detail::make_quantity_kind<quantity_kind>(qk.common() / v);
@@ -265,7 +280,11 @@ public:
 
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const Value& v, const quantity_kind& qk)
-    requires requires(quantity_type q) { { v / q } -> Quantity; }
+    requires requires(quantity_type q) {
+               {
+                 v / q
+                 } -> Quantity;
+             }
   {
     gsl_ExpectsAudit(qk.common().number() != quantity_values<rep>::zero());
     return detail::downcasted_kind<quantity_kind>(v / qk.common());
@@ -297,7 +316,7 @@ template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
 
 template<QuantityKind QK1, QuantityKindEquivalentTo<QK1> QK2>
 [[nodiscard]] constexpr QuantityKind auto operator-(const QK1& lhs, const QK2& rhs)
-    requires requires { lhs.common() - rhs.common(); }
+  requires requires { lhs.common() - rhs.common(); }
 {
   return detail::make_quantity_kind<QK1>(lhs.common() - rhs.common());
 }
@@ -311,7 +330,7 @@ template<QuantityKind QK, Quantity Q>
 
 template<Quantity Q, QuantityKind QK>
 [[nodiscard]] constexpr QuantityKind auto operator*(const Q& lhs, const QK& rhs)
-  requires requires { lhs * rhs.common(); }
+  requires requires { lhs* rhs.common(); }
 {
   return detail::downcasted_kind<QK>(lhs * rhs.common());
 }

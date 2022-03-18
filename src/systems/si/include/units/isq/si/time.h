@@ -57,56 +57,104 @@ using time = quantity<dim_time, U, Rep>;
 inline namespace literals {
 
 // ys
-constexpr auto operator"" _q_ys(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<yoctosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ys(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<yoctosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ys(long double l) { return time<yoctosecond, long double>(l); }
 
 // zs
-constexpr auto operator"" _q_zs(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<zeptosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zs(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<zeptosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zs(long double l) { return time<zeptosecond, long double>(l); }
 
 // as
-constexpr auto operator"" _q_as(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<attosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_as(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<attosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_as(long double l) { return time<attosecond, long double>(l); }
 
 // fs
-constexpr auto operator"" _q_fs(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<femtosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fs(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<femtosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fs(long double l) { return time<femtosecond, long double>(l); }
 
 // ps
-constexpr auto operator"" _q_ps(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<picosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ps(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<picosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ps(long double l) { return time<picosecond, long double>(l); }
 
 // ns
-constexpr auto operator"" _q_ns(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<nanosecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ns(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<nanosecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ns(long double l) { return time<nanosecond, long double>(l); }
 
 // us
-constexpr auto operator"" _q_us(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<microsecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_us(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<microsecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_us(long double l) { return time<microsecond, long double>(l); }
 
 // ms
-constexpr auto operator"" _q_ms(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<millisecond, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ms(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<millisecond, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ms(long double l) { return time<millisecond, long double>(l); }
 
 // s
-constexpr auto operator"" _q_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_s(long double l) { return time<second, long double>(l); }
 
 // min
-constexpr auto operator"" _q_min(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<minute, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_min(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<minute, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_min(long double l) { return time<minute, long double>(l); }
 
 // h
-constexpr auto operator"" _q_h(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_h(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<hour, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_h(long double l) { return time<hour, long double>(l); }
 
 // d
-constexpr auto operator"" _q_d(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return time<day, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_d(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return time<day, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_d(long double l) { return time<day, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -131,9 +179,9 @@ namespace references {
 
 using namespace time_references;
 
-} // namespace references
+}  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -141,19 +189,31 @@ using namespace time_references;
 
 namespace units::aliases::isq::si::inline time {
 
-template<Representation Rep = double> using ys = units::isq::si::time<units::isq::si::yoctosecond, Rep>;
-template<Representation Rep = double> using zs = units::isq::si::time<units::isq::si::zeptosecond, Rep>;
-template<Representation Rep = double> using as = units::isq::si::time<units::isq::si::attosecond, Rep>;
-template<Representation Rep = double> using fs = units::isq::si::time<units::isq::si::femtosecond, Rep>;
-template<Representation Rep = double> using ps = units::isq::si::time<units::isq::si::picosecond, Rep>;
-template<Representation Rep = double> using ns = units::isq::si::time<units::isq::si::nanosecond, Rep>;
-template<Representation Rep = double> using us = units::isq::si::time<units::isq::si::microsecond, Rep>;
-template<Representation Rep = double> using ms = units::isq::si::time<units::isq::si::millisecond, Rep>;
-template<Representation Rep = double> using s = units::isq::si::time<units::isq::si::second, Rep>;
-template<Representation Rep = double> using min = units::isq::si::time<units::isq::si::minute, Rep>;
-template<Representation Rep = double> using h = units::isq::si::time<units::isq::si::hour, Rep>;
-template<Representation Rep = double> using d = units::isq::si::time<units::isq::si::day, Rep>;
+template<Representation Rep = double>
+using ys = units::isq::si::time<units::isq::si::yoctosecond, Rep>;
+template<Representation Rep = double>
+using zs = units::isq::si::time<units::isq::si::zeptosecond, Rep>;
+template<Representation Rep = double>
+using as = units::isq::si::time<units::isq::si::attosecond, Rep>;
+template<Representation Rep = double>
+using fs = units::isq::si::time<units::isq::si::femtosecond, Rep>;
+template<Representation Rep = double>
+using ps = units::isq::si::time<units::isq::si::picosecond, Rep>;
+template<Representation Rep = double>
+using ns = units::isq::si::time<units::isq::si::nanosecond, Rep>;
+template<Representation Rep = double>
+using us = units::isq::si::time<units::isq::si::microsecond, Rep>;
+template<Representation Rep = double>
+using ms = units::isq::si::time<units::isq::si::millisecond, Rep>;
+template<Representation Rep = double>
+using s = units::isq::si::time<units::isq::si::second, Rep>;
+template<Representation Rep = double>
+using min = units::isq::si::time<units::isq::si::minute, Rep>;
+template<Representation Rep = double>
+using h = units::isq::si::time<units::isq::si::hour, Rep>;
+template<Representation Rep = double>
+using d = units::isq::si::time<units::isq::si::day, Rep>;
 
 }  // namespace units::aliases::isq::si::inline time
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

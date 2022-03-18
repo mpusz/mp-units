@@ -23,12 +23,12 @@
 #pragma once
 
 #include <units/isq/si/amount_of_substance.h>
-#include <units/isq/si/thermodynamic_temperature.h>
 #include <units/isq/si/electric_charge.h>
 #include <units/isq/si/energy.h>
 #include <units/isq/si/frequency.h>
 #include <units/isq/si/power.h>
 #include <units/isq/si/speed.h>
+#include <units/isq/si/thermodynamic_temperature.h>
 
 namespace units::isq::si::si2019 {
 

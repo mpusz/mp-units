@@ -37,7 +37,8 @@ namespace units::isq::si {
 
 struct ampere_per_metre_sq : unit<ampere_per_metre_sq> {};
 
-struct dim_current_density : isq::dim_current_density<dim_current_density, ampere_per_metre_sq, dim_electric_current, dim_length> {};
+struct dim_current_density :
+    isq::dim_current_density<dim_current_density, ampere_per_metre_sq, dim_electric_current, dim_length> {};
 
 template<UnitOf<dim_current_density> U, Representation Rep = double>
 using current_density = quantity<dim_current_density, U, Rep>;
@@ -47,12 +48,16 @@ using current_density = quantity<dim_current_density, U, Rep>;
 inline namespace literals {
 
 // A / m²
-constexpr auto operator"" _q_A_per_m2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return current_density<ampere_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_A_per_m2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return current_density<ampere_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<ampere_per_metre_sq, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -60,8 +65,9 @@ constexpr auto operator"" _q_A_per_m2(long double l) { return current_density<am
 
 namespace units::aliases::isq::si::inline current_density {
 
-template<Representation Rep = double> using A_per_m2 = units::isq::si::current_density<units::isq::si::ampere_per_metre_sq, Rep>;
+template<Representation Rep = double>
+using A_per_m2 = units::isq::si::current_density<units::isq::si::ampere_per_metre_sq, Rep>;
 
 }  // namespace units::aliases::isq::si::inline current_density
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

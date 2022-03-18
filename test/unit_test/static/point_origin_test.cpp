@@ -22,10 +22,10 @@
 
 #include <units/bits/equivalent.h>
 #include <units/chrono.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/length.h>
 #include <units/kind.h>
 #include <units/quantity_point.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/cgs/length.h>
 
 using namespace units;
 namespace si = isq::si;
@@ -54,8 +54,8 @@ static_assert(RebindablePointOriginFor<dynamic_origin<si::dim_length>, si::dim_l
 static_assert(is_same_v<rebind_point_origin_dimension<dynamic_origin<si::dim_length>, si::dim_length>,
                         dynamic_origin<si::dim_length>>);
 static_assert(RebindablePointOriginFor<dynamic_origin<si::dim_length>, si::dim_time>);
-static_assert(is_same_v<rebind_point_origin_dimension<dynamic_origin<si::dim_length>, si::dim_time>,
-                        dynamic_origin<si::dim_time>>);
+static_assert(
+  is_same_v<rebind_point_origin_dimension<dynamic_origin<si::dim_length>, si::dim_time>, dynamic_origin<si::dim_time>>);
 static_assert(RebindablePointOriginFor<ones_viewpoint1, si::dim_length>);
 static_assert(is_same_v<rebind_point_origin_dimension<ones_viewpoint1, si::dim_length>, ones_viewpoint1>);
 static_assert(RebindablePointOriginFor<ones_viewpoint2, si::dim_length>);

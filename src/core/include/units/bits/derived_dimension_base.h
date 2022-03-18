@@ -34,17 +34,17 @@ namespace units::detail {
  * Expression of the dependence of a quantity on the base quantities (and their base dimensions) of a system of
  * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  * A power of a factor is the factor raised to an exponent.
- * 
- * A derived dimension can be formed from multiple exponents (i.e. speed is represented as "exponent<L, 1>, exponent<T, -1>").
- * It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
+ *
+ * A derived dimension can be formed from multiple exponents (i.e. speed is represented as "exponent<L, 1>, exponent<T,
+ * -1>"). It is also possible to form a derived dimension with only one exponent (i.e. frequency is represented as just
  * "exponent<T, -1>").
- * 
+ *
  * @note This class template is used by the library engine and should not be directly instantiated by the user.
- * 
+ *
  * @tparam Es zero or more exponents of a derived dimension
  */
 template<Exponent... Es>
-  requires (BaseDimension<typename Es::dimension> && ...)
+  requires(BaseDimension<typename Es::dimension> && ...)
 struct derived_dimension_base : downcast_base<derived_dimension_base<Es...>> {
   using exponents = exponent_list<Es...>;
 };

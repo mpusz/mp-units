@@ -30,12 +30,10 @@ namespace units {
 namespace detail {
 
 template<typename T, typename U>
-struct equivalent_impl : std::false_type {
-};
+struct equivalent_impl : std::false_type {};
 
 template<typename T>
-struct equivalent_impl<T, T> : std::true_type {
-};
+struct equivalent_impl<T, T> : std::true_type {};
 
 
 // units
@@ -47,39 +45,35 @@ struct equivalent_impl<U1, U2> : std::disjunction<std::is_base_of<U1, U2>, std::
 // dimensions
 
 template<BaseDimension D1, BaseDimension D2>
-struct equivalent_impl<D1, D2> : std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
-                     same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {
-};
+struct equivalent_impl<D1, D2> :
+    std::conjunction<std::bool_constant<D1::symbol == D2::symbol>,
+                     same_unit_reference<typename D1::base_unit, typename D2::base_unit>> {};
 
 template<Exponent E1, Exponent E2>
-struct equivalent_exp : std::false_type {
-};
+struct equivalent_exp : std::false_type {};
 
 template<BaseDimension Dim1, std::intmax_t Num, std::intmax_t Den, BaseDimension Dim2>
-struct equivalent_exp<exponent<Dim1, Num, Den>, exponent<Dim2, Num, Den>> : equivalent_impl<Dim1, Dim2> {
-};
+struct equivalent_exp<exponent<Dim1, Num, Den>, exponent<Dim2, Num, Den>> : equivalent_impl<Dim1, Dim2> {};
 
 template<DerivedDimension D1, DerivedDimension D2>
-struct equivalent_derived_dim : std::false_type {
-};
+struct equivalent_derived_dim : std::false_type {};
 
 template<typename... Es1, typename... Es2>
   requires(sizeof...(Es1) == sizeof...(Es2))
 struct equivalent_derived_dim<derived_dimension_base<Es1...>, derived_dimension_base<Es2...>> :
-    std::conjunction<equivalent_exp<Es1, Es2>...> {
-};
+    std::conjunction<equivalent_exp<Es1, Es2>...> {};
 
 template<DerivedDimension D1, DerivedDimension D2>
 struct equivalent_impl<D1, D2> :
     std::disjunction<std::is_base_of<D1, D2>, std::is_base_of<D2, D1>,
-                     equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {
-};
+                     equivalent_derived_dim<downcast_base_t<D1>, downcast_base_t<D2>>> {};
 
 
 // additionally accounts for unknown dimensions
 template<Unit U1, Dimension D1, Unit U2, Dimension D2>
-struct equivalent_unit : std::disjunction<equivalent_impl<U1, U2>,
-                                          std::bool_constant<U1::ratio / dimension_unit<D1>::ratio == U2::ratio / dimension_unit<D2>::ratio>> {};
+struct equivalent_unit :
+    std::disjunction<equivalent_impl<U1, U2>, std::bool_constant<U1::ratio / dimension_unit<D1>::ratio ==
+                                                                 U2::ratio / dimension_unit<D2>::ratio>> {};
 
 // point origins
 
@@ -90,41 +84,46 @@ concept EquivalentPointOrigins =
   std::same_as<U, rebind_point_origin_dimension<T, typename U::dimension>>;
 
 template<PointOrigin T, PointOrigin U>
-struct equivalent_impl<T, U> : std::bool_constant<
-  EquivalentPointOrigins<T, U> && equivalent_impl<typename T::dimension, typename U::dimension>::value> {};
+struct equivalent_impl<T, U> :
+    std::bool_constant<EquivalentPointOrigins<T, U> &&
+                       equivalent_impl<typename T::dimension, typename U::dimension>::value> {};
 
 
 // (point) kinds
 
 template<Kind T, Kind U>
 struct equivalent_impl<T, U> :
-  std::conjunction<std::is_same<typename T::base_kind, typename U::base_kind>,
-                   equivalent_impl<typename T::dimension, typename U::dimension>> {};
+    std::conjunction<std::is_same<typename T::base_kind, typename U::base_kind>,
+                     equivalent_impl<typename T::dimension, typename U::dimension>> {};
 
 template<PointKind T, PointKind U>
 struct equivalent_impl<T, U> :
-  std::conjunction<equivalent_impl<typename T::base_kind, typename U::base_kind>,
-                   equivalent_impl<typename T::origin, typename U::origin>> {};
+    std::conjunction<equivalent_impl<typename T::base_kind, typename U::base_kind>,
+                     equivalent_impl<typename T::origin, typename U::origin>> {};
 
 
 // quantities, quantity points, quantity (point) kinds
 
 template<Quantity Q1, Quantity Q2>
-struct equivalent_impl<Q1, Q2> : std::conjunction<equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
-                                                                  equivalent_unit<typename Q1::unit, typename Q1::dimension,
-                                                                                  typename Q2::unit, typename Q2::dimension>> {};
+struct equivalent_impl<Q1, Q2> :
+    std::conjunction<
+      equivalent_impl<typename Q1::dimension, typename Q2::dimension>,
+      equivalent_unit<typename Q1::unit, typename Q1::dimension, typename Q2::unit, typename Q2::dimension>> {};
 
 template<QuantityPoint QP1, QuantityPoint QP2>
-struct equivalent_impl<QP1, QP2> : std::conjunction<equivalent_impl<typename QP1::quantity_type, typename QP2::quantity_type>,
-                                                    equivalent_impl<typename QP1::origin, typename QP2::origin>> {};
+struct equivalent_impl<QP1, QP2> :
+    std::conjunction<equivalent_impl<typename QP1::quantity_type, typename QP2::quantity_type>,
+                     equivalent_impl<typename QP1::origin, typename QP2::origin>> {};
 
 template<QuantityKind QK1, QuantityKind QK2>
-struct equivalent_impl<QK1, QK2> : std::conjunction<equivalent_impl<typename QK1::kind_type, typename QK2::kind_type>,
-                                                    equivalent_impl<typename QK1::quantity_type, typename QK2::quantity_type>> {};
+struct equivalent_impl<QK1, QK2> :
+    std::conjunction<equivalent_impl<typename QK1::kind_type, typename QK2::kind_type>,
+                     equivalent_impl<typename QK1::quantity_type, typename QK2::quantity_type>> {};
 
 template<QuantityPointKind QPK1, QuantityPointKind QPK2>
-struct equivalent_impl<QPK1, QPK2> : std::conjunction<equivalent_impl<typename QPK1::quantity_kind_type, typename QPK2::quantity_kind_type>,
-                                                      equivalent_impl<typename QPK1::origin, typename QPK2::origin>> {};
+struct equivalent_impl<QPK1, QPK2> :
+    std::conjunction<equivalent_impl<typename QPK1::quantity_kind_type, typename QPK2::quantity_kind_type>,
+                     equivalent_impl<typename QPK1::origin, typename QPK2::origin>> {};
 
 }  // namespace detail
 

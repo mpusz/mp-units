@@ -29,10 +29,10 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/voltage.h>
-#include <units/isq/si/time.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/prefixes.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/voltage.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
@@ -58,7 +58,8 @@ struct yottatesla : prefixed_unit<yottatesla, yotta, tesla> {};
 
 struct gauss : named_scaled_unit<gauss, "G", prefix, ratio(1, 10'000), tesla> {};
 
-struct dim_magnetic_induction : isq::dim_magnetic_induction<dim_magnetic_induction, tesla, dim_voltage, dim_time, dim_length> {};
+struct dim_magnetic_induction :
+    isq::dim_magnetic_induction<dim_magnetic_induction, tesla, dim_voltage, dim_time, dim_length> {};
 
 template<UnitOf<dim_magnetic_induction> U, Representation Rep = double>
 using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
@@ -68,80 +69,152 @@ using magnetic_induction = quantity<dim_magnetic_induction, U, Rep>;
 inline namespace literals {
 
 // T
-constexpr auto operator"" _q_T(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<tesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_T(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<tesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_T(long double l) { return magnetic_induction<tesla, long double>(l); }
 
 // yT
-constexpr auto operator"" _q_yT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<yoctotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<yoctotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yT(long double l) { return magnetic_induction<yoctotesla, long double>(l); }
 
 // zT
-constexpr auto operator"" _q_zT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<zeptotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<zeptotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zT(long double l) { return magnetic_induction<zeptotesla, long double>(l); }
 
 // aT
-constexpr auto operator"" _q_aT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<attotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<attotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_aT(long double l) { return magnetic_induction<attotesla, long double>(l); }
 
 // fT
-constexpr auto operator"" _q_fT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<femtotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<femtotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fT(long double l) { return magnetic_induction<femtotesla, long double>(l); }
 
 // pT
-constexpr auto operator"" _q_pT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<picotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<picotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pT(long double l) { return magnetic_induction<picotesla, long double>(l); }
 
 // nT
-constexpr auto operator"" _q_nT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<nanotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<nanotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_nT(long double l) { return magnetic_induction<nanotesla, long double>(l); }
 
 // µT
-constexpr auto operator"" _q_uT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<microtesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<microtesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_uT(long double l) { return magnetic_induction<microtesla, long double>(l); }
 
 // mT
-constexpr auto operator"" _q_mT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<millitesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<millitesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mT(long double l) { return magnetic_induction<millitesla, long double>(l); }
 
 // kT
-constexpr auto operator"" _q_kT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<kilotesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<kilotesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kT(long double l) { return magnetic_induction<kilotesla, long double>(l); }
 
 // MT
-constexpr auto operator"" _q_MT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<megatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<megatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MT(long double l) { return magnetic_induction<megatesla, long double>(l); }
 
 // GT
-constexpr auto operator"" _q_GT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<gigatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<gigatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GT(long double l) { return magnetic_induction<gigatesla, long double>(l); }
 
 // TT
-constexpr auto operator"" _q_TT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<teratesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<teratesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TT(long double l) { return magnetic_induction<teratesla, long double>(l); }
 
 // PT
-constexpr auto operator"" _q_PT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<petatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<petatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PT(long double l) { return magnetic_induction<petatesla, long double>(l); }
 
 // ET
-constexpr auto operator"" _q_ET(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<exatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ET(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<exatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ET(long double l) { return magnetic_induction<exatesla, long double>(l); }
 
 // ZT
-constexpr auto operator"" _q_ZT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<zettatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<zettatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ZT(long double l) { return magnetic_induction<zettatesla, long double>(l); }
 
 // YT
-constexpr auto operator"" _q_YT(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<yottatesla, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YT(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<yottatesla, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YT(long double l) { return magnetic_induction<yottatesla, long double>(l); }
 
 // G
-constexpr auto operator"" _q_G(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return magnetic_induction<gauss, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_G(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return magnetic_induction<gauss, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_G(long double l) { return magnetic_induction<gauss, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -174,33 +247,51 @@ using namespace magnetic_induction_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
-} // namespace units::isq::si
+}  // namespace units::isq::si
 
 #ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline magnetic_induction {
 
-template<Representation Rep = double> using T = units::isq::si::magnetic_induction<units::isq::si::tesla, Rep>;
-template<Representation Rep = double> using yT = units::isq::si::magnetic_induction<units::isq::si::yoctotesla, Rep>;
-template<Representation Rep = double> using zT = units::isq::si::magnetic_induction<units::isq::si::zeptotesla, Rep>;
-template<Representation Rep = double> using aT = units::isq::si::magnetic_induction<units::isq::si::attotesla, Rep>;
-template<Representation Rep = double> using fT = units::isq::si::magnetic_induction<units::isq::si::femtotesla, Rep>;
-template<Representation Rep = double> using pT = units::isq::si::magnetic_induction<units::isq::si::picotesla, Rep>;
-template<Representation Rep = double> using nT = units::isq::si::magnetic_induction<units::isq::si::nanotesla, Rep>;
-template<Representation Rep = double> using uT = units::isq::si::magnetic_induction<units::isq::si::microtesla, Rep>;
-template<Representation Rep = double> using mT = units::isq::si::magnetic_induction<units::isq::si::millitesla, Rep>;
-template<Representation Rep = double> using kT = units::isq::si::magnetic_induction<units::isq::si::kilotesla, Rep>;
-template<Representation Rep = double> using MT = units::isq::si::magnetic_induction<units::isq::si::megatesla, Rep>;
-template<Representation Rep = double> using GT = units::isq::si::magnetic_induction<units::isq::si::gigatesla, Rep>;
-template<Representation Rep = double> using TT = units::isq::si::magnetic_induction<units::isq::si::teratesla, Rep>;
-template<Representation Rep = double> using PT = units::isq::si::magnetic_induction<units::isq::si::petatesla, Rep>;
-template<Representation Rep = double> using ET = units::isq::si::magnetic_induction<units::isq::si::exatesla, Rep>;
-template<Representation Rep = double> using ZT = units::isq::si::magnetic_induction<units::isq::si::zettatesla, Rep>;
-template<Representation Rep = double> using YT = units::isq::si::magnetic_induction<units::isq::si::yottatesla, Rep>;
-template<Representation Rep = double> using G = units::isq::si::magnetic_induction<units::isq::si::gauss, Rep>;
+template<Representation Rep = double>
+using T = units::isq::si::magnetic_induction<units::isq::si::tesla, Rep>;
+template<Representation Rep = double>
+using yT = units::isq::si::magnetic_induction<units::isq::si::yoctotesla, Rep>;
+template<Representation Rep = double>
+using zT = units::isq::si::magnetic_induction<units::isq::si::zeptotesla, Rep>;
+template<Representation Rep = double>
+using aT = units::isq::si::magnetic_induction<units::isq::si::attotesla, Rep>;
+template<Representation Rep = double>
+using fT = units::isq::si::magnetic_induction<units::isq::si::femtotesla, Rep>;
+template<Representation Rep = double>
+using pT = units::isq::si::magnetic_induction<units::isq::si::picotesla, Rep>;
+template<Representation Rep = double>
+using nT = units::isq::si::magnetic_induction<units::isq::si::nanotesla, Rep>;
+template<Representation Rep = double>
+using uT = units::isq::si::magnetic_induction<units::isq::si::microtesla, Rep>;
+template<Representation Rep = double>
+using mT = units::isq::si::magnetic_induction<units::isq::si::millitesla, Rep>;
+template<Representation Rep = double>
+using kT = units::isq::si::magnetic_induction<units::isq::si::kilotesla, Rep>;
+template<Representation Rep = double>
+using MT = units::isq::si::magnetic_induction<units::isq::si::megatesla, Rep>;
+template<Representation Rep = double>
+using GT = units::isq::si::magnetic_induction<units::isq::si::gigatesla, Rep>;
+template<Representation Rep = double>
+using TT = units::isq::si::magnetic_induction<units::isq::si::teratesla, Rep>;
+template<Representation Rep = double>
+using PT = units::isq::si::magnetic_induction<units::isq::si::petatesla, Rep>;
+template<Representation Rep = double>
+using ET = units::isq::si::magnetic_induction<units::isq::si::exatesla, Rep>;
+template<Representation Rep = double>
+using ZT = units::isq::si::magnetic_induction<units::isq::si::zettatesla, Rep>;
+template<Representation Rep = double>
+using YT = units::isq::si::magnetic_induction<units::isq::si::yottatesla, Rep>;
+template<Representation Rep = double>
+using G = units::isq::si::magnetic_induction<units::isq::si::gauss, Rep>;
 
 }  // namespace units::aliases::isq::si::inline magnetic_induction
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

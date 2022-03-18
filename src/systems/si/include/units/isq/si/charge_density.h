@@ -38,8 +38,11 @@ namespace units::isq::si {
 struct coulomb_per_metre_cub : unit<coulomb_per_metre_cub> {};
 struct coulomb_per_metre_sq : unit<coulomb_per_metre_sq> {};
 
-struct dim_charge_density : isq::dim_charge_density<dim_charge_density, coulomb_per_metre_cub, dim_electric_charge, dim_length> {};
-struct dim_surface_charge_density : isq::dim_surface_charge_density<dim_surface_charge_density, coulomb_per_metre_sq, dim_electric_charge, dim_length> {};
+struct dim_charge_density :
+    isq::dim_charge_density<dim_charge_density, coulomb_per_metre_cub, dim_electric_charge, dim_length> {};
+struct dim_surface_charge_density :
+    isq::dim_surface_charge_density<dim_surface_charge_density, coulomb_per_metre_sq, dim_electric_charge, dim_length> {
+};
 
 template<UnitOf<dim_charge_density> U, Representation Rep = double>
 using charge_density = quantity<dim_charge_density, U, Rep>;
@@ -52,16 +55,27 @@ using surface_charge_density = quantity<dim_surface_charge_density, U, Rep>;
 inline namespace literals {
 
 // C/m³
-constexpr auto operator"" _q_C_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return charge_density<coulomb_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_C_per_m3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return charge_density<coulomb_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_C_per_m3(long double l) { return charge_density<coulomb_per_metre_cub, long double>(l); }
 
 // C/m²
-constexpr auto operator"" _q_C_per_m2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return surface_charge_density<coulomb_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_density<coulomb_per_metre_sq, long double>(l); }
+constexpr auto operator"" _q_C_per_m2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return surface_charge_density<coulomb_per_metre_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_C_per_m2(long double l)
+{
+  return surface_charge_density<coulomb_per_metre_sq, long double>(l);
+}
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -69,9 +83,11 @@ constexpr auto operator"" _q_C_per_m2(long double l) { return surface_charge_den
 
 namespace units::aliases::isq::si::inline charge_density {
 
-template<Representation Rep = double> using C_per_m3 = units::isq::si::charge_density<units::isq::si::coulomb_per_metre_cub, Rep>;
-template<Representation Rep = double> using C_per_m2 = units::isq::si::surface_charge_density<units::isq::si::coulomb_per_metre_sq, Rep>;
+template<Representation Rep = double>
+using C_per_m3 = units::isq::si::charge_density<units::isq::si::coulomb_per_metre_cub, Rep>;
+template<Representation Rep = double>
+using C_per_m2 = units::isq::si::surface_charge_density<units::isq::si::coulomb_per_metre_sq, Rep>;
 
 }  // namespace units::aliases::isq::si::inline charge_density
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

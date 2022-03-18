@@ -51,20 +51,32 @@ using power = quantity<dim_power, U, Rep>;
 inline namespace literals {
 
 // foot pound force per second
-constexpr auto operator"" _q_ft_pdl_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return power<foot_poundal_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_pdl_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return power<foot_poundal_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_pdl_per_s(long double l) { return power<foot_poundal_per_second, long double>(l); }
 
 // foot pound force per second
-constexpr auto operator"" _q_ft_lbf_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return power<foot_pound_force_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_lbf_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return power<foot_pound_force_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_lbf_per_s(long double l) { return power<foot_pound_force_per_second, long double>(l); }
 
 // horse power
-constexpr auto operator"" _q_hp(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return power<horse_power, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hp(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return power<horse_power, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_hp(long double l) { return power<horse_power, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -80,7 +92,7 @@ using namespace power_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -88,10 +100,13 @@ using namespace power_references;
 
 namespace units::aliases::isq::si::fps::inline power {
 
-template<Representation Rep = double> using ft_pdl_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_poundal_per_second, Rep>;
-template<Representation Rep = double> using ft_lbf_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_pound_force_per_second, Rep>;
-template<Representation Rep = double> using hp = units::isq::si::fps::power<units::isq::si::fps::horse_power, Rep>;
+template<Representation Rep = double>
+using ft_pdl_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_poundal_per_second, Rep>;
+template<Representation Rep = double>
+using ft_lbf_per_s = units::isq::si::fps::power<units::isq::si::fps::foot_pound_force_per_second, Rep>;
+template<Representation Rep = double>
+using hp = units::isq::si::fps::power<units::isq::si::fps::horse_power, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline power
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

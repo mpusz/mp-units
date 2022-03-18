@@ -35,7 +35,8 @@
 
 namespace units::isq::si::typographic {
 
-// TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors and provide hyperlinks to definitions
+// TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors
+// and provide hyperlinks to definitions
 struct pica_comp : named_scaled_unit<pica_comp, "pica(comp)", no_prefix, ratio(4233333, 1000000, -3), si::metre> {};
 struct pica_prn : named_scaled_unit<pica_prn, "pica(prn)", no_prefix, ratio(2108759, 500000, -3), si::metre> {};
 struct point_comp : named_scaled_unit<point_comp, "point(comp)", no_prefix, ratio(1763889, 500000, -4), si::metre> {};
@@ -46,24 +47,40 @@ struct point_prn : named_scaled_unit<point_prn, "point(prn)", no_prefix, ratio(1
 inline namespace literals {
 
 // pica comp
-constexpr auto operator"" _q_pica_comp(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<pica_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pica_comp(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<pica_comp, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pica_comp(long double l) { return si::length<pica_comp, long double>(l); }
 
 // pica prn
-constexpr auto operator"" _q_pica_prn(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<pica_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pica_prn(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<pica_prn, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pica_prn(long double l) { return si::length<pica_prn, long double>(l); }
 
 // point comp
-constexpr auto operator"" _q_point_comp(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<point_comp, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_point_comp(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<point_comp, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_point_comp(long double l) { return si::length<point_comp, long double>(l); }
 
 // point prn
-constexpr auto operator"" _q_point_prn(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<point_prn, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_point_prn(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<point_prn, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_point_prn(long double l) { return si::length<point_prn, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -82,7 +99,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::typographic
 
@@ -90,11 +107,15 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::typographic::inline length {
 
-template<Representation Rep = double> using pica_comp = units::isq::si::length<units::isq::si::typographic::pica_comp, Rep>;
-template<Representation Rep = double> using pica_prn = units::isq::si::length<units::isq::si::typographic::pica_prn, Rep>;
-template<Representation Rep = double> using point_comp = units::isq::si::length<units::isq::si::typographic::point_comp, Rep>;
-template<Representation Rep = double> using point_prn = units::isq::si::length<units::isq::si::typographic::point_prn, Rep>;
+template<Representation Rep = double>
+using pica_comp = units::isq::si::length<units::isq::si::typographic::pica_comp, Rep>;
+template<Representation Rep = double>
+using pica_prn = units::isq::si::length<units::isq::si::typographic::pica_prn, Rep>;
+template<Representation Rep = double>
+using point_comp = units::isq::si::length<units::isq::si::typographic::point_comp, Rep>;
+template<Representation Rep = double>
+using point_prn = units::isq::si::length<units::isq::si::typographic::point_prn, Rep>;
 
 }  // namespace units::aliases::isq::si::typographic::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

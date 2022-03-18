@@ -28,9 +28,9 @@ namespace {
 
 /**
  * @brief Implicitly constructible and convertible representation type
- * 
+ *
  * A wrapper type that is implicitly convertible from and to the contained type.
- * 
+ *
  * @tparam T element type
  */
 template<typename T>
@@ -42,11 +42,13 @@ public:
   min_impl() = default;
   constexpr min_impl(T v) noexcept : value_(v) {}
   template<typename U>
-  constexpr min_impl(min_impl<U> i) noexcept : value_(static_cast<T>(i.value_)) {}
+  constexpr min_impl(min_impl<U> i) noexcept : value_(static_cast<T>(i.value_))
+  {
+  }
   constexpr operator T() const noexcept { return value_; }
 };
 
-}
+}  // namespace
 
 template<typename T, typename U>
 struct std::common_type<min_impl<T>, min_impl<U>> : std::common_type<T, U> {};
@@ -125,7 +127,8 @@ static_assert(!std::convertible_to<min_impl<double>, dimensionless<percent, min_
 static_assert(std::constructible_from<dimensionless<percent, min_impl<double>>, min_impl<int>>);
 static_assert(!std::convertible_to<min_impl<int>, dimensionless<percent, min_impl<double>>>);
 
-static_assert(!std::constructible_from<dimensionless<percent, min_impl<int>>, min_impl<double>>);  // narrowing conversion
+static_assert(
+  !std::constructible_from<dimensionless<percent, min_impl<int>>, min_impl<double>>);  // narrowing conversion
 static_assert(!std::convertible_to<min_impl<double>, dimensionless<percent, min_impl<int>>>);
 
 // implicit conversion tests
@@ -191,7 +194,8 @@ static_assert(std::convertible_to<length<metre, min_impl<double>>, length<metre,
 static_assert(std::constructible_from<length<metre, min_impl<double>>, length<metre, min_impl<int>>>);
 static_assert(std::convertible_to<length<metre, min_impl<int>>, length<metre, min_impl<double>>>);
 
-static_assert(!std::constructible_from<length<metre, min_impl<int>>, length<metre, min_impl<double>>>); // narrowing conversion
+static_assert(
+  !std::constructible_from<length<metre, min_impl<int>>, length<metre, min_impl<double>>>);  // narrowing conversion
 static_assert(!std::convertible_to<length<metre, min_impl<double>>, length<metre, min_impl<int>>>);
 
 // T -> min_impl<T>
@@ -204,7 +208,7 @@ static_assert(std::convertible_to<length<metre, double>, length<metre, min_impl<
 static_assert(std::constructible_from<length<metre, min_impl<double>>, length<metre, int>>);
 static_assert(std::convertible_to<length<metre, int>, length<metre, min_impl<double>>>);
 
-static_assert(!std::constructible_from<length<metre, min_impl<int>>, length<metre, double>>); // narrowing conversion
+static_assert(!std::constructible_from<length<metre, min_impl<int>>, length<metre, double>>);  // narrowing conversion
 static_assert(!std::convertible_to<length<metre, double>, length<metre, min_impl<int>>>);
 
 // min_impl<T> -> T
@@ -217,13 +221,14 @@ static_assert(std::convertible_to<length<metre, min_impl<double>>, length<metre,
 static_assert(std::constructible_from<length<metre, double>, length<metre, min_impl<int>>>);
 static_assert(std::convertible_to<length<metre, min_impl<int>>, length<metre, double>>);
 
-static_assert(!std::constructible_from<length<metre, int>, length<metre, min_impl<double>>>); // narrowing conversion
+static_assert(!std::constructible_from<length<metre, int>, length<metre, min_impl<double>>>);  // narrowing conversion
 static_assert(!std::convertible_to<length<metre, min_impl<double>>, length<metre, int>>);
 
 
 // arithmetic operators
 static_assert(length<metre, min_impl<int>>(1) + length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(2));
-static_assert(length<metre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(2.5));
+static_assert(length<metre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(2.5));
 static_assert(length<metre, int>(1) + length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(2));
 static_assert(length<metre, int>(1) + length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(2.5));
 static_assert(length<metre, min_impl<int>>(1) + length<metre, int>(1) == length<metre, min_impl<int>>(2));
@@ -231,26 +236,37 @@ static_assert(length<metre, min_impl<int>>(1) + length<metre, double>(1.5) == le
 static_assert(length<metre, min_impl<int>>(1) + length<metre, min_impl<int>>(1) == length<metre, int>(2));
 static_assert(length<metre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) == length<metre, double>(2.5));
 
-static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1001.5));
+static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<int>>(1) ==
+              length<metre, min_impl<int>>(1001));
+static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1001.5));
 static_assert(length<kilometre, int>(1) + length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<kilometre, int>(1) + length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1001.5));
+static_assert(length<kilometre, int>(1) + length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1001.5));
 static_assert(length<kilometre, min_impl<int>>(1) + length<metre, int>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<kilometre, min_impl<int>>(1) + length<metre, double>(1.5) == length<metre, min_impl<double>>(1001.5));
+static_assert(length<kilometre, min_impl<int>>(1) + length<metre, double>(1.5) ==
+              length<metre, min_impl<double>>(1001.5));
 static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<int>>(1) == length<metre, int>(1001));
-static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) == length<metre, double>(1001.5));
+static_assert(length<kilometre, min_impl<int>>(1) + length<metre, min_impl<double>>(1.5) ==
+              length<metre, double>(1001.5));
 
-static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<int>>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1501));
+static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<int>>(1) ==
+              length<metre, min_impl<int>>(1001));
+static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1501));
 static_assert(length<metre, int>(1) + length<kilometre, min_impl<int>>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<metre, int>(1) + length<kilometre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1501));
+static_assert(length<metre, int>(1) + length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1501));
 static_assert(length<metre, min_impl<int>>(1) + length<kilometre, int>(1) == length<metre, min_impl<int>>(1001));
-static_assert(length<metre, min_impl<int>>(1) + length<kilometre, double>(1.5) == length<metre, min_impl<double>>(1501));
+static_assert(length<metre, min_impl<int>>(1) + length<kilometre, double>(1.5) ==
+              length<metre, min_impl<double>>(1501));
 static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<int>>(1) == length<metre, int>(1001));
-static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<double>>(1.5) == length<metre, double>(1501));
+static_assert(length<metre, min_impl<int>>(1) + length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, double>(1501));
 
 static_assert(length<metre, min_impl<int>>(2) - length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1));
-static_assert(length<metre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(0.5));
+static_assert(length<metre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(0.5));
 static_assert(length<metre, int>(2) - length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1));
 static_assert(length<metre, int>(2) - length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(0.5));
 static_assert(length<metre, min_impl<int>>(2) - length<metre, int>(1) == length<metre, min_impl<int>>(1));
@@ -258,29 +274,40 @@ static_assert(length<metre, min_impl<int>>(2) - length<metre, double>(1.5) == le
 static_assert(length<metre, min_impl<int>>(2) - length<metre, min_impl<int>>(1) == length<metre, int>(1));
 static_assert(length<metre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) == length<metre, double>(0.5));
 
-static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1999));
-static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1998.5));
+static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<int>>(1) ==
+              length<metre, min_impl<int>>(1999));
+static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1998.5));
 static_assert(length<kilometre, int>(2) - length<metre, min_impl<int>>(1) == length<metre, min_impl<int>>(1999));
-static_assert(length<kilometre, int>(2) - length<metre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(1998.5));
+static_assert(length<kilometre, int>(2) - length<metre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(1998.5));
 static_assert(length<kilometre, min_impl<int>>(2) - length<metre, int>(1) == length<metre, min_impl<int>>(1999));
-static_assert(length<kilometre, min_impl<int>>(2) - length<metre, double>(1.5) == length<metre, min_impl<double>>(1998.5));
+static_assert(length<kilometre, min_impl<int>>(2) - length<metre, double>(1.5) ==
+              length<metre, min_impl<double>>(1998.5));
 static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<int>>(1) == length<metre, int>(1999));
-static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) == length<metre, double>(1998.5));
+static_assert(length<kilometre, min_impl<int>>(2) - length<metre, min_impl<double>>(1.5) ==
+              length<metre, double>(1998.5));
 
-static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<int>>(1) == length<metre, min_impl<int>>(1000));
-static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(500));
+static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<int>>(1) ==
+              length<metre, min_impl<int>>(1000));
+static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(500));
 static_assert(length<metre, int>(2000) - length<kilometre, min_impl<int>>(1) == length<metre, min_impl<int>>(1000));
-static_assert(length<metre, int>(2000) - length<kilometre, min_impl<double>>(1.5) == length<metre, min_impl<double>>(500));
+static_assert(length<metre, int>(2000) - length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, min_impl<double>>(500));
 static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, int>(1) == length<metre, min_impl<int>>(1000));
-static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, double>(1.5) == length<metre, min_impl<double>>(500));
+static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, double>(1.5) ==
+              length<metre, min_impl<double>>(500));
 static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<int>>(1) == length<metre, int>(1000));
-static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<double>>(1.5) == length<metre, double>(500));
+static_assert(length<metre, min_impl<int>>(2000) - length<kilometre, min_impl<double>>(1.5) ==
+              length<metre, double>(500));
 
 static_assert(length<metre, min_impl<int>>(123) * min_impl<double>(1.5) == length<metre, min_impl<double>>(184.5));
 static_assert(length<metre, min_impl<int>>(123) * 1.5 == length<metre, min_impl<double>>(184.5));
 static_assert(length<metre, int>(123) * min_impl<double>(1.5) == length<metre, min_impl<double>>(184.5));
 
-static_assert(length<metre, min_impl<int>>(123) * quantity{min_impl<double>(1.5)} == length<metre, min_impl<double>>(184.5));
+static_assert(length<metre, min_impl<int>>(123) * quantity{min_impl<double>(1.5)} ==
+              length<metre, min_impl<double>>(184.5));
 static_assert(length<metre, min_impl<int>>(123) * quantity{1.5} == length<metre, min_impl<double>>(184.5));
 static_assert(length<metre, int>(123) * quantity{min_impl<double>(1.5)} == length<metre, min_impl<double>>(184.5));
 
@@ -288,7 +315,8 @@ static_assert(min_impl<double>(1.5) * length<metre, min_impl<int>>(123) == lengt
 static_assert(min_impl<double>(1.5) * length<metre, int>(123) == length<metre, min_impl<double>>(184.5));
 static_assert(1.5 * length<metre, min_impl<int>>(123) == length<metre, min_impl<double>>(184.5));
 
-static_assert(quantity{min_impl<double>(1.5)} * length<metre, min_impl<int>>(123) == length<metre, min_impl<double>>(184.5));
+static_assert(quantity{min_impl<double>(1.5)} * length<metre, min_impl<int>>(123) ==
+              length<metre, min_impl<double>>(184.5));
 static_assert(quantity{min_impl<double>(1.5)} * length<metre, int>(123) == length<metre, min_impl<double>>(184.5));
 static_assert(quantity{1.5} * length<metre, min_impl<int>>(123) == length<metre, min_impl<double>>(184.5));
 
@@ -296,7 +324,8 @@ static_assert(length<metre, min_impl<int>>(123) / min_impl<double>(2.) == length
 static_assert(length<metre, min_impl<int>>(123) / 2. == length<metre, min_impl<double>>(61.5));
 static_assert(length<metre, int>(123) / min_impl<double>(2.) == length<metre, min_impl<double>>(61.5));
 
-static_assert(length<metre, min_impl<int>>(123) / quantity{min_impl<double>(2.)} == length<metre, min_impl<double>>(61.5));
+static_assert(length<metre, min_impl<int>>(123) / quantity{min_impl<double>(2.)} ==
+              length<metre, min_impl<double>>(61.5));
 static_assert(length<metre, min_impl<int>>(123) / quantity{2.} == length<metre, min_impl<double>>(61.5));
 static_assert(length<metre, int>(123) / quantity{min_impl<double>(2.)} == length<metre, min_impl<double>>(61.5));
 

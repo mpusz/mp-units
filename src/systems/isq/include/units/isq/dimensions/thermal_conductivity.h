@@ -32,8 +32,10 @@ namespace units::isq {
 template<typename Child, Unit U, typename...>
 struct dim_thermal_conductivity;
 
-template<typename Child, Unit U, DimensionOfT<dim_power> P, DimensionOfT<dim_length> L, DimensionOfT<dim_thermodynamic_temperature> T>
-struct dim_thermal_conductivity<Child, U, P, L, T> : derived_dimension<Child, U, exponent<P, 1>, exponent<L, -1>, exponent<T, -1>> {};
+template<typename Child, Unit U, DimensionOfT<dim_power> P, DimensionOfT<dim_length> L,
+         DimensionOfT<dim_thermodynamic_temperature> T>
+struct dim_thermal_conductivity<Child, U, P, L, T> :
+    derived_dimension<Child, U, exponent<P, 1>, exponent<L, -1>, exponent<T, -1>> {};
 
 template<typename T>
 concept ThermalConductivity = QuantityOfT<T, dim_thermal_conductivity>;

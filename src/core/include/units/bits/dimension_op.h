@@ -34,11 +34,11 @@ namespace units {
 
 /**
  * @brief Unknown dimension
- * 
+ *
  * Sometimes a temporary partial result of a complex calculation may not result in a predefined
  * dimension. In such a case an `unknown_dimension` is created with a coherent unit of `unknown_coherent_unit`
  * and ratio(1).
- * 
+ *
  * @tparam Es the list of exponents of ingredient dimensions
  */
 template<Exponent... Es>
@@ -70,7 +70,7 @@ struct downcast_dimension_impl<D> {
   using type = TYPENAME check_unknown<downcast<D>>::type;
 };
 
-} // namespace detail
+}  // namespace detail
 
 template<Dimension D>
 using downcast_dimension = TYPENAME detail::downcast_dimension_impl<D>::type;
@@ -97,8 +97,7 @@ struct dim_invert_impl<derived_dimension_base<Es...>> {
 };
 
 template<DerivedDimension D>
-struct dim_invert_impl<D> : dim_invert_impl<downcast_base_t<D>> {
-};
+struct dim_invert_impl<D> : dim_invert_impl<downcast_base_t<D>> {};
 
 }  // namespace detail
 
@@ -123,7 +122,7 @@ struct to_dimension<exponent_list<exponent<D, 1>>> {
 
 /**
  * @brief Merges 2 sorted derived dimensions into one units::derived_dimension_base
- * 
+ *
  * A result of a dimensional calculation may result with many exponents of the same base dimension orginated
  * from different parts of the equation. As the exponents lists of both operands it is enough to merge them
  * into one list and consolidate duplicates. Also it is possible that final exponents list will contain only
@@ -131,19 +130,22 @@ struct to_dimension<exponent_list<exponent<D, 1>>> {
  * dimension itself.
  */
 template<Dimension D1, Dimension D2>
-using merge_dimension = TYPENAME to_dimension<typename dim_consolidate<type_list_merge_sorted<typename D1::exponents, typename D2::exponents, exponent_less>>::type>::type;
+using merge_dimension = TYPENAME to_dimension<typename dim_consolidate<
+  type_list_merge_sorted<typename D1::exponents, typename D2::exponents, exponent_less>>::type>::type;
 
 template<Dimension D1, Dimension D2>
 struct dimension_multiply_impl;
 
 template<BaseDimension D1, BaseDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast_dimension<merge_dimension<derived_dimension_base<exponent<D1, 1>>, derived_dimension_base<exponent<D2, 1>>>>;
+  using type = downcast_dimension<
+    merge_dimension<derived_dimension_base<exponent<D1, 1>>, derived_dimension_base<exponent<D2, 1>>>>;
 };
 
 template<BaseDimension D1, DerivedDimension D2>
 struct dimension_multiply_impl<D1, D2> {
-  using type = downcast_dimension<merge_dimension<derived_dimension_base<exponent<D1, 1>>, typename D2::downcast_base_type>>;
+  using type =
+    downcast_dimension<merge_dimension<derived_dimension_base<exponent<D1, 1>>, typename D2::downcast_base_type>>;
 };
 
 template<DerivedDimension D1, BaseDimension D2>

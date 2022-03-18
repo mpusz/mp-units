@@ -47,12 +47,16 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // erg
-constexpr auto operator"" _q_erg(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<erg, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_erg(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return energy<erg, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_erg(long double l) { return energy<erg, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -68,7 +72,7 @@ using namespace energy_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -76,8 +80,9 @@ using namespace energy_references;
 
 namespace units::aliases::isq::si::cgs::inline energy {
 
-template<Representation Rep = double> using erg = units::isq::si::cgs::energy<units::isq::si::cgs::erg, Rep>;
+template<Representation Rep = double>
+using erg = units::isq::si::cgs::energy<units::isq::si::cgs::erg, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline energy
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

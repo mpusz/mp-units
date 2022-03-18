@@ -34,24 +34,27 @@ template<typename T>
 inline constexpr bool compare_impl<T, T> = true;
 
 template<typename T, typename U>
-  requires (UNITS_DOWNCAST_MODE == 0)
+  requires(UNITS_DOWNCAST_MODE == 0)
 inline constexpr bool compare_impl<T, U> = units::equivalent<T, U>;
 
 template<typename T, typename U>
 inline constexpr bool compare = compare_impl<std::remove_cvref_t<T>, std::remove_cvref_t<U>>;
 
 template<typename T, typename... Us, typename... Vs>
-constexpr bool constructible_from(Vs...) {
+constexpr bool constructible_from(Vs...)
+{
   return std::constructible_from<T, Us..., Vs...>;
 }
 
-template<class T> void convertible_from__(T);
+template<class T>
+void convertible_from__(T);
 
 template<typename T, typename... Us>
 concept convertible_from_ = requires(Us... us) { convertible_from__<T>({us...}); };
 
 template<typename T, typename... Us, typename... Vs>
-constexpr bool convertible_from(Vs...) {
+constexpr bool convertible_from(Vs...)
+{
   if constexpr (sizeof...(Us) + sizeof...(Vs) == 1)
     return std::is_convertible_v<Us..., Vs..., T>;
   else
@@ -59,24 +62,28 @@ constexpr bool convertible_from(Vs...) {
 }
 
 template<typename T, typename... Us, typename... Vs>
-constexpr bool constructible_or_convertible_from(Vs...) {
+constexpr bool constructible_or_convertible_from(Vs...)
+{
   return constructible_from<T, Us..., Vs...>() || convertible_from<T, Us..., Vs...>();
 }
 
 template<typename T, typename... Us, typename... Vs>
-constexpr bool constructible_and_convertible_from(Vs...) {
+constexpr bool constructible_and_convertible_from(Vs...)
+{
   return constructible_from<T, Us..., Vs...>() && convertible_from<T, Us..., Vs...>();
 }
 
 template<typename T, typename... Us>
-  requires (constructible_from<T, Us...>())
-constexpr T construct_from(Us... us) {
+  requires(constructible_from<T, Us...>())
+constexpr T construct_from(Us... us)
+{
   return T(us...);
 }
 
 template<typename T, typename... Us>
-  requires (convertible_from<T, Us...>())
-constexpr T convert_from(Us... us) {
+  requires(convertible_from<T, Us...>())
+constexpr T convert_from(Us... us)
+{
   if constexpr (sizeof...(Us) == 1)
     return [](T t) { return t; }(us...);
   else
@@ -84,16 +91,18 @@ constexpr T convert_from(Us... us) {
 }
 
 template<std::equality_comparable T, typename... Us>
-  requires (constructible_from<T, Us...>() && convertible_from<T, Us...>())
-constexpr T construct_and_convert_from(Us... us) {
+  requires(constructible_from<T, Us...>() && convertible_from<T, Us...>())
+constexpr T construct_and_convert_from(Us... us)
+{
   T t{construct_from<T>(us...)};
   assert(t == convert_from<T>(us...));
   return t;
 }
 
 template<typename T, typename... Us>
-  requires (constructible_from<T, Us...>() && !convertible_from<T, Us...>())
-constexpr T construct_from_only(Us... us) {
+  requires(constructible_from<T, Us...>() && !convertible_from<T, Us...>())
+constexpr T construct_from_only(Us... us)
+{
   return construct_from<T>(us...);
 }
 
@@ -109,7 +118,8 @@ inline constexpr bool ctad_constructible_from_<T, std::void_t<decltype(T(Us{}...
 #endif
 
 template<template<typename...> typename T, typename... Us, typename... Vs>
-constexpr bool ctad_constructible_from(Vs...) {
+constexpr bool ctad_constructible_from(Vs...)
+{
   return ctad_constructible_from_<T, void, Us..., Vs...>;
 }
 
@@ -118,8 +128,10 @@ constexpr auto same = []<std::equality_comparable T>(T l, T r) { return l == r; 
 #else
 constexpr auto same = []<typename T, typename U>(T l, U r)
   requires requires { l == r; }
-  // requires std::equality_comparable_with<T, U>  // TODO: Fix #205
-  { return l == r; };
+// requires std::equality_comparable_with<T, U>  // TODO: Fix #205
+{
+  return l == r;
+};
 #endif
 
 template<auto F>

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <cassert>
 #include <cmath>
@@ -29,7 +30,6 @@
 #include <numeric>
 #include <tuple>
 #include <type_traits>
-#include <gsl/gsl-lite.hpp>
 
 namespace units::detail {
 
@@ -106,9 +106,9 @@ template<typename T>
   // (a 10^e) mod b -> [ (a mod b) (10^e mod b) ] mod b
 
   return std::gcd(
-      b, static_cast<std::intmax_t>(mulmod(static_cast<std::uint64_t>(a % b),
-                                           modpow(10, static_cast<std::uint64_t>(e), static_cast<std::uint64_t>(b)),
-                                           static_cast<std::uint64_t>(b))));
+    b, static_cast<std::intmax_t>(mulmod(static_cast<std::uint64_t>(a % b),
+                                         modpow(10, static_cast<std::uint64_t>(e), static_cast<std::uint64_t>(b)),
+                                         static_cast<std::uint64_t>(b))));
 }
 
 constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
@@ -119,8 +119,8 @@ constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
 }
 
 // Computes the rational gcd of n1/d1 x 10^e1 and n2/d2 x 10^e2
-[[nodiscard]] constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, std::intmax_t n2, std::intmax_t d2,
-                                      std::intmax_t e2) noexcept
+[[nodiscard]] constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, std::intmax_t n2,
+                                      std::intmax_t d2, std::intmax_t e2) noexcept
 {
   // Short cut for equal ratios
   if (n1 == n2 && d1 == d2 && e1 == e2) {
@@ -153,7 +153,7 @@ constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
 
 constexpr void normalize(std::intmax_t& num, std::intmax_t& den, std::intmax_t& exp)
 {
-  if(num == 0) {
+  if (num == 0) {
     den = 1;
     exp = 0;
     return;

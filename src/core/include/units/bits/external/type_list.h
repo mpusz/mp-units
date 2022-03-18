@@ -111,7 +111,7 @@ struct split_impl<List, Idx, N> {
 };
 
 template<template<typename...> typename List, std::size_t Idx, std::size_t N, typename T, typename... Rest>
-  requires (Idx < N)
+  requires(Idx < N)
 struct split_impl<List, Idx, N, T, Rest...> : split_impl<List, Idx + 1, N, Rest...> {
   using base = split_impl<List, Idx + 1, N, Rest...>;
   using first_list = TYPENAME type_list_push_front_impl<typename base::first_list, T>::type;
@@ -144,8 +144,7 @@ template<TypeList List>
 struct type_list_split_half;
 
 template<template<typename...> typename List, typename... Types>
-struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {
-};
+struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {};
 
 // merge_sorted
 
@@ -174,13 +173,15 @@ template<template<typename...> typename List, typename Lhs1, typename... LhsRest
          template<typename, typename> typename Pred>
   requires Pred<Lhs1, Rhs1>::value
 struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
-  using type = TYPENAME type_list_push_front_impl<typename type_list_merge_sorted_impl<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>::type, Lhs1>::type;
+  using type = TYPENAME type_list_push_front_impl<
+    typename type_list_merge_sorted_impl<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>::type, Lhs1>::type;
 };
 
 template<template<typename...> typename List, typename Lhs1, typename... LhsRest, typename Rhs1, typename... RhsRest,
          template<typename, typename> typename Pred>
 struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
-  using type = TYPENAME type_list_push_front_impl<typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type;
+  using type = TYPENAME type_list_push_front_impl<
+    typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type;
 };
 
 }  // namespace detail

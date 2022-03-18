@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/math.h> // IWYU pragma: keep
-#include <units/isq/si/length.h>
 #include <units/isq/si/area.h>
-#include <units/isq/si/volume.h>
-#include <units/isq/si/time.h>
-#include <units/isq/si/international/length.h>
 #include <units/isq/si/international/area.h>
+#include <units/isq/si/international/length.h>
 #include <units/isq/si/international/volume.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/volume.h>
+#include <units/math.h>  // IWYU pragma: keep
 
 namespace {
 

@@ -54,7 +54,8 @@ struct dim_consolidate<exponent_list<E1, ERest...>> {
   using type = type_list_push_front<typename dim_consolidate<exponent_list<ERest...>>::type, E1>;
 };
 
-template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2, typename... ERest>
+template<BaseDimension Dim, std::intmax_t Num1, std::intmax_t Den1, std::intmax_t Num2, std::intmax_t Den2,
+         typename... ERest>
 struct dim_consolidate<exponent_list<exponent<Dim, Num1, Den1>, exponent<Dim, Num2, Den2>, ERest...>> {
   using r1 = std::ratio<Num1, Den1>;
   using r2 = std::ratio<Num2, Den2>;

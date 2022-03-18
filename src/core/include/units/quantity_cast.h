@@ -22,14 +22,15 @@
 
 #pragma once
 
-#include <units/concepts.h>
-#include <units/customization_points.h>
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/pow.h>
+#include <units/concepts.h>
+#include <units/customization_points.h>
 
 UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
+// warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
+UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
 
 namespace units {
 
@@ -48,28 +49,24 @@ class quantity_point_kind;
 namespace detail {
 
 template<typename T>
-  inline constexpr ratio quantity_ratio = std::enable_if_t<!Quantity<T>>{};
+inline constexpr ratio quantity_ratio = std::enable_if_t<!Quantity<T>>{};
 
 template<typename D, typename U, typename Rep>
-inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = []
-{
-  if constexpr(BaseDimension<D>) {
+inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = [] {
+  if constexpr (BaseDimension<D>) {
     return U::ratio;
-  }
-  else {
+  } else {
     return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
   }
 }();
 
 template<typename QFrom, typename QTo>
-inline constexpr ratio cast_ratio = []
-{
+inline constexpr ratio cast_ratio = [] {
   using FromU = TYPENAME QFrom::unit;
   using ToU = TYPENAME QTo::unit;
-  if constexpr(same_unit_reference<FromU, ToU>::value) {
+  if constexpr (same_unit_reference<FromU, ToU>::value) {
     return FromU::ratio / ToU::ratio;
-  }
-  else {
+  } else {
     return quantity_ratio<QFrom> / quantity_ratio<QTo>;
   }
 }();
@@ -78,17 +75,17 @@ template<typename From, typename To>
 struct cast_traits;
 
 template<typename From, typename To>
-  requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
-struct cast_traits<From, To> {
+  requires common_type_with_<std::common_type_t<From, To>,
+                             std::intmax_t> struct cast_traits<From, To> {
   using ratio_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
   using rep_type = ratio_type;
 };
 
 template<typename From, typename To>
-  requires (!common_type_with_<std::common_type_t<From, To>, std::intmax_t>) &&
-          scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
-          requires { typename std::common_type_t<From, To>::value_type; } &&
-          common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>
+  requires(!common_type_with_<std::common_type_t<From, To>, std::intmax_t> &&
+           scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
+           requires { typename std::common_type_t<From, To>::value_type; } &&
+           common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>)
 struct cast_traits<From, To> {
   using ratio_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
   using rep_type = std::common_type_t<From, To>;
@@ -109,7 +106,7 @@ struct cast_traits<From, To> {
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> Rep>
-  requires QuantityOf<To, D> && std::constructible_from<typename To::rep, std::common_type_t<typename To::rep, Rep>>
+  requires QuantityOf<To, D> && (std::constructible_from<typename To::rep, std::common_type_t<typename To::rep, Rep>>)
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   using traits = detail::cast_traits<Rep, typename To::rep>;
@@ -118,19 +115,20 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
   constexpr auto c_ratio = detail::cast_ratio<quantity<D, U, Rep>, To>;
 
   if constexpr (treat_as_floating_point<rep_type>) {
-    return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
-                              (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) / static_cast<ratio_type>(c_ratio.den))));
-  }
-  else {
+    return To(
+      static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
+                                    (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) /
+                                     static_cast<ratio_type>(c_ratio.den))));
+  } else {
     if constexpr (c_ratio.exp > 0) {
-      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
-                              (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
-                              static_cast<ratio_type>(c_ratio.den)));
-    }
-    else {
-      return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
-                              static_cast<ratio_type>(c_ratio.num) /
-                              (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
+      return To(static_cast<TYPENAME To::rep>(
+        static_cast<rep_type>(q.number()) *
+        (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
+        static_cast<ratio_type>(c_ratio.den)));
+    } else {
+      return To(static_cast<TYPENAME To::rep>(
+        static_cast<rep_type>(q.number()) * static_cast<ratio_type>(c_ratio.num) /
+        (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
     }
   }
 }
@@ -209,7 +207,7 @@ template<Dimension ToD, Unit ToU, typename D, typename U, typename Rep>
  * @tparam ToRep a representation type to use for a target quantity
  */
 template<Representation ToRep, typename D, typename U, scalable_with_<ToRep> Rep>
-  requires std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>
+  requires(std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>)
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
   return quantity_cast<quantity<D, U, ToRep>>(q);
@@ -233,9 +231,11 @@ template<Representation ToRep, typename D, typename U, scalable_with_<ToRep> Rep
  */
 template<typename CastSpec, typename O, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<O, U, Rep>& qp)
-  requires requires { requires is_specialization_of<CastSpec, quantity_point>;
-                      requires requires { quantity_cast<typename CastSpec::quantity_type>(qp.relative()); };
-                      requires equivalent<O, typename CastSpec::origin>; } ||  // TODO: Simplify when Clang catches up.
+  requires requires {
+             requires is_specialization_of<CastSpec, quantity_point>;
+             requires requires { quantity_cast<typename CastSpec::quantity_type>(qp.relative()); };
+             requires equivalent<O, typename CastSpec::origin>;
+           } ||  // TODO: Simplify when Clang catches up.
            requires { quantity_cast<CastSpec>(qp.relative()); }
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point>)
@@ -286,10 +286,13 @@ template<Dimension ToD, Unit ToU, typename O, typename U, typename Rep>
  */
 template<typename CastSpec, typename K, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityKind auto quantity_kind_cast(const quantity_kind<K, U, Rep>& qk)
-  requires requires { requires is_specialization_of<CastSpec, quantity_kind>;
-              requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); }; } ||
-           requires { requires Kind<CastSpec>; requires UnitOf<U, typename CastSpec::dimension>; } ||
-           requires { quantity_cast<CastSpec>(qk.common()); }  // TODO: Simplify when Clang catches up.
+  requires requires {
+             requires is_specialization_of<CastSpec, quantity_kind>;
+             requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); };
+           } || requires {
+                  requires Kind<CastSpec>;
+                  requires UnitOf<U, typename CastSpec::dimension>;
+                } || requires { quantity_cast<CastSpec>(qk.common()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_kind>)
     return CastSpec(quantity_cast<typename CastSpec::quantity_type>(qk.common()));
@@ -330,25 +333,27 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
  * Implicit conversions between quantity point kinds of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
  *
- * This cast gets the target (quantity) point kind type to cast to or anything that works for quantity_kind_cast. For example:
+ * This cast gets the target (quantity) point kind type to cast to or anything that works for quantity_kind_cast. For
+ * example:
  *
  * auto q1 = units::quantity_point_kind_cast<decltype(ns::x_coordinate{1 * m))>(ns::x_coordinate{1 * mm});
  * auto q1 = units::quantity_point_kind_cast<decltype(ns::width{1 * m})>(ns::x_coordinate{1 * mm});
  * auto q1 = units::quantity_point_kind_cast<ns::y_coordinate_kind>(ns::x_coordinate{1 * m});
  * auto q1 = units::quantity_point_kind_cast<ns::height_kind>(ns::x_coordinate{1 * m});
  * auto q1 = units::quantity_point_kind_cast<units::isq::si::length<units::isq::si::metre>>(ns::x_coordinate{1 * mm});
- * auto q1 = units::quantity_point_kind_cast<units::isq::si::dim_acceleration>(quantity_point_kind(ns::rate_of_climb{200 * Gal}));
- * auto q1 = units::quantity_point_kind_cast<units::isq::si::metre>(ns::x_coordinate{1 * mm});
- * auto q1 = units::quantity_point_kind_cast<int>(ns::x_coordinate{1.0 * mm});
+ * auto q1 = units::quantity_point_kind_cast<units::isq::si::dim_acceleration>(quantity_point_kind(ns::rate_of_climb{200
+ * * Gal})); auto q1 = units::quantity_point_kind_cast<units::isq::si::metre>(ns::x_coordinate{1 * mm}); auto q1 =
+ * units::quantity_point_kind_cast<int>(ns::x_coordinate{1.0 * mm});
  *
  * @tparam CastSpec a target (quantity) point kind type to cast to or anything that works for quantity_kind_cast
  */
 template<typename CastSpec, typename PK, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep>& qpk)
-  requires requires { requires is_specialization_of<CastSpec, quantity_point_kind>;
-                      requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); };
-                      requires equivalent<typename PK::origin, typename CastSpec::point_kind_type::origin>; } ||
-           requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
+  requires requires {
+             requires is_specialization_of<CastSpec, quantity_point_kind>;
+             requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); };
+             requires equivalent<typename PK::origin, typename CastSpec::point_kind_type::origin>;
+           } || requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
            requires { quantity_kind_cast<CastSpec>(qpk.relative()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point_kind>)

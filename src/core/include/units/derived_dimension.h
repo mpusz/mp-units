@@ -40,7 +40,7 @@ namespace detail {
 
 /**
  * @brief Converts user provided derived dimension specification into a valid units::derived_dimension_base definition
- * 
+ *
  * User provided definition of a derived dimension may contain the same base dimension repeated more than once on the
  * list possibly hidden in other derived units provided by the user. The process here should:
  * 1. Extract derived dimensions into exponents of base dimensions.
@@ -49,23 +49,24 @@ namespace detail {
  *    this base dimension.
  */
 template<Exponent... Es>
-using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exponent_less>>::type>::type;
+using make_dimension = TYPENAME to_derived_dimension_base<
+  typename dim_consolidate<type_list_sort<typename dim_unpack<Es...>::type, exponent_less>>::type>::type;
 
 }  // namespace detail
 
 /**
  * @brief The list of exponents of dimensions (both base and derived) provided by the user
- * 
+ *
  * This is the user's interface to create derived dimensions. Exponents list can contain powers of factors of both
  * base and derived dimensions. This is called a "recipe" of the dimension and among others is used to print
  * unnamed coherent units of this dimension.
- * 
+ *
  * Coherent unit is a unit that, for a given system of quantities and for a chosen set of base units, is a product
  * of powers of base units with no other proportionality factor than one.
  *
  * The implementation is responsible for unpacking all of the dimensions into a list containing only base dimensions
  * and their factors and putting them to derived_dimension_base class template.
- * 
+ *
  * Sometimes units of equivalent quantities in different systems of units do not share the same reference so they
  * cannot be easily converted to each other. An example can be a pressure for which a coherent unit in SI is pascal
  * and in CGS barye. Those two units are not directly related with each other with some ratio. As they both are
@@ -75,7 +76,7 @@ using make_dimension = TYPENAME to_derived_dimension_base<typename dim_consolida
  * base_units_ratio of two quantities of equivalent dimensions in two different systems gives a ratio between their
  * coherent units. Alternatively, the user would always have to directly define a barye in terms of pascal or vice
  * versa.
- * 
+ *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam U a coherent unit of a derived dimension
  * @tparam Es the list of exponents of ingredient dimensions
