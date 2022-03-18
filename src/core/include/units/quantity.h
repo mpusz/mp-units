@@ -362,11 +362,11 @@ public:
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
-    requires requires {
+    requires requires {  // TODO: Simplify when Clang catches up.
                requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;  // TODO: Simplify
+               requires is_same_v<unit, units::one>;
                requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>;
-             }  // when Clang catches up.
+             }
   {
     return units::quantity(lhs - rhs.number());
   }
