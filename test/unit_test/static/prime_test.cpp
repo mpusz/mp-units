@@ -50,7 +50,6 @@ static_assert(WheelFactorizer<2>::coprimes_in_first_wheel.size() == 2);
 static_assert(WheelFactorizer<3>::coprimes_in_first_wheel.size() == 8);
 static_assert(WheelFactorizer<4>::coprimes_in_first_wheel.size() == 48);
 static_assert(WheelFactorizer<5>::coprimes_in_first_wheel.size() == 480);
-static_assert(WheelFactorizer<6>::coprimes_in_first_wheel.size() == 5760);
 
 static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[0] == 1);
 static_assert(WheelFactorizer<3>::coprimes_in_first_wheel[1] == 7);
