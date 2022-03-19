@@ -34,7 +34,7 @@
 namespace units {
 namespace detail {
 // Higher numbers use fewer trial divisions, at the price of more storage space.
-using Factorizer = WheelFactorizer<4>;
+using factorizer = wheel_factorizer<4>;
 }  // namespace detail
 
 /**
@@ -274,7 +274,7 @@ constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std:
 }
 
 // A way to check whether a number is prime at compile time.
-constexpr bool is_prime(std::intmax_t n) { return (n >= 0) && Factorizer::is_prime(static_cast<std::size_t>(n)); }
+constexpr bool is_prime(std::intmax_t n) { return (n >= 0) && factorizer::is_prime(static_cast<std::size_t>(n)); }
 
 constexpr bool is_valid_base_power(const BasePower auto& bp)
 {
@@ -502,7 +502,7 @@ struct prime_factorization {
     if constexpr (known_first_factor<N>.has_value()) {
       return known_first_factor<N>.value();
     } else {
-      return static_cast<std::intmax_t>(Factorizer::find_first_factor(N));
+      return static_cast<std::intmax_t>(factorizer::find_first_factor(N));
     }
   }
 

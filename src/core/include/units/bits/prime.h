@@ -124,7 +124,7 @@ constexpr std::size_t product(const std::array<std::size_t, N>& values)
 //
 // [1] https://en.wikipedia.org/wiki/Wheel_factorization
 template<std::size_t BasisSize>
-struct WheelFactorizer {
+struct wheel_factorizer {
   static constexpr auto basis = first_n_primes<BasisSize>();
   static constexpr std::size_t wheel_size = product(basis);
   static constexpr auto coprimes_in_first_wheel =
