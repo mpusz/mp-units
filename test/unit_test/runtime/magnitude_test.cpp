@@ -156,15 +156,18 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
   }
 
-  SECTION ("Can handle prime number which would exceed GCC iteration limit") {
+  SECTION("Can handle prime number which would exceed GCC iteration limit")
+  {
     // GCC 10 has a constexpr loop iteration limit of 262144.  A naive algorithm, which performs trial division on 2 and
     // all odd numbers up to sqrt(N), will exceed this limit for the following prime.  Thus, for this test to pass, we
     // need to be using a more efficient algorithm.  (We could increase the limit, but we don't want users to have to
     // mess with compiler flags just to compile the code.)
-    as_magnitude<334'524'384'739>();
+    constexpr std::intmax_t big_prime = 414'131;
+    as_magnitude<big_prime * big_prime>();
   }
 
-  SECTION ("Can bypass computing primes by providing known_first_factor<N>") {
+  SECTION("Can bypass computing primes by providing known_first_factor<N>")
+  {
     // Sometimes, even wheel factorization isn't enough to handle the compilers' limits on constexpr steps and/or
     // iterations.  To work around these cases, we can explicitly provide the correct answer directly to the compiler.
     //
@@ -383,7 +386,7 @@ TEST_CASE("int_power computes integer powers")
 
 TEST_CASE("Prime helper functions")
 {
-  SECTION ("multiplicity")
+  SECTION("multiplicity")
   {
     CHECK(multiplicity(2, 8) == 3);
     CHECK(multiplicity(2, 1024) == 10);
