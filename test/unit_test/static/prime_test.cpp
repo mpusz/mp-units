@@ -24,7 +24,9 @@
 #include <type_traits>
 #include <utility>
 
-namespace units::detail {
+using namespace units::detail;
+
+namespace {
 
 template<std::size_t BasisSize, std::size_t... Is>
 constexpr bool check_primes(std::index_sequence<Is...>)
@@ -71,4 +73,4 @@ static_assert(!WheelFactorizer<3>::is_prime(0));
 static_assert(!WheelFactorizer<3>::is_prime(1));
 static_assert(WheelFactorizer<3>::is_prime(2));
 
-}  // namespace units::detail
+}  // namespace

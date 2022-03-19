@@ -25,7 +25,10 @@
 #include <units/ratio.h>
 #include <type_traits>
 
-namespace units {
+using namespace units;
+using namespace units::detail;
+
+namespace {
 
 // A set of non-standard bases for testing purposes.
 struct noninteger_base {
@@ -313,7 +316,8 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
   }
 }
 
-namespace detail {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Detail function tests below.
 
 TEST_CASE("int_power computes integer powers")
 {
@@ -473,6 +477,4 @@ TEST_CASE("strictly_increasing")
   }
 }
 
-}  // namespace detail
-
-}  // namespace units
+}  // namespace
