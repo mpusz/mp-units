@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/isq/dimensions/amount_of_substance.h>
 #include <units/concepts.h>
+#include <units/isq/dimensions/amount_of_substance.h>
 #include <units/isq/dimensions/time.h>
 
 namespace units::isq {

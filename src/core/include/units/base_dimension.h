@@ -23,8 +23,8 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <units/bits/external/fixed_string.h>
 #include <units/bits/basic_concepts.h>
+#include <units/bits/external/fixed_string.h>
 // IWYU pragma: end_exports
 
 #include <type_traits>
@@ -38,7 +38,7 @@ namespace units {
  * in the subset can be expressed in terms of the other quantities within that subset. They are referred to as
  * being mutually independent since a base quantity cannot be expressed as a product of powers of the other base
  * quantities.
- * 
+ *
  * Base unit is a measurement unit that is adopted by convention for a base quantity in a specific system of units.
  *
  * Pair of Symbol and Unit template parameters form an unique identifier of the base dimension. The same identifiers can
@@ -61,7 +61,6 @@ struct base_dimension {
 template<BaseDimension D1, BaseDimension D2>
 struct base_dimension_less :
     std::bool_constant<(D1::symbol < D2::symbol) ||
-                       (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {
-};
+                       (D1::symbol == D2::symbol && D1::base_unit::symbol < D1::base_unit::symbol)> {};
 
 }  // namespace units

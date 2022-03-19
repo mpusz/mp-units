@@ -58,4 +58,4 @@ static_assert(120 * kB / (2 * min) == 1000 * (B / s));
 static_assert(12 / (2 * s) == 6 * Bd);
 static_assert(6000 / (3 * s) == 2 * kBd);
 
-}
+}  // namespace

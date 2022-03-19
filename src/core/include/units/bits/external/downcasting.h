@@ -38,17 +38,16 @@ namespace units {
 template<typename BaseType>
 struct downcast_base {
   using downcast_base_type = BaseType;
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
+  UNITS_DIAGNOSTIC_PUSH
+  UNITS_DIAGNOSTIC_IGNORE_NON_TEMPLATE_FRIEND
   friend auto downcast_guide(downcast_base);
   friend auto downcast_poison_pill(downcast_base);
-UNITS_DIAGNOSTIC_POP
+  UNITS_DIAGNOSTIC_POP
 };
 
 template<typename T>
 concept Downcastable =
-  requires { typename T::downcast_base_type; } &&
-  std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
+  requires { typename T::downcast_base_type; } && std::derived_from<T, downcast_base<typename T::downcast_base_type>>;
 
 template<typename T>
 concept has_downcast_guide = requires(T t) { downcast_guide(t); };
@@ -58,30 +57,31 @@ concept has_downcast_poison_pill = requires(T t) { downcast_poison_pill(t); };
 
 template<typename Target, Downcastable T>
 struct downcast_child : T {
-  friend auto downcast_guide(typename T::downcast_base)
-  { return std::type_identity<Target>(); }
+  friend auto downcast_guide(typename T::downcast_base) { return std::type_identity<Target>(); }
 };
 
 template<Downcastable T>
 struct downcast_poison : T {
-  friend auto downcast_poison_pill(typename T::downcast_base)
-  { return true; }
+  friend auto downcast_poison_pill(typename T::downcast_base) { return true; }
 };
 
 enum class downcast_mode {
-  off = 0,         // no downcasting at all
-  on = 1,          // downcasting always forced -> compile-time errors in case of duplicated definitions
-  automatic = 2    // downcasting automatically enabled if no collisions are present
+  off = 0,       // no downcasting at all
+  on = 1,        // downcasting always forced -> compile-time errors in case of duplicated definitions
+  automatic = 2  // downcasting automatically enabled if no collisions are present
 };
 
 
 template<typename Target, Downcastable T, downcast_mode mode = static_cast<downcast_mode>(UNITS_DOWNCAST_MODE)>
-struct downcast_dispatch : std::conditional_t<mode == downcast_mode::off, T,
+struct downcast_dispatch :
+    std::conditional_t<mode == downcast_mode::off, T,
 #ifdef UNITS_COMP_MSVC
-                                              downcast_child<Target, T>> {};
+                       downcast_child<Target, T>> {
+};
 #else
-                                              std::conditional_t<mode == downcast_mode::automatic && has_downcast_guide<T>,
-                                                                 downcast_poison<T>, downcast_child<Target, T>>> {};
+                       std::conditional_t<mode == downcast_mode::automatic && has_downcast_guide<T>, downcast_poison<T>,
+                                          downcast_child<Target, T>>> {
+};
 #endif
 
 namespace detail {
@@ -89,7 +89,7 @@ namespace detail {
 template<typename T>
 constexpr auto downcast_impl()
 {
-  if constexpr(has_downcast_guide<downcast_base<T>> && !has_downcast_poison_pill<downcast_base<T>>)
+  if constexpr (has_downcast_guide<downcast_base<T>> && !has_downcast_poison_pill<downcast_base<T>>)
     return decltype(downcast_guide(std::declval<downcast_base<T>>()))();
   else
     return std::type_identity<T>();

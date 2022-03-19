@@ -35,7 +35,9 @@
 
 namespace units::isq::si::hep {
 
-struct eV_per_c : named_scaled_unit<eV_per_c, "eV/c", prefix, ratio(5'344'285'992'678, 1'000'000'000'000, -35), ::units::isq::si::kilogram_metre_per_second> {};
+struct eV_per_c :
+    named_scaled_unit<eV_per_c, "eV/c", prefix, ratio(5'344'285'992'678, 1'000'000'000'000, -35),
+                      ::units::isq::si::kilogram_metre_per_second> {};
 struct feV_per_c : prefixed_unit<feV_per_c, femto, eV_per_c> {};
 struct peV_per_c : prefixed_unit<peV_per_c, pico, eV_per_c> {};
 struct neV_per_c : prefixed_unit<neV_per_c, nano, eV_per_c> {};
@@ -58,48 +60,101 @@ using momentum = quantity<dim_momentum, U, Rep>;
 
 inline namespace literals {
 
-constexpr auto operator"" _q_feV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<feV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_feV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<feV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_feV_per_c(long double l) { return momentum<feV_per_c, long double>(l); }
-constexpr auto operator"" _q_peV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<peV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_peV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<peV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_peV_per_c(long double l) { return momentum<peV_per_c, long double>(l); }
-constexpr auto operator"" _q_neV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<neV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_neV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<neV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_neV_per_c(long double l) { return momentum<neV_per_c, long double>(l); }
-constexpr auto operator"" _q_ueV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<ueV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ueV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<ueV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ueV_per_c(long double l) { return momentum<ueV_per_c, long double>(l); }
-constexpr auto operator"" _q_meV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<meV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_meV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<meV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_meV_per_c(long double l) { return momentum<meV_per_c, long double>(l); }
 
 // eV_per_c
-constexpr auto operator"" _q_eV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<eV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_eV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<eV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_eV_per_c(long double l) { return momentum<eV_per_c, long double>(l); }
 
-constexpr auto operator"" _q_keV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<keV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_keV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<keV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_keV_per_c(long double l) { return momentum<keV_per_c, long double>(l); }
-constexpr auto operator"" _q_MeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<MeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<MeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MeV_per_c(long double l) { return momentum<MeV_per_c, long double>(l); }
-constexpr auto operator"" _q_GeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<GeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<GeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GeV_per_c(long double l) { return momentum<GeV_per_c, long double>(l); }
-constexpr auto operator"" _q_TeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<TeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<TeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TeV_per_c(long double l) { return momentum<TeV_per_c, long double>(l); }
-constexpr auto operator"" _q_PeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<PeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<PeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PeV_per_c(long double l) { return momentum<PeV_per_c, long double>(l); }
-constexpr auto operator"" _q_EeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<EeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<EeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_EeV_per_c(long double l) { return momentum<EeV_per_c, long double>(l); }
-constexpr auto operator"" _q_YeV_per_c(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return momentum<YeV_per_c, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YeV_per_c(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return momentum<YeV_per_c, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YeV_per_c(long double l) { return momentum<YeV_per_c, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
-}  // namespace units::isq::si
+}  // namespace units::isq::si::hep
 
 #ifndef UNITS_NO_ALIASES
 
 namespace units::aliases::isq::si::inline momentum {
 
-template<Representation Rep = double> using eV_per_c = units::isq::si::hep::momentum<units::isq::si::hep::eV_per_c, Rep>;
+template<Representation Rep = double>
+using eV_per_c = units::isq::si::hep::momentum<units::isq::si::hep::eV_per_c, Rep>;
 
 }  // namespace units::aliases::isq::si::inline momentum
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

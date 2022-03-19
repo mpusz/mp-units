@@ -46,12 +46,16 @@ using mass = quantity<dim_mass, U, Rep>;
 inline namespace literals {
 
 // g
-constexpr auto operator"" _q_g(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return mass<gram, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_g(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return mass<gram, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_g(long double l) { return mass<gram, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -67,7 +71,7 @@ using namespace mass_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -75,8 +79,9 @@ using namespace mass_references;
 
 namespace units::aliases::isq::si::cgs::inline mass {
 
-template<Representation Rep = double> using g = units::isq::si::cgs::mass<units::isq::si::cgs::gram, Rep>;
+template<Representation Rep = double>
+using g = units::isq::si::cgs::mass<units::isq::si::cgs::gram, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline mass
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

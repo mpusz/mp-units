@@ -45,12 +45,16 @@ using surface_tension = quantity<dim_surface_tension, U, Rep>;
 inline namespace literals {
 
 // N/m
-constexpr auto operator"" _q_N_per_m(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return surface_tension<newton_per_metre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_N_per_m(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return surface_tension<newton_per_metre, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<newton_per_metre, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -58,8 +62,9 @@ constexpr auto operator"" _q_N_per_m(long double l) { return surface_tension<new
 
 namespace units::aliases::isq::si::inline surface_tension {
 
-template<Representation Rep = double> using N_per_m = units::isq::si::surface_tension<units::isq::si::newton_per_metre, Rep>;
+template<Representation Rep = double>
+using N_per_m = units::isq::si::surface_tension<units::isq::si::newton_per_metre, Rep>;
 
 }  // namespace units::aliases::isq::si::inline surface_tension
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

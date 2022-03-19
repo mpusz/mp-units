@@ -45,12 +45,16 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 inline namespace literals {
 
 // Gal
-constexpr auto operator"" _q_Gal(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return acceleration<gal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gal(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return acceleration<gal, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Gal(long double l) { return acceleration<gal, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -66,7 +70,7 @@ using namespace acceleration_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -74,8 +78,9 @@ using namespace acceleration_references;
 
 namespace units::aliases::isq::si::cgs::inline acceleration {
 
-template<Representation Rep = double> using Gal = units::isq::si::cgs::acceleration<units::isq::si::cgs::gal, Rep>;
+template<Representation Rep = double>
+using Gal = units::isq::si::cgs::acceleration<units::isq::si::cgs::gal, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline acceleration
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

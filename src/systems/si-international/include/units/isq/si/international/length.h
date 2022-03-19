@@ -71,40 +71,72 @@ using mil = thou;
 inline namespace literals {
 
 // yd
-constexpr auto operator"" _q_yd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<yard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<yard, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yd(long double l) { return si::length<yard, long double>(l); }
 
 // ft
-constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<foot, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft(long double l) { return si::length<foot, long double>(l); }
 
 // fathom
-constexpr auto operator"" _q_fathom(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fathom(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<fathom, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fathom(long double l) { return si::length<fathom, long double>(l); }
 
 // in
-constexpr auto operator"" _q_in(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<inch, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_in(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<inch, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_in(long double l) { return si::length<inch, long double>(l); }
 
 // mi
-constexpr auto operator"" _q_mi(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mi(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<mile, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mi(long double l) { return si::length<mile, long double>(l); }
 
 // mi_naut
-constexpr auto operator"" _q_naut_mi(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_naut_mi(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_naut_mi(long double l) { return si::length<nautical_mile, long double>(l); }
 
 // thou
-constexpr auto operator"" _q_thou(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<thou, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_thou(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<thou, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_thou(long double l) { return si::length<thou, long double>(l); }
 
 // mil
-constexpr auto operator"" _q_mil(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<mil, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mil(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<mil, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mil(long double l) { return si::length<mil, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -127,7 +159,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
@@ -135,15 +167,23 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::international::inline length {
 
-template<Representation Rep = double> using yd = units::isq::si::length<units::isq::si::international::yard, Rep>;
-template<Representation Rep = double> using ft = units::isq::si::length<units::isq::si::international::foot, Rep>;
-template<Representation Rep = double> using fathom = units::isq::si::length<units::isq::si::international::fathom, Rep>;
-template<Representation Rep = double> using in = units::isq::si::length<units::isq::si::international::inch, Rep>;
-template<Representation Rep = double> using mi = units::isq::si::length<units::isq::si::international::mile, Rep>;
-template<Representation Rep = double> using mi_naut = units::isq::si::length<units::isq::si::international::nautical_mile, Rep>;
-template<Representation Rep = double> using thou = units::isq::si::length<units::isq::si::international::thou, Rep>;
-template<Representation Rep = double> using mil = units::isq::si::length<units::isq::si::international::mil, Rep>;
+template<Representation Rep = double>
+using yd = units::isq::si::length<units::isq::si::international::yard, Rep>;
+template<Representation Rep = double>
+using ft = units::isq::si::length<units::isq::si::international::foot, Rep>;
+template<Representation Rep = double>
+using fathom = units::isq::si::length<units::isq::si::international::fathom, Rep>;
+template<Representation Rep = double>
+using in = units::isq::si::length<units::isq::si::international::inch, Rep>;
+template<Representation Rep = double>
+using mi = units::isq::si::length<units::isq::si::international::mile, Rep>;
+template<Representation Rep = double>
+using mi_naut = units::isq::si::length<units::isq::si::international::nautical_mile, Rep>;
+template<Representation Rep = double>
+using thou = units::isq::si::length<units::isq::si::international::thou, Rep>;
+template<Representation Rep = double>
+using mil = units::isq::si::length<units::isq::si::international::mil, Rep>;
 
 }  // namespace units::aliases::isq::si::international::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

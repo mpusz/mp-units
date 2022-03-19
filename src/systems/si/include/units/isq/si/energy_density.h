@@ -45,12 +45,16 @@ using energy_density = quantity<dim_energy_density, U, Rep>;
 inline namespace literals {
 
 // N/m
-constexpr auto operator"" _q_J_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy_density<joule_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_J_per_m3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return energy_density<joule_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_J_per_m3(long double l) { return energy_density<joule_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -58,8 +62,9 @@ constexpr auto operator"" _q_J_per_m3(long double l) { return energy_density<jou
 
 namespace units::aliases::isq::si::inline energy_density {
 
-template<Representation Rep = double> using J_per_m3 = units::isq::si::energy_density<units::isq::si::joule_per_metre_cub, Rep>;
+template<Representation Rep = double>
+using J_per_m3 = units::isq::si::energy_density<units::isq::si::joule_per_metre_cub, Rep>;
 
 }  // namespace units::aliases::isq::si::inline energy_density
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

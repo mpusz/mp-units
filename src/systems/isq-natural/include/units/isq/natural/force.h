@@ -48,13 +48,13 @@ inline constexpr auto GeV2 = reference<dim_force, square_gigaelectronvolt>{};
 
 }  // namespace force_references
 
-namespace references { 
+namespace references {
 
 using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::natural
 
@@ -62,8 +62,9 @@ using namespace force_references;
 
 namespace units::aliases::isq::natural::inline force {
 
-template<Representation Rep = double> using GeV2 = units::isq::natural::force<units::isq::natural::square_gigaelectronvolt, Rep>;
+template<Representation Rep = double>
+using GeV2 = units::isq::natural::force<units::isq::natural::square_gigaelectronvolt, Rep>;
 
 }  // namespace units::aliases::isq::natural::inline force
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

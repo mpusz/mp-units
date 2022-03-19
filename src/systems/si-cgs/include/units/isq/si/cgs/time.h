@@ -45,7 +45,7 @@ using si::literals::operator"" _q_s;
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -61,7 +61,7 @@ using namespace time_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -73,4 +73,4 @@ using namespace units::aliases::isq::si::time;
 
 }  // namespace units::aliases::isq::si::cgs::inline time
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

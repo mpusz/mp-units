@@ -59,7 +59,7 @@ struct common_quantity_reference_impl<reference<D, U1>, reference<D, U2>> {
 };
 
 template<typename D1, typename U1, typename D2, typename U2>
-  requires same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value
+  requires(same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value)
 struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
   using type = reference<D1, downcast_unit<D1, common_ratio(U1::ratio, U2::ratio)>>;
 };
@@ -77,8 +77,8 @@ struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
 
 template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
 using common_quantity_reference =
-  TYPENAME detail::common_quantity_reference_impl <
-  std::remove_const_t<decltype(Q1::reference)>, std::remove_const_t<decltype(Q2::reference)>>::type;
+  TYPENAME detail::common_quantity_reference_impl<std::remove_const_t<decltype(Q1::reference)>,
+                                                  std::remove_const_t<decltype(Q2::reference)>>::type;
 
 }  // namespace detail
 }  // namespace units
@@ -91,33 +91,37 @@ struct common_type<Q1, Q2> {
 private:
   using ref = units::detail::common_quantity_reference<Q1, Q2>;
 public:
-  using type = units::quantity<typename ref::dimension, typename ref::unit, common_type_t<typename Q1::rep, typename Q2::rep>>;
+  using type =
+    units::quantity<typename ref::dimension, typename ref::unit, common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 
 template<units::QuantityPoint QP1, units::QuantityPointEquivalentTo<QP1> QP2>
   requires requires { typename common_type_t<typename QP1::rep, typename QP2::rep>; }
 struct common_type<QP1, QP2> {
-  using type = units::quantity_point<
-    units::rebind_point_origin_dimension<typename QP1::origin,
-      typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::dimension>,
-    typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::unit,
-    typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::rep>;
+  using type =
+    units::quantity_point<units::rebind_point_origin_dimension<
+                            typename QP1::origin, typename common_type_t<typename QP1::quantity_type,
+                                                                         typename QP2::quantity_type>::dimension>,
+                          typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::unit,
+                          typename common_type_t<typename QP1::quantity_type, typename QP2::quantity_type>::rep>;
 };
 
 template<units::QuantityKind QK1, units::QuantityKindEquivalentTo<QK1> QK2>
   requires requires { typename common_type_t<typename QK1::rep, typename QK2::rep>; }
 struct common_type<QK1, QK2> {
-  using type = units::quantity_kind<typename QK1::kind_type,
-    typename common_type_t<typename QK1::quantity_type, typename QK2::quantity_type>::unit,
-    typename common_type_t<typename QK1::quantity_type, typename QK2::quantity_type>::rep>;
+  using type =
+    units::quantity_kind<typename QK1::kind_type,
+                         typename common_type_t<typename QK1::quantity_type, typename QK2::quantity_type>::unit,
+                         typename common_type_t<typename QK1::quantity_type, typename QK2::quantity_type>::rep>;
 };
 
 template<units::QuantityPointKind QPK1, units::QuantityPointKindEquivalentTo<QPK1> QPK2>
   requires requires { typename common_type_t<typename QPK1::rep, typename QPK2::rep>; }
 struct common_type<QPK1, QPK2> {
-  using type = units::quantity_point_kind<typename QPK1::point_kind_type,
+  using type = units::quantity_point_kind<
+    typename QPK1::point_kind_type,
     typename common_type_t<typename QPK1::quantity_kind_type, typename QPK2::quantity_kind_type>::unit,
     typename common_type_t<typename QPK1::quantity_kind_type, typename QPK2::quantity_kind_type>::rep>;
 };
 
-}
+}  // namespace std

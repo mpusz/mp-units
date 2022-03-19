@@ -40,14 +40,15 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
 };
 
 template<typename C>
-struct clock_origin : point_origin<isq::si::dim_time> { };
+struct clock_origin : point_origin<isq::si::dim_time> {};
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
   using origin = clock_origin<C>;
   using unit = downcast_unit<typename origin::dimension, ratio(Period::num, Period::den)>;
   using rep = Rep;
-  [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp) {
+  [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
+  {
     return qp.time_since_epoch();
   }
 };
@@ -61,17 +62,16 @@ constexpr std::intmax_t pow_10(std::intmax_t v)
 {
   gsl_Expects(v > 0);
   std::intmax_t res = 1;
-  for(std::intmax_t i = 0; i < v; i++)
-    res *= 10;
+  for (std::intmax_t i = 0; i < v; i++) res *= 10;
   return res;
 }
 
 template<ratio R>
 constexpr auto to_std_ratio_impl()
 {
-  if constexpr(R.exp == 0)
+  if constexpr (R.exp == 0)
     return std::ratio<R.num, R.den>{};
-  else if constexpr(R.exp > 0)
+  else if constexpr (R.exp > 0)
     return std::ratio<R.num * pow_10(R.exp), R.den>{};
   else
     return std::ratio<R.num, R.den * pow_10(-R.exp)>{};
@@ -96,4 +96,4 @@ template<typename C, typename U, typename Rep>
   return ret_type(to_std_duration(qp.relative()));
 }
 
-} // namespace units
+}  // namespace units

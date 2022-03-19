@@ -100,4 +100,4 @@ static_assert(10_q_erg / 1_q_erg_per_s == 10_q_s);
 
 static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 
-}
+}  // namespace

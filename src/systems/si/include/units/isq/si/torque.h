@@ -28,8 +28,8 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/energy.h>
 #include <units/generic/angle.h>
+#include <units/isq/si/energy.h>
 #include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
@@ -47,12 +47,16 @@ using torque = quantity<dim_torque, U, Rep>;
 inline namespace literals {
 
 // Nm
-constexpr auto operator"" _q_N_m_per_rad(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return torque<newton_metre_per_radian, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_N_m_per_rad(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return torque<newton_metre_per_radian, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_N_m_per_rad(long double l) { return torque<newton_metre_per_radian, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -60,8 +64,9 @@ constexpr auto operator"" _q_N_m_per_rad(long double l) { return torque<newton_m
 
 namespace units::aliases::isq::si::inline torque {
 
-template<Representation Rep = double> using N_m_per_rad = units::isq::si::torque<units::isq::si::newton_metre_per_radian, Rep>;
+template<Representation Rep = double>
+using N_m_per_rad = units::isq::si::torque<units::isq::si::newton_metre_per_radian, Rep>;
 
 }  // namespace units::aliases::isq::si::inline torque
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

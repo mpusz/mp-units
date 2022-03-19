@@ -48,12 +48,16 @@ using pressure = quantity<dim_pressure, U, Rep>;
 inline namespace literals {
 
 // Ba
-constexpr auto operator"" _q_Ba(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return pressure<barye, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ba(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return pressure<barye, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Ba(long double l) { return pressure<barye, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -69,7 +73,7 @@ using namespace pressure_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -77,8 +81,9 @@ using namespace pressure_references;
 
 namespace units::aliases::isq::si::cgs::inline pressure {
 
-template<Representation Rep = double> using Ba = units::isq::si::cgs::pressure<units::isq::si::cgs::barye, Rep>;
+template<Representation Rep = double>
+using Ba = units::isq::si::cgs::pressure<units::isq::si::cgs::barye, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline pressure
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

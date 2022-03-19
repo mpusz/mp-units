@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/math.h>
+#include <catch2/catch.hpp>
 #include <units/isq/si/area.h>
 #include <units/isq/si/length.h>
-#include <units/isq/si/volume.h>
 #include <units/isq/si/time.h>
-#include <catch2/catch.hpp>
+#include <units/isq/si/volume.h>
+#include <units/math.h>
 #include <limits>
 
 using namespace units;
@@ -36,21 +36,13 @@ using namespace units::isq::si;
 
 TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
-  SECTION ("'pow<0>(q)' returns '1'") {
-    CHECK(pow<0>(2_q_m) == 1);
-  }
+  SECTION("'pow<0>(q)' returns '1'") { CHECK(pow<0>(2_q_m) == 1); }
 
-  SECTION ("'pow<1>(q)' returns 'q'") {
-    CHECK(pow<1>(2_q_m) == 2_q_m);
-  }
+  SECTION("'pow<1>(q)' returns 'q'") { CHECK(pow<1>(2_q_m) == 2_q_m); }
 
-  SECTION ("'pow<2>(q)' squares both the value and a dimension") {
-    CHECK(pow<2>(2_q_m) == 4_q_m2);
-  }
+  SECTION("'pow<2>(q)' squares both the value and a dimension") { CHECK(pow<2>(2_q_m) == 4_q_m2); }
 
-  SECTION ("'pow<3>(q)' cubes both the value and a dimension") {
-    CHECK(pow<3>(2_q_m) == 8_q_m3);
-  }
+  SECTION("'pow<3>(q)' cubes both the value and a dimension") { CHECK(pow<3>(2_q_m) == 8_q_m3); }
 }
 
 TEST_CASE("'sqrt()' on quantity changes the value and the dimension accordingly", "[math][sqrt]")
@@ -70,85 +62,86 @@ TEST_CASE("'pow<Num, Den>()' on quantity changes the value and the dimension acc
 
 TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
 {
-  SECTION ("'abs()' on a negative quantity returns the abs")
+  SECTION("'abs()' on a negative quantity returns the abs")
   {
-    SECTION ("integral representation")
-    {
-      REQUIRE(abs(-1_q_m) == 1_q_m);
-    }
+    SECTION("integral representation") { REQUIRE(abs(-1_q_m) == 1_q_m); }
 
-    SECTION ("floating-point representation")
-    {
-      REQUIRE(abs(-1._q_m) == 1_q_m);
-    }
+    SECTION("floating-point representation") { REQUIRE(abs(-1._q_m) == 1_q_m); }
   }
 
-  SECTION ("'abs()' on a positive quantity returns the abs")
+  SECTION("'abs()' on a positive quantity returns the abs")
   {
-    SECTION ("integral representation")
-    {
-      REQUIRE(abs(1_q_m) == 1_q_m);
-    }
+    SECTION("integral representation") { REQUIRE(abs(1_q_m) == 1_q_m); }
 
-    SECTION ("floating-point representation")
-    {
-      REQUIRE(abs(1._q_m) == 1_q_m);
-    }
+    SECTION("floating-point representation") { REQUIRE(abs(1._q_m) == 1_q_m); }
   }
 }
 
 TEST_CASE("numeric_limits functions", "[limits]")
 {
-  SECTION ("'epsilon' works as expected using default floating type") {
+  SECTION("'epsilon' works as expected using default floating type")
+  {
     REQUIRE(epsilon<decltype(1._q_m)>().number() == std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
-  SECTION ("'epsilon' works as expected using integers") {
+  SECTION("'epsilon' works as expected using integers")
+  {
     REQUIRE(epsilon<decltype(1_q_m)>().number() == std::numeric_limits<decltype(1_q_m)::rep>::epsilon());
   }
-  SECTION ("'epsilon' works as expected using mixed Rep types") {
+  SECTION("'epsilon' works as expected using mixed Rep types")
+  {
     REQUIRE(epsilon<decltype(1_q_m)>().number() != std::numeric_limits<decltype(1._q_m)::rep>::epsilon());
   }
 }
 
 TEST_CASE("floor functions", "[floor]")
 {
-  SECTION ("floor 1 second with target unit second should be 1 second") {
-    REQUIRE(floor<si::second>(1_q_s) == 1_q_s);
-  }
-  SECTION ("floor 1000 milliseconds with target unit second should be 1 second") {
+  SECTION("floor 1 second with target unit second should be 1 second") { REQUIRE(floor<si::second>(1_q_s) == 1_q_s); }
+  SECTION("floor 1000 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1000_q_ms) == 1_q_s);
   }
-  SECTION ("floor 1001 milliseconds with target unit second should be 1 second") {
+  SECTION("floor 1001 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1001_q_ms) == 1_q_s);
   }
-  SECTION ("floor 1999 milliseconds with target unit second should be 1 second") {
+  SECTION("floor 1999 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1999_q_ms) == 1_q_s);
   }
-  SECTION ("floor -1000 milliseconds with target unit second should be -1 second") {
+  SECTION("floor -1000 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(floor<si::second>(-1000_q_ms) == -1_q_s);
   }
-  SECTION ("floor -999 milliseconds with target unit second should be -1 second") {
+  SECTION("floor -999 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(floor<si::second>(-999_q_ms) == -1_q_s);
   }
-  SECTION ("floor 1.3 seconds with target unit second should be 1 second") {
+  SECTION("floor 1.3 seconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1.3_q_s) == 1_q_s);
   }
-  SECTION ("floor -1.3 seconds with target unit second should be -2 seconds") {
+  SECTION("floor -1.3 seconds with target unit second should be -2 seconds")
+  {
     REQUIRE(floor<si::second>(-1.3_q_s) == -2_q_s);
   }
-  SECTION ("floor 1001. milliseconds with target unit second should be 1 second") {
+  SECTION("floor 1001. milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1001._q_ms) == 1_q_s);
   }
-  SECTION ("floor 1999. milliseconds with target unit second should be 1 second") {
+  SECTION("floor 1999. milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(floor<si::second>(1999._q_ms) == 1_q_s);
   }
-  SECTION ("floor -1000. milliseconds with target unit second should be -1 second") {
+  SECTION("floor -1000. milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(floor<si::second>(-1000._q_ms) == -1_q_s);
   }
-  SECTION ("floor -999. milliseconds with target unit second should be -1 second") {
+  SECTION("floor -999. milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(floor<si::second>(-999._q_ms) == -1_q_s);
   }
-  SECTION ("floor 1 second with target quantity with unit type second should be 1 second") {
+  SECTION("floor 1 second with target quantity with unit type second should be 1 second")
+  {
     using showtime = si::time<si::second, int>;
     REQUIRE(floor<showtime>(showtime::one()) == showtime::one());
   }
@@ -156,44 +149,53 @@ TEST_CASE("floor functions", "[floor]")
 
 TEST_CASE("ceil functions", "[ceil]")
 {
-  SECTION ("ceil 1 second with target unit second should be 1 second") {
-    REQUIRE(ceil<si::second>(1_q_s) == 1_q_s);
-  }
-  SECTION ("ceil 1000 milliseconds with target unit second should be 1 second") {
+  SECTION("ceil 1 second with target unit second should be 1 second") { REQUIRE(ceil<si::second>(1_q_s) == 1_q_s); }
+  SECTION("ceil 1000 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(ceil<si::second>(1000_q_ms) == 1_q_s);
   }
-  SECTION ("ceil 1001 milliseconds with target unit second should be 2 seconds") {
+  SECTION("ceil 1001 milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(ceil<si::second>(1001_q_ms) == 2_q_s);
   }
-  SECTION ("ceil 1999 milliseconds with target unit second should be 2 seconds") {
+  SECTION("ceil 1999 milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(ceil<si::second>(1999_q_ms) == 2_q_s);
   }
-  SECTION ("ceil -1000 milliseconds with target unit second should be -1 second") {
+  SECTION("ceil -1000 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(ceil<si::second>(-1000_q_ms) == -1_q_s);
   }
-  SECTION ("ceil -999 milliseconds with target unit second should be 0 seconds") {
+  SECTION("ceil -999 milliseconds with target unit second should be 0 seconds")
+  {
     REQUIRE(ceil<si::second>(-999_q_ms) == 0_q_s);
   }
-  SECTION ("ceil 1.3 seconds with target unit second should be 2 seconds") {
+  SECTION("ceil 1.3 seconds with target unit second should be 2 seconds")
+  {
     REQUIRE(ceil<si::second>(1.3_q_s) == 2_q_s);
   }
-  SECTION ("ceil -1.3 seconds with target unit second should be -1 second") {
+  SECTION("ceil -1.3 seconds with target unit second should be -1 second")
+  {
     REQUIRE(ceil<si::second>(-1.3_q_s) == -1_q_s);
   }
-  SECTION ("ceil 1001. milliseconds with target unit second should be 2 seconds") {
+  SECTION("ceil 1001. milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(ceil<si::second>(1001._q_ms) == 2_q_s);
   }
-  SECTION ("ceil 1999. milliseconds with target unit second should be 2 seconds") {
+  SECTION("ceil 1999. milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(ceil<si::second>(1999._q_ms) == 2_q_s);
   }
-// TODO does not work, probably due to a bug in fpow10() see #311
-//   SECTION ("ceil -1000. milliseconds with target unit second should be -1 second") {
-//     REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
-//   }
-  SECTION ("ceil -999. milliseconds with target unit second should be 0 seconds") {
+  // TODO does not work, probably due to a bug in fpow10() see #311
+  //   SECTION ("ceil -1000. milliseconds with target unit second should be -1 second") {
+  //     REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
+  //   }
+  SECTION("ceil -999. milliseconds with target unit second should be 0 seconds")
+  {
     REQUIRE(ceil<si::second>(-999._q_ms) == 0_q_s);
   }
-  SECTION ("ceil 1 second with target quantity with unit type second should be 1 second") {
+  SECTION("ceil 1 second with target quantity with unit type second should be 1 second")
+  {
     using showtime = si::time<si::second, int>;
     REQUIRE(ceil<showtime>(showtime::one()) == showtime::one());
   }
@@ -201,70 +203,89 @@ TEST_CASE("ceil functions", "[ceil]")
 
 TEST_CASE("round functions", "[round]")
 {
-  SECTION ("round 1 second with target unit second should be 1 second") {
-    REQUIRE(round<si::second>(1_q_s) == 1_q_s);
-  }
-  SECTION ("round 1000 milliseconds with target unit second should be 1 second") {
+  SECTION("round 1 second with target unit second should be 1 second") { REQUIRE(round<si::second>(1_q_s) == 1_q_s); }
+  SECTION("round 1000 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1000_q_ms) == 1_q_s);
   }
-  SECTION ("round 1001 milliseconds with target unit second should be 1 second") {
+  SECTION("round 1001 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1001_q_ms) == 1_q_s);
   }
-  SECTION ("round 1499 milliseconds with target unit second should be 1 second") {
+  SECTION("round 1499 milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1499_q_ms) == 1_q_s);
   }
-  SECTION ("round 1500 milliseconds with target unit second should be 2 seconds") {
+  SECTION("round 1500 milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(round<si::second>(1500_q_ms) == 2_q_s);
   }
-  SECTION ("round 1999 milliseconds with target unit second should be 2 seconds") {
+  SECTION("round 1999 milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(round<si::second>(1999_q_ms) == 2_q_s);
   }
-  SECTION ("round -1000 milliseconds with target unit second should be -1 second") {
+  SECTION("round -1000 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1000_q_ms) == -1_q_s);
   }
-  SECTION ("round -1001 milliseconds with target unit second should be -1 second") {
+  SECTION("round -1001 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1001_q_ms) == -1_q_s);
   }
-  SECTION ("round -1499 milliseconds with target unit second should be -1 second") {
+  SECTION("round -1499 milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1499_q_ms) == -1_q_s);
   }
-  SECTION ("round -1500 milliseconds with target unit second should be -2 seconds") {
+  SECTION("round -1500 milliseconds with target unit second should be -2 seconds")
+  {
     REQUIRE(round<si::second>(-1500_q_ms) == -2_q_s);
   }
-  SECTION ("round -1999 milliseconds with target unit second should be -2 seconds") {
+  SECTION("round -1999 milliseconds with target unit second should be -2 seconds")
+  {
     REQUIRE(round<si::second>(-1999_q_ms) == -2_q_s);
   }
-  SECTION ("round 1000. milliseconds with target unit second should be 1 second") {
+  SECTION("round 1000. milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1000._q_ms) == 1_q_s);
   }
-  SECTION ("round 1001. milliseconds with target unit second should be 1 second") {
+  SECTION("round 1001. milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1001._q_ms) == 1_q_s);
   }
-  SECTION ("round 1499. milliseconds with target unit second should be 1 second") {
+  SECTION("round 1499. milliseconds with target unit second should be 1 second")
+  {
     REQUIRE(round<si::second>(1499._q_ms) == 1_q_s);
   }
-  SECTION ("round 1500. milliseconds with target unit second should be 2 seconds") {
+  SECTION("round 1500. milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(round<si::second>(1500._q_ms) == 2_q_s);
   }
-  SECTION ("round 1999. milliseconds with target unit second should be 2 seconds") {
+  SECTION("round 1999. milliseconds with target unit second should be 2 seconds")
+  {
     REQUIRE(round<si::second>(1999._q_ms) == 2_q_s);
   }
-  SECTION ("round -1000. milliseconds with target unit second should be -1 second") {
+  SECTION("round -1000. milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1000._q_ms) == -1_q_s);
   }
-  SECTION ("round -1001. milliseconds with target unit second should be -1 second") {
+  SECTION("round -1001. milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1001._q_ms) == -1_q_s);
   }
-  SECTION ("round -1499. milliseconds with target unit second should be -1 second") {
+  SECTION("round -1499. milliseconds with target unit second should be -1 second")
+  {
     REQUIRE(round<si::second>(-1499._q_ms) == -1_q_s);
   }
-  SECTION ("round -1500. milliseconds with target unit second should be -2 seconds") {
+  SECTION("round -1500. milliseconds with target unit second should be -2 seconds")
+  {
     REQUIRE(round<si::second>(-1500._q_ms) == -2_q_s);
   }
-  SECTION ("round -1999. milliseconds with target unit second should be -2 seconds") {
+  SECTION("round -1999. milliseconds with target unit second should be -2 seconds")
+  {
     REQUIRE(round<si::second>(-1999._q_ms) == -2_q_s);
   }
-  SECTION ("round 1 second with target quantity with unit type second should be 1 second") {
+  SECTION("round 1 second with target quantity with unit type second should be 1 second")
+  {
     using showtime = si::time<si::second, int>;
     REQUIRE(round<showtime>(showtime::one()) == showtime::one());
   }
@@ -281,7 +302,7 @@ template<std::intmax_t N>
 struct Pow {
   constexpr static std::intmax_t exponent = N;
   template<typename T>
-  [[nodiscard]] constexpr static auto pow(T const& v) noexcept
+  [[nodiscard]] constexpr static auto pow(const T& v) noexcept
   {
     return detail::pow_impl<N>(v);
   }
@@ -301,8 +322,9 @@ struct RuntimeRoot : Pow<N> {
 template<typename TestType>
 static void root_test()
 {
-  SECTION ("Roots are truncated down") {
-    auto base = GENERATE(range(1.0, 10.0, 1.0)); // doubles to guard against overflow
+  SECTION("Roots are truncated down")
+  {
+    auto base = GENERATE(range(1.0, 10.0, 1.0));  // doubles to guard against overflow
 
     if (TestType::pow(base) < static_cast<double>(std::numeric_limits<std::intmax_t>::max())) {
       const std::intmax_t x = TestType::pow(static_cast<std::intmax_t>(base));
@@ -313,7 +335,8 @@ static void root_test()
     }
   }
 
-  SECTION ("Roots are truncated correctly for very large inputs") {
+  SECTION("Roots are truncated correctly for very large inputs")
+  {
     auto exponent = GENERATE(range(10, std::numeric_limits<std::intmax_t>::digits10, 1));
     const auto large_val = static_cast<std::intmax_t>(std::pow(10, exponent));
     const auto expected = static_cast<std::intmax_t>(std::pow(10, exponent / static_cast<double>(TestType::exponent)));

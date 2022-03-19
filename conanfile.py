@@ -28,7 +28,7 @@ import os, re
 
 required_conan_version = ">=1.44.0"
 
-class UnitsConan(ConanFile):
+class MPUnitsConan(ConanFile):
     name = "mp-units"
     homepage = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
@@ -49,12 +49,6 @@ class UnitsConan(ConanFile):
     }
     exports = ["LICENSE.md"]
     exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
-    # scm = {
-    #     "type": "git",
-    #     "url": "auto",
-    #     "revision": "auto",
-    #     "submodule": "recursive"
-    # }
     generators = "cmake_paths"
 
     @property
@@ -66,15 +60,23 @@ class UnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         std_support = \
-            (compiler == "Visual Studio" and version >= "17" and compiler.cppstd == 23) or \
-            (compiler == "msvc" and (version == "19.3" or version >= "19.30") and compiler.cppstd == 23)
+            (compiler == "Visual Studio" and version >= 17 and compiler.cppstd == 23) or \
+            (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
         return not std_support
 
     @property
     def _use_range_v3(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
-        return ("clang" in compiler and compiler.libcxx == "libc++" and version < "14.0")
+        return ("clang" in compiler and compiler.libcxx == "libc++" and version < 14)
+
+    @property
+    def _msvc_version(self):
+        compiler = self.settings.compiler
+        if (compiler.update):
+            return int(f"{compiler.version}{compiler.update}")
+        else:
+            return int(f"{compiler.version}0")
 
     def set_version(self):
         content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
@@ -99,23 +101,23 @@ class UnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
-            if version < "10.0":
+            if version < 10:
                 raise ConanInvalidConfiguration("mp-units requires at least g++-10")
         elif compiler == "clang":
-            if version < "12":
+            if version < 12:
                 raise ConanInvalidConfiguration("mp-units requires at least clang++-12")
         elif compiler == "apple-clang":
-            if version < "13":
+            if version < 13:
                 raise ConanInvalidConfiguration("mp-units requires at least AppleClang 13")
         elif compiler == "Visual Studio":
-            if version < "16":
+            if version < 16:
                 raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
         elif compiler == "msvc":
-            if version < "1928":
+            if self._msvc_version < 1928:
                 raise ConanInvalidConfiguration("mp-units requires at least MSVC 19.28")
         else:
             raise ConanInvalidConfiguration("Unsupported compiler")
-        check_min_cppstd(self, "20")
+        check_min_cppstd(self, 20)
 
     # TODO Uncomment this when environment is supported in the Conan toolchain
     # def config_options(self):
@@ -127,7 +129,7 @@ class UnitsConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
-        tc.variables["UNITS_BUILD_DOCS"] = self.options.build_docs == "True"
+        tc.variables["UNITS_BUILD_DOCS"] = bool(self.options.build_docs)
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
@@ -144,7 +146,7 @@ class UnitsConan(ConanFile):
         self.info.header_only()
 
     def package(self):
-        self.copy(pattern="LICENSE.md", dst="licenses")
+        self.copy("LICENSE.md", dst="licenses")
         cmake = CMake(self)
         cmake.install()
         tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))

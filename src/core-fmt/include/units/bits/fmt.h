@@ -86,7 +86,10 @@ template<std::integral Char>
 
 template<typename Char>
   requires std::is_enum_v<Char>
-[[nodiscard]] constexpr auto to_ascii(Char value) -> std::underlying_type_t<Char> { return value; }
+[[nodiscard]] constexpr auto to_ascii(Char value) -> std::underlying_type_t<Char>
+{
+  return value;
+}
 
 struct width_checker {
   template<typename T>
@@ -442,7 +445,8 @@ public:
 
   constexpr dynamic_specs_handler(dynamic_format_specs<char_type>& specs, ParseContext& ctx) :
       specs_setter<char_type>(specs), specs_(specs), context_(ctx)
-  {}
+  {
+  }
 
   template<typename T>
   constexpr void on_dynamic_width(T t)

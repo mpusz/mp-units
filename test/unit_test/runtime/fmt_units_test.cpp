@@ -20,7 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/external/hacks.h> // IWYU pragma: keep
+#include <catch2/catch.hpp>
+#include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <units/format.h>
 #include <units/isq/iec80000/iec80000.h>
 #include <units/isq/si/iau/iau.h>
@@ -29,7 +30,6 @@
 #include <units/isq/si/si.h>
 #include <units/isq/si/typographic/typographic.h>
 #include <units/isq/si/uscs/uscs.h>
-#include <catch2/catch.hpp>
 
 using namespace units::isq::si;
 using namespace units::isq::si::references;
@@ -80,10 +80,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1_q_point_prn) == "1 point(prn)");
   }
 
-  SECTION("mass")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_kg) == "1 kg");
-  }
+  SECTION("mass") { CHECK(STD_FMT::format("{}", 1_q_kg) == "1 kg"); }
 
   SECTION("area")
   {
@@ -189,15 +186,9 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1_q_GW) == "1 GW");
   }
 
-  SECTION("surface tension")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_N_per_m) == "1 N/m");
-  }
+  SECTION("surface tension") { CHECK(STD_FMT::format("{}", 1_q_N_per_m) == "1 N/m"); }
 
-  SECTION("magnetic induction")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_T) == "1 T");
-  }
+  SECTION("magnetic induction") { CHECK(STD_FMT::format("{}", 1_q_T) == "1 T"); }
 
   SECTION("magnetic flux")
   {
@@ -230,10 +221,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1_q_mGy) == "1 mGy");
   }
 
-  SECTION("addition with common ratio")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_in + 1_q_yd) == "37 in");
-  }
+  SECTION("addition with common ratio") { CHECK(STD_FMT::format("{}", 1_q_in + 1_q_yd) == "37 in"); }
 
   SECTION("current density")
   {
@@ -259,10 +247,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_Pa_s) == "1 Pa s");
   }
 
-  SECTION("heat capacity")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_J_per_K) == "1 J/K");
-  }
+  SECTION("heat capacity") { CHECK(STD_FMT::format("{}", 1_q_J_per_K) == "1 J/K"); }
 
   SECTION("specific heat capacity")
   {
@@ -282,10 +267,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_W_per_m_K) == "1 W m^-1 K^-1");
   }
 
-  SECTION("electric field strength")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_V_per_m) == "1 V/m");
-  }
+  SECTION("electric field strength") { CHECK(STD_FMT::format("{}", 1_q_V_per_m) == "1 V/m"); }
 
   SECTION("charge density")
   {
@@ -295,25 +277,13 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_C_per_m2) == "1 C/m^2");
   }
 
-  SECTION("permittivity")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_F_per_m) == "1 F/m");
-  }
+  SECTION("permittivity") { CHECK(STD_FMT::format("{}", 1_q_F_per_m) == "1 F/m"); }
 
-  SECTION("permeability")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_H_per_m) == "1 H/m");
-  }
+  SECTION("permeability") { CHECK(STD_FMT::format("{}", 1_q_H_per_m) == "1 H/m"); }
 
-  SECTION("molar energy")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_J_per_mol) == "1 J/mol");
-  }
+  SECTION("molar energy") { CHECK(STD_FMT::format("{}", 1_q_J_per_mol) == "1 J/mol"); }
 
-  SECTION("torque")
-  {
-    CHECK(STD_FMT::format("{}", 1_q_N_m_per_rad) == "1 N ⋅ m/rad");
-  }
+  SECTION("torque") { CHECK(STD_FMT::format("{}", 1_q_N_m_per_rad) == "1 N ⋅ m/rad"); }
 
   SECTION("storage_capacity")
   {
@@ -332,10 +302,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1 * (TB / s)) == "1 TB/s");
   }
 
-  SECTION("traffic_intesity") 
-  {
-    CHECK(STD_FMT::format("{}", 1 * E) == "1 E");
-  }
+  SECTION("traffic_intesity") { CHECK(STD_FMT::format("{}", 1 * E) == "1 E"); }
 
   SECTION("modulation_rate")
   {

@@ -36,7 +36,9 @@ namespace units::isq::si {
 
 struct watt_per_metre_kelvin : unit<watt_per_metre_kelvin> {};
 
-struct dim_thermal_conductivity : isq::dim_thermal_conductivity<dim_thermal_conductivity, watt_per_metre_kelvin, dim_power, dim_length, dim_thermodynamic_temperature> {};
+struct dim_thermal_conductivity :
+    isq::dim_thermal_conductivity<dim_thermal_conductivity, watt_per_metre_kelvin, dim_power, dim_length,
+                                  dim_thermodynamic_temperature> {};
 
 template<UnitOf<dim_thermal_conductivity> U, Representation Rep = double>
 using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
@@ -46,12 +48,19 @@ using thermal_conductivity = quantity<dim_thermal_conductivity, U, Rep>;
 inline namespace literals {
 
 // W/(m K)
-constexpr auto operator"" _q_W_per_m_K(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return thermal_conductivity<watt_per_metre_kelvin, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_W_per_m_K(long double l) { return thermal_conductivity<watt_per_metre_kelvin, long double>(l); }
+constexpr auto operator"" _q_W_per_m_K(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return thermal_conductivity<watt_per_metre_kelvin, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_W_per_m_K(long double l)
+{
+  return thermal_conductivity<watt_per_metre_kelvin, long double>(l);
+}
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -59,8 +68,9 @@ constexpr auto operator"" _q_W_per_m_K(long double l) { return thermal_conductiv
 
 namespace units::aliases::isq::si::inline thermal_conductivity {
 
-template<Representation Rep = double> using W_per_m_K = units::isq::si::thermal_conductivity<units::isq::si::watt_per_metre_kelvin, Rep>;
+template<Representation Rep = double>
+using W_per_m_K = units::isq::si::thermal_conductivity<units::isq::si::watt_per_metre_kelvin, Rep>;
 
 }  // namespace units::aliases::isq::si::inline thermal_conductivity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES
