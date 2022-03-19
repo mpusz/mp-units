@@ -21,15 +21,14 @@
 // SOFTWARE.
 
 #include <units/bits/prime.h>
-
 #include <type_traits>
 #include <utility>
 
-namespace units::detail
-{
+namespace units::detail {
 
 template<std::size_t BasisSize, std::size_t... Is>
-constexpr bool check_primes(std::index_sequence<Is...>) {
+constexpr bool check_primes(std::index_sequence<Is...>)
+{
   return ((Is < 2 || WheelFactorizer<BasisSize>::is_prime(Is) == is_prime_by_trial_division(Is)) && ...);
 }
 
@@ -72,4 +71,4 @@ static_assert(!WheelFactorizer<3>::is_prime(0));
 static_assert(!WheelFactorizer<3>::is_prime(1));
 static_assert(WheelFactorizer<3>::is_prime(2));
 
-} // namespace units::detail
+}  // namespace units::detail

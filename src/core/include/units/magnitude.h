@@ -22,19 +22,19 @@
 
 #pragma once
 
-#include <units/ratio.h>
+#include <units/bits/external/hacks.h>
 #include <units/bits/prime.h>
+#include <units/ratio.h>
 #include <concepts>
 #include <cstdint>
 #include <numbers>
 #include <stdexcept>
 
 namespace units {
-namespace detail
-{
+namespace detail {
 // Higher numbers use fewer trial divisions, at the price of more storage space.
 using Factorizer = WheelFactorizer<4>;
-} // namespace detail
+}  // namespace detail
 
 /**
  * @brief  Any type which can be used as a basis vector in a BasePower.
@@ -52,7 +52,8 @@ using Factorizer = WheelFactorizer<4>;
  * GCC 10) which don't yet permit floating point NTTPs.
  */
 template<typename T>
-concept BaseRep = std::is_same_v<T, std::intmax_t> || std::is_same_v<std::remove_cvref_t<decltype(T::value)>, long double>;
+concept BaseRep = std::is_same_v<T, std::intmax_t> || std::is_same_v < std::remove_cvref_t<decltype(T::value)>,
+long double > ;
 
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
@@ -114,7 +115,7 @@ template<typename T>
 inline constexpr bool is_base_power = false;
 template<BaseRep T>
 inline constexpr bool is_base_power<base_power<T>> = true;
-} // namespace detail
+}  // namespace detail
 
 /**
  * @brief  Concept to detect whether a _type_ is a valid base power.
@@ -125,34 +126,40 @@ inline constexpr bool is_base_power<base_power<T>> = true;
 template<typename T>
 concept BasePower = detail::is_base_power<T>;
 
-namespace detail
+namespace detail {
+
+constexpr auto inverse(BasePower auto bp)
 {
-constexpr auto inverse(BasePower auto bp) {
   bp.power.num *= -1;
   return bp;
 }
 
 // `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
-template<typename T> requires std::is_arithmetic_v<T>
-using widen_t = std::conditional_t<
-  std::is_floating_point_v<T>,
-  long double,
-  std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
+template<typename T>
+  requires std::is_arithmetic_v<T>
+using widen_t = std::conditional_t<std::is_floating_point_v<T>, long double,
+                                   std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
-template<typename T> requires std::is_arithmetic_v<T>
-constexpr T int_power(T base, std::integral auto exp){
+template<typename T>
+  requires std::is_arithmetic_v<T>
+constexpr T int_power(T base, std::integral auto exp)
+{
   // As this function should only be called at compile time, the exceptions herein function as
   // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
-  if (exp < 0) { throw std::invalid_argument{"int_power only supports positive integer powers"}; }
+  if (exp < 0) {
+    throw std::invalid_argument{"int_power only supports positive integer powers"};
+  }
 
-  constexpr auto checked_multiply = [] (auto a, auto b) {
+  constexpr auto checked_multiply = [](auto a, auto b) {
     const auto result = a * b;
-    if (result / a != b) { throw std::overflow_error{"Wraparound detected"}; }
+    if (result / a != b) {
+      throw std::overflow_error{"Wraparound detected"};
+    }
     return result;
   };
 
-  constexpr auto checked_square = [checked_multiply] (auto a) { return checked_multiply(a, a); };
+  constexpr auto checked_square = [checked_multiply](auto a) { return checked_multiply(a, a); };
 
   // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
   // template parameter, rather than a function parameter.
@@ -169,7 +176,8 @@ constexpr T int_power(T base, std::integral auto exp){
 }
 
 
-template<typename T> requires std::is_arithmetic_v<T>
+template<typename T>
+  requires std::is_arithmetic_v<T>
 constexpr widen_t<T> compute_base_power(BasePower auto bp)
 {
   // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
@@ -177,8 +185,12 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
   //
   // Note that since this function should only be called at compile time, the point of these
   // exceptions is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
-  if (bp.power.den != 1) { throw std::invalid_argument{"Rational powers not yet supported"}; }
-  if (bp.power.exp < 0) { throw std::invalid_argument{"Unsupported exp value"}; }
+  if (bp.power.den != 1) {
+    throw std::invalid_argument{"Rational powers not yet supported"};
+  }
+  if (bp.power.exp < 0) {
+    throw std::invalid_argument{"Unsupported exp value"};
+  }
 
   if (bp.power.num < 0) {
     if constexpr (std::is_integral_v<T>) {
@@ -197,10 +209,10 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
 // The input is the desired result, but in a (wider) intermediate type.  The point of this function
 // is to cast to the desired type, but avoid overflow in doing so.
 template<typename To, typename From>
-  requires std::is_arithmetic_v<To>
-    && std::is_arithmetic_v<From>
-    && (std::is_integral_v<To> == std::is_integral_v<From>)
-constexpr To checked_static_cast(From x) {
+  requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From> &&
+           (std::is_integral_v<To> == std::is_integral_v<From>)
+constexpr To checked_static_cast(From x)
+{
   // This function should only ever be called at compile time.  The purpose of these exceptions is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
@@ -215,20 +227,22 @@ constexpr To checked_static_cast(From x) {
 
   return static_cast<To>(x);
 }
-} // namespace detail
+}  // namespace detail
 
 /**
  * @brief  Equality detection for two base powers.
  */
 template<BasePower T, BasePower U>
-constexpr bool operator==(T t, U u) {
+constexpr bool operator==(T t, U u)
+{
   return std::is_same_v<T, U> && (t.get_base() == u.get_base()) && (t.power == u.power);
 }
 
 /**
  * @brief  A BasePower, raised to a rational power E.
  */
-constexpr auto pow(BasePower auto bp, ratio p) {
+constexpr auto pow(BasePower auto bp, ratio p)
+{
   bp.power = bp.power * p;
   return bp;
 }
@@ -240,8 +254,7 @@ namespace detail {
 constexpr std::intmax_t multiplicity(std::intmax_t factor, std::intmax_t n)
 {
   std::intmax_t m = 0;
-  while (n % factor == 0)
-  {
+  while (n % factor == 0) {
     n /= factor;
     ++m;
   }
@@ -253,20 +266,26 @@ constexpr std::intmax_t multiplicity(std::intmax_t factor, std::intmax_t n)
 // Undefined unless base > 1, pow >= 0, and (base ^ pow) evenly divides n.
 constexpr std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std::intmax_t n)
 {
-  while (pow-- > 0) { n /= base; }
+  while (pow-- > 0) {
+    n /= base;
+  }
   return n;
 }
 
 // A way to check whether a number is prime at compile time.
-constexpr bool is_prime(std::intmax_t n) {
-  return (n >= 0) && Factorizer::is_prime(static_cast<std::size_t>(n));
-}
+constexpr bool is_prime(std::intmax_t n) { return (n >= 0) && Factorizer::is_prime(static_cast<std::size_t>(n)); }
 
-constexpr bool is_valid_base_power(const BasePower auto &bp) {
-  if (bp.power == 0) { return false; }
+constexpr bool is_valid_base_power(const BasePower auto& bp)
+{
+  if (bp.power == 0) {
+    return false;
+  }
 
-  if constexpr (std::is_same_v<decltype(bp.get_base()), std::intmax_t>) { return is_prime(bp.get_base()); }
-  else { return bp.get_base() > 0; }
+  if constexpr (std::is_same_v<decltype(bp.get_base()), std::intmax_t>) {
+    return is_prime(bp.get_base());
+  } else {
+    return bp.get_base() > 0;
+  }
 }
 
 // A function object to apply a predicate to all consecutive pairs of values in a sequence.
@@ -275,16 +294,19 @@ struct pairwise_all {
   Predicate predicate;
 
   template<typename... Ts>
-  constexpr bool operator()(Ts&&... ts) const {
+  constexpr bool operator()(Ts&&... ts) const
+  {
     // Carefully handle different sizes, avoiding unsigned integer underflow.
     constexpr auto num_comparisons = [](auto num_elements) {
       return (num_elements > 1) ? (num_elements - 1) : 0;
     }(sizeof...(Ts));
 
     // Compare zero or more pairs of neighbours as needed.
-    return [this]<std::size_t... Is>(std::tuple<Ts...> &&t, std::index_sequence<Is...>) {
+    return [this]<std::size_t... Is>(std::tuple<Ts...> && t, std::index_sequence<Is...>)
+    {
       return (predicate(std::get<Is>(t), std::get<Is + 1>(t)) && ...);
-    }(std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
+    }
+    (std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
   }
 };
 
@@ -294,8 +316,9 @@ pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a sequence of (possibly heterogeneously typed) values are strictly increasing.
 template<typename... Ts>
-  requires (std::is_signed_v<Ts> && ...)
-constexpr bool strictly_increasing(Ts&&... ts) {
+  requires(std::is_signed_v<Ts> && ...)
+constexpr bool strictly_increasing(Ts&&... ts)
+{
   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
 }
 
@@ -308,14 +331,13 @@ inline constexpr bool all_bases_in_order = strictly_increasing(BPs.get_base()...
 template<BasePower auto... BPs>
 inline constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> && all_bases_in_order<BPs...>;
 
-constexpr bool is_rational(BasePower auto bp) {
+constexpr bool is_rational(BasePower auto bp)
+{
   return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
 }
 
-constexpr bool is_integral(BasePower auto bp) {
-  return is_rational(bp) && bp.power.num > 0;
-}
-} // namespace detail
+constexpr bool is_integral(BasePower auto bp) { return is_rational(bp) && bp.power.num > 0; }
+}  // namespace detail
 
 /**
  * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
@@ -339,7 +361,7 @@ template<typename T>
 inline constexpr bool is_magnitude = false;
 template<BasePower auto... BPs>
 inline constexpr bool is_magnitude<magnitude<BPs...>> = true;
-} // namespace detail
+}  // namespace detail
 
 /**
  * @brief  Concept to detect whether T is a valid Magnitude.
@@ -352,7 +374,8 @@ concept Magnitude = detail::is_magnitude<T>;
  */
 template<typename T, BasePower auto... BPs>
   requires std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{}))
-constexpr T get_value(const magnitude<BPs...> &) {
+constexpr T get_value(const magnitude<BPs...>&)
+{
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
   constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ...));
 
@@ -370,18 +393,26 @@ struct pi_base {
 // Magnitude equality implementation.
 
 template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
-constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>) {
-  if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) { return ((LeftBPs == RightBPs) && ...); }
-  else { return false; }
+constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
+{
+  if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
+    return ((LeftBPs == RightBPs) && ...);
+  } else {
+    return false;
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.
 
 template<ratio E, BasePower auto... BPs>
-constexpr auto pow(magnitude<BPs...>) {
-  if constexpr (E == 0) { return magnitude<>{}; }
-  else { return magnitude<pow(BPs, E)...>{}; }
+constexpr auto pow(magnitude<BPs...>)
+{
+  if constexpr (E == 0) {
+    return magnitude<>{};
+  } else {
+    return magnitude<pow(BPs, E)...>{};
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,9 +425,10 @@ constexpr auto operator*(Magnitude auto m, magnitude<>) { return m; }
 
 // Recursive case for the product of any two non-identity Magnitudes.
 template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
-constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
+constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
+{
   // Case for when H1 has the smaller base.
-  if constexpr(H1.get_base() < H2.get_base()){
+  if constexpr (H1.get_base() < H2.get_base()) {
     if constexpr (sizeof...(T1) == 0) {
       // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
       return magnitude<H1, H2, T2...>{};
@@ -406,7 +438,7 @@ constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>) {
   }
 
   // Case for when H2 has the smaller base.
-  if constexpr(H1.get_base() > H2.get_base()){
+  if constexpr (H1.get_base() > H2.get_base()) {
     return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
   }
 
@@ -439,23 +471,25 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 namespace detail {
 // Helper to perform prime factorization at compile time.
 template<std::intmax_t N>
-  requires (N > 0)
+  requires(N > 0)
 struct prime_factorization {
   static constexpr std::intmax_t first_base = static_cast<std::intmax_t>(Factorizer::find_first_factor(N));
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
-  static constexpr auto value = magnitude<base_power{first_base, first_power}>{}
-      * prime_factorization<remainder>::value;
+  static constexpr auto value =
+    magnitude<base_power{first_base, first_power}>{} * prime_factorization<remainder>::value;
 };
 
 // Specialization for the prime factorization of 1 (base case).
 template<>
-struct prime_factorization<1> { static constexpr magnitude<> value{}; };
+struct prime_factorization<1> {
+  static constexpr magnitude<> value{};
+};
 
 template<std::intmax_t N>
 inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
-} // namespace detail
+}  // namespace detail
 
 /**
  * @brief  Convert any positive integer to a Magnitude.
@@ -464,11 +498,11 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  * manually adding base powers.
  */
 template<ratio R>
-  requires (R.num > 0)
-constexpr Magnitude auto as_magnitude() {
-  return pow<R.exp>(detail::prime_factorization_v<10>)
-    * detail::prime_factorization_v<R.num>
-    / detail::prime_factorization_v<R.den>;
+  requires(R.num > 0)
+constexpr Magnitude auto as_magnitude()
+{
+  return pow<R.exp>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
+         detail::prime_factorization_v<R.den>;
 }
 
-} // namespace units
+}  // namespace units
