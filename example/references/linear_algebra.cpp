@@ -158,7 +158,7 @@ void matrix_of_quantity_add()
 void matrix_of_quantity_multiply_same()
 {
   std::cout << "\nmatrix_of_quantity_multiply_same:\n";
-  
+
   matrix<si::length<si::metre>> v = {{ 1 * m, 2 * m, 3 * m }, { 4 * m, 5 * m, 6 * m }, { 7 * m, 8 * m, 9 * m }};
   vector<si::length<si::metre>> u = { 3 * m, 2 * m, 1 * m };
 
@@ -303,7 +303,7 @@ void quantity_of_matrix_add()
 void quantity_of_matrix_multiply_same()
 {
   std::cout << "\nquantity_of_matrix_multiply_same:\n";
-  
+
   length_m<> v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
   length_v<> u(vector<>{ 3, 2, 1 });
 

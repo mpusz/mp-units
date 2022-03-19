@@ -86,7 +86,7 @@ EmptyLineBeforeAccessModifier: Leave
 # IfMacros:
 #   - KJ_IF_MAYBE
 IncludeBlocks:   Merge
-IncludeCategories: 
+IncludeCategories:
   - Regex:           '^".*'
     Priority:        1
   - Regex:           '^".+/.*'

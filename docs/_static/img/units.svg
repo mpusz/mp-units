@@ -58,7 +58,7 @@ package Unit <<Frame>> [[../../framework/units.html]] {
   abstract named_scaled_unit<Symbol, PrefixFamily, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
   abstract named_unit<Symbol, PrefixFamily> [[../../framework/units.html#base-units]]
   abstract unit [[../../framework/units.html#derived-unnamed-units]]
-  
+
   scaled_unit <|- - unit
   scaled_unit <|- - named_unit
   scaled_unit <|- - named_scaled_unit
@@ -100,7 +100,7 @@ package Unit <<Frame>> [[../../framework/units.html]] {
   abstract named_scaled_unit<Symbol, PrefixFamily, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
   abstract named_unit<Symbol, PrefixFamily> [[../../framework/units.html#base-units]]
   abstract unit [[../../framework/units.html#derived-unnamed-units]]
-  
+
   scaled_unit <|- - unit
   scaled_unit <|- - named_unit
   scaled_unit <|- - named_scaled_unit

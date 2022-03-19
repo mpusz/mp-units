@@ -18,7 +18,7 @@ package Dimension <<Frame>> {
   abstract base_dimension<Symbol, Unit> [[../../framework/units.html]]
   abstract exponent<Dimension, Num, Den> [[../../framework/dimensions.html#derived-dimensions]]
   abstract derived_dimension<Unit, Exponent...> [[../../framework/dimensions.html#derived-dimensions]]
-  
+
   base_dimension <.. exponent
   exponent <.. "0..n" derived_dimension
   exponent ..> derived_dimension

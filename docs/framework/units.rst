@@ -25,7 +25,7 @@ of a `scaled_unit` class template:
 
     <object data="../_images/units.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
 
-.. 
+..
     https://www.planttext.com
 
     @startuml
@@ -65,7 +65,7 @@ of a `scaled_unit` class template:
     abstract named_scaled_unit<Symbol, PrefixFamily, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
     abstract named_unit<Symbol, PrefixFamily> [[../../framework/units.html#base-units]]
     abstract unit [[../../framework/units.html#derived-unnamed-units]]
-    
+
     scaled_unit <|-- unit
     scaled_unit <|-- named_unit
     scaled_unit <|-- named_scaled_unit
@@ -209,7 +209,7 @@ and define units like::
     struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix,
                                             ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
 
-.. 
+..
     TODO Submit a bug for above lexing problem
 
 Finally, the last of the `named_scaled_unit` class template parameters
@@ -256,16 +256,16 @@ Alternative hierarchy of prefixes is the one used in data information
 domain::
 
     namespace iec80000 {
-    
+
     struct binary_prefix : prefix_family {};
-    
+
     struct kibi : units::prefix<kibi, binary_prefix, "Ki", ratio(                    1'024)> {};
     struct mebi : units::prefix<mebi, binary_prefix, "Mi", ratio(                1'048'576)> {};
     struct gibi : units::prefix<gibi, binary_prefix, "Gi", ratio(            1'073'741'824)> {};
     struct tebi : units::prefix<tebi, binary_prefix, "Ti", ratio(        1'099'511'627'776)> {};
     struct pebi : units::prefix<pebi, binary_prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
     struct exbi : units::prefix<exbi, binary_prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
-    
+
     }
 
 With the definitions like above we can easily define prefixed unit. For

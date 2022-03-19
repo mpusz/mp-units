@@ -44,7 +44,7 @@ struct pound_force : named_scaled_unit<pound_force, "lbf", si::prefix, ratio(32'
 
 struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 
-// https://en.wikipedia.org/wiki/Kip_(unit), 
+// https://en.wikipedia.org/wiki/Kip_(unit),
 struct kip : alias_unit<kilopound_force, "klbf", no_prefix> {};
 
 struct dim_force : isq::dim_force<dim_force, poundal, dim_mass, dim_acceleration> {};

@@ -345,7 +345,7 @@ html_static_path = ['_static']
 # configuration directory) that is the logo of the docs. It is placed at the
 # top of the sidebar; its width should therefore not exceed 200 pixels.
 # Default: None.
-# html_logo = 
+# html_logo =
 
 # These paths are either relative to html_static_path or fully qualified
 # paths (eg. https://...)
@@ -359,10 +359,10 @@ html_css_files = [
 def configureDoxyfile(input_dir, output_dir):
     with open('Doxyfile.in', 'r') as file:
         filedata = file.read()
- 
+
     filedata = filedata.replace('@DOXYGEN_INPUT_DIR@', input_dir)
     filedata = filedata.replace('@DOXYGEN_OUTPUT_DIR@', output_dir)
- 
+
     with open('Doxyfile', 'w') as file:
         file.write(filedata)
 

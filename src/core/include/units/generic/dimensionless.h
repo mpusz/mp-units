@@ -35,7 +35,7 @@ struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), one> 
 
 /**
  * @brief Dimension one
- * 
+ *
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */
