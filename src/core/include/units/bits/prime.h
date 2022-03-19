@@ -101,7 +101,7 @@ constexpr auto coprimes_up_to(std::size_t n, const std::array<std::size_t, N>& b
 template<std::size_t N>
 constexpr std::size_t product(const std::array<std::size_t, N>& values)
 {
-  return std::accumulate(std::begin(values), std::end(values), std::size_t{1u}, std::multiplies{});
+  return std::reduce(values.begin(), values.end(), std::size_t{1}, std::multiplies{});
 }
 
 // A configurable instantiation of the "wheel factorization" algorithm [1] for prime numbers.
