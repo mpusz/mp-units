@@ -28,6 +28,7 @@
 #include <concepts>
 #include <cstdint>
 #include <numbers>
+#include <optional>
 #include <stdexcept>
 
 namespace units {
@@ -282,6 +283,20 @@ constexpr bool is_valid_base_power(const BasePower auto& bp)
   }
 
   if constexpr (std::is_same_v<decltype(bp.get_base()), std::intmax_t>) {
+    // Some prime numbers are so big, that we can't check their primality without exhausting limits on constexpr steps
+    // and/or iterations.  We can still _perform_ the factorization for these by using the `known_first_factor`
+    // workaround.  However, we can't _check_ that they are prime, because this workaround depends on the input being
+    // usable in a constexpr expression.  This is true for `prime_factorization` (below), where the input `N` is a
+    // template parameter, but is not true for our case, where the input `bp.get_base()` is a function parameter.  (See
+    // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1045r1.html for some background reading on this
+    // distinction.)
+    //
+    // In our case: we simply give up on excluding every possible ill-formed base power, and settle for catching the
+    // most likely and common mistakes.
+    if (const bool too_big_to_check = (bp.get_base() > 1'000'000'000)) {
+      return true;
+    }
+
     return is_prime(bp.get_base());
   } else {
     return bp.get_base() > 0;
@@ -468,12 +483,30 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
 
+// Sometimes we need to give the compiler a "shortcut" when factorizing large numbers (specifically, numbers whose
+// _first factor_ is very large).  If we don't, we can run into limits on the number of constexpr steps or iterations.
+//
+// To provide the first factor for a given number, specialize this variable template.
+//
+// WARNING:  The program behaviour will be undefined if you provide a wrong answer, so check your math!
+template<std::intmax_t N>
+inline constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
+
 namespace detail {
 // Helper to perform prime factorization at compile time.
 template<std::intmax_t N>
   requires(N > 0)
 struct prime_factorization {
-  static constexpr std::intmax_t first_base = static_cast<std::intmax_t>(Factorizer::find_first_factor(N));
+  static constexpr std::intmax_t get_or_compute_first_factor()
+  {
+    if constexpr (known_first_factor<N>.has_value()) {
+      return known_first_factor<N>.value();
+    } else {
+      return static_cast<std::intmax_t>(Factorizer::find_first_factor(N));
+    }
+  }
+
+  static constexpr std::intmax_t first_base = get_or_compute_first_factor();
   static constexpr std::intmax_t first_power = multiplicity(first_base, N);
   static constexpr std::intmax_t remainder = remove_power(first_base, first_power, N);
 
