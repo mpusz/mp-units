@@ -149,10 +149,6 @@ struct wheel_factorizer {
     }
 
     for (std::size_t wheel = wheel_size; wheel < n; wheel += wheel_size) {
-      if (const auto k = first_factor_maybe(n, wheel + 1)) {
-        return *k;
-      }
-
       for (const auto& p : coprimes_in_first_wheel) {
         if (const auto k = first_factor_maybe(n, wheel + p)) {
           return *k;
