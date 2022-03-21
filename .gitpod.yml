@@ -1,4 +1,5 @@
-image: trainiteu/gitpod-cpp
+image:
+  file: .gitpod.Dockerfile
 
 # --------------------------------------------------------
 # exposing ports for VSCode Live Server
@@ -52,6 +53,15 @@ tasks:
           "-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake"
         ],
         "cmake.generator": "Ninja Multi-Config",
+        "[cpp]": {
+          "editor.defaultFormatter": "ms-vscode.cpptools"
+        },
+        "C_Cpp.clang_format_path": "/usr/bin/clang-format-15",
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
         "restructuredtext.preview.scrollEditorWithPreview": false,
         "restructuredtext.preview.scrollPreviewWithEditor": false,
         "liveServer.settings.root": "/build/docs/docs/sphinx/"
@@ -70,11 +80,17 @@ tasks:
       pushd /workspace/.conan/profiles
       cp default gcc10
       cp default gcc11
+      cp default clang12
       cp default clang13
       popd
       conan profile update settings.compiler.version=10 gcc10
       conan profile update env.CXX=/usr/bin/g++-10 gcc10
       conan profile update env.CC=/usr/bin/gcc-10 gcc10
+      conan profile update settings.compiler=clang clang12
+      conan profile update settings.compiler.version=12 clang12
+      conan profile update settings.compiler.libcxx=libstdc++11 clang12
+      conan profile update env.CXX=/usr/bin/clang++-12 clang12
+      conan profile update env.CC=/usr/bin/clang-12 clang12
       conan profile update settings.compiler=clang clang13
       conan profile update settings.compiler.version=13 clang13
       conan profile update settings.compiler.libcxx=libc++ clang13
@@ -107,6 +123,18 @@ tasks:
       ctest -C Release
       ctest -C Debug
       echo "🛠️ gcc-11 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: clang-12
+    init: |
+      gp sync-await conan-init
+      mkdir -p build/Clang-12 && cd build/Clang-12
+      conan install ../.. -pr clang12 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      conan install ../.. -pr clang12 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
+      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/clang-12 -DCMAKE_CXX_COMPILER=/bin/clang++-12
+      cmake --build . --config Release -j
+      cmake --build . --config Debug -j
+      ctest -C Release
+      ctest -C Debug
+      echo "🛠️ clang-12 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-13
     init: |
       gp sync-await conan-init
