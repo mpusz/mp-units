@@ -24,9 +24,41 @@
 
 #include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <compare>
+#include <iterator>
 
 namespace units::detail {
 
+// TODO refactor two below functions with std::ranges when moved to modules
+
+
+/**
+ * @brief Returns the first successful value obtained from applying the function object to the elements of a given
+ * range, if any.
+ *
+ * @tparam InputIt must meet the requirements of LegacyInputIterator
+ * @tparam UnaryFunction must meet the requirements of MoveConstructible
+ * @param first the beginning of the range of elements to examine
+ * @param last the end of the range of elements to examine
+ * @param f function object, to be applied to the result of dereferencing every iterator in the range
+ * @return std::invoke_result_t<UnaryPredicate, std::iter_value_t<InputIt>>
+ */
+template<class InputIt, class UnaryFunction>
+constexpr std::invoke_result_t<UnaryFunction, std::iter_value_t<InputIt>> get_first_of(InputIt first, InputIt last,
+                                                                                       UnaryFunction f)
+{
+  for (; first != last; ++first)
+    if (auto opt = f(*first)) return *opt;
+  return {};
+}
+
+template<class Rng, class UnaryFunction>
+constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
+{
+  using std::begin, std::end;
+  return get_first_of(begin(rng), end(rng), f);
+}
+
+// TODO remove all the below and use std when moved to modules
 template<class InputIt1, class InputIt2>
 constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
 {
@@ -36,17 +68,6 @@ constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
     }
   }
   return true;
-}
-
-template<class InputIt, class UnaryPredicate>
-constexpr InputIt find_if(InputIt first, InputIt last, UnaryPredicate p)
-{
-  for (; first != last; ++first) {
-    if (p(*first)) {
-      return first;
-    }
-  }
-  return last;
 }
 
 template<class I1, class I2, class Cmp>

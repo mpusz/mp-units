@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/algorithm.h>
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -53,23 +54,6 @@ constexpr std::optional<std::size_t> first_factor_maybe(std::size_t n, std::size
     return n;
   }
   return std::nullopt;
-}
-
-// TODO refactor two below functions with std::ranges when moved to modules
-template<class InputIt>
-constexpr std::optional<std::size_t> first_factor_maybe(InputIt first, InputIt last, std::size_t n,
-                                                        std::size_t offset = 0)
-{
-  for (; first != last; ++first)
-    if (const auto k = first_factor_maybe(n, *first + offset)) return *k;
-  return {};
-}
-
-template<class Rng>
-constexpr std::optional<std::size_t> first_factor_maybe(const Rng& rng, std::size_t n, std::size_t offset = 0)
-{
-  using std::begin, std::end;
-  return first_factor_maybe(begin(rng), end(rng), n, offset);
 }
 
 template<std::size_t N>
@@ -153,11 +137,16 @@ struct wheel_factorizer {
 
   static constexpr std::size_t find_first_factor(std::size_t n)
   {
-    if (const auto k = first_factor_maybe(basis, n)) return *k;
-    if (const auto k = first_factor_maybe(std::next(begin(coprimes_in_first_wheel)), end(coprimes_in_first_wheel), n))
+    if (const auto k = detail::get_first_of(basis, [&](auto p) { return first_factor_maybe(n, p); })) return *k;
+
+    if (const auto k = detail::get_first_of(std::next(begin(coprimes_in_first_wheel)), end(coprimes_in_first_wheel),
+                                            [&](auto p) { return first_factor_maybe(n, p); }))
       return *k;
+
     for (std::size_t wheel = wheel_size; wheel < n; wheel += wheel_size)
-      if (const auto k = first_factor_maybe(coprimes_in_first_wheel, n, wheel)) return *k;
+      if (const auto k =
+            detail::get_first_of(coprimes_in_first_wheel, [&](auto p) { return first_factor_maybe(n, wheel + p); }))
+        return *k;
     return n;
   }
 
