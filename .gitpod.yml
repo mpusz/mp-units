@@ -31,9 +31,9 @@ vscode:
   extensions:
     - twxs.cmake
     - ms-vscode.cmake-tools
+    - xaver.clang-format
     - streetsidesoftware.code-spell-checker
     - vivaxy.vscode-conventional-commits
-    - github.vscode-pull-request-github
     - hbenl.vscode-test-explorer
     - matepek.vscode-catch2-test-adapter
     - trond-snekvik.simple-rst
@@ -50,13 +50,10 @@ tasks:
       {
         "cmake.buildDirectory": "${workspaceFolder}/build/${buildKitVendor}-${buildKitVersionMajor}",
         "cmake.configureArgs": [
-          "-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake"
+          "--toolchain conan_toolchain.cmake"
         ],
         "cmake.generator": "Ninja Multi-Config",
-        "[cpp]": {
-          "editor.defaultFormatter": "ms-vscode.cpptools"
-        },
-        "C_Cpp.clang_format_path": "/usr/bin/clang-format-15",
+        "clang-format.executable": "/usr/bin/clang-format-15",
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
