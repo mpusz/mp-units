@@ -25,7 +25,13 @@
 #include <units/ratio.h>
 #include <type_traits>
 
-namespace units {
+using namespace units;
+using namespace units::detail;
+
+template<>
+inline constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
+
+namespace {
 
 // A set of non-standard bases for testing purposes.
 struct noninteger_base {
@@ -148,6 +154,17 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     // This was taken from a case which failed when we used `int` for our base to store prime numbers.
     // The failure was due to a prime factor which is larger than 2^31.
     as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
+  }
+
+  SECTION("Can bypass computing primes by providing known_first_factor<N>")
+  {
+    // Sometimes, even wheel factorization isn't enough to handle the compilers' limits on constexpr steps and/or
+    // iterations.  To work around these cases, we can explicitly provide the correct answer directly to the compiler.
+    //
+    // In this case, we test that we can represent the largest prime that fits in a signed 64-bit int.  The reason this
+    // test can pass is that we have provided the answer, by specializing the `known_first_factor` variable template
+    // above in this file.
+    as_magnitude<9'223'372'036'854'775'783>();
   }
 }
 
@@ -334,7 +351,8 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
   }
 }
 
-namespace detail {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Detail function tests below.
 
 TEST_CASE("int_power computes integer powers")
 {
@@ -358,16 +376,6 @@ TEST_CASE("int_power computes integer powers")
 
 TEST_CASE("Prime helper functions")
 {
-  SECTION("find_first_factor()")
-  {
-    CHECK(find_first_factor(1) == 1);
-    CHECK(find_first_factor(2) == 2);
-    CHECK(find_first_factor(4) == 2);
-    CHECK(find_first_factor(6) == 2);
-    CHECK(find_first_factor(15) == 3);
-    CHECK(find_first_factor(17) == 17);
-  }
-
   SECTION("multiplicity")
   {
     CHECK(multiplicity(2, 8) == 3);
@@ -514,6 +522,4 @@ TEST_CASE("strictly_increasing")
   }
 }
 
-}  // namespace detail
-
-}  // namespace units
+}  // namespace
