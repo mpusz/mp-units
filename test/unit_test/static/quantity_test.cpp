@@ -835,52 +835,17 @@ constexpr auto quotient_remainder_theorem(auto q1, auto q2)
   return q;
 }
 
-constexpr auto qr1 = quotient_remainder_theorem(3'000 * m, 400 * m);
-static_assert(qr1 == 3'000 * m);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr1)>, decltype(3'000 * m)>);
-
-constexpr auto qr2 = quotient_remainder_theorem(3 * km, 400 * m);
-static_assert(qr2 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr2)>, decltype(3 * km)>);
-
-constexpr auto qr3 = quotient_remainder_theorem(3 * km, 2 * m);
-static_assert(qr3 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr2)>, decltype(3 * km)>);
-
-constexpr auto qr4 = quotient_remainder_theorem(3 * km, 400'000 * mm);
-static_assert(qr4 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr4)>, decltype(3 * km)>);
-
-constexpr auto qr5 = quotient_remainder_theorem(3 * km, 2'000 * mm);
-static_assert(qr5 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr5)>, decltype(3 * km)>);
-
-constexpr auto qr6 = quotient_remainder_theorem(3 * km, 400 * mm);
-static_assert(qr6 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr6)>, decltype(3 * km)>);
-
-constexpr auto qr7 = quotient_remainder_theorem(3 * km, 2 * mm);
-static_assert(qr7 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr7)>, decltype(3 * km)>);
-
-constexpr auto qr8 = quotient_remainder_theorem(3'000 * m, 400);
-static_assert(qr8 == 3'000 * m);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr8)>, decltype(3'000 * m)>);
-
-constexpr auto qr9 = quotient_remainder_theorem(3'000 * m, quantity(400));
-static_assert(qr9 == 3'000 * m);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr9)>, decltype(3'000 * m)>);
-
-constexpr auto qr10 = quotient_remainder_theorem(3 * km, quantity(400));
-static_assert(qr10 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr10)>, decltype(3 * km)>);
-
-constexpr auto qr11 = quotient_remainder_theorem(3 * km, quantity(2));
-static_assert(qr11 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr11)>, decltype(3 * km)>);
-
-constexpr auto qr12 = quotient_remainder_theorem(3 * km, dimensionless<scaled_unit<ratio(1, 1000), one>, int>(400));
-static_assert(qr12 == 3 * km);
-static_assert(is_same_v<std::remove_cvref_t<decltype(qr12)>, decltype(3 * km)>);
+static_assert(same(quotient_remainder_theorem(3'000 * m, 400 * m), 3'000 * m));
+static_assert(same(quotient_remainder_theorem(3 * km, 400 * m), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, 2 * m), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, 400'000 * mm), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, 2'000 * mm), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, 400 * mm), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, 2 * mm), 3 * km));
+static_assert(same(quotient_remainder_theorem(3'000 * m, 400), 3'000 * m));
+static_assert(same(quotient_remainder_theorem(3'000 * m, quantity(400)), 3'000 * m));
+static_assert(same(quotient_remainder_theorem(3 * km, quantity(400)), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, quantity(2)), 3 * km));
+static_assert(same(quotient_remainder_theorem(3 * km, dimensionless<scaled_unit<ratio(1, 1000), one>, int>(400)), 3 * km));
 
 }  // namespace
