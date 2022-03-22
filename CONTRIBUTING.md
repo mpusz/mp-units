@@ -6,9 +6,18 @@
 
 The easiest way to start coding is to jump straight into [Gitpod](https://www.gitpod.io). You can either click the button
 below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ...) in your web browser with `gitpod.io/#`
-(i.e. https://gitpod.io/#https://github.com/mpusz/units).
+(i.e. <https://gitpod.io/#https://github.com/mpusz/units>).
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/units)
+
+The above environment provides you with:
+
+- all supported compilers for Linux development (`g++-10`, `g++-11`, `clang-12`, `clang-13`) and build tools like `cmake` and `conan`
+- all Conan dependencies preinstalled on the machine
+- all documentation generation tools ready to use
+- completed prebuilds for all targets (each compiler as well as a documentation)
+- `clang-format-15` for source code formatting
+- VSCode preconfigured to benefit from all the above
 
 ## Download, Build, Install
 
@@ -29,7 +38,7 @@ Here are the main rules for naming things in this repo:
 
 - types, functions, variables naming in a `standard_case`
 - template parameters in a `PascalCase`
-- C++20 concepts names for now in a `PascalCase` but we plan to change it (see https://github.com/mpusz/units/issues/93 for more details)
+- C++20 concepts names for now in a `PascalCase` but we plan to change it (see <https://github.com/mpusz/units/issues/93> for more details)
 
 ## Code Formatting
 
