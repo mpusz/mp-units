@@ -52,12 +52,13 @@ private:
   unsigned char size_ = 1;
 
 public:
-  constexpr void operator=(std::basic_string_view<Char> str)
+  constexpr fill_t& operator=(std::basic_string_view<Char> str)
   {
     auto size = str.size();
-    if (size > max_size) return throw STD_FMT::format_error("invalid fill");
+    if (size > max_size) throw STD_FMT::format_error("invalid fill");
     for (size_t i = 0; i < size; ++i) data_[i] = str[i];
     size_ = static_cast<unsigned char>(size);
+    return *this;
   }
 
   [[nodiscard]] constexpr size_t size() const { return size_; }
