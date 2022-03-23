@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <units/bits/external/hacks.h>
-#include <units/bits/external/type_traits.h>
 #include <cstddef>
 
 UNITS_DIAGNOSTIC_PUSH
