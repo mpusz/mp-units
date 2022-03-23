@@ -65,6 +65,7 @@ tasks:
         "restructuredtext.preview.scrollEditorWithPreview": false,
         "restructuredtext.preview.scrollPreviewWithEditor": false,
         "liveServer.settings.root": "/build/docs/docs/sphinx/",
+        "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
         "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
       }
 
