@@ -39,6 +39,7 @@ vscode:
     - trond-snekvik.simple-rst
     - lextudio.restructuredtext
     - ritwickdey.liveserver
+    - ms-python.python
 
 # --------------------------------------------------------
 # VSCode setup, Conan installation, and build of all the targets
@@ -53,7 +54,9 @@ tasks:
           "--toolchain conan_toolchain.cmake"
         ],
         "cmake.generator": "Ninja Multi-Config",
+        "cmake.configureOnOpen": true,
         "clang-format.executable": "/usr/bin/clang-format-15",
+        "editor.tabSize": 2,
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
@@ -61,14 +64,15 @@ tasks:
         "editor.guides.bracketPairs": "active",
         "restructuredtext.preview.scrollEditorWithPreview": false,
         "restructuredtext.preview.scrollPreviewWithEditor": false,
-        "liveServer.settings.root": "/build/docs/docs/sphinx/"
+        "liveServer.settings.root": "/build/docs/docs/sphinx/",
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
       }
 
       EOF
       exit
   - name: conan
     before: |
-      sudo pip3 install -U conan
+      pip3 install -U conan
       conan config init
       conan profile update settings.compiler.libcxx=libstdc++11 default
       conan profile update settings.compiler.cppstd=20 default
@@ -101,7 +105,7 @@ tasks:
       mkdir -p build/GCC-10 && cd build/GCC-10
       conan install ../.. -pr gcc10 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan install ../.. -pr gcc10 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
-      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/x86_64-linux-gnu-gcc-10 -DCMAKE_CXX_COMPILER=/bin/x86_64-linux-gnu-g++-10
+      cmake ../.. --no-warn-unused-cli --toolchain conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/usr/bin/gcc-10 -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
       ctest -C Release
@@ -114,7 +118,7 @@ tasks:
       conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       gp sync-done conan-gcc-install
       conan install ../.. -pr gcc11 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
-      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/x86_64-linux-gnu-gcc-11 -DCMAKE_CXX_COMPILER=/bin/x86_64-linux-gnu-g++-11
+      cmake ../.. --no-warn-unused-cli --toolchain conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
       ctest -C Release
@@ -126,7 +130,7 @@ tasks:
       mkdir -p build/Clang-12 && cd build/Clang-12
       conan install ../.. -pr clang12 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan install ../.. -pr clang12 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
-      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/clang-12 -DCMAKE_CXX_COMPILER=/bin/clang++-12
+      cmake ../.. --no-warn-unused-cli --toolchain conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/usr/bin/clang-12 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-12
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
       ctest -C Release
@@ -138,7 +142,7 @@ tasks:
       mkdir -p build/Clang-13 && cd build/Clang-13
       conan install ../.. -pr clang13 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
       conan install ../.. -pr clang13 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
-      cmake ../.. --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/bin/clang-13 -DCMAKE_CXX_COMPILER=/bin/clang++-13
+      cmake ../.. --no-warn-unused-cli --toolchain conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/usr/bin/clang-13 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-13
       cmake --build . --config Release -j
       cmake --build . --config Debug -j
       ctest -C Release
@@ -147,11 +151,11 @@ tasks:
   - name: documentation
     init: |
       gp sync-await conan-init
-      pip3 install -U sphinx sphinx-autobuild rstcheck
       pip3 install -Ur docs/requirements.txt
+      pip3 install -U sphinx-autobuild rstcheck esbonio
       mkdir -p build/docs && cd build/docs
       gp sync-await conan-gcc-install
       conan install ../.. -e mp-units:CONAN_RUN_TESTS=True -b outdated
-      cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake ../.. --toolchain conan_toolchain.cmake
       cmake --build . --target documentation --config Release -j
       echo "📚 Documentation pre-build complete! You can open it by clicking on 'Go Live' in the VSCode status bar. 📚"
