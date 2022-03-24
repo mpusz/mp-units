@@ -24,7 +24,6 @@
 
 #include <units/bits/algorithm.h>
 #include <array>
-#include <cassert>
 #include <cstddef>
 #include <numeric>
 #include <optional>
