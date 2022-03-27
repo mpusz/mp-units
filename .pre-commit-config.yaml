@@ -14,7 +14,7 @@ repos:
     rev: v0.6.13
     hooks:
       - id: cmake-format
-        additional_dependencies: ["cmakelang"]
+        additional_dependencies: ["cmakelang[YAML]"]
       # - id: cmake-lint
       # additional_dependencies: ["cmakelang"]
       # exclude: "cmake/.*"
