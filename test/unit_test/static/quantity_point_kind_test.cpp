@@ -250,7 +250,7 @@ static_assert(abscissa<metre>{}.relative().common() == 0 * m);
 // CTAD
 /////////
 
-static_assert(same(quantity_point_kind(width<metre, int>(0 * m)), abscissa<metre, int>{}));
+static_assert(comp(quantity_point_kind(width<metre, int>(0 * m)), abscissa<metre, int>{}));
 static_assert(same(quantity_point_kind(abscissa<metre, int>(0 * m)), abscissa<metre, int>{}));
 
 
@@ -500,16 +500,16 @@ static_assert(invalid_compound_assignments_<time_point_kind, second, std::chrono
 /////////////////////////
 
 // clang-format off
-static_assert(same(abscissa<metre, int>(2 * m) + width<metre, int>(3 * m), abscissa<metre, int>(5 * m)));
-static_assert(same(abscissa<metre, int>(2 * m) + width<metre, double>(3. * m), abscissa<metre, double>(5. * m)));
-static_assert(same(abscissa<metre, double>(2. * m) + width<metre, int>(3 * m), abscissa<metre, double>(5. * m)));
-static_assert(same(abscissa<kilometre, int>(2 * km) + width<metre, double>(3e3 * m), abscissa<metre, double>(5e3 * m)));
-static_assert(same(abscissa<metre, double>(2e3 * m) + width<kilometre, int>(3 * km), abscissa<metre, double>(5e3 * m)));
-static_assert(same(width<metre, int>(2 * m) + abscissa<metre, int>(3 * m), abscissa<metre, int>(5 * m)));
-static_assert(same(width<metre, int>(2 * m) + abscissa<metre, double>(3. * m), abscissa<metre, double>(5. * m)));
-static_assert(same(width<metre, double>(2. * m) + abscissa<metre, int>(3 * m), abscissa<metre, double>(5. * m)));
-static_assert(same(width<kilometre, int>(2 * km) + abscissa<metre, double>(3e3 * m), abscissa<metre, double>(5e3 * m)));
-static_assert(same(width<metre, double>(2e3 * m) + abscissa<kilometre, int>(3 * km), abscissa<metre, double>(5e3 * m)));
+static_assert(comp(abscissa<metre, int>(2 * m) + width<metre, int>(3 * m), abscissa<metre, int>(5 * m)));
+static_assert(comp(abscissa<metre, int>(2 * m) + width<metre, double>(3. * m), abscissa<metre, double>(5. * m)));
+static_assert(comp(abscissa<metre, double>(2. * m) + width<metre, int>(3 * m), abscissa<metre, double>(5. * m)));
+static_assert(comp(abscissa<kilometre, int>(2 * km) + width<metre, double>(3e3 * m), abscissa<metre, double>(5e3 * m)));
+static_assert(comp(abscissa<metre, double>(2e3 * m) + width<kilometre, int>(3 * km), abscissa<metre, double>(5e3 * m)));
+static_assert(comp(width<metre, int>(2 * m) + abscissa<metre, int>(3 * m), abscissa<metre, int>(5 * m)));
+static_assert(comp(width<metre, int>(2 * m) + abscissa<metre, double>(3. * m), abscissa<metre, double>(5. * m)));
+static_assert(comp(width<metre, double>(2. * m) + abscissa<metre, int>(3 * m), abscissa<metre, double>(5. * m)));
+static_assert(comp(width<kilometre, int>(2 * km) + abscissa<metre, double>(3e3 * m), abscissa<metre, double>(5e3 * m)));
+static_assert(comp(width<metre, double>(2e3 * m) + abscissa<kilometre, int>(3 * km), abscissa<metre, double>(5e3 * m)));
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, double>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, length<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, abscissa<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
@@ -522,16 +522,16 @@ static_assert(!std::is_invocable_v<std::plus<>, quantity_point<dynamic_origin<di
 static_assert(!std::is_invocable_v<std::plus<>, length<metre>, abscissa<metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, double, abscissa<metre>>);
 
-static_assert(same(abscissa<metre, int>(2 * m) - width<metre, int>(3 * m), abscissa<metre, int>(-1 * m)));
-static_assert(same(abscissa<metre, int>(2 * m) - width<metre, double>(3. * m), abscissa<metre, double>(-1. * m)));
-static_assert(same(abscissa<metre, double>(2. * m) - width<metre, int>(3 * m), abscissa<metre, double>(-1. * m)));
-static_assert(same(abscissa<kilometre, int>(2 * km) - width<metre, double>(3e3 * m), abscissa<metre, double>(-1e3 * m)));
-static_assert(same(abscissa<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), abscissa<metre, double>(-1e3 * m)));
+static_assert(comp(abscissa<metre, int>(2 * m) - width<metre, int>(3 * m), abscissa<metre, int>(-1 * m)));
+static_assert(comp(abscissa<metre, int>(2 * m) - width<metre, double>(3. * m), abscissa<metre, double>(-1. * m)));
+static_assert(comp(abscissa<metre, double>(2. * m) - width<metre, int>(3 * m), abscissa<metre, double>(-1. * m)));
+static_assert(comp(abscissa<kilometre, int>(2 * km) - width<metre, double>(3e3 * m), abscissa<metre, double>(-1e3 * m)));
+static_assert(comp(abscissa<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), abscissa<metre, double>(-1e3 * m)));
 static_assert(same(abscissa<metre, int>(2 * m) - abscissa<metre, int>(3 * m), width<metre, int>(-1 * m)));
 static_assert(same(abscissa<metre, int>(2 * m) - abscissa<metre, double>(3. * m), width<metre, double>(-1. * m)));
 static_assert(same(abscissa<metre, double>(2. * m) - abscissa<metre, int>(3 * m), width<metre, double>(-1. * m)));
-static_assert(same(abscissa<kilometre, int>(2 * km) - abscissa<metre, double>(3e3 * m), width<metre, double>(-1e3 * m)));
-static_assert(same(abscissa<metre, double>(2e3 * m) - abscissa<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
+static_assert(comp(abscissa<kilometre, int>(2 * km) - abscissa<metre, double>(3e3 * m), width<metre, double>(-1e3 * m)));
+static_assert(comp(abscissa<metre, double>(2e3 * m) - abscissa<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, double>);
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, length<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, abscissa<metre>, quantity_point<dynamic_origin<dim_length>, metre>>);
@@ -634,41 +634,41 @@ static_assert(same(quantity_point_kind_cast<abscissa<metre, double>>(abscissa<me
 static_assert(same(quantity_point_kind_cast<abscissa<kilometre, int>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, int>(0 * km)));
 static_assert(same(quantity_point_kind_cast<abscissa<kilometre, int>>(abscissa<metre, int>(1000 * m)), abscissa<kilometre, int>(1 * km)));
 static_assert(same(quantity_point_kind_cast<abscissa<kilometre, double>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, double>(0.999 * km)));
-static_assert(same(quantity_point_kind_cast<width<metre, int>>(abscissa<metre, int>(1 * m)), abscissa<metre, int>(1 * m)));
-static_assert(same(quantity_point_kind_cast<width<metre, double>>(abscissa<metre, int>(1 * m)), abscissa<metre, double>(1.0 * m)));
-static_assert(same(quantity_point_kind_cast<width<kilometre, int>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, int>(0 * km)));
-static_assert(same(quantity_point_kind_cast<width<kilometre, int>>(abscissa<metre, int>(1000 * m)), abscissa<kilometre, int>(1 * km)));
-static_assert(same(quantity_point_kind_cast<width<kilometre, double>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, double>(0.999 * km)));
-static_assert(same(quantity_point_kind_cast<double>(abscissa<metre, int>(1 * m)), abscissa<metre, double>(1.0 * m)));
-static_assert(same(quantity_point_kind_cast<metre>(abscissa<metre, int>(1 * m)), abscissa<metre, int>(1 * m)));
-static_assert(same(quantity_point_kind_cast<kilometre>(abscissa<metre, int>(999 * m)), abscissa<kilometre, int>(0 * km)));
-static_assert(same(quantity_point_kind_cast<kilometre>(abscissa<metre, int>(1000 * m)), abscissa<kilometre, int>(1 * km)));
+static_assert(comp(quantity_point_kind_cast<width<metre, int>>(abscissa<metre, int>(1 * m)), abscissa<metre, int>(1 * m)));
+static_assert(comp(quantity_point_kind_cast<width<metre, double>>(abscissa<metre, int>(1 * m)), abscissa<metre, double>(1.0 * m)));
+static_assert(comp(quantity_point_kind_cast<width<kilometre, int>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, int>(0 * km)));
+static_assert(comp(quantity_point_kind_cast<width<kilometre, int>>(abscissa<metre, int>(1000 * m)), abscissa<kilometre, int>(1 * km)));
+static_assert(comp(quantity_point_kind_cast<width<kilometre, double>>(abscissa<metre, int>(999 * m)), abscissa<kilometre, double>(0.999 * km)));
+static_assert(comp(quantity_point_kind_cast<double>(abscissa<metre, int>(1 * m)), abscissa<metre, double>(1.0 * m)));
+static_assert(comp(quantity_point_kind_cast<metre>(abscissa<metre, int>(1 * m)), abscissa<metre, int>(1 * m)));
+static_assert(comp(quantity_point_kind_cast<kilometre>(abscissa<metre, int>(999 * m)), abscissa<kilometre, int>(0 * km)));
+static_assert(comp(quantity_point_kind_cast<kilometre>(abscissa<metre, int>(1000 * m)), abscissa<kilometre, int>(1 * km)));
 static_assert(same(quantity_point_kind_cast<ordinate<metre, int>>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
 static_assert(same(quantity_point_kind_cast<ordinate<metre, double>>(abscissa<metre, int>(1 * m)), ordinate<metre, double>(1.0 * m)));
 static_assert(same(quantity_point_kind_cast<ordinate<kilometre, int>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, int>(0 * km)));
 static_assert(same(quantity_point_kind_cast<ordinate<kilometre, int>>(abscissa<metre, int>(1000 * m)), ordinate<kilometre, int>(1 * km)));
 static_assert(same(quantity_point_kind_cast<ordinate<kilometre, double>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, double>(0.999 * km)));
-static_assert(same(quantity_point_kind_cast<height<metre, int>>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
-static_assert(same(quantity_point_kind_cast<height<metre, double>>(abscissa<metre, int>(1 * m)), ordinate<metre, double>(1.0 * m)));
-static_assert(same(quantity_point_kind_cast<height<kilometre, int>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, int>(0 * km)));
-static_assert(same(quantity_point_kind_cast<height<kilometre, int>>(abscissa<metre, int>(1000 * m)), ordinate<kilometre, int>(1 * km)));
-static_assert(same(quantity_point_kind_cast<height<kilometre, double>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, double>(0.999 * km)));
-static_assert(same(quantity_point_kind_cast<height_kind>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
+static_assert(comp(quantity_point_kind_cast<height<metre, int>>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
+static_assert(comp(quantity_point_kind_cast<height<metre, double>>(abscissa<metre, int>(1 * m)), ordinate<metre, double>(1.0 * m)));
+static_assert(comp(quantity_point_kind_cast<height<kilometre, int>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, int>(0 * km)));
+static_assert(comp(quantity_point_kind_cast<height<kilometre, int>>(abscissa<metre, int>(1000 * m)), ordinate<kilometre, int>(1 * km)));
+static_assert(comp(quantity_point_kind_cast<height<kilometre, double>>(abscissa<metre, int>(999 * m)), ordinate<kilometre, double>(0.999 * km)));
+static_assert(comp(quantity_point_kind_cast<height_kind>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
 static_assert(same(quantity_point_kind_cast<ordinate_kind, metre>(abscissa<metre, int>(1 * m)), ordinate<metre, int>(1 * m)));
 static_assert(same(quantity_point_kind_cast<ordinate_kind, kilometre>(abscissa<metre, int>(999 * m)), ordinate<kilometre, int>(0 * km)));
 static_assert(same(quantity_point_kind_cast<ordinate_kind, kilometre>(abscissa<metre, int>(1000 * m)), ordinate<kilometre, int>(1 * km)));
 static_assert(same(quantity_point_kind_cast<cgs_width<cgs::centimetre, int>>(abscissa<centimetre, int>(1 * cm)), quantity_point_kind(cgs_width<cgs::centimetre, int>(1 * cgs_cm))));
 static_assert(same(quantity_point_kind_cast<cgs_width_kind>(abscissa<centimetre, int>(1 * cm)), quantity_point_kind(cgs_width<cgs::centimetre, int>(1 * cgs_cm))));
-static_assert(same(quantity_point_kind_cast<altitude_kind>(abscissa<centimetre, int>(1 * cm)), altitude<cgs::centimetre, int>(1 * cgs_cm)));
+static_assert(comp(quantity_point_kind_cast<altitude_kind>(abscissa<centimetre, int>(1 * cm)), altitude<cgs::centimetre, int>(1 * cgs_cm)));
 static_assert(same(quantity_point_kind_cast<altitude_kind, cgs::centimetre>(abscissa<centimetre, int>(1 * cm)), altitude<cgs::centimetre, int>(1 * cgs_cm)));
 static_assert(same(quantity_point_kind_cast<cgs_width_kind>(abscissa<metre, int>(1 * m)), quantity_point_kind(cgs_width<metre, int>(1 * m))));
-static_assert(same(quantity_point_kind_cast<altitude_kind>(abscissa<metre, int>(1 * m)), altitude<metre, int>(1 * m)));
+static_assert(comp(quantity_point_kind_cast<altitude_kind>(abscissa<metre, int>(1 * m)), altitude<metre, int>(1 * m)));
 static_assert(same(quantity_point_kind_cast<altitude_kind, metre>(abscissa<metre, int>(1 * m)), altitude<metre, int>(1 * m)));
-static_assert(same(quantity_point_kind_cast<cgs::dim_length>(abscissa<centimetre, int>(1 * cm)), abscissa<cgs::centimetre, int>(1 * cgs_cm)));
-static_assert(same(quantity_point_kind_cast<length<kilometre, int>>(abscissa<metre, int>(1 * m)), abscissa<kilometre, int>(0 * km)));
-static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, int>(1 * m)), abscissa<centimetre, int>(100 * cm)));
-static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, double>(0.01 * m)), abscissa<centimetre, int>(1 * cm)));
-static_assert(same(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cgs::centimetre, int>(1 * cgs_cm)), abscissa<cgs::centimetre, int>(1 * cgs_cm)));
+static_assert(comp(quantity_point_kind_cast<cgs::dim_length>(abscissa<centimetre, int>(1 * cm)), abscissa<cgs::centimetre, int>(1 * cgs_cm)));
+static_assert(comp(quantity_point_kind_cast<length<kilometre, int>>(abscissa<metre, int>(1 * m)), abscissa<kilometre, int>(0 * km)));
+static_assert(comp(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, int>(1 * m)), abscissa<centimetre, int>(100 * cm)));
+static_assert(comp(quantity_point_kind_cast<length<centimetre, int>>(abscissa<metre, double>(0.01 * m)), abscissa<centimetre, int>(1 * cm)));
+static_assert(comp(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cgs::centimetre, int>(1 * cgs_cm)), abscissa<cgs::centimetre, int>(1 * cgs_cm)));
 static_assert(same(quantity_point_kind_cast<screen_si_cgs_width<metre, int>>(screen_si_width<metre, int>(1 * m)), screen_si_cgs_width<metre, int>(1 * m)));
 // clang-format on
 template<typename Int>
