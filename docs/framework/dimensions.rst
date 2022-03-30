@@ -25,7 +25,7 @@ of a :term:`system of quantities`. For example the The International System
 of Units (:term:`SI`) defines 7 of them: length, mass, time, electric
 current, thermodynamic temperature, substance, and luminous intensity.
 
-To define a new base dimension the `base_dimension` class template is
+To define a new base dimension the ``base_dimension`` class template is
 provided. For example the SI base dimension of length can be defined as::
 
     namespace si {
@@ -35,7 +35,7 @@ provided. For example the SI base dimension of length can be defined as::
     }
 
 In the above code sample ``"L"`` is an base dimension's unique identifier
-and `isq::si::metre` is a :term:`base unit` of this base dimension. We can
+and ``isq::si::metre`` is a :term:`base unit` of this base dimension. We can
 obtain those back easily with::
 
     static_assert(si::dim_length::symbol == "L");
@@ -59,7 +59,7 @@ as a unique list of exponents of base quantities. For example:
   and time base quantity with exponent ``-1``.
 
 The above dimensions can be defined in the library with the
-`derived_dimension` class template as follows::
+``derived_dimension`` class template as follows::
 
     namespace si {
 
@@ -70,8 +70,8 @@ The above dimensions can be defined in the library with the
 
     }
 
-In the above code sample `isq::si::square_metre` and
-`isq::si::metre_per_second` are the
+In the above code sample ``isq::si::square_metre`` and
+``isq::si::metre_per_second`` are the
 :term:`coherent derived units <coherent derived unit>` of those derived dimensions.
 
 Coherent unit argument is followed by the list of exponents that form this
@@ -88,7 +88,7 @@ an dimension's unnamed unit symbol is being printed in the text output.
     chapter.
 
 It is important to mention here that beside text output the order and
-the number of elements in the `derived_dimension` definition does not
+the number of elements in the ``derived_dimension`` definition does not
 matter. Even if we define the above as:
 
 .. code-block::
@@ -109,8 +109,8 @@ analysis in the library to work as expected.
 
 .. note::
 
-    The first template argument of `derived_dimension` is the type of the
-    child class inherited from the instantiation of this `derived_dimension`
+    The first template argument of ``derived_dimension`` is the type of the
+    child class inherited from the instantiation of this ``derived_dimension``
     class template. This is called a
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
     in many places in this library to provide
@@ -123,7 +123,7 @@ Obtaining a Unit of the Dimension
 ---------------------------------
 
 In order to obtain the base/coherent unit of any dimension type a
-`dimension_unit` helper was introduced::
+``dimension_unit`` helper was introduced::
 
     static_assert(is_same_v<dimension_unit<si::dim_length>, si::metre>);
     static_assert(is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);

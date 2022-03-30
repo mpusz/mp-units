@@ -56,11 +56,11 @@ Quantities of Linear Algebra Types
 
 The previous chapter should address most of the Linear Algebra related requirements.
 However, it is also possible to use Linear Algebra entities as custom representation
-types provided to a `quantity` class template.
+types provided to a ``quantity`` class template.
 
 .. seealso::
 
-    More information on providing custom representation types for `quantity` can be
+    More information on providing custom representation types for ``quantity`` can be
     found in the :ref:`use_cases/custom_representation_types:Using Custom Representation Types`
     chapter.
 

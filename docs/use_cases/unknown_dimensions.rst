@@ -3,8 +3,8 @@
 Working with Unknown Dimensions and Their Units
 ===============================================
 
-From time to time the user of this library will face an `unknown_dimension` and
-`unknown_coherent_unit` types. This chapters describes their purpose and usage in
+From time to time the user of this library will face an ``unknown_dimension`` and
+``unknown_coherent_unit`` types. This chapters describes their purpose and usage in
 detail.
 
 What is an unknown dimension?
@@ -34,8 +34,8 @@ The same applies to the resulting unit. For example:
                                  kilometre_per_hour>);
 
 However, if the resulting dimension is not predefined by the user, the library framework
-will create an instance of an `unknown_dimension`. The coherent unit of such an unknown
-dimension is an `unknown_coherent_unit`. Let's see what happens with our example when
+will create an instance of an ``unknown_dimension``. The coherent unit of such an unknown
+dimension is an ``unknown_coherent_unit``. Let's see what happens with our example when
 instead including the header with all :term:`SI` definitions we will just provide base
 dimensions used in the division operation:
 
@@ -64,7 +64,7 @@ Operations On Unknown Dimensions And Their Units
 ------------------------------------------------
 
 For some cases we can eliminate the need to predefine a specific dimension and just use
-the `unknown_dimension` instead. Let's play with the previous example a bit::
+the ``unknown_dimension`` instead. Let's play with the previous example a bit::
 
     static_assert(result.number() == 72);
 

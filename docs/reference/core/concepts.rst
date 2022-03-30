@@ -70,7 +70,7 @@ Concepts
 
 .. concept:: template<typename T> Representation
 
-    A concept matching types that can be used as a `Quantity` representation type. Satisfied
+    A concept matching types that can be used as a ``Quantity`` representation type. Satisfied
     by types that match ``(!Quantity<T>) && (!QuantityLike<T>) && (!WrappedQuantity<T>) && std::regular<T>``
     and satisfy one of the following:
 

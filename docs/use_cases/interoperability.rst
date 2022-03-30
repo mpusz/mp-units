@@ -4,7 +4,7 @@ Interoperability with Other Units Libraries
 ===========================================
 
 Other units libraries can be easily integrated with **mp-units** via specialization of a
-`quantity_like_traits` for external quantity-like type. The type trait specialization should
+``quantity_like_traits`` for external quantity-like type. The type trait specialization should
 provide the following:
 
 - type aliases:
@@ -31,8 +31,8 @@ For example, to provide support for the ``std::chrono::duration`` it is enough t
 
     } // namespace units
 
-Providing the above allows the external quantity-like type to satisfy the `QuantityLike` concept
-which in turn enables the explicit `quantity` constructor that provides the type conversion.
+Providing the above allows the external quantity-like type to satisfy the ``QuantityLike`` concept
+which in turn enables the explicit ``quantity`` constructor that provides the type conversion.
 A Class Template Argument Deduction (CTAD) guide is provided to improve the user experience of
 such an explicit conversion::
 
@@ -54,13 +54,13 @@ such an explicit conversion::
         using namespace std::chrono_literals;
         quantity q = 1s;  // ERROR
 
-For external quantity point-like types, `quantity_point_like_traits` is also provided.
-It works just like `quantity_like_traits`, except that
-``number(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value
+For external quantity point-like types, ``quantity_point_like_traits`` is also provided.
+It works just like ``quantity_like_traits``, except that
+``number(T)`` is replaced with ``relative(T)`` that returns the ``QuantityLike`` value
 and ``dimension`` is replaced with ``origin``.
 
-Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_kind_point`
-provide a deduction guide from `QuantityPointLike`::
+Similar to ``quantity`` and ``quantity_kind``, ``quantity_point`` and ``quantity_kind_point``
+provide a deduction guide from ``QuantityPointLike``::
 
     using namespace std::chrono_literals;
 
@@ -79,17 +79,17 @@ They are provided in a dedicated header file::
 The same header file provides additional conversion helpers from ``mp-units`` to
 the C++ Standard Library types:
 
-- an alias that provides a conversion from `ratio` to ``std::ratio``::
+- an alias that provides a conversion from ``ratio`` to ``std::ratio``::
 
     template<ratio R>
     using to_std_ratio = /* ... */
 
-- an explicit conversion of `quantity` of `isq::si::dim_time` to ``std::chrono::duration``::
+- an explicit conversion of ``quantity`` of ``isq::si::dim_time`` to ``std::chrono::duration``::
 
     template<typename U, typename Rep>
     [[nodiscard]] constexpr auto to_std_duration(const quantity<isq::si::dim_time, U, Rep>& q)
 
-- an explicit conversion of `quantity_point` that previously originated from ``std::chrono``
+- an explicit conversion of ``quantity_point`` that previously originated from ``std::chrono``
   to ``std::chrono::time_point``::
 
     template<typename C, typename U, typename Rep>
@@ -97,7 +97,7 @@ the C++ Standard Library types:
 
 .. note::
 
-    Only `quantity_point` that was created from a ``std::chrono::time_point`` of a specific
+    Only ``quantity_point`` that was created from a ``std::chrono::time_point`` of a specific
     ``std::chrono`` clock can be converted back to ``std::chrono`` domain::
 
         const auto qp1 = quantity_point{sys_seconds{1s}};

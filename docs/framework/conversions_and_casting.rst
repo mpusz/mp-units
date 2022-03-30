@@ -55,8 +55,8 @@ Implicit conversions are allowed only across quantities of the same dimension:
 Explicit
 --------
 
-Explicit conversions are available with the `quantity_cast`, `quantity_point_cast`,
-`quantity_kind_cast`, and `quantity_point_kind_cast` function templates.
+Explicit conversions are available with the ``quantity_cast``, ``quantity_point_cast``,
+``quantity_kind_cast``, and ``quantity_point_kind_cast`` function templates.
 They are especially useful to force a truncating conversion across quantities of the same
 dimension for integral representation types and ratios that may cause precision loss::
 
@@ -72,7 +72,7 @@ dimension for integral representation types and ratios that may cause precision 
 Quantity Cast Overloads
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-`quantity_cast` comes with several overloads:
+``quantity_cast`` comes with several overloads:
 
 .. code-block::
     :linenos:
@@ -83,7 +83,7 @@ Quantity Cast Overloads
     std::cout << "Distance: " << quantity_cast<int>(d) << '\n';
     std::cout << "Distance: " << quantity_cast<si::dim_length, si::metre>(d) << '\n';
 
-`quantity_cast` in line #1 takes a specific target `quantity` type to which an explicit
+``quantity_cast`` in line #1 takes a specific target ``quantity`` type to which an explicit
 cast should be performed. This option will change multiple quantity properties at once
 (unit, representation, etc). However, it is also possible to force only some properties at
 once and leave the rest intact:
@@ -94,16 +94,16 @@ once and leave the rest intact:
 - line #5 forces both a specific dimension and a unit while preserving the original
   representation type.
 
-`quantity_point_cast` takes anything that works for `quantity_point`
-or a specific target `quantity_point`::
+``quantity_point_cast`` takes anything that works for ``quantity_point``
+or a specific target ``quantity_point``::
 
     std::cout << "Point: " << quantity_point_cast<decltype(quantity_point{0 * m})>(d) << '\n';
 
-For a single explicit template argument, `quantity_point_kind_cast` is a superset of
-`quantity_kind_cast`, which is also a superset of `quantity_cast`.
-For the (dimension, unit) pair of explicit arguments case of `quantity_cast`,
-`quantity_point_kind_cast` and `quantity_kind_cast` accept a `PointKind` and `Kind`
-instead of a `Dimension`, respectively.
+For a single explicit template argument, ``quantity_point_kind_cast`` is a superset of
+``quantity_kind_cast``, which is also a superset of ``quantity_cast``.
+For the (dimension, unit) pair of explicit arguments case of ``quantity_cast``,
+``quantity_point_kind_cast`` and ``quantity_kind_cast`` accept a ``PointKind`` and ``Kind``
+instead of a ``Dimension``, respectively.
 
 .. seealso::
 
@@ -145,7 +145,7 @@ and::
 
     const auto fill_time_left = (box.height / box.fill_level(measured_mass) - 1) * fill_time;
 
-The above is true only for dimensionless quantities of `one` unit. If our quantity have a unit with
+The above is true only for dimensionless quantities of ``one`` unit. If our quantity have a unit with
 ratio different than ``1`` the implicit conversion will not happen. This is to prevent cases were the code
 could be ambiguous. For example::
 
@@ -163,7 +163,7 @@ either change the type of the resulting unit to the one having ``ratio(1)`` (:te
       return quantity_cast<one>(d1 / d2) + 1;
     }
 
-or to explicitly state what is the unit of our dimensionless value, e.g. `one`, `percent`, etc::
+or to explicitly state what is the unit of our dimensionless value, e.g. ``one``, ``percent``, etc::
 
     Dimensionless auto foo(Length auto d1, Length auto d2)
     {
@@ -180,11 +180,11 @@ To make it compile fine we have to either explicitly get the value stored in the
 
     auto v = std::exp(quantity_cast<one>(10 * m / (5 * m)).number());
 
-or use a mathematical wrapper function from `units` namespace::
+or use a mathematical wrapper function from ``units`` namespace::
 
     auto v = units::exp(10 * m / (5 * m));
 
 .. important::
 
-    Always remember to explicitly cast the quantity to the destination unit with `quantity_cast` before
+    Always remember to explicitly cast the quantity to the destination unit with ``quantity_cast`` before
     calling `quantity::number()`!

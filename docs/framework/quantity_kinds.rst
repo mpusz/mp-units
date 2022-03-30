@@ -4,13 +4,13 @@ Quantity Kinds
 ==============
 
 A quantity kind is a quantity of more specific usage.
-It is represented in the library with a `quantity_kind` class template.
+It is represented in the library with a ``quantity_kind`` class template.
 
 
 Kind Creation
 -------------
 
-We need a `kind` to represent the more specific usage of a quantity::
+We need a ``kind`` to represent the more specific usage of a quantity::
 
     struct radius : kind<radius, si::dim_length> {};
 
@@ -21,8 +21,8 @@ They are clearly distinct from more generic usages of length quantities.
 Construction
 ------------
 
-To create the quantity kind object from a `quantity` we just have to pass
-the value to the `quantity_kind` class template constructor::
+To create the quantity kind object from a ``quantity`` we just have to pass
+the value to the ``quantity_kind`` class template constructor::
 
     quantity_kind<radius, si::kilometre, double> d(123 * km);
 
@@ -47,7 +47,7 @@ The library provides:
 
     * no UDLs or quantity references,
     * no kind-specific concepts, such as ``Radius``,
-      (there's the generic `QuantityKind` and kind-specifiable `QuantityKindOf`),
+      (there's the generic ``QuantityKind`` and kind-specifiable ``QuantityKindOf``),
 
 - a slightly larger set of operations on quantity kinds
   (see the :ref:`framework/dimensions:Quantity Kinds` chapter).
@@ -59,9 +59,9 @@ Quantity Point Kinds
 A quantity point kind is the analogous of a quantity point for quantity kinds
 (see the :ref:`framework/quantity_points:Quantity Points` chapter).
 
-They are represented in the library with a `quantity_point_kind` class template.
+They are represented in the library with a ``quantity_point_kind`` class template.
 
-First, we need a `point_kind` for a `kind`::
+First, we need a ``point_kind`` for a ``kind``::
 
     struct width : kind<width, si::dim_length> {};
     struct x_coordinate : point_kind<x_coordinate, width> {};

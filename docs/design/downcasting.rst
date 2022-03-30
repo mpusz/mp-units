@@ -89,7 +89,7 @@ In the above example:
 
 - ``detail::derived_dimension_base`` class template instantiation is a downcasting source (base class)
 
-- `downcast_base` is a class that implements :abbr:`CRTP (Curiously Recurring Template Pattern)`
+- ``downcast_base`` is a class that implements :abbr:`CRTP (Curiously Recurring Template Pattern)`
   idiom, stores the base of a downcasting operation in a ``downcast_base_type`` member type,
   and provides only a Hidden Friend non-member function declaration of ``downcast_guide`` which is an
   :abbr:`ADL (Argument Dependent Lookup)` entry  point for the downcasting operation::
@@ -105,8 +105,8 @@ In the above example:
       An important design point here is that this friend function does not return any specific type
       in its declaration and no definition is provided at this point.
 
-- `downcast_child` is another :abbr:`CRTP (Curiously Recurring Template Pattern)` class template
-  that defines the implementation of a non-member friend function of the `downcast_base` class
+- ``downcast_child`` is another :abbr:`CRTP (Curiously Recurring Template Pattern)` class template
+  that defines the implementation of a non-member friend function of the ``downcast_base`` class
   template::
 
       template<typename Target, Downcastable T>
@@ -117,7 +117,7 @@ In the above example:
   This is the place where the actual return type of the ``downcast_guide`` function is provided
   which serves as a target type of the downcasting operation.
 
-  In the above class template definition `Downcastable` is a concepts that verifies if a type
+  In the above class template definition ``Downcastable`` is a concepts that verifies if a type
   implements and can be used in a downcasting facility::
 
       template<typename T>
@@ -130,7 +130,7 @@ In the above example:
 
 With such :abbr:`CRTP (Curiously Recurring Template Pattern)` types the only thing the user
 has to do in order to register a new type in the downcasting facility is to publicly derive
-from `downcast_child` and pass this type as the first template argument of the `downcast_child`
+from ``downcast_child`` and pass this type as the first template argument of the ``downcast_child``
 class template.
 
 Until now we scoped on how we define the base and target of a downcasting operation. To
@@ -139,7 +139,7 @@ perform the actual downcasting operation a dedicated alias template is provided:
     template<Downcastable T>
     using downcast = decltype(detail::downcast_impl<T>());
 
-`downcast` is used to obtain the target type of the downcasting operation registered for a
+``downcast`` is used to obtain the target type of the downcasting operation registered for a
 given instantiation in a base type. ``detail::downcast_impl`` checks if a downcasting
 target is registered for the specific base class. If yes, it returns the registered type,
 otherwise it works like a regular identity type trait returning a provided base class::

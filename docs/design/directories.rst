@@ -42,7 +42,7 @@ Library Directories Structure
 - *./units/generic*
 
   - Provides quantity types not related to any :term:`system of quantities`
-    (e.g. `dimensionless`, `angle`).
+    (e.g. ``dimensionless``, ``angle``).
 
 - *./units/isq*
 

@@ -57,7 +57,7 @@ Enabling a Unit for Prefixing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In case I decide it is reasonable to express my desks with SI prefixes the only thing I have
-to change in the above code is to replace `no_prefix` with `isq::si::prefix`::
+to change in the above code is to replace ``no_prefix`` with ``isq::si::prefix``::
 
     struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio(3, 10), si::square_metre> {};
 
@@ -302,7 +302,7 @@ and in case of some units may result with a problem of limited resolution
 of ``std::int64_t`` used to store numerator, denominator, and exponent
 values of ratio. For example the ``si::fps::qubic_foot`` already has the
 ratio of ``ratio{55306341, 1953125, -3}``. In case of more complicated
-conversion ratio we can overflow `ratio` and get a compile-time error.
+conversion ratio we can overflow ``ratio`` and get a compile-time error.
 In such a situation the standalone system may be a better choice here.
 
 

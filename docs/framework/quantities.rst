@@ -5,14 +5,14 @@ Quantities
 
 A :term:`quantity` is a concrete amount of a unit for a specified dimension
 with a specific representation and is represented in the library with a
-`quantity` class template.
+``quantity`` class template.
 
 
 Construction
 ------------
 
 To create the quantity object from a :term:`scalable number` we just have to pass
-the value to the `quantity` class template explicit constructor::
+the value to the ``quantity`` class template explicit constructor::
 
     quantity<si::dim_length, si::kilometre, double> d(123);
     quantity<si::dim_speed, si::kilometre_per_hour, int> v(70);
@@ -45,7 +45,7 @@ Quantity Construction Helpers
 Dimension-Specific Aliases (Experimental)
 +++++++++++++++++++++++++++++++++++++++++
 
-To simplify `quantity` objects creation the library provides helper aliases for
+To simplify ``quantity`` objects creation the library provides helper aliases for
 quantities of each :term:`dimension` which additionally set the representation
 type to ``double`` by default::
 
@@ -114,7 +114,7 @@ Quantity References (Experimental)
 ++++++++++++++++++++++++++++++++++
 
 Quantity References provide an alternative and simplified way to create quantities.
-They are defined using the `reference` class template::
+They are defined using the ``reference`` class template::
 
     #ifndef UNITS_NO_REFERENCES
 
@@ -242,8 +242,8 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
 
      No possibility to obtain any other representation type. Additionally this gets contagious
      as the result of every arithmetic expression on quantities is always expanded to the common
-     type of its arguments. For example `si::length<si::metre, int>(1) + 1_q_m` results in a
-     `si::length<si::metre, int64_t>` type.
+     type of its arguments. For example ``si::length<si::metre, int>(1) + 1_q_m`` results in a
+     ``si::length<si::metre, int64_t>`` type.
 
    - Quantity References::
 
@@ -280,16 +280,16 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
    - UDLs:
 
      Every unit requires two UDLs to be defined which in turns requires two instantiations
-     of "heavy" `quantity` class template. Those are then not often used by non-UDL construction
-     as most users instantiate `quantity` class template with `int` or `double` which
+     of "heavy" ``quantity`` class template. Those are then not often used by non-UDL construction
+     as most users instantiate ``quantity`` class template with ``int`` or ``double`` which
      again have to be separately instantiated. This has a significant impact on the compile-time
      performance.
 
    - Quantity References:
 
-     `reference` class template is "cheaper" to instantiate. Additionally, every unit requires
-     only one instantiation of a `reference` class template. Such pre-defined reference instance
-     is then shared among all the instantiations of `quantity` class template for this specific
+     ``reference`` class template is "cheaper" to instantiate. Additionally, every unit requires
+     only one instantiation of a ``reference`` class template. Such pre-defined reference instance
+     is then shared among all the instantiations of ``quantity`` class template for this specific
      unit (no matter of its representation type). With this approach we end up with much less class
      template instantiations in the application.
 
@@ -497,10 +497,10 @@ be used::
 
 .. note::
 
-    All instances of `quantity` class always match the `Quantity` concept.
+    All instances of ``quantity`` class always match the ``Quantity`` concept.
     All other regular types that are not quantities are called
     :term:`scalable numbers <scalable number>` by the library and match the
-    `Representation` concept.
+    ``Representation`` concept.
 
 However, the above is not the most important usage of those concepts. Let's
 assume that the user wants to implement an ``avg_speed`` function that will
@@ -595,7 +595,7 @@ Whenever we divide two quantities of the same dimension we end up with a
     static_assert(10 * km / (5 * km) == 2);
     static_assert(std::is_same_v<decltype(10 * km / (5 * km)), quantity<dim_one, one, int>>);
 
-According to the official ISO definition `dim_one` is a dimension "for which all the
+According to the official ISO definition ``dim_one`` is a dimension "for which all the
 exponents of the factors corresponding to the base quantities in its quantity dimension
 are zero".
 
@@ -615,10 +615,10 @@ are provided::
 
 There are two special units provided for usage with such a quantity:
 
-- `one` which is the :term:`coherent derived unit` of dimensionless quantity and does not
+- ``one`` which is the :term:`coherent derived unit` of dimensionless quantity and does not
   provide any textual symbol (according to the ISO definition "the measurement units and
   values of quantities of dimension one are numbers"),
-- `percent` which has the symbol ``%`` and ``ratio(1, 100)`` of the `one` unit.
+- ``percent`` which has the symbol ``%`` and ``ratio(1, 100)`` of the ``one`` unit.
 
 For example the following code::
 
@@ -628,7 +628,7 @@ will print ``50 %`` to the console output.
 
 Again, according to the ISO definition "such quantities convey more information than a
 number". This is exactly what we observe in the above example. The value stored inside
-the quantity, the text output, and the value returned by the `quantity::number()` member
+the quantity, the text output, and the value returned by the ``quantity::number()`` member
 function is ``50`` rather than ``0.5``. It means that dimensionless quantities behave
 like all other quantities and store the value in terms of a ratio of a coherent unit.
 This allows us to not loose precision when we divide quantities of the same dimensions

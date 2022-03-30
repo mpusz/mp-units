@@ -19,7 +19,7 @@ Class Hierarchy
 ---------------
 
 All of the described here class templates to produce unit types inherit from some instance
-of a `scaled_unit` class template:
+of a ``scaled_unit`` class template:
 
 .. raw:: html
 
@@ -78,7 +78,7 @@ of a `scaled_unit` class template:
 
     @enduml
 
-`scaled_unit` is a class template used exclusively by the library's framework
+``scaled_unit`` is a class template used exclusively by the library's framework
 and user should not instantiate it by him/her-self. However the user can sometimes
 observe this type in case an unit/dimension conversion expression will end up with an
 unknown/undefined unit type like in the below example::
@@ -103,7 +103,7 @@ Base Units
 ``m`` (meter) is a base unit of length, ``s`` (second) is a base unit of
 time. In each :term:`coherent system of units`, there is only one base
 unit for each base quantity. This is why a base unit type is required by
-the `base_dimension` definition in this library. For example ``si::dim_length``
+the ``base_dimension`` definition in this library. For example ``si::dim_length``
 can be defined in the following way::
 
     namespace si {
@@ -132,8 +132,8 @@ definitions of prefixed units using ``si::metre`` as a reference (i.e.
 
 .. note::
 
-    The first template argument of `named_unit` is the type of the
-    child class inherited from the instantiation of this `named_unit`
+    The first template argument of ``named_unit`` is the type of the
+    child class inherited from the instantiation of this ``named_unit``
     class template. This is called a
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
     in many places in this library to provide
@@ -145,7 +145,7 @@ definitions of prefixed units using ``si::metre`` as a reference (i.e.
 It is important to notice here that :term:`SI` is not the only system used
 in the industry and the library has to support other systems too. Also
 in some cases conversions between such systems should be allowed. Thanks to
-the fact that the `base_dimension` takes the base unit type in its definition
+the fact that the ``base_dimension`` takes the base unit type in its definition
 allows us to easily define various systems of units for the same physical
 dimension. For example length in the
 `CGS <https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units>`_
@@ -189,15 +189,15 @@ Named Scaled Units
 We are used to use minutes, hours, or days to measure quantities of time.
 Those units are the scaled versions of a time dimension's base unit,
 namely second. Those can be defined easily in the library using
-`named_scaled_unit` class template::
+``named_scaled_unit`` class template::
 
     struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
     struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
     struct day : named_scaled_unit<hour, "d", no_prefix, ratio(24), hour> {};
 
-where `no_prefix` is a special tag type describing that the library should
+where ``no_prefix`` is a special tag type describing that the library should
 not allow to define a new prefixed unit that would use this unit as a
-reference ("kilohours" does not have much sense, right?). The `ratio` type
+reference ("kilohours" does not have much sense, right?). The ``ratio`` type
 used in the definition is really similar to ``std::ratio`` but it takes
 an additional ``Exponent`` template parameter that defines the exponent of the ratio.
 Another important difference is the fact that the objects of that class are used
@@ -212,7 +212,7 @@ and define units like::
 ..
     TODO Submit a bug for above lexing problem
 
-Finally, the last of the `named_scaled_unit` class template parameters
+Finally, the last of the ``named_scaled_unit`` class template parameters
 provide a reference unit for scaling. Please note that it can be a dimension's
 base/coherent unit (like ``si::second``) or any other unit (i.e. ``si::minute``,
 ``si::hour``) that is a scaled version of the dimension's base/coherent unit.
@@ -385,7 +385,7 @@ ratio in reference to the "metre per second":
 
 Whichever, we choose there will always be someone not happy with our choice.
 
-Thanks to a `derived_unit` class template provided by the library this problem
+Thanks to a ``derived_unit`` class template provided by the library this problem
 does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     namespace si {
@@ -395,7 +395,7 @@ does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
     }
 
 In case the scaled derived unit should serve as a named one we can use
-a `named_derived_unit` where the user is able to provide a symbol for the unit
+a ``named_derived_unit`` where the user is able to provide a symbol for the unit
 by him/her-self::
 
     namespace si::fps {
@@ -420,7 +420,7 @@ to some popular units. As an example we often use "tonne" instead of "megagram",
 "litre" instead of "cubic decimetre", or "hectare" instead of "square hectometre".
 
 This library provides facilities to define aliased names to already defined units
-with `alias_unit` class template::
+with ``alias_unit`` class template::
 
     namespace si {
 
@@ -428,7 +428,7 @@ with `alias_unit` class template::
 
     }
 
-Also, it is possible to add prefixes to such aliased units with `prefixed_alias_unit`
+Also, it is possible to add prefixes to such aliased units with ``prefixed_alias_unit``
 class template::
 
     namespace si {

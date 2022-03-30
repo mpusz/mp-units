@@ -6,9 +6,9 @@ Working with Legacy Interfaces
 In case we are working with a legacy/unsafe interface we may be forced to
 extract the :term:`value of a quantity` with :func:`quantity::number()`
 (in addition
-to the quantity of a `quantity_point` with :func:`quantity_point::relative()`,
-or the quantity of a `quantity_kind` with :func:`quantity_kind::common()`,
-or the quantity kind of a `quantity_point_kind`
+to the quantity of a ``quantity_point`` with :func:`quantity_point::relative()`,
+or the quantity of a ``quantity_kind`` with :func:`quantity_kind::common()`,
+or the quantity kind of a ``quantity_point_kind``
 with :func:`quantity_point_kind::relative()`)
 and pass it to the library's output:
 
@@ -51,5 +51,5 @@ and pass it to the library's output:
 .. important::
 
     When dealing with a quantity of an unknown ``auto`` type please remember
-    to always use `quantity_cast` to cast it to a desired unit before calling
-    `quantity::number()` and passing the raw value to the legacy/unsafe interface.
+    to always use ``quantity_cast`` to cast it to a desired unit before calling
+    ``quantity::number()`` and passing the raw value to the legacy/unsafe interface.

@@ -5,13 +5,13 @@ glide_computer
 
 This example presents the usage of:
 
-- `quantity_point` to mark "absolute" quantities like ``timestamp``
-- `quantity_point_kind` to mark "absolute" kinds of quantities like ``altitude`` (as opposed to ``height``),
+- ``quantity_point`` to mark "absolute" quantities like ``timestamp``
+- ``quantity_point_kind`` to mark "absolute" kinds of quantities like ``altitude`` (as opposed to ``height``),
 - different kinds for length, time, and speed,
 - the use of quantity kinds to show how to handle 3D space for aviation needs,
 - unit constants to initialize the database
 - quantities text output formatting,
-- cooperation with `std::chrono`.
+- cooperation with ``std::chrono``.
 
 .. literalinclude:: ../../../example/glide_computer/include/glide_computer.h
   :caption: glide_computer.h
@@ -20,7 +20,7 @@ This example presents the usage of:
   :linenos:
   :lineno-match:
 
-The use of `quantity_kind` and `quantity_point_kind` provides strong typing
+The use of ``quantity_kind`` and ``quantity_point_kind`` provides strong typing
 that divide quantities and quantity points to the ones on a horizontal (X, Y) plane and vertical (Z) axis.
 Their purpose is to make different kinds of quantity
 (i.e. length) separate strong types (i.e. distance, height).

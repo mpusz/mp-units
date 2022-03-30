@@ -6,7 +6,7 @@ quantity
 Interface
 ---------
 
-`quantity` class template provides a similar interface to
+``quantity`` class template provides a similar interface to
 `std::chrono::duration <https://en.cppreference.com/w/cpp/chrono/duration>`_.
 The difference is that it uses ``double`` as a default representation and has
 a few additional member types and functions::
@@ -50,8 +50,8 @@ class template:
    representation for a calculation result. Such a design was reported as problematic
    by SG6 (numerics study group) members as sometimes we want to provide a different
    type in case of multiplication and different in case of division. ``std::common_type``
-   lacks that additional information. That is why `quantity` uses the resulting
+   lacks that additional information. That is why ``quantity`` uses the resulting
    type of a concrete operator operation.
-2. ``quantity::operator%()`` is constrained with `treat_as_floating_point` type trait to limit the
+2. ``quantity::operator%()`` is constrained with ``treat_as_floating_point`` type trait to limit the
    types to integral representations only. Also ``quantity::operator%(Rep)`` takes ``Rep`` as a
    template argument to limit implicit conversions.

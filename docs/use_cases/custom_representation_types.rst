@@ -3,20 +3,20 @@
 Using Custom Representation Types
 =================================
 
-A custom representation type can be provided as the last `quantity` class template parameter.
+A custom representation type can be provided as the last ``quantity`` class template parameter.
 With this a user is able to change how a quantity's value is being represented and provide
 its own custom logic for it (i.e. use a complex number or a measurement class that will handle
 not only a value but also a measurement error).
 
 
-A `Representation` concept
+A ``Representation`` concept
 --------------------------
 
-To support a minimum set of `quantity` operations all custom representation types have to
-satisfy at least the `Representation` concept. Which means that they:
+To support a minimum set of ``quantity`` operations all custom representation types have to
+satisfy at least the ``Representation`` concept. Which means that they:
 
 - cannot be quantities by themselves,
-- cannot be wrappers over the `quantity` type (i.e. ``std::optional<si::length<si::metre>>``),
+- cannot be wrappers over the ``quantity`` type (i.e. ``std::optional<si::length<si::metre>>``),
 - have to be regular types (e.g. they have to provide equality operators)
 - should either have common type with ``std::intmax_t`` which provides multiplication and
   division operators
@@ -50,7 +50,7 @@ The simplest representation type that fulfills the above requirements can look a
       }
     };
 
-Now we can put ``my_rep`` as the last parameter of the `quantity` class template and the following
+Now we can put ``my_rep`` as the last parameter of the ``quantity`` class template and the following
 code will work just fine::
 
     static_assert(si::length<si::metre, my_rep>(my_rep(2'000)) == si::length<si::kilometre, my_rep>(my_rep(2)));
@@ -97,15 +97,15 @@ from a regular quantity value::
     si::length<si::metre, expl> d2(d);                      // Compile-time error
     si::length<si::metre, expl> d3(quantity_cast<expl>(d)); // OK
 
-The only difference here is that in this case we have to explicitly cast the `quantity` with
-`quantity_cast` overload that scopes only on changing the representation type.
+The only difference here is that in this case we have to explicitly cast the ``quantity`` with
+``quantity_cast`` overload that scopes only on changing the representation type.
 
 Additional Requirements
 -----------------------
 
-As noted in the previous chapter, the `Representation` concept guarantees us the possibility
+As noted in the previous chapter, the ``Representation`` concept guarantees us the possibility
 to construct quantities, convert between the units of the same dimension, and compare them
-for equality. To provide additional `quantity` operations the custom representation type
+for equality. To provide additional ``quantity`` operations the custom representation type
 have to satisfy more requirements.
 
 .. important::
@@ -118,7 +118,7 @@ have to satisfy more requirements.
 Relational Quantity Operators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In case we want to to compare the values of `quantity` type not only for equality but
+In case we want to to compare the values of ``quantity`` type not only for equality but
 also for ordering, we have to provide a corresponding operators to our ``my_rep`` class.
 With C++20 it is really easy to do::
 
@@ -137,7 +137,7 @@ With the above the following code will compile fine::
 Arithmetic Quantity Operators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In case we plan to perform arithmetic operations on our `quantity` type we have to provide
+In case we plan to perform arithmetic operations on our ``quantity`` type we have to provide
 at least the following::
 
     class my_rep {
@@ -183,7 +183,7 @@ the following ones can be provided::
       // ...
     };
 
-Each of the above operators will enable a respective operator in the `quantity`
+Each of the above operators will enable a respective operator in the ``quantity``
 type.
 
 
@@ -194,12 +194,12 @@ Up to now we were enabling new functionalities by adding new operations to the c
 type. However, we can also enable more operations and customize the engine behavior through a few
 customization points.
 
-`quantity_value`
+``quantity_value``
 ^^^^^^^^^^^^^^^^
 
-The `quantity` class template has a few static member functions: `quantity::zero`, `quantity::one`,
-`quantity::min`, and `quantity::max`. Those return the respective quantity values for a specific
-representation type. The default implementation is provided through the `quantity_values` class
+The ``quantity`` class template has a few static member functions: ``quantity::zero``, ``quantity::one``,
+``quantity::min``, and ``quantity::max``. Those return the respective quantity values for a specific
+representation type. The default implementation is provided through the ``quantity_values`` class
 template::
 
     template<Representation Rep>
@@ -211,16 +211,16 @@ template::
     };
 
 The user can provide an explicit/partial class template specialization for his/her custom
-representation type and provide values that should be returned by the respective `quantity`
+representation type and provide values that should be returned by the respective ``quantity``
 operations.
 
-`treat_as_floating_point`
+``treat_as_floating_point``
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the :ref:`framework/conversions_and_casting:Conversions and Casting` chapter we learned
 that the conversions provided by the library's framework treat floating-point representation
 types differently than the integral ones. This behavior can also be extended to the custom
-representation types with `treat_as_floating_point` customization point which default
+representation types with ``treat_as_floating_point`` customization point which default
 definition is::
 
     template<Representation Rep>

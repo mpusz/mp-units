@@ -33,7 +33,7 @@ by a space and then the symbol of a :term:`unit` associated with this quantity.
 
 .. important::
 
-    Remember that it is a good practice to always `quantity_cast()` a quantity
+    Remember that it is a good practice to always ``quantity_cast()`` a quantity
     of an unknown ``auto`` type before passing it to the text output::
 
         std::cout << quantity_cast<si::kilometre_per_hour>(v1) << '\n';  // 110 km/h
@@ -95,7 +95,7 @@ In the above grammar:
 Default formatting
 ^^^^^^^^^^^^^^^^^^
 
-To format `quantity` values the formatting facility uses :token:`units-format-spec`.
+To format ``quantity`` values the formatting facility uses :token:`units-format-spec`.
 In case it is left empty the default formatting of ``{:%Q %q}`` is applied. The same
 default formatting is also applied to the output streams. This is why the following
 code lines produce the same output::

@@ -4,7 +4,7 @@ Quantity Constants
 ==================
 
 In the **mp-units** library quantity constants are implemented as variable
-templates of `quantity` types parametrized by the quantity's representation
+templates of ``quantity`` types parametrized by the quantity's representation
 type.
 
 Additionally, in case of the :term:`SI` its physical constants are put in

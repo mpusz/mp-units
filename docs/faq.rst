@@ -30,10 +30,10 @@ different dimensions (i.e. height, width, and depth) all of them will just be
 measured in meters.
 
 
-Why other systems are defined in the `isq::si` namespace?
+Why other systems are defined in the ``isq::si`` namespace?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All systems defined in the `isq::si` namespace are defined in terms of
+All systems defined in the ``isq::si`` namespace are defined in terms of
 base units that are convertible to the :term:`SI` units. This enables conversions
 of units of the same physical dimension between different systems.
 
@@ -51,14 +51,14 @@ two quantities was their common representation type::
 
     static_assert(std::is_same_v<decltype(10 * km / (5 * km)), std::int64_t>);
 
-The reasoning behind it was to not provide a false impression of a strong `quantity` type
+The reasoning behind it was to not provide a false impression of a strong ``quantity`` type
 for something that looks and feels like a regular number. Also all of the mathematic
 and trigonometric functions were working fine out of the box with such representation
 types, so we did not have to rewrite ``sin()``, ``cos()``, ``exp()``, and others.
 
 However, the feedback we got from the production usage was that such an approach
 is really bad for generic programming. It is really hard to handle the result of
-division (or multiplication) of two quantities as it might be either a `quantity`
+division (or multiplication) of two quantities as it might be either a ``quantity``
 or a fundamental type. If we want to raise such a result to some power we have to
 either use ``units::pow`` or ``std::pow`` depending on the resulting type. Those
 are only a few from many similar issues related to such an approach.
@@ -125,7 +125,7 @@ error: reference to ‘time’ is ambiguous
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Unfortunately, if `using-directives <https://en.cppreference.com/w/cpp/language/namespace#Using-directives>`_
-(i.e. ``using namespace units::isq::si``) are being used, `units::isq::si::time`
+(i.e. ``using namespace units::isq::si``) are being used, ``units::isq::si::time``
 will collide with C `time <https://en.cppreference.com/w/c/chrono/time>`_ function. In
 such a case the library's ``time`` function needs to be prefixed with at least one (or all)
 namespace names.
