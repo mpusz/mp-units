@@ -28,9 +28,9 @@ cmake_minimum_required(VERSION 3.15)
 function(add_units_module name)
     add_library(mp-units-${name} INTERFACE)
     target_link_libraries(mp-units-${name} INTERFACE ${ARGN})
-    target_include_directories(mp-units-${name} ${unitsAsSystem} INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+    target_include_directories(
+        mp-units-${name} ${unitsAsSystem} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                                                    $<INSTALL_INTERFACE:include>
     )
     set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
     add_library(mp-units::${name} ALIAS mp-units-${name})

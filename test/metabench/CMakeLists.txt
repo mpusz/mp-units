@@ -25,16 +25,9 @@ cmake_minimum_required(VERSION 3.12)
 function(add_metabench_test target name erb_path range)
     metabench_add_dataset(${target} "${erb_path}" "${range}" NAME "${name}")
     target_compile_features(${target} PUBLIC cxx_std_20)
-    target_link_libraries(${target}
-        PUBLIC
-            range-v3::range-v3>
-    )
-    target_compile_options(${target}
-        PUBLIC
-            -fconcepts
-    )
+    target_link_libraries(${target} PUBLIC range-v3::range-v3>)
+    target_compile_options(${target} PUBLIC -fconcepts)
 endfunction()
-
 
 include(metabench)
 if(NOT METABENCH_DIR)

@@ -23,15 +23,18 @@
 cmake_minimum_required(VERSION 3.2)
 
 add_metabench_test(metabench.data.make_dimension.no_concepts "no concepts" no_concepts.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
-add_metabench_test(metabench.data.make_dimension.concepts_iface "concepts iface" concepts_iface.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
-add_metabench_test(metabench.data.make_dimension.concepts_all "concepts all" concepts_all.cpp.erb "[1, 2, 3, 4, 6, 8, 10]")
-metabench_add_chart(metabench.chart.make_dimension
+add_metabench_test(
+    metabench.data.make_dimension.concepts_iface "concepts iface" concepts_iface.cpp.erb "[1, 2, 3, 4, 6, 8, 10]"
+)
+add_metabench_test(
+    metabench.data.make_dimension.concepts_all "concepts all" concepts_all.cpp.erb "[1, 2, 3, 4, 6, 8, 10]"
+)
+metabench_add_chart(
+    metabench.chart.make_dimension
     TITLE "100 x make_dimension"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.make_dimension.no_concepts
-        metabench.data.make_dimension.concepts_iface
-        metabench.data.make_dimension.concepts_all
+    DATASETS metabench.data.make_dimension.no_concepts metabench.data.make_dimension.concepts_iface
+             metabench.data.make_dimension.concepts_all
 )
 
 add_dependencies(metabench metabench.chart.make_dimension)

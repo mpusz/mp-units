@@ -22,34 +22,44 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_metabench_test(metabench.data.list.type_list.concepts_all "all concepts" type_list_concepts_all.cpp.erb "[3, 6, 9, 12, 15]")
-add_metabench_test(metabench.data.list.type_list.concepts_iface "concepts in interface" type_list_concepts_iface.cpp.erb "[3, 6, 9, 12, 15]")
-add_metabench_test(metabench.data.list.type_list.concepts_no "no concepts" type_list_concepts_no.cpp.erb "[3, 6, 9, 12, 15]")
-metabench_add_chart(metabench.chart.list.concepts
+add_metabench_test(
+    metabench.data.list.type_list.concepts_all "all concepts" type_list_concepts_all.cpp.erb "[3, 6, 9, 12, 15]"
+)
+add_metabench_test(
+    metabench.data.list.type_list.concepts_iface "concepts in interface" type_list_concepts_iface.cpp.erb
+    "[3, 6, 9, 12, 15]"
+)
+add_metabench_test(
+    metabench.data.list.type_list.concepts_no "no concepts" type_list_concepts_no.cpp.erb "[3, 6, 9, 12, 15]"
+)
+metabench_add_chart(
+    metabench.chart.list.concepts
     TITLE "Sorting a list of size N"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.list.type_list.concepts_all
-        metabench.data.list.type_list.concepts_iface
-        metabench.data.list.type_list.concepts_no
+    DATASETS metabench.data.list.type_list.concepts_all metabench.data.list.type_list.concepts_iface
+             metabench.data.list.type_list.concepts_no
 )
 
-add_metabench_test(metabench.data.list.type_list.conditional_std "std::conditional" type_list_conditional_std.cpp.erb "[3, 6, 9, 12, 15]")
-add_metabench_test(metabench.data.list.type_list.conditional_alias "alias conditional" type_list_conditional_alias.cpp.erb "[3, 6, 9, 12, 15]")
-add_metabench_test(metabench.data.list.type_list.conditional_alias_hard "alias conditional hard" type_list_conditional_alias_hard.cpp.erb "[3, 6, 9, 12, 15]")
-metabench_add_chart(metabench.chart.list.conditional
+add_metabench_test(
+    metabench.data.list.type_list.conditional_std "std::conditional" type_list_conditional_std.cpp.erb
+    "[3, 6, 9, 12, 15]"
+)
+add_metabench_test(
+    metabench.data.list.type_list.conditional_alias "alias conditional" type_list_conditional_alias.cpp.erb
+    "[3, 6, 9, 12, 15]"
+)
+add_metabench_test(
+    metabench.data.list.type_list.conditional_alias_hard "alias conditional hard"
+    type_list_conditional_alias_hard.cpp.erb "[3, 6, 9, 12, 15]"
+)
+metabench_add_chart(
+    metabench.chart.list.conditional
     TITLE "Sorting a list of size N"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.list.type_list.conditional_std
-        metabench.data.list.type_list.conditional_alias
-        metabench.data.list.type_list.conditional_alias_hard
+    DATASETS metabench.data.list.type_list.conditional_std metabench.data.list.type_list.conditional_alias
+             metabench.data.list.type_list.conditional_alias_hard
 )
 
-add_custom_target(metabench.chart.list
-    DEPENDS
-        metabench.chart.list.concepts
-        metabench.chart.list.conditional
-)
+add_custom_target(metabench.chart.list DEPENDS metabench.chart.list.concepts metabench.chart.list.conditional)
 
 add_dependencies(metabench metabench.chart.list)

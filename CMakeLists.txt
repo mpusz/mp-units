@@ -21,9 +21,7 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-project(mp-units-dev
-    LANGUAGES CXX
-)
+project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -50,8 +48,7 @@ if(${projectPrefix}IWYU)
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
-        NO_FORWARD_DECLARATIONS
-        QUOTED_INCLUDES_FIRST
+        NO_FORWARD_DECLARATIONS QUOTED_INCLUDES_FIRST
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
