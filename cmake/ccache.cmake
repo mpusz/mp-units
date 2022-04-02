@@ -134,7 +134,7 @@ function(enable_ccache)
     endif()
 
     if("${_ccache_version}" VERSION_LESS 3.3.0)
-        list(APPEND _ccacheEnv CCACHE_CPP2=1)  # avoids spurious warnings with some compilers for ccache older than 3.3
+        list(APPEND _ccacheEnv CCACHE_CPP2=1) # avoids spurious warnings with some compilers for ccache older than 3.3
     endif()
 
     if(_enable_ccache_MODE STREQUAL DIRECT_DEPEND)
@@ -188,25 +188,18 @@ function(enable_ccache)
 
     if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
         foreach(_lang IN ITEMS C CXX OBJC OBJCXX CUDA)
-            set(CMAKE_${_lang}_COMPILER_LAUNCHER
-                ${CMAKE_COMMAND} -E env
-                ${_ccacheEnv} ${CCACHE_PATH}
-                PARENT_SCOPE
-            )
+            set(CMAKE_${_lang}_COMPILER_LAUNCHER ${CMAKE_COMMAND} -E env ${_ccacheEnv} ${CCACHE_PATH} PARENT_SCOPE)
         endforeach()
     elseif(CMAKE_GENERATOR STREQUAL Xcode)
         # Each of the Xcode project variables allow specifying only a single value, but the ccache command line needs to have multiple options.
         # A separate launch script needs to be written out and the project variables pointed at them.
         foreach(_lang IN ITEMS C CXX)
-        set(launch${_lang} ${CMAKE_BINARY_DIR}/launch-${_lang})
-        file(WRITE ${launch${_lang}} "#!/bin/bash\n\n")
-        foreach(keyVal IN LISTS _ccacheEnv)
-            file(APPEND ${launch${_lang}} "export ${keyVal}\n")
-        endforeach()
-            file(APPEND ${launch${_lang}}
-                "exec \"${CCACHE_PROGRAM}\" "
-                "\"${CMAKE_${_lang}_COMPILER}\" \"$@\"\n"
-            )
+            set(launch${_lang} ${CMAKE_BINARY_DIR}/launch-${_lang})
+            file(WRITE ${launch${_lang}} "#!/bin/bash\n\n")
+            foreach(keyVal IN LISTS _ccacheEnv)
+                file(APPEND ${launch${_lang}} "export ${keyVal}\n")
+            endforeach()
+            file(APPEND ${launch${_lang}} "exec \"${CCACHE_PROGRAM}\" " "\"${CMAKE_${_lang}_COMPILER}\" \"$@\"\n")
             execute_process(COMMAND chmod a+rx ${launch${_lang}})
         endforeach()
         set(CMAKE_XCODE_ATTRIBUTE_CC ${launchC} PARENT_SCOPE)

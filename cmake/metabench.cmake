@@ -20,7 +20,6 @@ endif()
 # avoid polluting the build tree.
 set(METABENCH_DIR "${CMAKE_CURRENT_BINARY_DIR}/_metabench")
 
-
 # metabench_add_dataset(target path_to_template range
 #                       [NAME name]
 #                       [ENV env]
@@ -124,40 +123,39 @@ function(metabench_add_dataset target path_to_template range)
     set(multi_value_args)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
-    if (NOT IS_ABSOLUTE "${path_to_template}")
+    if(NOT IS_ABSOLUTE "${path_to_template}")
         set(path_to_template "${CMAKE_CURRENT_SOURCE_DIR}/${path_to_template}")
     endif()
-    if (NOT EXISTS ${path_to_template})
+    if(NOT EXISTS ${path_to_template})
         message(FATAL_ERROR "The file specified to metabench_add_dataset (${path_to_template}) does not exist.")
     endif()
 
-    if (NOT ARGS_NAME)
+    if(NOT ARGS_NAME)
         set(ARGS_NAME ${target})
     endif()
 
-    if (NOT ARGS_ENV)
+    if(NOT ARGS_ENV)
         set(ARGS_ENV "{}")
     endif()
 
-    if (NOT ARGS_COLOR)
+    if(NOT ARGS_COLOR)
         set(ARGS_COLOR "")
     endif()
 
-    if (NOT ARGS_SCALE)
+    if(NOT ARGS_SCALE)
         set(ARGS_SCALE 1.0)
     endif()
 
-    if (NOT ARGS_MEDIAN_OF)
+    if(NOT ARGS_MEDIAN_OF)
         set(ARGS_MEDIAN_OF 1)
     endif()
 
-    if (NOT ARGS_OUTPUT)
+    if(NOT ARGS_OUTPUT)
         set(ARGS_OUTPUT "${target}.json")
     endif()
     if(NOT IS_ABSOLUTE "${ARGS_OUTPUT}")
         set(ARGS_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${ARGS_OUTPUT}")
     endif()
-
 
     # Add a dummy executable that will be used to collect the dataset.
     # We'll build this executable multiple times for different values
@@ -169,46 +167,42 @@ function(metabench_add_dataset target path_to_template range)
     # so we store it in a custom property.
     file(WRITE "${METABENCH_DIR}/${target}.cpp" "")
     add_executable(${target} EXCLUDE_FROM_ALL "${METABENCH_DIR}/${target}.cpp")
-    set_target_properties(${target} PROPERTIES
-        RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${COMPILE_RB_PATH}\""
-        RULE_LAUNCH_LINK "${RUBY_EXECUTABLE} -- \"${LINK_RB_PATH}\""
-        RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE "${METABENCH_DIR}"
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG "${METABENCH_DIR}"
-        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${METABENCH_DIR}"
-        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${METABENCH_DIR}"
-        METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
+    set_target_properties(
+        ${target}
+        PROPERTIES
+            RULE_LAUNCH_COMPILE "${RUBY_EXECUTABLE} -- \"${COMPILE_RB_PATH}\""
+            RULE_LAUNCH_LINK "${RUBY_EXECUTABLE} -- \"${LINK_RB_PATH}\""
+            RUNTIME_OUTPUT_DIRECTORY "${METABENCH_DIR}"
+            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${METABENCH_DIR}"
+            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${METABENCH_DIR}"
+            RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO "${METABENCH_DIR}"
+            RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${METABENCH_DIR}"
+            METABENCH_DATASET_PATH "${ARGS_OUTPUT}"
     )
     get_filename_component(template_dir "${path_to_template}" DIRECTORY)
     target_include_directories(${target} PUBLIC "${template_dir}")
 
     # Add a command to generate the JSON file that will contain the measurements
     # we collect for this dataset when we build the executable above.
-    add_custom_command(OUTPUT "${ARGS_OUTPUT}"
-        COMMAND "${RUBY_EXECUTABLE}" -r json -r fileutils -r "${METABENCH_RB_PATH}"
-            -e "range = (${range}).to_a"
-            -e "env = (${ARGS_ENV})"
-            -e "data = {}"
-            -e "data['key'] = '${ARGS_NAME}'"
-            -e "data['scale'] = (${ARGS_SCALE})"
-            -e "data['color'] = '${ARGS_COLOR}'"
-            -e "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})"
-            -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
-            -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
+    add_custom_command(
+        OUTPUT "${ARGS_OUTPUT}"
+        COMMAND "${RUBY_EXECUTABLE}" -r json -r fileutils -r "${METABENCH_RB_PATH}" -e "range = (${range}).to_a" -e
+                "env = (${ARGS_ENV})" -e "data = {}" -e "data['key'] = '${ARGS_NAME}'" -e
+                "data['scale'] = (${ARGS_SCALE})" -e "data['color'] = '${ARGS_COLOR}'" -e
+                "data['values'] = measure('${target}', '${path_to_template}', range, env, ${ARGS_MEDIAN_OF})" -e
+                "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))" -e "IO.write('${ARGS_OUTPUT}', JSON.generate(data))"
         DEPENDS "${path_to_template}"
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
         VERBATIM USES_TERMINAL
     )
 
-
     # We also setup a CTest target to test the generation of the dataset.
     # We do not actually collect any data here.
-    add_test(NAME ${target}
-        COMMAND "${RUBY_EXECUTABLE}" -r "${METABENCH_RB_PATH}"
-            -e "range = (${range}).to_a"
-            -e "range = [range[0], range[-1]] if range.length >= 2"
-            -e "env = (${ARGS_ENV})"
-            -e "data = measure('${target}', '${path_to_template}', range, env, 1)"
+    add_test(
+        NAME ${target}
+        COMMAND "${RUBY_EXECUTABLE}" -r "${METABENCH_RB_PATH}" -e "range = (${range}).to_a" -e
+                "range = [range[0], range[-1]] if range.length >= 2" -e "env = (${ARGS_ENV})" -e
+                "data = measure('${target}', '${path_to_template}', range, env, 1)"
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     )
 endfunction()
@@ -276,7 +270,7 @@ function(metabench_add_chart target)
     set(multi_value_args DATASETS)
     cmake_parse_arguments(ARGS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
-    if (NOT ARGS_ASPECT)
+    if(NOT ARGS_ASPECT)
         set(ARGS_ASPECT "COMPILATION_TIME")
     endif()
 
@@ -284,7 +278,7 @@ function(metabench_add_chart target)
         message(FATAL_ERROR "metabench_add_chart requires at least one dataset.")
     endif()
 
-    if (NOT ARGS_OUTPUT)
+    if(NOT ARGS_OUTPUT)
         set(ARGS_OUTPUT "${target}.html")
     endif()
 
@@ -300,22 +294,17 @@ function(metabench_add_chart target)
 
     add_custom_command(
         OUTPUT "${ARGS_OUTPUT}"
-        COMMAND "${RUBY_EXECUTABLE}" -r erb -r json -r fileutils
-            -e "options = {}"
-            -e "options['TITLE'] = '${ARGS_TITLE}'"
-            -e "options['SUBTITLE'] = '${ARGS_SUBTITLE}'"
-            -e "options['XLABEL'] = '${ARGS_XLABEL}'"
-            -e "options['YLABEL'] = '${ARGS_YLABEL}'"
-            -e "aspect = '${ARGS_ASPECT}'"
-            -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
-            -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)"
-            -e "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))"
-            -e "IO.write('${ARGS_OUTPUT}', html)"
+        COMMAND "${RUBY_EXECUTABLE}" -r erb -r json -r fileutils -e "options = {}" -e
+                "options['TITLE'] = '${ARGS_TITLE}'" -e "options['SUBTITLE'] = '${ARGS_SUBTITLE}'" -e
+                "options['XLABEL'] = '${ARGS_XLABEL}'" -e "options['YLABEL'] = '${ARGS_YLABEL}'" -e
+                "aspect = '${ARGS_ASPECT}'" -e "data = '${data}'.split(';').map { |datum| JSON.parse(IO.read(datum)) }"
+                -e "html = ERB.new(File.read('${CHART_HTML_ERB_PATH}')).result(binding)" -e
+                "FileUtils.mkdir_p(File.dirname('${ARGS_OUTPUT}'))" -e "IO.write('${ARGS_OUTPUT}', html)"
         DEPENDS ${data} "${ARGS_CHART}"
         VERBATIM
     )
 
-    if (${ARGS_ALL})
+    if(${ARGS_ALL})
         add_custom_target(${target} ALL DEPENDS "${ARGS_OUTPUT}")
     else()
         add_custom_target(${target} DEPENDS "${ARGS_OUTPUT}")
@@ -338,109 +327,109 @@ endfunction()
 ################################################################################
 set(METABENCH_RB_PATH "${METABENCH_DIR}/metabench.rb")
 file(WRITE "${METABENCH_RB_PATH}"
-"require 'benchmark'                                                                                      \n"
-"require 'erb'                                                                                            \n"
-"require 'fileutils'                                                                                      \n"
-"require 'open3'                                                                                          \n"
-"require 'pathname'                                                                                       \n"
-"require 'time'                                                                                           \n"
-"                                                                                                         \n"
-"                                                                                                         \n"
-"def report_error(command_line, stdout, stderr, code)                                                     \n"
-"  raise [%{\\ncommand line: #{command_line}},                                                            \n"
-"         %{stdout\\n#{'-'*80}\\n#{stdout}},                                                              \n"
-"         %{stderr\\n#{'-'*80}\\n#{stderr}},                                                              \n"
-"         %{code\\n#{'-'*80}\\n#{code}}].join(%{\\n\\n})                                                  \n"
-"end                                                                                                      \n"
-"                                                                                                         \n"
-"# Build the specified CMake target and return the measurements that were taken.                          \n"
-"# The exact format of a measurement returned by this function is explained                               \n"
-"# in the JavaScript code that loads it, in the chart template file below.                                \n"
-"def build(target)                                                                                        \n"
-"  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target]                   \n"
-"  exe_file = %{${METABENCH_DIR}/#{target}${CMAKE_EXECUTABLE_SUFFIX}}                                     \n"
-"  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                           \n"
-"                                                                                                         \n"
-"  # We change the timestamp of the source file and remove the executable                                 \n"
-"  # to make sure CMake considers the target as outdated; otherwise, we                                   \n"
-"  # might skip the compilation and/or link steps. This is because CMake's                                \n"
-"  # timestamps are not precise enough.                                                                   \n"
-"  FileUtils.touch(cpp_file, mtime: Time.now+1)                                                           \n"
-"  File.delete(exe_file) if File.exist?(exe_file)                                                         \n"
-"                                                                                                         \n"
-"  stdout, stderr, status = Open3.capture3(*command)                                                      \n"
-"  compile_cli = stdout.match(/\\[compilation command: (.+)\\]/i)                                         \n"
-"  compile_cli = compile_cli ? compile_cli.captures[0] : '(unavailable)'                                  \n"
-"  link_cli = stdout.match(/\\[link command: (.+)\\]/i)                                                   \n"
-"  link_cli = link_cli ? link_cli.captures[0] : '(unavailable)'                                           \n"
-"                                                                                                         \n"
-"  if not status.success?                                                                                 \n"
-"    cli = %{compile: #{compile_cli}\\nlink: #{link_cli}}                                                 \n"
-"    report_error(cli, stdout, stderr, IO.read(cpp_file))                                                 \n"
-"  end                                                                                                    \n"
-"                                                                                                         \n"
-"  result = {}                                                                                            \n"
-"                                                                                                         \n"
-"  # Compilation and link times in seconds. They are output to stdout because                             \n"
-"  # we use the `compile.rb` and `link.rb` scripts below to launch the compiler                           \n"
-"  # and linker with CMake.                                                                               \n"
-"  result['COMPILATION_TIME'] = stdout.match(/\\[COMPILATION_TIME: (.+)\\]/i).captures[0].to_f            \n"
-"  result['LINK_TIME'] = stdout.match(/\\[LINK_TIME: (.+)\\]/i).captures[0].to_f                          \n"
-"                                                                                                         \n"
-"  # Peak memory usage                                                                                    \n"
-"  result['PEAK_MEMORY'] = stdout.match(/\\[PEAK_MEMORY: (.+)\\]/i).captures[0].to_f                      \n"
-"                                                                                                         \n"
-"  # Size of the generated executable in KB                                                               \n"
-"  result['EXECUTABLE_SIZE'] = File.size(exe_file).to_f / 1000                                            \n"
-"                                                                                                         \n"
-"  return result                                                                                          \n"
-"end                                                                                                      \n"
-"                                                                                                         \n"
-"# Render the ERB template and return the generated code.                                                 \n"
-"def render(erb_template, n, env)                                                                         \n"
-"  begin                                                                                                  \n"
-"    ERB.new(File.read(erb_template)).result(binding)                                                     \n"
-"  rescue Exception => e                                                                                  \n"
-"    $stderr.puts(%{\\nError while generating a C++ file from the ERB template #{erb_template}:\\n})      \n"
-"    raise e                                                                                              \n"
-"  end                                                                                                    \n"
-"end                                                                                                      \n"
-"                                                                                                         \n"
-"# Formats the progress bar that we print while we run the benchmark                                      \n"
-"def progress_bar(range, index, start_time, filename)                                                     \n"
-"   n = range[index]                                                                                      \n"
-"   percentage = (index+1) * 100 / range.size                                                             \n"
-"   relative = filename.relative_path_from(Pathname.getwd)                                                \n"
-"   elapsed = Time.now - start_time                                                                       \n"
-"   return %{==> #{percentage}% (#{elapsed.round(2)}s) #{relative} (n = #{n})}                            \n"
-"end                                                                                                      \n"
-"                                                                                                         \n"
-"# Returns an array of measurements representing the compilation of an ERB                                \n"
-"# template for the values of `n` in the specified `range`.                                               \n"
-"def measure(target, erb_template, range, env, repetitions)                                               \n"
-"  erb_template = Pathname.new(erb_template)                                                              \n"
-"  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                           \n"
-"  data = []                                                                                              \n"
-"  range = range.to_a                                                                                     \n"
-"  start = Time.now                                                                                       \n"
-"  $stderr.write(progress_bar(range, 0, start, erb_template)) # Setup the initial progress bar            \n"
-"  range.each_with_index do |n, index|                                                                    \n"
-"    compile = -> (code) {                                                                                \n"
-"      IO.write(cpp_file, code)                                                                           \n"
-"      return repetitions.times.map { build(target) }                                                     \n"
-"    }                                                                                                    \n"
-"    code = render(erb_template, n, env)                                                                  \n"
-"    compile[code] if index == 0 # Fill the cache on the first iteration                                  \n"
-"    base = compile[code]                                                                                 \n"
-"    total = compile[%{#define METABENCH\\n} + code]                                                      \n"
-"    data << {'n' => n, 'base' => base, 'total' => total}                                                 \n"
-"    $stderr.write(%{\\r} + progress_bar(range, index, start, erb_template)) # Update the progress bar    \n"
-"  end                                                                                                    \n"
-"  return data                                                                                            \n"
-"ensure                                                                                                   \n"
-"  $stderr.puts # Otherwise the output of the next CMake command appears on the same line                 \n"
-"  IO.write(cpp_file, '')                                                                                 \n"
-"end                                                                                                      \n"
+     "require 'benchmark'                                                                                      \n"
+     "require 'erb'                                                                                            \n"
+     "require 'fileutils'                                                                                      \n"
+     "require 'open3'                                                                                          \n"
+     "require 'pathname'                                                                                       \n"
+     "require 'time'                                                                                           \n"
+     "                                                                                                         \n"
+     "                                                                                                         \n"
+     "def report_error(command_line, stdout, stderr, code)                                                     \n"
+     "  raise [%{\\ncommand line: #{command_line}},                                                            \n"
+     "         %{stdout\\n#{'-'*80}\\n#{stdout}},                                                              \n"
+     "         %{stderr\\n#{'-'*80}\\n#{stderr}},                                                              \n"
+     "         %{code\\n#{'-'*80}\\n#{code}}].join(%{\\n\\n})                                                  \n"
+     "end                                                                                                      \n"
+     "                                                                                                         \n"
+     "# Build the specified CMake target and return the measurements that were taken.                          \n"
+     "# The exact format of a measurement returned by this function is explained                               \n"
+     "# in the JavaScript code that loads it, in the chart template file below.                                \n"
+     "def build(target)                                                                                        \n"
+     "  command = ['${CMAKE_COMMAND}', '--build', '${CMAKE_BINARY_DIR}', '--target', target]                   \n"
+     "  exe_file = %{${METABENCH_DIR}/#{target}${CMAKE_EXECUTABLE_SUFFIX}}                                     \n"
+     "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                           \n"
+     "                                                                                                         \n"
+     "  # We change the timestamp of the source file and remove the executable                                 \n"
+     "  # to make sure CMake considers the target as outdated; otherwise, we                                   \n"
+     "  # might skip the compilation and/or link steps. This is because CMake's                                \n"
+     "  # timestamps are not precise enough.                                                                   \n"
+     "  FileUtils.touch(cpp_file, mtime: Time.now+1)                                                           \n"
+     "  File.delete(exe_file) if File.exist?(exe_file)                                                         \n"
+     "                                                                                                         \n"
+     "  stdout, stderr, status = Open3.capture3(*command)                                                      \n"
+     "  compile_cli = stdout.match(/\\[compilation command: (.+)\\]/i)                                         \n"
+     "  compile_cli = compile_cli ? compile_cli.captures[0] : '(unavailable)'                                  \n"
+     "  link_cli = stdout.match(/\\[link command: (.+)\\]/i)                                                   \n"
+     "  link_cli = link_cli ? link_cli.captures[0] : '(unavailable)'                                           \n"
+     "                                                                                                         \n"
+     "  if not status.success?                                                                                 \n"
+     "    cli = %{compile: #{compile_cli}\\nlink: #{link_cli}}                                                 \n"
+     "    report_error(cli, stdout, stderr, IO.read(cpp_file))                                                 \n"
+     "  end                                                                                                    \n"
+     "                                                                                                         \n"
+     "  result = {}                                                                                            \n"
+     "                                                                                                         \n"
+     "  # Compilation and link times in seconds. They are output to stdout because                             \n"
+     "  # we use the `compile.rb` and `link.rb` scripts below to launch the compiler                           \n"
+     "  # and linker with CMake.                                                                               \n"
+     "  result['COMPILATION_TIME'] = stdout.match(/\\[COMPILATION_TIME: (.+)\\]/i).captures[0].to_f            \n"
+     "  result['LINK_TIME'] = stdout.match(/\\[LINK_TIME: (.+)\\]/i).captures[0].to_f                          \n"
+     "                                                                                                         \n"
+     "  # Peak memory usage                                                                                    \n"
+     "  result['PEAK_MEMORY'] = stdout.match(/\\[PEAK_MEMORY: (.+)\\]/i).captures[0].to_f                      \n"
+     "                                                                                                         \n"
+     "  # Size of the generated executable in KB                                                               \n"
+     "  result['EXECUTABLE_SIZE'] = File.size(exe_file).to_f / 1000                                            \n"
+     "                                                                                                         \n"
+     "  return result                                                                                          \n"
+     "end                                                                                                      \n"
+     "                                                                                                         \n"
+     "# Render the ERB template and return the generated code.                                                 \n"
+     "def render(erb_template, n, env)                                                                         \n"
+     "  begin                                                                                                  \n"
+     "    ERB.new(File.read(erb_template)).result(binding)                                                     \n"
+     "  rescue Exception => e                                                                                  \n"
+     "    $stderr.puts(%{\\nError while generating a C++ file from the ERB template #{erb_template}:\\n})      \n"
+     "    raise e                                                                                              \n"
+     "  end                                                                                                    \n"
+     "end                                                                                                      \n"
+     "                                                                                                         \n"
+     "# Formats the progress bar that we print while we run the benchmark                                      \n"
+     "def progress_bar(range, index, start_time, filename)                                                     \n"
+     "   n = range[index]                                                                                      \n"
+     "   percentage = (index+1) * 100 / range.size                                                             \n"
+     "   relative = filename.relative_path_from(Pathname.getwd)                                                \n"
+     "   elapsed = Time.now - start_time                                                                       \n"
+     "   return %{==> #{percentage}% (#{elapsed.round(2)}s) #{relative} (n = #{n})}                            \n"
+     "end                                                                                                      \n"
+     "                                                                                                         \n"
+     "# Returns an array of measurements representing the compilation of an ERB                                \n"
+     "# template for the values of `n` in the specified `range`.                                               \n"
+     "def measure(target, erb_template, range, env, repetitions)                                               \n"
+     "  erb_template = Pathname.new(erb_template)                                                              \n"
+     "  cpp_file = %{${METABENCH_DIR}/#{target}.cpp}                                                           \n"
+     "  data = []                                                                                              \n"
+     "  range = range.to_a                                                                                     \n"
+     "  start = Time.now                                                                                       \n"
+     "  $stderr.write(progress_bar(range, 0, start, erb_template)) # Setup the initial progress bar            \n"
+     "  range.each_with_index do |n, index|                                                                    \n"
+     "    compile = -> (code) {                                                                                \n"
+     "      IO.write(cpp_file, code)                                                                           \n"
+     "      return repetitions.times.map { build(target) }                                                     \n"
+     "    }                                                                                                    \n"
+     "    code = render(erb_template, n, env)                                                                  \n"
+     "    compile[code] if index == 0 # Fill the cache on the first iteration                                  \n"
+     "    base = compile[code]                                                                                 \n"
+     "    total = compile[%{#define METABENCH\\n} + code]                                                      \n"
+     "    data << {'n' => n, 'base' => base, 'total' => total}                                                 \n"
+     "    $stderr.write(%{\\r} + progress_bar(range, index, start, erb_template)) # Update the progress bar    \n"
+     "  end                                                                                                    \n"
+     "  return data                                                                                            \n"
+     "ensure                                                                                                   \n"
+     "  $stderr.puts # Otherwise the output of the next CMake command appears on the same line                 \n"
+     "  IO.write(cpp_file, '')                                                                                 \n"
+     "end                                                                                                      \n"
 )
 ################################################################################
 # end metabench.rb
@@ -454,47 +443,47 @@ file(WRITE "${METABENCH_RB_PATH}"
 ################################################################################
 set(MEMUSG_RB_PATH "${METABENCH_DIR}/memusg.rb")
 file(WRITE "${MEMUSG_RB_PATH}"
-"module OS                                                                        \n"
-"  def OS.windows?                                                                \n"
-"    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil              \n"
-"  end                                                                            \n"
-"  def OS.mac?                                                                    \n"
-"   (/darwin/ =~ RUBY_PLATFORM) != nil                                            \n"
-"  end                                                                            \n"
-"  def OS.unix?                                                                   \n"
-"    !OS.windows?                                                                 \n"
-"  end                                                                            \n"
-"  def OS.linux?                                                                  \n"
-"    OS.unix? and not OS.mac?                                                     \n"
-"  end                                                                            \n"
-"end                                                                              \n"
-"                                                                                 \n"
-"if OS.mac?                                                                       \n"
-"  def memusg(pgid)                                                               \n"
-"    `/bin/ps -o rss= -g #{pgid}`.to_i                                            \n"
-"  end                                                                            \n"
-"elsif OS.linux?                                                                  \n"
-"  def memusg(pgid)                                                               \n"
-"    `/bin/ps -o rss= -#{pgid}`.to_i                                              \n"
-"  end                                                                            \n"
-"else                                                                             \n"
-"  throw %{Unsupported platform #{RUBY_PLATFORM}}                                 \n"
-"end                                                                              \n"
-"                                                                                 \n"
-"pid = Process.spawn(*ARGV)                                                       \n"
-"Process.detach(pid) # Make sure the child process does not become a zombie       \n"
-"peak = 0                                                                         \n"
-"# Loop until getpgid throws ESRCH, which means the process is not alive anymore  \n"
-"begin                                                                            \n"
-"  while true                                                                     \n"
-"    pgid = Process.getpgid(pid)                                                  \n"
-"    peak = [peak, memusg(pgid)].max                                              \n"
-"    sleep 0.01                                                                   \n"
-"  end                                                                            \n"
-"rescue Errno::ESRCH                                                              \n"
-"end                                                                              \n"
-"                                                                                 \n"
-"puts %{[PEAK_MEMORY: #{peak}]}                                                   \n"
+     "module OS                                                                        \n"
+     "  def OS.windows?                                                                \n"
+     "    (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil              \n"
+     "  end                                                                            \n"
+     "  def OS.mac?                                                                    \n"
+     "   (/darwin/ =~ RUBY_PLATFORM) != nil                                            \n"
+     "  end                                                                            \n"
+     "  def OS.unix?                                                                   \n"
+     "    !OS.windows?                                                                 \n"
+     "  end                                                                            \n"
+     "  def OS.linux?                                                                  \n"
+     "    OS.unix? and not OS.mac?                                                     \n"
+     "  end                                                                            \n"
+     "end                                                                              \n"
+     "                                                                                 \n"
+     "if OS.mac?                                                                       \n"
+     "  def memusg(pgid)                                                               \n"
+     "    `/bin/ps -o rss= -g #{pgid}`.to_i                                            \n"
+     "  end                                                                            \n"
+     "elsif OS.linux?                                                                  \n"
+     "  def memusg(pgid)                                                               \n"
+     "    `/bin/ps -o rss= -#{pgid}`.to_i                                              \n"
+     "  end                                                                            \n"
+     "else                                                                             \n"
+     "  throw %{Unsupported platform #{RUBY_PLATFORM}}                                 \n"
+     "end                                                                              \n"
+     "                                                                                 \n"
+     "pid = Process.spawn(*ARGV)                                                       \n"
+     "Process.detach(pid) # Make sure the child process does not become a zombie       \n"
+     "peak = 0                                                                         \n"
+     "# Loop until getpgid throws ESRCH, which means the process is not alive anymore  \n"
+     "begin                                                                            \n"
+     "  while true                                                                     \n"
+     "    pgid = Process.getpgid(pid)                                                  \n"
+     "    peak = [peak, memusg(pgid)].max                                              \n"
+     "    sleep 0.01                                                                   \n"
+     "  end                                                                            \n"
+     "rescue Errno::ESRCH                                                              \n"
+     "end                                                                              \n"
+     "                                                                                 \n"
+     "puts %{[PEAK_MEMORY: #{peak}]}                                                   \n"
 )
 ################################################################################
 # end memusg.rb
@@ -508,18 +497,18 @@ file(WRITE "${MEMUSG_RB_PATH}"
 ################################################################################
 set(COMPILE_RB_PATH "${METABENCH_DIR}/compile.rb")
 file(WRITE "${COMPILE_RB_PATH}"
-"require 'benchmark'                                                              \n"
-"require 'open3'                                                                  \n"
-"stdout = stderr = status = nil                                                   \n"
-"command_line = ['${RUBY_EXECUTABLE}', '--', '${MEMUSG_RB_PATH}'] + ARGV          \n"
-"time = Benchmark.measure {                                                       \n"
-"  stdout, stderr, status = Open3.capture3(*command_line)                         \n"
-"}.total                                                                          \n"
-"$stdout.puts(stdout)                                                             \n"
-"$stdout.puts(%{[compilation command: #{command_line.join(' ')}]})                \n"
-"$stdout.puts(%{[COMPILATION_TIME: #{time}]})                                     \n"
-"$stderr.puts(stderr)                                                             \n"
-"exit(status.success?)                                                            \n"
+     "require 'benchmark'                                                              \n"
+     "require 'open3'                                                                  \n"
+     "stdout = stderr = status = nil                                                   \n"
+     "command_line = ['${RUBY_EXECUTABLE}', '--', '${MEMUSG_RB_PATH}'] + ARGV          \n"
+     "time = Benchmark.measure {                                                       \n"
+     "  stdout, stderr, status = Open3.capture3(*command_line)                         \n"
+     "}.total                                                                          \n"
+     "$stdout.puts(stdout)                                                             \n"
+     "$stdout.puts(%{[compilation command: #{command_line.join(' ')}]})                \n"
+     "$stdout.puts(%{[COMPILATION_TIME: #{time}]})                                     \n"
+     "$stderr.puts(stderr)                                                             \n"
+     "exit(status.success?)                                                            \n"
 )
 ################################################################################
 # end compile.rb
@@ -532,15 +521,15 @@ file(WRITE "${COMPILE_RB_PATH}"
 ################################################################################
 set(LINK_RB_PATH "${METABENCH_DIR}/link.rb")
 file(WRITE "${LINK_RB_PATH}"
-"require 'benchmark'                                                              \n"
-"require 'open3'                                                                  \n"
-"stdout = stderr = status = nil                                                   \n"
-"time = Benchmark.measure { stdout, stderr, status = Open3.capture3(*ARGV) }.total\n"
-"$stdout.puts(stdout)                                                             \n"
-"$stdout.puts(%{[link command: #{ARGV.join(' ')}]})                               \n"
-"$stdout.puts(%{[LINK_TIME: #{time}]})                                            \n"
-"$stderr.puts(stderr)                                                             \n"
-"exit(status.success?)                                                            \n"
+     "require 'benchmark'                                                              \n"
+     "require 'open3'                                                                  \n"
+     "stdout = stderr = status = nil                                                   \n"
+     "time = Benchmark.measure { stdout, stderr, status = Open3.capture3(*ARGV) }.total\n"
+     "$stdout.puts(stdout)                                                             \n"
+     "$stdout.puts(%{[link command: #{ARGV.join(' ')}]})                               \n"
+     "$stdout.puts(%{[LINK_TIME: #{time}]})                                            \n"
+     "$stderr.puts(stderr)                                                             \n"
+     "exit(status.success?)                                                            \n"
 )
 ################################################################################
 # end link.rb
@@ -555,191 +544,191 @@ file(WRITE "${LINK_RB_PATH}"
 ################################################################################
 set(CHART_HTML_ERB_PATH "${METABENCH_DIR}/chart.html.erb")
 file(WRITE "${CHART_HTML_ERB_PATH}"
-"<!DOCTYPE html>                                                                                                            \n"
-"<html>                                                                                                                     \n"
-"  <head>                                                                                                                   \n"
-"    <meta charset='utf-8'>                                                                                                 \n"
-"    <style><%= IO.read('${METABENCH_DIR}/nvd3.css') %></style>                                                             \n"
-"    <style>                                                                                                                \n"
-"      * {                                                                                                                  \n"
-"        box-sizing: border-box;                                                                                            \n"
-"      }                                                                                                                    \n"
-"      html, body {                                                                                                         \n"
-"        position: relative;                                                                                                \n"
-"        height: 100%;                                                                                                      \n"
-"        width: 100%;                                                                                                       \n"
-"        border: 0;                                                                                                         \n"
-"        margin: 0;                                                                                                         \n"
-"        padding: 0;                                                                                                        \n"
-"        font-size: 0;                                                                                                      \n"
-"      }                                                                                                                    \n"
-"      svg g {                                                                                                              \n"
-"        clip-path: none;                                                                                                   \n"
-"      }                                                                                                                    \n"
-"      svg text {                                                                                                           \n"
-"        fill: #333;                                                                                                        \n"
-"      }                                                                                                                    \n"
-"      .nv-axislabel {                                                                                                      \n"
-"        font-size: 16px !important;                                                                                        \n"
-"      }                                                                                                                    \n"
-"      .control {                                                                                                           \n"
-"        cursor: pointer;                                                                                                   \n"
-"        visibility: hidden;                                                                                                \n"
-"        pointer-events: visible;                                                                                           \n"
-"      }                                                                                                                    \n"
-"      @media (min-width: 768px) {                                                                                          \n"
-"        .control {                                                                                                         \n"
-"          visibility: visible;                                                                                             \n"
-"        }                                                                                                                  \n"
-"      }                                                                                                                    \n"
-"    </style>                                                                                                               \n"
-"    <script><%= IO.read('${METABENCH_DIR}/d3.js') %></script>                                                              \n"
-"    <script><%= IO.read('${METABENCH_DIR}/nvd3.js') %></script>                                                            \n"
-"  </head>                                                                                                                  \n"
-"  <body>                                                                                                                   \n"
-"    <svg id='chart'></svg>                                                                                                 \n"
-"    <script type='text/javascript'>                                                                                        \n"
-"      // Simple helper to compute the median of a sequence of values                                                       \n"
-"      var median = function(values) {                                                                                      \n"
-"        values.sort(function(a, b) { return a - b; });                                                                     \n"
-"        var half = Math.floor(values.length / 2);                                                                          \n"
-"        if (values.length % 2)                                                                                             \n"
-"          return values[half];                                                                                             \n"
-"        else                                                                                                               \n"
-"          return (values[half - 1] + values[half]) / 2.0;                                                                  \n"
-"      };                                                                                                                   \n"
-"                                                                                                                           \n"
-"      var customSettings = <%= options.to_json %>;                                                                         \n"
-"      var aspect = '<%= aspect %>';                                                                                        \n"
-"      // 'data' is an array of datasets (i.e. curves), each of which is an object of the form                              \n"
-"      // {                                                                                                                 \n"
-"      //   key: <name of the curve>,                                                                                       \n"
-"      //   color: <COLOR argument for that dataset (optional, may be the empty string)>,                                   \n"
-"      //   scale: <SCALE argument for that dataset>,                                                                       \n"
-"      //   values: [{                                                                                                      \n"
-"      //       n: <value of n for that run>,                                                                               \n"
-"      //       base: [{ // an array of samples for the same 'n'                                                            \n"
-"      //           COMPILATION_TIME: <compilation time in seconds>,                                                        \n"
-"      //           LINK_TIME:        <link time in seconds>,                                                               \n"
-"      //           EXECUTABLE_SIZE:  <executable size in KB>,                                                              \n"
-"      //           PEAK_MEMORY:      <peak memory usage in KB>                                                             \n"
-"      //       }],                                                                                                         \n"
-"      //       total: <same as 'base', but with METABENCH defined>                                                         \n"
-"      //   }]                                                                                                              \n"
-"      // }                                                                                                                 \n"
-"      var data = <%= data.to_json %>;                                                                                      \n"
-"                                                                                                                           \n"
-"      // massage the measurements for ingestion by nvd3                                                                    \n"
-"      data.forEach(function(dataset) {                                                                                     \n"
-"        dataset.values = dataset.values.map(function(value) {                                                              \n"
-"          new_value = {'n': value['n'], 'base': {}, 'total': {}};                                                          \n"
-"          ['COMPILATION_TIME', 'LINK_TIME', 'EXECUTABLE_SIZE', 'PEAK_MEMORY'].forEach(function(aspect) {                   \n"
-"            new_value['base'][aspect] = value.base.map(function(v){ return dataset.scale * v[aspect]; });                  \n"
-"            new_value['total'][aspect] = value.total.map(function(v){ return dataset.scale * v[aspect]; });                \n"
-"          });                                                                                                              \n"
-"          return new_value;                                                                                                \n"
-"        });                                                                                                                \n"
-"      });                                                                                                                  \n"
-"                                                                                                                           \n"
-"      // setup per-aspect custom settings                                                                                  \n"
-"      var aspectDefaults = {                                                                                               \n"
-"        'COMPILATION_TIME': {                                                                                              \n"
-"          axisLabel: 'Compilation time',                                                                                   \n"
-"          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 \n"
-"        },                                                                                                                 \n"
-"        'EXECUTABLE_SIZE': {                                                                                               \n"
-"          axisLabel: 'Executable size',                                                                                    \n"
-"          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                \n"
-"        },                                                                                                                 \n"
-"        'LINK_TIME': {                                                                                                     \n"
-"          axisLabel: 'Link time',                                                                                          \n"
-"          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 \n"
-"        },                                                                                                                 \n"
-"        'PEAK_MEMORY': {                                                                                                   \n"
-"          axisLabel: 'Peak memory usage',                                                                                  \n"
-"          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                \n"
-"        }                                                                                                                  \n"
-"      };                                                                                                                   \n"
-"                                                                                                                           \n"
-"      // setup the chart and its options                                                                                   \n"
-"      var chart = nv.models.lineChart()                                                                                    \n"
-"                    .color(d3.scale.category10().range())                                                                  \n"
-"                    .margin({left: 75, bottom: 50})                                                                        \n"
-"                    .forceX([0]).forceY([0]);                                                                              \n"
-"                                                                                                                           \n"
-"      chart.x(function(datum){ return datum.n; })                                                                          \n"
-"           .xAxis.options({                                                                                                \n"
-"             axisLabel: customSettings.XLABEL || 'Number of elements',                                                     \n"
-"             tickFormat: d3.format('.0f')                                                                                  \n"
-"           });                                                                                                             \n"
-"                                                                                                                           \n"
-"      var subtract_baseline = function(datum) {                                                                            \n"
-"        return Math.max(0, median(datum.total[aspect]) - median(datum.base[aspect]));                                      \n"
-"      };                                                                                                                   \n"
-"      chart.y(subtract_baseline)                                                                                           \n"
-"           .yAxis.options({                                                                                                \n"
-"             axisLabel: customSettings.YLABEL || aspectDefaults[aspect].axisLabel,                                         \n"
-"             tickFormat: aspectDefaults[aspect].tickFormat                                                                 \n"
-"           });                                                                                                             \n"
-"                                                                                                                           \n"
-"      chart.interpolate('cardinal').useInteractiveGuideline(true);                                                         \n"
-"      d3.select('#chart').datum(data).call(chart);                                                                         \n"
-"      var plot = d3.select('#chart > g');                                                                                  \n"
-"                                                                                                                           \n"
-"      // setup the title                                                                                                   \n"
-"      plot.append('text')                                                                                                  \n"
-"          .style('font-size', '24px')                                                                                      \n"
-"          .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '20px')                                                \n"
-"          .text(customSettings.TITLE || '');                                                                               \n"
-"                                                                                                                           \n"
-"      // setup the subtitle                                                                                                \n"
-"      plot.append('text')                                                                                                  \n"
-"          .style('font-size', '16px')                                                                                      \n"
-"          .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '40px')                                                \n"
-"          .text(customSettings.SUBTITLE || '');                                                                            \n"
-"                                                                                                                           \n"
-"      // setup interpolation control                                                                                       \n"
-"      var controls = plot.select('.nv-x.nv-axis').append('g').attr('transform', 'translate(24,30)');                       \n"
-"      var interpolate = controls.append('g').attr('class', 'control interpolate').datum([chart.interpolate()]);            \n"
-"      interpolate.append('circle')                                                                                         \n"
-"                 .style('fill', '#333').style('stroke', '#333').style('stroke-width', '2').style('fill-opacity', 1)        \n"
-"                 .attr('cx', 0).attr('cy', 0).attr('r', 5);                                                                \n"
-"      interpolate.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('interpolate');     \n"
-"      interpolate.on('click', function() {                                                                                 \n"
-"        if (chart.interpolate() === interpolate.datum()[0]) {                                                              \n"
-"          interpolate.select('circle').style('fill-opacity', 0);                                                           \n"
-"          chart.interpolate('linear');                                                                                     \n"
-"        } else {                                                                                                           \n"
-"          d3.select(this).select('circle').style('fill-opacity', 1);                                                       \n"
-"          chart.interpolate(interpolate.datum()[0]);                                                                       \n"
-"        }                                                                                                                  \n"
-"        chart.update();                                                                                                    \n"
-"      });                                                                                                                  \n"
-"                                                                                                                           \n"
-"      // setup baseline control                                                                                            \n"
-"      var baseline = controls.append('g').attr('class', 'control baseline').datum(true /* whether button is checked */);   \n"
-"      baseline.attr('transform', 'translate(80,0)').append('circle')                                                       \n"
-"              .style('fill', '#333').style('stroke', '#333').style('stroke-width', '2').style('fill-opacity', 1)           \n"
-"              .attr('cx', 0).attr('cy', 0).attr('r', 5);                                                                   \n"
-"      baseline.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('subtract baseline');  \n"
-"      baseline.on('click', function() {                                                                                    \n"
-"        // We subtract the baseline from the total if the button was just checked, otherwise we use the total unchanged.   \n"
-"        if (!baseline.datum()) {                                                                                           \n"
-"          d3.select(this).select('circle').style('fill-opacity', 1);                                                       \n"
-"          chart.y(subtract_baseline);                                                                                      \n"
-"        } else {                                                                                                           \n"
-"          baseline.select('circle').style('fill-opacity', 0);                                                              \n"
-"          chart.y(function(datum) { return median(datum.total[aspect]); });                                                \n"
-"        }                                                                                                                  \n"
-"        baseline.datum(!baseline.datum()); // toggle the radio button                                                      \n"
-"        chart.update();                                                                                                    \n"
-"      });                                                                                                                  \n"
-"                                                                                                                           \n"
-"      // ensure the chart is responsive                                                                                    \n"
-"      nv.utils.windowResize(chart.update);                                                                                 \n"
-"    </script>                                                                                                              \n"
-"  </body>                                                                                                                  \n"
-"</html>                                                                                                                    \n"
+     "<!DOCTYPE html>                                                                                                            \n"
+     "<html>                                                                                                                     \n"
+     "  <head>                                                                                                                   \n"
+     "    <meta charset='utf-8'>                                                                                                 \n"
+     "    <style><%= IO.read('${METABENCH_DIR}/nvd3.css') %></style>                                                             \n"
+     "    <style>                                                                                                                \n"
+     "      * {                                                                                                                  \n"
+     "        box-sizing: border-box;                                                                                            \n"
+     "      }                                                                                                                    \n"
+     "      html, body {                                                                                                         \n"
+     "        position: relative;                                                                                                \n"
+     "        height: 100%;                                                                                                      \n"
+     "        width: 100%;                                                                                                       \n"
+     "        border: 0;                                                                                                         \n"
+     "        margin: 0;                                                                                                         \n"
+     "        padding: 0;                                                                                                        \n"
+     "        font-size: 0;                                                                                                      \n"
+     "      }                                                                                                                    \n"
+     "      svg g {                                                                                                              \n"
+     "        clip-path: none;                                                                                                   \n"
+     "      }                                                                                                                    \n"
+     "      svg text {                                                                                                           \n"
+     "        fill: #333;                                                                                                        \n"
+     "      }                                                                                                                    \n"
+     "      .nv-axislabel {                                                                                                      \n"
+     "        font-size: 16px !important;                                                                                        \n"
+     "      }                                                                                                                    \n"
+     "      .control {                                                                                                           \n"
+     "        cursor: pointer;                                                                                                   \n"
+     "        visibility: hidden;                                                                                                \n"
+     "        pointer-events: visible;                                                                                           \n"
+     "      }                                                                                                                    \n"
+     "      @media (min-width: 768px) {                                                                                          \n"
+     "        .control {                                                                                                         \n"
+     "          visibility: visible;                                                                                             \n"
+     "        }                                                                                                                  \n"
+     "      }                                                                                                                    \n"
+     "    </style>                                                                                                               \n"
+     "    <script><%= IO.read('${METABENCH_DIR}/d3.js') %></script>                                                              \n"
+     "    <script><%= IO.read('${METABENCH_DIR}/nvd3.js') %></script>                                                            \n"
+     "  </head>                                                                                                                  \n"
+     "  <body>                                                                                                                   \n"
+     "    <svg id='chart'></svg>                                                                                                 \n"
+     "    <script type='text/javascript'>                                                                                        \n"
+     "      // Simple helper to compute the median of a sequence of values                                                       \n"
+     "      var median = function(values) {                                                                                      \n"
+     "        values.sort(function(a, b) { return a - b; });                                                                     \n"
+     "        var half = Math.floor(values.length / 2);                                                                          \n"
+     "        if (values.length % 2)                                                                                             \n"
+     "          return values[half];                                                                                             \n"
+     "        else                                                                                                               \n"
+     "          return (values[half - 1] + values[half]) / 2.0;                                                                  \n"
+     "      };                                                                                                                   \n"
+     "                                                                                                                           \n"
+     "      var customSettings = <%= options.to_json %>;                                                                         \n"
+     "      var aspect = '<%= aspect %>';                                                                                        \n"
+     "      // 'data' is an array of datasets (i.e. curves), each of which is an object of the form                              \n"
+     "      // {                                                                                                                 \n"
+     "      //   key: <name of the curve>,                                                                                       \n"
+     "      //   color: <COLOR argument for that dataset (optional, may be the empty string)>,                                   \n"
+     "      //   scale: <SCALE argument for that dataset>,                                                                       \n"
+     "      //   values: [{                                                                                                      \n"
+     "      //       n: <value of n for that run>,                                                                               \n"
+     "      //       base: [{ // an array of samples for the same 'n'                                                            \n"
+     "      //           COMPILATION_TIME: <compilation time in seconds>,                                                        \n"
+     "      //           LINK_TIME:        <link time in seconds>,                                                               \n"
+     "      //           EXECUTABLE_SIZE:  <executable size in KB>,                                                              \n"
+     "      //           PEAK_MEMORY:      <peak memory usage in KB>                                                             \n"
+     "      //       }],                                                                                                         \n"
+     "      //       total: <same as 'base', but with METABENCH defined>                                                         \n"
+     "      //   }]                                                                                                              \n"
+     "      // }                                                                                                                 \n"
+     "      var data = <%= data.to_json %>;                                                                                      \n"
+     "                                                                                                                           \n"
+     "      // massage the measurements for ingestion by nvd3                                                                    \n"
+     "      data.forEach(function(dataset) {                                                                                     \n"
+     "        dataset.values = dataset.values.map(function(value) {                                                              \n"
+     "          new_value = {'n': value['n'], 'base': {}, 'total': {}};                                                          \n"
+     "          ['COMPILATION_TIME', 'LINK_TIME', 'EXECUTABLE_SIZE', 'PEAK_MEMORY'].forEach(function(aspect) {                   \n"
+     "            new_value['base'][aspect] = value.base.map(function(v){ return dataset.scale * v[aspect]; });                  \n"
+     "            new_value['total'][aspect] = value.total.map(function(v){ return dataset.scale * v[aspect]; });                \n"
+     "          });                                                                                                              \n"
+     "          return new_value;                                                                                                \n"
+     "        });                                                                                                                \n"
+     "      });                                                                                                                  \n"
+     "                                                                                                                           \n"
+     "      // setup per-aspect custom settings                                                                                  \n"
+     "      var aspectDefaults = {                                                                                               \n"
+     "        'COMPILATION_TIME': {                                                                                              \n"
+     "          axisLabel: 'Compilation time',                                                                                   \n"
+     "          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 \n"
+     "        },                                                                                                                 \n"
+     "        'EXECUTABLE_SIZE': {                                                                                               \n"
+     "          axisLabel: 'Executable size',                                                                                    \n"
+     "          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                \n"
+     "        },                                                                                                                 \n"
+     "        'LINK_TIME': {                                                                                                     \n"
+     "          axisLabel: 'Link time',                                                                                          \n"
+     "          tickFormat: function(val){ return d3.format('.2f')(val) + 's'; }                                                 \n"
+     "        },                                                                                                                 \n"
+     "        'PEAK_MEMORY': {                                                                                                   \n"
+     "          axisLabel: 'Peak memory usage',                                                                                  \n"
+     "          tickFormat: function(val){ return d3.format('.0f')(val) + 'kb'; }                                                \n"
+     "        }                                                                                                                  \n"
+     "      };                                                                                                                   \n"
+     "                                                                                                                           \n"
+     "      // setup the chart and its options                                                                                   \n"
+     "      var chart = nv.models.lineChart()                                                                                    \n"
+     "                    .color(d3.scale.category10().range())                                                                  \n"
+     "                    .margin({left: 75, bottom: 50})                                                                        \n"
+     "                    .forceX([0]).forceY([0]);                                                                              \n"
+     "                                                                                                                           \n"
+     "      chart.x(function(datum){ return datum.n; })                                                                          \n"
+     "           .xAxis.options({                                                                                                \n"
+     "             axisLabel: customSettings.XLABEL || 'Number of elements',                                                     \n"
+     "             tickFormat: d3.format('.0f')                                                                                  \n"
+     "           });                                                                                                             \n"
+     "                                                                                                                           \n"
+     "      var subtract_baseline = function(datum) {                                                                            \n"
+     "        return Math.max(0, median(datum.total[aspect]) - median(datum.base[aspect]));                                      \n"
+     "      };                                                                                                                   \n"
+     "      chart.y(subtract_baseline)                                                                                           \n"
+     "           .yAxis.options({                                                                                                \n"
+     "             axisLabel: customSettings.YLABEL || aspectDefaults[aspect].axisLabel,                                         \n"
+     "             tickFormat: aspectDefaults[aspect].tickFormat                                                                 \n"
+     "           });                                                                                                             \n"
+     "                                                                                                                           \n"
+     "      chart.interpolate('cardinal').useInteractiveGuideline(true);                                                         \n"
+     "      d3.select('#chart').datum(data).call(chart);                                                                         \n"
+     "      var plot = d3.select('#chart > g');                                                                                  \n"
+     "                                                                                                                           \n"
+     "      // setup the title                                                                                                   \n"
+     "      plot.append('text')                                                                                                  \n"
+     "          .style('font-size', '24px')                                                                                      \n"
+     "          .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '20px')                                                \n"
+     "          .text(customSettings.TITLE || '');                                                                               \n"
+     "                                                                                                                           \n"
+     "      // setup the subtitle                                                                                                \n"
+     "      plot.append('text')                                                                                                  \n"
+     "          .style('font-size', '16px')                                                                                      \n"
+     "          .attr('text-anchor', 'middle').attr('x', '50%').attr('y', '40px')                                                \n"
+     "          .text(customSettings.SUBTITLE || '');                                                                            \n"
+     "                                                                                                                           \n"
+     "      // setup interpolation control                                                                                       \n"
+     "      var controls = plot.select('.nv-x.nv-axis').append('g').attr('transform', 'translate(24,30)');                       \n"
+     "      var interpolate = controls.append('g').attr('class', 'control interpolate').datum([chart.interpolate()]);            \n"
+     "      interpolate.append('circle')                                                                                         \n"
+     "                 .style('fill', '#333').style('stroke', '#333').style('stroke-width', '2').style('fill-opacity', 1)        \n"
+     "                 .attr('cx', 0).attr('cy', 0).attr('r', 5);                                                                \n"
+     "      interpolate.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('interpolate');     \n"
+     "      interpolate.on('click', function() {                                                                                 \n"
+     "        if (chart.interpolate() === interpolate.datum()[0]) {                                                              \n"
+     "          interpolate.select('circle').style('fill-opacity', 0);                                                           \n"
+     "          chart.interpolate('linear');                                                                                     \n"
+     "        } else {                                                                                                           \n"
+     "          d3.select(this).select('circle').style('fill-opacity', 1);                                                       \n"
+     "          chart.interpolate(interpolate.datum()[0]);                                                                       \n"
+     "        }                                                                                                                  \n"
+     "        chart.update();                                                                                                    \n"
+     "      });                                                                                                                  \n"
+     "                                                                                                                           \n"
+     "      // setup baseline control                                                                                            \n"
+     "      var baseline = controls.append('g').attr('class', 'control baseline').datum(true /* whether button is checked */);   \n"
+     "      baseline.attr('transform', 'translate(80,0)').append('circle')                                                       \n"
+     "              .style('fill', '#333').style('stroke', '#333').style('stroke-width', '2').style('fill-opacity', 1)           \n"
+     "              .attr('cx', 0).attr('cy', 0).attr('r', 5);                                                                   \n"
+     "      baseline.append('text').attr('text-anchor', 'start').attr('dx', '8').attr('dy', '.32em').text('subtract baseline');  \n"
+     "      baseline.on('click', function() {                                                                                    \n"
+     "        // We subtract the baseline from the total if the button was just checked, otherwise we use the total unchanged.   \n"
+     "        if (!baseline.datum()) {                                                                                           \n"
+     "          d3.select(this).select('circle').style('fill-opacity', 1);                                                       \n"
+     "          chart.y(subtract_baseline);                                                                                      \n"
+     "        } else {                                                                                                           \n"
+     "          baseline.select('circle').style('fill-opacity', 0);                                                              \n"
+     "          chart.y(function(datum) { return median(datum.total[aspect]); });                                                \n"
+     "        }                                                                                                                  \n"
+     "        baseline.datum(!baseline.datum()); // toggle the radio button                                                      \n"
+     "        chart.update();                                                                                                    \n"
+     "      });                                                                                                                  \n"
+     "                                                                                                                           \n"
+     "      // ensure the chart is responsive                                                                                    \n"
+     "      nv.utils.windowResize(chart.update);                                                                                 \n"
+     "    </script>                                                                                                              \n"
+     "  </body>                                                                                                                  \n"
+     "</html>                                                                                                                    \n"
 )
 ################################################################################
 # end chart.html.erb
@@ -751,13 +740,15 @@ file(WRITE "${CHART_HTML_ERB_PATH}"
 # The following is a copy of the nvd3 1.8.5 css file.
 # https://github.com/novus/nvd3
 ################################################################################
-file(WRITE "${METABENCH_DIR}/nvd3.css" "\
+file(WRITE "${METABENCH_DIR}/nvd3.css"
+     "\
 .nvd3 .nv-axis line,.nvd3 .nv-axis path{fill:none;shape-rendering:crispEdges}.nv-brush .extent,.nvd3 .background path,.nvd3 .nv-axis line,.nvd3 .nv-axis path{shape-rendering:crispEdges}.nv-distx,.nv-disty,.nv-noninteractive,.nvd3 .nv-axis,.nvd3.nv-pie .nv-label,.nvd3.nv-sparklineplus g.nv-hoverValue{pointer-events:none}.nvd3 .nv-axis{opacity:1}.nvd3 .nv-axis.nv-disabled,.nvd3 .nv-controlsWrap .nv-legend .nv-check-box .nv-check{opacity:0}.nvd3 .nv-axis path{stroke:#000;stroke-opacity:.75}.nvd3 .nv-axis path.domain{stroke-opacity:.75}.nvd3 .nv-axis.nv-x path.domain{stroke-opacity:0}.nvd3 .nv-axis line{stroke:#e5e5e5}.nvd3 .nv-axis .zero line, .nvd3 .nv-axis line.zero{stroke-opacity:.75}.nvd3 .nv-axis .nv-axisMaxMin text{font-weight:700}.nvd3 .x .nv-axis .nv-axisMaxMin text,.nvd3 .x2 .nv-axis .nv-axisMaxMin text,.nvd3 .x3 .nv-axis .nv-axisMaxMin text{text-anchor:middle}.nvd3 .nv-bars rect{fill-opacity:.75;transition:fill-opacity 250ms linear}.nvd3 .nv-bars rect.hover{fill-opacity:1}.nvd3 .nv-bars .hover rect{fill:#add8e6}.nvd3 .nv-bars text{fill:transparent}.nvd3 .nv-bars .hover text{fill:rgba(0,0,0,1)}.nvd3 .nv-discretebar .nv-groups rect,.nvd3 .nv-multibar .nv-groups rect,.nvd3 .nv-multibarHorizontal .nv-groups rect{stroke-opacity:0;transition:fill-opacity 250ms linear}.with-transitions .nv-candlestickBar .nv-ticks .nv-tick,.with-transitions .nvd3 .nv-groups .nv-point{transition:stroke-width 250ms linear,stroke-opacity 250ms linear}.nvd3 .nv-candlestickBar .nv-ticks rect:hover,.nvd3 .nv-discretebar .nv-groups rect:hover,.nvd3 .nv-multibar .nv-groups rect:hover,.nvd3 .nv-multibarHorizontal .nv-groups rect:hover{fill-opacity:1}.nvd3 .nv-discretebar .nv-groups text,.nvd3 .nv-multibarHorizontal .nv-groups text{font-weight:700;fill:rgba(0,0,0,1);stroke:transparent}.nvd3 .nv-boxplot circle{fill-opacity:.5}.nvd3 .nv-boxplot circle:hover,.nvd3 .nv-boxplot rect:hover{fill-opacity:1}.nvd3 line.nv-boxplot-median{stroke:#000}.nv-boxplot-tick:hover{stroke-width:2.5px}.nvd3.nv-bullet{font:10px sans-serif}.nvd3.nv-bullet .nv-measure{fill-opacity:.8}.nvd3.nv-bullet \
 .nv-measure:hover{fill-opacity:1}.nvd3.nv-bullet .nv-marker{stroke:#000;stroke-width:2px}.nvd3.nv-bullet .nv-markerTriangle{stroke:#000;fill:#fff;stroke-width:1.5px}.nvd3.nv-bullet .nv-markerLine{stroke:#000;stroke-width:1.5px}.nvd3.nv-bullet .nv-tick line{stroke:#666;stroke-width:.5px}.nvd3.nv-bullet .nv-range.nv-s0{fill:#eee}.nvd3.nv-bullet .nv-range.nv-s1{fill:#ddd}.nvd3.nv-bullet .nv-range.nv-s2{fill:#ccc}.nvd3.nv-bullet .nv-title{font-size:14px;font-weight:700}.nvd3.nv-bullet .nv-subtitle{fill:#999}.nvd3.nv-bullet .nv-range{fill:#bababa;fill-opacity:.4}.nvd3.nv-bullet .nv-range:hover{fill-opacity:.7}.nvd3.nv-candlestickBar .nv-ticks .nv-tick{stroke-width:1px}.nvd3.nv-candlestickBar .nv-ticks .nv-tick.hover{stroke-width:2px}.nvd3.nv-candlestickBar .nv-ticks .nv-tick.positive rect{stroke:#2ca02c;fill:#2ca02c}.nvd3.nv-candlestickBar .nv-ticks .nv-tick.negative rect{stroke:#d62728;fill:#d62728}.nvd3.nv-candlestickBar .nv-ticks line{stroke:#333}.nv-force-node{stroke:#fff;stroke-width:1.5px}.nv-force-link{stroke:#999;stroke-opacity:.6}.nv-force-node text{stroke-width:0}.nvd3 .nv-check-box .nv-box{fill-opacity:0;stroke-width:2}.nvd3 .nv-check-box .nv-check{fill-opacity:0;stroke-width:4}.nvd3 .nv-series.nv-disabled .nv-check-box .nv-check{fill-opacity:0;stroke-opacity:0}.nvd3.nv-linePlusBar .nv-bar rect{fill-opacity:.75}.nvd3.nv-linePlusBar .nv-bar rect:hover{fill-opacity:1}.nvd3 .nv-groups path.nv-line{fill:none}.nvd3 .nv-groups path.nv-area{stroke:none}.nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point{fill-opacity:0;stroke-opacity:0}.nvd3.nv-scatter.nv-single-point .nv-groups .nv-point{fill-opacity:.5!important;stroke-opacity:.5!important}.nvd3 .nv-groups .nv-point.hover,.nvd3.nv-scatter .nv-groups .nv-point.hover{stroke-width:7px;fill-opacity:.95!important;stroke-opacity:.95!important}.nvd3 .nv-point-paths path{stroke:#aaa;stroke-opacity:0;fill:#eee;fill-opacity:0}.nvd3 .nv-indexLine{cursor:ew-resize}svg.nvd3-svg{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;display:block;width:100%;\
 height:100%}.nvtooltip.with-3d-shadow,.with-3d-shadow .nvtooltip{box-shadow:0 5px 10px rgba(0,0,0,.2);border-radius:5px}.nvd3 text{font:400 12px Arial,sans-serif}.nvd3 .title{font:700 14px Arial,sans-serif}.nvd3 .nv-background{fill:#fff;fill-opacity:0}.nvd3.nv-noData{font-size:18px;font-weight:700}.nv-brush .extent{fill-opacity:.125}.nv-brush .resize path{fill:#eee;stroke:#666}.nvd3 .nv-legend .nv-series{cursor:pointer}.nvd3 .nv-legend .nv-disabled circle{fill-opacity:0}.nvd3 .nv-brush .extent{fill-opacity:0!important}.nvd3 .nv-brushBackground rect{stroke:#000;stroke-width:.4;fill:#fff;fill-opacity:.7}\@media print{.nvd3 text{stroke-width:0;fill-opacity:1}}.nvd3.nv-ohlcBar .nv-ticks .nv-tick{stroke-width:1px}.nvd3.nv-ohlcBar .nv-ticks .nv-tick.hover{stroke-width:2px}.nvd3.nv-ohlcBar .nv-ticks .nv-tick.positive{stroke:#2ca02c}.nvd3.nv-ohlcBar .nv-ticks .nv-tick.negative{stroke:#d62728}.nvd3 .background path{fill:none;stroke:#EEE;stroke-opacity:.4}.nvd3 .foreground path{fill:none;stroke-opacity:.7}.nvd3 .nv-parallelCoordinates-brush .extent{fill:#fff;fill-opacity:.6;stroke:gray;shape-rendering:crispEdges}.nvd3 .nv-parallelCoordinates .hover{fill-opacity:1;stroke-width:3px}.nvd3 .missingValuesline line{fill:none;stroke:#000;stroke-width:1;stroke-opacity:1;stroke-dasharray:5,5}.nvd3.nv-pie .nv-pie-title{font-size:24px;fill:rgba(19,196,249,.59)}.nvd3.nv-pie .nv-slice text{stroke:#000;stroke-width:0}.nvd3.nv-pie path{transition:fill-opacity 250ms linear,stroke-width 250ms linear,stroke-opacity 250ms linear;stroke:#fff;stroke-width:1px;stroke-opacity:1;fill-opacity:.7}.nvd3.nv-pie .hover path{fill-opacity:1}.nvd3.nv-pie .nv-label rect{fill-opacity:0;stroke-opacity:0}.nvd3 .nv-groups .nv-point.hover{stroke-width:20px;stroke-opacity:.5}.nvd3 .nv-scatter .nv-point.hover{fill-opacity:1}.nvd3.nv-sparkline path{fill:none}.nvd3.nv-sparklineplus .nv-hoverValue line{stroke:#333;stroke-width:1.5px}.nvd3.nv-sparklineplus,.nvd3.nv-sparklineplus g{pointer-events:all}.nvd3 .nv-interactiveGuideLine,.nvtooltip{pointer-events:none}.nvd3 .nv-hoverArea{fill-opacity:0;\
 stroke-opacity:0}.nvd3.nv-sparklineplus .nv-xValue,.nvd3.nv-sparklineplus .nv-yValue{stroke-width:0;font-size:.9em;font-weight:400}.nvd3.nv-sparklineplus .nv-yValue{stroke:#f66}.nvd3.nv-sparklineplus .nv-maxValue{stroke:#2ca02c;fill:#2ca02c}.nvd3.nv-sparklineplus .nv-minValue{stroke:#d62728;fill:#d62728}.nvd3.nv-sparklineplus .nv-currentValue{font-weight:700;font-size:1.1em}.nvtooltip h3,.nvtooltip table td.key{font-weight:400}.nvd3.nv-stackedarea path.nv-area{fill-opacity:.7;stroke-opacity:0;transition:fill-opacity 250ms linear,stroke-opacity 250ms linear}.nvd3.nv-stackedarea path.nv-area.hover{fill-opacity:.9}.nvd3.nv-stackedarea .nv-groups .nv-point{stroke-opacity:0;fill-opacity:0}.nvtooltip{position:absolute;color:rgba(0,0,0,1);padding:1px;z-index:10000;display:block;font-family:Arial,sans-serif;font-size:13px;text-align:left;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.5);border-radius:4px}.nvtooltip h3,.nvtooltip p{margin:0;text-align:center}.nvtooltip.with-transitions,.with-transitions .nvtooltip{transition:opacity 50ms linear;transition-delay:200ms}.nvtooltip.x-nvtooltip,.nvtooltip.y-nvtooltip{padding:8px}.nvtooltip h3{padding:4px 14px;line-height:18px;background-color:rgba(247,247,247,.75);color:rgba(0,0,0,1);border-bottom:1px solid #ebebeb;border-radius:5px 5px 0 0}.nvtooltip p{padding:5px 14px}.nvtooltip span{display:inline-block;margin:2px 0}.nvtooltip table{margin:6px;border-spacing:0}.nvtooltip table td{padding:2px 9px 2px 0;vertical-align:middle}.nvtooltip table td.key.total{font-weight:700}.nvtooltip table td.value{text-align:right;font-weight:700}.nvtooltip table td.percent{color:#a9a9a9}.nvtooltip table tr.highlight td{padding:1px 9px 1px 0;border-bottom-style:solid;border-bottom-width:1px;border-top-style:solid;border-top-width:1px}.nvtooltip table td.legend-color-guide div{vertical-align:middle;width:12px;height:12px;border:1px solid #999}.nvtooltip .footer{padding:3px;text-align:center}.nvtooltip-pending-removal{pointer-events:none;\
 display:none}.nvd3 line.nv-guideline{stroke:#ccc}\
-")
+"
+)
 ################################################################################
 # end nvd3.css
 ################################################################################
@@ -770,7 +761,8 @@ display:none}.nvd3 line.nv-guideline{stroke:#ccc}\
 # parsing too long strings.
 # https://github.com/novus/nvd3
 ################################################################################
-file(WRITE "${METABENCH_DIR}/nvd3.js" "\
+file(WRITE "${METABENCH_DIR}/nvd3.js"
+     "\
 /* nvd3 version 1.8.5 (https://github.com/novus/nvd3) 2016-12-01 */\
 !function(){var a={};a.dev=!1,a.tooltip=a.tooltip||{},a.utils=a.utils||{},a.models=a.models||{},a.charts={},a.logs={},a.dom={},\"undefined\"!=typeof module&&\"undefined\"!=typeof exports&&\"undefined\"==typeof d3&&(d3=require(\"d3\")),a.dispatch=d3.dispatch(\"render_start\",\"render_end\"),Function.prototype.bind||(Function.prototype.bind=function(a){if(\"function\"!=typeof this)throw new TypeError(\"Function.prototype.bind - what is trying to be bound is not callable\");var b=Array.prototype.slice.call(arguments,1),c=this,d=function(){},e=function(){return c.apply(this instanceof d&&a?this:a,b.concat(Array.prototype.slice.call(arguments)))};return d.prototype=this.prototype,e.prototype=new d,e}),a.dev&&(a.dispatch.on(\"render_start\",function(b){a.logs.startTime=+new Date}),a.dispatch.on(\"render_end\",function(b){a.logs.endTime=+new Date,a.logs.totalTime=a.logs.endTime-a.logs.startTime,a.log(\"total\",a.logs.totalTime)})),a.log=function(){if(a.dev&&window.console&&console.log&&console.log.apply)console.log.apply(console,arguments);else if(a.dev&&window.console&&\"function\"==typeof console.log&&Function.prototype.bind){var b=Function.prototype.bind.call(console.log,console);b.apply(console,arguments)}return arguments[arguments.length-1]},a.deprecated=function(a,b){console&&console.warn&&console.warn(\"nvd3 warning: `\"+a+\"` has been deprecated. \",b||\"\")},a.render=function(b){b=b||1,a.render.active=!0,a.dispatch.render_start();var c=function(){for(var d,e,f=0;b>f&&(e=a.render.queue[f]);f++)d=e.generate(),typeof e.callback==typeof Function&&e.callback(d);a.render.queue.splice(0,f),a.render.queue.length?setTimeout(c):(a.dispatch.render_end(),a.render.active=!1)};setTimeout(c)},a.render.active=!1,a.render.queue=[],a.addGraph=function(b){typeof arguments[0]==typeof Function&&(b={generate:arguments[0],callback:arguments[1]}),a.render.queue.push(b),a.render.active||a.render()},\"undefined\"!=typeof module&&\"undefined\"!=typeof exports&&(module.exports=a),\"undefined\"!=typeof window&&(window.nv=a),a.dom.write=function(a){return void 0!==window.fastdom?fastdom.mutate(a):a()},\
 a.dom.read=function(a){return void 0!==window.fastdom?fastdom.measure(a):a()},a.interactiveGuideline=function(){\"use strict\";function b(l){l.each(function(l){function m(){var a=d3.mouse(this),d=a[0],e=a[1],h=!0,i=!1;if(k&&(d=d3.event.offsetX,e=d3.event.offsetY,\"svg\"!==d3.event.target.tagName&&(h=!1),d3.event.target.className.baseVal.match(\"nv-legend\")&&(i=!0)),h&&(d-=c.left,e-=c.top),\"mouseout\"===d3.event.type||0>d||0>e||d>o||e>p||d3.event.relatedTarget&&void 0===d3.event.relatedTarget.ownerSVGElement||i){if(k&&d3.event.relatedTarget&&void 0===d3.event.relatedTarget.ownerSVGElement&&(void 0===d3.event.relatedTarget.className||d3.event.relatedTarget.className.match(j.nvPointerEventsClass)))return;return g.elementMouseout({mouseX:d,mouseY:e}),b.renderGuideLine(null),void j.hidden(!0)}j.hidden(!1);var l=\"function\"==typeof f.rangeBands,m=void 0;if(l){var n=d3.bisect(f.range(),d)-1;if(!(f.range()[n]+f.rangeBand()>=d))return g.elementMouseout({mouseX:d,mouseY:e}),b.renderGuideLine(null),void j.hidden(!0);m=f.domain()[d3.bisect(f.range(),d)-1]}else m=f.invert(d);g.elementMousemove({mouseX:d,mouseY:e,pointXValue:m}),\"dblclick\"===d3.event.type&&g.elementDblclick({mouseX:d,mouseY:e,pointXValue:m}),\"click\"===d3.event.type&&g.elementClick({mouseX:d,mouseY:e,pointXValue:m}),\"mousedown\"===d3.event.type&&g.elementMouseDown({mouseX:d,mouseY:e,pointXValue:m}),\"mouseup\"===d3.event.type&&g.elementMouseUp({mouseX:d,mouseY:e,pointXValue:m})}var n=d3.select(this),o=d||960,p=e||400,q=n.selectAll(\"g.nv-wrap.nv-interactiveLineLayer\").data([l]),r=q.enter().append(\"g\").attr(\"class\",\" nv-wrap nv-interactiveLineLayer\");r.append(\"g\").attr(\"class\",\"nv-interactiveGuideLine\"),i&&(i.on(\"touchmove\",m).on(\"mousemove\",m,!0).on(\"mouseout\",m,!0).on(\"mousedown\",m,!0).on(\"mouseup\",m,!0).on(\"dblclick\",m).on(\"click\",m),b.guideLine=null,b.renderGuideLine=function(c){h&&(b.guideLine&&b.guideLine.attr(\"x1\")===c||a.dom.write(function(){var b=q.select(\".nv-interactiveGuideLine\").selectAll(\"line\").data(null!=c?[a.utils.NaNtoZero(c)]:[],String);b.enter().append(\"line\").attr(\"class\",\
@@ -800,9 +792,11 @@ c>d?m(d)-m(c):m(c)-m(d)})}),b}var c,d,e,f,g,h={top:0,right:0,bottom:0,left:0},i=
 h.bottom=void 0!=a.bottom?a.bottom:h.bottom,h.left=void 0!=a.left?a.left:h.left}},color:{get:function(){return x},set:function(b){x=a.utils.getColor(b)}}}),a.utils.initOptions(b),b},a.models.cumulativeLineChart=function(){\"use strict\";function b(l){return I.reset(),I.models(f),s&&I.models(g),t&&I.models(h),l.each(function(l){function B(a,c){d3.select(b.container).style(\"cursor\",\"ew-resize\")}function F(a,b){H.x=d3.event.x,H.i=Math.round(G.invert(H.x)),L()}function I(a,c){d3.select(b.container).style(\"cursor\",\"auto\"),z.index=H.i,D.stateChange(z)}function L(){ba.data([H]);var a=b.duration();b.duration(0),b.update(),b.duration(a)}var M=d3.select(this);a.utils.initSVG(M),M.classed(\"nv-chart-\"+y,!0);var N=a.utils.availableWidth(p,M,m),O=a.utils.availableHeight(q,M,m);if(b.update=function(){0===E?M.call(b):M.transition().duration(E).call(b)},b.container=this,z.setter(K(l),b.update).getter(J(l)).update(),z.disabled=l.map(function(a){return!!a.disabled}),!A){var P;A={};for(P in z)z[P]instanceof Array?A[P]=z[P].slice(0):A[P]=z[P]}var Q=d3.behavior.drag().on(\"dragstart\",B).on(\"drag\",F).on(\"dragend\",I);if(!(l&&l.length&&l.filter(function(a){return a.values.length}).length))return a.utils.noData(b,M),b;if(M.selectAll(\".nv-noData\").remove(),d=f.xScale(),e=f.yScale(),x)f.yDomain(null);else{var R=l.filter(function(a){return!a.disabled}).map(function(a,b){var c=d3.extent(a.values,f.y());return c[0]<-.95&&(c[0]=-.95),[(c[0]-c[1])/(1+c[1]),(c[1]-c[0])/(1+c[0])]}),S=[d3.min(R,function(a){return a[0]}),d3.max(R,function(a){return a[1]})];f.yDomain(S)}G.domain([0,l[0].values.length-1]).range([0,N]).clamp(!0);var l=c(H.i,l),T=w?\"none\":\"all\",U=M.selectAll(\"g.nv-wrap.nv-cumulativeLine\").data([l]),V=U.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-cumulativeLine\").append(\"g\"),W=U.select(\"g\");if(V.append(\"g\").attr(\"class\",\"nv-interactive\"),V.append(\"g\").attr(\"class\",\"nv-x nv-axis\").style(\"pointer-events\",\"none\"),V.append(\"g\").attr(\"class\",\"nv-y nv-axis\"),V.append(\"g\").attr(\"class\",\"nv-background\"),V.append(\"g\").attr(\"class\",\"nv-linesWrap\").style(\"pointer-events\",\
 T),V.append(\"g\").attr(\"class\",\"nv-avgLinesWrap\").style(\"pointer-events\",\"none\"),V.append(\"g\").attr(\"class\",\"nv-legendWrap\"),V.append(\"g\").attr(\"class\",\"nv-controlsWrap\"),r?(i.width(N),W.select(\".nv-legendWrap\").datum(l).call(i),n||i.height()===m.top||(m.top=i.height(),O=a.utils.availableHeight(q,M,m)),W.select(\".nv-legendWrap\").attr(\"transform\",\"translate(0,\"+-m.top+\")\")):W.select(\".nv-legendWrap\").selectAll(\"*\").remove(),v){var X=[{key:\"Re-scale y-axis\",disabled:!x}];j.width(140).color([\"#444\",\"#444\",\"#444\"]).rightAlign(!1).margin({top:5,right:0,bottom:5,left:20}),W.select(\".nv-controlsWrap\").datum(X).attr(\"transform\",\"translate(0,\"+-m.top+\")\").call(j)}else W.select(\".nv-controlsWrap\").selectAll(\"*\").remove();U.attr(\"transform\",\"translate(\"+m.left+\",\"+m.top+\")\"),u&&W.select(\".nv-y.nv-axis\").attr(\"transform\",\"translate(\"+N+\",0)\");var Y=l.filter(function(a){return a.tempDisabled});U.select(\".tempDisabled\").remove(),Y.length&&U.append(\"text\").attr(\"class\",\"tempDisabled\").attr(\"x\",N/2).attr(\"y\",\"-.71em\").style(\"text-anchor\",\"end\").text(Y.map(function(a){return a.key}).join(\", \")+\" values cannot be calculated for this time period.\"),w&&(k.width(N).height(O).margin({left:m.left,top:m.top}).svgContainer(M).xScale(d),U.select(\".nv-interactive\").call(k)),V.select(\".nv-background\").append(\"rect\"),W.select(\".nv-background rect\").attr(\"width\",N).attr(\"height\",O),f.y(function(a){return a.display.y}).width(N).height(O).color(l.map(function(a,b){return a.color||o(a,b)}).filter(function(a,b){return!l[b].disabled&&!l[b].tempDisabled}));var Z=W.select(\".nv-linesWrap\").datum(l.filter(function(a){return!a.disabled&&!a.tempDisabled}));Z.call(f),l.forEach(function(a,b){a.seriesIndex=b});var $=l.filter(function(a){return!a.disabled&&!!C(a)}),_=W.select(\".nv-avgLinesWrap\").selectAll(\"line\").data($,function(a){return a.key}),aa=function(a){var b=e(C(a));return 0>b?0:b>O?O:b};_.enter().append(\"line\").style(\"stroke-width\",2).style(\"stroke-dasharray\",\"10,10\").style(\"stroke\",function(a,b){return f.color()(a,a.seriesIndex)}).attr(\"x1\",0).attr(\"x2\",\
 N).attr(\"y1\",aa).attr(\"y2\",aa),_.style(\"stroke-opacity\",function(a){var b=e(C(a));return 0>b||b>O?0:1}).attr(\"x1\",0).attr(\"x2\",N).attr(\"y1\",aa).attr(\"y2\",aa),_.exit().remove();var ba=Z.selectAll(\".nv-indexLine\").data([H]);ba.enter().append(\"rect\").attr(\"class\",\"nv-indexLine\").attr(\"width\",3).attr(\"x\",-2).attr(\"fill\",\"red\").attr(\"fill-opacity\",.5).style(\"pointer-events\",\"all\").call(Q),ba.attr(\"transform\",function(a){return\"translate(\"+G(a.i)+\",0)\"}).attr(\"height\",O),s&&(g.scale(d)._ticks(a.utils.calcTicksX(N/70,l)).tickSize(-O,0),W.select(\".nv-x.nv-axis\").attr(\"transform\",\"translate(0,\"+e.range()[0]+\")\"),W.select(\".nv-x.nv-axis\").call(g)),t&&(h.scale(e)._ticks(a.utils.calcTicksY(O/36,l)).tickSize(-N,0),W.select(\".nv-y.nv-axis\").call(h)),W.select(\".nv-background rect\").on(\"click\",function(){H.x=d3.mouse(this)[0],H.i=Math.round(G.invert(H.x)),z.index=H.i,D.stateChange(z),L()}),f.dispatch.on(\"elementClick\",function(a){H.i=a.pointIndex,H.x=G(H.i),z.index=H.i,D.stateChange(z),L()}),j.dispatch.on(\"legendClick\",function(a,c){a.disabled=!a.disabled,x=!a.disabled,z.rescaleY=x,D.stateChange(z),b.update()}),i.dispatch.on(\"stateChange\",function(a){for(var c in a)z[c]=a[c];D.stateChange(z),b.update()}),k.dispatch.on(\"elementMousemove\",function(c){f.clearHighlights();var d,e,i,j=[];if(l.filter(function(a,b){return a.seriesIndex=b,!a.disabled}).forEach(function(g,h){e=a.interactiveBisect(g.values,c.pointXValue,b.x()),f.highlightPoint(h,e,!0);var k=g.values[e];\"undefined\"!=typeof k&&(\"undefined\"==typeof d&&(d=k),\"undefined\"==typeof i&&(i=b.xScale()(b.x()(k,e))),j.push({key:g.key,value:b.y()(k,e),color:o(g,g.seriesIndex)}))}),j.length>2){var m=b.yScale().invert(c.mouseY),n=Math.abs(b.yScale().domain()[0]-b.yScale().domain()[1]),p=.03*n,q=a.nearestValueIndex(j.map(function(a){return a.value}),m,p);null!==q&&(j[q].highlight=!0)}var r=g.tickFormat()(b.x()(d,e),e);k.tooltip.valueFormatter(function(a,b){return h.tickFormat()(a)}).data({value:r,series:j})(),k.renderGuideLine(i)}),k.dispatch.on(\"elementMouseout\",function(a){f.clearHighlights()}),\
-")
+"
+)
 
-file(APPEND "${METABENCH_DIR}/nvd3.js" "\
+file(APPEND "${METABENCH_DIR}/nvd3.js"
+     "\
 D.on(\"changeState\",function(a){\"undefined\"!=typeof a.disabled&&(l.forEach(function(b,c){b.disabled=a.disabled[c]}),z.disabled=a.disabled),\"undefined\"!=typeof a.index&&(H.i=a.index,H.x=G(H.i),z.index=a.index,ba.data([H])),\"undefined\"!=typeof a.rescaleY&&(x=a.rescaleY),b.update()})}),I.renderEnd(\"cumulativeLineChart immediate\"),b}function c(a,b){return L||(L=f.y()),b.map(function(b,c){if(!b.values)return b;var d=b.values[a];if(null==d)return b;var e=L(d,a);return-.95>e&&!F?(b.tempDisabled=!0,b):(b.tempDisabled=!1,b.values=b.values.map(function(a,b){return a.display={y:(L(a,b)-e)/(1+e)},a}),b)})}var d,e,f=a.models.line(),g=a.models.axis(),h=a.models.axis(),i=a.models.legend(),j=a.models.legend(),k=a.interactiveGuideline(),l=a.models.tooltip(),m={top:30,right:30,bottom:50,left:60},n=null,o=a.utils.defaultColor(),p=null,q=null,r=!0,s=!0,t=!0,u=!1,v=!0,w=!1,x=!0,y=f.id(),z=a.utils.state(),A=null,B=null,C=function(a){return a.average},D=d3.dispatch(\"stateChange\",\"changeState\",\"renderEnd\"),E=250,F=!1;z.index=0,z.rescaleY=x,g.orient(\"bottom\").tickPadding(7),h.orient(u?\"right\":\"left\"),l.valueFormatter(function(a,b){return h.tickFormat()(a,b)}).headerFormatter(function(a,b){return g.tickFormat()(a,b)}),j.updateState(!1);var G=d3.scale.linear(),H={i:0,x:0},I=a.utils.renderWatch(D,E),J=function(a){return function(){return{active:a.map(function(a){return!a.disabled}),index:H.i,rescaleY:x}}},K=function(a){return function(b){void 0!==b.index&&(H.i=b.index),void 0!==b.rescaleY&&(x=b.rescaleY),void 0!==b.active&&a.forEach(function(a,c){a.disabled=!b.active[c]})}};f.dispatch.on(\"elementMouseover.tooltip\",function(a){var c={x:b.x()(a.point),y:b.y()(a.point),color:a.point.color};a.point=c,l.data(a).hidden(!1)}),f.dispatch.on(\"elementMouseout.tooltip\",function(a){l.hidden(!0)});var L=null;return b.dispatch=D,b.lines=f,b.legend=i,b.controls=j,b.xAxis=g,b.yAxis=h,b.interactiveLayer=k,b.state=z,b.tooltip=l,b.options=a.utils.optionsFunc.bind(b),b._options=Object.create({},{width:{get:function(){return p},set:function(a){p=a}},height:{get:function(){return \
 q},set:function(a){q=a}},rescaleY:{get:function(){return x},set:function(a){x=a}},showControls:{get:function(){return v},set:function(a){v=a}},showLegend:{get:function(){return r},set:function(a){r=a}},average:{get:function(){return C},set:function(a){C=a}},defaultState:{get:function(){return A},set:function(a){A=a}},noData:{get:function(){return B},set:function(a){B=a}},showXAxis:{get:function(){return s},set:function(a){s=a}},showYAxis:{get:function(){return t},set:function(a){t=a}},noErrorCheck:{get:function(){return F},set:function(a){F=a}},margin:{get:function(){return m},set:function(a){void 0!==a.top&&(m.top=a.top,n=a.top),m.right=void 0!==a.right?a.right:m.right,m.bottom=void 0!==a.bottom?a.bottom:m.bottom,m.left=void 0!==a.left?a.left:m.left}},color:{get:function(){return o},set:function(b){o=a.utils.getColor(b),i.color(o)}},useInteractiveGuideline:{get:function(){return w},set:function(a){w=a,a===!0&&(b.interactive(!1),b.useVoronoi(!1))}},rightAlignYAxis:{get:function(){return u},set:function(a){u=a,h.orient(a?\"right\":\"left\")}},duration:{get:function(){return E},set:function(a){E=a,f.duration(E),g.duration(E),h.duration(E),I.reset(E)}}}),a.utils.inheritOptions(b,f),a.utils.initOptions(b),b},a.models.discreteBar=function(){\"use strict\";function b(m){return y.reset(),m.each(function(b){var m=k-j.left-j.right,x=l-j.top-j.bottom;c=d3.select(this),a.utils.initSVG(c),b.forEach(function(a,b){a.values.forEach(function(a){a.series=b})});var z=d&&e?[]:b.map(function(a){return a.values.map(function(a,b){return{x:p(a,b),y:q(a,b),y0:a.y0}})});n.domain(d||d3.merge(z).map(function(a){return a.x})).rangeBands(f||[0,m],.1),o.domain(e||d3.extent(d3.merge(z).map(function(a){return a.y}).concat(r))),t?o.range(g||[x-(o.domain()[0]<0?12:0),o.domain()[1]>0?12:0]):o.range(g||[x,0]),h=h||n,i=i||o.copy().range([o(0),o(0)]);var A=c.selectAll(\"g.nv-wrap.nv-discretebar\").data([b]),B=A.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-discretebar\"),C=B.append(\"g\");A.select(\"g\");C.append(\"g\").attr(\"class\",\"nv-groups\"),A.attr(\"transform\",\
 \"translate(\"+j.left+\",\"+j.top+\")\");var D=A.select(\".nv-groups\").selectAll(\".nv-group\").data(function(a){return a},function(a){return a.key});D.enter().append(\"g\").style(\"stroke-opacity\",1e-6).style(\"fill-opacity\",1e-6),D.exit().watchTransition(y,\"discreteBar: exit groups\").style(\"stroke-opacity\",1e-6).style(\"fill-opacity\",1e-6).remove(),D.attr(\"class\",function(a,b){return\"nv-group nv-series-\"+b}).classed(\"hover\",function(a){return a.hover}),D.watchTransition(y,\"discreteBar: groups\").style(\"stroke-opacity\",1).style(\"fill-opacity\",.75);var E=D.selectAll(\"g.nv-bar\").data(function(a){return a.values});E.exit().remove();var F=E.enter().append(\"g\").attr(\"transform\",function(a,b,c){return\"translate(\"+(n(p(a,b))+.05*n.rangeBand())+\", \"+o(0)+\")\"}).on(\"mouseover\",function(a,b){d3.select(this).classed(\"hover\",!0),v.elementMouseover({data:a,index:b,color:d3.select(this).style(\"fill\")})}).on(\"mouseout\",function(a,b){d3.select(this).classed(\"hover\",!1),v.elementMouseout({data:a,index:b,color:d3.select(this).style(\"fill\")})}).on(\"mousemove\",function(a,b){v.elementMousemove({data:a,index:b,color:d3.select(this).style(\"fill\")})}).on(\"click\",function(a,b){var c=this;v.elementClick({data:a,index:b,color:d3.select(this).style(\"fill\"),event:d3.event,element:c}),d3.event.stopPropagation()}).on(\"dblclick\",function(a,b){v.elementDblClick({data:a,index:b,color:d3.select(this).style(\"fill\")}),d3.event.stopPropagation()});F.append(\"rect\").attr(\"height\",0).attr(\"width\",.9*n.rangeBand()/b.length),t?(F.append(\"text\").attr(\"text-anchor\",\"middle\"),E.select(\"text\").text(function(a,b){return u(q(a,b))}).watchTransition(y,\"discreteBar: bars text\").attr(\"x\",.9*n.rangeBand()/2).attr(\"y\",function(a,b){return q(a,b)<0?o(q(a,b))-o(0)+12:-4})):E.selectAll(\"text\").remove(),E.attr(\"class\",function(a,b){return q(a,b)<0?\"nv-bar negative\":\"nv-bar positive\"}).style(\"fill\",function(a,b){return a.color||s(a,b)}).style(\"stroke\",function(a,b){return a.color||s(a,b)}).select(\"rect\").attr(\"class\",w).watchTransition(y,\"discreteBar: bars rect\").attr(\"width\",.9*n.rangeBand()/b.length),\
@@ -833,9 +827,11 @@ K.select(\".nv-legendWrap\").attr(\"transform\",\"translate(0,\"+-l.top+\")\")))
 i.tooltip.valueFormatter(i.tooltip.valueFormatter()||s).data({value:b.x()(f,h),index:h,series:m})(),i.renderGuideLine(l)}),i.dispatch.on(\"elementClick\",function(c){var d,f=[];j.filter(function(a,b){return a.seriesIndex=b,!a.disabled}).forEach(function(e){var g=a.interactiveBisect(e.values,c.pointXValue,b.x()),h=e.values[g];if(\"undefined\"!=typeof h){\"undefined\"==typeof d&&(d=b.xScale()(b.x()(h,g)));var i=b.yScale()(b.y()(h,g));f.push({point:h,pointIndex:g,pos:[d,i],seriesIndex:e.seriesIndex,series:e})}}),e.dispatch.elementClick(f)}),i.dispatch.on(\"elementMouseout\",function(a){e.clearHighlights()}),A.on(\"changeState\",function(a){\"undefined\"!=typeof a.disabled&&j.length===a.disabled.length&&(j.forEach(function(b,c){b.disabled=a.disabled[c]}),x.disabled=a.disabled),b.update()})}),C.renderEnd(\"lineChart immediate\"),b}var c,d,e=a.models.line(),f=a.models.axis(),g=a.models.axis(),h=a.models.legend(),i=a.interactiveGuideline(),j=a.models.tooltip(),k=a.models.focus(a.models.line()),l={top:30,right:20,bottom:50,left:60},m=null,n=a.utils.defaultColor(),o=null,p=null,q=!0,r=\"top\",s=!0,t=!0,u=!1,v=!1,w=!1,x=a.utils.state(),y=null,z=null,A=d3.dispatch(\"tooltipShow\",\"tooltipHide\",\"stateChange\",\"changeState\",\"renderEnd\"),B=250;f.orient(\"bottom\").tickPadding(7),g.orient(u?\"right\":\"left\"),e.clipEdge(!0).duration(0),j.valueFormatter(function(a,b){return g.tickFormat()(a,b)}).headerFormatter(function(a,b){return f.tickFormat()(a,b)}),i.tooltip.valueFormatter(function(a,b){return g.tickFormat()(a,b)}).headerFormatter(function(a,b){return f.tickFormat()(a,b)});var C=a.utils.renderWatch(A,B),D=function(a){return function(){return{active:a.map(function(a){return!a.disabled})}}},E=function(a){return function(b){void 0!==b.active&&a.forEach(function(a,c){a.disabled=!b.active[c]})}};return e.dispatch.on(\"elementMouseover.tooltip\",function(a){a.series.disableTooltip||j.data(a).hidden(!1)}),e.dispatch.on(\"elementMouseout.tooltip\",function(a){j.hidden(!0)}),b.dispatch=A,b.lines=e,b.legend=h,b.focus=k,b.xAxis=f,b.x2Axis=k.xAxis,b.yAxis=g,b.y2Axis=k.yAxis,\
 b.interactiveLayer=i,b.tooltip=j,b.state=x,b.dispatch=A,b.options=a.utils.optionsFunc.bind(b),b._options=Object.create({},{width:{get:function(){return o},set:function(a){o=a}},height:{get:function(){return p},set:function(a){p=a}},showLegend:{get:function(){return q},set:function(a){q=a}},legendPosition:{get:function(){return r},set:function(a){r=a}},showXAxis:{get:function(){return s},set:function(a){s=a}},showYAxis:{get:function(){return t},set:function(a){t=a}},defaultState:{get:function(){return y},set:function(a){y=a}},noData:{get:function(){return z},set:function(a){z=a}},focusEnable:{get:function(){return w},set:function(a){w=a}},focusHeight:{get:function(){return k.height()},set:function(a){k.height(a)}},focusShowAxisX:{get:function(){return k.showXAxis()},set:function(a){k.showXAxis(a)}},focusShowAxisY:{get:function(){return k.showYAxis()},set:function(a){k.showYAxis(a)}},brushExtent:{get:function(){return k.brushExtent()},set:function(a){k.brushExtent(a)}},focusMargin:{get:function(){return k.margin},set:function(a){void 0!==a.top&&(l.top=a.top,m=a.top),k.margin.right=void 0!==a.right?a.right:k.margin.right,k.margin.bottom=void 0!==a.bottom?a.bottom:k.margin.bottom,k.margin.left=void 0!==a.left?a.left:k.margin.left}},margin:{get:function(){return l},set:function(a){l.top=void 0!==a.top?a.top:l.top,l.right=void 0!==a.right?a.right:l.right,l.bottom=void 0!==a.bottom?a.bottom:l.bottom,l.left=void 0!==a.left?a.left:l.left}},duration:{get:function(){return B},set:function(a){B=a,C.reset(B),e.duration(B),k.duration(B),f.duration(B),g.duration(B)}},color:{get:function(){return n},set:function(b){n=a.utils.getColor(b),h.color(n),e.color(n),k.color(n)}},interpolate:{get:function(){return e.interpolate()},set:function(a){e.interpolate(a),k.interpolate(a)}},xTickFormat:{get:function(){return f.tickFormat()},set:function(a){f.tickFormat(a),k.xTickFormat(a)}},yTickFormat:{get:function(){return g.tickFormat()},set:function(a){g.tickFormat(a),k.yTickFormat(a)}},x:{get:function(){return e.x()},set:function(a){e.x(a),k.x(a)}},\
 y:{get:function(){return e.y()},set:function(a){e.y(a),k.y(a)}},rightAlignYAxis:{get:function(){return u},set:function(a){u=a,g.orient(u?\"right\":\"left\")}},useInteractiveGuideline:{get:function(){return v},set:function(a){v=a,v&&(e.interactive(!1),e.useVoronoi(!1))}}}),a.utils.inheritOptions(b,e),a.utils.initOptions(b),b},a.models.lineWithFocusChart=function(){return a.models.lineChart().margin({bottom:30}).focusEnable(!0)},a.models.linePlusBarChart=function(){\"use strict\";function b(v){return v.each(function(v){function K(a){var b=+(\"e\"==a),c=b?1:-1,d=$/3;return\"M\"+.5*c+\",\"+d+\"A6,6 0 0 \"+b+\" \"+6.5*c+\",\"+(d+6)+\"V\"+(2*d-6)+\"A6,6 0 0 \"+b+\" \"+.5*c+\",\"+2*d+\"ZM\"+2.5*c+\",\"+(d+8)+\"V\"+(2*d-8)+\"M\"+4.5*c+\",\"+(d+8)+\"V\"+(2*d-8)}function S(){u.empty()||u.extent(J),na.data([u.empty()?e.domain():J]).each(function(a,b){var c=e(a[0])-e.range()[0],d=e.range()[1]-e(a[1]);d3.select(this).select(\".left\").attr(\"width\",0>c?0:c),d3.select(this).select(\".right\").attr(\"x\",e(a[1])).attr(\"width\",0>d?0:d)})}function T(){J=u.empty()?null:u.extent(),c=u.empty()?e.domain():u.extent(),L.brush({extent:c,brush:u}),S(),l.width(Y).height(Z).color(v.map(function(a,b){return a.color||D(a,b)}).filter(function(a,b){return!v[b].disabled&&v[b].bar})),j.width(Y).height(Z).color(v.map(function(a,b){return a.color||D(a,b)}).filter(function(a,b){return!v[b].disabled&&!v[b].bar}));var b=ga.select(\".nv-focus .nv-barsWrap\").datum(aa.length?aa.map(function(a,b){return{key:a.key,values:a.values.filter(function(a,b){return l.x()(a,b)>=c[0]&&l.x()(a,b)<=c[1]})}}):[{values:[]}]),h=ga.select(\".nv-focus .nv-linesWrap\").datum(W(ba)?[{values:[]}]:ba.filter(function(a){return!a.disabled}).map(function(a,b){return{area:a.area,fillOpacity:a.fillOpacity,strokeWidth:a.strokeWidth,key:a.key,values:a.values.filter(function(a,b){return j.x()(a,b)>=c[0]&&j.x()(a,b)<=c[1]})}}));d=aa.length&&!R?l.xScale():j.xScale(),n.scale(d)._ticks(a.utils.calcTicksX(Y/100,v)).tickSize(-Z,0),n.domain([Math.ceil(c[0]),Math.floor(c[1])]),ga.select(\".nv-x.nv-axis\").transition().duration(M).call(n),b.transition().duration(M).call(l),\
-")
+"
+)
 
-file(APPEND "${METABENCH_DIR}/nvd3.js" "\
+file(APPEND "${METABENCH_DIR}/nvd3.js"
+     "\
 h.transition().duration(M).call(j),ga.select(\".nv-focus .nv-x.nv-axis\").attr(\"transform\",\"translate(0,\"+f.range()[0]+\")\"),p.scale(f)._ticks(a.utils.calcTicksY(Z/36,v)).tickSize(-Y,0),q.scale(g)._ticks(a.utils.calcTicksY(Z/36,v)),R?q.tickSize(ba.length?0:-Y,0):q.tickSize(aa.length?0:-Y,0);var i=aa.length?1:0,k=ba.length&&!W(ba)?1:0,m=R?k:i,o=R?i:k;ga.select(\".nv-focus .nv-y1.nv-axis\").style(\"opacity\",m),ga.select(\".nv-focus .nv-y2.nv-axis\").style(\"opacity\",o).attr(\"transform\",\"translate(\"+d.range()[1]+\",0)\"),ga.select(\".nv-focus .nv-y1.nv-axis\").transition().duration(M).call(p),ga.select(\".nv-focus .nv-y2.nv-axis\").transition().duration(M).call(q)}var X=d3.select(this);a.utils.initSVG(X);var Y=a.utils.availableWidth(z,X,w),Z=a.utils.availableHeight(A,X,w)-(F?I:0),$=I-y.top-y.bottom;if(b.update=function(){X.transition().duration(M).call(b)},b.container=this,N.setter(V(v),b.update).getter(U(v)).update(),N.disabled=v.map(function(a){return!!a.disabled}),!O){var _;O={};for(_ in N)N[_]instanceof Array?O[_]=N[_].slice(0):O[_]=N[_]}if(!(v&&v.length&&v.filter(function(a){return a.values.length}).length))return a.utils.noData(b,X),b;X.selectAll(\".nv-noData\").remove();var aa=v.filter(function(a){return!a.disabled&&a.bar}),ba=v.filter(function(a){return!a.bar});d=aa.length&&!R?l.xScale():j.xScale(),e=o.scale(),f=R?j.yScale():l.yScale(),g=R?l.yScale():j.yScale(),h=R?k.yScale():m.yScale(),i=R?m.yScale():k.yScale();var ca=v.filter(function(a){return!a.disabled&&(R?!a.bar:a.bar)}).map(function(a){return a.values.map(function(a,b){return{x:B(a,b),y:C(a,b)}})}),da=v.filter(function(a){return!a.disabled&&(R?a.bar:!a.bar)}).map(function(a){return a.values.map(function(a,b){return{x:B(a,b),y:C(a,b)}})});d.range([0,Y]),e.domain(d3.extent(d3.merge(ca.concat(da)),function(a){return a.x})).range([0,Y]);var ea=X.selectAll(\"g.nv-wrap.nv-linePlusBar\").data([v]),fa=ea.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-linePlusBar\").append(\"g\"),ga=ea.select(\"g\");fa.append(\"g\").attr(\"class\",\"nv-legendWrap\");var ha=fa.append(\"g\").attr(\"class\",\"nv-focus\");\
 ha.append(\"g\").attr(\"class\",\"nv-x nv-axis\"),ha.append(\"g\").attr(\"class\",\"nv-y1 nv-axis\"),ha.append(\"g\").attr(\"class\",\"nv-y2 nv-axis\"),ha.append(\"g\").attr(\"class\",\"nv-barsWrap\"),ha.append(\"g\").attr(\"class\",\"nv-linesWrap\");var ia=fa.append(\"g\").attr(\"class\",\"nv-context\");if(ia.append(\"g\").attr(\"class\",\"nv-x nv-axis\"),ia.append(\"g\").attr(\"class\",\"nv-y1 nv-axis\"),ia.append(\"g\").attr(\"class\",\"nv-y2 nv-axis\"),ia.append(\"g\").attr(\"class\",\"nv-barsWrap\"),ia.append(\"g\").attr(\"class\",\"nv-linesWrap\"),ia.append(\"g\").attr(\"class\",\"nv-brushBackground\"),ia.append(\"g\").attr(\"class\",\"nv-x nv-brush\"),E){var ja=t.align()?Y/2:Y,ka=t.align()?ja:0;t.width(ja),ga.select(\".nv-legendWrap\").datum(v.map(function(a){return a.originalKey=void 0===a.originalKey?a.key:a.originalKey,R?a.key=a.originalKey+(a.bar?Q:P):a.key=a.originalKey+(a.bar?P:Q),a})).call(t),x||t.height()===w.top||(w.top=t.height(),Z=a.utils.availableHeight(A,X,w)-I),ga.select(\".nv-legendWrap\").attr(\"transform\",\"translate(\"+ka+\",\"+-w.top+\")\")}else ga.select(\".nv-legendWrap\").selectAll(\"*\").remove();ea.attr(\"transform\",\"translate(\"+w.left+\",\"+w.top+\")\"),ga.select(\".nv-context\").style(\"display\",F?\"initial\":\"none\"),m.width(Y).height($).color(v.map(function(a,b){return a.color||D(a,b)}).filter(function(a,b){return!v[b].disabled&&v[b].bar})),k.width(Y).height($).color(v.map(function(a,b){return a.color||D(a,b)}).filter(function(a,b){return!v[b].disabled&&!v[b].bar}));var la=ga.select(\".nv-context .nv-barsWrap\").datum(aa.length?aa:[{values:[]}]),ma=ga.select(\".nv-context .nv-linesWrap\").datum(W(ba)?[{values:[]}]:ba.filter(function(a){return!a.disabled}));ga.select(\".nv-context\").attr(\"transform\",\"translate(0,\"+(Z+w.bottom+y.top)+\")\"),la.transition().call(m),ma.transition().call(k),H&&(o._ticks(a.utils.calcTicksX(Y/100,v)).tickSize(-$,0),ga.select(\".nv-context .nv-x.nv-axis\").attr(\"transform\",\"translate(0,\"+h.range()[0]+\")\"),ga.select(\".nv-context .nv-x.nv-axis\").transition().call(o)),G&&(r.scale(h)._ticks($/36).tickSize(-Y,0),s.scale(i)._ticks($/36).tickSize(aa.length?0:-Y,0),ga.select(\".nv-context \
 .nv-y3.nv-axis\").style(\"opacity\",aa.length?1:0).attr(\"transform\",\"translate(0,\"+e.range()[0]+\")\"),ga.select(\".nv-context .nv-y2.nv-axis\").style(\"opacity\",ba.length?1:0).attr(\"transform\",\"translate(\"+e.range()[1]+\",0)\"),ga.select(\".nv-context .nv-y1.nv-axis\").transition().call(r),ga.select(\".nv-context .nv-y2.nv-axis\").transition().call(s)),u.x(e).on(\"brush\",T),J&&u.extent(J);var na=ga.select(\".nv-brushBackground\").selectAll(\"g\").data([J||u.extent()]),oa=na.enter().append(\"g\");oa.append(\"rect\").attr(\"class\",\"left\").attr(\"x\",0).attr(\"y\",0).attr(\"height\",$),oa.append(\"rect\").attr(\"class\",\"right\").attr(\"x\",0).attr(\"y\",0).attr(\"height\",$);var pa=ga.select(\".nv-x.nv-brush\").call(u);pa.selectAll(\"rect\").attr(\"height\",$),pa.selectAll(\".resize\").append(\"path\").attr(\"d\",K),t.dispatch.on(\"stateChange\",function(a){for(var c in a)N[c]=a[c];L.stateChange(N),b.update()}),L.on(\"changeState\",function(a){\"undefined\"!=typeof a.disabled&&(v.forEach(function(b,c){b.disabled=a.disabled[c]}),N.disabled=a.disabled),b.update()}),T()}),b}var c,d,e,f,g,h,i,j=a.models.line(),k=a.models.line(),l=a.models.historicalBar(),m=a.models.historicalBar(),n=a.models.axis(),o=a.models.axis(),p=a.models.axis(),q=a.models.axis(),r=a.models.axis(),s=a.models.axis(),t=a.models.legend(),u=d3.svg.brush(),v=a.models.tooltip(),w={top:30,right:30,bottom:30,left:60},x=null,y={top:0,right:30,bottom:20,left:60},z=null,A=null,B=function(a){return a.x},C=function(a){return a.y},D=a.utils.defaultColor(),E=!0,F=!0,G=!1,H=!0,I=50,J=null,K=null,L=d3.dispatch(\"brush\",\"stateChange\",\"changeState\"),M=0,N=a.utils.state(),O=null,P=\" (left axis)\",Q=\" (right axis)\",R=!1;j.clipEdge(!0),k.interactive(!1),k.pointActive(function(a){return!1}),n.orient(\"bottom\").tickPadding(5),p.orient(\"left\"),q.orient(\"right\"),o.orient(\"bottom\").tickPadding(5),r.orient(\"left\"),s.orient(\"right\"),v.headerEnabled(!0).headerFormatter(function(a,b){return n.tickFormat()(a,b)});var S=function(){return R?{main:q,focus:s}:{main:p,focus:r}},T=function(){return R?{main:p,focus:r}:{main:q,focus:s}},U=function(a){return \
@@ -866,9 +862,11 @@ D=C.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-ohlcBar\"),E=D.append
 d[1]]);l[b.key].brush.y(f),v.push(b.key)}if(isNaN(a.values[b.key])||isNaN(parseFloat(a.values[b.key])))return[k(b.key),l[b.key](e)]}return void 0!==U&&(v.length>0||O?(U.style(\"display\",\"inline\"),V.style(\"display\",\"inline\")):(U.style(\"display\",\"none\"),V.style(\"display\",\"none\"))),[k(b.key),l[b.key](a.values[b.key])]}))}function B(a){s.forEach(function(b){var c=l[b.dimension].brush.y().domain();b.hasOnlyNaN&&(b.extent[1]=(l[b.dimension].domain()[1]-c[0])*(b.extent[1]-b.extent[0])/(N[b.dimension]-b.extent[0])+c[0]),b.hasNaN&&(b.extent[0]=c[0]),a&&l[b.dimension].brush.extent(b.extent)}),e.select(\".nv-brushBackground\").each(function(a){d3.select(this).call(l[a.key].brush)}).selectAll(\"rect\").attr(\"x\",-8).attr(\"width\",16),F()}function C(){q===!1&&(q=!0,B(!0))}function D(){$=p.filter(function(a){return!l[a].brush.empty()}),_=$.map(function(a){return l[a].brush.extent()}),s=[],$.forEach(function(a,b){s[b]={dimension:a,extent:_[b],hasNaN:!1,hasOnlyNaN:!1}}),t=[],c.style(\"display\",function(a){var b=$.every(function(b,c){return(isNaN(a.values[b])||isNaN(parseFloat(a.values[b])))&&_[c][0]==l[b].brush.y().domain()[0]?!0:_[c][0]<=a.values[b]&&a.values[b]<=_[c][1]&&!isNaN(parseFloat(a.values[b]))});return b&&t.push(a),b?null:\"none\"}),F(),z.brush({filters:s,active:t})}function E(){var a=$.length>0?!0:!1;s.forEach(function(a){a.extent[0]===l[a.dimension].brush.y().domain()[0]&&v.indexOf(a.dimension)>=0&&(a.hasNaN=!0),a.extent[1]<l[a.dimension].domain()[0]&&(a.hasOnlyNaN=!0)}),z.brushEnd(t,a)}function F(){e.select(\".nv-axis\").each(function(a,b){var c=s.filter(function(b){return b.dimension==a.key});P[a.key]=l[a.key].domain(),0!=c.length&&q&&(P[a.key]=[],c[0].extent[1]>l[a.key].domain()[0]&&(P[a.key]=[c[0].extent[1]]),c[0].extent[0]>=l[a.key].domain()[0]&&P[a.key].push(c[0].extent[0])),d3.select(this).call(y.scale(l[a.key]).tickFormat(a.format).tickValues(P[a.key]))})}function G(a){u[a.key]=this.parentNode.__origin__=k(a.key),d.attr(\"visibility\",\"hidden\")}function H(a){u[a.key]=Math.min(i,Math.max(0,this.parentNode.__origin__+=d3.event.x)),\
 c.attr(\"d\",A),o.sort(function(a,b){return J(a.key)-J(b.key)}),o.forEach(function(a,b){return a.currentPosition=b}),k.domain(o.map(function(a){return a.key})),e.attr(\"transform\",function(a){return\"translate(\"+J(a.key)+\")\"})}function I(a,b){delete this.parentNode.__origin__,delete u[a.key],d3.select(this.parentNode).attr(\"transform\",\"translate(\"+k(a.key)+\")\"),c.attr(\"d\",A),d.attr(\"d\",A).attr(\"visibility\",null),z.dimensionsOrder(o)}function J(a){var b=u[a];return null==b?k(a):b}var K=d3.select(this);if(i=a.utils.availableWidth(g,K,f),j=a.utils.availableHeight(h,K,f),a.utils.initSVG(K),void 0===b[0].values){var L=[];b.forEach(function(a){var b={},c=Object.keys(a);c.forEach(function(c){\"name\"!==c&&(b[c]=a[c])}),L.push({key:a.name,values:b})}),b=L}var M=b.map(function(a){return a.values});0===t.length&&(t=b),p=n.sort(function(a,b){return a.currentPosition-b.currentPosition}).map(function(a){return a.key}),o=n.filter(function(a){return!a.disabled}),k.rangePoints([0,i],1).domain(o.map(function(a){return a.key}));var N={},O=!1,P=[];p.forEach(function(a){var b=d3.extent(M,function(b){return+b[a]}),c=b[0],d=b[1],e=!1;(isNaN(c)||isNaN(d))&&(e=!0,c=0,d=0),c===d&&(c-=1,d+=1);var f=s.filter(function(b){return b.dimension==a});0!==f.length&&(e?(c=l[a].domain()[0],d=l[a].domain()[1]):!f[0].hasOnlyNaN&&q?(c=c>f[0].extent[0]?f[0].extent[0]:c,d=d<f[0].extent[1]?f[0].extent[1]:d):f[0].hasNaN&&(d=d<f[0].extent[1]?f[0].extent[1]:d,N[a]=l[a].domain()[1],O=!0)),l[a]=d3.scale.linear().domain([c,d]).range([.9*(j-12),0]),v=[],l[a].brush=d3.svg.brush().y(l[a]).on(\"brushstart\",C).on(\"brush\",D).on(\"brushend\",E)});var Q=K.selectAll(\"g.nv-wrap.nv-parallelCoordinates\").data([b]),R=Q.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-parallelCoordinates\"),S=R.append(\"g\"),T=Q.select(\"g\");S.append(\"g\").attr(\"class\",\"nv-parallelCoordinates background\"),S.append(\"g\").attr(\"class\",\"nv-parallelCoordinates foreground\"),S.append(\"g\").attr(\"class\",\"nv-parallelCoordinates missingValuesline\"),Q.attr(\"transform\",\"translate(\"+f.left+\",\"+f.top+\")\"),x.interpolate(\"cardinal\").tension(w),\
 y.orient(\"left\");var U,V,W=d3.behavior.drag().on(\"dragstart\",G).on(\"drag\",H).on(\"dragend\",I),X=k.range()[1]-k.range()[0];if(X=isNaN(X)?k.range()[0]:X,!isNaN(X)){var Y=[0+X/2,j-12,i-X/2,j-12];U=Q.select(\".missingValuesline\").selectAll(\"line\").data([Y]),U.enter().append(\"line\"),U.exit().remove(),U.attr(\"x1\",function(a){return a[0]}).attr(\"y1\",function(a){return a[1]}).attr(\"x2\",function(a){return a[2]}).attr(\"y2\",function(a){return a[3]}),V=Q.select(\".missingValuesline\").selectAll(\"text\").data([m]),V.append(\"text\").data([m]),V.enter().append(\"text\"),V.exit().remove(),V.attr(\"y\",j).attr(\"x\",i-92-X/2).text(function(a){return a})}d=Q.select(\".background\").selectAll(\"path\").data(b),d.enter().append(\"path\"),d.exit().remove(),d.attr(\"d\",A),c=Q.select(\".foreground\").selectAll(\"path\").data(b),c.enter().append(\"path\"),c.exit().remove(),c.attr(\"d\",A).style(\"stroke-width\",function(a,b){return isNaN(a.strokeWidth)&&(a.strokeWidth=1),a.strokeWidth}).attr(\"stroke\",function(a,b){return a.color||r(a,b)}),c.on(\"mouseover\",function(a,b){d3.select(this).classed(\"hover\",!0).style(\"stroke-width\",a.strokeWidth+2+\"px\").style(\"stroke-opacity\",1),z.elementMouseover({label:a.name,color:a.color||r(a,b),values:a.values,dimensions:o})}),c.on(\"mouseout\",function(a,b){d3.select(this).classed(\"hover\",!1).style(\"stroke-width\",a.strokeWidth+\"px\").style(\"stroke-opacity\",.7),z.elementMouseout({label:a.name,index:b})}),c.on(\"mousemove\",function(a,b){z.elementMousemove()}),c.on(\"click\",function(a){z.elementClick({id:a.id})}),e=T.selectAll(\".dimension\").data(o);var Z=e.enter().append(\"g\").attr(\"class\",\"nv-parallelCoordinates dimension\");e.attr(\"transform\",function(a){return\"translate(\"+k(a.key)+\",0)\"}),Z.append(\"g\").attr(\"class\",\"nv-axis\"),Z.append(\"text\").attr(\"class\",\"nv-label\").style(\"cursor\",\"move\").attr(\"dy\",\"-1em\").attr(\"text-anchor\",\"middle\").on(\"mouseover\",function(a,b){z.elementMouseover({label:a.tooltip||a.key,color:a.color})}).on(\"mouseout\",function(a,b){z.elementMouseout({label:a.tooltip})}).on(\"mousemove\",function(a,b){z.elementMousemove()}).call(W),\
-")
+"
+)
 
-file(APPEND "${METABENCH_DIR}/nvd3.js" "\
+file(APPEND "${METABENCH_DIR}/nvd3.js"
+     "\
 Z.append(\"g\").attr(\"class\",\"nv-brushBackground\"),e.exit().remove(),e.select(\".nv-label\").text(function(a){return a.key}),B(q);var $=p.filter(function(a){return!l[a].brush.empty()}),_=$.map(function(a){return l[a].brush.extent()}),aa=t.slice(0);t=[],c.style(\"display\",function(a){var b=$.every(function(b,c){return(isNaN(a.values[b])||isNaN(parseFloat(a.values[b])))&&_[c][0]==l[b].brush.y().domain()[0]?!0:_[c][0]<=a.values[b]&&a.values[b]<=_[c][1]&&!isNaN(parseFloat(a.values[b]))});return b&&t.push(a),b?null:\"none\"}),(s.length>0||!a.utils.arrayEquals(t,aa))&&z.activeChanged(t)}),b}var c,d,e,f={top:30,right:0,bottom:10,left:0},g=null,h=null,i=null,j=null,k=d3.scale.ordinal(),l={},m=\"undefined values\",n=[],o=[],p=[],q=!0,r=a.utils.defaultColor(),s=[],t=[],u=[],v=[],w=1,x=d3.svg.line(),y=d3.svg.axis(),z=d3.dispatch(\"brushstart\",\"brush\",\"brushEnd\",\"dimensionsOrder\",\"stateChange\",\"elementClick\",\"elementMouseover\",\"elementMouseout\",\"elementMousemove\",\"renderEnd\",\"activeChanged\"),A=a.utils.renderWatch(z);return b.dispatch=z,b.options=a.utils.optionsFunc.bind(b),b._options=Object.create({},{width:{get:function(){return g},set:function(a){g=a}},height:{get:function(){return h},set:function(a){h=a}},dimensionData:{get:function(){return n},set:function(a){n=a}},displayBrush:{get:function(){return q},set:function(a){q=a}},filters:{get:function(){return s},set:function(a){s=a}},active:{get:function(){return t},set:function(a){t=a}},lineTension:{get:function(){return w},set:function(a){w=a}},undefinedValuesLabel:{get:function(){return m},set:function(a){m=a}},dimensions:{get:function(){return n.map(function(a){return a.key})},set:function(b){a.deprecated(\"dimensions\",\"use dimensionData instead\"),0===n.length?b.forEach(function(a){n.push({key:a})}):b.forEach(function(a,b){n[b].key=a})}},dimensionNames:{get:function(){return n.map(function(a){return a.key})},set:function(b){a.deprecated(\"dimensionNames\",\"use dimensionData instead\"),p=[],0===n.length?b.forEach(function(a){n.push({key:a})}):b.forEach(function(a,b){n[b].key=a})}},dimensionFormats:{get:function(){return \
 n.map(function(a){return a.format})},set:function(b){a.deprecated(\"dimensionFormats\",\"use dimensionData instead\"),0===n.length?b.forEach(function(a){n.push({format:a})}):b.forEach(function(a,b){n[b].format=a})}},margin:{get:function(){return f},set:function(a){f.top=void 0!==a.top?a.top:f.top,f.right=void 0!==a.right?a.right:f.right,f.bottom=void 0!==a.bottom?a.bottom:f.bottom,f.left=void 0!==a.left?a.left:f.left}},color:{get:function(){return r},set:function(b){r=a.utils.getColor(b)}}}),a.utils.initOptions(b),b},a.models.parallelCoordinatesChart=function(){\"use strict\";function b(e){return s.reset(),s.models(c),e.each(function(e){var k=d3.select(this);a.utils.initSVG(k);var p=a.utils.availableWidth(h,k,f),q=a.utils.availableHeight(i,k,f);if(b.update=function(){k.call(b)},b.container=this,l.setter(u(m),b.update).getter(t(m)).update(),l.disabled=m.map(function(a){return!!a.disabled}),m=m.map(function(a){return a.disabled=!!a.disabled,a}),m.forEach(function(a,b){a.originalPosition=isNaN(a.originalPosition)?b:a.originalPosition,a.currentPosition=isNaN(a.currentPosition)?b:a.currentPosition}),!o){var s;o={};for(s in l)l[s]instanceof Array?o[s]=l[s].slice(0):o[s]=l[s]}if(!e||!e.length)return a.utils.noData(b,k),b;k.selectAll(\".nv-noData\").remove();var v=k.selectAll(\"g.nv-wrap.nv-parallelCoordinatesChart\").data([e]),w=v.enter().append(\"g\").attr(\"class\",\"nvd3 nv-wrap nv-parallelCoordinatesChart\").append(\"g\"),x=v.select(\"g\");w.append(\"g\").attr(\"class\",\"nv-parallelCoordinatesWrap\"),w.append(\"g\").attr(\"class\",\"nv-legendWrap\"),x.select(\"rect\").attr(\"width\",p).attr(\"height\",q>0?q:0),j?(d.width(p).color(function(a){return\"rgb(188,190,192)\"}),x.select(\".nv-legendWrap\").datum(m.sort(function(a,b){return a.originalPosition-b.originalPosition})).call(d),g||d.height()===f.top||(f.top=d.height(),q=a.utils.availableHeight(i,k,f)),v.select(\".nv-legendWrap\").attr(\"transform\",\"translate( 0 ,\"+-f.top+\")\")):x.select(\".nv-legendWrap\").selectAll(\"*\").remove(),v.attr(\"transform\",\"translate(\"+f.left+\",\"+f.top+\")\"),c.width(p).height(q).dimensionData(m).displayBrush(n);\
 var y=x.select(\".nv-parallelCoordinatesWrap \").datum(e);y.transition().call(c),c.dispatch.on(\"brushEnd\",function(a,b){b?(n=!0,r.brushEnd(a)):n=!1}),d.dispatch.on(\"stateChange\",function(a){for(var c in a)l[c]=a[c];r.stateChange(l),b.update()}),c.dispatch.on(\"dimensionsOrder\",function(a){m.sort(function(a,b){return a.currentPosition-b.currentPosition});var b=!1;m.forEach(function(a,c){a.currentPosition=c,a.currentPosition!==a.originalPosition&&(b=!0)}),r.dimensionsOrder(m,b)}),r.on(\"changeState\",function(a){\"undefined\"!=typeof a.disabled&&(m.forEach(function(b,c){b.disabled=a.disabled[c]}),l.disabled=a.disabled),b.update()})}),s.renderEnd(\"parraleleCoordinateChart immediate\"),b}var c=a.models.parallelCoordinates(),d=a.models.legend(),e=a.models.tooltip(),f=(a.models.tooltip(),{top:0,right:0,bottom:0,left:0}),g=null,h=null,i=null,j=!0,k=a.utils.defaultColor(),l=a.utils.state(),m=[],n=!0,o=null,p=null,q=\"undefined\",r=d3.dispatch(\"dimensionsOrder\",\"brushEnd\",\"stateChange\",\"changeState\",\"renderEnd\"),s=a.utils.renderWatch(r),t=function(a){return function(){return{active:a.map(function(a){return!a.disabled})}}},u=function(a){return function(b){void 0!==b.active&&a.forEach(function(a,c){a.disabled=!b.active[c]})}};return e.contentGenerator(function(a){var b='<table><thead><tr><td class=\"legend-color-guide\"><div style=\"background-color:'+a.color+'\"></div></td><td><strong>'+a.key+\"</strong></td></tr></thead>\";return 0!==a.series.length&&(b+='<tbody><tr><td height =\"10px\"></td></tr>',a.series.forEach(function(a){b=b+'<tr><td class=\"legend-color-guide\"><div style=\"background-color:'+a.color+'\"></div></td><td class=\"key\">'+a.key+'</td><td class=\"value\">'+a.value+\"</td></tr>\"}),b+=\"</tbody>\"),b+=\"</table>\"}),c.dispatch.on(\"elementMouseover.tooltip\",function(a){var b={key:a.label,color:a.color,series:[]};a.values&&(Object.keys(a.values).forEach(function(c){var d=a.dimensions.filter(function(a){return a.key===c})[0];if(d){var e;e=isNaN(a.values[c])||isNaN(parseFloat(a.values[c]))?q:d.format(a.values[c]),b.series.push({idx:d.currentPosition,\
@@ -906,7 +904,8 @@ a.models.sunburst=function(){\"use strict\";function b(a){var b=c(a);return b>90
 \"nvd3 nv-wrap nv-sunburst nv-chart-\"+u).attr(\"transform\",\"translate(\"+(m/2+p.left+p.right)+\",\"+(n/2+p.top+p.bottom)+\")\"),v.on(\"click\",function(a,b){E.chartClick({data:a,index:b,pos:d3.event,id:u})}),H.value(t[s]||t.count);var k=H.nodes(f[0]).reverse();i(k);var l=h.selectAll(\".arc-container\").data(k,B),z=l.enter().append(\"g\").attr(\"class\",\"arc-container\");z.append(\"path\").attr(\"d\",J).style(\"fill\",function(a){return a.color?a.color:w(C?(a.children?a:a.parent).name:a.name)}).style(\"stroke\",\"#FFF\").on(\"click\",function(a,b){j(a),E.elementClick({data:a,index:b})}).on(\"mouseover\",function(a,b){d3.select(this).classed(\"hover\",!0).style(\"opacity\",.8),E.elementMouseover({data:a,color:d3.select(this).style(\"fill\"),percent:d(a)})}).on(\"mouseout\",function(a,b){d3.select(this).classed(\"hover\",!1).style(\"opacity\",1),E.elementMouseout({data:a})}).on(\"mousemove\",function(a,b){E.elementMousemove({data:a})}),l.each(function(a){d3.select(this).select(\"path\").transition().duration(D).attrTween(\"d\",g)}),x&&(l.selectAll(\"text\").remove(),l.append(\"text\").text(function(a){return y(a)}).transition().duration(D).attr(\"opacity\",function(a){return e(a)?1:0}).attr(\"transform\",function(a){var d=this.getBBox().width;if(0===a.depth)return\"rotate(0)translate(\"+d/2*-1+\",0)\";var e=c(a),f=b(a);return 0===f?\"rotate(\"+e+\")translate(\"+(G(a.y)+5)+\",0)\":\"rotate(\"+e+\")translate(\"+(G(a.y)+d+5)+\",0)rotate(\"+f+\")\"})),j(k[k.length-1]),l.exit().transition().duration(D).attr(\"opacity\",0).each(\"end\",function(a){var b=B(a);I[b]=void 0}).remove()}),K.renderEnd(\"sunburst immediate\"),k}var l,m,n,o,p={top:0,right:0,bottom:0,left:0},q=600,r=600,s=\"count\",t={count:function(a){return 1},value:function(a){return a.value||a.size},size:function(a){return a.value||a.size}},u=Math.floor(1e4*Math.random()),v=null,w=a.utils.defaultColor(),x=!1,y=function(a){return\"count\"===s?a.name+\" #\"+a.value:a.name+\" \"+(a.value||a.size)},z=.02,A=function(a,b){return a.name>b.name},B=function(a,b){return a.name},C=!0,D=500,E=d3.dispatch(\"chartClick\",\"elementClick\",\"elementDblClick\",\"elementMousemove\",\
 \"elementMouseover\",\"elementMouseout\",\"renderEnd\"),F=d3.scale.linear().range([0,2*Math.PI]),G=d3.scale.sqrt(),H=d3.layout.partition().sort(A),I={},J=d3.svg.arc().startAngle(function(a){return Math.max(0,Math.min(2*Math.PI,F(a.x)))}).endAngle(function(a){return Math.max(0,Math.min(2*Math.PI,F(a.x+a.dx)))}).innerRadius(function(a){return Math.max(0,G(a.y))}).outerRadius(function(a){return Math.max(0,G(a.y+a.dy))}),K=a.utils.renderWatch(E);return k.dispatch=E,k.options=a.utils.optionsFunc.bind(k),k._options=Object.create({},{width:{get:function(){return q},set:function(a){q=a}},height:{get:function(){return r},set:function(a){r=a}},mode:{get:function(){return s},set:function(a){s=a}},id:{get:function(){return u},set:function(a){u=a}},duration:{get:function(){return D},set:function(a){D=a}},groupColorByParent:{get:function(){return C},set:function(a){C=!!a}},showLabels:{get:function(){return x},set:function(a){x=!!a}},labelFormat:{get:function(){return y},set:function(a){y=a}},labelThreshold:{get:function(){return z},set:function(a){z=a}},sort:{get:function(){return A},set:function(a){A=a}},key:{get:function(){return B},set:function(a){B=a}},margin:{get:function(){return p},set:function(a){p.top=void 0!=a.top?a.top:p.top,p.right=void 0!=a.right?a.right:p.right,p.bottom=void 0!=a.bottom?a.bottom:p.bottom,p.left=void 0!=a.left?a.left:p.left}},color:{get:function(){return w},set:function(b){w=a.utils.getColor(b)}}}),a.utils.initOptions(k),k},a.models.sunburstChart=function(){\"use strict\";function b(d){return n.reset(),n.models(c),d.each(function(d){var h=d3.select(this);a.utils.initSVG(h);var i=a.utils.availableWidth(f,h,e),j=a.utils.availableHeight(g,h,e);return b.update=function(){0===l?h.call(b):h.transition().duration(l).call(b)},b.container=h,d&&d.length?(h.selectAll(\".nv-noData\").remove(),c.width(i).height(j).margin(e),void h.call(c)):(a.utils.noData(b,h),b)}),n.renderEnd(\"sunburstChart immediate\"),b}var c=a.models.sunburst(),d=a.models.tooltip(),e={top:30,right:20,bottom:20,left:20},f=null,g=null,h=a.utils.defaultColor(),\
 i=!1,j=(Math.round(1e5*Math.random()),null),k=null,l=250,m=d3.dispatch(\"stateChange\",\"changeState\",\"renderEnd\"),n=a.utils.renderWatch(m);return d.duration(0).headerEnabled(!1).valueFormatter(function(a){return a}),c.dispatch.on(\"elementMouseover.tooltip\",function(a){a.series={key:a.data.name,value:a.data.value||a.data.size,color:a.color,percent:a.percent},i||(delete a.percent,delete a.series.percent),d.data(a).hidden(!1)}),c.dispatch.on(\"elementMouseout.tooltip\",function(a){d.hidden(!0)}),c.dispatch.on(\"elementMousemove.tooltip\",function(a){d()}),b.dispatch=m,b.sunburst=c,b.tooltip=d,b.options=a.utils.optionsFunc.bind(b),b._options=Object.create({},{noData:{get:function(){return k},set:function(a){k=a}},defaultState:{get:function(){return j},set:function(a){j=a}},showTooltipPercent:{get:function(){return i},set:function(a){i=a}},color:{get:function(){return h},set:function(a){h=a,c.color(h)}},duration:{get:function(){return l},set:function(a){l=a,n.reset(l),c.duration(l)}},margin:{get:function(){return e},set:function(a){e.top=void 0!==a.top?a.top:e.top,e.right=void 0!==a.right?a.right:e.right,e.bottom=void 0!==a.bottom?a.bottom:e.bottom,e.left=void 0!==a.left?a.left:e.left,c.margin(e)}}}),a.utils.inheritOptions(b,c),a.utils.initOptions(b),b},a.version=\"1.8.5\"}();\
-")
+"
+)
 ################################################################################
 # end nvd3.js
 ################################################################################
@@ -919,7 +918,8 @@ i=!1,j=(Math.round(1e5*Math.random()),null),k=null,l=250,m=d3.dispatch(\"stateCh
 # parsing too long strings.
 # https://github.com/mbostock/d3
 ################################################################################
-file(WRITE "${METABENCH_DIR}/d3.js" "\
+file(WRITE "${METABENCH_DIR}/d3.js"
+     "\
 !function(){function n(n){return n&&(n.ownerDocument||n.document||n).documentElement}function t(n){return n&&(n.ownerDocument&&n.ownerDocument.defaultView||n.document&&n||n.defaultView)}function e(n,t){return t>n?-1:n>t?1:n>=t?0:NaN}function r(n){return null===n?NaN:+n}function i(n){return!isNaN(n)}function u(n){return{left:function(t,e,r,i){for(arguments.length<3&&(r=0),arguments.length<4&&(i=t.length);i>r;){var u=r+i>>>1;n(t[u],e)<0?r=u+1:i=u}return r},right:function(t,e,r,i){for(arguments.length<3&&(r=0),arguments.length<4&&(i=t.length);i>r;){var u=r+i>>>1;n(t[u],e)>0?i=u:r=u+1}return r}}}function o(n){return n.length}function a(n){for(var t=1;n*t%1;)t*=10;return t}function l(n,t){for(var e in t)Object.defineProperty(n.prototype,e,{value:t[e],enumerable:!1})}function c(){this._=Object.create(null)}function f(n){return(n+=\"\")===bo||n[0]===_o?_o+n:n}function s(n){return(n+=\"\")[0]===_o?n.slice(1):n}function h(n){return f(n)in this._}function p(n){return(n=f(n))in this._&&delete this._[n]}function g(){var n=[];for(var t in this._)n.push(s(t));return n}function v(){var n=0;for(var t in this._)++n;return n}function d(){for(var n in this._)return!1;return!0}function y(){this._=Object.create(null)}function m(n){return n}function M(n,t,e){return function(){var r=e.apply(t,arguments);return r===t?n:r}}function x(n,t){if(t in n)return t;t=t.charAt(0).toUpperCase()+t.slice(1);for(var e=0,r=wo.length;r>e;++e){var i=wo[e]+t;if(i in n)return i}}function b(){}function _(){}function w(n){function t(){for(var t,r=e,i=-1,u=r.length;++i<u;)(t=r[i].on)&&t.apply(this,arguments);return n}var e=[],r=new c;return t.on=function(t,i){var u,o=r.get(t);return arguments.length<2?o&&o.on:(o&&(o.on=null,e=e.slice(0,u=e.indexOf(o)).concat(e.slice(u+1)),r.remove(t)),i&&e.push(r.set(t,{on:i})),n)},t}function S(){ao.event.preventDefault()}function k(){for(var n,t=ao.event;n=t.sourceEvent;)t=n;return t}function N(n){for(var t=new _,e=0,r=arguments.length;++e<r;)t[arguments[e]]=w(t);return t.of=function(e,r){return function(i){try{var u=i.sourceEvent=ao.event;\
 i.target=n,ao.event=i,t[i.type].apply(e,r)}finally{ao.event=u}}},t}function E(n){return ko(n,Co),n}function A(n){return\"function\"==typeof n?n:function(){return No(n,this)}}function C(n){return\"function\"==typeof n?n:function(){return Eo(n,this)}}function z(n,t){function e(){this.removeAttribute(n)}function r(){this.removeAttributeNS(n.space,n.local)}function i(){this.setAttribute(n,t)}function u(){this.setAttributeNS(n.space,n.local,t)}function o(){var e=t.apply(this,arguments);null==e?this.removeAttribute(n):this.setAttribute(n,e)}function a(){var e=t.apply(this,arguments);null==e?this.removeAttributeNS(n.space,n.local):this.setAttributeNS(n.space,n.local,e)}return n=ao.ns.qualify(n),null==t?n.local?r:e:\"function\"==typeof t?n.local?a:o:n.local?u:i}function L(n){return n.trim().replace(/\\s+/g,\" \")}function q(n){return new RegExp(\"(?:^|\\\\s+)\"+ao.requote(n)+\"(?:\\\\s+|$)\",\"g\")}function T(n){return(n+\"\").trim().split(/^|\\s+/)}function R(n,t){function e(){for(var e=-1;++e<i;)n[e](this,t)}function r(){for(var e=-1,r=t.apply(this,arguments);++e<i;)n[e](this,r)}n=T(n).map(D);var i=n.length;return\"function\"==typeof t?r:e}function D(n){var t=q(n);return function(e,r){if(i=e.classList)return r?i.add(n):i.remove(n);var i=e.getAttribute(\"class\")||\"\";r?(t.lastIndex=0,t.test(i)||e.setAttribute(\"class\",L(i+\" \"+n))):e.setAttribute(\"class\",L(i.replace(t,\" \")))}}function P(n,t,e){function r(){this.style.removeProperty(n)}function i(){this.style.setProperty(n,t,e)}function u(){var r=t.apply(this,arguments);null==r?this.style.removeProperty(n):this.style.setProperty(n,r,e)}return null==t?r:\"function\"==typeof t?u:i}function U(n,t){function e(){delete this[n]}function r(){this[n]=t}function i(){var e=t.apply(this,arguments);null==e?delete this[n]:this[n]=e}return null==t?e:\"function\"==typeof t?i:r}function j(n){function t(){var t=this.ownerDocument,e=this.namespaceURI;return e===zo&&t.documentElement.namespaceURI===zo?t.createElement(n):t.createElementNS(e,n)}function e(){return this.ownerDocument.createElementNS(n.space,n.local)}return\"function\"==typeof \
 n?n:(n=ao.ns.qualify(n)).local?e:t}function F(){var n=this.parentNode;n&&n.removeChild(this)}function H(n){return{__data__:n}}function O(n){return function(){return Ao(this,n)}}function I(n){return arguments.length||(n=e),function(t,e){return t&&e?n(t.__data__,e.__data__):!t-!e}}function Y(n,t){for(var e=0,r=n.length;r>e;e++)for(var i,u=n[e],o=0,a=u.length;a>o;o++)(i=u[o])&&t(i,o,e);return n}function Z(n){return ko(n,qo),n}function V(n){var t,e;return function(r,i,u){var o,a=n[u].update,l=a.length;for(u!=e&&(e=u,t=0),i>=t&&(t=i+1);!(o=a[t])&&++t<l;);return o}}function X(n,t,e){function r(){var t=this[o];t&&(this.removeEventListener(n,t,t.$),delete this[o])}function i(){var i=l(t,co(arguments));r.call(this),this.addEventListener(n,this[o]=i,i.$=e),i._=t}function u(){var t,e=new RegExp(\"^__on([^.]+)\"+ao.requote(n)+\"$\");for(var r in this)if(t=r.match(e)){var i=this[r];this.removeEventListener(t[1],i,i.$),delete this[r]}}var o=\"__on\"+n,a=n.indexOf(\".\"),l=$;a>0&&(n=n.slice(0,a));var c=To.get(n);return c&&(n=c,l=B),a?t?i:r:t?b:u}function $(n,t){return function(e){var r=ao.event;ao.event=e,t[0]=this.__data__;try{n.apply(this,t)}finally{ao.event=r}}}function B(n,t){var e=$(n,t);return function(n){var t=this,r=n.relatedTarget;r&&(r===t||8&r.compareDocumentPosition(t))||e.call(t,n)}}function W(e){var r=\".dragsuppress-\"+ ++Do,i=\"click\"+r,u=ao.select(t(e)).on(\"touchmove\"+r,S).on(\"dragstart\"+r,S).on(\"selectstart\"+r,S);if(null==Ro&&(Ro=\"onselectstart\"in e?!1:x(e.style,\"userSelect\")),Ro){var o=n(e).style,a=o[Ro];o[Ro]=\"none\"}return function(n){if(u.on(r,null),Ro&&(o[Ro]=a),n){var t=function(){u.on(i,null)};u.on(i,function(){S(),t()},!0),setTimeout(t,0)}}}function J(n,e){e.changedTouches&&(e=e.changedTouches[0]);var r=n.ownerSVGElement||n;if(r.createSVGPoint){var i=r.createSVGPoint();if(0>Po){var u=t(n);if(u.scrollX||u.scrollY){r=ao.select(\"body\").append(\"svg\").style({position:\"absolute\",top:0,left:0,margin:0,padding:0,border:\"none\"},\"important\");var o=r[0][0].getScreenCTM();Po=!(o.f||o.e),r.remove()}}return Po?(i.x=e.pageX,i.y=e.pageY):(i.x=e.clientX,\
@@ -958,9 +958,11 @@ ao={version:\"3.5.17\"},lo=[].slice,co=function(n){return lo.call(n)},fo=this.do
 t){var u,o=[],a=n.length,l=-1;if(1===arguments.length)for(;++l<a;)i(u=r(n[l]))&&o.push(u);else for(;++l<a;)i(u=r(t.call(n,n[l],l)))&&o.push(u);return o.length?ao.quantile(o.sort(e),.5):void 0},ao.variance=function(n,t){var e,u,o=n.length,a=0,l=0,c=-1,f=0;if(1===arguments.length)for(;++c<o;)i(e=r(n[c]))&&(u=e-a,a+=u/++f,l+=u*(e-a));else for(;++c<o;)i(e=r(t.call(n,n[c],c)))&&(u=e-a,a+=u/++f,l+=u*(e-a));return f>1?l/(f-1):void 0},ao.deviation=function(){var n=ao.variance.apply(this,arguments);return n?Math.sqrt(n):n};var Mo=u(e);ao.bisectLeft=Mo.left,ao.bisect=ao.bisectRight=Mo.right,ao.bisector=function(n){return u(1===n.length?function(t,r){return e(n(t),r)}:n)},ao.shuffle=function(n,t,e){(u=arguments.length)<3&&(e=n.length,2>u&&(t=0));for(var r,i,u=e-t;u;)i=Math.random()*u--|0,r=n[u+t],n[u+t]=n[i+t],n[i+t]=r;return n},ao.permute=function(n,t){for(var e=t.length,r=new Array(e);e--;)r[e]=n[t[e]];return r},ao.pairs=function(n){for(var t,e=0,r=n.length-1,i=n[0],u=new Array(0>r?0:r);r>e;)u[e]=[t=i,i=n[++e]];return u},ao.transpose=function(n){if(!(i=n.length))return[];for(var t=-1,e=ao.min(n,o),r=new Array(e);++t<e;)for(var i,u=-1,a=r[t]=new Array(i);++u<i;)a[u]=n[u][t];return r},ao.zip=function(){return ao.transpose(arguments)},ao.keys=function(n){var t=[];for(var e in n)t.push(e);return t},ao.values=function(n){var t=[];for(var e in n)t.push(n[e]);return t},ao.entries=function(n){var t=[];for(var e in n)t.push({key:e,value:n[e]});return t},ao.merge=function(n){for(var t,e,r,i=n.length,u=-1,o=0;++u<i;)o+=n[u].length;for(e=new Array(o);--i>=0;)for(r=n[i],t=r.length;--t>=0;)e[--o]=r[t];return e};var xo=Math.abs;ao.range=function(n,t,e){if(arguments.length<3&&(e=1,arguments.length<2&&(t=n,n=0)),(t-n)/e===1/0)throw new Error(\"infinite range\");var r,i=[],u=a(xo(e)),o=-1;if(n*=u,t*=u,e*=u,0>e)for(;(r=n+e*++o)>t;)i.push(r/u);else for(;(r=n+e*++o)<t;)i.push(r/u);return i},ao.map=function(n,t){var e=new c;if(n instanceof c)n.forEach(function(n,t){e.set(n,t)});else if(Array.isArray(n)){var r,i=-1,u=n.length;if(1===arguments.length)for(;\
 ++i<u;)e.set(i,n[i]);else for(;++i<u;)e.set(t.call(n,r=n[i],i),r)}else for(var o in n)e.set(o,n[o]);return e};var bo=\"__proto__\",_o=\"\\x00\";l(c,{has:h,get:function(n){return this._[f(n)]},set:function(n,t){return this._[f(n)]=t},remove:p,keys:g,values:function(){var n=[];for(var t in this._)n.push(this._[t]);return n},entries:function(){var n=[];for(var t in this._)n.push({key:s(t),value:this._[t]});return n},size:v,empty:d,forEach:function(n){for(var t in this._)n.call(this,s(t),this._[t])}}),ao.nest=function(){function n(t,o,a){if(a>=u.length)return r?r.call(i,o):e?o.sort(e):o;for(var l,f,s,h,p=-1,g=o.length,v=u[a++],d=new c;++p<g;)(h=d.get(l=v(f=o[p])))?h.push(f):d.set(l,[f]);return t?(f=t(),s=function(e,r){f.set(e,n(t,r,a))}):(f={},s=function(e,r){f[e]=n(t,r,a)}),d.forEach(s),f}function t(n,e){if(e>=u.length)return n;var r=[],i=o[e++];return n.forEach(function(n,i){r.push({key:n,values:t(i,e)})}),i?r.sort(function(n,t){return i(n.key,t.key)}):r}var e,r,i={},u=[],o=[];return i.map=function(t,e){return n(e,t,0)},i.entries=function(e){return t(n(ao.map,e,0),0)},i.key=function(n){return u.push(n),i},i.sortKeys=function(n){return o[u.length-1]=n,i},i.sortValues=function(n){return e=n,i},i.rollup=function(n){return r=n,i},i},ao.set=function(n){var t=new y;if(n)for(var e=0,r=n.length;r>e;++e)t.add(n[e]);return t},l(y,{has:h,add:function(n){return this._[f(n+=\"\")]=!0,n},remove:p,values:g,size:v,empty:d,forEach:function(n){for(var t in this._)n.call(this,s(t))}}),ao.behavior={},ao.rebind=function(n,t){for(var e,r=1,i=arguments.length;++r<i;)n[e=arguments[r]]=M(n,t,t[e]);return n};var wo=[\"webkit\",\"ms\",\"moz\",\"Moz\",\"o\",\"O\"];ao.dispatch=function(){for(var n=new _,t=-1,e=arguments.length;++t<e;)n[arguments[t]]=w(n);return n},_.prototype.on=function(n,t){var e=n.indexOf(\".\"),r=\"\";if(e>=0&&(r=n.slice(e+1),n=n.slice(0,e)),n)return arguments.length<2?this[n].on(r):this[n].on(r,t);if(2===arguments.length){if(null==t)for(n in this)this.hasOwnProperty(n)&&this[n].on(r,null);return this}},ao.event=null,ao.requote=function(n){return \
 n.replace(So,\"\\\\$&\")};var So=/[\\\\\\^\\$\\*\\+\\?\\|\\[\\]\\(\\)\\.\\{\\}]/g,ko={}.__proto__?function(n,t){n.__proto__=t}:function(n,t){for(var e in t)n[e]=t[e]},No=function(n,t){return t.querySelector(n)},Eo=function(n,t){return t.querySelectorAll(n)},Ao=function(n,t){var e=n.matches||n[x(n,\"matchesSelector\")];return(Ao=function(n,t){return e.call(n,t)})(n,t)};\"function\"==typeof Sizzle&&(No=function(n,t){return Sizzle(n,t)[0]||null},Eo=Sizzle,Ao=Sizzle.matchesSelector),ao.selection=function(){return ao.select(fo.documentElement)};var Co=ao.selection.prototype=[];Co.select=function(n){var t,e,r,i,u=[];n=A(n);for(var o=-1,a=this.length;++o<a;){u.push(t=[]),t.parentNode=(r=this[o]).parentNode;for(var l=-1,c=r.length;++l<c;)(i=r[l])?(t.push(e=n.call(i,i.__data__,l,o)),e&&\"__data__\"in i&&(e.__data__=i.__data__)):t.push(null)}return E(u)},Co.selectAll=function(n){var t,e,r=[];n=C(n);for(var i=-1,u=this.length;++i<u;)for(var o=this[i],a=-1,l=o.length;++a<l;)(e=o[a])&&(r.push(t=co(n.call(e,e.__data__,a,i))),t.parentNode=e);return E(r)};var zo=\"http://www.w3.org/1999/xhtml\",Lo={svg:\"http://www.w3.org/2000/svg\",xhtml:zo,xlink:\"http://www.w3.org/1999/xlink\",xml:\"http://www.w3.org/XML/1998/namespace\",xmlns:\"http://www.w3.org/2000/xmlns/\"};ao.ns={prefix:Lo,qualify:function(n){var t=n.indexOf(\":\"),e=n;return t>=0&&\"xmlns\"!==(e=n.slice(0,t))&&(n=n.slice(t+1)),Lo.hasOwnProperty(e)?{space:Lo[e],local:n}:n}},Co.attr=function(n,t){if(arguments.length<2){if(\"string\"==typeof n){var e=this.node();return n=ao.ns.qualify(n),n.local?e.getAttributeNS(n.space,n.local):e.getAttribute(n)}for(t in n)this.each(z(t,n[t]));return this}return this.each(z(n,t))},Co.classed=function(n,t){if(arguments.length<2){if(\"string\"==typeof n){var e=this.node(),r=(n=T(n)).length,i=-1;if(t=e.classList){for(;++i<r;)if(!t.contains(n[i]))return!1}else for(t=e.getAttribute(\"class\");++i<r;)if(!q(n[i]).test(t))return!1;return!0}for(t in n)this.each(R(t,n[t]));return this}return this.each(R(n,t))},Co.style=function(n,e,r){var i=arguments.length;if(3>i){if(\"string\"!=typeof n){2>i&&(e=\"\");\
-")
+"
+)
 
-file(APPEND "${METABENCH_DIR}/d3.js" "\
+file(APPEND "${METABENCH_DIR}/d3.js"
+     "\
 for(r in n)this.each(P(r,n[r],e));return this}if(2>i){var u=this.node();return t(u).getComputedStyle(u,null).getPropertyValue(n)}r=\"\"}return this.each(P(n,e,r))},Co.property=function(n,t){if(arguments.length<2){if(\"string\"==typeof n)return this.node()[n];for(t in n)this.each(U(t,n[t]));return this}return this.each(U(n,t))},Co.text=function(n){return arguments.length?this.each(\"function\"==typeof n?function(){var t=n.apply(this,arguments);this.textContent=null==t?\"\":t}:null==n?function(){this.textContent=\"\"}:function(){this.textContent=n}):this.node().textContent},Co.html=function(n){return arguments.length?this.each(\"function\"==typeof n?function(){var t=n.apply(this,arguments);this.innerHTML=null==t?\"\":t}:null==n?function(){this.innerHTML=\"\"}:function(){this.innerHTML=n}):this.node().innerHTML},Co.append=function(n){return n=j(n),this.select(function(){return this.appendChild(n.apply(this,arguments))})},Co.insert=function(n,t){return n=j(n),t=A(t),this.select(function(){return this.insertBefore(n.apply(this,arguments),t.apply(this,arguments)||null)})},Co.remove=function(){return this.each(F)},Co.data=function(n,t){function e(n,e){var r,i,u,o=n.length,s=e.length,h=Math.min(o,s),p=new Array(s),g=new Array(s),v=new Array(o);if(t){var d,y=new c,m=new Array(o);for(r=-1;++r<o;)(i=n[r])&&(y.has(d=t.call(i,i.__data__,r))?v[r]=i:y.set(d,i),m[r]=d);for(r=-1;++r<s;)(i=y.get(d=t.call(e,u=e[r],r)))?i!==!0&&(p[r]=i,i.__data__=u):g[r]=H(u),y.set(d,!0);for(r=-1;++r<o;)r in m&&y.get(m[r])!==!0&&(v[r]=n[r])}else{for(r=-1;++r<h;)i=n[r],u=e[r],i?(i.__data__=u,p[r]=i):g[r]=H(u);for(;s>r;++r)g[r]=H(e[r]);for(;o>r;++r)v[r]=n[r]}g.update=p,g.parentNode=p.parentNode=v.parentNode=n.parentNode,a.push(g),l.push(p),f.push(v)}var r,i,u=-1,o=this.length;if(!arguments.length){for(n=new Array(o=(r=this[0]).length);++u<o;)(i=r[u])&&(n[u]=i.__data__);return n}var a=Z([]),l=E([]),f=E([]);if(\"function\"==typeof n)for(;++u<o;)e(r=this[u],n.call(r,r.parentNode.__data__,u));else for(;++u<o;)e(r=this[u],n);return l.enter=function(){return a},l.exit=function(){return \
 f},l},Co.datum=function(n){return arguments.length?this.property(\"__data__\",n):this.property(\"__data__\")},Co.filter=function(n){var t,e,r,i=[];\"function\"!=typeof n&&(n=O(n));for(var u=0,o=this.length;o>u;u++){i.push(t=[]),t.parentNode=(e=this[u]).parentNode;for(var a=0,l=e.length;l>a;a++)(r=e[a])&&n.call(r,r.__data__,a,u)&&t.push(r)}return E(i)},Co.order=function(){for(var n=-1,t=this.length;++n<t;)for(var e,r=this[n],i=r.length-1,u=r[i];--i>=0;)(e=r[i])&&(u&&u!==e.nextSibling&&u.parentNode.insertBefore(e,u),u=e);return this},Co.sort=function(n){n=I.apply(this,arguments);for(var t=-1,e=this.length;++t<e;)this[t].sort(n);return this.order()},Co.each=function(n){return Y(this,function(t,e,r){n.call(t,t.__data__,e,r)})},Co.call=function(n){var t=co(arguments);return n.apply(t[0]=this,t),this},Co.empty=function(){return!this.node()},Co.node=function(){for(var n=0,t=this.length;t>n;n++)for(var e=this[n],r=0,i=e.length;i>r;r++){var u=e[r];if(u)return u}return null},Co.size=function(){var n=0;return Y(this,function(){++n}),n};var qo=[];ao.selection.enter=Z,ao.selection.enter.prototype=qo,qo.append=Co.append,qo.empty=Co.empty,qo.node=Co.node,qo.call=Co.call,qo.size=Co.size,qo.select=function(n){for(var t,e,r,i,u,o=[],a=-1,l=this.length;++a<l;){r=(i=this[a]).update,o.push(t=[]),t.parentNode=i.parentNode;for(var c=-1,f=i.length;++c<f;)(u=i[c])?(t.push(r[c]=e=n.call(i.parentNode,u.__data__,c,a)),e.__data__=u.__data__):t.push(null)}return E(o)},qo.insert=function(n,t){return arguments.length<2&&(t=V(this)),Co.insert.call(this,n,t)},ao.select=function(t){var e;return\"string\"==typeof t?(e=[No(t,fo)],e.parentNode=fo.documentElement):(e=[t],e.parentNode=n(t)),E([e])},ao.selectAll=function(n){var t;return\"string\"==typeof n?(t=co(Eo(n,fo)),t.parentNode=fo.documentElement):(t=co(n),t.parentNode=null),E([t])},Co.on=function(n,t,e){var r=arguments.length;if(3>r){if(\"string\"!=typeof n){2>r&&(t=!1);for(e in n)this.each(X(e,n[e],t));return this}if(2>r)return(r=this.node()[\"__on\"+n])&&r._;e=!1}return this.each(X(n,t,e))};var To=ao.map({mouseenter:\"mouseover\",\
 mouseleave:\"mouseout\"});fo&&To.forEach(function(n){\"on\"+n in fo&&To.remove(n)});var Ro,Do=0;ao.mouse=function(n){return J(n,k())};var Po=this.navigator&&/WebKit/.test(this.navigator.userAgent)?-1:0;ao.touch=function(n,t,e){if(arguments.length<3&&(e=t,t=k().changedTouches),t)for(var r,i=0,u=t.length;u>i;++i)if((r=t[i]).identifier===e)return J(n,r)},ao.behavior.drag=function(){function n(){this.on(\"mousedown.drag\",u).on(\"touchstart.drag\",o)}function e(n,t,e,u,o){return function(){function a(){var n,e,r=t(h,v);r&&(n=r[0]-M[0],e=r[1]-M[1],g|=n|e,M=r,p({type:\"drag\",x:r[0]+c[0],y:r[1]+c[1],dx:n,dy:e}))}function l(){t(h,v)&&(y.on(u+d,null).on(o+d,null),m(g),p({type:\"dragend\"}))}var c,f=this,s=ao.event.target.correspondingElement||ao.event.target,h=f.parentNode,p=r.of(f,arguments),g=0,v=n(),d=\".drag\"+(null==v?\"\":\"-\"+v),y=ao.select(e(s)).on(u+d,a).on(o+d,l),m=W(s),M=t(h,v);i?(c=i.apply(f,arguments),c=[c.x-M[0],c.y-M[1]]):c=[0,0],p({type:\"dragstart\"})}}var r=N(n,\"drag\",\"dragstart\",\"dragend\"),i=null,u=e(b,ao.mouse,t,\"mousemove\",\"mouseup\"),o=e(G,ao.touch,m,\"touchmove\",\"touchend\");return n.origin=function(t){return arguments.length?(i=t,n):i},ao.rebind(n,r,\"on\")},ao.touches=function(n,t){return arguments.length<2&&(t=k().touches),t?co(t).map(function(t){var e=J(n,t);return e.identifier=t.identifier,e}):[]};var Uo=1e-6,jo=Uo*Uo,Fo=Math.PI,Ho=2*Fo,Oo=Ho-Uo,Io=Fo/2,Yo=Fo/180,Zo=180/Fo,Vo=Math.SQRT2,Xo=2,$o=4;ao.interpolateZoom=function(n,t){var e,r,i=n[0],u=n[1],o=n[2],a=t[0],l=t[1],c=t[2],f=a-i,s=l-u,h=f*f+s*s;if(jo>h)r=Math.log(c/o)/Vo,e=function(n){return[i+n*f,u+n*s,o*Math.exp(Vo*n*r)]};else{var p=Math.sqrt(h),g=(c*c-o*o+$o*h)/(2*o*Xo*p),v=(c*c-o*o-$o*h)/(2*c*Xo*p),d=Math.log(Math.sqrt(g*g+1)-g),y=Math.log(Math.sqrt(v*v+1)-v);r=(y-d)/Vo,e=function(n){var t=n*r,e=rn(d),a=o/(Xo*p)*(e*un(Vo*t+d)-en(d));return[i+a*f,u+a*s,o*e/rn(Vo*t+d)]}}return e.duration=1e3*r,e},ao.behavior.zoom=function(){function n(n){n.on(L,s).on(Wo+\".zoom\",p).on(\"dblclick.zoom\",g).on(R,h)}function e(n){return[(n[0]-k.x)/k.k,(n[1]-k.y)/k.k]}function r(n){return[n[0]*k.k+k.x,\
@@ -999,7 +1001,8 @@ function(n){return/^[ns]/.test(n)?-3:null}).attr(\"width\",6).attr(\"height\",6)
 d).on(\"mouseup.brush\",m),k.interrupt().selectAll(\"*\").interrupt(),C)L[0]=s[0]-L[0],L[1]=h[0]-L[1];else if(N){var T=+/w$/.test(N),R=+/^n/.test(N);x=[s[1-T]-L[0],h[1-R]-L[1]],L[0]=s[T],L[1]=h[R]}else ao.event.altKey&&(M=L.slice());k.style(\"pointer-events\",\"none\").selectAll(\".resize\").style(\"display\",null),ao.select(\"body\").style(\"cursor\",_.style(\"cursor\")),w({type:\"brushstart\"}),d()}var o,a,l=N(n,\"brushstart\",\"brush\",\"brushend\"),c=null,f=null,s=[0,0],h=[0,0],p=!0,g=!0,v=Bl[0];return n.event=function(n){n.each(function(){var n=l.of(this,arguments),t={x:s,y:h,i:o,j:a},e=this.__chart__||t;this.__chart__=t,Hl?ao.select(this).transition().each(\"start.brush\",function(){o=e.i,a=e.j,s=e.x,h=e.y,n({type:\"brushstart\"})}).tween(\"brush:brush\",function(){var e=xr(s,t.x),r=xr(h,t.y);return o=a=null,function(i){s=t.x=e(i),h=t.y=r(i),n({type:\"brush\",mode:\"resize\"})}}).each(\"end.brush\",function(){o=t.i,a=t.j,n({type:\"brush\",mode:\"resize\"}),n({type:\"brushend\"})}):(n({type:\"brushstart\"}),n({type:\"brush\",mode:\"resize\"}),n({type:\"brushend\"}))})},n.x=function(t){return arguments.length?(c=t,v=Bl[!c<<1|!f],n):c},n.y=function(t){return arguments.length?(f=t,v=Bl[!c<<1|!f],n):f},n.clamp=function(t){return arguments.length?(c&&f?(p=!!t[0],g=!!t[1]):c?p=!!t:f&&(g=!!t),n):c&&f?[p,g]:c?p:f?g:null},n.extent=function(t){var e,r,i,u,l;return arguments.length?(c&&(e=t[0],r=t[1],f&&(e=e[0],r=r[0]),o=[e,r],c.invert&&(e=c(e),r=c(r)),e>r&&(l=e,e=r,r=l),e==s[0]&&r==s[1]||(s=[e,r])),f&&(i=t[0],u=t[1],c&&(i=i[1],u=u[1]),a=[i,u],f.invert&&(i=f(i),u=f(u)),i>u&&(l=i,i=u,u=l),i==h[0]&&u==h[1]||(h=[i,u])),n):(c&&(o?(e=o[0],r=o[1]):(e=s[0],r=s[1],c.invert&&(e=c.invert(e),r=c.invert(r)),e>r&&(l=e,e=r,r=l))),f&&(a?(i=a[0],u=a[1]):(i=h[0],u=h[1],f.invert&&(i=f.invert(i),u=f.invert(u)),i>u&&(l=i,i=u,u=l))),c&&f?[[e,i],[r,u]]:c?[e,r]:f&&[i,u])},n.clear=function(){return n.empty()||(s=[0,0],h=[0,0],o=a=null),n},n.empty=function(){return!!c&&s[0]==s[1]||!!f&&h[0]==h[1]},ao.rebind(n,l,\"on\")};var $l={n:\"ns-resize\",e:\"ew-resize\",s:\"ns-resize\",w:\"ew-resize\",nw:\"nwse-resize\",\
 ne:\"nesw-resize\",se:\"nwse-resize\",sw:\"nesw-resize\"},Bl=[[\"n\",\"e\",\"s\",\"w\",\"nw\",\"ne\",\"se\",\"sw\"],[\"e\",\"w\"],[\"n\",\"s\"],[]],Wl=ga.format=xa.timeFormat,Jl=Wl.utc,Gl=Jl(\"%Y-%m-%dT%H:%M:%S.%LZ\");Wl.iso=Date.prototype.toISOString&&+new Date(\"2000-01-01T00:00:00.000Z\")?eo:Gl,eo.parse=function(n){var t=new Date(n);return isNaN(t)?null:t},eo.toString=Gl.toString,ga.second=On(function(n){return new va(1e3*Math.floor(n/1e3))},function(n,t){n.setTime(n.getTime()+1e3*Math.floor(t))},function(n){return n.getSeconds()}),ga.seconds=ga.second.range,ga.seconds.utc=ga.second.utc.range,ga.minute=On(function(n){return new va(6e4*Math.floor(n/6e4))},function(n,t){n.setTime(n.getTime()+6e4*Math.floor(t))},function(n){return n.getMinutes()}),ga.minutes=ga.minute.range,ga.minutes.utc=ga.minute.utc.range,ga.hour=On(function(n){var t=n.getTimezoneOffset()/60;return new va(36e5*(Math.floor(n/36e5-t)+t))},function(n,t){n.setTime(n.getTime()+36e5*Math.floor(t))},function(n){return n.getHours()}),ga.hours=ga.hour.range,ga.hours.utc=ga.hour.utc.range,ga.month=On(function(n){return n=ga.day(n),n.setDate(1),n},function(n,t){n.setMonth(n.getMonth()+t)},function(n){return n.getMonth()}),ga.months=ga.month.range,ga.months.utc=ga.month.utc.range;var Kl=[1e3,5e3,15e3,3e4,6e4,3e5,9e5,18e5,36e5,108e5,216e5,432e5,864e5,1728e5,6048e5,2592e6,7776e6,31536e6],Ql=[[ga.second,1],[ga.second,5],[ga.second,15],[ga.second,30],[ga.minute,1],[ga.minute,5],[ga.minute,15],[ga.minute,30],[ga.hour,1],[ga.hour,3],[ga.hour,6],[ga.hour,12],[ga.day,1],[ga.day,2],[ga.week,1],[ga.month,1],[ga.month,3],[ga.year,1]],nc=Wl.multi([[\".%L\",function(n){return n.getMilliseconds()}],[\":%S\",function(n){return n.getSeconds()}],[\"%I:%M\",function(n){return n.getMinutes()}],[\"%I %p\",function(n){return n.getHours()}],[\"%a %d\",function(n){return n.getDay()&&1!=n.getDate()}],[\"%b %d\",function(n){return 1!=n.getDate()}],[\"%B\",function(n){return n.getMonth()}],[\"%Y\",zt]]),tc={range:function(n,t,e){return ao.range(Math.ceil(n/e)*e,+t,e).map(io)},floor:m,ceil:m};Ql.year=ga.year,ga.scale=function(){return \
 ro(ao.scale.linear(),Ql,nc)};var ec=Ql.map(function(n){return[n[0].utc,n[1]]}),rc=Jl.multi([[\".%L\",function(n){return n.getUTCMilliseconds()}],[\":%S\",function(n){return n.getUTCSeconds()}],[\"%I:%M\",function(n){return n.getUTCMinutes()}],[\"%I %p\",function(n){return n.getUTCHours()}],[\"%a %d\",function(n){return n.getUTCDay()&&1!=n.getUTCDate()}],[\"%b %d\",function(n){return 1!=n.getUTCDate()}],[\"%B\",function(n){return n.getUTCMonth()}],[\"%Y\",zt]]);ec.year=ga.year.utc,ga.scale.utc=function(){return ro(ao.scale.linear(),ec,rc)},ao.text=An(function(n){return n.responseText}),ao.json=function(n,t){return Cn(n,\"application/json\",uo,t)},ao.html=function(n,t){return Cn(n,\"text/html\",oo,t)},ao.xml=An(function(n){return n.responseXML}),\"function\"==typeof define&&define.amd?(this.d3=ao,define(ao)):\"object\"==typeof module&&module.exports?module.exports=ao:this.d3=ao}();
-")
+"
+)
 ################################################################################
 # end d3.js
 ################################################################################

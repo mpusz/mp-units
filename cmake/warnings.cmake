@@ -70,9 +70,7 @@ macro(_set_flags)
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
     )
 
-    set(CLANG_WARNINGS
-        ${GCC_COMMON_WARNINGS}
-    )
+    set(CLANG_WARNINGS ${GCC_COMMON_WARNINGS})
 
     set(GCC_WARNINGS
         ${GCC_COMMON_WARNINGS}

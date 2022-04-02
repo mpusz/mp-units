@@ -29,6 +29,6 @@ add_units_module(core-fmt mp-units::core)
 target_compile_definitions(mp-units-core-fmt INTERFACE ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>)
 
 if(${projectPrefix}USE_LIBFMT)
-  find_package(fmt CONFIG REQUIRED)
-  target_link_libraries(mp-units-core-fmt INTERFACE fmt::fmt)
+    find_package(fmt CONFIG REQUIRED)
+    target_link_libraries(mp-units-core-fmt INTERFACE fmt::fmt)
 endif()

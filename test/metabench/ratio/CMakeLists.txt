@@ -22,52 +22,65 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_metabench_test(metabench.data.ratio.create.std_ratio "std::ratio" create_std_ratio.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
-add_metabench_test(metabench.data.ratio.create.ratio_type_constexpr "ratio with constexpr" create_ratio_type_constexpr.cpp.erb "[1000, 2500, 5000, 7500, 10000]")
-metabench_add_chart(metabench.chart.ratio.create
+add_metabench_test(
+    metabench.data.ratio.create.std_ratio "std::ratio" create_std_ratio.cpp.erb "[1000, 2500, 5000, 7500, 10000]"
+)
+add_metabench_test(
+    metabench.data.ratio.create.ratio_type_constexpr "ratio with constexpr" create_ratio_type_constexpr.cpp.erb
+    "[1000, 2500, 5000, 7500, 10000]"
+)
+metabench_add_chart(
+    metabench.chart.ratio.create
     TITLE "Creation of 2*N ratios"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.ratio.create.std_ratio
-        metabench.data.ratio.create.ratio_type_constexpr
+    DATASETS metabench.data.ratio.create.std_ratio metabench.data.ratio.create.ratio_type_constexpr
 )
 
-add_metabench_test(metabench.data.ratio.multiply_divide.std_ratio "std::ratio" multiply_divide_std_ratio.cpp.erb "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]")
-add_metabench_test(metabench.data.ratio.multiply_divide.ratio_type_constexpr "ratio constexpr" multiply_divide_ratio_type_constexpr.cpp.erb "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]")
-metabench_add_chart(metabench.chart.ratio.multiply_divide
+add_metabench_test(
+    metabench.data.ratio.multiply_divide.std_ratio "std::ratio" multiply_divide_std_ratio.cpp.erb
+    "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]"
+)
+add_metabench_test(
+    metabench.data.ratio.multiply_divide.ratio_type_constexpr "ratio constexpr"
+    multiply_divide_ratio_type_constexpr.cpp.erb "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]"
+)
+metabench_add_chart(
+    metabench.chart.ratio.multiply_divide
     TITLE "N ratio multiply + divide operations"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.ratio.multiply_divide.std_ratio
-        metabench.data.ratio.multiply_divide.ratio_type_constexpr
+    DATASETS metabench.data.ratio.multiply_divide.std_ratio metabench.data.ratio.multiply_divide.ratio_type_constexpr
 )
 
-add_metabench_test(metabench.data.ratio.common_ratio.std_ratio "std::ratio" common_ratio_std_ratio.cpp.erb "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]")
-add_metabench_test(metabench.data.ratio.common_ratio.ratio_type_constexpr "ratio constexpr" common_ratio_ratio_type_constexpr.cpp.erb "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]")
-metabench_add_chart(metabench.chart.ratio.common_ratio
+add_metabench_test(
+    metabench.data.ratio.common_ratio.std_ratio "std::ratio" common_ratio_std_ratio.cpp.erb
+    "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]"
+)
+add_metabench_test(
+    metabench.data.ratio.common_ratio.ratio_type_constexpr "ratio constexpr" common_ratio_ratio_type_constexpr.cpp.erb
+    "[10, 50, 100, 250, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000]"
+)
+metabench_add_chart(
+    metabench.chart.ratio.common_ratio
     TITLE "N common_ratio operations"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.ratio.common_ratio.std_ratio
-        metabench.data.ratio.common_ratio.ratio_type_constexpr
+    DATASETS metabench.data.ratio.common_ratio.std_ratio metabench.data.ratio.common_ratio.ratio_type_constexpr
 )
 
 add_metabench_test(metabench.data.ratio.all.std_ratio "std::ratio" all_std_ratio.cpp.erb "[10, 50, 100, 500, 1000]")
-add_metabench_test(metabench.data.ratio.all.ratio_type_constexpr "ratio with constexpr" all_ratio_type_constexpr.cpp.erb "[10, 50, 100, 500, 1000]")
-metabench_add_chart(metabench.chart.ratio.all
+add_metabench_test(
+    metabench.data.ratio.all.ratio_type_constexpr "ratio with constexpr" all_ratio_type_constexpr.cpp.erb
+    "[10, 50, 100, 500, 1000]"
+)
+metabench_add_chart(
+    metabench.chart.ratio.all
     TITLE "N x all ratio operations"
     SUBTITLE "(lower is better)"
-    DATASETS
-        metabench.data.ratio.all.std_ratio
-        metabench.data.ratio.all.ratio_type_constexpr
+    DATASETS metabench.data.ratio.all.std_ratio metabench.data.ratio.all.ratio_type_constexpr
 )
 
-add_custom_target(metabench.chart.ratio
-    DEPENDS
-        metabench.chart.ratio.create
-        metabench.chart.ratio.multiply_divide
-        metabench.chart.ratio.common_ratio
-        metabench.chart.ratio.all
+add_custom_target(
+    metabench.chart.ratio DEPENDS metabench.chart.ratio.create metabench.chart.ratio.multiply_divide
+                                  metabench.chart.ratio.common_ratio metabench.chart.ratio.all
 )
 
 add_dependencies(metabench metabench.chart.ratio)

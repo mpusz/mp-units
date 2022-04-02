@@ -44,17 +44,13 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_1.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/downcast_2.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/_static/img/units.svg"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/design.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/directories.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/downcasting.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/quantity.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/design/quantity_kind.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/avg_speed.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/box_example.rst"
@@ -66,17 +62,13 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/hello_units.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/total_energy.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/basics/unknown_dimension.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation/linear_algebra.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_representation/measurement.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_systems.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_systems/custom_systems.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_utilities.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/custom_utilities/conversion_factor.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_1.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_2.rst"
@@ -87,9 +79,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_7.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/example_8.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/kalman_filter/kalman.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/faq.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/framework.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/arithmetics.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/basic_concepts.rst"
@@ -101,18 +91,16 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_points.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/text_output.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/units.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/genindex.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/glossary.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/index.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/introduction.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/quick_start.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/concepts.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/customization_points.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/downcasting.rst"
-#   "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/functions.rst"
+    #   "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/functions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/metafunctions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/dimensions.rst"
@@ -128,26 +116,20 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/basic_fixed_string.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/basic_symbol_text.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/ratio.rst"
-
-#   "${CMAKE_CURRENT_SOURCE_DIR}/reference/math.rst"
+    #   "${CMAKE_CURRENT_SOURCE_DIR}/reference/math.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/random.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/angle.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/dimensionless.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/generic/unknown.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/binary_prefixes.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/modulation_rate.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/storage_capacity.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/traffic_intensity.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/iec80000/transfer_rate.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/acceleration.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/constants.rst"
@@ -159,7 +141,6 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/speed.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/time.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/natural/units.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_cgs.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/cgs/length.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/cgs/acceleration.rst"
@@ -172,9 +153,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/cgs/pressure.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/cgs/speed.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/cgs/time.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/dimensions_and_concepts.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_fps.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/fps/length.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/fps/acceleration.rst"
@@ -189,19 +168,15 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/fps/speed.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/fps/time.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/fps/volume.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_iau.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/iau/length.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_imperial.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/imperial/length.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_international.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/international/area.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/international/length.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/international/speed.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/international/volume.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/absorbed_dose.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/acceleration.rst"
@@ -245,15 +220,11 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/time.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/voltage.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/volume.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_typographic.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/typographic/length.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si_uscs.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems/isq/si/uscs/length.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/references.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/custom_representation_types.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/extensions.rst"
@@ -262,14 +233,14 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/linear_algebra.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/natural_units.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/use_cases/unknown_dimensions.rst"
-
     "${CMAKE_CURRENT_SOURCE_DIR}/usage.rst"
 )
 
 include(documentation)
 include(GNUInstallDirs)
 
-add_documentation(documentation ALL
+add_documentation(
+    documentation ALL
     BREATHE_PROJECT mp-units
     CODE_SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
     INSTALL_DIR ${CMAKE_INSTALL_DOCDIR}
@@ -277,6 +248,7 @@ add_documentation(documentation ALL
     DOCS_DEPENDS ${unitsSphinxDocs}
 )
 
-add_custom_command(TARGET documentation POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/_static/img/*.svg ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_images
+add_custom_command(
+    TARGET documentation POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/_static/img/*.svg
+                                            ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_images
 )

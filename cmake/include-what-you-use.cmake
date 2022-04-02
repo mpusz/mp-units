@@ -48,7 +48,17 @@ macro(_enable_iwyu_failed log_postfix)
 endmacro()
 
 macro(_process_iwyu_arguments offset log_postfix)
-    set(_options QUIET REQUIRED NO_DEFAULT_MAPPINGS PCH_IN_CODE TRANSITIVE_INCLUDES_ONLY NO_COMMENTS NO_FORWARD_DECLARATIONS CXX17_NAMESPACES QUOTED_INCLUDES_FIRST)
+    set(_options
+        QUIET
+        REQUIRED
+        NO_DEFAULT_MAPPINGS
+        PCH_IN_CODE
+        TRANSITIVE_INCLUDES_ONLY
+        NO_COMMENTS
+        NO_FORWARD_DECLARATIONS
+        CXX17_NAMESPACES
+        QUOTED_INCLUDES_FIRST
+    )
     set(_one_value_args PROGRAM MAPPING_FILE MAX_LINE_LENGTH)
     set(_multi_value_args KEEP)
     cmake_parse_arguments(PARSE_ARGV ${offset} _enable_iwyu "${_options}" "${_one_value_args}" "${_multi_value_args}")
@@ -160,7 +170,5 @@ endfunction()
 #
 function(enable_target_iwyu target)
     _process_iwyu_arguments(1 " for '${target}'")
-    set_target_properties(${target} PROPERTIES
-        CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}"
-    )
+    set_target_properties(${target} PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${_iwyu_path};${_iwyu_args}")
 endfunction()
