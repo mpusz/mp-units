@@ -334,16 +334,18 @@ static_assert(1_q_J_per_K * 1_q_K == 1_q_s * 1_q_N * 1_q_m_per_s);
 static_assert(1_q_J_per_mol_K == 1_q_J_per_K / 1_q_mol);
 
 static_assert(detail::unit_text<dim_heat_capacity, joule_per_kelvin>() == "J/K");
-static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() == basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J K^-1 kg^-1"));
+static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() ==
+              basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J K^-1 kg^-1"));
 
 // thermal conductivity
 
 static_assert(20_q_W_per_m_K * 10_q_m * 300_q_K == 60'000_q_W);
-static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() == basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
+static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() ==
+              basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
 
 // electric field strength
 
-static_assert(100_q_N/20_q_C == 5_q_V_per_m);
+static_assert(100_q_N / 20_q_C == 5_q_V_per_m);
 static_assert(1_q_C * 10_q_V_per_m * 3_q_m == 30_q_J);
 
 static_assert(detail::unit_text<dim_electric_field_strength, volt_per_metre>() == "V/m");
@@ -358,12 +360,13 @@ static_assert(1_q_C_per_m2 == 1_q_C_per_m3 * 1_q_m);
 static_assert(1_q_V_per_m * 10_q_C_per_m3 * 1_q_m3 == 10_q_N);
 
 static_assert(detail::unit_text<dim_charge_density, coulomb_per_metre_cub>() == basic_symbol_text("C/m³", "C/m^3"));
-static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() == basic_symbol_text("C/m²", "C/m^2"));
+static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() ==
+              basic_symbol_text("C/m²", "C/m^2"));
 
 // permittivity
 
 static_assert(1_q_F_per_m == 1_q_F / 1_q_m);
-static_assert(1/(1_q_F_per_m) * 1_q_C * 1_q_C / 1_q_m2 == 1_q_N);
+static_assert(1 / (1_q_F_per_m) * 1_q_C * 1_q_C / 1_q_m2 == 1_q_N);
 static_assert(1_q_C_per_m3 / 1_q_F_per_m * 1_q_m == 1_q_V_per_m);
 
 static_assert(detail::unit_text<dim_permittivity, farad_per_metre>() == "F/m");

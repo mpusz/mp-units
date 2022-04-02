@@ -36,7 +36,8 @@ namespace units::isq::si {
 
 struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}, no_prefix> {};
 
-struct dim_angular_velocity : isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};
+struct dim_angular_velocity :
+    isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};
 
 template<UnitOf<dim_angular_velocity> U, Representation Rep = double>
 using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
@@ -46,12 +47,16 @@ using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 inline namespace literals {
 
 // rad / s
-constexpr auto operator"" _q_rad_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return angular_velocity<radian_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_rad_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return angular_velocity<radian_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<radian_per_second, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -59,8 +64,9 @@ constexpr auto operator"" _q_rad_per_s(long double l) { return angular_velocity<
 
 namespace units::aliases::isq::si::inline angular_velocity {
 
-template<Representation Rep = double> using rad_per_s = units::isq::si::angular_velocity<units::isq::si::radian_per_second, Rep>;
+template<Representation Rep = double>
+using rad_per_s = units::isq::si::angular_velocity<units::isq::si::radian_per_second, Rep>;
 
 }  // namespace units::aliases::isq::si::inline angular_velocity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

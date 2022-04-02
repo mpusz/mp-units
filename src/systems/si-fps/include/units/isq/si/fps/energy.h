@@ -40,7 +40,7 @@ struct foot_poundal : unit<foot_poundal> {};
 struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_length, dim_force> {};
 
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
- struct foot_pound_force : derived_unit<foot_pound_force, dim_energy, foot, pound_force> {};
+struct foot_pound_force : derived_unit<foot_pound_force, dim_energy, foot, pound_force> {};
 
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;
@@ -50,16 +50,24 @@ using energy = quantity<dim_energy, U, Rep>;
 inline namespace literals {
 
 // foot poundal
-constexpr auto operator"" _q_ft_pdl(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<foot_poundal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_pdl(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return energy<foot_poundal, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_pdl(long double l) { return energy<foot_poundal, long double>(l); }
 
 // foot_pound force
-constexpr auto operator"" _q_ft_lbf(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return energy<foot_pound_force, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_lbf(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return energy<foot_pound_force, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_force, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::fps
 
@@ -67,9 +75,11 @@ constexpr auto operator"" _q_ft_lbf(long double l) { return energy<foot_pound_fo
 
 namespace units::aliases::isq::si::fps::inline energy {
 
-template<Representation Rep = double> using ft_pdl = units::isq::si::fps::energy<units::isq::si::fps::foot_poundal, Rep>;
-template<Representation Rep = double> using ft_lbf = units::isq::si::fps::energy<units::isq::si::fps::foot_pound_force, Rep>;
+template<Representation Rep = double>
+using ft_pdl = units::isq::si::fps::energy<units::isq::si::fps::foot_poundal, Rep>;
+template<Representation Rep = double>
+using ft_lbf = units::isq::si::fps::energy<units::isq::si::fps::foot_pound_force, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline energy
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

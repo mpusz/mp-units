@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/energy.h> // IWYU pragma: keep
+#include <units/format.h>
+#include <units/isq/si/energy.h>  // IWYU pragma: keep
 #include <units/isq/si/force.h>
 #include <units/isq/si/length.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
-#include <units/format.h>
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/quantity_io.h>
-#include <linear_algebra.hpp>
 #include <iostream>
+#include <linear_algebra.hpp>
 
 namespace STD_LA {
 
@@ -72,9 +72,9 @@ void vector_of_quantity_add()
 {
   std::cout << "\nvector_of_quantity_add:\n";
 
-  vector<length::m<>> v = { m<>(1), m<>(2), m<>(3) };
-  vector<length::m<>> u = { m<>(3), m<>(2), m<>(1) };
-  vector<length::km<>> t = { km<>(3), km<>(2), km<>(1) };
+  vector<length::m<>> v = {m<>(1), m<>(2), m<>(3)};
+  vector<length::m<>> u = {m<>(3), m<>(2), m<>(1)};
+  vector<length::km<>> t = {km<>(3), km<>(2), km<>(1)};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -89,8 +89,8 @@ void vector_of_quantity_multiply_same()
 {
   std::cout << "\nvector_of_quantity_multiply_same:\n";
 
-  vector<length::m<>> v = { m<>(1), m<>(2), m<>(3) };
-  vector<length::m<>> u = { m<>(3), m<>(2), m<>(1) };
+  vector<length::m<>> v = {m<>(1), m<>(2), m<>(3)};
+  vector<length::m<>> u = {m<>(3), m<>(2), m<>(1)};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -103,8 +103,8 @@ void vector_of_quantity_multiply_different()
 {
   std::cout << "\nvector_of_quantity_multiply_different:\n";
 
-  vector<force::N<>> v = { N<>(1), N<>(2), N<>(3) };
-  vector<length::m<>> u = { m<>(3), m<>(2), m<>(1) };
+  vector<force::N<>> v = {N<>(1), N<>(2), N<>(3)};
+  vector<length::m<>> u = {m<>(3), m<>(2), m<>(1)};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -118,7 +118,7 @@ void vector_of_quantity_divide_by_scalar()
 {
   std::cout << "\nvector_of_quantity_divide_by_scalar:\n";
 
-  vector<length::m<>> v = { m<>(4), m<>(8), m<>(12) };
+  vector<length::m<>> v = {m<>(4), m<>(8), m<>(12)};
 
   std::cout << "v = " << v << "\n";
 
@@ -139,9 +139,9 @@ void matrix_of_quantity_add()
 {
   std::cout << "\nmatrix_of_quantity_add:\n";
 
-  matrix<length::m<>> v = {{ m<>(1), m<>(2), m<>(3) }, { m<>(4), m<>(5), m<>(6) }, { m<>(7), m<>(8), m<>(9) }};
-  matrix<length::m<>> u = {{ m<>(3), m<>(2), m<>(1) }, { m<>(3), m<>(2), m<>(1) }, { m<>(3), m<>(2), m<>(1) }};
-  matrix<length::mm<>> t = {{ mm<>(3), mm<>(2), mm<>(1) }, { mm<>(3), mm<>(2), mm<>(1) }, { mm<>(3), mm<>(2), mm<>(1) }};
+  matrix<length::m<>> v = {{m<>(1), m<>(2), m<>(3)}, {m<>(4), m<>(5), m<>(6)}, {m<>(7), m<>(8), m<>(9)}};
+  matrix<length::m<>> u = {{m<>(3), m<>(2), m<>(1)}, {m<>(3), m<>(2), m<>(1)}, {m<>(3), m<>(2), m<>(1)}};
+  matrix<length::mm<>> t = {{mm<>(3), mm<>(2), mm<>(1)}, {mm<>(3), mm<>(2), mm<>(1)}, {mm<>(3), mm<>(2), mm<>(1)}};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -158,8 +158,8 @@ void matrix_of_quantity_multiply_same()
 {
   std::cout << "\nmatrix_of_quantity_multiply_same:\n";
 
-  matrix<length::m<>> v = {{ m<>(1), m<>(2), m<>(3) }, { m<>(4), m<>(5), m<>(6) }, { m<>(7), m<>(8), m<>(9) }};
-  vector<length::m<>> u = { m<>(3), m<>(2), m<>(1) };
+  matrix<length::m<>> v = {{m<>(1), m<>(2), m<>(3)}, {m<>(4), m<>(5), m<>(6)}, {m<>(7), m<>(8), m<>(9)}};
+  vector<length::m<>> u = {m<>(3), m<>(2), m<>(1)};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -172,8 +172,8 @@ void matrix_of_quantity_multiply_different()
 {
   std::cout << "\nmatrix_of_quantity_multiply_different:\n";
 
-  vector<force::N<>> v = { N<>(1), N<>(2), N<>(3) };
-  matrix<length::m<>> u = {{ m<>(1), m<>(2), m<>(3) }, { m<>(4), m<>(5), m<>(6) }, { m<>(7), m<>(8), m<>(9) }};
+  vector<force::N<>> v = {N<>(1), N<>(2), N<>(3)};
+  matrix<length::m<>> u = {{m<>(1), m<>(2), m<>(3)}, {m<>(4), m<>(5), m<>(6)}, {m<>(7), m<>(8), m<>(9)}};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -187,7 +187,7 @@ void matrix_of_quantity_divide_by_scalar()
 {
   std::cout << "\nmatrix_of_quantity_divide_by_scalar:\n";
 
-  matrix<length::m<>> v = {{ m<>(2), m<>(4), m<>(6) }, { m<>(4), m<>(6), m<>(8) }, { m<>(8), m<>(4), m<>(2) }};
+  matrix<length::m<>> v = {{m<>(2), m<>(4), m<>(6)}, {m<>(4), m<>(6), m<>(8)}, {m<>(8), m<>(4), m<>(2)}};
 
   std::cout << "v =\n" << v << "\n";
 
@@ -216,9 +216,9 @@ void quantity_of_vector_add()
 {
   std::cout << "\nquantity_of_vector_add:\n";
 
-  length_v<> v(vector<>{ 1, 2, 3 });
-  length_v<> u(vector<>{ 3, 2, 1 });
-  length_v<si::kilometre> t(vector<>{ 3, 2, 1 });
+  length_v<> v(vector<>{1, 2, 3});
+  length_v<> u(vector<>{3, 2, 1});
+  length_v<si::kilometre> t(vector<>{3, 2, 1});
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -233,8 +233,8 @@ void quantity_of_vector_multiply_same()
 {
   std::cout << "\nquantity_of_vector_multiply_same:\n";
 
-  length_v<> v(vector<>{ 1, 2, 3 });
-  length_v<> u(vector<>{ 3, 2, 1 });
+  length_v<> v(vector<>{1, 2, 3});
+  length_v<> u(vector<>{3, 2, 1});
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -247,8 +247,8 @@ void quantity_of_vector_multiply_different()
 {
   std::cout << "\nquantity_of_vector_multiply_different:\n";
 
-  force_v<> v(vector<>{ 1, 2, 3 });
-  length_v<> u(vector<>{ 3, 2, 1 });
+  force_v<> v(vector<>{1, 2, 3});
+  length_v<> u(vector<>{3, 2, 1});
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -262,7 +262,7 @@ void quantity_of_vector_divide_by_scalar()
 {
   std::cout << "\nquantity_of_vector_divide_by_scalar:\n";
 
-  length_v<> v(vector<>{ 4, 8, 12 });
+  length_v<> v(vector<>{4, 8, 12});
 
   std::cout << "v = " << v << "\n";
 
@@ -286,9 +286,9 @@ void quantity_of_matrix_add()
 {
   std::cout << "\nquantity_of_matrix_add:\n";
 
-  length_m<> v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
-  length_m<> u(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
-  length_m<si::kilometre> t(matrix<>{{ 3, 2, 1 }, { 3, 2, 1 }, { 3, 2, 1 }});
+  length_m<> v(matrix<>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+  length_m<> u(matrix<>{{3, 2, 1}, {3, 2, 1}, {3, 2, 1}});
+  length_m<si::kilometre> t(matrix<>{{3, 2, 1}, {3, 2, 1}, {3, 2, 1}});
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -305,8 +305,8 @@ void quantity_of_matrix_multiply_same()
 {
   std::cout << "\nquantity_of_matrix_multiply_same:\n";
 
-  length_m<> v(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
-  length_v<> u(vector<>{ 3, 2, 1 });
+  length_m<> v(matrix<>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
+  length_v<> u(vector<>{3, 2, 1});
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -319,8 +319,8 @@ void quantity_of_matrix_multiply_different()
 {
   std::cout << "\nquantity_of_matrix_multiply_different:\n";
 
-  force_v<> v(vector<>{ 1, 2, 3 });
-  length_m<> u(matrix<>{{ 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }});
+  force_v<> v(vector<>{1, 2, 3});
+  length_m<> u(matrix<>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -334,7 +334,7 @@ void quantity_of_matrix_divide_by_scalar()
 {
   std::cout << "\nquantity_of_matrix_divide_by_scalar:\n";
 
-  length_m<> v(matrix<>{{ 2, 4, 6 }, { 4, 6, 8 }, { 8, 4, 2 }});
+  length_m<> v(matrix<>{{2, 4, 6}, {4, 6, 8}, {8, 4, 2}});
 
   std::cout << "v =\n" << v << "\n";
 

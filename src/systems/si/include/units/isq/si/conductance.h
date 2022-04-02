@@ -29,8 +29,8 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/resistance.h>
 #include <units/isq/si/prefixes.h>
+#include <units/isq/si/resistance.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
@@ -63,76 +63,144 @@ using conductance = quantity<dim_conductance, U, Rep>;
 inline namespace literals {
 
 // R
-constexpr auto operator"" _q_S(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<siemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_S(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<siemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_S(long double l) { return conductance<siemens, long double>(l); }
 
 // yS
-constexpr auto operator"" _q_yS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<yoctosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<yoctosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yS(long double l) { return conductance<yoctosiemens, long double>(l); }
 
 // zS
-constexpr auto operator"" _q_zS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<zeptosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<zeptosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zS(long double l) { return conductance<zeptosiemens, long double>(l); }
 
 // aS
-constexpr auto operator"" _q_aS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<attosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<attosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_aS(long double l) { return conductance<attosiemens, long double>(l); }
 
 // fS
-constexpr auto operator"" _q_fS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<femtosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<femtosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fS(long double l) { return conductance<femtosiemens, long double>(l); }
 
 // pS
-constexpr auto operator"" _q_pS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<picosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<picosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pS(long double l) { return conductance<picosiemens, long double>(l); }
 
 // nS
-constexpr auto operator"" _q_nS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<nanosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<nanosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_nS(long double l) { return conductance<nanosiemens, long double>(l); }
 
 // µS
-constexpr auto operator"" _q_uS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<microsiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<microsiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_uS(long double l) { return conductance<microsiemens, long double>(l); }
 
 // mS
-constexpr auto operator"" _q_mS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<millisiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<millisiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mS(long double l) { return conductance<millisiemens, long double>(l); }
 
 // kS
-constexpr auto operator"" _q_kS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<kilosiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<kilosiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kS(long double l) { return conductance<kilosiemens, long double>(l); }
 
 // MS
-constexpr auto operator"" _q_MS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<megasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<megasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MS(long double l) { return conductance<megasiemens, long double>(l); }
 
 // GS
-constexpr auto operator"" _q_GS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<gigasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<gigasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GS(long double l) { return conductance<gigasiemens, long double>(l); }
 
 // TS
-constexpr auto operator"" _q_TS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<terasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<terasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TS(long double l) { return conductance<terasiemens, long double>(l); }
 
 // PS
-constexpr auto operator"" _q_PS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<petasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<petasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PS(long double l) { return conductance<petasiemens, long double>(l); }
 
 // ES
-constexpr auto operator"" _q_ES(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<exasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ES(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<exasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ES(long double l) { return conductance<exasiemens, long double>(l); }
 
 // ZS
-constexpr auto operator"" _q_ZS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<zettasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<zettasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ZS(long double l) { return conductance<zettasiemens, long double>(l); }
 
 // YS
-constexpr auto operator"" _q_YS(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return conductance<yottasiemens, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YS(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return conductance<yottasiemens, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YS(long double l) { return conductance<yottasiemens, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -164,7 +232,7 @@ using namespace conductance_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -172,24 +240,41 @@ using namespace conductance_references;
 
 namespace units::aliases::isq::si::inline conductance {
 
-template<Representation Rep = double> using S = units::isq::si::conductance<units::isq::si::siemens, Rep>;
-template<Representation Rep = double> using yS = units::isq::si::conductance<units::isq::si::yoctosiemens, Rep>;
-template<Representation Rep = double> using zS = units::isq::si::conductance<units::isq::si::zeptosiemens, Rep>;
-template<Representation Rep = double> using aS = units::isq::si::conductance<units::isq::si::attosiemens, Rep>;
-template<Representation Rep = double> using fS = units::isq::si::conductance<units::isq::si::femtosiemens, Rep>;
-template<Representation Rep = double> using pS = units::isq::si::conductance<units::isq::si::picosiemens, Rep>;
-template<Representation Rep = double> using nS = units::isq::si::conductance<units::isq::si::nanosiemens, Rep>;
-template<Representation Rep = double> using uS = units::isq::si::conductance<units::isq::si::microsiemens, Rep>;
-template<Representation Rep = double> using mS = units::isq::si::conductance<units::isq::si::millisiemens, Rep>;
-template<Representation Rep = double> using kS = units::isq::si::conductance<units::isq::si::kilosiemens, Rep>;
-template<Representation Rep = double> using MS = units::isq::si::conductance<units::isq::si::megasiemens, Rep>;
-template<Representation Rep = double> using GS = units::isq::si::conductance<units::isq::si::gigasiemens, Rep>;
-template<Representation Rep = double> using TS = units::isq::si::conductance<units::isq::si::terasiemens, Rep>;
-template<Representation Rep = double> using PS = units::isq::si::conductance<units::isq::si::petasiemens, Rep>;
-template<Representation Rep = double> using ES = units::isq::si::conductance<units::isq::si::exasiemens, Rep>;
-template<Representation Rep = double> using ZS = units::isq::si::conductance<units::isq::si::zettasiemens, Rep>;
-template<Representation Rep = double> using YS = units::isq::si::conductance<units::isq::si::yottasiemens, Rep>;
+template<Representation Rep = double>
+using S = units::isq::si::conductance<units::isq::si::siemens, Rep>;
+template<Representation Rep = double>
+using yS = units::isq::si::conductance<units::isq::si::yoctosiemens, Rep>;
+template<Representation Rep = double>
+using zS = units::isq::si::conductance<units::isq::si::zeptosiemens, Rep>;
+template<Representation Rep = double>
+using aS = units::isq::si::conductance<units::isq::si::attosiemens, Rep>;
+template<Representation Rep = double>
+using fS = units::isq::si::conductance<units::isq::si::femtosiemens, Rep>;
+template<Representation Rep = double>
+using pS = units::isq::si::conductance<units::isq::si::picosiemens, Rep>;
+template<Representation Rep = double>
+using nS = units::isq::si::conductance<units::isq::si::nanosiemens, Rep>;
+template<Representation Rep = double>
+using uS = units::isq::si::conductance<units::isq::si::microsiemens, Rep>;
+template<Representation Rep = double>
+using mS = units::isq::si::conductance<units::isq::si::millisiemens, Rep>;
+template<Representation Rep = double>
+using kS = units::isq::si::conductance<units::isq::si::kilosiemens, Rep>;
+template<Representation Rep = double>
+using MS = units::isq::si::conductance<units::isq::si::megasiemens, Rep>;
+template<Representation Rep = double>
+using GS = units::isq::si::conductance<units::isq::si::gigasiemens, Rep>;
+template<Representation Rep = double>
+using TS = units::isq::si::conductance<units::isq::si::terasiemens, Rep>;
+template<Representation Rep = double>
+using PS = units::isq::si::conductance<units::isq::si::petasiemens, Rep>;
+template<Representation Rep = double>
+using ES = units::isq::si::conductance<units::isq::si::exasiemens, Rep>;
+template<Representation Rep = double>
+using ZS = units::isq::si::conductance<units::isq::si::zettasiemens, Rep>;
+template<Representation Rep = double>
+using YS = units::isq::si::conductance<units::isq::si::yottasiemens, Rep>;
 
 }  // namespace units::aliases::isq::si::inline conductance
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

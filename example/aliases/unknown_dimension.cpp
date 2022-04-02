@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <units/isq/si/length.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <exception>
@@ -44,8 +44,9 @@ void example()
   Time auto t1 = s<>(10);
   Speed auto v1 = avg_speed(d1, t1);
 
-  auto temp1 = v1 * m<>(50);  // produces intermediate unknown dimension with 'unknown_coherent_unit' as its 'coherent_unit'
-  Speed auto v2 = temp1 / m<>(100); // back to known dimensions again
+  auto temp1 =
+    v1 * m<>(50);  // produces intermediate unknown dimension with 'unknown_coherent_unit' as its 'coherent_unit'
+  Speed auto v2 = temp1 / m<>(100);  // back to known dimensions again
   Length auto d2 = v2 * s<>(60);
 
   std::cout << "d1 = " << d1 << '\n';
@@ -56,17 +57,15 @@ void example()
   std::cout << "d2 = " << d2 << '\n';
 }
 
-} // namespace
+}  // namespace
 
 int main()
 {
   try {
     example();
-  }
-  catch (const std::exception& ex) {
+  } catch (const std::exception& ex) {
     std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
-  }
-  catch (...) {
+  } catch (...) {
     std::cerr << "Unhandled unknown exception caught\n";
   }
 }

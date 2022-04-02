@@ -32,14 +32,14 @@
 
 #include <units/chrono.h>
 #include <units/format.h>
-#include <units/math.h> // IWYU pragma: keep
+#include <units/math.h>  // IWYU pragma: keep
 #include <algorithm>
 #include <array>
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
 #include <ranges>
-#include <string> // IWYU pragma: keep
+#include <string>  // IWYU pragma: keep
 #include <vector>
 
 // An example of a really simplified tactical glide computer
@@ -69,7 +69,7 @@ namespace glide_computer {
 
 template<units::QuantityKind QK1, units::QuantityKind QK2>
 constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
-  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common();}
+  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); }
 {
   return lhs.common() / rhs.common();
 }
@@ -149,7 +149,7 @@ public:
     const waypoint* end_;
     distance length_ = geographic::spherical_distance(begin().pos, end().pos);
   public:
-    leg(const waypoint& b, const waypoint& e) noexcept: begin_(&b), end_(&e) {}
+    leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
     constexpr const waypoint& begin() const { return *begin_; };
     constexpr const waypoint& end() const { return *end_; }
     constexpr const distance get_length() const { return length_; }
@@ -157,8 +157,11 @@ public:
   using legs = std::vector<leg>;
 
   template<std::ranges::input_range R>
-    requires std::same_as<std::ranges::range_value_t<R>, waypoint>
-  explicit task(const R& r) : waypoints_(std::ranges::begin(r), std::ranges::end(r)) {}
+    requires std::same_as<std::ranges::range_value_t<R>,
+                          waypoint> explicit task(const R& r) :
+      waypoints_(std::ranges::begin(r), std::ranges::end(r))
+  {
+  }
 
   task(std::initializer_list<waypoint> wpts) : waypoints_(wpts) {}
 
@@ -170,10 +173,14 @@ public:
 
   distance get_length() const { return length_; }
 
-  distance get_leg_dist_offset(std::size_t leg_index) const { return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1]; }
+  distance get_leg_dist_offset(std::size_t leg_index) const
+  {
+    return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1];
+  }
   std::size_t get_leg_index(distance dist) const
   {
-    return static_cast<std::size_t>(std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
+    return static_cast<std::size_t>(
+      std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
   }
 
 private:
@@ -214,6 +221,7 @@ inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);
 
-void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s, const aircraft_tow& at);
+void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
+              const aircraft_tow& at);
 
 }  // namespace glide_computer

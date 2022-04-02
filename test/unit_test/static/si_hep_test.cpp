@@ -23,9 +23,9 @@
 #include <units/isq/si/area.h>
 #include <units/isq/si/hep/area.h>
 #include <units/isq/si/hep/energy.h>
-#include <units/isq/si/length.h>
 #include <units/isq/si/hep/mass.h>
 #include <units/isq/si/hep/momentum.h>
+#include <units/isq/si/length.h>
 
 namespace {
 
@@ -45,7 +45,8 @@ static_assert(si::momentum<si::hep::eV_per_c>(1'000'000) == si::hep::momentum<si
 
 // area
 static_assert(si::area<si::hep::barn>(1e28) == si::area<si::square_metre>(1));
-//static_assert(si::area<si::hep::barn>(1) == si::area<si::square_metre>(1e-28)); // numeric rounding issues on some platforms
+// static_assert(si::area<si::hep::barn>(1) == si::area<si::square_metre>(1e-28)); // numeric rounding issues on some
+// platforms
 
 
 namespace hep_literal_test {
@@ -62,9 +63,10 @@ static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000) == 1_q_keV_per_c);
 static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000'000) == 1_q_MeV_per_c);
 
 // static_assert(si::area<si::square_metre, long double>(1e-28L) == 1_q_b); // numeric rounding issues on some platforms
-//static_assert(si::hep::area<si::square_yoctometre, long double>(1e-4L) == 1_q_b); // numeric rounding issues on some platforms
+// static_assert(si::hep::area<si::square_yoctometre, long double>(1e-4L) == 1_q_b); // numeric rounding issues on some
+// platforms
 static_assert(si::area<si::square_metre>(1e-43) == 1_q_fb);
 
-}
+}  // namespace hep_literal_test
 
-}
+}  // namespace

@@ -49,7 +49,8 @@ distance spherical_distance(position from, position to)
   if constexpr (sizeof(rep) >= 8) {
     // spherical law of cosines
     const auto central_angle = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon2 - lon1));
-    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2 - lat1) / 2 + cos(lat1) * cos(lat2) * (1 - cos(lon2 - lon1)) / 2));
+    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2 - lat1) / 2 + cos(lat1) * cos(lat2) * (1 - cos(lon2 -
+    // lon1)) / 2));
     return distance(earth_radius * central_angle);
   } else {
     // the haversine formula

@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/isq/si/thermodynamic_temperature.h>
 #include <units/format.h>
+#include <units/isq/si/thermodynamic_temperature.h>
 #include <units/math.h>
 #include <units/quantity_point.h>
 #include <units/unit.h>
@@ -56,13 +56,15 @@ template<QuantityPoint QP>
 void print_header(kalman::estimation<QP> initial)
 {
   std::cout << STD_FMT::format("Initial: {}\n", initial);
-  std::cout << STD_FMT::format("{:>2} | {:>7} | {:>10} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate", "Next Estimate");
+  std::cout << STD_FMT::format("{:>2} | {:>7} | {:>10} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate",
+                               "Next Estimate");
 }
 
 template<QuantityPoint QP, Dimensionless K>
 void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, kalman::estimation<QP> next)
 {
-  std::cout << STD_FMT::format("{:2} | {:7%.3Q} | {:10%.3Q %q} | {:>16.2} | {:>16.2}\n", iteration, gain, measured.relative(), current, next);
+  std::cout << STD_FMT::format("{:2} | {:7%.3Q} | {:10%.3Q %q} | {:>16.2} | {:>16.2}\n", iteration, gain,
+                               measured.relative(), current, next);
 }
 
 int main()
@@ -72,32 +74,25 @@ int main()
   using namespace units::isq::si::references;
 
   const auto process_noise_variance = 0.15 * (deg_C * deg_C);
-  const estimation initial = { state{ quantity_point(10. * deg_C) }, pow<2>(100. * deg_C) };
-  const std::array measurements = {
-    quantity_point(50.45 * deg_C),
-    quantity_point(50.967 * deg_C),
-    quantity_point(51.6 * deg_C),
-    quantity_point(52.106 * deg_C),
-    quantity_point(52.492 * deg_C),
-    quantity_point(52.819 * deg_C),
-    quantity_point(53.433 * deg_C),
-    quantity_point(54.007 * deg_C),
-    quantity_point(54.523 * deg_C),
-    quantity_point(54.99 * deg_C)
-  };
+  const estimation initial = {state{quantity_point(10. * deg_C)}, pow<2>(100. * deg_C)};
+  const std::array measurements = {quantity_point(50.45 * deg_C),  quantity_point(50.967 * deg_C),
+                                   quantity_point(51.6 * deg_C),   quantity_point(52.106 * deg_C),
+                                   quantity_point(52.492 * deg_C), quantity_point(52.819 * deg_C),
+                                   quantity_point(53.433 * deg_C), quantity_point(54.007 * deg_C),
+                                   quantity_point(54.523 * deg_C), quantity_point(54.99 * deg_C)};
   const auto measurement_uncertainty = pow<2>(0.1 * deg_C);
 
   auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement, Dimensionless auto gain) {
-    return estimation{ state_update(previous.state, meassurement, gain), covariance_update(previous.uncertainty, gain) };
+    return estimation{state_update(previous.state, meassurement, gain), covariance_update(previous.uncertainty, gain)};
   };
 
   auto predict = [=]<QuantityPoint QP>(const estimation<QP>& current) {
-    return estimation{ current.state, covariance_extrapolation(current.uncertainty, process_noise_variance) };
+    return estimation{current.state, covariance_extrapolation(current.uncertainty, process_noise_variance)};
   };
 
   print_header(initial);
   estimation next = predict(initial);
-  for(int index = 1; const auto& m : measurements) {
+  for (int index = 1; const auto& m : measurements) {
     const auto& previous = next;
     const auto gain = kalman_gain(previous.uncertainty, measurement_uncertainty);
     const estimation current = update(previous, m, gain);

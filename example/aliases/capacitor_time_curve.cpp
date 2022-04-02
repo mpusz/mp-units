@@ -25,7 +25,7 @@
 #include <units/isq/si/resistance.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/voltage.h>
-#include <units/math.h> // IWYU pragma: keep
+#include <units/math.h>  // IWYU pragma: keep
 #include <units/quantity_io.h>
 #include <iostream>
 

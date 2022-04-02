@@ -42,12 +42,16 @@ struct square_foot : derived_unit<square_foot, si::dim_area, si::international::
 inline namespace literals {
 
 // ft2
-constexpr auto operator"" _q_ft2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::area<square_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::area<square_foot, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft2(long double l) { return si::area<square_foot, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -63,7 +67,7 @@ using namespace area_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
@@ -71,8 +75,9 @@ using namespace area_references;
 
 namespace units::aliases::isq::si::international::inline area {
 
-template<Representation Rep = double> using ft2 = units::isq::si::area<units::isq::si::international::square_foot, Rep>;
+template<Representation Rep = double>
+using ft2 = units::isq::si::area<units::isq::si::international::square_foot, Rep>;
 
 }  // namespace units::aliases::isq::si::international::inline area
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

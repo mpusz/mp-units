@@ -28,8 +28,8 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/energy.h>
 #include <units/isq/si/amount_of_substance.h>
+#include <units/isq/si/energy.h>
 #include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
@@ -37,7 +37,8 @@ namespace units::isq::si {
 
 struct joule_per_mole : unit<joule_per_mole> {};
 
-struct dim_molar_energy : isq::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_amount_of_substance> {};
+struct dim_molar_energy :
+    isq::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_amount_of_substance> {};
 
 template<UnitOf<dim_molar_energy> U, Representation Rep = double>
 using molar_energy = quantity<dim_molar_energy, U, Rep>;
@@ -47,12 +48,16 @@ using molar_energy = quantity<dim_molar_energy, U, Rep>;
 inline namespace literals {
 
 // J/mol
-constexpr auto operator"" _q_J_per_mol(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return molar_energy<joule_per_mole, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_J_per_mol(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return molar_energy<joule_per_mole, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joule_per_mole, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -60,8 +65,9 @@ constexpr auto operator"" _q_J_per_mol(long double l) { return molar_energy<joul
 
 namespace units::aliases::isq::si::inline molar_energy {
 
-template<Representation Rep = double> using J_per_mol = units::isq::si::molar_energy<units::isq::si::joule_per_mole, Rep>;
+template<Representation Rep = double>
+using J_per_mol = units::isq::si::molar_energy<units::isq::si::joule_per_mole, Rep>;
 
 }  // namespace units::aliases::isq::si::inline molar_energy
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

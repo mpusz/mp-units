@@ -28,8 +28,8 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/length.h>
+#include <units/isq/si/fps/mass.h>
 #include <units/unit.h>
 
 namespace units::isq::si::fps {
@@ -46,12 +46,16 @@ using density = quantity<dim_density, U, Rep>;
 inline namespace literals {
 
 // lb/ft³
-constexpr auto operator"" _q_lb_per_ft3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return density<pound_per_foot_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_lb_per_ft3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return density<pound_per_foot_cub, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_per_foot_cub, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::fps
 
@@ -59,8 +63,9 @@ constexpr auto operator"" _q_lb_per_ft3(long double l) { return density<pound_pe
 
 namespace units::aliases::isq::si::fps::inline density {
 
-template<Representation Rep = double> using lb_per_ft3 = units::isq::si::fps::density<units::isq::si::fps::pound_per_foot_cub, Rep>;
+template<Representation Rep = double>
+using lb_per_ft3 = units::isq::si::fps::density<units::isq::si::fps::pound_per_foot_cub, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline density
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

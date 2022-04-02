@@ -114,7 +114,7 @@ concept invalid_types =
   requires {
     requires !requires { typename quantity_kind<Width, second, int>; };           // unit of a different dimension
     requires !requires { typename quantity_kind<Width, metre, length<metre>>; };  // quantity used as Rep
-    requires !requires {  // quantity point used as Rep
+    requires !requires {                                                          // quantity point used as Rep
                 typename quantity_kind<Width, metre, quantity_point<dynamic_origin<dim_length>, metre>>;
               };
     requires !requires { typename quantity_kind<Width, metre, width<metre>>; };  // quantity kind used as Rep

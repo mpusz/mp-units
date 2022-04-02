@@ -66,10 +66,7 @@ using length = quantity<dim_length, U, Rep>;
 }  // namespace si
 
 template<typename Q, typename U>
-concept castable_to = Quantity<Q> && Unit<U> &&
-  requires (Q q) {
-    quantity_cast<U>(q);
-  };
+concept castable_to = Quantity<Q> && Unit<U> && requires(Q q) { quantity_cast<U>(q); };
 
 void conversions()
 {

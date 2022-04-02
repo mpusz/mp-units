@@ -25,7 +25,7 @@
 #include <units/isq/si/energy.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/momentum.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/math.h>
 #include <units/quantity_io.h>
 #include <exception>
@@ -87,18 +87,16 @@ void natural_example()
             << "E = " << E << "\n";
 }
 
-} // namespace
+}  // namespace
 
 int main()
 {
   try {
     si_example();
     natural_example();
-  }
-  catch (const std::exception& ex) {
+  } catch (const std::exception& ex) {
     std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
-  }
-  catch (...) {
+  } catch (...) {
     std::cerr << "Unhandled unknown exception caught\n";
   }
 }

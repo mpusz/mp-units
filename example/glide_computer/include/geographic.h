@@ -25,7 +25,6 @@
 #include <units/bits/fmt_hacks.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
-
 #include <limits>
 #include <ostream>
 

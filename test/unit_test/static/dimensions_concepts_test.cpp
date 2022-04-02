@@ -67,19 +67,22 @@ static_assert(!Speed<si::time<si::second>>);
 static_assert(Acceleration<si::acceleration<si::metre_per_second_sq>>);
 static_assert(!Acceleration<si::time<si::second>>);
 #if UNITS_DOWNCAST_MODE == 0
-static_assert(Acceleration<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>>, unknown_coherent_unit>>);
+static_assert(Acceleration<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>>,
+                                    unknown_coherent_unit>>);
 #endif
 
 static_assert(Force<si::force<si::newton>>);
 static_assert(!Force<si::time<si::second>>);
 #if UNITS_DOWNCAST_MODE == 0
-// static_assert(Force<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>, exponent<si::dim_mass, 1>>, unknown_coherent_unit>>);
+// static_assert(Force<quantity<unknown_dimension<exponent<si::dim_length, 1>, exponent<si::dim_time, -2>,
+// exponent<si::dim_mass, 1>>, unknown_coherent_unit>>);
 #endif
 
 static_assert(Energy<si::energy<si::joule>>);
 static_assert(!Energy<si::time<si::second>>);
 #if UNITS_DOWNCAST_MODE == 0
-// static_assert(Energy<quantity<unknown_dimension<exponent<si::dim_mass, 1>, exponent<si::dim_length, 2>, exponent<si::dim_time, -3>>, unknown_coherent_unit>>);
+// static_assert(Energy<quantity<unknown_dimension<exponent<si::dim_mass, 1>, exponent<si::dim_length, 2>,
+// exponent<si::dim_time, -3>>, unknown_coherent_unit>>);
 #endif
 
 static_assert(Power<si::power<si::watt>>);
@@ -168,4 +171,4 @@ static_assert(!Permeability<si::time<si::second>>);
 static_assert(MolarEnergy<si::molar_energy<si::joule_per_mole>>);
 static_assert(!MolarEnergy<si::time<si::second>>);
 
-}
+}  // namespace

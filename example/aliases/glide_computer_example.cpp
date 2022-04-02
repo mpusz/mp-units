@@ -25,7 +25,6 @@
 #include <units/chrono.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/si/international/length.h>
-
 #include <array>
 #include <exception>
 #include <iostream>
@@ -43,14 +42,14 @@ using namespace units::isq;
 auto get_gliders()
 {
   using namespace units::aliases::isq::si;
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
+  UNITS_DIAGNOSTIC_PUSH
+  UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {
-      glider{"SZD-30 Pirat", {velocity(km_per_h<>(83)), rate_of_climb(m_per_s<>(-0.7389))}},
-      glider{"SZD-51 Junior", {velocity(km_per_h<>(80)), rate_of_climb(m_per_s<>(-0.6349))}},
-      glider{"SZD-48 Jantar Std 3", {velocity(km_per_h<>(110)), rate_of_climb(m_per_s<>(-0.77355))}},
-      glider{"SZD-56 Diana", {velocity(km_per_h<>(110)), rate_of_climb(m_per_s<>(-0.63657))}}};
-UNITS_DIAGNOSTIC_POP
+    glider{"SZD-30 Pirat", {velocity(km_per_h<>(83)), rate_of_climb(m_per_s<>(-0.7389))}},
+    glider{"SZD-51 Junior", {velocity(km_per_h<>(80)), rate_of_climb(m_per_s<>(-0.6349))}},
+    glider{"SZD-48 Jantar Std 3", {velocity(km_per_h<>(110)), rate_of_climb(m_per_s<>(-0.77355))}},
+    glider{"SZD-56 Diana", {velocity(km_per_h<>(110)), rate_of_climb(m_per_s<>(-0.63657))}}};
+  UNITS_DIAGNOSTIC_POP
   return gliders;
 }
 
@@ -58,9 +57,9 @@ auto get_weather_conditions()
 {
   using namespace units::aliases::isq::si;
   static const std::array weather_conditions = {
-      std::pair("Good", weather{height(m<>(1900)), rate_of_climb(m_per_s<>(4.3))}),
-      std::pair("Medium", weather{height(m<>(1550)), rate_of_climb(m_per_s<>(2.8))}),
-      std::pair("Bad", weather{height(m<>(850)), rate_of_climb(m_per_s<>(1.8))})};
+    std::pair("Good", weather{height(m<>(1900)), rate_of_climb(m_per_s<>(4.3))}),
+    std::pair("Medium", weather{height(m<>(1550)), rate_of_climb(m_per_s<>(2.8))}),
+    std::pair("Bad", weather{height(m<>(850)), rate_of_climb(m_per_s<>(1.8))})};
   return weather_conditions;
 }
 
@@ -69,14 +68,14 @@ auto get_waypoints()
   using namespace geographic::literals;
   using namespace units::aliases::isq::si::international;
   static const std::array waypoints = {
-      waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude(ft<>(16))},    // N54°14'51.8" E18°40'28.2"
-      waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude(ft<>(115))}   // N53°31'27.9" E18°50'58.1"
+    waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude(ft<>(16))},   // N54°14'51.8" E18°40'28.2"
+    waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude(ft<>(115))}  // N53°31'27.9" E18°50'58.1"
   };
   return waypoints;
 }
 
 template<std::ranges::input_range R>
-  requires std::same_as<std::ranges::range_value_t<R>, glider>
+  requires(std::same_as<std::ranges::range_value_t<R>, glider>)
 void print(const R& gliders)
 {
   std::cout << "Gliders:\n";
@@ -85,13 +84,14 @@ void print(const R& gliders)
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar)
-      std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v, units::quantity_cast<units::one>(glide_ratio(g.polar[0])));
+      std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v,
+                                   units::quantity_cast<units::one>(glide_ratio(g.polar[0])));
     std::cout << "\n";
   }
 }
 
 template<std::ranges::input_range R>
-  requires std::same_as<std::ranges::range_value_t<R>, std::pair<const char*, weather>>
+  requires(std::same_as<std::ranges::range_value_t<R>, std::pair<const char*, weather>>)
 void print(const R& conditions)
 {
   std::cout << "Weather:\n";
@@ -106,7 +106,7 @@ void print(const R& conditions)
 }
 
 template<std::ranges::input_range R>
-  requires std::same_as<std::ranges::range_value_t<R>, waypoint>
+  requires(std::same_as<std::ranges::range_value_t<R>, waypoint>)
 void print(const R& waypoints)
 {
   std::cout << "Waypoints:\n";
@@ -125,7 +125,8 @@ void print(const task& t)
   std::cout << "- Finish: " << t.get_finish().name << "\n";
   std::cout << "- Length:  " << STD_FMT::format("{:%.1Q %q}", t.get_length()) << "\n";
 
-  std::cout << "- Legs: " << "\n";
+  std::cout << "- Legs: "
+            << "\n";
   for (const auto& l : t.get_legs())
     std::cout << STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_length());
   std::cout << "\n";
