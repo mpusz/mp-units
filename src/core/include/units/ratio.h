@@ -90,23 +90,22 @@ struct ratio {
 
   [[nodiscard]] friend constexpr std::intmax_t numerator(const ratio& r)
   {
-    std::intmax_t num = r.num;
+    std::intmax_t true_num = r.num;
     for (auto i = r.exp; i > 0; --i) {
-      num *= 10;
+      true_num *= 10;
     }
-    return num;
+    return true_num;
   }
 
   [[nodiscard]] friend constexpr std::intmax_t denominator(const ratio& r)
   {
-    std::intmax_t den = r.den;
+    std::intmax_t true_den = r.den;
     for (auto i = r.exp; i < 0; ++i) {
-      den *= 10;
+      true_den *= 10;
     }
-    return den;
+    return true_den;
   }
 };
-
 
 [[nodiscard]] constexpr ratio inverse(const ratio& r) { return ratio(r.den, r.num, -r.exp); }
 
