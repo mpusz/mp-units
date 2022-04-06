@@ -368,9 +368,6 @@ struct magnitude {
 
   // Whether this magnitude represents a rational number.
   friend constexpr bool is_rational(const magnitude&) { return (detail::is_rational(BPs) && ...); }
-
-  // Implicit conversion to ratio.
-  constexpr explicit(false) operator ratio() const;
 };
 
 // Implementation for Magnitude concept (below).
@@ -395,7 +392,7 @@ template<typename T, BasePower auto... BPs>
 constexpr T get_value(const magnitude<BPs...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ... * 1));
+  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(BPs) * ... * T{1}));
 
   return result;
 }

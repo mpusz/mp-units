@@ -383,12 +383,10 @@ TEST_CASE("Constructing ratio from rational magnitude")
   SECTION("Irrational magnitude does not convert to ratio")
   {
     // The following code should not compile.
-    // constexpr ratio radical = pow<ratio{1, 2}>(as_magnitude<2>());
-    // (void)radical;
+    // as_ratio(pow<ratio{1, 2}>(as_magnitude<2>()));
 
     // The following code should not compile.
-    // constexpr ratio degrees_per_radian = as_magnitude<180>() / pi_to_the<1>();
-    // (void)degrees_per_radian;
+    // as_ratio(as_magnitude<180>() / pi_to_the<1>());
   }
 }
 
