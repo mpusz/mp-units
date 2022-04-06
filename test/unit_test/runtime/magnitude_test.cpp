@@ -374,9 +374,9 @@ TEST_CASE("Constructing ratio from rational magnitude")
     check_ratio_round_trip_is_identity<ratio{5, 8}>();
   }
 
-  SECTION("Rational magnitude implicitly converts to ratio")
+  SECTION("Rational magnitude converts to ratio")
   {
-    constexpr ratio r = as_magnitude<ratio{22, 7}>();
+    constexpr ratio r = as_ratio(as_magnitude<ratio{22, 7}>());
     CHECK(r == ratio{22, 7});
   }
 

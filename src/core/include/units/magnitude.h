@@ -517,16 +517,14 @@ constexpr auto numerator(magnitude<BPs...>)
 
 constexpr auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
-// Implementation of implicit conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
-template<BasePower auto... BPs>
-  requires detail::is_base_power_pack_valid<BPs...>
-constexpr magnitude<BPs...>::operator ratio() const
+// Implementation of conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
+constexpr ratio as_ratio(Magnitude auto m)
 {
-  static_assert(is_rational(magnitude<BPs...>{}));
+  static_assert(is_rational(m));
 
   return ratio{
-    get_value<std::intmax_t>(numerator(*this)),
-    get_value<std::intmax_t>(denominator(*this)),
+    get_value<std::intmax_t>(numerator(m)),
+    get_value<std::intmax_t>(denominator(m)),
   };
 }
 
