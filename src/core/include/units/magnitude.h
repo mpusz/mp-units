@@ -519,6 +519,7 @@ constexpr auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
 // Implementation of implicit conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
 template<BasePower auto... BPs>
+  requires detail::is_base_power_pack_valid<BPs...>
 constexpr magnitude<BPs...>::operator ratio() const
 {
   static_assert(is_rational(magnitude<BPs...>{}));
