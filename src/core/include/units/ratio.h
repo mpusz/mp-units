@@ -78,6 +78,10 @@ struct ratio {
     return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den, common_exp};
   }
 
+  [[nodiscard]] friend constexpr ratio operator-(const ratio& lhs, const ratio& rhs) { return lhs + (-rhs); }
+
+  [[nodiscard]] friend constexpr auto operator<=>(const ratio& lhs, const ratio& rhs) { return (lhs - rhs).num <=> 0; }
+
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {
     const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);
