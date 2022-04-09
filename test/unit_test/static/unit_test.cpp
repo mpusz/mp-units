@@ -67,14 +67,6 @@ static_assert(
 static_assert(compare<downcast<scaled_unit<yard::mag / as_magnitude<3>(), metre>>, foot>);
 static_assert(compare<downcast<scaled_unit<kilometre::mag / hour::mag, metre_per_second>>, kilometre_per_hour>);
 
-// We should delete this test case, because we are switching from ratio to Magnitude, and a negative Magnitude cannot
-// even be formed.
-// #if !UNITS_COMP_MSVC
-// static_assert([]<ratio R>() {
-//   return !requires { typename scaled_unit<R, metre>; };
-// }.template operator()<as_magnitude<ratio(-1, 1)>()>());  // negative unit ratio
-// #endif
-
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");
 static_assert(kilometre_per_hour::symbol == "km/h");
