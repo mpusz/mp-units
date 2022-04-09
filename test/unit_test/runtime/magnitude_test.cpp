@@ -292,6 +292,27 @@ TEST_CASE("Multiplication works for magnitudes")
   }
 }
 
+TEST_CASE("Common Magnitude")
+{
+  SECTION("Identity for identical magnitudes")
+  {
+    CHECK(common_magnitude(as_magnitude<1>(), as_magnitude<1>()) == as_magnitude<1>());
+    CHECK(common_magnitude(as_magnitude<15>(), as_magnitude<15>()) == as_magnitude<15>());
+    CHECK(common_magnitude(pi_to_the<ratio{3, 4}>(), pi_to_the<ratio{3, 4}>()) == pi_to_the<ratio{3, 4}>());
+  }
+
+  SECTION("Greatest Common Factor for integers")
+  {
+    CHECK(common_magnitude(as_magnitude<24>(), as_magnitude<36>()) == as_magnitude<12>());
+    CHECK(common_magnitude(as_magnitude<24>(), as_magnitude<37>()) == as_magnitude<1>());
+  }
+
+  SECTION("Handles fractions")
+  {
+    CHECK(common_magnitude(as_magnitude<ratio{3, 8}>(), as_magnitude<ratio{5, 6}>()) == as_magnitude<ratio{1, 24}>());
+  }
+}
+
 TEST_CASE("Division works for magnitudes")
 {
   SECTION("Dividing anything by itself reduces to null magnitude")

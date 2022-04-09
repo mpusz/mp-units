@@ -526,6 +526,74 @@ constexpr ratio as_ratio(Magnitude auto m)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Common Magnitude.
+//
+// The "common Magnitude" C, of two Magnitudes M1 and M2, is the largest Magnitude such that each of its inputs is
+// expressible by only positive basis powers relative to C.  That is, both (M1 / C) and (M2 / C) contain only positive
+// powers in the expansion on our basis.
+//
+// For rational Magnitudes (or, more precisely, Magnitudes that are rational _relative to each other_), this reduces to
+// the familiar convention from the std::chrono library: it is the largest Magnitude C such that each input Magnitude is
+// an _integer multiple_ of C.  The connection can be seen by considering the definition in the above paragraph, and
+// recognizing that both the bases and the powers are all integers for rational Magnitudes.
+//
+// For relatively _irrational_ Magnitudes (whether from irrational bases, or fractional powers of integer bases), the
+// notion of a "common type" becomes less important, because there is no way to preserve pure integer multiplication.
+// When we go to retrieve our value, we'll be stuck with a floating point approximation no matter what choice we make.
+// Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking the
+// minimum power for each base (where absent bases implicitly have a power of 0).
+
+namespace detail {
+template<BasePower auto BP>
+constexpr auto remove_positive_power(magnitude<BP> m)
+{
+  if constexpr (numerator(BP.power) < 0) {
+    return m;
+  } else {
+    return magnitude<>{};
+  }
+}
+
+template<BasePower auto... BPs>
+constexpr auto remove_positive_powers(magnitude<BPs...>)
+{
+  return (magnitude<>{} * ... * remove_positive_power(magnitude<BPs>{}));
+}
+}  // namespace detail
+
+// Base cases, for when either (or both) inputs are the identity.
+constexpr auto common_magnitude(magnitude<>, magnitude<>) { return magnitude<>{}; }
+constexpr auto common_magnitude(magnitude<>, Magnitude auto m) { return detail::remove_positive_powers(m); }
+constexpr auto common_magnitude(Magnitude auto m, magnitude<>) { return detail::remove_positive_powers(m); }
+
+// Recursive case for the common Magnitude of any two non-identity Magnitudes.
+template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
+constexpr auto common_magnitude(magnitude<H1, T1...> m1, magnitude<H2, T2...> m2)
+{
+  using namespace detail;
+
+  // Case for when H1 has the smaller base.
+  if constexpr (H1.get_base() < H2.get_base()) {
+    return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, m2);
+  }
+
+  // Case for when H2 has the smaller base.
+  if constexpr (H2.get_base() < H1.get_base()) {
+    return remove_positive_power(magnitude<H2>{}) * common_magnitude(m1, magnitude<T2...>{});
+  }
+
+  // Case for equal bases.
+  if constexpr (H1.get_base() == H2.get_base()) {
+    constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
+    if constexpr (H1.power < H2.power) {
+      return magnitude<H1>{} * common_tail;
+    } else {
+      return magnitude<H2>{} * common_tail;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
 
 // Sometimes we need to give the compiler a "shortcut" when factorizing large numbers (specifically, numbers whose
