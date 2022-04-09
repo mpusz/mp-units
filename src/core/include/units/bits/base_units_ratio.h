@@ -24,29 +24,35 @@
 
 #include <units/base_dimension.h>
 #include <units/exponent.h>
+#include <units/magnitude.h>
 #include <units/ratio.h>
 
 namespace units::detail {
 
-template<Exponent E>
-  requires(E::den == 1 || E::den == 2)  // TODO provide support for any den
-constexpr ratio exp_ratio()
+/**
+ * @brief Calculates the "absolute" magnitude of the derived dimension defined by this list.
+ *
+ * "Absolute" magnitudes are not physically observable: only ratios of magnitudes are.  For example: if we multiplied
+ * all magnitudes in the system by the same constant, no meaningful results would change.  However, in practice, we need
+ * to make some global choice for the "absolute" values of magnitudes, so that we can compute their ratios.
+ *
+ * The point of this function is to compute the absolute magnitude of a derived dimension, in terms of the absolute
+ * magnitudes of its constituent dimensions.
+ */
+template<typename... Es>
+constexpr Magnitude auto absolute_magnitude(exponent_list<Es...>)
 {
-  const ratio base_ratio = E::dimension::base_unit::ratio;
-  const ratio positive_ratio =
-    E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
-  const std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
-  const ratio ratio_pow = pow<N>(positive_ratio);
-  return E::den == 2 ? sqrt(ratio_pow) : ratio_pow;
+  return (pow<ratio{Es::num, Es::den}>(Es::dimension::base_unit::mag) * ... * magnitude<>{});
 }
 
 /**
  * @brief Calculates the common ratio of all the references of base units in the derived dimension
  */
 template<typename... Es>
-constexpr ratio base_units_ratio(exponent_list<Es...>)
+constexpr ratio base_units_ratio(exponent_list<Es...> es)
 {
-  return (exp_ratio<Es>() * ... * ratio(1));
+  return as_ratio(absolute_magnitude(es));
 }
+
 
 }  // namespace units::detail
