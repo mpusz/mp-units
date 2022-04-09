@@ -137,13 +137,14 @@ constexpr auto inverse(BasePower auto bp)
 
 // `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
 template<typename T>
-  requires std::is_arithmetic_v<T>
-using widen_t = std::conditional_t<std::is_floating_point_v<T>, long double,
-                                   std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
+using widen_t =
+  std::conditional_t<std::is_arithmetic_v<T>,
+                     std::conditional_t<std::is_floating_point_v<T>, long double,
+                                        std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>,
+                     T>;
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
 template<typename T>
-  requires std::is_arithmetic_v<T>
 constexpr T int_power(T base, std::integral auto exp)
 {
   // As this function should only be called at compile time, the exceptions herein function as
@@ -166,7 +167,7 @@ constexpr T int_power(T base, std::integral auto exp)
   // template parameter, rather than a function parameter.
 
   if (exp == 0) {
-    return 1;
+    return T{1};
   }
 
   if (exp % 2 == 1) {
@@ -178,7 +179,6 @@ constexpr T int_power(T base, std::integral auto exp)
 
 
 template<typename T>
-  requires std::is_arithmetic_v<T>
 constexpr widen_t<T> compute_base_power(BasePower auto bp)
 {
   // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
@@ -197,11 +197,11 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
     if constexpr (std::is_integral_v<T>) {
       throw std::invalid_argument{"Cannot represent reciprocal as integer"};
     } else {
-      return 1 / compute_base_power<T>(inverse(bp));
+      return T{1} / compute_base_power<T>(inverse(bp));
     }
   }
 
-  auto power = bp.power.num * int_power(10, bp.power.exp);
+  auto power = numerator(bp.power);
   return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
 }
 
@@ -210,18 +210,14 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
 // The input is the desired result, but in a (wider) intermediate type.  The point of this function
 // is to cast to the desired type, but avoid overflow in doing so.
 template<typename To, typename From>
-  requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From> &&
-           (std::is_integral_v<To> == std::is_integral_v<From>)
+// TODO(chogg): Migrate this to use `treat_as_floating_point`.
+  requires(!std::is_integral_v<To> || std::is_integral_v<From>)
 constexpr To checked_static_cast(From x)
 {
   // This function should only ever be called at compile time.  The purpose of these exceptions is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (!std::in_range<To>(x)) {
-      throw std::invalid_argument{"Cannot represent magnitude in this type"};
-    }
-  } else {
-    if (x < std::numeric_limits<To>::min() || x > std::numeric_limits<To>::max()) {
       throw std::invalid_argument{"Cannot represent magnitude in this type"};
     }
   }
@@ -388,7 +384,8 @@ concept Magnitude = detail::is_magnitude<T>;
  * @brief  The value of a Magnitude in a desired type T.
  */
 template<typename T, BasePower auto... BPs>
-  requires std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{}))
+// TODO(chogg): Migrate this to use `treat_as_floating_point`.
+  requires(!std::is_integral_v<T> || is_integral(magnitude<BPs...>{}))
 constexpr T get_value(const magnitude<BPs...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
