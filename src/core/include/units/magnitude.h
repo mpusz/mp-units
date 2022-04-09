@@ -493,7 +493,7 @@ constexpr auto integer_part(magnitude<BP>)
   constexpr auto power_den = denominator(BP.power);
 
   if constexpr (std::is_integral_v<decltype(BP.get_base())> && (power_num >= power_den)) {
-    constexpr auto largest_integer_power = [power_num, power_den](BasePower auto bp) {
+    constexpr auto largest_integer_power = [=](BasePower auto bp) {
       bp.power = (power_num / power_den);  // Note: integer division intended.
       return bp;
     }(BP);  // Note: lambda is immediately invoked.
@@ -516,9 +516,8 @@ constexpr auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
 // Implementation of conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
 constexpr ratio as_ratio(Magnitude auto m)
+  requires(is_rational(decltype(m){}))
 {
-  static_assert(is_rational(m));
-
   return ratio{
     get_value<std::intmax_t>(numerator(m)),
     get_value<std::intmax_t>(denominator(m)),
