@@ -496,7 +496,7 @@ static_assert(compare<decltype(1_q_m / 1_q_m), dimensionless<one, std::int64_t>>
 static_assert(compare<decltype(1 / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(quantity{1} / 1_q_s), frequency<hertz, std::int64_t>>);
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1_q_s),
-                      frequency<scaled_unit<ratio(1, 100), hertz>, std::int64_t>>);
+                      frequency<scaled_unit<as_magnitude<ratio(1, 100)>(), hertz>, std::int64_t>>);
 
 static_assert(is_same_v<decltype((std::uint8_t(0) * m + std::uint8_t(0) * m).number()), int&&>);
 static_assert(is_same_v<decltype((std::uint8_t(0) * m - std::uint8_t(0) * m).number()), int&&>);
@@ -527,7 +527,7 @@ static_assert(compare<decltype(1_q_m / 1._q_m), dimensionless<one, long double>>
 static_assert(compare<decltype(1 / 1._q_s), frequency<hertz, long double>>);
 static_assert(compare<decltype(quantity{1} / 1._q_s), frequency<hertz, long double>>);
 static_assert(compare<decltype(dimensionless<percent, std::int64_t>(1) / 1._q_s),
-                      frequency<scaled_unit<ratio(1, 100), hertz>, long double>>);
+                      frequency<scaled_unit<as_magnitude<ratio(1, 100)>(), hertz>, long double>>);
 static_assert(compare<decltype(1_q_m % short(1)), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m % quantity{short(1)}), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m % dimensionless<percent, short>(1)), length<metre, std::int64_t>>);
@@ -549,7 +549,7 @@ static_assert(compare<decltype(1._q_m / 1_q_m), dimensionless<one, long double>>
 static_assert(compare<decltype(1.L / 1_q_s), frequency<hertz, long double>>);
 static_assert(compare<decltype(quantity{1.L} / 1_q_s), frequency<hertz, long double>>);
 static_assert(compare<decltype(dimensionless<percent, long double>(1) / 1_q_s),
-                      frequency<scaled_unit<ratio(1, 100), hertz>, long double>>);
+                      frequency<scaled_unit<as_magnitude<ratio(1, 100)>(), hertz>, long double>>);
 
 // different units
 static_assert(is_same_v<decltype(1_q_m + 1_q_km), length<metre, std::int64_t>>);
@@ -577,22 +577,25 @@ static_assert(is_same_v<decltype(1_q_km % 1_q_m), length<kilometre, std::int64_t
 
 // different dimensions
 static_assert(compare<decltype(1_q_m_per_s * 1_q_s), length<metre, std::int64_t>>);
-static_assert(compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<ratio(36, 1, 2), metre>, std::int64_t>>);
+static_assert(
+  compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<as_magnitude<ratio(36, 1, 2)>(), metre>, std::int64_t>>);
 static_assert(
   compare<decltype(1_q_m * 1_q_min), quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>,
-                                              scaled_unit<ratio(60), unknown_coherent_unit>, std::int64_t>>);
+                                              scaled_unit<as_magnitude<60>(), unknown_coherent_unit>, std::int64_t>>);
 static_assert(compare<decltype(1_q_s * 1_q_Hz), dimensionless<one, std::int64_t>>);
-static_assert(compare<decltype(1 / 1_q_min), frequency<scaled_unit<ratio(1, 60), hertz>, std::int64_t>>);
-static_assert(compare<decltype(1 / 1_q_Hz), isq::si::time<second, std::int64_t>>);
 static_assert(
-  compare<decltype(1 / 1_q_km), quantity<unknown_dimension<exponent<dim_length, -1>>,
-                                         scaled_unit<ratio(1, 1, -3), unknown_coherent_unit>, std::int64_t>>);
-static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<ratio(1000), one>, std::int64_t>>);
+  compare<decltype(1 / 1_q_min), frequency<scaled_unit<as_magnitude<ratio(1, 60)>(), hertz>, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_Hz), isq::si::time<second, std::int64_t>>);
+static_assert(compare<decltype(1 / 1_q_km),
+                      quantity<unknown_dimension<exponent<dim_length, -1>>,
+                               scaled_unit<as_magnitude<ratio(1, 1, -3)>(), unknown_coherent_unit>, std::int64_t>>);
+static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<as_magnitude<1000>(), one>, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / 1_q_s), speed<metre_per_second, std::int64_t>>);
-static_assert(compare<decltype(1_q_m / 1_q_min), speed<scaled_unit<ratio(1, 60), metre_per_second>, std::int64_t>>);
+static_assert(
+  compare<decltype(1_q_m / 1_q_min), speed<scaled_unit<as_magnitude<ratio(1, 60)>(), metre_per_second>, std::int64_t>>);
 static_assert(
   compare<decltype(1_q_min / 1_q_m), quantity<unknown_dimension<exponent<dim_length, -1>, exponent<dim_time, 1>>,
-                                              scaled_unit<ratio(60), unknown_coherent_unit>, std::int64_t>>);
+                                              scaled_unit<as_magnitude<60>(), unknown_coherent_unit>, std::int64_t>>);
 
 static_assert((1_q_m + 1_q_m).number() == 2);
 static_assert((1_q_m + 1_q_km).number() == 1001);
@@ -882,8 +885,9 @@ static_assert(!is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<cubic_d
 
 static_assert(is_same_v<decltype(10_q_m / 5_q_s),
                         quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>,
-                                 scaled_unit<ratio(1), unknown_coherent_unit>, std::int64_t>>);
-static_assert(is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<ratio(1, 1, -3), metre>, std::int64_t>>);
+                                 scaled_unit<as_magnitude<1>(), unknown_coherent_unit>, std::int64_t>>);
+static_assert(
+  is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<as_magnitude<ratio(1, 1, -3)>(), metre>, std::int64_t>>);
 
 #else
 
@@ -913,7 +917,8 @@ static_assert(same(quotient_remainder_theorem(3'000 * m, 400), 3'000 * m));
 static_assert(same(quotient_remainder_theorem(3'000 * m, quantity(400)), 3'000 * m));
 static_assert(same(quotient_remainder_theorem(3 * km, quantity(400)), 3 * km));
 static_assert(same(quotient_remainder_theorem(3 * km, quantity(2)), 3 * km));
-static_assert(same(quotient_remainder_theorem(3 * km, dimensionless<scaled_unit<ratio(1, 1000), one>, int>(400)),
-                   3 * km));
+static_assert(
+  same(quotient_remainder_theorem(3 * km, dimensionless<scaled_unit<as_magnitude<ratio(1, 1000)>(), one>, int>(400)),
+       3 * km));
 
 }  // namespace

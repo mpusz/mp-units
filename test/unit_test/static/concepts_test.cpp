@@ -53,15 +53,6 @@ static_assert(Prefix<si::kilo>);
 static_assert(!Prefix<si::prefix>);
 static_assert(!Prefix<std::kilo>);
 
-// UnitRatio
-
-static_assert(UnitRatio<ratio(1000)>);
-static_assert(!UnitRatio<ratio(0)>);
-// static_assert(UnitRatio<ratio(1000, 0)>);  // static_assert in ratio
-static_assert(UnitRatio<ratio(-1000, -1)>);
-static_assert(!UnitRatio<ratio(-1000, 1)>);
-static_assert(!UnitRatio<ratio(1, -1000)>);
-
 // BaseDimension
 
 static_assert(BaseDimension<si::dim_length>);

@@ -35,24 +35,24 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Foot_(unit)
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(3'048, 1'000, -1), si::metre> {};
+struct foot : named_scaled_unit<foot, "ft", no_prefix, as_magnitude<ratio(3'048, 1'000, -1)>(), si::metre> {};
 
-struct inch : named_scaled_unit<inch, "in", no_prefix, ratio(1, 12), foot> {};
+struct inch : named_scaled_unit<inch, "in", no_prefix, as_magnitude<ratio(1, 12)>(), foot> {};
 
 // thousandth of an inch
-struct thousandth : named_scaled_unit<thousandth, "thou", no_prefix, ratio(1, 1'000), inch> {};
+struct thousandth : named_scaled_unit<thousandth, "thou", no_prefix, as_magnitude<ratio(1, 1'000)>(), inch> {};
 struct thou : alias_unit<thousandth, "thou", no_prefix> {};
 struct mil : alias_unit<thousandth, "mil", no_prefix> {};
 
-struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio(3, 1), foot> {};
+struct yard : named_scaled_unit<yard, "yd", si::prefix, as_magnitude<3>(), foot> {};
 
-struct fathom : named_scaled_unit<fathom, "ftm", no_prefix, ratio(6, 1), foot> {};
+struct fathom : named_scaled_unit<fathom, "ftm", no_prefix, as_magnitude<6>(), foot> {};
 
 struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
-struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio(5'280), foot> {};
+struct mile : named_scaled_unit<mile, "mile", no_prefix, as_magnitude<5'280>(), foot> {};
 
-struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio(2'000), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, as_magnitude<2'000>(), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 

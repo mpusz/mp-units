@@ -28,6 +28,7 @@
 // IWYU pragma: begin_exports
 #include <units/bits/derived_unit.h>
 #include <units/bits/external/fixed_string.h>
+#include <units/magnitude.h>
 #include <units/prefix.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
@@ -47,20 +48,18 @@ namespace units {
  * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
  * terms of gram, ...)
  *
- * @tparam R a ratio of a reference unit
+ * @tparam M a Magnitude representing the (relative) size of this unit
  * @tparam U a unit to use as a reference for this dimension
  */
-template<ratio R, typename U>
-  requires UnitRatio<R>
-struct scaled_unit : downcast_base<scaled_unit<R, U>> {
-  static constexpr ::units::ratio ratio = R;
+template<Magnitude auto M, typename U>
+struct scaled_unit : downcast_base<scaled_unit<M, U>> {
+  static constexpr ::units::ratio ratio = as_ratio(M);
+  static constexpr Magnitude auto mag = M;
   using reference = U;
 };
 
-template<Dimension D, auto R>
-// template<Dimension D, ratio R>  // TODO: GCC crash!!!
-  requires UnitRatio<R>
-using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
+template<Dimension D, Magnitude auto M>
+using downcast_unit = downcast<scaled_unit<M, typename dimension_unit<D>::reference>>;
 
 template<Unit U1, Unit U2>
 struct same_unit_reference : is_same<typename U1::reference, typename U2::reference> {};
@@ -74,7 +73,7 @@ struct same_unit_reference : is_same<typename U1::reference, typename U2::refere
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
+struct unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
   static constexpr bool is_named = false;
   using prefix_family = no_prefix;
 };
@@ -92,7 +91,7 @@ struct unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
  * @tparam PF no_prefix or a type of prefix family
  */
 template<typename Child, basic_symbol_text Symbol, PrefixFamily PF>
-struct named_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
+struct named_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;
@@ -109,12 +108,11 @@ struct named_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
  * @tparam PF no_prefix or a type of prefix family
- * @tparam R a scale to apply to U
+ * @tparam M the Magnitude by which to scale U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, ratio R, Unit U>
-  requires UnitRatio<R>
-struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<R * U::ratio, typename U::reference>> {
+template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, Magnitude auto M, Unit U>
+struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<M * U::mag, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
   using prefix_family = PF;
@@ -133,7 +131,7 @@ struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<R * U::ratio, ty
  */
 template<typename Child, Prefix P, Unit U>
   requires U::is_named && std::same_as<typename P::prefix_family, typename U::prefix_family>
-struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio, typename U::reference>> {
+struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
   using prefix_family = no_prefix;

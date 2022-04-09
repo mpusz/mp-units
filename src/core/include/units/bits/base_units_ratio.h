@@ -45,14 +45,4 @@ constexpr Magnitude auto absolute_magnitude(exponent_list<Es...>)
   return (pow<ratio{Es::num, Es::den}>(Es::dimension::base_unit::mag) * ... * magnitude<>{});
 }
 
-/**
- * @brief Calculates the common ratio of all the references of base units in the derived dimension
- */
-template<typename... Es>
-constexpr ratio base_units_ratio(exponent_list<Es...> es)
-{
-  return as_ratio(absolute_magnitude(es));
-}
-
-
 }  // namespace units::detail

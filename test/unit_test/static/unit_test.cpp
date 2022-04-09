@@ -36,12 +36,12 @@ using namespace units::isq;
 struct metre : named_unit<metre, "m", si::prefix> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
 struct kilometre : prefixed_unit<kilometre, si::kilo, metre> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(9'144, 1, -4), metre> {};
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(1, 3), yard> {};
+struct yard : named_scaled_unit<yard, "yd", no_prefix, as_magnitude<ratio(9'144, 1, -4)>(), metre> {};
+struct foot : named_scaled_unit<foot, "ft", no_prefix, as_magnitude<ratio(1, 3)>(), yard> {};
 struct dim_length : base_dimension<"length", metre> {};
 
 struct second : named_unit<second, "s", si::prefix> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(36, 1, 2), second> {};
+struct hour : named_scaled_unit<hour, "h", no_prefix, as_magnitude<ratio(36, 1, 2)>(), second> {};
 struct dim_time : base_dimension<"time", second> {};
 
 struct kelvin : named_unit<kelvin, "K", no_prefix> {};
@@ -59,17 +59,21 @@ struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometr
 
 static_assert(equivalent<metre::named_unit, metre>);
 static_assert(equivalent<metre::scaled_unit, metre>);
-static_assert(compare<downcast<scaled_unit<ratio(1), metre>>, metre>);
-static_assert(compare<downcast<scaled_unit<ratio(1, 1, -2), metre>>, centimetre>);
-static_assert(compare<downcast<scaled_unit<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp), metre>>, yard>);
-static_assert(compare<downcast<scaled_unit<yard::ratio * ratio(1, 3), metre>>, foot>);
-static_assert(compare<downcast<scaled_unit<kilometre::ratio / hour::ratio, metre_per_second>>, kilometre_per_hour>);
+static_assert(compare<downcast<scaled_unit<as_magnitude<1>(), metre>>, metre>);
+static_assert(compare<downcast<scaled_unit<as_magnitude<ratio(1, 1, -2)>(), metre>>, centimetre>);
+static_assert(
+  compare<downcast<scaled_unit<as_magnitude<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp)>(), metre>>,
+          yard>);
+static_assert(compare<downcast<scaled_unit<yard::mag / as_magnitude<3>(), metre>>, foot>);
+static_assert(compare<downcast<scaled_unit<kilometre::mag / hour::mag, metre_per_second>>, kilometre_per_hour>);
 
-#if !UNITS_COMP_MSVC
-static_assert([]<ratio R>() {
-  return !requires { typename scaled_unit<R, metre>; };
-}.template operator()<ratio(-1, 1)>());  // negative unit ratio
-#endif
+// We should delete this test case, because we are switching from ratio to Magnitude, and a negative Magnitude cannot
+// even be formed.
+// #if !UNITS_COMP_MSVC
+// static_assert([]<ratio R>() {
+//   return !requires { typename scaled_unit<R, metre>; };
+// }.template operator()<as_magnitude<ratio(-1, 1)>()>());  // negative unit ratio
+// #endif
 
 static_assert(centimetre::symbol == "cm");
 static_assert(kilometre::symbol == "km");

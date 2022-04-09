@@ -55,22 +55,22 @@ struct common_quantity_reference_impl<reference<D, U>, reference<D, U>> {
 
 template<typename D, typename U1, typename U2>
 struct common_quantity_reference_impl<reference<D, U1>, reference<D, U2>> {
-  using type = reference<D, downcast_unit<D, common_ratio(U1::ratio, U2::ratio)>>;
+  using type = reference<D, downcast_unit<D, common_magnitude(U1::mag, U2::mag)>>;
 };
 
 template<typename D1, typename U1, typename D2, typename U2>
   requires(same_unit_reference<dimension_unit<D1>, dimension_unit<D2>>::value)
 struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
-  using type = reference<D1, downcast_unit<D1, common_ratio(U1::ratio, U2::ratio)>>;
+  using type = reference<D1, downcast_unit<D1, common_magnitude(U1::mag, U2::mag)>>;
 };
 
 template<typename D1, typename U1, typename D2, typename U2>
 struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
   using dimension = conditional<is_specialization_of<D1, unknown_dimension>, D2, D1>;
-  static constexpr ratio r1 = D1::base_units_ratio * U1::ratio;
-  static constexpr ratio r2 = D2::base_units_ratio * U2::ratio;
-  static constexpr ratio cr = common_ratio(r1, r2);
-  using unit = downcast_unit<dimension, cr / dimension::base_units_ratio>;
+  static constexpr Magnitude auto m1 = D1::base_units_ratio * U1::mag;
+  static constexpr Magnitude auto m2 = D2::base_units_ratio * U2::mag;
+  static constexpr Magnitude auto cm = common_magnitude(m1, m2);
+  using unit = downcast_unit<dimension, cm / dimension::base_units_ratio>;
   using type = reference<dimension, unit>;
 };
 

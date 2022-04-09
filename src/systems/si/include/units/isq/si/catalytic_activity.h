@@ -58,7 +58,7 @@ struct exakatal : prefixed_unit<exakatal, exa, katal> {};
 struct zettakatal : prefixed_unit<zettakatal, zetta, katal> {};
 struct yottakatal : prefixed_unit<yottakatal, yotta, katal> {};
 
-struct enzyme_unit : named_scaled_unit<enzyme_unit, "U", prefix, ratio(1, 60, -6), katal> {};
+struct enzyme_unit : named_scaled_unit<enzyme_unit, "U", prefix, as_magnitude<ratio(1, 60, -6)>(), katal> {};
 
 struct dim_catalytic_activity :
     isq::dim_catalytic_activity<dim_catalytic_activity, katal, dim_time, dim_amount_of_substance> {};

@@ -43,12 +43,6 @@ constexpr Magnitude auto derived_mag(exponent_list<Es...>)
           pow<ratio{Es::num, Es::den}>(Us::mag / dimension_unit<typename Es::dimension>::mag));
 }
 
-template<Unit... Us, typename... Es>
-constexpr ratio derived_ratio(exponent_list<Es...> es)
-{
-  return as_ratio(derived_mag<Us...>(es));
-}
-
 template<DerivedDimension D, Unit... Us>
 using derived_unit = scaled_unit<derived_mag<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
 

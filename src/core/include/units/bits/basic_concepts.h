@@ -28,7 +28,7 @@
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/type_traits.h>
 #include <units/customization_points.h>
-#include <units/ratio.h>
+#include <units/magnitude.h>
 // IWYU pragma: end_exports
 
 #include <cstdint>
@@ -67,24 +67,15 @@ void to_prefix_base(const volatile prefix_base<PF, R>*);
 template<typename T>
 concept Prefix = requires(T* t) { detail::to_prefix_base(t); };
 
-/**
- * @brief A concept matching unit's ratio
- *
- * Satisfied by all ratio values for which `R.num > 0` and `R.den > 0`.
- */
-template<ratio R>
-concept UnitRatio = (R.num > 0) && (R.den > 0);
-
 // Unit
-template<ratio R, typename U>
-  requires UnitRatio<R>
+template<Magnitude auto M, typename U>
 struct scaled_unit;
 
 // TODO: Remove when P1985 accepted
 namespace detail {
 
-template<ratio R, typename U>
-void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
+template<Magnitude auto M, typename U>
+void to_base_scaled_unit(const volatile scaled_unit<M, U>*);
 
 }  // namespace detail
 

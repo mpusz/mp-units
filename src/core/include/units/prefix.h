@@ -25,6 +25,7 @@
 #include <units/bits/basic_concepts.h>
 #include <units/bits/external/downcasting.h>
 // IWYU pragma: begin_exports
+#include <units/magnitude.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
@@ -52,6 +53,7 @@ template<PrefixFamily PF, ratio R>
 struct prefix_base : downcast_base<prefix_base<PF, R>> {
   using prefix_family = PF;
   static constexpr ::units::ratio ratio = R;
+  static constexpr Magnitude auto mag = as_magnitude<R>();
 };
 
 }  // namespace detail

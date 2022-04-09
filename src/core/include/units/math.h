@@ -57,7 +57,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
     return rep(1);
   } else {
     using dim = dimension_pow<typename Q::dimension, Num, Den>;
-    using unit = downcast_unit<dim, pow<Num, Den>(Q::unit::ratio)>;
+    using unit = downcast_unit<dim, pow<ratio{Num, Den}>(Q::unit::mag)>;
     using std::pow;
     return quantity<dim, unit, rep>(
       static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
@@ -77,7 +77,7 @@ template<Quantity Q>
   requires requires { sqrt(q.number()); } || requires { std::sqrt(q.number()); }
 {
   using dim = dimension_pow<typename Q::dimension, 1, 2>;
-  using unit = downcast_unit<dim, sqrt(Q::unit::ratio)>;
+  using unit = downcast_unit<dim, pow<ratio{1, 2}>(Q::unit::mag)>;
   using rep = TYPENAME Q::rep;
   using std::sqrt;
   return quantity<dim, unit, rep>(static_cast<rep>(sqrt(q.number())));
@@ -96,7 +96,7 @@ template<Quantity Q>
   requires requires { cbrt(q.number()); } || requires { std::cbrt(q.number()); }
 {
   using dim = dimension_pow<typename Q::dimension, 1, 3>;
-  using unit = downcast_unit<dim, cbrt(Q::unit::ratio)>;
+  using unit = downcast_unit<dim, pow<ratio{1, 3}>(Q::unit::mag)>;
   using rep = TYPENAME Q::rep;
   using std::cbrt;
   return quantity<dim, unit, rep>(static_cast<rep>(cbrt(q.number())));

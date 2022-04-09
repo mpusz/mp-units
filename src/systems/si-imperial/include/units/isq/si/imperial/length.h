@@ -35,10 +35,10 @@
 namespace units::isq::si::imperial {
 
 // https://en.wikipedia.org/wiki/Chain_(unit)
-struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio(22, 1), si::international::yard> {};
+struct chain : named_scaled_unit<chain, "ch", no_prefix, as_magnitude<22>(), si::international::yard> {};
 
 // https://en.wikipedia.org/wiki/Rod_(unit)
-struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
+struct rod : named_scaled_unit<rod, "rd", no_prefix, as_magnitude<ratio(1, 4)>(), chain> {};
 
 #ifndef UNITS_NO_LITERALS
 

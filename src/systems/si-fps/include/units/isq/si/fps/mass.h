@@ -35,28 +35,29 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Pound_(mass)
-struct pound : named_scaled_unit<pound, "lb", no_prefix, ratio(45'359'237, 100'000'000), si::kilogram> {};
+struct pound :
+    named_scaled_unit<pound, "lb", no_prefix, as_magnitude<ratio(45'359'237, 100'000'000)>(), si::kilogram> {};
 
 struct dim_mass : isq::dim_mass<pound> {};
 
 template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-struct grain : named_scaled_unit<grain, "gr", no_prefix, ratio(1, 7000), pound> {};
+struct grain : named_scaled_unit<grain, "gr", no_prefix, as_magnitude<ratio(1, 7000)>(), pound> {};
 
-struct dram : named_scaled_unit<dram, "dr", no_prefix, ratio(1, 256), pound> {};
+struct dram : named_scaled_unit<dram, "dr", no_prefix, as_magnitude<ratio(1, 256)>(), pound> {};
 
-struct ounce : named_scaled_unit<ounce, "oz", no_prefix, ratio(1, 16), pound> {};
+struct ounce : named_scaled_unit<ounce, "oz", no_prefix, as_magnitude<ratio(1, 16)>(), pound> {};
 
-struct stone : named_scaled_unit<stone, "st", no_prefix, ratio(14, 1), pound> {};
+struct stone : named_scaled_unit<stone, "st", no_prefix, as_magnitude<14>(), pound> {};
 
-struct quarter : named_scaled_unit<quarter, "qr", no_prefix, ratio(28, 1), pound> {};
+struct quarter : named_scaled_unit<quarter, "qr", no_prefix, as_magnitude<28>(), pound> {};
 
-struct hundredweight : named_scaled_unit<hundredweight, "cwt", no_prefix, ratio(112, 1), pound> {};
+struct hundredweight : named_scaled_unit<hundredweight, "cwt", no_prefix, as_magnitude<112>(), pound> {};
 
-struct short_ton : named_scaled_unit<short_ton, "ton (short)", no_prefix, ratio(2'000, 1), pound> {};
+struct short_ton : named_scaled_unit<short_ton, "ton (short)", no_prefix, as_magnitude<2'000>(), pound> {};
 
-struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, ratio(2'240, 1), pound> {};
+struct long_ton : named_scaled_unit<long_ton, "ton (long)", no_prefix, as_magnitude<2'240>(), pound> {};
 
 #ifndef UNITS_NO_LITERALS
 

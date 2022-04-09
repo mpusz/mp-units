@@ -56,7 +56,7 @@ struct exatesla : prefixed_unit<exatesla, exa, tesla> {};
 struct zettatesla : prefixed_unit<zettatesla, zetta, tesla> {};
 struct yottatesla : prefixed_unit<yottatesla, yotta, tesla> {};
 
-struct gauss : named_scaled_unit<gauss, "G", prefix, ratio(1, 10'000), tesla> {};
+struct gauss : named_scaled_unit<gauss, "G", prefix, as_magnitude<ratio(1, 10'000)>(), tesla> {};
 
 struct dim_magnetic_induction :
     isq::dim_magnetic_induction<dim_magnetic_induction, tesla, dim_voltage, dim_time, dim_length> {};

@@ -53,7 +53,7 @@ struct tebibit : prefixed_unit<tebibit, tebi, binary_prefix_bit> {};
 struct pebibit : prefixed_unit<pebibit, pebi, binary_prefix_bit> {};
 struct exbibit : prefixed_unit<exbibit, exbi, binary_prefix_bit> {};
 
-struct byte : named_scaled_unit<byte, "B", si::prefix, ratio(8), bit> {};
+struct byte : named_scaled_unit<byte, "B", si::prefix, as_magnitude<8>(), bit> {};
 struct kilobyte : prefixed_unit<kilobyte, si::kilo, byte> {};
 struct megabyte : prefixed_unit<megabyte, si::mega, byte> {};
 struct gigabyte : prefixed_unit<gigabyte, si::giga, byte> {};

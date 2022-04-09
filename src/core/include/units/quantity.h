@@ -402,7 +402,7 @@ public:
   {
     gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
     using dim = dim_invert<D>;
-    using ret_unit = downcast_unit<dim, inverse(U::ratio)>;
+    using ret_unit = downcast_unit<dim, pow<-1>(U::mag)>;
     using ret = quantity<dim, ret_unit, std::invoke_result_t<std::divides<>, Value, rep>>;
     return ret(v / q.number());
   }

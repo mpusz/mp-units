@@ -34,7 +34,7 @@ namespace units {
 template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   using dimension = isq::si::dim_time;
-  using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
+  using unit = downcast_unit<dimension, as_magnitude<ratio(Period::num, Period::den)>()>;
   using rep = Rep;
   [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
@@ -45,7 +45,7 @@ struct clock_origin : point_origin<isq::si::dim_time> {};
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
   using origin = clock_origin<C>;
-  using unit = downcast_unit<typename origin::dimension, ratio(Period::num, Period::den)>;
+  using unit = downcast_unit<typename origin::dimension, as_magnitude<ratio(Period::num, Period::den)>()>;
   using rep = Rep;
   [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
   {
