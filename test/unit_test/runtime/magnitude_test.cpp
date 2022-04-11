@@ -63,6 +63,18 @@ void check_same_type_and_value(T actual, U expected)
   CHECK(actual == expected);
 }
 
+template<ratio R>
+void check_ratio_round_trip_is_identity()
+{
+  constexpr Magnitude auto m = as_magnitude<R>();
+  constexpr ratio round_trip = ratio{
+    get_value<std::intmax_t>(numerator(m)),
+    get_value<std::intmax_t>(denominator(m)),
+  };
+  CHECK(round_trip == R);
+}
+
+
 TEST_CASE("base_power")
 {
   SECTION("base rep deducible for integral base")
@@ -351,6 +363,33 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
   }
 }
 
+TEST_CASE("Constructing ratio from rational magnitude")
+{
+  SECTION("Round trip is identity")
+  {
+    // Note that not every Magnitude can be represented as a ratio.  However, if we _start_ with a
+    // ratio, we must guarantee to recover the same ratio in a round trip.
+    check_ratio_round_trip_is_identity<1>();
+    check_ratio_round_trip_is_identity<9>();
+    check_ratio_round_trip_is_identity<ratio{5, 8}>();
+  }
+
+  SECTION("Rational magnitude converts to ratio")
+  {
+    constexpr ratio r = as_ratio(as_magnitude<ratio{22, 7}>());
+    CHECK(r == ratio{22, 7});
+  }
+
+  SECTION("Irrational magnitude does not convert to ratio")
+  {
+    // The following code should not compile.
+    // as_ratio(pow<ratio{1, 2}>(as_magnitude<2>()));
+
+    // The following code should not compile.
+    // as_ratio(as_magnitude<180>() / pi_to_the<1>());
+  }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Detail function tests below.
 
@@ -371,6 +410,34 @@ TEST_CASE("int_power computes integer powers")
     check_same_type_and_value(int_power(8, 0), 1);
     check_same_type_and_value(int_power(9L, 1), 9L);
     check_same_type_and_value(int_power(2, 10), 1024);
+  }
+}
+
+TEST_CASE("integer_part picks out integer part of single-basis magnitude")
+{
+  SECTION("integer_part of non-integer base is identity magnitude")
+  {
+    CHECK(integer_part(pi_to_the<1>()) == magnitude<>{});
+    CHECK(integer_part(pi_to_the<-8>()) == magnitude<>{});
+    CHECK(integer_part(pi_to_the<ratio{3, 4}>()) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to negative power is identity magnitude")
+  {
+    CHECK(integer_part(magnitude<base_power{2, -8}>{}) == magnitude<>{});
+    CHECK(integer_part(magnitude<base_power{11, -1}>{}) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to fractional power is identity magnitude")
+  {
+    CHECK(integer_part(magnitude<base_power{2, ratio{1, 2}}>{}) == magnitude<>{});
+  }
+
+  SECTION("integer_part of integer base to power at least one takes integer part")
+  {
+    CHECK(integer_part(magnitude<base_power{2, 1}>{}) == magnitude<base_power{2, 1}>{});
+    CHECK(integer_part(magnitude<base_power{2, ratio{19, 10}}>{}) == magnitude<base_power{2, 1}>{});
+    CHECK(integer_part(magnitude<base_power{11, ratio{97, 9}}>{}) == magnitude<base_power{11, 10}>{});
   }
 }
 
