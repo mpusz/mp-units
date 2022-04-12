@@ -53,7 +53,6 @@ namespace units {
  */
 template<Magnitude auto M, typename U>
 struct scaled_unit : downcast_base<scaled_unit<M, U>> {
-  static constexpr ::units::ratio ratio = as_ratio(M);
   static constexpr Magnitude auto mag = M;
   using reference = U;
 };

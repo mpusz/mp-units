@@ -103,7 +103,7 @@ template<Unit U>
 std::ostream& operator<<(std::ostream& os, const U& u)
 {
   using unit_type = std::remove_cvref_t<decltype(u)>;
-  return os << unit_type::ratio << " x " << unit_type::reference::symbol.standard();
+  return os << as_ratio(unit_type::mag) << " x " << unit_type::reference::symbol.standard();
 }
 
 void what_is_your_ratio()

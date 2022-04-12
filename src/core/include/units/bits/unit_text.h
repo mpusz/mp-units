@@ -151,14 +151,14 @@ constexpr auto unit_text()
       // use predefined coherent unit symbol
       constexpr auto symbol_text = coherent_unit::symbol;
       constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family,
+        prefix_or_ratio_text<as_ratio(U::mag / coherent_unit::mag), typename U::reference::prefix_family,
                              symbol_text.standard().size()>();
       return prefix_txt + symbol_text;
     } else {
       // use derived dimension ingredients to create a unit symbol
       constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
       constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family,
+        prefix_or_ratio_text<as_ratio(U::mag / coherent_unit::mag), typename U::reference::prefix_family,
                              symbol_text.standard().size()>();
       return prefix_txt + symbol_text;
     }

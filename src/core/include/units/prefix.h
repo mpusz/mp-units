@@ -52,7 +52,6 @@ namespace detail {
 template<PrefixFamily PF, ratio R>
 struct prefix_base : downcast_base<prefix_base<PF, R>> {
   using prefix_family = PF;
-  static constexpr ::units::ratio ratio = R;
   static constexpr Magnitude auto mag = as_magnitude<R>();
 };
 

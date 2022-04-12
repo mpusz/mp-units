@@ -61,9 +61,7 @@ static_assert(equivalent<metre::named_unit, metre>);
 static_assert(equivalent<metre::scaled_unit, metre>);
 static_assert(compare<downcast<scaled_unit<as_magnitude<1>(), metre>>, metre>);
 static_assert(compare<downcast<scaled_unit<as_magnitude<ratio(1, 1, -2)>(), metre>>, centimetre>);
-static_assert(
-  compare<downcast<scaled_unit<as_magnitude<ratio(yard::ratio.num, yard::ratio.den, yard::ratio.exp)>(), metre>>,
-          yard>);
+static_assert(compare<downcast<scaled_unit<yard::mag, metre>>, yard>);
 static_assert(compare<downcast<scaled_unit<yard::mag / as_magnitude<3>(), metre>>, foot>);
 static_assert(compare<downcast<scaled_unit<kilometre::mag / hour::mag, metre_per_second>>, kilometre_per_hour>);
 

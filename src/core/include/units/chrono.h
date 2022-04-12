@@ -86,13 +86,13 @@ using to_std_ratio = decltype(detail::to_std_ratio_impl<R>());
 template<typename U, typename Rep>
 [[nodiscard]] constexpr auto to_std_duration(const quantity<isq::si::dim_time, U, Rep>& q)
 {
-  return std::chrono::duration<Rep, to_std_ratio<U::ratio>>(q.number());
+  return std::chrono::duration<Rep, to_std_ratio<as_ratio(U::mag)>>(q.number());
 }
 
 template<typename C, typename U, typename Rep>
 [[nodiscard]] constexpr auto to_std_time_point(const quantity_point<clock_origin<C>, U, Rep>& qp)
 {
-  using ret_type = std::chrono::time_point<C, std::chrono::duration<Rep, to_std_ratio<U::ratio>>>;
+  using ret_type = std::chrono::time_point<C, std::chrono::duration<Rep, to_std_ratio<as_ratio(U::mag)>>>;
   return ret_type(to_std_duration(qp.relative()));
 }
 
