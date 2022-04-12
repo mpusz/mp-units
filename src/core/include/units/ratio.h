@@ -32,6 +32,7 @@
 
 #include <gsl/gsl-lite.hpp>
 #include <array>
+#include <compare>
 #include <numeric>
 
 namespace units {
