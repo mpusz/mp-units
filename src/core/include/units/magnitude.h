@@ -567,7 +567,7 @@ constexpr auto common_magnitude(Magnitude auto m, magnitude<>) { return detail::
 template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
 constexpr auto common_magnitude(magnitude<H1, T1...> m1, magnitude<H2, T2...> m2)
 {
-  using namespace detail;
+  using detail::remove_positive_power;
 
   // Case for when H1 has the smaller base.
   if constexpr (H1.get_base() < H2.get_base()) {
