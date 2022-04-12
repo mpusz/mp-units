@@ -36,11 +36,15 @@
 template<>
 inline constexpr std::optional<std::intmax_t> units::known_first_factor<334'524'384'739> = 334'524'384'739;
 
+// Necessary to factor `17'826'619'216'279`, which appears in the value for eV/c^2.
+template<>
+inline constexpr std::optional<std::intmax_t> units::known_first_factor<225'653'407'801> = 225'653'407'801;
+
 namespace units::isq::si::hep {
 
 struct eV_per_c2 :
     named_scaled_unit<eV_per_c2, basic_symbol_text{"eV/c²", "eV/c^2"}, prefix,
-                      as_magnitude<ratio(1'7826'619'216'279, 1'000'000'000'000, -35)>(), kilogram> {};
+                      as_magnitude<ratio(17'826'619'216'279, 1'000'000'000'000, -35)>(), kilogram> {};
 struct feV_per_c2 : prefixed_unit<feV_per_c2, femto, eV_per_c2> {};
 struct peV_per_c2 : prefixed_unit<peV_per_c2, pico, eV_per_c2> {};
 struct neV_per_c2 : prefixed_unit<neV_per_c2, nano, eV_per_c2> {};
