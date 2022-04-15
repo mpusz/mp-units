@@ -23,9 +23,14 @@
 from conans import ConanFile, tools
 from conan.tools.cmake import CMake
 
+
 class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeToolchain", "CMakeDeps"
+    test_type = "explicit"  # TODO Remove for Conan 2.0
+
+    def requirements(self):
+        self.requires(self.tested_reference_str)
 
     def build(self):
         cmake = CMake(self)
