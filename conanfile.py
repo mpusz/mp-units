@@ -28,11 +28,24 @@ import os, re
 
 required_conan_version = ">=1.44.0"
 
+
 class MPUnitsConan(ConanFile):
     name = "mp-units"
     homepage = "https://github.com/mpusz/units"
     description = "Physical Units library for C++"
-    topics = ("units", "dimensions", "quantities", "dimensional-analysis", "physical-quantities", "physical-units", "system-of-units", "cpp23", "cpp20", "library", "quantity-manipulation")
+    topics = (
+        "units",
+        "dimensions",
+        "quantities",
+        "dimensional-analysis",
+        "physical-quantities",
+        "physical-units",
+        "system-of-units",
+        "cpp23",
+        "cpp20",
+        "library",
+        "quantity-manipulation",
+    )
     license = "MIT"
     url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
@@ -48,7 +61,7 @@ class MPUnitsConan(ConanFile):
         "build_docs": True
     }
     exports = ["LICENSE.md"]
-    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*","CMakeLists.txt"]
+    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*", "CMakeLists.txt"]
     generators = "cmake_paths"
 
     @property
@@ -68,12 +81,12 @@ class MPUnitsConan(ConanFile):
     def _use_range_v3(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
-        return ("clang" in compiler and compiler.libcxx == "libc++" and version < 14)
+        return "clang" in compiler and compiler.libcxx == "libc++" and version < 14
 
     @property
     def _msvc_version(self):
         compiler = self.settings.compiler
-        if (compiler.update):
+        if compiler.update:
             return int(f"{compiler.version}{compiler.update}")
         else:
             return int(f"{compiler.version}0")
