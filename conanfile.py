@@ -110,7 +110,8 @@ class MPUnitsConan(ConanFile):
             if self.options.build_docs:
                 self.tool_requires("doxygen/1.9.2")
 
-    def validate(self):
+    # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
+    def configure(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         if compiler == "gcc":
