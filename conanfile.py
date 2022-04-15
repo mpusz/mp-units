@@ -23,6 +23,7 @@
 from conans import ConanFile, tools
 from conans.tools import Version, check_min_cppstd
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
+from conan.tools.files import copy
 from conans.errors import ConanInvalidConfiguration
 import os, re
 
@@ -160,7 +161,7 @@ class MPUnitsConan(ConanFile):
         self.info.header_only()
 
     def package(self):
-        self.copy("LICENSE.md", dst="licenses")
+        copy(self, "LICENSE.md", self.source_folder, os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
         tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
