@@ -193,7 +193,7 @@ namely second. Those can be defined easily in the library using
 
     struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
     struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
-    struct day : named_scaled_unit<hour, "d", no_prefix, ratio(24), hour> {};
+    struct day : named_scaled_unit<day, "d", no_prefix, ratio(24), hour> {};
 
 where `no_prefix` is a special tag type describing that the library should
 not allow to define a new prefixed unit that would use this unit as a
