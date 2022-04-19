@@ -52,7 +52,7 @@ struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
 struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio(5'280), foot> {};
 
-struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio(2'000), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", no_prefix, ratio(2'000), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 
