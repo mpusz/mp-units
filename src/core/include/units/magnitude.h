@@ -427,6 +427,18 @@ constexpr auto pow(magnitude<BPs...>)
   }
 }
 
+template<BasePower auto... BPs>
+constexpr auto sqrt(magnitude<BPs...> m)
+{
+  return pow<ratio{1, 2}>(m);
+}
+
+template<BasePower auto... BPs>
+constexpr auto cbrt(magnitude<BPs...> m)
+{
+  return pow<ratio{1, 3}>(m);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
 
@@ -569,18 +581,14 @@ constexpr auto common_magnitude(magnitude<H1, T1...> m1, magnitude<H2, T2...> m2
 {
   using detail::remove_positive_power;
 
-  // Case for when H1 has the smaller base.
   if constexpr (H1.get_base() < H2.get_base()) {
+    // When H1 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, m2);
-  }
-
-  // Case for when H2 has the smaller base.
-  if constexpr (H2.get_base() < H1.get_base()) {
+  } else if constexpr (H2.get_base() < H1.get_base()) {
+    // When H2 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H2>{}) * common_magnitude(m1, magnitude<T2...>{});
-  }
-
-  // Case for equal bases.
-  if constexpr (H1.get_base() == H2.get_base()) {
+  } else {
+    // When the bases are equal, pick whichever has the lower power.
     constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
     if constexpr (H1.power < H2.power) {
       return magnitude<H1>{} * common_tail;

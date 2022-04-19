@@ -61,6 +61,8 @@ struct ratio {
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
+  [[nodiscard]] friend constexpr auto operator<=>(const ratio& lhs, const ratio& rhs) { return (lhs - rhs).num <=> 0; }
+
   [[nodiscard]] friend constexpr ratio operator-(const ratio& r) { return ratio(-r.num, r.den, r.exp); }
 
   [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
@@ -80,8 +82,6 @@ struct ratio {
   }
 
   [[nodiscard]] friend constexpr ratio operator-(const ratio& lhs, const ratio& rhs) { return lhs + (-rhs); }
-
-  [[nodiscard]] friend constexpr auto operator<=>(const ratio& lhs, const ratio& rhs) { return (lhs - rhs).num <=> 0; }
 
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {

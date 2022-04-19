@@ -62,10 +62,7 @@ inline constexpr Magnitude auto quantity_magnitude<quantity<D, U, Rep>> = [] {
 }();
 
 template<typename T>
-inline constexpr ratio quantity_ratio = std::enable_if_t<!Quantity<T>>{};
-
-template<typename D, typename U, typename Rep>
-inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = as_ratio(quantity_magnitude<quantity<D, U, Rep>>);
+inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<T>);
 
 template<typename QFrom, typename QTo>
 inline constexpr Magnitude auto cast_magnitude = [] {
@@ -119,17 +116,14 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
   using traits = detail::cast_traits<Rep, typename To::rep>;
   using ratio_type = TYPENAME traits::ratio_type;
   using rep_type = TYPENAME traits::rep_type;
-  constexpr Magnitude auto c_mag = detail::cast_magnitude<quantity<D, U, Rep>, To>;
 
-  if constexpr (treat_as_floating_point<rep_type>) {
-    return To(
-      static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * (get_value<ratio_type>(numerator(c_mag)) /
-                                                                         get_value<ratio_type>(denominator(c_mag)))));
-  } else {
-    return To(
-      static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * get_value<ratio_type>(numerator(c_mag)) /
-                                    get_value<ratio_type>(denominator(c_mag))));
-  }
+  constexpr Magnitude auto c_mag = detail::cast_magnitude<quantity<D, U, Rep>, To>;
+  constexpr Magnitude auto num = numerator(c_mag);
+  constexpr Magnitude auto den = denominator(c_mag);
+  constexpr Magnitude auto irr = c_mag * (den / num);
+
+  constexpr auto val = [](Magnitude auto m) { return get_value<ratio_type>(m); };
+  return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)));
 }
 
 /**

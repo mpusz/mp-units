@@ -31,6 +31,7 @@
 #include <units/isq/si/pressure.h>
 #include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
+#include <units/math.h>
 
 namespace {
 
@@ -113,6 +114,13 @@ static_assert(1_q_pdl_per_ft2 > 1.4881639435_q_Pa && 1_q_pdl_per_ft2 < 1.4881639
 }  // namespace fps_plus_si_literals
 
 namespace fps_test {
+namespace {
+constexpr bool is_near(auto a, auto b, auto tol)
+{
+  const auto diff = a - b;
+  return (diff <= tol) && (-diff <= tol);
+}
+}  // namespace
 
 using namespace units::isq::si::fps::literals;
 using namespace units::isq::si::fps::references;
@@ -121,10 +129,12 @@ using namespace units::isq::si::fps::references;
 
 static_assert(si::length<si::metre>(1) + 1 * ft == si::length<si::metre>(1.3048));
 static_assert(1 * ft + si::length<si::metre>(1) == si::length<si::metre>(1.3048));
-static_assert(quantity_cast<si::length<si::metre>>(1. * ft / 0.3048) + si::length<si::metre>(1) ==
-              si::length<si::metre>(2));  // 1 m in ft + 1 m
-static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(1. * ft / 0.3048) ==
-              si::length<si::metre>(2));  // 1 m + 1 m in ft
+static_assert(is_near(quantity_cast<si::length<si::metre>>(1. * ft / 0.3048) + si::length<si::metre>(1),
+                      si::length<si::metre>(2),
+                      si::length<si::femtometre>(1)));  // 1 m in ft + 1 m
+static_assert(is_near(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(1. * ft / 0.3048),
+                      si::length<si::metre>(2),
+                      si::length<si::femtometre>(1)));  // 1 m + 1 m in ft
 static_assert(1 * ft + quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre>(0.3048)) ==
               2 * ft);  // 1 ft + 1 ft in m
 static_assert(quantity_cast<si::fps::length<si::fps::foot>>(si::length<si::metre>(0.3048)) + 1 * ft ==
