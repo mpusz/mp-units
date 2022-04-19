@@ -35,6 +35,9 @@
 namespace units::isq::si::international {
 
 struct mile_per_hour : derived_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
+struct nautical_mile_per_hour :
+    derived_unit<nautical_mile_per_hour, si::dim_speed, si::international::nautical_mile, si::hour> {};
+struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
 
 #ifndef UNITS_NO_LITERALS
 
@@ -48,9 +51,41 @@ constexpr auto operator"" _q_mi_per_h(unsigned long long l)
 }
 constexpr auto operator"" _q_mi_per_h(long double l) { return si::speed<mile_per_hour, long double>(l); }
 
+// nmi/h
+constexpr auto operator"" _q_nmi_per_h(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::speed<nautical_mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_nmi_per_h(long double l) { return si::speed<nautical_mile_per_hour, long double>(l); }
+
+// kn
+constexpr auto operator"" _q_kn(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::speed<knot, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_kn(long double l) { return si::speed<knot, long double>(l); }
+
 }  // namespace literals
 
 #endif  // UNITS_NO_LITERALS
+
+#ifndef UNITS_NO_REFERENCES
+
+namespace speed_references {
+
+inline constexpr auto kn = reference<si::dim_speed, knot>{};
+
+}  // namespace speed_references
+
+namespace references {
+
+using namespace speed_references;
+
+}  // namespace references
+
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::international
 
@@ -60,6 +95,12 @@ namespace units::aliases::isq::si::international::inline speed {
 
 template<Representation Rep = double>
 using mi_per_h = units::isq::si::speed<units::isq::si::international::mile_per_hour, Rep>;
+
+template<Representation Rep = double>
+using nmi_per_h = units::isq::si::speed<units::isq::si::international::nautical_mile_per_hour, Rep>;
+
+template<Representation Rep = double>
+using kn = units::isq::si::speed<units::isq::si::international::knot, Rep>;
 
 }  // namespace units::aliases::isq::si::international::inline speed
 
