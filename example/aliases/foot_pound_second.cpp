@@ -68,7 +68,7 @@ void print_details(std::string_view description, const Ship& ship)
             << STD_FMT::format("{:20} : {}\n", "beam", fmt_line<si::fps::length::yd<>, si::length::m<>>(ship.beam))
             << STD_FMT::format("{:20} : {}\n", "mass", fmt_line<si::fps::mass::lton<>, si::mass::t<>>(ship.mass))
             << STD_FMT::format("{:20} : {}\n", "speed",
-                               fmt_line<si::fps::speed::knot<>, si::speed::km_per_h<>>(ship.speed))
+                               fmt_line<si::fps::speed::kn<>, si::speed::km_per_h<>>(ship.speed))
             << STD_FMT::format("{:20} : {}\n", "power", fmt_line<si::fps::power::hp<>, si::power::kW<>>(ship.power))
             << STD_FMT::format("{:20} : {}\n", "main guns",
                                fmt_line<si::fps::length::in<>, si::length::mm<>>(ship.mainGuns))
@@ -101,7 +101,7 @@ int main()
   auto iowa = Ship{.length{ft<>(860.)},
                    .draft{ft<>(37.) + in<>(2.)},
                    .beam{ft<>(108.) + in<>(2.)},
-                   .speed{knot<>(33)},
+                   .speed{kn<>(33)},
                    .mass{lton<>(57'540)},
                    .mainGuns{in<>(16)},
                    .shellMass{lb<>(2700)},
@@ -112,7 +112,7 @@ int main()
   auto kgv = Ship{.length{ft<>(745.1)},
                   .draft{ft<>(33.) + in<>(7.5)},
                   .beam{ft<>(103.2) + in<>(2.5)},
-                  .speed{knot<>(28.3)},
+                  .speed{kn<>(28.3)},
                   .mass{lton<>(42'245)},
                   .mainGuns{in<>(14)},
                   .shellMass{lb<>(1'590)},
