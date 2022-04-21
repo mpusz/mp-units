@@ -22,6 +22,6 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_library(glide_computer STATIC geographic.cpp include/geographic.h glide_computer.cpp include/glide_computer.h)
-target_link_libraries(glide_computer PRIVATE mp-units::core-fmt PUBLIC mp-units::si)
+add_library(glide_computer STATIC include/geographic.h glide_computer.cpp include/glide_computer.h)
+target_link_libraries(glide_computer PRIVATE mp-units::core-fmt PUBLIC mp-units::si example_utils)
 target_include_directories(glide_computer PUBLIC include)

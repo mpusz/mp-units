@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include "ranged_representation.h"
 #include <units/bits/fmt_hacks.h>
+#include <units/generic/dimensionless.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
 #include <limits>
@@ -34,88 +36,95 @@
 
 namespace geographic {
 
-template<typename Derived, typename Rep>
-struct coordinate {
-  using value_type = Rep;
-  constexpr explicit coordinate(value_type v) : value_(v) {}
-  constexpr value_type value() const { return value_; }
-  auto operator<=>(const coordinate&) const = default;
-private:
-  value_type value_;
-};
+// TODO Change to `angle` dimension in degree unit when the work on magnitudes is done
+template<typename T = double>
+using latitude = units::dimensionless<units::one, ranged_representation<T, T(-90), T(90)>>;
 
-struct latitude : coordinate<latitude, double> {
-  using coordinate::coordinate;
-};
+template<typename T = double>
+using longitude = units::dimensionless<units::one, ranged_representation<T, T(-180), T(180)>>;
 
-struct longitude : coordinate<longitude, double> {
-  using coordinate::coordinate;
-};
-
-template<class CharT, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude& lat)
+template<class CharT, class Traits, typename T>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (lat.value() > 0)
-    return os << "N" << lat.value();
+  if (lat.number() > 0)
+    return os << "N" << lat.number();
   else
-    return os << "S" << -lat.value();
+    return os << "S" << -lat.number();
 }
 
-template<class CharT, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude& lon)
+template<class CharT, class Traits, typename T>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (lon.value() > 0)
-    return os << "E" << lon.value();
+  if (lon.number() > 0)
+    return os << "E" << lon.number();
   else
-    return os << "W" << -lon.value();
+    return os << "W" << -lon.number();
 }
 
 inline namespace literals {
 
-constexpr auto operator"" _N(unsigned long long v) { return latitude(static_cast<latitude::value_type>(v)); }
-constexpr auto operator"" _N(long double v) { return latitude(static_cast<latitude::value_type>(v)); }
-constexpr auto operator"" _S(unsigned long long v) { return latitude(-static_cast<latitude::value_type>(v)); }
-constexpr auto operator"" _S(long double v) { return latitude(-static_cast<latitude::value_type>(v)); }
-constexpr auto operator"" _E(unsigned long long v) { return longitude(static_cast<longitude::value_type>(v)); }
-constexpr auto operator"" _E(long double v) { return longitude(static_cast<longitude::value_type>(v)); }
-constexpr auto operator"" _W(unsigned long long v) { return longitude(-static_cast<longitude::value_type>(v)); }
-constexpr auto operator"" _W(long double v) { return longitude(-static_cast<longitude::value_type>(v)); }
+constexpr auto operator"" _N(long double v) { return latitude<long double>(latitude<long double>::rep(v)); }
+constexpr auto operator"" _S(long double v) { return latitude<long double>(latitude<long double>::rep(v)); }
+constexpr auto operator"" _E(long double v) { return longitude<long double>(longitude<long double>::rep(v)); }
+constexpr auto operator"" _W(long double v) { return longitude<long double>(longitude<long double>::rep(v)); }
+constexpr auto operator"" _N(unsigned long long v)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
+  return latitude<std::int64_t>(latitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+}
+constexpr auto operator"" _S(unsigned long long v)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
+  return latitude<std::int64_t>(-latitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+}
+constexpr auto operator"" _E(unsigned long long v)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
+  return longitude<std::int64_t>(longitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+}
+constexpr auto operator"" _W(unsigned long long v)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
+  return longitude<std::int64_t>(-longitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+}
 
 }  // namespace literals
 
 }  // namespace geographic
 
-template<>
-class std::numeric_limits<geographic::latitude> : public numeric_limits<geographic::latitude::value_type> {
-  static constexpr auto min() noexcept { return geographic::latitude(-90); }
-  static constexpr auto lowest() noexcept { return geographic::latitude(-90); }
-  static constexpr auto max() noexcept { return geographic::latitude(90); }
+template<typename T>
+class std::numeric_limits<geographic::latitude<T>> : public numeric_limits<T> {
+  static constexpr auto min() noexcept { return geographic::latitude<T>(-90); }
+  static constexpr auto lowest() noexcept { return geographic::latitude<T>(-90); }
+  static constexpr auto max() noexcept { return geographic::latitude<T>(90); }
 };
 
-template<>
-class std::numeric_limits<geographic::longitude> : public numeric_limits<geographic::longitude::value_type> {
-  static constexpr auto min() noexcept { return geographic::longitude(-180); }
-  static constexpr auto lowest() noexcept { return geographic::longitude(-180); }
-  static constexpr auto max() noexcept { return geographic::longitude(180); }
+template<typename T>
+class std::numeric_limits<geographic::longitude<T>> : public numeric_limits<T> {
+  static constexpr auto min() noexcept { return geographic::longitude<T>(-180); }
+  static constexpr auto lowest() noexcept { return geographic::longitude<T>(-180); }
+  static constexpr auto max() noexcept { return geographic::longitude<T>(180); }
 };
 
-template<>
-struct STD_FMT::formatter<geographic::latitude> : formatter<geographic::latitude::value_type> {
+template<typename T>
+struct STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   template<typename FormatContext>
-  auto format(geographic::latitude lat, FormatContext& ctx)
+  auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), "{}", lat.value() > 0 ? 'N' : 'S');
-    return formatter<geographic::latitude::value_type>::format(lat.value() > 0 ? lat.value() : -lat.value(), ctx);
+    using rep = geographic::latitude<T>::rep;
+    STD_FMT::format_to(ctx.out(), "{}", lat > rep{0} ? 'N' : 'S');
+    return formatter<T>::format(lat > rep{0} ? lat.number() : -lat.number(), ctx);
   }
 };
 
-template<>
-struct STD_FMT::formatter<geographic::longitude> : formatter<geographic::longitude::value_type> {
+template<typename T>
+struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   template<typename FormatContext>
-  auto format(geographic::longitude lon, FormatContext& ctx)
+  auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), "{}", lon.value() > 0 ? 'E' : 'W');
-    return formatter<geographic::longitude::value_type>::format(lon.value() > 0 ? lon.value() : -lon.value(), ctx);
+    using rep = geographic::longitude<T>::rep;
+    STD_FMT::format_to(ctx.out(), "{}", lon > rep{0} ? 'E' : 'W');
+    return formatter<T>::format(lon > rep{0} ? lon.number() : -lon.number(), ctx);
   }
 };
 
@@ -124,11 +133,41 @@ namespace geographic {
 struct horizontal_kind : units::kind<horizontal_kind, units::isq::si::dim_length> {};
 using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
 
+template<typename T>
 struct position {
-  latitude lat;
-  longitude lon;
+  latitude<T> lat;
+  longitude<T> lon;
 };
 
-distance spherical_distance(position from, position to);
+template<typename T>
+distance spherical_distance(position<T> from, position<T> to)
+{
+  using namespace units::isq::si;
+  constexpr length<kilometre> earth_radius(6371);
+
+  constexpr auto p = std::numbers::pi_v<T> / 180;
+  const auto lat1_rad = from.lat.number() * p;
+  const auto lon1_rad = from.lon.number() * p;
+  const auto lat2_rad = to.lat.number() * p;
+  const auto lon2_rad = to.lon.number() * p;
+
+  using std::sin, std::cos, std::asin, std::acos, std::sqrt;
+
+  // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
+  if constexpr (sizeof(T) >= 8) {
+    // spherical law of cosines
+    const auto central_angle =
+      acos(sin(lat1_rad) * sin(lat2_rad) + cos(lat1_rad) * cos(lat2_rad) * cos(lon2_rad - lon1_rad));
+    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2_rad - lat1_rad) / 2 + cos(lat1_rad) * cos(lat2_rad) * (1
+    // - cos(lon2_rad - lon1_rad)) / 2));
+    return distance(earth_radius * central_angle);
+  } else {
+    // the haversine formula
+    const auto sin_lat = sin((lat2_rad - lat1_rad) / 2);
+    const auto sin_lon = sin((lon2_rad - lon1_rad) / 2);
+    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(lat1_rad) * cos(lat2_rad) * sin_lon * sin_lon));
+    return distance(earth_radius * central_angle);
+  }
+}
 
 }  // namespace geographic
