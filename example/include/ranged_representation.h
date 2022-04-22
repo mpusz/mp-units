@@ -26,27 +26,23 @@
 #include <algorithm>
 #include <type_traits>
 
-template<auto Min, auto Max>
-inline constexpr auto is_in_range = [](const auto& v) { return std::clamp(v, Min, Max) == v; };
+template<typename T, auto Min, auto Max>
+inline constexpr auto is_in_range = [](const auto& v) { return std::clamp(v, T{Min}, T{Max}) == v; };
 
-template<typename T, T Min, T Max>
-class ranged_representation : public validated_type<T, decltype(is_in_range<Min, Max>)> {
+template<typename T, auto Min, auto Max>
+class ranged_representation : public validated_type<T, decltype(is_in_range<T, Min, Max>)> {
 public:
-  using base = validated_type<T, decltype(is_in_range<Min, Max>)>;
+  using base = validated_type<T, decltype(is_in_range<T, Min, Max>)>;
   using base::validated_type;
   constexpr ranged_representation() : base(T{}) {}
 
   [[nodiscard]] constexpr ranged_representation operator-() const { return ranged_representation(-this->value()); }
 };
 
-template<typename T, T Min, T Max>
+template<typename T, auto Min, auto Max>
 struct std::common_type<std::intmax_t, ranged_representation<T, Min, Max>> :
-    std::type_identity<
-      ranged_representation<std::common_type_t<std::intmax_t, T>, std::common_type_t<std::intmax_t, T>{Min},
-                            std::common_type_t<std::intmax_t, T>{Max}>> {};
+    std::type_identity<ranged_representation<std::common_type_t<std::intmax_t, T>, Min, Max>> {};
 
-template<typename T, T Min, T Max>
+template<typename T, auto Min, auto Max>
 struct std::common_type<ranged_representation<T, Min, Max>, std::intmax_t> :
-    std::type_identity<
-      ranged_representation<std::common_type_t<T, std::intmax_t>, std::common_type_t<T, std::intmax_t>{Min},
-                            std::common_type_t<T, std::intmax_t>{Max}>> {};
+    std::type_identity<ranged_representation<std::common_type_t<T, std::intmax_t>, Min, Max>> {};

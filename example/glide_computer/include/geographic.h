@@ -28,6 +28,7 @@
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
 #include <limits>
+#include <numbers>
 #include <ostream>
 
 // IWYU pragma: begin_exports
@@ -38,10 +39,10 @@ namespace geographic {
 
 // TODO Change to `angle` dimension in degree unit when the work on magnitudes is done
 template<typename T = double>
-using latitude = units::dimensionless<units::one, ranged_representation<T, T(-90), T(90)>>;
+using latitude = units::dimensionless<units::one, ranged_representation<T, -90, 90>>;
 
 template<typename T = double>
-using longitude = units::dimensionless<units::one, ranged_representation<T, T(-180), T(180)>>;
+using longitude = units::dimensionless<units::one, ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
