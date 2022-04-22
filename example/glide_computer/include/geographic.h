@@ -23,6 +23,7 @@
 #pragma once
 
 #include "ranged_representation.h"
+#include <units/bits/external/hacks.h>
 #include <units/bits/fmt_hacks.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/si/length.h>
@@ -112,7 +113,7 @@ struct STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    using rep = geographic::latitude<T>::rep;
+    using rep = TYPENAME geographic::latitude<T>::rep;
     STD_FMT::format_to(ctx.out(), "{}", lat > rep{0} ? 'N' : 'S');
     return formatter<T>::format(lat > rep{0} ? lat.number() : -lat.number(), ctx);
   }
@@ -123,7 +124,7 @@ struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    using rep = geographic::longitude<T>::rep;
+    using rep = TYPENAME geographic::longitude<T>::rep;
     STD_FMT::format_to(ctx.out(), "{}", lon > rep{0} ? 'E' : 'W');
     return formatter<T>::format(lon > rep{0} ? lon.number() : -lon.number(), ctx);
   }
