@@ -57,6 +57,13 @@ if(${projectPrefix}IWYU)
     endif()
 endif()
 
+option(${projectPrefix}CLANG_TIDY "Enables clang-tidy" OFF)
+if(${projectPrefix}CLANG_TIDY)
+    message(STATUS "Enabling clang-tidy")
+    set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+    message(STATUS "Enabling clang-tidy - done")
+endif()
+
 #enable_clang_tidy()
 
 # add project code
@@ -72,42 +79,6 @@ add_subdirectory(docs)
 enable_testing()
 add_subdirectory(test)
 
-function(get_target_linked_targets target targets_out)
-    get_target_property(linked_libs ${target} INTERFACE_LINK_LIBRARIES)
-    foreach(linked_lib ${linked_libs})
-        if(NOT linked_lib IN_LIST targets)
-            if(TARGET ${linked_lib})
-                get_target_linked_targets(${linked_lib} child_targets)
-                list(APPEND targets ${linked_lib} ${child_targets})
-            endif()
-        endif()
-    endforeach()
-
-    list(REMOVE_DUPLICATES targets)
-    list(REMOVE_DUPLICATES link_libs)
-    set(${targets_out} ${targets} PARENT_SCOPE)
-endfunction()
-
-function(get_target_sources target paths_out)
-    get_target_linked_targets(${target} targets)
-    list(APPEND targets ${target})
-
-    foreach(t ${targets})
-        get_target_property(sources ${t} SOURCES)
-        if(sources)
-            get_target_property(source_dir ${t} SOURCE_DIR)
-            foreach(f ${sources})
-                file(REAL_PATH "${f}" path BASE_DIRECTORY "${source_dir}")
-                list(APPEND paths "${path}")
-            endforeach()
-        endif()
-    endforeach()
-
-    set(${paths_out} ${paths} PARENT_SCOPE)
-endfunction()
-
 # tests for standalone headers
-include(TestHeaders)
-get_target_sources(mp-units::mp-units sources)
-add_header_test(test_headers HEADERS ${sources})
-target_link_libraries(test_headers PRIVATE mp-units::mp-units)
+include(TestPublicHeaders)
+add_public_header_test(test_headers mp-units::mp-units)
