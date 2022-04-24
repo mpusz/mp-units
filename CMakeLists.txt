@@ -57,13 +57,6 @@ if(${projectPrefix}IWYU)
     endif()
 endif()
 
-option(${projectPrefix}CLANG_TIDY "Enables clang-tidy" OFF)
-if(${projectPrefix}CLANG_TIDY)
-    message(STATUS "Enabling clang-tidy")
-    set(CMAKE_CXX_CLANG_TIDY clang-tidy)
-    message(STATUS "Enabling clang-tidy - done")
-endif()
-
 #enable_clang_tidy()
 
 # add project code
