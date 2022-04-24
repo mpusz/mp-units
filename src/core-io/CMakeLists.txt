@@ -22,9 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(core-io
-    DEPENDENCIES
-        mp-units::core
-    HEADERS
-        include/units/quantity_io.h
-)
+add_units_module(core-io DEPENDENCIES mp-units::core HEADERS include/units/quantity_io.h)

@@ -22,10 +22,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-imperial
-    DEPENDENCIES
-        mp-units::si
-    HEADERS
-        include/units/isq/si/imperial/imperial.h
-        include/units/isq/si/imperial/length.h
+add_units_module(
+    si-imperial DEPENDENCIES mp-units::si HEADERS include/units/isq/si/imperial/imperial.h
+                                                  include/units/isq/si/imperial/length.h
 )

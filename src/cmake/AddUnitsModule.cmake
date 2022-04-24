@@ -24,8 +24,7 @@ cmake_minimum_required(VERSION 3.19)
 
 function(validate_unparsed module prefix)
     if(${prefix}_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Invalid arguments '${${prefix}_UNPARSED_ARGUMENTS}' "
-            "for module '${module}'")
+        message(FATAL_ERROR "Invalid arguments '${${prefix}_UNPARSED_ARGUMENTS}' " "for module '${module}'")
     endif()
 endfunction()
 
@@ -49,11 +48,7 @@ endfunction()
 function(add_units_module name)
     # parse arguments
     set(multiValues DEPENDENCIES HEADERS)
-    cmake_parse_arguments(
-        PARSE_ARGV 1
-        ARG
-        "" "" "${multiValues}"
-    )
+    cmake_parse_arguments(PARSE_ARGV 1 ARG "" "" "${multiValues}")
 
     # validate and process arguments
     validate_unparsed(${name} ARG)

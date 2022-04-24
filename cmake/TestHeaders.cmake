@@ -80,15 +80,18 @@
 #   If provided, the generated target is excluded from the 'all' target.
 #
 function(add_header_test target)
-    cmake_parse_arguments(ARGS "EXCLUDE_FROM_ALL"             # options
-                               ""                             # 1 value args
-                               "HEADERS;EXCLUDE"              # multivalued args
-                               ${ARGN})
-    if (NOT ARGS_HEADERS)
+    cmake_parse_arguments(
+        ARGS
+        "EXCLUDE_FROM_ALL" # options
+        "" # 1 value args
+        "HEADERS;EXCLUDE" # multivalued args
+        ${ARGN}
+    )
+    if(NOT ARGS_HEADERS)
         message(FATAL_ERROR "The `HEADERS` argument must be provided.")
     endif()
 
-    if (ARGS_EXCLUDE_FROM_ALL)
+    if(ARGS_EXCLUDE_FROM_ALL)
         set(ARGS_EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
     else()
         set(ARGS_EXCLUDE_FROM_ALL "")
@@ -97,12 +100,12 @@ function(add_header_test target)
     foreach(header ${ARGS_HEADERS})
         set(skip FALSE)
         foreach(exclude ${ARGS_EXCLUDE})
-            if (${header} MATCHES ${exclude})
+            if(${header} MATCHES ${exclude})
                 set(skip TRUE)
                 break()
             endif()
         endforeach()
-        if (skip)
+        if(skip)
             continue()
         endif()
 
@@ -110,19 +113,17 @@ function(add_header_test target)
         get_filename_component(directory "${header}" DIRECTORY)
 
         set(source "${CMAKE_CURRENT_BINARY_DIR}/headers/${directory}/${filename}.cpp")
-        if (NOT EXISTS "${source}")
+        if(NOT EXISTS "${source}")
             file(WRITE "${source}" "#include <${header}>")
         endif()
         list(APPEND sources "${source}")
     endforeach()
 
     set(standalone_main "${CMAKE_CURRENT_BINARY_DIR}/headers/_standalone_main.cpp")
-    if (NOT EXISTS "${standalone_main}")
+    if(NOT EXISTS "${standalone_main}")
         file(WRITE "${standalone_main}" "int main() { }")
     endif()
-    add_executable(${target}
-        ${ARGS_EXCLUDE_FROM_ALL}
-        ${sources}
-        "${CMAKE_CURRENT_BINARY_DIR}/headers/_standalone_main.cpp"
+    add_executable(
+        ${target} ${ARGS_EXCLUDE_FROM_ALL} ${sources} "${CMAKE_CURRENT_BINARY_DIR}/headers/_standalone_main.cpp"
     )
 endfunction()

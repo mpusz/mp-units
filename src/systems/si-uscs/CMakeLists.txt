@@ -22,11 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-uscs
-    DEPENDENCIES
-        mp-units::si
-    HEADERS
-        include/units/isq/si/uscs/length.h
-        include/units/isq/si/uscs/uscs.h
+add_units_module(
+    si-uscs DEPENDENCIES mp-units::si HEADERS include/units/isq/si/uscs/length.h include/units/isq/si/uscs/uscs.h
 )
-

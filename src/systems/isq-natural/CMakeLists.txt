@@ -22,19 +22,18 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(isq-natural
-    DEPENDENCIES
-        mp-units::isq
-    HEADERS
-        include/units/isq/natural/acceleration.h
-        include/units/isq/natural/constants.h
-        include/units/isq/natural/energy.h
-        include/units/isq/natural/force.h
-        include/units/isq/natural/length.h
-        include/units/isq/natural/mass.h
-        include/units/isq/natural/momentum.h
-        include/units/isq/natural/natural.h
-        include/units/isq/natural/speed.h
-        include/units/isq/natural/time.h
-        include/units/isq/natural/units.h
+add_units_module(
+    isq-natural
+    DEPENDENCIES mp-units::isq
+    HEADERS include/units/isq/natural/acceleration.h
+            include/units/isq/natural/constants.h
+            include/units/isq/natural/energy.h
+            include/units/isq/natural/force.h
+            include/units/isq/natural/length.h
+            include/units/isq/natural/mass.h
+            include/units/isq/natural/momentum.h
+            include/units/isq/natural/natural.h
+            include/units/isq/natural/speed.h
+            include/units/isq/natural/time.h
+            include/units/isq/natural/units.h
 )

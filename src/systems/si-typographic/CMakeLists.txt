@@ -22,11 +22,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-typographic
-    DEPENDENCIES
-        mp-units::si
-    HEADERS
-        include/units/isq/si/typographic/length.h
-        include/units/isq/si/typographic/typographic.h
+add_units_module(
+    si-typographic DEPENDENCIES mp-units::si HEADERS include/units/isq/si/typographic/length.h
+                                                     include/units/isq/si/typographic/typographic.h
 )
-

@@ -22,22 +22,20 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-fps
-    DEPENDENCIES
-        mp-units::si
-    HEADERS
-        include/units/isq/si/fps/acceleration.h
-        include/units/isq/si/fps/area.h
-        include/units/isq/si/fps/density.h
-        include/units/isq/si/fps/energy.h
-        include/units/isq/si/fps/force.h
-        include/units/isq/si/fps/fps.h
-        include/units/isq/si/fps/length.h
-        include/units/isq/si/fps/mass.h
-        include/units/isq/si/fps/power.h
-        include/units/isq/si/fps/pressure.h
-        include/units/isq/si/fps/speed.h
-        include/units/isq/si/fps/time.h
-        include/units/isq/si/fps/volume.h
+add_units_module(
+    si-fps
+    DEPENDENCIES mp-units::si
+    HEADERS include/units/isq/si/fps/acceleration.h
+            include/units/isq/si/fps/area.h
+            include/units/isq/si/fps/density.h
+            include/units/isq/si/fps/energy.h
+            include/units/isq/si/fps/force.h
+            include/units/isq/si/fps/fps.h
+            include/units/isq/si/fps/length.h
+            include/units/isq/si/fps/mass.h
+            include/units/isq/si/fps/power.h
+            include/units/isq/si/fps/pressure.h
+            include/units/isq/si/fps/speed.h
+            include/units/isq/si/fps/time.h
+            include/units/isq/si/fps/volume.h
 )
-

@@ -22,10 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-iau
-    DEPENDENCIES
-        mp-units::si
-    HEADERS
-        include/units/isq/si/iau/iau.h
-        include/units/isq/si/iau/length.h
+add_units_module(
+    si-iau DEPENDENCIES mp-units::si HEADERS include/units/isq/si/iau/iau.h include/units/isq/si/iau/length.h
 )

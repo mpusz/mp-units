@@ -34,7 +34,9 @@ include(CheckLibcxxInUse)
 check_libcxx_in_use(${projectPrefix}LIBCXX)
 
 # core library definition
-add_library(mp-units-core INTERFACE
+add_library(
+    mp-units-core
+    INTERFACE
     include/units/base_dimension.h
     include/units/chrono.h
     include/units/concepts.h

@@ -65,4 +65,3 @@ function(add_public_header_test target test_target)
     target_link_libraries(${target} PRIVATE ${test_target})
     target_include_directories(${target} PRIVATE .)
 endfunction()
-
