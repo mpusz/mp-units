@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
 # core library options
 set(${projectPrefix}DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
@@ -34,7 +34,31 @@ include(CheckLibcxxInUse)
 check_libcxx_in_use(${projectPrefix}LIBCXX)
 
 # core library definition
-add_library(mp-units-core INTERFACE)
+add_library(mp-units-core INTERFACE
+    include/units/base_dimension.h
+    include/units/chrono.h
+    include/units/concepts.h
+    include/units/customization_points.h
+    include/units/derived_dimension.h
+    include/units/exponent.h
+    include/units/generic/angle.h
+    include/units/generic/dimensionless.h
+    include/units/kind.h
+    include/units/magnitude.h
+    include/units/math.h
+    include/units/point_origin.h
+    include/units/prefix.h
+    include/units/quantity.h
+    include/units/quantity_cast.h
+    include/units/quantity_kind.h
+    include/units/quantity_point.h
+    include/units/quantity_point_kind.h
+    include/units/random.h
+    include/units/ratio.h
+    include/units/reference.h
+    include/units/symbol_text.h
+    include/units/unit.h
+)
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
 target_include_directories(

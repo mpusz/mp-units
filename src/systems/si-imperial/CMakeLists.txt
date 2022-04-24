@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-imperial mp-units::si)
+add_units_module(si-imperial
+    DEPENDENCIES
+        mp-units::si
+    HEADERS
+        include/units/isq/si/imperial/imperial.h
+        include/units/isq/si/imperial/length.h
+)

@@ -20,6 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-international mp-units::si)
+add_units_module(si-international
+    DEPENDENCIES
+        mp-units::si
+    HEADERS
+        include/units/isq/si/international/area.h
+        include/units/isq/si/international/international.h
+        include/units/isq/si/international/length.h
+        include/units/isq/si/international/speed.h
+        include/units/isq/si/international/volume.h
+)
+

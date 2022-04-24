@@ -20,6 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(core-io mp-units::core)
+add_units_module(core-io
+    DEPENDENCIES
+        mp-units::core
+    HEADERS
+        include/units/quantity_io.h
+)

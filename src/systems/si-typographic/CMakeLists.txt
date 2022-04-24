@@ -20,6 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-typographic mp-units::si)
+add_units_module(si-typographic
+    DEPENDENCIES
+        mp-units::si
+    HEADERS
+        include/units/isq/si/typographic/length.h
+        include/units/isq/si/typographic/typographic.h
+)
+

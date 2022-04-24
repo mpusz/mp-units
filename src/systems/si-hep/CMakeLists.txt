@@ -20,6 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-hep mp-units::si)
+add_units_module(si-hep
+    DEPENDENCIES
+        mp-units::si
+    HEADERS
+        include/units/isq/si/hep/area.h
+        include/units/isq/si/hep/energy.h
+        include/units/isq/si/hep/hep.h
+        include/units/isq/si/hep/mass.h
+        include/units/isq/si/hep/momentum.h
+)
