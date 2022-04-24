@@ -29,7 +29,7 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/length.h>
+#include <units/isq/si/area.h>
 #include <units/unit.h>
 
 namespace units::isq::si::hep {
