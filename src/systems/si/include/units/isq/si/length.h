@@ -56,7 +56,7 @@ struct exametre : prefixed_unit<exametre, exa, metre> {};
 struct zettametre : prefixed_unit<zettametre, zetta, metre> {};
 struct yottametre : prefixed_unit<yottametre, yotta, metre> {};
 
-struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", no_prefix, ratio(149'597'870'700), metre> {};
+struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", prefix, ratio(149'597'870'700), metre> {};
 
 struct dim_length : isq::dim_length<metre> {};
 

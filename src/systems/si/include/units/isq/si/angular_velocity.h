@@ -29,12 +29,13 @@
 // IWYU pragma: end_exports
 
 #include <units/generic/angle.h>
+#include <units/isq/si/prefixes.h>
 #include <units/isq/si/time.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
-struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}, no_prefix> {};
+struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}, prefix> {};
 
 struct dim_angular_velocity :
     isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};
