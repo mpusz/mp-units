@@ -58,7 +58,11 @@ struct square_exametre : derived_unit<square_exametre, dim_area, exametre> {};
 struct square_zettametre : derived_unit<square_zettametre, dim_area, zettametre> {};
 struct square_yottametre : derived_unit<square_yottametre, dim_area, yottametre> {};
 
-struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
+struct are : alias_unit<square_decametre, "a", prefix> {};
+struct centiare : prefixed_alias_unit<square_metre, centi, are> {};
+struct deciare : prefixed_unit<deciare, deci, are> {};
+struct decare : prefixed_unit<decare, deca, are> {};
+struct hectare : prefixed_alias_unit<square_hectometre, hecto, are> {};
 
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
@@ -235,6 +239,38 @@ constexpr auto operator"" _q_Ym2(unsigned long long l)
 }
 constexpr auto operator"" _q_Ym2(long double l) { return area<square_yottametre, long double>(l); }
 
+// a
+constexpr auto operator"" _q_a(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<are, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_a(long double l) { return area<are, long double>(l); }
+
+// ca
+constexpr auto operator"" _q_ca(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<centiare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_ca(long double l) { return area<centiare, long double>(l); }
+
+// da
+constexpr auto operator"" _q_da(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<deciare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_da(long double l) { return area<deciare, long double>(l); }
+
+// daa
+constexpr auto operator"" _q_daa(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<decare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_daa(long double l) { return area<decare, long double>(l); }
+
 // ha
 constexpr auto operator"" _q_ha(unsigned long long l)
 {
@@ -273,6 +309,10 @@ inline constexpr auto Em2 = reference<dim_area, square_exametre>{};
 inline constexpr auto Zm2 = reference<dim_area, square_zettametre>{};
 inline constexpr auto Ym2 = reference<dim_area, square_yottametre>{};
 
+inline constexpr auto a = reference<dim_area, are>{};
+inline constexpr auto ca = reference<dim_area, centiare>{};
+inline constexpr auto da = reference<dim_area, deciare>{};
+inline constexpr auto daa = reference<dim_area, decare>{};
 inline constexpr auto ha = reference<dim_area, hectare>{};
 
 }  // namespace area_references

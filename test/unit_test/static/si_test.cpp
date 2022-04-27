@@ -276,8 +276,17 @@ static_assert(10_q_m * 10_q_m == 100_q_m2);
 static_assert(100_q_m2 / 10_q_m == 10_q_m);
 static_assert(10_q_km * 10_q_km == 100_q_km2);
 static_assert(1_q_m2 == 10'000_q_cm2);
+
+static_assert(1_q_ca == 1_q_m2);
+static_assert(1_q_da == 10_q_m2);
+static_assert(1_q_a == 100_q_m2);
+static_assert(1_q_daa == 1'000_q_m2);
 static_assert(1_q_ha == 10'000_q_m2);
 
+static_assert(centiare::symbol == "ca");
+static_assert(deciare::symbol == "da");
+static_assert(are::symbol == "a");
+static_assert(decare::symbol == "daa");
 static_assert(hectare::symbol == "ha");
 
 static_assert(detail::unit_text<dim_area, square_metre>() == basic_symbol_text("m²", "m^2"));
