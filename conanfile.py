@@ -22,8 +22,8 @@
 
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
-from conan.tools.files import copy, load, rmdir, update_conandata
-from conan.tools.scm import Git, Version
+from conan.tools.files import copy, load, rmdir
+from conan.tools.scm import Version
 from conans.tools import get_env, check_min_cppstd   # TODO replace with new tools for Conan 2.0
 import os, re
 
@@ -62,6 +62,7 @@ class MPUnitsConan(ConanFile):
         "build_docs": True
     }
     exports = ["LICENSE.md"]
+    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*", "CMakeLists.txt"]
     no_copy_source = True
     generators = "cmake_paths"
 
@@ -139,22 +140,6 @@ class MPUnitsConan(ConanFile):
     #     if not self._run_tests:
     #         # build_docs has sense only in a development or CI build
     #         del self.options.build_docs
-
-    def export(self):
-        git = Git(self, self.recipe_folder)
-        scm_url, scm_commit = git.get_url_and_commit()
-        # stores the current url and commit in conandata.yml
-        update_conandata(self, {"sources": {"commit": scm_commit, "url": scm_url}})
-
-    def layout(self):
-        self.folders.source = "."
-
-    def source(self):
-        # recovers the saved url and commit from conandata.yml and use them to get sources
-        git = Git(self)
-        sources = self.conan_data["sources"]
-        git.clone(url=sources["url"], target=".")
-        git.checkout(commit=sources["commit"])
 
     def generate(self):
         tc = CMakeToolchain(self)
