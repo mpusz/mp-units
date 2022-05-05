@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, tools
-from conans.tools import Version, check_min_cppstd
+from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
-from conan.tools.files import copy
-from conans.errors import ConanInvalidConfiguration
+from conan.tools.files import copy, load, rmdir
+from conan.tools.scm import Version
+from conans.tools import get_env, check_min_cppstd   # TODO replace with new tools for Conan 2.0
 import os, re
 
-required_conan_version = ">=1.44.0"
+required_conan_version = ">=1.48.0"
 
 
 class MPUnitsConan(ConanFile):
@@ -67,7 +67,7 @@ class MPUnitsConan(ConanFile):
 
     @property
     def _run_tests(self):
-        return tools.get_env("CONAN_RUN_TESTS", False)
+        return get_env("CONAN_RUN_TESTS", False)
 
     @property
     def _use_libfmt(self):
@@ -93,7 +93,7 @@ class MPUnitsConan(ConanFile):
             return int(f"{compiler.version}0")
 
     def set_version(self):
-        content = tools.load(os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
+        content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
         self.version = version.strip()
 
@@ -164,7 +164,7 @@ class MPUnitsConan(ConanFile):
         copy(self, "LICENSE.md", self.source_folder, os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
-        tools.rmdir(os.path.join(self.package_folder, "lib", "cmake"))
+        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
         compiler = self.settings.compiler
