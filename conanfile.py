@@ -62,6 +62,7 @@ class MPUnitsConan(ConanFile):
         "build_docs": True
     }
     exports = ["LICENSE.md"]
+    no_copy_source = True
     generators = "cmake_paths"
 
     @property
