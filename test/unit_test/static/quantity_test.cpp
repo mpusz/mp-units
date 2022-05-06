@@ -275,11 +275,11 @@ struct derived_quantity : quantity<typename Q::dimension, typename Q::unit, Rep>
 static_assert(detail::is_quantity<derived_quantity<double, si::length<metre>, "NTTP type description">>);
 constexpr isq::Length auto get_length_derived_quantity() noexcept
 {
-  derived_quantity<double, si::length<metre>, "NTTP type description"> a{};
-  a += 1_q_m;
-  a = a + 1_q_m;
-  a *= 0.5;
-  return a;
+  derived_quantity<double, si::length<metre>, "NTTP type description"> dist{};
+  dist += 1_q_m;
+  dist = dist + 1_q_m;
+  dist *= 0.5;
+  return dist;
 }
 static_assert(get_length_derived_quantity() == 1_q_m);
 
