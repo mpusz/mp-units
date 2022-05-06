@@ -194,13 +194,13 @@ jobs:
         working-directory: build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Install mp-units
         shell: bash
         working-directory: build/${{ matrix.build_type }}
@@ -217,14 +217,14 @@ jobs:
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
           cmake --build .
       - name: Build test_package CMake (local build)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
           cmake --build .
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type == 'VISUAL'
@@ -232,14 +232,14 @@ jobs:
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Run test_package
         shell: bash
