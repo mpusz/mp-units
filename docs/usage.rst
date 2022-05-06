@@ -294,7 +294,7 @@ library release the following steps may be performed:
 
       mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
       cmake --build .
 
 
@@ -345,7 +345,7 @@ differences:
 
       mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
       cmake --build .
 
 
@@ -360,7 +360,7 @@ to find it, it is enough to perform the following steps:
 
     mkdir units/build && cd units/build
     conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-    cmake ../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake ../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
     cmake --install . --prefix <install_dir>
 
 
@@ -392,7 +392,7 @@ step with the CMake build:
 .. code-block:: shell
 
     # ...
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
     cmake --build .
     ctest
 
