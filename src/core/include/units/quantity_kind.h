@@ -54,6 +54,10 @@ inline constexpr auto downcasted_kind_fn = [](auto q) {
 template<QuantityKind QK>
 inline constexpr auto& downcasted_kind = downcasted_kind_fn<typename QK::kind_type::base_kind>;
 
+template<typename T, typename K>
+concept quantity_kind_one = QuantityKind<T> && equivalent<typename T::kind_type, downcast_kind<K, dim_one>> &&
+                            detail::quantity_one<typename T::quantity_type>;
+
 }  // namespace detail
 
 /**
@@ -198,8 +202,8 @@ public:
     q_ *= rhs;
     return *this;
   }
-  template<typename Rep2>
-  constexpr quantity_kind& operator*=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
+  template<detail::quantity_kind_one<K> QK>
+  constexpr quantity_kind& operator*=(const QK& rhs)
     requires requires(quantity_type q) { q *= rhs.common(); }
   {
     q_ *= rhs.common();
@@ -214,8 +218,8 @@ public:
     q_ /= rhs;
     return *this;
   }
-  template<typename Rep2>
-  constexpr quantity_kind& operator/=(const quantity_kind<downcast_kind<K, dim_one>, units::one, Rep2>& rhs)
+  template<detail::quantity_kind_one<K> QK>
+  constexpr quantity_kind& operator/=(const QK& rhs)
     requires requires(quantity_type q) { q /= rhs.common(); }
   {
     q_ /= rhs.common();
@@ -233,8 +237,7 @@ public:
 
   template<QuantityKind QK>
   constexpr quantity_kind& operator%=(const QK& rhs)
-    requires(QuantityKindEquivalentTo<QK, quantity_kind> ||
-             std::same_as<typename QK::kind_type, downcast_kind<K, dim_one>>) &&
+    requires(QuantityKindEquivalentTo<QK, quantity_kind> || detail::quantity_kind_one<QK, K>) &&
             requires(quantity_type q) { q %= rhs.common(); }
   {
     gsl_ExpectsAudit(rhs.common().number() != quantity_values<typename QK::rep>::zero());
