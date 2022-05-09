@@ -26,6 +26,7 @@
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
 #include <units/isq/si/fps/speed.h>
+#include <units/isq/si/international/speed.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
@@ -53,7 +54,7 @@ struct Ship {
 };
 
 // Print 'a' in its current units and print its value cast to the units in each of Args
-template<class ...Args, units::Quantity Q>
+template<class... Args, units::Quantity Q>
 auto fmt_line(const Q a)
 {
   return STD_FMT::format("{:22}", a) + (STD_FMT::format(",{:20}", units::quantity_cast<Args>(a)) + ...);
@@ -65,16 +66,28 @@ void print_details(std::string_view description, const Ship& ship)
   using namespace units::isq::si::fps::literals;
   const auto waterDensity = 62.4_q_lb_per_ft3;
   std::cout << STD_FMT::format("{}\n", description);
-  std::cout << STD_FMT::format("{:20} : {}\n", "length",    fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
-            << STD_FMT::format("{:20} : {}\n", "draft",     fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
-            << STD_FMT::format("{:20} : {}\n", "beam",      fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
-            << STD_FMT::format("{:20} : {}\n", "mass",      fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
-            << STD_FMT::format("{:20} : {}\n", "speed",     fmt_line<si::fps::speed<si::fps::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
-            << STD_FMT::format("{:20} : {}\n", "power",     fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
-            << STD_FMT::format("{:20} : {}\n", "main guns", fmt_line<si::fps::length<si::fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
-            << STD_FMT::format("{:20} : {}\n", "fire shells weighing",fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
-            << STD_FMT::format("{:20} : {}\n", "fire shells at",fmt_line<si::fps::speed<si::fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
-            << STD_FMT::format("{:20} : {}\n", "volume underwater", fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
+  std::cout << STD_FMT::format("{:20} : {}\n", "length",
+                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
+            << STD_FMT::format("{:20} : {}\n", "draft",
+                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
+            << STD_FMT::format("{:20} : {}\n", "beam",
+                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
+            << STD_FMT::format("{:20} : {}\n", "mass",
+                               fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
+            << STD_FMT::format(
+                 "{:20} : {}\n", "speed",
+                 fmt_line<si::speed<si::international::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
+            << STD_FMT::format("{:20} : {}\n", "power",
+                               fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
+            << STD_FMT::format("{:20} : {}\n", "main guns",
+                               fmt_line<si::fps::length<si::fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
+            << STD_FMT::format("{:20} : {}\n", "fire shells weighing",
+                               fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
+            << STD_FMT::format(
+                 "{:20} : {}\n", "fire shells at",
+                 fmt_line<si::fps::speed<si::fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
+            << STD_FMT::format("{:20} : {}\n", "volume underwater",
+                               fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
 }
 
 int main()
@@ -83,13 +96,37 @@ int main()
   using namespace units::isq::si::fps::literals;
 
   // KMS Bismark, using the units the Germans would use, taken from Wiki
-  auto bismark = Ship{.length{251._q_m}, .draft{9.3_q_m}, .beam{36_q_m}, .speed{56_q_km_per_h}, .mass{50'300_q_t}, .mainGuns{380_q_mm}, .shellMass{800_q_kg}, .shellSpeed{820._q_m_per_s}, .power{110.45_q_kW}};
+  auto bismark = Ship{.length{251._q_m},
+                      .draft{9.3_q_m},
+                      .beam{36_q_m},
+                      .speed{56_q_km_per_h},
+                      .mass{50'300_q_t},
+                      .mainGuns{380_q_mm},
+                      .shellMass{800_q_kg},
+                      .shellSpeed{820._q_m_per_s},
+                      .power{110.45_q_kW}};
 
   // USS Iowa, using units from the foot-pound-second system
-  auto iowa = Ship{.length{860._q_ft}, .draft{37._q_ft + 2._q_in}, .beam{108._q_ft + 2._q_in}, .speed{33_q_knot}, .mass{57'540_q_lton}, .mainGuns{16_q_in}, .shellMass{2700_q_lb}, .shellSpeed{2690._q_ft_per_s}, .power{212'000_q_hp}};
+  auto iowa = Ship{.length{860._q_ft},
+                   .draft{37._q_ft + 2._q_in},
+                   .beam{108._q_ft + 2._q_in},
+                   .speed{si::speed<si::international::knot>{33}},
+                   .mass{57'540_q_lton},
+                   .mainGuns{16_q_in},
+                   .shellMass{2700_q_lb},
+                   .shellSpeed{2690._q_ft_per_s},
+                   .power{212'000_q_hp}};
 
   // HMS King George V, using units from the foot-pound-second system
-  auto kgv = Ship{.length{745.1_q_ft}, .draft{33._q_ft + 7.5_q_in}, .beam{103.2_q_ft + 2.5_q_in}, .speed{28.3_q_knot}, .mass{42'245_q_lton}, .mainGuns{14_q_in}, .shellMass{1'590_q_lb}, .shellSpeed{2483._q_ft_per_s}, .power{110'000_q_hp}};
+  auto kgv = Ship{.length{745.1_q_ft},
+                  .draft{33._q_ft + 7.5_q_in},
+                  .beam{103.2_q_ft + 2.5_q_in},
+                  .speed{si::speed<si::international::knot>{28.3}},
+                  .mass{42'245_q_lton},
+                  .mainGuns{14_q_in},
+                  .shellMass{1'590_q_lb},
+                  .shellSpeed{2483._q_ft_per_s},
+                  .power{110'000_q_hp}};
 
   print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);
   std::cout << "\n\n";

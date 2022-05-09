@@ -92,4 +92,4 @@ static_assert(sym6 + basic_fixed_string("f") == basic_symbol_text("bcf", "def"))
 static_assert("a" + sym6 == basic_symbol_text("abc", "ade"));
 static_assert(sym6 + "f" == basic_symbol_text("bcf", "def"));
 
-}
+}  // namespace

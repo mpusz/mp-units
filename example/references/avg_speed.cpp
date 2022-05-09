@@ -21,12 +21,12 @@
 // SOFTWARE.
 
 #include <units/isq/si/cgs/length.h>
-#include <units/isq/si/cgs/speed.h> // IWYU pragma: keep
+#include <units/isq/si/cgs/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/international/length.h>
-#include <units/isq/si/international/speed.h> // IWYU pragma: keep
-#include <units/isq/si/length.h> // IWYU pragma: keep
-#include <units/isq/si/time.h>
+#include <units/isq/si/international/speed.h>  // IWYU pragma: keep
+#include <units/isq/si/length.h>               // IWYU pragma: keep
 #include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <exception>
 #include <iostream>
@@ -35,38 +35,31 @@ namespace {
 
 using namespace units::isq;
 
-constexpr si::speed<si::metre_per_second, int>
-fixed_int_si_avg_speed(si::length<si::metre, int> d,
-                       si::time<si::second, int> t)
+constexpr si::speed<si::metre_per_second, int> fixed_int_si_avg_speed(si::length<si::metre, int> d,
+                                                                      si::time<si::second, int> t)
 {
   return d / t;
 }
 
-constexpr si::speed<si::metre_per_second>
-fixed_double_si_avg_speed(si::length<si::metre> d,
-                          si::time<si::second> t)
+constexpr si::speed<si::metre_per_second> fixed_double_si_avg_speed(si::length<si::metre> d, si::time<si::second> t)
 {
   return d / t;
 }
 
 template<typename U1, typename R1, typename U2, typename R2>
-constexpr Speed auto si_avg_speed(si::length<U1, R1> d,
-                                  si::time<U2, R2> t)
+constexpr Speed auto si_avg_speed(si::length<U1, R1> d, si::time<U2, R2> t)
 {
   return d / t;
 }
 
-constexpr Speed auto avg_speed(Length auto d, Time auto t)
-{
-  return d / t;
-}
+constexpr Speed auto avg_speed(Length auto d, Time auto t) { return d / t; }
 
 template<Length D, Time T, Speed V>
 void print_result(D distance, T duration, V speed)
 {
   const auto result_in_kmph = units::quantity_cast<si::speed<si::kilometre_per_hour>>(speed);
-  std::cout << "Average speed of a car that makes " << distance << " in "
-            << duration << " is " << result_in_kmph << ".\n";
+  std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
+            << ".\n";
 }
 
 void example()
@@ -94,7 +87,8 @@ void example()
     std::cout << "\nSI units with 'double' as representation\n";
 
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
-    print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<int>(distance), quantity_cast<int>(duration)));
+    print_result(distance, duration,
+                 fixed_int_si_avg_speed(quantity_cast<int>(distance), quantity_cast<int>(duration)));
 
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, si_avg_speed(distance, duration));
@@ -130,7 +124,9 @@ void example()
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // also it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<si::length<si::metre, int>>(distance), quantity_cast<int>(duration)));
+    print_result(
+      distance, duration,
+      fixed_int_si_avg_speed(quantity_cast<si::length<si::metre, int>>(distance), quantity_cast<int>(duration)));
 
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, si_avg_speed(distance, duration));
@@ -169,7 +165,9 @@ void example()
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // it is not possible to make a lossless conversion of centimeters to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration, fixed_int_si_avg_speed(quantity_cast<si::length<si::metre, int>>(distance), quantity_cast<int>(duration)));
+    print_result(
+      distance, duration,
+      fixed_int_si_avg_speed(quantity_cast<si::length<si::metre, int>>(distance), quantity_cast<int>(duration)));
 
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
 
@@ -178,20 +176,17 @@ void example()
 
     print_result(distance, duration, avg_speed(distance, duration));
   }
-
 }
 
-} // namespace
+}  // namespace
 
 int main()
 {
   try {
     example();
-  }
-  catch (const std::exception& ex) {
+  } catch (const std::exception& ex) {
     std::cerr << "Unhandled std exception caught: " << ex.what() << '\n';
-  }
-  catch (...) {
+  } catch (...) {
     std::cerr << "Unhandled unknown exception caught\n";
   }
 }

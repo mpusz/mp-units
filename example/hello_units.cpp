@@ -22,19 +22,16 @@
 
 #include <units/format.h>
 #include <units/isq/si/international/length.h>
-#include <units/isq/si/international/speed.h> // IWYU pragma: keep
+#include <units/isq/si/international/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/length.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/time.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 using namespace units::isq;
 
-constexpr Speed auto avg_speed(Length auto d, Time auto t)
-{
-  return d / t;
-}
+constexpr Speed auto avg_speed(Length auto d, Time auto t) { return d / t; }
 
 int main()
 {
@@ -55,11 +52,11 @@ int main()
 #endif
   constexpr Speed auto v7 = quantity_cast<int>(v6);
 
-  std::cout << v1 << '\n';                                      // 110 km/h
-  std::cout << v2 << '\n';                                      // 70 mi/h
-  std::cout << STD_FMT::format("{}", v3) << '\n';               // 110 km/h
-  std::cout << STD_FMT::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
-  std::cout << STD_FMT::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
-  std::cout << STD_FMT::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
-  std::cout << STD_FMT::format("{:%Q}", v7) << '\n';            // 31
+  std::cout << v1 << '\n';                                       // 110 km/h
+  std::cout << v2 << '\n';                                       // 70 mi/h
+  std::cout << STD_FMT::format("{}", v3) << '\n';                // 110 km/h
+  std::cout << STD_FMT::format("{:*^14}", v4) << '\n';           // ***70 mi/h****
+  std::cout << STD_FMT::format("{:%Q in %q}", v5) << '\n';       // 30.5556 in m/s
+  std::cout << STD_FMT::format("{0:%Q} in {0:%q}", v6) << '\n';  // 31.2928 in m/s
+  std::cout << STD_FMT::format("{:%Q}", v7) << '\n';             // 31
 }

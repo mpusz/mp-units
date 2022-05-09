@@ -26,11 +26,11 @@
 
 namespace std {
 
-  // concepts
-  using concepts::same_as;
-  using concepts::derived_from;
-  using concepts::regular;
-  using concepts::totally_ordered;
-  using concepts::convertible_to;
+// concepts
+using concepts::convertible_to;
+using concepts::derived_from;
+using concepts::regular;
+using concepts::same_as;
+using concepts::totally_ordered;
 
-}
+}  // namespace std

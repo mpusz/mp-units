@@ -28,14 +28,15 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/length.h>
 #include <units/isq/si/amount_of_substance.h>
+#include <units/isq/si/length.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
 struct mol_per_metre_cub : unit<mol_per_metre_cub> {};
-struct dim_concentration : isq::dim_concentration<dim_concentration, mol_per_metre_cub, dim_amount_of_substance, dim_length> {};
+struct dim_concentration :
+    isq::dim_concentration<dim_concentration, mol_per_metre_cub, dim_amount_of_substance, dim_length> {};
 
 template<UnitOf<dim_concentration> U, Representation Rep = double>
 using concentration = quantity<dim_concentration, U, Rep>;
@@ -45,12 +46,16 @@ using concentration = quantity<dim_concentration, U, Rep>;
 inline namespace literals {
 
 // mol/m³
-constexpr auto operator"" _q_mol_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return concentration<mol_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mol_per_m3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return concentration<mol_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mol_per_m3(long double l) { return concentration<mol_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -58,8 +63,9 @@ constexpr auto operator"" _q_mol_per_m3(long double l) { return concentration<mo
 
 namespace units::aliases::isq::si::inline concentration {
 
-template<Representation Rep = double> using mol_per_m3 = units::isq::si::concentration<units::isq::si::mol_per_metre_cub, Rep>;
+template<Representation Rep = double>
+using mol_per_m3 = units::isq::si::concentration<units::isq::si::mol_per_metre_cub, Rep>;
 
 }  // namespace units::aliases::isq::si::inline concentration
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/isq/si/mass.h>
 #include <units/format.h>
 #include <units/generic/dimensionless.h>
+#include <units/isq/si/mass.h>
 #include <array>
 #include <iostream>
 
@@ -34,10 +34,12 @@ using namespace units;
 void print_header(const kalman::State auto& initial)
 {
   std::cout << STD_FMT::format("Initial: {}\n", initial);
-  std::cout << STD_FMT::format("{:>2} | {:>9} | {:>8} | {:>14} | {:>14}\n", "N", "Gain", "Measured", "Curr. Estimate", "Next Estimate");
+  std::cout << STD_FMT::format("{:>2} | {:>9} | {:>8} | {:>14} | {:>14}\n", "N", "Gain", "Measured", "Curr. Estimate",
+                               "Next Estimate");
 }
 
-void print(auto iteration, Dimensionless auto gain, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
+void print(auto iteration, Dimensionless auto gain, Quantity auto measured, const kalman::State auto& current,
+           const kalman::State auto& next)
 {
   std::cout << STD_FMT::format("{:2} | {:9} | {:8} | {:14} | {:14}\n", iteration, gain, measured, current, next);
 }
@@ -48,13 +50,13 @@ int main()
   using namespace units::isq::si::references;
   using state = kalman::state<si::mass<si::gram>>;
 
-  const state initial = { 1 * kg };
-  const std::array measurements = { 1030 * g, 989 * g, 1017 * g, 1009 * g, 1013 * g,
-                                    979 * g, 1008 * g, 1042 * g, 1012 * g, 1011 * g };
+  const state initial = {1 * kg};
+  const std::array measurements = {1030 * g, 989 * g,  1017 * g, 1009 * g, 1013 * g,
+                                   979 * g,  1008 * g, 1042 * g, 1012 * g, 1011 * g};
 
   print_header(initial);
   state next = initial;
-  for(int index = 1; const auto& m : measurements) {
+  for (int index = 1; const auto& m : measurements) {
     const auto& previous = next;
     const dimensionless<one> gain = 1. / index;
     const auto current = state_update(previous, m, gain);

@@ -29,7 +29,7 @@
 #include <units/isq/si/force.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
 #include <cassert>
@@ -40,7 +40,7 @@ namespace {
 
 using namespace units::aliases::isq::si;
 
-inline constexpr auto g = units::isq::si::si2019::standard_gravity<>;
+inline constexpr auto g = units::isq::si::si2019::standard_gravity<>;  // NOLINT(readability-identifier-length)
 inline constexpr auto air_density = kg_per_m3<>(1.225);
 
 class Box {
@@ -48,7 +48,10 @@ class Box {
   length::m<> height_;
   density::kg_per_m3<> density_ = air_density;
 public:
-  constexpr Box(const length::m<>& length, const length::m<>& width, length::m<> height): base_(length * width), height_(std::move(height)) {}
+  constexpr Box(const length::m<>& length, const length::m<>& width, length::m<> height) :
+      base_(length * width), height_(std::move(height))
+  {
+  }
 
   [[nodiscard]] constexpr force::N<> filled_weight() const
   {
@@ -86,13 +89,13 @@ int main()
   auto box = Box(mm<>(1000.0), mm<>(500.0), height);
   box.set_contents_density(kg_per_m3<>(1000.0));
 
-  const auto fill_time = s<>(200.0);        // time since starting fill
-  const auto measured_mass = kg<>(20.0);    // measured mass at fill_time
+  const auto fill_time = s<>(200.0);      // time since starting fill
+  const auto measured_mass = kg<>(20.0);  // measured mass at fill_time
 
   const Length auto fill_level = box.fill_level(measured_mass);
   const Dimensionless auto fill_percent = quantity_cast<percent>(fill_level / height);
   const Volume auto spare_capacity = box.spare_capacity(measured_mass);
-  const auto input_flow_rate = measured_mass / fill_time;    // unknown dimension
+  const auto input_flow_rate = measured_mass / fill_time;  // unknown dimension
   const Speed auto float_rise_rate = fill_level / fill_time;
   const Time auto fill_time_left = (height / fill_level - 1) * fill_time;
 

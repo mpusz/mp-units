@@ -20,6 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-fps mp-units::si)
+add_units_module(
+    si-fps
+    DEPENDENCIES mp-units::si-international
+    HEADERS include/units/isq/si/fps/acceleration.h
+            include/units/isq/si/fps/area.h
+            include/units/isq/si/fps/density.h
+            include/units/isq/si/fps/energy.h
+            include/units/isq/si/fps/force.h
+            include/units/isq/si/fps/fps.h
+            include/units/isq/si/fps/length.h
+            include/units/isq/si/fps/mass.h
+            include/units/isq/si/fps/power.h
+            include/units/isq/si/fps/pressure.h
+            include/units/isq/si/fps/speed.h
+            include/units/isq/si/fps/time.h
+            include/units/isq/si/fps/volume.h
+)

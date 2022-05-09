@@ -20,10 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
-project(mp-units-dev
-    LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.19)
+project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -50,8 +48,7 @@ if(${projectPrefix}IWYU)
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
-        NO_FORWARD_DECLARATIONS
-        QUOTED_INCLUDES_FIRST
+        NO_FORWARD_DECLARATIONS QUOTED_INCLUDES_FIRST
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
@@ -74,3 +71,7 @@ add_subdirectory(docs)
 # add unit tests
 enable_testing()
 add_subdirectory(test)
+
+# tests for standalone headers
+include(TestPublicHeaders)
+add_public_header_test(test_headers mp-units::mp-units)

@@ -37,7 +37,7 @@ namespace units::isq::si::international {
 
 // si::international yard
 // https://en.wikipedia.org/wiki/International_yard_and_pound
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(9'144, 1'000, -1), si::metre> {};
+struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio(9'144, 1'000, -1), si::metre> {};
 
 // si::international foot
 // https://en.wikipedia.org/wiki/Foot_(unit)#International_foot
@@ -56,7 +56,7 @@ struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio(25'146, 15'625), si
 
 // si::international nautical mile
 // https://en.wikipedia.org/wiki/Nautical_mile
-struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio(1852), si::metre> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", no_prefix, ratio(1852), si::metre> {};
 
 // thou
 // https://en.wikipedia.org/wiki/Thousandth_of_an_inch

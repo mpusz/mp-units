@@ -48,12 +48,16 @@ using angle = quantity<dim_angle<>, U, Rep>;
 inline namespace literals {
 
 // rad
-constexpr auto operator"" _q_rad(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return angle<radian, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_rad(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return angle<radian, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_rad(long double l) { return angle<radian, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -69,6 +73,6 @@ using namespace angle_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units

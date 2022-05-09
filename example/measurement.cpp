@@ -38,8 +38,7 @@ public:
 
   measurement() = default;
 
-  constexpr explicit measurement(const value_type& val, const value_type& err = {}) :
-      value_(val)
+  constexpr explicit measurement(const value_type& val, const value_type& err = {}) : value_(val)
   {
     // it sucks that using declaration cannot be provided for a constructor initializer list
     using namespace std;
@@ -133,7 +132,8 @@ void example()
 
   const Speed auto v1 = a * t;
 #if UNITS_DOWNCAST_MODE == 0
-  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::dim_speed, si::kilometre_per_hour>(v1) << '\n';
+  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::dim_speed, si::kilometre_per_hour>(v1)
+            << '\n';
 #else
   std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';
 #endif

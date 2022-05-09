@@ -66,92 +66,176 @@ using radioactivity = quantity<dim_radioactivity, U, Rep>;
 inline namespace literals {
 
 // Bq
-constexpr auto operator"" _q_Bq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<becquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Bq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<becquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Bq(long double l) { return radioactivity<becquerel, long double>(l); }
 
 // yBq
-constexpr auto operator"" _q_yBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<yoctobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<yoctobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yBq(long double l) { return radioactivity<yoctobecquerel, long double>(l); }
 
 // zBq
-constexpr auto operator"" _q_zBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<zeptobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<zeptobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zBq(long double l) { return radioactivity<zeptobecquerel, long double>(l); }
 
 // aBq
-constexpr auto operator"" _q_aBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<attobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<attobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_aBq(long double l) { return radioactivity<attobecquerel, long double>(l); }
 
 // fBq
-constexpr auto operator"" _q_fBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<femtobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<femtobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fBq(long double l) { return radioactivity<femtobecquerel, long double>(l); }
 
 // pBq
-constexpr auto operator"" _q_pBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<picobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<picobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pBq(long double l) { return radioactivity<picobecquerel, long double>(l); }
 
 // nBq
-constexpr auto operator"" _q_nBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<nanobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<nanobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_nBq(long double l) { return radioactivity<nanobecquerel, long double>(l); }
 
 // uBq
-constexpr auto operator"" _q_uBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<microbecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<microbecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_uBq(long double l) { return radioactivity<microbecquerel, long double>(l); }
 
 // mBq
-constexpr auto operator"" _q_mBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<millibecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<millibecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mBq(long double l) { return radioactivity<millibecquerel, long double>(l); }
 
 // cBq
-constexpr auto operator"" _q_cBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<centibecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<centibecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_cBq(long double l) { return radioactivity<centibecquerel, long double>(l); }
 
 // dBq
-constexpr auto operator"" _q_dBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<decibecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<decibecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_dBq(long double l) { return radioactivity<decibecquerel, long double>(l); }
 
 // daBq
-constexpr auto operator"" _q_daBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<decabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_daBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<decabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_daBq(long double l) { return radioactivity<decabecquerel, long double>(l); }
 
 // hBq
-constexpr auto operator"" _q_hBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<hectobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<hectobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_hBq(long double l) { return radioactivity<hectobecquerel, long double>(l); }
 
 // kBq
-constexpr auto operator"" _q_kBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<kilobecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<kilobecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kBq(long double l) { return radioactivity<kilobecquerel, long double>(l); }
 
 // MBq
-constexpr auto operator"" _q_MBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<megabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<megabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MBq(long double l) { return radioactivity<megabecquerel, long double>(l); }
 
 // GBq
-constexpr auto operator"" _q_GBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<gigabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<gigabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GBq(long double l) { return radioactivity<gigabecquerel, long double>(l); }
 
 // TBq
-constexpr auto operator"" _q_TBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<terabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<terabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TBq(long double l) { return radioactivity<terabecquerel, long double>(l); }
 
 // PBq
-constexpr auto operator"" _q_PBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<petabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<petabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PBq(long double l) { return radioactivity<petabecquerel, long double>(l); }
 
 // EBq
-constexpr auto operator"" _q_EBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<exabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<exabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_EBq(long double l) { return radioactivity<exabecquerel, long double>(l); }
 
 // ZBq
-constexpr auto operator"" _q_ZBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<zettabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<zettabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ZBq(long double l) { return radioactivity<zettabecquerel, long double>(l); }
 
 // YBq
-constexpr auto operator"" _q_YBq(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return radioactivity<yottabecquerel, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YBq(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return radioactivity<yottabecquerel, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YBq(long double l) { return radioactivity<yottabecquerel, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -187,7 +271,7 @@ using namespace radioactivity_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -195,28 +279,49 @@ using namespace radioactivity_references;
 
 namespace units::aliases::isq::si::inline radioactivity {
 
-template<Representation Rep = double> using Bq = units::isq::radioactivity<units::isq::becquerel, Rep>;
-template<Representation Rep = double> using yBq = units::isq::radioactivity<units::isq::yoctobecquerel, Rep>;
-template<Representation Rep = double> using zBq = units::isq::radioactivity<units::isq::zeptobecquerel, Rep>;
-template<Representation Rep = double> using aBq = units::isq::radioactivity<units::isq::attobecquerel, Rep>;
-template<Representation Rep = double> using fBq = units::isq::radioactivity<units::isq::femtobecquerel, Rep>;
-template<Representation Rep = double> using pBq = units::isq::radioactivity<units::isq::picobecquerel, Rep>;
-template<Representation Rep = double> using nBq = units::isq::radioactivity<units::isq::nanobecquerel, Rep>;
-template<Representation Rep = double> using uBq = units::isq::radioactivity<units::isq::microbecquerel, Rep>;
-template<Representation Rep = double> using mBq = units::isq::radioactivity<units::isq::millibecquerel, Rep>;
-template<Representation Rep = double> using cBq = units::isq::radioactivity<units::isq::centibecquerel, Rep>;
-template<Representation Rep = double> using dBq = units::isq::radioactivity<units::isq::decibecquerel, Rep>;
-template<Representation Rep = double> using daBq = units::isq::radioactivity<units::isq::decabecquerel, Rep>;
-template<Representation Rep = double> using hBq = units::isq::radioactivity<units::isq::hectobecquerel, Rep>;
-template<Representation Rep = double> using kBq = units::isq::radioactivity<units::isq::kilobecquerel, Rep>;
-template<Representation Rep = double> using MBq = units::isq::radioactivity<units::isq::megabecquerel, Rep>;
-template<Representation Rep = double> using GBq = units::isq::radioactivity<units::isq::gigabecquerel, Rep>;
-template<Representation Rep = double> using TBq = units::isq::radioactivity<units::isq::terabecquerel, Rep>;
-template<Representation Rep = double> using PBq = units::isq::radioactivity<units::isq::petabecquerel, Rep>;
-template<Representation Rep = double> using EBq = units::isq::radioactivity<units::isq::exabecquerel, Rep>;
-template<Representation Rep = double> using ZBq = units::isq::radioactivity<units::isq::zettabecquerel, Rep>;
-template<Representation Rep = double> using YBq = units::isq::radioactivity<units::isq::yottabecquerel, Rep>;
+template<Representation Rep = double>
+using Bq = units::isq::si::radioactivity<units::isq::si::becquerel, Rep>;
+template<Representation Rep = double>
+using yBq = units::isq::si::radioactivity<units::isq::si::yoctobecquerel, Rep>;
+template<Representation Rep = double>
+using zBq = units::isq::si::radioactivity<units::isq::si::zeptobecquerel, Rep>;
+template<Representation Rep = double>
+using aBq = units::isq::si::radioactivity<units::isq::si::attobecquerel, Rep>;
+template<Representation Rep = double>
+using fBq = units::isq::si::radioactivity<units::isq::si::femtobecquerel, Rep>;
+template<Representation Rep = double>
+using pBq = units::isq::si::radioactivity<units::isq::si::picobecquerel, Rep>;
+template<Representation Rep = double>
+using nBq = units::isq::si::radioactivity<units::isq::si::nanobecquerel, Rep>;
+template<Representation Rep = double>
+using uBq = units::isq::si::radioactivity<units::isq::si::microbecquerel, Rep>;
+template<Representation Rep = double>
+using mBq = units::isq::si::radioactivity<units::isq::si::millibecquerel, Rep>;
+template<Representation Rep = double>
+using cBq = units::isq::si::radioactivity<units::isq::si::centibecquerel, Rep>;
+template<Representation Rep = double>
+using dBq = units::isq::si::radioactivity<units::isq::si::decibecquerel, Rep>;
+template<Representation Rep = double>
+using daBq = units::isq::si::radioactivity<units::isq::si::decabecquerel, Rep>;
+template<Representation Rep = double>
+using hBq = units::isq::si::radioactivity<units::isq::si::hectobecquerel, Rep>;
+template<Representation Rep = double>
+using kBq = units::isq::si::radioactivity<units::isq::si::kilobecquerel, Rep>;
+template<Representation Rep = double>
+using MBq = units::isq::si::radioactivity<units::isq::si::megabecquerel, Rep>;
+template<Representation Rep = double>
+using GBq = units::isq::si::radioactivity<units::isq::si::gigabecquerel, Rep>;
+template<Representation Rep = double>
+using TBq = units::isq::si::radioactivity<units::isq::si::terabecquerel, Rep>;
+template<Representation Rep = double>
+using PBq = units::isq::si::radioactivity<units::isq::si::petabecquerel, Rep>;
+template<Representation Rep = double>
+using EBq = units::isq::si::radioactivity<units::isq::si::exabecquerel, Rep>;
+template<Representation Rep = double>
+using ZBq = units::isq::si::radioactivity<units::isq::si::zettabecquerel, Rep>;
+template<Representation Rep = double>
+using YBq = units::isq::si::radioactivity<units::isq::si::yottabecquerel, Rep>;
 
 }  // namespace units::aliases::isq::si::inline radioactivity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

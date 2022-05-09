@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
 # systems
 add_subdirectory(isq)
@@ -38,19 +38,21 @@ add_subdirectory(si-uscs)
 
 # wrapper for all the systems
 add_library(mp-units-systems INTERFACE)
-target_link_libraries(mp-units-systems INTERFACE
-    mp-units::isq
-    mp-units::isq-iec80000
-    mp-units::isq-natural
-    mp-units::si
-    mp-units::si-cgs
-    mp-units::si-fps
-    mp-units::si-hep
-    mp-units::si-iau
-    mp-units::si-imperial
-    mp-units::si-international
-    mp-units::si-typographic
-    mp-units::si-uscs
+target_link_libraries(
+    mp-units-systems
+    INTERFACE
+        mp-units::isq
+        mp-units::isq-iec80000
+        mp-units::isq-natural
+        mp-units::si
+        mp-units::si-cgs
+        mp-units::si-fps
+        mp-units::si-hep
+        mp-units::si-iau
+        mp-units::si-imperial
+        mp-units::si-international
+        mp-units::si-typographic
+        mp-units::si-uscs
 )
 add_library(mp-units::systems ALIAS mp-units-systems)
 set_target_properties(mp-units-systems PROPERTIES EXPORT_NAME systems)

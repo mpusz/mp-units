@@ -43,9 +43,12 @@ struct dim_pressure : isq::dim_pressure<dim_pressure, poundal_per_foot_sq, dim_f
 template<UnitOf<dim_pressure> U, Representation Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
-struct pound_force_per_foot_sq : named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio(32'174'049, 1'000'000), poundal_per_foot_sq> {};
+struct pound_force_per_foot_sq :
+    named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio(32'174'049, 1'000'000),
+                      poundal_per_foot_sq> {};
 
-struct pound_force_per_inch_sq : named_scaled_unit<pound_force_per_inch_sq, "psi", si::prefix, ratio(1, 144), pound_force_per_foot_sq> {};
+struct pound_force_per_inch_sq :
+    named_scaled_unit<pound_force_per_inch_sq, "psi", si::prefix, ratio(1, 144), pound_force_per_foot_sq> {};
 
 struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 
@@ -54,20 +57,32 @@ struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, 
 inline namespace literals {
 
 // Poundal per square foot
-constexpr auto operator"" _q_pdl_per_ft2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return pressure<poundal_per_foot_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pdl_per_ft2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return pressure<poundal_per_foot_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pdl_per_ft2(long double l) { return pressure<poundal_per_foot_sq, long double>(l); }
 
 // Pounds per square inch
-constexpr auto operator"" _q_psi(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return pressure<pound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_psi(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return pressure<pound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_psi(long double l) { return pressure<pound_force_per_inch_sq, long double>(l); }
 
 // kilopounds per square inch
-constexpr auto operator"" _q_kpsi(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return pressure<kilopound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kpsi(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return pressure<kilopound_force_per_inch_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kpsi(long double l) { return pressure<kilopound_force_per_inch_sq, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -84,7 +99,7 @@ using namespace pressure_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -92,10 +107,13 @@ using namespace pressure_references;
 
 namespace units::aliases::isq::si::fps::inline pressure {
 
-template<Representation Rep = double> using pdl_per_ft2 = units::isq::si::fps::pressure<units::isq::si::fps::poundal_per_foot_sq, Rep>;
-template<Representation Rep = double> using psi = units::isq::si::fps::pressure<units::isq::si::fps::pound_force_per_inch_sq, Rep>;
-template<Representation Rep = double> using kpsi = units::isq::si::fps::pressure<units::isq::si::fps::kilopound_force_per_inch_sq, Rep>;
+template<Representation Rep = double>
+using pdl_per_ft2 = units::isq::si::fps::pressure<units::isq::si::fps::poundal_per_foot_sq, Rep>;
+template<Representation Rep = double>
+using psi = units::isq::si::fps::pressure<units::isq::si::fps::pound_force_per_inch_sq, Rep>;
+template<Representation Rep = double>
+using kpsi = units::isq::si::fps::pressure<units::isq::si::fps::kilopound_force_per_inch_sq, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline pressure
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

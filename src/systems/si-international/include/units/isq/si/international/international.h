@@ -23,9 +23,8 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <units/isq/si/international/length.h>
-
 #include <units/isq/si/international/area.h>
+#include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h>
 #include <units/isq/si/international/volume.h>
 // IWYU pragma: end_exports

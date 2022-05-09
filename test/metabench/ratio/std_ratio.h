@@ -27,42 +27,37 @@
 
 namespace units {
 
-  // static_sign
+// static_sign
 
-  template<std::intmax_t Pn>
-  struct static_sign : std::integral_constant<std::intmax_t, (Pn < 0) ? -1 : 1> {
-  };
+template<std::intmax_t Pn>
+struct static_sign : std::integral_constant<std::intmax_t, (Pn < 0) ? -1 : 1> {};
 
-  // static_abs
+// static_abs
 
-  template<std::intmax_t Pn>
-  struct static_abs : std::integral_constant<std::intmax_t, Pn * static_sign<Pn>::value> {
-  };
+template<std::intmax_t Pn>
+struct static_abs : std::integral_constant<std::intmax_t, Pn * static_sign<Pn>::value> {};
 
-  // static_gcd
+// static_gcd
 
-  template<std::intmax_t Pn, std::intmax_t Qn>
-  struct static_gcd : static_gcd<Qn, (Pn % Qn)> {
-  };
+template<std::intmax_t Pn, std::intmax_t Qn>
+struct static_gcd : static_gcd<Qn, (Pn % Qn)> {};
 
-  template<std::intmax_t Pn>
-  struct static_gcd<Pn, 0> : std::integral_constant<std::intmax_t, static_abs<Pn>::value> {
-  };
+template<std::intmax_t Pn>
+struct static_gcd<Pn, 0> : std::integral_constant<std::intmax_t, static_abs<Pn>::value> {};
 
-  template<std::intmax_t Qn>
-  struct static_gcd<0, Qn> : std::integral_constant<std::intmax_t, static_abs<Qn>::value> {
-  };
+template<std::intmax_t Qn>
+struct static_gcd<0, Qn> : std::integral_constant<std::intmax_t, static_abs<Qn>::value> {};
 
-  // common_ratio
+// common_ratio
 
-  template<typename R1, typename R2>
-  struct common_ratio {
-    using gcd_num = static_gcd<R1::num, R2::num>;
-    using gcd_den = static_gcd<R1::den, R2::den>;
-    using type = std::ratio<gcd_num::value, (R1::den / gcd_den::value) * R2::den>;
-  };
+template<typename R1, typename R2>
+struct common_ratio {
+  using gcd_num = static_gcd<R1::num, R2::num>;
+  using gcd_den = static_gcd<R1::den, R2::den>;
+  using type = std::ratio<gcd_num::value, (R1::den / gcd_den::value) * R2::den>;
+};
 
-  template<typename R1, typename R2>
-  using common_ratio_t = typename common_ratio<R1, R2>::type;
+template<typename R1, typename R2>
+using common_ratio_t = typename common_ratio<R1, R2>::type;
 
 }  // namespace units

@@ -41,36 +41,48 @@ struct dim_speed : isq::dim_speed<dim_speed, foot_per_second, dim_length, dim_ti
 template<UnitOf<dim_speed> U, Representation Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
 
-struct mile_per_hour : derived_unit<mile_per_hour, dim_speed, mile, hour>{};
-struct nautical_mile_per_hour : derived_unit<nautical_mile_per_hour, dim_speed, nautical_mile, hour>{};
-struct knot : alias_unit<nautical_mile_per_hour, "knot", no_prefix> {};
+struct mile_per_hour : derived_unit<mile_per_hour, dim_speed, mile, hour> {};
+struct nautical_mile_per_hour : derived_unit<nautical_mile_per_hour, dim_speed, nautical_mile, hour> {};
+struct knot : alias_unit<nautical_mile_per_hour, "kn", no_prefix> {};
 
 #ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
 // ft/s
-constexpr auto operator"" _q_ft_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<foot_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return speed<foot_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_per_s(long double l) { return speed<foot_per_second, long double>(l); }
 
 // mph
-constexpr auto operator"" _q_mph(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mph(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return speed<mile_per_hour, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mph(long double l) { return speed<mile_per_hour, long double>(l); }
 
 // kn
-constexpr auto operator"" _q_knot(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<knot, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_knot(long double l) { return speed<knot, long double>(l); }
+constexpr auto operator"" _q_kn(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return speed<knot, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_kn(long double l) { return speed<knot, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
 namespace speed_references {
 
 inline constexpr auto mph = reference<dim_speed, mile_per_hour>{};
-inline constexpr auto knot = reference<dim_speed, fps::knot>{};
+inline constexpr auto kn = reference<dim_speed, fps::knot>{};
 
 }  // namespace speed_references
 
@@ -80,7 +92,7 @@ using namespace speed_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -88,10 +100,13 @@ using namespace speed_references;
 
 namespace units::aliases::isq::si::fps::inline speed {
 
-template<Representation Rep = double> using ft_per_s = units::isq::si::fps::speed<units::isq::si::fps::foot_per_second, Rep>;
-template<Representation Rep = double> using mph = units::isq::si::fps::speed<units::isq::si::fps::mile_per_hour, Rep>;
-template<Representation Rep = double> using knot = units::isq::si::fps::speed<units::isq::si::fps::knot, Rep>;
+template<Representation Rep = double>
+using ft_per_s = units::isq::si::fps::speed<units::isq::si::fps::foot_per_second, Rep>;
+template<Representation Rep = double>
+using mph = units::isq::si::fps::speed<units::isq::si::fps::mile_per_hour, Rep>;
+template<Representation Rep = double>
+using kn = units::isq::si::fps::speed<units::isq::si::fps::knot, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline speed
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

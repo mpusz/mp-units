@@ -28,16 +28,23 @@ cmake_minimum_required(VERSION 3.2)
 function(add_example target)
     add_executable(${target}-literals ${target}.cpp)
     target_link_libraries(${target}-literals PRIVATE ${ARGN})
-    target_compile_definitions(${target}-literals PRIVATE
-        ${projectPrefix}NO_REFERENCES
-        ${projectPrefix}NO_ALIASES
-    )
+    target_compile_definitions(${target}-literals PRIVATE ${projectPrefix}NO_REFERENCES ${projectPrefix}NO_ALIASES)
 endfunction()
 
 add_example(avg_speed mp-units::core-io mp-units::si mp-units::si-cgs mp-units::si-international)
 add_example(box_example mp-units::core-fmt mp-units::si)
 add_example(capacitor_time_curve mp-units::core-io mp-units::si)
-add_example(clcpp_response mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-iau mp-units::si-imperial mp-units::si-international mp-units::si-typographic mp-units::si-uscs)
+add_example(
+    clcpp_response
+    mp-units::core-fmt
+    mp-units::core-io
+    mp-units::si
+    mp-units::si-iau
+    mp-units::si-imperial
+    mp-units::si-international
+    mp-units::si-typographic
+    mp-units::si-uscs
+)
 add_example(experimental_angle mp-units::core-fmt mp-units::core-io mp-units::si)
 add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
@@ -45,9 +52,8 @@ add_example(unknown_dimension mp-units::core-io mp-units::si)
 
 if(NOT ${projectPrefix}LIBCXX)
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
-    target_compile_definitions(glide_computer_example-literals PRIVATE
-        ${projectPrefix}NO_REFERENCES
-        ${projectPrefix}NO_ALIASES
+    target_compile_definitions(
+        glide_computer_example-literals PRIVATE ${projectPrefix}NO_REFERENCES ${projectPrefix}NO_ALIASES
     )
 
     find_package(wg21_linear_algebra CONFIG REQUIRED)

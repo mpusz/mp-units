@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include "kalman.h"
+#include <units/format.h>
+#include <units/generic/dimensionless.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
 #include <array>
 #include <iostream>
 
@@ -51,14 +51,14 @@ int main()
   using state = kalman::state<si::length<si::metre>, si::speed<si::metre_per_second>>;
 
   const auto interval = 5 * s;
-  const state initial = { 30 * km, 40 * (m / s) };
-  const std::array measurements = { 30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
-                                    31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m };
+  const state initial = {30 * km, 40 * (m / s)};
+  const std::array measurements = {30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
+                                   31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m};
   std::array gain = {dimensionless<one>(0.2), dimensionless<one>(0.1)};
 
   print_header(initial);
   state next = state_extrapolation(initial, interval);
-  for(int index = 1; const auto& measured : measurements) {
+  for (int index = 1; const auto& measured : measurements) {
     const auto& previous = next;
     const auto current = state_update(previous, measured, gain, interval);
     next = state_extrapolation(current, interval);

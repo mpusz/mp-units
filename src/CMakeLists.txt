@@ -20,11 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
-project(mp-units
-    VERSION 0.8.0
-    LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.19)
+project(mp-units VERSION 0.8.0 LANGUAGES CXX)
 
 set(projectPrefix UNITS_)
 
@@ -47,12 +44,7 @@ add_subdirectory(systems)
 
 # project-wide wrapper
 add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE
-    mp-units::core
-    mp-units::core-io
-    mp-units::core-fmt
-    mp-units::systems
-)
+target_link_libraries(mp-units INTERFACE mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems)
 add_library(mp-units::mp-units ALIAS mp-units)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
 
@@ -63,11 +55,8 @@ include(CMakePackageConfigHelpers)
 write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
 # installation
-install(EXPORT mp-unitsTargets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-    NAMESPACE mp-units::
-)
+install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )

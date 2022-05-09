@@ -66,92 +66,176 @@ using luminous_intensity = quantity<dim_luminous_intensity, U, Rep>;
 inline namespace literals {
 
 // cd
-constexpr auto operator"" _q_cd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<candela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<candela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_cd(long double l) { return luminous_intensity<candela, long double>(l); }
 
 // ycd
-constexpr auto operator"" _q_ycd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<yoctocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ycd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<yoctocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ycd(long double l) { return luminous_intensity<yoctocandela, long double>(l); }
 
 // zcd
-constexpr auto operator"" _q_zcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<zeptocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<zeptocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zcd(long double l) { return luminous_intensity<zeptocandela, long double>(l); }
 
 // acd
-constexpr auto operator"" _q_acd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<attocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_acd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<attocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_acd(long double l) { return luminous_intensity<attocandela, long double>(l); }
 
 // fcd
-constexpr auto operator"" _q_fcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<femtocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<femtocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fcd(long double l) { return luminous_intensity<femtocandela, long double>(l); }
 
 // pcd
-constexpr auto operator"" _q_pcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<picocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<picocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pcd(long double l) { return luminous_intensity<picocandela, long double>(l); }
 
 // ncd
-constexpr auto operator"" _q_ncd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<nanocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ncd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<nanocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ncd(long double l) { return luminous_intensity<nanocandela, long double>(l); }
 
 // ucd
-constexpr auto operator"" _q_ucd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<microcandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ucd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<microcandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ucd(long double l) { return luminous_intensity<microcandela, long double>(l); }
 
 // mcd
-constexpr auto operator"" _q_mcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<millicandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<millicandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mcd(long double l) { return luminous_intensity<millicandela, long double>(l); }
 
 // ccd
-constexpr auto operator"" _q_ccd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<centicandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ccd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<centicandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ccd(long double l) { return luminous_intensity<centicandela, long double>(l); }
 
 // dcd
-constexpr auto operator"" _q_dcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<decicandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<decicandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_dcd(long double l) { return luminous_intensity<decicandela, long double>(l); }
 
 // dacd
-constexpr auto operator"" _q_dacd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<decacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dacd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<decacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_dacd(long double l) { return luminous_intensity<decacandela, long double>(l); }
 
 // hcd
-constexpr auto operator"" _q_hcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<hectocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<hectocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_hcd(long double l) { return luminous_intensity<hectocandela, long double>(l); }
 
 // kcd
-constexpr auto operator"" _q_kcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<kilocandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<kilocandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kcd(long double l) { return luminous_intensity<kilocandela, long double>(l); }
 
 // Mcd
-constexpr auto operator"" _q_Mcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<megacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Mcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<megacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Mcd(long double l) { return luminous_intensity<megacandela, long double>(l); }
 
 // Gcd
-constexpr auto operator"" _q_Gcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<gigacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Gcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<gigacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Gcd(long double l) { return luminous_intensity<gigacandela, long double>(l); }
 
 // Tcd
-constexpr auto operator"" _q_Tcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<teracandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Tcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<teracandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Tcd(long double l) { return luminous_intensity<teracandela, long double>(l); }
 
 // Pcd
-constexpr auto operator"" _q_Pcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<petacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Pcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<petacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Pcd(long double l) { return luminous_intensity<petacandela, long double>(l); }
 
 // Ecd
-constexpr auto operator"" _q_Ecd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<exacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ecd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<exacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Ecd(long double l) { return luminous_intensity<exacandela, long double>(l); }
 
 // Zcd
-constexpr auto operator"" _q_Zcd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<zettacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Zcd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<zettacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Zcd(long double l) { return luminous_intensity<zettacandela, long double>(l); }
 
 // Ycd
-constexpr auto operator"" _q_Ycd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return luminous_intensity<yottacandela, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Ycd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return luminous_intensity<yottacandela, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_Ycd(long double l) { return luminous_intensity<yottacandela, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -187,7 +271,7 @@ using namespace luminous_intensity_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -195,28 +279,49 @@ using namespace luminous_intensity_references;
 
 namespace units::aliases::isq::si::luminous_intensity {
 
-template<Representation Rep = double> using cd = units::isq::si::luminous_intensity<units::isq::si::candela, Rep>;
-template<Representation Rep = double> using ycd = units::isq::si::luminous_intensity<units::isq::si::yoctocandela, Rep>;
-template<Representation Rep = double> using zcd = units::isq::si::luminous_intensity<units::isq::si::zeptocandela, Rep>;
-template<Representation Rep = double> using acd = units::isq::si::luminous_intensity<units::isq::si::attocandela, Rep>;
-template<Representation Rep = double> using fcd = units::isq::si::luminous_intensity<units::isq::si::femtocandela, Rep>;
-template<Representation Rep = double> using pcd = units::isq::si::luminous_intensity<units::isq::si::picocandela, Rep>;
-template<Representation Rep = double> using ncd = units::isq::si::luminous_intensity<units::isq::si::nanocandela, Rep>;
-template<Representation Rep = double> using ucd = units::isq::si::luminous_intensity<units::isq::si::microcandela, Rep>;
-template<Representation Rep = double> using mcd = units::isq::si::luminous_intensity<units::isq::si::millicandela, Rep>;
-template<Representation Rep = double> using ccd = units::isq::si::luminous_intensity<units::isq::si::centicandela, Rep>;
-template<Representation Rep = double> using dcd = units::isq::si::luminous_intensity<units::isq::si::decicandela, Rep>;
-template<Representation Rep = double> using dacd = units::isq::si::luminous_intensity<units::isq::si::decacandela, Rep>;
-template<Representation Rep = double> using hcd = units::isq::si::luminous_intensity<units::isq::si::hectocandela, Rep>;
-template<Representation Rep = double> using kcd = units::isq::si::luminous_intensity<units::isq::si::kilocandela, Rep>;
-template<Representation Rep = double> using Mcd = units::isq::si::luminous_intensity<units::isq::si::megacandela, Rep>;
-template<Representation Rep = double> using Gcd = units::isq::si::luminous_intensity<units::isq::si::gigacandela, Rep>;
-template<Representation Rep = double> using Tcd = units::isq::si::luminous_intensity<units::isq::si::teracandela, Rep>;
-template<Representation Rep = double> using Pcd = units::isq::si::luminous_intensity<units::isq::si::petacandela, Rep>;
-template<Representation Rep = double> using Ecd = units::isq::si::luminous_intensity<units::isq::si::exacandela, Rep>;
-template<Representation Rep = double> using Zcd = units::isq::si::luminous_intensity<units::isq::si::zettacandela, Rep>;
-template<Representation Rep = double> using Ycd = units::isq::si::luminous_intensity<units::isq::si::yottacandela, Rep>;
+template<Representation Rep = double>
+using cd = units::isq::si::luminous_intensity<units::isq::si::candela, Rep>;
+template<Representation Rep = double>
+using ycd = units::isq::si::luminous_intensity<units::isq::si::yoctocandela, Rep>;
+template<Representation Rep = double>
+using zcd = units::isq::si::luminous_intensity<units::isq::si::zeptocandela, Rep>;
+template<Representation Rep = double>
+using acd = units::isq::si::luminous_intensity<units::isq::si::attocandela, Rep>;
+template<Representation Rep = double>
+using fcd = units::isq::si::luminous_intensity<units::isq::si::femtocandela, Rep>;
+template<Representation Rep = double>
+using pcd = units::isq::si::luminous_intensity<units::isq::si::picocandela, Rep>;
+template<Representation Rep = double>
+using ncd = units::isq::si::luminous_intensity<units::isq::si::nanocandela, Rep>;
+template<Representation Rep = double>
+using ucd = units::isq::si::luminous_intensity<units::isq::si::microcandela, Rep>;
+template<Representation Rep = double>
+using mcd = units::isq::si::luminous_intensity<units::isq::si::millicandela, Rep>;
+template<Representation Rep = double>
+using ccd = units::isq::si::luminous_intensity<units::isq::si::centicandela, Rep>;
+template<Representation Rep = double>
+using dcd = units::isq::si::luminous_intensity<units::isq::si::decicandela, Rep>;
+template<Representation Rep = double>
+using dacd = units::isq::si::luminous_intensity<units::isq::si::decacandela, Rep>;
+template<Representation Rep = double>
+using hcd = units::isq::si::luminous_intensity<units::isq::si::hectocandela, Rep>;
+template<Representation Rep = double>
+using kcd = units::isq::si::luminous_intensity<units::isq::si::kilocandela, Rep>;
+template<Representation Rep = double>
+using Mcd = units::isq::si::luminous_intensity<units::isq::si::megacandela, Rep>;
+template<Representation Rep = double>
+using Gcd = units::isq::si::luminous_intensity<units::isq::si::gigacandela, Rep>;
+template<Representation Rep = double>
+using Tcd = units::isq::si::luminous_intensity<units::isq::si::teracandela, Rep>;
+template<Representation Rep = double>
+using Pcd = units::isq::si::luminous_intensity<units::isq::si::petacandela, Rep>;
+template<Representation Rep = double>
+using Ecd = units::isq::si::luminous_intensity<units::isq::si::exacandela, Rep>;
+template<Representation Rep = double>
+using Zcd = units::isq::si::luminous_intensity<units::isq::si::zettacandela, Rep>;
+template<Representation Rep = double>
+using Ycd = units::isq::si::luminous_intensity<units::isq::si::yottacandela, Rep>;
 
 }  // namespace units::aliases::isq::si::luminous_intensity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

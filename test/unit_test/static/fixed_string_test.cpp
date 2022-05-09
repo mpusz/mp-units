@@ -50,4 +50,4 @@ static_assert(basic_fixed_string('d') + txt2 == basic_fixed_string("dabc"));
 static_assert(txt2 + basic_fixed_string("def") == basic_fixed_string("abcdef"));
 static_assert(basic_fixed_string("def") + txt2 == basic_fixed_string("defabc"));
 
-}
+}  // namespace

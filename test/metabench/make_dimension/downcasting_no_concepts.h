@@ -27,18 +27,18 @@
 
 namespace units {
 
-  template<typename BaseType>
-  struct downcast_base {
-    using downcast_base_type = BaseType;
-  };
+template<typename BaseType>
+struct downcast_base {
+  using downcast_base_type = BaseType;
+};
 
-  template<typename T>
-  using downcast_base_t = T::downcast_base_type;
+template<typename T>
+using downcast_base_t = T::downcast_base_type;
 
-  template<typename T>
-  struct downcast_traits : std::type_identity<T> {};
+template<typename T>
+struct downcast_traits : std::type_identity<T> {};
 
-  template<typename T>
-  using downcast_traits_t = downcast_traits<T>::type;
+template<typename T>
+using downcast_traits_t = downcast_traits<T>::type;
 
 }  // namespace units

@@ -22,7 +22,8 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-find_package(Doxygen MODULE REQUIRED)  # TODO Switch to CONFIG when Conan will start supporting imported executables in CMakeDeps
+find_package(Doxygen MODULE REQUIRED
+)# TODO Switch to CONFIG when Conan will start supporting imported executables in CMakeDeps
 find_package(Sphinx REQUIRED)
 
 #
@@ -80,16 +81,14 @@ function(add_documentation targetName)
     set(_doxygenIndexFile "${DOXYGEN_OUTPUT_DIR}/xml/index.xml")
 
     # Only regenerate Doxygen when the Doxyfile or given dependencies change
-    add_custom_command(OUTPUT "${_doxygenIndexFile}"
+    add_custom_command(
+        OUTPUT "${_doxygenIndexFile}"
         COMMAND ${CMAKE_COMMAND} -E make_directory ${DOXYGEN_OUTPUT_DIR}
         COMMAND Doxygen::doxygen ARGS "${_doxyfile}"
         MAIN_DEPENDENCY "${_doxyfileIn}"
-        DEPENDS
-            "${_doxyfile}"
-            "${_args_CODE_DEPENDS}"
+        DEPENDS "${_doxyfile}" "${_args_CODE_DEPENDS}"
         COMMENT "Generating doxygen XML metadata"
-        USES_TERMINAL
-        VERBATIM
+        USES_TERMINAL VERBATIM
     )
 
     set(_sphinx_docs_dir "${CMAKE_CURRENT_BINARY_DIR}/sphinx")
@@ -99,16 +98,16 @@ function(add_documentation targetName)
     # - Doxygen has rerun
     # - Our doc files have been updated
     # - The Sphinx config has been updated
-    add_custom_command(OUTPUT "${_sphinx_index_file}"
-        COMMAND "${SPHINX_EXECUTABLE}" ARGS -b html -j auto "-Dbreathe_projects.${_args_BREATHE_PROJECT}=${DOXYGEN_OUTPUT_DIR}/xml" "${_args_DOCS_SOURCE_DIR}" "${_sphinx_docs_dir}"
+    add_custom_command(
+        OUTPUT "${_sphinx_index_file}"
+        COMMAND "${SPHINX_EXECUTABLE}" ARGS -b html -j auto
+                "-Dbreathe_projects.${_args_BREATHE_PROJECT}=${DOXYGEN_OUTPUT_DIR}/xml" "${_args_DOCS_SOURCE_DIR}"
+                "${_sphinx_docs_dir}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
         MAIN_DEPENDENCY "${_args_DOCS_SOURCE_DIR}/conf.py"
-        DEPENDS
-            "${_doxygenIndexFile}"
-            "${_args_DOCS_DEPENDS}"
+        DEPENDS "${_doxygenIndexFile}" "${_args_DOCS_DEPENDS}"
         COMMENT "Generating documentation with Sphinx"
-        USES_TERMINAL
-        VERBATIM
+        USES_TERMINAL VERBATIM
     )
 
     # Custom target
@@ -118,7 +117,7 @@ function(add_documentation targetName)
     add_custom_target(${targetName} ${_all} DEPENDS "${_sphinx_index_file}")
 
     if(_args_INSTALL_DIR)
-      # Add an install step to install the docs
-      install(DIRECTORY ${_sphinx_docs_dir} TYPE DOC)
+        # Add an install step to install the docs
+        install(DIRECTORY ${_sphinx_docs_dir} TYPE DOC)
     endif()
 endfunction()

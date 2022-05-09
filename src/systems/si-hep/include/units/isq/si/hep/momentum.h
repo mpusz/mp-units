@@ -24,7 +24,6 @@
 
 // IWYU pragma: begin_exports
 #include <units/isq/dimensions/momentum.h>
-#include <units/isq/si/momentum.h>
 #include <units/quantity.h>
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
@@ -35,9 +34,11 @@
 
 namespace units::isq::si::hep {
 
+struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+
 struct eV_per_c :
     named_scaled_unit<eV_per_c, "eV/c", prefix, ratio(5'344'285'992'678, 1'000'000'000'000, -35),
-                      ::units::isq::si::kilogram_metre_per_second> {};
+                      kilogram_metre_per_second> {};
 struct feV_per_c : prefixed_unit<feV_per_c, femto, eV_per_c> {};
 struct peV_per_c : prefixed_unit<peV_per_c, pico, eV_per_c> {};
 struct neV_per_c : prefixed_unit<neV_per_c, nano, eV_per_c> {};

@@ -68,92 +68,176 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // N
-constexpr auto operator"" _q_N(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<newton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_N(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<newton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_N(long double l) { return force<newton, long double>(l); }
 
 // yN
-constexpr auto operator"" _q_yN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<yoctonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<yoctonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yN(long double l) { return force<yoctonewton, long double>(l); }
 
 // zN
-constexpr auto operator"" _q_zN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<zeptonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_zN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<zeptonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_zN(long double l) { return force<zeptonewton, long double>(l); }
 
 // aN
-constexpr auto operator"" _q_aN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<attonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_aN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<attonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_aN(long double l) { return force<attonewton, long double>(l); }
 
 // fN
-constexpr auto operator"" _q_fN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<femtonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_fN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<femtonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_fN(long double l) { return force<femtonewton, long double>(l); }
 
 // pN
-constexpr auto operator"" _q_pN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<piconewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<piconewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pN(long double l) { return force<piconewton, long double>(l); }
 
 // nN
-constexpr auto operator"" _q_nN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<nanonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_nN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<nanonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_nN(long double l) { return force<nanonewton, long double>(l); }
 
 // uN
-constexpr auto operator"" _q_uN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<micronewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_uN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<micronewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_uN(long double l) { return force<micronewton, long double>(l); }
 
 // mN
-constexpr auto operator"" _q_mN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<millinewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<millinewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mN(long double l) { return force<millinewton, long double>(l); }
 
 // cN
-constexpr auto operator"" _q_cN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<centinewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<centinewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_cN(long double l) { return force<centinewton, long double>(l); }
 
 // dN
-constexpr auto operator"" _q_dN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<decinewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_dN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<decinewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_dN(long double l) { return force<decinewton, long double>(l); }
 
 // daN
-constexpr auto operator"" _q_daN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<decanewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_daN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<decanewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_daN(long double l) { return force<decanewton, long double>(l); }
 
 // hN
-constexpr auto operator"" _q_hN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<hectonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_hN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<hectonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_hN(long double l) { return force<hectonewton, long double>(l); }
 
 // kN
-constexpr auto operator"" _q_kN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<kilonewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<kilonewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kN(long double l) { return force<kilonewton, long double>(l); }
 
 // MN
-constexpr auto operator"" _q_MN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<meganewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_MN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<meganewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_MN(long double l) { return force<meganewton, long double>(l); }
 
 // GN
-constexpr auto operator"" _q_GN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<giganewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_GN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<giganewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_GN(long double l) { return force<giganewton, long double>(l); }
 
 // TN
-constexpr auto operator"" _q_TN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<teranewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_TN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<teranewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_TN(long double l) { return force<teranewton, long double>(l); }
 
 // PN
-constexpr auto operator"" _q_PN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<petanewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_PN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<petanewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_PN(long double l) { return force<petanewton, long double>(l); }
 
 // EN
-constexpr auto operator"" _q_EN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<exanewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_EN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<exanewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_EN(long double l) { return force<exanewton, long double>(l); }
 
 // ZN
-constexpr auto operator"" _q_ZN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<zettanewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ZN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<zettanewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ZN(long double l) { return force<zettanewton, long double>(l); }
 
 // YN
-constexpr auto operator"" _q_YN(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<yottanewton, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_YN(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<yottanewton, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_YN(long double l) { return force<yottanewton, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -189,7 +273,7 @@ using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -197,28 +281,49 @@ using namespace force_references;
 
 namespace units::aliases::isq::si::inline force {
 
-template<Representation Rep = double> using N = units::isq::si::force<units::isq::si::newton, Rep>;
-template<Representation Rep = double> using yN = units::isq::si::force<units::isq::si::yoctonewton, Rep>;
-template<Representation Rep = double> using zN = units::isq::si::force<units::isq::si::zeptonewton, Rep>;
-template<Representation Rep = double> using aN = units::isq::si::force<units::isq::si::attonewton, Rep>;
-template<Representation Rep = double> using fN = units::isq::si::force<units::isq::si::femtonewton, Rep>;
-template<Representation Rep = double> using pN = units::isq::si::force<units::isq::si::piconewton, Rep>;
-template<Representation Rep = double> using nN = units::isq::si::force<units::isq::si::nanonewton, Rep>;
-template<Representation Rep = double> using uN = units::isq::si::force<units::isq::si::micronewton, Rep>;
-template<Representation Rep = double> using mN = units::isq::si::force<units::isq::si::millinewton, Rep>;
-template<Representation Rep = double> using cN = units::isq::si::force<units::isq::si::centinewton, Rep>;
-template<Representation Rep = double> using dN = units::isq::si::force<units::isq::si::decinewton, Rep>;
-template<Representation Rep = double> using daN = units::isq::si::force<units::isq::si::decanewton, Rep>;
-template<Representation Rep = double> using hN = units::isq::si::force<units::isq::si::hectonewton, Rep>;
-template<Representation Rep = double> using kN = units::isq::si::force<units::isq::si::kilonewton, Rep>;
-template<Representation Rep = double> using MN = units::isq::si::force<units::isq::si::meganewton, Rep>;
-template<Representation Rep = double> using GN = units::isq::si::force<units::isq::si::giganewton, Rep>;
-template<Representation Rep = double> using TN = units::isq::si::force<units::isq::si::teranewton, Rep>;
-template<Representation Rep = double> using PN = units::isq::si::force<units::isq::si::petanewton, Rep>;
-template<Representation Rep = double> using EN = units::isq::si::force<units::isq::si::exanewton, Rep>;
-template<Representation Rep = double> using ZN = units::isq::si::force<units::isq::si::zettanewton, Rep>;
-template<Representation Rep = double> using YN = units::isq::si::force<units::isq::si::yottanewton, Rep>;
+template<Representation Rep = double>
+using N = units::isq::si::force<units::isq::si::newton, Rep>;
+template<Representation Rep = double>
+using yN = units::isq::si::force<units::isq::si::yoctonewton, Rep>;
+template<Representation Rep = double>
+using zN = units::isq::si::force<units::isq::si::zeptonewton, Rep>;
+template<Representation Rep = double>
+using aN = units::isq::si::force<units::isq::si::attonewton, Rep>;
+template<Representation Rep = double>
+using fN = units::isq::si::force<units::isq::si::femtonewton, Rep>;
+template<Representation Rep = double>
+using pN = units::isq::si::force<units::isq::si::piconewton, Rep>;
+template<Representation Rep = double>
+using nN = units::isq::si::force<units::isq::si::nanonewton, Rep>;
+template<Representation Rep = double>
+using uN = units::isq::si::force<units::isq::si::micronewton, Rep>;
+template<Representation Rep = double>
+using mN = units::isq::si::force<units::isq::si::millinewton, Rep>;
+template<Representation Rep = double>
+using cN = units::isq::si::force<units::isq::si::centinewton, Rep>;
+template<Representation Rep = double>
+using dN = units::isq::si::force<units::isq::si::decinewton, Rep>;
+template<Representation Rep = double>
+using daN = units::isq::si::force<units::isq::si::decanewton, Rep>;
+template<Representation Rep = double>
+using hN = units::isq::si::force<units::isq::si::hectonewton, Rep>;
+template<Representation Rep = double>
+using kN = units::isq::si::force<units::isq::si::kilonewton, Rep>;
+template<Representation Rep = double>
+using MN = units::isq::si::force<units::isq::si::meganewton, Rep>;
+template<Representation Rep = double>
+using GN = units::isq::si::force<units::isq::si::giganewton, Rep>;
+template<Representation Rep = double>
+using TN = units::isq::si::force<units::isq::si::teranewton, Rep>;
+template<Representation Rep = double>
+using PN = units::isq::si::force<units::isq::si::petanewton, Rep>;
+template<Representation Rep = double>
+using EN = units::isq::si::force<units::isq::si::exanewton, Rep>;
+template<Representation Rep = double>
+using ZN = units::isq::si::force<units::isq::si::zettanewton, Rep>;
+template<Representation Rep = double>
+using YN = units::isq::si::force<units::isq::si::yottanewton, Rep>;
 
 }  // namespace units::aliases::isq::si::inline force
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

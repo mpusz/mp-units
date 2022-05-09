@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-iau mp-units::si)
+add_units_module(
+    si-iau DEPENDENCIES mp-units::si HEADERS include/units/isq/si/iau/iau.h include/units/isq/si/iau/length.h
+)

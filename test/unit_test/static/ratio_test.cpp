@@ -45,7 +45,7 @@ static_assert(-ratio(3, 8) == ratio(-3, 8));
 
 // ratio addition
 static_assert(ratio(1, 2) + ratio(1, 3) == ratio(5, 6));
-static_assert(ratio(1, 3, 2) + ratio(11, 6) == ratio(211, 6)); // 100/3 + 11/6
+static_assert(ratio(1, 3, 2) + ratio(11, 6) == ratio(211, 6));  // 100/3 + 11/6
 
 // multiply with exponents
 static_assert(ratio(1, 8, 2) * ratio(2, 1, 4) == ratio(1, 4, 6));
@@ -101,5 +101,11 @@ static_assert(common_ratio(ratio(100, 1), ratio(1, 10)) == ratio(1, 10));
 // common ratio with exponents
 static_assert(common_ratio(ratio(1), ratio(1, 1, 3)) == ratio(1));
 static_assert(common_ratio(ratio(10, 1, -1), ratio(1, 1, -3)) == ratio(1, 1, -3));
+
+// numerator and denominator
+static_assert(numerator(ratio(3, 4)) == 3);
+static_assert(numerator(ratio(3, 7, 2)) == 300);
+static_assert(denominator(ratio(3, 4)) == 4);
+static_assert(denominator(ratio(3, 7, -2)) == 700);
 
 }  // namespace
