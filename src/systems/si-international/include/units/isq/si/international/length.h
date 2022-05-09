@@ -37,7 +37,7 @@ namespace units::isq::si::international {
 
 // si::international yard
 // https://en.wikipedia.org/wiki/International_yard_and_pound
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(9'144, 1'000, -1), si::metre> {};
+struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio(9'144, 1'000, -1), si::metre> {};
 
 // si::international foot
 // https://en.wikipedia.org/wiki/Foot_(unit)#International_foot
