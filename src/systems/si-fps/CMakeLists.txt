@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.19)
 
 add_units_module(
     si-fps
-    DEPENDENCIES mp-units::si
+    DEPENDENCIES mp-units::si-international
     HEADERS include/units/isq/si/fps/acceleration.h
             include/units/isq/si/fps/area.h
             include/units/isq/si/fps/density.h
