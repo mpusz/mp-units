@@ -199,7 +199,7 @@ class MPUnitsConan(ConanFile):
         self.cpp_info.components["si-cgs"].requires = ["si"]
         self.cpp_info.components["si-cgs"].includedirs = ["include"]
 
-        self.cpp_info.components["si-fps"].requires = ["si"]
+        self.cpp_info.components["si-fps"].requires = ["si-international"]
         self.cpp_info.components["si-fps"].includedirs = ["include"]
 
         self.cpp_info.components["si-hep"].requires = ["si"]
