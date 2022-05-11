@@ -50,8 +50,7 @@ namespace units {
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  * @tparam U a base unit to be used for this base dimension
  */
-template<basic_fixed_string Symbol, Unit U>
-  requires U::is_named
+template<basic_fixed_string Symbol, NamedUnit U>
 struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
   using base_unit = U;                    ///< Base unit adopted for this dimension

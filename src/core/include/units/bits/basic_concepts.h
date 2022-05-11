@@ -96,9 +96,18 @@ void to_base_scaled_unit(const volatile scaled_unit<R, U>*);
 template<typename T>
 concept Unit = requires(T* t) { detail::to_base_scaled_unit(t); };
 
+namespace detail {
+
+template<typename>
+inline constexpr bool is_named = false;
+
+}
+
+template<typename T>
+concept NamedUnit = Unit<T> && detail::is_named<T>;
+
 // BaseDimension
-template<basic_fixed_string Symbol, Unit U>
-  requires U::is_named
+template<basic_fixed_string Symbol, NamedUnit U>
 struct base_dimension;
 
 namespace detail {

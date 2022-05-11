@@ -110,7 +110,7 @@ template<Exponent Exp>
 constexpr auto exponent_list_with_named_units(Exp)
 {
   using dim = TYPENAME Exp::dimension;
-  if constexpr (dimension_unit<dim>::is_named) {
+  if constexpr (NamedUnit<dimension_unit<dim>>) {
     return exponent_list<Exp>();
   } else {
     using recipe = TYPENAME dim::recipe;
