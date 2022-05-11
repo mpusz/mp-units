@@ -34,7 +34,7 @@
 
 namespace units::isq::si::cgs {
 
-struct erg_per_second : unit<erg_per_second> {};
+struct erg_per_second : derived_unit<erg_per_second> {};
 
 struct dim_power : isq::dim_power<dim_power, erg_per_second, dim_energy, dim_time> {};
 

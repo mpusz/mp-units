@@ -34,7 +34,7 @@
 
 namespace units::isq::iec80000 {
 
-struct byte_per_second : unit<byte_per_second> {};
+struct byte_per_second : derived_unit<byte_per_second> {};
 struct dim_transfer_rate :
     derived_dimension<dim_transfer_rate, byte_per_second, exponent<dim_storage_capacity, 1>,
                       exponent<si::dim_time, -1>> {};

@@ -66,20 +66,6 @@ template<Unit U1, Unit U2>
 struct same_unit_reference : is_same<typename U1::reference, typename U2::reference> {};
 
 /**
- * @brief An unnamed unit
- *
- * Defines a new unnamed (in most cases coherent) derived unit of a specific derived dimension
- * and it should be passed in this dimension's definition.
- *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- */
-template<typename Child>
-struct unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
-  static constexpr bool is_named = false;
-  using prefix_family = no_prefix;
-};
-
-/**
  * @brief A named unit
  *
  * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
@@ -136,6 +122,20 @@ template<typename Child, Prefix P, Unit U>
 struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio, typename U::reference>> {
   static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
+  using prefix_family = no_prefix;
+};
+
+/**
+ * @brief A coherent unit of a derived quantity
+ *
+ * Defines a new coherent unit of a derived quantity. It should be passed as a coherent unit
+ * in the dimension's definition for such a quantity.
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ */
+template<typename Child>
+struct derived_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
+  static constexpr bool is_named = false;
   using prefix_family = no_prefix;
 };
 
@@ -209,6 +209,6 @@ struct prefixed_alias_unit : U {
  *
  * Used as a coherent unit of an unknown dimension.
  */
-struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
+struct unknown_coherent_unit : derived_unit<unknown_coherent_unit> {};
 
 }  // namespace units

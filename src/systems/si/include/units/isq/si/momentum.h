@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 struct dim_momentum : isq::dim_momentum<dim_momentum, kilogram_metre_per_second, dim_mass, dim_speed> {};
 
 template<UnitOf<dim_momentum> U, Representation Rep = double>

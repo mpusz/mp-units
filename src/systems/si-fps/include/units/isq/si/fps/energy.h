@@ -35,7 +35,7 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Foot-poundal
-struct foot_poundal : unit<foot_poundal> {};
+struct foot_poundal : derived_unit<foot_poundal> {};
 
 struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_length, dim_force> {};
 

@@ -34,7 +34,7 @@
 
 namespace units::isq::si::cgs {
 
-struct centimetre_per_second : unit<centimetre_per_second> {};
+struct centimetre_per_second : derived_unit<centimetre_per_second> {};
 struct dim_speed : isq::dim_speed<dim_speed, centimetre_per_second, dim_length, dim_time> {};
 
 template<UnitOf<dim_speed> U, Representation Rep = double>

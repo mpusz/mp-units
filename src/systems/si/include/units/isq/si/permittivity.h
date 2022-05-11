@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct farad_per_metre : unit<farad_per_metre> {};
+struct farad_per_metre : derived_unit<farad_per_metre> {};
 
 struct dim_permittivity : isq::dim_permittivity<dim_permittivity, farad_per_metre, dim_capacitance, dim_length> {};
 

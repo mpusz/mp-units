@@ -35,8 +35,8 @@
 
 namespace units::isq::si {
 
-struct coulomb_per_metre_cub : unit<coulomb_per_metre_cub> {};
-struct coulomb_per_metre_sq : unit<coulomb_per_metre_sq> {};
+struct coulomb_per_metre_cub : derived_unit<coulomb_per_metre_cub> {};
+struct coulomb_per_metre_sq : derived_unit<coulomb_per_metre_sq> {};
 
 struct dim_charge_density :
     isq::dim_charge_density<dim_charge_density, coulomb_per_metre_cub, dim_electric_charge, dim_length> {};

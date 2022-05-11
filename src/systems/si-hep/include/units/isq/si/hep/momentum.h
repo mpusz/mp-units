@@ -34,7 +34,7 @@
 
 namespace units::isq::si::hep {
 
-struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
 struct eV_per_c :
     named_scaled_unit<eV_per_c, "eV/c", prefix, ratio(5'344'285'992'678, 1'000'000'000'000, -35),

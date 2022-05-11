@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
+struct kilogram_per_metre_cub : derived_unit<kilogram_per_metre_cub> {};
 
 struct dim_density : isq::dim_density<dim_density, kilogram_per_metre_cub, dim_mass, dim_length> {};
 

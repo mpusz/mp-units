@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct joule_per_mole : unit<joule_per_mole> {};
+struct joule_per_mole : derived_unit<joule_per_mole> {};
 
 struct dim_molar_energy :
     isq::dim_molar_energy<dim_molar_energy, joule_per_mole, dim_energy, dim_amount_of_substance> {};

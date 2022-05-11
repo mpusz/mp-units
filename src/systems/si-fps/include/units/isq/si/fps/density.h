@@ -34,7 +34,7 @@
 
 namespace units::isq::si::fps {
 
-struct pound_per_foot_cub : unit<pound_per_foot_cub> {};
+struct pound_per_foot_cub : derived_unit<pound_per_foot_cub> {};
 
 struct dim_density : isq::dim_density<dim_density, pound_per_foot_cub, dim_mass, dim_length> {};
 

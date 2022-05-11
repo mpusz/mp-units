@@ -36,7 +36,7 @@ using namespace units;
 using namespace units::isq::si;
 
 // power spectral density
-struct sq_volt_per_hertz : unit<sq_volt_per_hertz> {};
+struct sq_volt_per_hertz : derived_unit<sq_volt_per_hertz> {};
 struct dim_power_spectral_density :
     derived_dimension<dim_power_spectral_density, sq_volt_per_hertz, units::exponent<dim_voltage, 2>,
                       units::exponent<dim_frequency, -1>> {};
@@ -45,7 +45,7 @@ template<UnitOf<dim_power_spectral_density> U, Representation Rep = double>
 using power_spectral_density = quantity<dim_power_spectral_density, U, Rep>;
 
 // amplitude spectral density
-struct volt_per_sqrt_hertz : unit<volt_per_sqrt_hertz> {};
+struct volt_per_sqrt_hertz : derived_unit<volt_per_sqrt_hertz> {};
 struct dim_amplitude_spectral_density :
     derived_dimension<dim_amplitude_spectral_density, volt_per_sqrt_hertz, units::exponent<dim_voltage, 1>,
                       units::exponent<dim_frequency, -1, 2>> {};
@@ -69,7 +69,7 @@ static_assert(compare<decltype(sqrt(power_spectral_density<sq_volt_per_hertz>(16
 
 namespace {
 
-struct kilogram_per_second : unit<kilogram_per_second> {};
+struct kilogram_per_second : derived_unit<kilogram_per_second> {};
 struct dim_mass_rate :
     derived_dimension<dim_mass_rate, kilogram_per_second, units::exponent<dim_mass, 1>, units::exponent<dim_time, -1>> {
 };

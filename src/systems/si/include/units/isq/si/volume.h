@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct cubic_metre : unit<cubic_metre> {};
+struct cubic_metre : derived_unit<cubic_metre> {};
 struct dim_volume : isq::dim_volume<dim_volume, cubic_metre, dim_length> {};
 
 struct cubic_yoctometre : derived_deduced_unit<cubic_yoctometre, dim_volume, yoctometre> {};

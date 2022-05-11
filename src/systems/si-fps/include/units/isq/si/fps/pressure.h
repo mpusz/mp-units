@@ -36,7 +36,7 @@
 
 namespace units::isq::si::fps {
 
-struct poundal_per_foot_sq : unit<poundal_per_foot_sq> {};
+struct poundal_per_foot_sq : derived_unit<poundal_per_foot_sq> {};
 
 struct dim_pressure : isq::dim_pressure<dim_pressure, poundal_per_foot_sq, dim_force, dim_area> {};
 

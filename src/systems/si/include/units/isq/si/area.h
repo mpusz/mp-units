@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct square_metre : unit<square_metre> {};
+struct square_metre : derived_unit<square_metre> {};
 struct dim_area : isq::dim_area<dim_area, square_metre, dim_length> {};
 
 struct square_yoctometre : derived_deduced_unit<square_yoctometre, dim_area, yoctometre> {};

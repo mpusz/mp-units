@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct candela_per_metre_sq : unit<candela_per_metre_sq> {};
+struct candela_per_metre_sq : derived_unit<candela_per_metre_sq> {};
 struct dim_luminance : isq::dim_luminance<dim_luminance, candela_per_metre_sq, dim_luminous_intensity, dim_length> {};
 
 template<UnitOf<dim_luminance> U, Representation Rep = double>

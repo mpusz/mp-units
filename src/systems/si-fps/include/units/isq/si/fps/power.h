@@ -35,7 +35,7 @@
 
 namespace units::isq::si::fps {
 
-struct foot_poundal_per_second : unit<foot_poundal_per_second> {};
+struct foot_poundal_per_second : derived_unit<foot_poundal_per_second> {};
 
 struct dim_power : isq::dim_power<dim_power, foot_poundal_per_second, dim_length, dim_force, dim_time> {};
 
