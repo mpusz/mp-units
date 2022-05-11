@@ -370,7 +370,7 @@ struct magnitude {
 namespace detail {
 template<typename T>
 inline constexpr bool is_magnitude = false;
-template<BasePower auto... BPs>
+template<auto... BPs>
 inline constexpr bool is_magnitude<magnitude<BPs...>> = true;
 }  // namespace detail
 
@@ -383,7 +383,7 @@ concept Magnitude = detail::is_magnitude<T>;
 /**
  * @brief  The value of a Magnitude in a desired type T.
  */
-template<typename T, BasePower auto... BPs>
+template<typename T, auto... BPs>
 // TODO(chogg): Migrate this to use `treat_as_floating_point`.
   requires(!std::is_integral_v<T> || is_integral(magnitude<BPs...>{}))
 constexpr T get_value(const magnitude<BPs...>&)
@@ -404,7 +404,7 @@ struct pi_base {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 
-template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
+template<auto... LeftBPs, auto... RightBPs>
 constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
 {
   if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
@@ -417,7 +417,7 @@ constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.
 
-template<ratio E, BasePower auto... BPs>
+template<ratio E, auto... BPs>
 constexpr auto pow(magnitude<BPs...>)
 {
   if constexpr (E == 0) {
@@ -427,13 +427,13 @@ constexpr auto pow(magnitude<BPs...>)
   }
 }
 
-template<BasePower auto... BPs>
+template<auto... BPs>
 constexpr auto sqrt(magnitude<BPs...> m)
 {
   return pow<ratio{1, 2}>(m);
 }
 
-template<BasePower auto... BPs>
+template<auto... BPs>
 constexpr auto cbrt(magnitude<BPs...> m)
 {
   return pow<ratio{1, 3}>(m);
@@ -448,7 +448,7 @@ constexpr auto operator*(magnitude<>, Magnitude auto m) { return m; }
 constexpr auto operator*(Magnitude auto m, magnitude<>) { return m; }
 
 // Recursive case for the product of any two non-identity Magnitudes.
-template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
+template<auto H1, auto... T1, auto H2, auto... T2>
 constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   // Case for when H1 has the smaller base.
@@ -495,7 +495,7 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 namespace detail {
 
 // The largest integer which can be extracted from any magnitude with only a single basis vector.
-template<BasePower auto BP>
+template<auto BP>
 constexpr auto integer_part(magnitude<BP>)
 {
   constexpr auto power_num = numerator(BP.power);
@@ -515,7 +515,7 @@ constexpr auto integer_part(magnitude<BP>)
 
 }  // namespace detail
 
-template<BasePower auto... BPs>
+template<auto... BPs>
 constexpr auto numerator(magnitude<BPs...>)
 {
   return (detail::integer_part(magnitude<BPs>{}) * ... * magnitude<>{});
@@ -553,7 +553,7 @@ constexpr ratio as_ratio(Magnitude auto m)
 // minimum power for each base (where absent bases implicitly have a power of 0).
 
 namespace detail {
-template<BasePower auto BP>
+template<auto BP>
 constexpr auto remove_positive_power(magnitude<BP> m)
 {
   if constexpr (numerator(BP.power) < 0) {
@@ -563,7 +563,7 @@ constexpr auto remove_positive_power(magnitude<BP> m)
   }
 }
 
-template<BasePower auto... BPs>
+template<auto... BPs>
 constexpr auto remove_positive_powers(magnitude<BPs...>)
 {
   return (magnitude<>{} * ... * remove_positive_power(magnitude<BPs>{}));
@@ -576,7 +576,7 @@ constexpr auto common_magnitude(magnitude<>, Magnitude auto m) { return detail::
 constexpr auto common_magnitude(Magnitude auto m, magnitude<>) { return detail::remove_positive_powers(m); }
 
 // Recursive case for the common Magnitude of any two non-identity Magnitudes.
-template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
+template<auto H1, auto... T1, auto H2, auto... T2>
 constexpr auto common_magnitude(magnitude<H1, T1...> m1, magnitude<H2, T2...> m2)
 {
   using detail::remove_positive_power;
