@@ -162,29 +162,6 @@ struct derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URes
 };
 
 /**
- * @brief A named unit with a deduced ratio
- *
- * Defines a new unit with a deduced ratio and the given symbol based on the recipe from the provided
- * derived dimension. The number and order of provided units should match the recipe of the
- * derived dimension. All of the units provided should also be a named ones so it is possible
- * to create a deduced symbol text.
- *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam Dim a derived dimension recipe to use for deduction
- * @tparam Symbol a short text representation of the unit
- * @tparam PF no_prefix or a type of prefix family
- * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
- * @tparam URest the units for the rest of dimensions from the recipe
- */
-template<typename Child, DerivedDimension Dim, basic_symbol_text Symbol, PrefixFamily PF, Unit U, Unit... URest>
-  requires detail::same_scaled_units<typename Dim::recipe, U, URest...>
-struct named_derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
-  static constexpr bool is_named = true;
-  static constexpr auto symbol = Symbol;
-  using prefix_family = PF;
-};
-
-/**
  * @brief An aliased named unit
  *
  * Defines a named alias for another unit. It is useful to assign alternative names and symbols
