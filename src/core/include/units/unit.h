@@ -26,7 +26,7 @@
 #include <units/bits/external/downcasting.h>
 
 // IWYU pragma: begin_exports
-#include <units/bits/derived_unit.h>
+#include <units/bits/derived_deduced_unit.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/prefix.h>
 #include <units/ratio.h>
@@ -155,7 +155,7 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio,
 template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
            (U::is_named && (URest::is_named && ... && true))
-struct derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
+struct derived_deduced_unit : downcast_dispatch<Child, detail::derived_deduced_unit<Dim, U, URest...>> {
   static constexpr bool is_named = false;
   static constexpr auto symbol = detail::derived_symbol_text<Dim, U, URest...>();
   using prefix_family = no_prefix;

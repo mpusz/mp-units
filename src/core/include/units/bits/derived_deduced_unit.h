@@ -33,7 +33,7 @@ inline constexpr bool same_scaled_units = false;
 template<typename... Es, Unit... Us>
 inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
-// derived_unit
+// derived_deduced_unit
 
 template<Exponent E>
 constexpr ratio inverse_if_negative(const ratio& r)
@@ -52,6 +52,7 @@ constexpr ratio derived_ratio(exponent_list<Es...>)
 }
 
 template<DerivedDimension D, Unit... Us>
-using derived_unit = scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
+using derived_deduced_unit =
+  scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
 
 }  // namespace units::detail

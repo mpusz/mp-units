@@ -35,7 +35,7 @@
 
 namespace units::isq::si::international {
 
-struct square_foot : derived_unit<square_foot, si::dim_area, si::international::foot> {};
+struct square_foot : derived_deduced_unit<square_foot, si::dim_area, si::international::foot> {};
 
 #ifndef UNITS_NO_LITERALS
 
