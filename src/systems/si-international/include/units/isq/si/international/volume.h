@@ -35,7 +35,7 @@
 
 namespace units::isq::si::international {
 
-struct cubic_foot : derived_deduced_unit<cubic_foot, si::dim_volume, si::international::foot> {};
+struct cubic_foot : derived_scaled_unit<cubic_foot, si::dim_volume, si::international::foot> {};
 
 #ifndef UNITS_NO_LITERALS
 

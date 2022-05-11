@@ -40,7 +40,7 @@ struct foot_poundal_per_second : derived_unit<foot_poundal_per_second> {};
 struct dim_power : isq::dim_power<dim_power, foot_poundal_per_second, dim_length, dim_force, dim_time> {};
 
 struct foot_pound_force_per_second :
-    derived_deduced_unit<foot_pound_force_per_second, dim_power, foot, pound_force, second> {};
+    derived_scaled_unit<foot_pound_force_per_second, dim_power, foot, pound_force, second> {};
 
 struct horse_power : named_scaled_unit<horse_power, "hp", ratio(550), foot_pound_force_per_second> {};
 

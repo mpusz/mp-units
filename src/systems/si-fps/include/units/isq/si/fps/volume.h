@@ -37,7 +37,7 @@ namespace units::isq::si::fps {
 struct cubic_foot : derived_unit<cubic_foot> {};
 struct dim_volume : isq::dim_volume<dim_volume, cubic_foot, dim_length> {};
 
-struct cubic_yard : derived_deduced_unit<cubic_yard, dim_volume, yard> {};
+struct cubic_yard : derived_scaled_unit<cubic_yard, dim_volume, yard> {};
 
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
