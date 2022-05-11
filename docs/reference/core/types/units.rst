@@ -4,9 +4,6 @@ Units
 .. doxygenstruct:: units::scaled_unit
    :members:
 
-.. doxygenstruct:: units::unit
-   :members:
-
 .. doxygenstruct:: units::named_unit
    :members:
 
@@ -19,7 +16,7 @@ Units
 .. doxygenstruct:: units::derived_unit
    :members:
 
-.. doxygenstruct:: units::named_derived_unit
+.. doxygenstruct:: units::derived_scaled_unit
    :members:
 
 .. doxygenstruct:: units::alias_unit

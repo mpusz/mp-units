@@ -8,10 +8,6 @@ Concepts
     All names defined in this chapter reside in the :any:`units` namespace unless
     specified otherwise.
 
-.. concept:: template<typename T> PrefixFamily
-
-    A concept matching a prefix family. Satisfied by all types derived from :class:`prefix_family`.
-
 .. concept:: template<typename T> Prefix
 
     A concept matching a symbol prefix. Satisfied by all instantiations of :struct:`prefix`.
@@ -43,6 +39,11 @@ Concepts
 
     A concept matching all unit types in the library. Satisfied by all unit types derived
     from the instantiation of :class:`scaled_unit`.
+
+.. concept:: template<typename T> NamedUnit
+
+    A concept matching all unit types that have an atomic text symbol that can be used to aggregate it with
+    other named units to form a final symbol of a derived unit.
 
 .. concept:: template<typename U, typename D> UnitOf
 

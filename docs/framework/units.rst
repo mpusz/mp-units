@@ -40,38 +40,22 @@ of a `scaled_unit` class template:
     left to right direction
 
     package Unit <<Frame>> [[../../framework/units.html]] {
-    abstract prefix_family [[../../framework/units.html#prefixed-unit]]
-    abstract no_prefix [[../../framework/units.html#named-scaled-units]]
-    abstract prefix<PrefixFamily, Symbol, Ratio> [[../../framework/units.html#prefixed-unit]]
-
-    prefix_family <|-- no_prefix
-    prefix_family <.. prefix
-
-    '  prefix_family <.. named_unit
-    '  prefix_family <.. named_scaled_unit
-    '  prefix_family <.. named_derived_unit
-    '  prefix_family <.. alias_unit
-
-    '  prefix <.. prefixed_unit
-    '  prefix <.. prefixed_alias_unit
 
     abstract scaled_unit<UnitRatio, Unit>
 
     abstract prefixed_alias_unit<Unit, Prefix, AliasUnit> [[../../framework/units.html#aliased-units]]
-    abstract alias_unit<Unit, Symbol, PrefixFamily> [[../../framework/units.html#aliased-units]]
-    abstract named_derived_unit<Dimension, Symbol, PrefixFamily, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
-    abstract derived_unit<Dimension, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract alias_unit<Unit, Symbol> [[../../framework/units.html#aliased-units]]
+    abstract derived_scaled_unit<Dimension, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract derived_unit [[../../framework/units.html#derived-unnamed-units]]
     abstract prefixed_unit<Prefix, Unit> [[../../framework/units.html#prefixed-unit]]
-    abstract named_scaled_unit<Symbol, PrefixFamily, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
-    abstract named_unit<Symbol, PrefixFamily> [[../../framework/units.html#base-units]]
-    abstract unit [[../../framework/units.html#derived-unnamed-units]]
+    abstract named_scaled_unit<Symbol, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
+    abstract named_unit<Symbol> [[../../framework/units.html#base-units]]
 
-    scaled_unit <|-- unit
     scaled_unit <|-- named_unit
     scaled_unit <|-- named_scaled_unit
     scaled_unit <|-- prefixed_unit
     scaled_unit <|-- derived_unit
-    scaled_unit <|-- named_derived_unit
+    scaled_unit <|-- derived_scaled_unit
     scaled_unit <|-- alias_unit
     scaled_unit <|-- prefixed_alias_unit
     }
@@ -191,14 +175,11 @@ Those units are the scaled versions of a time dimension's base unit,
 namely second. Those can be defined easily in the library using
 `named_scaled_unit` class template::
 
-    struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
-    struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
-    struct day : named_scaled_unit<day, "d", no_prefix, ratio(24), hour> {};
+    struct minute : named_scaled_unit<minute, "min", ratio(60), second> {};
+    struct hour : named_scaled_unit<hour, "h", ratio(60), minute> {};
+    struct day : named_scaled_unit<day, "d", ratio(24), hour> {};
 
-where `no_prefix` is a special tag type describing that the library should
-not allow to define a new prefixed unit that would use this unit as a
-reference ("kilohours" does not have much sense, right?). The `ratio` type
-used in the definition is really similar to ``std::ratio`` but it takes
+The `ratio` type used in the definition is really similar to ``std::ratio`` but it takes
 an additional ``Exponent`` template parameter that defines the exponent of the ratio.
 Another important difference is the fact that the objects of that class are used
 as class NTTPs rather then a type template parameter kind.
@@ -227,28 +208,26 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     namespace si {
 
-    struct prefix : prefix_family {};
-
-    struct yocto  : units::prefix<yocto,  prefix, "y",  ratio(1, 1, -24)> {};
-    struct zepto  : units::prefix<zepto,  prefix, "z",  ratio(1, 1, -21)> {};
-    struct atto   : units::prefix<atto,   prefix, "a",  ratio(1, 1, -18)> {};
-    struct femto  : units::prefix<femto,  prefix, "f",  ratio(1, 1, -15)> {};
-    struct pico   : units::prefix<pico,   prefix, "p",  ratio(1, 1, -12)> {};
-    struct nano   : units::prefix<nano,   prefix, "n",  ratio(1, 1,  -9)> {};
-    struct micro  : units::prefix<micro,  prefix, "µ",  ratio(1, 1,  -6)> {};
-    struct milli  : units::prefix<milli,  prefix, "m",  ratio(1, 1,  -3)> {};
-    struct centi  : units::prefix<centi,  prefix, "c",  ratio(1, 1,  -2)> {};
-    struct deci   : units::prefix<deci,   prefix, "d",  ratio(1, 1,  -1)> {};
-    struct deca   : units::prefix<deca,   prefix, "da", ratio(1, 1,   1)> {};
-    struct hecto  : units::prefix<hecto,  prefix, "h",  ratio(1, 1,   2)> {};
-    struct kilo   : units::prefix<kilo,   prefix, "k",  ratio(1, 1,   3)> {};
-    struct mega   : units::prefix<mega,   prefix, "M",  ratio(1, 1,   6)> {};
-    struct giga   : units::prefix<giga,   prefix, "G",  ratio(1, 1,   9)> {};
-    struct tera   : units::prefix<tera,   prefix, "T",  ratio(1, 1,  12)> {};
-    struct peta   : units::prefix<peta,   prefix, "P",  ratio(1, 1,  15)> {};
-    struct exa    : units::prefix<exa,    prefix, "E",  ratio(1, 1,  18)> {};
-    struct zetta  : units::prefix<zetta,  prefix, "Z",  ratio(1, 1,  21)> {};
-    struct yotta  : units::prefix<yotta,  prefix, "Y",  ratio(1, 1,  24)> {};
+    struct yocto : units::prefix<yocto, "y", ratio(1, 1, -24)> {};
+    struct zepto : units::prefix<zepto, "z", ratio(1, 1, -21)> {};
+    struct atto  : units::prefix<atto,  "a", ratio(1, 1, -18)> {};
+    struct femto : units::prefix<femto, "f", ratio(1, 1, -15)> {};
+    struct pico  : units::prefix<pico,  "p", ratio(1, 1, -12)> {};
+    struct nano  : units::prefix<nano,  "n", ratio(1, 1,  -9)> {};
+    struct micro : units::prefix<micro, "µ", ratio(1, 1,  -6)> {};
+    struct milli : units::prefix<milli, "m", ratio(1, 1,  -3)> {};
+    struct centi : units::prefix<centi, "c", ratio(1, 1,  -2)> {};
+    struct deci  : units::prefix<deci,  "d", ratio(1, 1,  -1)> {};
+    struct deca  : units::prefix<deca,  "da",ratio(1, 1,   1)> {};
+    struct hecto : units::prefix<hecto, "h", ratio(1, 1,   2)> {};
+    struct kilo  : units::prefix<kilo,  "k", ratio(1, 1,   3)> {};
+    struct mega  : units::prefix<mega,  "M", ratio(1, 1,   6)> {};
+    struct giga  : units::prefix<giga,  "G", ratio(1, 1,   9)> {};
+    struct tera  : units::prefix<tera,  "T", ratio(1, 1,  12)> {};
+    struct peta  : units::prefix<peta,  "P", ratio(1, 1,  15)> {};
+    struct exa   : units::prefix<exa,   "E", ratio(1, 1,  18)> {};
+    struct zetta : units::prefix<zetta, "Z", ratio(1, 1,  21)> {};
+    struct yotta : units::prefix<yotta, "Y", ratio(1, 1,  24)> {};
 
     }
 
@@ -257,14 +236,12 @@ domain::
 
     namespace iec80000 {
 
-    struct binary_prefix : prefix_family {};
-
-    struct kibi : units::prefix<kibi, binary_prefix, "Ki", ratio(                    1'024)> {};
-    struct mebi : units::prefix<mebi, binary_prefix, "Mi", ratio(                1'048'576)> {};
-    struct gibi : units::prefix<gibi, binary_prefix, "Gi", ratio(            1'073'741'824)> {};
-    struct tebi : units::prefix<tebi, binary_prefix, "Ti", ratio(        1'099'511'627'776)> {};
-    struct pebi : units::prefix<pebi, binary_prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
-    struct exbi : units::prefix<exbi, binary_prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
+    struct kibi : units::prefix<kibi, "Ki", ratio(                    1'024)> {};
+    struct mebi : units::prefix<mebi, "Mi", ratio(                1'048'576)> {};
+    struct gibi : units::prefix<gibi, "Gi", ratio(            1'073'741'824)> {};
+    struct tebi : units::prefix<tebi, "Ti", ratio(        1'099'511'627'776)> {};
+    struct pebi : units::prefix<pebi, "Pi", ratio(    1'125'899'906'842'624)> {};
+    struct exbi : units::prefix<exbi, "Ei", ratio(1'152'921'504'606'846'976)> {};
 
     }
 
@@ -338,7 +315,7 @@ will result in a different unnamed unit symbol:
 
 where ``kilogram_metre_per_second`` is defined as::
 
-    struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+    struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
 However, the easiest way to define momentum is just to use the
 ``si::dim_speed`` derived dimension in the recipe:
@@ -385,12 +362,12 @@ ratio in reference to the "metre per second":
 
 Whichever, we choose there will always be someone not happy with our choice.
 
-Thanks to a `derived_unit` class template provided by the library this problem
+Thanks to a `derived_scaled_unit` class template provided by the library this problem
 does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     namespace si {
 
-    struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+    struct kilometre_per_hour : derived_scaled_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
     }
 
@@ -400,7 +377,7 @@ by him/her-self::
 
     namespace si::fps {
 
-    struct knot : named_derived_unit<knot, dim_speed, "knot", no_prefix, nautical_mile, hour> {};
+    struct knot : named_derived_unit<knot, dim_speed, "knot", nautical_mile, hour> {};
 
     }
 
