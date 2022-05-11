@@ -443,13 +443,13 @@ constexpr auto cbrt(magnitude<BPs...> m)
 // Magnitude product implementation.
 
 // Base cases, for when either (or both) inputs are the identity.
-constexpr auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
-constexpr auto operator*(magnitude<>, Magnitude auto m) { return m; }
-constexpr auto operator*(Magnitude auto m, magnitude<>) { return m; }
+constexpr Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
+constexpr Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
+constexpr Magnitude auto operator*(Magnitude auto m, magnitude<>) { return m; }
 
 // Recursive case for the product of any two non-identity Magnitudes.
 template<auto H1, auto... T1, auto H2, auto... T2>
-constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
+constexpr Magnitude auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   // Case for when H1 has the smaller base.
   if constexpr (H1.get_base() < H2.get_base()) {
