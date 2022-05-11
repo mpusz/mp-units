@@ -37,30 +37,30 @@ namespace units::isq::si::international {
 
 // si::international yard
 // https://en.wikipedia.org/wiki/International_yard_and_pound
-struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio(9'144, 1'000, -1), si::metre> {};
+struct yard : named_scaled_unit<yard, "yd", ratio(9'144, 1'000, -1), si::metre> {};
 
 // si::international foot
 // https://en.wikipedia.org/wiki/Foot_(unit)#International_foot
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(1, 3), yard> {};
+struct foot : named_scaled_unit<foot, "ft", ratio(1, 3), yard> {};
 
 // https://en.wikipedia.org/wiki/Fathom#International_fathom
-struct fathom : named_scaled_unit<fathom, "fathom", no_prefix, ratio(2), yard> {};
+struct fathom : named_scaled_unit<fathom, "fathom", ratio(2), yard> {};
 
 // si::international inch
 // https://en.wikipedia.org/wiki/Inch#Equivalences
-struct inch : named_scaled_unit<inch, "in", no_prefix, ratio(1, 36), yard> {};
+struct inch : named_scaled_unit<inch, "in", ratio(1, 36), yard> {};
 
 // intrnational mile
 // https://en.wikipedia.org/wiki/Mile#International_mile
-struct mile : named_scaled_unit<mile, "mi", no_prefix, ratio(25'146, 15'625), si::kilometre> {};
+struct mile : named_scaled_unit<mile, "mi", ratio(25'146, 15'625), si::kilometre> {};
 
 // si::international nautical mile
 // https://en.wikipedia.org/wiki/Nautical_mile
-struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", no_prefix, ratio(1852), si::metre> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", ratio(1852), si::metre> {};
 
 // thou
 // https://en.wikipedia.org/wiki/Thousandth_of_an_inch
-struct thou : named_scaled_unit<thou, "thou", no_prefix, ratio(1, 1000), inch> {};
+struct thou : named_scaled_unit<thou, "thou", ratio(1, 1000), inch> {};
 
 // mil - different name for thou
 // https://en.wikipedia.org/wiki/Thousandth_of_an_inch

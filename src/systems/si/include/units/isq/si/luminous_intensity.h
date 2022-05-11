@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct candela : named_unit<candela, "cd", prefix> {};
+struct candela : named_unit<candela, "cd"> {};
 struct yoctocandela : prefixed_unit<yoctocandela, yocto, candela> {};
 struct zeptocandela : prefixed_unit<zeptocandela, zepto, candela> {};
 struct attocandela : prefixed_unit<attocandela, atto, candela> {};

@@ -32,7 +32,7 @@
 
 namespace units {
 
-struct radian : named_unit<radian, "rad", isq::si::prefix> {};
+struct radian : named_unit<radian, "rad"> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};

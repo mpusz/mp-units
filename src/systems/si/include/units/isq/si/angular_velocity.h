@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}, prefix> {};
+struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}> {};
 
 struct dim_angular_velocity :
     isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};

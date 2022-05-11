@@ -36,7 +36,7 @@
 
 namespace units::isq::si {
 
-struct newton : named_unit<newton, "N", prefix> {};
+struct newton : named_unit<newton, "N"> {};
 struct yoctonewton : prefixed_unit<yoctonewton, yocto, newton> {};
 struct zeptonewton : prefixed_unit<zeptonewton, zepto, newton> {};
 struct attonewton : prefixed_unit<attonewton, atto, newton> {};

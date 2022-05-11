@@ -43,13 +43,13 @@ using si::international::thou;
 using si::international::yard;
 
 // thousandth of an inch
-struct thousandth : alias_unit<thou, "thou", no_prefix> {};
+struct thousandth : alias_unit<thou, "thou"> {};
 
 struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
-struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio(5'280), foot> {};
+struct mile : named_scaled_unit<mile, "mile", ratio(5'280), foot> {};
 
-struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", no_prefix, ratio(2'000), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", ratio(2'000), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 

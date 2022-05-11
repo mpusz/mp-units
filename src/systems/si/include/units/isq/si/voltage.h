@@ -36,7 +36,7 @@
 
 namespace units::isq::si {
 
-struct volt : named_unit<volt, "V", prefix> {};
+struct volt : named_unit<volt, "V"> {};
 struct yoctovolt : prefixed_unit<yoctovolt, yocto, volt> {};
 struct zeptovolt : prefixed_unit<zeptovolt, zepto, volt> {};
 struct attovolt : prefixed_unit<attovolt, atto, volt> {};

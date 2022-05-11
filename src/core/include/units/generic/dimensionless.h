@@ -30,8 +30,8 @@
 
 namespace units {
 
-struct one : named_unit<one, "", no_prefix> {};
-struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), one> {};
+struct one : named_unit<one, ""> {};
+struct percent : named_scaled_unit<percent, "%", ratio(1, 100), one> {};
 
 /**
  * @brief Dimension one

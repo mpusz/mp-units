@@ -33,7 +33,7 @@
 
 namespace units::isq::iec80000 {
 
-struct erlang : named_unit<erlang, "E", no_prefix> {};
+struct erlang : named_unit<erlang, "E"> {};
 
 struct dim_traffic_intensity : base_dimension<"A", erlang> {};
 

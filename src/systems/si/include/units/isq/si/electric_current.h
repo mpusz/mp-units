@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct ampere : named_unit<ampere, "A", prefix> {};
+struct ampere : named_unit<ampere, "A"> {};
 struct yoctoampere : prefixed_unit<yoctoampere, yocto, ampere> {};
 struct zeptoampere : prefixed_unit<zeptoampere, zepto, ampere> {};
 struct attoampere : prefixed_unit<attoampere, atto, ampere> {};

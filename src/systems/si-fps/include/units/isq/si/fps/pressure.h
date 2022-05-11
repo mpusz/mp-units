@@ -44,11 +44,10 @@ template<UnitOf<dim_pressure> U, Representation Rep = double>
 using pressure = quantity<dim_pressure, U, Rep>;
 
 struct pound_force_per_foot_sq :
-    named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", si::prefix, ratio(32'174'049, 1'000'000),
-                      poundal_per_foot_sq> {};
+    named_scaled_unit<pound_force_per_foot_sq, "lbf ft2", ratio(32'174'049, 1'000'000), poundal_per_foot_sq> {};
 
 struct pound_force_per_inch_sq :
-    named_scaled_unit<pound_force_per_inch_sq, "psi", si::prefix, ratio(1, 144), pound_force_per_foot_sq> {};
+    named_scaled_unit<pound_force_per_inch_sq, "psi", ratio(1, 144), pound_force_per_foot_sq> {};
 
 struct kilopound_force_per_inch_sq : prefixed_unit<kilopound_force_per_inch_sq, si::kilo, pound_force_per_inch_sq> {};
 

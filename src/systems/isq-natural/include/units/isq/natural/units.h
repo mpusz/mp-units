@@ -31,11 +31,10 @@
 
 namespace units::isq::natural {
 
-struct electronvolt : named_unit<electronvolt, "eV", si::prefix> {};
+struct electronvolt : named_unit<electronvolt, "eV"> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, si::giga, electronvolt> {};
-struct inverted_gigaelectronvolt :
-    named_unit<inverted_gigaelectronvolt, basic_symbol_text{"GeV⁻¹", "GeV^-1"}, no_prefix> {};
-struct square_gigaelectronvolt : named_unit<square_gigaelectronvolt, basic_symbol_text{"GeV²", "GeV^2"}, no_prefix> {};
+struct inverted_gigaelectronvolt : named_unit<inverted_gigaelectronvolt, basic_symbol_text{"GeV⁻¹", "GeV^-1"}> {};
+struct square_gigaelectronvolt : named_unit<square_gigaelectronvolt, basic_symbol_text{"GeV²", "GeV^2"}> {};
 
 // NOTE: eV as a base unit with no relation to joule prevents us from going back
 // from natural units to SI. Do we need such a support or should we treat

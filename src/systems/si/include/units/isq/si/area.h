@@ -58,7 +58,7 @@ struct square_exametre : derived_deduced_unit<square_exametre, dim_area, exametr
 struct square_zettametre : derived_deduced_unit<square_zettametre, dim_area, zettametre> {};
 struct square_yottametre : derived_deduced_unit<square_yottametre, dim_area, yottametre> {};
 
-struct are : alias_unit<square_decametre, "a", prefix> {};
+struct are : alias_unit<square_decametre, "a"> {};
 struct centiare : prefixed_alias_unit<square_metre, centi, are> {};
 struct deciare : prefixed_unit<deciare, deci, are> {};
 struct decare : prefixed_unit<decare, deca, are> {};

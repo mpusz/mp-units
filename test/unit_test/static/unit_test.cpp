@@ -33,22 +33,22 @@ namespace {
 using namespace units;
 using namespace units::isq;
 
-struct metre : named_unit<metre, "m", si::prefix> {};
+struct metre : named_unit<metre, "m"> {};
 struct centimetre : prefixed_unit<centimetre, si::centi, metre> {};
 struct kilometre : prefixed_unit<kilometre, si::kilo, metre> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(9'144, 1, -4), metre> {};
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(1, 3), yard> {};
+struct yard : named_scaled_unit<yard, "yd", ratio(9'144, 1, -4), metre> {};
+struct foot : named_scaled_unit<foot, "ft", ratio(1, 3), yard> {};
 struct dim_length : base_dimension<"length", metre> {};
 
-struct second : named_unit<second, "s", si::prefix> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(36, 1, 2), second> {};
+struct second : named_unit<second, "s"> {};
+struct hour : named_scaled_unit<hour, "h", ratio(36, 1, 2), second> {};
 struct dim_time : base_dimension<"time", second> {};
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K"> {};
 
 #if !UNITS_COMP_MSVC
 static_assert([]<Prefix P>(P) {
-  return !requires { typename prefixed_unit<struct kilokelvin, P, kelvin>; };
+  return !requires { typename prefixed_unit<struct kilokilometre, P, kilometre>; };
 }(si::kilo{}));  // no prefix allowed
 #endif
 

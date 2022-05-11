@@ -37,7 +37,7 @@ namespace units::isq::si::international {
 struct mile_per_hour : derived_deduced_unit<mile_per_hour, si::dim_speed, si::international::mile, si::hour> {};
 struct nautical_mile_per_hour :
     derived_deduced_unit<nautical_mile_per_hour, si::dim_speed, si::international::nautical_mile, si::hour> {};
-struct knot : alias_unit<nautical_mile_per_hour, "kn", no_prefix> {};
+struct knot : alias_unit<nautical_mile_per_hour, "kn"> {};
 
 #ifndef UNITS_NO_LITERALS
 

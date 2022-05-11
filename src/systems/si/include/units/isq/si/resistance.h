@@ -36,7 +36,7 @@
 
 namespace units::isq::si {
 
-struct ohm : named_unit<ohm, basic_symbol_text{"Ω", "ohm"}, prefix> {};
+struct ohm : named_unit<ohm, basic_symbol_text{"Ω", "ohm"}> {};
 struct yoctoohm : prefixed_unit<yoctoohm, yocto, ohm> {};
 struct zeptoohm : prefixed_unit<zeptoohm, zepto, ohm> {};
 struct attoohm : prefixed_unit<attoohm, atto, ohm> {};

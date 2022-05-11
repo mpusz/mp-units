@@ -57,28 +57,19 @@ constexpr auto ratio_text()
   }
 }
 
-template<ratio R, typename PrefixFamily, std::size_t SymbolLen>
+template<ratio R, std::size_t SymbolLen>
 constexpr auto prefix_or_ratio_text()
 {
   if constexpr (R.num == 1 && R.den == 1 && R.exp == 0) {
     // no ratio/prefix
     return basic_fixed_string("");
   } else {
-    if constexpr (!is_same_v<PrefixFamily, no_prefix>) {
-      // try to form a prefix
-      using prefix = downcast<detail::prefix_base<PrefixFamily, R>>;
+    // try to form a prefix
+    using prefix = downcast<detail::prefix_base<R>>;
 
-      if constexpr (!is_same_v<prefix, prefix_base<PrefixFamily, R>>) {
-        // print as a prefixed unit
-        return prefix::symbol;
-      } else {
-        // print as a ratio of the coherent unit
-        constexpr auto txt = ratio_text<R>();
-        if constexpr (SymbolLen > 0 && txt.standard().size() > 0)
-          return txt + basic_fixed_string(" ");
-        else
-          return txt;
-      }
+    if constexpr (!is_same_v<prefix, prefix_base<R>>) {
+      // print as a prefixed unit
+      return prefix::symbol;
     } else {
       // print as a ratio of the coherent unit
       constexpr auto txt = ratio_text<R>();
@@ -151,15 +142,13 @@ constexpr auto unit_text()
       // use predefined coherent unit symbol
       constexpr auto symbol_text = coherent_unit::symbol;
       constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family,
-                             symbol_text.standard().size()>();
+        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
       return prefix_txt + symbol_text;
     } else {
       // use derived dimension ingredients to create a unit symbol
       constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
       constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family,
-                             symbol_text.standard().size()>();
+        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
       return prefix_txt + symbol_text;
     }
   }

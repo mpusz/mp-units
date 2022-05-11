@@ -32,7 +32,7 @@
 // TODO Fix when Celsius is properly supported (#232)
 namespace units::isq::si {
 
-struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"°C", "deg_C"}, no_prefix> {};
+struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"°C", "deg_C"}> {};
 
 namespace thermodynamic_temperature_references {
 

@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct hertz : named_unit<hertz, "Hz", prefix> {};
+struct hertz : named_unit<hertz, "Hz"> {};
 struct yoctohertz : prefixed_unit<yoctohertz, yocto, hertz> {};
 struct zeptohertz : prefixed_unit<zeptohertz, zepto, hertz> {};
 struct attohertz : prefixed_unit<attohertz, atto, hertz> {};

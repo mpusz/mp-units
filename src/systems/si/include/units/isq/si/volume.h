@@ -58,7 +58,7 @@ struct cubic_exametre : derived_deduced_unit<cubic_exametre, dim_volume, exametr
 struct cubic_zettametre : derived_deduced_unit<cubic_zettametre, dim_volume, zettametre> {};
 struct cubic_yottametre : derived_deduced_unit<cubic_yottametre, dim_volume, yottametre> {};
 
-struct litre : alias_unit<cubic_decimetre, "l", prefix> {};
+struct litre : alias_unit<cubic_decimetre, "l"> {};
 struct yoctolitre : prefixed_alias_unit<cubic_nanometre, yocto, litre> {};
 struct zeptolitre : prefixed_unit<zeptolitre, zepto, litre> {};
 struct attolitre : prefixed_unit<attolitre, atto, litre> {};

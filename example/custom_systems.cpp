@@ -32,8 +32,8 @@ using namespace units;
 
 namespace fps {
 
-struct foot : named_unit<foot, "ft", no_prefix> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+struct foot : named_unit<foot, "ft"> {};
+struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -44,7 +44,7 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace si {
 
-struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+struct metre : named_unit<metre, "m"> {};
 struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
 struct dim_length : base_dimension<"L", metre> {};
@@ -54,8 +54,8 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
 
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(3'048, 1'000, -1), metre> {};
-struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+struct foot : named_scaled_unit<foot, "ft", ratio(3'048, 1'000, -1), metre> {};
+struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 

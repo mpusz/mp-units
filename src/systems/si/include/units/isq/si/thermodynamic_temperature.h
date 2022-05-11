@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct kelvin : named_unit<kelvin, "K", prefix> {};
+struct kelvin : named_unit<kelvin, "K"> {};
 
 struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin> {};
 

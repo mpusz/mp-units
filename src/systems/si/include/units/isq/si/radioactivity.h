@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct becquerel : named_unit<becquerel, "Bq", prefix> {};
+struct becquerel : named_unit<becquerel, "Bq"> {};
 struct yoctobecquerel : prefixed_unit<yoctobecquerel, yocto, becquerel> {};
 struct zeptobecquerel : prefixed_unit<zeptobecquerel, zepto, becquerel> {};
 struct attobecquerel : prefixed_unit<attobecquerel, atto, becquerel> {};

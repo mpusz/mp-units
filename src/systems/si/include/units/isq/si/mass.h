@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct gram : named_unit<gram, "g", prefix> {};
+struct gram : named_unit<gram, "g"> {};
 struct yoctogram : prefixed_unit<yoctogram, yocto, gram> {};
 struct zeptogram : prefixed_unit<zeptogram, zepto, gram> {};
 struct attogram : prefixed_unit<attogram, atto, gram> {};
@@ -56,7 +56,7 @@ struct exagram : prefixed_unit<exagram, exa, gram> {};
 struct zettagram : prefixed_unit<zettagram, zetta, gram> {};
 struct yottagram : prefixed_unit<yottagram, yotta, gram> {};
 
-struct tonne : alias_unit<megagram, "t", prefix> {};
+struct tonne : alias_unit<megagram, "t"> {};
 struct yoctotonne : prefixed_alias_unit<attogram, yocto, tonne> {};
 struct zeptotonne : prefixed_alias_unit<femtogram, zepto, tonne> {};
 struct attotonne : prefixed_alias_unit<picogram, atto, tonne> {};
@@ -78,8 +78,7 @@ struct exatonne : prefixed_alias_unit<yottagram, exa, tonne> {};
 struct zettatonne : prefixed_unit<zettatonne, zetta, tonne> {};
 struct yottatonne : prefixed_unit<yottatonne, yotta, tonne> {};
 
-struct dalton :
-    named_scaled_unit<dalton, "Da", prefix, ratio(16'605'390'666'050, 10'000'000'000'000, -27), kilogram> {};
+struct dalton : named_scaled_unit<dalton, "Da", ratio(16'605'390'666'050, 10'000'000'000'000, -27), kilogram> {};
 
 struct dim_mass : isq::dim_mass<kilogram> {};
 

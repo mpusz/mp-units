@@ -37,25 +37,14 @@
 
 namespace units {
 
-// PrefixFamily
-struct prefix_family;
-
-/**
- * @brief A concept matching a prefix family
- *
- * Satisfied by all types derived from `prefix_family`
- */
-template<typename T>
-concept PrefixFamily = std::derived_from<T, prefix_family>;
-
 // Prefix
 namespace detail {
 
-template<PrefixFamily PF, ratio R>
+template<ratio R>
 struct prefix_base;
 
-template<PrefixFamily PF, ratio R>
-void to_prefix_base(const volatile prefix_base<PF, R>*);
+template<ratio R>
+void to_prefix_base(const volatile prefix_base<R>*);
 
 }  // namespace detail
 
