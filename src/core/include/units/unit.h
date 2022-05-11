@@ -225,6 +225,9 @@ void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
 template<Unit U>
 inline constexpr bool can_be_prefixed<U> = requires(U * u) { can_be_prefixed_impl(u); };
 
+template<ratio R, typename U>
+inline constexpr bool can_be_prefixed<scaled_unit<R, U>> = can_be_prefixed<typename U::reference>;
+
 }  // namespace detail
 
 }  // namespace units

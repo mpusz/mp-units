@@ -26,6 +26,7 @@
 #include <units/bits/external/text_tools.h>
 #include <units/derived_dimension.h>
 #include <units/prefix.h>
+#include <units/unit.h>
 
 namespace units::detail {
 
@@ -57,7 +58,7 @@ constexpr auto ratio_text()
   }
 }
 
-template<ratio R, std::size_t SymbolLen>
+template<Unit U, ratio R, std::size_t SymbolLen>
 constexpr auto prefix_or_ratio_text()
 {
   if constexpr (R.num == 1 && R.den == 1 && R.exp == 0) {
@@ -67,7 +68,7 @@ constexpr auto prefix_or_ratio_text()
     // try to form a prefix
     using prefix = downcast<detail::prefix_base<R>>;
 
-    if constexpr (!is_same_v<prefix, prefix_base<R>>) {
+    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<R>>) {
       // print as a prefixed unit
       return prefix::symbol;
     } else {
@@ -138,19 +139,16 @@ constexpr auto unit_text()
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
 
-    if constexpr (has_symbol<coherent_unit>) {
-      // use predefined coherent unit symbol
-      constexpr auto symbol_text = coherent_unit::symbol;
-      constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    } else {
-      // use derived dimension ingredients to create a unit symbol
-      constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
-      constexpr auto prefix_txt =
-        prefix_or_ratio_text<U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    }
+    constexpr auto symbol_text = []() {
+      if constexpr (has_symbol<coherent_unit>)
+        return coherent_unit::symbol;
+      else
+        return derived_dimension_unit_text<Dim>();
+    }();
+
+    constexpr auto prefix_txt =
+      prefix_or_ratio_text<U, U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
+    return prefix_txt + symbol_text;
   }
 }
 

@@ -30,7 +30,7 @@
 
 namespace units {
 
-struct one : named_unit<one, ""> {};
+struct one : derived_unit<one> {};
 struct percent : named_scaled_unit<percent, "%", ratio(1, 100), one> {};
 
 /**
