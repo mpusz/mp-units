@@ -652,7 +652,7 @@ template<ratio R>
   requires(R.num > 0)
 constexpr Magnitude auto as_magnitude()
 {
-  return pow<R>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
+  return pow<R.exp>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
 
 }  // namespace units
