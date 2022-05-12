@@ -20,15 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import re
+
 from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
-from conans.tools import (
-    get_env,
+from conans.tools import (  # TODO replace with new tools for Conan 2.0
     check_min_cppstd,
-)  # TODO replace with new tools for Conan 2.0
-import os, re
+    get_env,
+)
 
 required_conan_version = ">=1.48.0"
 

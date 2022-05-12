@@ -10,30 +10,30 @@
 """
 
 import re
-import sphinx_rtd_theme
 
+import sphinx_rtd_theme
 from pygments.lexer import (
     RegexLexer,
-    include,
     bygroups,
-    using,
-    this,
-    inherit,
     default,
+    include,
+    inherit,
+    this,
+    using,
     words,
 )
-from pygments.util import get_bool_opt
 from pygments.token import (
-    Text,
     Comment,
-    Operator,
+    Error,
     Keyword,
     Name,
-    String,
     Number,
+    Operator,
     Punctuation,
-    Error,
+    String,
+    Text,
 )
+from pygments.util import get_bool_opt
 from sphinx.highlighting import lexers
 
 
@@ -482,7 +482,9 @@ lexers["cpp"] = MyCppLexer(startinline=True)
 # For a full list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-import subprocess, os, re
+import os
+import re
+import subprocess
 
 
 def get_version():
