@@ -420,7 +420,8 @@ constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
 template<ratio E, auto... BPs>
 constexpr auto pow(magnitude<BPs...>)
 {
-  if constexpr (E.num == 0) {
+  constexpr auto exp = E;
+  if constexpr (exp.num == 0) {
     return magnitude<>{};
   } else {
     return magnitude<pow(BPs, E)...>{};
