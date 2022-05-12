@@ -37,25 +37,14 @@
 
 namespace units {
 
-// PrefixFamily
-struct prefix_family;
-
-/**
- * @brief A concept matching a prefix family
- *
- * Satisfied by all types derived from `prefix_family`
- */
-template<typename T>
-concept PrefixFamily = std::derived_from<T, prefix_family>;
-
 // Prefix
 namespace detail {
 
-template<PrefixFamily PF, ratio R>
+template<ratio R>
 struct prefix_base;
 
-template<PrefixFamily PF, ratio R>
-void to_prefix_base(const volatile prefix_base<PF, R>*);
+template<ratio R>
+void to_prefix_base(const volatile prefix_base<R>*);
 
 }  // namespace detail
 
@@ -87,9 +76,18 @@ void to_base_scaled_unit(const volatile scaled_unit<M, U>*);
 template<typename T>
 concept Unit = requires(T* t) { detail::to_base_scaled_unit(t); };
 
+namespace detail {
+
+template<typename>
+inline constexpr bool is_named = false;
+
+}
+
+template<typename T>
+concept NamedUnit = Unit<T> && detail::is_named<T>;
+
 // BaseDimension
-template<basic_fixed_string Symbol, Unit U>
-  requires U::is_named
+template<basic_fixed_string Symbol, NamedUnit U>
 struct base_dimension;
 
 namespace detail {

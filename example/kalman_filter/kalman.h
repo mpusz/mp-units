@@ -84,7 +84,7 @@ public:
   uncertainty_type uncertainty;
 };
 
-#if UNITS_COMP_CLANG <= 13
+#if UNITS_COMP_CLANG <= 14
 
 template<QuantityOrQuantityPoint QQP, units::Quantity U>
 estimation(state<QQP>, U) -> estimation<QQP>;

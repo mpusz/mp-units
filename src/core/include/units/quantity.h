@@ -45,6 +45,12 @@ inline constexpr auto make_quantity = [](auto&& v) {
   return quantity<typename decltype(R)::dimension, typename decltype(R)::unit, Rep>(std::forward<decltype(v)>(v));
 };
 
+template<typename T>
+concept quantity_one =
+  Quantity<T> &&
+  (std::same_as<typename T::dimension, dim_one> || std::same_as<typename T::dimension, unknown_dimension<>>) &&
+  detail::equivalent_unit<typename T::unit, typename T::dimension, ::units::one, typename T::dimension>::value;
+
 }  // namespace detail
 
 template<typename T>
@@ -133,8 +139,7 @@ public:
 
   template<typename Value>
     requires(safe_convertible_to_<std::remove_cvref_t<Value>, rep>)
-  constexpr explicit(!(std::same_as<dimension, dim_one> && std::same_as<unit, ::units::one>)) quantity(Value&& v) :
-      number_(std::forward<Value>(v))
+  constexpr explicit(!detail::quantity_one<quantity>) quantity(Value&& v) : number_(std::forward<Value>(v))
   {
   }
 
@@ -252,9 +257,9 @@ public:
     number_ *= rhs;
     return *this;
   }
-  template<typename Rep2>
-  constexpr quantity& operator*=(const dimensionless<units::one, Rep2>& rhs)
-    requires requires(rep a, const Rep2 b) {
+  template<detail::quantity_one Q>
+  constexpr quantity& operator*=(const Q& rhs)
+    requires requires(rep a, const typename Q::rep b) {
                {
                  a *= b
                  } -> std::same_as<rep&>;
@@ -276,15 +281,15 @@ public:
     number_ /= rhs;
     return *this;
   }
-  template<typename Rep2>
-  constexpr quantity& operator/=(const dimensionless<units::one, Rep2>& rhs)
-    requires requires(rep a, const Rep2 b) {
+  template<detail::quantity_one Q>
+  constexpr quantity& operator/=(const Q& rhs)
+    requires requires(rep a, const typename Q::rep b) {
                {
                  a /= b
                  } -> std::same_as<rep&>;
              }
   {
-    gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
+    gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q::rep>::zero());
     number_ /= rhs.number();
     return *this;
   }
@@ -302,15 +307,15 @@ public:
     return *this;
   }
 
-  template<typename Rep2>
-  constexpr quantity& operator%=(const dimensionless<units::one, Rep2>& rhs)
-    requires(!floating_point_<rep>) && (!floating_point_<Rep2>) && requires(rep a, const Rep2 b) {
-                                                                     {
-                                                                       a %= b
-                                                                       } -> std::same_as<rep&>;
-                                                                   }
+  template<detail::quantity_one Q>
+  constexpr quantity& operator%=(const Q& rhs)
+    requires(!floating_point_<rep>) && (!floating_point_<typename Q::rep>) && requires(rep a, const typename Q::rep b) {
+                                                                                {
+                                                                                  a %= b
+                                                                                  } -> std::same_as<rep&>;
+                                                                              }
   {
-    gsl_ExpectsAudit(rhs.number() != quantity_values<Rep2>::zero());
+    gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q::rep>::zero());
     number_ %= rhs.number();
     return *this;
   }

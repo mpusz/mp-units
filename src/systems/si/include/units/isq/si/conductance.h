@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct siemens : named_unit<siemens, "S", prefix> {};
+struct siemens : named_unit<siemens, "S"> {};
 struct yoctosiemens : prefixed_unit<yoctosiemens, yocto, siemens> {};
 struct zeptosiemens : prefixed_unit<zeptosiemens, zepto, siemens> {};
 struct attosiemens : prefixed_unit<attosiemens, atto, siemens> {};

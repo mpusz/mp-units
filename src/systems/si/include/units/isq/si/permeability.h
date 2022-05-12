@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct henry_per_metre : unit<henry_per_metre> {};
+struct henry_per_metre : derived_unit<henry_per_metre> {};
 
 struct dim_permeability : isq::dim_permeability<dim_permeability, henry_per_metre, dim_inductance, dim_length> {};
 

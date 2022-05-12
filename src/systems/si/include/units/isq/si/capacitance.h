@@ -36,7 +36,7 @@
 
 namespace units::isq::si {
 
-struct farad : named_unit<farad, "F", prefix> {};
+struct farad : named_unit<farad, "F"> {};
 struct yoctofarad : prefixed_unit<yoctofarad, yocto, farad> {};
 struct zeptofarad : prefixed_unit<zeptofarad, zepto, farad> {};
 struct attofarad : prefixed_unit<attofarad, atto, farad> {};

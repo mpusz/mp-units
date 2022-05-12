@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct newton_metre_per_radian : unit<newton_metre_per_radian> {};
+struct newton_metre_per_radian : derived_unit<newton_metre_per_radian> {};
 
 struct dim_torque : isq::dim_torque<dim_torque, newton_metre_per_radian, dim_force, dim_length, dim_angle<>> {};
 

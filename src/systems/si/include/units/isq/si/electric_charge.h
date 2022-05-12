@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct coulomb : named_unit<coulomb, "C", prefix> {};
+struct coulomb : named_unit<coulomb, "C"> {};
 
 struct dim_electric_charge : isq::dim_electric_charge<dim_electric_charge, coulomb, dim_time, dim_electric_current> {};
 

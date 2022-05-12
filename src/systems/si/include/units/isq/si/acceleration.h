@@ -33,7 +33,7 @@
 
 namespace units::isq::si {
 
-struct metre_per_second_sq : unit<metre_per_second_sq> {};
+struct metre_per_second_sq : derived_unit<metre_per_second_sq> {};
 struct dim_acceleration : isq::dim_acceleration<dim_acceleration, metre_per_second_sq, dim_length, dim_time> {};
 
 template<UnitOf<dim_acceleration> U, Representation Rep = double>

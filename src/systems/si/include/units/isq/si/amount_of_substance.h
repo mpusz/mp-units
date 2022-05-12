@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct mole : named_unit<mole, "mol", prefix> {};
+struct mole : named_unit<mole, "mol"> {};
 
 struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 

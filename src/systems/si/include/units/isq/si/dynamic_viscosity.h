@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct pascal_second : unit<pascal_second> {};
+struct pascal_second : derived_unit<pascal_second> {};
 struct dim_dynamic_viscosity :
     isq::dim_dynamic_viscosity<dim_dynamic_viscosity, pascal_second, dim_pressure, dim_time> {};
 

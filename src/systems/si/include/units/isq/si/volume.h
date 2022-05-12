@@ -34,31 +34,31 @@
 
 namespace units::isq::si {
 
-struct cubic_metre : unit<cubic_metre> {};
+struct cubic_metre : derived_unit<cubic_metre> {};
 struct dim_volume : isq::dim_volume<dim_volume, cubic_metre, dim_length> {};
 
-struct cubic_yoctometre : derived_unit<cubic_yoctometre, dim_volume, yoctometre> {};
-struct cubic_zeptometre : derived_unit<cubic_zeptometre, dim_volume, zeptometre> {};
-struct cubic_attometre : derived_unit<cubic_attometre, dim_volume, attometre> {};
-struct cubic_femtometre : derived_unit<cubic_femtometre, dim_volume, femtometre> {};
-struct cubic_picometre : derived_unit<cubic_picometre, dim_volume, picometre> {};
-struct cubic_nanometre : derived_unit<cubic_nanometre, dim_volume, nanometre> {};
-struct cubic_micrometre : derived_unit<cubic_micrometre, dim_volume, micrometre> {};
-struct cubic_millimetre : derived_unit<cubic_millimetre, dim_volume, millimetre> {};
-struct cubic_centimetre : derived_unit<cubic_centimetre, dim_volume, centimetre> {};
-struct cubic_decimetre : derived_unit<cubic_decimetre, dim_volume, decimetre> {};
-struct cubic_decametre : derived_unit<cubic_decametre, dim_volume, decametre> {};
-struct cubic_hectometre : derived_unit<cubic_hectometre, dim_volume, hectometre> {};
-struct cubic_kilometre : derived_unit<cubic_kilometre, dim_volume, kilometre> {};
-struct cubic_megametre : derived_unit<cubic_megametre, dim_volume, megametre> {};
-struct cubic_gigametre : derived_unit<cubic_gigametre, dim_volume, gigametre> {};
-struct cubic_terametre : derived_unit<cubic_terametre, dim_volume, terametre> {};
-struct cubic_petametre : derived_unit<cubic_petametre, dim_volume, petametre> {};
-struct cubic_exametre : derived_unit<cubic_exametre, dim_volume, exametre> {};
-struct cubic_zettametre : derived_unit<cubic_zettametre, dim_volume, zettametre> {};
-struct cubic_yottametre : derived_unit<cubic_yottametre, dim_volume, yottametre> {};
+struct cubic_yoctometre : derived_scaled_unit<cubic_yoctometre, dim_volume, yoctometre> {};
+struct cubic_zeptometre : derived_scaled_unit<cubic_zeptometre, dim_volume, zeptometre> {};
+struct cubic_attometre : derived_scaled_unit<cubic_attometre, dim_volume, attometre> {};
+struct cubic_femtometre : derived_scaled_unit<cubic_femtometre, dim_volume, femtometre> {};
+struct cubic_picometre : derived_scaled_unit<cubic_picometre, dim_volume, picometre> {};
+struct cubic_nanometre : derived_scaled_unit<cubic_nanometre, dim_volume, nanometre> {};
+struct cubic_micrometre : derived_scaled_unit<cubic_micrometre, dim_volume, micrometre> {};
+struct cubic_millimetre : derived_scaled_unit<cubic_millimetre, dim_volume, millimetre> {};
+struct cubic_centimetre : derived_scaled_unit<cubic_centimetre, dim_volume, centimetre> {};
+struct cubic_decimetre : derived_scaled_unit<cubic_decimetre, dim_volume, decimetre> {};
+struct cubic_decametre : derived_scaled_unit<cubic_decametre, dim_volume, decametre> {};
+struct cubic_hectometre : derived_scaled_unit<cubic_hectometre, dim_volume, hectometre> {};
+struct cubic_kilometre : derived_scaled_unit<cubic_kilometre, dim_volume, kilometre> {};
+struct cubic_megametre : derived_scaled_unit<cubic_megametre, dim_volume, megametre> {};
+struct cubic_gigametre : derived_scaled_unit<cubic_gigametre, dim_volume, gigametre> {};
+struct cubic_terametre : derived_scaled_unit<cubic_terametre, dim_volume, terametre> {};
+struct cubic_petametre : derived_scaled_unit<cubic_petametre, dim_volume, petametre> {};
+struct cubic_exametre : derived_scaled_unit<cubic_exametre, dim_volume, exametre> {};
+struct cubic_zettametre : derived_scaled_unit<cubic_zettametre, dim_volume, zettametre> {};
+struct cubic_yottametre : derived_scaled_unit<cubic_yottametre, dim_volume, yottametre> {};
 
-struct litre : alias_unit<cubic_decimetre, "l", prefix> {};
+struct litre : alias_unit<cubic_decimetre, "l"> {};
 struct yoctolitre : prefixed_alias_unit<cubic_nanometre, yocto, litre> {};
 struct zeptolitre : prefixed_unit<zeptolitre, zepto, litre> {};
 struct attolitre : prefixed_unit<attolitre, atto, litre> {};

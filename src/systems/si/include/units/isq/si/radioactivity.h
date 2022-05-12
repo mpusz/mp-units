@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct becquerel : named_unit<becquerel, "Bq", prefix> {};
+struct becquerel : named_unit<becquerel, "Bq"> {};
 struct yoctobecquerel : prefixed_unit<yoctobecquerel, yocto, becquerel> {};
 struct zeptobecquerel : prefixed_unit<zeptobecquerel, zepto, becquerel> {};
 struct attobecquerel : prefixed_unit<attobecquerel, atto, becquerel> {};
@@ -280,47 +280,47 @@ using namespace radioactivity_references;
 namespace units::aliases::isq::si::inline radioactivity {
 
 template<Representation Rep = double>
-using Bq = units::isq::radioactivity<units::isq::becquerel, Rep>;
+using Bq = units::isq::si::radioactivity<units::isq::si::becquerel, Rep>;
 template<Representation Rep = double>
-using yBq = units::isq::radioactivity<units::isq::yoctobecquerel, Rep>;
+using yBq = units::isq::si::radioactivity<units::isq::si::yoctobecquerel, Rep>;
 template<Representation Rep = double>
-using zBq = units::isq::radioactivity<units::isq::zeptobecquerel, Rep>;
+using zBq = units::isq::si::radioactivity<units::isq::si::zeptobecquerel, Rep>;
 template<Representation Rep = double>
-using aBq = units::isq::radioactivity<units::isq::attobecquerel, Rep>;
+using aBq = units::isq::si::radioactivity<units::isq::si::attobecquerel, Rep>;
 template<Representation Rep = double>
-using fBq = units::isq::radioactivity<units::isq::femtobecquerel, Rep>;
+using fBq = units::isq::si::radioactivity<units::isq::si::femtobecquerel, Rep>;
 template<Representation Rep = double>
-using pBq = units::isq::radioactivity<units::isq::picobecquerel, Rep>;
+using pBq = units::isq::si::radioactivity<units::isq::si::picobecquerel, Rep>;
 template<Representation Rep = double>
-using nBq = units::isq::radioactivity<units::isq::nanobecquerel, Rep>;
+using nBq = units::isq::si::radioactivity<units::isq::si::nanobecquerel, Rep>;
 template<Representation Rep = double>
-using uBq = units::isq::radioactivity<units::isq::microbecquerel, Rep>;
+using uBq = units::isq::si::radioactivity<units::isq::si::microbecquerel, Rep>;
 template<Representation Rep = double>
-using mBq = units::isq::radioactivity<units::isq::millibecquerel, Rep>;
+using mBq = units::isq::si::radioactivity<units::isq::si::millibecquerel, Rep>;
 template<Representation Rep = double>
-using cBq = units::isq::radioactivity<units::isq::centibecquerel, Rep>;
+using cBq = units::isq::si::radioactivity<units::isq::si::centibecquerel, Rep>;
 template<Representation Rep = double>
-using dBq = units::isq::radioactivity<units::isq::decibecquerel, Rep>;
+using dBq = units::isq::si::radioactivity<units::isq::si::decibecquerel, Rep>;
 template<Representation Rep = double>
-using daBq = units::isq::radioactivity<units::isq::decabecquerel, Rep>;
+using daBq = units::isq::si::radioactivity<units::isq::si::decabecquerel, Rep>;
 template<Representation Rep = double>
-using hBq = units::isq::radioactivity<units::isq::hectobecquerel, Rep>;
+using hBq = units::isq::si::radioactivity<units::isq::si::hectobecquerel, Rep>;
 template<Representation Rep = double>
-using kBq = units::isq::radioactivity<units::isq::kilobecquerel, Rep>;
+using kBq = units::isq::si::radioactivity<units::isq::si::kilobecquerel, Rep>;
 template<Representation Rep = double>
-using MBq = units::isq::radioactivity<units::isq::megabecquerel, Rep>;
+using MBq = units::isq::si::radioactivity<units::isq::si::megabecquerel, Rep>;
 template<Representation Rep = double>
-using GBq = units::isq::radioactivity<units::isq::gigabecquerel, Rep>;
+using GBq = units::isq::si::radioactivity<units::isq::si::gigabecquerel, Rep>;
 template<Representation Rep = double>
-using TBq = units::isq::radioactivity<units::isq::terabecquerel, Rep>;
+using TBq = units::isq::si::radioactivity<units::isq::si::terabecquerel, Rep>;
 template<Representation Rep = double>
-using PBq = units::isq::radioactivity<units::isq::petabecquerel, Rep>;
+using PBq = units::isq::si::radioactivity<units::isq::si::petabecquerel, Rep>;
 template<Representation Rep = double>
-using EBq = units::isq::radioactivity<units::isq::exabecquerel, Rep>;
+using EBq = units::isq::si::radioactivity<units::isq::si::exabecquerel, Rep>;
 template<Representation Rep = double>
-using ZBq = units::isq::radioactivity<units::isq::zettabecquerel, Rep>;
+using ZBq = units::isq::si::radioactivity<units::isq::si::zettabecquerel, Rep>;
 template<Representation Rep = double>
-using YBq = units::isq::radioactivity<units::isq::yottabecquerel, Rep>;
+using YBq = units::isq::si::radioactivity<units::isq::si::yottabecquerel, Rep>;
 
 }  // namespace units::aliases::isq::si::inline radioactivity
 

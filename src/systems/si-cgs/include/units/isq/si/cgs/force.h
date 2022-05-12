@@ -36,7 +36,7 @@
 
 namespace units::isq::si::cgs {
 
-struct dyne : named_unit<dyne, "dyn", si::prefix> {};
+struct dyne : named_unit<dyne, "dyn"> {};
 
 struct dim_force : isq::dim_force<dim_force, dyne, dim_mass, dim_acceleration> {};
 

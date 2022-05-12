@@ -25,10 +25,10 @@ name: Conan CI
 on:
   push:
     paths-ignore:
-    - 'docs/**'
+      - "docs/**"
   pull_request:
     paths-ignore:
-    - 'docs/**'
+      - "docs/**"
 
 jobs:
   build:
@@ -38,51 +38,108 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {
-            name: "Windows MSVC 14.2",
-            os: windows-2019,
-            compiler: { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" }
-          }
-        - {
-            name: "Windows MSVC 14.3",
-            os: windows-2022,
-            compiler: { type: MSVC, version: 193, std: 23, cc: "cl", cxx: "cl" }
-          }
-        - {
-            name: "Ubuntu GCC-10",
-            os: ubuntu-20.04,
-            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10", std: 20 },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu GCC-11",
-            os: ubuntu-20.04,
-            compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11", std: 20 },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu Clang-12 + libstdc++11",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12", std: 20 },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu Clang-12 + libc++",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12", std: 20 },
-            lib: "libc++"
-          }
-        - {
-            name: "Ubuntu Clang-13 + libc++",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13", std: 20 },
-            lib: "libc++"
-          }
-        - {
-            name: "MacOS Apple Clang 13",
-            os: macos-11,
-            compiler: { type: APPLE_CLANG, version: "13.0", cc: "clang", cxx: "clang++", std: 20 }
-          }
+          - {
+              name: "Windows MSVC 14.2",
+              os: windows-2019,
+              compiler:
+                { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" },
+            }
+          - {
+              name: "Windows MSVC 14.3",
+              os: windows-2022,
+              compiler:
+                { type: MSVC, version: 193, std: 23, cc: "cl", cxx: "cl" },
+            }
+          - {
+              name: "Ubuntu GCC-10",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 10,
+                  cc: "gcc-10",
+                  cxx: "g++-10",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu GCC-11",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 11,
+                  cc: "gcc-11",
+                  cxx: "g++-11",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang-12 + libstdc++11",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 12,
+                  cc: "clang-12",
+                  cxx: "clang++-12",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang-12 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 12,
+                  cc: "clang-12",
+                  cxx: "clang++-12",
+                  std: 20,
+                },
+              lib: "libc++",
+            }
+          - {
+              name: "Ubuntu Clang-13 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 13,
+                  cc: "clang-13",
+                  cxx: "clang++-13",
+                  std: 20,
+                },
+              lib: "libc++",
+            }
+          - {
+              name: "Ubuntu Clang-14 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 14,
+                  cc: "clang-14",
+                  cxx: "clang++-14",
+                  std: 20,
+                },
+              lib: "libc++",
+            }
+          - {
+              name: "MacOS Apple Clang 13",
+              os: macos-11,
+              compiler:
+                {
+                  type: APPLE_CLANG,
+                  version: "13.0",
+                  cc: "clang",
+                  cxx: "clang++",
+                  std: 20,
+                },
+            }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
         #     name: "Ubuntu GCC 10.2.0",
@@ -90,8 +147,8 @@ jobs:
         #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
         #     docker_image: conanio/gcc10
         #   }
-        build_type: [ "Release", "Debug" ]
-        downcast_mode: [ "on", "auto" ]
+        build_type: ["Release", "Debug"]
+        downcast_mode: ["on", "auto"]
     steps:
       - uses: actions/checkout@v2
       - uses: hendrikmuhs/ccache-action@v1
@@ -141,7 +198,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Install Conan Package Tools
         run: |
           pip install -U conan_package_tools

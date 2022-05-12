@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct watt : named_unit<watt, "W", prefix> {};
+struct watt : named_unit<watt, "W"> {};
 struct yoctowatt : prefixed_unit<yoctowatt, yocto, watt> {};
 struct zeptowatt : prefixed_unit<zeptowatt, zepto, watt> {};
 struct attowatt : prefixed_unit<attowatt, atto, watt> {};

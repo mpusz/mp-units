@@ -36,7 +36,7 @@
 
 namespace units::isq::si {
 
-struct pascal : named_unit<pascal, "Pa", prefix> {};
+struct pascal : named_unit<pascal, "Pa"> {};
 struct yoctopascal : prefixed_unit<yoctopascal, yocto, pascal> {};
 struct zeptopascal : prefixed_unit<zeptopascal, zepto, pascal> {};
 struct attopascal : prefixed_unit<attopascal, atto, pascal> {};

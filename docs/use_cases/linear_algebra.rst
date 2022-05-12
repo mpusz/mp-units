@@ -11,7 +11,7 @@ enough to be used with other Linear Algebra libraries existing on the market.
     All of the examples provided in this chapter refer to the official proposal of the
     Linear Algebra Library for the C++23 defined in `P1385 <https://wg21.link/P1385>`_
     and its latest implementation from `GitHub <https://github.com/BobSteagall/wg21/tree/master/include>`_
-    or `Conan <https://twonington.jfrog.io/artifactory/api/conan/conan-oss>`_.
+    or `Conan <https://conan.io/center/wg21-linear_algebra>`_.
     Also, to simplify the examples all of them assume::
 
         using namespace std::math;

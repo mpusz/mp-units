@@ -26,6 +26,7 @@
 #include <units/bits/external/text_tools.h>
 #include <units/derived_dimension.h>
 #include <units/prefix.h>
+#include <units/unit.h>
 
 namespace units::detail {
 
@@ -57,28 +58,19 @@ constexpr auto ratio_text()
   }
 }
 
-template<ratio R, typename PrefixFamily, std::size_t SymbolLen>
+template<Unit U, ratio R, std::size_t SymbolLen>
 constexpr auto prefix_or_ratio_text()
 {
   if constexpr (R.num == 1 && R.den == 1 && R.exp == 0) {
     // no ratio/prefix
     return basic_fixed_string("");
   } else {
-    if constexpr (!is_same_v<PrefixFamily, no_prefix>) {
-      // try to form a prefix
-      using prefix = downcast<detail::prefix_base<PrefixFamily, R>>;
+    // try to form a prefix
+    using prefix = downcast<detail::prefix_base<R>>;
 
-      if constexpr (!is_same_v<prefix, prefix_base<PrefixFamily, R>>) {
-        // print as a prefixed unit
-        return prefix::symbol;
-      } else {
-        // print as a ratio of the coherent unit
-        constexpr auto txt = ratio_text<R>();
-        if constexpr (SymbolLen > 0 && txt.standard().size() > 0)
-          return txt + basic_fixed_string(" ");
-        else
-          return txt;
-      }
+    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<R>>) {
+      // print as a prefixed unit
+      return prefix::symbol;
     } else {
       // print as a ratio of the coherent unit
       constexpr auto txt = ratio_text<R>();
@@ -110,7 +102,7 @@ template<Exponent Exp>
 constexpr auto exponent_list_with_named_units(Exp)
 {
   using dim = TYPENAME Exp::dimension;
-  if constexpr (dimension_unit<dim>::is_named) {
+  if constexpr (NamedUnit<dimension_unit<dim>>) {
     return exponent_list<Exp>();
   } else {
     using recipe = TYPENAME dim::recipe;
@@ -147,21 +139,16 @@ constexpr auto unit_text()
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
 
-    if constexpr (has_symbol<coherent_unit>) {
-      // use predefined coherent unit symbol
-      constexpr auto symbol_text = coherent_unit::symbol;
-      constexpr auto prefix_txt =
-        prefix_or_ratio_text<as_ratio(U::mag / coherent_unit::mag), typename U::reference::prefix_family,
-                             symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    } else {
-      // use derived dimension ingredients to create a unit symbol
-      constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
-      constexpr auto prefix_txt =
-        prefix_or_ratio_text<as_ratio(U::mag / coherent_unit::mag), typename U::reference::prefix_family,
-                             symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    }
+    constexpr auto symbol_text = []() {
+      if constexpr (has_symbol<coherent_unit>)
+        return coherent_unit::symbol;
+      else
+        return derived_dimension_unit_text<Dim>();
+    }();
+
+    constexpr auto prefix_txt =
+      prefix_or_ratio_text<U, as_ratio(U::mag / coherent_unit::mag), symbol_text.standard().size()>();
+    return prefix_txt + symbol_text;
   }
 }
 

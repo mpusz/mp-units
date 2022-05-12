@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -71,3 +71,7 @@ add_subdirectory(docs)
 # add unit tests
 enable_testing()
 add_subdirectory(test)
+
+# tests for standalone headers
+include(TestPublicHeaders)
+add_public_header_test(test_headers mp-units::mp-units)

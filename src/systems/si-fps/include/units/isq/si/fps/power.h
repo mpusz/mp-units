@@ -35,14 +35,14 @@
 
 namespace units::isq::si::fps {
 
-struct foot_poundal_per_second : unit<foot_poundal_per_second> {};
+struct foot_poundal_per_second : derived_unit<foot_poundal_per_second> {};
 
 struct dim_power : isq::dim_power<dim_power, foot_poundal_per_second, dim_length, dim_force, dim_time> {};
 
-struct foot_pound_force_per_second : derived_unit<foot_pound_force_per_second, dim_power, foot, pound_force, second> {};
+struct foot_pound_force_per_second :
+    derived_scaled_unit<foot_pound_force_per_second, dim_power, foot, pound_force, second> {};
 
-struct horse_power :
-    named_scaled_unit<horse_power, "hp", no_prefix, as_magnitude<550>(), foot_pound_force_per_second> {};
+struct horse_power : named_scaled_unit<horse_power, "hp", as_magnitude<550>(), foot_pound_force_per_second> {};
 
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;

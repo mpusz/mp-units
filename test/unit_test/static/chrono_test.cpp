@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <units/bits/external/type_traits.h>
 #include <units/chrono.h>
 #include <units/isq/si/length.h>
@@ -82,12 +83,12 @@ static_assert(!std::convertible_to<sys_seconds, time_point<std::chrono::system_c
 
 
 // CTAD
-static_assert(is_same_v<decltype(quantity{1s}), si::time<si::second, std::chrono::seconds::rep>>);
-static_assert(is_same_v<decltype(quantity{1h}), si::time<si::hour, std::chrono::hours::rep>>);
-static_assert(is_same_v<decltype(quantity_point{sys_seconds{1s}}),
-                        time_point<std::chrono::system_clock, si::second, sys_seconds::rep>>);
-static_assert(is_same_v<decltype(quantity_point{sys_days{sys_days::duration{1}}}),
-                        time_point<std::chrono::system_clock, si::day, sys_days::rep>>);
+static_assert(compare<decltype(quantity{1s}), si::time<si::second, std::chrono::seconds::rep>>);
+static_assert(compare<decltype(quantity{1h}), si::time<si::hour, std::chrono::hours::rep>>);
+static_assert(compare<decltype(quantity_point{sys_seconds{1s}}),
+                      time_point<std::chrono::system_clock, si::second, sys_seconds::rep>>);
+static_assert(compare<decltype(quantity_point{sys_days{sys_days::duration{1}}}),
+                      time_point<std::chrono::system_clock, si::day, sys_days::rep>>);
 
 // operators
 static_assert(quantity{1s} + 1_q_s == 2_q_s);

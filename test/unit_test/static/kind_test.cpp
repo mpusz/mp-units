@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <units/bits/equivalent.h>
 #include <units/bits/external/downcasting.h>
 #include <units/bits/external/type_traits.h>
@@ -62,7 +63,7 @@ static_assert(!PointKind<azimuth::_kind_base>);
 
 static_assert(is_same_v<radius::base_kind, radius>);
 static_assert(is_same_v<radius::dimension, dim_length>);
-static_assert(is_same_v<downcast_result<radius>, downcast_kind<radius, dim_length>>);
+static_assert(compare<downcast_result<radius>, downcast_kind<radius, dim_length>>);
 
 static_assert(equivalent<radius, radius>);
 static_assert(equivalent<radius, radius::kind>);
@@ -124,7 +125,7 @@ static_assert(PointKind<abscissa::_point_kind_base>);
 
 static_assert(is_same_v<abscissa::base_kind, width>);
 static_assert(is_same_v<abscissa::dimension, dim_length>);
-static_assert(is_same_v<downcast_result<abscissa>, downcast_point_kind<width>>);
+static_assert(compare<downcast_result<abscissa>, downcast_point_kind<width>>);
 
 static_assert(equivalent<abscissa, abscissa>);
 static_assert(equivalent<abscissa, abscissa::point_kind>);
@@ -162,8 +163,8 @@ static_assert(!PointKind<rate_of_climb::_kind_base>);
 
 static_assert(is_same_v<rate_of_climb::base_kind, height>);
 static_assert(is_same_v<rate_of_climb::dimension, dim_speed>);
-static_assert(is_same_v<downcast_result<rate_of_climb>, downcast_kind<rate_of_climb, dim_speed>>);
-static_assert(is_same_v<downcast_result<rate_of_climb>, downcast_kind<height, dim_speed>>);
+static_assert(compare<downcast_result<rate_of_climb>, downcast_kind<rate_of_climb, dim_speed>>);
+static_assert(compare<downcast_result<rate_of_climb>, downcast_kind<height, dim_speed>>);
 
 static_assert(equivalent<rate_of_climb, rate_of_climb>);
 static_assert(equivalent<rate_of_climb, rate_of_climb::derived_kind>);
@@ -181,7 +182,7 @@ static_assert(PointKind<velocity_of_climb::_point_kind_base>);
 
 static_assert(is_same_v<velocity_of_climb::base_kind, rate_of_climb>);
 static_assert(is_same_v<velocity_of_climb::dimension, dim_speed>);
-static_assert(is_same_v<downcast_result<velocity_of_climb>, downcast_point_kind<rate_of_climb>>);
+static_assert(compare<downcast_result<velocity_of_climb>, downcast_point_kind<rate_of_climb>>);
 
 static_assert(equivalent<velocity_of_climb, velocity_of_climb>);
 static_assert(equivalent<velocity_of_climb, velocity_of_climb::point_kind>);
@@ -200,6 +201,6 @@ static_assert(!equivalent<height::_kind_base, velocity_of_climb::_point_kind_bas
 static_assert(!equivalent<rate_of_climb, velocity_of_climb>);
 static_assert(!equivalent<rate_of_climb::_kind_base, velocity_of_climb::_point_kind_base>);
 
-static_assert(is_same_v<downcast_result<height>, downcast_kind<rate_of_climb, dim_length>>);
+static_assert(compare<downcast_result<height>, downcast_kind<rate_of_climb, dim_length>>);
 
 }  // namespace

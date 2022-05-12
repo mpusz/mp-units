@@ -84,6 +84,7 @@ tasks:
       cp default gcc11
       cp default clang12
       cp default clang13
+      cp default clang14
       popd
       conan profile update settings.compiler.version=10 gcc10
       conan profile update env.CXX=/usr/bin/g++-10 gcc10
@@ -95,9 +96,14 @@ tasks:
       conan profile update env.CC=/usr/bin/clang-12 clang12
       conan profile update settings.compiler=clang clang13
       conan profile update settings.compiler.version=13 clang13
-      conan profile update settings.compiler.libcxx=libc++ clang13
+      conan profile update settings.compiler.libcxx=libstdc++11 clang13
       conan profile update env.CXX=/usr/bin/clang++-13 clang13
       conan profile update env.CC=/usr/bin/clang-13 clang13
+      conan profile update settings.compiler=clang clang14
+      conan profile update settings.compiler.version=14 clang14
+      conan profile update settings.compiler.libcxx=libc++ clang14
+      conan profile update env.CXX=/usr/bin/clang++-14 clang14
+      conan profile update env.CC=/usr/bin/clang-14 clang14
       gp sync-done conan-init
       exit
   - name: gcc-10
@@ -149,6 +155,18 @@ tasks:
       ctest -C Release
       ctest -C Debug
       echo "🛠️ clang-13 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: clang-14
+    init: |
+      gp sync-await conan-init
+      mkdir -p build/Clang-14 && cd build/Clang-14
+      conan install ../.. -pr clang4 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated
+      conan install ../.. -pr clang14 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -s build_type=Debug
+      cmake ../.. --no-warn-unused-cli --toolchain conan_toolchain.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14
+      cmake --build . --config Release -j
+      cmake --build . --config Debug -j
+      ctest -C Release
+      ctest -C Debug
+      echo "🛠️ clang-14 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |
       gp sync-await conan-init

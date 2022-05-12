@@ -94,9 +94,9 @@ static_assert(
   is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
 // type_list_merge_sorted
-struct u0 : named_unit<u0, "u0", no_prefix> {};
+struct u0 : named_unit<u0, "u0"> {};
 struct d0 : base_dimension<"d0", u0> {};
-struct u1 : named_unit<u1, "u1", no_prefix> {};
+struct u1 : named_unit<u1, "u1"> {};
 struct d1 : base_dimension<"d1", u1> {};
 
 static_assert(

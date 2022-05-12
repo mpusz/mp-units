@@ -66,7 +66,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1_q_fathom_us) == "1 fathom(us)");
     CHECK(STD_FMT::format("{}", 1_q_mi) == "1 mi");
     CHECK(STD_FMT::format("{}", 1_q_mi_us) == "1 mi(us)");
-    CHECK(STD_FMT::format("{}", 1_q_naut_mi) == "1 mi(naut)");
+    CHECK(STD_FMT::format("{}", 1_q_naut_mi) == "1 nmi");
     CHECK(STD_FMT::format("{}", 1_q_ch) == "1 ch");
     CHECK(STD_FMT::format("{}", 1_q_rd) == "1 rd");
     CHECK(STD_FMT::format("{}", 1_q_thou) == "1 thou");

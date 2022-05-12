@@ -26,7 +26,7 @@
 #include <units/bits/external/downcasting.h>
 
 // IWYU pragma: begin_exports
-#include <units/bits/derived_unit.h>
+#include <units/bits/derived_scaled_unit.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/magnitude.h>
 #include <units/prefix.h>
@@ -35,6 +35,13 @@
 // IWYU pragma: end_exports
 
 namespace units {
+
+namespace detail {
+
+template<typename>
+inline constexpr bool can_be_prefixed = false;
+
+}  // namespace detail
 
 /**
  * @brief A common point for a hierarchy of units
@@ -64,57 +71,33 @@ template<Unit U1, Unit U2>
 struct same_unit_reference : is_same<typename U1::reference, typename U2::reference> {};
 
 /**
- * @brief An unnamed unit
- *
- * Defines a new unnamed (in most cases coherent) derived unit of a specific derived dimension
- * and it should be passed in this dimension's definition.
- *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- */
-template<typename Child>
-struct unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
-  static constexpr bool is_named = false;
-  using prefix_family = no_prefix;
-};
-
-/**
  * @brief A named unit
  *
  * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
- * A named unit may be used by other units defined with the prefix of the same type, unless
- * no_prefix is provided for PF template parameter (in such a case it is impossible to define
- * a prefix unit based on this one).
+ * A named unit may be composed with a prefix to create a prefixed_unit.
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
- * @tparam PF no_prefix or a type of prefix family
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF>
+template<typename Child, basic_symbol_text Symbol>
 struct named_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
-  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PF;
 };
 
 /**
- * @brief A scaled unit
+ * @brief A named scaled unit
  *
- * Defines a new named unit that is a scaled version of another unit. Such unit can be used by
- * other units defined with the prefix of the same type, unless no_prefix is provided for PF
- * template parameter (in such a case it is impossible to define a prefix unit based on this
- * one).
+ * Defines a new named unit that is a scaled version of another unit.
+ * A named unit may be composed with a prefix to create a prefixed_unit.
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
- * @tparam PF no_prefix or a type of prefix family
  * @tparam M the Magnitude by which to scale U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, PrefixFamily PF, Magnitude auto M, Unit U>
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, Unit U>
 struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<M * U::mag, typename U::reference>> {
-  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PF;
 };
 
 /**
@@ -128,13 +111,22 @@ struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<M * U::mag, type
  * @tparam P prefix to be appied to the reference unit
  * @tparam U reference unit
  */
-template<typename Child, Prefix P, Unit U>
-  requires U::is_named && std::same_as<typename P::prefix_family, typename U::prefix_family>
+template<typename Child, Prefix P, NamedUnit U>
+  requires detail::can_be_prefixed<U>
 struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typename U::reference>> {
-  static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + U::symbol;
-  using prefix_family = no_prefix;
 };
+
+/**
+ * @brief A coherent unit of a derived quantity
+ *
+ * Defines a new coherent unit of a derived quantity. It should be passed as a coherent unit
+ * in the dimension's definition for such a quantity.
+ *
+ * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
+ */
+template<typename Child>
+struct derived_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {};
 
 /**
  * @brief A unit with a deduced ratio and symbol
@@ -149,36 +141,10 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typ
  * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
  * @tparam URest the units for the rest of dimensions from the recipe
  */
-template<typename Child, DerivedDimension Dim, Unit U, Unit... URest>
-  requires detail::same_scaled_units<typename Dim::recipe, U, URest...> &&
-           (U::is_named && (URest::is_named && ... && true))
-struct derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
-  static constexpr bool is_named = false;
-  static constexpr auto symbol = detail::derived_symbol_text<Dim, U, URest...>();
-  using prefix_family = no_prefix;
-};
-
-/**
- * @brief A named unit with a deduced ratio
- *
- * Defines a new unit with a deduced ratio and the given symbol based on the recipe from the provided
- * derived dimension. The number and order of provided units should match the recipe of the
- * derived dimension. All of the units provided should also be a named ones so it is possible
- * to create a deduced symbol text.
- *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam Dim a derived dimension recipe to use for deduction
- * @tparam Symbol a short text representation of the unit
- * @tparam PF no_prefix or a type of prefix family
- * @tparam U the unit of the first composite dimension from provided derived dimension's recipe
- * @tparam URest the units for the rest of dimensions from the recipe
- */
-template<typename Child, DerivedDimension Dim, basic_symbol_text Symbol, PrefixFamily PF, Unit U, Unit... URest>
+template<typename Child, DerivedDimension Dim, NamedUnit U, NamedUnit... URest>
   requires detail::same_scaled_units<typename Dim::recipe, U, URest...>
-struct named_derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U, URest...>> {
-  static constexpr bool is_named = true;
-  static constexpr auto symbol = Symbol;
-  using prefix_family = PF;
+struct derived_scaled_unit : downcast_dispatch<Child, detail::derived_scaled_unit<Dim, U, URest...>> {
+  static constexpr auto symbol = detail::derived_symbol_text<Dim, U, URest...>();
 };
 
 /**
@@ -186,19 +152,14 @@ struct named_derived_unit : downcast_dispatch<Child, detail::derived_unit<Dim, U
  *
  * Defines a named alias for another unit. It is useful to assign alternative names and symbols
  * to the already predefined units (i.e. "tonne" for "megagram").
- * An alias unit may be used by other units defined with the prefix of the same type, unless
- * no_prefix is provided for PF template parameter (in such a case it is impossible to define
- * a prefix unit based on this one).
+ * A alias unit may be composed with a prefix to create a prefixed_alias_unit.
  *
  * @tparam U Unit for which an alias is defined
  * @tparam Symbol a short text representation of the unit
- * @tparam PF no_prefix or a type of prefix family
  */
-template<Unit U, basic_symbol_text Symbol, PrefixFamily PF>
+template<Unit U, basic_symbol_text Symbol>
 struct alias_unit : U {
-  static constexpr bool is_named = true;
   static constexpr auto symbol = Symbol;
-  using prefix_family = PF;
 };
 
 /**
@@ -215,20 +176,55 @@ struct alias_unit : U {
 // TODO gcc bug: 95015
 // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
 // template<Unit U, Prefix P, AliasUnit AU>
-//   requires (!AliasUnit<U>) && std::same_as<typename P::prefix_family, typename AU::prefix_family>
-template<Unit U, Prefix P, Unit AU>
-  requires AU::is_named && std::same_as<typename P::prefix_family, typename AU::prefix_family>
+//   requires (!AliasUnit<U>)
+template<Unit U, Prefix P, NamedUnit AU>
+  requires detail::can_be_prefixed<AU>
 struct prefixed_alias_unit : U {
-  static constexpr bool is_named = true;
   static constexpr auto symbol = P::symbol + AU::symbol;
-  using prefix_family = no_prefix;
 };
 
 /**
- * @brief Unknown unit
+ * @brief Unknown coherent unit
  *
  * Used as a coherent unit of an unknown dimension.
  */
-struct unknown_coherent_unit : unit<unknown_coherent_unit> {};
+struct unknown_coherent_unit : derived_unit<unknown_coherent_unit> {};
+
+namespace detail {
+
+template<typename Child, basic_symbol_text Symbol>
+void is_named_impl(const volatile named_unit<Child, Symbol>*);
+
+template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
+void is_named_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+
+template<typename Child, typename P, typename U>
+void is_named_impl(const volatile prefixed_unit<Child, P, U>*);
+
+template<typename U, basic_symbol_text Symbol>
+void is_named_impl(const volatile alias_unit<U, Symbol>*);
+
+template<typename U, typename P, typename AU>
+void is_named_impl(const volatile prefixed_alias_unit<U, P, AU>*);
+
+template<Unit U>
+inline constexpr bool is_named<U> = requires(U * u) { is_named_impl(u); };
+
+template<typename Child, basic_symbol_text Symbol>
+void can_be_prefixed_impl(const volatile named_unit<Child, Symbol>*);
+
+template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
+void can_be_prefixed_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+
+template<typename U, basic_symbol_text Symbol>
+void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
+
+template<Unit U>
+inline constexpr bool can_be_prefixed<U> = requires(U * u) { can_be_prefixed_impl(u); };
+
+template<ratio R, typename U>
+inline constexpr bool can_be_prefixed<scaled_unit<R, U>> = can_be_prefixed<typename U::reference>;
+
+}  // namespace detail
 
 }  // namespace units

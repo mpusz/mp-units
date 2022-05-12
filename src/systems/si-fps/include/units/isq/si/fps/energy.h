@@ -35,12 +35,12 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Foot-poundal
-struct foot_poundal : unit<foot_poundal> {};
+struct foot_poundal : derived_unit<foot_poundal> {};
 
 struct dim_energy : isq::dim_energy<dim_energy, foot_poundal, dim_length, dim_force> {};
 
 // https://en.wikipedia.org/wiki/Foot-pound_(energy)
-struct foot_pound_force : derived_unit<foot_pound_force, dim_energy, foot, pound_force> {};
+struct foot_pound_force : derived_scaled_unit<foot_pound_force, dim_energy, foot, pound_force> {};
 
 template<UnitOf<dim_energy> U, Representation Rep = double>
 using energy = quantity<dim_energy, U, Rep>;

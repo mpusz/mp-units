@@ -34,7 +34,7 @@
 
 namespace units::isq::iec80000 {
 
-struct baud : alias_unit<si::hertz, "Bd", si::prefix> {};
+struct baud : alias_unit<si::hertz, "Bd"> {};
 struct kilobaud : prefixed_alias_unit<si::kilohertz, si::kilo, baud> {};
 struct megabaud : prefixed_alias_unit<si::megahertz, si::mega, baud> {};
 struct gigabaud : prefixed_alias_unit<si::gigahertz, si::giga, baud> {};

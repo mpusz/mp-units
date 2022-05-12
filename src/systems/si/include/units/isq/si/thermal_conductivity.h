@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct watt_per_metre_kelvin : unit<watt_per_metre_kelvin> {};
+struct watt_per_metre_kelvin : derived_unit<watt_per_metre_kelvin> {};
 
 struct dim_thermal_conductivity :
     isq::dim_thermal_conductivity<dim_thermal_conductivity, watt_per_metre_kelvin, dim_power, dim_length,
