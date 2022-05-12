@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, tools
 from conan.tools.cmake import CMake
+from conans import ConanFile, tools
 
 
 class TestPackageConan(ConanFile):

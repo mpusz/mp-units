@@ -20,12 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import re
+
 from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
-from conans.tools import get_env, check_min_cppstd   # TODO replace with new tools for Conan 2.0
-import os, re
+from conans.errors import ConanInvalidConfiguration
+from conans.tools import (  # TODO replace with new tools for Conan 2.0
+    check_min_cppstd,
+    get_env,
+)
 
 required_conan_version = ">=1.48.0"
 
@@ -50,19 +56,18 @@ class MPUnitsConan(ConanFile):
     license = "MIT"
     url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
-    requires = (
-        "gsl-lite/0.40.0"
-    )
-    options = {
-        "downcast_mode": ["off", "on", "auto"],
-        "build_docs": [True, False]
-    }
-    default_options = {
-        "downcast_mode": "on",
-        "build_docs": True
-    }
+    requires = "gsl-lite/0.40.0"
+    options = {"downcast_mode": ["off", "on", "auto"], "build_docs": [True, False]}
+    default_options = {"downcast_mode": "on", "build_docs": True}
     exports = ["LICENSE.md"]
-    exports_sources = ["docs/*", "src/*", "test/*", "cmake/*", "example/*", "CMakeLists.txt"]
+    exports_sources = [
+        "docs/*",
+        "src/*",
+        "test/*",
+        "cmake/*",
+        "example/*",
+        "CMakeLists.txt",
+    ]
     no_copy_source = True
     generators = "cmake_paths"
 
@@ -74,9 +79,9 @@ class MPUnitsConan(ConanFile):
     def _use_libfmt(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
-        std_support = \
-            (compiler == "Visual Studio" and version >= 17 and compiler.cppstd == 23) or \
-            (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
+        std_support = (
+            compiler == "Visual Studio" and version >= 17 and compiler.cppstd == 23
+        ) or (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
         return not std_support
 
     @property
@@ -95,7 +100,9 @@ class MPUnitsConan(ConanFile):
 
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
-        version = re.search(r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content).group(1)
+        version = re.search(
+            r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
+        ).group(1)
         self.version = version.strip()
 
     def requirements(self):
@@ -124,10 +131,14 @@ class MPUnitsConan(ConanFile):
                 raise ConanInvalidConfiguration("mp-units requires at least clang++-12")
         elif compiler == "apple-clang":
             if version < 13:
-                raise ConanInvalidConfiguration("mp-units requires at least AppleClang 13")
+                raise ConanInvalidConfiguration(
+                    "mp-units requires at least AppleClang 13"
+                )
         elif compiler == "Visual Studio":
             if version < 16:
-                raise ConanInvalidConfiguration("mp-units requires at least Visual Studio 16.9")
+                raise ConanInvalidConfiguration(
+                    "mp-units requires at least Visual Studio 16.9"
+                )
         elif compiler == "msvc":
             if self._msvc_version < 1928:
                 raise ConanInvalidConfiguration("mp-units requires at least MSVC 19.28")
@@ -162,7 +173,12 @@ class MPUnitsConan(ConanFile):
         self.info.header_only()
 
     def package(self):
-        copy(self, "LICENSE.md", self.source_folder, os.path.join(self.package_folder, "licenses"))
+        copy(
+            self,
+            "LICENSE.md",
+            self.source_folder,
+            os.path.join(self.package_folder, "licenses"),
+        )
         cmake = CMake(self)
         cmake.install()
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
