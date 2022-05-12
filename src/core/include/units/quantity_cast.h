@@ -61,8 +61,8 @@ inline constexpr Magnitude auto quantity_magnitude<quantity<D, U, Rep>> = [] {
   }
 }();
 
-template<typename T>
-inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<T>);
+template<Quantity Q>
+inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<Q>);
 
 template<typename QFrom, typename QTo>
 inline constexpr Magnitude auto cast_magnitude = [] {
