@@ -117,7 +117,7 @@ class MPUnitsConan(ConanFile):
             self.test_requires("catch2/2.13.9")
             self.test_requires("wg21-linear_algebra/0.7.2")
             if self.options.build_docs:
-                self.tool_requires("doxygen/1.9.2")
+                self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
     def configure(self):
