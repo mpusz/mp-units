@@ -40,6 +40,9 @@
 /out/
 _build/
 
+# CMake
+CMakeUserPresets.json
+
 # Conan
 *.pyc
 /test_package/build/

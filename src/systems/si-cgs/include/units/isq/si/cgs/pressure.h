@@ -36,7 +36,7 @@
 
 namespace units::isq::si::cgs {
 
-struct barye : named_unit<barye, "Ba", si::prefix> {};
+struct barye : named_unit<barye, "Ba"> {};
 
 struct dim_pressure : isq::dim_pressure<dim_pressure, barye, dim_force, dim_area> {};
 

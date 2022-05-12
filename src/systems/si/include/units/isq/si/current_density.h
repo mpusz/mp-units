@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct ampere_per_metre_sq : unit<ampere_per_metre_sq> {};
+struct ampere_per_metre_sq : derived_unit<ampere_per_metre_sq> {};
 
 struct dim_current_density :
     isq::dim_current_density<dim_current_density, ampere_per_metre_sq, dim_electric_current, dim_length> {};

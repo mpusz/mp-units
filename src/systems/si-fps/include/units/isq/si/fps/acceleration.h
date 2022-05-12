@@ -33,7 +33,7 @@
 
 namespace units::isq::si::fps {
 
-struct foot_per_second_sq : unit<foot_per_second_sq> {};
+struct foot_per_second_sq : derived_unit<foot_per_second_sq> {};
 struct dim_acceleration : isq::dim_acceleration<dim_acceleration, foot_per_second_sq, dim_length, dim_time> {};
 
 template<UnitOf<dim_acceleration> U, Representation Rep = double>

@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct henry : named_unit<henry, "H", prefix> {};
+struct henry : named_unit<henry, "H"> {};
 
 struct yoctohenry : prefixed_unit<yoctohenry, yocto, henry> {};
 struct zeptohenry : prefixed_unit<zeptohenry, zepto, henry> {};

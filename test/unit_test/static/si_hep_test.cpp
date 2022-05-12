@@ -40,8 +40,6 @@ static_assert(si::mass<si::hep::eV_per_c2>(1'000) == si::hep::mass<si::hep::keV_
 
 // momentum
 static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000'000) == si::hep::momentum<si::hep::MeV_per_c>(1));
-static_assert(si::hep::momentum<si::hep::eV_per_c>(1'000'000) == si::momentum<si::hep::MeV_per_c>(1));
-static_assert(si::momentum<si::hep::eV_per_c>(1'000'000) == si::hep::momentum<si::hep::MeV_per_c>(1));
 
 // area
 static_assert(si::area<si::hep::barn>(1e28) == si::area<si::square_metre>(1));

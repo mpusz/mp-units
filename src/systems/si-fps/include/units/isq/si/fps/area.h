@@ -34,7 +34,7 @@
 
 namespace units::isq::si::fps {
 
-struct square_foot : unit<square_foot> {};
+struct square_foot : derived_unit<square_foot> {};
 struct dim_area : isq::dim_area<dim_area, square_foot, dim_length> {};
 
 

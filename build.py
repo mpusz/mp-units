@@ -31,16 +31,14 @@ from cpt.packager import ConanMultiPackager
 if __name__ == "__main__":
     builder = ConanMultiPackager(
         # package id
-        channel = "testing",
-        stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
-
+        channel="testing",
+        stable_branch_pattern=r"v\d+\.\d+\.\d+.*",
         # dependencies
-        build_policy = ["mp-units", "outdated"],
-        upload_dependencies = "all",
-        pip_install = ["sphinx", "recommonmark", "breathe"],
-
+        build_policy=["mp-units", "outdated"],
+        upload_dependencies="all",
+        pip_install=["sphinx", "recommonmark", "breathe"],
         # build configurations
-        archs = ["x86_64"], #  limit to 64-bit only
+        archs=["x86_64"],  # limit to 64-bit only
     )
     builder.add_common_builds(pure_c=True)
     for settings, options, env_vars, build_requires, reference in builder.items:

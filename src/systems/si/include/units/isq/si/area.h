@@ -34,31 +34,35 @@
 
 namespace units::isq::si {
 
-struct square_metre : unit<square_metre> {};
+struct square_metre : derived_unit<square_metre> {};
 struct dim_area : isq::dim_area<dim_area, square_metre, dim_length> {};
 
-struct square_yoctometre : derived_unit<square_yoctometre, dim_area, yoctometre> {};
-struct square_zeptometre : derived_unit<square_zeptometre, dim_area, zeptometre> {};
-struct square_attometre : derived_unit<square_attometre, dim_area, attometre> {};
-struct square_femtometre : derived_unit<square_femtometre, dim_area, femtometre> {};
-struct square_picometre : derived_unit<square_picometre, dim_area, picometre> {};
-struct square_nanometre : derived_unit<square_nanometre, dim_area, nanometre> {};
-struct square_micrometre : derived_unit<square_micrometre, dim_area, micrometre> {};
-struct square_millimetre : derived_unit<square_millimetre, dim_area, millimetre> {};
-struct square_centimetre : derived_unit<square_centimetre, dim_area, centimetre> {};
-struct square_decimetre : derived_unit<square_decimetre, dim_area, decimetre> {};
-struct square_decametre : derived_unit<square_decametre, dim_area, decametre> {};
-struct square_hectometre : derived_unit<square_hectometre, dim_area, hectometre> {};
-struct square_kilometre : derived_unit<square_kilometre, dim_area, kilometre> {};
-struct square_megametre : derived_unit<square_megametre, dim_area, megametre> {};
-struct square_gigametre : derived_unit<square_gigametre, dim_area, gigametre> {};
-struct square_terametre : derived_unit<square_terametre, dim_area, terametre> {};
-struct square_petametre : derived_unit<square_petametre, dim_area, petametre> {};
-struct square_exametre : derived_unit<square_exametre, dim_area, exametre> {};
-struct square_zettametre : derived_unit<square_zettametre, dim_area, zettametre> {};
-struct square_yottametre : derived_unit<square_yottametre, dim_area, yottametre> {};
+struct square_yoctometre : derived_scaled_unit<square_yoctometre, dim_area, yoctometre> {};
+struct square_zeptometre : derived_scaled_unit<square_zeptometre, dim_area, zeptometre> {};
+struct square_attometre : derived_scaled_unit<square_attometre, dim_area, attometre> {};
+struct square_femtometre : derived_scaled_unit<square_femtometre, dim_area, femtometre> {};
+struct square_picometre : derived_scaled_unit<square_picometre, dim_area, picometre> {};
+struct square_nanometre : derived_scaled_unit<square_nanometre, dim_area, nanometre> {};
+struct square_micrometre : derived_scaled_unit<square_micrometre, dim_area, micrometre> {};
+struct square_millimetre : derived_scaled_unit<square_millimetre, dim_area, millimetre> {};
+struct square_centimetre : derived_scaled_unit<square_centimetre, dim_area, centimetre> {};
+struct square_decimetre : derived_scaled_unit<square_decimetre, dim_area, decimetre> {};
+struct square_decametre : derived_scaled_unit<square_decametre, dim_area, decametre> {};
+struct square_hectometre : derived_scaled_unit<square_hectometre, dim_area, hectometre> {};
+struct square_kilometre : derived_scaled_unit<square_kilometre, dim_area, kilometre> {};
+struct square_megametre : derived_scaled_unit<square_megametre, dim_area, megametre> {};
+struct square_gigametre : derived_scaled_unit<square_gigametre, dim_area, gigametre> {};
+struct square_terametre : derived_scaled_unit<square_terametre, dim_area, terametre> {};
+struct square_petametre : derived_scaled_unit<square_petametre, dim_area, petametre> {};
+struct square_exametre : derived_scaled_unit<square_exametre, dim_area, exametre> {};
+struct square_zettametre : derived_scaled_unit<square_zettametre, dim_area, zettametre> {};
+struct square_yottametre : derived_scaled_unit<square_yottametre, dim_area, yottametre> {};
 
-struct hectare : alias_unit<square_hectometre, "ha", no_prefix> {};
+struct are : alias_unit<square_decametre, "a"> {};
+struct centiare : prefixed_alias_unit<square_metre, centi, are> {};
+struct deciare : prefixed_unit<deciare, deci, are> {};
+struct decare : prefixed_unit<decare, deca, are> {};
+struct hectare : prefixed_alias_unit<square_hectometre, hecto, are> {};
 
 template<UnitOf<dim_area> U, Representation Rep = double>
 using area = quantity<dim_area, U, Rep>;
@@ -235,6 +239,38 @@ constexpr auto operator"" _q_Ym2(unsigned long long l)
 }
 constexpr auto operator"" _q_Ym2(long double l) { return area<square_yottametre, long double>(l); }
 
+// a
+constexpr auto operator"" _q_a(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<are, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_a(long double l) { return area<are, long double>(l); }
+
+// ca
+constexpr auto operator"" _q_ca(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<centiare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_ca(long double l) { return area<centiare, long double>(l); }
+
+// da
+constexpr auto operator"" _q_da(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<deciare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_da(long double l) { return area<deciare, long double>(l); }
+
+// daa
+constexpr auto operator"" _q_daa(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return area<decare, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_daa(long double l) { return area<decare, long double>(l); }
+
 // ha
 constexpr auto operator"" _q_ha(unsigned long long l)
 {
@@ -273,6 +309,10 @@ inline constexpr auto Em2 = reference<dim_area, square_exametre>{};
 inline constexpr auto Zm2 = reference<dim_area, square_zettametre>{};
 inline constexpr auto Ym2 = reference<dim_area, square_yottametre>{};
 
+inline constexpr auto a = reference<dim_area, are>{};
+inline constexpr auto ca = reference<dim_area, centiare>{};
+inline constexpr auto da = reference<dim_area, deciare>{};
+inline constexpr auto daa = reference<dim_area, decare>{};
 inline constexpr auto ha = reference<dim_area, hectare>{};
 
 }  // namespace area_references

@@ -33,7 +33,7 @@
 
 namespace units::isq::si {
 
-struct newton_per_metre : unit<newton_per_metre> {};
+struct newton_per_metre : derived_unit<newton_per_metre> {};
 
 struct dim_surface_tension : isq::dim_surface_tension<dim_surface_tension, newton_per_metre, dim_force, dim_length> {};
 

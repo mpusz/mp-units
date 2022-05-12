@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct gray : named_unit<gray, "Gy", prefix> {};
+struct gray : named_unit<gray, "Gy"> {};
 struct yoctogray : prefixed_unit<yoctogray, yocto, gray> {};
 struct zeptogray : prefixed_unit<zeptogray, zepto, gray> {};
 struct attogray : prefixed_unit<attogray, atto, gray> {};

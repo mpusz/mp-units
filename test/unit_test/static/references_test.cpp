@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <units/bits/external/hacks.h>
 #include <units/bits/external/type_traits.h>
 #include <units/isq/si/area.h>
@@ -70,8 +71,8 @@ static_assert([] {
   const auto duration{2};
   return length * km / (duration * h);
 }() == 60_q_km_per_h);
-static_assert(is_same_v<decltype(std::int64_t{120} * km / (2 * h)), decltype(60_q_km_per_h)>);
-static_assert(is_same_v<decltype(120.L * km / (2 * h)), decltype(60._q_km_per_h)>);
+static_assert(compare<decltype(std::int64_t{120} * km / (2 * h)), decltype(60_q_km_per_h)>);
+static_assert(compare<decltype(120.L * km / (2 * h)), decltype(60._q_km_per_h)>);
 
 static_assert(1. / 4 * m2 == 1._q_m2 / 4);
 

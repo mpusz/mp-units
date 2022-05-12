@@ -43,7 +43,7 @@ inline constexpr std::optional<std::intmax_t> units::known_first_factor<225'653'
 namespace units::isq::si::hep {
 
 struct eV_per_c2 :
-    named_scaled_unit<eV_per_c2, basic_symbol_text{"eV/c²", "eV/c^2"}, prefix,
+    named_scaled_unit<eV_per_c2, basic_symbol_text{"eV/c²", "eV/c^2"},
                       as_magnitude<ratio(17'826'619'216'279, 1'000'000'000'000, -35)>(), kilogram> {};
 struct feV_per_c2 : prefixed_unit<feV_per_c2, femto, eV_per_c2> {};
 struct peV_per_c2 : prefixed_unit<peV_per_c2, pico, eV_per_c2> {};
@@ -60,14 +60,11 @@ struct PeV_per_c2 : prefixed_unit<PeV_per_c2, peta, eV_per_c2> {};
 struct EeV_per_c2 : prefixed_unit<EeV_per_c2, exa, eV_per_c2> {};
 struct YeV_per_c2 : prefixed_unit<YeV_per_c2, yotta, eV_per_c2> {};
 struct electron_mass :
-    named_scaled_unit<eV_per_c2, "m_e", prefix, as_magnitude<ratio(9'109'383'701'528, 1'000'000'000'000, -31)>(),
-                      kilogram> {};
+    named_scaled_unit<eV_per_c2, "m_e", as_magnitude<ratio(9'109'383'701'528, 1'000'000'000'000, -31)>(), kilogram> {};
 struct proton_mass :
-    named_scaled_unit<eV_per_c2, "m_p", prefix, as_magnitude<ratio(1'672'621'923'695, 1'000'000'000'000, -27)>(),
-                      kilogram> {};
+    named_scaled_unit<eV_per_c2, "m_p", as_magnitude<ratio(1'672'621'923'695, 1'000'000'000'000, -27)>(), kilogram> {};
 struct neutron_mass :
-    named_scaled_unit<eV_per_c2, "m_n", prefix, as_magnitude<ratio(1'674'927'498'049, 1'000'000'000'000, -27)>(),
-                      kilogram> {};
+    named_scaled_unit<eV_per_c2, "m_n", as_magnitude<ratio(1'674'927'498'049, 1'000'000'000'000, -27)>(), kilogram> {};
 
 struct dim_mass : isq::dim_mass<eV_per_c2> {};
 

@@ -481,11 +481,11 @@ static_assert(invalid_compound_assignments_<time_kind, second, std::chrono::seco
 static_assert(same(width<metre, int>(2 * m) + width<metre, int>(3 * m), width<metre, int>(5 * m)));
 static_assert(same(width<metre, int>(2 * m) + width<metre, double>(3. * m), width<metre, double>(5. * m)));
 static_assert(same(width<metre, double>(2. * m) + width<metre, int>(3 * m), width<metre, double>(5. * m)));
-static_assert(same(width<kilometre, int>(2 * km) + width<metre, double>(3e3 * m), width<metre, double>(5e3 * m)));
+static_assert(comp(width<kilometre, int>(2 * km) + width<metre, double>(3e3 * m), width<metre, double>(5e3 * m)));
 static_assert(same(width<metre, int>(2 * m) - width<metre, int>(3 * m), width<metre, int>(-1 * m)));
 static_assert(same(width<metre, int>(2 * m) - width<metre, double>(3. * m), width<metre, double>(-1. * m)));
 static_assert(same(width<metre, double>(2. * m) - width<metre, int>(3 * m), width<metre, double>(-1. * m)));
-static_assert(same(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
+static_assert(comp(width<metre, double>(2e3 * m) - width<kilometre, int>(3 * km), width<metre, double>(-1e3 * m)));
 
 static_assert(
   is_same_v<decltype((width<metre, std::uint8_t>(0 * m) + width<metre, std::uint8_t>(0 * m)).common().number()),
@@ -531,131 +531,131 @@ static_assert(same(2 * width<metre, int>(3 * m), width<metre, int>(6 * m)));
 static_assert(same(2 * width<metre, double>(3. * m), width<metre, double>(6. * m)));
 static_assert(same(2. * width<metre, int>(3 * m), width<metre, double>(6. * m)));
 
-static_assert(same(width<metre, int>(2 * m) * quantity(3), width<metre, int>(6 * m)));
-static_assert(same(width<metre, int>(2 * m) * quantity(3.), width<metre, double>(6. * m)));
-static_assert(same(width<metre, double>(2. * m) * quantity(3), width<metre, double>(6. * m)));
-static_assert(same(quantity(2) * width<metre, int>(3 * m), width<metre, int>(6 * m)));
-static_assert(same(quantity(2) * width<metre, double>(3. * m), width<metre, double>(6. * m)));
-static_assert(same(quantity(2.) * width<metre, int>(3 * m), width<metre, double>(6. * m)));
+static_assert(comp(width<metre, int>(2 * m) * quantity(3), width<metre, int>(6 * m)));
+static_assert(comp(width<metre, int>(2 * m) * quantity(3.), width<metre, double>(6. * m)));
+static_assert(comp(width<metre, double>(2. * m) * quantity(3), width<metre, double>(6. * m)));
+static_assert(comp(quantity(2) * width<metre, int>(3 * m), width<metre, int>(6 * m)));
+static_assert(comp(quantity(2) * width<metre, double>(3. * m), width<metre, double>(6. * m)));
+static_assert(comp(quantity(2.) * width<metre, int>(3 * m), width<metre, double>(6. * m)));
 
-static_assert(same(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
                    width<metre, int>(6 * m)));
-static_assert(same(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
+static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
                    width<metre, double>(6. * m)));
-static_assert(same(width<metre, double>(2. * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, double>(2. * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
                    width<metre, double>(6. * m)));
-static_assert(same(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, int>(3 * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, int>(3 * m),
                    width<metre, int>(6 * m)));
-static_assert(same(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, double>(3. * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, double>(3. * m),
                    width<metre, double>(6. * m)));
-static_assert(same(quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(2.) * width<metre, int>(3 * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(2.) * width<metre, int>(3 * m),
                    width<metre, double>(6. * m)));
 
-static_assert(same(height<metre, int>(2 * m) * (3 * Hz), rate_of_climb<metre_per_second, int>(6 * (m / s))));
-static_assert(same(height<metre, int>(2 * m) * (3. * Hz), rate_of_climb<metre_per_second, double>(6. * (m / s))));
-static_assert(same(height<metre, double>(2. * m) * (3 * Hz), rate_of_climb<metre_per_second, double>(6. * (m / s))));
-static_assert(same((2 * Hz) * height<metre, int>(3 * m), rate_of_climb<metre_per_second, int>(6 * (m / s))));
-static_assert(same((2 * Hz) * height<metre, double>(3. * m), rate_of_climb<metre_per_second, double>(6. * (m / s))));
-static_assert(same((2. * Hz) * height<metre, int>(3 * m), rate_of_climb<metre_per_second, double>(6. * (m / s))));
+static_assert(comp(height<metre, int>(2 * m) * (3 * Hz), rate_of_climb<metre_per_second, int>(6 * (m / s))));
+static_assert(comp(height<metre, int>(2 * m) * (3. * Hz), rate_of_climb<metre_per_second, double>(6. * (m / s))));
+static_assert(comp(height<metre, double>(2. * m) * (3 * Hz), rate_of_climb<metre_per_second, double>(6. * (m / s))));
+static_assert(comp((2 * Hz) * height<metre, int>(3 * m), rate_of_climb<metre_per_second, int>(6 * (m / s))));
+static_assert(comp((2 * Hz) * height<metre, double>(3. * m), rate_of_climb<metre_per_second, double>(6. * (m / s))));
+static_assert(comp((2. * Hz) * height<metre, int>(3 * m), rate_of_climb<metre_per_second, double>(6. * (m / s))));
 
-static_assert(same(quantity_kind<time_kind, second, int>(2 * s) * (3 * Hz),
+static_assert(comp(quantity_kind<time_kind, second, int>(2 * s) * (3 * Hz),
                    quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(6)));
-static_assert(same((3 * Hz) * quantity_kind<time_kind, second, int>(2 * s),
+static_assert(comp((3 * Hz) * quantity_kind<time_kind, second, int>(2 * s),
                    quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(6)));
 
-static_assert(same(apples<one, int>(2) * quantity(2), apples<one, int>(4)));
-static_assert(same(quantity(2) * apples<one, int>(2), apples<one, int>(4)));
+static_assert(comp(apples<one, int>(2) * quantity(2), apples<one, int>(4)));
+static_assert(comp(quantity(2) * apples<one, int>(2), apples<one, int>(4)));
 
 // clang-format off
-static_assert(same(width<metre, int>(4 * m) * (1 * m), horizontal_area<square_metre, int>(4 * (m * m))));
-static_assert(same(width<metre, int>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, int>(4 * (m * m))));
-static_assert(same(width<metre, int>(2 * m) * width<metre, double>(2 * m), horizontal_area<square_metre, double>(4 * (m * m))));
-static_assert(same(width<metre, double>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, double>(4 * (m * m))));
+static_assert(comp(width<metre, int>(4 * m) * (1 * m), horizontal_area<square_metre, int>(4 * (m * m))));
+static_assert(comp(width<metre, int>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, int>(4 * (m * m))));
+static_assert(comp(width<metre, int>(2 * m) * width<metre, double>(2 * m), horizontal_area<square_metre, double>(4 * (m * m))));
+static_assert(comp(width<metre, double>(2 * m) * width<metre, int>(2 * m), horizontal_area<square_metre, double>(4 * (m * m))));
 // clang-format on
 
-static_assert(same(apples<one, int>(2) * apples<one, int>(2), apples<one, int>(4)));
-static_assert(same(apples<one, int>(2) * (2 / apples<one, int>(1)), apples<one, int>(4)));
+static_assert(comp(apples<one, int>(2) * apples<one, int>(2), apples<one, int>(4)));
+static_assert(comp(apples<one, int>(2) * (2 / apples<one, int>(1)), apples<one, int>(4)));
 
-static_assert(same(width<kilometre>(4 * m) * (1 * mm), horizontal_area<square_metre>(4 * (m * mm))));
-static_assert(same(width<kilometre>(2 * m) * width<millimetre>(2 * m), horizontal_area<square_metre>(4 * (m * m))));
-static_assert(same(width<metre>(2 * m) * (1 / width<metre>(2 * m)),
+static_assert(comp(width<kilometre>(4 * m) * (1 * mm), horizontal_area<square_metre>(4 * (m * mm))));
+static_assert(comp(width<kilometre>(2 * m) * width<millimetre>(2 * m), horizontal_area<square_metre>(4 * (m * m))));
+static_assert(comp(width<metre>(2 * m) * (1 / width<metre>(2 * m)),
                    quantity_kind<downcast_kind<width_kind, dim_one>, one>(1)));
 
 static_assert(same(width<metre, int>(2 * m) / 3, width<metre, int>(0 * m)));
 static_assert(same(width<metre, int>(2 * m) / 3., width<metre, double>(2 / 3. * m)));
 static_assert(same(width<metre, double>(2. * m) / 3, width<metre, double>(2. / 3 * m)));
 
-static_assert(same(width<metre, int>(2 * m) / quantity(3), width<metre, int>(0 * m)));
-static_assert(same(width<metre, int>(2 * m) / quantity(3.), width<metre, double>(2 / 3. * m)));
-static_assert(same(width<metre, double>(2. * m) / quantity(3), width<metre, double>(2. / 3 * m)));
+static_assert(comp(width<metre, int>(2 * m) / quantity(3), width<metre, int>(0 * m)));
+static_assert(comp(width<metre, int>(2 * m) / quantity(3.), width<metre, double>(2 / 3. * m)));
+static_assert(comp(width<metre, double>(2. * m) / quantity(3), width<metre, double>(2. / 3 * m)));
 
-static_assert(same(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
                    width<metre, int>(0 * m)));
-static_assert(same(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
+static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
                    width<metre, double>(2 / 3. * m)));
-static_assert(same(width<metre, double>(2. * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3),
+static_assert(comp(width<metre, double>(2. * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3),
                    width<metre, double>(2. / 3 * m)));
 
-static_assert(same(2 / quantity_kind<time_kind, second, int>(3 * s),
+static_assert(comp(2 / quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
-static_assert(same(2 / quantity_kind<time_kind, second, double>(3. * s),
+static_assert(comp(2 / quantity_kind<time_kind, second, double>(3. * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
-static_assert(same(2. / quantity_kind<time_kind, second, int>(3 * s),
+static_assert(comp(2. / quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
-static_assert(same(quantity(2) / quantity_kind<time_kind, second, int>(3 * s),
+static_assert(comp(quantity(2) / quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
-static_assert(same(quantity(2) / quantity_kind<time_kind, second, double>(3. * s),
+static_assert(comp(quantity(2) / quantity_kind<time_kind, second, double>(3. * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
-static_assert(same(quantity(2.) / quantity_kind<time_kind, second, int>(3 * s),
+static_assert(comp(quantity(2.) / quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
-static_assert(same(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
                      quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
-static_assert(same(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
                      quantity_kind<time_kind, second, double>(3. * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
-static_assert(same(quantity_kind<downcast_kind<time_kind, dim_one>, one, double>(2.) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, double>(2.) /
                      quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
-static_assert(same(height<metre, int>(2 * m) / (3 * s), rate_of_climb<metre_per_second, int>(0 * (m / s))));
-static_assert(same(height<metre, int>(2 * m) / (3. * s), rate_of_climb<metre_per_second, double>(2 / 3. * (m / s))));
-static_assert(same(height<metre, double>(2. * m) / (3 * s), rate_of_climb<metre_per_second, double>(2. / 3 * (m / s))));
+static_assert(comp(height<metre, int>(2 * m) / (3 * s), rate_of_climb<metre_per_second, int>(0 * (m / s))));
+static_assert(comp(height<metre, int>(2 * m) / (3. * s), rate_of_climb<metre_per_second, double>(2 / 3. * (m / s))));
+static_assert(comp(height<metre, double>(2. * m) / (3 * s), rate_of_climb<metre_per_second, double>(2. / 3 * (m / s))));
 
-static_assert(same(width<metre, int>(2 * m) * dimensionless<percent, int>(3), width<centimetre, int>(6 * cm)));
-static_assert(same(dimensionless<percent, int>(2) * width<metre, int>(3 * m), width<centimetre, int>(6 * cm)));
-static_assert(same(width<metre, int>(2 * m) / dimensionless<percent, double>(3),
+static_assert(comp(width<metre, int>(2 * m) * dimensionless<percent, int>(3), width<centimetre, int>(6 * cm)));
+static_assert(comp(dimensionless<percent, int>(2) * width<metre, int>(3 * m), width<centimetre, int>(6 * cm)));
+static_assert(comp(width<metre, int>(2 * m) / dimensionless<percent, double>(3),
                    width<hectometre, double>(2. / 3 * hm)));
 static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<metre, int>(2 * m)));
 
-static_assert(same(height<metre, int>(2 * m) / (3 * m),
+static_assert(comp(height<metre, int>(2 * m) / (3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
-static_assert(same(height<metre, int>(2 * m) / (3. * m),
+static_assert(comp(height<metre, int>(2 * m) / (3. * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2 / 3.)));
-static_assert(same(height<metre, double>(2. * m) / (3 * m),
+static_assert(comp(height<metre, double>(2. * m) / (3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2. / 3)));
 
-static_assert(same((2 * m) / height<metre, int>(3 * m),
+static_assert(comp((2 * m) / height<metre, int>(3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
-static_assert(same((2 * m) / height<metre, double>(3. * m),
+static_assert(comp((2 * m) / height<metre, double>(3. * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2 / 3.)));
-static_assert(same((2. * m) / height<metre, int>(3 * m),
+static_assert(comp((2. * m) / height<metre, int>(3 * m),
                    quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2. / 3)));
 
-static_assert(same(width<metre, int>(8 * m) / width<metre, int>(2 * m),
+static_assert(comp(width<metre, int>(8 * m) / width<metre, int>(2 * m),
                    quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(4)));
-static_assert(same(width<metre, int>(8 * m) / width<metre, double>(2 * m),
+static_assert(comp(width<metre, int>(8 * m) / width<metre, double>(2 * m),
                    quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(4.0)));
-static_assert(same(width<metre, double>(8 * m) / width<metre, int>(2 * m),
+static_assert(comp(width<metre, double>(8 * m) / width<metre, int>(2 * m),
                    quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(4.0)));
 
-static_assert(same(apples<one, int>(8) / apples<one, int>(2), apples<one, int>(4)));
-static_assert(same(apples<one, int>(8) / (2 / apples<one, int>(1)), apples<one, int>(4)));
+static_assert(comp(apples<one, int>(8) / apples<one, int>(2), apples<one, int>(4)));
+static_assert(comp(apples<one, int>(8) / (2 / apples<one, int>(1)), apples<one, int>(4)));
 
-static_assert(same(horizontal_area<square_metre>(8 * (m * m)) / width<metre>(2 * m), width<metre>(4 * m)));
-static_assert(same(horizontal_area<square_metre>(4 * (m * m)) / (1 * m), width<metre>(4 * m)));
+static_assert(comp(horizontal_area<square_metre>(8 * (m * m)) / width<metre>(2 * m), width<metre>(4 * m)));
+static_assert(comp(horizontal_area<square_metre>(4 * (m * m)) / (1 * m), width<metre>(4 * m)));
 
 static_assert(same(width<metre, int>(2 * m) % 3, width<metre, int>(2 * m)));
 static_assert(same(width<metre, int>(3 * m) % width<metre, int>(2 * m), width<metre, int>(1 * m)));
@@ -800,7 +800,7 @@ static_assert(same(quantity_kind_cast<cgs_width_kind>(width<centimetre, int>(1 *
 static_assert(same(quantity_kind_cast<cgs_width_kind, cgs::centimetre>(width<centimetre, int>(1 * cm)), cgs_width<cgs::centimetre, int>(1 * cgs_cm)));
 static_assert(same(quantity_kind_cast<cgs_width_kind>(width<metre, int>(1 * m)), cgs_width<metre, int>(1 * m)));
 static_assert(same(quantity_kind_cast<cgs_width_kind, metre>(width<metre, int>(1 * m)), cgs_width<metre, int>(1 * m)));
-static_assert(same(quantity_kind_cast<cgs::dim_length>(width<centimetre, int>(1 * cm)), width<cgs::centimetre, int>(1 * cgs_cm)));
+static_assert(comp(quantity_kind_cast<cgs::dim_length>(width<centimetre, int>(1 * cm)), width<cgs::centimetre, int>(1 * cgs_cm)));
 static_assert(same(quantity_kind_cast<length<kilometre, int>>(width<metre, int>(1 * m)), width<kilometre, int>(0 * km)));
 static_assert(same(quantity_kind_cast<length<centimetre, int>>(width<metre, int>(1 * m)), width<centimetre, int>(100 * cm)));
 static_assert(same(quantity_kind_cast<length<centimetre, int>>(width<metre, double>(0.01 * m)), width<centimetre, int>(1 * cm)));

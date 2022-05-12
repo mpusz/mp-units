@@ -34,7 +34,7 @@ inline constexpr bool same_scaled_units = false;
 template<typename... Es, Unit... Us>
 inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
-// derived_unit
+// derived_scaled_unit
 
 template<Unit... Us, typename... Es>
 constexpr Magnitude auto derived_mag(exponent_list<Es...>)
@@ -44,6 +44,6 @@ constexpr Magnitude auto derived_mag(exponent_list<Es...>)
 }
 
 template<DerivedDimension D, Unit... Us>
-using derived_unit = scaled_unit<derived_mag<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
+using derived_scaled_unit = scaled_unit<derived_mag<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
 
 }  // namespace units::detail

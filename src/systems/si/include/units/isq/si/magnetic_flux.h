@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct weber : named_unit<weber, "Wb", prefix> {};
+struct weber : named_unit<weber, "Wb"> {};
 
 struct yoctoweber : prefixed_unit<yoctoweber, yocto, weber> {};
 struct zeptoweber : prefixed_unit<zeptoweber, zepto, weber> {};

@@ -34,7 +34,7 @@
 
 namespace units::isq::si::cgs {
 
-struct gal : named_unit<gal, "Gal", si::prefix> {};
+struct gal : named_unit<gal, "Gal"> {};
 struct dim_acceleration : isq::dim_acceleration<dim_acceleration, gal, dim_length, dim_time> {};
 
 template<UnitOf<dim_acceleration> U, Representation Rep = double>

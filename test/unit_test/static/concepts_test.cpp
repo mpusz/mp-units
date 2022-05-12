@@ -42,15 +42,9 @@ namespace {
 using namespace units;
 using namespace units::isq;
 
-// Prefix family
-
-static_assert(PrefixFamily<si::prefix>);
-static_assert(!PrefixFamily<si::kilo>);
-
 // Prefix
 
 static_assert(Prefix<si::kilo>);
-static_assert(!Prefix<si::prefix>);
 static_assert(!Prefix<std::kilo>);
 
 // BaseDimension
@@ -82,6 +76,13 @@ static_assert(Unit<si::metre_per_second>);
 static_assert(!Unit<si::dim_length>);
 static_assert(!Unit<int>);
 static_assert(!Unit<std::chrono::seconds>);
+
+// NamedUnit
+
+static_assert(NamedUnit<si::metre>);
+static_assert(NamedUnit<si::kilometre>);
+static_assert(NamedUnit<si::fps::mile>);
+static_assert(!NamedUnit<si::metre_per_second>);
 
 // UnitOf
 

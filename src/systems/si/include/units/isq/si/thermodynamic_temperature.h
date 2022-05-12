@@ -29,11 +29,12 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
+#include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
-struct kelvin : named_unit<kelvin, "K", no_prefix> {};
+struct kelvin : named_unit<kelvin, "K"> {};
 
 struct dim_thermodynamic_temperature : isq::dim_thermodynamic_temperature<kelvin> {};
 

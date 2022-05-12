@@ -38,13 +38,11 @@ namespace units::isq::si::typographic {
 // TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors
 // and provide hyperlinks to definitions
 struct pica_comp :
-    named_scaled_unit<pica_comp, "pica(comp)", no_prefix, as_magnitude<ratio(4233333, 1000000, -3)>(), si::metre> {};
-struct pica_prn :
-    named_scaled_unit<pica_prn, "pica(prn)", no_prefix, as_magnitude<ratio(2108759, 500000, -3)>(), si::metre> {};
+    named_scaled_unit<pica_comp, "pica(comp)", as_magnitude<ratio(4233333, 1000000, -3)>(), si::metre> {};
+struct pica_prn : named_scaled_unit<pica_prn, "pica(prn)", as_magnitude<ratio(2108759, 500000, -3)>(), si::metre> {};
 struct point_comp :
-    named_scaled_unit<point_comp, "point(comp)", no_prefix, as_magnitude<ratio(1763889, 500000, -4)>(), si::metre> {};
-struct point_prn :
-    named_scaled_unit<point_prn, "point(prn)", no_prefix, as_magnitude<ratio(1757299, 500000, -4)>(), si::metre> {};
+    named_scaled_unit<point_comp, "point(comp)", as_magnitude<ratio(1763889, 500000, -4)>(), si::metre> {};
+struct point_prn : named_scaled_unit<point_prn, "point(prn)", as_magnitude<ratio(1757299, 500000, -4)>(), si::metre> {};
 
 #ifndef UNITS_NO_LITERALS
 

@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(isq-iec80000 mp-units::si)
+add_units_module(
+    isq-iec80000
+    DEPENDENCIES mp-units::si
+    HEADERS include/units/isq/iec80000/binary_prefixes.h include/units/isq/iec80000/iec80000.h
+            include/units/isq/iec80000/modulation_rate.h include/units/isq/iec80000/storage_capacity.h
+            include/units/isq/iec80000/traffic_intensity.h include/units/isq/iec80000/transfer_rate.h
+)

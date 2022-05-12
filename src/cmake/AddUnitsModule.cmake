@@ -20,14 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
+
+function(validate_unparsed module prefix)
+    if(${prefix}_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Invalid arguments '${${prefix}_UNPARSED_ARGUMENTS}' " "for module '${module}'")
+    endif()
+endfunction()
+
+function(validate_argument_exists module prefix arg)
+    if(NOT ${prefix}_${arg})
+        message(FATAL_ERROR "'${arg}' not provided for module '${module}'")
+    endif()
+endfunction()
+
+function(validate_arguments_exists module prefix)
+    foreach(arg ${ARGN})
+        validate_argument_exists(${module} ${prefix} ${arg})
+    endforeach()
+endfunction()
 
 #
-# add_units_module(ModuleName <depependencies>...)
+# add_units_module(ModuleName
+#                  DEPENDENCIES <depependency>...
+#                  HEADERS <header_file>...)
 #
 function(add_units_module name)
-    add_library(mp-units-${name} INTERFACE)
-    target_link_libraries(mp-units-${name} INTERFACE ${ARGN})
+    # parse arguments
+    set(multiValues DEPENDENCIES HEADERS)
+    cmake_parse_arguments(PARSE_ARGV 1 ARG "" "" "${multiValues}")
+
+    # validate and process arguments
+    validate_unparsed(${name} ARG)
+    validate_arguments_exists(${name} ARG DEPENDENCIES HEADERS)
+
+    # define the target for a module
+    add_library(mp-units-${name} INTERFACE ${ARG_HEADERS})
+    target_link_libraries(mp-units-${name} INTERFACE ${ARG_DEPENDENCIES})
     target_include_directories(
         mp-units-${name} ${unitsAsSystem} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                                     $<INSTALL_INTERFACE:include>

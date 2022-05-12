@@ -37,16 +37,15 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Poundal
-struct poundal : named_unit<poundal, "pdl", no_prefix> {};
+struct poundal : named_unit<poundal, "pdl"> {};
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-struct pound_force :
-    named_scaled_unit<pound_force, "lbf", si::prefix, as_magnitude<ratio(32'174'049, 1'000'000)>(), poundal> {};
+struct pound_force : named_scaled_unit<pound_force, "lbf", as_magnitude<ratio(32'174'049, 1'000'000)>(), poundal> {};
 
 struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 
 // https://en.wikipedia.org/wiki/Kip_(unit),
-struct kip : alias_unit<kilopound_force, "klbf", no_prefix> {};
+struct kip : alias_unit<kilopound_force, "klbf"> {};
 
 struct dim_force : isq::dim_force<dim_force, poundal, dim_mass, dim_acceleration> {};
 

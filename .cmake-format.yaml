@@ -4,19 +4,25 @@ parse:
       pargs:
         nargs: 1
         flags:
-        - ALL
+          - ALL
       kwargs:
         BREATHE_PROJECT: 1
         CODE_SOURCE_DIR: 1
         INSTALL_DIR: 1
         CODE_DEPENDS: 1
         DOCS_DEPENDS: 1
+    add_units_module:
+      pargs:
+        nargs: 1
+      kwargs:
+        DEPENDENCIES: +
+        HEADERS: +
     enable_iwyu:
       pargs:
         flags:
-        - NO_FORWARD_DECLARATIONS
-        - QUOTED_INCLUDES_FIRST
-        - NO_COMMENTS
+          - NO_FORWARD_DECLARATIONS
+          - QUOTED_INCLUDES_FIRST
+          - NO_COMMENTS
       kwargs:
         MAPPING_FILE: 1
         MAX_LINE_LENGTH: 1

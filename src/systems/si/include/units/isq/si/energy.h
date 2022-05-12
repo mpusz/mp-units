@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct joule : named_unit<joule, "J", prefix> {};
+struct joule : named_unit<joule, "J"> {};
 struct yoctojoule : prefixed_unit<yoctojoule, yocto, joule> {};
 struct zeptojoule : prefixed_unit<zeptojoule, zepto, joule> {};
 struct attojoule : prefixed_unit<attojoule, atto, joule> {};
@@ -56,7 +56,7 @@ struct yottajoule : prefixed_unit<yottajoule, yotta, joule> {};
 // N.B. electron charge (and eV) is an exact constant:
 // https://www.bipm.org/documents/20126/41483022/SI-Brochure-9.pdf#page=147
 struct electronvolt :
-    named_scaled_unit<electronvolt, "eV", prefix, as_magnitude<ratio(1'602'176'634, 1'000'000'000, -19)>(), joule> {};
+    named_scaled_unit<electronvolt, "eV", as_magnitude<ratio(1'602'176'634, 1'000'000'000, -19)>(), joule> {};
 struct gigaelectronvolt : prefixed_unit<gigaelectronvolt, giga, electronvolt> {};
 
 struct dim_energy : isq::dim_energy<dim_energy, joule, dim_force, dim_length> {};

@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct second : named_unit<second, "s", prefix> {};
+struct second : named_unit<second, "s"> {};
 struct yoctosecond : prefixed_unit<yoctosecond, yocto, second> {};
 struct zeptosecond : prefixed_unit<zeptosecond, zepto, second> {};
 struct attosecond : prefixed_unit<attosecond, atto, second> {};
@@ -43,9 +43,9 @@ struct picosecond : prefixed_unit<picosecond, pico, second> {};
 struct nanosecond : prefixed_unit<nanosecond, nano, second> {};
 struct microsecond : prefixed_unit<microsecond, micro, second> {};
 struct millisecond : prefixed_unit<millisecond, milli, second> {};
-struct minute : named_scaled_unit<minute, "min", no_prefix, as_magnitude<60>(), second> {};
-struct hour : named_scaled_unit<hour, "h", no_prefix, as_magnitude<60>(), minute> {};
-struct day : named_scaled_unit<day, "d", no_prefix, as_magnitude<24>(), hour> {};
+struct minute : named_scaled_unit<minute, "min", as_magnitude<60>(), second> {};
+struct hour : named_scaled_unit<hour, "h", as_magnitude<60>(), minute> {};
+struct day : named_scaled_unit<day, "d", as_magnitude<24>(), hour> {};
 
 struct dim_time : isq::dim_time<second> {};
 

@@ -35,7 +35,8 @@
 
 namespace units::isq::iec80000 {
 
-struct bit : named_unit<bit, "bit", si::prefix> {};
+struct bit : named_unit<bit, "bit"> {};
+
 struct kilobit : prefixed_unit<kilobit, si::kilo, bit> {};
 struct megabit : prefixed_unit<megabit, si::mega, bit> {};
 struct gigabit : prefixed_unit<gigabit, si::giga, bit> {};
@@ -45,15 +46,15 @@ struct exabit : prefixed_unit<exabit, si::exa, bit> {};
 struct zettabit : prefixed_unit<zettabit, si::zetta, bit> {};
 struct yottabit : prefixed_unit<yottabit, si::yotta, bit> {};
 
-struct binary_prefix_bit : alias_unit<bit, "bit", binary_prefix> {};
-struct kibibit : prefixed_unit<kibibit, kibi, binary_prefix_bit> {};
-struct mebibit : prefixed_unit<mebibit, mebi, binary_prefix_bit> {};
-struct gibibit : prefixed_unit<gibibit, gibi, binary_prefix_bit> {};
-struct tebibit : prefixed_unit<tebibit, tebi, binary_prefix_bit> {};
-struct pebibit : prefixed_unit<pebibit, pebi, binary_prefix_bit> {};
-struct exbibit : prefixed_unit<exbibit, exbi, binary_prefix_bit> {};
+struct kibibit : prefixed_unit<kibibit, kibi, bit> {};
+struct mebibit : prefixed_unit<mebibit, mebi, bit> {};
+struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
+struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
+struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
+struct exbibit : prefixed_unit<exbibit, exbi, bit> {};
 
-struct byte : named_scaled_unit<byte, "B", si::prefix, as_magnitude<8>(), bit> {};
+struct byte : named_scaled_unit<byte, "B", as_magnitude<8>(), bit> {};
+
 struct kilobyte : prefixed_unit<kilobyte, si::kilo, byte> {};
 struct megabyte : prefixed_unit<megabyte, si::mega, byte> {};
 struct gigabyte : prefixed_unit<gigabyte, si::giga, byte> {};
@@ -63,13 +64,12 @@ struct exabyte : prefixed_unit<exabyte, si::exa, byte> {};
 struct zettabyte : prefixed_unit<zettabyte, si::zetta, byte> {};
 struct yottabyte : prefixed_unit<yottabyte, si::yotta, byte> {};
 
-struct binary_prefix_byte : alias_unit<byte, "B", binary_prefix> {};
-struct kibibyte : prefixed_unit<kibibyte, kibi, binary_prefix_byte> {};
-struct mebibyte : prefixed_unit<mebibyte, mebi, binary_prefix_byte> {};
-struct gibibyte : prefixed_unit<gibibyte, gibi, binary_prefix_byte> {};
-struct tebibyte : prefixed_unit<tebibyte, tebi, binary_prefix_byte> {};
-struct pebibyte : prefixed_unit<pebibyte, pebi, binary_prefix_byte> {};
-// struct exbibyte : prefixed_unit<exbibyte, exbi, binary_prefix_byte> {};
+struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
+struct mebibyte : prefixed_unit<mebibyte, mebi, byte> {};
+struct gibibyte : prefixed_unit<gibibyte, gibi, byte> {};
+struct tebibyte : prefixed_unit<tebibyte, tebi, byte> {};
+struct pebibyte : prefixed_unit<pebibyte, pebi, byte> {};
+// struct exbibyte : prefixed_unit<exbibyte, exbi, byte> {};
 
 struct dim_storage_capacity : base_dimension<"M", byte> {};
 

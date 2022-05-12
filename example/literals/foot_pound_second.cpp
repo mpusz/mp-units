@@ -26,6 +26,7 @@
 #include <units/isq/si/fps/mass.h>
 #include <units/isq/si/fps/power.h>
 #include <units/isq/si/fps/speed.h>
+#include <units/isq/si/international/speed.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
 #include <units/isq/si/power.h>
@@ -73,8 +74,9 @@ void print_details(std::string_view description, const Ship& ship)
                                fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
             << STD_FMT::format("{:20} : {}\n", "mass",
                                fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
-            << STD_FMT::format("{:20} : {}\n", "speed",
-                               fmt_line<si::fps::speed<si::fps::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
+            << STD_FMT::format(
+                 "{:20} : {}\n", "speed",
+                 fmt_line<si::speed<si::international::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
             << STD_FMT::format("{:20} : {}\n", "power",
                                fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
             << STD_FMT::format("{:20} : {}\n", "main guns",
@@ -108,7 +110,7 @@ int main()
   auto iowa = Ship{.length{860._q_ft},
                    .draft{37._q_ft + 2._q_in},
                    .beam{108._q_ft + 2._q_in},
-                   .speed{33_q_knot},
+                   .speed{si::speed<si::international::knot>{33}},
                    .mass{57'540_q_lton},
                    .mainGuns{16_q_in},
                    .shellMass{2700_q_lb},
@@ -119,7 +121,7 @@ int main()
   auto kgv = Ship{.length{745.1_q_ft},
                   .draft{33._q_ft + 7.5_q_in},
                   .beam{103.2_q_ft + 2.5_q_in},
-                  .speed{28.3_q_knot},
+                  .speed{si::speed<si::international::knot>{28.3}},
                   .mass{42'245_q_lton},
                   .mainGuns{14_q_in},
                   .shellMass{1'590_q_lb},

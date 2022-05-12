@@ -25,14 +25,14 @@ name: CMake Test Package CI
 on:
   push:
     paths-ignore:
-    - 'docs/**'
-    - 'example/**'
-    - 'test/**'
+      - "docs/**"
+      - "example/**"
+      - "test/**"
   pull_request:
     paths-ignore:
-    - 'docs/**'
-    - 'example/**'
-    - 'test/**'
+      - "docs/**"
+      - "example/**"
+      - "test/**"
 
 jobs:
   test_package:
@@ -42,46 +42,62 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {
-            name: "Windows MSVC 2019",
-            os: windows-latest,
-            compiler: { type: VISUAL, version: 16, cc: "", cxx: "" }
-          }
-        - {
-            name: "Ubuntu GCC 10.3.0",
-            os: ubuntu-20.04,
-            compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu GCC 11.1.0",
-            os: ubuntu-20.04,
-            compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11" },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu Clang 12.0.0 + libstdc++11",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
-            lib: "libstdc++11"
-          }
-        - {
-            name: "Ubuntu Clang 12.0.0 + libc++",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
-            lib: "libc++"
-          }
-        - {
-            name: "Ubuntu Clang 13.0.0 + libc++",
-            os: ubuntu-20.04,
-            compiler: { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13" },
-            lib: "libc++"
-          }
-        - {
-            name: "MacOS Apple Clang 13",
-            os: macos-11,
-            compiler: { type: APPLE_CLANG, version: "13.0", cc: "clang", cxx: "clang++" }
-          }
+          - {
+              name: "Windows MSVC 2019",
+              os: windows-latest,
+              compiler: { type: VISUAL, version: 16, cc: "", cxx: "" },
+            }
+          - {
+              name: "Ubuntu GCC 10.3.0",
+              os: ubuntu-20.04,
+              compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu GCC 11.1.0",
+              os: ubuntu-20.04,
+              compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11" },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang 12.0.0 + libstdc++11",
+              os: ubuntu-20.04,
+              compiler:
+                { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang 12.0.0 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+              lib: "libc++",
+            }
+          - {
+              name: "Ubuntu Clang 13.0.0 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13" },
+              lib: "libc++",
+            }
+          - {
+              name: "Ubuntu Clang 14.0.0 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                { type: CLANG, version: 14, cc: "clang-14", cxx: "clang++-14" },
+              lib: "libc++",
+            }
+          - {
+              name: "MacOS Apple Clang 13",
+              os: macos-11,
+              compiler:
+                {
+                  type: APPLE_CLANG,
+                  version: "13.0",
+                  cc: "clang",
+                  cxx: "clang++",
+                },
+            }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
         # - {
         #     name: "Ubuntu GCC 10.2.0",
@@ -89,7 +105,7 @@ jobs:
         #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
         #     docker_image: conanio/gcc10
         #   }
-        build_type: [ "Release", "Debug" ]
+        build_type: ["Release", "Debug"]
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
@@ -151,7 +167,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Install Conan
         shell: bash
         run: |
@@ -185,13 +201,13 @@ jobs:
         working-directory: build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Install mp-units
         shell: bash
         working-directory: build/${{ matrix.build_type }}
@@ -208,14 +224,14 @@ jobs:
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
           cmake --build .
       - name: Build test_package CMake (local build)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
           cmake --build .
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type == 'VISUAL'
@@ -223,14 +239,14 @@ jobs:
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
           call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
+          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
           cmake --build .
       - name: Run test_package
         shell: bash

@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct metre : named_unit<metre, "m", prefix> {};
+struct metre : named_unit<metre, "m"> {};
 struct yoctometre : prefixed_unit<yoctometre, yocto, metre> {};
 struct zeptometre : prefixed_unit<zeptometre, zepto, metre> {};
 struct attometre : prefixed_unit<attometre, atto, metre> {};
@@ -56,8 +56,7 @@ struct exametre : prefixed_unit<exametre, exa, metre> {};
 struct zettametre : prefixed_unit<zettametre, zetta, metre> {};
 struct yottametre : prefixed_unit<yottametre, yotta, metre> {};
 
-struct astronomical_unit :
-    named_scaled_unit<astronomical_unit, "au", no_prefix, as_magnitude<149'597'870'700>(), metre> {};
+struct astronomical_unit : named_scaled_unit<astronomical_unit, "au", as_magnitude<149'597'870'700>(), metre> {};
 
 struct dim_length : isq::dim_length<metre> {};
 

@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
 option(${projectPrefix}USE_LIBFMT "Enables usage of libfmt instead of the one from 'std'" ON)
 message(STATUS "${projectPrefix}USE_LIBFMT: ${${projectPrefix}USE_LIBFMT}")
 
-add_units_module(core-fmt mp-units::core)
+add_units_module(core-fmt DEPENDENCIES mp-units::core HEADERS include/units/format.h)
 target_compile_definitions(mp-units-core-fmt INTERFACE ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>)
 
 if(${projectPrefix}USE_LIBFMT)

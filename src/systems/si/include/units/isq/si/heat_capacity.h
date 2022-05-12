@@ -36,9 +36,9 @@
 
 namespace units::isq::si {
 
-struct joule_per_kelvin : unit<joule_per_kelvin> {};
-struct joule_per_kilogram_kelvin : unit<joule_per_kilogram_kelvin> {};
-struct joule_per_mole_kelvin : unit<joule_per_mole_kelvin> {};
+struct joule_per_kelvin : derived_unit<joule_per_kelvin> {};
+struct joule_per_kilogram_kelvin : derived_unit<joule_per_kilogram_kelvin> {};
+struct joule_per_mole_kelvin : derived_unit<joule_per_mole_kelvin> {};
 
 struct dim_heat_capacity :
     isq::dim_heat_capacity<dim_heat_capacity, joule_per_kelvin, dim_energy, dim_thermodynamic_temperature> {};
