@@ -525,7 +525,7 @@ constexpr auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
 // Implementation of conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
 constexpr ratio as_ratio(Magnitude auto m)
-  requires(is_rational(m))
+  requires(is_rational(decltype(m){}))
 {
   return ratio{
     get_value<std::intmax_t>(numerator(m)),
@@ -652,7 +652,8 @@ template<ratio R>
   requires(R.num > 0)
 constexpr Magnitude auto as_magnitude()
 {
-  return pow<R.exp>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
+  return pow<R.exp>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
+         detail::prime_factorization_v<R.den>;
 }
 
 }  // namespace units
