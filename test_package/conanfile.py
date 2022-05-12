@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from conan import ConanFile
 from conan.tools.cmake import CMake
-from conans import ConanFile, tools
+from conan.tools.build import cross_building
 
 
 class TestPackageConan(ConanFile):
@@ -38,5 +39,5 @@ class TestPackageConan(ConanFile):
         cmake.build()
 
     def test(self):
-        if not tools.cross_building(self.settings):
+        if not cross_building(self):
             self.run("test_package", run_environment=True)
