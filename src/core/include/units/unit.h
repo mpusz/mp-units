@@ -126,7 +126,7 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typ
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct derived_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {};
+struct derived_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {};
 
 /**
  * @brief A unit with a deduced ratio and symbol
@@ -195,8 +195,8 @@ namespace detail {
 template<typename Child, basic_symbol_text Symbol>
 void is_named_impl(const volatile named_unit<Child, Symbol>*);
 
-template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
-void is_named_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, typename U>
+void is_named_impl(const volatile named_scaled_unit<Child, Symbol, M, U>*);
 
 template<typename Child, typename P, typename U>
 void is_named_impl(const volatile prefixed_unit<Child, P, U>*);
@@ -213,8 +213,8 @@ inline constexpr bool is_named<U> = requires(U * u) { is_named_impl(u); };
 template<typename Child, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile named_unit<Child, Symbol>*);
 
-template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
-void can_be_prefixed_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, typename U>
+void can_be_prefixed_impl(const volatile named_scaled_unit<Child, Symbol, M, U>*);
 
 template<typename U, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
@@ -222,8 +222,8 @@ void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
 template<Unit U>
 inline constexpr bool can_be_prefixed<U> = requires(U * u) { can_be_prefixed_impl(u); };
 
-template<ratio R, typename U>
-inline constexpr bool can_be_prefixed<scaled_unit<R, U>> = can_be_prefixed<typename U::reference>;
+template<Magnitude auto M, typename U>
+inline constexpr bool can_be_prefixed<scaled_unit<M, U>> = can_be_prefixed<typename U::reference>;
 
 }  // namespace detail
 
