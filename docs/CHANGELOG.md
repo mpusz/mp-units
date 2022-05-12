@@ -2,18 +2,60 @@
 
 - **0.8.0 WIP**
   - (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`, `common_quantity_kind`, and `common_quantity_point_kind` removed
+  - (!) refactor: `named_derived_unit` removed as it was not used
+  - (!) refactor: `derived_unit` renamed to `derived_scaled_unit`
+  - (!) refactor: `unit` renamed to `derived_unit`
+  - (!) refactor: `U::is_named` removed from the unit types and replaced with `NamedUnit` concept
+  - (!) refactor: `PrefixFamily` support removed
+  - (!) refactor: `mi(naut)` renamed to `nmi`
+  - (!) refactor: `knot` unit helper renamed to `kn` in FPS
+  - (!) refactor: `knot` text symbol changed from `"knot"` to `"kn`"
   - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
-  - feat: `std::format` support for compliant compilers added
+  - refactor(example): `glide_computer` now use dimensionless quantities with `ranged_representation` as `rep`
   - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))
+  - feat: `floor()`, `ceil()`, and `round()` support added (thanks [@hofbi](https://github.com/hofbi))
+  - feat: `std::format` support for compliant compilers added
   - feat: conversion helpers from `mp-units` to `std::chrono` types added
+  - feat: math functions can now be safely used with user-defined types
+  - feat: conversion from `quantity_point` to `std::chrono::time_point` added
+  - feat: `nautical_mile_per_hour` and `knot` added to `si::international` system
   - (!) fix: add `quantity_point::origin`, like `std::chrono::time_point::clock`
+  - fix: enable any prefixes for most of the named units (beside those that use prefixes already)
+  - fix: `hectare` definition fixed to be a prefixed version of `are` + other units
   - fix: account for different dimensions in `quantity_point_cast`'s constraint
-  - build: Minimum Conan version changed to 1.40
+  - fix: output stream operator now properly handles state
+  - fix: `fmt` algorithms were overconstrained with `forward_iterator`
+  - fix: CTAD for aliases fixed
+  - fix: `derived_ratio` calculation
+  - fix: `fill_t` assignment operator fixed
+  - fix: improve downcast mode off
+  - fix: `radioactivity` header compilation fixed
+  - fix: `si::hep::dim_momentum` duplicated definition fixed
+  - fix: `fps` can now coexist with `international` system
+  - fix: public headers fixed to be standalone
+  - test: standalone public headers tests added
+  - (!) build: CMake generator in Conan is no longer obtained from an environment variable
+  - (!) build: Required Conan version bumped to 1.48
+  - (!) build: Conan 1.48 does not set `CMAKE_BUILD_TYPE` in the `conan_toolchain.cmake` anymore
+  - build: AppleClang 13 support added (thanks [@fdischner](https://github.com/fdischner))
+  - build: most of the `conanfile.py` refactored to be Conan 2.0 ready
+  - build: `validate()` replaced with `configure()` to raise errors during `conan install` in Conan 1.X
+  - build: minimum Conan version changed to 1.40
+  - build: `linear-algebra` Conan repo is no needed anymore
+  - build: Gitpod support added
+  - build: clang-format-15 support added
+  - build: export config to local build (#322)
+  - build: fix export name of `mp-units-system`
   - build: fmt updated to 8.0.1
-  - build: gsl-lite updated to 0.38.1
-  - build: catch2 updated to 2.13.7
-  - build: doxygen updated to 1.9.2
-  - build: linear algebra switched to wg21-linear_algebra/0.7.2
+  - build: gsl-lite updated to 0.40.0
+  - build: catch2 updated to 2.13.9
+  - build: doxygen updated to 1.9.4
+  - build: linear_algebra/0.7.0 switched to wg21-linear_algebra/0.7.2
+  - ci: VS2022, gcc-11, clang-13, clang-14, and AppleClang 13 support added
+  - ci: pre-commit support added (thanks [@hofbi](https://github.com/hofbi))
+  - docs: Project documentation updated
+  - docs: `CITATION.cff` file added
+  - docs: `CONTRIBUTING.md` updated
 
 - **0.7.0 May 11, 2021**
   - (!) refactor: `ScalableNumber` renamed to `Representation`
