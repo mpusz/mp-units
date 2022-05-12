@@ -27,6 +27,7 @@ from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
+from conans.errors import ConanInvalidConfiguration
 from conans.tools import (  # TODO replace with new tools for Conan 2.0
     check_min_cppstd,
     get_env,

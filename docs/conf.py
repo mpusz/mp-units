@@ -9,9 +9,10 @@
     :license: BSD, see LICENSE for details.
 """
 
+import os
 import re
+import subprocess
 
-import sphinx_rtd_theme
 from pygments.lexer import (
     RegexLexer,
     bygroups,
@@ -481,10 +482,6 @@ lexers["cpp"] = MyCppLexer(startinline=True)
 # This file only contains a selection of the most common options.
 # For a full list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-import os
-import re
-import subprocess
 
 
 def get_version():
