@@ -48,6 +48,7 @@
 #include <units/isq/dimensions/inductance.h>
 #include <units/isq/dimensions/length.h>
 #include <units/isq/dimensions/luminance.h>
+#include <units/isq/dimensions/luminous_flux.h>
 #include <units/isq/dimensions/luminous_intensity.h>
 #include <units/isq/dimensions/magnetic_flux.h>
 #include <units/isq/dimensions/magnetic_induction.h>
