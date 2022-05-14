@@ -106,7 +106,7 @@
 
 #else
 
-#define UNITS_MSVC_WORKAROUND(X) (X)
+#define UNITS_MSVC_WORKAROUND(X) X
 
 #endif
 
