@@ -85,7 +85,7 @@ template<typename Child, Unit U, Exponent... Es>
 struct derived_dimension : downcast_dispatch<Child, typename detail::make_dimension<Es...>> {
   using recipe = exponent_list<Es...>;
   using coherent_unit = U;
-  static constexpr Magnitude auto base_units_ratio =
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto base_units_ratio =
     detail::absolute_magnitude(typename derived_dimension::exponents());
 };
 

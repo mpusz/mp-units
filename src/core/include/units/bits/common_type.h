@@ -67,9 +67,9 @@ struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
 template<typename D1, typename U1, typename D2, typename U2>
 struct common_quantity_reference_impl<reference<D1, U1>, reference<D2, U2>> {
   using dimension = conditional<is_specialization_of<D1, unknown_dimension>, D2, D1>;
-  static constexpr Magnitude auto m1 = D1::base_units_ratio * U1::mag;
-  static constexpr Magnitude auto m2 = D2::base_units_ratio * U2::mag;
-  static constexpr Magnitude auto cm = common_magnitude(m1, m2);
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto m1 = D1::base_units_ratio * U1::mag;
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto m2 = D2::base_units_ratio * U2::mag;
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto cm = common_magnitude(m1, m2);
   using unit = downcast_unit<dimension, cm / dimension::base_units_ratio>;
   using type = reference<dimension, unit>;
 };

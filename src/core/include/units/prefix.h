@@ -36,7 +36,7 @@ namespace detail {
 
 template<ratio R>
 struct prefix_base : downcast_base<prefix_base<R>> {
-  static constexpr Magnitude auto mag = as_magnitude<R>();
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = as_magnitude<R>();
 };
 
 }  // namespace detail

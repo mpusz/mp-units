@@ -100,6 +100,16 @@
 
 #endif
 
+#if UNITS_COMP_MSVC
+
+#define UNITS_MSVC_WORKAROUND(X)
+
+#else
+
+#define UNITS_MSVC_WORKAROUND(X) (X)
+
+#endif
+
 
 namespace std {
 
