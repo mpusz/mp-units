@@ -212,8 +212,8 @@ only a few of many options possible.
 Copy
 ^^^^
 
-As **mp-units** is a C++ header-only library you can simply copy *src/include* directory to
-your source tree and use it as regular header files.
+As **mp-units** is a C++ header-only library you can simply copy all needed ``src/*/include`` subdirectories
+to your source tree.
 
 .. important::
 
