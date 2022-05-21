@@ -208,26 +208,26 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     namespace si {
 
-    struct yocto : units::prefix<yocto, "y", ratio(1, 1, -24)> {};
-    struct zepto : units::prefix<zepto, "z", ratio(1, 1, -21)> {};
-    struct atto  : units::prefix<atto,  "a", ratio(1, 1, -18)> {};
-    struct femto : units::prefix<femto, "f", ratio(1, 1, -15)> {};
-    struct pico  : units::prefix<pico,  "p", ratio(1, 1, -12)> {};
-    struct nano  : units::prefix<nano,  "n", ratio(1, 1,  -9)> {};
-    struct micro : units::prefix<micro, "µ", ratio(1, 1,  -6)> {};
-    struct milli : units::prefix<milli, "m", ratio(1, 1,  -3)> {};
-    struct centi : units::prefix<centi, "c", ratio(1, 1,  -2)> {};
-    struct deci  : units::prefix<deci,  "d", ratio(1, 1,  -1)> {};
-    struct deca  : units::prefix<deca,  "da",ratio(1, 1,   1)> {};
-    struct hecto : units::prefix<hecto, "h", ratio(1, 1,   2)> {};
-    struct kilo  : units::prefix<kilo,  "k", ratio(1, 1,   3)> {};
-    struct mega  : units::prefix<mega,  "M", ratio(1, 1,   6)> {};
-    struct giga  : units::prefix<giga,  "G", ratio(1, 1,   9)> {};
-    struct tera  : units::prefix<tera,  "T", ratio(1, 1,  12)> {};
-    struct peta  : units::prefix<peta,  "P", ratio(1, 1,  15)> {};
-    struct exa   : units::prefix<exa,   "E", ratio(1, 1,  18)> {};
-    struct zetta : units::prefix<zetta, "Z", ratio(1, 1,  21)> {};
-    struct yotta : units::prefix<yotta, "Y", ratio(1, 1,  24)> {};
+    struct yocto : prefix<yocto, "y", ratio(1, 1, -24)> {};
+    struct zepto : prefix<zepto, "z", ratio(1, 1, -21)> {};
+    struct atto  : prefix<atto,  "a", ratio(1, 1, -18)> {};
+    struct femto : prefix<femto, "f", ratio(1, 1, -15)> {};
+    struct pico  : prefix<pico,  "p", ratio(1, 1, -12)> {};
+    struct nano  : prefix<nano,  "n", ratio(1, 1,  -9)> {};
+    struct micro : prefix<micro, "µ", ratio(1, 1,  -6)> {};
+    struct milli : prefix<milli, "m", ratio(1, 1,  -3)> {};
+    struct centi : prefix<centi, "c", ratio(1, 1,  -2)> {};
+    struct deci  : prefix<deci,  "d", ratio(1, 1,  -1)> {};
+    struct deca  : prefix<deca,  "da",ratio(1, 1,   1)> {};
+    struct hecto : prefix<hecto, "h", ratio(1, 1,   2)> {};
+    struct kilo  : prefix<kilo,  "k", ratio(1, 1,   3)> {};
+    struct mega  : prefix<mega,  "M", ratio(1, 1,   6)> {};
+    struct giga  : prefix<giga,  "G", ratio(1, 1,   9)> {};
+    struct tera  : prefix<tera,  "T", ratio(1, 1,  12)> {};
+    struct peta  : prefix<peta,  "P", ratio(1, 1,  15)> {};
+    struct exa   : prefix<exa,   "E", ratio(1, 1,  18)> {};
+    struct zetta : prefix<zetta, "Z", ratio(1, 1,  21)> {};
+    struct yotta : prefix<yotta, "Y", ratio(1, 1,  24)> {};
 
     }
 
@@ -236,12 +236,12 @@ domain::
 
     namespace iec80000 {
 
-    struct kibi : units::prefix<kibi, "Ki", ratio(                    1'024)> {};
-    struct mebi : units::prefix<mebi, "Mi", ratio(                1'048'576)> {};
-    struct gibi : units::prefix<gibi, "Gi", ratio(            1'073'741'824)> {};
-    struct tebi : units::prefix<tebi, "Ti", ratio(        1'099'511'627'776)> {};
-    struct pebi : units::prefix<pebi, "Pi", ratio(    1'125'899'906'842'624)> {};
-    struct exbi : units::prefix<exbi, "Ei", ratio(1'152'921'504'606'846'976)> {};
+    struct kibi : prefix<kibi, "Ki", ratio(                    1'024)> {};
+    struct mebi : prefix<mebi, "Mi", ratio(                1'048'576)> {};
+    struct gibi : prefix<gibi, "Gi", ratio(            1'073'741'824)> {};
+    struct tebi : prefix<tebi, "Ti", ratio(        1'099'511'627'776)> {};
+    struct pebi : prefix<pebi, "Pi", ratio(    1'125'899'906'842'624)> {};
+    struct exbi : prefix<exbi, "Ei", ratio(1'152'921'504'606'846'976)> {};
 
     }
 
