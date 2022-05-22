@@ -449,6 +449,9 @@ template<typename D, typename U, typename Rep>
 explicit(false) quantity(Rep&&)->quantity<D, U, Rep>;
 #endif
 
+template<typename D, typename U, typename Rep>
+explicit(false) quantity(quantity<D, U, Rep>)->quantity<D, U, Rep>;
+
 template<Representation Rep>
 explicit(false) quantity(Rep)->quantity<dim_one, one, Rep>;
 
