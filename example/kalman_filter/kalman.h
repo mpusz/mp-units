@@ -38,20 +38,20 @@ concept QuantityOrQuantityPoint =
   units::Quantity<T> || units::QuantityPoint<T>;  // TODO Should it also account for `kinds`?
 
 template<typename... Qs>
-inline constexpr bool are_derivatives = false;
+inline constexpr bool are_time_derivatives = false;
 
 template<typename Q>
-inline constexpr bool are_derivatives<Q> = true;
+inline constexpr bool are_time_derivatives<Q> = true;
 
 template<typename Q1, typename Q2, typename... Qs>
-inline constexpr bool are_derivatives<Q1, Q2, Qs...> =
+inline constexpr bool are_time_derivatives<Q1, Q2, Qs...> =
   units::DimensionOfT<typename decltype(Q1::reference / Q2::reference)::dimension,
                       units::isq::dim_time> &&  // TODO Think on how to simplify this
-  are_derivatives<Q2, Qs...>;
+  are_time_derivatives<Q2, Qs...>;
 
 // state
 template<QuantityOrQuantityPoint... QQPs>
-  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_derivatives<QQPs...>
+  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs...>
 struct state {
   std::tuple<QQPs...> variables_;
   constexpr state(QQPs... qqps) : variables_(std::move(qqps)...) {}
