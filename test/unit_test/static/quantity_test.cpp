@@ -288,9 +288,12 @@ static_assert(get_length_derived_quantity() == 1_q_m);
 /////////
 
 #if UNITS_COMP_GCC >= 11 || UNITS_COMP_CLANG > 15
-static_assert(std::is_same_v<decltype(units::aliases::isq::si::m(123))::rep, int>);
-static_assert(std::is_same_v<decltype(units::aliases::isq::si::m(123.))::rep, double>);
+static_assert(std::is_same_v<decltype(aliases::isq::si::m(123))::rep, int>);
+static_assert(std::is_same_v<decltype(aliases::isq::si::m(123.))::rep, double>);
 #endif
+
+static_assert(
+  std::is_same_v<decltype(aliases::isq::si::m3(aliases::isq::si::m2{2} * aliases::isq::si::m{3}))::rep, int>);
 
 static_assert(is_same_v<decltype(quantity{length<metre, int>(123)}), length<metre, int>>);
 static_assert(is_same_v<decltype(quantity{speed<metre_per_second>(123)}), speed<metre_per_second>>);
@@ -513,7 +516,9 @@ static_assert(
   is_same_v<decltype(1_q_m * 1.L), length<metre, long double>>);  // TODO should we address fundamental types implicit
                                                                   // truncating conversions with concepts?
 static_assert(is_same_v<decltype(1 * 1._q_m), length<metre, long double>>);
-static_assert(compare<decltype(1_q_m * quantity{1.L}), length<metre, long double>>);  // TODO should we address fundamental types implicit truncating conversions with concepts?
+static_assert(compare<decltype(1_q_m * quantity{1.L}),
+                      length<metre, long double>>);  // TODO should we address fundamental types implicit truncating
+                                                     // conversions with concepts?
 static_assert(compare<decltype(quantity{1} * 1._q_m), length<metre, long double>>);
 static_assert(is_same_v<decltype(1_q_m / 1.L), length<metre, long double>>);
 static_assert(compare<decltype(1_q_m / quantity{1.L}), length<metre, long double>>);
