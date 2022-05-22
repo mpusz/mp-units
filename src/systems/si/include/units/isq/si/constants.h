@@ -52,7 +52,7 @@ template<Representation Rep = double>
 inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
 
 template<Representation Rep = double>
-inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(9'192'631'770);
+inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(Rep{9'192'631'770});
 
 template<Representation Rep = double>
 inline constexpr auto luminous_efficacy = luminous_flux<lumen, Rep>(683) / power<watt, Rep>(1);
