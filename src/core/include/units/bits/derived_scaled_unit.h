@@ -26,12 +26,12 @@
 
 namespace units::detail {
 
-// same_scaled_units
+// compatible_units
 template<typename ExpList, Unit... Us>
-inline constexpr bool same_scaled_units = false;
+inline constexpr bool compatible_units = false;
 
 template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+inline constexpr bool compatible_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
 
 // derived_scaled_unit
 
