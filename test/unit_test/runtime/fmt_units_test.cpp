@@ -167,7 +167,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("momentum")
   {
-    CHECK(STD_FMT::format("{}", 1_q_kg_m_per_s) == "1 kg ⋅ m/s");
+    CHECK(STD_FMT::format("{}", 1_q_kg_m_per_s) == "1 kg⋅m/s");
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_kg_m_per_s) == "1 kg m/s");
   }
 
@@ -244,7 +244,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("dynamic viscosity")
   {
-    CHECK(STD_FMT::format("{}", 1_q_Pa_s) == "1 Pa ⋅ s");
+    CHECK(STD_FMT::format("{}", 1_q_Pa_s) == "1 Pa⋅s");
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_Pa_s) == "1 Pa s");
   }
 
@@ -252,19 +252,19 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("specific heat capacity")
   {
-    CHECK(STD_FMT::format("{}", 1_q_J_per_kg_K) == "1 J ⋅ K⁻¹ ⋅ kg⁻¹");
+    CHECK(STD_FMT::format("{}", 1_q_J_per_kg_K) == "1 J⋅K⁻¹⋅kg⁻¹");
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_J_per_kg_K) == "1 J K^-1 kg^-1");
   }
 
   SECTION("molar heath capacity")
   {
-    CHECK(STD_FMT::format("{}", 1_q_J_per_mol_K) == "1 J ⋅ K⁻¹ ⋅ mol⁻¹");
+    CHECK(STD_FMT::format("{}", 1_q_J_per_mol_K) == "1 J⋅K⁻¹⋅mol⁻¹");
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_J_per_mol_K) == "1 J K^-1 mol^-1");
   }
 
   SECTION("thermal conductivity")
   {
-    CHECK(STD_FMT::format("{}", 1_q_W_per_m_K) == "1 W ⋅ m⁻¹ ⋅ K⁻¹");
+    CHECK(STD_FMT::format("{}", 1_q_W_per_m_K) == "1 W⋅m⁻¹⋅K⁻¹");
     CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_W_per_m_K) == "1 W m^-1 K^-1");
   }
 
@@ -284,7 +284,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("molar energy") { CHECK(STD_FMT::format("{}", 1_q_J_per_mol) == "1 J/mol"); }
 
-  SECTION("torque") { CHECK(STD_FMT::format("{}", 1_q_N_m_per_rad) == "1 N ⋅ m/rad"); }
+  SECTION("torque") { CHECK(STD_FMT::format("{}", 1_q_N_m_per_rad) == "1 N⋅m/rad"); }
 
   SECTION("storage_capacity")
   {
