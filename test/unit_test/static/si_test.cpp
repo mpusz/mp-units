@@ -340,7 +340,7 @@ static_assert(detail::unit_text<dim_luminance, candela_per_metre_sq>() == basic_
 // dynamic viscosity
 
 static_assert(1_q_Pa_s == 1_q_N * 1_q_s / 1_q_m2);
-static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa ⋅ s", "Pa s"));
+static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa⋅s", "Pa s"));
 
 // [specific|molar] heath capacity
 
@@ -350,13 +350,13 @@ static_assert(1_q_J_per_mol_K == 1_q_J_per_K / 1_q_mol);
 
 static_assert(detail::unit_text<dim_heat_capacity, joule_per_kelvin>() == "J/K");
 static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() ==
-              basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J K^-1 kg^-1"));
+              basic_symbol_text("J⋅K⁻¹⋅kg⁻¹", "J K^-1 kg^-1"));
 
 // thermal conductivity
 
 static_assert(20_q_W_per_m_K * 10_q_m * 300_q_K == 60'000_q_W);
 static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() ==
-              basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
+              basic_symbol_text("W⋅m⁻¹⋅K⁻¹", "W m^-1 K^-1"));
 
 // electric field strength
 
