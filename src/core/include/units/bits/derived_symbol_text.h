@@ -42,7 +42,7 @@ constexpr auto operator_text()
     if constexpr (Divide && NegativeExpCount == 1) {
       return basic_fixed_string("/");
     } else {
-      return basic_symbol_text("⋅", " ");
+      return basic_symbol_text(" ⋅ ", " ");
     }
   }
 }
