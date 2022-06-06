@@ -115,8 +115,6 @@ analysis in the library to work as expected.
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
     in many places in this library to provide
     :ref:`design/downcasting:The Downcasting Facility`.
-    Hopefully if [P0847]_ will land in C++23 the additional CRTP-related
-    template parameter will be removed from this definition.
 
 
 Obtaining a Unit of the Dimension
