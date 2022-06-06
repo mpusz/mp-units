@@ -25,16 +25,16 @@ name: Documentation
 on:
   push:
     paths:
-    - '.github/workflows/documentation.yml'
-    - 'docs/**'
-    - 'src/**'
-    - 'example/**'
+      - ".github/workflows/documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "example/**"
   pull_request:
     paths:
-    - '.github/workflows/documentation.yml'
-    - 'docs/**'
-    - 'src/**'
-    - 'example/**'
+      - ".github/workflows/documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "example/**"
 
 env:
   CC: gcc-10
@@ -65,7 +65,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Install Python dependencies
         run: |
           pip install -Ur docs/requirements.txt
@@ -83,7 +83,7 @@ jobs:
       - name: Configure CMake
         working-directory: build
         run: |
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
       - name: Generate documentation
         working-directory: build
         run: |
