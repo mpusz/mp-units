@@ -122,8 +122,6 @@ definitions of prefixed units using ``si::metre`` as a reference (i.e.
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
     in many places in this library to provide
     :ref:`design/downcasting:The Downcasting Facility`.
-    Hopefully if [P0847]_ will land in C++23 the additional CRTP-related
-    template parameter will be removed from this definition.
 
 
 It is important to notice here that :term:`SI` is not the only system used
