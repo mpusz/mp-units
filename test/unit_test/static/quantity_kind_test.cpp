@@ -219,7 +219,7 @@ static_assert(same(quantity_kind(rate_of_climb<kilometre_per_hour, double>(0.01 
 
 static_assert(construct_from_only<apples<one, int>>(1).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(1.0).common() == 1);
-static_assert(construct_from_only<apples<percent, int>>(1ULL).common().number() == 1);
+static_assert(construct_from_only<apples<percent, int>>(1LL).common().number() == 1);
 static_assert(construct_from_only<apples<percent, double>>(1.0L).common().number() == 1);
 static_assert(!constructible_or_convertible_from<apples<one, int>>(1.0));
 static_assert(!constructible_or_convertible_from<apples<percent, int>>(1.0));
