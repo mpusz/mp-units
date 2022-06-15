@@ -577,16 +577,16 @@ constexpr auto common_magnitude(Magnitude auto m, magnitude<>) { return detail::
 
 // Recursive case for the common Magnitude of any two non-identity Magnitudes.
 template<auto H1, auto... T1, auto H2, auto... T2>
-constexpr auto common_magnitude(magnitude<H1, T1...> m1, magnitude<H2, T2...> m2)
+constexpr auto common_magnitude(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   using detail::remove_positive_power;
 
   if constexpr (H1.get_base() < H2.get_base()) {
     // When H1 has the smaller base, prepend to result from recursion.
-    return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, m2);
+    return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{});
   } else if constexpr (H2.get_base() < H1.get_base()) {
     // When H2 has the smaller base, prepend to result from recursion.
-    return remove_positive_power(magnitude<H2>{}) * common_magnitude(m1, magnitude<T2...>{});
+    return remove_positive_power(magnitude<H2>{}) * common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{});
   } else {
     // When the bases are equal, pick whichever has the lower power.
     constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
