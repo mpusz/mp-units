@@ -50,6 +50,7 @@ add_units_module(
             include/units/isq/si/inductance.h
             include/units/isq/si/length.h
             include/units/isq/si/luminance.h
+            include/units/isq/si/luminous_flux.h
             include/units/isq/si/luminous_intensity.h
             include/units/isq/si/magnetic_flux.h
             include/units/isq/si/magnetic_induction.h

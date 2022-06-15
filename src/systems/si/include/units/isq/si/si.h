@@ -33,6 +33,7 @@
 #include <units/isq/si/charge_density.h>
 #include <units/isq/si/concentration.h>
 #include <units/isq/si/conductance.h>
+#include <units/isq/si/constants.h>
 #include <units/isq/si/current_density.h>
 #include <units/isq/si/density.h>
 #include <units/isq/si/dynamic_viscosity.h>
@@ -40,35 +41,37 @@
 #include <units/isq/si/electric_current.h>
 #include <units/isq/si/electric_field_strength.h>
 #include <units/isq/si/energy.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/luminous_intensity.h>
-#include <units/isq/si/mass.h>
-#include <units/isq/si/thermodynamic_temperature.h>
-#include <units/isq/si/time.h>
-// TODO Add when downcasting issue is solved (collides with pressure)
-// #include <units/isq/si/energy_density.h>
 #include <units/isq/si/force.h>
 #include <units/isq/si/frequency.h>
 #include <units/isq/si/heat_capacity.h>
 #include <units/isq/si/inductance.h>
+#include <units/isq/si/length.h>
 #include <units/isq/si/luminance.h>
+#include <units/isq/si/luminous_flux.h>
+#include <units/isq/si/luminous_intensity.h>
 #include <units/isq/si/magnetic_flux.h>
 #include <units/isq/si/magnetic_induction.h>
+#include <units/isq/si/mass.h>
 #include <units/isq/si/molar_energy.h>
 #include <units/isq/si/momentum.h>
 #include <units/isq/si/permeability.h>
 #include <units/isq/si/permittivity.h>
 #include <units/isq/si/power.h>
-#include <units/isq/si/pressure.h>
-// TODO Add when downcasting issue is solved (collides with frequency)
-// #include <units/isq/si/radioactivity.h>
-#include <units/isq/si/constants.h>
 #include <units/isq/si/prefixes.h>
+#include <units/isq/si/pressure.h>
 #include <units/isq/si/resistance.h>
 #include <units/isq/si/speed.h>
 #include <units/isq/si/surface_tension.h>
 #include <units/isq/si/thermal_conductivity.h>
+#include <units/isq/si/thermodynamic_temperature.h>
+#include <units/isq/si/time.h>
 #include <units/isq/si/torque.h>
 #include <units/isq/si/voltage.h>
 #include <units/isq/si/volume.h>
 // IWYU pragma: end_exports
+
+// TODO Add when downcasting issue is solved (collides with pressure)
+// #include <units/isq/si/energy_density.h>
+
+// TODO Add when downcasting issue is solved (collides with frequency)
+// #include <units/isq/si/radioactivity.h>

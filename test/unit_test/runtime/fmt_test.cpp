@@ -318,7 +318,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         const auto q = 2_q_s * 2_q_m * 2_q_kg;
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "8 m ⋅ kg ⋅ s"); }
+        SECTION("iostream") { CHECK(os.str() == "8 m⋅kg⋅s"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -330,7 +330,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         const auto q = 2._q_s * si::cgs::length<si::cgs::centimetre>(2) * si::cgs::mass<si::cgs::gram>(2);
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "8 cm ⋅ g ⋅ s"); }
+        SECTION("iostream") { CHECK(os.str() == "8 cm⋅g⋅s"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -343,7 +343,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       const auto q = 4_q_km * 2_q_s;
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "8 × 10³ m ⋅ s"); }
+      SECTION("iostream") { CHECK(os.str() == "8 × 10³ m⋅s"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -379,7 +379,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       const auto q = 2._q_s * si::cgs::length<si::metre>(2) * si::cgs::mass<si::kilogram>(2);
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "8 × 10⁵ cm ⋅ g ⋅ s"); }
+      SECTION("iostream") { CHECK(os.str() == "8 × 10⁵ cm⋅g⋅s"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -404,7 +404,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       const auto q = 4_q_m * 2_q_s;
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "8 m ⋅ s"); }
+      SECTION("iostream") { CHECK(os.str() == "8 m⋅s"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -416,7 +416,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       const auto q = 4_q_m * 2_q_s * 2_q_s;
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "16 m ⋅ s²"); }
+      SECTION("iostream") { CHECK(os.str() == "16 m⋅s²"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
@@ -428,7 +428,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       const auto q = 8_q_s / 2_q_m / 2_q_m;
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "2 1/m² ⋅ s"); }
+      SECTION("iostream") { CHECK(os.str() == "2 1/m²⋅s"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 

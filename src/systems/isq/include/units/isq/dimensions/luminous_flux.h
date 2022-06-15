@@ -22,28 +22,15 @@
 
 #pragma once
 
-#include <units/derived_dimension.h>
-#include <units/magnitude.h>
+#include <units/concepts.h>
+#include <units/isq/dimensions/power.h>
 
-namespace units::detail {
+namespace units::isq {
 
-// compatible_units
-template<typename ExpList, Unit... Us>
-inline constexpr bool compatible_units = false;
+template<typename Child, Unit U, typename... Dims>
+using dim_luminous_flux = dim_power<Child, U, Dims...>;
 
-template<typename... Es, Unit... Us>
-inline constexpr bool compatible_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+template<typename T>
+concept LuminousFlux = QuantityOfT<T, dim_luminous_flux>;
 
-// derived_scaled_unit
-
-template<Unit... Us, typename... Es>
-constexpr Magnitude auto derived_mag(exponent_list<Es...>)
-{
-  return (as_magnitude<1>() * ... *
-          pow<ratio{Es::num, Es::den}>(Us::mag / dimension_unit<typename Es::dimension>::mag));
-}
-
-template<DerivedDimension D, Unit... Us>
-using derived_scaled_unit = scaled_unit<derived_mag<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
-
-}  // namespace units::detail
+}  // namespace units::isq

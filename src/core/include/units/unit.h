@@ -142,7 +142,7 @@ struct derived_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Ch
  * @tparam URest the units for the rest of dimensions from the recipe
  */
 template<typename Child, DerivedDimension Dim, NamedUnit U, NamedUnit... URest>
-  requires detail::same_scaled_units<typename Dim::recipe, U, URest...>
+  requires detail::compatible_units<typename Dim::recipe, U, URest...>
 struct derived_scaled_unit : downcast_dispatch<Child, detail::derived_scaled_unit<Dim, U, URest...>> {
   static constexpr auto symbol = detail::derived_symbol_text<Dim, U, URest...>();
 };

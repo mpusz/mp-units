@@ -12,6 +12,7 @@ Framework Basics
     :maxdepth: 2
 
     framework/basic_concepts
+    framework/quantity_like
     framework/quantities
     framework/quantity_points
     framework/quantity_kinds

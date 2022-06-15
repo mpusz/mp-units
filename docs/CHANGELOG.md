@@ -9,7 +9,7 @@
   - (!) refactor: `PrefixFamily` support removed
   - (!) refactor: `mi(naut)` renamed to `nmi`
   - (!) refactor: `knot` unit helper renamed to `kn` in FPS
-  - (!) refactor: `knot` text symbol changed from `"knot"` to `"kn`"
+  - (!) refactor: `knot` text symbol changed from `"knot"` to `"kn"`
   - refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
   - refactor(example): `glide_computer` now use dimensionless quantities with `ranged_representation` as `rep`
   - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))

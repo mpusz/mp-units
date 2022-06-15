@@ -21,8 +21,8 @@
 # SOFTWARE.
 
 from conan import ConanFile
-from conan.tools.cmake import CMake
 from conan.tools.build import cross_building
+from conan.tools.cmake import CMake
 
 
 class TestPackageConan(ConanFile):
