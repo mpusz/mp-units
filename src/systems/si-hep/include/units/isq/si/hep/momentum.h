@@ -32,12 +32,11 @@
 #include <units/isq/si/speed.h>
 #include <units/unit.h>
 
-namespace units::isq::si::hep {
-
-
 // Necessary to factor `5'344'285'992'678`, which appears in the value for eV/c.
 template<>
 inline constexpr std::optional<std::intmax_t> units::known_first_factor<296'904'777'371> = 157'667;
+
+namespace units::isq::si::hep {
 
 struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
