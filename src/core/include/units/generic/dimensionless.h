@@ -31,7 +31,7 @@
 namespace units {
 
 struct one : derived_unit<one> {};
-struct percent : named_scaled_unit<percent, "%", ratio(1, 100), one> {};
+struct percent : named_scaled_unit<percent, "%", as_magnitude<ratio(1, 100)>(), one> {};
 
 /**
  * @brief Dimension one

@@ -33,8 +33,11 @@ namespace units {
 
 template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
+private:
+  static constexpr auto mag = as_magnitude<ratio(Period::num, Period::den)>();
+public:
   using dimension = isq::si::dim_time;
-  using unit = downcast_unit<dimension, ratio(Period::num, Period::den)>;
+  using unit = downcast_unit<dimension, mag>;
   using rep = Rep;
   [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
@@ -44,8 +47,11 @@ struct clock_origin : point_origin<isq::si::dim_time> {};
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
+private:
+  static constexpr auto mag = as_magnitude<ratio(Period::num, Period::den)>();
+public:
   using origin = clock_origin<C>;
-  using unit = downcast_unit<typename origin::dimension, ratio(Period::num, Period::den)>;
+  using unit = downcast_unit<typename origin::dimension, mag>;
   using rep = Rep;
   [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
   {
@@ -86,13 +92,13 @@ using to_std_ratio = decltype(detail::to_std_ratio_impl<R>());
 template<typename U, typename Rep>
 [[nodiscard]] constexpr auto to_std_duration(const quantity<isq::si::dim_time, U, Rep>& q)
 {
-  return std::chrono::duration<Rep, to_std_ratio<U::ratio>>(q.number());
+  return std::chrono::duration<Rep, to_std_ratio<as_ratio(U::mag)>>(q.number());
 }
 
 template<typename C, typename U, typename Rep>
 [[nodiscard]] constexpr auto to_std_time_point(const quantity_point<clock_origin<C>, U, Rep>& qp)
 {
-  using ret_type = std::chrono::time_point<C, std::chrono::duration<Rep, to_std_ratio<U::ratio>>>;
+  using ret_type = std::chrono::time_point<C, std::chrono::duration<Rep, to_std_ratio<as_ratio(U::mag)>>>;
   return ret_type(to_std_duration(qp.relative()));
 }
 

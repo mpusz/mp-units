@@ -32,6 +32,7 @@
 
 #include <gsl/gsl-lite.hpp>
 #include <array>
+#include <compare>
 #include <numeric>
 
 namespace units {
@@ -60,6 +61,8 @@ struct ratio {
 
   [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
 
+  [[nodiscard]] friend constexpr auto operator<=>(const ratio& lhs, const ratio& rhs) { return (lhs - rhs).num <=> 0; }
+
   [[nodiscard]] friend constexpr ratio operator-(const ratio& r) { return ratio(-r.num, r.den, r.exp); }
 
   [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
@@ -77,6 +80,8 @@ struct ratio {
 
     return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den, common_exp};
   }
+
+  [[nodiscard]] friend constexpr ratio operator-(const ratio& lhs, const ratio& rhs) { return lhs + (-rhs); }
 
   [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
   {

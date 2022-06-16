@@ -27,6 +27,7 @@
 #include <units/bits/pow.h>
 #include <units/concepts.h>
 #include <units/customization_points.h>
+#include <units/magnitude.h>
 
 UNITS_DIAGNOSTIC_PUSH
 // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
@@ -49,25 +50,28 @@ class quantity_point_kind;
 namespace detail {
 
 template<typename T>
-inline constexpr ratio quantity_ratio = std::enable_if_t<!Quantity<T>>{};
+inline constexpr Magnitude auto quantity_magnitude = std::enable_if_t<!Quantity<T>, magnitude<>>{};
 
 template<typename D, typename U, typename Rep>
-inline constexpr ratio quantity_ratio<quantity<D, U, Rep>> = [] {
+inline constexpr Magnitude auto quantity_magnitude<quantity<D, U, Rep>> = [] {
   if constexpr (BaseDimension<D>) {
-    return U::ratio;
+    return U::mag;
   } else {
-    return D::base_units_ratio * U::ratio / D::coherent_unit::ratio;
+    return D::base_units_ratio * U::mag / D::coherent_unit::mag;
   }
 }();
 
+template<Quantity Q>
+inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<Q>);
+
 template<typename QFrom, typename QTo>
-inline constexpr ratio cast_ratio = [] {
+inline constexpr Magnitude auto cast_magnitude = [] {
   using FromU = TYPENAME QFrom::unit;
   using ToU = TYPENAME QTo::unit;
   if constexpr (same_unit_reference<FromU, ToU>::value) {
-    return FromU::ratio / ToU::ratio;
+    return FromU::mag / ToU::mag;
   } else {
-    return quantity_ratio<QFrom> / quantity_ratio<QTo>;
+    return quantity_magnitude<QFrom> / quantity_magnitude<QTo>;
   }
 }();
 
@@ -112,25 +116,14 @@ template<Quantity To, typename D, typename U, scalable_with_<typename To::rep> R
   using traits = detail::cast_traits<Rep, typename To::rep>;
   using ratio_type = TYPENAME traits::ratio_type;
   using rep_type = TYPENAME traits::rep_type;
-  constexpr auto c_ratio = detail::cast_ratio<quantity<D, U, Rep>, To>;
 
-  if constexpr (treat_as_floating_point<rep_type>) {
-    return To(
-      static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) *
-                                    (static_cast<ratio_type>(c_ratio.num) * detail::fpow10<ratio_type>(c_ratio.exp) /
-                                     static_cast<ratio_type>(c_ratio.den))));
-  } else {
-    if constexpr (c_ratio.exp > 0) {
-      return To(static_cast<TYPENAME To::rep>(
-        static_cast<rep_type>(q.number()) *
-        (static_cast<ratio_type>(c_ratio.num) * static_cast<ratio_type>(detail::ipow10(c_ratio.exp))) /
-        static_cast<ratio_type>(c_ratio.den)));
-    } else {
-      return To(static_cast<TYPENAME To::rep>(
-        static_cast<rep_type>(q.number()) * static_cast<ratio_type>(c_ratio.num) /
-        (static_cast<ratio_type>(c_ratio.den) * static_cast<ratio_type>(detail::ipow10(-c_ratio.exp)))));
-    }
-  }
+  constexpr Magnitude auto c_mag = detail::cast_magnitude<quantity<D, U, Rep>, To>;
+  constexpr Magnitude auto num = numerator(c_mag);
+  constexpr Magnitude auto den = denominator(c_mag);
+  constexpr Magnitude auto irr = c_mag * (den / num);
+
+  constexpr auto val = [](Magnitude auto m) { return get_value<ratio_type>(m); };
+  return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)));
 }
 
 /**
@@ -149,7 +142,7 @@ template<Dimension ToD, typename D, typename U, typename Rep>
   requires equivalent<ToD, D>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<D, U, Rep>& q)
 {
-  return quantity_cast<quantity<ToD, downcast_unit<ToD, U::ratio>, Rep>>(q);
+  return quantity_cast<quantity<ToD, downcast_unit<ToD, U::mag>, Rep>>(q);
 }
 
 /**

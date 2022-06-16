@@ -32,12 +32,17 @@
 #include <units/isq/si/speed.h>
 #include <units/unit.h>
 
+// Necessary to factor `5'344'285'992'678`, which appears in the value for eV/c.
+template<>
+inline constexpr std::optional<std::intmax_t> units::known_first_factor<296'904'777'371> = 157'667;
+
 namespace units::isq::si::hep {
 
 struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
 struct eV_per_c :
-    named_scaled_unit<eV_per_c, "eV/c", ratio(5'344'285'992'678, 1'000'000'000'000, -35), kilogram_metre_per_second> {};
+    named_scaled_unit<eV_per_c, "eV/c", as_magnitude<ratio(5'344'285'992'678, 1'000'000'000'000, -35)>(),
+                      kilogram_metre_per_second> {};
 struct feV_per_c : prefixed_unit<feV_per_c, femto, eV_per_c> {};
 struct peV_per_c : prefixed_unit<peV_per_c, pico, eV_per_c> {};
 struct neV_per_c : prefixed_unit<neV_per_c, nano, eV_per_c> {};

@@ -39,6 +39,7 @@ using si::international::fathom;
 using si::international::foot;
 using si::international::inch;
 using si::international::mil;
+using si::international::mile;
 using si::international::thou;
 using si::international::yard;
 
@@ -47,9 +48,7 @@ struct thousandth : alias_unit<thou, "thou"> {};
 
 struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
-struct mile : named_scaled_unit<mile, "mile", ratio(5'280), foot> {};
-
-struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", ratio(2'000), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", as_magnitude<2'000>(), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 

@@ -137,13 +137,14 @@ constexpr auto inverse(BasePower auto bp)
 
 // `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
 template<typename T>
-  requires std::is_arithmetic_v<T>
-using widen_t = std::conditional_t<std::is_floating_point_v<T>, long double,
-                                   std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>;
+using widen_t =
+  std::conditional_t<std::is_arithmetic_v<T>,
+                     std::conditional_t<std::is_floating_point_v<T>, long double,
+                                        std::conditional_t<std::is_signed_v<T>, std::intmax_t, std::uintmax_t>>,
+                     T>;
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
 template<typename T>
-  requires std::is_arithmetic_v<T>
 constexpr T int_power(T base, std::integral auto exp)
 {
   // As this function should only be called at compile time, the exceptions herein function as
@@ -166,7 +167,7 @@ constexpr T int_power(T base, std::integral auto exp)
   // template parameter, rather than a function parameter.
 
   if (exp == 0) {
-    return 1;
+    return T{1};
   }
 
   if (exp % 2 == 1) {
@@ -178,7 +179,6 @@ constexpr T int_power(T base, std::integral auto exp)
 
 
 template<typename T>
-  requires std::is_arithmetic_v<T>
 constexpr widen_t<T> compute_base_power(BasePower auto bp)
 {
   // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
@@ -197,11 +197,11 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
     if constexpr (std::is_integral_v<T>) {
       throw std::invalid_argument{"Cannot represent reciprocal as integer"};
     } else {
-      return 1 / compute_base_power<T>(inverse(bp));
+      return T{1} / compute_base_power<T>(inverse(bp));
     }
   }
 
-  auto power = bp.power.num * int_power(10, bp.power.exp);
+  auto power = numerator(bp.power);
   return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
 }
 
@@ -210,18 +210,14 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
 // The input is the desired result, but in a (wider) intermediate type.  The point of this function
 // is to cast to the desired type, but avoid overflow in doing so.
 template<typename To, typename From>
-  requires std::is_arithmetic_v<To> && std::is_arithmetic_v<From> &&
-           (std::is_integral_v<To> == std::is_integral_v<From>)
+// TODO(chogg): Migrate this to use `treat_as_floating_point`.
+  requires(!std::is_integral_v<To> || std::is_integral_v<From>)
 constexpr To checked_static_cast(From x)
 {
   // This function should only ever be called at compile time.  The purpose of these exceptions is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (!std::in_range<To>(x)) {
-      throw std::invalid_argument{"Cannot represent magnitude in this type"};
-    }
-  } else {
-    if (x < std::numeric_limits<To>::min() || x > std::numeric_limits<To>::max()) {
       throw std::invalid_argument{"Cannot represent magnitude in this type"};
     }
   }
@@ -374,7 +370,7 @@ struct magnitude {
 namespace detail {
 template<typename T>
 inline constexpr bool is_magnitude = false;
-template<BasePower auto... BPs>
+template<auto... BPs>
 inline constexpr bool is_magnitude<magnitude<BPs...>> = true;
 }  // namespace detail
 
@@ -387,8 +383,9 @@ concept Magnitude = detail::is_magnitude<T>;
 /**
  * @brief  The value of a Magnitude in a desired type T.
  */
-template<typename T, BasePower auto... BPs>
-  requires std::is_floating_point_v<T> || (std::is_integral_v<T> && is_integral(magnitude<BPs...>{}))
+template<typename T, auto... BPs>
+// TODO(chogg): Migrate this to use `treat_as_floating_point`.
+  requires(!std::is_integral_v<T> || is_integral(magnitude<BPs...>{}))
 constexpr T get_value(const magnitude<BPs...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
@@ -407,7 +404,7 @@ struct pi_base {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 
-template<BasePower auto... LeftBPs, BasePower auto... RightBPs>
+template<auto... LeftBPs, auto... RightBPs>
 constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
 {
   if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
@@ -420,27 +417,39 @@ constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.
 
-template<ratio E, BasePower auto... BPs>
+template<ratio E, auto... BPs>
 constexpr auto pow(magnitude<BPs...>)
 {
-  if constexpr (E == 0) {
+  if constexpr (E.num == 0) {
     return magnitude<>{};
   } else {
     return magnitude<pow(BPs, E)...>{};
   }
 }
 
+template<auto... BPs>
+constexpr auto sqrt(magnitude<BPs...> m)
+{
+  return pow<ratio{1, 2}>(m);
+}
+
+template<auto... BPs>
+constexpr auto cbrt(magnitude<BPs...> m)
+{
+  return pow<ratio{1, 3}>(m);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
 
 // Base cases, for when either (or both) inputs are the identity.
-constexpr auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
-constexpr auto operator*(magnitude<>, Magnitude auto m) { return m; }
-constexpr auto operator*(Magnitude auto m, magnitude<>) { return m; }
+constexpr Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
+constexpr Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
+constexpr Magnitude auto operator*(Magnitude auto m, magnitude<>) { return m; }
 
 // Recursive case for the product of any two non-identity Magnitudes.
-template<BasePower auto H1, BasePower auto... T1, BasePower auto H2, BasePower auto... T2>
-constexpr auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
+template<auto H1, auto... T1, auto H2, auto... T2>
+constexpr Magnitude auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   // Case for when H1 has the smaller base.
   if constexpr (H1.get_base() < H2.get_base()) {
@@ -486,7 +495,7 @@ constexpr auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1
 namespace detail {
 
 // The largest integer which can be extracted from any magnitude with only a single basis vector.
-template<BasePower auto BP>
+template<auto BP>
 constexpr auto integer_part(magnitude<BP>)
 {
   constexpr auto power_num = numerator(BP.power);
@@ -506,7 +515,7 @@ constexpr auto integer_part(magnitude<BP>)
 
 }  // namespace detail
 
-template<BasePower auto... BPs>
+template<auto... BPs>
 constexpr auto numerator(magnitude<BPs...>)
 {
   return (detail::integer_part(magnitude<BPs>{}) * ... * magnitude<>{});
@@ -524,6 +533,70 @@ constexpr ratio as_ratio(Magnitude auto m)
   };
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Common Magnitude.
+//
+// The "common Magnitude" C, of two Magnitudes M1 and M2, is the largest Magnitude such that each of its inputs is
+// expressible by only positive basis powers relative to C.  That is, both (M1 / C) and (M2 / C) contain only positive
+// powers in the expansion on our basis.
+//
+// For rational Magnitudes (or, more precisely, Magnitudes that are rational _relative to each other_), this reduces to
+// the familiar convention from the std::chrono library: it is the largest Magnitude C such that each input Magnitude is
+// an _integer multiple_ of C.  The connection can be seen by considering the definition in the above paragraph, and
+// recognizing that both the bases and the powers are all integers for rational Magnitudes.
+//
+// For relatively _irrational_ Magnitudes (whether from irrational bases, or fractional powers of integer bases), the
+// notion of a "common type" becomes less important, because there is no way to preserve pure integer multiplication.
+// When we go to retrieve our value, we'll be stuck with a floating point approximation no matter what choice we make.
+// Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking the
+// minimum power for each base (where absent bases implicitly have a power of 0).
+
+namespace detail {
+template<auto BP>
+constexpr auto remove_positive_power(magnitude<BP> m)
+{
+  if constexpr (numerator(BP.power) < 0) {
+    return m;
+  } else {
+    return magnitude<>{};
+  }
+}
+
+template<auto... BPs>
+constexpr auto remove_positive_powers(magnitude<BPs...>)
+{
+  return (magnitude<>{} * ... * remove_positive_power(magnitude<BPs>{}));
+}
+}  // namespace detail
+
+// Base cases, for when either (or both) inputs are the identity.
+constexpr auto common_magnitude(magnitude<>, magnitude<>) { return magnitude<>{}; }
+constexpr auto common_magnitude(magnitude<>, Magnitude auto m) { return detail::remove_positive_powers(m); }
+constexpr auto common_magnitude(Magnitude auto m, magnitude<>) { return detail::remove_positive_powers(m); }
+
+// Recursive case for the common Magnitude of any two non-identity Magnitudes.
+template<auto H1, auto... T1, auto H2, auto... T2>
+constexpr auto common_magnitude(magnitude<H1, T1...>, magnitude<H2, T2...>)
+{
+  using detail::remove_positive_power;
+
+  if constexpr (H1.get_base() < H2.get_base()) {
+    // When H1 has the smaller base, prepend to result from recursion.
+    return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{});
+  } else if constexpr (H2.get_base() < H1.get_base()) {
+    // When H2 has the smaller base, prepend to result from recursion.
+    return remove_positive_power(magnitude<H2>{}) * common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{});
+  } else {
+    // When the bases are equal, pick whichever has the lower power.
+    constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
+    if constexpr (H1.power < H2.power) {
+      return magnitude<H1>{} * common_tail;
+    } else {
+      return magnitude<H2>{} * common_tail;
+    }
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `as_magnitude()` implementation.
@@ -579,7 +652,7 @@ template<ratio R>
   requires(R.num > 0)
 constexpr Magnitude auto as_magnitude()
 {
-  return pow<R.exp>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
+  return pow<ratio{R.exp}>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
          detail::prime_factorization_v<R.den>;
 }
 

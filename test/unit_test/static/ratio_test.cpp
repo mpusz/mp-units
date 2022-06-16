@@ -108,4 +108,10 @@ static_assert(numerator(ratio(3, 7, 2)) == 300);
 static_assert(denominator(ratio(3, 4)) == 4);
 static_assert(denominator(ratio(3, 7, -2)) == 700);
 
+// comparison
+static_assert((ratio(3, 4) <=> ratio(6, 8)) == (0 <=> 0));
+static_assert((ratio(3, 4) <=> ratio(-3, 4)) == (0 <=> -1));
+static_assert((ratio(-3, 4) <=> ratio(3, -4)) == (0 <=> 0));
+static_assert((ratio(1, 1, 1) <=> ratio(10)) == (0 <=> 0));
+
 }  // namespace

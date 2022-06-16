@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/derived_dimension.h>
+#include <units/magnitude.h>
 
 namespace units::detail {
 
@@ -35,24 +36,14 @@ inline constexpr bool compatible_units<exponent_list<Es...>, Us...> = (UnitOf<Us
 
 // derived_scaled_unit
 
-template<Exponent E>
-constexpr ratio inverse_if_negative(const ratio& r)
-{
-  if constexpr (E::num * E::den > 0)
-    return r;
-  else
-    return inverse(r);
-}
-
 template<Unit... Us, typename... Es>
-constexpr ratio derived_ratio(exponent_list<Es...>)
+constexpr Magnitude auto derived_mag(exponent_list<Es...>)
 {
-  return (... * inverse_if_negative<Es>(
-                  pow<detail::abs(Es::num)>(Us::ratio / dimension_unit<typename Es::dimension>::ratio)));
+  return (as_magnitude<1>() * ... *
+          pow<ratio{Es::num, Es::den}>(Us::mag / dimension_unit<typename Es::dimension>::mag));
 }
 
 template<DerivedDimension D, Unit... Us>
-using derived_scaled_unit =
-  scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
+using derived_scaled_unit = scaled_unit<derived_mag<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
 
 }  // namespace units::detail

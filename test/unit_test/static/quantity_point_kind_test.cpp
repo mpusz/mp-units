@@ -264,7 +264,7 @@ static_assert(construct_from_only<nth_apple<one, double>>(1).relative().common()
 static_assert(construct_from_only<nth_apple<one, double>>(short{1}).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, short>>(1).relative().common() == 1);
 static_assert(construct_from_only<nth_apple<one, int>>(1).relative().common() == 1);
-static_assert(construct_from_only<nth_apple<percent, int>>(1ULL).relative().common().number() == 1);
+static_assert(construct_from_only<nth_apple<percent, int>>(1LL).relative().common().number() == 1);
 static_assert(construct_from_only<nth_apple<percent, double>>(1).relative().common().number() == 1);
 static_assert(!constructible_or_convertible_from<nth_apple<percent, int>>(1.0));
 static_assert(!constructible_or_convertible_from<nth_apple<one, int>>(1.0));

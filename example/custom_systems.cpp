@@ -33,7 +33,7 @@ using namespace units;
 namespace fps {
 
 struct foot : named_unit<foot, "ft"> {};
-struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
+struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -54,8 +54,8 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
 
-struct foot : named_scaled_unit<foot, "ft", ratio(3'048, 1'000, -1), metre> {};
-struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
+struct foot : named_scaled_unit<foot, "ft", as_magnitude<ratio(3'048, 1'000, -1)>(), metre> {};
+struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -103,7 +103,7 @@ template<Unit U>
 std::ostream& operator<<(std::ostream& os, const U& u)
 {
   using unit_type = std::remove_cvref_t<decltype(u)>;
-  return os << unit_type::ratio << " x " << unit_type::reference::symbol.standard();
+  return os << as_ratio(unit_type::mag) << " x " << unit_type::reference::symbol.standard();
 }
 
 void what_is_your_ratio()

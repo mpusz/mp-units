@@ -52,7 +52,7 @@ static_assert(10_q_ft == 2_q_ft_per_s * 5_q_s);
 static_assert(detail::unit_text<dim_speed, foot_per_second>() == "ft/s");
 
 // area
-static_assert(foot::ratio / dimension_unit<dim_length>::ratio == ratio(1));
+static_assert(as_ratio(foot::mag / dimension_unit<dim_length>::mag) == ratio(1));
 
 static_assert(1_q_ft * 1_q_ft == 1_q_ft2);
 static_assert(100_q_ft2 / 10_q_ft == 10_q_ft);
@@ -61,7 +61,7 @@ static_assert(detail::unit_text<dim_area, square_foot>() == basic_symbol_text("f
 
 // volume
 static_assert(1_q_yd * 1_q_yd * 1_q_yd == 1_q_yd3);
-static_assert(cubic_yard::ratio / cubic_foot::ratio == ratio(27));
+static_assert(as_ratio(cubic_yard::mag / cubic_foot::mag) == ratio(27));
 
 /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 

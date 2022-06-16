@@ -30,6 +30,7 @@
 #include <units/isq/si/si.h>
 #include <units/isq/si/typographic/typographic.h>
 #include <units/isq/si/uscs/uscs.h>
+#include <units/magnitude.h>
 
 using namespace units::isq::si;
 using namespace units::isq::si::references;
@@ -65,7 +66,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     CHECK(STD_FMT::format("{}", 1_q_fathom_us) == "1 fathom(us)");
     CHECK(STD_FMT::format("{}", 1_q_mi) == "1 mi");
     CHECK(STD_FMT::format("{}", 1_q_mi_us) == "1 mi(us)");
-    CHECK(STD_FMT::format("{}", 1_q_naut_mi) == "1 nmi");
+    CHECK(STD_FMT::format("{}", 1_q_naut_mi) == "1 mi(naut)");
     CHECK(STD_FMT::format("{}", 1_q_ch) == "1 ch");
     CHECK(STD_FMT::format("{}", 1_q_rd) == "1 rd");
     CHECK(STD_FMT::format("{}", 1_q_thou) == "1 thou");
@@ -315,16 +316,19 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
 
   SECTION("incoherent units with powers")
   {
-    CHECK(STD_FMT::format("{}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
-    CHECK(STD_FMT::format("{}", 1_q_au * 1_q_au) == "1 [2237952291797391849 × 10⁴] m²");
-
-    CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 x 10^9] m^3");
-    CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_au * 1_q_au) == "1 [2237952291797391849 x 10^4] m^2");
+    // TODO(chogg): Reinstate after format/Magnitude redesign.
+    // CHECK(STD_FMT::format("{}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
+    // CHECK(STD_FMT::format("{}", 1_q_au * 1_q_au) == "1 [2237952291797391849 × 10⁴] m²");
+    //
+    // CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 x 10^9] m^3");
+    // CHECK(STD_FMT::format("{:%Q %Aq}", 1_q_au * 1_q_au) == "1 [2237952291797391849 x 10^4] m^2");
   }
 
   SECTION("unknown scaled unit with reference different than the dimension's coherent unit")
   {
-    CHECK(STD_FMT::format("{}", mass<units::scaled_unit<units::ratio(2, 3), gram>>(1)) == "1 [2/3 × 10⁻³] kg");
-    CHECK(STD_FMT::format("{:%Q %Aq}", mass<units::scaled_unit<units::ratio(2, 3), gram>>(1)) == "1 [2/3 x 10^-3] kg");
+    // TODO(chogg): Reinstate after format/Magnitude redesign.
+    // constexpr auto mag = units::as_magnitude<units::ratio{2, 3}>();
+    // CHECK(STD_FMT::format("{}", mass<units::scaled_unit<mag, gram>>(1)) == "1 [2/3 × 10⁻³] kg");
+    // CHECK(STD_FMT::format("{:%Q %Aq}", mass<units::scaled_unit<mag, gram>>(1)) == "1 [2/3 x 10^-3] kg");
   }
 }

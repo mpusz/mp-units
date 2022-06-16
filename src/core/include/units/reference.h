@@ -37,13 +37,13 @@ namespace detail {
 
 template<typename D, typename D1, typename U1, typename D2, typename U2>
 using reference_multiply_impl =
-  reference<D, downcast_unit<D, (U1::ratio / dimension_unit<D1>::ratio) * (U2::ratio / dimension_unit<D2>::ratio) *
-                                  dimension_unit<D>::ratio>>;
+  reference<D, downcast_unit<D, (U1::mag / dimension_unit<D1>::mag) * (U2::mag / dimension_unit<D2>::mag) *
+                                  dimension_unit<D>::mag>>;
 
 template<typename D, typename D1, typename U1, typename D2, typename U2>
 using reference_divide_impl =
-  reference<D, downcast_unit<D, (U1::ratio / dimension_unit<D1>::ratio) / (U2::ratio / dimension_unit<D2>::ratio) *
-                                  dimension_unit<D>::ratio>>;
+  reference<D, downcast_unit<D, (U1::mag / dimension_unit<D1>::mag) / (U2::mag / dimension_unit<D2>::mag) *
+                                  dimension_unit<D>::mag>>;
 
 }  // namespace detail
 

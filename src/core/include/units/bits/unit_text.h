@@ -147,7 +147,7 @@ constexpr auto unit_text()
     }();
 
     constexpr auto prefix_txt =
-      prefix_or_ratio_text<U, U::ratio / coherent_unit::ratio, symbol_text.standard().size()>();
+      prefix_or_ratio_text<U, as_ratio(U::mag / coherent_unit::mag), symbol_text.standard().size()>();
     return prefix_txt + symbol_text;
   }
 }

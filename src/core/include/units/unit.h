@@ -28,6 +28,7 @@
 // IWYU pragma: begin_exports
 #include <units/bits/derived_scaled_unit.h>
 #include <units/bits/external/fixed_string.h>
+#include <units/magnitude.h>
 #include <units/prefix.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
@@ -54,20 +55,17 @@ inline constexpr bool can_be_prefixed = false;
  * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
  * terms of gram, ...)
  *
- * @tparam R a ratio of a reference unit
+ * @tparam M a Magnitude representing the (relative) size of this unit
  * @tparam U a unit to use as a reference for this dimension
  */
-template<ratio R, typename U>
-  requires UnitRatio<R>
-struct scaled_unit : downcast_base<scaled_unit<R, U>> {
-  static constexpr ::units::ratio ratio = R;
+template<Magnitude auto M, typename U>
+struct scaled_unit : downcast_base<scaled_unit<M, U>> {
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
   using reference = U;
 };
 
-template<Dimension D, auto R>
-// template<Dimension D, ratio R>  // TODO: GCC crash!!!
-  requires UnitRatio<R>
-using downcast_unit = downcast<scaled_unit<R, typename dimension_unit<D>::reference>>;
+template<Dimension D, Magnitude auto M>
+using downcast_unit = downcast<scaled_unit<M, typename dimension_unit<D>::reference>>;
 
 template<Unit U1, Unit U2>
 struct same_unit_reference : is_same<typename U1::reference, typename U2::reference> {};
@@ -82,7 +80,7 @@ struct same_unit_reference : is_same<typename U1::reference, typename U2::refere
  * @tparam Symbol a short text representation of the unit
  */
 template<typename Child, basic_symbol_text Symbol>
-struct named_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
+struct named_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
   static constexpr auto symbol = Symbol;
 };
 
@@ -94,12 +92,11 @@ struct named_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {
  *
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  * @tparam Symbol a short text representation of the unit
- * @tparam R a scale to apply to U
+ * @tparam M the Magnitude by which to scale U
  * @tparam U a reference unit to scale
  */
-template<typename Child, basic_symbol_text Symbol, ratio R, Unit U>
-  requires UnitRatio<R>
-struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<R * U::ratio, typename U::reference>> {
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, Unit U>
+struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<M * U::mag, typename U::reference>> {
   static constexpr auto symbol = Symbol;
 };
 
@@ -116,7 +113,7 @@ struct named_scaled_unit : downcast_dispatch<Child, scaled_unit<R * U::ratio, ty
  */
 template<typename Child, Prefix P, NamedUnit U>
   requires detail::can_be_prefixed<U>
-struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio, typename U::reference>> {
+struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typename U::reference>> {
   static constexpr auto symbol = P::symbol + U::symbol;
 };
 
@@ -129,7 +126,7 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::ratio * U::ratio,
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct derived_unit : downcast_dispatch<Child, scaled_unit<ratio(1), Child>> {};
+struct derived_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {};
 
 /**
  * @brief A unit with a deduced ratio and symbol
@@ -198,8 +195,8 @@ namespace detail {
 template<typename Child, basic_symbol_text Symbol>
 void is_named_impl(const volatile named_unit<Child, Symbol>*);
 
-template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
-void is_named_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, typename U>
+void is_named_impl(const volatile named_scaled_unit<Child, Symbol, M, U>*);
 
 template<typename Child, typename P, typename U>
 void is_named_impl(const volatile prefixed_unit<Child, P, U>*);
@@ -216,8 +213,8 @@ inline constexpr bool is_named<U> = requires(U * u) { is_named_impl(u); };
 template<typename Child, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile named_unit<Child, Symbol>*);
 
-template<typename Child, basic_symbol_text Symbol, ratio R, typename U>
-void can_be_prefixed_impl(const volatile named_scaled_unit<Child, Symbol, R, U>*);
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M, typename U>
+void can_be_prefixed_impl(const volatile named_scaled_unit<Child, Symbol, M, U>*);
 
 template<typename U, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
@@ -225,8 +222,8 @@ void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
 template<Unit U>
 inline constexpr bool can_be_prefixed<U> = requires(U * u) { can_be_prefixed_impl(u); };
 
-template<ratio R, typename U>
-inline constexpr bool can_be_prefixed<scaled_unit<R, U>> = can_be_prefixed<typename U::reference>;
+template<Magnitude auto M, typename U>
+inline constexpr bool can_be_prefixed<scaled_unit<M, U>> = can_be_prefixed<typename U::reference>;
 
 }  // namespace detail
 

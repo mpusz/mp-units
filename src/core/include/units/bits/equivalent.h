@@ -72,8 +72,8 @@ struct equivalent_impl<D1, D2> :
 // additionally accounts for unknown dimensions
 template<Unit U1, Dimension D1, Unit U2, Dimension D2>
 struct equivalent_unit :
-    std::disjunction<equivalent_impl<U1, U2>, std::bool_constant<U1::ratio / dimension_unit<D1>::ratio ==
-                                                                 U2::ratio / dimension_unit<D2>::ratio>> {};
+    std::disjunction<equivalent_impl<U1, U2>,
+                     std::bool_constant<U1::mag / dimension_unit<D1>::mag == U2::mag / dimension_unit<D2>::mag>> {};
 
 // point origins
 

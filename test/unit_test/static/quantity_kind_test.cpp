@@ -219,7 +219,7 @@ static_assert(same(quantity_kind(rate_of_climb<kilometre_per_hour, double>(0.01 
 
 static_assert(construct_from_only<apples<one, int>>(1).common() == 1);
 static_assert(construct_from_only<apples<one, double>>(1.0).common() == 1);
-static_assert(construct_from_only<apples<percent, int>>(1ULL).common().number() == 1);
+static_assert(construct_from_only<apples<percent, int>>(1LL).common().number() == 1);
 static_assert(construct_from_only<apples<percent, double>>(1.0L).common().number() == 1);
 static_assert(!constructible_or_convertible_from<apples<one, int>>(1.0));
 static_assert(!constructible_or_convertible_from<apples<percent, int>>(1.0));
@@ -456,9 +456,9 @@ concept invalid_compound_assignments =
     requires !requires { w *= m; };
     requires !requires { w /= m; };
     requires !requires { w %= m; };
-    requires !requires { w *= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
-    requires !requires { w /= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
-    requires !requires { w %= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<ratio{1, 1, 3}, one>, int>{1}; };
+    requires !requires { w *= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<as_magnitude<1000>(), one>, int>{1}; };
+    requires !requires { w /= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<as_magnitude<1000>(), one>, int>{1}; };
+    requires !requires { w %= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<as_magnitude<1000>(), one>, int>{1}; };
     requires !requires { w %= 1.0; };
     requires !requires { w %= quantity(1.0); };
     requires !requires { w %= 1.0 * (w / w); };
