@@ -69,28 +69,22 @@ constexpr auto magnitude_text()
   }
 }
 
-template<ratio R>
-constexpr auto ratio_text()
+template<Unit U, Magnitude auto M, std::size_t SymbolLen>
+constexpr auto prefix_or_magnitude_text()
 {
-  return magnitude_text<as_magnitude<R>()>();
-}
-
-template<Unit U, ratio R, std::size_t SymbolLen>
-constexpr auto prefix_or_ratio_text()
-{
-  if constexpr (R.num == 1 && R.den == 1 && R.exp == 0) {
+  if constexpr (M == as_magnitude<1>()) {
     // no ratio/prefix
     return basic_fixed_string("");
   } else {
     // try to form a prefix
-    using prefix = downcast<detail::prefix_base<R>>;
+    using prefix = downcast<detail::prefix_base<M>>;
 
-    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<R>>) {
+    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<M>>) {
       // print as a prefixed unit
       return prefix::symbol;
     } else {
       // print as a ratio of the coherent unit
-      constexpr auto txt = ratio_text<R>();
+      constexpr auto txt = magnitude_text<M>();
       if constexpr (SymbolLen > 0 && txt.standard().size() > 0)
         return txt + basic_fixed_string(" ");
       else
@@ -164,7 +158,7 @@ constexpr auto unit_text()
     }();
 
     constexpr auto prefix_txt =
-      prefix_or_ratio_text<U, as_ratio(U::mag / coherent_unit::mag), symbol_text.standard().size()>();
+      prefix_or_magnitude_text<U, U::mag / coherent_unit::mag, symbol_text.standard().size()>();
     return prefix_txt + symbol_text;
   }
 }

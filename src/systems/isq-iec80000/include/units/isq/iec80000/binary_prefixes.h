@@ -26,11 +26,11 @@
 
 namespace units::isq::iec80000 {
 
-struct kibi : prefix<kibi, "Ki", ratio(1'024)> {};
-struct mebi : prefix<mebi, "Mi", ratio(1'048'576)> {};
-struct gibi : prefix<gibi, "Gi", ratio(1'073'741'824)> {};
-struct tebi : prefix<tebi, "Ti", ratio(1'099'511'627'776)> {};
-struct pebi : prefix<pebi, "Pi", ratio(1'125'899'906'842'624)> {};
-struct exbi : prefix<exbi, "Ei", ratio(1'152'921'504'606'846'976)> {};
+struct kibi : prefix<kibi, "Ki", pow<10>(as_magnitude<2>())> {};
+struct mebi : prefix<mebi, "Mi", pow<20>(as_magnitude<2>())> {};
+struct gibi : prefix<gibi, "Gi", pow<30>(as_magnitude<2>())> {};
+struct tebi : prefix<tebi, "Ti", pow<40>(as_magnitude<2>())> {};
+struct pebi : prefix<pebi, "Pi", pow<50>(as_magnitude<2>())> {};
+struct exbi : prefix<exbi, "Ei", pow<60>(as_magnitude<2>())> {};
 
 }  // namespace units::isq::iec80000
