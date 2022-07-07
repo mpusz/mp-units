@@ -32,12 +32,19 @@ namespace units::detail {
 
 inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
 
-template<ratio R>
-constexpr auto ratio_text()
+template<Magnitude auto M>
+constexpr auto magnitude_text()
 {
-  constexpr auto num_value = R.num;
-  constexpr auto den_value = R.den;
-  constexpr auto exp10 = R.exp;
+  constexpr auto exp10 = extract_power_of_10(M);
+
+  constexpr Magnitude auto base = M / pow<exp10>(as_magnitude<10>());
+  constexpr Magnitude auto num = numerator(base);
+  constexpr Magnitude auto den = denominator(base);
+  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
 
   if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
     return base_multiplier + superscript<exp10>();
@@ -60,6 +67,12 @@ constexpr auto ratio_text()
   } else {
     return basic_fixed_string("");
   }
+}
+
+template<ratio R>
+constexpr auto ratio_text()
+{
+  return magnitude_text<as_magnitude<R>()>();
 }
 
 template<Unit U, ratio R, std::size_t SymbolLen>
