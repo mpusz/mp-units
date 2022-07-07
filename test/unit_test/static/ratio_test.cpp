@@ -63,10 +63,6 @@ static_assert(common_ratio(ratio(1, 1000), ratio(1)) == ratio(1, 1000));
 static_assert(common_ratio(ratio(100, 1), ratio(10, 1)) == ratio(10, 1));
 static_assert(common_ratio(ratio(100, 1), ratio(1, 10)) == ratio(1, 10));
 
-// numerator and denominator
-static_assert(numerator(ratio(3, 4)) == 3);
-static_assert(denominator(ratio(3, 4)) == 4);
-
 // comparison
 static_assert((ratio(3, 4) <=> ratio(6, 8)) == (0 <=> 0));
 static_assert((ratio(3, 4) <=> ratio(-3, 4)) == (0 <=> -1));

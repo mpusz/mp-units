@@ -78,10 +78,6 @@ struct ratio {
   }
 
   [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs) { return lhs * inverse(rhs); }
-
-  [[nodiscard]] friend constexpr std::intmax_t numerator(const ratio& r) { return r.num; }
-
-  [[nodiscard]] friend constexpr std::intmax_t denominator(const ratio& r) { return r.den; }
 };
 
 [[nodiscard]] constexpr ratio inverse(const ratio& r) { return ratio(r.den, r.num); }

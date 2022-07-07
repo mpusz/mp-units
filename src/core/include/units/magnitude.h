@@ -198,7 +198,7 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
     }
   }
 
-  auto power = numerator(bp.power);
+  auto power = bp.power.num;
   return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
 }
 
@@ -495,8 +495,8 @@ namespace detail {
 template<auto BP>
 constexpr auto integer_part(magnitude<BP>)
 {
-  constexpr auto power_num = numerator(BP.power);
-  constexpr auto power_den = denominator(BP.power);
+  constexpr auto power_num = BP.power.num;
+  constexpr auto power_den = BP.power.den;
 
   if constexpr (std::is_integral_v<decltype(BP.get_base())> && (power_num >= power_den)) {
     constexpr auto largest_integer_power = [=](BasePower auto bp) {
@@ -553,7 +553,7 @@ namespace detail {
 template<auto BP>
 constexpr auto remove_positive_power(magnitude<BP> m)
 {
-  if constexpr (numerator(BP.power) < 0) {
+  if constexpr (BP.power.num < 0) {
     return m;
   } else {
     return magnitude<>{};
@@ -659,7 +659,7 @@ constexpr ratio get_power(T base, magnitude<BPs...>)
   return ((BPs.get_base() == base ? BPs.power : ratio{0}) + ... + ratio{0});
 }
 
-constexpr std::intmax_t integer_part(ratio r) { return numerator(r) / denominator(r); }
+constexpr std::intmax_t integer_part(ratio r) { return r.num / r.den; }
 
 constexpr std::intmax_t extract_power_of_10(Magnitude auto m)
 {
