@@ -35,21 +35,25 @@ inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
 template<ratio R>
 constexpr auto ratio_text()
 {
-  if constexpr (R.num == 1 && R.den == 1 && R.exp != 0) {
-    return base_multiplier + superscript<R.exp>();
-  } else if constexpr (R.num != 1 || R.den != 1 || R.exp != 0) {
-    auto txt = basic_fixed_string("[") + regular<R.num>();
-    if constexpr (R.den == 1) {
-      if constexpr (R.exp == 0) {
+  constexpr auto num_value = R.num;
+  constexpr auto den_value = R.den;
+  constexpr auto exp10 = R.exp;
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return base_multiplier + superscript<exp10>();
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = basic_fixed_string("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
+      if constexpr (exp10 == 0) {
         return txt + basic_fixed_string("]");
       } else {
-        return txt + " " + base_multiplier + superscript<R.exp>() + basic_fixed_string("]");
+        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
       }
     } else {
-      if constexpr (R.exp == 0) {
-        return txt + basic_fixed_string("/") + regular<R.den>() + basic_fixed_string("]");
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
       } else {
-        return txt + basic_fixed_string("/") + regular<R.den>() + " " + base_multiplier + superscript<R.exp>() +
+        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
                basic_fixed_string("]");
       }
     }
