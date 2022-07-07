@@ -94,10 +94,7 @@ void unknown_dimensions()
   std::cout << si_fps_area << "\n";
 }
 
-std::ostream& operator<<(std::ostream& os, const ratio& r)
-{
-  return os << "ratio{" << r.num << ", " << r.den << ", " << r.exp << "}";
-}
+std::ostream& operator<<(std::ostream& os, const ratio& r) { return os << "ratio{" << r.num << ", " << r.den << "}"; }
 
 template<Unit U>
 std::ostream& operator<<(std::ostream& os, const U& u)

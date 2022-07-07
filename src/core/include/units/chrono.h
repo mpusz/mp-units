@@ -75,12 +75,7 @@ constexpr std::intmax_t pow_10(std::intmax_t v)
 template<ratio R>
 constexpr auto to_std_ratio_impl()
 {
-  if constexpr (R.exp == 0)
-    return std::ratio<R.num, R.den>{};
-  else if constexpr (R.exp > 0)
-    return std::ratio<R.num * pow_10(R.exp), R.den>{};
-  else
-    return std::ratio<R.num, R.den * pow_10(-R.exp)>{};
+  return std::ratio<R.num, R.den>{};
 }
 
 }  // namespace detail

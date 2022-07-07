@@ -154,13 +154,6 @@ TEST_CASE("make_ratio performs prime factorization correctly")
 
   SECTION("Supports fractions") { CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
 
-  SECTION("Supports nonzero exp")
-  {
-    constexpr ratio r{3, 1, 2};
-    REQUIRE(r.exp == 2);
-    CHECK(as_magnitude<r>() == as_magnitude<300>());
-  }
-
   SECTION("Can handle prime factor which would be large enough to overflow int")
   {
     // This was taken from a case which failed when we used `int` for our base to store prime numbers.

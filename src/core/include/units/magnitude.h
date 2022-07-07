@@ -189,9 +189,6 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
   if (bp.power.den != 1) {
     throw std::invalid_argument{"Rational powers not yet supported"};
   }
-  if (bp.power.exp < 0) {
-    throw std::invalid_argument{"Unsupported exp value"};
-  }
 
   if (bp.power.num < 0) {
     if constexpr (std::is_integral_v<T>) {
@@ -344,7 +341,7 @@ inline constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> &
 
 constexpr bool is_rational(BasePower auto bp)
 {
-  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
+  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1);
 }
 
 constexpr bool is_integral(BasePower auto bp) { return is_rational(bp) && bp.power.num > 0; }
@@ -652,8 +649,7 @@ template<ratio R>
   requires(R.num > 0)
 constexpr Magnitude auto as_magnitude()
 {
-  return pow<ratio{R.exp}>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
-         detail::prime_factorization_v<R.den>;
+  return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
 
 namespace detail {
