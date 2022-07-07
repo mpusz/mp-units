@@ -32,5 +32,7 @@ struct gibi : prefix<gibi, "Gi", pow<30>(as_magnitude<2>())> {};
 struct tebi : prefix<tebi, "Ti", pow<40>(as_magnitude<2>())> {};
 struct pebi : prefix<pebi, "Pi", pow<50>(as_magnitude<2>())> {};
 struct exbi : prefix<exbi, "Ei", pow<60>(as_magnitude<2>())> {};
+struct zebi : prefix<zebi, "Zi", pow<70>(as_magnitude<2>())> {};
+struct yobi : prefix<yobi, "Yi", pow<80>(as_magnitude<2>())> {};
 
 }  // namespace units::isq::iec80000
