@@ -579,8 +579,7 @@ static_assert(is_same_v<decltype(1_q_km % 1_q_m), length<kilometre, std::int64_t
 
 // different dimensions
 static_assert(compare<decltype(1_q_m_per_s * 1_q_s), length<metre, std::int64_t>>);
-static_assert(
-  compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<as_magnitude<ratio(36, 1, 2)>(), metre>, std::int64_t>>);
+static_assert(compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<as_magnitude<3600>(), metre>, std::int64_t>>);
 static_assert(
   compare<decltype(1_q_m * 1_q_min), quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>,
                                               scaled_unit<as_magnitude<60>(), unknown_coherent_unit>, std::int64_t>>);
@@ -590,7 +589,7 @@ static_assert(
 static_assert(compare<decltype(1 / 1_q_Hz), isq::si::time<second, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_km),
                       quantity<unknown_dimension<exponent<dim_length, -1>>,
-                               scaled_unit<as_magnitude<ratio(1, 1, -3)>(), unknown_coherent_unit>, std::int64_t>>);
+                               scaled_unit<as_magnitude<ratio(1, 1000)>(), unknown_coherent_unit>, std::int64_t>>);
 static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<as_magnitude<1000>(), one>, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / 1_q_s), speed<metre_per_second, std::int64_t>>);
 static_assert(
@@ -889,7 +888,7 @@ static_assert(is_same_v<decltype(10_q_m / 5_q_s),
                         quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>,
                                  scaled_unit<as_magnitude<1>(), unknown_coherent_unit>, std::int64_t>>);
 static_assert(
-  is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<as_magnitude<ratio(1, 1, -3)>(), metre>, std::int64_t>>);
+  is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<as_magnitude<ratio(1, 1000)>(), metre>, std::int64_t>>);
 
 #else
 

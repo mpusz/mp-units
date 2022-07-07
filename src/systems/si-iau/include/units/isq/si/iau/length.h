@@ -42,7 +42,7 @@ struct light_year : named_scaled_unit<light_year, "ly", as_magnitude<94607304725
 struct parsec : named_scaled_unit<parsec, "pc", as_magnitude<30'856'775'814'913'673>(), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Angstrom
-struct angstrom : named_scaled_unit<angstrom, "angstrom", as_magnitude<ratio(1, 1, -10)>(), si::metre> {};
+struct angstrom : named_scaled_unit<angstrom, "angstrom", pow<-10>(as_magnitude<10>()), si::metre> {};
 
 #ifndef UNITS_NO_LITERALS
 
