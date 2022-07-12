@@ -39,14 +39,14 @@ function(__check_libcxx_in_use variable)
 endfunction()
 
 include(CMakeFindDependencyMacro)
-find_dependency(fmt)
-find_dependency(gsl-lite)
+find_dependency(fmt CONFIG)
+find_dependency(gsl-lite CONFIG)
 
 # add range-v3 dependency only for clang + libc++
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     __check_libcxx_in_use(__units_libcxx)
     if(__units_libcxx AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
-        find_dependency(range-v3)
+        find_dependency(range-v3 CONFIG)
     endif()
     unset(__units_libcxx)
 endif()
