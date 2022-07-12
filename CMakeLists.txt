@@ -63,14 +63,22 @@ endif()
 add_subdirectory(src)
 
 # add usage example
-add_subdirectory(example)
+option(BUILD_EXAMPLES "Build usage examples" ON)
+if(BUILD_EXAMPLES)
+    add_subdirectory(example)
+endif()
 
 # generate project documentation
-add_subdirectory(docs)
+option(BUILD_DOCS "Generate docs" ON)
+if(BUILD_DOCS)
+    add_subdirectory(docs)
+endif()
 
 # add unit tests
-enable_testing()
-add_subdirectory(test)
+include(CTest)
+if(BUILD_TESTING)
+    add_subdirectory(test)
+endif()
 
 # tests for standalone headers
 include(TestPublicHeaders)
