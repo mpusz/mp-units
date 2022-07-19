@@ -32,24 +32,35 @@ namespace units::detail {
 
 inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
 
-template<ratio R>
-constexpr auto ratio_text()
+template<Magnitude auto M>
+constexpr auto magnitude_text()
 {
-  if constexpr (R.num == 1 && R.den == 1 && R.exp != 0) {
-    return base_multiplier + superscript<R.exp>();
-  } else if constexpr (R.num != 1 || R.den != 1 || R.exp != 0) {
-    auto txt = basic_fixed_string("[") + regular<R.num>();
-    if constexpr (R.den == 1) {
-      if constexpr (R.exp == 0) {
+  constexpr auto exp10 = extract_power_of_10(M);
+
+  constexpr Magnitude auto base = M / pow<exp10>(as_magnitude<10>());
+  constexpr Magnitude auto num = numerator(base);
+  constexpr Magnitude auto den = denominator(base);
+  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return base_multiplier + superscript<exp10>();
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = basic_fixed_string("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
+      if constexpr (exp10 == 0) {
         return txt + basic_fixed_string("]");
       } else {
-        return txt + " " + base_multiplier + superscript<R.exp>() + basic_fixed_string("]");
+        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
       }
     } else {
-      if constexpr (R.exp == 0) {
-        return txt + basic_fixed_string("/") + regular<R.den>() + basic_fixed_string("]");
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
       } else {
-        return txt + basic_fixed_string("/") + regular<R.den>() + " " + base_multiplier + superscript<R.exp>() +
+        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
                basic_fixed_string("]");
       }
     }
@@ -58,22 +69,22 @@ constexpr auto ratio_text()
   }
 }
 
-template<Unit U, ratio R, std::size_t SymbolLen>
-constexpr auto prefix_or_ratio_text()
+template<Unit U, Magnitude auto M, std::size_t SymbolLen>
+constexpr auto prefix_or_magnitude_text()
 {
-  if constexpr (R.num == 1 && R.den == 1 && R.exp == 0) {
+  if constexpr (M == as_magnitude<1>()) {
     // no ratio/prefix
     return basic_fixed_string("");
   } else {
     // try to form a prefix
-    using prefix = downcast<detail::prefix_base<R>>;
+    using prefix = downcast<detail::prefix_base<M>>;
 
-    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<R>>) {
+    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<M>>) {
       // print as a prefixed unit
       return prefix::symbol;
     } else {
       // print as a ratio of the coherent unit
-      constexpr auto txt = ratio_text<R>();
+      constexpr auto txt = magnitude_text<M>();
       if constexpr (SymbolLen > 0 && txt.standard().size() > 0)
         return txt + basic_fixed_string(" ");
       else
@@ -147,7 +158,7 @@ constexpr auto unit_text()
     }();
 
     constexpr auto prefix_txt =
-      prefix_or_ratio_text<U, as_ratio(U::mag / coherent_unit::mag), symbol_text.standard().size()>();
+      prefix_or_magnitude_text<U, U::mag / coherent_unit::mag, symbol_text.standard().size()>();
     return prefix_txt + symbol_text;
   }
 }

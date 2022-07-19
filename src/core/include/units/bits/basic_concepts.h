@@ -40,11 +40,11 @@ namespace units {
 // Prefix
 namespace detail {
 
-template<ratio R>
+template<Magnitude auto M>
 struct prefix_base;
 
-template<ratio R>
-void to_prefix_base(const volatile prefix_base<R>*);
+template<Magnitude auto M>
+void to_prefix_base(const volatile prefix_base<M>*);
 
 }  // namespace detail
 

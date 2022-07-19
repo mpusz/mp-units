@@ -34,9 +34,9 @@ namespace units {
 
 namespace detail {
 
-template<ratio R>
-struct prefix_base : downcast_base<prefix_base<R>> {
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = as_magnitude<R>();
+template<Magnitude auto M>
+struct prefix_base : downcast_base<prefix_base<M>> {
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
 };
 
 }  // namespace detail
@@ -54,8 +54,8 @@ struct prefix_base : downcast_base<prefix_base<R>> {
  * @tparam Symbol a text representation of the prefix
  * @tparam R factor to be used to scale a unit
  */
-template<typename Child, basic_symbol_text Symbol, ratio R>
-struct prefix : downcast_dispatch<Child, detail::prefix_base<R>, downcast_mode::on> {
+template<typename Child, basic_symbol_text Symbol, Magnitude auto M>
+struct prefix : downcast_dispatch<Child, detail::prefix_base<M>, downcast_mode::on> {
   static constexpr auto symbol = Symbol;
 };
 

@@ -610,4 +610,30 @@ TEST_CASE("strictly_increasing")
   }
 }
 
+TEST_CASE("extract_power_of_10")
+{
+  SECTION("Picks out positive powers")
+  {
+    CHECK(extract_power_of_10(as_magnitude<10>()) == 1);
+    CHECK(extract_power_of_10(as_magnitude<20>()) == 1);
+    CHECK(extract_power_of_10(as_magnitude<40>()) == 1);
+    CHECK(extract_power_of_10(as_magnitude<50>()) == 1);
+    CHECK(extract_power_of_10(as_magnitude<100>()) == 2);
+  }
+
+  SECTION("Picks out negative powers")
+  {
+    constexpr auto ONE = as_magnitude<1>();
+    CHECK(extract_power_of_10(ONE / as_magnitude<10>()) == -1);
+    CHECK(extract_power_of_10(ONE / as_magnitude<20>()) == -1);
+    CHECK(extract_power_of_10(ONE / as_magnitude<40>()) == -1);
+    CHECK(extract_power_of_10(ONE / as_magnitude<50>()) == -1);
+    CHECK(extract_power_of_10(ONE / as_magnitude<100>()) == -2);
+  }
+
+  SECTION("Zero if signs disagree") { CHECK(extract_power_of_10(as_magnitude<2>() / as_magnitude<5>()) == 0); }
+
+  SECTION("Handles rational powers") { CHECK(extract_power_of_10(sqrt(as_magnitude<1000>())) == 1); }
+}
+
 }  // namespace

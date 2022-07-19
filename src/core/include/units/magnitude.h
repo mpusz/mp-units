@@ -656,4 +656,26 @@ constexpr Magnitude auto as_magnitude()
          detail::prime_factorization_v<R.den>;
 }
 
+namespace detail {
+template<typename T, BasePower auto... BPs>
+constexpr ratio get_power(T base, magnitude<BPs...>)
+{
+  return ((BPs.get_base() == base ? BPs.power : ratio{0}) + ... + ratio{0});
+}
+
+constexpr std::intmax_t integer_part(ratio r) { return numerator(r) / denominator(r); }
+
+constexpr std::intmax_t extract_power_of_10(Magnitude auto m)
+{
+  const auto power_of_2 = get_power(2, m);
+  const auto power_of_5 = get_power(5, m);
+
+  if ((power_of_2 * power_of_5).num <= 0) {
+    return 0;
+  }
+
+  return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
+}
+}  // namespace detail
+
 }  // namespace units
