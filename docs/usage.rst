@@ -22,8 +22,8 @@ This repository contains three independent CMake-based projects:
   - when this library will become part of the C++ standard it will have no external dependencies
     but until then it depends on:
 
-    - `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
     - `gsl-lite <https://github.com/gsl-lite/gsl-lite>`_ to verify runtime contracts with the ``gsl_Expects`` macro.
+    - [for compilers other than VS2022] `{fmt} <https://github.com/fmtlib/fmt>`_ to provide text formatting of quantities.
     - [only for clang < 14 with libc++] `range-v3 <https://github.com/ericniebler/range-v3>`_ to provide needed C++20 concepts and utilities.
 
 - *.*
@@ -36,9 +36,13 @@ This repository contains three independent CMake-based projects:
     - `linear algebra <https://github.com/BobSteagall/wg21/tree/master/include>`_
       library based on proposal `P1385 <https://wg21.link/P1385>`_ used in some examples
       and tests.
+
+  - in case you also want to build the project's documentation you will need:
+
     - `Doxygen <http://www.doxygen.nl>`_ to extract C++ entities information from the source
       code.
     - `Sphinx <https://www.sphinx-doc.org>`_ to build the documentation.
+    - `Sphinx ReadTheDocs Theme <https://sphinx-rtd-theme.readthedocs.io/>`_
     - `Sphinx recommonmark <https://recommonmark.readthedocs.io>`_.
     - `Breathe <https://breathe.readthedocs.io/>`_ as a bridge between the Sphinx and Doxygen
       documentation systems.
