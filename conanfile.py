@@ -32,7 +32,7 @@ from conans.errors import ConanInvalidConfiguration
 # TODO replace with new tools for Conan 2.0
 from conans.tools import check_min_cppstd, get_env
 
-required_conan_version = ">=1.48.0"
+required_conan_version = ">=1.50.0"
 
 
 class MPUnitsConan(ConanFile):
@@ -169,7 +169,7 @@ class MPUnitsConan(ConanFile):
             cmake.test()
 
     def package_id(self):
-        self.info.header_only()
+        self.info.clear()
 
     def package(self):
         copy(
