@@ -46,3 +46,11 @@ CMakeUserPresets.json
 # Conan
 *.pyc
 /test_package/build/
+
+# Conan internal files
+# TODO Remove for Conan 2.0
+conan_paths.cmake
+conan.lock
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
