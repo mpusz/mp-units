@@ -25,12 +25,13 @@ import re
 
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
+from conan.tools.build import check_min_cppstd
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
 from conans.errors import ConanInvalidConfiguration
 
-# TODO replace with new tools for Conan 2.0
-from conans.tools import check_min_cppstd, get_env
+# TODO remove when `CONAN_RUN_TESTS` will be replaced with a `[conf]` variable
+from conans.tools import get_env
 
 required_conan_version = ">=1.50.0"
 
