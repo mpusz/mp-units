@@ -38,15 +38,15 @@ namespace units::isq::si::typographic {
 // TODO Conflicts with (https://en.wikipedia.org/wiki/Pica_(typography)), verify correctness of below conversion factors
 // and provide hyperlinks to definitions
 struct pica_comp :
-    named_scaled_unit<pica_comp, "pica(comp)", as_magnitude<4'233'333>() * pow<-9>(as_magnitude<10>()), si::metre> {};
+    named_scaled_unit<pica_comp, "pica(comp)", as_magnitude<4'233'333>() * mag_power<10, -9>(), si::metre> {};
 struct pica_prn :
-    named_scaled_unit<pica_prn, "pica(prn)", as_magnitude<ratio(2108759, 500000)>() * pow<-3>(as_magnitude<10>()),
-                      si::metre> {};
+    named_scaled_unit<pica_prn, "pica(prn)", as_magnitude<ratio(2108759, 500000)>() * mag_power<10, -3>(), si::metre> {
+};
 struct point_comp :
-    named_scaled_unit<point_comp, "point(comp)", as_magnitude<ratio(1763889, 500000)>() * pow<-4>(as_magnitude<10>()),
+    named_scaled_unit<point_comp, "point(comp)", as_magnitude<ratio(1763889, 500000)>() * mag_power<10, -4>(),
                       si::metre> {};
 struct point_prn :
-    named_scaled_unit<point_prn, "point(prn)", as_magnitude<ratio(1757299, 500000)>() * pow<-4>(as_magnitude<10>()),
+    named_scaled_unit<point_prn, "point(prn)", as_magnitude<ratio(1757299, 500000)>() * mag_power<10, -4>(),
                       si::metre> {};
 
 #ifndef UNITS_NO_LITERALS

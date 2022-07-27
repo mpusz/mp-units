@@ -37,7 +37,7 @@ namespace units::isq::si::hep {
 // effective cross-sectional area according to EU council directive 80/181/EEC
 // https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:01980L0181-20090527#page=10
 // https://www.fedlex.admin.ch/eli/cc/1994/3109_3109_3109/de
-struct barn : named_scaled_unit<barn, "b", pow<-28>(as_magnitude<10>()), square_metre> {};
+struct barn : named_scaled_unit<barn, "b", mag_power<10, -28>(), square_metre> {};
 struct yocto_barn : prefixed_unit<yocto_barn, yocto, barn> {};
 struct zepto_barn : prefixed_unit<zepto_barn, zepto, barn> {};
 struct atto_barn : prefixed_unit<atto_barn, atto, barn> {};

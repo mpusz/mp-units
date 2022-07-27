@@ -652,6 +652,16 @@ constexpr Magnitude auto as_magnitude()
   return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
 
+/**
+ * @brief  Create a Magnitude which is some rational number raised to a rational power.
+ */
+template<ratio Base, ratio Pow>
+  requires(Base.num > 0)
+constexpr Magnitude auto mag_power()
+{
+  return pow<Pow>(as_magnitude<Base>());
+}
+
 namespace detail {
 template<typename T, BasePower auto... BPs>
 constexpr ratio get_power(T base, magnitude<BPs...>)

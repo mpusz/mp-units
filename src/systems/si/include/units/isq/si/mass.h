@@ -80,8 +80,8 @@ struct yottatonne : prefixed_unit<yottatonne, yotta, tonne> {};
 
 struct dalton :
     named_scaled_unit<dalton, "Da",
-                      as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>() * pow<-27>(as_magnitude<10>()),
-                      kilogram> {};
+                      as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>() * mag_power<10, -27>(), kilogram> {
+};
 
 struct dim_mass : isq::dim_mass<kilogram> {};
 

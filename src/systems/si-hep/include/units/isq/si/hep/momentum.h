@@ -42,7 +42,7 @@ struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
 struct eV_per_c :
     named_scaled_unit<eV_per_c, "eV/c",
-                      as_magnitude<ratio(5'344'285'992'678, 1'000'000'000'000)>() * pow<-35>(as_magnitude<10>()),
+                      as_magnitude<ratio(5'344'285'992'678, 1'000'000'000'000)>() * mag_power<10, -35>(),
                       kilogram_metre_per_second> {};
 struct feV_per_c : prefixed_unit<feV_per_c, femto, eV_per_c> {};
 struct peV_per_c : prefixed_unit<peV_per_c, pico, eV_per_c> {};
