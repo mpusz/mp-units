@@ -189,9 +189,6 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
   if (bp.power.den != 1) {
     throw std::invalid_argument{"Rational powers not yet supported"};
   }
-  if (bp.power.exp < 0) {
-    throw std::invalid_argument{"Unsupported exp value"};
-  }
 
   if (bp.power.num < 0) {
     if constexpr (std::is_integral_v<T>) {
@@ -201,7 +198,7 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
     }
   }
 
-  auto power = numerator(bp.power);
+  auto power = bp.power.num;
   return int_power(static_cast<widen_t<T>>(bp.get_base()), power);
 }
 
@@ -344,7 +341,7 @@ inline constexpr bool is_base_power_pack_valid = all_base_powers_valid<BPs...> &
 
 constexpr bool is_rational(BasePower auto bp)
 {
-  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1) && (bp.power.exp >= 0);
+  return std::is_integral_v<decltype(bp.get_base())> && (bp.power.den == 1);
 }
 
 constexpr bool is_integral(BasePower auto bp) { return is_rational(bp) && bp.power.num > 0; }
@@ -498,8 +495,8 @@ namespace detail {
 template<auto BP>
 constexpr auto integer_part(magnitude<BP>)
 {
-  constexpr auto power_num = numerator(BP.power);
-  constexpr auto power_den = denominator(BP.power);
+  constexpr auto power_num = BP.power.num;
+  constexpr auto power_den = BP.power.den;
 
   if constexpr (std::is_integral_v<decltype(BP.get_base())> && (power_num >= power_den)) {
     constexpr auto largest_integer_power = [=](BasePower auto bp) {
@@ -556,7 +553,7 @@ namespace detail {
 template<auto BP>
 constexpr auto remove_positive_power(magnitude<BP> m)
 {
-  if constexpr (numerator(BP.power) < 0) {
+  if constexpr (BP.power.num < 0) {
     return m;
   } else {
     return magnitude<>{};
@@ -652,8 +649,17 @@ template<ratio R>
   requires(R.num > 0)
 constexpr Magnitude auto as_magnitude()
 {
-  return pow<ratio{R.exp}>(detail::prime_factorization_v<10>) * detail::prime_factorization_v<R.num> /
-         detail::prime_factorization_v<R.den>;
+  return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
+}
+
+/**
+ * @brief  Create a Magnitude which is some rational number raised to a rational power.
+ */
+template<ratio Base, ratio Pow>
+  requires(Base.num > 0)
+constexpr Magnitude auto mag_power()
+{
+  return pow<Pow>(as_magnitude<Base>());
 }
 
 namespace detail {
@@ -663,7 +669,7 @@ constexpr ratio get_power(T base, magnitude<BPs...>)
   return ((BPs.get_base() == base ? BPs.power : ratio{0}) + ... + ratio{0});
 }
 
-constexpr std::intmax_t integer_part(ratio r) { return numerator(r) / denominator(r); }
+constexpr std::intmax_t integer_part(ratio r) { return r.num / r.den; }
 
 constexpr std::intmax_t extract_power_of_10(Magnitude auto m)
 {

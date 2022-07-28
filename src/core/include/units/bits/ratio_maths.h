@@ -39,108 +39,20 @@ template<typename T>
   return v < 0 ? -v : v;
 }
 
-// the following functions enable gcd and related computations on ratios
-// with exponents. They avoid overflow. Further information here:
-// https://github.com/mpusz/units/issues/62#issuecomment-588152833
-
-// Computes (a * b) mod m relies on unsigned integer arithmetic, should not
-// overflow
-[[nodiscard]] constexpr std::uint64_t mulmod(std::uint64_t a, std::uint64_t b, std::uint64_t m)
-{
-  std::uint64_t res = 0;
-
-  if (b >= m) {
-    if (m > UINT64_MAX / 2u) {
-      b -= m;
-    } else {
-      b %= m;
-    }
-  }
-
-  while (a != 0) {
-    if (a & 1) {
-      if (b >= m - res) {
-        res -= m;
-      }
-      res += b;
-    }
-    a >>= 1;
-
-    std::uint64_t temp_b = b;
-    if (b >= m - b) {
-      temp_b -= m;
-    }
-    b += temp_b;
-  }
-
-  return res;
-}
-
-// Calculates (a ^ e) mod m , should not overflow.
-[[nodiscard]] constexpr std::uint64_t modpow(std::uint64_t a, std::uint64_t e, std::uint64_t m)
-{
-  a %= m;
-  std::uint64_t result = 1;
-
-  while (e > 0) {
-    if (e & 1) {
-      result = mulmod(result, a, m);
-    }
-    a = mulmod(a, a, m);
-    e >>= 1;
-  }
-  return result;
-}
-
-// gcd(a * 10 ^ e, b), should not overflow
-[[nodiscard]] constexpr std::intmax_t gcdpow(std::intmax_t a, std::intmax_t e, std::intmax_t b) noexcept
-{
-  assert(a > 0);
-  assert(e >= 0);
-  assert(b > 0);
-
-  // gcd(i, j) = gcd(j, i mod j) for j != 0 Euclid;
-  //
-  // gcd(a 10^e, b) = gcd(b, a 10^e mod b)
-  //
-  // (a 10^e) mod b -> [ (a mod b) (10^e mod b) ] mod b
-
-  return std::gcd(
-    b, static_cast<std::intmax_t>(mulmod(static_cast<std::uint64_t>(a % b),
-                                         modpow(10, static_cast<std::uint64_t>(e), static_cast<std::uint64_t>(b)),
-                                         static_cast<std::uint64_t>(b))));
-}
-
-constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
-{
-  std::intmax_t tmp = lhs;
-  lhs = rhs;
-  rhs = tmp;
-}
-
-// Computes the rational gcd of n1/d1 x 10^e1 and n2/d2 x 10^e2
-[[nodiscard]] constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t e1, std::intmax_t n2,
-                                      std::intmax_t d2, std::intmax_t e2) noexcept
+// Computes the rational gcd of n1/d1 and n2/d2
+[[nodiscard]] constexpr auto gcd_frac(std::intmax_t n1, std::intmax_t d1, std::intmax_t n2, std::intmax_t d2) noexcept
 {
   // Short cut for equal ratios
-  if (n1 == n2 && d1 == d2 && e1 == e2) {
-    return std::array{n1, d1, e1};
+  if (n1 == n2 && d1 == d2) {
+    return std::array{n1, d1};
   }
-
-  if (e2 > e1) {
-    detail::cwap(n1, n2);
-    detail::cwap(d1, d2);
-    detail::cwap(e1, e2);
-  }
-
-  std::intmax_t exp = e2;  // minimum
 
   // gcd(a/b,c/d) = gcd(a⋅d, c⋅b) / b⋅d
 
   assert(std::numeric_limits<std::intmax_t>::max() / n1 > d2);
   assert(std::numeric_limits<std::intmax_t>::max() / n2 > d1);
 
-  std::intmax_t num = detail::gcdpow(n1 * d2, e1 - e2, n2 * d1);
+  std::intmax_t num = std::gcd(n1 * d2, n2 * d1);
 
   assert(std::numeric_limits<std::intmax_t>::max() / d1 > d2);
 
@@ -148,29 +60,19 @@ constexpr void cwap(std::intmax_t& lhs, std::intmax_t& rhs)
 
   std::intmax_t gcd = std::gcd(num, den);
 
-  return std::array{num / gcd, den / gcd, exp};
+  return std::array{num / gcd, den / gcd};
 }
 
-constexpr void normalize(std::intmax_t& num, std::intmax_t& den, std::intmax_t& exp)
+constexpr void normalize(std::intmax_t& num, std::intmax_t& den)
 {
   if (num == 0) {
     den = 1;
-    exp = 0;
     return;
   }
 
   std::intmax_t gcd = std::gcd(num, den);
   num = num * (den < 0 ? -1 : 1) / gcd;
   den = detail::abs(den) / gcd;
-
-  while (num % 10 == 0) {
-    num /= 10;
-    ++exp;
-  }
-  while (den % 10 == 0) {
-    den /= 10;
-    --exp;
-  }
 }
 
 [[nodiscard]] constexpr std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
