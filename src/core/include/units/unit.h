@@ -80,7 +80,7 @@ struct same_unit_reference : is_same<typename U1::reference, typename U2::refere
  * @tparam Symbol a short text representation of the unit
  */
 template<typename Child, basic_symbol_text Symbol>
-struct named_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
+struct named_unit : downcast_dispatch<Child, scaled_unit<mag<1>(), Child>> {
   static constexpr auto symbol = Symbol;
 };
 
@@ -126,7 +126,7 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typ
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct derived_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {};
+struct derived_unit : downcast_dispatch<Child, scaled_unit<mag<1>(), Child>> {};
 
 /**
  * @brief A unit with a deduced ratio and symbol

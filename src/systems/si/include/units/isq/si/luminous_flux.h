@@ -36,7 +36,7 @@ namespace units::isq::si {
 
 // TODO Is this correct? Should we account for steradian here? How?
 
-struct lumen : named_scaled_unit<lumen, "lm", as_magnitude<ratio(1, 683)>(), watt> {};
+struct lumen : named_scaled_unit<lumen, "lm", mag<ratio(1, 683)>(), watt> {};
 
 using dim_luminous_flux = dim_power;
 

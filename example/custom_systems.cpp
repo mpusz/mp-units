@@ -33,7 +33,7 @@ using namespace units;
 namespace fps {
 
 struct foot : named_unit<foot, "ft"> {};
-struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
+struct yard : named_scaled_unit<yard, "yd", mag<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -54,8 +54,8 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
 
-struct foot : named_scaled_unit<foot, "ft", as_magnitude<ratio{3'048, 10'000}>(), metre> {};
-struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
+struct foot : named_scaled_unit<foot, "ft", mag<ratio{3'048, 10'000}>(), metre> {};
+struct yard : named_scaled_unit<yard, "yd", mag<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 

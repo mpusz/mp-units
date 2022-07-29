@@ -37,7 +37,7 @@ constexpr auto magnitude_text()
 {
   constexpr auto exp10 = extract_power_of_10(M);
 
-  constexpr Magnitude auto base = M / pow<exp10>(as_magnitude<10>());
+  constexpr Magnitude auto base = M / pow<exp10>(mag<10>());
   constexpr Magnitude auto num = numerator(base);
   constexpr Magnitude auto den = denominator(base);
   static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
@@ -72,7 +72,7 @@ constexpr auto magnitude_text()
 template<Unit U, Magnitude auto M, std::size_t SymbolLen>
 constexpr auto prefix_or_magnitude_text()
 {
-  if constexpr (M == as_magnitude<1>()) {
+  if constexpr (M == mag<1>()) {
     // no ratio/prefix
     return basic_fixed_string("");
   } else {
