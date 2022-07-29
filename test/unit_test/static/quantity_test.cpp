@@ -287,7 +287,7 @@ static_assert(get_length_derived_quantity() == 1_q_m);
 // CTAD
 /////////
 
-#if UNITS_COMP_GCC >= 11 || UNITS_COMP_CLANG > 15
+#if UNITS_COMP_GCC >= 11 || UNITS_COMP_CLANG > 16
 static_assert(std::is_same_v<decltype(aliases::isq::si::m(123))::rep, int>);
 static_assert(std::is_same_v<decltype(aliases::isq::si::m(123.))::rep, double>);
 static_assert(
