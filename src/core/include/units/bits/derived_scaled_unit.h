@@ -39,8 +39,7 @@ inline constexpr bool compatible_units<exponent_list<Es...>, Us...> = (UnitOf<Us
 template<Unit... Us, typename... Es>
 constexpr Magnitude auto derived_mag(exponent_list<Es...>)
 {
-  return (as_magnitude<1>() * ... *
-          pow<ratio{Es::num, Es::den}>(Us::mag / dimension_unit<typename Es::dimension>::mag));
+  return (mag<1>() * ... * pow<ratio{Es::num, Es::den}>(Us::mag / dimension_unit<typename Es::dimension>::mag));
 }
 
 template<DerivedDimension D, Unit... Us>

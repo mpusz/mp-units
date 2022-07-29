@@ -596,7 +596,7 @@ constexpr auto common_magnitude(magnitude<H1, T1...>, magnitude<H2, T2...>)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// `as_magnitude()` implementation.
+// `mag()` implementation.
 
 // Sometimes we need to give the compiler a "shortcut" when factorizing large numbers (specifically, numbers whose
 // _first factor_ is very large).  If we don't, we can run into limits on the number of constexpr steps or iterations.
@@ -647,7 +647,7 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  */
 template<ratio R>
   requires(R.num > 0)
-constexpr Magnitude auto as_magnitude()
+constexpr Magnitude auto mag()
 {
   return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 }
@@ -659,7 +659,7 @@ template<ratio Base, ratio Pow>
   requires(Base.num > 0)
 constexpr Magnitude auto mag_power()
 {
-  return pow<Pow>(as_magnitude<Base>());
+  return pow<Pow>(mag<Base>());
 }
 
 namespace detail {

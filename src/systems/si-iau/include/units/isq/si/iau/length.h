@@ -36,10 +36,10 @@
 namespace units::isq::si::iau {
 
 // https://en.wikipedia.org/wiki/Light-year
-struct light_year : named_scaled_unit<light_year, "ly", as_magnitude<9460730472580800>(), si::metre> {};
+struct light_year : named_scaled_unit<light_year, "ly", mag<9460730472580800>(), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Parsec
-struct parsec : named_scaled_unit<parsec, "pc", as_magnitude<30'856'775'814'913'673>(), si::metre> {};
+struct parsec : named_scaled_unit<parsec, "pc", mag<30'856'775'814'913'673>(), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Angstrom
 struct angstrom : named_scaled_unit<angstrom, "angstrom", mag_power<10, -10>(), si::metre> {};
