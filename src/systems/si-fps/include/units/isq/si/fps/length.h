@@ -48,7 +48,7 @@ struct thousandth : alias_unit<thou, "thou"> {};
 
 struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
-struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", as_magnitude<2'000>(), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", mag<2'000>(), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 

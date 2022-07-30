@@ -327,7 +327,7 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
   SECTION("unknown scaled unit with reference different than the dimension's coherent unit")
   {
     // TODO(chogg): Reinstate after format/Magnitude redesign.
-    // constexpr auto mag = units::as_magnitude<units::ratio{2, 3}>();
+    // constexpr auto mag = units::mag<units::ratio{2, 3}>();
     // CHECK(STD_FMT::format("{}", mass<units::scaled_unit<mag, gram>>(1)) == "1 [2/3 × 10⁻³] kg");
     // CHECK(STD_FMT::format("{:%Q %Aq}", mass<units::scaled_unit<mag, gram>>(1)) == "1 [2/3 x 10^-3] kg");
   }

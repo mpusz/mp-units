@@ -66,7 +66,7 @@ void check_same_type_and_value(T actual, U expected)
 template<ratio R>
 void check_ratio_round_trip_is_identity()
 {
-  constexpr Magnitude auto m = as_magnitude<R>();
+  constexpr Magnitude auto m = mag<R>();
   constexpr ratio round_trip = ratio{
     get_value<std::intmax_t>(numerator(m)),
     get_value<std::intmax_t>(denominator(m)),
@@ -125,10 +125,10 @@ TEST_CASE("base_power")
 
   SECTION("product with inverse equals identity")
   {
-    auto check_product_with_inverse_is_identity = [](auto x) { CHECK(x * pow<-1>(x) == as_magnitude<1>()); };
+    auto check_product_with_inverse_is_identity = [](auto x) { CHECK(x * pow<-1>(x) == mag<1>()); };
 
-    check_product_with_inverse_is_identity(as_magnitude<3>());
-    check_product_with_inverse_is_identity(as_magnitude<ratio{4, 17}>());
+    check_product_with_inverse_is_identity(mag<3>());
+    check_product_with_inverse_is_identity(mag<ratio{4, 17}>());
     check_product_with_inverse_is_identity(pi_to_the<ratio{-22, 7}>());
   }
 
@@ -144,28 +144,21 @@ TEST_CASE("make_ratio performs prime factorization correctly")
 {
   SECTION("Performs prime factorization when denominator is 1")
   {
-    CHECK(as_magnitude<1>() == magnitude<>{});
-    CHECK(as_magnitude<2>() == magnitude<base_power{2}>{});
-    CHECK(as_magnitude<3>() == magnitude<base_power{3}>{});
-    CHECK(as_magnitude<4>() == magnitude<base_power{2, 2}>{});
+    CHECK(mag<1>() == magnitude<>{});
+    CHECK(mag<2>() == magnitude<base_power{2}>{});
+    CHECK(mag<3>() == magnitude<base_power{3}>{});
+    CHECK(mag<4>() == magnitude<base_power{2, 2}>{});
 
-    CHECK(as_magnitude<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+    CHECK(mag<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
   }
 
-  SECTION("Supports fractions") { CHECK(as_magnitude<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
-
-  SECTION("Supports nonzero exp")
-  {
-    constexpr ratio r{3, 1, 2};
-    REQUIRE(r.exp == 2);
-    CHECK(as_magnitude<r>() == as_magnitude<300>());
-  }
+  SECTION("Supports fractions") { CHECK(mag<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
 
   SECTION("Can handle prime factor which would be large enough to overflow int")
   {
     // This was taken from a case which failed when we used `int` for our base to store prime numbers.
     // The failure was due to a prime factor which is larger than 2^31.
-    as_magnitude<ratio(16'605'390'666'050, 10'000'000'000'000)>();
+    mag<ratio(16'605'390'666'050, 10'000'000'000'000)>();
   }
 
   SECTION("Can bypass computing primes by providing known_first_factor<N>")
@@ -176,7 +169,7 @@ TEST_CASE("make_ratio performs prime factorization correctly")
     // In this case, we test that we can represent the largest prime that fits in a signed 64-bit int.  The reason this
     // test can pass is that we have provided the answer, by specializing the `known_first_factor` variable template
     // above in this file.
-    as_magnitude<9'223'372'036'854'775'783>();
+    mag<9'223'372'036'854'775'783>();
   }
 }
 
@@ -184,7 +177,7 @@ TEST_CASE("magnitude converts to numerical value")
 {
   SECTION("Positive integer powers of integer bases give integer values")
   {
-    constexpr auto mag_412 = as_magnitude<412>();
+    constexpr auto mag_412 = mag<412>();
     check_same_type_and_value(get_value<int>(mag_412), 412);
     check_same_type_and_value(get_value<std::size_t>(mag_412), std::size_t{412});
     check_same_type_and_value(get_value<float>(mag_412), 412.0f);
@@ -193,7 +186,7 @@ TEST_CASE("magnitude converts to numerical value")
 
   SECTION("Negative integer powers of integer bases compute correct values")
   {
-    constexpr auto mag_0p125 = as_magnitude<ratio{1, 8}>();
+    constexpr auto mag_0p125 = mag<ratio{1, 8}>();
     check_same_type_and_value(get_value<float>(mag_0p125), 0.125f);
     check_same_type_and_value(get_value<double>(mag_0p125), 0.125);
   }
@@ -226,20 +219,20 @@ TEST_CASE("magnitude converts to numerical value")
     // Naturally, we cannot actually write a test to verify a compiler error.  But any of these can
     // be uncommented if desired to verify that it breaks the build.
 
-    // get_value<int8_t>(as_magnitude<412>());
+    // get_value<int8_t>(mag<412>());
 
     // Would work for pow<62>:
-    // get_value<int64_t>(pow<63>(as_magnitude<2>()));
+    // get_value<int64_t>(pow<63>(mag<2>()));
 
     // Would work for pow<63>:
-    // get_value<uint64_t>(pow<64>(as_magnitude<2>()));
+    // get_value<uint64_t>(pow<64>(mag<2>()));
 
-    get_value<double>(pow<308>(as_magnitude<10>()));  // Compiles, correctly.
-    // get_value<double>(pow<309>(as_magnitude<10>()));
-    // get_value<double>(pow<3099>(as_magnitude<10>()));
-    // get_value<double>(pow<3099999>(as_magnitude<10>()));
+    get_value<double>(pow<308>(mag<10>()));  // Compiles, correctly.
+    // get_value<double>(pow<309>(mag<10>()));
+    // get_value<double>(pow<3099>(mag<10>()));
+    // get_value<double>(pow<3099999>(mag<10>()));
 
-    auto sqrt_2 = pow<ratio{1, 2}>(as_magnitude<2>());
+    auto sqrt_2 = pow<ratio{1, 2}>(mag<2>());
     CHECK(!is_integral(sqrt_2));
     // get_value<int>(sqrt_2);
   }
@@ -249,46 +242,40 @@ TEST_CASE("Equality works for magnitudes")
 {
   SECTION("Equivalent ratios are equal")
   {
-    CHECK(as_magnitude<1>() == as_magnitude<1>());
-    CHECK(as_magnitude<3>() == as_magnitude<3>());
-    CHECK(as_magnitude<ratio{3, 4}>() == as_magnitude<ratio{9, 12}>());
+    CHECK(mag<1>() == mag<1>());
+    CHECK(mag<3>() == mag<3>());
+    CHECK(mag<ratio{3, 4}>() == mag<ratio{9, 12}>());
   }
 
   SECTION("Different ratios are unequal")
   {
-    CHECK(as_magnitude<3>() != as_magnitude<5>());
-    CHECK(as_magnitude<3>() != as_magnitude<ratio{3, 2}>());
+    CHECK(mag<3>() != mag<5>());
+    CHECK(mag<3>() != mag<ratio{3, 2}>());
   }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto eq = (as_magnitude<ratio{4, 5}>() == as_magnitude<ratio{4, 3}>());
+    constexpr auto eq = (mag<ratio{4, 5}>() == mag<ratio{4, 3}>());
     CHECK(!eq);
   }
 }
 
 TEST_CASE("Multiplication works for magnitudes")
 {
-  SECTION("Reciprocals reduce to null magnitude")
-  {
-    CHECK(as_magnitude<ratio{3, 4}>() * as_magnitude<ratio{4, 3}>() == as_magnitude<1>());
-  }
+  SECTION("Reciprocals reduce to null magnitude") { CHECK(mag<ratio{3, 4}>() * mag<ratio{4, 3}>() == mag<1>()); }
 
-  SECTION("Products work as expected")
-  {
-    CHECK(as_magnitude<ratio{4, 5}>() * as_magnitude<ratio{4, 3}>() == as_magnitude<ratio{16, 15}>());
-  }
+  SECTION("Products work as expected") { CHECK(mag<ratio{4, 5}>() * mag<ratio{4, 3}>() == mag<ratio{16, 15}>()); }
 
   SECTION("Products handle pi correctly")
   {
-    CHECK(pi_to_the<1>() * as_magnitude<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
+    CHECK(pi_to_the<1>() * mag<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
           magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
   }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto p = as_magnitude<ratio{4, 5}>() * as_magnitude<ratio{4, 3}>();
-    CHECK(p == as_magnitude<ratio{16, 15}>());
+    constexpr auto p = mag<ratio{4, 5}>() * mag<ratio{4, 3}>();
+    CHECK(p == mag<ratio{16, 15}>());
   }
 }
 
@@ -296,20 +283,20 @@ TEST_CASE("Common Magnitude")
 {
   SECTION("Identity for identical magnitudes")
   {
-    CHECK(common_magnitude(as_magnitude<1>(), as_magnitude<1>()) == as_magnitude<1>());
-    CHECK(common_magnitude(as_magnitude<15>(), as_magnitude<15>()) == as_magnitude<15>());
+    CHECK(common_magnitude(mag<1>(), mag<1>()) == mag<1>());
+    CHECK(common_magnitude(mag<15>(), mag<15>()) == mag<15>());
     CHECK(common_magnitude(pi_to_the<ratio{3, 4}>(), pi_to_the<ratio{3, 4}>()) == pi_to_the<ratio{3, 4}>());
   }
 
   SECTION("Greatest Common Factor for integers")
   {
-    CHECK(common_magnitude(as_magnitude<24>(), as_magnitude<36>()) == as_magnitude<12>());
-    CHECK(common_magnitude(as_magnitude<24>(), as_magnitude<37>()) == as_magnitude<1>());
+    CHECK(common_magnitude(mag<24>(), mag<36>()) == mag<12>());
+    CHECK(common_magnitude(mag<24>(), mag<37>()) == mag<1>());
   }
 
   SECTION("Handles fractions")
   {
-    CHECK(common_magnitude(as_magnitude<ratio{3, 8}>(), as_magnitude<ratio{5, 6}>()) == as_magnitude<ratio{1, 24}>());
+    CHECK(common_magnitude(mag<ratio{3, 8}>(), mag<ratio{5, 6}>()) == mag<ratio{1, 24}>());
   }
 }
 
@@ -317,19 +304,16 @@ TEST_CASE("Division works for magnitudes")
 {
   SECTION("Dividing anything by itself reduces to null magnitude")
   {
-    CHECK(as_magnitude<ratio{3, 4}>() / as_magnitude<ratio{3, 4}>() == as_magnitude<1>());
-    CHECK(as_magnitude<15>() / as_magnitude<15>() == as_magnitude<1>());
+    CHECK(mag<ratio{3, 4}>() / mag<ratio{3, 4}>() == mag<1>());
+    CHECK(mag<15>() / mag<15>() == mag<1>());
   }
 
-  SECTION("Quotients work as expected")
-  {
-    CHECK(as_magnitude<ratio{4, 5}>() / as_magnitude<ratio{4, 3}>() == as_magnitude<ratio{3, 5}>());
-  }
+  SECTION("Quotients work as expected") { CHECK(mag<ratio{4, 5}>() / mag<ratio{4, 3}>() == mag<ratio{3, 5}>()); }
 
   SECTION("Supports constexpr")
   {
-    constexpr auto q = as_magnitude<ratio{4, 5}>() / as_magnitude<ratio{4, 3}>();
-    CHECK(q == as_magnitude<ratio{3, 5}>());
+    constexpr auto q = mag<ratio{4, 5}>() / mag<ratio{4, 3}>();
+    CHECK(q == mag<ratio{3, 5}>());
   }
 }
 
@@ -337,17 +321,17 @@ TEST_CASE("Can raise Magnitudes to rational powers")
 {
   SECTION("Anything to the 0 is 1")
   {
-    CHECK(pow<0>(as_magnitude<1>()) == as_magnitude<1>());
-    CHECK(pow<0>(as_magnitude<123>()) == as_magnitude<1>());
-    CHECK(pow<0>(as_magnitude<ratio{3, 4}>()) == as_magnitude<1>());
-    CHECK(pow<0>(pi_to_the<ratio{-1, 2}>()) == as_magnitude<1>());
+    CHECK(pow<0>(mag<1>()) == mag<1>());
+    CHECK(pow<0>(mag<123>()) == mag<1>());
+    CHECK(pow<0>(mag<ratio{3, 4}>()) == mag<1>());
+    CHECK(pow<0>(pi_to_the<ratio{-1, 2}>()) == mag<1>());
   }
 
   SECTION("Anything to the 1 is itself")
   {
-    CHECK(pow<1>(as_magnitude<1>()) == as_magnitude<1>());
-    CHECK(pow<1>(as_magnitude<123>()) == as_magnitude<123>());
-    CHECK(pow<1>(as_magnitude<ratio{3, 4}>()) == as_magnitude<ratio{3, 4}>());
+    CHECK(pow<1>(mag<1>()) == mag<1>());
+    CHECK(pow<1>(mag<123>()) == mag<123>());
+    CHECK(pow<1>(mag<ratio{3, 4}>()) == mag<ratio{3, 4}>());
     CHECK(pow<1>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{-1, 2}>());
   }
 
@@ -366,11 +350,11 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
       CHECK(is_rational(m));
     };
     check_rational_and_integral(magnitude<>{});
-    check_rational_and_integral(as_magnitude<1>());
-    check_rational_and_integral(as_magnitude<3>());
-    check_rational_and_integral(as_magnitude<8>());
-    check_rational_and_integral(as_magnitude<412>());
-    check_rational_and_integral(as_magnitude<ratio{1, 1}>());
+    check_rational_and_integral(mag<1>());
+    check_rational_and_integral(mag<3>());
+    check_rational_and_integral(mag<8>());
+    check_rational_and_integral(mag<412>());
+    check_rational_and_integral(mag<ratio{1, 1}>());
   }
 
   SECTION("Fractional magnitudes are rational, but not integral")
@@ -379,8 +363,8 @@ TEST_CASE("can distinguish integral, rational, and irrational magnitudes")
       CHECK(!is_integral(m));
       CHECK(is_rational(m));
     };
-    check_rational_but_not_integral(as_magnitude<ratio{1, 2}>());
-    check_rational_but_not_integral(as_magnitude<ratio{5, 8}>());
+    check_rational_but_not_integral(mag<ratio{1, 2}>());
+    check_rational_but_not_integral(mag<ratio{5, 8}>());
   }
 }
 
@@ -397,17 +381,17 @@ TEST_CASE("Constructing ratio from rational magnitude")
 
   SECTION("Rational magnitude converts to ratio")
   {
-    constexpr ratio r = as_ratio(as_magnitude<ratio{22, 7}>());
+    constexpr ratio r = as_ratio(mag<ratio{22, 7}>());
     CHECK(r == ratio{22, 7});
   }
 
   SECTION("Irrational magnitude does not convert to ratio")
   {
     // The following code should not compile.
-    // as_ratio(pow<ratio{1, 2}>(as_magnitude<2>()));
+    // as_ratio(pow<ratio{1, 2}>(mag<2>()));
 
     // The following code should not compile.
-    // as_ratio(as_magnitude<180>() / pi_to_the<1>());
+    // as_ratio(mag<180>() / pi_to_the<1>());
   }
 }
 
@@ -614,26 +598,26 @@ TEST_CASE("extract_power_of_10")
 {
   SECTION("Picks out positive powers")
   {
-    CHECK(extract_power_of_10(as_magnitude<10>()) == 1);
-    CHECK(extract_power_of_10(as_magnitude<20>()) == 1);
-    CHECK(extract_power_of_10(as_magnitude<40>()) == 1);
-    CHECK(extract_power_of_10(as_magnitude<50>()) == 1);
-    CHECK(extract_power_of_10(as_magnitude<100>()) == 2);
+    CHECK(extract_power_of_10(mag<10>()) == 1);
+    CHECK(extract_power_of_10(mag<20>()) == 1);
+    CHECK(extract_power_of_10(mag<40>()) == 1);
+    CHECK(extract_power_of_10(mag<50>()) == 1);
+    CHECK(extract_power_of_10(mag<100>()) == 2);
   }
 
   SECTION("Picks out negative powers")
   {
-    constexpr auto ONE = as_magnitude<1>();
-    CHECK(extract_power_of_10(ONE / as_magnitude<10>()) == -1);
-    CHECK(extract_power_of_10(ONE / as_magnitude<20>()) == -1);
-    CHECK(extract_power_of_10(ONE / as_magnitude<40>()) == -1);
-    CHECK(extract_power_of_10(ONE / as_magnitude<50>()) == -1);
-    CHECK(extract_power_of_10(ONE / as_magnitude<100>()) == -2);
+    constexpr auto ONE = mag<1>();
+    CHECK(extract_power_of_10(ONE / mag<10>()) == -1);
+    CHECK(extract_power_of_10(ONE / mag<20>()) == -1);
+    CHECK(extract_power_of_10(ONE / mag<40>()) == -1);
+    CHECK(extract_power_of_10(ONE / mag<50>()) == -1);
+    CHECK(extract_power_of_10(ONE / mag<100>()) == -2);
   }
 
-  SECTION("Zero if signs disagree") { CHECK(extract_power_of_10(as_magnitude<2>() / as_magnitude<5>()) == 0); }
+  SECTION("Zero if signs disagree") { CHECK(extract_power_of_10(mag<2>() / mag<5>()) == 0); }
 
-  SECTION("Handles rational powers") { CHECK(extract_power_of_10(sqrt(as_magnitude<1000>())) == 1); }
+  SECTION("Handles rational powers") { CHECK(extract_power_of_10(sqrt(mag<1000>())) == 1); }
 }
 
 }  // namespace

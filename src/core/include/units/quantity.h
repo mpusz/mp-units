@@ -444,7 +444,7 @@ public:
 };
 
 // CTAD
-#if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 15
+#if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 16
 template<typename D, typename U, typename Rep>
 explicit(false) quantity(Rep&&)->quantity<D, U, Rep>;
 #endif

@@ -35,28 +35,28 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Pound_(mass)
-struct pound : named_scaled_unit<pound, "lb", as_magnitude<ratio(45'359'237, 100'000'000)>(), si::kilogram> {};
+struct pound : named_scaled_unit<pound, "lb", mag<ratio(45'359'237, 100'000'000)>(), si::kilogram> {};
 
 struct dim_mass : isq::dim_mass<pound> {};
 
 template<UnitOf<dim_mass> U, Representation Rep = double>
 using mass = quantity<dim_mass, U, Rep>;
 
-struct grain : named_scaled_unit<grain, "gr", as_magnitude<ratio(1, 7000)>(), pound> {};
+struct grain : named_scaled_unit<grain, "gr", mag<ratio(1, 7000)>(), pound> {};
 
-struct dram : named_scaled_unit<dram, "dr", as_magnitude<ratio(1, 256)>(), pound> {};
+struct dram : named_scaled_unit<dram, "dr", mag<ratio(1, 256)>(), pound> {};
 
-struct ounce : named_scaled_unit<ounce, "oz", as_magnitude<ratio(1, 16)>(), pound> {};
+struct ounce : named_scaled_unit<ounce, "oz", mag<ratio(1, 16)>(), pound> {};
 
-struct stone : named_scaled_unit<stone, "st", as_magnitude<14>(), pound> {};
+struct stone : named_scaled_unit<stone, "st", mag<14>(), pound> {};
 
-struct quarter : named_scaled_unit<quarter, "qr", as_magnitude<28>(), pound> {};
+struct quarter : named_scaled_unit<quarter, "qr", mag<28>(), pound> {};
 
-struct hundredweight : named_scaled_unit<hundredweight, "cwt", as_magnitude<112>(), pound> {};
+struct hundredweight : named_scaled_unit<hundredweight, "cwt", mag<112>(), pound> {};
 
-struct short_ton : named_scaled_unit<short_ton, "ton (short)", as_magnitude<2'000>(), pound> {};
+struct short_ton : named_scaled_unit<short_ton, "ton (short)", mag<2'000>(), pound> {};
 
-struct long_ton : named_scaled_unit<long_ton, "ton (long)", as_magnitude<2'240>(), pound> {};
+struct long_ton : named_scaled_unit<long_ton, "ton (long)", mag<2'240>(), pound> {};
 
 #ifndef UNITS_NO_LITERALS
 
