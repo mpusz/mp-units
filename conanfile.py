@@ -25,7 +25,7 @@ import re
 
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
-from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
 from conans.errors import ConanInvalidConfiguration
@@ -152,9 +152,6 @@ class MPUnitsConan(ConanFile):
     #         # build_docs has sense only in a development or CI build
     #         del self.options.build_docs
 
-    def layout(self):
-        cmake_layout(self)
-
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
@@ -191,6 +188,7 @@ class MPUnitsConan(ConanFile):
 
         # core
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        self.cpp_info.components["core"].includedirs = ["include"]
         if compiler == "Visual Studio":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
         if self._use_range_v3:
@@ -198,21 +196,49 @@ class MPUnitsConan(ConanFile):
 
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]
+        self.cpp_info.components["core-io"].includedirs = ["include"]
+
         self.cpp_info.components["core-fmt"].requires = ["core"]
+        self.cpp_info.components["core-fmt"].includedirs = ["include"]
         if self._use_libfmt:
             self.cpp_info.components["core-fmt"].requires.append("fmt::fmt")
+
         self.cpp_info.components["isq"].requires = ["core"]
+        self.cpp_info.components["isq"].includedirs = ["include"]
+
         self.cpp_info.components["isq-natural"].requires = ["isq"]
+        self.cpp_info.components["isq-natural"].includedirs = ["include"]
+
         self.cpp_info.components["si"].requires = ["isq"]
+        self.cpp_info.components["si"].includedirs = ["include"]
+
         self.cpp_info.components["si-cgs"].requires = ["si"]
+        self.cpp_info.components["si-cgs"].includedirs = ["include"]
+
         self.cpp_info.components["si-fps"].requires = ["si-international"]
+        self.cpp_info.components["si-fps"].includedirs = ["include"]
+
         self.cpp_info.components["si-hep"].requires = ["si"]
+        self.cpp_info.components["si-hep"].includedirs = ["include"]
+
         self.cpp_info.components["si-iau"].requires = ["si"]
+        self.cpp_info.components["si-iau"].includedirs = ["include"]
+
         self.cpp_info.components["si-imperial"].requires = ["si"]
+        self.cpp_info.components["si-imperial"].includedirs = ["include"]
+
         self.cpp_info.components["si-international"].requires = ["si"]
+        self.cpp_info.components["si-international"].includedirs = ["include"]
+
         self.cpp_info.components["si-typographic"].requires = ["si"]
+        self.cpp_info.components["si-typographic"].includedirs = ["include"]
+
         self.cpp_info.components["si-uscs"].requires = ["si"]
+        self.cpp_info.components["si-uscs"].includedirs = ["include"]
+
         self.cpp_info.components["isq-iec80000"].requires = ["si"]
+        self.cpp_info.components["isq-iec80000"].includedirs = ["include"]
+
         self.cpp_info.components["systems"].requires = [
             "isq",
             "isq-natural",
