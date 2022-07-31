@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/base_dimension.h>
-#include <units/bits/base_units_ratio.h>
+#include <units/bits/absolute_magnitude.h>
 #include <units/bits/derived_dimension_base.h>
 #include <units/bits/dim_consolidate.h>
 #include <units/bits/dim_unpack.h>
