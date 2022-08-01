@@ -86,26 +86,42 @@ in *~/.conan/profiles* directory. An example profile can look as follows:
     arch=x86_64
     arch_build=x86_64
     compiler=gcc
-    compiler.version=10
+    compiler.version=12
     compiler.cppstd=20
     compiler.libcxx=libstdc++11
     build_type=Release
 
-    [options]
-    [build_requires]
-
-    [conf]
-    tools.cmake.cmaketoolchain:generator=Ninja
-
     [env]
-    CC=/usr/bin/gcc-10
-    CXX=/usr/bin/g++-10
+    CC=/usr/bin/gcc-12
+    CXX=/usr/bin/g++-12
 
 .. tip::
 
     Please note that **mp-units** library requires C++20 to be set either in a Conan profile or forced
     via Conan command line. If you do the former, you will not need to provide ``-s compiler.cppstd=20``
-    every time your run a Conan command line (as it is suggested below).
+    every time your run a Conan command line (as provided in the command line instructions below).
+
+Additionally, it is recommended to set Ninja as a CMake generator for Conan. To do so you should create
+a *~/.conan/global.conf* file that will set ``tools.cmake.cmaketoolchain:generator`` to one of Ninja
+generators. For example:
+
+.. code-block:: text
+
+    tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
+
+.. note::
+
+  *~/.conan/global.conf* file may also set ``tools.cmake.cmake_layout:build_folder_vars``` which
+  `makes working with several compilers or build configurations easier
+  <https://docs.conan.io/en/latest/reference/conanfile/tools/cmake/cmake_layout.html#multi-setting-option-cmake-layout>`_.
+  For example the below line will force Conan to generate separate CMake presets and folders for each compiler:
+
+  .. code-block:: text
+
+      tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version"]
+
+  In such a case you will need to use a configuration specific preset name in the Conan instructions provided below
+  rather then just ``default`` and ``release`` (i.e. ``gcc-11`` and ``gcc-11-release``)
 
 
 Build Options
@@ -207,6 +223,21 @@ UNITS_USE_LIBFMT
 Enables usage of `{fmt} <https://github.com/fmtlib/fmt>`_ library instead of the C++20 Standard Library feature.
 
 
+CMake with Presets Support
+--------------------------
+
+It is recommended to use at least CMake 3.23 to build this project as this version introduced a support
+for CMake Presets schema version 4 used now by Conan to generate presets files. All build instructions
+below assume that you have such a support. If not, your CMake invocations have to be replaced to something
+like:
+
+.. code-block:: shell
+
+    mkdir build && cd build
+    cmake .. -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=<path_to_generators_dir>/conan_toolchain.cmake
+    cmake --build . --config Release
+
+
 Installation and Reuse
 ----------------------
 
@@ -298,8 +329,8 @@ library release the following steps may be performed:
 
       mkdir my_project/build && cd my_project/build
       conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-      cmake --build .
+      cmake .. -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+      cmake --build . --config Release
 
 
 Conan + CMake (Live At Head)
@@ -333,6 +364,9 @@ differences:
       [requires]
       mp-units/0.8.0@mpusz/testing
 
+      [layout]
+      cmake_layout
+
       [generators]
       CMakeToolchain
       CMakeDeps
@@ -347,10 +381,9 @@ differences:
 
   .. code-block:: shell
 
-      mkdir my_project/build && cd my_project/build
-      conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-      cmake --build .
+      conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
+      cmake --preset default
+      cmake --build --preset release
 
 
 Install
@@ -362,43 +395,60 @@ to find it, it is enough to perform the following steps:
 
 .. code-block:: shell
 
-    mkdir units/build && cd units/build
-    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-    cmake ../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-    cmake --install . --prefix <install_dir>
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+    mv CMakeUserPresets.json src
+    cd src
+    cmake --preset default -DCMAKE_INSTALL_PREFIX=<your_installation_path>
+    cmake --build --preset release --target install
 
 
-Contributing (or just building all the tests, examples, and documentation)
---------------------------------------------------------------------------
+Contributing (or just building all the tests and examples)
+----------------------------------------------------------
 
-In case you would like to build all the source code (with unit tests and examples) and documentation
-in **mp-units** repository, you should:
+In case you would like to build all the source code (with unit tests and examples) in **mp-units** repository,
+you should:
 
-1. Add remotes of additional Conan dependencies.
-2. Use the *CMakeLists.txt* from the top-level directory.
-3. Obtain Python dependencies.
-4. Run Conan with `CONAN_RUN_TESTS`_ = ``True``.
+1. Use the *CMakeLists.txt* from the top-level directory.
+2. Run Conan with `CONAN_RUN_TESTS`_ = ``True``
+   (use ``-o build_docs=False`` if you want to skip the documentation generation).
+
+.. code-block:: shell
+
+    git clone https://github.com/mpusz/units.git && cd units
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+    conan build .
+
+The above will download and install all of the dependencies needed for the development of the library,
+build all of the source code and run unit tests.
+
+If you prefer to build the project via CMake rather then Conan, then you should replace the last ``conan build .``
+step with the explicit CMake build:
+
+.. code-block:: shell
+
+    cmake --preset default
+    cmake --build --preset release
+    cmake --build --preset release --target test
+
+
+Building documentation
+----------------------
+
+In case you would like to build the project's documentation, you should:
+
+1. Use the *CMakeLists.txt* from the top-level directory.
+2. Obtain Python dependencies.
+3. Run Conan with `CONAN_RUN_TESTS`_ = ``True``.
 
 .. code-block:: shell
 
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    mkdir units/build && cd units/build
-    conan install .. -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
-    conan build ..
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b missing
+    cmake --preset default
+    cmake --build --preset release --target documentation
 
-The above will download and install all of the dependencies needed for the development of the library,
-build all of the source code and documentation, and run unit tests.
-
-If you prefer to build the project via CMake rather then Conan, then you should replace the last ``conan build ..``
-step with the CMake build:
-
-.. code-block:: shell
-
-    # ...
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-    cmake --build .
-    ctest
+The above will download and install all of the dependencies needed and build the documentation.
 
 
 Packaging
