@@ -23,6 +23,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
+#include <units/bits/external/hacks.h>
 #include <units/bits/math_concepts.h>
 #include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
@@ -36,9 +37,12 @@ struct decimal_fp {
 
 [[nodiscard]] constexpr decimal_fp to_decimal(double v) noexcept
 {
+  UNITS_DIAGNOSTIC_PUSH
+  UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
   if (v == 0) {
     return {.significant = 0.0, .exponent = 0};
   }
+  UNITS_DIAGNOSTIC_POP
 
   double significant = abs(v);
   std::intmax_t exponent = 0;
