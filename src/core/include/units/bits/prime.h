@@ -25,15 +25,16 @@
 #include <units/bits/algorithm.h>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <numeric>
 #include <optional>
 #include <tuple>
 
 namespace units::detail {
 
-constexpr bool is_prime_by_trial_division(std::size_t n)
+constexpr bool is_prime_by_trial_division(std::uintmax_t n)
 {
-  for (std::size_t f = 2; f * f <= n; f += 1 + (f % 2)) {
+  for (std::uintmax_t f = 2; f * f <= n; f += 1 + (f % 2)) {
     if (n % f == 0) {
       return false;
     }
@@ -44,7 +45,7 @@ constexpr bool is_prime_by_trial_division(std::size_t n)
 // Return the first factor of n, as long as it is either k or n.
 //
 // Precondition: no integer smaller than k evenly divides n.
-constexpr std::optional<std::size_t> first_factor_maybe(std::size_t n, std::size_t k)
+constexpr std::optional<std::uintmax_t> first_factor_maybe(std::uintmax_t n, std::uintmax_t k)
 {
   if (n % k == 0) {
     return k;
@@ -56,9 +57,9 @@ constexpr std::optional<std::size_t> first_factor_maybe(std::size_t n, std::size
 }
 
 template<std::size_t N>
-constexpr std::array<std::size_t, N> first_n_primes()
+constexpr std::array<std::uintmax_t, N> first_n_primes()
 {
-  std::array<std::size_t, N> primes;
+  std::array<std::uintmax_t, N> primes;
   primes[0] = 2;
   for (std::size_t i = 1; i < N; ++i) {
     primes[i] = primes[i - 1] + 1;
@@ -70,9 +71,9 @@ constexpr std::array<std::size_t, N> first_n_primes()
 }
 
 template<std::size_t N, typename Callable>
-constexpr void call_for_coprimes_up_to(std::size_t n, const std::array<std::size_t, N>& basis, Callable&& call)
+constexpr void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis, Callable&& call)
 {
-  for (std::size_t i = 0u; i < n; ++i) {
+  for (std::uintmax_t i = 0u; i < n; ++i) {
     if (std::apply([&i](auto... primes) { return ((i % primes != 0) && ...); }, basis)) {
       call(i);
     }
@@ -80,7 +81,7 @@ constexpr void call_for_coprimes_up_to(std::size_t n, const std::array<std::size
 }
 
 template<std::size_t N>
-constexpr std::size_t num_coprimes_up_to(std::size_t n, const std::array<std::size_t, N>& basis)
+constexpr std::size_t num_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis)
 {
   std::size_t count = 0u;
   call_for_coprimes_up_to(n, basis, [&count](auto) { ++count; });
@@ -88,20 +89,20 @@ constexpr std::size_t num_coprimes_up_to(std::size_t n, const std::array<std::si
 }
 
 template<std::size_t ResultSize, std::size_t N>
-constexpr auto coprimes_up_to(std::size_t n, const std::array<std::size_t, N>& basis)
+constexpr auto coprimes_up_to(std::size_t n, const std::array<std::uintmax_t, N>& basis)
 {
-  std::array<std::size_t, ResultSize> coprimes;
+  std::array<std::uintmax_t, ResultSize> coprimes;
   std::size_t i = 0u;
 
-  call_for_coprimes_up_to(n, basis, [&coprimes, &i](std::size_t cp) { coprimes[i++] = cp; });
+  call_for_coprimes_up_to(n, basis, [&coprimes, &i](std::uintmax_t cp) { coprimes[i++] = cp; });
 
   return coprimes;
 }
 
 template<std::size_t N>
-constexpr std::size_t product(const std::array<std::size_t, N>& values)
+constexpr std::uintmax_t product(const std::array<std::uintmax_t, N>& values)
 {
-  std::size_t product = 1;
+  std::uintmax_t product = 1;
   for (const auto& v : values) {
     product *= v;
   }
@@ -130,11 +131,11 @@ constexpr std::size_t product(const std::array<std::size_t, N>& values)
 template<std::size_t BasisSize>
 struct wheel_factorizer {
   static constexpr auto basis = first_n_primes<BasisSize>();
-  static constexpr std::size_t wheel_size = product(basis);
+  static constexpr auto wheel_size = product(basis);
   static constexpr auto coprimes_in_first_wheel =
     coprimes_up_to<num_coprimes_up_to(wheel_size, basis)>(wheel_size, basis);
 
-  static constexpr std::size_t find_first_factor(std::size_t n)
+  static constexpr std::uintmax_t find_first_factor(std::uintmax_t n)
   {
     if (const auto k = detail::get_first_of(basis, [&](auto p) { return first_factor_maybe(n, p); })) return *k;
 
