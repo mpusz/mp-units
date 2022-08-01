@@ -200,6 +200,7 @@ jobs:
         shell: cmd
         working-directory: build/${{ matrix.build_type }}
         run: |
+          cmake --version
           call conanvcvars.bat
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Configure mp-units CMake
@@ -207,6 +208,7 @@ jobs:
         shell: bash
         working-directory: build/${{ matrix.build_type }}
         run: |
+          cmake --version
           cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
       - name: Install mp-units
         shell: bash
