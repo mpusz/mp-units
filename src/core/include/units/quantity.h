@@ -405,11 +405,7 @@ public:
     requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
-    using dim = dim_invert<D>;
-    using ret_unit = downcast_unit<dim, pow<-1>(U::mag)>;
-    using ret = quantity<dim, ret_unit, std::invoke_result_t<std::divides<>, Value, rep>>;
-    return ret(v / q.number());
+    return detail::make_quantity<::units::reference<dim_one, ::units::one>{} / reference>(v / q.number());
   }
 
   template<typename Value>
