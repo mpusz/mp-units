@@ -20,14 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+
 from conan import ConanFile
 from conan.tools.build import cross_building
-from conan.tools.cmake import CMake
+from conan.tools.cmake import CMake, cmake_layout
 
 
 class TestPackageConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeToolchain", "CMakeDeps"
+    generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv", "VirtualRunEnv"
+    apply_env = False
     test_type = "explicit"  # TODO Remove for Conan 2.0
 
     def requirements(self):
@@ -38,6 +41,10 @@ class TestPackageConan(ConanFile):
         cmake.configure()
         cmake.build()
 
+    def layout(self):
+        cmake_layout(self)
+
     def test(self):
         if not cross_building(self):
-            self.run("test_package", run_environment=True)
+            cmd = os.path.join(self.cpp.build.bindirs[0], "test_package")
+            self.run(cmd, env="conanrun")
