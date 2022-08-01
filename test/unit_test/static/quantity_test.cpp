@@ -581,21 +581,26 @@ static_assert(is_same_v<decltype(1_q_km % 1_q_m), length<kilometre, std::int64_t
 static_assert(compare<decltype(1_q_m_per_s * 1_q_s), length<metre, std::int64_t>>);
 static_assert(compare<decltype(1_q_m_per_s * 1_q_h), length<scaled_unit<mag<3600>(), metre>, std::int64_t>>);
 static_assert(
-  compare<decltype(1_q_m * 1_q_min), quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>,
-                                              scaled_unit<mag<60>(), unknown_coherent_unit>, std::int64_t>>);
+  compare<decltype(1_q_m * 1_q_min),
+          quantity<unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, 1>>,
+                   scaled_unit<mag<60>(), unknown_coherent_unit<exponent<dim_length, 1>, exponent<dim_time, 1>>>,
+                   std::int64_t>>);
 static_assert(compare<decltype(1_q_s * 1_q_Hz), dimensionless<one, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_min), frequency<scaled_unit<mag<ratio(1, 60)>(), hertz>, std::int64_t>>);
 static_assert(compare<decltype(1 / 1_q_Hz), isq::si::time<second, std::int64_t>>);
 static_assert(
-  compare<decltype(1 / 1_q_km), quantity<unknown_dimension<exponent<dim_length, -1>>,
-                                         scaled_unit<mag<ratio(1, 1000)>(), unknown_coherent_unit>, std::int64_t>>);
+  compare<decltype(1 / 1_q_km),
+          quantity<unknown_dimension<exponent<dim_length, -1>>,
+                   scaled_unit<mag<ratio(1, 1000)>(), unknown_coherent_unit<exponent<dim_length, -1>>>, std::int64_t>>);
 static_assert(compare<decltype(1_q_km / 1_q_m), dimensionless<scaled_unit<mag<1000>(), one>, std::int64_t>>);
 static_assert(compare<decltype(1_q_m / 1_q_s), speed<metre_per_second, std::int64_t>>);
 static_assert(
   compare<decltype(1_q_m / 1_q_min), speed<scaled_unit<mag<ratio(1, 60)>(), metre_per_second>, std::int64_t>>);
 static_assert(
-  compare<decltype(1_q_min / 1_q_m), quantity<unknown_dimension<exponent<dim_length, -1>, exponent<dim_time, 1>>,
-                                              scaled_unit<mag<60>(), unknown_coherent_unit>, std::int64_t>>);
+  compare<decltype(1_q_min / 1_q_m),
+          quantity<unknown_dimension<exponent<dim_length, -1>, exponent<dim_time, 1>>,
+                   scaled_unit<mag<60>(), unknown_coherent_unit<exponent<dim_length, -1>, exponent<dim_time, 1>>>,
+                   std::int64_t>>);
 
 static_assert((1_q_m + 1_q_m).number() == 2);
 static_assert((1_q_m + 1_q_km).number() == 1001);
@@ -883,9 +888,12 @@ static_assert(!is_same_v<decltype(quantity_cast<litre>(2_q_dm3)), volume<cubic_d
 
 #if UNITS_DOWNCAST_MODE == 0
 
-static_assert(is_same_v<decltype(10_q_m / 5_q_s),
-                        quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>,
-                                 scaled_unit<mag<1>(), unknown_coherent_unit>, std::int64_t>>);
+static_assert(
+  is_same_v<decltype(10_q_m / 5_q_s),
+            quantity<unknown_dimension<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>,
+                     scaled_unit<mag<1>(),
+                                 unknown_coherent_unit<units::exponent<dim_length, 1>, units::exponent<dim_time, -1>>>,
+                     std::int64_t>>);
 static_assert(is_same_v<decltype(1_q_mm + 1_q_km), length<scaled_unit<mag<ratio(1, 1000)>(), metre>, std::int64_t>>);
 
 #else

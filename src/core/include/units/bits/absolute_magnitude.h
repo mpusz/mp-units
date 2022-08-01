@@ -42,7 +42,7 @@ namespace units::detail {
 template<typename... Es>
 constexpr Magnitude auto absolute_magnitude(exponent_list<Es...>)
 {
-  return (pow<ratio{Es::num, Es::den}>(Es::dimension::base_unit::mag) * ... * magnitude<>{});
+  return (magnitude<>{} * ... * pow<ratio{Es::num, Es::den}>(Es::dimension::base_unit::mag));
 }
 
 }  // namespace units::detail

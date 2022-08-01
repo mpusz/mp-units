@@ -24,6 +24,7 @@
 
 #include <units/bits/derived_symbol_text.h>
 #include <units/bits/external/downcasting.h>
+#include <units/bits/external/type_traits.h>
 
 // IWYU pragma: begin_exports
 #include <units/bits/derived_scaled_unit.h>
@@ -58,6 +59,7 @@ inline constexpr bool can_be_prefixed = false;
  * @tparam M a Magnitude representing the (relative) size of this unit
  * @tparam U a unit to use as a reference for this dimension
  */
+// TODO Replace `typename` with `Unit`
 template<Magnitude auto M, typename U>
 struct scaled_unit : downcast_base<scaled_unit<M, U>> {
   static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
@@ -188,7 +190,10 @@ struct prefixed_alias_unit : U {
  *
  * Used as a coherent unit of an unknown dimension.
  */
-struct unknown_coherent_unit : derived_unit<unknown_coherent_unit> {};
+template<Exponent... Es>
+struct unknown_coherent_unit :
+    downcast_dispatch<unknown_coherent_unit<Es...>,
+                      scaled_unit<detail::absolute_magnitude(exponent_list<Es...>()), unknown_coherent_unit<Es...>>> {};
 
 namespace detail {
 

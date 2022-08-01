@@ -35,27 +35,21 @@ struct reference;
 
 namespace detail {
 
-template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_multiply_impl =
-  reference<D, downcast_unit<D, (U1::mag / dimension_unit<D1>::mag) * (U2::mag / dimension_unit<D2>::mag) *
-                                  dimension_unit<D>::mag>>;
+template<Dimension D, Reference R1, Reference R2>
+using reference_multiply_impl = reference<D, downcast_unit<D, R1::mag * R2::mag / D::mag>>;
 
-template<typename D, typename D1, typename U1, typename D2, typename U2>
-using reference_divide_impl =
-  reference<D, downcast_unit<D, (U1::mag / dimension_unit<D1>::mag) / (U2::mag / dimension_unit<D2>::mag) *
-                                  dimension_unit<D>::mag>>;
+template<typename D, Reference R1, Reference R2>
+using reference_divide_impl = reference<D, downcast_unit<D, R1::mag / R2::mag / D::mag>>;
 
 }  // namespace detail
 
 template<Reference R1, Reference R2>
 using reference_multiply =
-  detail::reference_multiply_impl<dimension_multiply<typename R1::dimension, typename R2::dimension>,
-                                  typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+  detail::reference_multiply_impl<dimension_multiply<typename R1::dimension, typename R2::dimension>, R1, R2>;
 
 template<Reference R1, Reference R2>
 using reference_divide =
-  detail::reference_divide_impl<dimension_divide<typename R1::dimension, typename R2::dimension>,
-                                typename R1::dimension, typename R1::unit, typename R2::dimension, typename R2::unit>;
+  detail::reference_divide_impl<dimension_divide<typename R1::dimension, typename R2::dimension>, R1, R2>;
 
 /**
  * @brief The type for quantity references
@@ -100,6 +94,7 @@ template<Dimension D, UnitOf<D> U>
 struct reference {
   using dimension = D;
   using unit = U;
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only

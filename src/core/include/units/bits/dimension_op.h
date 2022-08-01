@@ -37,12 +37,12 @@ namespace units {
  *
  * Sometimes a temporary partial result of a complex calculation may not result in a predefined
  * dimension. In such a case an `unknown_dimension` is created with a coherent unit of `unknown_coherent_unit`
- * and ratio(1).
+ * with a magnitude being the absolute one of all the exponents of such a dimension.
  *
  * @tparam Es the list of exponents of ingredient dimensions
  */
 template<Exponent... Es>
-struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, unknown_coherent_unit, Es...> {};
+struct unknown_dimension : derived_dimension<unknown_dimension<Es...>, unknown_coherent_unit<Es...>, Es...> {};
 
 namespace detail {
 

@@ -72,8 +72,8 @@ using make_dimension = TYPENAME to_derived_dimension_base<
  * and in CGS barye. Those two units are not directly related with each other with some ratio. As they both are
  * coherent units of their dimensions, the ratio between them is directly determined by the ratios of base units
  * defined in base dimensions end their exponents in the derived dimension recipe. To provide interoperability of
- * such quantities of different systems base_units_ratio is being used. The result of the division of two
- * base_units_ratio of two quantities of equivalent dimensions in two different systems gives a ratio between their
+ * such quantities of different systems mag is being used. The result of the division of two
+ * mag of two quantities of equivalent dimensions in two different systems gives a ratio between their
  * coherent units. Alternatively, the user would always have to directly define a barye in terms of pascal or vice
  * versa.
  *
@@ -85,8 +85,8 @@ template<typename Child, Unit U, Exponent... Es>
 struct derived_dimension : downcast_dispatch<Child, typename detail::make_dimension<Es...>> {
   using recipe = exponent_list<Es...>;
   using coherent_unit = U;
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto base_units_ratio =
-    detail::absolute_magnitude(typename derived_dimension::exponents());
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag =
+    detail::absolute_magnitude(typename derived_dimension::exponents()) / U::mag;
 };
 
 }  // namespace units
