@@ -113,6 +113,10 @@ jobs:
       CMAKE_GENERATOR: Ninja
 
     steps:
+      - name: Downcase 'build_type'
+        run: |
+          build_type=${{ matrix.build_type }}
+          echo "build_type=${build_type,,}" >> ${GITHUB_ENV}
       - uses: actions/checkout@v2
       - name: Cache Conan data
         uses: actions/cache@v2
@@ -177,12 +181,11 @@ jobs:
         run: |
           conan config init
           conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          conan profile update settings.build_type=${{ matrix.build_type }} default
           conan profile update settings.compiler.cppstd=20 default
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
-          conan profile update conf.tools.cmake.cmaketoolchain:generator=Ninja default
+          conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
           conan profile show default
       # - name: Add support for clang-13 to Conan's settings.yml
       #   # TODO Remove when Conan will support clang-13
@@ -193,65 +196,70 @@ jobs:
       - name: Install Conan dependencies
         shell: bash
         run: |
-          mkdir -p build/${{ matrix.build_type }} && cd build/${{ matrix.build_type }}
-          conan install ../.. -b outdated -u
+          conan install . -s build_type=${{ matrix.build_type }} -b outdated -u
+          mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL'
         shell: cmd
-        working-directory: build/${{ matrix.build_type }}
+        working-directory: src
         run: |
           cmake --version
-          call conanvcvars.bat
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          ..\build\generators\conanbuild.bat
+          cmake --preset default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
-        working-directory: build/${{ matrix.build_type }}
+        working-directory: src
         run: |
           cmake --version
-          cmake ../../src -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          cmake --preset default -DCMAKE_INSTALL_PREFIX=../out
       - name: Install mp-units
         shell: bash
-        working-directory: build/${{ matrix.build_type }}
+        working-directory: src
         run: |
-          cmake --install . --prefix test_package
-      - name: Install dependencies for test_package
+          cmake --build --preset ${build_type} --target install
+      - name: Provide dependencies for test_package
         shell: bash
+        working-directory: test_package
         run: |
-          mkdir -p test_package/build/${{ matrix.build_type }} && cd test_package/build/${{ matrix.build_type }}
-          conan install ../../..
+          cp ../src/CMakeUserPresets.json .
       - name: Build test_package CMake (local build)
         if: matrix.config.compiler.type == 'VISUAL'
         shell: cmd
-        working-directory: test_package/build/${{ matrix.build_type }}
+        working-directory: test_package
         run: |
-          call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
-          cmake --build .
+          ..\build\generators\conanbuild.bat
+          cmake --preset default -Dmp-units_DIR=../build -Bbuild/local
+          cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
-        working-directory: test_package/build/${{ matrix.build_type }}
+        working-directory: test_package
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dmp-units_DIR=${{ github.workspace }}/build/${{ matrix.build_type }}
-          cmake --build .
+          cmake --preset default -Dmp-units_DIR=../build -Bbuild/local
+          cmake --build build/local --config ${{ matrix.build_type }}
+      - name: Run test_package (local build)
+        shell: bash
+        working-directory: test_package/build/local/${{ matrix.build_type }}
+        run: |
+          ./test_package
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type == 'VISUAL'
         shell: cmd
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          call conanvcvars.bat
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
-          cmake --build .
+          ..\build\generators\conanbuild.bat
+          cmake --preset default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
+          cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
         if: matrix.config.compiler.type != 'VISUAL'
         shell: bash
         working-directory: test_package/build/${{ matrix.build_type }}
         run: |
-          cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=../../../build/${{ matrix.build_type }}/test_package
-          cmake --build .
-      - name: Run test_package
+          cmake --preset default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
+          cmake --build build/install --config ${{ matrix.build_type }}
+      - name: Run test_package (installation)
         shell: bash
-        working-directory: test_package/build/${{ matrix.build_type }}
+        working-directory: test_package/build/install/${{ matrix.build_type }}
         run: |
           ./test_package
