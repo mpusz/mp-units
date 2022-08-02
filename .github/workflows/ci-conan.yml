@@ -236,7 +236,7 @@ jobs:
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . mpusz/testing -e mp-units:CONAN_RUN_TESTS=True -o mp-units:build_docs=False -o mp-units:downcast_mode=${{ matrix.downcast_mode }} -b mp-units -b outdated -u
+          conan create . mpusz/testing -o mp-units:downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True -b mp-units -b outdated -u
       - name: Upload mp-units Conan package
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash

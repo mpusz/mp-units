@@ -78,7 +78,7 @@ jobs:
           conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
       - name: Configure CMake
         run: |
           cmake --preset default
