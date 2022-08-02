@@ -244,7 +244,7 @@ jobs:
           conan install . -b outdated -u
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
-        if: matrix.config.compiler.type == 'VISUAL'
+        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
         shell: cmd
         working-directory: src
         run: |
@@ -252,7 +252,7 @@ jobs:
           call ..\build\generators\conanvcvars.bat
           cmake --preset default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
-        if: matrix.config.compiler.type != 'VISUAL'
+        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
         shell: bash
         working-directory: src
         run: |
@@ -269,7 +269,7 @@ jobs:
         run: |
           cp ../src/CMakeUserPresets.json .
       - name: Build test_package CMake (local build)
-        if: matrix.config.compiler.type == 'VISUAL'
+        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
         shell: cmd
         working-directory: test_package
         run: |
@@ -277,7 +277,7 @@ jobs:
           cmake --preset default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
-        if: matrix.config.compiler.type != 'VISUAL'
+        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
         shell: bash
         working-directory: test_package
         run: |
@@ -289,7 +289,7 @@ jobs:
         run: |
           ./test_package
       - name: Build test_package CMake (installation)
-        if: matrix.config.compiler.type == 'VISUAL'
+        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
         shell: cmd
         working-directory: test_package
         run: |
@@ -297,7 +297,7 @@ jobs:
           cmake --preset default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
-        if: matrix.config.compiler.type != 'VISUAL'
+        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
         shell: bash
         working-directory: test_package
         run: |
