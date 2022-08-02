@@ -80,11 +80,9 @@ jobs:
         run: |
           conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
       - name: Configure CMake
-        working-directory: build
         run: |
           cmake --preset default
       - name: Generate documentation
-        working-directory: build
         run: |
           cmake --build --preset Release --target documentation
       - name: Deploy documentation
