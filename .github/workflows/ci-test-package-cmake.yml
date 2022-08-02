@@ -205,7 +205,7 @@ jobs:
         working-directory: src
         run: |
           cmake --version
-          ..\build\generators\conanbuild.bat
+          call ..\build\generators\conanvcvars.bat
           cmake --preset default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type != 'VISUAL'
@@ -229,7 +229,7 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
-          ..\build\generators\conanbuild.bat
+          call ..\build\generators\conanvcvars.bat
           cmake --preset default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
@@ -249,7 +249,7 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
-          ..\build\generators\conanbuild.bat
+          call ..\build\generators\conanvcvars.bat
           cmake --preset default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
