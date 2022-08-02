@@ -127,22 +127,6 @@ generators. For example:
 Build Options
 -------------
 
-Environment Variables
-^^^^^^^^^^^^^^^^^^^^^
-
-CONAN_RUN_TESTS
-+++++++++++++++
-
-**Values**: ``True``/``False``
-
-**Defaulted to**: ``False``
-
-Enables compilation of all the source code (tests and examples) and building the documentation.
-To support this it requires some additional Conan build dependencies described in
-`Repository Structure and Dependencies`_.
-It also runs unit tests during Conan build.
-
-
 Conan Options
 ^^^^^^^^^^^^^
 
@@ -159,15 +143,30 @@ Specifies how :ref:`design/downcasting:The Downcasting Facility` works:
 - ``on`` - downcasting always forced -> compile-time errors in case of duplicated definitions
 - ``automatic`` - downcasting automatically enabled if no collisions are present
 
-build_docs
-++++++++++
+Conan Configuration Properties
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+build_all
++++++++++
 
 **Values**: ``True``/``False``
 
-**Defaulted to**: ``True``
+**Defaulted to**: ``False``
 
-If enabled, Conan installs the documentation generation dependencies (i.e. doxygen).
-Additionally, enables project documentation generation when the project is being built by Conan.
+Enables compilation of all the source code (tests and examples) and generating the documentation.
+To support this it requires some additional Conan build dependencies described in
+`Repository Structure and Dependencies`_.
+It also runs unit tests during Conan build (unless ``tools.build:skip_test`` configuration property is set to ``True``)
+
+skip_docs
++++++++++
+
+**Values**: ``True``/``False``
+
+**Defaulted to**: ``False``
+
+If `build_all`_ is enabled, among others, Conan installs the documentation generation dependencies (i.e. doxygen) and
+turns on the project documentation generation. Such behavior can be disabled with this option.
 
 CMake Options
 ^^^^^^^^^^^^^
@@ -415,7 +414,7 @@ you should:
 .. code-block:: shell
 
     git clone https://github.com/mpusz/units.git && cd units
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -o build_docs=False -b outdated -u
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -c user.build:skip_docs=True -b outdated -u
     conan build .
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -444,7 +443,7 @@ In case you would like to build the project's documentation, you should:
 
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b missing
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -b missing
     cmake --preset default
     cmake --build --preset release --target documentation
 
@@ -458,7 +457,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
 .. code-block:: shell
 
-    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -c user.build:skip_docs=True -b outdated -u
 
 The above will create a Conan package and run tests provided in *./test_package* directory.
 
