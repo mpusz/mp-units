@@ -45,14 +45,12 @@ jobs:
           - {
               name: "Windows MSVC 14.2",
               os: windows-2019,
-              compiler:
-                { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" },
+              compiler: { type: VISUAL, version: 16, cc: "", cxx: "", std: 20 },
             }
           - {
               name: "Windows MSVC 14.3",
               os: windows-2022,
-              compiler:
-                { type: MSVC, version: 193, std: 23, cc: "cl", cxx: "cl" },
+              compiler: { type: MSVC, version: 193, cc: "", cxx: "", std: 23 },
             }
           - {
               name: "Ubuntu GCC-10",
