@@ -114,9 +114,10 @@ jobs:
 
     steps:
       - name: Downcase 'build_type'
-        run: |
-          build_type=${{ matrix.build_type }}
-          echo "build_type=${build_type,,}" >> ${GITHUB_ENV}
+        id: build_type
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ matrix.build_type }}
       - uses: actions/checkout@v2
       - name: Cache Conan data
         uses: actions/cache@v2
@@ -217,7 +218,7 @@ jobs:
         shell: bash
         working-directory: src
         run: |
-          cmake --build --preset ${build_type} --target install
+          cmake --build --preset ${{ steps.build_type.outputs.lowercase }} --target install
       - name: Provide dependencies for test_package
         shell: bash
         working-directory: test_package
