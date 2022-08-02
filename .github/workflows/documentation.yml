@@ -84,7 +84,7 @@ jobs:
           cmake --preset default
       - name: Generate documentation
         run: |
-          cmake --build --preset Release --target documentation
+          cmake --build --preset release --target documentation
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
