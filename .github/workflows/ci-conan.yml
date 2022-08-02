@@ -214,7 +214,7 @@ jobs:
         shell: bash
         run: |
           conan config init
-          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
@@ -240,8 +240,8 @@ jobs:
       - name: Upload mp-units Conan package
         shell: bash
         run: |
-          conan user ${{ secrets.CONAN_LOGIN_USERNAME }} -r https://mpusz.jfrog.io/artifactory/api/conan/conan-oss -p ${{ secrets.CONAN_PASSWORD }}
-          conan upload "mp-units*" --all -r https://mpusz.jfrog.io/artifactory/api/conan/conan-oss --confirm
+          conan user ${{ secrets.CONAN_LOGIN_USERNAME }} -r artifactory -p ${{ secrets.CONAN_PASSWORD }}
+          conan upload "mp-units*" --all -r artifactory --confirm
       - name: Remove mp-units package from Conan local cache
         shell: bash
         run: |
