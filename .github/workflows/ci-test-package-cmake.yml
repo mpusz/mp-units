@@ -142,13 +142,6 @@ jobs:
                   std: 20,
                 },
             }
-        # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
-        # - {
-        #     name: "Ubuntu GCC 10.2.0",
-        #     os: ubuntu-20.04,
-        #     compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
-        #     docker_image: conanio/gcc10
-        #   }
         build_type: ["Release", "Debug"]
 
     env:
@@ -224,7 +217,7 @@ jobs:
         shell: bash
         run: |
           conan config init
-          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
