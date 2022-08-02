@@ -408,7 +408,7 @@ In case you would like to build all the source code (with unit tests and example
 you should:
 
 1. Use the *CMakeLists.txt* from the top-level directory.
-2. Run Conan with `CONAN_RUN_TESTS`_ = ``True``
+2. Run Conan with `build_all`_ = ``True``
    (use ``-o build_docs=False`` if you want to skip the documentation generation).
 
 .. code-block:: shell
@@ -437,7 +437,7 @@ In case you would like to build the project's documentation, you should:
 
 1. Use the *CMakeLists.txt* from the top-level directory.
 2. Obtain Python dependencies.
-3. Run Conan with `CONAN_RUN_TESTS`_ = ``True``.
+3. Run Conan with `build_all`_ = ``True``.
 
 .. code-block:: shell
 

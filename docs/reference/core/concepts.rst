@@ -63,6 +63,11 @@ Concepts
     A concept matching all quantity-like types other than specialization of :class:`quantity`. Satisfied by
     all types for which a correct specialization of :class:`quantity_like_traits` type trait is provided.
 
+.. concept:: template<typename T> QuantityPointLike
+
+    A concept matching all quantity-point-like types other than specialization of :class:`quantity_point`.
+    Satisfied by all types for which a correct specialization of :class:`quantity_point_like_traits` type trait is provided.
+
 .. concept:: template<typename T> WrappedQuantity
 
     A concept matching types that wrap quantity objects. Satisfied by all wrapper types that
