@@ -43,48 +43,93 @@ jobs:
       matrix:
         config:
           - {
-              name: "Windows MSVC 2019",
-              os: windows-latest,
-              compiler: { type: VISUAL, version: 16, cc: "", cxx: "" },
+              name: "Windows MSVC 14.2",
+              os: windows-2019,
+              compiler:
+                { type: VISUAL, version: 16, std: 20, cc: "cl", cxx: "cl" },
             }
           - {
-              name: "Ubuntu GCC 10.3.0",
-              os: ubuntu-20.04,
-              compiler: { type: GCC, version: 10, cc: "gcc-10", cxx: "g++-10" },
-              lib: "libstdc++11",
+              name: "Windows MSVC 14.3",
+              os: windows-2022,
+              compiler:
+                { type: MSVC, version: 193, std: 23, cc: "cl", cxx: "cl" },
             }
           - {
-              name: "Ubuntu GCC 11.1.0",
-              os: ubuntu-20.04,
-              compiler: { type: GCC, version: 11, cc: "gcc-11", cxx: "g++-11" },
-              lib: "libstdc++11",
-            }
-          - {
-              name: "Ubuntu Clang 12.0.0 + libstdc++11",
+              name: "Ubuntu GCC-10",
               os: ubuntu-20.04,
               compiler:
-                { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+                {
+                  type: GCC,
+                  version: 10,
+                  cc: "gcc-10",
+                  cxx: "g++-10",
+                  std: 20,
+                },
               lib: "libstdc++11",
             }
           - {
-              name: "Ubuntu Clang 12.0.0 + libc++",
+              name: "Ubuntu GCC-11",
               os: ubuntu-20.04,
               compiler:
-                { type: CLANG, version: 12, cc: "clang-12", cxx: "clang++-12" },
+                {
+                  type: GCC,
+                  version: 11,
+                  cc: "gcc-11",
+                  cxx: "g++-11",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang-12 + libstdc++11",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 12,
+                  cc: "clang-12",
+                  cxx: "clang++-12",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu Clang-12 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 12,
+                  cc: "clang-12",
+                  cxx: "clang++-12",
+                  std: 20,
+                },
               lib: "libc++",
             }
           - {
-              name: "Ubuntu Clang 13.0.0 + libc++",
+              name: "Ubuntu Clang-13 + libc++",
               os: ubuntu-20.04,
               compiler:
-                { type: CLANG, version: 13, cc: "clang-13", cxx: "clang++-13" },
+                {
+                  type: CLANG,
+                  version: 13,
+                  cc: "clang-13",
+                  cxx: "clang++-13",
+                  std: 20,
+                },
               lib: "libc++",
             }
           - {
-              name: "Ubuntu Clang 14.0.0 + libc++",
+              name: "Ubuntu Clang-14 + libc++",
               os: ubuntu-20.04,
               compiler:
-                { type: CLANG, version: 14, cc: "clang-14", cxx: "clang++-14" },
+                {
+                  type: CLANG,
+                  version: 14,
+                  cc: "clang-14",
+                  cxx: "clang++-14",
+                  std: 20,
+                },
               lib: "libc++",
             }
           - {
@@ -96,6 +141,7 @@ jobs:
                   version: "13.0",
                   cc: "clang",
                   cxx: "clang++",
+                  std: 20,
                 },
             }
         # In case a Conan docker image will be needed to provide a specific configuration we can use a Docker image as follows
@@ -110,7 +156,6 @@ jobs:
     env:
       CC: ${{ matrix.config.compiler.cc }}
       CXX: ${{ matrix.config.compiler.cxx }}
-      CMAKE_GENERATOR: Ninja
 
     steps:
       - name: Downcase 'build_type'
@@ -182,10 +227,11 @@ jobs:
         run: |
           conan config init
           conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          conan profile update settings.compiler.cppstd=20 default
           if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
           fi
+          conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
+          conan profile update settings.build_type=${{ matrix.build_type }} default
           conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
           conan profile show default
       # - name: Add support for clang-13 to Conan's settings.yml
@@ -197,7 +243,7 @@ jobs:
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -s build_type=${{ matrix.build_type }} -b outdated -u
+          conan install . -b outdated -u
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL'
