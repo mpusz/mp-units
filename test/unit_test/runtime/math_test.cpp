@@ -187,10 +187,10 @@ TEST_CASE("ceil functions", "[ceil]")
   {
     REQUIRE(ceil<si::second>(1999._q_ms) == 2_q_s);
   }
-  // TODO does not work, probably due to a bug in fpow10() see #311
-  //   SECTION ("ceil -1000. milliseconds with target unit second should be -1 second") {
-  //     REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
-  //   }
+  SECTION("ceil -1000. milliseconds with target unit second should be -1 second")
+  {
+    REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
+  }
   SECTION("ceil -999. milliseconds with target unit second should be 0 seconds")
   {
     REQUIRE(ceil<si::second>(-999._q_ms) == 0_q_s);
