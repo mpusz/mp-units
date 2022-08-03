@@ -22,6 +22,7 @@
 
 #include <catch2/catch.hpp>
 #include <units/isq/si/area.h>
+#include <units/isq/si/cgs/length.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
@@ -30,7 +31,7 @@
 
 using namespace units;
 using namespace units::isq;
-using namespace units::isq::si;
+using namespace units::isq::si::literals;
 
 // classical
 
@@ -363,3 +364,21 @@ TEMPLATE_PRODUCT_TEST_CASE_SIG("detail::iroot<N>()", "[math][pow][iroot]", (std:
 
 ROOT_TEST_CASE(CompileRoot)
 ROOT_TEST_CASE(RuntimeRoot)
+
+TEST_CASE("hypot functions", "[hypot]")
+{
+  using namespace units::aliases::isq::si;
+
+  SECTION("hypot of 3 kilometres with 4 kilometres should be 5 kilometres")
+  {
+    REQUIRE(hypot(km<>(3.), km<>(4.)) == km<>(5.));
+  }
+  SECTION("hypot should work with different units of the same dimension")
+  {
+    REQUIRE(hypot(km<>(3.), m<>(4000.)) == km<>(5.));
+  }
+  SECTION("hypot should work with different but equivalent dimensions")
+  {
+    REQUIRE(hypot(km<>(3.), cgs::length::cm<>(400'000.)) == km<>(5.));
+  }
+}
