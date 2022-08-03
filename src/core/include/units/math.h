@@ -309,9 +309,6 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] inline std::common_type_t<Q1, Q2> hypot(const Q1& x, const Q2& y) noexcept
   requires requires { typename std::common_type_t<Q1, Q2>; } &&
            requires(std::common_type_t<Q1, Q2> q) {
-             pow<2>(x);
-             pow<2>(y);
-             sqrt(pow<2>(x) + pow<2>(y));
              requires requires { hypot(q.number(), q.number()); } || requires { std::hypot(q.number(), q.number()); };
            }
 {
@@ -330,10 +327,6 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
 [[nodiscard]] inline std::common_type_t<Q1, Q2, Q3> hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
   requires requires { typename std::common_type_t<Q1, Q2, Q3>; } &&
            requires(std::common_type_t<Q1, Q2, Q3> q) {
-             pow<2>(x);
-             pow<2>(y);
-             pow<2>(z);
-             sqrt(pow<2>(x) + pow<2>(y) + pow<2>(z));
              requires requires { hypot(q.number(), q.number(), q.number()); } ||
                         requires { std::hypot(q.number(), q.number(), q.number()); };
            }
