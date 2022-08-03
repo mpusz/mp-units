@@ -327,10 +327,9 @@ template<Quantity Q1, Quantity Q2>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2, Quantity Q3>
-[[nodiscard]] inline std::common_type_t<std::common_type_t<Q1, Q2>, Q3> hypot(const Q1& x, const Q2& y,
-                                                                              const Q3& z) noexcept
-  requires requires { typename std::common_type_t<std::common_type_t<Q1, Q2>, Q3>; } &&
-           requires(std::common_type_t<std::common_type_t<Q1, Q2>, Q3> q) {
+[[nodiscard]] inline std::common_type_t<Q1, Q2, Q3> hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
+  requires requires { typename std::common_type_t<Q1, Q2, Q3>; } &&
+           requires(std::common_type_t<Q1, Q2, Q3> q) {
              pow<2>(x);
              pow<2>(y);
              pow<2>(z);
@@ -339,7 +338,7 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
                         requires { std::hypot(q.number(), q.number(), q.number()); };
            }
 {
-  using type = std::common_type_t<std::common_type_t<Q1, Q2>, Q3>;
+  using type = std::common_type_t<Q1, Q2, Q3>;
   type xx = x;
   type yy = y;
   type zz = z;
