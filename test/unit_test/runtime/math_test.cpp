@@ -369,16 +369,19 @@ TEST_CASE("hypot functions", "[hypot]")
 {
   using namespace units::aliases::isq::si;
 
-  SECTION("hypot of 3 kilometres with 4 kilometres should be 5 kilometres")
+  SECTION("hypot should work on the same quantities")
   {
     REQUIRE(hypot(km<>(3.), km<>(4.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), km<>(3.), km<>(6.)) == km<>(7.));
   }
   SECTION("hypot should work with different units of the same dimension")
   {
     REQUIRE(hypot(km<>(3.), m<>(4000.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), m<>(3000.), km<>(6.)) == km<>(7.));
   }
   SECTION("hypot should work with different but equivalent dimensions")
   {
     REQUIRE(hypot(km<>(3.), cgs::length::cm<>(400'000.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), cgs::length::cm<>(300'000.), km<>(6.)) == km<>(7.));
   }
 }
