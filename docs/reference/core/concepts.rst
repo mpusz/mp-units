@@ -45,6 +45,11 @@ Concepts
     A concept matching all unit types that have an atomic text symbol that can be used to aggregate it with
     other named units to form a final symbol of a derived unit.
 
+.. concept:: template<typename T> AliasUnit
+
+    A concept matching all alias unit types in the library. Satisfied by all unit types derived
+    from the instantiation of :class:`alias_unit`.
+
 .. concept:: template<typename U, typename D> UnitOf
 
     A concept matching only units of a specified dimension. Satisfied by all unit types that

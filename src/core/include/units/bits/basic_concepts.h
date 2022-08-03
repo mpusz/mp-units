@@ -29,6 +29,7 @@
 #include <units/bits/external/type_traits.h>
 #include <units/customization_points.h>
 #include <units/magnitude.h>
+#include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
 #include <cstdint>
@@ -85,6 +86,20 @@ inline constexpr bool is_named = false;
 
 template<typename T>
 concept NamedUnit = Unit<T> && detail::is_named<T>;
+
+template<Unit U, basic_symbol_text Symbol>
+struct alias_unit;
+
+// TODO: Remove when P1985 accepted
+namespace detail {
+
+template<Unit U, basic_symbol_text Symbol>
+void to_base_alias_unit(const volatile alias_unit<U, Symbol>*);
+
+}  // namespace detail
+
+template<typename T>
+concept AliasUnit = requires(T* t) { detail::to_base_alias_unit(t); };
 
 // BaseDimension
 template<basic_fixed_string Symbol, NamedUnit U>

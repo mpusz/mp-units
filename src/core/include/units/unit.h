@@ -58,8 +58,10 @@ inline constexpr bool can_be_prefixed = false;
  *
  * @tparam M a Magnitude representing the (relative) size of this unit
  * @tparam U a unit to use as a reference for this dimension
+ *
+ * @note U cannot be constrained with Unit as for some specializations (i.e. named_unit)
+ *       it gets the incomplete child's type with the CRTP idiom.
  */
-// TODO Replace `typename` with `Unit`
 template<Magnitude auto M, typename U>
 struct scaled_unit : downcast_base<scaled_unit<M, U>> {
   static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
@@ -175,12 +177,8 @@ struct alias_unit : U {
  * @tparam P prefix to be appied to the reference unit
  * @tparam AU reference alias unit
  */
-// TODO gcc bug: 95015
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
-// template<Unit U, Prefix P, AliasUnit AU>
-//   requires (!AliasUnit<U>)
-template<Unit U, Prefix P, NamedUnit AU>
-  requires detail::can_be_prefixed<AU>
+template<Unit U, Prefix P, AliasUnit AU>
+  requires(!AliasUnit<U>)
 struct prefixed_alias_unit : U {
   static constexpr auto symbol = P::symbol + AU::symbol;
 };
