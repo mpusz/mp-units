@@ -157,9 +157,8 @@ public:
   using legs = std::vector<leg>;
 
   template<std::ranges::input_range R>
-    requires std::same_as<std::ranges::range_value_t<R>,
-                          waypoint> explicit task(const R& r) :
-      waypoints_(std::ranges::begin(r), std::ranges::end(r))
+    requires std::same_as<std::ranges::range_value_t<R>, waypoint>
+  explicit task(const R& r) : waypoints_(std::ranges::begin(r), std::ranges::end(r))
   {
   }
 
@@ -215,8 +214,7 @@ constexpr height agl(altitude glider_alt, altitude terrain_level) { return glide
 
 inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist, height h)
 {
-  // TODO support for hypot(q, q)
-  return sqrt(pow<2>(dist.common()) + pow<2>(h.common()));
+  return hypot(dist.common(), h.common());
 }
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);
