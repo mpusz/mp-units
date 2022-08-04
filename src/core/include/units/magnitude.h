@@ -398,6 +398,11 @@ struct pi_base {
   static constexpr long double value = std::numbers::pi_v<long double>;
 };
 
+/**
+ * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
+ */
+inline constexpr Magnitude auto pi = magnitude<base_power<pi_base>{}>{};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 
