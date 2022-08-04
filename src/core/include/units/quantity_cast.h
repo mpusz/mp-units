@@ -28,6 +28,7 @@
 #include <units/concepts.h>
 #include <units/customization_points.h>
 #include <units/magnitude.h>
+#include <units/reference.h>
 
 UNITS_DIAGNOSTIC_PUSH
 // warning C4244: 'argument': conversion from 'intmax_t' to 'T', possible loss of data with T=int
@@ -49,17 +50,8 @@ class quantity_point_kind;
 
 namespace detail {
 
-template<typename T>
-inline constexpr Magnitude auto quantity_magnitude = std::enable_if_t<!Quantity<T>, magnitude<>>{};
-
-template<typename D, typename U, typename Rep>
-inline constexpr Magnitude auto quantity_magnitude<quantity<D, U, Rep>> = [] {
-  if constexpr (BaseDimension<D>) {
-    return U::mag;
-  } else {
-    return D::base_units_ratio * U::mag / D::coherent_unit::mag;
-  }
-}();
+template<Quantity Q>
+inline constexpr Magnitude auto quantity_magnitude = decltype(Q::reference)::mag;
 
 template<Quantity Q>
 inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<Q>);
@@ -79,8 +71,8 @@ template<typename From, typename To>
 struct cast_traits;
 
 template<typename From, typename To>
-  requires common_type_with_<std::common_type_t<From, To>,
-                             std::intmax_t> struct cast_traits<From, To> {
+  requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
+struct cast_traits<From, To> {
   using ratio_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
   using rep_type = ratio_type;
 };

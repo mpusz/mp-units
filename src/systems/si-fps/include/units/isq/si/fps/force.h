@@ -40,7 +40,7 @@ namespace units::isq::si::fps {
 struct poundal : named_unit<poundal, "pdl"> {};
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-struct pound_force : named_scaled_unit<pound_force, "lbf", as_magnitude<ratio(32'174'049, 1'000'000)>(), poundal> {};
+struct pound_force : named_scaled_unit<pound_force, "lbf", mag<ratio(32'174'049, 1'000'000)>(), poundal> {};
 
 struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 

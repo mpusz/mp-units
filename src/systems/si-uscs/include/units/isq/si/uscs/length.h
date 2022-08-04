@@ -36,14 +36,14 @@ namespace units::isq::si::uscs {
 
 // https://en.wikipedia.org/wiki/Foot_(unit)#US_survey_foot
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
-struct foot : named_scaled_unit<foot, "ft(us)", as_magnitude<ratio(1'200, 3'937)>(), si::metre> {};
+struct foot : named_scaled_unit<foot, "ft(us)", mag<ratio(1'200, 3'937)>(), si::metre> {};
 
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
-struct fathom : named_scaled_unit<fathom, "fathom(us)", as_magnitude<6>(), foot> {};
+struct fathom : named_scaled_unit<fathom, "fathom(us)", mag<6>(), foot> {};
 
 // https://en.wikipedia.org/wiki/Mile#U.S._survey_mile
 // https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors#B6
-struct mile : named_scaled_unit<mile, "mi(us)", as_magnitude<5280>(), foot> {};
+struct mile : named_scaled_unit<mile, "mi(us)", mag<5280>(), foot> {};
 
 #ifndef UNITS_NO_LITERALS
 

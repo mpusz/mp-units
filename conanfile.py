@@ -24,15 +24,13 @@ import os
 import re
 
 from conan import ConanFile
-from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain
+from conan.tools.build import check_min_cppstd
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
 from conans.errors import ConanInvalidConfiguration
 
-# TODO replace with new tools for Conan 2.0
-from conans.tools import check_min_cppstd, get_env
-
-required_conan_version = ">=1.48.0"
+required_conan_version = ">=1.50.0"
 
 
 class MPUnitsConan(ConanFile):
@@ -56,8 +54,8 @@ class MPUnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
     requires = "gsl-lite/0.40.0"
-    options = {"downcast_mode": ["off", "on", "auto"], "build_docs": [True, False]}
-    default_options = {"downcast_mode": "on", "build_docs": True}
+    options = {"downcast_mode": ["off", "on", "auto"]}
+    default_options = {"downcast_mode": "on"}
     exports = ["LICENSE.md"]
     exports_sources = [
         "docs/*",
@@ -71,8 +69,12 @@ class MPUnitsConan(ConanFile):
     generators = "cmake_paths"
 
     @property
-    def _run_tests(self):
-        return get_env("CONAN_RUN_TESTS", False)
+    def _build_all(self):
+        return bool(self.conf["user.build:all"])
+
+    @property
+    def _skip_docs(self):
+        return bool(self.conf["user.build:skip_docs"])
 
     @property
     def _use_libfmt(self):
@@ -112,10 +114,10 @@ class MPUnitsConan(ConanFile):
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
-        if self._run_tests:
+        if self._build_all:
             self.test_requires("catch2/2.13.9")
             self.test_requires("wg21-linear_algebra/0.7.2")
-            if self.options.build_docs:
+            if not self._skip_docs:
                 self.tool_requires("doxygen/1.9.4")
 
     # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
@@ -145,17 +147,13 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration("Unsupported compiler")
         check_min_cppstd(self, 20)
 
-    # TODO Uncomment this when environment is supported in the Conan toolchain
-    # def config_options(self):
-    #     if not self._run_tests:
-    #         # build_docs has sense only in a development or CI build
-    #         del self.options.build_docs
+    def layout(self):
+        cmake_layout(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
-        # if self._run_tests:  # TODO Enable this when environment is supported in the Conan toolchain
-        tc.variables["UNITS_BUILD_DOCS"] = bool(self.options.build_docs)
+        tc.variables["UNITS_BUILD_DOCS"] = self._build_all and not self._skip_docs
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
@@ -163,13 +161,13 @@ class MPUnitsConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(build_script_folder=None if self._run_tests else "src")
+        cmake.configure(build_script_folder=None if self._build_all else "src")
         cmake.build()
-        if self._run_tests:
+        if self._build_all:
             cmake.test()
 
     def package_id(self):
-        self.info.header_only()
+        self.info.clear()
 
     def package(self):
         copy(
@@ -187,7 +185,6 @@ class MPUnitsConan(ConanFile):
 
         # core
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        self.cpp_info.components["core"].includedirs = ["include"]
         if compiler == "Visual Studio":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
         if self._use_range_v3:
@@ -195,49 +192,21 @@ class MPUnitsConan(ConanFile):
 
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]
-        self.cpp_info.components["core-io"].includedirs = ["include"]
-
         self.cpp_info.components["core-fmt"].requires = ["core"]
-        self.cpp_info.components["core-fmt"].includedirs = ["include"]
         if self._use_libfmt:
             self.cpp_info.components["core-fmt"].requires.append("fmt::fmt")
-
         self.cpp_info.components["isq"].requires = ["core"]
-        self.cpp_info.components["isq"].includedirs = ["include"]
-
         self.cpp_info.components["isq-natural"].requires = ["isq"]
-        self.cpp_info.components["isq-natural"].includedirs = ["include"]
-
         self.cpp_info.components["si"].requires = ["isq"]
-        self.cpp_info.components["si"].includedirs = ["include"]
-
         self.cpp_info.components["si-cgs"].requires = ["si"]
-        self.cpp_info.components["si-cgs"].includedirs = ["include"]
-
         self.cpp_info.components["si-fps"].requires = ["si-international"]
-        self.cpp_info.components["si-fps"].includedirs = ["include"]
-
         self.cpp_info.components["si-hep"].requires = ["si"]
-        self.cpp_info.components["si-hep"].includedirs = ["include"]
-
         self.cpp_info.components["si-iau"].requires = ["si"]
-        self.cpp_info.components["si-iau"].includedirs = ["include"]
-
         self.cpp_info.components["si-imperial"].requires = ["si"]
-        self.cpp_info.components["si-imperial"].includedirs = ["include"]
-
         self.cpp_info.components["si-international"].requires = ["si"]
-        self.cpp_info.components["si-international"].includedirs = ["include"]
-
         self.cpp_info.components["si-typographic"].requires = ["si"]
-        self.cpp_info.components["si-typographic"].includedirs = ["include"]
-
         self.cpp_info.components["si-uscs"].requires = ["si"]
-        self.cpp_info.components["si-uscs"].includedirs = ["include"]
-
         self.cpp_info.components["isq-iec80000"].requires = ["si"]
-        self.cpp_info.components["isq-iec80000"].includedirs = ["include"]
-
         self.cpp_info.components["systems"].requires = [
             "isq",
             "isq-natural",

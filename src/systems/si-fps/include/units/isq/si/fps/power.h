@@ -42,7 +42,7 @@ struct dim_power : isq::dim_power<dim_power, foot_poundal_per_second, dim_length
 struct foot_pound_force_per_second :
     derived_scaled_unit<foot_pound_force_per_second, dim_power, foot, pound_force, second> {};
 
-struct horse_power : named_scaled_unit<horse_power, "hp", as_magnitude<550>(), foot_pound_force_per_second> {};
+struct horse_power : named_scaled_unit<horse_power, "hp", mag<550>(), foot_pound_force_per_second> {};
 
 template<UnitOf<dim_power> U, Representation Rep = double>
 using power = quantity<dim_power, U, Rep>;

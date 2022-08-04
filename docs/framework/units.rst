@@ -188,9 +188,6 @@ and define units like::
     struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix,
                                             ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
 
-..
-    TODO Submit a bug for above lexing problem
-
 Finally, the last of the `named_scaled_unit` class template parameters
 provide a reference unit for scaling. Please note that it can be a dimension's
 base/coherent unit (like ``si::second``) or any other unit (i.e. ``si::minute``,

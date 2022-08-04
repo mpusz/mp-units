@@ -30,6 +30,7 @@ function(__check_libcxx_in_use variable)
         set(${variable} ${${variable}} PARENT_SCOPE)
 
         list(POP_BACK CMAKE_MESSAGE_INDENT)
+
         if(${variable})
             message(CHECK_PASS "found")
         else()
@@ -39,15 +40,21 @@ function(__check_libcxx_in_use variable)
 endfunction()
 
 include(CMakeFindDependencyMacro)
-find_dependency(fmt)
+
+if(UNITS_USE_LIBFMT)
+    find_dependency(fmt)
+endif()
+
 find_dependency(gsl-lite)
 
 # add range-v3 dependency only for clang + libc++
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     __check_libcxx_in_use(__units_libcxx)
+
     if(__units_libcxx AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
         find_dependency(range-v3)
     endif()
+
     unset(__units_libcxx)
 endif()
 

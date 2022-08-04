@@ -24,6 +24,7 @@
 
 #include <units/bits/derived_symbol_text.h>
 #include <units/bits/external/downcasting.h>
+#include <units/bits/external/type_traits.h>
 
 // IWYU pragma: begin_exports
 #include <units/bits/derived_scaled_unit.h>
@@ -57,6 +58,9 @@ inline constexpr bool can_be_prefixed = false;
  *
  * @tparam M a Magnitude representing the (relative) size of this unit
  * @tparam U a unit to use as a reference for this dimension
+ *
+ * @note U cannot be constrained with Unit as for some specializations (i.e. named_unit)
+ *       it gets the incomplete child's type with the CRTP idiom.
  */
 template<Magnitude auto M, typename U>
 struct scaled_unit : downcast_base<scaled_unit<M, U>> {
@@ -80,7 +84,7 @@ struct same_unit_reference : is_same<typename U1::reference, typename U2::refere
  * @tparam Symbol a short text representation of the unit
  */
 template<typename Child, basic_symbol_text Symbol>
-struct named_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {
+struct named_unit : downcast_dispatch<Child, scaled_unit<mag<1>(), Child>> {
   static constexpr auto symbol = Symbol;
 };
 
@@ -126,7 +130,7 @@ struct prefixed_unit : downcast_dispatch<Child, scaled_unit<P::mag * U::mag, typ
  * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
  */
 template<typename Child>
-struct derived_unit : downcast_dispatch<Child, scaled_unit<as_magnitude<1>(), Child>> {};
+struct derived_unit : downcast_dispatch<Child, scaled_unit<mag<1>(), Child>> {};
 
 /**
  * @brief A unit with a deduced ratio and symbol
@@ -173,12 +177,8 @@ struct alias_unit : U {
  * @tparam P prefix to be appied to the reference unit
  * @tparam AU reference alias unit
  */
-// TODO gcc bug: 95015
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95015
-// template<Unit U, Prefix P, AliasUnit AU>
-//   requires (!AliasUnit<U>)
-template<Unit U, Prefix P, NamedUnit AU>
-  requires detail::can_be_prefixed<AU>
+template<Unit U, Prefix P, AliasUnit AU>
+  requires(!AliasUnit<U>)
 struct prefixed_alias_unit : U {
   static constexpr auto symbol = P::symbol + AU::symbol;
 };
@@ -188,7 +188,10 @@ struct prefixed_alias_unit : U {
  *
  * Used as a coherent unit of an unknown dimension.
  */
-struct unknown_coherent_unit : derived_unit<unknown_coherent_unit> {};
+template<Exponent... Es>
+struct unknown_coherent_unit :
+    downcast_dispatch<unknown_coherent_unit<Es...>,
+                      scaled_unit<detail::absolute_magnitude(exponent_list<Es...>()), unknown_coherent_unit<Es...>>> {};
 
 namespace detail {
 

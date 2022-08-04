@@ -258,14 +258,14 @@ Even though the base dimension of ``si::fps`` is defined in terms of
 ``si::metre`` foot is preserved as the base unit of length in both systems::
 
     constexpr auto fps_yard = fps::length<fps::yard>(1.);
-    constexpr auto fps_area = quantity_cast<unknown_coherent_unit>(fps_yard * fps_yard);
-    std::cout << fps_yard << "\n";     // 1 yd
-    std::cout << fps_area << "\n";     // 9 ft²
+    constexpr auto fps_area = fps_yard * fps_yard;
+    std::cout << fps_yard << "\n";                                                               // 1 yd
+    std::cout << quantity_cast<decltype(fps_area)::dimension::coherent_unit>(fps_area) << "\n";  // 9 ft²
 
     constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
-    constexpr auto si_fps_area = quantity_cast<unknown_coherent_unit>(si_fps_yard * si_fps_yard);
-    std::cout << si_fps_yard << "\n";  // 1 yd
-    std::cout << si_fps_area << "\n";  // 9 ft²
+    constexpr auto si_fps_area = si_fps_yard * si_fps_yard;
+    std::cout << si_fps_yard << "\n";                                                                  // 1 yd
+    std::cout << quantity_cast<decltype(si_fps_area)::dimension::coherent_unit>(si_fps_area) << "\n";  // 9 ft²
 
 In most cases we want conversions between systems and that is why nearly all
 systems provided with this library are implemented in terms on the :term:`SI`

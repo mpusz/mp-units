@@ -116,7 +116,7 @@ static_assert(si::length<si::metre>(1) + quantity_cast<si::length<si::metre>>(10
 static_assert(100_q_cm + quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) == 200_q_cm);
 static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si::metre>(1)) + 100_q_cm == 200_q_cm);
 
-// substraction
+// subtraction
 
 static_assert(500_q_cm - si::length<si::metre>(1) == si::length<si::metre>(4));
 static_assert(si::length<si::metre>(5) - 100_q_cm == si::length<si::metre>(4));
@@ -127,8 +127,8 @@ static_assert(quantity_cast<si::cgs::length<si::cgs::centimetre>>(si::length<si:
 
 // multiplication
 
-// static_assert(200_q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4)); // TODO Add support for
-// comparing of an unknown_dimension
+// TODO Add support for comparing of an unknown_dimension
+// static_assert(200._q_cm * si::length<si::metre>(2) == si::area<si::square_metre>(4));
 
 static_assert(quantity_cast<si::dim_length>(200._q_cm) * si::length<si::metre>(2) == si::area<si::square_metre>(4));
 static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metre>(2)) == 40'000_q_cm2);
@@ -142,13 +142,31 @@ static_assert(200._q_cm * quantity_cast<si::cgs::dim_length>(si::length<si::metr
 
 // division
 
-// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2)); // TODO Add support for
-// comparing of an unknown_dimension
+// TODO Add support for comparing of an unknown_dimension
+// static_assert(si::area<si::square_metre>(4) / 200_q_cm == si::length<si::metre>(2));
+// static_assert(400._q_cm / si::length<si::metre>(2) == 2);
 
 static_assert(si::area<si::square_metre>(4) / quantity_cast<si::length<si::metre>>(200_q_cm) ==
               si::length<si::metre>(2));
 static_assert(quantity_cast<si::cgs::area<si::cgs::square_centimetre>>(si::area<si::square_metre>(4)) / 200._q_cm ==
               200_q_cm);
+
+static_assert(si::cgs::length<si::cgs::centimetre>(50) == si::length<si::centimetre>(50));
+static_assert(si::cgs::mass<si::cgs::gram>(50) == si::mass<si::gram>(50));
+
+static_assert(1 / si::cgs::length<si::cgs::centimetre>(50) == 1 / si::length<si::centimetre>(50));
+static_assert(1 / si::cgs::length<si::metre>(50) == 1 / si::length<si::metre>(50));
+
+static_assert(1 / si::cgs::mass<si::cgs::gram>(50) == 1 / si::mass<si::gram>(50));
+static_assert(1 / si::cgs::mass<si::kilogram>(50) == 1 / si::mass<si::kilogram>(50));
+
+static_assert(si::cgs::length<si::cgs::centimetre>(50) * si::cgs::mass<si::cgs::gram>(50) ==
+              si::length<si::centimetre>(50) * si::mass<si::gram>(50));
+static_assert(si::cgs::length<si::metre>(50) * si::cgs::mass<si::kilogram>(50) ==
+              si::length<si::metre>(50) * si::mass<si::kilogram>(50));
+
+static_assert(si::cgs::length<si::cgs::centimetre>(50) / si::cgs::mass<si::cgs::gram>(50) ==
+              si::length<si::centimetre>(50) / si::mass<si::gram>(50));
 
 }  // namespace cgs_test
 

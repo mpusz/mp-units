@@ -78,16 +78,13 @@ jobs:
           conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          mkdir build && cd build
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
       - name: Configure CMake
-        working-directory: build
         run: |
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --preset default
       - name: Generate documentation
-        working-directory: build
         run: |
-          cmake --build . --target documentation --config Release
+          cmake --build --preset release --target documentation
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3

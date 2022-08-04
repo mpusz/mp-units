@@ -59,7 +59,7 @@ It works just like `quantity_like_traits`, except that
 ``number(T)`` is replaced with ``relative(T)`` that returns the `QuantityLike` value
 and ``dimension`` is replaced with ``origin``.
 
-Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_kind_point`
+Similar to `quantity` and `quantity_kind`, `quantity_point` and `quantity_point_kind`
 provide a deduction guide from `QuantityPointLike`::
 
     using namespace std::chrono_literals;

@@ -22,6 +22,7 @@
 
 #include <catch2/catch.hpp>
 #include <units/isq/si/area.h>
+#include <units/isq/si/cgs/length.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
@@ -30,7 +31,7 @@
 
 using namespace units;
 using namespace units::isq;
-using namespace units::isq::si;
+using namespace units::isq::si::literals;
 
 // classical
 
@@ -186,10 +187,10 @@ TEST_CASE("ceil functions", "[ceil]")
   {
     REQUIRE(ceil<si::second>(1999._q_ms) == 2_q_s);
   }
-  // TODO does not work, probably due to a bug in fpow10() see #311
-  //   SECTION ("ceil -1000. milliseconds with target unit second should be -1 second") {
-  //     REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
-  //   }
+  SECTION("ceil -1000. milliseconds with target unit second should be -1 second")
+  {
+    REQUIRE(ceil<si::second>(-1000._q_ms) == -1_q_s);
+  }
   SECTION("ceil -999. milliseconds with target unit second should be 0 seconds")
   {
     REQUIRE(ceil<si::second>(-999._q_ms) == 0_q_s);
@@ -363,3 +364,24 @@ TEMPLATE_PRODUCT_TEST_CASE_SIG("detail::iroot<N>()", "[math][pow][iroot]", (std:
 
 ROOT_TEST_CASE(CompileRoot)
 ROOT_TEST_CASE(RuntimeRoot)
+
+TEST_CASE("hypot functions", "[hypot]")
+{
+  using namespace units::aliases::isq::si;
+
+  SECTION("hypot should work on the same quantities")
+  {
+    REQUIRE(hypot(km<>(3.), km<>(4.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), km<>(3.), km<>(6.)) == km<>(7.));
+  }
+  SECTION("hypot should work with different units of the same dimension")
+  {
+    REQUIRE(hypot(km<>(3.), m<>(4000.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), m<>(3000.), km<>(6.)) == km<>(7.));
+  }
+  SECTION("hypot should work with different but equivalent dimensions")
+  {
+    REQUIRE(hypot(km<>(3.), cgs::length::cm<>(400'000.)) == km<>(5.));
+    REQUIRE(hypot(km<>(2.), cgs::length::cm<>(300'000.), km<>(6.)) == km<>(7.));
+  }
+}

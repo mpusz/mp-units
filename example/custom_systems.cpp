@@ -33,7 +33,7 @@ using namespace units;
 namespace fps {
 
 struct foot : named_unit<foot, "ft"> {};
-struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
+struct yard : named_scaled_unit<yard, "yd", mag<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -54,8 +54,8 @@ using length = quantity<dim_length, U, Rep>;
 
 namespace fps {
 
-struct foot : named_scaled_unit<foot, "ft", as_magnitude<ratio(3'048, 1'000, -1)>(), metre> {};
-struct yard : named_scaled_unit<yard, "yd", as_magnitude<3>(), foot> {};
+struct foot : named_scaled_unit<foot, "ft", mag<ratio{3'048, 10'000}>(), metre> {};
+struct yard : named_scaled_unit<yard, "yd", mag<3>(), foot> {};
 
 struct dim_length : base_dimension<"L", foot> {};
 
@@ -84,20 +84,17 @@ void conversions()
 void unknown_dimensions()
 {
   constexpr auto fps_yard = fps::length<fps::yard>(1.);
-  constexpr auto fps_area = quantity_cast<unknown_coherent_unit>(fps_yard * fps_yard);
+  constexpr auto fps_area = fps_yard * fps_yard;
   std::cout << fps_yard << "\n";
-  std::cout << fps_area << "\n";
+  std::cout << quantity_cast<decltype(fps_area)::dimension::coherent_unit>(fps_area) << "\n";
 
   constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
-  constexpr auto si_fps_area = quantity_cast<unknown_coherent_unit>(si_fps_yard * si_fps_yard);
+  constexpr auto si_fps_area = si_fps_yard * si_fps_yard;
   std::cout << si_fps_yard << "\n";
-  std::cout << si_fps_area << "\n";
+  std::cout << quantity_cast<decltype(si_fps_area)::dimension::coherent_unit>(si_fps_area) << "\n";
 }
 
-std::ostream& operator<<(std::ostream& os, const ratio& r)
-{
-  return os << "ratio{" << r.num << ", " << r.den << ", " << r.exp << "}";
-}
+std::ostream& operator<<(std::ostream& os, const ratio& r) { return os << "ratio{" << r.num << ", " << r.den << "}"; }
 
 template<Unit U>
 std::ostream& operator<<(std::ostream& os, const U& u)
