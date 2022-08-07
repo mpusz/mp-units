@@ -414,7 +414,7 @@ you should:
 .. code-block:: shell
 
     git clone https://github.com/mpusz/units.git && cd units
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -c user.build:skip_docs=True -b outdated -u
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
     conan build .
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -443,7 +443,7 @@ In case you would like to build the project's documentation, you should:
 
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -b missing
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
     cmake --preset default
     cmake --build --preset release --target documentation
 
@@ -457,7 +457,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
 .. code-block:: shell
 
-    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c mp-units:user.build:all=True -c user.build:skip_docs=True -b outdated -u
+    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
 
 The above will create a Conan package and run tests provided in *./test_package* directory.
 
