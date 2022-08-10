@@ -155,9 +155,12 @@ constexpr T int_power(T base, std::integral auto exp)
 
   constexpr auto checked_multiply = [](auto a, auto b) {
     const auto result = a * b;
+    UNITS_DIAGNOSTIC_PUSH
+    UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     if (result / a != b) {
       throw std::overflow_error{"Wraparound detected"};
     }
+    UNITS_DIAGNOSTIC_POP
     return result;
   };
 
