@@ -203,27 +203,27 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     namespace si {
 
-    struct yocto  : prefix<yocto, "y",             pow<-24>(as_magnitude<10>())> {};
-    struct zepto  : prefix<zepto, "z",             pow<-21>(as_magnitude<10>())> {};
-    struct atto   : prefix<atto,  "a",             pow<-18>(as_magnitude<10>())> {};
-    struct femto  : prefix<femto, "f",             pow<-15>(as_magnitude<10>())> {};
-    struct pico   : prefix<pico,  "p",             pow<-12>(as_magnitude<10>())> {};
-    struct nano   : prefix<nano,  "n",             pow<-9>(as_magnitude<10>())> {};
+    struct yocto  : prefix<yocto, "y",             pow<-24>(mag<10>())> {};
+    struct zepto  : prefix<zepto, "z",             pow<-21>(mag<10>())> {};
+    struct atto   : prefix<atto,  "a",             pow<-18>(mag<10>())> {};
+    struct femto  : prefix<femto, "f",             pow<-15>(mag<10>())> {};
+    struct pico   : prefix<pico,  "p",             pow<-12>(mag<10>())> {};
+    struct nano   : prefix<nano,  "n",             pow<-9>(mag<10>())> {};
     struct micro  : prefix<micro, basic_symbol_text{"\u00b5", "u"},
-                                                   pow<-6>(as_magnitude<10>())> {};
-    struct milli  : prefix<milli, "m",             pow<-3>(as_magnitude<10>())> {};
-    struct centi  : prefix<centi, "c",             pow<-2>(as_magnitude<10>())> {};
-    struct deci   : prefix<deci,  "d",             pow<-1>(as_magnitude<10>())> {};
-    struct deca   : prefix<deca,  "da",            pow<1>(as_magnitude<10>())> {};
-    struct hecto  : prefix<hecto, "h",             pow<2>(as_magnitude<10>())> {};
-    struct kilo   : prefix<kilo,  "k",             pow<3>(as_magnitude<10>())> {};
-    struct mega   : prefix<mega,  "M",             pow<6>(as_magnitude<10>())> {};
-    struct giga   : prefix<giga,  "G",             pow<9>(as_magnitude<10>())> {};
-    struct tera   : prefix<tera,  "T",             pow<12>(as_magnitude<10>())> {};
-    struct peta   : prefix<peta,  "P",             pow<15>(as_magnitude<10>())> {};
-    struct exa    : prefix<exa,   "E",             pow<18>(as_magnitude<10>())> {};
-    struct zetta  : prefix<zetta, "Z",             pow<21>(as_magnitude<10>())> {};
-    struct yotta  : prefix<yotta, "Y",             pow<24>(as_magnitude<10>())> {};
+                                                   pow<-6>(mag<10>())> {};
+    struct milli  : prefix<milli, "m",             pow<-3>(mag<10>())> {};
+    struct centi  : prefix<centi, "c",             pow<-2>(mag<10>())> {};
+    struct deci   : prefix<deci,  "d",             pow<-1>(mag<10>())> {};
+    struct deca   : prefix<deca,  "da",            pow<1>(mag<10>())> {};
+    struct hecto  : prefix<hecto, "h",             pow<2>(mag<10>())> {};
+    struct kilo   : prefix<kilo,  "k",             pow<3>(mag<10>())> {};
+    struct mega   : prefix<mega,  "M",             pow<6>(mag<10>())> {};
+    struct giga   : prefix<giga,  "G",             pow<9>(mag<10>())> {};
+    struct tera   : prefix<tera,  "T",             pow<12>(mag<10>())> {};
+    struct peta   : prefix<peta,  "P",             pow<15>(mag<10>())> {};
+    struct exa    : prefix<exa,   "E",             pow<18>(mag<10>())> {};
+    struct zetta  : prefix<zetta, "Z",             pow<21>(mag<10>())> {};
+    struct yotta  : prefix<yotta, "Y",             pow<24>(mag<10>())> {};
 
     }
 
@@ -232,14 +232,14 @@ domain::
 
     namespace iec80000 {
 
-    struct kibi : prefix<kibi, "Ki", pow<10>(as_magnitude<2>())> {};
-    struct mebi : prefix<mebi, "Mi", pow<20>(as_magnitude<2>())> {};
-    struct gibi : prefix<gibi, "Gi", pow<30>(as_magnitude<2>())> {};
-    struct tebi : prefix<tebi, "Ti", pow<40>(as_magnitude<2>())> {};
-    struct pebi : prefix<pebi, "Pi", pow<50>(as_magnitude<2>())> {};
-    struct exbi : prefix<exbi, "Ei", pow<60>(as_magnitude<2>())> {};
-    struct zebi : prefix<zebi, "Zi", pow<70>(as_magnitude<2>())> {};
-    struct yobi : prefix<yobi, "Yi", pow<80>(as_magnitude<2>())> {};
+    struct kibi : prefix<kibi, "Ki", pow<10>(mag<2>())> {};
+    struct mebi : prefix<mebi, "Mi", pow<20>(mag<2>())> {};
+    struct gibi : prefix<gibi, "Gi", pow<30>(mag<2>())> {};
+    struct tebi : prefix<tebi, "Ti", pow<40>(mag<2>())> {};
+    struct pebi : prefix<pebi, "Pi", pow<50>(mag<2>())> {};
+    struct exbi : prefix<exbi, "Ei", pow<60>(mag<2>())> {};
+    struct zebi : prefix<zebi, "Zi", pow<70>(mag<2>())> {};
+    struct yobi : prefix<yobi, "Yi", pow<80>(mag<2>())> {};
 
     }
 
