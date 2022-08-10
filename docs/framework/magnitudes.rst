@@ -6,8 +6,8 @@ Magnitudes
 The ratio of two Units of the same Dimension---say, `inches` and `centi<meters>`---is some constant
 number, which is known at compile time.  It's a positive real number---a _Magnitude_.
 
-We also use Magnitudes for _Dimensionless_ Units.  `percent` has a Magnitude of $1/100$, and `dozen`
-would have a Magnitude of $12$.
+We also use Magnitudes for _Dimensionless_ Units.  `percent` has a Magnitude of :math:`1/100`, and
+`dozen` would have a Magnitude of :math:`12`.
 
 Interestingly, it turns out that the usual numeric types are not up to this task.  We need
 a Magnitude representation that can do everything Units can do.  This means, among other things:
@@ -19,12 +19,12 @@ a Magnitude representation that can do everything Units can do.  This means, amo
    consider the ratio between `degrees` and `radians`).
 
 3. We should _avoid overflow_ wherever possible (note that `std::intmax_t` can't even handle certain
-   simple SI prefixes, such as `yotta`, representing $10^{24}$).
+   simple SI prefixes, such as `yotta`, representing :math:`10^{24}`).
 
 Integers' inadequacies are clear enough, but even floating point falls short.  Imagine if we
 implemented all angular units in terms of `radians`: then both `degrees` and `revolutions` pick up
-a factor of $\pi$.  The arithmetic with _its floating point representation_ is unlikely to cancel
-_exactly_.
+a factor of :math:`\pi`.  The arithmetic with _its floating point representation_ is unlikely to
+cancel _exactly_.
 
 Another common alternative choice is `std::ratio`, but this fails the first requirement: rational
 numbers are ([rather infamously](https://hsm.stackexchange.com/a/7)!) _not_ closed under rational
@@ -84,10 +84,11 @@ Why these particular definitions?  Because they are equivalent to the numerator 
 we have a rational number, and they are compatible with how humans write numbers when we don't.
 Example:
 
-- $m1 = \frac{27 \pi^2}{25}$.  Then `numerator(m1) == mag<27>()`, and
+- :math:`m1 = \frac{27 \pi^2}{25}`.  Then `numerator(m1) == mag<27>()`, and
   `denominator(m1) == mag<25>()`.
-- $m2 = \sqrt{m1}$.  Then `numerator(m2) == mag<3>()`, and `denominator(m2) == mag<5>()`.  Note that
-  this is consistent with how humans would typically write `m2`, as $\frac{3\sqrt{3} \pi}{5}$.
+- :math:`m2 = \sqrt{m1}`.  Then `numerator(m2) == mag<3>()`, and `denominator(m2) == mag<5>()`.
+  Note that this is consistent with how humans would typically write `m2`, as :math:`\frac{3\sqrt{3}
+  \pi}{5}`.
 
 Getting values out
 ------------------
