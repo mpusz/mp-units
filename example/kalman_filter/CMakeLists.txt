@@ -35,7 +35,11 @@ add_example(kalman_filter-example_1 mp-units::core-fmt mp-units::si)
 add_example(kalman_filter-example_2 mp-units::core-fmt mp-units::si)
 add_example(kalman_filter-example_3 mp-units::core-fmt mp-units::si)
 add_example(kalman_filter-example_4 mp-units::core-fmt mp-units::si)
-add_example(kalman_filter-example_5 mp-units::core-fmt mp-units::si)
-add_example(kalman_filter-example_6 mp-units::core-fmt mp-units::si)
+
+if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    add_example(kalman_filter-example_5 mp-units::core-fmt mp-units::si)
+    add_example(kalman_filter-example_6 mp-units::core-fmt mp-units::si)
+endif()
+
 add_example(kalman_filter-example_7 mp-units::core-fmt mp-units::si)
 add_example(kalman_filter-example_8 mp-units::core-fmt mp-units::si)
