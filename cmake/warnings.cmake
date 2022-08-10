@@ -68,6 +68,7 @@ macro(_set_flags)
         -Wsign-conversion # warn on sign conversions
         -Wnull-dereference # warn if a null dereference is detected
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
+        -Wdangling-else # warn about constructions where there may be confusion to which if statement an else branch belongs
     )
 
     set(CLANG_WARNINGS ${GCC_COMMON_WARNINGS})
@@ -79,6 +80,8 @@ macro(_set_flags)
         -Wduplicated-cond # warn if if / else chain has duplicated conditions
         -Wduplicated-branches # warn if if / else branches have duplicated code
         -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
+        -Wduplicated-branches # warn when an if-else has identical branches
+        -Wduplicated-cond # warn about duplicated conditions in an if-else-if chain
     )
 
     if(${projectPrefix}WARNINGS_AS_ERRORS)
@@ -114,6 +117,7 @@ endfunction()
 # Set compiler warning level for a provided CMake target
 function(set_target_warnings target scope)
     set(scopes PUBLIC INTERFACE PRIVATE)
+
     if(NOT scope IN_LIST scopes)
         message(FATAL_ERROR "'scope' argument should be one of ${scopes} ('${scope}' received)")
     endif()
