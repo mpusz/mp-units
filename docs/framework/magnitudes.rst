@@ -4,9 +4,9 @@ Magnitudes
 ==========
 
 The ratio of two Units of the same Dimension---say, ``inches`` and ``centimeters``---is some
-constant number, which is known at compile time.  It's a positive real number---a _Magnitude_.
+constant number, which is known at compile time.  It's a positive real number---a *Magnitude*.
 
-We also use Magnitudes for _Dimensionless_ Units.  ``percent`` has a Magnitude of :math:`1/100`, and
+We also use Magnitudes for *Dimensionless* Units.  ``percent`` has a Magnitude of :math:`1/100`, and
 ``dozen`` would have a Magnitude of :math:`12`.
 
 Interestingly, it turns out that the usual numeric types are not up to this task.  We need a
@@ -68,8 +68,8 @@ rational numbers, or manipulate integer or rational parts.
 The above traits indicate what kind of Magnitude we already have.  The next traits *manipulate* a
 Magnitude, letting us break it apart into *constituent* Magnitudes which may be more meaningful.
 (For example, imagine going from ``inches`` to ``feet``.  Naively, we might multiply by the floating
-point representation of ``1.0 / 12.0````.  However, if we broke this apart into separate numerator
-and denominator, it would let us simply *divide by 12*, yielding **exact** results for inputs that
+point representation of ``1.0 / 12.0``.  However, if we broke this apart into separate numerator and
+denominator, it would let us simply *divide by 12*, yielding **exact** results for inputs that
 happen to be multiples of 12.)
 
 - ``numerator(m)`` (value): a Magnitude representing the "numerator", i.e., the largest integer
