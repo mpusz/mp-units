@@ -193,7 +193,6 @@ TEST_CASE("magnitude converts to numerical value")
 
   SECTION("pi to the 1 supplies correct values")
   {
-    constexpr auto pi = pi_to_the<1>();
     check_same_type_and_value(get_value<float>(pi), std::numbers::pi_v<float>);
     check_same_type_and_value(get_value<double>(pi), std::numbers::pi_v<double>);
     check_same_type_and_value(get_value<long double>(pi), std::numbers::pi_v<long double>);

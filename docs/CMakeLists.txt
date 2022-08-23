@@ -87,6 +87,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/constants.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/conversions_and_casting.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/dimensions.rst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/framework/magnitudes.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantities.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_kinds.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/framework/quantity_like.rst"
