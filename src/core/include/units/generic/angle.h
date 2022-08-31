@@ -32,7 +32,9 @@
 
 namespace units {
 
-struct radian : named_unit<radian, "rad"> {};
+struct degree : named_unit<degree, "deg"> {};
+struct rotation : named_scaled_unit<rotation, "rot", mag<360>(), degree> {};
+struct radian : named_scaled_unit<radian, "rad", mag<ratio(1, 2)>() / pi, rotation> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};
@@ -55,6 +57,22 @@ constexpr auto operator"" _q_rad(unsigned long long l)
 }
 constexpr auto operator"" _q_rad(long double l) { return angle<radian, long double>(l); }
 
+// rot
+constexpr auto operator"" _q_rot(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return angle<rotation, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_rot(long double l) { return angle<rotation, long double>(l); }
+
+// deg
+constexpr auto operator"" _q_deg(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return angle<degree, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_deg(long double l) { return angle<degree, long double>(l); }
+
 }  // namespace literals
 
 #endif  // UNITS_NO_LITERALS
@@ -64,6 +82,8 @@ constexpr auto operator"" _q_rad(long double l) { return angle<radian, long doub
 namespace angle_references {
 
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
+inline constexpr auto rot = reference<dim_angle<>, rotation>{};
+inline constexpr auto deg = reference<dim_angle<>, degree>{};
 
 }  // namespace angle_references
 
@@ -76,3 +96,18 @@ using namespace angle_references;
 #endif  // UNITS_NO_REFERENCES
 
 }  // namespace units
+
+#ifndef UNITS_NO_ALIASES
+
+namespace units::aliases::inline angle {
+
+template<Representation Rep = double>
+using rad = units::angle<units::radian, Rep>;
+template<Representation Rep = double>
+using rot = units::angle<units::rotation, Rep>;
+template<Representation Rep = double>
+using deg = units::angle<units::degree, Rep>;
+
+}  // namespace units::aliases::inline angle
+
+#endif  // UNITS_NO_ALIASES
