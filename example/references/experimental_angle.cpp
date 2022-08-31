@@ -36,14 +36,17 @@ UNITS_DIAGNOSTIC_POP
 
 int main()
 {
+  using namespace units;
   using namespace units::isq;
   using namespace units::isq::si::references;
   using namespace units::references;
 
-  Torque auto torque = 20.0 * (N * m / rad);
+  Torque auto torque = 20.0 / std::numbers::pi * (N * m / rad);
   Energy auto energy = 20.0 * J;
 
-  units::Angle auto angle = energy / torque;
+  Angle auto angle = energy / torque;
 
   std::cout << angle << '\n';
+  std::cout << quantity_cast<rotation>(angle) << '\n';
+  std::cout << quantity_cast<degree>(angle) << '\n';
 }

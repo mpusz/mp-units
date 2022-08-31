@@ -28,13 +28,16 @@
 
 int main()
 {
+  using namespace units;
   using namespace units::isq;
   using namespace units::isq::si::literals;
 
-  const auto torque = 20.0_q_N_m_per_rad;
+  const auto torque = 20.0_q_N_m_per_rad / std::numbers::pi;
   const auto energy = 20.0_q_J;
 
-  units::Angle auto angle = energy / torque;
+  Angle auto angle = energy / torque;
 
   std::cout << angle << '\n';
+  std::cout << quantity_cast<rotation>(angle) << '\n';
+  std::cout << quantity_cast<degree>(angle) << '\n';
 }
