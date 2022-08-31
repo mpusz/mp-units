@@ -27,37 +27,6 @@
 
 namespace units::detail {
 
-constexpr std::intmax_t ipow10(std::intmax_t exp)
-{
-  assert(exp >= 0);
-  if (exp == 0) return 1;
-  std::intmax_t result = 1;
-  while (exp > 0) {
-    result *= 10;
-    --exp;
-  }
-  return result;
-}
-
-template<typename Rep>
-constexpr Rep fpow10(std::intmax_t exp)
-{
-  if (exp == 0) return Rep(1.0);
-  Rep result = Rep(1.0);
-  if (exp < 0) {
-    while (exp < 0) {
-      result = result / Rep(10.0);
-      ++exp;
-    }
-  } else {
-    while (exp > 0) {
-      result = result * Rep(10.0);
-      --exp;
-    }
-  }
-  return result;
-}
-
 template<std::intmax_t N, typename T>
 constexpr T pow_impl(const T& v) noexcept
 {
