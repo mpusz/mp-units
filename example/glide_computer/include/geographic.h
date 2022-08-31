@@ -25,7 +25,7 @@
 #include "ranged_representation.h"
 #include <units/bits/external/hacks.h>
 #include <units/bits/fmt_hacks.h>
-#include <units/generic/dimensionless.h>
+#include <units/generic/angle.h>
 #include <units/isq/si/length.h>
 #include <units/quantity_kind.h>
 #include <limits>
@@ -38,12 +38,11 @@
 
 namespace geographic {
 
-// TODO Change to `angle` dimension in degree unit when the work on magnitudes is done
 template<typename T = double>
-using latitude = units::dimensionless<units::one, ranged_representation<T, -90, 90>>;
+using latitude = units::angle<units::degree, ranged_representation<T, -90, 90>>;
 
 template<typename T = double>
-using longitude = units::dimensionless<units::one, ranged_representation<T, -180, 180>>;
+using longitude = units::angle<units::degree, ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
@@ -113,9 +112,8 @@ struct STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    using rep = TYPENAME geographic::latitude<T>::rep;
-    STD_FMT::format_to(ctx.out(), "{}", lat > rep{0} ? 'N' : 'S');
-    return formatter<T>::format(lat > rep{0} ? lat.number() : -lat.number(), ctx);
+    STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
+    return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.number() : -lat.number(), ctx);
   }
 };
 
@@ -124,9 +122,8 @@ struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    using rep = TYPENAME geographic::longitude<T>::rep;
-    STD_FMT::format_to(ctx.out(), "{}", lon > rep{0} ? 'E' : 'W');
-    return formatter<T>::format(lon > rep{0} ? lon.number() : -lon.number(), ctx);
+    STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
+    return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.number() : -lon.number(), ctx);
   }
 };
 
