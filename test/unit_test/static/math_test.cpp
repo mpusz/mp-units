@@ -57,7 +57,7 @@ static_assert(compare<decltype(pow<1, 4>(4_q_m2)), decltype(sqrt(2_q_m))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_km2)), decltype(sqrt(2_q_km))>);
 static_assert(compare<decltype(pow<1, 4>(4_q_ft2)), decltype(sqrt(2_q_ft))>);
 
-#if __cpp_lib_constexpr_cmath  // TODO remove once std::floor, std::ceil, and std::round is constexpr for all compilers
+#if __cpp_lib_constexpr_cmath
 // floor
 // integral types
 static_assert(compare<decltype(floor<si::second>(1_q_s)), decltype(1_q_s)>);
@@ -72,14 +72,14 @@ static_assert(compare<decltype(floor<si::second>(-999_q_ms)), decltype(-1_q_s)>)
 static_assert(floor<si::second>(1.3_q_s) == 1_q_s);
 static_assert(floor<si::second>(-1.3_q_s) == -2_q_s);
 
-// static_assert(floor<si::second>(1000._q_ms) == 1_q_s);  // does not work due to a bug in fpow10() see #311
+static_assert(floor<si::second>(1000._q_ms) == 1_q_s);
 static_assert(floor<si::second>(1001._q_ms) == 1_q_s);
 static_assert(floor<si::second>(1999._q_ms) == 1_q_s);
 static_assert(floor<si::second>(-1000._q_ms) == -1_q_s);
 static_assert(floor<si::second>(-999._q_ms) == -1_q_s);
 
 // floor with quantity
-static_assert(compare<decltype(floor<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
+static_assert(compare<decltype(floor<si::time<si::second, long int>>(1_q_s)), decltype(1_q_s)>);
 
 // ceil
 // integral types
@@ -102,7 +102,7 @@ static_assert(ceil<si::second>(-1000._q_ms) == -1_q_s);
 static_assert(ceil<si::second>(-999._q_ms) == 0_q_s);
 
 // ceil with quantity
-static_assert(compare<decltype(ceil<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
+static_assert(compare<decltype(ceil<si::time<si::second, long int>>(1_q_s)), decltype(1_q_s)>);
 
 // round
 // integral types
@@ -124,20 +124,20 @@ static_assert(compare<decltype(round<si::second>(-1999_q_ms)), decltype(-2_q_s)>
 static_assert(round<si::second>(1.3_q_s) == 1_q_s);
 static_assert(round<si::second>(-1.3_q_s) == -1_q_s);
 
-static_assert(compare<decltype(round<si::second>(1000._q_ms)), decltype(1_q_s)>);
-static_assert(compare<decltype(round<si::second>(1001._q_ms)), decltype(1_q_s)>);
-static_assert(compare<decltype(round<si::second>(1499._q_ms)), decltype(1_q_s)>);
-static_assert(compare<decltype(round<si::second>(1500._q_ms)), decltype(2_q_s)>);
-static_assert(compare<decltype(round<si::second>(1999._q_ms)), decltype(2_q_s)>);
+static_assert(compare<decltype(round<si::second>(1000._q_ms)), decltype(1._q_s)>);
+static_assert(compare<decltype(round<si::second>(1001._q_ms)), decltype(1._q_s)>);
+static_assert(compare<decltype(round<si::second>(1499._q_ms)), decltype(1._q_s)>);
+static_assert(compare<decltype(round<si::second>(1500._q_ms)), decltype(2._q_s)>);
+static_assert(compare<decltype(round<si::second>(1999._q_ms)), decltype(2._q_s)>);
 
-static_assert(compare<decltype(round<si::second>(-1000._q_ms)), decltype(-1_q_s)>);
-static_assert(compare<decltype(round<si::second>(-1001._q_ms)), decltype(-1_q_s)>);
-static_assert(compare<decltype(round<si::second>(-1499._q_ms)), decltype(-1_q_s)>);
-static_assert(compare<decltype(round<si::second>(-1500._q_ms)), decltype(-2_q_s)>);
-static_assert(compare<decltype(round<si::second>(-1999._q_ms)), decltype(-2_q_s)>);
+static_assert(compare<decltype(round<si::second>(-1000._q_ms)), decltype(-1._q_s)>);
+static_assert(compare<decltype(round<si::second>(-1001._q_ms)), decltype(-1._q_s)>);
+static_assert(compare<decltype(round<si::second>(-1499._q_ms)), decltype(-1._q_s)>);
+static_assert(compare<decltype(round<si::second>(-1500._q_ms)), decltype(-2._q_s)>);
+static_assert(compare<decltype(round<si::second>(-1999._q_ms)), decltype(-2._q_s)>);
 
 // round with quantity
-static_assert(compare<decltype(round<si::time<si::second>>(1_q_s)), decltype(1_q_s)>);
+static_assert(compare<decltype(round<si::time<si::second, long int>>(1_q_s)), decltype(1_q_s)>);
 #endif
 
 }  // namespace
