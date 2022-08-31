@@ -53,9 +53,6 @@ namespace detail {
 template<Quantity Q>
 inline constexpr Magnitude auto quantity_magnitude = decltype(Q::reference)::mag;
 
-template<Quantity Q>
-inline constexpr ratio quantity_ratio = as_ratio(quantity_magnitude<Q>);
-
 template<typename QFrom, typename QTo>
 inline constexpr Magnitude auto cast_magnitude = [] {
   using FromU = TYPENAME QFrom::unit;

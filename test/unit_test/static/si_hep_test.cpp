@@ -31,7 +31,10 @@ namespace {
 
 using namespace units::isq;
 
-static_assert(units::detail::quantity_ratio<si::length<si::metre>> == units::ratio(1));
+template<units::Quantity Q>
+inline constexpr units::ratio quantity_ratio = units::as_ratio(units::detail::quantity_magnitude<Q>);
+
+static_assert(quantity_ratio<si::length<si::metre>> == units::ratio(1));
 
 // mass
 static_assert(si::hep::mass<si::hep::eV_per_c2>(1'000) == si::hep::mass<si::hep::keV_per_c2>(1));

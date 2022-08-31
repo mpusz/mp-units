@@ -36,13 +36,16 @@ namespace {
 
 using namespace units::isq;
 
-static_assert(units::detail::quantity_ratio<si::length<si::metre>> == units::ratio(1));
-static_assert(units::detail::quantity_ratio<si::cgs::length<si::cgs::centimetre>> == units::ratio(1, 100));
-static_assert(units::detail::quantity_ratio<si::speed<si::metre_per_second>> == units::ratio(1));
-static_assert(units::detail::quantity_ratio<si::cgs::speed<si::cgs::centimetre_per_second>> == units::ratio(1, 100));
-static_assert(units::detail::quantity_ratio<si::force<si::newton>> ==
+template<units::Quantity Q>
+inline constexpr units::ratio quantity_ratio = units::as_ratio(units::detail::quantity_magnitude<Q>);
+
+static_assert(quantity_ratio<si::length<si::metre>> == units::ratio(1));
+static_assert(quantity_ratio<si::cgs::length<si::cgs::centimetre>> == units::ratio(1, 100));
+static_assert(quantity_ratio<si::speed<si::metre_per_second>> == units::ratio(1));
+static_assert(quantity_ratio<si::cgs::speed<si::cgs::centimetre_per_second>> == units::ratio(1, 100));
+static_assert(quantity_ratio<si::force<si::newton>> ==
               units::ratio(1000));  // defined in terms of kilogram that are 1000 * gram
-static_assert(units::detail::quantity_ratio<si::cgs::force<si::cgs::dyne>> ==
+static_assert(quantity_ratio<si::cgs::force<si::cgs::dyne>> ==
               units::ratio(1, 100));  // defined in terms of gram so only centimetre ratio counts here
 
 static_assert(si::cgs::length<si::cgs::centimetre>(100) == si::length<si::metre>(1));
