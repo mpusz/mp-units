@@ -28,6 +28,7 @@ add_units_module(
     HEADERS include/units/isq/dimensions/absorbed_dose.h
             include/units/isq/dimensions/acceleration.h
             include/units/isq/dimensions/amount_of_substance.h
+            include/units/isq/dimensions/angular_acceleration.h
             include/units/isq/dimensions/angular_velocity.h
             include/units/isq/dimensions/area.h
             include/units/isq/dimensions/capacitance.h

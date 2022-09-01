@@ -404,4 +404,10 @@ static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
 static_assert(1_q_rad / 1_q_s == 1_q_rad_per_s);
 static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == "rad/s");
 
+// angular acceleration
+
+static_assert(1_q_rad_per_s / 1_q_s == 1_q_rad_per_s2);
+static_assert(detail::unit_text<dim_angular_acceleration, radian_per_second_sq>() ==
+              basic_symbol_text("rad/s²", "rad/s^2"));
+
 }  // namespace

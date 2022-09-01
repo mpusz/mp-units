@@ -26,6 +26,7 @@
 #include <units/isq/si/absorbed_dose.h>
 #include <units/isq/si/acceleration.h>
 #include <units/isq/si/amount_of_substance.h>
+#include <units/isq/si/angular_acceleration.h>
 #include <units/isq/si/angular_velocity.h>
 #include <units/isq/si/area.h>
 #include <units/isq/si/capacitance.h>
