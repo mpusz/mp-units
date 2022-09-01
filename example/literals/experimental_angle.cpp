@@ -40,4 +40,5 @@ int main()
   std::cout << angle << '\n';
   std::cout << quantity_cast<rotation>(angle) << '\n';
   std::cout << quantity_cast<degree>(angle) << '\n';
+  std::cout << quantity_cast<gradian>(angle) << '\n';
 }

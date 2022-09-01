@@ -35,6 +35,7 @@ namespace units {
 struct radian : named_unit<radian, "rad"> {};
 struct rotation : named_scaled_unit<rotation, "rot", mag<2>() * mag_pi, radian> {};
 struct degree : named_scaled_unit<degree, basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}>(), rotation> {};
+struct gradian : named_scaled_unit<gradian, basic_symbol_text{"ᵍ", "grad"}, mag<ratio{1, 400}>(), rotation> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};
@@ -73,6 +74,14 @@ constexpr auto operator"" _q_deg(unsigned long long l)
 }
 constexpr auto operator"" _q_deg(long double l) { return angle<degree, long double>(l); }
 
+// grad
+constexpr auto operator"" _q_grad(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return angle<gradian, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_grad(long double l) { return angle<gradian, long double>(l); }
+
 }  // namespace literals
 
 #endif  // UNITS_NO_LITERALS
@@ -84,6 +93,7 @@ namespace angle_references {
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
 inline constexpr auto rot = reference<dim_angle<>, rotation>{};
 inline constexpr auto deg = reference<dim_angle<>, degree>{};
+inline constexpr auto grad = reference<dim_angle<>, gradian>{};
 
 }  // namespace angle_references
 
@@ -107,6 +117,8 @@ template<Representation Rep = double>
 using rot = units::angle<units::rotation, Rep>;
 template<Representation Rep = double>
 using deg = units::angle<units::degree, Rep>;
+template<Representation Rep = double>
+using grad = units::angle<units::gradian, Rep>;
 
 }  // namespace units::aliases::inline angle
 

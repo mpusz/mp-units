@@ -27,26 +27,19 @@ namespace {
 
 using namespace units::references;
 
-static_assert(360. * deg == 1. * rot);
 static_assert(360 * deg == 1 * rot);
+static_assert(400 * grad == 1 * rot);
 static_assert(std::numbers::pi * 2 * rad == 1. * rot);
-
-}  // namespace
-
-namespace {
 
 using namespace units::literals;
 
-static_assert(360._q_deg == 1._q_rot);
 static_assert(360_q_deg == 1_q_rot);
+static_assert(400_q_grad == 1_q_rot);
 static_assert(std::numbers::pi * quantity_cast<double>(2._q_rad) == quantity_cast<double>(1._q_rot));
-
-}  // namespace
-
-namespace {
 
 static_assert(units::aliases::deg<>(360.) == units::aliases::rot<>(1.));
 static_assert(units::aliases::deg<int>(360) == units::aliases::rot<int>(1));
+static_assert(units::aliases::grad<int>(400) == units::aliases::rot<int>(1));
 static_assert(std::numbers::pi * units::aliases::rad<>(2.) == units::aliases::rot<>(1.));
 
 }  // namespace
