@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <units/isq/si/length.h>
+#include <units/quantity_io.h>
 #include <units/random.h>
 #include <array>
 #include <initializer_list>

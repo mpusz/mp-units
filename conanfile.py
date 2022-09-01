@@ -115,7 +115,7 @@ class MPUnitsConan(ConanFile):
 
     def build_requirements(self):
         if self._build_all:
-            self.test_requires("catch2/2.13.9")
+            self.test_requires("catch2/3.1.0")
             self.test_requires("wg21-linear_algebra/0.7.2")
             if not self._skip_docs:
                 self.tool_requires("doxygen/1.9.4")

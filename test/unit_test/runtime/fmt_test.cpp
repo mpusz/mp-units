@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <units/customization_points.h>
 #include <units/format.h>
 #include <units/generic/dimensionless.h>
@@ -35,7 +35,6 @@
 using namespace units;
 using namespace units::isq;
 using namespace units::isq::si;
-using namespace Catch::Matchers;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
@@ -696,13 +695,13 @@ TEST_CASE("precision specification for integral representation should throw", "[
   SECTION("full format {:%Q %q} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%.1Q %q}", STD_FMT::make_format_args(1_q_m)), STD_FMT::format_error,
-                           Message("precision not allowed for integral quantity representation"));
+                           Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
     REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%.1Q}", STD_FMT::make_format_args(1_q_m)), STD_FMT::format_error,
-                           Message("precision not allowed for integral quantity representation"));
+                           Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 }
 

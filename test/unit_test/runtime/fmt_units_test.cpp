@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <units/format.h>
 #include <units/isq/iec80000/iec80000.h>

@@ -20,13 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <units/isq/si/area.h>
 #include <units/isq/si/cgs/length.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
 #include <units/math.h>
+#include <units/quantity_io.h>
 #include <limits>
 
 using namespace units;
@@ -296,7 +297,7 @@ TEMPLATE_TEST_CASE_SIG("pow<N>() implementation exponentiates values to power N"
                        (std::intmax_t N, N), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25)
 {
   auto v = GENERATE(range(0.5, 20.0, 0.5));
-  REQUIRE(detail::pow_impl<N>(v) == Approx(std::pow(v, N)).epsilon(1e-15).margin(0));
+  REQUIRE(detail::pow_impl<N>(v) == Catch::Approx(std::pow(v, N)).epsilon(1e-15).margin(0));
 }
 
 template<std::intmax_t N>
