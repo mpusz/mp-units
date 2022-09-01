@@ -402,6 +402,6 @@ static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
 // angular velocity
 
 static_assert(1_q_rad / 1_q_s == 1_q_rad_per_s);
-static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == basic_symbol_text("ω", "w"));
+static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == "rad/s");
 
 }  // namespace

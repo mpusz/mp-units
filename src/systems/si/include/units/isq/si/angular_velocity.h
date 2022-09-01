@@ -35,7 +35,7 @@
 
 namespace units::isq::si {
 
-struct radian_per_second : named_unit<radian_per_second, basic_symbol_text{"ω", "w"}> {};
+struct radian_per_second : derived_unit<radian_per_second> {};
 
 struct dim_angular_velocity :
     isq::dim_angular_velocity<dim_angular_velocity, radian_per_second, dim_angle<>, dim_time> {};
@@ -47,7 +47,7 @@ using angular_velocity = quantity<dim_angular_velocity, U, Rep>;
 
 inline namespace literals {
 
-// rad / s
+// rad/s
 constexpr auto operator"" _q_rad_per_s(unsigned long long l)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
