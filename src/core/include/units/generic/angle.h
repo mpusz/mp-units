@@ -32,9 +32,9 @@
 
 namespace units {
 
-struct degree : named_unit<degree, "deg"> {};
-struct rotation : named_scaled_unit<rotation, "rot", mag<360>(), degree> {};
-struct radian : named_scaled_unit<radian, "rad", mag<ratio(1, 2)>() / pi, rotation> {};
+struct radian : named_unit<radian, "rad"> {};
+struct rotation : named_scaled_unit<rotation, "rot", mag<2>() * pi, radian> {};
+struct degree : named_scaled_unit<degree, basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}>(), rotation> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};
