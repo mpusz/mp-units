@@ -45,6 +45,7 @@ add_library(
     include/units/exponent.h
     include/units/generic/angle.h
     include/units/generic/dimensionless.h
+    include/units/generic/solid_angle.h
     include/units/kind.h
     include/units/magnitude.h
     include/units/math.h
@@ -83,6 +84,7 @@ endif()
 if(DEFINED ${projectPrefix}DOWNCAST_MODE)
     set(downcast_mode_options OFF ON AUTO)
     list(FIND downcast_mode_options "${${projectPrefix}DOWNCAST_MODE}" downcast_mode)
+
     if(downcast_mode EQUAL -1)
         message(FATAL_ERROR
                     "'${projectPrefix}DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${${projectPrefix}DOWNCAST_MODE}' received)"

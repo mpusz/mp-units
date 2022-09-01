@@ -21,17 +21,19 @@
 // SOFTWARE.
 
 #include <units/generic/angle.h>
+#include <units/generic/solid_angle.h>
 #include <numbers>
 
 namespace {
 
+// plane angle
+
 using namespace units::references;
+using namespace units::literals;
 
 static_assert(360 * deg == 1 * rot);
 static_assert(400 * grad == 1 * rot);
 static_assert(std::numbers::pi * 2 * rad == 1. * rot);
-
-using namespace units::literals;
 
 static_assert(360_q_deg == 1_q_rot);
 static_assert(400_q_grad == 1_q_rot);
@@ -41,5 +43,10 @@ static_assert(units::aliases::deg<>(360.) == units::aliases::rot<>(1.));
 static_assert(units::aliases::deg<int>(360) == units::aliases::rot<int>(1));
 static_assert(units::aliases::grad<int>(400) == units::aliases::rot<int>(1));
 static_assert(std::numbers::pi * units::aliases::rad<>(2.) == units::aliases::rot<>(1.));
+
+// solid angle
+
+static_assert(1_q_rad * 1_q_rad == 1_q_sr);
+static_assert(1_q_deg * 1_q_deg == 1_q_deg2);
 
 }  // namespace
