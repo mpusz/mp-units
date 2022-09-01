@@ -30,15 +30,16 @@ template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   AlmostEqualsMatcher(const T& target) : target_{target} {}
 
-  template<Quantity U>
-    requires std::three_way_comparable_with<T, U> && std::same_as<typename T::rep, typename U::rep> &&
-             treat_as_floating_point<typename T::rep> bool
+  template<QuantityEquivalentTo<T> U>
+    requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep> bool
   match(const U& other) const
   {
+    using std::abs;
     using common = std::common_type_t<T, U>;
-    auto maxTUOne =
-      std::max({typename T::rep(1), std::abs(common(target_).number()), std::abs(common(other).number())});
-    return abs(target_ - other).number() <= std::numeric_limits<typename T::rep>::epsilon() * maxTUOne;
+    const auto x = common(target_).number();
+    const auto y = common(other).number();
+    const auto maxXYOne = std::max({typename T::rep{1}, abs(x), abs(y)});
+    return abs(x - y) <= std::numeric_limits<typename T::rep>::epsilon() * maxXYOne;
   }
 
   std::string describe() const override { return "almost equals: " + STD_FMT::format("{}", target_); }
