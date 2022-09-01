@@ -23,12 +23,16 @@
 #pragma once
 
 #include <units/concepts.h>
-#include <units/isq/dimensions/power.h>
+#include <units/generic/solid_angle.h>
+#include <units/isq/dimensions/luminous_intensity.h>
 
 namespace units::isq {
 
-template<typename Child, Unit U, typename... Dims>
-using dim_luminous_flux = dim_power<Child, U, Dims...>;
+template<typename Child, Unit U, typename...>
+struct dim_luminous_flux;
+
+template<typename Child, Unit U, DimensionOfT<dim_luminous_intensity> I, DimensionOfT<dim_solid_angle> A>
+struct dim_luminous_flux<Child, U, I, A> : derived_dimension<Child, U, exponent<I, 1>, exponent<A, 1>> {};
 
 template<typename T>
 concept LuminousFlux = QuantityOfT<T, dim_luminous_flux>;

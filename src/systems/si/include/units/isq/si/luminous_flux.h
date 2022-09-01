@@ -23,25 +23,26 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <units/isq/si/power.h>
+#include <units/isq/dimensions/luminous_flux.h>
+#include <units/isq/si/luminous_intensity.h>
 #include <units/quantity.h>
 #include <units/reference.h>
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
+#include <units/generic/solid_angle.h>
 #include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
-// TODO Is this correct? Should we account for steradian here? How?
+struct lumen : named_unit<lumen, "lm"> {};
 
-struct lumen : named_scaled_unit<lumen, "lm", mag<ratio(1, 683)>(), watt> {};
-
-using dim_luminous_flux = dim_power;
+struct dim_luminous_flux :
+    isq::dim_luminous_flux<dim_luminous_flux, lumen, dim_luminous_intensity, dim_solid_angle<>> {};
 
 template<UnitOf<dim_luminous_flux> U, Representation Rep = double>
-using luminous_flux = power<U, Rep>;
+using luminous_flux = quantity<dim_luminous_flux, U, Rep>;
 
 #ifndef UNITS_NO_LITERALS
 

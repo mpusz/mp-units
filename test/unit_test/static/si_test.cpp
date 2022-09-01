@@ -241,8 +241,7 @@ static_assert(kilogray::symbol == "kGy");
 
 // luminous flux
 
-static_assert(683_q_lm == 1_q_W);
-
+static_assert(1_q_sr * 1_q_cd == 1_q_lm);
 static_assert(lumen::symbol == "lm");
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
