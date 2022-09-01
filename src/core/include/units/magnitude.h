@@ -53,8 +53,8 @@ using factorizer = wheel_factorizer<4>;
  * GCC 10) which don't yet permit floating point NTTPs.
  */
 template<typename T>
-concept BaseRep = std::is_same_v<T, std::intmax_t> || std::is_same_v < std::remove_cvref_t<decltype(T::value)>,
-long double > ;
+concept BaseRep =
+  std::is_same_v<T, std::intmax_t> || std::is_same_v<std::remove_cvref_t<decltype(T::value)>, long double>;
 
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
@@ -404,7 +404,7 @@ struct pi_base {
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-inline constexpr Magnitude auto pi = magnitude<base_power<pi_base>{}>{};
+inline constexpr Magnitude auto mag_pi = magnitude<base_power<pi_base>{}>{};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.

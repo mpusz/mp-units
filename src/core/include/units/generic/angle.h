@@ -33,7 +33,7 @@
 namespace units {
 
 struct radian : named_unit<radian, "rad"> {};
-struct rotation : named_scaled_unit<rotation, "rot", mag<2>() * pi, radian> {};
+struct rotation : named_scaled_unit<rotation, "rot", mag<2>() * mag_pi, radian> {};
 struct degree : named_scaled_unit<degree, basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}>(), rotation> {};
 
 template<Unit U = radian>

@@ -193,9 +193,9 @@ TEST_CASE("magnitude converts to numerical value")
 
   SECTION("pi to the 1 supplies correct values")
   {
-    check_same_type_and_value(get_value<float>(pi), std::numbers::pi_v<float>);
-    check_same_type_and_value(get_value<double>(pi), std::numbers::pi_v<double>);
-    check_same_type_and_value(get_value<long double>(pi), std::numbers::pi_v<long double>);
+    check_same_type_and_value(get_value<float>(mag_pi), std::numbers::pi_v<float>);
+    check_same_type_and_value(get_value<double>(mag_pi), std::numbers::pi_v<double>);
+    check_same_type_and_value(get_value<long double>(mag_pi), std::numbers::pi_v<long double>);
   }
 
   SECTION("pi to arbitrary power performs computations in most accurate type at compile time")
