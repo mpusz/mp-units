@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "almost_equals.h"
 #include <catch2/catch_all.hpp>
 #include <units/isq/si/area.h>
 #include <units/isq/si/cgs/length.h>
@@ -384,5 +385,75 @@ TEST_CASE("hypot functions", "[hypot]")
   {
     REQUIRE(hypot(km<>(3.), cgs::length::cm<>(400'000.)) == km<>(5.));
     REQUIRE(hypot(km<>(2.), cgs::length::cm<>(300'000.), km<>(6.)) == km<>(7.));
+  }
+}
+
+TEST_CASE("trigonometric functions", "[trig]")
+{
+  using namespace units::aliases;
+
+  SECTION("sin")
+  {
+    REQUIRE_THAT(sin(deg<>(0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(deg<>(90.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(sin(deg<>(180.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(deg<>(270.)), AlmostEquals(quantity{-1.}));
+
+    REQUIRE_THAT(sin(grad<>(0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(grad<>(100.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(sin(grad<>(200.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(grad<>(300.)), AlmostEquals(quantity{-1.}));
+  }
+
+  SECTION("cos")
+  {
+    REQUIRE_THAT(cos(deg<>(0.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(cos(deg<>(90.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(cos(deg<>(180.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(cos(deg<>(270.)), AlmostEquals(quantity{0.}));
+
+    REQUIRE_THAT(cos(grad<>(0.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(cos(grad<>(100.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(cos(grad<>(200.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(cos(grad<>(300.)), AlmostEquals(quantity{0.}));
+  }
+
+  SECTION("tan")
+  {
+    REQUIRE_THAT(tan(deg<>(0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(tan(deg<>(45.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(tan(deg<>(135.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(tan(deg<>(180.)), AlmostEquals(quantity{0.}));
+
+    REQUIRE_THAT(tan(grad<>(0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(tan(grad<>(50.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(tan(grad<>(150.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(tan(grad<>(200.)), AlmostEquals(quantity{0.}));
+  }
+}
+
+TEST_CASE("inverse trigonometric functions", "[inv trig]")
+{
+  using namespace units::aliases;
+
+  SECTION("asin")
+  {
+    REQUIRE_THAT(asin(quantity{-1.}), AlmostEquals(deg<>(-90.)));
+    REQUIRE_THAT(asin(quantity{0.}), AlmostEquals(deg<>(0.)));
+    REQUIRE_THAT(asin(quantity{1.}), AlmostEquals(deg<>(90.)));
+  }
+
+  SECTION("acos")
+  {
+    REQUIRE_THAT(asin(quantity{-1.}), AlmostEquals(deg<>(-90.)));
+    REQUIRE_THAT(asin(quantity{0.}), AlmostEquals(deg<>(0.)));
+    REQUIRE_THAT(asin(quantity{1.}), AlmostEquals(deg<>(90.)));
+  }
+
+  SECTION("atan")
+  {
+    REQUIRE_THAT(atan(quantity{-1.}), AlmostEquals(deg<>(-45.)));
+    REQUIRE_THAT(atan(quantity{0.}), AlmostEquals(deg<>(0.)));
+    REQUIRE_THAT(atan(quantity{1.}), AlmostEquals(deg<>(45.)));
   }
 }
