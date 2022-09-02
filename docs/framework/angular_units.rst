@@ -38,10 +38,10 @@ He proposes the following changes:
 - The **radian** would become either a new base unit or a 'complementary' unit
 - The **steradian** would become a derived unit equal to :math:`1\:rad^2`
 - The SI units for
-  
+
   - **Torque** would change from :math:`N\:m` (= J) to :math:`J\:rad^{-1}`
   - **Angular momentum** would change from :math:`J\:s` to :math:`J\:s\:rad^{-1}` (i.e. :math:`J/(rad/s)`)
-  - **Moment of inertia** would change from :math:`kg\:m^2` to :math:`kg\:m^2\:rad^{-2}` (i.e. :math:`J/(rad/s)^2`) 
+  - **Moment of inertia** would change from :math:`kg\:m^2` to :math:`kg\:m^2\:rad^{-2}` (i.e. :math:`J/(rad/s)^2`)
 
 - The option to omit the radian from the SI units for **angle**, **angular velocity**, **angular frequency**,
   **angular acceleration**, and **angular wavenumber** would be removed, the only correct SI units being
@@ -87,7 +87,7 @@ The above program prints:
 
 .. code-block::
 
-    Glide ratio: 48.0 
+    Glide ratio: 48.0
     Glide angle:
      - 0.0208 rad
      - 1.19 °
