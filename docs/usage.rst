@@ -236,6 +236,12 @@ like:
     cmake .. -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=<path_to_generators_dir>/conan_toolchain.cmake
     cmake --build . --config Release
 
+.. note::
+
+  In case you can't use CMake 3.23 but you have access to CMake 3.20 or later, you can append
+  ``-c tools.cmake.cmaketoolchain.presets:max_schema_version=2`` to the ``conan install`` command
+  which will force Conan to use an older version of CMake Presets schema.
+
 
 Installation and Reuse
 ----------------------
