@@ -112,7 +112,7 @@ How to use Magnitudes
 ---------------------
 
 - First, start with your basic inputs: this will typically be ``mag<N>()`` for any integer ``N``, or
-  the built-in Magnitude constant ``pi``.  (Again, these are all *values*, not types.)
+  the built-in Magnitude constant ``mag_pi``.  (Again, these are all *values*, not types.)
 
 - Next, combine and manipulate these using the various "Magnitude math" operations, all of which are
   **exact**: ``*``, ``/``, ``pow<N>``, ``root<N>``, ``numerator()``, ``denominator()``.
