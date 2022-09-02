@@ -23,6 +23,7 @@
 #include "glide_computer.h"
 #include <units/bits/fmt_hacks.h>
 #include <units/chrono.h>
+#include <units/generic/angle.h>
 #include <units/generic/dimensionless.h>
 #include <units/isq/si/international/length.h>
 #include <array>
@@ -83,9 +84,11 @@ void print(const R& gliders)
   for (const auto& g : gliders) {
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
-    for (const auto& p : g.polar)
-      std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q}\n", p.climb, p.v,
-                                   units::quantity_cast<units::one>(glide_ratio(g.polar[0])));
+    for (const auto& p : g.polar) {
+      const auto ratio = units::quantity_cast<units::one>(glide_ratio(g.polar[0]));
+      std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v, ratio,
+                                   units::quantity_cast<units::degree>(asin(1 / ratio)));
+    }
     std::cout << "\n";
   }
 }
