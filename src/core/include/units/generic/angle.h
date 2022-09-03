@@ -46,6 +46,9 @@ concept Angle = QuantityOfT<T, dim_angle>;
 template<UnitOf<dim_angle<>> U, Representation Rep = double>
 using angle = quantity<dim_angle<>, U, Rep>;
 
+template<Representation Rep = double>
+inline constexpr auto cotes_angle = angle<radian, Rep>(1);
+
 #ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
