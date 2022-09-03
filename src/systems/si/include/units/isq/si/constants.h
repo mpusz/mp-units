@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/generic/angle.h>
 #include <units/isq/si/amount_of_substance.h>
 #include <units/isq/si/electric_charge.h>
 #include <units/isq/si/energy.h>
@@ -35,9 +36,6 @@ namespace units::isq::si::si2019 {
 
 template<Representation Rep = double>
 inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
-
-template<Representation Rep = double>
-inline constexpr auto reduced_planck_constant = energy<gigaelectronvolt, Rep>(6.582119569e-10) * time<second, Rep>(1);
 
 template<Representation Rep = double>
 inline constexpr auto elementary_charge = electric_charge<coulomb, Rep>(1.602176634e-19);
