@@ -26,7 +26,7 @@ as early as 1936 and as recently as 2022. This would bring the advantages of a p
 unit system, with unambiguous units for all physical quantities. At the same time the only notable changes for typical
 end-users would be: improved units for the quantities **torque**, **angular momentum** and **moment of inertia**.
 
-Paul Quincey in his proposal `"Angles in the SI: a detailed proposal for solving the problem" <https://arxiv.org/pdf/2108.05704.pdf>`_ states:
+Paul Quincey in his proposal *"Angles in the SI: a detailed proposal for solving the problem"* [Quincey]_ states:
 
     The familiar units assigned to some angular quantities are based on equations that have adopted the radian convention,
     and so are missing `rad`s that would be present if the complete equation is used. The physically-correct units are
@@ -46,6 +46,17 @@ He proposes the following changes:
 - The option to omit the radian from the SI units for **angle**, **angular velocity**, **angular frequency**,
   **angular acceleration**, and **angular wavenumber** would be removed, the only correct SI units being
   :math:`rad`, :math:`rad/s`, :math:`rad/s`, :math:`rad/s^2` and :math:`rad/m` respectively.
+
+Paul Quincey summarizes that with the above in action:
+
+    However, the physical clarity this would build into the SI should be recognised very quickly. The units would tell us that
+    :math:`torque \times angle = energy`, and :math:`angular\:momentum \times angle = action`, for example, in the same way that they do for
+    :math:`force \times distance = energy`, :math:`linear\:momentum \times distance = action`, and
+    :math:`radiant\:intensity \times solid\:angle = radiant\:flux`.
+    Dimensional analysis could be used to its full extent. Software involving angular quantities would be rationalised.
+    Arguments about the correct units for frequency and angular frequency, and the meaning of the unit Hz, could be left behind.
+    The explanation of these changes would be considerably easier and more rewarding than explaining how a kilogram-sized mass
+    can be measured in terms of the Planck constant. 
 
 
 Angular quantities in the library
