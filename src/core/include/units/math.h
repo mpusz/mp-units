@@ -342,6 +342,7 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
 
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline dimensionless<one, Rep> sin(const angle<U, Rep>& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
@@ -350,6 +351,7 @@ template<typename U, typename Rep>
 }
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline dimensionless<one, Rep> cos(const angle<U, Rep>& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
@@ -358,6 +360,7 @@ template<typename U, typename Rep>
 }
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline dimensionless<one, Rep> tan(const angle<U, Rep>& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
@@ -367,6 +370,7 @@ template<typename U, typename Rep>
 
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline angle<radian, Rep> asin(const dimensionless<U, Rep>& q) noexcept
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
 {
@@ -375,6 +379,7 @@ template<typename U, typename Rep>
 }
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline angle<radian, Rep> acos(const dimensionless<U, Rep>& q) noexcept
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
 {
@@ -383,6 +388,7 @@ template<typename U, typename Rep>
 }
 
 template<typename U, typename Rep>
+  requires treat_as_floating_point<Rep>
 [[nodiscard]] inline angle<radian, Rep> atan(const dimensionless<U, Rep>& q) noexcept
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
 {
