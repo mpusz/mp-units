@@ -47,7 +47,7 @@ int main()
   Angle auto angle = energy / torque;
 
   std::cout << angle << '\n';
-  std::cout << quantity_cast<rotation>(angle) << '\n';
+  std::cout << quantity_cast<revolution>(angle) << '\n';
   std::cout << quantity_cast<degree>(angle) << '\n';
   std::cout << quantity_cast<gradian>(angle) << '\n';
 }

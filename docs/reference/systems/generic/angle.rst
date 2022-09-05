@@ -2,7 +2,7 @@ Angle
 =====
 
 .. doxygenstruct:: units::radian
-.. doxygenstruct:: units::rotation
+.. doxygenstruct:: units::revolution
 .. doxygenstruct:: units::degree
 .. doxygenstruct:: units::gradian
 

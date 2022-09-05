@@ -33,9 +33,9 @@
 namespace units {
 
 struct radian : named_unit<radian, "rad"> {};
-struct rotation : named_scaled_unit<rotation, "rot", mag<2>() * mag_pi, radian> {};
-struct degree : named_scaled_unit<degree, basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}>(), rotation> {};
-struct gradian : named_scaled_unit<gradian, basic_symbol_text{"ᵍ", "grad"}, mag<ratio{1, 400}>(), rotation> {};
+struct revolution : named_scaled_unit<revolution, "rev", mag<2>() * mag_pi, radian> {};
+struct degree : named_scaled_unit<degree, basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}>(), revolution> {};
+struct gradian : named_scaled_unit<gradian, basic_symbol_text{"ᵍ", "grad"}, mag<ratio{1, 400}>(), revolution> {};
 
 template<Unit U = radian>
 struct dim_angle : base_dimension<"A", U> {};
@@ -62,12 +62,12 @@ constexpr auto operator"" _q_rad(unsigned long long l)
 constexpr auto operator"" _q_rad(long double l) { return angle<radian, long double>(l); }
 
 // rot
-constexpr auto operator"" _q_rot(unsigned long long l)
+constexpr auto operator"" _q_rev(unsigned long long l)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
-  return angle<rotation, std::int64_t>(static_cast<std::int64_t>(l));
+  return angle<revolution, std::int64_t>(static_cast<std::int64_t>(l));
 }
-constexpr auto operator"" _q_rot(long double l) { return angle<rotation, long double>(l); }
+constexpr auto operator"" _q_rev(long double l) { return angle<revolution, long double>(l); }
 
 // deg
 constexpr auto operator"" _q_deg(unsigned long long l)
@@ -94,7 +94,7 @@ constexpr auto operator"" _q_grad(long double l) { return angle<gradian, long do
 namespace angle_references {
 
 inline constexpr auto rad = reference<dim_angle<>, radian>{};
-inline constexpr auto rot = reference<dim_angle<>, rotation>{};
+inline constexpr auto rev = reference<dim_angle<>, revolution>{};
 inline constexpr auto deg = reference<dim_angle<>, degree>{};
 inline constexpr auto grad = reference<dim_angle<>, gradian>{};
 
@@ -117,7 +117,7 @@ namespace units::aliases::inline angle {
 template<Representation Rep = double>
 using rad = units::angle<units::radian, Rep>;
 template<Representation Rep = double>
-using rot = units::angle<units::rotation, Rep>;
+using rev = units::angle<units::revolution, Rep>;
 template<Representation Rep = double>
 using deg = units::angle<units::degree, Rep>;
 template<Representation Rep = double>
