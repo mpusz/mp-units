@@ -24,9 +24,7 @@
 
 // IWYU pragma: begin_exports
 #include <units/bits/math_concepts.h>
-#include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
-#include <units/bits/root.h>
 #include <cstdint>
 // IWYU pragma: end_exports
 
@@ -83,24 +81,6 @@ struct ratio {
 [[nodiscard]] constexpr ratio inverse(const ratio& r) { return ratio(r.den, r.num); }
 
 [[nodiscard]] constexpr bool is_integral(const ratio& r) { return r.num % r.den == 0; }
-
-template<std::intmax_t Num>
-[[nodiscard]] constexpr ratio pow(const ratio& r)
-{
-  if constexpr (Num == 0) {
-    return ratio(1);
-  } else if constexpr (Num == 1) {
-    return r;
-  } else {
-    const ratio result = detail::pow_impl<Num>(r);
-
-    if constexpr (Num < 0) {  // account for negative exponent
-      return inverse(result);
-    } else {
-      return result;
-    }
-  }
-}
 
 // common_ratio
 [[nodiscard]] constexpr ratio common_ratio(const ratio& r1, const ratio& r2)

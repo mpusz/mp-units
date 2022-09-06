@@ -24,7 +24,6 @@
 
 #include <units/bits/dimension_op.h>
 #include <units/bits/external/type_traits.h>
-#include <units/bits/pow.h>
 #include <units/concepts.h>
 #include <units/customization_points.h>
 #include <units/magnitude.h>

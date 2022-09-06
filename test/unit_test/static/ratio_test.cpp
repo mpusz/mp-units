@@ -46,15 +46,6 @@ static_assert(ratio(2) / ratio(8) == ratio(1, 4));
 static_assert(ratio(1, 8) / ratio(2) == ratio(1, 16));
 static_assert(ratio(6) / ratio(3) == ratio(2));
 
-static_assert(pow<0>(ratio(2)) == ratio(1));
-static_assert(pow<1>(ratio(2)) == ratio(2));
-static_assert(pow<2>(ratio(2)) == ratio(4));
-static_assert(pow<3>(ratio(2)) == ratio(8));
-static_assert(pow<0>(ratio(1, 2)) == ratio(1));
-static_assert(pow<1>(ratio(1, 2)) == ratio(1, 2));
-static_assert(pow<2>(ratio(1, 2)) == ratio(1, 4));
-static_assert(pow<3>(ratio(1, 2)) == ratio(1, 8));
-
 // common_ratio
 static_assert(common_ratio(ratio(1), ratio(1000)) == ratio(1));
 static_assert(common_ratio(ratio(1000), ratio(1)) == ratio(1));

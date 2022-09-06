@@ -25,7 +25,6 @@
 #include <gsl/gsl-lite.hpp>
 #include <units/bits/external/hacks.h>
 #include <units/bits/math_concepts.h>
-#include <units/bits/pow.h>
 #include <units/bits/ratio_maths.h>
 
 namespace units::detail {
