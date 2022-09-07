@@ -56,7 +56,7 @@ Paul Quincey summarizes that with the above in action:
     Dimensional analysis could be used to its full extent. Software involving angular quantities would be rationalised.
     Arguments about the correct units for frequency and angular frequency, and the meaning of the unit Hz, could be left behind.
     The explanation of these changes would be considerably easier and more rewarding than explaining how a kilogram-sized mass
-    can be measured in terms of the Planck constant. 
+    can be measured in terms of the Planck constant.
 
 
 Angular quantities in the library
