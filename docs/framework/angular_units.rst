@@ -70,7 +70,41 @@ with a base unit of radian and solid angle as its derived quantity.
 As those the above (at least for now) not a part of :term:`SI`, the plain angle and solid
 angle definitions can be found in the *units/generic* subdirectory. However, in the sake of correctness,
 they are consistently used in the dimensional recipes of all angle-based :term:`SI` quantities like
-torque or angular velocity.
+torque or angular velocity::
+
+    #include <units/generic/angle.h>
+    #include <units/isq/si/torque.h>
+    #include <units/math.h>
+    #include <units/quantity_io.h>
+    #include <iostream>
+
+    int main()
+    {
+      using namespace units;
+      using namespace units::isq;
+      using namespace units::aliases;
+      using namespace units::aliases::isq::si;
+
+      const Length auto lever = cm<>(20);
+      const Force auto force = N<>(500);
+      const Angle auto angle = deg<>(90);
+      const Torque auto torque = lever * force * sin(angle) / cotes_angle<>;
+
+      std::cout << "Applying a perpendicular force of " << force << " to a "
+                << lever << " long lever results in "
+                << quantity_cast<si::newton_metre_per_radian>(torque) << " of torque.\n";
+    }
+
+The above program prints:
+
+.. code-block::
+
+    Applying a perpendicular force of 500 N to a 20 cm long lever results in 100 N⋅m/rad of torque.
+
+.. note::
+
+    `cotes_angle` is a constant which represents an angle with the value of exactly ``1 radian``.
+    You can find more information about this constant in [Quincey]_.
 
 
 Radians and degrees support
