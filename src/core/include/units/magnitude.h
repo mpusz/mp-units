@@ -595,7 +595,7 @@ constexpr auto common_magnitude(magnitude<H1, T1...>, magnitude<H2, T2...>)
   } else {
     // When the bases are equal, pick whichever has the lower power.
     constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
-    if constexpr (H1.power < H2.power) {
+    if constexpr ((H1.power) < (H2.power)) {
       return magnitude<H1>{} * common_tail;
     } else {
       return magnitude<H2>{} * common_tail;

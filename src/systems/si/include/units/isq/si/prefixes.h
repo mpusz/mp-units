@@ -22,31 +22,49 @@
 
 #pragma once
 
-#include <units/prefix.h>
+#include <units/unit.h>
 
 namespace units::isq::si {
 
-// clang-format off
-struct yocto  : prefix<yocto, "y",             pow<-24>(mag<10>())> {};
-struct zepto  : prefix<zepto, "z",             pow<-21>(mag<10>())> {};
-struct atto   : prefix<atto,  "a",             pow<-18>(mag<10>())> {};
-struct femto  : prefix<femto, "f",             pow<-15>(mag<10>())> {};
-struct pico   : prefix<pico,  "p",             pow<-12>(mag<10>())> {};
-struct nano   : prefix<nano,  "n",             pow<-9>(mag<10>())> {};
-struct micro  : prefix<micro, basic_symbol_text{"\u00b5", "u"}, pow<-6>(mag<10>())> {};
-struct milli  : prefix<milli, "m",             pow<-3>(mag<10>())> {};
-struct centi  : prefix<centi, "c",             pow<-2>(mag<10>())> {};
-struct deci   : prefix<deci,  "d",             pow<-1>(mag<10>())> {};
-struct deca   : prefix<deca,  "da",            pow<1>(mag<10>())> {};
-struct hecto  : prefix<hecto, "h",             pow<2>(mag<10>())> {};
-struct kilo   : prefix<kilo,  "k",             pow<3>(mag<10>())> {};
-struct mega   : prefix<mega,  "M",             pow<6>(mag<10>())> {};
-struct giga   : prefix<giga,  "G",             pow<9>(mag<10>())> {};
-struct tera   : prefix<tera,  "T",             pow<12>(mag<10>())> {};
-struct peta   : prefix<peta,  "P",             pow<15>(mag<10>())> {};
-struct exa    : prefix<exa,   "E",             pow<18>(mag<10>())> {};
-struct zetta  : prefix<zetta, "Z",             pow<21>(mag<10>())> {};
-struct yotta  : prefix<yotta, "Y",             pow<24>(mag<10>())> {};
-// clang-format on
+template<NamedUnit auto U>
+struct yocto : prefixed_unit<"y", pow<-24>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct zepto : prefixed_unit<"z", pow<-21>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct atto : prefixed_unit<"a", pow<-18>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct femto : prefixed_unit<"f", pow<-15>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct pico : prefixed_unit<"p", pow<-12>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct nano : prefixed_unit<"n", pow<-9>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct micro : prefixed_unit<basic_symbol_text{"\u00b5", "u"}, pow<-6>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct milli : prefixed_unit<"m", pow<-3>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct centi : prefixed_unit<"c", pow<-2>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct deci : prefixed_unit<"d", pow<-1>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct deca : prefixed_unit<"da", pow<1>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct hecto : prefixed_unit<"h", pow<2>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct kilo : prefixed_unit<"k", pow<3>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct mega : prefixed_unit<"M", pow<6>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct giga : prefixed_unit<"G", pow<9>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct tera : prefixed_unit<"T", pow<12>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct peta : prefixed_unit<"P", pow<15>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct exa : prefixed_unit<"E", pow<18>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct zetta : prefixed_unit<"Z", pow<21>(mag<10>()), U> {};
+template<NamedUnit auto U>
+struct yotta : prefixed_unit<"Y", pow<24>(mag<10>()), U> {};
 
 }  // namespace units::isq::si

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <cstddef>
 
 UNITS_DIAGNOSTIC_PUSH
@@ -41,6 +42,38 @@ inline constexpr bool is_type_list<T<Types...>> = true;
 
 template<typename T>
 concept TypeList = detail::is_type_list<T>;
+
+// size
+
+namespace detail {
+
+template<template<typename...> typename List, typename... Ts>
+constexpr std::size_t type_list_size_impl(List<Ts...>)
+{
+  return sizeof...(Ts);
+}
+
+}  // namespace detail
+
+template<TypeList List>
+inline constexpr std::size_t type_list_size = detail::type_list_size_impl(List{});
+
+// front
+
+namespace detail {
+
+template<typename List>
+struct type_list_front_impl;
+
+template<template<typename...> typename List, typename T, typename... Ts>
+struct type_list_front_impl<List<T, Ts...>> {
+  using type = T;
+};
+
+}  // namespace detail
+
+template<TypeList List>
+using type_list_front = TYPENAME detail::type_list_front_impl<List>::type;
 
 // push_front
 
@@ -217,6 +250,23 @@ struct type_list_sort_impl<List<Types...>, Pred> {
 
 template<TypeList List, template<typename, typename> typename Pred>
 using type_list_sort = TYPENAME detail::type_list_sort_impl<List, Pred>::type;
+
+// map
+
+namespace detail {
+
+template<typename T, template<typename...> typename To>
+struct type_list_map_impl;
+
+template<template<typename...> typename From, template<typename...> typename To, typename... Args>
+struct type_list_map_impl<From<Args...>, To> {
+  using type = To<Args...>;
+};
+
+}  // namespace detail
+
+template<TypeList From, template<typename...> typename To>
+using type_list_map = TYPENAME detail::type_list_map_impl<From, To>::type;
 
 }  // namespace units
 

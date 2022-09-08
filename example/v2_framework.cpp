@@ -183,7 +183,14 @@ inline constexpr auto W = watt;
 }  // namespace isq::si
 }  // namespace units
 
-#include <units/system_reference.h>
+#include <units/reference.h>
+
+namespace units {
+
+inline constexpr struct dimensionless : system_reference<dimensionless, dim_one, one> {
+} dimensionless;
+
+}  // namespace units
 
 namespace units::isq::si {
 
@@ -381,22 +388,15 @@ using namespace units::isq::si;
 using namespace units::isq::si::short_units;
 
 /* Frequency */ auto freq1 = 20 * frequency[Hz];
-// /* Frequency */ auto freq2 = 20 / (1 * time[s]);
+// /* Frequency */ auto freq2 = 20 / (1 * isq::si::time[s]);
 quantity<frequency[Hz]> freq3(20);
-// quantity<frequency[1 / s]> freq4(20);
-// quantity<1 / time[s]> freq5(20);
-
+quantity<frequency[1 / s]> freq4(20);
+quantity<dimensionless[one] / isq::si::time[s]> freq5(20);
 
 /* Speed */ auto speed1 = 20 * speed[m / s];
 /* Speed */ auto speed2 = 20 * (length[m] / isq::si::time[s]);
-// quantity<speed[m / s]> speed3(20);
-// quantity<length[m] / time[s]> speed4(20);
-
-
-// quantity<kilo<metre> / second> speed1(123);
-// quantity<km / s> speed2(123);
-// auto speed3 = 123 * (kilo<metre> / second);
-// auto speed4 = 123 * (km / s);
+quantity<speed[m / s]> speed3(20);
+quantity<length[m] / isq::si::time[s]> speed4(20);
 
 template<typename T>
 void print();
@@ -405,6 +405,14 @@ void print();
 
 int main()
 {
+  print<decltype(freq1)>();
+  // print<decltype(freq2)>();
+  print<decltype(freq3)>();
+  print<decltype(freq4)>();
+  print<decltype(freq5)>();
+
   print<decltype(speed1)>();
   print<decltype(speed2)>();
+  print<decltype(speed3)>();
+  print<decltype(speed4)>();
 }

@@ -22,34 +22,36 @@
 
 #pragma once
 
-#include <units/bits/basic_concepts.h>
-#include <units/bits/dimension_op.h>
+#include <units/dimension.h>
+#include <units/unit.h>
 
 namespace units {
 
-template<Dimension D, UnitOf<D> U, Representation Rep>
-class quantity;
+// TODO Concept for system reference
+template<auto R, typename Rep = double>
+class quantity {
+public:
+  using reference = decltype(R);
+  static constexpr auto dimension = reference::dimension;
+  static constexpr auto unit = reference::unit;
 
-template<Dimension D, UnitOf<D> U>
-struct reference;
+  quantity(Rep) {}
+};
+
+template<typename Child, Dimension auto Dim, Unit auto CoU>
+struct system_reference;
 
 namespace detail {
 
-template<Dimension D, Reference R1, Reference R2>
-using reference_multiply_impl = reference<D, downcast_unit<D, R1::mag * R2::mag / D::mag>>;
+template<typename Child, auto Dim, auto CoU>
+void to_base_specialization_of_system_reference(const volatile system_reference<Child, Dim, CoU>*);
 
-template<typename D, Reference R1, Reference R2>
-using reference_divide_impl = reference<D, downcast_unit<D, R1::mag / R2::mag / D::mag>>;
+template<typename T>
+// inline constexpr bool // TODO: Replace with concept when it works with MSVC
+concept is_derived_from_specialization_of_system_reference =
+  requires(T* t) { detail::to_base_specialization_of_system_reference(t); };
 
 }  // namespace detail
-
-template<Reference R1, Reference R2>
-using reference_multiply =
-  detail::reference_multiply_impl<dimension_multiply<typename R1::dimension, typename R2::dimension>, R1, R2>;
-
-template<Reference R1, Reference R2>
-using reference_divide =
-  detail::reference_divide_impl<dimension_divide<typename R1::dimension, typename R2::dimension>, R1, R2>;
 
 /**
  * @brief The type for quantity references
@@ -90,50 +92,71 @@ using reference_divide =
  * The following syntaxes are not allowed:
  * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
-template<Dimension D, UnitOf<D> U>
-struct reference {
-  using dimension = D;
-  using unit = U;
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
+template<typename T, Unit U>
+struct reference;
 
-  // Hidden Friends
-  // Below friend functions are to be found via argument-dependent lookup only
-
-  template<Reference R2>
-  [[nodiscard]] friend constexpr reference_multiply<reference, R2> operator*(reference, R2)
-  {
-    return {};
-  }
-
-  template<Reference R2>
-  [[nodiscard]] friend constexpr reference_divide<reference, R2> operator/(reference, R2)
-  {
-    return {};
-  }
-
-  template<Representation Rep>
-  [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
-  {
-    return quantity<D, U, Rep>(lhs);
-  }
-
-  friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
-
-  template<Reference R2>
-  [[nodiscard]] friend constexpr bool operator==(reference, R2)
-  {
-    return false;
-  }
-
-  [[nodiscard]] friend constexpr bool operator==(reference, reference) { return true; }
+template<typename R, Unit U>
+  requires detail::is_derived_from_specialization_of_system_reference<R>
+struct reference<R, U> {
+  using system_reference = R;
+  static constexpr auto dimension = R::dimension;
+  static constexpr U unit{};
+  // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
 };
 
-// type traits
-namespace detail {
+template<DerivedDimension D, Unit U>
+struct reference<D, U> {
+  static constexpr D dimension{};
+  static constexpr U unit{};
+  // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
+};
 
-template<typename D, typename U>
-inline constexpr bool is_reference<reference<D, U>> = true;
+// Reference
+/**
+ * @brief A concept matching all references in the library.
+ *
+ * Satisfied by all specializations of @c reference.
+ */
+template<typename T>
+concept Reference = is_specialization_of<T, reference>;
 
-}  // namespace detail
+template<Reference R1, Reference R2>
+[[nodiscard]] constexpr reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
+                                                                                                                    R2)
+{
+  return {};
+}
+
+template<Reference R1, Reference R2>
+[[nodiscard]] constexpr reference<decltype(R1::dimension / R2::dimension), decltype(R1::unit / R2::unit)> operator/(R1,
+                                                                                                                    R2)
+{
+  return {};
+}
+
+// TODO Update when quantity is done
+// template<Representation Rep>
+// [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
+template<typename Rep, Reference R>
+[[nodiscard]] constexpr quantity<R{}, Rep> operator*(const Rep& lhs, R)
+{
+  return quantity<R{}, Rep>(lhs);
+}
+
+// friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
+
+// TODO will use deducing this
+template<typename Child, Dimension auto Dim, Unit auto CoU>
+struct system_reference {
+  static constexpr auto dimension = Dim;
+  static constexpr auto coherent_unit = CoU;
+
+  template<Unit U>
+  // requires same_unit_reference<CoU, U>
+  [[nodiscard]] constexpr reference<Child, U> operator[](U) const
+  {
+    return {};
+  }
+};
 
 }  // namespace units
