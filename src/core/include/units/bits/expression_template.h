@@ -135,6 +135,7 @@ struct expr_consolidate_impl<type_list<T, Rest...>> {
 };
 
 template<typename T, typename... Rest>
+  requires(!is_specialization_of_power<T>)
 struct expr_consolidate_impl<type_list<T, T, Rest...>> {
   using type = expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
 };
