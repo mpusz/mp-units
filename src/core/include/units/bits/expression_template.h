@@ -287,7 +287,7 @@ public:
 };
 
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-constexpr auto expr_expression_impl()
+[[nodiscard]] constexpr auto expr_expression_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -312,7 +312,7 @@ using expr_expression = decltype(expr_expression_impl<NumList, DenList, OneType,
 
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-constexpr auto get_optimized_expression()
+[[nodiscard]] constexpr auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -332,7 +332,7 @@ constexpr auto get_optimized_expression()
  */
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-constexpr auto expr_multiply()
+[[nodiscard]] constexpr auto expr_multiply()
 {
   if constexpr (is_same_v<T1, OneType>) {
     return T2{};
@@ -356,7 +356,7 @@ constexpr auto expr_multiply()
 
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-constexpr auto expr_divide()
+[[nodiscard]] constexpr auto expr_divide()
 {
   if constexpr (is_same_v<T1, T2>) {
     return OneType{};
@@ -378,7 +378,7 @@ constexpr auto expr_divide()
 }
 
 template<typename T, typename OneType, template<typename...> typename To>
-constexpr auto expr_invert()
+[[nodiscard]] constexpr auto expr_invert()
 {
   if constexpr (is_specialization_of<T, To>)
     return expr_expression<typename T::den, typename T::num, OneType, To>{};
