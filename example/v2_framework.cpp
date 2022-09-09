@@ -122,28 +122,27 @@ inline constexpr struct watt : named_unit<"W", joule / second> {
 
 namespace short_units {
 
-// TODO collide with reference names
-// inline namespace length {
+inline namespace length_units {
 
 inline constexpr auto m = metre;
 inline constexpr auto km = kilometre;
 inline constexpr auto au = astronomical_unit;
 
-// }  // namespace length
+}  // namespace length_units
 
-// inline namespace area {
+inline namespace area_units {
 
 inline constexpr auto m2 = square_metre;
 
-// }
+}
 
-// inline namespace volume {
+inline namespace volume_units {
 
 inline constexpr auto m3 = cubic_metre;
 
-// }
+}
 
-// inline namespace time {
+inline namespace time_units {
 
 inline constexpr auto s = second;
 inline constexpr auto min = minute;
@@ -152,45 +151,45 @@ inline constexpr auto d = day;
 
 inline constexpr auto s2 = second_squared;
 
-// }  // namespace time
+}  // namespace time_units
 
-// inline namespace mass {
+inline namespace mass_units {
 
 inline constexpr auto g = gram;
 inline constexpr auto kg = kilogram;
 inline constexpr auto t = tonne;
 
-// }  // namespace mass
+}  // namespace mass_units
 
-// inline namespace frequency {
+inline namespace frequency_units {
 
 inline constexpr auto Hz = hertz;
 
-// }
+}
 
-// inline namespace force {
+inline namespace force_units {
 
 inline constexpr auto N = newton;
 
-// }
+}
 
-// inline namespace pressure {
+inline namespace pressure_units {
 
 inline constexpr auto Pa = pascal;
 
-// }
+}
 
-// inline namespace energy {
+inline namespace energy_units {
 
 inline constexpr auto J = joule;
 
-// }
+}
 
-// inline namespace power {
+inline namespace power_units {
 
 inline constexpr auto W = watt;
 
-// }
+}
 
 }  // namespace short_units
 
