@@ -83,7 +83,7 @@ inline constexpr struct square_metre : derived_unit<decltype(metre * metre)> {
 } square_metre;
 
 // volume units
-inline constexpr struct cubic_metre : derived_unit<decltype(square_metre * metre)> {
+inline constexpr struct cubic_metre : derived_unit<decltype(metre * metre * metre)> {
 } cubic_metre;
 
 // time units
@@ -96,9 +96,12 @@ inline constexpr struct hour : named_scaled_unit<"h", mag<60>(), minute> {
 inline constexpr struct day : named_scaled_unit<"d", mag<24>(), hour> {
 } day;
 
-// not a time unit!
+// not time units!
+// TODO should those be provided for other scaled units like ms, h, ...
 inline constexpr struct second_squared : derived_unit<decltype(second * second)> {
 } second_squared;
+inline constexpr struct second_cubed : derived_unit<decltype(second * second * second)> {
+} second_cubed;
 
 // mass units
 inline constexpr struct gram : named_unit<"g"> {
@@ -356,10 +359,28 @@ static_assert(is_of_type<metre / second*(second / metre), struct one>);
 static_assert(is_of_type<watt / joule, derived_unit<struct watt, per<struct joule>>>);
 static_assert(is_of_type<joule / watt, derived_unit<struct joule, per<struct watt>>>);
 
-// comparisons of equivalent dimensions
-// static_assert(metre / metre == one);
+// comparisons of equivalent units
+static_assert(metre / metre == one);
+static_assert(metre * metre == square_metre);
+static_assert(second * second == second_squared);
+static_assert(second * second * second == second_cubed);
+static_assert(second * (second * second) == second_cubed);
+static_assert(second_squared * second == second_cubed);
+static_assert(second * second_squared == second_cubed);
 
-// static_assert(1 / second == dim_frequency);
+static_assert(1 / second * metre == metre / second);
+static_assert(metre * (1 / second) == metre / second);
+static_assert((metre / second) * (1 / second) == metre / second / second);
+static_assert((metre / second) * (1 / second) == metre / (second * second));
+static_assert((metre / second) * (1 / second) == metre / second_squared);
+
+static_assert(hertz == 1 / second);
+static_assert(newton == kilogram * metre / second_squared);
+static_assert(joule == kilogram * square_metre / second_squared);
+static_assert(joule == newton * metre);
+static_assert(watt == joule / second);
+static_assert(watt == kilogram * square_metre / second_cubed);
+
 // static_assert(1 / dim_frequency == second);
 // static_assert(dim_frequency * second == one);
 
@@ -394,6 +415,23 @@ static_assert(is_of_type<joule / watt, derived_unit<struct joule, per<struct wat
 
 // Bq + Hz + 1/s should compile?
 
+
+}  // namespace units::isq::si
+
+
+template<typename T, Dimension auto D, Unit auto U>
+inline constexpr bool is_exactly_quantity_of =
+  is_same_v<decltype(T::dimension), decltype(D)> && is_same_v<decltype(T::unit), decltype(U)>;
+
+namespace units::isq::si {
+
+// quantity tests
+static_assert(
+  is_exactly_quantity_of<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<kilometre, per<metre>>>);
+
+// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<kilometre, per<metre>>);
+// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<metre, per<millimetre>>);
+// // TODO Should this compile?
 
 }  // namespace units::isq::si
 
