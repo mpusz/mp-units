@@ -25,40 +25,40 @@
 
 namespace units::isq {
 
-inline constexpr struct dim_length : base_dimension<"L"> {
-} dim_length;
-inline constexpr struct dim_mass : base_dimension<"M"> {
-} dim_mass;
-inline constexpr struct dim_time : base_dimension<"T"> {
-} dim_time;
-inline constexpr struct dim_electric_current : base_dimension<"I"> {
-} dim_electric_current;
+inline constexpr struct length_dim : base_dimension<"L"> {
+} length_dim;
+inline constexpr struct mass_dim : base_dimension<"M"> {
+} mass_dim;
+inline constexpr struct time_dim : base_dimension<"T"> {
+} time_dim;
+inline constexpr struct electric_current_dim : base_dimension<"I"> {
+} electric_current_dim;
 // TODO Should the below use basic_symbol_text? How to name it for ASCII?
-inline constexpr struct dim_thermodynamic_temperature : base_dimension<"Θ"> {
-} dim_thermodynamic_temperature;
-inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {
-} dim_amount_of_substance;
-inline constexpr struct dim_luminous_intensity : base_dimension<"J"> {
-} dim_luminous_intensity;
+inline constexpr struct thermodynamic_temperature_dim : base_dimension<"Θ"> {
+} thermodynamic_temperature_dim;
+inline constexpr struct amount_of_substance_dim : base_dimension<"N"> {
+} amount_of_substance_dim;
+inline constexpr struct luminous_intensity_dim : base_dimension<"J"> {
+} luminous_intensity_dim;
 
-inline constexpr struct dim_frequency : decltype(1 / dim_time) {
-} dim_frequency;
-inline constexpr struct dim_area : decltype(dim_length * dim_length) {
-} dim_area;
-inline constexpr struct dim_volume : decltype(dim_area * dim_length) {
-} dim_volume;
-inline constexpr struct dim_speed : decltype(dim_length / dim_time) {
-} dim_speed;
-inline constexpr struct dim_acceleration : decltype(dim_speed / dim_time) {
-} dim_acceleration;
+inline constexpr struct frequency_dim : decltype(1 / time_dim) {
+} frequency_dim;
+inline constexpr struct area_dim : decltype(length_dim * length_dim) {
+} area_dim;
+inline constexpr struct volume_dim : decltype(area_dim * length_dim) {
+} volume_dim;
+inline constexpr struct speed_dim : decltype(length_dim / time_dim) {
+} speed_dim;
+inline constexpr struct acceleration_dim : decltype(speed_dim / time_dim) {
+} acceleration_dim;
 
 // inline constexpr auto speed = length / time;
 
-// using dim_speed = decltype(dim_length / dim_time);
-// inline constexpr dim_speed dim_speed;
+// using speed_dim = decltype(length_dim / time_dim);
+// inline constexpr speed_dim speed_dim;
 
 // template<typename T>
-// concept Length = QuantityOf<T, dim_length>;
+// concept Length = QuantityOf<T, length_dim>;
 
 }  // namespace units::isq
 
@@ -203,26 +203,26 @@ inline constexpr auto W = watt;
 
 namespace units {
 
-inline constexpr struct dimensionless : system_reference<dimensionless, dim_one, one> {
+inline constexpr struct dimensionless : system_reference<dimensionless, one_dim, one> {
 } dimensionless;
 
 }  // namespace units
 
 namespace units::isq::si {
 
-inline constexpr struct length : system_reference<length, dim_length, metre> {
+inline constexpr struct length : system_reference<length, length_dim, metre> {
 } length;
-inline constexpr struct time : system_reference<time, dim_time, second> {
+inline constexpr struct time : system_reference<time, time_dim, second> {
 } time;
-inline constexpr struct frequency : system_reference<frequency, dim_frequency, hertz> {
+inline constexpr struct frequency : system_reference<frequency, frequency_dim, hertz> {
 } frequency;
-inline constexpr struct area : system_reference<area, dim_area, square_metre> {
+inline constexpr struct area : system_reference<area, area_dim, square_metre> {
 } area;
-inline constexpr struct volume : system_reference<volume, dim_volume, cubic_metre> {
+inline constexpr struct volume : system_reference<volume, volume_dim, cubic_metre> {
 } volume;
-inline constexpr struct speed : system_reference<speed, dim_speed, metre / second> {
+inline constexpr struct speed : system_reference<speed, speed_dim, metre / second> {
 } speed;
-inline constexpr struct acceleration : system_reference<acceleration, dim_acceleration, metre / second / second> {
+inline constexpr struct acceleration : system_reference<acceleration, acceleration_dim, metre / second / second> {
 } acceleration;
 
 }  // namespace units::isq::si
@@ -234,86 +234,86 @@ inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V
 namespace units::isq {
 
 // derived dimension expression template syntax verification
-static_assert(is_of_type<1 / dim_time, derived_dimension<struct dim_one, per<struct dim_time>>>);
-static_assert(is_of_type<1 / (1 / dim_time), struct dim_time>);
+static_assert(is_of_type<1 / time_dim, derived_dimension<struct one_dim, per<struct time_dim>>>);
+static_assert(is_of_type<1 / (1 / time_dim), struct time_dim>);
 
-static_assert(is_of_type<dim_one * dim_time, struct dim_time>);
-static_assert(is_of_type<dim_time * dim_one, struct dim_time>);
-static_assert(is_of_type<dim_one * (1 / dim_time), derived_dimension<struct dim_one, per<struct dim_time>>>);
-static_assert(is_of_type<1 / dim_time * dim_one, derived_dimension<struct dim_one, per<struct dim_time>>>);
+static_assert(is_of_type<one_dim * time_dim, struct time_dim>);
+static_assert(is_of_type<time_dim * one_dim, struct time_dim>);
+static_assert(is_of_type<one_dim * (1 / time_dim), derived_dimension<struct one_dim, per<struct time_dim>>>);
+static_assert(is_of_type<1 / time_dim * one_dim, derived_dimension<struct one_dim, per<struct time_dim>>>);
 
-static_assert(is_of_type<dim_length * dim_time, derived_dimension<struct dim_length, struct dim_time>>);
-static_assert(is_of_type<dim_length * dim_length, derived_dimension<power<struct dim_length, 2>>>);
-
-static_assert(
-  is_of_type<dim_length * dim_length * dim_time, derived_dimension<power<struct dim_length, 2>, struct dim_time>>);
-static_assert(
-  is_of_type<dim_length * dim_time * dim_length, derived_dimension<power<struct dim_length, 2>, struct dim_time>>);
+static_assert(is_of_type<length_dim * time_dim, derived_dimension<struct length_dim, struct time_dim>>);
+static_assert(is_of_type<length_dim * length_dim, derived_dimension<power<struct length_dim, 2>>>);
 
 static_assert(
-  is_of_type<dim_length*(dim_time* dim_length), derived_dimension<power<struct dim_length, 2>, struct dim_time>>);
+  is_of_type<length_dim * length_dim * time_dim, derived_dimension<power<struct length_dim, 2>, struct time_dim>>);
 static_assert(
-  is_of_type<dim_time*(dim_length* dim_length), derived_dimension<power<struct dim_length, 2>, struct dim_time>>);
+  is_of_type<length_dim * time_dim * length_dim, derived_dimension<power<struct length_dim, 2>, struct time_dim>>);
 
-static_assert(is_of_type<1 / dim_time * dim_length, derived_dimension<struct dim_length, per<struct dim_time>>>);
-static_assert(is_of_type<1 / dim_time * dim_time, struct dim_one>);
-
-static_assert(is_of_type<dim_time / dim_one, struct dim_time>);
-static_assert(is_of_type<1 / dim_time / dim_one, derived_dimension<struct dim_one, per<struct dim_time>>>);
-
-static_assert(is_of_type<dim_length / dim_time * dim_time, struct dim_length>);
 static_assert(
-  is_of_type<1 / dim_time * (1 / dim_time), derived_dimension<struct dim_one, per<power<struct dim_time, 2>>>>);
-static_assert(is_of_type<1 / (dim_time * dim_time), derived_dimension<struct dim_one, per<power<struct dim_time, 2>>>>);
-static_assert(is_of_type<1 / (1 / (dim_time * dim_time)), derived_dimension<power<struct dim_time, 2>>>);
-
-static_assert(is_of_type<dim_length / dim_time * (1 / dim_time),
-                         derived_dimension<struct dim_length, per<power<struct dim_time, 2>>>>);
-static_assert(is_of_type<dim_length / dim_time*(dim_length / dim_time),
-                         derived_dimension<power<struct dim_length, 2>, per<power<struct dim_time, 2>>>>);
-static_assert(is_of_type<dim_length / dim_time*(dim_time / dim_length), struct dim_one>);
-
-static_assert(is_of_type<dim_speed / dim_acceleration, struct dim_time>);
-static_assert(is_of_type<dim_acceleration / dim_speed, derived_dimension<struct dim_one, per<struct dim_time>>>);
+  is_of_type<length_dim*(time_dim* length_dim), derived_dimension<power<struct length_dim, 2>, struct time_dim>>);
 static_assert(
-  is_of_type<dim_speed * dim_speed / dim_length, derived_dimension<struct dim_length, per<power<struct dim_time, 2>>>>);
-static_assert(is_of_type<1 / (dim_speed * dim_speed) * dim_length,
-                         derived_dimension<power<struct dim_time, 2>, per<struct dim_length>>>);
+  is_of_type<time_dim*(length_dim* length_dim), derived_dimension<power<struct length_dim, 2>, struct time_dim>>);
+
+static_assert(is_of_type<1 / time_dim * length_dim, derived_dimension<struct length_dim, per<struct time_dim>>>);
+static_assert(is_of_type<1 / time_dim * time_dim, struct one_dim>);
+
+static_assert(is_of_type<time_dim / one_dim, struct time_dim>);
+static_assert(is_of_type<1 / time_dim / one_dim, derived_dimension<struct one_dim, per<struct time_dim>>>);
+
+static_assert(is_of_type<length_dim / time_dim * time_dim, struct length_dim>);
+static_assert(
+  is_of_type<1 / time_dim * (1 / time_dim), derived_dimension<struct one_dim, per<power<struct time_dim, 2>>>>);
+static_assert(is_of_type<1 / (time_dim * time_dim), derived_dimension<struct one_dim, per<power<struct time_dim, 2>>>>);
+static_assert(is_of_type<1 / (1 / (time_dim * time_dim)), derived_dimension<power<struct time_dim, 2>>>);
+
+static_assert(is_of_type<length_dim / time_dim * (1 / time_dim),
+                         derived_dimension<struct length_dim, per<power<struct time_dim, 2>>>>);
+static_assert(is_of_type<length_dim / time_dim*(length_dim / time_dim),
+                         derived_dimension<power<struct length_dim, 2>, per<power<struct time_dim, 2>>>>);
+static_assert(is_of_type<length_dim / time_dim*(time_dim / length_dim), struct one_dim>);
+
+static_assert(is_of_type<speed_dim / acceleration_dim, struct time_dim>);
+static_assert(is_of_type<acceleration_dim / speed_dim, derived_dimension<struct one_dim, per<struct time_dim>>>);
+static_assert(
+  is_of_type<speed_dim * speed_dim / length_dim, derived_dimension<struct length_dim, per<power<struct time_dim, 2>>>>);
+static_assert(is_of_type<1 / (speed_dim * speed_dim) * length_dim,
+                         derived_dimension<power<struct time_dim, 2>, per<struct length_dim>>>);
 
 namespace si {
 
 // comparisons of equivalent dimensions
-static_assert(dim_length / dim_length == dim_one);
+static_assert(length_dim / length_dim == one_dim);
 
-static_assert(1 / dim_time == dim_frequency);
-static_assert(1 / dim_frequency == dim_time);
-static_assert(dim_frequency * dim_time == dim_one);
+static_assert(1 / time_dim == frequency_dim);
+static_assert(1 / frequency_dim == time_dim);
+static_assert(frequency_dim * time_dim == one_dim);
 
-static_assert(dim_length * dim_length == dim_area);
-static_assert(dim_length * dim_length != dim_volume);
-static_assert(dim_area / dim_length == dim_length);
+static_assert(length_dim * length_dim == area_dim);
+static_assert(length_dim * length_dim != volume_dim);
+static_assert(area_dim / length_dim == length_dim);
 
-static_assert(dim_length * dim_length * dim_length == dim_volume);
-static_assert(dim_area * dim_length == dim_volume);
-static_assert(dim_volume / dim_length == dim_area);
-static_assert(dim_volume / dim_length / dim_length == dim_length);
-static_assert(dim_area * dim_area / dim_length == dim_volume);
-static_assert(dim_area * (dim_area / dim_length) == dim_volume);
-static_assert(dim_volume / (dim_length * dim_length) == dim_length);
+static_assert(length_dim * length_dim * length_dim == volume_dim);
+static_assert(area_dim * length_dim == volume_dim);
+static_assert(volume_dim / length_dim == area_dim);
+static_assert(volume_dim / length_dim / length_dim == length_dim);
+static_assert(area_dim * area_dim / length_dim == volume_dim);
+static_assert(area_dim * (area_dim / length_dim) == volume_dim);
+static_assert(volume_dim / (length_dim * length_dim) == length_dim);
 
-static_assert(dim_length / dim_time == dim_speed);
-static_assert(dim_length * dim_time != dim_speed);
-static_assert(dim_length / dim_time / dim_time != dim_speed);
-static_assert(dim_length / dim_speed == dim_time);
-static_assert(dim_speed * dim_time == dim_length);
+static_assert(length_dim / time_dim == speed_dim);
+static_assert(length_dim * time_dim != speed_dim);
+static_assert(length_dim / time_dim / time_dim != speed_dim);
+static_assert(length_dim / speed_dim == time_dim);
+static_assert(speed_dim * time_dim == length_dim);
 
-static_assert(dim_length / dim_time / dim_time == dim_acceleration);
-static_assert(dim_length / (dim_time * dim_time) == dim_acceleration);
-static_assert(dim_speed / dim_time == dim_acceleration);
-static_assert(dim_speed / dim_acceleration == dim_time);
-static_assert(dim_acceleration * dim_time == dim_speed);
-static_assert(dim_acceleration * (dim_time * dim_time) == dim_length);
-static_assert(dim_acceleration / dim_speed == dim_frequency);
+static_assert(length_dim / time_dim / time_dim == acceleration_dim);
+static_assert(length_dim / (time_dim * time_dim) == acceleration_dim);
+static_assert(speed_dim / time_dim == acceleration_dim);
+static_assert(speed_dim / acceleration_dim == time_dim);
+static_assert(acceleration_dim * time_dim == speed_dim);
+static_assert(acceleration_dim * (time_dim * time_dim) == length_dim);
+static_assert(acceleration_dim / speed_dim == frequency_dim);
 
 }  // namespace si
 
@@ -381,34 +381,34 @@ static_assert(joule == newton * metre);
 static_assert(watt == joule / second);
 static_assert(watt == kilogram * square_metre / second_cubed);
 
-// static_assert(1 / dim_frequency == second);
-// static_assert(dim_frequency * second == one);
+// static_assert(1 / frequency_dim == second);
+// static_assert(frequency_dim * second == one);
 
-// static_assert(metre * metre == dim_area);
-// static_assert(metre * metre != dim_volume);
-// static_assert(dim_area / metre == metre);
+// static_assert(metre * metre == area_dim);
+// static_assert(metre * metre != volume_dim);
+// static_assert(area_dim / metre == metre);
 
-// static_assert(metre * metre * metre == dim_volume);
-// static_assert(dim_area * metre == dim_volume);
-// static_assert(dim_volume / metre == dim_area);
-// static_assert(dim_volume / metre / metre == metre);
-// static_assert(dim_area * dim_area / metre == dim_volume);
-// static_assert(dim_area * (dim_area / metre) == dim_volume);
-// static_assert(dim_volume / (metre * metre) == metre);
+// static_assert(metre * metre * metre == volume_dim);
+// static_assert(area_dim * metre == volume_dim);
+// static_assert(volume_dim / metre == area_dim);
+// static_assert(volume_dim / metre / metre == metre);
+// static_assert(area_dim * area_dim / metre == volume_dim);
+// static_assert(area_dim * (area_dim / metre) == volume_dim);
+// static_assert(volume_dim / (metre * metre) == metre);
 
-// static_assert(metre / second == dim_speed);
-// static_assert(metre * second != dim_speed);
-// static_assert(metre / second / second != dim_speed);
-// static_assert(metre / dim_speed == second);
-// static_assert(dim_speed * second == metre);
+// static_assert(metre / second == speed_dim);
+// static_assert(metre * second != speed_dim);
+// static_assert(metre / second / second != speed_dim);
+// static_assert(metre / speed_dim == second);
+// static_assert(speed_dim * second == metre);
 
-// static_assert(metre / second / second == dim_acceleration);
-// static_assert(metre / (second * second) == dim_acceleration);
-// static_assert(dim_speed / second == dim_acceleration);
-// static_assert(dim_speed / dim_acceleration == second);
-// static_assert(dim_acceleration * second == dim_speed);
-// static_assert(dim_acceleration * (second * second) == metre);
-// static_assert(dim_acceleration / dim_speed == dim_frequency);
+// static_assert(metre / second / second == acceleration_dim);
+// static_assert(metre / (second * second) == acceleration_dim);
+// static_assert(speed_dim / second == acceleration_dim);
+// static_assert(speed_dim / acceleration_dim == second);
+// static_assert(acceleration_dim * second == speed_dim);
+// static_assert(acceleration_dim * (second * second) == metre);
+// static_assert(acceleration_dim / speed_dim == frequency_dim);
 
 
 // Bq + Hz should not compile
@@ -427,10 +427,10 @@ namespace units::isq::si {
 
 // quantity tests
 static_assert(
-  is_exactly_quantity_of<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<kilometre, per<metre>>>);
+  is_exactly_quantity_of<decltype(4 * length[km] / (2 * length[m])), one_dim, derived_unit<kilometre, per<metre>>>);
 
-// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<kilometre, per<metre>>);
-// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), dim_one, derived_unit<metre, per<millimetre>>);
+// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), one_dim, derived_unit<kilometre, per<metre>>);
+// static_assert(QuantityOf<decltype(4 * length[km] / (2 * length[m])), one_dim, derived_unit<metre, per<millimetre>>);
 // // TODO Should this compile?
 
 }  // namespace units::isq::si

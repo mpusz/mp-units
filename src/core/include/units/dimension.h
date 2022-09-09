@@ -91,14 +91,14 @@ template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
 template<typename T>
-inline constexpr bool is_dim_one = false;
+inline constexpr bool is_one_dim = false;
 
 }  // namespace detail
 
 // TODO add checking for `per` and power elements as well
 template<typename T>
 concept DimensionSpec =
-  BaseDimension<T> || detail::is_dim_one<T> || is_specialization_of<T, per> || detail::is_specialization_of_power<T>;
+  BaseDimension<T> || detail::is_one_dim<T> || is_specialization_of<T, per> || detail::is_specialization_of_power<T>;
 
 // User should not instantiate this type!!!
 // It should not be exported from the module
@@ -116,13 +116,13 @@ std::true_type is_derived_dimension(const volatile derived_dimension<Args...>*);
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */
-inline constexpr struct dim_one : derived_dimension<> {
-} dim_one;
+inline constexpr struct one_dim : derived_dimension<> {
+} one_dim;
 
 namespace detail {
 
 template<>
-inline constexpr bool is_dim_one<struct dim_one> = true;
+inline constexpr bool is_one_dim<struct one_dim> = true;
 
 template<Dimension T>
 struct dim_type_impl {
@@ -142,14 +142,14 @@ using dim_type = dim_type_impl<T>::type;
 template<Dimension D1, Dimension D2>
 [[nodiscard]] constexpr Dimension auto operator*(D1, D2)
 {
-  return detail::expr_multiply<detail::dim_type<D1>, detail::dim_type<D2>, struct dim_one,
+  return detail::expr_multiply<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
                                detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] constexpr Dimension auto operator/(D1, D2)
 {
-  return detail::expr_divide<detail::dim_type<D1>, detail::dim_type<D2>, struct dim_one,
+  return detail::expr_divide<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
                              detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
@@ -157,7 +157,7 @@ template<Dimension D>
 [[nodiscard]] constexpr Dimension auto operator/(int value, D)
 {
   gsl_Assert(value == 1);
-  return detail::expr_invert<detail::dim_type<D>, struct dim_one, derived_dimension>();
+  return detail::expr_invert<detail::dim_type<D>, struct one_dim, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
