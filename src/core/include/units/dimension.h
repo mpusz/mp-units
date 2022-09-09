@@ -103,7 +103,9 @@ concept DimensionSpec =
 // User should not instantiate this type!!!
 // It should not be exported from the module
 template<DimensionSpec... Ds>
-struct derived_dimension : detail::expr_fractions<derived_dimension<>, Ds...> {};
+struct derived_dimension : detail::expr_fractions<derived_dimension<>, Ds...> {
+  using type = derived_dimension<Ds...>;
+};
 
 template<typename... Args>
 std::true_type is_derived_dimension(const volatile derived_dimension<Args...>*);
@@ -122,37 +124,46 @@ namespace detail {
 template<>
 inline constexpr bool is_dim_one<struct dim_one> = true;
 
+template<Dimension T>
+struct dim_type_impl {
+  using type = T;
+};
+
+template<DerivedDimension T>
+struct dim_type_impl<T> {
+  using type = T::type;
+};
+
+template<Dimension T>
+using dim_type = dim_type_impl<T>::type;
+
 }  // namespace detail
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] constexpr Dimension auto operator*(D1, D2)
 {
-  return detail::expr_multiply<D1, D2, struct dim_one, detail::type_list_of_base_dimension_less, derived_dimension>();
+  return detail::expr_multiply<detail::dim_type<D1>, detail::dim_type<D2>, struct dim_one,
+                               detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] constexpr Dimension auto operator/(D1, D2)
 {
-  return detail::expr_divide<D1, D2, struct dim_one, detail::type_list_of_base_dimension_less, derived_dimension>();
+  return detail::expr_divide<detail::dim_type<D1>, detail::dim_type<D2>, struct dim_one,
+                             detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
 template<Dimension D>
 [[nodiscard]] constexpr Dimension auto operator/(int value, D)
 {
   gsl_Assert(value == 1);
-  return detail::expr_invert<D, struct dim_one, derived_dimension>();
+  return detail::expr_invert<detail::dim_type<D>, struct dim_one, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] constexpr bool operator==(D1, D2)
 {
-  return false;
-}
-
-template<Dimension D>
-[[nodiscard]] constexpr bool operator==(D, D)
-{
-  return true;
+  return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
 }
 
 // TODO consider adding the support for text output of the dimensional equation
