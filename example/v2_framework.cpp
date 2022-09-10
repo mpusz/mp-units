@@ -123,7 +123,7 @@ inline constexpr struct joule : named_unit<"J", newton * metre> {
 inline constexpr struct watt : named_unit<"W", joule / second> {
 } watt;
 
-namespace short_units {
+namespace unit_symbols {
 
 inline namespace length_units {
 
@@ -194,7 +194,7 @@ inline constexpr auto W = watt;
 
 }
 
-}  // namespace short_units
+}  // namespace unit_symbols
 
 }  // namespace isq::si
 }  // namespace units
@@ -438,7 +438,7 @@ static_assert(
 
 using namespace units;
 using namespace units::isq::si;
-using namespace units::isq::si::short_units;
+using namespace units::isq::si::unit_symbols;
 
 /* Frequency */ auto freq1 = 20 * frequency[Hz];
 // /* Frequency */ auto freq2 = 20 / (1 * isq::si::time[s]);
