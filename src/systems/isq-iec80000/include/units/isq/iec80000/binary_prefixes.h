@@ -26,13 +26,13 @@
 
 namespace units::isq::iec80000 {
 
-struct kibi : prefix<kibi, "Ki", pow<10>(mag<2>())> {};
-struct mebi : prefix<mebi, "Mi", pow<20>(mag<2>())> {};
-struct gibi : prefix<gibi, "Gi", pow<30>(mag<2>())> {};
-struct tebi : prefix<tebi, "Ti", pow<40>(mag<2>())> {};
-struct pebi : prefix<pebi, "Pi", pow<50>(mag<2>())> {};
-struct exbi : prefix<exbi, "Ei", pow<60>(mag<2>())> {};
-struct zebi : prefix<zebi, "Zi", pow<70>(mag<2>())> {};
-struct yobi : prefix<yobi, "Yi", pow<80>(mag<2>())> {};
+struct kibi : prefix<kibi, "Ki", mag_power<2, 10>()> {};
+struct mebi : prefix<mebi, "Mi", mag_power<2, 20>()> {};
+struct gibi : prefix<gibi, "Gi", mag_power<2, 30>()> {};
+struct tebi : prefix<tebi, "Ti", mag_power<2, 40>()> {};
+struct pebi : prefix<pebi, "Pi", mag_power<2, 50>()> {};
+struct exbi : prefix<exbi, "Ei", mag_power<2, 60>()> {};
+struct zebi : prefix<zebi, "Zi", mag_power<2, 70>()> {};
+struct yobi : prefix<yobi, "Yi", mag_power<2, 80>()> {};
 
 }  // namespace units::isq::iec80000
