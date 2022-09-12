@@ -27,9 +27,9 @@
 #include <units/ratio.h>
 #include <concepts>
 #include <cstdint>
+#include <exception>
 #include <numbers>
 #include <optional>
-#include <stdexcept>
 
 namespace units {
 namespace detail {
@@ -147,10 +147,10 @@ using widen_t =
 template<typename T>
 constexpr T int_power(T base, std::integral auto exp)
 {
-  // As this function should only be called at compile time, the exceptions herein function as
-  // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
+  // As this function should only be called at compile time, the terminations herein function as
+  // "parameter-compatible static_asserts", and should not result in terminations at runtime.
   if (exp < 0) {
-    throw std::invalid_argument{"int_power only supports positive integer powers"};
+    std::terminate();  // int_power only supports positive integer powers
   }
 
   constexpr auto checked_multiply = [](auto a, auto b) {
@@ -158,7 +158,7 @@ constexpr T int_power(T base, std::integral auto exp)
     UNITS_DIAGNOSTIC_PUSH
     UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     if (result / a != b) {
-      throw std::overflow_error{"Wraparound detected"};
+      std::terminate();  // Wraparound detected
     }
     UNITS_DIAGNOSTIC_POP
     return result;
@@ -188,14 +188,14 @@ constexpr widen_t<T> compute_base_power(BasePower auto bp)
   // need to write a custom function.
   //
   // Note that since this function should only be called at compile time, the point of these
-  // exceptions is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
+  // terminations is to act as "static_assert substitutes", not to actually terminate at runtime.
   if (bp.power.den != 1) {
-    throw std::invalid_argument{"Rational powers not yet supported"};
+    std::terminate();  // Rational powers not yet supported
   }
 
   if (bp.power.num < 0) {
     if constexpr (std::is_integral_v<T>) {
-      throw std::invalid_argument{"Cannot represent reciprocal as integer"};
+      std::terminate();  // Cannot represent reciprocal as integer
     } else {
       return T{1} / compute_base_power<T>(inverse(bp));
     }
@@ -214,11 +214,11 @@ template<typename To, typename From>
   requires(!std::is_integral_v<To> || std::is_integral_v<From>)
 constexpr To checked_static_cast(From x)
 {
-  // This function should only ever be called at compile time.  The purpose of these exceptions is
+  // This function should only ever be called at compile time.  The purpose of these terminations is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (!std::in_range<To>(x)) {
-      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+      std::terminate();  // Cannot represent magnitude in this type
     }
   }
 
