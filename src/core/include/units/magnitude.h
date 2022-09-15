@@ -653,22 +653,17 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
  * manually adding base powers.
  */
+
 template<ratio R>
   requires(R.num > 0)
-constexpr Magnitude auto mag()
-{
-  return detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
-}
+inline constexpr Magnitude auto mag = detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 template<ratio Base, ratio Pow>
   requires(Base.num > 0)
-constexpr Magnitude auto mag_power()
-{
-  return pow<Pow>(mag<Base>());
-}
+inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 
 namespace detail {
 template<typename T, BasePower auto... BPs>

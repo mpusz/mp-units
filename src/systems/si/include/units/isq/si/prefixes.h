@@ -27,44 +27,44 @@
 namespace units::isq::si {
 
 template<NamedUnit auto U>
-struct yocto : prefixed_unit<"y", pow<-24>(mag<10>()), U> {};
+struct yocto : prefixed_unit<"y", mag_power<10, -24>, U> {};
 template<NamedUnit auto U>
-struct zepto : prefixed_unit<"z", pow<-21>(mag<10>()), U> {};
+struct zepto : prefixed_unit<"z", mag_power<10, -21>, U> {};
 template<NamedUnit auto U>
-struct atto : prefixed_unit<"a", pow<-18>(mag<10>()), U> {};
+struct atto : prefixed_unit<"a", mag_power<10, -18>, U> {};
 template<NamedUnit auto U>
-struct femto : prefixed_unit<"f", pow<-15>(mag<10>()), U> {};
+struct femto : prefixed_unit<"f", mag_power<10, -15>, U> {};
 template<NamedUnit auto U>
-struct pico : prefixed_unit<"p", pow<-12>(mag<10>()), U> {};
+struct pico : prefixed_unit<"p", mag_power<10, -12>, U> {};
 template<NamedUnit auto U>
-struct nano : prefixed_unit<"n", pow<-9>(mag<10>()), U> {};
+struct nano : prefixed_unit<"n", mag_power<10, -9>, U> {};
 template<NamedUnit auto U>
-struct micro : prefixed_unit<basic_symbol_text{"\u00b5", "u"}, pow<-6>(mag<10>()), U> {};
+struct micro : prefixed_unit<basic_symbol_text{"\u00b5", "u"}, mag_power<10, -6>, U> {};
 template<NamedUnit auto U>
-struct milli : prefixed_unit<"m", pow<-3>(mag<10>()), U> {};
+struct milli : prefixed_unit<"m", mag_power<10, -3>, U> {};
 template<NamedUnit auto U>
-struct centi : prefixed_unit<"c", pow<-2>(mag<10>()), U> {};
+struct centi : prefixed_unit<"c", mag_power<10, -2>, U> {};
 template<NamedUnit auto U>
-struct deci : prefixed_unit<"d", pow<-1>(mag<10>()), U> {};
+struct deci : prefixed_unit<"d", mag_power<10, -1>, U> {};
 template<NamedUnit auto U>
-struct deca : prefixed_unit<"da", pow<1>(mag<10>()), U> {};
+struct deca : prefixed_unit<"da", mag_power<10, 1>, U> {};
 template<NamedUnit auto U>
-struct hecto : prefixed_unit<"h", pow<2>(mag<10>()), U> {};
+struct hecto : prefixed_unit<"h", mag_power<10, 2>, U> {};
 template<NamedUnit auto U>
-struct kilo : prefixed_unit<"k", pow<3>(mag<10>()), U> {};
+struct kilo : prefixed_unit<"k", mag_power<10, 3>, U> {};
 template<NamedUnit auto U>
-struct mega : prefixed_unit<"M", pow<6>(mag<10>()), U> {};
+struct mega : prefixed_unit<"M", mag_power<10, 6>, U> {};
 template<NamedUnit auto U>
-struct giga : prefixed_unit<"G", pow<9>(mag<10>()), U> {};
+struct giga : prefixed_unit<"G", mag_power<10, 9>, U> {};
 template<NamedUnit auto U>
-struct tera : prefixed_unit<"T", pow<12>(mag<10>()), U> {};
+struct tera : prefixed_unit<"T", mag_power<10, 12>, U> {};
 template<NamedUnit auto U>
-struct peta : prefixed_unit<"P", pow<15>(mag<10>()), U> {};
+struct peta : prefixed_unit<"P", mag_power<10, 15>, U> {};
 template<NamedUnit auto U>
-struct exa : prefixed_unit<"E", pow<18>(mag<10>()), U> {};
+struct exa : prefixed_unit<"E", mag_power<10, 18>, U> {};
 template<NamedUnit auto U>
-struct zetta : prefixed_unit<"Z", pow<21>(mag<10>()), U> {};
+struct zetta : prefixed_unit<"Z", mag_power<10, 21>, U> {};
 template<NamedUnit auto U>
-struct yotta : prefixed_unit<"Y", pow<24>(mag<10>()), U> {};
+struct yotta : prefixed_unit<"Y", mag_power<10, 24>, U> {};
 
 }  // namespace units::isq::si

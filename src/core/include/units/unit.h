@@ -103,7 +103,7 @@ template<typename T>
 concept UnitSpec = Unit<T> || is_specialization_of<T, per> || detail::is_specialization_of_power<T>;
 
 template<UnitSpec... Us>
-struct derived_unit : detail::expr_fractions<derived_unit<>, Us...>, scaled_unit<mag<1>(), derived_unit<Us...>> {};
+struct derived_unit : detail::expr_fractions<derived_unit<>, Us...>, scaled_unit<mag<1>, derived_unit<Us...>> {};
 
 // : detail::normalized_dimension<derived_dimension<>, Ds...> {};
 
@@ -127,7 +127,7 @@ template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
 template<basic_symbol_text Symbol>
-struct named_unit<Symbol> : scaled_unit<mag<1>(), named_unit<Symbol>> {
+struct named_unit<Symbol> : scaled_unit<mag<1>, named_unit<Symbol>> {
   static constexpr auto symbol = Symbol;
 };
 
