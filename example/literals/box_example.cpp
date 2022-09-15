@@ -47,7 +47,7 @@ using kg = si::kilogram;
 using N = si::newton;
 using kgpm3 = si::kilogram_per_metre_cub;
 
-inline constexpr auto g = si::si2019::standard_gravity<>;
+inline constexpr auto g = si::standard_gravity<>;
 inline constexpr si::density<kgpm3> air_density(1.225);
 
 

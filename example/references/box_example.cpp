@@ -42,7 +42,7 @@ using namespace units::isq;
 using namespace si::mass_references;
 using namespace si::volume_references;
 
-inline constexpr Acceleration auto g = si::si2019::standard_gravity<>;
+inline constexpr Acceleration auto g = si::standard_gravity<>;
 inline constexpr Density auto air_density = 1.225 * (kg / m3);
 
 class Box {

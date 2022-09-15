@@ -40,7 +40,7 @@ namespace {
 
 using namespace units::aliases::isq::si;
 
-inline constexpr auto g = units::isq::si::si2019::standard_gravity<>;  // NOLINT(readability-identifier-length)
+inline constexpr auto g = units::isq::si::standard_gravity<>;  // NOLINT(readability-identifier-length)
 inline constexpr auto air_density = kg_per_m3<>(1.225);
 
 class Box {

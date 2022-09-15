@@ -32,7 +32,16 @@
 #include <units/isq/si/speed.h>
 #include <units/isq/si/thermodynamic_temperature.h>
 
-namespace units::isq::si::si2019 {
+namespace units::isq::si {
+
+namespace si2019 {
+
+// defining constants
+template<Representation Rep = double>
+inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(Rep{9'192'631'770});
+
+template<Representation Rep = double>
+inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
 
 template<Representation Rep = double>
 inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
@@ -47,15 +56,11 @@ template<Representation Rep = double>
 inline constexpr auto avogadro_constant = Rep(6.02214076e23) / amount_of_substance<mole, Rep>(1);
 
 template<Representation Rep = double>
-inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
-
-template<Representation Rep = double>
-inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(Rep{9'192'631'770});
-
-template<Representation Rep = double>
 inline constexpr auto luminous_efficacy = luminous_flux<lumen, Rep>(683) / power<watt, Rep>(1);
+
+}  // namespace si2019
 
 template<Representation Rep = double>
 inline constexpr auto standard_gravity = acceleration<metre_per_second_sq, Rep>(9.80665);
 
-}  // namespace units::isq::si::si2019
+}  // namespace units::isq::si
