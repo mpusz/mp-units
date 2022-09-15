@@ -221,26 +221,26 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 }  // namespace detail
 
 template<Unit U1, Unit U2>
-[[nodiscard]] constexpr Unit auto operator*(U1, U2)
+[[nodiscard]] consteval Unit auto operator*(U1, U2)
 {
   return detail::expr_multiply<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
 }
 
 template<Unit U1, Unit U2>
-[[nodiscard]] constexpr Unit auto operator/(U1, U2)
+[[nodiscard]] consteval Unit auto operator/(U1, U2)
 {
   return detail::expr_divide<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
 }
 
 template<Unit U>
-[[nodiscard]] constexpr Unit auto operator/(int value, U)
+[[nodiscard]] consteval Unit auto operator/(int value, U)
 {
   gsl_Assert(value == 1);
   return detail::expr_invert<U, struct one, derived_unit>();
 }
 
 template<Unit U1, Unit U2>
-[[nodiscard]] constexpr bool operator==(U1, U2)
+[[nodiscard]] consteval bool operator==(U1, U2)
 {
   return false;
 }

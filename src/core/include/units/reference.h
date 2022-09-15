@@ -121,14 +121,14 @@ template<typename T>
 concept Reference = is_specialization_of<T, reference>;
 
 template<Reference R1, Reference R2>
-[[nodiscard]] constexpr reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
+[[nodiscard]] consteval reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
                                                                                                                     R2)
 {
   return {};
 }
 
 template<Reference R1, Reference R2>
-[[nodiscard]] constexpr reference<decltype(R1::dimension / R2::dimension), decltype(R1::unit / R2::unit)> operator/(R1,
+[[nodiscard]] consteval reference<decltype(R1::dimension / R2::dimension), decltype(R1::unit / R2::unit)> operator/(R1,
                                                                                                                     R2)
 {
   return {};
@@ -153,7 +153,7 @@ struct system_reference {
 
   template<Unit U>
   // requires same_unit_reference<CoU, U>
-  [[nodiscard]] constexpr reference<Child, U> operator[](U) const
+  [[nodiscard]] consteval reference<Child, U> operator[](U) const
   {
     return {};
   }

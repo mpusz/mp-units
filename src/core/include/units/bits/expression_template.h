@@ -66,7 +66,7 @@ struct power<F, Num, Den> {
 namespace detail {
 
 template<typename T, int Num, int Den>
-constexpr auto power_or_T_impl()
+consteval auto power_or_T_impl()
 {
   constexpr ratio r{Num, Den};
   if constexpr (r.den == 1) {
@@ -287,7 +287,7 @@ public:
 };
 
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-[[nodiscard]] constexpr auto expr_expression_impl()
+[[nodiscard]] consteval auto expr_expression_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -312,7 +312,7 @@ using expr_expression = decltype(expr_expression_impl<NumList, DenList, OneType,
 
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] constexpr auto get_optimized_expression()
+[[nodiscard]] consteval auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -332,7 +332,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  */
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] constexpr auto expr_multiply()
+[[nodiscard]] consteval auto expr_multiply()
 {
   if constexpr (is_same_v<T1, OneType>) {
     return T2{};
@@ -356,7 +356,7 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
 
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] constexpr auto expr_divide()
+[[nodiscard]] consteval auto expr_divide()
 {
   if constexpr (is_same_v<T1, T2>) {
     return OneType{};
@@ -378,7 +378,7 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
 }
 
 template<typename T, typename OneType, template<typename...> typename To>
-[[nodiscard]] constexpr auto expr_invert()
+[[nodiscard]] consteval auto expr_invert()
 {
   if constexpr (is_specialization_of<T, To>)
     return expr_expression<typename T::den, typename T::num, OneType, To>{};

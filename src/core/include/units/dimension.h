@@ -140,28 +140,28 @@ using dim_type = dim_type_impl<T>::type;
 }  // namespace detail
 
 template<Dimension D1, Dimension D2>
-[[nodiscard]] constexpr Dimension auto operator*(D1, D2)
+[[nodiscard]] consteval Dimension auto operator*(D1, D2)
 {
   return detail::expr_multiply<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
                                detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
-[[nodiscard]] constexpr Dimension auto operator/(D1, D2)
+[[nodiscard]] consteval Dimension auto operator/(D1, D2)
 {
   return detail::expr_divide<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
                              detail::type_list_of_base_dimension_less, derived_dimension>();
 }
 
 template<Dimension D>
-[[nodiscard]] constexpr Dimension auto operator/(int value, D)
+[[nodiscard]] consteval Dimension auto operator/(int value, D)
 {
   gsl_Assert(value == 1);
   return detail::expr_invert<detail::dim_type<D>, struct one_dim, derived_dimension>();
 }
 
 template<Dimension D1, Dimension D2>
-[[nodiscard]] constexpr bool operator==(D1, D2)
+[[nodiscard]] consteval bool operator==(D1, D2)
 {
   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
 }

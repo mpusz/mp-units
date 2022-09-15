@@ -48,7 +48,7 @@ concept TypeList = detail::is_type_list<T>;
 namespace detail {
 
 template<template<typename...> typename List, typename... Ts>
-constexpr std::size_t type_list_size_impl(List<Ts...>)
+consteval std::size_t type_list_size_impl(List<Ts...>)
 {
   return sizeof...(Ts);
 }
