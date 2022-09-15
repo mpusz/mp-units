@@ -20,17 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/external/hacks.h>  // IWYU pragma: keep
+#include <units/generic/angle.h>
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <units/isq/si/force.h>  // 'N' (Newton) shadows a template parameter traditionally used as a size of the array
 UNITS_DIAGNOSTIC_POP
 
-#include <units/generic/angle.h>
-#include <units/isq/si/energy.h>
 #include <units/isq/si/length.h>
-#include <units/isq/si/torque.h>  // IWYU pragma: keep
+#include <units/isq/si/torque.h>
+#include <units/math.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
@@ -41,13 +40,11 @@ int main()
   using namespace units::isq::si::references;
   using namespace units::references;
 
-  Torque auto torque = 20.0 / std::numbers::pi * (N * m / rad);
-  Energy auto energy = 20.0 * J;
+  const Length auto lever = 20 * cm;
+  const Force auto force = 500 * N;
+  const Angle auto angle = 90. * deg;
+  const Torque auto torque = lever * force * sin(angle) / cotes_angle<>;
 
-  Angle auto angle = energy / torque;
-
-  std::cout << angle << '\n';
-  std::cout << quantity_cast<revolution>(angle) << '\n';
-  std::cout << quantity_cast<degree>(angle) << '\n';
-  std::cout << quantity_cast<gradian>(angle) << '\n';
+  std::cout << "Applying a perpendicular force of " << force << " to a " << lever << " long lever results in "
+            << quantity_cast<si::newton_metre_per_radian>(torque) << " of torque.\n";
 }
