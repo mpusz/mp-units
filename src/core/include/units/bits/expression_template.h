@@ -31,11 +31,14 @@ namespace units {
 template<typename... Ts>
 struct type_list {};
 
-template<typename... Ts>
+template<typename T, typename... Ts>
 struct per {};
 
-template<typename F, int...>
-struct power;
+template<typename F, int Num, int... Den>
+struct power {
+  using factor = F;
+  static constexpr ::units::ratio ratio{Num, Den...};
+};
 
 // TODO make_power() that will simplify cases like <dim_length, 2, 2>?
 
@@ -49,38 +52,25 @@ inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
 }  // namespace detail
 
-template<typename F, int Num>
-struct power<F, Num> {
-  using factor = F;
-  static constexpr int num = Num;
-  static constexpr int den = 1;
-};
-
-template<typename F, int Num, int Den>
-struct power<F, Num, Den> {
-  using factor = F;
-  static constexpr int num = Num;
-  static constexpr int den = Den;
-};
-
 namespace detail {
 
-template<typename T, int Num, int Den>
+template<typename T, auto R>
+// template<typename T, raio R>   // TODO
 consteval auto power_or_T_impl()
 {
-  constexpr ratio r{Num, Den};
-  if constexpr (r.den == 1) {
-    if constexpr (r.num == 1)
+  if constexpr (R.den == 1) {
+    if constexpr (R.num == 1)
       return T{};
     else
-      return power<T, r.num>{};
+      return power<T, R.num>{};
   } else {
-    return power<T, r.num, r.den>{};
+    return power<T, R.num, R.den>{};
   }
 };
 
-template<typename T, int Num, int Den>
-using power_or_T = decltype(power_or_T_impl<T, Num, Den>());
+template<typename T, auto R>
+// template<typename T, ratio R>  // TODO
+using power_or_T = decltype(power_or_T_impl<T, R>());
 
 // type_power
 // template<typename T, int Num, int Den>
@@ -142,16 +132,14 @@ struct expr_consolidate_impl<type_list<T, T, Rest...>> {
 
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
-  using type = expr_consolidate_impl<
-    type_list<power_or_T<T, power<T, Ints...>::num + power<T, Ints...>::den, power<T, Ints...>::den>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::ratio + 1>, Rest...>>::type;
 };
 
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
-  static constexpr ratio r =
-    ratio(power<T, Ints1...>::num, power<T, Ints1...>::den) + ratio(power<T, Ints2...>::num, power<T, Ints2...>::den);
+  static constexpr ratio r = power<T, Ints1...>::ratio + power<T, Ints2...>::ratio;
   using type = conditional<r.num == 0, typename expr_consolidate_impl<type_list<Rest...>>::type,
-                           typename expr_consolidate_impl<type_list<power_or_T<T, r.num, r.den>, Rest...>>::type>;
+                           typename expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type>;
 };
 
 template<typename List>
@@ -162,8 +150,8 @@ using expr_consolidate = typename expr_consolidate_impl<List>::type;
 
 template<typename T, typename powerNum, typename powerDen>
 struct expr_simplify_power {
-  static constexpr ratio r = ratio(powerNum::num, powerNum::den) - ratio(powerDen::num, powerDen::den);
-  using type = power_or_T<T, abs(r.num), r.den>;
+  static constexpr ratio r = powerNum::ratio - powerDen::ratio;
+  using type = power_or_T<T, ratio{abs(r.num), r.den}>;
   using num = conditional<(r > 0), type_list<type>, type_list<>>;
   using den = conditional<(r < 0), type_list<type>, type_list<>>;
 };
