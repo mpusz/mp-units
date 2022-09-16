@@ -83,30 +83,30 @@ template<typename T, int Num, int Den>
 using power_or_T = decltype(power_or_T_impl<T, Num, Den>());
 
 // type_power
-template<typename T, int Num, int Den>
-struct type_power {
-  using type = conditional<Den == 1, power<T, Num>, power<T, Num, Den>>;
-};
+// template<typename T, int Num, int Den>
+// struct type_power {
+//   using type = conditional<Den == 1, power<T, Num>, power<T, Num, Den>>;
+// };
 
-template<typename T, int Num2, int Num>
-struct type_power<power<T, Num2>, Num, 1> {
-  using type = power<T, Num * Num2>;
-};
+// template<typename T, int Num2, int Num>
+// struct type_power<power<T, Num2>, Num, 1> {
+//   using type = power<T, Num * Num2>;
+// };
 
-template<typename T, int Num, int Den, int... Ints>
-struct type_power<power<T, Ints...>, Num, Den> {
-  static constexpr ratio r = ratio(power<T, Ints...>::num, power<T, Ints...>::den) * ratio(Num, Den);
-  using type = power_or_T<T, r.num, r.den>;
-};
+// template<typename T, int Num, int Den, int... Ints>
+// struct type_power<power<T, Ints...>, Num, Den> {
+//   static constexpr ratio r = ratio(power<T, Ints...>::num, power<T, Ints...>::den) * ratio(Num, Den);
+//   using type = power_or_T<T, r.num, r.den>;
+// };
 
 // expr_power
-template<typename List, int Num, int Den>
-struct expr_power;
+// template<typename List, int Num, int Den>
+// struct expr_power;
 
-template<typename... Ts, int Num, int Den>
-struct expr_power<type_list<Ts...>, Num, Den> {
-  using type = type_list<typename type_power<Ts, Num, Den>::type...>;
-};
+// template<typename... Ts, int Num, int Den>
+// struct expr_power<type_list<Ts...>, Num, Den> {
+//   using type = type_list<typename type_power<Ts, Num, Den>::type...>;
+// };
 
 /**
  * @brief Consolidates contiguous ranges of exponents of the same dimension
