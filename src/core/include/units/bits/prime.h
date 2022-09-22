@@ -32,7 +32,7 @@
 
 namespace units::detail {
 
-constexpr bool is_prime_by_trial_division(std::uintmax_t n)
+[[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
 {
   for (std::uintmax_t f = 2; f * f <= n; f += 1 + (f % 2)) {
     if (n % f == 0) {
@@ -45,7 +45,7 @@ constexpr bool is_prime_by_trial_division(std::uintmax_t n)
 // Return the first factor of n, as long as it is either k or n.
 //
 // Precondition: no integer smaller than k evenly divides n.
-constexpr std::optional<std::uintmax_t> first_factor_maybe(std::uintmax_t n, std::uintmax_t k)
+[[nodiscard]] constexpr std::optional<std::uintmax_t> first_factor_maybe(std::uintmax_t n, std::uintmax_t k)
 {
   if (n % k == 0) {
     return k;
@@ -57,7 +57,7 @@ constexpr std::optional<std::uintmax_t> first_factor_maybe(std::uintmax_t n, std
 }
 
 template<std::size_t N>
-constexpr std::array<std::uintmax_t, N> first_n_primes()
+[[nodiscard]] consteval std::array<std::uintmax_t, N> first_n_primes()
 {
   std::array<std::uintmax_t, N> primes;
   primes[0] = 2;
@@ -71,7 +71,7 @@ constexpr std::array<std::uintmax_t, N> first_n_primes()
 }
 
 template<std::size_t N, typename Callable>
-constexpr void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis, Callable&& call)
+consteval void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis, Callable&& call)
 {
   for (std::uintmax_t i = 0u; i < n; ++i) {
     if (std::apply([&i](auto... primes) { return ((i % primes != 0) && ...); }, basis)) {
@@ -81,7 +81,7 @@ constexpr void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::u
 }
 
 template<std::size_t N>
-constexpr std::size_t num_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis)
+[[nodiscard]] consteval std::size_t num_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis)
 {
   std::size_t count = 0u;
   call_for_coprimes_up_to(n, basis, [&count](auto) { ++count; });
@@ -89,7 +89,7 @@ constexpr std::size_t num_coprimes_up_to(std::uintmax_t n, const std::array<std:
 }
 
 template<std::size_t ResultSize, std::size_t N>
-constexpr auto coprimes_up_to(std::size_t n, const std::array<std::uintmax_t, N>& basis)
+[[nodiscard]] consteval auto coprimes_up_to(std::size_t n, const std::array<std::uintmax_t, N>& basis)
 {
   std::array<std::uintmax_t, ResultSize> coprimes;
   std::size_t i = 0u;
@@ -100,7 +100,7 @@ constexpr auto coprimes_up_to(std::size_t n, const std::array<std::uintmax_t, N>
 }
 
 template<std::size_t N>
-constexpr std::uintmax_t product(const std::array<std::uintmax_t, N>& values)
+[[nodiscard]] consteval std::uintmax_t product(const std::array<std::uintmax_t, N>& values)
 {
   std::uintmax_t product = 1;
   for (const auto& v : values) {
@@ -135,7 +135,7 @@ struct wheel_factorizer {
   static constexpr auto coprimes_in_first_wheel =
     coprimes_up_to<num_coprimes_up_to(wheel_size, basis)>(wheel_size, basis);
 
-  static constexpr std::uintmax_t find_first_factor(std::uintmax_t n)
+  [[nodiscard]] static consteval std::uintmax_t find_first_factor(std::uintmax_t n)
   {
     if (const auto k = detail::get_first_of(basis, [&](auto p) { return first_factor_maybe(n, p); })) return *k;
 
@@ -150,7 +150,7 @@ struct wheel_factorizer {
     return n;
   }
 
-  static constexpr bool is_prime(std::size_t n) { return (n > 1) && find_first_factor(n) == n; }
+  [[nodiscard]] static consteval bool is_prime(std::size_t n) { return (n > 1) && find_first_factor(n) == n; }
 };
 
 }  // namespace units::detail
