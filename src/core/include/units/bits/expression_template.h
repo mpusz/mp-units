@@ -37,10 +37,8 @@ struct per {};
 template<typename F, int Num, int... Den>
 struct power {
   using factor = F;
-  static constexpr ::units::ratio ratio{Num, Den...};
+  static constexpr ratio exponent{Num, Den...};
 };
-
-// TODO make_power() that will simplify cases like <dim_length, 2, 2>?
 
 namespace detail {
 
@@ -55,7 +53,7 @@ inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 namespace detail {
 
 template<typename T, auto R>
-// template<typename T, raio R>   // TODO
+// template<typename T, ratio R>   // TODO
 consteval auto power_or_T_impl()
 {
   if constexpr (R.den == 1) {
@@ -132,12 +130,12 @@ struct expr_consolidate_impl<type_list<T, T, Rest...>> {
 
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
-  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::ratio + 1>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
 };
 
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
-  static constexpr ratio r = power<T, Ints1...>::ratio + power<T, Ints2...>::ratio;
+  static constexpr ratio r = power<T, Ints1...>::exponent + power<T, Ints2...>::exponent;
   using type = conditional<r.num == 0, typename expr_consolidate_impl<type_list<Rest...>>::type,
                            typename expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type>;
 };
@@ -150,7 +148,7 @@ using expr_consolidate = typename expr_consolidate_impl<List>::type;
 
 template<typename T, typename powerNum, typename powerDen>
 struct expr_simplify_power {
-  static constexpr ratio r = powerNum::ratio - powerDen::ratio;
+  static constexpr ratio r = powerNum::exponent - powerDen::exponent;
   using type = power_or_T<T, ratio{abs(r.num), r.den}>;
   using num = conditional<(r > 0), type_list<type>, type_list<>>;
   using den = conditional<(r < 0), type_list<type>, type_list<>>;
