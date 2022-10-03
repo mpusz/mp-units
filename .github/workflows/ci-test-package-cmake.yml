@@ -131,6 +131,19 @@ jobs:
               lib: "libc++",
             }
           - {
+              name: "Ubuntu Clang-15 + libc++",
+              os: ubuntu-20.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 15,
+                  cc: "clang-15",
+                  cxx: "clang++-15",
+                  std: 20,
+                },
+              lib: "libc++",
+            }
+          - {
               name: "MacOS Apple Clang 13",
               os: macos-11,
               compiler:
