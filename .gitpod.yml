@@ -92,7 +92,7 @@ tasks:
       conan profile update env.CC=/usr/bin/clang-13 clang13
       conan profile update settings.compiler=clang clang14
       conan profile update settings.compiler.version=14 clang14
-      conan profile update settings.compiler.libcxx=libc++11 clang14
+      conan profile update settings.compiler.libcxx=libstdc++11 clang14
       conan profile update env.CXX=/usr/bin/clang++-14 clang14
       conan profile update env.CC=/usr/bin/clang-14 clang14
       conan profile update settings.compiler=clang clang15
