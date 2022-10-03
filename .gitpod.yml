@@ -78,6 +78,7 @@ tasks:
       cp default gcc12
       cp default clang13
       cp default clang14
+      cp default clang15
       popd
       conan profile update settings.compiler.version=10 gcc10
       conan profile update env.CXX=/usr/bin/g++-10 gcc10

@@ -12,7 +12,7 @@ below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ..
 
 The above environment provides you with:
 
-- all supported compilers for Linux development (`g++-10`, `g++-11`, `g++12`, `clang-12`, `clang-13`, `clang-14`, and `clang-15`)
+- all supported compilers for Linux development (`g++-10`, `g++-11`, `g++12`, `clang-13`, `clang-14`, and `clang-15`)
   and the latest version of build tools like `cmake` and `conan`
 - all Conan dependencies preinstalled on the machine
 - all documentation generation tools ready to use
