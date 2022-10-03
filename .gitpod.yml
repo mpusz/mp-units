@@ -76,7 +76,6 @@ tasks:
       cp default gcc10
       cp default gcc11
       cp default gcc12
-      cp default clang12
       cp default clang13
       cp default clang14
       popd
@@ -86,11 +85,6 @@ tasks:
       conan profile update settings.compiler.version=11 gcc11
       conan profile update env.CXX=/usr/bin/g++-11 gcc11
       conan profile update env.CC=/usr/bin/gcc-11 gcc11
-      conan profile update settings.compiler=clang clang12
-      conan profile update settings.compiler.version=12 clang12
-      conan profile update settings.compiler.libcxx=libstdc++11 clang12
-      conan profile update env.CXX=/usr/bin/clang++-12 clang12
-      conan profile update env.CC=/usr/bin/clang-12 clang12
       conan profile update settings.compiler=clang clang13
       conan profile update settings.compiler.version=13 clang13
       conan profile update settings.compiler.libcxx=libstdc++11 clang13
@@ -143,17 +137,6 @@ tasks:
       ctest -C Release
       ctest -C Debug
       echo "🛠️ gcc-12 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: clang-12
-    init: |
-      gp sync-await conan-init
-      conan install . -pr clang12 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr clang12 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-12 -DCMAKE_C_COMPILER=/usr/bin/clang-12 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-12
-      cmake --build --preset clang-12-release -j
-      cmake --build --preset clang-12-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ clang-12 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-13
     init: |
       gp sync-await conan-init
