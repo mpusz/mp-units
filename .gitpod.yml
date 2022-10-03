@@ -75,6 +75,7 @@ tasks:
       pushd /workspace/.conan/profiles
       cp default gcc10
       cp default gcc11
+      cp default gcc12
       cp default clang12
       cp default clang13
       cp default clang14
@@ -82,6 +83,9 @@ tasks:
       conan profile update settings.compiler.version=10 gcc10
       conan profile update env.CXX=/usr/bin/g++-10 gcc10
       conan profile update env.CC=/usr/bin/gcc-10 gcc10
+      conan profile update settings.compiler.version=11 gcc11
+      conan profile update env.CXX=/usr/bin/g++-11 gcc11
+      conan profile update env.CC=/usr/bin/gcc-11 gcc11
       conan profile update settings.compiler=clang clang12
       conan profile update settings.compiler.version=12 clang12
       conan profile update settings.compiler.libcxx=libstdc++11 clang12
@@ -94,9 +98,14 @@ tasks:
       conan profile update env.CC=/usr/bin/clang-13 clang13
       conan profile update settings.compiler=clang clang14
       conan profile update settings.compiler.version=14 clang14
-      conan profile update settings.compiler.libcxx=libc++ clang14
+      conan profile update settings.compiler.libcxx=libc++11 clang14
       conan profile update env.CXX=/usr/bin/clang++-14 clang14
       conan profile update env.CC=/usr/bin/clang-14 clang14
+      conan profile update settings.compiler=clang clang15
+      conan profile update settings.compiler.version=15 clang15
+      conan profile update settings.compiler.libcxx=libc++ clang15
+      conan profile update env.CXX=/usr/bin/clang++-15 clang15
+      conan profile update env.CC=/usr/bin/clang-15 clang15
       echo 'tools.cmake.cmaketoolchain:generator=Ninja Multi-Config' > /workspace/.conan/global.conf
       echo 'tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version"]' >> /workspace/.conan/global.conf
       gp sync-done conan-init
@@ -123,6 +132,17 @@ tasks:
       ctest -C Release
       ctest -C Debug
       echo "🛠️ gcc-11 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: gcc-12
+    init: |
+      gp sync-await conan-init
+      conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated
+      conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
+      cmake --preset gcc-12 -DCMAKE_C_COMPILER=/usr/bin/gcc-12 -DCMAKE_CXX_COMPILER=/usr/bin/g++-12
+      cmake --build --preset gcc-12-release -j
+      cmake --build --preset gcc-12-debug -j
+      ctest -C Release
+      ctest -C Debug
+      echo "🛠️ gcc-12 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-12
     init: |
       gp sync-await conan-init
@@ -137,7 +157,6 @@ tasks:
   - name: clang-13
     init: |
       gp sync-await conan-init
-      mkdir -p build/Clang-13 && cd build/Clang-13
       conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
       cmake --preset clang-13 -DCMAKE_C_COMPILER=/usr/bin/clang-13 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-13
@@ -149,7 +168,6 @@ tasks:
   - name: clang-14
     init: |
       gp sync-await conan-init
-      mkdir -p build/Clang-14 && cd build/Clang-14
       conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
       cmake --preset clang-14 -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14
@@ -158,6 +176,17 @@ tasks:
       ctest -C Release
       ctest -C Debug
       echo "🛠️ clang-14 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: clang-15
+    init: |
+      gp sync-await conan-init
+      conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated
+      conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
+      cmake --preset clang-15 -DCMAKE_C_COMPILER=/usr/bin/clang-15 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-15
+      cmake --build --preset clang-15-release -j
+      cmake --build --preset clang-15-debug -j
+      ctest -C Release
+      ctest -C Debug
+      echo "🛠️ clang-15 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |
       gp sync-await conan-init

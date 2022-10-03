@@ -12,11 +12,11 @@ below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ..
 
 The above environment provides you with:
 
-- all supported compilers for Linux development (`g++-10`, `g++-11`, `clang-12`, `clang-13`) and build tools like `cmake` and `conan`
+- all supported compilers for Linux development (`g++-10`, `g++-11`, `g++12`, `clang-12`, `clang-13`, `clang-14`, and `clang-15`)
+  and the latest version of build tools like `cmake` and `conan`
 - all Conan dependencies preinstalled on the machine
 - all documentation generation tools ready to use
-- completed prebuilds for all targets (each compiler as well as a documentation)
-- `clang-format-15` for source code formatting
+- completed prebuilds for all targets (Debug and Release builds for each compiler as well as a documentation)
 - VSCode preconfigured to benefit from all the above
 
 ## Download, Build, Install
