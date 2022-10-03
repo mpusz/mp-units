@@ -94,7 +94,7 @@
 #include <compare>
 #include <concepts>
 
-#if UNITS_COMP_MSVC || UNITS_COMP_CLANG
+#if UNITS_COMP_MSVC || UNITS_COMP_CLANG < 16
 
 #define TYPENAME typename
 
