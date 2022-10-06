@@ -37,7 +37,7 @@ constexpr auto magnitude_text()
 {
   constexpr auto exp10 = extract_power_of_10(M);
 
-  constexpr Magnitude auto base = M / pow<exp10>(mag<10>());
+  constexpr Magnitude auto base = M / mag_power<10, exp10>;
   constexpr Magnitude auto num = numerator(base);
   constexpr Magnitude auto den = denominator(base);
   static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");

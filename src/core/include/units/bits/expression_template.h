@@ -34,7 +34,39 @@ struct type_list {};
 template<typename T, typename... Ts>
 struct per {};
 
+namespace detail {
+
+template<int Num, int... Den>
+inline constexpr bool valid_ratio = true;
+
+template<int... Den>
+inline constexpr bool valid_ratio<0, Den...> = false;
+
+template<int Num>
+inline constexpr bool valid_ratio<Num, 0> = false;
+
+template<>
+inline constexpr bool valid_ratio<0, 0> = false;
+
+template<int Num, int... Den>
+inline constexpr bool positive_ratio = (Num > 0);
+
+template<int Num, int Den>
+inline constexpr bool positive_ratio<Num, Den> = (Num * Den > 0);
+
+template<int Num, int... Den>
+inline constexpr bool ratio_one = false;
+
+template<>
+inline constexpr bool ratio_one<1> = true;
+
+template<int N>
+inline constexpr bool ratio_one<N, N> = true;
+
+}  // namespace detail
+
 template<typename F, int Num, int... Den>
+  requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power {
   using factor = F;
   static constexpr ratio exponent{Num, Den...};
@@ -146,9 +178,9 @@ using expr_consolidate = typename expr_consolidate_impl<List>::type;
 
 // expr_simplify
 
-template<typename T, typename powerNum, typename powerDen>
+template<typename T, ratio Num, ratio Den>
 struct expr_simplify_power {
-  static constexpr ratio r = powerNum::exponent - powerDen::exponent;
+  static constexpr ratio r = Num - Den;
   using type = power_or_T<T, ratio{abs(r.num), r.den}>;
   using num = conditional<(r > 0), type_list<type>, type_list<>>;
   using den = conditional<(r < 0), type_list<type>, type_list<>>;
@@ -179,7 +211,7 @@ struct expr_simplify<type_list<T, NRest...>, type_list<T, DRest...>, Pred> :
 template<typename T, typename... NRest, int... Ints, typename... DRest, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints...>, power<T, 1>>;
+  using type = expr_simplify_power<T, power<T, Ints...>::exponent, ratio{1}>;
   using num = type_list_join<typename type::num, typename impl::num>;
   using den = type_list_join<typename type::den, typename impl::den>;
 };
@@ -187,7 +219,7 @@ struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest.
 template<typename T, typename... NRest, typename... DRest, int... Ints, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, 1>, power<T, Ints...>>;
+  using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::exponent>;
   using num = type_list_join<typename impl::num, typename type::num>;
   using den = type_list_join<typename impl::den, typename type::den>;
 };
@@ -197,7 +229,7 @@ template<typename T, typename... NRest, int... Ints1, typename... DRest, int... 
   requires(!std::same_as<power<T, Ints1...>, power<T, Ints2...>>)
 struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T, Ints2...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints1...>, power<T, Ints2...>>;
+  using type = expr_simplify_power<T, power<T, Ints1...>::exponent, power<T, Ints2...>::exponent>;
   using num = type_list_join<typename impl::num, typename type::num>;
   using den = type_list_join<typename impl::den, typename type::den>;
 };

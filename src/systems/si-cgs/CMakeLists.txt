@@ -22,18 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(
-    si-cgs
-    DEPENDENCIES mp-units::si
-    HEADERS include/units/isq/si/cgs/acceleration.h
-            include/units/isq/si/cgs/area.h
-            include/units/isq/si/cgs/cgs.h
-            include/units/isq/si/cgs/energy.h
-            include/units/isq/si/cgs/force.h
-            include/units/isq/si/cgs/length.h
-            include/units/isq/si/cgs/mass.h
-            include/units/isq/si/cgs/power.h
-            include/units/isq/si/cgs/pressure.h
-            include/units/isq/si/cgs/speed.h
-            include/units/isq/si/cgs/time.h
-)
+add_units_module(si-cgs DEPENDENCIES mp-units::si HEADERS include/units/si/cgs/cgs.h)

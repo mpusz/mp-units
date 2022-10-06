@@ -105,32 +105,45 @@ static_assert(is_of_type<1 / (speed_dim * speed_dim) * length_dim,
 // comparisons of equivalent dimensions
 static_assert(length_dim / length_dim == one_dim);
 
-static_assert(1 / time_dim == frequency_dim);
+static_assert(1 / time_dim != frequency_dim);
+static_assert(equivalent(1 / time_dim, frequency_dim));
 static_assert(1 / frequency_dim == time_dim);
 static_assert(frequency_dim * time_dim == one_dim);
 
-static_assert(length_dim * length_dim == area_dim);
+static_assert(length_dim * length_dim != area_dim);
+static_assert(equivalent(length_dim * length_dim, area_dim));
 static_assert(length_dim * length_dim != volume_dim);
 static_assert(area_dim / length_dim == length_dim);
 
-static_assert(length_dim * length_dim * length_dim == volume_dim);
-static_assert(area_dim * length_dim == volume_dim);
-static_assert(volume_dim / length_dim == area_dim);
+static_assert(length_dim * length_dim * length_dim != volume_dim);
+static_assert(equivalent(length_dim * length_dim * length_dim, volume_dim));
+static_assert(area_dim * length_dim != volume_dim);
+static_assert(equivalent(area_dim * length_dim, volume_dim));
+static_assert(volume_dim / length_dim != area_dim);
+static_assert(equivalent(volume_dim / length_dim, area_dim));
 static_assert(volume_dim / length_dim / length_dim == length_dim);
-static_assert(area_dim * area_dim / length_dim == volume_dim);
-static_assert(area_dim * (area_dim / length_dim) == volume_dim);
+static_assert(area_dim * area_dim / length_dim != volume_dim);
+static_assert(equivalent(area_dim * area_dim / length_dim, volume_dim));
+static_assert(area_dim * (area_dim / length_dim) != volume_dim);
+static_assert(equivalent(area_dim * (area_dim / length_dim), volume_dim));
 static_assert(volume_dim / (length_dim * length_dim) == length_dim);
 
-static_assert(length_dim / time_dim == speed_dim);
+static_assert(length_dim / time_dim != speed_dim);
+static_assert(equivalent(length_dim / time_dim, speed_dim));
 static_assert(length_dim * time_dim != speed_dim);
 static_assert(length_dim / time_dim / time_dim != speed_dim);
 static_assert(length_dim / speed_dim == time_dim);
 static_assert(speed_dim * time_dim == length_dim);
 
-static_assert(length_dim / time_dim / time_dim == acceleration_dim);
-static_assert(length_dim / (time_dim * time_dim) == acceleration_dim);
-static_assert(speed_dim / time_dim == acceleration_dim);
+static_assert(length_dim / time_dim / time_dim != acceleration_dim);
+static_assert(equivalent(length_dim / time_dim / time_dim, acceleration_dim));
+static_assert(length_dim / (time_dim * time_dim) != acceleration_dim);
+static_assert(equivalent(length_dim / (time_dim * time_dim), acceleration_dim));
+static_assert(speed_dim / time_dim != acceleration_dim);
+static_assert(equivalent(speed_dim / time_dim, acceleration_dim));
 static_assert(speed_dim / acceleration_dim == time_dim);
-static_assert(acceleration_dim * time_dim == speed_dim);
+static_assert(acceleration_dim * time_dim != speed_dim);
+static_assert(equivalent(acceleration_dim * time_dim, speed_dim));
 static_assert(acceleration_dim * (time_dim * time_dim) == length_dim);
-static_assert(acceleration_dim / speed_dim == frequency_dim);
+static_assert(acceleration_dim / speed_dim != frequency_dim);
+static_assert(equivalent(acceleration_dim / speed_dim, frequency_dim));

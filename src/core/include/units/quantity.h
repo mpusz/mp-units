@@ -23,33 +23,37 @@
 
 #pragma once
 
-#include <units/bits/common_type.h>
-#include <units/generic/dimensionless.h>
+// #include <units/bits/common_type.h>
+// #include <units/generic/dimensionless.h>
 
 // IWYU pragma: begin_exports
-#include <units/quantity_cast.h>
-#include <units/ratio.h>
+// #include <units/quantity_cast.h>
+// #include <units/ratio.h>
+#include <units/bits/common_type.h>
+#include <units/concepts.h>
+#include <units/customization_points.h>
+#include <units/dimension.h>
+#include <units/reference.h>
+#include <units/unit.h>
 #include <compare>
 // IWYU pragma: end_exports
 
-#include <units/reference.h>
-#include <utility>
+// #include <units/reference.h>
+// #include <utility>
 
 namespace units {
 
 namespace detail {
 
-template<Reference auto R>  // TODO: Replace with `v * R` pending https://github.com/BobSteagall/wg21/issues/58.
-inline constexpr auto make_quantity = [](auto&& v) {
+// TODO: Replace with `v * R` pending https://github.com/BobSteagall/wg21/issues/58.
+template<Reference auto R>
+inline constexpr auto make_quantity = [](Representation auto&& v) {
   using Rep = std::remove_cvref_t<decltype(v)>;
-  return quantity<typename decltype(R)::dimension, typename decltype(R)::unit, Rep>(std::forward<decltype(v)>(v));
+  return quantity<R, Rep>(std::forward<decltype(v)>(v));
 };
 
 template<typename T>
-concept quantity_one =
-  Quantity<T> &&
-  (std::same_as<typename T::dimension, dim_one> || std::same_as<typename T::dimension, unknown_dimension<>>) &&
-  detail::equivalent_unit<typename T::unit, typename T::dimension, ::units::one, typename T::dimension>::value;
+concept quantity_one = Quantity<T> && (T::dimension == one_dim) && (T::unit == one);
 
 }  // namespace detail
 
@@ -65,12 +69,12 @@ concept safe_convertible_to_ =  // exposition only
 // QFrom ratio is an exact multiple of QTo
 template<typename QFrom, typename QTo>
 concept harmonic_ =  // exposition only
-  Quantity<QFrom> && Quantity<QTo> && is_integral(detail::quantity_magnitude<QFrom> / detail::quantity_magnitude<QTo>);
+  true;              // TODO fix it when magnitudes are ready
+// Quantity<QFrom> && Quantity<QTo> && is_integral(detail::quantity_magnitude<QFrom> / detail::quantity_magnitude<QTo>);
 
 template<typename QFrom, typename QTo>
 concept safe_castable_to_ =  // exposition only
-  Quantity<QFrom> && QuantityOf<QTo, typename QFrom::dimension> &&
-  scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+  Quantity<QFrom> && quantity_of<QTo, QFrom::dimension> && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
   (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>
@@ -83,9 +87,23 @@ concept invoke_result_convertible_to_ =
 template<typename Func, typename Q, typename V>
 concept have_quantity_for_ = Quantity<Q> && (!Quantity<V>) && quantity_value_for_<Func, typename Q::rep, V>;
 
+template<typename T>
+concept QuantityLike = requires(T q) {
+                         typename quantity_like_traits<T>::dimension;
+                         typename quantity_like_traits<T>::unit;
+                         typename quantity_like_traits<T>::rep;
+                         requires Dimension<typename quantity_like_traits<T>::dimension>;
+                         requires Unit<typename quantity_like_traits<T>::unit>;
+                         requires Representation<typename quantity_like_traits<T>::rep>;
+                         {
+                           quantity_like_traits<T>::number(q)
+                           } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+                       };
+
 template<QuantityLike Q>
-using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit,
-                                    typename quantity_like_traits<Q>::rep>;
+using quantity_like_type =
+  quantity<reference<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit>{},
+           typename quantity_like_traits<Q>::rep>;
 
 /**
  * @brief A quantity
@@ -97,15 +115,15 @@ using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension,
  * @tparam U a measurement unit of the quantity
  * @tparam Rep a type to be used to represent values of a quantity
  */
-template<Dimension D, UnitOf<D> U, Representation Rep = double>
+template<Reference auto R, Representation Rep = double>
 class quantity {
   Rep number_;
 public:
   // member types and values
-  using dimension = D;
-  using unit = U;
   using rep = Rep;
-  static constexpr units::reference<dimension, unit> reference{};
+  static constexpr auto reference = R;
+  static constexpr auto dimension = R.dimension;
+  static constexpr auto unit = R.unit;
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
@@ -171,14 +189,14 @@ public:
                  } -> std::common_with<rep>;
              }
   {
-    using ret = quantity<D, U, decltype(+number())>;
+    using ret = quantity<R, decltype(+number())>;
     return ret(+number());
   }
 
   [[nodiscard]] constexpr Quantity auto operator-() const
     requires(std::regular_invocable<std::negate<>, rep>)
   {
-    using ret = quantity<D, U, decltype(-number())>;
+    using ret = quantity<R, decltype(-number())>;
     return ret(-number());
   }
 
@@ -380,7 +398,7 @@ public:
     requires(invoke_result_convertible_to_<rep, std::multiplies<>, rep, const Value&>)
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
-    using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, rep, Value>>;
+    using ret = quantity<R, std::invoke_result_t<std::multiplies<>, rep, Value>>;
     return ret(q.number() * v);
   }
 
@@ -388,7 +406,7 @@ public:
     requires(invoke_result_convertible_to_<rep, std::multiplies<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
-    using ret = quantity<D, U, std::invoke_result_t<std::multiplies<>, Value, rep>>;
+    using ret = quantity<R, std::invoke_result_t<std::multiplies<>, Value, rep>>;
     return ret(v * q.number());
   }
 
@@ -397,7 +415,7 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    using ret = quantity<D, U, std::invoke_result_t<std::divides<>, rep, Value>>;
+    using ret = quantity<R, std::invoke_result_t<std::divides<>, rep, Value>>;
     return ret(q.number() / v);
   }
 
@@ -405,7 +423,7 @@ public:
     requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return detail::make_quantity<::units::reference<dim_one, ::units::one>{} / reference>(v / q.number());
+    return detail::make_quantity<dimensionless[one] / reference>(v / q.number());
   }
 
   template<typename Value>
@@ -414,7 +432,7 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, Value>>;
+    using ret = quantity<R, std::invoke_result_t<std::modulus<>, rep, Value>>;
     return ret(q.number() % v);
   }
 
@@ -422,7 +440,7 @@ public:
     requires(!floating_point_<rep>) && (invoke_result_convertible_to_<rep, std::modulus<>, rep, rep>)
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
-    using ret = quantity<D, U, std::invoke_result_t<std::modulus<>, rep, rep>>;
+    using ret = quantity<R, std::invoke_result_t<std::modulus<>, rep, rep>>;
     return ret(lhs.number() % rhs.number());
   }
 
@@ -441,36 +459,37 @@ public:
 
 // CTAD
 #if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 16
-template<typename D, typename U, typename Rep>
-explicit(false) quantity(Rep&&)->quantity<D, U, Rep>;
+template<auto R, typename Rep>
+explicit(false) quantity(Rep&&) -> quantity<R, Rep>;
 #endif
 
-template<typename D, typename U, typename Rep>
-explicit(false) quantity(quantity<D, U, Rep>)->quantity<D, U, Rep>;
+template<auto R, typename Rep>
+explicit(false) quantity(quantity<R, Rep>) -> quantity<R, Rep>;
 
 template<Representation Rep>
-explicit(false) quantity(Rep)->quantity<dim_one, one, Rep>;
+explicit(false) quantity(Rep)->quantity<dimensionless[one], Rep>;
 
 template<QuantityLike Q>
-explicit quantity(Q) -> quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit,
-                                 typename quantity_like_traits<Q>::rep>;
+explicit quantity(Q)
+  -> quantity<reference<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit>{},
+              typename quantity_like_traits<Q>::rep>;
 
 // non-member binary operators
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
   requires(quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
   using ref = detail::common_quantity_reference<Q1, Q2>;
-  using ret = quantity<typename ref::dimension, typename ref::unit, decltype(lhs.number() + rhs.number())>;
+  using ret = quantity<ref{}, decltype(lhs.number() + rhs.number())>;
   return ret(ret(lhs).number() + ret(rhs).number());
 }
 
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
   requires(quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
   using ref = detail::common_quantity_reference<Q1, Q2>;
-  using ret = quantity<typename ref::dimension, typename ref::unit, decltype(lhs.number() - rhs.number())>;
+  using ret = quantity<ref{}, decltype(lhs.number() - rhs.number())>;
   return ret(ret(lhs).number() - ret(rhs).number());
 }
 
@@ -491,17 +510,17 @@ template<Quantity Q1, Quantity Q2>
 
 template<Quantity Q1, Quantity Q2>
   requires(!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
-          (QuantityEquivalentTo<Q2, Q1> || Dimensionless<Q2>) &&
+          (quantity_equivalent_to<Q2, Q1> || quantity_of<Q2, one_dim>) &&
           (quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {
   gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
-  using ret = quantity<typename Q1::dimension, typename Q1::unit,
+  using ret = quantity<reference<typename Q1::dimension, typename Q1::unit>{},
                        std::invoke_result_t<std::modulus<>, typename Q1::rep, typename Q2::rep>>;
   return ret(lhs.number() % rhs.number());
 }
 
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
   requires std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
@@ -509,24 +528,12 @@ template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
   return cq(lhs).number() <=> cq(rhs).number();
 }
 
-template<Quantity Q1, QuantityEquivalentTo<Q1> Q2>
+template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
   requires std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
   using cq = std::common_type_t<Q1, Q2>;
   return cq(lhs).number() == cq(rhs).number();
 }
-
-// type traits
-namespace detail {
-
-template<typename D, typename U, typename Rep>
-inline constexpr bool is_quantity<quantity<D, U, Rep>> = true;
-
-template<typename T>
-  requires units::is_derived_from_specialization_of<T, units::quantity>
-inline constexpr bool is_quantity<T> = true;
-
-}  // namespace detail
 
 }  // namespace units

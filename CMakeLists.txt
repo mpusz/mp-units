@@ -73,7 +73,7 @@ add_subdirectory(example)
 # add unit tests
 enable_testing()
 
-# add_subdirectory(test)
+add_subdirectory(test)
 
 # tests for standalone headers
 include(TestPublicHeaders)

@@ -5,7 +5,7 @@
 #include <string_view>
 
 template<typename T>
-constexpr auto type_name()
+[[nodiscard]] consteval std::string_view type_name()
 {
   std::string_view name, prefix, suffix;
 #ifdef __clang__

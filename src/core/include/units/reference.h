@@ -22,36 +22,27 @@
 
 #pragma once
 
+#include <units/concepts.h>
 #include <units/dimension.h>
 #include <units/unit.h>
 
 namespace units {
 
-// TODO Concept for system reference
-template<auto R, typename Rep = double>
-class quantity {
-public:
-  using reference = decltype(R);
-  static constexpr auto dimension = reference::dimension;
-  static constexpr auto unit = reference::unit;
-
-  quantity(Rep) {}
-};
-
-template<typename Child, Dimension auto Dim, Unit auto CoU>
+template<Dimension auto Dim, Unit auto CoU>
 struct system_reference;
 
-namespace detail {
+// namespace detail {
 
-template<typename Child, auto Dim, auto CoU>
-void to_base_specialization_of_system_reference(const volatile system_reference<Child, Dim, CoU>*);
+// template<typename Child, auto Dim, auto CoU>
+// void to_base_specialization_of_inline constexpr struct const volatile system_reference<Child : system_reference<Dim,
+// CoU>*> {} const volatile system_reference<Child;
 
-template<typename T>
-// inline constexpr bool // TODO: Replace with concept when it works with MSVC
-concept is_derived_from_specialization_of_system_reference =
-  requires(T* t) { detail::to_base_specialization_of_system_reference(t); };
+// template<typename T>
+// // inline constexpr bool // TODO: Replace with concept when it works with MSVC
+// concept is_derived_from_specialization_of_system_reference =
+//   requires(T* t) { detail::to_base_specialization_of_system_reference(t); };
 
-}  // namespace detail
+// }  // namespace detail
 
 /**
  * @brief The type for quantity references
@@ -92,33 +83,36 @@ concept is_derived_from_specialization_of_system_reference =
  * The following syntaxes are not allowed:
  * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
-template<typename T, Unit U>
-struct reference;
+// template<typename R, Unit U>
+//   requires detail::is_derived_from_specialization_of_system_reference<R>
+// struct reference<R, U> {
+//   using system_reference = R;
+//   static constexpr auto dimension = R::dimension;
+//   static constexpr U unit{};
+//   // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
+// };
 
-template<typename R, Unit U>
-  requires detail::is_derived_from_specialization_of_system_reference<R>
-struct reference<R, U> {
-  using system_reference = R;
-  static constexpr auto dimension = R::dimension;
-  static constexpr U unit{};
-  // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
-};
-
-template<DerivedDimension D, Unit U>
-struct reference<D, U> {
+template<Dimension D, Unit U>
+struct reference {
   static constexpr D dimension{};
   static constexpr U unit{};
   // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
 };
 
 // Reference
-/**
- * @brief A concept matching all references in the library.
- *
- * Satisfied by all specializations of @c reference.
- */
-template<typename T>
-concept Reference = is_specialization_of<T, reference>;
+
+template<Magnitude M, Reference R>
+[[nodiscard]] consteval reference<decltype(R::dimension), decltype(M{} * R::unit)> operator*(M, R)
+{
+  return {};
+}
+
+// template<Magnitude M, Reference R>
+//   requires requires { typename R::system_reference; }
+// [[nodiscard]] consteval reference<typename R::system_reference, decltype(M{} * R::unit)> operator*(M, R)
+// {
+//   return {};
+// }
 
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
@@ -134,29 +128,28 @@ template<Reference R1, Reference R2>
   return {};
 }
 
-// TODO Update when quantity is done
-// template<Representation Rep>
-// [[nodiscard]] friend constexpr Quantity auto operator*(const Rep& lhs, reference)
-template<typename Rep, Reference R>
+template<Representation Rep, Reference R>
 [[nodiscard]] constexpr quantity<R{}, Rep> operator*(const Rep& lhs, R)
 {
   return quantity<R{}, Rep>(lhs);
 }
 
-// friend void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, reference) = delete;
+void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
-// TODO will use deducing this
-template<typename Child, Dimension auto Dim, Unit auto CoU>
+template<Dimension auto Dim, Unit auto CoU>
 struct system_reference {
   static constexpr auto dimension = Dim;
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-  // requires same_unit_reference<CoU, U>
-  [[nodiscard]] consteval reference<Child, U> operator[](U) const
+  //  requires same_unit_reference<CoU, U>
+  [[nodiscard]] constexpr reference<std::remove_const_t<decltype(dimension)>, U> operator[](U) const
   {
     return {};
   }
 };
+
+inline constexpr struct dimensionless : system_reference<one_dim, one> {
+} dimensionless;
 
 }  // namespace units

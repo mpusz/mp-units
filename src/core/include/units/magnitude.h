@@ -22,7 +22,10 @@
 
 #pragma once
 
+#include <units/bits/expression_template.h>
 #include <units/bits/external/hacks.h>
+#include <units/bits/external/type_name.h>
+#include <units/bits/external/type_traits.h>
 #include <units/bits/prime.h>
 #include <units/ratio.h>
 #include <concepts>
@@ -40,31 +43,47 @@ using factorizer = wheel_factorizer<4>;
 
 }  // namespace detail
 
-/**
- * @brief  A type to represent a standalone constant value.
- */
-template<auto V>
-struct constant {
-  static constexpr auto value = V;
-};
-
-// is_derived_from_specialization_of_constant
 namespace detail {
 
-template<auto V>
-void to_base_specialization_of_constant(const volatile constant<V>*);
+template<typename T>
+inline constexpr bool is_magnitude = false;
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_constant =
-  requires(T * t) { to_base_specialization_of_constant(t); };
+inline constexpr bool is_specialization_of_magnitude = false;
 
 }  // namespace detail
 
-
+/**
+ * @brief  Concept to detect whether T is a valid Magnitude.
+ */
 template<typename T>
-concept Constant = detail::is_derived_from_specialization_of_constant<T>;
+concept Magnitude = detail::is_magnitude<T>;
 
-struct pi_v : constant<std::numbers::pi_v<long double>> {};
+/**
+ * @brief  A type to represent a standalone constant value.
+ */
+// template<auto V>
+// struct constant {
+//   static constexpr auto value = V;
+// };
+
+// // is_derived_from_specialization_of_constant
+// namespace detail {
+
+// template<auto V>
+// void to_base_specialization_of_constant(const volatile constant<V>*);
+
+// template<typename T>
+// inline constexpr bool is_derived_from_specialization_of_constant =
+//   requires(T * t) { to_base_specialization_of_constant(t); };
+
+// }  // namespace detail
+
+
+// template<typename T>
+// concept Constant = detail::is_derived_from_specialization_of_constant<T>;
+
+// struct pi_v : constant<std::numbers::pi_v<long double>> {};
 
 /**
  * @brief  Any type which can be used as a basis vector in a PowerV.
@@ -106,20 +125,26 @@ struct pi_v : constant<std::numbers::pi_v<long double>> {};
  * _existing_ bases, including both prime numbers and any other irrational bases.  For example, even though `sqrt(2)` is
  * irrational, we must not ever use it as a base; instead, we would use `base_power{2, ratio{1, 2}}`.
  */
-template<typename T>
-concept PowerVBase = Constant<T> || std::integral<T>;
-
-// TODO Unify with `power` if UTPs (P1985) are accepted by the Committee
-template<PowerVBase auto V, int Num, int... Den>
-  requires(Num != 0)
-struct power_v {
-  static constexpr auto base = V;
-  static constexpr ratio exponent{Num, Den...};
-  static_assert(exponent != 1);
-};
 
 namespace detail {
 
+template<typename T>
+inline constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specialization_of_magnitude<T>;
+
+}
+
+template<typename T>
+concept PowerVBase = one_of<T, int, std::intmax_t, long double> || detail::is_named_magnitude<T>;
+
+// TODO Unify with `power` if UTPs (P1985) are accepted by the Committee
+template<PowerVBase auto V, int Num, int... Den>
+  requires(detail::valid_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
+struct power_v {
+  static constexpr auto base = V;
+  static constexpr ratio exponent{Num, Den...};
+};
+
+namespace detail {
 
 /**
  * @brief  Deduction guides for base_power: only permit deducing integral bases.
@@ -149,6 +174,8 @@ concept PowerV = detail::is_specialization_of_power_v<T>;
 
 namespace detail {
 
+// We do not want magnitude type to have the `l` literal after a value for a small integral number.
+// For example this modifies `magnitude<3l>` to be `magnitude<3>`
 template<auto V>
 [[nodiscard]] consteval auto shorten_T()
 {
@@ -156,8 +183,10 @@ template<auto V>
     if constexpr (V <= std::numeric_limits<int>::max()) {
       return static_cast<int>(V);
     } else {
-      return V;
+      return static_cast<std::intmax_t>(V);
     }
+  } else if constexpr (std::floating_point<decltype(V)>) {
+    return static_cast<long double>(V);
   } else {
     return V;
   }
@@ -178,7 +207,7 @@ template<PowerVBase auto V, ratio R>
   }
 };
 
-consteval auto inverse(PowerV auto bp) { return power_v_or_T<bp.base, bp.exponent * (-1)>(); }
+// consteval auto inverse(PowerV auto bp) { return power_v_or_T<bp.base, bp.exponent * (-1)>(); }
 
 // `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
 // template<typename T>
@@ -253,35 +282,35 @@ consteval auto inverse(PowerV auto bp) { return power_v_or_T<bp.base, bp.exponen
 //
 // The input is the desired result, but in a (wider) intermediate type.  The point of this function
 // is to cast to the desired type, but avoid overflow in doing so.
-// template<typename To, typename From>
-// // TODO(chogg): Migrate this to use `treat_as_floating_point`.
-//   requires(!std::is_integral_v<To> || std::is_integral_v<From>)
-// constexpr To checked_static_cast(From x)
-// {
-//   // This function should only ever be called at compile time.  The purpose of these exceptions is
-//   // to produce compiler errors, because we cannot `static_assert` on function arguments.
-//   if constexpr (std::is_integral_v<To>) {
-//     if (!std::in_range<To>(x)) {
-//       throw std::invalid_argument{"Cannot represent magnitude in this type"};
-//     }
-//   }
+template<typename To, typename From>
+// TODO(chogg): Migrate this to use `treat_as_floating_point`.
+  requires(!std::is_integral_v<To> || std::is_integral_v<From>)
+constexpr To checked_static_cast(From x)
+{
+  // This function should only ever be called at compile time.  The purpose of these exceptions is
+  // to produce compiler errors, because we cannot `static_assert` on function arguments.
+  if constexpr (std::is_integral_v<To>) {
+    if (!std::in_range<To>(x)) {
+      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+    }
+  }
 
-//   return static_cast<To>(x);
-// }
+  return static_cast<To>(x);
+}
+
 }  // namespace detail
 
 /**
  * @brief  Equality detection for two base powers.
  */
-template<PowerV T, PowerV U>
-[[nodiscard]] consteval bool operator==(T, U)
-{
-  return std::is_same_v<T, U>;
-}
+// template<PowerV T, PowerV U>
+// [[nodiscard]] consteval bool operator==(T, U)
+// {
+//   return std::is_same_v<T, U>;
+// }
 
 template<typename T>
-concept MagnitudeSpec = std::integral<T> || Constant<T> || PowerV<T>;
-
+concept MagnitudeSpec = PowerVBase<T> || PowerV<T>;
 
 // A variety of implementation detail helpers.
 namespace detail {
@@ -293,17 +322,6 @@ template<MagnitudeSpec Element>
     return Element::base;
   else
     return element;
-}
-
-template<MagnitudeSpec Element>
-[[nodiscard]] consteval auto get_base_value(Element element)
-{
-  const auto base = get_base(element);
-  using base_type = decltype(base);
-  if constexpr (std::integral<base_type>)
-    return base;
-  else
-    return base_type::value;
 }
 
 template<MagnitudeSpec Element>
@@ -338,88 +356,92 @@ template<MagnitudeSpec Element>
 }
 
 // A way to check whether a number is prime at compile time.
-[[nodiscard]] consteval bool is_prime(std::intmax_t n)
-{
-  return (n >= 0) && factorizer::is_prime(static_cast<std::size_t>(n));
-}
+// [[nodiscard]] consteval bool is_prime(std::intmax_t n)
+// {
+//   return (n >= 0) && factorizer::is_prime(static_cast<std::size_t>(n));
+// }
 
-template<MagnitudeSpec Element>
-[[nodiscard]] consteval bool is_valid_element(Element element)
-{
-  if (get_exponent(element) == 0) {
-    return false;
-  }
-  if constexpr (std::integral<decltype(get_base(element))>) {
-    // Some prime numbers are so big, that we can't check their primality without exhausting limits on constexpr steps
-    // and/or iterations.  We can still _perform_ the factorization for these by using the `known_first_factor`
-    // workaround.  However, we can't _check_ that they are prime, because this workaround depends on the input being
-    // usable in a constexpr expression.  This is true for `prime_factorization` (below), where the input `N` is a
-    // template parameter, but is not true for our case, where the input `bp.get_base()` is a function parameter.  (See
-    // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1045r1.html for some background reading on this
-    // distinction.)
-    //
-    // In our case: we simply give up on excluding every possible ill-formed base power, and settle for catching the
-    // most likely and common mistakes.
-    if (const bool too_big_to_check = (get_base_value(element) > 1'000'000'000)) {
-      return true;
-    }
+// template<MagnitudeSpec Element>
+// [[nodiscard]] consteval bool is_valid_element(Element element)
+// {
+//   if (get_exponent(element) == 0) {
+//     return false;
+//   }
+//   if constexpr (std::integral<decltype(get_base(element))>) {
+//     // Some prime numbers are so big, that we can't check their primality without exhausting limits on constexpr
+//     steps
+//     // and/or iterations.  We can still _perform_ the factorization for these by using the `known_first_factor`
+//     // workaround.  However, we can't _check_ that they are prime, because this workaround depends on the input being
+//     // usable in a constexpr expression.  This is true for `prime_factorization` (below), where the input `N` is a
+//     // template parameter, but is not true for our case, where the input `bp.get_base()` is a function parameter.
+//     (See
+//     // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1045r1.html for some background reading on this
+//     // distinction.)
+//     //
+//     // In our case: we simply give up on excluding every possible ill-formed base power, and settle for catching the
+//     // most likely and common mistakes.
+//     if (const bool too_big_to_check = (get_base_value(element) > 1'000'000'000)) {
+//       return true;
+//     }
 
-    return is_prime(get_base_value(element));
-  } else {
-    return get_base_value(element) > 0;
-  }
-}
+//     return is_prime(get_base_value(element));
+//   } else {
+//     return get_base_value(element) > 0;
+//   }
+// }
 
 // A function object to apply a predicate to all consecutive pairs of values in a sequence.
-template<typename Predicate>
-struct pairwise_all {
-  Predicate predicate;
+// template<typename Predicate>
+// struct pairwise_all {
+//   Predicate predicate;
 
-  template<typename... Ts>
-  [[nodiscard]] consteval bool operator()(Ts&&... ts) const
-  {
-    // Carefully handle different sizes, avoiding unsigned integer underflow.
-    constexpr auto num_comparisons = [](auto num_elements) {
-      return (num_elements > 1) ? (num_elements - 1) : 0;
-    }(sizeof...(Ts));
+//   template<typename... Ts>
+//   [[nodiscard]] consteval bool operator()(Ts&&... ts) const
+//   {
+//     // Carefully handle different sizes, avoiding unsigned integer underflow.
+//     constexpr auto num_comparisons = [](auto num_elements) {
+//       return (num_elements > 1) ? (num_elements - 1) : 0;
+//     }(sizeof...(Ts));
 
-    // Compare zero or more pairs of neighbours as needed.
-    return [this]<std::size_t... Is>(std::tuple<Ts...> && t, std::index_sequence<Is...>)
-    {
-      return (predicate(std::get<Is>(t), std::get<Is + 1>(t)) && ...);
-    }
-    (std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
-  }
-};
+//     // Compare zero or more pairs of neighbours as needed.
+//     return [this]<std::size_t... Is>(std::tuple<Ts...> && t, std::index_sequence<Is...>)
+//     {
+//       return (predicate(std::get<Is>(t), std::get<Is + 1>(t)) && ...);
+//     }
+//     (std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
+//   }
+// };
 
 // Deduction guide: permit constructions such as `pairwise_all{std::less{}}`.
 // template<typename T>
 // pairwise_all(T) -> pairwise_all<T>;
 
 // Check whether a sequence of (possibly heterogeneously typed) values are strictly increasing.
-template<typename... Ts>
-  requires(std::is_signed_v<Ts> && ...)
-[[nodiscard]] consteval bool strictly_increasing(Ts&&... ts)
-{
-  return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
-}
+// template<typename... Ts>
+//   requires(std::is_signed_v<Ts> && ...)
+// [[nodiscard]] consteval bool strictly_increasing(Ts&&... ts)
+// {
+//   return pairwise_all{std::less{}}(std::forward<Ts>(ts)...);
+// }
 
-template<MagnitudeSpec auto... Elements>
-inline constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
+// template<MagnitudeSpec auto... Elements>
+// inline constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
 
-template<MagnitudeSpec auto... Elements>
-inline constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
+// template<MagnitudeSpec auto... Elements>
+// inline constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
 
-template<MagnitudeSpec auto... Elements>
-inline constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
+// template<MagnitudeSpec auto... Elements>
+// inline constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
 
 [[nodiscard]] consteval bool is_rational(MagnitudeSpec auto element)
 {
-  return std::is_integral_v<decltype(get_base_value(element))> && (get_exponent(element).den == 1);
+  static_assert(!Magnitude<decltype(element)>);  // magnitudes are handles by another overload
+  return std::is_integral_v<decltype(get_base(element))> && (get_exponent(element).den == 1);
 }
 
 [[nodiscard]] consteval bool is_integral(MagnitudeSpec auto element)
 {
+  static_assert(!Magnitude<decltype(element)>);  // magnitudes are handles by another overload
   return is_rational(element) && get_exponent(element).num > 0;
 }
 
@@ -433,29 +455,40 @@ inline constexpr bool is_element_pack_valid = all_elements_valid<Elements...> &&
  * rational powers, and compare for equality.
  */
 template<MagnitudeSpec auto... Ms>
-  requires detail::is_element_pack_valid<Ms...>
+// requires detail::is_element_pack_valid<Ms...>
 struct magnitude {
-  // Whether this magnitude represents an integer.
-  [[nodiscard]] friend consteval bool is_integral(const magnitude&) { return (detail::is_integral(Ms) && ...); }
+  [[nodiscard]] friend consteval bool is_integral(const magnitude&)
+  {
+    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
+    return (is_integral(Ms) && ...);
+  }
 
-  // Whether this magnitude represents a rational number.
-  [[nodiscard]] friend consteval bool is_rational(const magnitude&) { return (detail::is_rational(Ms) && ...); }
+  [[nodiscard]] friend consteval bool is_rational(const magnitude&)
+  {
+    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
+    return (is_rational(Ms) && ...);
+  }
 };
+
 
 namespace detail {
 
-// Implementation for Magnitude concept (below).
+template<auto... Ms>
+void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
+
 template<typename T>
-inline constexpr bool is_magnitude = false;
-template<auto... BPs>
-inline constexpr bool is_magnitude<magnitude<BPs...>> = true;
+inline constexpr bool is_derived_from_specialization_of_magnitude =
+  requires(T * t) { to_base_specialization_of_magnitude(t); };
+
+template<typename T>
+  requires is_derived_from_specialization_of_magnitude<T>
+inline constexpr bool is_magnitude<T> = true;
+
+template<auto... Ms>
+inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
+
 }  // namespace detail
 
-/**
- * @brief  Concept to detect whether T is a valid Magnitude.
- */
-template<typename T>
-concept Magnitude = detail::is_magnitude<T>;
 
 /**
  * @brief  The value of a Magnitude in a desired type T.
@@ -471,23 +504,25 @@ concept Magnitude = detail::is_magnitude<T>;
 //   return result;
 // }
 
+
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-inline constexpr Magnitude auto mag_pi = magnitude<pi_v{}>{};
+inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
+} mag_pi;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 
-template<auto... LeftBPs, auto... RightBPs>
-constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
-{
-  if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
-    return ((LeftBPs == RightBPs) && ...);
-  } else {
-    return false;
-  }
-}
+// template<auto... LeftBPs, auto... RightBPs>
+// constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
+// {
+//   if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
+//     return ((LeftBPs == RightBPs) && ...);
+//   } else {
+//     return false;
+//   }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.
@@ -517,6 +552,21 @@ constexpr auto cbrt(magnitude<Ms...> m)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
 
+namespace detail {
+
+consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
+{
+  if constexpr (is_named_magnitude<decltype(lhs)> && is_named_magnitude<decltype(rhs)>)
+    return type_name(lhs) < type_name(rhs);
+  else if constexpr (!is_named_magnitude<decltype(lhs)> && !is_named_magnitude<decltype(rhs)>)
+    return get_base(lhs) < get_base(rhs);
+  else
+    return is_named_magnitude<decltype(lhs)>;
+}
+
+}  // namespace detail
+
+
 // Base cases, for when either (or both) inputs are the identity.
 constexpr Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
 constexpr Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
@@ -528,32 +578,31 @@ constexpr Magnitude auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   using namespace detail;
 
-  // Case for when H1 has the smaller base.
-  if constexpr (get_base_value(H1) < get_base_value(H2)) {
+  if constexpr (less(H1, H2)) {
     if constexpr (sizeof...(T1) == 0) {
       // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
       return magnitude<H1, H2, T2...>{};
     } else {
       return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
     }
-  }
-
-  // Case for when H2 has the smaller base.
-  if constexpr (get_base_value(H1) > get_base_value(H2)) {
+  } else if constexpr (less(H2, H1)) {
     return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
-  }
-
-  // "Same leading base" case.
-  if constexpr (get_base(H1) == get_base(H2)) {
+  } else {
     constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
 
-    // Make a new power_v with the common base of H1 and H2, whose power is their powers' sum.
-    constexpr auto new_head = power_v_or_T<get_base(H1), get_exponent(H1) + get_exponent(H2)>();
+    if constexpr (is_same_v<decltype(get_base(H1)), decltype(get_base(H2))>) {
+      // Make a new power_v with the common base of H1 and H2, whose power is their powers' sum.
+      constexpr auto new_head = power_v_or_T<get_base(H1), get_exponent(H1) + get_exponent(H2)>();
 
-    if constexpr (get_exponent(new_head) == 0) {
-      return partial_product;
+      if constexpr (get_exponent(new_head) == 0) {
+        return partial_product;
+      } else {
+        return magnitude<new_head>{} * partial_product;
+      }
+    } else if constexpr (is_named_magnitude<decltype(get_base(H1))>) {
+      return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
     } else {
-      return magnitude<new_head>{} * partial_product;
+      return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
     }
   }
 }

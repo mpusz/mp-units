@@ -52,6 +52,12 @@ namespace detail {
 template<basic_fixed_string Symbol>
 void to_base_base_dimension(const volatile base_dimension<Symbol>*);
 
+template<typename T>
+inline constexpr bool is_specialization_of_base_dimension = false;
+
+template<basic_fixed_string Symbol>
+inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
+
 }  // namespace detail
 
 /**
@@ -60,13 +66,18 @@ void to_base_base_dimension(const volatile base_dimension<Symbol>*);
  * Satisfied by all dimension types derived from an specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); };
+concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
+                        (!detail::is_specialization_of_base_dimension<T>);
 
 template<BaseDimension D1, BaseDimension D2>
 struct base_dimension_less : std::bool_constant<(D1::symbol < D2::symbol)> {};
 
-// TODO Can we provide a smarter implementation?
-std::false_type is_derived_dimension(...);
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_derived_dimension = false;
+
+}
 
 /**
  * @brief A concept matching all derived dimensions in the library.
@@ -74,7 +85,7 @@ std::false_type is_derived_dimension(...);
  * Satisfied by all dimension types derived from an specialization of `derived_dimension`.
  */
 template<typename T>
-concept DerivedDimension = decltype(is_derived_dimension(std::declval<T*>()))::value;
+concept DerivedDimension = detail::is_derived_dimension<T>;
 
 /**
  * @brief A concept matching all dimensions in the library.
@@ -107,8 +118,20 @@ struct derived_dimension : detail::expr_fractions<derived_dimension<>, Ds...> {
   using type = derived_dimension<Ds...>;
 };
 
-template<typename... Args>
-std::true_type is_derived_dimension(const volatile derived_dimension<Args...>*);
+namespace detail {
+
+template<typename... Ds>
+void to_base_specialization_of_derived_dimension(const volatile derived_dimension<Ds...>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_derived_dimension =
+  requires(T * t) { to_base_specialization_of_derived_dimension(t); };
+
+template<typename T>
+  requires is_derived_from_specialization_of_derived_dimension<T>
+inline constexpr bool is_derived_dimension<T> = true;
+
+}  // namespace detail
 
 /**
  * @brief Dimension one
@@ -162,6 +185,12 @@ template<Dimension D>
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool operator==(D1, D2)
+{
+  return is_same_v<D1, D2>;
+}
+
+template<Dimension D1, Dimension D2>
+[[nodiscard]] consteval bool equivalent(D1, D2)
 {
   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
 }

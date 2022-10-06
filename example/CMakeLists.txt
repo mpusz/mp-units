@@ -33,7 +33,7 @@ function(add_example target)
     target_link_libraries(${target} PRIVATE ${ARGN})
 endfunction()
 
-add_example(v2_framework mp-units::core-fmt mp-units::core-io mp-units::si)
+add_example(v2_framework mp-units::core mp-units::si)
 
 # add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
 # add_example(custom_systems mp-units::core-io mp-units::si)

@@ -77,4 +77,7 @@ template<typename T, template<typename...> typename Type>
 // inline constexpr bool // TODO: Replace with concept when it works with MSVC
 concept is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
 
+template<typename T, typename... Ts>
+concept one_of = (... || std::same_as<T, Ts>);
+
 }  // namespace units
