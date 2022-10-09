@@ -139,16 +139,20 @@ If so how to implement that? What should be the rules for a derived_dimension si
 
 ```cpp
 static_assert(equivalent(isq::power_dim / isq::power_dim, isq::efficiency_dim));
-static_assert(isq::power_dim / isq::power_dim != isq::efficiency_dim);             // ???
-static_assert(one_dim != isq::efficiency_dim);                                     // ???
+static_assert(convertible(isq::power_dim / isq::power_dim, isq::efficiency_dim));
+static_assert(isq::power_dim / isq::power_dim != isq::efficiency_dim);              // ???
+static_assert(one_dim != isq::efficiency_dim);                                      // ???
 
-static_assert(equivalent(isq::efficiency_dim, isq::strain_dim));                   // ???
-static_assert(isq::efficiency_dim != isq::strain_dim);                             // ???
+static_assert(equivalent(isq::efficiency_dim, isq::strain_dim));                    // ???
+static_assert(!convertible(isq::efficiency_dim, isq::strain_dim));
+static_assert(isq::efficiency_dim != isq::strain_dim);                              // ???
 
-static_assert(isq::stress_dim / isq::stress_dim != isq::strain_dim);               // ???
-static_assert(isq::stress_dim / isq::stress_dim != isq::efficiency_dim);           // ???
+static_assert(isq::stress_dim / isq::stress_dim != isq::strain_dim);                // ???
+static_assert(isq::stress_dim / isq::stress_dim != isq::efficiency_dim);            // ???
 static_assert(equivalent(isq::stress_dim / isq::stress_dim, isq::strain_dim));
-static_assert(equivalent(isq::stress_dim / isq::stress_dim, isq::efficiency_dim)); // ???
+static_assert(equivalent(isq::stress_dim / isq::stress_dim, isq::efficiency_dim));  // ???
+static_assert(convertible(isq::stress_dim / isq::stress_dim, isq::strain_dim));
+static_assert(convertible(isq::stress_dim / isq::stress_dim, isq::efficiency_dim)); // ???
 ```
 
 ---
