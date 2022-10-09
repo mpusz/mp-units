@@ -23,6 +23,9 @@
 #include <units/si/si.h>
 
 
+template<typename T>
+consteval bool print();
+
 template<typename T, typename Expr>
 constexpr bool is_of_type(Expr)
 {
@@ -34,33 +37,102 @@ namespace {
 using namespace units;
 using namespace units::si::unit_symbols;
 
-constexpr auto power = 5 * si::power[W];
-static_assert(is_of_type<quantity<reference<struct isq::power_dim, struct si::watt>{}, int>>(power));
+// clang-format off
+inline constexpr struct activity_dim : decltype(1 / isq::time_dim) {} activity_dim;
+inline constexpr struct activity : system_reference<activity_dim, si::becquerel> {} activity;
+// clang-format on
 
-constexpr auto speed = 5 * si::speed[m / s];
+
+// Named quantity/dimension and unit
 static_assert(
-  is_of_type<quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>(
-    speed));
+  is_same_v<decltype(5 * si::power[W]), quantity<reference<struct isq::power_dim, struct si::watt>{}, int>>);
 
-constexpr auto q = 10 * si::length[m] / (2 * si::time[s]);
-static_assert(is_of_type<quantity<reference<derived_dimension<struct isq::length_dim, per<struct isq::time_dim>>,
-                                            derived_unit<struct si::metre, per<struct si::second>>>{},
-                                  int>>(q));
+// Named quantity/dimension and derived (unnamed) unit
+static_assert(
+  is_same_v<decltype(5 * si::speed[m / s]),
+            quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
 
-constexpr auto distance = 5 * si::speed[m / s] * (5 * si::time[s]);
+// Derived (unnamed) quantity/dimension and derived (unnamed) unit
+static_assert(is_same_v<decltype(10 * si::length[m] / (2 * si::time[s])),
+                        quantity<reference<derived_dimension<struct isq::length_dim, per<struct isq::time_dim>>,
+                                           derived_unit<struct si::metre, per<struct si::second>>>{},
+                                 int>>);
 
-static_assert(is_of_type<quantity<reference<struct isq::length_dim, struct si::metre>{}, int>>(distance));
+// Base quantity as a result of dimensional transformation
+static_assert(is_same_v<decltype(5 * si::speed[m / s] * (5 * si::time[s])),
+                        quantity<reference<struct isq::length_dim, struct si::metre>{}, int>>);
 
-constexpr auto dimensionless = 20 * si::speed[m / s] / (10 * si::length[m]) * (5 * si::time[s]);
+// Dimensionless
+static_assert(is_same_v<decltype(20 * si::speed[m / s] / (10 * si::length[m]) * (5 * si::time[s])),
+                        quantity<reference<struct one_dim, struct one>{}, int>>);
 
-static_assert(is_of_type<quantity<reference<struct one_dim, struct one>{}, int>>(dimensionless));
+// Comparisons
 
+// Named and derived dimensions (same units)
+static_assert(10 * si::length[m] / (2 * si::time[s]) == 5 * si::speed[m / s]);
+static_assert(5 * si::speed[m / s] == 10 * si::length[m] / (2 * si::time[s]));
 
-// constexpr auto q1 = 10 * si::length[m] / (2 * si::time[s]) + 5 * si::speed[m / s];
-// static_assert(is_of_type<quantity<reference<derived_dimension<struct isq::length_dim, per<struct isq::time_dim>>,
-//                                             derived_unit<struct si::metre, per<struct si::second>>>{},
-//                                   int>>(q1));
+// Named and derived dimensions (different units)
+static_assert(10 / (2 * si::time[s]) == 5 * si::frequency[Hz]);
+static_assert(5 * si::frequency[Hz] == 10 / (2 * si::time[s]));
 
+// Different named dimensions
+template<Reference auto R1, Reference auto R2>
+concept invalid_comparison = requires {
+                               requires !requires { 2 * R1 == 2 * R2; };
+                               requires !requires { 2 * R2 == 2 * R1; };
+                             };
+static_assert(invalid_comparison<activity[Bq], si::frequency[Hz]>);
+
+// static_assert(print<decltype(10 * si::length[m] / (2 * si::time[s]) + 5 * si::speed[m / s])>());
+
+// Arithmetics
+
+// Named and derived dimensions (same units)
+static_assert(10 * si::length[m] / (2 * si::time[s]) + 5 * si::speed[m / s] == 10 * si::speed[m / s]);
+static_assert(5 * si::speed[m / s] + 10 * si::length[m] / (2 * si::time[s]) == 10 * si::speed[m / s]);
+static_assert(10 * si::length[m] / (2 * si::time[s]) - 5 * si::speed[m / s] == 0 * si::speed[m / s]);
+static_assert(5 * si::speed[m / s] - 10 * si::length[m] / (2 * si::time[s]) == 0 * si::speed[m / s]);
+static_assert(
+  is_same_v<decltype(10 * si::length[m] / (2 * si::time[s]) + 5 * si::speed[m / s]),
+            quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
+static_assert(
+  is_same_v<decltype(5 * si::speed[m / s] + 10 * si::length[m] / (2 * si::time[s])),
+            quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
+static_assert(
+  is_same_v<decltype(10 * si::length[m] / (2 * si::time[s]) - 5 * si::speed[m / s]),
+            quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
+static_assert(
+  is_same_v<decltype(5 * si::speed[m / s] - 10 * si::length[m] / (2 * si::time[s])),
+            quantity<reference<struct isq::speed_dim, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
+
+// Named and derived dimensions (different units)
+static_assert(10 / (2 * si::time[s]) + 5 * si::frequency[Hz] == 10 * si::frequency[Hz]);
+static_assert(5 * si::frequency[Hz] + 10 / (2 * si::time[s]) == 10 * si::frequency[Hz]);
+static_assert(10 / (2 * si::time[s]) - 5 * si::frequency[Hz] == 0 * si::frequency[Hz]);
+static_assert(5 * si::frequency[Hz] - 10 / (2 * si::time[s]) == 0 * si::frequency[Hz]);
+static_assert(is_same_v<decltype(10 / (2 * si::time[s]) + 5 * si::frequency[Hz]),
+                        quantity<reference<struct isq::frequency_dim, struct si::hertz>{}, int>>);
+static_assert(is_same_v<decltype(5 * si::frequency[Hz] + 10 / (2 * si::time[s])),
+                        quantity<reference<struct isq::frequency_dim, struct si::hertz>{}, int>>);
+static_assert(is_same_v<decltype(10 / (2 * si::time[s]) - 5 * si::frequency[Hz]),
+                        quantity<reference<struct isq::frequency_dim, struct si::hertz>{}, int>>);
+static_assert(is_same_v<decltype(5 * si::frequency[Hz] - 10 / (2 * si::time[s])),
+                        quantity<reference<struct isq::frequency_dim, struct si::hertz>{}, int>>);
+
+// Different named dimensions
+template<typename... Ts>
+consteval bool invalid_arithmetic(Ts... ts)
+{
+  return requires {
+           requires !requires { (... + ts); };
+           requires !requires { (... - ts); };
+         };
+}
+static_assert(invalid_arithmetic(5 * activity[Bq], 5 * si::frequency[Hz]));
+static_assert(invalid_arithmetic(5 * activity[Bq], 10 / (2 * si::time[s]), 5 * si::frequency[Hz]));
+
+// static_assert(quantity_of<decltype(60 * si::speed[km / h]), isq::speed_dim>);
 // static_assert(quantity_of<decltype(120 * si::length[km] / (2 * si::time[h])), isq::speed_dim>);
 // static_assert(quantity_of<decltype(120 * si::length[km] / (2 * si::time[h])), si::speed[km / h]>);
 // static_assert(!quantity_of<decltype(120 * si::length[km] / (2 * si::time[h])), si::speed[m / s]>);
@@ -222,8 +294,6 @@ namespace units::isq::si {
 // quantity<speed[km / s]> speed3(20);
 // quantity<length[m] / si::time[s]> speed4(20);
 
-template<typename T>
-void print();
 
 // constexpr auto avg_speed(quantity<length[km]> d, quantity<si::time[h]> t) { return d / t; }
 

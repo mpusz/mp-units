@@ -36,13 +36,13 @@ inline constexpr struct length_dim_ : base_dimension<"L"> {} length_dim;
 inline constexpr struct time_dim_ : base_dimension<"T"> {} time_dim;
 
 inline constexpr struct frequency_dim_ : decltype(1 / time_dim) {} frequency_dim;
+inline constexpr struct action_dim_ : decltype(1 / time_dim) {} action_dim;
 inline constexpr struct area_dim_ : decltype(length_dim * length_dim) {} area_dim;
 inline constexpr struct volume_dim_ : decltype(area_dim * length_dim) {} volume_dim;
 inline constexpr struct speed_dim_ : decltype(length_dim / time_dim) {} speed_dim;
+inline constexpr struct velocity_dim_ : speed_dim_ {} velocity_dim;
 inline constexpr struct acceleration_dim_ : decltype(speed_dim / time_dim) {} acceleration_dim;
 // clang-format on
-
-}  // namespace
 
 // concepts verification
 static_assert(BaseDimension<length_dim_>);
@@ -107,13 +107,19 @@ static_assert(length_dim / length_dim == one_dim);
 
 static_assert(1 / time_dim != frequency_dim);
 static_assert(equivalent(1 / time_dim, frequency_dim));
+static_assert(convertible(1 / time_dim, frequency_dim));
 static_assert(1 / frequency_dim == time_dim);
 static_assert(frequency_dim * time_dim == one_dim);
+static_assert(std::is_same_v<std::common_type_t<decltype(1 / time_dim), decltype(frequency_dim)>, frequency_dim_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(frequency_dim), decltype(1 / time_dim)>, frequency_dim_>);
 
 static_assert(length_dim * length_dim != area_dim);
 static_assert(equivalent(length_dim * length_dim, area_dim));
+static_assert(convertible(length_dim * length_dim, area_dim));
 static_assert(length_dim * length_dim != volume_dim);
 static_assert(area_dim / length_dim == length_dim);
+static_assert(std::is_same_v<std::common_type_t<decltype(length_dim * length_dim), decltype(area_dim)>, area_dim_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(area_dim), decltype(length_dim * length_dim)>, area_dim_>);
 
 static_assert(length_dim * length_dim * length_dim != volume_dim);
 static_assert(equivalent(length_dim * length_dim * length_dim, volume_dim));
@@ -134,6 +140,10 @@ static_assert(length_dim * time_dim != speed_dim);
 static_assert(length_dim / time_dim / time_dim != speed_dim);
 static_assert(length_dim / speed_dim == time_dim);
 static_assert(speed_dim * time_dim == length_dim);
+static_assert(std::is_same_v<std::common_type_t<decltype(length_dim / time_dim), decltype(speed_dim)>, speed_dim_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(speed_dim), decltype(length_dim / time_dim)>, speed_dim_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(length_dim / time_dim), decltype(length_dim / time_dim)>,
+                             decltype(length_dim / time_dim)>);
 
 static_assert(length_dim / time_dim / time_dim != acceleration_dim);
 static_assert(equivalent(length_dim / time_dim / time_dim, acceleration_dim));
@@ -147,3 +157,21 @@ static_assert(equivalent(acceleration_dim * time_dim, speed_dim));
 static_assert(acceleration_dim * (time_dim * time_dim) == length_dim);
 static_assert(acceleration_dim / speed_dim != frequency_dim);
 static_assert(equivalent(acceleration_dim / speed_dim, frequency_dim));
+
+static_assert(frequency_dim != action_dim);
+static_assert(equivalent(frequency_dim, action_dim));
+static_assert(!convertible(frequency_dim, action_dim));
+template<auto T1, auto T2>
+concept no_common_type = requires {
+                           requires !requires { typename std::common_type_t<decltype(T1), decltype(T2)>; };
+                           requires !requires { typename std::common_type_t<decltype(T2), decltype(T1)>; };
+                         };
+static_assert(no_common_type<frequency_dim, action_dim>);
+
+static_assert(velocity_dim != speed_dim);
+static_assert(equivalent(velocity_dim, speed_dim));
+static_assert(convertible(speed_dim, velocity_dim));
+static_assert(std::is_same_v<std::common_type_t<decltype(velocity_dim), decltype(speed_dim)>, velocity_dim_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(speed_dim), decltype(velocity_dim)>, velocity_dim_>);
+
+}  // namespace

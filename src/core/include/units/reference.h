@@ -136,13 +136,27 @@ template<Representation Rep, Reference R>
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
+template<Reference R1, Reference R2>
+[[nodiscard]] consteval bool equivalent(R1, R2)
+{
+  return equivalent(R1::dimension, R2::dimension) && equivalent(R1::unit, R2::unit);
+}
+
+template<Reference R1, Reference R2>
+[[nodiscard]] consteval bool convertible(R1, R2)
+{
+  return convertible(R1::dimension, R2::dimension) && convertible(R1::unit, R2::unit);
+}
+
+
 template<Dimension auto Dim, Unit auto CoU>
 struct system_reference {
   static constexpr auto dimension = Dim;
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-  //  requires same_unit_reference<CoU, U>
+  // TODO enable that
+  // requires(convertible(coherent_unit, U{}))
   [[nodiscard]] constexpr reference<std::remove_const_t<decltype(dimension)>, U> operator[](U) const
   {
     return {};
@@ -153,3 +167,20 @@ inline constexpr struct dimensionless : system_reference<one_dim, one> {
 } dimensionless;
 
 }  // namespace units
+
+namespace std {
+
+template<units::Reference R1, units::Reference R2>
+  requires requires {
+             typename common_type_t<remove_const_t<decltype(R1::dimension)>, remove_const_t<decltype(R2::dimension)>>;
+             typename common_type_t<remove_const_t<decltype(R1::unit)>, remove_const_t<decltype(R2::unit)>>;
+           }
+struct common_type<R1, R2> {
+private:
+  using dim = common_type_t<remove_const_t<decltype(R1::dimension)>, remove_const_t<decltype(R2::dimension)>>;
+  using unit = common_type_t<remove_const_t<decltype(R1::unit)>, remove_const_t<decltype(R2::unit)>>;
+public:
+  using type = units::reference<dim, unit>;
+};
+
+}  // namespace std

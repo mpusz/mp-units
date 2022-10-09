@@ -23,13 +23,9 @@
 
 #pragma once
 
-// #include <units/bits/common_type.h>
-// #include <units/generic/dimensionless.h>
-
 // IWYU pragma: begin_exports
-// #include <units/quantity_cast.h>
+#include <units/quantity_cast.h>
 // #include <units/ratio.h>
-#include <units/bits/common_type.h>
 #include <units/concepts.h>
 #include <units/customization_points.h>
 #include <units/dimension.h>
@@ -38,8 +34,7 @@
 #include <compare>
 // IWYU pragma: end_exports
 
-// #include <units/reference.h>
-// #include <utility>
+#include <utility>
 
 namespace units {
 
@@ -73,8 +68,9 @@ concept harmonic_ =  // exposition only
 // Quantity<QFrom> && Quantity<QTo> && is_integral(detail::quantity_magnitude<QFrom> / detail::quantity_magnitude<QTo>);
 
 template<typename QFrom, typename QTo>
-concept safe_castable_to_ =  // exposition only
-  Quantity<QFrom> && quantity_of<QTo, QFrom::dimension> && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+concept quantity_convertible_to_ =  // exposition only
+  Quantity<QFrom> && Quantity<QTo> && convertible(QFrom::dimension, QTo::dimension) &&
+  convertible(QFrom::unit, QTo::unit) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
   (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>
@@ -161,13 +157,13 @@ public:
   {
   }
 
-  template<safe_castable_to_<quantity> Q>
+  template<quantity_convertible_to_<quantity> Q>
   constexpr explicit(false) quantity(const Q& q) : number_(quantity_cast<quantity>(q).number())
   {
   }
 
   template<QuantityLike Q>
-    requires(safe_castable_to_<quantity_like_type<Q>, quantity>)
+    requires(quantity_convertible_to_<quantity_like_type<Q>, quantity>)
   constexpr explicit quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
   {
   }
@@ -423,7 +419,7 @@ public:
     requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return detail::make_quantity<dimensionless[one] / reference>(v / q.number());
+    return detail::make_quantity<dimensionless[::units::one] / reference>(v / q.number());
   }
 
   template<typename Value>
@@ -475,20 +471,20 @@ explicit quantity(Q)
               typename quantity_like_traits<Q>::rep>;
 
 // non-member binary operators
-template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
+template<Quantity Q1, std::convertible_to<Q1> Q2>
   requires(quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
-  using ref = detail::common_quantity_reference<Q1, Q2>;
+  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
   using ret = quantity<ref{}, decltype(lhs.number() + rhs.number())>;
   return ret(ret(lhs).number() + ret(rhs).number());
 }
 
-template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
+template<Quantity Q1, std::convertible_to<Q1> Q2>
   requires(quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
-  using ref = detail::common_quantity_reference<Q1, Q2>;
+  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
   using ret = quantity<ref{}, decltype(lhs.number() - rhs.number())>;
   return ret(ret(lhs).number() - ret(rhs).number());
 }
@@ -510,7 +506,7 @@ template<Quantity Q1, Quantity Q2>
 
 template<Quantity Q1, Quantity Q2>
   requires(!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
-          (quantity_equivalent_to<Q2, Q1> || quantity_of<Q2, one_dim>) &&
+          (std::convertible_to<Q2, Q1> || quantity_of<Q2, one_dim>) &&
           (quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {
@@ -520,20 +516,36 @@ template<Quantity Q1, Quantity Q2>
   return ret(lhs.number() % rhs.number());
 }
 
-template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
+template<Quantity Q1, std::convertible_to<Q1> Q2>
   requires std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
-  using cq = std::common_type_t<Q1, Q2>;
-  return cq(lhs).number() <=> cq(rhs).number();
+  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
+  return quantity_cast<ref>(lhs).number() <=> quantity_cast<ref>(rhs).number();
 }
 
-template<Quantity Q1, quantity_equivalent_to<Q1> Q2>
+template<Quantity Q1, std::convertible_to<Q1> Q2>
   requires std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
-  using cq = std::common_type_t<Q1, Q2>;
-  return cq(lhs).number() == cq(rhs).number();
+  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
+  return quantity_cast<ref{}>(lhs).number() == quantity_cast<ref{}>(rhs).number();
 }
 
 }  // namespace units
+
+namespace std {
+
+template<units::Quantity Q1, units::Quantity Q2>
+  requires requires {
+             typename common_type_t<remove_const_t<decltype(Q1::reference)>, remove_const_t<decltype(Q2::reference)>>;
+             typename common_type_t<typename Q1::rep, typename Q2::rep>;
+           }
+struct common_type<Q1, Q2> {
+private:
+  using ref = common_type_t<remove_const_t<decltype(Q1::reference)>, remove_const_t<decltype(Q2::reference)>>;
+public:
+  using type = units::quantity<ref{}, common_type_t<typename Q1::rep, typename Q2::rep>>;
+};
+
+}  // namespace std

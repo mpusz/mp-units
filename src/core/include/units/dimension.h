@@ -195,6 +195,23 @@ template<Dimension D1, Dimension D2>
   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
 }
 
+template<Dimension D1, Dimension D2>
+[[nodiscard]] consteval bool convertible(D1, D2)
+{
+  return std::derived_from<D1, D2> || std::derived_from<D2, D1>;
+}
+
 // TODO consider adding the support for text output of the dimensional equation
 
 }  // namespace units
+
+namespace std {
+
+template<units::Dimension D1, units::Dimension D2>
+  requires(units::convertible(D1{}, D2{}))
+struct common_type<D1, D2> {
+  using type = ::units::conditional<std::derived_from<std::remove_const_t<D1>, std::remove_const_t<D2>>,
+                                    std::remove_const_t<D1>, std::remove_const_t<D2>>;
+};
+
+}  // namespace std

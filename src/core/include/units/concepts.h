@@ -102,15 +102,7 @@ inline constexpr bool is_quantity<quantity<R, Rep>> = true;
  */
 template<typename Q, auto V>
 concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                                      (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension));
-
-/**
- * @brief A concept matching two equivalent quantities
- *
- * Satisfied by quantities having equivalent dimensions and units.
- */
-template<typename Q1, typename Q2>
-concept quantity_equivalent_to = Quantity<Q1> && equivalent(Q1::dimension, Q2::dimension) &&
-                                 equivalent(Q1::unit, Q2::unit);
+                                      (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension &&
+                                       Q::unit == V.unit));
 
 }  // namespace units

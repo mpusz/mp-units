@@ -330,12 +330,6 @@ template<Unit U1, Unit U2>
   return is_same_v<U1, U2>;
 }
 
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool equivalent(U1, U2)
-{
-  return true;  // TODO implement this
-}
-
 
 // template<BaseDimension D1, BaseDimension D2>
 // constexpr bool operator==(D1, D2)
@@ -366,6 +360,20 @@ template<Unit U1, Unit U2>
 //          std::is_same_v<typename D1::normalized_den, typename D2::normalized_den>;
 // }
 
+// TODO implement this
+// template<Dimension D1, Dimension D2>
+// [[nodiscard]] consteval bool equivalent(D1, D2)
+// {
+//   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
+// }
+
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool convertible(U1, U2)
+{
+  // TODO implement this
+  return std::derived_from<U1, U2> || std::derived_from<U2, U1>;
+}
+
 template<Unit U>
 struct square_ : decltype(U{} * U{}) {};
 
@@ -379,3 +387,15 @@ template<Unit auto U>
 inline constexpr cubic_<std::remove_const_t<decltype(U)>> cubic;
 
 }  // namespace units
+
+namespace std {
+
+// TODO implement this
+template<units::Unit U1, units::Unit U2>
+  requires(units::convertible(U1{}, U2{}))
+struct common_type<U1, U2> {
+  using type = ::units::conditional<std::derived_from<std::remove_const_t<U1>, std::remove_const_t<U2>>,
+                                    std::remove_const_t<U1>, std::remove_const_t<U2>>;
+};
+
+}  // namespace std
