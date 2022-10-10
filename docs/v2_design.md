@@ -84,7 +84,7 @@ static_assert(is_same_v<decltype(q1),
 
 // Named and derived dimensions (different units)
 auto q2 = 10 / (2 * si::time[s]) + 5 * si::frequency[Hz];
-static_assert(is_same_v<decltype(q1), quantity<reference<isq::frequency_dim, si::hertz>{}, int>>)
+static_assert(is_same_v<decltype(q2), quantity<reference<isq::frequency_dim, si::hertz>{}, int>>)
 
 // Different named dimensions
 // auto q3 = 5 * si::activity[Bq] + 5 * si::frequency[Hz];                          // ambiguous
