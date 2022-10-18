@@ -60,6 +60,7 @@ inline constexpr auto ms = milli<second>;
 inline constexpr auto cs = centi<second>;
 inline constexpr auto ds = deci<second>;
 inline constexpr auto s = second;
+// TODO Should the below multiples of second be provided?
 inline constexpr auto das = deca<second>;
 inline constexpr auto hs = hecto<second>;
 inline constexpr auto ks = kilo<second>;
@@ -489,8 +490,6 @@ inline constexpr auto EH = exa<henry>;
 inline constexpr auto ZH = zetta<henry>;
 inline constexpr auto YH = yotta<henry>;
 
-inline constexpr auto deg_C = degree_Celsius;
-
 inline constexpr auto ylm = yocto<lumen>;
 inline constexpr auto zlm = zepto<lumen>;
 inline constexpr auto alm = atto<lumen>;
@@ -623,9 +622,7 @@ inline constexpr auto Ekat = exa<katal>;
 inline constexpr auto Zkat = zetta<katal>;
 inline constexpr auto Ykat = yotta<katal>;
 
-inline constexpr auto min = minute;
-inline constexpr auto h = hour;
-inline constexpr auto d = day;
+// TODO Should the following non-SI units have prefixes symbols predefiend as well?
 inline constexpr auto au = astronomical_unit;
 inline constexpr auto a = are;
 inline constexpr auto ha = hectare;
@@ -633,5 +630,11 @@ inline constexpr auto l = litre;
 inline constexpr auto t = tonne;
 inline constexpr auto Da = dalton;
 inline constexpr auto eV = electronvolt;
+
+// No prefixes should be provided for the below units
+inline constexpr auto deg_C = degree_Celsius;
+inline constexpr auto min = minute;
+inline constexpr auto h = hour;
+inline constexpr auto d = day;
 
 }  // namespace units::si::unit_symbols
