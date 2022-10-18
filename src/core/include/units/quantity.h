@@ -69,8 +69,8 @@ concept harmonic_ =  // exposition only
 
 template<typename QFrom, typename QTo>
 concept quantity_convertible_to_ =  // exposition only
-  Quantity<QFrom> && Quantity<QTo> && convertible(QFrom::dimension, QTo::dimension) &&
-  convertible(QFrom::unit, QTo::unit) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+  Quantity<QFrom> && Quantity<QTo> &&
+  convertible(QFrom::reference, QTo::reference) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
   (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>

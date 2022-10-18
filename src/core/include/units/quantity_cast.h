@@ -99,11 +99,10 @@ namespace detail {
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, auto R, scalable_with_<typename To::rep> Rep>
-  requires(convertible(R, To::reference))
+  requires(convertible(To::reference, R))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  // TODO implement same unit magnitude check
-  if constexpr (std::same_as<decltype(R.unit), decltype(To::unit)>) {
+  if constexpr (R.unit == To::unit) {
     return To(static_cast<TYPENAME To::rep>(q.number()));
   } else {
     // using traits = detail::cast_traits<Rep, typename To::rep>;
@@ -202,7 +201,7 @@ template<Representation ToRep, auto R, scalable_with_<ToRep> Rep>
 // requires(std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>)
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  return To(static_cast<ToRep>(q.number()));
+  return quantity_cast<quantity<R, ToRep>>(q);
 }
 
 // /**

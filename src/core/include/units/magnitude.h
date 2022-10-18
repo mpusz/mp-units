@@ -514,15 +514,12 @@ inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
 
-// template<auto... LeftBPs, auto... RightBPs>
-// constexpr bool operator==(magnitude<LeftBPs...>, magnitude<RightBPs...>)
-// {
-//   if constexpr (sizeof...(LeftBPs) == sizeof...(RightBPs)) {
-//     return ((LeftBPs == RightBPs) && ...);
-//   } else {
-//     return false;
-//   }
-// }
+template<Magnitude M1, Magnitude M2>
+[[nodiscard]] consteval bool operator==(M1, M2)
+{
+  return std::is_same_v<M1, M2>;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.

@@ -104,19 +104,41 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 template<typename T>
 inline constexpr bool is_one_dim = false;
 
+template<typename T>
+inline constexpr bool is_power_of_dim =
+  requires {
+    requires is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_one_dim<typename T::factor>);
+  };
+
+template<typename T>
+inline constexpr bool is_per_of_dims = false;
+
+template<typename... Ts>
+inline constexpr bool is_per_of_dims<per<Ts...>> =
+  (... && (BaseDimension<Ts> || is_one_dim<Ts> || is_power_of_dim<Ts>));
+
 }  // namespace detail
 
-// TODO add checking for `per` and power elements as well
 template<typename T>
 concept DimensionSpec =
-  BaseDimension<T> || detail::is_one_dim<T> || is_specialization_of<T, per> || detail::is_specialization_of_power<T>;
+  BaseDimension<T> || detail::is_one_dim<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
+
+template<DimensionSpec... Ds>
+struct derived_dimension;
+
+namespace detail {
+
+template<typename... Ds>
+struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds...> {
+  using _type_ = derived_dimension<Ds...>;  // exposition only
+};
+
+}  // namespace detail
 
 // User should not instantiate this type!!!
 // It should not be exported from the module
 template<DimensionSpec... Ds>
-struct derived_dimension : detail::expr_fractions<derived_dimension<>, Ds...> {
-  using type = derived_dimension<Ds...>;
-};
+struct derived_dimension : detail::derived_dimension_impl<Ds...> {};
 
 namespace detail {
 
@@ -154,7 +176,7 @@ struct dim_type_impl {
 
 template<DerivedDimension T>
 struct dim_type_impl<T> {
-  using type = T::type;
+  using type = T::_type_;
 };
 
 template<Dimension T>
@@ -189,11 +211,11 @@ template<Dimension D1, Dimension D2>
   return is_same_v<D1, D2>;
 }
 
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool equivalent(D1, D2)
-{
-  return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
-}
+// template<Dimension D1, Dimension D2>
+// [[nodiscard]] consteval bool equivalent(D1, D2)
+// {
+//   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
+// }
 
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool convertible(D1, D2)
