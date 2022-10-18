@@ -300,8 +300,8 @@ struct expr_fractions {
 private:
   using impl = expr_fractions_impl<OneTypeBase, false, Ts...>;
 public:
-  using num = TYPENAME impl::num;
-  using den = TYPENAME impl::den;
+  using _num_ = TYPENAME impl::num;  // exposition only
+  using _den_ = TYPENAME impl::den;  // exposition only
 };
 
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
@@ -357,14 +357,14 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
   } else if constexpr (is_same_v<T2, OneType>) {
     return T1{};
   } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T1::num, typename T2::num, Pred>,
-                                    type_list_merge_sorted<typename T1::den, typename T2::den, Pred>, OneType, Pred,
+    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_num_, Pred>,
+                                    type_list_merge_sorted<typename T1::_den_, typename T2::_den_, Pred>, OneType, Pred,
                                     To>();
   } else if constexpr (is_specialization_of<T1, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T1::num, type_list<T2>, Pred>, typename T1::den,
+    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, type_list<T2>, Pred>, typename T1::_den_,
                                     OneType, Pred, To>();
   } else if constexpr (is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T2::num, type_list<T1>, Pred>, typename T2::den,
+    return get_optimized_expression<type_list_merge_sorted<typename T2::_num_, type_list<T1>, Pred>, typename T2::_den_,
                                     OneType, Pred, To>();
   } else {
     return get_optimized_expression<type_list_merge_sorted<type_list<T1>, type_list<T2>, Pred>, type_list<>, OneType,
@@ -381,14 +381,14 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
   } else if constexpr (is_same_v<T2, OneType>) {
     return T1{};
   } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T1::num, typename T2::den, Pred>,
-                                    type_list_merge_sorted<typename T1::den, typename T2::num, Pred>, OneType, Pred,
+    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_den_, Pred>,
+                                    type_list_merge_sorted<typename T1::_den_, typename T2::_num_, Pred>, OneType, Pred,
                                     To>();
   } else if constexpr (is_specialization_of<T1, To>) {
-    return get_optimized_expression<typename T1::num, type_list_merge_sorted<typename T1::den, type_list<T2>, Pred>,
+    return get_optimized_expression<typename T1::_num_, type_list_merge_sorted<typename T1::_den_, type_list<T2>, Pred>,
                                     OneType, Pred, To>();
   } else if constexpr (is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T2::den, type_list<T1>, Pred>, typename T2::num,
+    return get_optimized_expression<type_list_merge_sorted<typename T2::_den_, type_list<T1>, Pred>, typename T2::_num_,
                                     OneType, Pred, To>();
   } else {
     return To<T1, per<T2>>{};
@@ -399,7 +399,7 @@ template<typename T, typename OneType, template<typename...> typename To>
 [[nodiscard]] consteval auto expr_invert()
 {
   if constexpr (is_specialization_of<T, To>)
-    return expr_expression<typename T::den, typename T::num, OneType, To>{};
+    return expr_expression<typename T::_den_, typename T::_num_, OneType, To>{};
   else
     return To<OneType, per<T>>{};
 }
