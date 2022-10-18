@@ -293,7 +293,7 @@ static_assert(metre / second == metre / second);
 static_assert(1 / second == hertz);
 static_assert(convertible(1 / second, hertz));
 
-// comparisons of equivalent but not convertible units
+// comparisons of equivalent units of different quantities
 static_assert(hertz == becquerel);
 static_assert(convertible(hertz, becquerel));
 
