@@ -136,12 +136,6 @@ template<Representation Rep, Reference R>
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
-// template<Reference R1, Reference R2>
-// [[nodiscard]] consteval bool equivalent(R1, R2)
-// {
-//   return equivalent(R1::dimension, R2::dimension) && R1::unit == R2::unit;
-// }
-
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval bool convertible(R1, R2)
 {

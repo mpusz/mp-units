@@ -211,12 +211,6 @@ template<Dimension D1, Dimension D2>
   return is_same_v<D1, D2>;
 }
 
-// template<Dimension D1, Dimension D2>
-// [[nodiscard]] consteval bool equivalent(D1, D2)
-// {
-//   return is_same_v<detail::dim_type<D1>, detail::dim_type<D2>>;
-// }
-
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool convertible(D1, D2)
 {

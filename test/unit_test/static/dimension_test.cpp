@@ -120,7 +120,6 @@ static_assert(speed_dim == speed_dim);
 static_assert(length_dim / length_dim == one_dim);
 
 static_assert(1 / time_dim != frequency_dim);
-// static_assert(equivalent(1 / time_dim, frequency_dim));
 static_assert(convertible(1 / time_dim, frequency_dim));
 static_assert(1 / frequency_dim == time_dim);
 static_assert(frequency_dim * time_dim == one_dim);
@@ -128,7 +127,6 @@ static_assert(std::is_same_v<std::common_type_t<decltype(1 / time_dim), decltype
 static_assert(std::is_same_v<std::common_type_t<decltype(frequency_dim), decltype(1 / time_dim)>, frequency_dim_>);
 
 static_assert(length_dim * length_dim != area_dim);
-// static_assert(equivalent(length_dim * length_dim, area_dim));
 static_assert(convertible(length_dim * length_dim, area_dim));
 static_assert(length_dim * length_dim != volume_dim);
 static_assert(area_dim / length_dim == length_dim);
@@ -136,20 +134,14 @@ static_assert(std::is_same_v<std::common_type_t<decltype(length_dim * length_dim
 static_assert(std::is_same_v<std::common_type_t<decltype(area_dim), decltype(length_dim * length_dim)>, area_dim_>);
 
 static_assert(length_dim * length_dim * length_dim != volume_dim);
-// static_assert(equivalent(length_dim * length_dim * length_dim, volume_dim));
 static_assert(area_dim * length_dim != volume_dim);
-// static_assert(equivalent(area_dim * length_dim, volume_dim));
 static_assert(volume_dim / length_dim != area_dim);
-// static_assert(equivalent(volume_dim / length_dim, area_dim));
 static_assert(volume_dim / length_dim / length_dim == length_dim);
 static_assert(area_dim * area_dim / length_dim != volume_dim);
-// static_assert(equivalent(area_dim * area_dim / length_dim, volume_dim));
 static_assert(area_dim * (area_dim / length_dim) != volume_dim);
-// static_assert(equivalent(area_dim * (area_dim / length_dim), volume_dim));
 static_assert(volume_dim / (length_dim * length_dim) == length_dim);
 
 static_assert(length_dim / time_dim != speed_dim);
-// static_assert(equivalent(length_dim / time_dim, speed_dim));
 static_assert(length_dim * time_dim != speed_dim);
 static_assert(length_dim / time_dim / time_dim != speed_dim);
 static_assert(length_dim / speed_dim == time_dim);
@@ -160,34 +152,25 @@ static_assert(std::is_same_v<std::common_type_t<decltype(length_dim / time_dim),
                              decltype(length_dim / time_dim)>);
 
 static_assert(length_dim / time_dim / time_dim != acceleration_dim);
-// static_assert(equivalent(length_dim / time_dim / time_dim, acceleration_dim));
 static_assert(length_dim / (time_dim * time_dim) != acceleration_dim);
-// static_assert(equivalent(length_dim / (time_dim * time_dim), acceleration_dim));
 static_assert(speed_dim / time_dim != acceleration_dim);
-// static_assert(equivalent(speed_dim / time_dim, acceleration_dim));
 static_assert(speed_dim / acceleration_dim == time_dim);
 static_assert(acceleration_dim * time_dim != speed_dim);
-// static_assert(equivalent(acceleration_dim * time_dim, speed_dim));
 static_assert(acceleration_dim * (time_dim * time_dim) == length_dim);
 static_assert(acceleration_dim / speed_dim != frequency_dim);
-// static_assert(equivalent(acceleration_dim / speed_dim, frequency_dim));
 
 // comparison of convertible named dimensions
 static_assert(velocity_dim != speed_dim);
-// static_assert(equivalent(velocity_dim, speed_dim));
 static_assert(convertible(speed_dim, velocity_dim));
 static_assert(std::is_same_v<std::common_type_t<decltype(velocity_dim), decltype(speed_dim)>, velocity_dim_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(speed_dim), decltype(velocity_dim)>, velocity_dim_>);
 
 // comparisons of equivalent but not convertible dimensions
 static_assert(energy_dim != torque_dim);
-// static_assert(equivalent(energy_dim, torque_dim));
 static_assert(!convertible(energy_dim, torque_dim));
 
 static_assert(force_dim * length_dim != energy_dim);
 static_assert(force_dim * length_dim != torque_dim);
-// static_assert(equivalent(force_dim * length_dim, energy_dim));
-// static_assert(equivalent(force_dim * length_dim, torque_dim));
 static_assert(convertible(force_dim * length_dim, energy_dim));
 static_assert(convertible(force_dim * length_dim, torque_dim));
 template<auto T1, auto T2>
@@ -198,34 +181,27 @@ concept no_common_type = requires {
 static_assert(no_common_type<energy_dim, torque_dim>);
 
 static_assert(frequency_dim != action_dim);
-// static_assert(equivalent(frequency_dim, action_dim));
 static_assert(!convertible(frequency_dim, action_dim));
 static_assert(no_common_type<frequency_dim, action_dim>);
 
 // Dimensionless
-// static_assert(equivalent(power_dim / power_dim, efficiency_dim));
 static_assert(convertible(power_dim / power_dim, efficiency_dim));
 static_assert(power_dim / power_dim != efficiency_dim);
 static_assert(one_dim != efficiency_dim);
 
-// static_assert(equivalent(efficiency_dim, strain_dim));
 static_assert(!convertible(efficiency_dim, strain_dim));
 static_assert(efficiency_dim != strain_dim);
 
 static_assert(stress_dim / stress_dim != strain_dim);
 static_assert(stress_dim / stress_dim != efficiency_dim);
-// static_assert(equivalent(stress_dim / stress_dim, strain_dim));
-// static_assert(equivalent(stress_dim / stress_dim, efficiency_dim));
 static_assert(convertible(stress_dim / stress_dim, strain_dim));
 static_assert(convertible(stress_dim / stress_dim, efficiency_dim));
 
 // comparison of not equivalent dimensions
 static_assert(length_dim != time_dim);
-// static_assert(!equivalent(length_dim, time_dim));
 static_assert(!convertible(length_dim, time_dim));
 
 static_assert(acceleration_dim != speed_dim);
-// static_assert(!equivalent(acceleration_dim, speed_dim));
 static_assert(!convertible(acceleration_dim, speed_dim));
 
 }  // namespace
