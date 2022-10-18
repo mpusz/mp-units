@@ -66,16 +66,20 @@ struct basic_symbol_text {
   basic_fixed_string<StandardCharT, N> standard_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr basic_symbol_text(char std) noexcept : standard_(std), ascii_(std) { detail::validate_ascii_char(std); }
+  constexpr explicit(false) basic_symbol_text(char std) noexcept : standard_(std), ascii_(std)
+  {
+    detail::validate_ascii_char(std);
+  }
   constexpr basic_symbol_text(StandardCharT std, char a) noexcept : standard_(std), ascii_(a)
   {
     detail::validate_ascii_char(a);
   }
-  constexpr basic_symbol_text(const char (&std)[N + 1]) noexcept : standard_(std), ascii_(std)
+  constexpr explicit(false) basic_symbol_text(const char (&std)[N + 1]) noexcept : standard_(std), ascii_(std)
   {
     detail::validate_ascii_string<N>(std);
   }
-  constexpr basic_symbol_text(const basic_fixed_string<char, N>& std) noexcept : standard_(std), ascii_(std)
+  constexpr explicit(false) basic_symbol_text(const basic_fixed_string<char, N>& std) noexcept :
+      standard_(std), ascii_(std)
   {
     detail::validate_ascii_string<N>(std.data_);
   }
