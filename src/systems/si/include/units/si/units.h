@@ -86,3 +86,16 @@ inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634,
 // clang-format on
 
 }  // namespace units::si
+
+namespace units {
+
+template<>
+inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;
+template<>
+inline constexpr bool unit_can_be_prefixed<si::minute> = false;
+template<>
+inline constexpr bool unit_can_be_prefixed<si::hour> = false;
+template<>
+inline constexpr bool unit_can_be_prefixed<si::day> = false;
+
+}  // namespace units
