@@ -43,6 +43,23 @@ static_assert(type_list_size<type_list<int>> == 1);
 static_assert(type_list_size<type_list<int, int>> == 2);
 static_assert(type_list_size<type_list<int, long, int>> == 3);
 
+// type_list_map
+
+template<typename... Types>
+struct other_list;
+
+static_assert(is_same_v<type_list_map<type_list<>, other_list>, other_list<>>);
+static_assert(is_same_v<type_list_map<type_list<int>, other_list>, other_list<int>>);
+static_assert(is_same_v<type_list_map<type_list<double, int>, other_list>, other_list<double, int>>);
+
+// type_list_element
+
+static_assert(is_same_v<type_list_element<type_list<int>, 0>, int>);
+static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 0>, int>);
+static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 1>, double>);
+static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 2>, float>);
+static_assert(is_same_v<type_list_element<type_list<int, double, float, long>, 3>, long>);
+
 // type_list_front
 
 template<template<typename...> typename List>
@@ -52,6 +69,16 @@ static_assert(type_list_front_invalid_for_empty_list<type_list>);
 static_assert(is_same_v<type_list_front<type_list<int>>, int>);
 static_assert(is_same_v<type_list_front<type_list<long, int>>, long>);
 static_assert(is_same_v<type_list_front<type_list<float, long, int>>, float>);
+
+// type_list_back
+
+template<template<typename...> typename List>
+concept type_list_back_invalid_for_empty_list = !requires { typename type_list_back<List<>>; };
+
+static_assert(type_list_back_invalid_for_empty_list<type_list>);
+static_assert(is_same_v<type_list_back<type_list<int>>, int>);
+static_assert(is_same_v<type_list_back<type_list<int, long>>, long>);
+static_assert(is_same_v<type_list_back<type_list<int, long, float>>, float>);
 
 // type_list_push_front
 
@@ -155,14 +182,5 @@ static_assert(is_same_v<type_list_sort<type_list<v1, v2>, constant_less>, type_l
 static_assert(is_same_v<type_list_sort<type_list<v2, v1>, constant_less>, type_list<v1, v2>>);
 static_assert(is_same_v<type_list_sort<type_list<v2, v1, v3>, constant_less>, type_list<v1, v2, v3>>);
 static_assert(is_same_v<type_list_sort<type_list<v4, v3, v2, v1>, constant_less>, type_list<v1, v2, v3, v4>>);
-
-// type_list_map
-
-template<typename... Types>
-struct other_list;
-
-static_assert(is_same_v<type_list_map<type_list<>, other_list>, other_list<>>);
-static_assert(is_same_v<type_list_map<type_list<v1>, other_list>, other_list<v1>>);
-static_assert(is_same_v<type_list_map<type_list<v1, v2>, other_list>, other_list<v1, v2>>);
 
 }  // namespace
