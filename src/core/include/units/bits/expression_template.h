@@ -28,13 +28,29 @@
 
 namespace units {
 
+/**
+ * @brief Type list type used by the expression template framework
+ *
+ * @tparam Ts The list of types
+ */
 template<typename... Ts>
 struct type_list {};
 
+/**
+ * @brief Type list type storing the list of components with negative exponents
+ *
+ * @note Can't be empty
+ */
 template<typename T, typename... Ts>
 struct per {};
 
 namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_per = false;
+
+template<typename... Ts>
+inline constexpr bool is_specialization_of_per<per<Ts...>> = true;
 
 template<int Num, int... Den>
 inline constexpr bool valid_ratio = true;
@@ -65,6 +81,19 @@ inline constexpr bool ratio_one<N, N> = true;
 
 }  // namespace detail
 
+
+/**
+ * @brief Type container for exponents with ratio different than `1`
+ *
+ * Ratio must be mathematically valid and non-negative. Negative exponents are passed to
+ * `per<...>` with inverted sign (as positive exponents).
+ *
+ * @tparam F factor to be raised to specified power
+ * @tparam Num Power ratio numerator
+ * @tparam Den [optional] Power ration denominator
+ *
+ * @note @p Den is an optional parameter to shorten the types presented to the user in the case when  @p Den equals `1`.
+ */
 template<typename F, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power {
@@ -80,12 +109,7 @@ inline constexpr bool is_specialization_of_power = false;
 template<typename F, int... Ints>
 inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
-}  // namespace detail
-
-namespace detail {
-
-template<typename T, auto R>
-// template<typename T, ratio R>   // TODO
+template<typename T, ratio R>
 consteval auto power_or_T_impl()
 {
   if constexpr (R.den == 1) {
@@ -99,42 +123,15 @@ consteval auto power_or_T_impl()
 };
 
 template<typename T, auto R>
-// template<typename T, ratio R>  // TODO
+// template<typename T, ratio R>  // TODO ICE gcc 12
 using power_or_T = decltype(power_or_T_impl<T, R>());
 
-// type_power
-// template<typename T, int Num, int Den>
-// struct type_power {
-//   using type = conditional<Den == 1, power<T, Num>, power<T, Num, Den>>;
-// };
-
-// template<typename T, int Num2, int Num>
-// struct type_power<power<T, Num2>, Num, 1> {
-//   using type = power<T, Num * Num2>;
-// };
-
-// template<typename T, int Num, int Den, int... Ints>
-// struct type_power<power<T, Ints...>, Num, Den> {
-//   static constexpr ratio r = ratio(power<T, Ints...>::num, power<T, Ints...>::den) * ratio(Num, Den);
-//   using type = power_or_T<T, r.num, r.den>;
-// };
-
-// expr_power
-// template<typename List, int Num, int Den>
-// struct expr_power;
-
-// template<typename... Ts, int Num, int Den>
-// struct expr_power<type_list<Ts...>, Num, Den> {
-//   using type = type_list<typename type_power<Ts, Num, Den>::type...>;
-// };
 
 /**
- * @brief Consolidates contiguous ranges of exponents of the same dimension
+ * @brief Consolidates contiguous ranges of exponents of the same type
  *
- * If there is more than one exponent with the same dimension they are aggregated into one exponent by adding
- * their exponents. If this accumulation will result with 0, such a dimension is removed from the list.
- *
- * @tparam D derived dimension to consolidate
+ * If there is more than one exponent with the same type they are aggregated into one type by adding
+ * their powers.
  */
 template<typename List>
 struct expr_consolidate_impl;
@@ -154,29 +151,65 @@ struct expr_consolidate_impl<type_list<T, Rest...>> {
   using type = type_list_push_front<typename expr_consolidate_impl<type_list<Rest...>>::type, T>;
 };
 
+// replaces two instances of a type with one having the power of `2`
 template<typename T, typename... Rest>
   requires(!is_specialization_of_power<T>)
 struct expr_consolidate_impl<type_list<T, T, Rest...>> {
   using type = expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
 };
 
+// replaces the instance of a type and a power of it with one with incremented power
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
   using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
 };
 
+// accumulates the powers of instances of the same type (removes the element in case the accumulation result is `0`)
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
   static constexpr ratio r = power<T, Ints1...>::exponent + power<T, Ints2...>::exponent;
-  using type = conditional<r.num == 0, typename expr_consolidate_impl<type_list<Rest...>>::type,
-                           typename expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type>;
+  using type = typename expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
 };
 
 template<typename List>
 using expr_consolidate = typename expr_consolidate_impl<List>::type;
 
 
-// expr_simplify
+/**
+ * @brief Simplifies the expression template
+ *
+ * Analyzes provided numerator and denominator type lists and simplifies elements with the same type.
+ * If the same power exists in both list, this elements gets omitted. Otherwise, the power of its
+ * exponent gets subtracted according to numerator and denominator elements powers.
+ *
+ * @tparam NumList type list for expression numerator
+ * @tparam DenList type list for expression denominator
+ * @tparam Pred predicate to be used for elements comparisons
+ */
+template<typename NumList, typename DenList, template<typename, typename> typename Pred>
+struct expr_simplify;
+
+// when one of the lists is empty there is nothing to do
+template<typename NumList, typename DenList, template<typename, typename> typename Pred>
+  requires(type_list_size<NumList> == 0) || (type_list_size<DenList> == 0)
+struct expr_simplify<NumList, DenList, Pred> {
+  using num = NumList;
+  using den = DenList;
+};
+
+// in case when front elements are different progress to the next element
+template<typename Num, typename... NRest, typename Den, typename... DRest, template<typename, typename> typename Pred>
+struct expr_simplify<type_list<Num, NRest...>, type_list<Den, DRest...>, Pred> {
+  using impl = conditional<Pred<Num, Den>::value, expr_simplify<type_list<NRest...>, type_list<Den, DRest...>, Pred>,
+                           expr_simplify<type_list<Num, NRest...>, type_list<DRest...>, Pred>>;
+  using num = conditional<Pred<Num, Den>::value, type_list_push_front<typename impl::num, Num>, typename impl::num>;
+  using den = conditional<Pred<Num, Den>::value, typename impl::den, type_list_push_front<typename impl::den, Den>>;
+};
+
+// in case two elements are of the same power such element gets omitted
+template<typename T, typename... NRest, typename... DRest, template<typename, typename> typename Pred>
+struct expr_simplify<type_list<T, NRest...>, type_list<T, DRest...>, Pred> :
+    expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred> {};
 
 template<typename T, ratio Num, ratio Den>
 struct expr_simplify_power {
@@ -186,28 +219,7 @@ struct expr_simplify_power {
   using den = conditional<(r < 0), type_list<type>, type_list<>>;
 };
 
-template<typename NumList, typename DenList, template<typename, typename> typename Pred>
-struct expr_simplify;
-
-template<typename NumList, typename DenList, template<typename, typename> typename Pred>
-  requires(type_list_size<NumList> == 0) || (type_list_size<DenList> == 0)
-struct expr_simplify<NumList, DenList, Pred> {
-  using num = NumList;
-  using den = DenList;
-};
-
-template<typename Num, typename... NRest, typename Den, typename... DRest, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<Num, NRest...>, type_list<Den, DRest...>, Pred> {
-  using impl = conditional<Pred<Num, Den>::value, expr_simplify<type_list<NRest...>, type_list<Den, DRest...>, Pred>,
-                           expr_simplify<type_list<Num, NRest...>, type_list<DRest...>, Pred>>;
-  using num = conditional<Pred<Num, Den>::value, type_list_push_front<typename impl::num, Num>, typename impl::num>;
-  using den = conditional<Pred<Num, Den>::value, typename impl::den, type_list_push_front<typename impl::den, Den>>;
-};
-
-template<typename T, typename... NRest, typename... DRest, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<T, NRest...>, type_list<T, DRest...>, Pred> :
-    expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred> {};
-
+// in case there are different powers for the same element simplify the power
 template<typename T, typename... NRest, int... Ints, typename... DRest, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
@@ -216,6 +228,7 @@ struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest.
   using den = type_list_join<typename type::den, typename impl::den>;
 };
 
+// in case there are different powers for the same element simplify the power
 template<typename T, typename... NRest, typename... DRest, int... Ints, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
@@ -224,6 +237,7 @@ struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest.
   using den = type_list_join<typename impl::den, typename type::den>;
 };
 
+// in case there are different powers for the same element simplify the power
 template<typename T, typename... NRest, int... Ints1, typename... DRest, int... Ints2,
          template<typename, typename> typename Pred>
   requires(!std::same_as<power<T, Ints1...>, power<T, Ints2...>>)
@@ -251,61 +265,57 @@ struct expr_less_impl<T1, power<T2, Ints...>, Pred> : Pred<T1, T2> {};
 template<typename T, int... Ints, template<typename, typename> typename Pred>
 struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
 
+/**
+ * @brief Compares two types with a given predicate
+ *
+ * Algorithm accounts not only for explicit types but also for the case when they
+ * are wrapped within `power<T, Num, Den>`.
+ */
 template<typename T1, typename T2, template<typename, typename> typename Pred>
 using expr_less = expr_less_impl<T1, T2, Pred>;
 
 
 // expr_fractions
-template<typename OneTypeBase, bool PerFound, typename... Ts>
-struct expr_fractions_impl;
-
-template<typename OneTypeBase>
-struct expr_fractions_impl<OneTypeBase, true> {
-  using den = type_list<>;
+template<typename Num = type_list<>, typename Den = type_list<>>
+struct expr_fractions_result {
+  using _num_ = Num;  // exposition only
+  using _den_ = Den;  // exposition only
 };
 
-template<typename OneTypeBase, typename T, typename... Rest>
-struct expr_fractions_impl<OneTypeBase, true, T, Rest...> {
-  using den = type_list_push_front<typename expr_fractions_impl<OneTypeBase, true, Rest...>::den, T>;
-};
+template<typename OneTypeBase, typename List>
+[[nodiscard]] consteval auto expr_fractions_impl()
+{
+  constexpr std::size_t size = type_list_size<List>;
 
-template<typename OneTypeBase, std::derived_from<OneTypeBase> T, typename... Rest>
-struct expr_fractions_impl<OneTypeBase, true, T, Rest...> :
-    TYPENAME expr_fractions_impl<OneTypeBase, true, Rest...>::den {};
+  if constexpr (size == 0)
+    return expr_fractions_result<>{};
+  else if constexpr (size == 1)
+    return expr_fractions_result<List>{};
+  else {
+    using last_element = type_list_back<List>;
 
-template<typename OneTypeBase>
-struct expr_fractions_impl<OneTypeBase, false> {
-  using num = type_list<>;
-  using den = type_list<>;
-};
+    if constexpr (is_specialization_of_per<last_element>) {
+      if constexpr (size == 2 && std::derived_from<type_list_front<List>, OneTypeBase>)
+        return expr_fractions_result<type_list<>, type_list_map<last_element, type_list>>{};
+      else {
+        using split = type_list_split<List, size - 1>;
+        return expr_fractions_result<typename split::first_list, type_list_map<last_element, type_list>>{};
+      }
+    } else {
+      return expr_fractions_result<List>{};
+    }
+  }
+}
 
-template<typename OneTypeBase, typename... Rest>
-struct expr_fractions_impl<OneTypeBase, false, per<Rest...>> {
-  using num = type_list<>;
-  using den = TYPENAME expr_fractions_impl<OneTypeBase, true, Rest...>::den;
-};
-
-template<typename OneTypeBase, std::derived_from<OneTypeBase> T, typename... Rest>
-struct expr_fractions_impl<OneTypeBase, false, T, Rest...> : expr_fractions_impl<OneTypeBase, false, Rest...> {};
-
-template<typename OneTypeBase, typename T, typename... Rest>
-struct expr_fractions_impl<OneTypeBase, false, T, Rest...> {
-  using impl = expr_fractions_impl<OneTypeBase, false, Rest...>;
-  using num = type_list_push_front<typename impl::num, T>;
-  using den = TYPENAME impl::den;
-};
-
+/**
+ * @brief Divides expression template spec to numerator and denominator parts
+ */
 template<typename OneTypeBase, typename... Ts>
-struct expr_fractions {
-private:
-  using impl = expr_fractions_impl<OneTypeBase, false, Ts...>;
-public:
-  using _num_ = TYPENAME impl::num;  // exposition only
-  using _den_ = TYPENAME impl::den;  // exposition only
-};
+struct expr_fractions : decltype(expr_fractions_impl<OneTypeBase, type_list<Ts...>>()) {};
 
+// expr_make_spec
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-[[nodiscard]] consteval auto expr_expression_impl()
+[[nodiscard]] consteval auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -325,8 +335,11 @@ template<typename NumList, typename DenList, typename OneType, template<typename
   }
 }
 
+/**
+ * @brief Creates an expression template spec based on provided numerator and denominator parts
+ */
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-using expr_expression = decltype(expr_expression_impl<NumList, DenList, OneType, To>());
+using expr_make_spec = decltype(expr_make_spec_impl<NumList, DenList, OneType, To>());
 
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
@@ -335,18 +348,18 @@ template<typename NumList, typename DenList, typename OneType, template<typename
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
   using simple = expr_simplify<num_list, den_list, Pred>;
-  using expr = expr_expression<typename simple::num, typename simple::den, OneType, To>;
+  using expr = expr_make_spec<typename simple::num, typename simple::den, OneType, To>;
   return expr{};
 }
 
 /**
- * @brief Merges 2 sorted derived dimensions into one units::normalized_dimension
+ * @brief Multiplies two sorted expression template specs
  *
- * A result of a dimensional calculation may result with many exponents of the same base dimension originated
- * from different parts of the equation. As the exponents lists of both operands it is enough to merge them
- * into one list and consolidate duplicates. Also it is possible that final exponents list will contain only
- * one element being a base dimension with exponent 1. In such a case the final dimension should be the base
- * dimension itself.
+ * @tparam T1 lhs of the operation
+ * @tparam T2 rhs of the operation
+ * @tparam OneType type that represents the value `1`
+ * @tparam Pred binary less then predicate
+ * @tparam To destination type list to put the result to
  */
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
@@ -357,6 +370,7 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
   } else if constexpr (is_same_v<T2, OneType>) {
     return T1{};
   } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
+    // two derived dimensions
     return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_num_, Pred>,
                                     type_list_merge_sorted<typename T1::_den_, typename T2::_den_, Pred>, OneType, Pred,
                                     To>();
@@ -367,11 +381,21 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
     return get_optimized_expression<type_list_merge_sorted<typename T2::_num_, type_list<T1>, Pred>, typename T2::_den_,
                                     OneType, Pred, To>();
   } else {
+    // two base dimensions
     return get_optimized_expression<type_list_merge_sorted<type_list<T1>, type_list<T2>, Pred>, type_list<>, OneType,
                                     Pred, To>();
   }
 }
 
+/**
+ * @brief Divides two sorted expression template specs
+ *
+ * @tparam T1 lhs of the operation
+ * @tparam T2 rhs of the operation
+ * @tparam OneType type that represents the value `1`
+ * @tparam Pred binary less then predicate
+ * @tparam To destination type list to put the result to
+ */
 template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
 [[nodiscard]] consteval auto expr_divide()
@@ -381,6 +405,7 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
   } else if constexpr (is_same_v<T2, OneType>) {
     return T1{};
   } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
+    // two derived dimensions
     return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_den_, Pred>,
                                     type_list_merge_sorted<typename T1::_den_, typename T2::_num_, Pred>, OneType, Pred,
                                     To>();
@@ -391,15 +416,23 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
     return get_optimized_expression<type_list_merge_sorted<typename T2::_den_, type_list<T1>, Pred>, typename T2::_num_,
                                     OneType, Pred, To>();
   } else {
+    // two base dimensions
     return To<T1, per<T2>>{};
   }
 }
 
+/**
+ * @brief Inverts the expression template spec
+ *
+ * @tparam T expression template spec to invert
+ * @tparam OneType type that represents the value `1`
+ * @tparam To destination type list to put the result to
+ */
 template<typename T, typename OneType, template<typename...> typename To>
 [[nodiscard]] consteval auto expr_invert()
 {
   if constexpr (is_specialization_of<T, To>)
-    return expr_expression<typename T::_den_, typename T::_num_, OneType, To>{};
+    return expr_make_spec<typename T::_den_, typename T::_num_, OneType, To>{};
   else
     return To<OneType, per<T>>{};
 }
