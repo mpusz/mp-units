@@ -92,6 +92,9 @@ concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_o
 template<Unit auto V>
 inline constexpr bool unit_can_be_prefixed = NamedUnit<std::remove_const_t<decltype(V)>>;
 
+template<typename T>
+concept PrefixableUnit = NamedUnit<T> && unit_can_be_prefixed<T{}>;
+
 /**
  * @brief A prefixed unit
  *
@@ -103,8 +106,7 @@ inline constexpr bool unit_can_be_prefixed = NamedUnit<std::remove_const_t<declt
  * @tparam P prefix to be appied to the coherent_unit unit
  * @tparam U coherent_unit unit
  */
-template<basic_symbol_text Symbol, Magnitude auto M, NamedUnit auto U>
-  requires unit_can_be_prefixed<U>
+template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
   static constexpr auto symbol = Symbol + U.symbol;
 };

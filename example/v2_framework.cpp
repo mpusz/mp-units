@@ -34,16 +34,16 @@ inline constexpr struct activity : system_reference<activity_dim, si::becquerel>
 
 // check for invalid prefixes
 
-template<Unit auto V1>
-concept can_not_be_prefixed = !requires { typename si::milli_<V1>; };
+template<template<auto U> typename prefix, Unit auto V1>
+concept can_not_be_prefixed = !requires { typename prefix<V1>; };
 
-static_assert(can_not_be_prefixed<si::degree_Celsius>);
-static_assert(can_not_be_prefixed<si::minute>);
-static_assert(can_not_be_prefixed<si::hour>);
-static_assert(can_not_be_prefixed<si::day>);
-static_assert(can_not_be_prefixed<si::kilogram>);
-static_assert(can_not_be_prefixed<si::hectare>);
-static_assert(can_not_be_prefixed<si::metre / si::second>);
+static_assert(can_not_be_prefixed<si::milli_, si::degree_Celsius>);
+static_assert(can_not_be_prefixed<si::milli_, si::minute>);
+static_assert(can_not_be_prefixed<si::milli_, si::hour>);
+static_assert(can_not_be_prefixed<si::milli_, si::day>);
+static_assert(can_not_be_prefixed<si::milli_, si::kilogram>);
+static_assert(can_not_be_prefixed<si::milli_, si::hectare>);
+static_assert(can_not_be_prefixed<si::milli_, si::metre / si::second>);
 
 // Named quantity/dimension and unit
 static_assert(
