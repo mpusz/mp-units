@@ -134,10 +134,10 @@ inline constexpr bool is_per_of_dims<per<Ts...>> =
 }  // namespace detail
 
 template<typename T>
-concept DimensionSpec =
+concept DerivedDimensionSpec =
   BaseDimension<T> || detail::is_one_dim<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
 
-template<DimensionSpec... Ds>
+template<DerivedDimensionSpec... Ds>
 struct derived_dimension;
 
 namespace detail {
@@ -199,7 +199,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<DimensionSpec... Ds>
+template<DerivedDimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {};
 
 namespace detail {
