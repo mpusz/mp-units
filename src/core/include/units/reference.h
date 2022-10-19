@@ -155,8 +155,7 @@ struct system_reference {
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-  // TODO enable that
-  // requires(convertible(coherent_unit, U{}))
+    requires(convertible(coherent_unit, U{}))
   [[nodiscard]] constexpr reference<std::remove_const_t<decltype(dimension)>, U> operator[](U) const
   {
     return {};
