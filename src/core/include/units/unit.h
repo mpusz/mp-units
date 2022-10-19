@@ -75,7 +75,7 @@ struct named_unit<Symbol> {
 };
 
 template<basic_symbol_text Symbol, Unit auto U>
-struct named_unit<Symbol, U> {
+struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;
 };
 
