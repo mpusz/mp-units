@@ -165,6 +165,14 @@ static_assert(convertible(speed_dim, velocity_dim));
 static_assert(std::is_same_v<std::common_type_t<decltype(velocity_dim), decltype(speed_dim)>, velocity_dim_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(speed_dim), decltype(velocity_dim)>, velocity_dim_>);
 
+// comparison of convertible unnamed dimensions
+static_assert(
+  is_of_type<mass_dim * acceleration_dim, derived_dimension<length_dim_, mass_dim_, per<units::power<time_dim_, 2>>>>);
+static_assert(
+  is_of_type<acceleration_dim * mass_dim, derived_dimension<length_dim_, mass_dim_, per<units::power<time_dim_, 2>>>>);
+static_assert(mass_dim * acceleration_dim == acceleration_dim * mass_dim);
+static_assert(convertible(mass_dim * acceleration_dim, acceleration_dim* mass_dim));
+
 // comparisons of equivalent but not convertible dimensions
 static_assert(energy_dim != torque_dim);
 static_assert(!convertible(energy_dim, torque_dim));

@@ -37,8 +37,22 @@ namespace units {
  * quantities.
  *
  * Symbol template parameters is an unique identifier of the base dimension. The same identifiers can be multiplied
- * and divided which will result with an adjustment of its factor in an Exponent of a DerivedDimension
+ * and divided which will result with an adjustment of its factor in an exponent of a derived_dimension
  * (in case of zero the dimension will be simplified and removed from further analysis of current expresion).
+ *
+ * User should derive a strong type from this class template rather than use it directly in the source code.
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct length_dim : base_dimension<"L"> {} length_dim;
+ * inline constexpr struct time_dim : base_dimension<"T"> {} time_dim;
+ * inline constexpr struct mass_dim : base_dimension<"M"> {} mass_dim;
+ * @endcode
+ *
+ * @note A common convention in this library is to assign the same name for a type and an object of this type.
+ *       Besides defining them user never works with the dimension types in the source code. All operations
+ *       are done on the objects. Contrarily, the dimension types are the only one visible in the compilation
+ *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  */
@@ -61,16 +75,13 @@ inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>
 }  // namespace detail
 
 /**
- * @brief A concept matching all base dimensions in the library.
+ * @brief A concept matching all named base dimensions in the library.
  *
- * Satisfied by all dimension types derived from an specialization of `base_dimension`.
+ * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
 concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
                         (!detail::is_specialization_of_base_dimension<T>);
-
-template<BaseDimension D1, BaseDimension D2>
-struct base_dimension_less : std::bool_constant<(D1::symbol < D2::symbol)> {};
 
 namespace detail {
 
@@ -82,7 +93,8 @@ inline constexpr bool is_derived_dimension = false;
 /**
  * @brief A concept matching all derived dimensions in the library.
  *
- * Satisfied by all dimension types derived from an specialization of `derived_dimension`.
+ * Satisfied by all dimension types either being a specialization of `derived_dimension`
+ * or derived from it.
  */
 template<typename T>
 concept DerivedDimension = detail::is_derived_dimension<T>;
@@ -97,6 +109,8 @@ concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
 namespace detail {
 
+template<BaseDimension D1, BaseDimension D2>
+struct base_dimension_less : std::bool_constant<(D1::symbol < D2::symbol)> {};
 
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
@@ -135,8 +149,56 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
 
 }  // namespace detail
 
-// User should not instantiate this type!!!
-// It should not be exported from the module
+
+/**
+ * @brief A dimension of a derived quantity
+ *
+ * Derived dimension is an expression of the dependence of a quantity on the base quantities of a system of quantities
+ * as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
+ *
+ * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
+ * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
+ * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
+ * is also one special case. In case all of the exponents are negative than the `one_dim` being a dimension of
+ * a dimensionless quantity is put in the front to increase the readability.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct frequency_dim : decltype(1 / time_dim) {} frequency_dim;
+ * inline constexpr struct speed_dim : decltype(length_dim / time_dim) {} speed_dim;
+ * inline constexpr struct acceleration_dim : decltype(speed_dim / time_dim) {} acceleration_dim;
+ * inline constexpr struct force_dim : decltype(mass_dim * acceleration_dim) {} force_dim;
+ * inline constexpr struct energy_dim : decltype(force_dim * length_dim) {} energy_dim;
+ * inline constexpr struct moment_of_force_dim : decltype(length_dim * force_dim) {} moment_of_force_dim;
+ * inline constexpr struct torque_dim : decltype(moment_of_force_dim) {} torque_dim;
+ * @endcode
+ *
+ * - `frequency_dim` will be derived from type `derived_dimension<one_dim, per<time_dim>>`
+ * - `speed_dim` will be derived from type `derived_dimension<length_dim, per<time_dim>>`
+ * - `acceleration_dim` will be derived from type `derived_dimension<length_dim, per<power<time_dim, 2>>>`
+ * - `force_dim` will be derived from type `derived_dimension<length_dim, mass_dim, per<power<time_dim, 2>>>`
+ * - `energy_dim` will be derived from type `derived_dimension<power<length_dim, 2>, mass_dim, per<power<time_dim, 2>>>`
+ *
+ * @note A common convention in this library is to assign the same name for a type and an object of this type.
+ *       Besides defining them user never works with the dimension types in the source code. All operations
+ *       are done on the objects. Contrarily, the dimension types are the only one visible in the compilation
+ *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
+ *
+ * Two dimensions are deemed equal when they are of the same type. With that strong type `speed_dim` and
+ * `derived_dimension<length_dim, per<time_dim>>` are considered not equal. They are convertible though.
+ * User can implicitly convert up and down the inheritance hierarchy between those two.
+ * `torque_dim` and `moment_of_force_dim` are convertible as well. However, `energy_dim` and `torque_dim`
+ * are not convertible as they do not inherit from each other. They are from two separate branches of
+ * dimensionally equivalent quantities.
+ *
+ * @tparam Ds a parameter pack consisting tokens allowed in the dimension specification
+ *            (base dimensions, `one_dim`, `power<Dim, Num, Den>`, `per<...>`)
+ *
+ * @note User should not instantiate this type! It is not exported from the C++ module. The library will
+ *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
+ */
 template<DimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {};
 
@@ -205,6 +267,9 @@ template<Dimension D>
   return detail::expr_invert<detail::dim_type<D>, struct one_dim, derived_dimension>();
 }
 
+template<Dimension D>
+[[nodiscard]] consteval Dimension auto operator/(D, int) = delete;
+
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool operator==(D1, D2)
 {
@@ -223,6 +288,12 @@ template<Dimension D1, Dimension D2>
 
 namespace std {
 
+/**
+ * @brief Partial specialization of `std::common_type` for dimensions
+ *
+ * Defined only for convertible types and returns the most derived/specific dimension type of
+ * the two provided.
+ */
 template<units::Dimension D1, units::Dimension D2>
   requires(units::convertible(D1{}, D2{}))
 struct common_type<D1, D2> {
