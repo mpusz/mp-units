@@ -24,6 +24,7 @@
 
 #include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <cstddef>
+#include <utility>
 
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
@@ -47,16 +48,16 @@ concept TypeList = detail::is_type_list<T>;
 
 namespace detail {
 
-template<template<typename...> typename List, typename... Ts>
-consteval std::size_t type_list_size_impl(List<Ts...>)
-{
-  return sizeof...(Ts);
-}
+template<typename List>
+struct type_list_size_impl;
+
+template<template<typename...> typename List, typename... Types>
+struct type_list_size_impl<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)> {};
 
 }  // namespace detail
 
 template<TypeList List>
-inline constexpr std::size_t type_list_size = detail::type_list_size_impl(List{});
+inline constexpr std::size_t type_list_size = detail::type_list_size_impl<List>::value;
 
 // front
 

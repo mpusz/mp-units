@@ -53,14 +53,14 @@ add_library(
     # math_test.cpp
     # point_origin_test.cpp
     # prime_test.cpp
-    # ratio_test.cpp
+    ratio_test.cpp
     # references_test.cpp
     # si_test.cpp
     # si_cgs_test.cpp
     # si_fps_test.cpp
     # si_hep_test.cpp
     # symbol_text_test.cpp
-    # type_list_test.cpp
+    type_list_test.cpp
     unit_test.cpp
 
     # us_test.cpp
