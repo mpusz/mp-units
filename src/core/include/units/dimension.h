@@ -246,6 +246,9 @@ using dim_type = dim_type_impl<T>::type;
 
 }  // namespace detail
 
+
+// Operators
+
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval Dimension auto operator*(D1, D2)
 {

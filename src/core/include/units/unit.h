@@ -43,40 +43,94 @@ namespace detail {
 template<typename T>
 inline constexpr bool is_unit = false;
 
-}
+}  // namespace detail
 
 /**
  * @brief A concept matching all unit types in the library
  *
- * Satisfied by all unit types derived from an specialization of :class:`scaled_unit`.
+ * Satisfied by all unit types provided by the library.
  */
 template<typename T>
 concept Unit = detail::is_unit<T>;
 
-// User should not instantiate this type!!!
-// It should not be exported from the module
+
+/**
+ * @brief Unit being a scaled version of another unit
+ *
+ * @tparam M magnitude describing the scale factor
+ * @tparam U reference unit being scaled
+ *
+ * @note User should not instantiate this type! It is not exported from the C++ module. The library will
+ *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
+ */
 template<Magnitude auto M, Unit U>
-struct scaled_unit {};
+struct scaled_unit {
+  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr U reference_unit{};
+};
+
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_scaled_unit = false;
+
+template<auto M, Unit U>
+inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
+
+}  // namespace detail
 
 /**
  * @brief A named unit
  *
- * Defines a named (in most cases coherent) unit that is then passed to a dimension definition.
- * A named unit may be composed with a prefix to create a prefixed_unit.
+ * Defines a unit with a special name.
+ * Most of the named units may be composed with a prefix to create a `prefixed_unit`.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct second : named_unit<"s"> {} second;
+ * inline constexpr struct metre : named_unit<"m"> {} metre;
+ * inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
+ * inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
+ * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"\u00B0C", "`C"}, kelvin> {} degree_Celsius;
+ * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+ * @endcode
+ *
+ * @note A common convention in this library is to assign the same name for a type and an object of this type.
+ *       Besides defining them user never works with the unit types in the source code. All operations
+ *       are done on the objects. Contrarily, the unit types are the only one visible in the compilation
+ *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Symbol a short text representation of the unit
  */
 template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
+/**
+ * @brief Specialization for base unit
+ *
+ * Defines a base unit in the system of units (i.e. `metre`).
+ * or a name assigned to another scaled or derived unit (i.e. `hour`, `joule`).
+ * Most of the named units may be composed with a prefix to create a `prefixed_unit`.
+ *
+ * @tparam Symbol a short text representation of the unit
+ */
 template<basic_symbol_text Symbol>
 struct named_unit<Symbol> {
-  static constexpr auto symbol = Symbol;
+  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
 };
 
+/**
+ * @brief Specialization for a unit with special name
+ *
+ * Allows assigning a special name to another scaled or derived unit (i.e. `hour`, `joule`).
+ *
+ * @tparam Symbol a short text representation of the unit
+ * @tparam Unit a unit for which we provide a special name
+ */
 template<basic_symbol_text Symbol, Unit auto U>
 struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
-  static constexpr auto symbol = Symbol;
+  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
 
 namespace detail {
@@ -84,27 +138,62 @@ namespace detail {
 template<basic_symbol_text Symbol, auto... Args>
 void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
 
+template<typename T>
+inline constexpr bool is_specialization_of_named_unit = false;
+
+template<basic_symbol_text Symbol, auto... Args>
+inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
+
 }  // namespace detail
 
+/**
+ * @brief A concept matching all units with special names
+ *
+ * Satisfied by all unit types derived from the specialization of `named_unit`.
+ */
 template<typename T>
-concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_of_named_unit(t); };
+concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_of_named_unit(t); } &&
+                    (!detail::is_specialization_of_named_unit<T>);
 
-template<Unit auto V>
-inline constexpr bool unit_can_be_prefixed = NamedUnit<std::remove_const_t<decltype(V)>>;
+/**
+ * @brief Prevents assignment of a prefix to specific units
+ *
+ * By default all named units allow assigning a prefix for them. There are some notable exceptions like
+ * `hour` or `degree_Celsius`. For those a partial specialization with the value `false` should be
+ * provided.
+ */
+template<NamedUnit auto V>
+inline constexpr bool unit_can_be_prefixed = true;
 
+
+/**
+ * @brief A concept to be used to define prefixes for a unit
+ */
 template<typename T>
 concept PrefixableUnit = NamedUnit<T> && unit_can_be_prefixed<T{}>;
+
 
 /**
  * @brief A prefixed unit
  *
- * Defines a new unit that is a scaled version of another unit by the provided prefix. It is
- * only possible to create such a unit if the given prefix type matches the one defined in a
- * coherent_unit unit.
+ * Defines a new unit that is a scaled version of another unit with the scaling
+ * factor specified by a predefined prefix.
  *
- * @tparam Child inherited class type used by the downcasting facility (CRTP Idiom)
- * @tparam P prefix to be appied to the coherent_unit unit
- * @tparam U coherent_unit unit
+ * For example:
+ *
+ * @code{.cpp}
+ * template<PrefixableUnit auto U>
+ * struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
+ *
+ * template<PrefixableUnit auto U>
+ * inline constexpr kilo_<U> kilo;
+ *
+ * inline constexpr struct kilogram : decltype(si::kilo<gram>) {} kilogram;
+ * @endcode
+ *
+ * @tparam Symbol a prefix text to prepend to a unit symbol
+ * @tparam M scaling factor of the prefix
+ * @tparam U a named unit to be prefixed
  */
 template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
@@ -129,11 +218,54 @@ inline constexpr bool is_per_of_units<per<Ts...>> = (... && UnitLike<Ts>);
 }  // namespace detail
 
 template<typename T>
-concept UnitSpec = detail::UnitLike<T> || detail::is_per_of_units<T>;
+concept DerivedUnitSpec = detail::UnitLike<T> || detail::is_per_of_units<T>;
 
-// User should not instantiate this type!!!
-// It should not be exported from the module
-template<UnitSpec... Us>
+/**
+ * @brief Measurement unit for a derived quantity
+ *
+ * Derived units are defined as products of powers of the base units.
+ *
+ * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
+ * into the `per<...>` class template. If a power of exponent is different than `1` the unit type is enclosed in
+ * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
+ * is also one special case. In case all of the exponents are negative then the `one` being a coherent unit of
+ * a dimensionless quantity is put in the front to increase the readability.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * static_assert(is_of_type<1 / second, derived_unit<one, per<second>>>);
+ * static_assert(is_of_type<1 / (1 / second), second>);
+ * static_assert(is_of_type<one * second, second>);
+ * static_assert(is_of_type<metre * metre, derived_unit<power<metre, 2>>>);
+ * static_assert(is_of_type<metre * second, derived_unit<metre, second>>);
+ * static_assert(is_of_type<metre / second, derived_unit<metre, per<second>>>);
+ * static_assert(is_of_type<metre / square<second>, derived_unit<metre, per<power<second, 2>>>>);
+ * static_assert(is_of_type<watt / joule, derived_unit<watt, per<joule>>>);
+ * @endcode
+ *
+ * Every unit in the library has its internal canonical representation being the list of exponents of named base units
+ * (with the exception of `kilogram` which is represented as `gram` here) and a scaling ratio represented with a
+ * magnitude.
+ *
+ * Two units are deemed convertible if their canonical version has units of the same type.
+ * Two units are equivalent when they are convertible and their canonical versions have the same scaling ratios.
+ *
+ * The above means that:
+ * - `1/s` and `Hz` are both convertible and equal
+ * - `m` and `km` are convertible but not equal
+ * - `m` and `m²` ane not convertible and not equal
+ *
+ * @note This also means that units like `hertz` and `becquerel` are also considered convertible and equal.
+ *
+ * @tparam Us a parameter pack consisting tokens allowed in the unit specification
+ *            (units, `power<U, Num, Den>`, `per<...>`)
+ *
+ * @note User should not instantiate this type! It is not exported from the C++ module. The library will
+ *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
+ */
+template<DerivedUnitSpec... Us>
 struct derived_unit : detail::expr_fractions<derived_unit<>, Us...> {};
 
 /**
@@ -161,27 +293,26 @@ template<typename T>
 inline constexpr bool is_unit<T> = true;
 
 /**
- * @brief A common point for a hierarchy of units
+ * @brief A canonical representation of a unit
  *
- * A unit is an entity defined and adopted by convention, with which any other quantity of
- * the same kind can be compared to express the ratio of the second quantity to the first
- * one as a number.
+ * A canonical representation of a unit consists of a `reference_unit` and its scaling
+ * factor represented by the magnitude `mag`.
  *
- * All units of the same dimension can be convereted between each other. To allow this all of
- * them are expressed as different ratios of the same one proprietary chosen coherent_unit unit
- * (i.e. all length units are expressed in terms of meter, all mass units are expressed in
- * terms of gram, ...)
+ * `reference_unit` is a unit (possibly derived one) that consists only named base units.
+ * All of the intermediate derived units are extracted, prefixes and magnitudes of scaled
+ * units are stripped from them and accounted in the `mag`.
  *
- * @tparam M a Magnitude representing the (relative) size of this unit
- * @tparam U a unit to use as a coherent_unit for this dimension
+ * All units having the same canonical unit are deemed equal.
+ * All units having the same `reference_unit` are convertible (their `mag` may differ
+ * and is the subject of conversion).
  *
- * @note U cannot be constrained with Unit as for some specializations (i.e. named_unit)
- *       it gets the incomplete child's type with the CRTP idiom.
+ * @tparam U a unit to use as a `reference_unit`
+ * @tparam M a Magnitude representing an absolute scaling factor of this unit
  */
-template<UnitLike U, Magnitude M>
+template<Magnitude M, UnitLike U>
 struct canonical_unit {
-  U reference_unit;
   M mag;
+  U reference_unit;
 };
 
 [[nodiscard]] constexpr auto get_canonical_unit(UnitLike auto u);
@@ -190,13 +321,13 @@ template<UnitLike T, auto M, typename U>
 [[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile scaled_unit<M, U>&)
 {
   auto base = get_canonical_unit(U{});
-  return canonical_unit{base.reference_unit, M * base.mag};
+  return canonical_unit{M * base.mag, base.reference_unit};
 }
 
 template<UnitLike T, basic_symbol_text Symbol>
 [[nodiscard]] constexpr auto get_canonical_unit_impl(T t, const volatile named_unit<Symbol>&)
 {
-  return canonical_unit{t, mag<1>};
+  return canonical_unit{mag<1>, t};
 }
 
 template<UnitLike T, basic_symbol_text Symbol, Unit auto U>
@@ -210,27 +341,29 @@ template<UnitLike T, typename F, int Num, int... Den>
 {
   auto base = get_canonical_unit(F{});
   return canonical_unit{
-    derived_unit<power_or_T<std::remove_const_t<decltype(base.reference_unit)>, power<F, Num, Den...>::exponent>>{},
-    pow<power<F, Num, Den...>::exponent>(base.mag)};
+    pow<power<F, Num, Den...>::exponent>(base.mag),
+    derived_unit<power_or_T<std::remove_const_t<decltype(base.reference_unit)>, power<F, Num, Den...>::exponent>>{}};
 }
 
-template<UnitLike T, UnitSpec... Us>
+template<UnitLike T, DerivedUnitSpec... Us>
 [[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile derived_unit<Us...>&)
 {
   if constexpr (type_list_size<typename derived_unit<Us...>::_den_> != 0) {
     auto num = get_canonical_unit(type_list_map<typename derived_unit<Us...>::_num_, derived_unit>{});
     auto den = get_canonical_unit(type_list_map<typename derived_unit<Us...>::_den_, derived_unit>{});
-    return canonical_unit{num.reference_unit / den.reference_unit, num.mag / den.mag};
+    return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
     auto num = (one * ... * get_canonical_unit(Us{}).reference_unit);
     auto mag = (units::mag<1> * ... * get_canonical_unit(Us{}).mag);
-    return canonical_unit{num, mag};
+    return canonical_unit{mag, num};
   }
 }
 
 [[nodiscard]] constexpr auto get_canonical_unit(UnitLike auto u) { return get_canonical_unit_impl(u, u); }
 
-
+// TODO What if the same unit will have different types (i.e. user will inherit its own type from `metre`)?
+// Is there a better way to sort units here? Some of them may not have symbol at all (like all units of
+// dimensionless quantities).
 template<Unit U1, Unit U2>
 struct unit_less : std::bool_constant<type_name<U1>() < type_name<U2>()> {};
 
@@ -242,27 +375,55 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 
 // Operators
 
+/**
+ * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
+ */
 template<Magnitude M, Unit U>
-[[nodiscard]] consteval Unit auto operator*(M mag, U)
+[[nodiscard]] consteval Unit auto operator*(M mag, U u)
 {
-  // TODO Try passing magnitude parameters rather than magnitude type itself in case of a trivial magnitude
-  // (single integer, ratio...)
-  return scaled_unit<mag, std::remove_const_t<U>>{};
+  if constexpr (mag == units::mag<1>)
+    return u;
+  else
+    return scaled_unit<mag, std::remove_const_t<U>>{};
 }
 
 template<Magnitude M, Unit U>
 [[nodiscard]] consteval Unit auto operator*(U, M) = delete;
 
+/**
+ * `scaled_unit` specializations have priority in this operation. This means that the library framework
+ * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
+ * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
+ */
 template<Unit U1, Unit U2>
-[[nodiscard]] consteval Unit auto operator*(U1, U2)
+[[nodiscard]] consteval Unit auto operator*(U1 u1, U2 u2)
 {
-  return detail::expr_multiply<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
+  if constexpr (detail::is_specialization_of_scaled_unit<U1> && detail::is_specialization_of_scaled_unit<U2>)
+    return (U1::mag * U2::mag) * (U1::reference_unit * U2::reference_unit);
+  else if constexpr (detail::is_specialization_of_scaled_unit<U1>)
+    return U1::mag * (U1::reference_unit * u2);
+  else if constexpr (detail::is_specialization_of_scaled_unit<U2>)
+    return U2::mag * (u1 * U2::reference_unit);
+  else
+    return detail::expr_multiply<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
 }
 
+/**
+ * `scaled_unit` specializations have priority in this operation. This means that the library framework
+ * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
+ * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
+ */
 template<Unit U1, Unit U2>
-[[nodiscard]] consteval Unit auto operator/(U1, U2)
+[[nodiscard]] consteval Unit auto operator/(U1 u1, U2 u2)
 {
-  return detail::expr_divide<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
+  if constexpr (detail::is_specialization_of_scaled_unit<U1> && detail::is_specialization_of_scaled_unit<U2>)
+    return (U1::mag / U2::mag) * (U1::reference_unit / U2::reference_unit);
+  else if constexpr (detail::is_specialization_of_scaled_unit<U1>)
+    return U1::mag * (U1::reference_unit / u2);
+  else if constexpr (detail::is_specialization_of_scaled_unit<U2>)
+    return U2::mag * (u1 / U2::reference_unit);
+  else
+    return detail::expr_divide<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
 }
 
 template<Unit U>
@@ -294,20 +455,12 @@ template<Unit U1, Unit U2>
   return is_same_v<decltype(canonical_lhs.reference_unit), decltype(canonical_rhs.reference_unit)>;
 }
 
-// Helper types and variable factories
-template<Unit U>
-struct square_ : decltype(U{} * U{}) {};
-
-template<Unit U>
-struct cubic_ : decltype(U{} * U{} * U{}) {};
-
-// it is not allowed to use the same name for a variable and class template
-// (even though it works for objects of regular class types)
+// Helper variable templates to create common powers
 template<Unit auto U>
-inline constexpr square_<std::remove_const_t<decltype(U)>> square;
+inline constexpr decltype(U * U) square;
 
 template<Unit auto U>
-inline constexpr cubic_<std::remove_const_t<decltype(U)>> cubic;
+inline constexpr decltype(U * U * U) cubic;
 
 }  // namespace units
 
