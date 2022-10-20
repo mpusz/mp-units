@@ -588,13 +588,17 @@ constexpr Magnitude auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
     constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
 
     if constexpr (is_same_v<decltype(get_base(H1)), decltype(get_base(H2))>) {
-      // Make a new power_v with the common base of H1 and H2, whose power is their powers' sum.
-      constexpr auto new_head = power_v_or_T<get_base(H1), get_exponent(H1) + get_exponent(H2)>();
-
-      if constexpr (get_exponent(new_head) == 0) {
-        return partial_product;
+      if constexpr (get_exponent(H1) + get_exponent(H2) == 0) {
+        return magnitude<1>{};
       } else {
-        return magnitude<new_head>{} * partial_product;
+        // Make a new power_v with the common base of H1 and H2, whose power is their powers' sum.
+        constexpr auto new_head = power_v_or_T<get_base(H1), get_exponent(H1) + get_exponent(H2)>();
+
+        if constexpr (get_exponent(new_head) == 0) {
+          return partial_product;
+        } else {
+          return magnitude<new_head>{} * partial_product;
+        }
       }
     } else if constexpr (is_named_magnitude<decltype(get_base(H1))>) {
       return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
