@@ -76,17 +76,13 @@ static_assert(is_of_type<one_dim * (1 / time_dim), derived_dimension<one_dim_, p
 static_assert(is_of_type<1 / time_dim * one_dim, derived_dimension<one_dim_, per<time_dim_>>>);
 
 static_assert(is_of_type<length_dim * time_dim, derived_dimension<length_dim_, time_dim_>>);
-static_assert(is_of_type<length_dim * length_dim, derived_dimension<units::power<length_dim_, 2>>>);
+static_assert(is_of_type<length_dim * length_dim, derived_dimension<power<length_dim_, 2>>>);
 
-static_assert(
-  is_of_type<length_dim * length_dim * time_dim, derived_dimension<units::power<length_dim_, 2>, time_dim_>>);
-static_assert(
-  is_of_type<length_dim * time_dim * length_dim, derived_dimension<units::power<length_dim_, 2>, time_dim_>>);
+static_assert(is_of_type<length_dim * length_dim * time_dim, derived_dimension<power<length_dim_, 2>, time_dim_>>);
+static_assert(is_of_type<length_dim * time_dim * length_dim, derived_dimension<power<length_dim_, 2>, time_dim_>>);
 
-static_assert(
-  is_of_type<length_dim*(time_dim* length_dim), derived_dimension<units::power<length_dim_, 2>, time_dim_>>);
-static_assert(
-  is_of_type<time_dim*(length_dim* length_dim), derived_dimension<units::power<length_dim_, 2>, time_dim_>>);
+static_assert(is_of_type<length_dim*(time_dim* length_dim), derived_dimension<power<length_dim_, 2>, time_dim_>>);
+static_assert(is_of_type<time_dim*(length_dim* length_dim), derived_dimension<power<length_dim_, 2>, time_dim_>>);
 
 static_assert(is_of_type<1 / time_dim * length_dim, derived_dimension<length_dim_, per<time_dim_>>>);
 static_assert(is_of_type<1 / time_dim * time_dim, one_dim_>);
@@ -95,22 +91,21 @@ static_assert(is_of_type<time_dim / one_dim, time_dim_>);
 static_assert(is_of_type<1 / time_dim / one_dim, derived_dimension<one_dim_, per<time_dim_>>>);
 
 static_assert(is_of_type<length_dim / time_dim * time_dim, length_dim_>);
-static_assert(is_of_type<1 / time_dim * (1 / time_dim), derived_dimension<one_dim_, per<units::power<time_dim_, 2>>>>);
-static_assert(is_of_type<1 / (time_dim * time_dim), derived_dimension<one_dim_, per<units::power<time_dim_, 2>>>>);
-static_assert(is_of_type<1 / (1 / (time_dim * time_dim)), derived_dimension<units::power<time_dim_, 2>>>);
+static_assert(is_of_type<1 / time_dim * (1 / time_dim), derived_dimension<one_dim_, per<power<time_dim_, 2>>>>);
+static_assert(is_of_type<1 / (time_dim * time_dim), derived_dimension<one_dim_, per<power<time_dim_, 2>>>>);
+static_assert(is_of_type<1 / (1 / (time_dim * time_dim)), derived_dimension<power<time_dim_, 2>>>);
 
 static_assert(
-  is_of_type<length_dim / time_dim * (1 / time_dim), derived_dimension<length_dim_, per<units::power<time_dim_, 2>>>>);
+  is_of_type<length_dim / time_dim * (1 / time_dim), derived_dimension<length_dim_, per<power<time_dim_, 2>>>>);
 static_assert(is_of_type<length_dim / time_dim*(length_dim / time_dim),
-                         derived_dimension<units::power<length_dim_, 2>, per<units::power<time_dim_, 2>>>>);
+                         derived_dimension<power<length_dim_, 2>, per<power<time_dim_, 2>>>>);
 static_assert(is_of_type<length_dim / time_dim*(time_dim / length_dim), one_dim_>);
 
 static_assert(is_of_type<speed_dim / acceleration_dim, time_dim_>);
 static_assert(is_of_type<acceleration_dim / speed_dim, derived_dimension<one_dim_, per<time_dim_>>>);
+static_assert(is_of_type<speed_dim * speed_dim / length_dim, derived_dimension<length_dim_, per<power<time_dim_, 2>>>>);
 static_assert(
-  is_of_type<speed_dim * speed_dim / length_dim, derived_dimension<length_dim_, per<units::power<time_dim_, 2>>>>);
-static_assert(is_of_type<1 / (speed_dim * speed_dim) * length_dim,
-                         derived_dimension<units::power<time_dim_, 2>, per<length_dim_>>>);
+  is_of_type<1 / (speed_dim * speed_dim) * length_dim, derived_dimension<power<time_dim_, 2>, per<length_dim_>>>);
 
 // comparisons of the same dimensions
 static_assert(length_dim == length_dim);
@@ -167,9 +162,9 @@ static_assert(std::is_same_v<std::common_type_t<decltype(speed_dim), decltype(ve
 
 // comparison of convertible unnamed dimensions
 static_assert(
-  is_of_type<mass_dim * acceleration_dim, derived_dimension<length_dim_, mass_dim_, per<units::power<time_dim_, 2>>>>);
+  is_of_type<mass_dim * acceleration_dim, derived_dimension<length_dim_, mass_dim_, per<power<time_dim_, 2>>>>);
 static_assert(
-  is_of_type<acceleration_dim * mass_dim, derived_dimension<length_dim_, mass_dim_, per<units::power<time_dim_, 2>>>>);
+  is_of_type<acceleration_dim * mass_dim, derived_dimension<length_dim_, mass_dim_, per<power<time_dim_, 2>>>>);
 static_assert(mass_dim * acceleration_dim == acceleration_dim * mass_dim);
 static_assert(convertible(mass_dim * acceleration_dim, acceleration_dim* mass_dim));
 
