@@ -392,8 +392,8 @@ public:
     return ret(v * q.number());
   }
 
-  template<typename Value>
-    requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, rep, const Value&>)
+  template<Representation Value>
+    requires(invoke_result_convertible_to_<rep, std::divides<>, rep, const Value&>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
@@ -401,8 +401,8 @@ public:
     return ret(q.number() / v);
   }
 
-  template<typename Value>
-    requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
+  template<Representation Value>
+    requires(invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
     return detail::make_quantity<::units::reference<dim_one, ::units::one>{} / reference>(v / q.number());
