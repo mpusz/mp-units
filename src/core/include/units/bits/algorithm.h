@@ -25,6 +25,7 @@
 #include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <compare>
 #include <iterator>
+#include <ranges>
 
 namespace units::detail {
 
@@ -96,5 +97,46 @@ constexpr auto lexicographical_compare_three_way(I1 f1, I1 l1, I2 f2, I2 l2)
 {
   return ::units::detail::lexicographical_compare_three_way(f1, l1, f2, l2, std::compare_three_way());
 }
+
+template<class I, class O>
+struct in_out_result {
+  [[no_unique_address]] I in;
+  [[no_unique_address]] O out;
+
+  template<class I2, class O2>
+    requires std::convertible_to<const I&, I2> && std::convertible_to<const O&, O2>
+  constexpr operator in_out_result<I2, O2>() const&
+  {
+    return {in, out};
+  }
+
+  template<class I2, class O2>
+    requires std::convertible_to<I, I2> && std::convertible_to<O, O2>
+  constexpr operator in_out_result<I2, O2>() &&
+  {
+    return {std::move(in), std::move(out)};
+  }
+};
+
+template<class I, class O>
+using copy_result = in_out_result<I, O>;
+
+template<std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O>
+  requires std::indirectly_copyable<I, O>
+constexpr copy_result<I, O> copy(I first, S last, O result)
+{
+  for (; first != last; ++first, (void)++result) {
+    *result = *first;
+  }
+  return {std::move(first), std::move(result)};
+}
+
+template<std::ranges::input_range R, std::weakly_incrementable O>
+  requires std::indirectly_copyable<std::ranges::iterator_t<R>, O>
+constexpr copy_result<std::ranges::borrowed_iterator_t<R>, O> copy(R&& r, O result)
+{
+  return ::units::detail::copy(std::ranges::begin(r), std::ranges::end(r), std::move(result));
+}
+
 
 }  // namespace units::detail
