@@ -116,6 +116,7 @@ struct named_unit;
  * @tparam Symbol a short text representation of the unit
  */
 template<basic_symbol_text Symbol>
+  requires(!Symbol.empty())
 struct named_unit<Symbol> {
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
 };
@@ -129,6 +130,7 @@ struct named_unit<Symbol> {
  * @tparam Unit a unit for which we provide a special name
  */
 template<basic_symbol_text Symbol, Unit auto U>
+  requires(!Symbol.empty())
 struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
@@ -196,6 +198,7 @@ concept PrefixableUnit = NamedUnit<T> && unit_can_be_prefixed<T{}>;
  * @tparam U a named unit to be prefixed
  */
 template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+  requires(!Symbol.empty())
 struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
   static constexpr auto symbol = Symbol + U.symbol;
 };
