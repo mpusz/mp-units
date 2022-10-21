@@ -57,7 +57,7 @@ inline constexpr basic_symbol_text superscript_minus("\u207b", "-");
 inline constexpr basic_symbol_text superscript_prefix("", "^");
 
 template<std::intmax_t Value>
-constexpr auto superscript_helper()
+[[nodiscard]] consteval auto superscript_helper()
 {
   if constexpr (Value < 0)
     return superscript_minus + superscript_helper<-Value>();
@@ -68,13 +68,13 @@ constexpr auto superscript_helper()
 }
 
 template<std::intmax_t Value>
-constexpr auto superscript()
+[[nodiscard]] consteval auto superscript()
 {
   return superscript_prefix + superscript_helper<Value>();
 }
 
 template<std::intmax_t Value>
-constexpr auto regular()
+[[nodiscard]] consteval auto regular()
 {
   if constexpr (Value < 0)
     return basic_fixed_string("-") + superscript_helper<-Value>();
