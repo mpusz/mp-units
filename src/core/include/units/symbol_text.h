@@ -57,119 +57,120 @@ constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) no
  * representation. In the libary it is used to define symbols of units and prefixes.
  * Each symbol can have two versions: Unicode and ASCI-only.
  *
- * @tparam StandardCharT Character type to be used for a Unicode representation
+ * @tparam UnicodeCharT Character type to be used for a Unicode representation
  * @tparam N The size of a Unicode symbol
  * @tparam M The size of the ASCII-only symbol
  */
-template<typename StandardCharT, std::size_t N, std::size_t M>
+template<typename UnicodeCharT, std::size_t N, std::size_t M>
 struct basic_symbol_text {
-  basic_fixed_string<StandardCharT, N> standard_;
+  basic_fixed_string<UnicodeCharT, N> unicode_;
   basic_fixed_string<char, M> ascii_;
 
-  constexpr explicit(false) basic_symbol_text(char std) noexcept : standard_(std), ascii_(std)
+  constexpr explicit(false) basic_symbol_text(char txt) noexcept : unicode_(txt), ascii_(txt)
   {
-    detail::validate_ascii_char(std);
+    detail::validate_ascii_char(txt);
   }
-  constexpr basic_symbol_text(StandardCharT std, char a) noexcept : standard_(std), ascii_(a)
+  constexpr basic_symbol_text(UnicodeCharT u, char a) noexcept : unicode_(u), ascii_(a)
   {
     detail::validate_ascii_char(a);
   }
-  constexpr explicit(false) basic_symbol_text(const char (&std)[N + 1]) noexcept : standard_(std), ascii_(std)
+  constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) noexcept : unicode_(txt), ascii_(txt)
   {
-    detail::validate_ascii_string<N>(std);
+    detail::validate_ascii_string<N>(txt);
   }
-  constexpr explicit(false) basic_symbol_text(const basic_fixed_string<char, N>& std) noexcept :
-      standard_(std), ascii_(std)
+  constexpr explicit(false) basic_symbol_text(const basic_fixed_string<char, N>& txt) noexcept :
+      unicode_(txt), ascii_(txt)
   {
-    detail::validate_ascii_string<N>(std.data_);
+    detail::validate_ascii_string<N>(txt.data_);
   }
-  constexpr basic_symbol_text(const StandardCharT (&std)[N + 1], const char (&ascii)[M + 1]) noexcept :
-      standard_(std), ascii_(ascii)
+  constexpr basic_symbol_text(const UnicodeCharT (&u)[N + 1], const char (&a)[M + 1]) noexcept : unicode_(u), ascii_(a)
   {
-    detail::validate_ascii_string<M>(ascii);
+    detail::validate_ascii_string<M>(a);
   }
-  constexpr basic_symbol_text(const basic_fixed_string<StandardCharT, N>& std,
-                              const basic_fixed_string<char, M>& ascii) noexcept :
-      standard_(std), ascii_(ascii)
+  constexpr basic_symbol_text(const basic_fixed_string<UnicodeCharT, N>& u,
+                              const basic_fixed_string<char, M>& a) noexcept :
+      unicode_(u), ascii_(a)
   {
-    detail::validate_ascii_string<M>(ascii.data_);
+    detail::validate_ascii_string<M>(a.data_);
   }
 
-  [[nodiscard]] constexpr auto& standard() { return standard_; }
-  [[nodiscard]] constexpr const auto& standard() const { return standard_; }
+  [[nodiscard]] constexpr auto& unicode() { return unicode_; }
+  [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }
   [[nodiscard]] constexpr auto& ascii() { return ascii_; }
   [[nodiscard]] constexpr const auto& ascii() const { return ascii_; }
 
+  [[nodiscard]] constexpr bool empty() const { return unicode().empty() && ascii().empty(); }
+
   template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + N2, M + M2> operator+(
-    const basic_symbol_text& lhs, const basic_symbol_text<StandardCharT, N2, M2>& rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2, M + M2> operator+(
+    const basic_symbol_text& lhs, const basic_symbol_text<UnicodeCharT, N2, M2>& rhs) noexcept
   {
-    return basic_symbol_text<StandardCharT, N + N2, M + M2>(lhs.standard() + rhs.standard(), lhs.ascii() + rhs.ascii());
+    return basic_symbol_text<UnicodeCharT, N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
   }
 
   template<std::size_t N2>
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + N2, M + N2> operator+(
-    const basic_symbol_text& lhs, const basic_fixed_string<StandardCharT, N2>& rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2, M + N2> operator+(
+    const basic_symbol_text& lhs, const basic_fixed_string<UnicodeCharT, N2>& rhs) noexcept
   {
-    return lhs + basic_symbol_text<StandardCharT, N2, N2>(rhs);
+    return lhs + basic_symbol_text<UnicodeCharT, N2, N2>(rhs);
   }
 
   template<std::size_t N2>
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + N2, M + N2> operator+(
-    const basic_fixed_string<StandardCharT, N2>& lhs, const basic_symbol_text& rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2, M + N2> operator+(
+    const basic_fixed_string<UnicodeCharT, N2>& lhs, const basic_symbol_text& rhs) noexcept
   {
-    return basic_symbol_text<StandardCharT, N2, N2>(lhs) + rhs;
+    return basic_symbol_text<UnicodeCharT, N2, N2>(lhs) + rhs;
   }
 
   template<std::size_t N2>
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + N2 - 1, M + N2 - 1> operator+(
-    const basic_symbol_text& lhs, const StandardCharT (&rhs)[N2]) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2 - 1, M + N2 - 1> operator+(
+    const basic_symbol_text& lhs, const UnicodeCharT (&rhs)[N2]) noexcept
   {
-    return lhs + basic_symbol_text<StandardCharT, N2 - 1, N2 - 1>(rhs);
+    return lhs + basic_symbol_text<UnicodeCharT, N2 - 1, N2 - 1>(rhs);
   }
 
   template<std::size_t N2>
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + N2 - 1, M + N2 - 1> operator+(
-    const StandardCharT (&lhs)[N2], const basic_symbol_text& rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2 - 1, M + N2 - 1> operator+(
+    const UnicodeCharT (&lhs)[N2], const basic_symbol_text& rhs) noexcept
   {
-    return basic_symbol_text<StandardCharT, N2 - 1, N2 - 1>(lhs) + rhs;
+    return basic_symbol_text<UnicodeCharT, N2 - 1, N2 - 1>(lhs) + rhs;
   }
 
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + 1, M + 1> operator+(const basic_symbol_text& lhs,
-                                                                                          StandardCharT rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + 1, M + 1> operator+(const basic_symbol_text& lhs,
+                                                                                         UnicodeCharT rhs) noexcept
   {
-    return lhs + basic_symbol_text<StandardCharT, 1, 1>(rhs);
+    return lhs + basic_symbol_text<UnicodeCharT, 1, 1>(rhs);
   }
 
-  [[nodiscard]] constexpr friend basic_symbol_text<StandardCharT, N + 1, M + 1> operator+(
-    StandardCharT lhs, const basic_symbol_text& rhs) noexcept
+  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + 1, M + 1> operator+(
+    UnicodeCharT lhs, const basic_symbol_text& rhs) noexcept
   {
-    return basic_symbol_text<StandardCharT, 1, 1>(lhs) + rhs;
+    return basic_symbol_text<UnicodeCharT, 1, 1>(lhs) + rhs;
   }
 
-  template<typename StandardCharT2, std::size_t N2, std::size_t M2>
+  template<typename UnicodeCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
+                                                  const basic_symbol_text<UnicodeCharT2, N2, M2>& rhs) noexcept
   {
     UNITS_DIAGNOSTIC_PUSH
     UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-    if (const auto cmp = lhs.standard() <=> rhs.standard(); cmp != 0) return cmp;
+    if (const auto cmp = lhs.unicode() <=> rhs.unicode(); cmp != 0) return cmp;
     UNITS_DIAGNOSTIC_POP
     return lhs.ascii() <=> rhs.ascii();
   }
 
-  template<typename StandardCharT2, std::size_t N2, std::size_t M2>
+  template<typename UnicodeCharT2, std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const basic_symbol_text<StandardCharT2, N2, M2>& rhs) noexcept
+                                                 const basic_symbol_text<UnicodeCharT2, N2, M2>& rhs) noexcept
   {
-    return lhs.standard() == rhs.standard() && lhs.ascii() == rhs.ascii();
+    return lhs.unicode() == rhs.unicode() && lhs.ascii() == rhs.ascii();
   }
 };
 
 basic_symbol_text(char)->basic_symbol_text<char, 1, 1>;
 
-template<typename StandardCharT>
-basic_symbol_text(StandardCharT, char) -> basic_symbol_text<StandardCharT, 1, 1>;
+template<typename UnicodeCharT>
+basic_symbol_text(UnicodeCharT, char) -> basic_symbol_text<UnicodeCharT, 1, 1>;
 
 template<std::size_t N>
 basic_symbol_text(const char (&)[N]) -> basic_symbol_text<char, N - 1, N - 1>;
@@ -177,11 +178,11 @@ basic_symbol_text(const char (&)[N]) -> basic_symbol_text<char, N - 1, N - 1>;
 template<std::size_t N>
 basic_symbol_text(const basic_fixed_string<char, N>&) -> basic_symbol_text<char, N, N>;
 
-template<typename StandardCharT, std::size_t N, std::size_t M>
-basic_symbol_text(const StandardCharT (&)[N], const char (&)[M]) -> basic_symbol_text<StandardCharT, N - 1, M - 1>;
+template<typename UnicodeCharT, std::size_t N, std::size_t M>
+basic_symbol_text(const UnicodeCharT (&)[N], const char (&)[M]) -> basic_symbol_text<UnicodeCharT, N - 1, M - 1>;
 
-template<typename StandardCharT, std::size_t N, std::size_t M>
-basic_symbol_text(const basic_fixed_string<StandardCharT, N>&, const basic_fixed_string<char, M>&)
-  -> basic_symbol_text<StandardCharT, N, M>;
+template<typename UnicodeCharT, std::size_t N, std::size_t M>
+basic_symbol_text(const basic_fixed_string<UnicodeCharT, N>&, const basic_fixed_string<char, M>&)
+  -> basic_symbol_text<UnicodeCharT, N, M>;
 
 }  // namespace units
