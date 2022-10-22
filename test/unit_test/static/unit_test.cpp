@@ -64,6 +64,10 @@ inline constexpr struct tonne_ : named_unit<"t", mag<1000> * kilogram> {} tonne;
 inline constexpr struct dalton_ : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * kilogram> {} dalton;
 inline constexpr struct electronvolt_ : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * joule> {} electronvolt;
 
+inline constexpr struct yard_ : named_unit<"yd", mag<ratio{9'144, 10'000}> * metre> {} yard;
+inline constexpr struct foot_ : named_unit<"ft", mag<ratio(1, 3)> * yard> {} foot;
+inline constexpr struct mile_ : named_unit<"mi", mag<1760> * yard> {} mile;
+
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
 // clang-format on
@@ -353,6 +357,37 @@ static_assert(joule == newton * metre);
 static_assert(watt == joule / second);
 static_assert(watt == kilogram * square<metre> / cubic<second>);
 
+// common_type
+static_assert(std::is_same_v<std::common_type_t<decltype(gram), decltype(gram)>, gram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(kilogram)>, kilogram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(si::kilo<gram>), decltype(kilogram)>, kilogram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(si::kilo<gram>)>, kilogram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(mag<1000> * gram), decltype(kilogram)>, kilogram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(mag<1000> * gram)>, kilogram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(1 / second), decltype(hertz)>, hertz_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(hertz), decltype(1 / second)>, hertz_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(gram), decltype(kilogram)>, gram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(gram)>, gram_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(second), decltype(hour)>, second_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(hour), decltype(second)>, second_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(minute), decltype(hour)>, minute_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(hour), decltype(minute)>, minute_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(si::kilo<metre>), decltype(si::milli<metre>)>,
+                             std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(std::is_same_v<std::common_type_t<decltype(si::milli<metre>), decltype(si::kilo<metre>)>,
+                             std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(std::is_same_v<std::common_type_t<decltype(yard), decltype(mile)>, yard_>);
+static_assert(std::is_same_v<std::common_type_t<decltype(mile), decltype(yard)>, yard_>);
+// TODO The below have long/unreadable magnitude types
+static_assert(std::is_same_v<std::common_type_t<decltype(kilometre / hour), decltype(metre / second)>,
+                             scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
+static_assert(std::is_same_v<std::common_type_t<decltype(metre / second), decltype(kilometre / hour)>,
+                             scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
+static_assert(
+  std::is_same_v<std::common_type_t<decltype(kilometre), decltype(mile)>, scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(
+  std::is_same_v<std::common_type_t<decltype(mile), decltype(kilometre)>, scaled_unit<mag<ratio{8, 125}>, metre_>>);
+
 // unit symbols
 #ifdef __cpp_lib_constexpr_string
 
@@ -379,6 +414,7 @@ static_assert(unit_symbol(mag<100> * metre, {.encoding = ascii}) == "x 10^2 m");
 static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
 static_assert(unit_symbol(mag<60> * second, {.encoding = ascii}) == "[6 x 10^1] s");
 
+// derived units
 static_assert(unit_symbol(one) == "");
 static_assert(unit_symbol(square<metre>) == "m²");
 static_assert(unit_symbol(square<metre>, {.encoding = ascii}) == "m^2");

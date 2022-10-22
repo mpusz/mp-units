@@ -679,6 +679,7 @@ template<auto... Ms>
 {
   return (magnitude<>{} * ... * remove_positive_power(magnitude<Ms>{}));
 }
+
 }  // namespace detail
 
 // Base cases, for when either (or both) inputs are the identity.
@@ -698,16 +699,16 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 {
   using detail::remove_positive_power;
 
-  if constexpr (get_base(H1) < get_base(H2)) {
+  if constexpr (detail::get_base(H1) < detail::get_base(H2)) {
     // When H1 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{});
-  } else if constexpr (get_base(H2) < get_base(H1)) {
+  } else if constexpr (detail::get_base(H2) < detail::get_base(H1)) {
     // When H2 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H2>{}) * common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{});
   } else {
     // When the bases are equal, pick whichever has the lower power.
     constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
-    if constexpr (get_exponent(H1) < get_exponent(H2)) {
+    if constexpr (detail::get_exponent(H1) < detail::get_exponent(H2)) {
       return magnitude<H1>{} * common_tail;
     } else {
       return magnitude<H2>{} * common_tail;

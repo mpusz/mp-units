@@ -395,12 +395,12 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
  * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] consteval Unit auto operator*(M mag, U u)
+[[nodiscard]] consteval Unit auto operator*(M mag, const U u)
 {
   if constexpr (mag == units::mag<1>)
     return u;
   else
-    return scaled_unit<mag, std::remove_const_t<U>>{};
+    return scaled_unit<mag, U>{};
 }
 
 template<Magnitude M, Unit U>
@@ -700,16 +700,42 @@ template<typename CharT = char, Unit U>
   return buffer;
 }
 
+namespace detail {
+
+
+template<typename U1, typename U2>
+[[nodiscard]] consteval auto common_type_impl(const U1 u1, const U2 u2)
+{
+  if constexpr (U1{} == U2{}) {
+    if constexpr (std::derived_from<U1, U2>)
+      return u1;
+    else
+      return u2;
+  } else {
+    constexpr auto canonical_lhs = detail::get_canonical_unit(U1{});
+    constexpr auto canonical_rhs = detail::get_canonical_unit(U2{});
+
+    if constexpr (is_integral(canonical_lhs.mag / canonical_rhs.mag))
+      return u2;
+    else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
+      return u1;
+    else {
+      constexpr auto cm = common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+      return scaled_unit<cm, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
+    }
+  }
+}
+
+}  // namespace detail
+
 }  // namespace units
 
 namespace std {
 
-// TODO implement this
 template<units::Unit U1, units::Unit U2>
   requires(units::convertible(U1{}, U2{}))
 struct common_type<U1, U2> {
-  using type = ::units::conditional<std::derived_from<std::remove_const_t<U1>, std::remove_const_t<U2>>,
-                                    std::remove_const_t<U1>, std::remove_const_t<U2>>;
+  using type = std::remove_const_t<decltype(::units::detail::common_type_impl(U1{}, U2{}))>;
 };
 
 }  // namespace std
