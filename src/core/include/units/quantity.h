@@ -64,8 +64,8 @@ concept safe_convertible_to_ =  // exposition only
 // QFrom ratio is an exact multiple of QTo
 template<typename QFrom, typename QTo>
 concept harmonic_ =  // exposition only
-  true;              // TODO fix it when magnitudes are ready
-// Quantity<QFrom> && Quantity<QTo> && is_integral(detail::quantity_magnitude<QFrom> / detail::quantity_magnitude<QTo>);
+  Quantity<QFrom> && Quantity<QTo> &&
+  is_integral(detail::get_canonical_unit(QFrom::unit).mag / detail::get_canonical_unit(QTo::unit).mag);
 
 template<typename QFrom, typename QTo>
 concept quantity_convertible_to_ =  // exposition only
