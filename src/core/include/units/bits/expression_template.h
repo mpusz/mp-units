@@ -250,17 +250,17 @@ struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T,
 
 
 // expr_less
-template<typename T1, typename T2, template<typename, typename> typename Pred>
-struct expr_less_impl : Pred<T1, T2> {};
+template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
+struct expr_less_impl : Pred<Lhs, Rhs> {};
 
-template<typename T1, int... Ints1, typename T2, int... Ints2, template<typename, typename> typename Pred>
-struct expr_less_impl<power<T1, Ints1...>, power<T2, Ints2...>, Pred> : Pred<T1, T2> {};
+template<typename Lhs, int... Ints1, typename Rhs, int... Ints2, template<typename, typename> typename Pred>
+struct expr_less_impl<power<Lhs, Ints1...>, power<Rhs, Ints2...>, Pred> : Pred<Lhs, Rhs> {};
 
-template<typename T1, int... Ints, typename T2, template<typename, typename> typename Pred>
-struct expr_less_impl<power<T1, Ints...>, T2, Pred> : Pred<T1, T2> {};
+template<typename Lhs, int... Ints, typename Rhs, template<typename, typename> typename Pred>
+struct expr_less_impl<power<Lhs, Ints...>, Rhs, Pred> : Pred<Lhs, Rhs> {};
 
-template<typename T1, typename T2, int... Ints, template<typename, typename> typename Pred>
-struct expr_less_impl<T1, power<T2, Ints...>, Pred> : Pred<T1, T2> {};
+template<typename Lhs, typename Rhs, int... Ints, template<typename, typename> typename Pred>
+struct expr_less_impl<Lhs, power<Rhs, Ints...>, Pred> : Pred<Lhs, Rhs> {};
 
 template<typename T, int... Ints, template<typename, typename> typename Pred>
 struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
@@ -271,8 +271,8 @@ struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
  * Algorithm accounts not only for explicit types but also for the case when they
  * are wrapped within `power<T, Num, Den>`.
  */
-template<typename T1, typename T2, template<typename, typename> typename Pred>
-using expr_less = expr_less_impl<T1, T2, Pred>;
+template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
+using expr_less = expr_less_impl<Lhs, Rhs, Pred>;
 
 
 // expr_fractions
@@ -355,34 +355,34 @@ template<typename NumList, typename DenList, typename OneType, template<typename
 /**
  * @brief Multiplies two sorted expression template specs
  *
- * @tparam T1 lhs of the operation
- * @tparam T2 rhs of the operation
+ * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
  * @tparam Pred binary less then predicate
- * @tparam To destination type list to put the result to
+ * @tparam Lhs lhs of the operation
+ * @tparam Rhs rhs of the operation
  */
-template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
-         template<typename...> typename To>
-[[nodiscard]] consteval auto expr_multiply()
+template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
+         typename Rhs>
+[[nodiscard]] consteval auto expr_multiply(Lhs, Rhs)
 {
-  if constexpr (is_same_v<T1, OneType>) {
-    return T2{};
-  } else if constexpr (is_same_v<T2, OneType>) {
-    return T1{};
-  } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
+  if constexpr (is_same_v<Lhs, OneType>) {
+    return Rhs{};
+  } else if constexpr (is_same_v<Rhs, OneType>) {
+    return Lhs{};
+  } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived dimensions
-    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_num_, Pred>,
-                                    type_list_merge_sorted<typename T1::_den_, typename T2::_den_, Pred>, OneType, Pred,
-                                    To>();
-  } else if constexpr (is_specialization_of<T1, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, type_list<T2>, Pred>, typename T1::_den_,
-                                    OneType, Pred, To>();
-  } else if constexpr (is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T2::_num_, type_list<T1>, Pred>, typename T2::_den_,
-                                    OneType, Pred, To>();
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_num_, Pred>,
+                                    type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_den_, Pred>, OneType,
+                                    Pred, To>();
+  } else if constexpr (is_specialization_of<Lhs, To>) {
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, type_list<Rhs>, Pred>,
+                                    typename Lhs::_den_, OneType, Pred, To>();
+  } else if constexpr (is_specialization_of<Rhs, To>) {
+    return get_optimized_expression<type_list_merge_sorted<typename Rhs::_num_, type_list<Lhs>, Pred>,
+                                    typename Rhs::_den_, OneType, Pred, To>();
   } else {
     // two base dimensions
-    return get_optimized_expression<type_list_merge_sorted<type_list<T1>, type_list<T2>, Pred>, type_list<>, OneType,
+    return get_optimized_expression<type_list_merge_sorted<type_list<Lhs>, type_list<Rhs>, Pred>, type_list<>, OneType,
                                     Pred, To>();
   }
 }
@@ -390,34 +390,34 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
 /**
  * @brief Divides two sorted expression template specs
  *
- * @tparam T1 lhs of the operation
- * @tparam T2 rhs of the operation
+ * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
  * @tparam Pred binary less then predicate
- * @tparam To destination type list to put the result to
+ * @tparam Lhs lhs of the operation
+ * @tparam Rhs rhs of the operation
  */
-template<typename T1, typename T2, typename OneType, template<typename, typename> typename Pred,
-         template<typename...> typename To>
-[[nodiscard]] consteval auto expr_divide()
+template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
+         typename Rhs>
+[[nodiscard]] consteval auto expr_divide(Lhs, Rhs)
 {
-  if constexpr (is_same_v<T1, T2>) {
+  if constexpr (is_same_v<Lhs, Rhs>) {
     return OneType{};
-  } else if constexpr (is_same_v<T2, OneType>) {
-    return T1{};
-  } else if constexpr (is_specialization_of<T1, To> && is_specialization_of<T2, To>) {
+  } else if constexpr (is_same_v<Rhs, OneType>) {
+    return Lhs{};
+  } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived dimensions
-    return get_optimized_expression<type_list_merge_sorted<typename T1::_num_, typename T2::_den_, Pred>,
-                                    type_list_merge_sorted<typename T1::_den_, typename T2::_num_, Pred>, OneType, Pred,
-                                    To>();
-  } else if constexpr (is_specialization_of<T1, To>) {
-    return get_optimized_expression<typename T1::_num_, type_list_merge_sorted<typename T1::_den_, type_list<T2>, Pred>,
-                                    OneType, Pred, To>();
-  } else if constexpr (is_specialization_of<T2, To>) {
-    return get_optimized_expression<type_list_merge_sorted<typename T2::_den_, type_list<T1>, Pred>, typename T2::_num_,
-                                    OneType, Pred, To>();
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_den_, Pred>,
+                                    type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_num_, Pred>, OneType,
+                                    Pred, To>();
+  } else if constexpr (is_specialization_of<Lhs, To>) {
+    return get_optimized_expression<
+      typename Lhs::_num_, type_list_merge_sorted<typename Lhs::_den_, type_list<Rhs>, Pred>, OneType, Pred, To>();
+  } else if constexpr (is_specialization_of<Rhs, To>) {
+    return get_optimized_expression<type_list_merge_sorted<typename Rhs::_den_, type_list<Lhs>, Pred>,
+                                    typename Rhs::_num_, OneType, Pred, To>();
   } else {
     // two base dimensions
-    return To<T1, per<T2>>{};
+    return To<Lhs, per<Rhs>>{};
   }
 }
 
@@ -428,8 +428,8 @@ template<typename T1, typename T2, typename OneType, template<typename, typename
  * @tparam OneType type that represents the value `1`
  * @tparam To destination type list to put the result to
  */
-template<typename T, typename OneType, template<typename...> typename To>
-[[nodiscard]] consteval auto expr_invert()
+template<template<typename...> typename To, typename OneType, typename T>
+[[nodiscard]] consteval auto expr_invert(T)
 {
   if constexpr (is_specialization_of<T, To>)
     return expr_make_spec<typename T::_den_, typename T::_num_, OneType, To>{};

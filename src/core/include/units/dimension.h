@@ -109,8 +109,8 @@ concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
 namespace detail {
 
-template<BaseDimension D1, BaseDimension D2>
-struct base_dimension_less : std::bool_constant<(D1::symbol < D2::symbol)> {};
+template<BaseDimension Lhs, BaseDimension Rhs>
+struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
 
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
@@ -249,34 +249,34 @@ using dim_type = dim_type_impl<T>::type;
 
 // Operators
 
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval Dimension auto operator*(D1, D2)
+template<Dimension Lhs, Dimension Rhs>
+[[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
 {
-  return detail::expr_multiply<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
-                               detail::type_list_of_base_dimension_less, derived_dimension>();
+  return detail::expr_multiply<derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(
+    detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval Dimension auto operator/(D1, D2)
+template<Dimension Lhs, Dimension Rhs>
+[[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
 {
-  return detail::expr_divide<detail::dim_type<D1>, detail::dim_type<D2>, struct one_dim,
-                             detail::type_list_of_base_dimension_less, derived_dimension>();
+  return detail::expr_divide<derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(
+    detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
 template<Dimension D>
 [[nodiscard]] consteval Dimension auto operator/(int value, D)
 {
   gsl_Assert(value == 1);
-  return detail::expr_invert<detail::dim_type<D>, struct one_dim, derived_dimension>();
+  return detail::expr_invert<derived_dimension, struct one_dim>(detail::dim_type<D>{});
 }
 
 template<Dimension D>
 [[nodiscard]] consteval Dimension auto operator/(D, int) = delete;
 
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool operator==(D1, D2)
+template<Dimension Lhs, Dimension Rhs>
+[[nodiscard]] consteval bool operator==(Lhs, Rhs)
 {
-  return is_same_v<D1, D2>;
+  return is_same_v<Lhs, Rhs>;
 }
 
 template<Dimension D1, Dimension D2>
