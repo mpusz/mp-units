@@ -22,12 +22,16 @@
 
 #pragma once
 
+#include <units/bits/algorithm.h>
 #include <units/bits/expression_template.h>
 #include <units/bits/external/fixed_string.h>
+#include <units/bits/external/text_tools.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/magnitude.h>
 #include <units/symbol_text.h>
+#include <iterator>
+#include <string>
 
 // #include <units/bits/derived_symbol_text.h>
 
@@ -210,18 +214,15 @@ inline constexpr bool is_power_of_unit =
   requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
 
 template<typename T>
-concept UnitLike = Unit<T> || is_power_of_unit<T>;
-
-template<typename T>
 inline constexpr bool is_per_of_units = false;
 
 template<typename... Ts>
-inline constexpr bool is_per_of_units<per<Ts...>> = (... && UnitLike<Ts>);
+inline constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
 
 }  // namespace detail
 
 template<typename T>
-concept DerivedUnitSpec = detail::UnitLike<T> || detail::is_per_of_units<T>;
+concept DerivedUnitSpec = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
 
 /**
  * @brief Measurement unit for a derived quantity
@@ -312,63 +313,75 @@ inline constexpr bool is_unit<T> = true;
  * @tparam U a unit to use as a `reference_unit`
  * @tparam M a Magnitude representing an absolute scaling factor of this unit
  */
-template<Magnitude M, UnitLike U>
+template<Magnitude M, Unit U>
 struct canonical_unit {
   M mag;
   U reference_unit;
 };
 
-[[nodiscard]] constexpr auto get_canonical_unit(UnitLike auto u);
+template<Unit T, basic_symbol_text Symbol>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&);
 
-template<UnitLike T, auto M, typename U>
-[[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile scaled_unit<M, U>&)
+template<Unit T, basic_symbol_text Symbol, Unit auto U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U>&);
+
+template<typename T, typename F, int Num, int... Den>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
+
+template<Unit T, typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Us...>&);
+
+template<Unit T, auto M, typename U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit<M, U>&)
 {
-  auto base = get_canonical_unit(U{});
+  auto base = get_canonical_unit_impl(U{}, U{});
   return canonical_unit{M * base.mag, base.reference_unit};
 }
 
-template<UnitLike T, basic_symbol_text Symbol>
-[[nodiscard]] constexpr auto get_canonical_unit_impl(T t, const volatile named_unit<Symbol>&)
+template<Unit T, basic_symbol_text Symbol>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&)
 {
   return canonical_unit{mag<1>, t};
 }
 
-template<UnitLike T, basic_symbol_text Symbol, Unit auto U>
-[[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile named_unit<Symbol, U>&)
+template<Unit T, basic_symbol_text Symbol, Unit auto U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U>&)
 {
-  return get_canonical_unit(U);
+  return get_canonical_unit_impl(U, U);
 }
 
-template<UnitLike T, typename F, int Num, int... Den>
-[[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile power<F, Num, Den...>&)
+template<typename T, typename F, int Num, int... Den>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&)
 {
-  auto base = get_canonical_unit(F{});
+  auto base = get_canonical_unit_impl(F{}, F{});
   return canonical_unit{
     pow<power<F, Num, Den...>::exponent>(base.mag),
     derived_unit<power_or_T<std::remove_const_t<decltype(base.reference_unit)>, power<F, Num, Den...>::exponent>>{}};
 }
 
-template<UnitLike T, DerivedUnitSpec... Us>
-[[nodiscard]] constexpr auto get_canonical_unit_impl(T, const volatile derived_unit<Us...>&)
+template<Unit T, typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Us...>&)
 {
   if constexpr (type_list_size<typename derived_unit<Us...>::_den_> != 0) {
-    auto num = get_canonical_unit(type_list_map<typename derived_unit<Us...>::_num_, derived_unit>{});
-    auto den = get_canonical_unit(type_list_map<typename derived_unit<Us...>::_den_, derived_unit>{});
+    using num_type = type_list_map<typename derived_unit<Us...>::_num_, derived_unit>;
+    using den_type = type_list_map<typename derived_unit<Us...>::_den_, derived_unit>;
+    auto num = get_canonical_unit_impl(num_type{}, num_type{});
+    auto den = get_canonical_unit_impl(den_type{}, den_type{});
     return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
-    auto num = (one * ... * get_canonical_unit(Us{}).reference_unit);
-    auto mag = (units::mag<1> * ... * get_canonical_unit(Us{}).mag);
+    auto num = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
+    auto mag = (units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
     return canonical_unit{mag, num};
   }
 }
 
-[[nodiscard]] constexpr auto get_canonical_unit(UnitLike auto u) { return get_canonical_unit_impl(u, u); }
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
 
 // TODO What if the same unit will have different types (i.e. user will inherit its own type from `metre`)?
 // Is there a better way to sort units here? Some of them may not have symbol at all (like all units of
 // dimensionless quantities).
-template<Unit U1, Unit U2>
-struct unit_less : std::bool_constant<type_name<U1>() < type_name<U2>()> {};
+template<Unit Lhs, Unit Rhs>
+struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
@@ -398,17 +411,17 @@ template<Magnitude M, Unit U>
  * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
  * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
  */
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval Unit auto operator*(U1 u1, U2 u2)
+template<Unit Lhs, Unit Rhs>
+[[nodiscard]] consteval Unit auto operator*(Lhs lhs, Rhs rhs)
 {
-  if constexpr (detail::is_specialization_of_scaled_unit<U1> && detail::is_specialization_of_scaled_unit<U2>)
-    return (U1::mag * U2::mag) * (U1::reference_unit * U2::reference_unit);
-  else if constexpr (detail::is_specialization_of_scaled_unit<U1>)
-    return U1::mag * (U1::reference_unit * u2);
-  else if constexpr (detail::is_specialization_of_scaled_unit<U2>)
-    return U2::mag * (u1 * U2::reference_unit);
+  if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
+    return (Lhs::mag * Rhs::mag) * (Lhs::reference_unit * Rhs::reference_unit);
+  else if constexpr (detail::is_specialization_of_scaled_unit<Lhs>)
+    return Lhs::mag * (Lhs::reference_unit * rhs);
+  else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
+    return Rhs::mag * (lhs * Rhs::reference_unit);
   else
-    return detail::expr_multiply<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
+    return detail::expr_multiply<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
 /**
@@ -416,31 +429,31 @@ template<Unit U1, Unit U2>
  * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
  * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
  */
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval Unit auto operator/(U1 u1, U2 u2)
+template<Unit Lhs, Unit Rhs>
+[[nodiscard]] consteval Unit auto operator/(Lhs lhs, Rhs rhs)
 {
-  if constexpr (detail::is_specialization_of_scaled_unit<U1> && detail::is_specialization_of_scaled_unit<U2>)
-    return (U1::mag / U2::mag) * (U1::reference_unit / U2::reference_unit);
-  else if constexpr (detail::is_specialization_of_scaled_unit<U1>)
-    return U1::mag * (U1::reference_unit / u2);
-  else if constexpr (detail::is_specialization_of_scaled_unit<U2>)
-    return U2::mag * (u1 / U2::reference_unit);
+  if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
+    return (Lhs::mag / Rhs::mag) * (Lhs::reference_unit / Rhs::reference_unit);
+  else if constexpr (detail::is_specialization_of_scaled_unit<Lhs>)
+    return Lhs::mag * (Lhs::reference_unit / rhs);
+  else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
+    return Rhs::mag * (lhs / Rhs::reference_unit);
   else
-    return detail::expr_divide<U1, U2, struct one, detail::type_list_of_unit_less, derived_unit>();
+    return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
 template<Unit U>
-[[nodiscard]] consteval Unit auto operator/(int value, U)
+[[nodiscard]] consteval Unit auto operator/(int value, U u)
 {
   gsl_Assert(value == 1);
-  return detail::expr_invert<U, struct one, derived_unit>();
+  return detail::expr_invert<derived_unit, struct one>(u);
 }
 
 template<Unit U>
 [[nodiscard]] consteval Unit auto operator/(U, int) = delete;
 
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool operator==(U1 lhs, U2 rhs)
+template<Unit Lhs, Unit Rhs>
+[[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
 {
   auto canonical_lhs = detail::get_canonical_unit(lhs);
   auto canonical_rhs = detail::get_canonical_unit(rhs);
@@ -450,8 +463,8 @@ template<Unit U1, Unit U2>
 
 
 // Convertible
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool convertible(U1 lhs, U2 rhs)
+template<Unit Lhs, Unit Rhs>
+[[nodiscard]] consteval bool convertible(Lhs lhs, Rhs rhs)
 {
   auto canonical_lhs = detail::get_canonical_unit(lhs);
   auto canonical_rhs = detail::get_canonical_unit(rhs);
@@ -465,9 +478,232 @@ inline constexpr decltype(U * U) square;
 template<Unit auto U>
 inline constexpr decltype(U * U * U) cubic;
 
+
+// get_unit_symbol
+
+enum class text_encoding {
+  unicode,  // m³;  µs
+  ascii,    // m^3; us
+  default_encoding = unicode
+};
+
+enum class unit_symbol_denominator {
+  solidus_one,      // m/s;   kg m-1 s-1
+  always_solidus,   // m/s;   kg/(m s)
+  always_negative,  // m s-1; kg m-1 s-1
+  default_denominator = solidus_one
+};
+
+enum class unit_symbol_separator {
+  space,  // kg m²/s²
+  dot,    // kg⋅m²/s²  (valid only for unicode encoding)
+  default_separator = space
+};
+
+struct unit_symbol_formatting {
+  text_encoding encoding = text_encoding::default_encoding;
+  unit_symbol_denominator denominator = unit_symbol_denominator::default_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+};
+
+namespace detail {
+
+// TODO Should `basic_symbol_text` be fixed to use `char` type for both encodings?
+template<typename CharT, typename UnicodeCharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
+constexpr Out copy(const basic_symbol_text<UnicodeCharT, N, M>& txt, text_encoding encoding, Out out)
+{
+  if (encoding == text_encoding::unicode) {
+    if (is_same_v<CharT, UnicodeCharT>)
+      return copy(txt.unicode(), out).out;
+    else
+      static_assert("Unicode text can't be copied to CharT output");
+  } else {
+    if (is_same_v<CharT, char>)
+      return copy(txt.ascii(), out).out;
+    else
+      static_assert("ASCII text can't be copied to CharT output");
+  }
+}
+
+inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
+
+template<Magnitude auto M>
+constexpr auto magnitude_text()
+{
+  constexpr auto exp10 = extract_power_of_10(M);
+
+  constexpr Magnitude auto base = M / mag_power<10, exp10>;
+  constexpr Magnitude auto num = numerator(base);
+  constexpr Magnitude auto den = denominator(base);
+  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return base_multiplier + superscript<exp10>();
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = basic_fixed_string("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("]");
+      } else {
+        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
+      }
+    } else {
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
+      } else {
+        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
+               basic_fixed_string("]");
+      }
+    }
+  } else {
+    return basic_fixed_string("");
+  }
+}
+
+template<typename CharT, std::output_iterator<CharT> Out>
+constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
+{
+  if (fmt.separator == unit_symbol_separator::dot) {
+    if (fmt.encoding != text_encoding::unicode)
+      throw std::invalid_argument("'unit_symbol_separator::dot' can be only used with 'text_encoding::unicode'");
+    copy(std::string_view("⋅"), out);
+  } else {
+    *out++ = ' ';
+  }
+  return out;
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, Unit U>
+  requires requires { U::symbol; }
+constexpr Out unit_symbol_impl(Out out, U, unit_symbol_formatting fmt, bool negative_power)
+{
+  out = copy<CharT>(U::symbol, fmt.encoding, out);
+  if (negative_power) {
+    constexpr auto txt = superscript<-1>();
+    out = copy<CharT>(txt, fmt.encoding, out);
+  }
+  return out;
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
+constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_formatting fmt, bool negative_power)
+{
+  if constexpr (M == mag<1>) {
+    // no ratio/prefix
+    return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
+  } else {
+    constexpr auto mag_txt = magnitude_text<M>();
+    out = copy<CharT>(mag_txt, fmt.encoding, out);
+
+    if constexpr (std::derived_from<std::remove_const_t<decltype(u.reference_unit)>, derived_unit<>>)
+      return out;
+    else {
+      *out++ = ' ';
+      return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
+    }
+  }
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
+constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, unit_symbol_formatting fmt, bool negative_power)
+{
+  out = unit_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
+
+  constexpr ratio r = power<F, Num, Den...>::exponent;
+  if constexpr (r.den != 1) {
+    // add root part
+    constexpr auto txt = txt + basic_fixed_string("^(") + regular<r.num>() + basic_fixed_string("/") +
+                         regular<r.den>() + basic_fixed_string(")");
+    return copy<CharT>(txt, fmt.encoding, out);
+  } else if constexpr (r.num != 1) {
+    // add exponent part
+    if (negative_power) {
+      constexpr auto txt = superscript<-r.num>();
+      return copy<CharT>(txt, fmt.encoding, out);
+    } else {
+      constexpr auto txt = superscript<r.num>();
+      return copy<CharT>(txt, fmt.encoding, out);
+    }
+  }
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec M>
+constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, unit_symbol_formatting fmt, bool negative_power)
+{
+  if (Idx > 0) out = print_separator<CharT>(out, fmt);
+  return unit_symbol_impl<CharT>(out, m, fmt, negative_power);
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec... Ms, std::size_t... Idxs>
+constexpr Out unit_symbol_impl(Out out, const type_list<Ms...>&, std::index_sequence<Idxs...>,
+                               unit_symbol_formatting fmt, bool negative_power)
+{
+  return (..., (out = unit_symbol_impl<CharT>(out, Ms{}, Idxs, fmt, negative_power)));
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec... Nums, DerivedUnitSpec... Dens>
+constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
+                               unit_symbol_formatting fmt)
+{
+  if constexpr (sizeof...(Nums) == 0 && sizeof...(Dens) == 0) {
+    // dimensionless quantity
+    return out;
+  } else if constexpr (sizeof...(Dens) == 0) {
+    // no denominator
+    return unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
+  } else {
+    using enum unit_symbol_denominator;
+    if constexpr (sizeof...(Nums) > 0) {
+      unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
+    }
+
+    if (fmt.denominator == always_solidus || (fmt.denominator == solidus_one && sizeof...(Dens) == 1)) {
+      if constexpr (sizeof...(Nums) == 0) *out++ = '1';
+      *out++ = '/';
+    } else {
+      out = print_separator<CharT>(out, fmt);
+    }
+
+    if (fmt.denominator == always_solidus && sizeof...(Dens) > 1) *out++ = '(';
+    bool negative_power = fmt.denominator == always_negative || (fmt.denominator == solidus_one && sizeof...(Dens) > 1);
+    out = unit_symbol_impl<CharT>(out, dens, std::index_sequence_for<Dens...>(), fmt, negative_power);
+    if (fmt.denominator == always_solidus && sizeof...(Dens) > 1) *out++ = ')';
+    return out;
+  }
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, typename... Us>
+constexpr Out unit_symbol_impl(Out out, const derived_unit<Us...>&, unit_symbol_formatting fmt, bool negative_power)
+{
+  gsl_Assert(negative_power == false);
+  return unit_symbol_impl<CharT>(out, typename derived_unit<Us...>::_num_{}, typename derived_unit<Us...>::_den_{},
+                                 fmt);
+}
+
+}  // namespace detail
+
+
+template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
+constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
+{
+  return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
+}
+
+template<typename CharT = char, Unit U>
+[[nodiscard]] constexpr std::basic_string<CharT> unit_symbol(U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
+{
+  std::basic_string<CharT> buffer;
+  unit_symbol_to<CharT>(std::back_inserter(buffer), u, fmt);
+  return buffer;
+}
+
 }  // namespace units
 
 namespace std {
+
 // TODO implement this
 template<units::Unit U1, units::Unit U2>
   requires(units::convertible(U1{}, U2{}))

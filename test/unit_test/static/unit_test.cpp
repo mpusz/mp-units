@@ -235,6 +235,9 @@ static_assert(is_of_type<square<metre>, derived_unit<power<metre_, 2>>>);
 static_assert(is_of_type<cubic<metre>, derived_unit<power<metre_, 3>>>);
 static_assert(is_of_type<square<metre> * metre, derived_unit<power<metre_, 3>>>);
 static_assert(is_of_type<metre * square<metre>, derived_unit<power<metre_, 3>>>);
+static_assert(is_of_type<square<metre> / metre, metre_>);
+static_assert(is_of_type<cubic<metre> / metre, derived_unit<power<metre_, 2>>>);
+static_assert(is_of_type<cubic<metre> / square<metre>, metre_>);
 
 static_assert(is_of_type<metre / second, derived_unit<metre_, per<second_>>>);
 static_assert(is_of_type<metre / square<second>, derived_unit<metre_, per<power<second_, 2>>>>);
@@ -350,8 +353,72 @@ static_assert(joule == newton * metre);
 static_assert(watt == joule / second);
 static_assert(watt == kilogram * square<metre> / cubic<second>);
 
-// static_assert(centimetre::symbol == "cm");
-// static_assert(kilometre::symbol == "km");
-// static_assert(kilometre_per_hour::symbol == "km/h");
+// unit symbols
+#ifdef __cpp_lib_constexpr_string
+
+using enum text_encoding;
+using enum unit_symbol_denominator;
+using enum unit_symbol_separator;
+
+// named units
+static_assert(unit_symbol(metre) == "m");
+static_assert(unit_symbol(second) == "s");
+static_assert(unit_symbol(joule) == "J");
+static_assert(unit_symbol(degree_Celsius) == "\u00B0C");
+static_assert(unit_symbol(degree_Celsius, {.encoding = ascii}) == "`C");
+static_assert(unit_symbol(kilometre) == "km");
+static_assert(unit_symbol(si::milli<metre>) == "mm");
+static_assert(unit_symbol(si::micro<metre>) == "µm");
+static_assert(unit_symbol(si::micro<metre>, {.encoding = ascii}) == "um");
+static_assert(unit_symbol(kilojoule) == "kJ");
+static_assert(unit_symbol(hour) == "h");
+
+// scaled units
+static_assert(unit_symbol(mag<100> * metre) == "× 10² m");
+static_assert(unit_symbol(mag<100> * metre, {.encoding = ascii}) == "x 10^2 m");
+static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
+static_assert(unit_symbol(mag<60> * second, {.encoding = ascii}) == "[6 x 10^1] s");
+
+static_assert(unit_symbol(one) == "");
+static_assert(unit_symbol(square<metre>) == "m²");
+static_assert(unit_symbol(square<metre>, {.encoding = ascii}) == "m^2");
+static_assert(unit_symbol(cubic<metre>) == "m³");
+static_assert(unit_symbol(cubic<metre>, {.encoding = ascii}) == "m^3");
+static_assert(unit_symbol(metre / second) == "m/s");
+static_assert(unit_symbol(metre / second, {.denominator = always_solidus}) == "m/s");
+static_assert(unit_symbol(metre / second, {.denominator = always_negative}) == "m s⁻¹");
+static_assert(unit_symbol(metre / second, {.encoding = ascii, .denominator = always_negative}) == "m s^-1");
+static_assert(unit_symbol(metre / second, {.denominator = always_negative, .separator = dot}) == "m⋅s⁻¹");
+static_assert(unit_symbol(metre / square<second>) == "m/s²");
+static_assert(unit_symbol(metre / square<second>, {.encoding = ascii}) == "m/s^2");
+static_assert(unit_symbol(metre / square<second>, {.denominator = always_solidus}) == "m/s²");
+static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) == "m/s^2");
+static_assert(unit_symbol(metre / square<second>, {.denominator = always_negative}) == "m s⁻²");
+static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .denominator = always_negative}) == "m s^-2");
+static_assert(unit_symbol(metre / square<second>, {.denominator = always_negative, .separator = dot}) == "m⋅s⁻²");
+static_assert(unit_symbol(kilogram * metre / square<second>) == "kg m/s²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.separator = dot}) == "kg⋅m/s²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii}) == "kg m/s^2");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_solidus}) == "kg m/s²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) ==
+              "kg m/s^2");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_negative}) == "kg m s⁻²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .denominator = always_negative}) ==
+              "kg m s^-2");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_negative, .separator = dot}) ==
+              "kg⋅m⋅s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>) == "kg m⁻¹ s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.separator = dot}) == "kg⋅m⁻¹⋅s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii}) == "kg m^-1 s^-2");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_solidus}) == "kg/(m s²)");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) ==
+              "kg/(m s^2)");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_negative}) == "kg m⁻¹ s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .denominator = always_negative}) ==
+              "kg m^-1 s^-2");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_negative, .separator = dot}) ==
+              "kg⋅m⁻¹⋅s⁻²");
+
+#endif  // __cpp_lib_constexpr_string
 
 }  // namespace
