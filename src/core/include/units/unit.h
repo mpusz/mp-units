@@ -516,12 +516,12 @@ constexpr Out copy(const basic_symbol_text<UnicodeCharT, N, M>& txt, text_encodi
     if (is_same_v<CharT, UnicodeCharT>)
       return copy(txt.unicode(), out).out;
     else
-      static_assert("Unicode text can't be copied to CharT output");
+      throw std::invalid_argument("Unicode text can't be copied to CharT output");
   } else {
     if (is_same_v<CharT, char>)
       return copy(txt.ascii(), out).out;
     else
-      static_assert("ASCII text can't be copied to CharT output");
+      throw std::invalid_argument("ASCII text can't be copied to CharT output");
   }
 }
 
