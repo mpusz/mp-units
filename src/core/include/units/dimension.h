@@ -266,7 +266,7 @@ template<Dimension Lhs, Dimension Rhs>
 template<Dimension D>
 [[nodiscard]] consteval Dimension auto operator/(int value, D)
 {
-  gsl_Assert(value == 1);
+  gsl_Expects(value == 1);
   return detail::expr_invert<derived_dimension, struct one_dim>(detail::dim_type<D>{});
 }
 

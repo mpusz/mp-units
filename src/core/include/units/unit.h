@@ -445,7 +445,7 @@ template<Unit Lhs, Unit Rhs>
 template<Unit U>
 [[nodiscard]] consteval Unit auto operator/(int value, U u)
 {
-  gsl_Assert(value == 1);
+  gsl_Expects(value == 1);
   return detail::expr_invert<derived_unit, struct one>(u);
 }
 
@@ -678,7 +678,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
 template<typename CharT, std::output_iterator<CharT> Out, typename... Us>
 constexpr Out unit_symbol_impl(Out out, const derived_unit<Us...>&, unit_symbol_formatting fmt, bool negative_power)
 {
-  gsl_Assert(negative_power == false);
+  gsl_Expects(negative_power == false);
   return unit_symbol_impl<CharT>(out, typename derived_unit<Us...>::_num_{}, typename derived_unit<Us...>::_den_{},
                                  fmt);
 }
