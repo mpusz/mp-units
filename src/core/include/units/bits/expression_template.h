@@ -112,13 +112,17 @@ inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 template<typename T, ratio R>
 consteval auto power_or_T_impl()
 {
-  if constexpr (R.den == 1) {
-    if constexpr (R.num == 1)
-      return T{};
-    else
-      return power<T, R.num>{};
+  if constexpr (is_specialization_of_power<T>) {
+    return power_or_T_impl<typename T::factor, T::exponent * R>();
   } else {
-    return power<T, R.num, R.den>{};
+    if constexpr (R.den == 1) {
+      if constexpr (R.num == 1)
+        return T{};
+      else
+        return power<T, R.num>{};
+    } else {
+      return power<T, R.num, R.den>{};
+    }
   }
 };
 
@@ -435,6 +439,32 @@ template<template<typename...> typename To, typename OneType, typename T>
     return expr_make_spec<typename T::_den_, typename T::_num_, OneType, To>{};
   else
     return To<OneType, per<T>>{};
+}
+
+
+template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, typename... Nums, typename... Dens>
+  requires detail::non_zero<Den>
+[[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
+{
+  return detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
+                                          type_list<power_or_T<Dens, ratio{Num, Den}>...>, OneType, Pred, To>();
+}
+
+
+/**
+ * @brief Computes the value of an expression raised to the `Num/Den` power
+ *
+ * @tparam Num Exponent numerator
+ * @tparam Den Exponent denominator
+ * @tparam T Expression being the base of the operation
+ */
+template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, typename T>
+  requires detail::non_zero<Den>
+[[nodiscard]] consteval auto expr_pow(T)
+{
+  return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
 }
 
 }  // namespace detail

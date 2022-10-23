@@ -207,4 +207,19 @@ static_assert(!convertible(length_dim, time_dim));
 static_assert(acceleration_dim != speed_dim);
 static_assert(!convertible(acceleration_dim, speed_dim));
 
+// power
+static_assert(is_of_type<pow<2>(length_dim), derived_dimension<power<length_dim_, 2>>>);
+static_assert(is_of_type<pow<1, 2>(length_dim), derived_dimension<power<length_dim_, 1, 2>>>);
+static_assert(is_of_type<pow<1, 2>(length_dim* length_dim), length_dim_>);
+static_assert(is_of_type<pow<1, 3>(length_dim* length_dim* length_dim), length_dim_>);
+static_assert(is_of_type<pow<1, 3>(length_dim* length_dim), derived_dimension<power<length_dim_, 2, 3>>>);
+static_assert(is_of_type<pow<1, 2>(length_dim / time_dim),
+                         derived_dimension<power<length_dim_, 1, 2>, per<power<time_dim_, 1, 2>>>>);
+static_assert(is_of_type<pow<1, 2>(length_dim / (time_dim * time_dim)),
+                         derived_dimension<power<length_dim_, 1, 2>, per<time_dim_>>>);
+
+static_assert(is_same_v<decltype(pow<2>(length_dim)), decltype(length_dim * length_dim)>);
+static_assert(
+  is_same_v<decltype(pow<2>(length_dim / time_dim)), decltype(length_dim * length_dim / time_dim / time_dim)>);
+
 }  // namespace

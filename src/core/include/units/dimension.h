@@ -285,6 +285,28 @@ template<Dimension D1, Dimension D2>
   return std::derived_from<D1, D2> || std::derived_from<D2, D1>;
 }
 
+/**
+ * @brief Computes the value of a dimension raised to the `Num/Den` power
+ *
+ * @tparam Num Exponent numerator
+ * @tparam Den Exponent denominator
+ * @param d Dimension being the base of the operation
+ *
+ * @return Dimension The result of computation
+ */
+template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
+  requires detail::non_zero<Den>
+[[nodiscard]] consteval Dimension auto pow(D d)
+{
+  if constexpr (BaseDimension<D>) {
+    if constexpr (Den == 1)
+      return derived_dimension<power<D, Num>>{};
+    else
+      return derived_dimension<power<D, Num, Den>>{};
+  } else
+    return detail::expr_pow<Num, Den, derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(d);
+}
+
 // TODO consider adding the support for text output of the dimensional equation
 
 }  // namespace units

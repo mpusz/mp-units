@@ -357,6 +357,30 @@ static_assert(joule == newton * metre);
 static_assert(watt == joule / second);
 static_assert(watt == kilogram * square<metre> / cubic<second>);
 
+// power
+static_assert(is_same_v<decltype(pow<2>(metre)), decltype(metre * metre)>);
+static_assert(is_same_v<decltype(pow<2>(kilometre)), decltype(kilometre * kilometre)>);
+static_assert(is_same_v<decltype(pow<2>(si::kilo<metre>)), decltype(si::kilo<metre> * si::kilo<metre>)>);
+static_assert(is_same_v<decltype(pow<2>(hour)), decltype(hour * hour)>);
+static_assert(is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600> * second) * (mag<3600> * second))>);
+static_assert(is_same_v<decltype(pow<2>(metre / second)), decltype(metre * metre / second / second)>);
+static_assert(is_same_v<decltype(pow<2>(kilometre / hour)), decltype(kilometre * kilometre / hour / hour)>);
+
+static_assert(is_of_type<pow<2>(metre), derived_unit<power<metre_, 2>>>);
+static_assert(is_of_type<pow<1, 2>(metre), derived_unit<power<metre_, 1, 2>>>);
+static_assert(is_of_type<pow<1, 2>(metre* metre), metre_>);
+static_assert(is_of_type<pow<1, 3>(metre* metre* metre), metre_>);
+static_assert(is_of_type<pow<1, 3>(metre* metre), derived_unit<power<metre_, 2, 3>>>);
+static_assert(is_of_type<pow<1, 2>(metre / second), derived_unit<power<metre_, 1, 2>, per<power<second_, 1, 2>>>>);
+static_assert(is_of_type<pow<1, 2>(metre / (second * second)), derived_unit<power<metre_, 1, 2>, per<second_>>>);
+static_assert(is_of_type<kilometre * kilometre, derived_unit<power<kilometre_, 2>>>);
+
+static_assert(is_of_type<pow<2>(kilometre), derived_unit<power<kilometre_, 2>>>);
+static_assert(is_of_type<pow<2>(si::kilo<metre>), derived_unit<power<si::kilo_<metre>, 2>>>);
+static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
+static_assert(
+  is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
+
 // common_type
 static_assert(std::is_same_v<std::common_type_t<decltype(gram), decltype(gram)>, gram_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(kilogram)>, kilogram_>);
