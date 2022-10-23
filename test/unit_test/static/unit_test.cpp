@@ -478,6 +478,10 @@ static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii,
               "kg m^-1 s^-2");
 static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_negative, .separator = dot}) ==
               "kg⋅m⁻¹⋅s⁻²");
+static_assert(unit_symbol(pow<123>(metre)) == "m¹²³");
+static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
+static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
+static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
 
 #endif  // __cpp_lib_constexpr_string
 
