@@ -22,11 +22,7 @@
 
 #pragma once
 
-#include <units/si/base_quantities.h>
 #include <units/si/constants.h>
-#include <units/si/mechanics.h>
 #include <units/si/prefixes.h>
-#include <units/si/space_and_time.h>
-#include <units/si/thermodynamics.h>
 #include <units/si/unit_symbols.h>
 #include <units/si/units.h>

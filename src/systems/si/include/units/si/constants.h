@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include <units/isq/mechanics.h>
+#include <units/isq/space_and_time.h>
+#include <units/isq/thermodynamics.h>
 #include <units/quantity.h>
-#include <units/si/mechanics.h>
-#include <units/si/space_and_time.h>
-#include <units/si/thermodynamics.h>
 #include <units/si/units.h>
 
 namespace units::si {
@@ -38,10 +38,10 @@ inline constexpr struct mag_speed_of_light : decltype(mag<299'792'458>) {} mag_s
 // clang-format on
 
 template<typename Rep = double>
-inline constexpr auto planck_constant = Rep{1} * (mag_planck * energy[joule] * time[second]);
+inline constexpr auto planck_constant = Rep{1} * (mag_planck * isq::energy[joule] * isq::time[second]);
 
 template<typename Rep = double>
-inline constexpr auto speed_of_light = Rep{1} * speed[mag_speed_of_light * metre / second];
+inline constexpr auto speed_of_light = Rep{1} * isq::speed[mag_speed_of_light * metre / second];
 
 // template<Representation Rep = double>
 // inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
@@ -75,6 +75,6 @@ inline constexpr struct mag_standard_gravity : decltype(mag<ratio{980'665, 10'00
 // clang-format on
 
 template<typename Rep = double>
-inline constexpr auto standard_gravity = Rep{1} * acceleration[mag_standard_gravity * metre / square<second>];
+inline constexpr auto standard_gravity = Rep{1} * isq::acceleration[mag_standard_gravity * metre / square<second>];
 
 }  // namespace units::si

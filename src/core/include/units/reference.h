@@ -162,9 +162,6 @@ struct system_reference {
   }
 };
 
-inline constexpr struct dimensionless : system_reference<one_dim, one> {
-} dimensionless;
-
 }  // namespace units
 
 namespace std {

@@ -457,6 +457,9 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  *
  * @tparam Num Exponent numerator
  * @tparam Den Exponent denominator
+ * @tparam To destination type list to put the result to
+ * @tparam OneType type that represents the value `1`
+ * @tparam Pred binary less then predicate
  * @tparam T Expression being the base of the operation
  */
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
@@ -465,6 +468,44 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
 [[nodiscard]] consteval auto expr_pow(T)
 {
   return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+}
+
+
+// expr_map
+
+template<typename T, template<typename...> typename Proj>
+struct expr_type_map {
+  using type = Proj<T>;
+};
+
+template<typename F, int... Ints, template<typename...> typename Proj>
+struct expr_type_map<power<F, Ints...>, Proj> {
+  using type = power<Proj<F>, Ints...>;
+};
+
+template<template<typename...> typename Proj, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, typename... Nums, typename... Dens>
+[[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
+{
+  using nums = type_list_sort<type_list<typename expr_type_map<Nums, Proj>::type...>, Pred>;
+  using dens = type_list_sort<type_list<typename expr_type_map<Dens, Proj>::type...>, Pred>;
+  return detail::get_optimized_expression<nums, dens, OneType, Pred, To>();
+}
+
+/**
+ * @brief Maps contents of one expression template to another resulting in a different type list
+ *
+ * @tparam Proj Projection to be used for mapping
+ * @tparam To destination type list to put the result to
+ * @tparam OneType type that represents the value `1`
+ * @tparam Pred binary less then predicate
+ * @tparam T expression template to map from
+ */
+template<template<typename...> typename Proj, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, typename T>
+[[nodiscard]] consteval auto expr_map(T)
+{
+  return expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
 }
 
 }  // namespace detail

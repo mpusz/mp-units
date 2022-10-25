@@ -42,16 +42,6 @@ inline constexpr struct poise : named_unit<"P", gram / (centimetre * second)> {}
 inline constexpr struct stokes : named_unit<"St", square<centimetre> / second> {} stokes;
 inline constexpr struct kayser : decltype(1 / centimetre) {} kayser;
 
-inline constexpr struct length : system_reference<isq::length_dim, centimetre> {} length;
-inline constexpr struct mass : system_reference<isq::mass_dim, gram> {} mass;
-inline constexpr struct time : system_reference<isq::time_dim, second> {} time;
-inline constexpr struct speed : system_reference<isq::speed_dim, centimetre / second> {} speed;
-inline constexpr struct acceleration : system_reference<isq::acceleration_dim, gal> {} acceleration;
-inline constexpr struct force : system_reference<isq::force_dim, dyne> {} force;inline constexpr struct energy : system_reference<isq::energy_dim, erg> {} energy;
-inline constexpr struct power : system_reference<isq::power_dim, erg / second> {} power;
-inline constexpr struct dynamic_viscosity : system_reference<isq::dynamic_viscosity_dim, poise> {} dynamic_viscosity;
-inline constexpr struct kinematic_viscosity : system_reference<isq::kinematic_viscosity_dim, stokes> {} kinematic_viscosity;
-// inline constexpr struct wavenumber : system_reference<isq::wavenumber_dim, dyne> {} wavenumber;
 // clang-format on
 
 }  // namespace units::si::cgs

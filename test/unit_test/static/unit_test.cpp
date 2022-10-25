@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
+#include <units/dimension.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
 
@@ -28,18 +30,21 @@ namespace {
 using namespace units;
 using namespace units::detail;
 
-template<auto V, typename T>
-inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;
-
 using one_ = struct one;
+
+// base dimensions
+BASE_DIMENSION_(length, "L");
+BASE_DIMENSION_(time, "T");
+BASE_DIMENSION_(mass, "M");
+BASE_DIMENSION_(thermodynamic_temperature, "Θ");
 
 // clang-format off
 // base units
-inline constexpr struct second_ : named_unit<"s"> {} second;
-inline constexpr struct metre_ : named_unit<"m"> {} metre;
-inline constexpr struct gram_ : named_unit<"g"> {} gram;
+inline constexpr struct second_ : named_unit<"s", time> {} second;
+inline constexpr struct metre_ : named_unit<"m", length> {} metre;
+inline constexpr struct gram_ : named_unit<"g", mass> {} gram;
 inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
-inline constexpr struct kelvin_ : named_unit<"K"> {} kelvin;
+inline constexpr struct kelvin_ : named_unit<"K", thermodynamic_temperature> {} kelvin;
 
 // derived named units
 inline constexpr struct radian_ : named_unit<"rad", metre / metre> {} radian;

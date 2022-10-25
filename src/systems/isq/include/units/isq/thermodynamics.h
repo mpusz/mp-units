@@ -28,15 +28,12 @@
 
 namespace units::isq {
 
-// clang-format off
-// inline constexpr struct thermodynamic_temperature_dim : base_dimension<"Θ"> {} thermodynamic_temperature_dim;
+// inline constexpr struct thermodynamic_temperature : base_dimension<"Θ"> {} thermodynamic_temperature;
 // TODO Celsius temperature???
 
-// inline constexpr struct mass_density_dim : decltype(mass_dim / volume_dim) {} mass_density_dim;
+// DERIVED_DIMENSION(mass_density, decltype(mass / volume));
 
 
-inline constexpr struct energy_dim : decltype(force_dim * length_dim) {} energy_dim;
-
-// clang-format on
+DERIVED_DIMENSION(energy, decltype(force * length));
 
 }  // namespace units::isq

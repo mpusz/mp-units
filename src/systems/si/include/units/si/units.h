@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/isq/base_dimensions.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
 
@@ -29,14 +30,14 @@ namespace units::si {
 
 // clang-format off
 // base units
-inline constexpr struct second : named_unit<"s"> {} second;
-inline constexpr struct metre : named_unit<"m"> {} metre;
-inline constexpr struct gram : named_unit<"g"> {} gram;
+inline constexpr struct second : named_unit<"s", isq::time> {} second;
+inline constexpr struct metre : named_unit<"m", isq::length> {} metre;
+inline constexpr struct gram : named_unit<"g", isq::mass> {} gram;
 inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
-inline constexpr struct ampere : named_unit<"A"> {} ampere;
-inline constexpr struct kelvin : named_unit<"K"> {} kelvin;
-inline constexpr struct mole : named_unit<"mol"> {} mole;
-inline constexpr struct candela : named_unit<"cd"> {} candela;
+inline constexpr struct ampere : named_unit<"A", isq::electric_current> {} ampere;
+inline constexpr struct kelvin : named_unit<"K", isq::thermodynamic_temperature> {} kelvin;
+inline constexpr struct mole : named_unit<"mol", isq::amount_of_substance> {} mole;
+inline constexpr struct candela : named_unit<"cd", isq::luminous_intensity> {} candela;
 
 // derived named units
 inline constexpr struct radian : named_unit<"rad", metre / metre> {} radian;
@@ -90,7 +91,7 @@ inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634,
 namespace units {
 
 template<>
-inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;
+inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;  // TODO Is it true?
 template<>
 inline constexpr bool unit_can_be_prefixed<si::minute> = false;
 template<>

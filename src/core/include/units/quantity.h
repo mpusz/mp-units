@@ -48,7 +48,7 @@ inline constexpr auto make_quantity = [](Representation auto&& v) {
 };
 
 template<typename T>
-concept quantity_one = Quantity<T> && (T::dimension == one_dim) && (T::unit == one);
+concept quantity_one = Quantity<T> && (T::dimension == dimensionless) && (T::unit == one);
 
 }  // namespace detail
 
@@ -506,7 +506,7 @@ template<Quantity Q1, Quantity Q2>
 
 template<Quantity Q1, Quantity Q2>
   requires(!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
-          (std::convertible_to<Q2, Q1> || quantity_of<Q2, one_dim>) &&
+          (std::convertible_to<Q2, Q1> || quantity_of<Q2, dimensionless>) &&
           (quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {

@@ -28,45 +28,45 @@
 
 namespace units::isq {
 
-// clang-format off
-// inline constexpr struct mass_dim : base_dimension<"M"> {} mass_dim;
-inline constexpr struct mass_density_dim : decltype(mass_dim / volume_dim) {} mass_density_dim;
-inline constexpr struct specific_volume_dim : decltype(1 / mass_density_dim) {} specific_volume_dim;
-inline constexpr struct relative_mass_density_dim : decltype(mass_density_dim / mass_density_dim) {} relative_mass_density_dim;
-inline constexpr struct surface_mass_density_dim : decltype(mass_dim / area_dim) {} surface_mass_density_dim;
-inline constexpr struct linear_mass_density_dim : decltype(mass_dim / length_dim) {} linear_mass_density_dim;
-inline constexpr struct momentum_dim : decltype(mass_dim * speed_dim) {} momentum_dim;  // TODO velocity_dim?
-inline constexpr struct force_dim : decltype(mass_dim * acceleration_dim) {} force_dim;  // TODO what is a correct equation here?
-// inline constexpr struct weight_dim : decltype(mass_dim * acceleration_dim) {} weight_dim;  // TODO should we add it as a quantity or should it be a quantity_kind?
-// TODO Should we add other forces as well: static_friction_force, kinematic_friction_force, rolling_resistance, drag_force
-inline constexpr struct impulse_dim : decltype(force_dim / time_dim) {} impulse_dim;
-inline constexpr struct angular_momentum_dim : decltype(length_dim * momentum_dim) {} angular_momentum_dim; // TODO position_vector
-inline constexpr struct moment_of_inertia_dim : decltype(angular_momentum_dim * angular_velocity_dim) {} moment_of_inertia_dim;
-inline constexpr struct moment_of_force_dim : decltype(length_dim * force_dim) {} moment_of_force_dim; // TODO position_vector
-inline constexpr struct torque_dim : decltype(moment_of_force_dim) {} torque_dim; // TODO angle?
-inline constexpr struct angular_impulse_dim : decltype(moment_of_force_dim * time_dim) {} angular_impulse_dim;
-inline constexpr struct pressure_dim : decltype(force_dim / area_dim) {} pressure_dim;
-inline constexpr struct stress_dim : decltype(pressure_dim) {} stress_dim; // TODO tensor?
-inline constexpr struct normal_stress_dim : decltype(force_dim / area_dim) {} normal_stress_dim;
-inline constexpr struct strain_dim : decltype(stress_dim / stress_dim) {} strain_dim; // TODO what is a correct equation here?
-inline constexpr struct poisson_number_dim : decltype(length_dim / length_dim) {} poisson_number_dim; // TODO width?
+// inline constexpr struct mass : base_dimension<"M"> {} mass;
+DERIVED_DIMENSION(mass_density, decltype(mass / volume));
+DERIVED_DIMENSION(specific_volume, decltype(1 / mass_density));
+DERIVED_DIMENSION(relative_mass_density, decltype(mass_density / mass_density));
+DERIVED_DIMENSION(surface_mass_density, decltype(mass / area));
+DERIVED_DIMENSION(linear_mass_density, decltype(mass / length));
+DERIVED_DIMENSION(momentum, decltype(mass * speed));      // TODO velocity?
+DERIVED_DIMENSION(force, decltype(mass * acceleration));  // TODO what is a correct equation here?
+// DERIVED_DIMENSION(weight, decltype(mass * acceleration));  // TODO should we add it as a quantity or should it be a
+// quantity_kind?
+// TODO Should we add other forces as well: static_friction_force, kinematic_friction_force, rolling_resistance,
+// drag_force
+DERIVED_DIMENSION(impulse, decltype(force / time));
+DERIVED_DIMENSION(angular_momentum, decltype(length * momentum));  // TODO position_vector
+DERIVED_DIMENSION(moment_of_inertia, decltype(angular_momentum * angular_velocity));
+DERIVED_DIMENSION(moment_of_force, decltype(length * force));  // TODO position_vector
+DERIVED_DIMENSION(torque, decltype(moment_of_force));          // TODO angle?
+DERIVED_DIMENSION(angular_impulse, decltype(moment_of_force * time));
+DERIVED_DIMENSION(pressure, decltype(force / area));
+DERIVED_DIMENSION(stress, decltype(pressure));  // TODO tensor?
+DERIVED_DIMENSION(normal_stress, decltype(force / area));
+DERIVED_DIMENSION(strain, decltype(stress / stress));          // TODO what is a correct equation here?
+DERIVED_DIMENSION(poisson_number, decltype(length / length));  // TODO width?
 // TODO modulus quantities
-inline constexpr struct compressibility_dim : decltype(volume_dim / pressure_dim) {} compressibility_dim;
-inline constexpr struct second_axial_moment_of_area_dim : decltype(area_dim * area_dim) {} second_axial_moment_of_area_dim;  // TODO what is a correct equation here?
-inline constexpr struct section_modulus_dim : decltype(second_axial_moment_of_area_dim / length_dim) {} section_modulus_dim;  // TODO radial distance
+DERIVED_DIMENSION(compressibility, decltype(volume / pressure));
+DERIVED_DIMENSION(second_axial_moment_of_area, decltype(area * area));  // TODO what is a correct equation here?
+DERIVED_DIMENSION(section_modulus, decltype(second_axial_moment_of_area / length));  // TODO radial distance
 // TODO friction coefficients?
-inline constexpr struct dynamic_viscosity_dim : decltype(stress_dim * length_dim / speed_dim) {} dynamic_viscosity_dim;  // TODO shear stress, velocity
-inline constexpr struct kinematic_viscosity_dim : decltype(dynamic_viscosity_dim / mass_density_dim) {} kinematic_viscosity_dim;
-inline constexpr struct surface_tension_dim : decltype(force_dim / length_dim) {} surface_tension_dim;  // TODO what is a correct equation here?
-inline constexpr struct power_dim : decltype(force_dim * speed_dim) {} power_dim;
-// TODO what about energy (potential and kinetic as separate quantities will prevent an equation for mechanical one, is it expected?)
-inline constexpr struct efficiency_dim : decltype(power_dim / power_dim) {} efficiency_dim;
-inline constexpr struct mass_flow_dim : decltype(mass_density_dim * speed_dim) {} mass_flow_dim; // TODO velocity
-inline constexpr struct mass_flow_rate_dim : decltype(mass_flow_dim * area_dim) {} mass_flow_rate_dim;
-inline constexpr struct mass_change_rate_dim : decltype(mass_dim / time_dim) {} mass_change_rate_dim;
-inline constexpr struct volume_flow_rate_dim : decltype(speed_dim * area_dim) {} volume_flow_rate_dim;  // TODO velocity
-// inline constexpr struct action_dim : decltype(energy_dim * time_dim) {} action_dim;  // TODO make it compile
-
-// clang-format on
+DERIVED_DIMENSION(dynamic_viscosity, decltype(stress * length / speed));  // TODO shear stress, velocity
+DERIVED_DIMENSION(kinematic_viscosity, decltype(dynamic_viscosity / mass_density));
+DERIVED_DIMENSION(surface_tension, decltype(force / length));  // TODO what is a correct equation here?
+DERIVED_DIMENSION(power, decltype(force * speed));
+// TODO what about energy (potential and kinetic as separate quantities will prevent an equation for mechanical one, is
+// it expected?)
+DERIVED_DIMENSION(efficiency, decltype(power / power));
+DERIVED_DIMENSION(mass_flow, decltype(mass_density * speed));  // TODO velocity
+DERIVED_DIMENSION(mass_flow_rate, decltype(mass_flow * area));
+DERIVED_DIMENSION(mass_change_rate, decltype(mass / time));
+DERIVED_DIMENSION(volume_flow_rate, decltype(speed * area));  // TODO velocity
+// DERIVED_DIMENSION(action, decltype(energy * time));  // TODO make it compile
 
 }  // namespace units::isq

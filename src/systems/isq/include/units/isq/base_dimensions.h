@@ -26,15 +26,13 @@
 
 namespace units::isq {
 
-// clang-format off
-inline constexpr struct length_dim : base_dimension<"L"> {} length_dim;
-inline constexpr struct mass_dim : base_dimension<"M"> {} mass_dim;
-inline constexpr struct time_dim : base_dimension<"T"> {} time_dim;
-inline constexpr struct electric_current_dim : base_dimension<"I"> {} electric_current_dim;
+BASE_DIMENSION(length, "L");
+BASE_DIMENSION(mass, "M");
+BASE_DIMENSION(time, "T");
+BASE_DIMENSION(electric_current, "I");
 // TODO Should the below use basic_symbol_text? How to name it for ASCII?
-inline constexpr struct thermodynamic_temperature_dim : base_dimension<"Θ"> {} thermodynamic_temperature_dim;
-inline constexpr struct amount_of_substance_dim : base_dimension<"N"> {} amount_of_substance_dim;
-inline constexpr struct luminous_intensity_dim : base_dimension<"J"> {} luminous_intensity_dim;
-// clang-format on
+BASE_DIMENSION(thermodynamic_temperature, "Θ");
+BASE_DIMENSION(amount_of_substance, "N");
+BASE_DIMENSION(luminous_intensity, "J");
 
 }  // namespace units::isq

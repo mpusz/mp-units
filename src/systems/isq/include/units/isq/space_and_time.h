@@ -27,42 +27,40 @@
 
 namespace units::isq {
 
-// clang-format off
-// inline constexpr struct length_dim : base_dimension<"L"> {} length_dim;
-inline constexpr struct curvature_dim : decltype(1 / length_dim) {} curvature_dim;
-inline constexpr struct area_dim : decltype(length_dim * length_dim) {} area_dim;
-inline constexpr struct volume_dim : decltype(length_dim * length_dim * length_dim) {} volume_dim;
-inline constexpr struct angular_measure_dim : decltype(length_dim / length_dim) {} angular_measure_dim;
-inline constexpr struct angular_displacement_dim : decltype(length_dim / length_dim) {} angular_displacement_dim;
-inline constexpr struct phase_angle_dim : decltype(length_dim / length_dim) {} phase_angle_dim;
-inline constexpr struct solid_angular_measure_dim : decltype(area_dim / (length_dim * length_dim)) {} solid_angular_measure_dim;
-// inline constexpr struct time_dim : base_dimension<"T"> {} time_dim;  // TODO called duration in ISO 80000
+// inline constexpr struct length : base_dimension<"L"> {} length;
+DERIVED_DIMENSION(curvature, decltype(1 / length));
+DERIVED_DIMENSION(area, decltype(length * length));
+DERIVED_DIMENSION(volume, decltype(length * length * length));
+DERIVED_DIMENSION(angular_measure, decltype(length / length));
+DERIVED_DIMENSION(angular_displacement, decltype(length / length));
+DERIVED_DIMENSION(phase_angle, decltype(length / length));
+inline constexpr struct solid_angular_measure : decltype(area / (length * length)) {
+} solid_angular_measure;
+// inline constexpr struct time : base_dimension<"T"> {} time;  // TODO called duration in ISO 80000
 // TODO there is also a velocity in ISO 80000
-inline constexpr struct speed_dim : decltype(length_dim / time_dim) {} speed_dim;
-inline constexpr struct acceleration_dim : decltype(speed_dim / time_dim) {} acceleration_dim;
-inline constexpr struct angular_velocity_dim : decltype(angular_displacement_dim / time_dim) {} angular_velocity_dim;
-inline constexpr struct angular_acceleration_dim : decltype(angular_velocity_dim / time_dim) {} angular_acceleration_dim;
-inline constexpr struct period_duration_dim : time_dim {} period_duration_dim;
-inline constexpr struct time_constant_dim : time_dim {} time_constant_dim;
-inline constexpr struct rotation_dim : angular_displacement_dim {} rotation_dim;
-inline constexpr struct frequency_dim : decltype(1 / time_dim) {} frequency_dim;
-inline constexpr struct rotational_frequency_dim : decltype(rotation_dim / time_dim) {} rotational_frequency_dim;
-inline constexpr struct angular_frequency_dim : decltype(angular_measure_dim / time_dim) {} angular_frequency_dim;
-inline constexpr struct wavelength_dim : length_dim {} wavelength_dim;
-inline constexpr struct repetency_dim : decltype(1 / wavelength_dim) {} repetency_dim;
-inline constexpr struct wave_vector_dim : decltype(1 / length_dim) {} wave_vector_dim;
-inline constexpr struct angular_repetency_dim : decltype(1 / wavelength_dim) {} angular_repetency_dim;
-inline constexpr struct phase_velocity_dim : decltype(angular_frequency_dim / angular_repetency_dim) {} phase_velocity_dim;
-inline constexpr struct damping_coefficient_dim : decltype(1 / time_constant_dim) {} damping_coefficient_dim;
-inline constexpr struct logarithmic_decrement_dim : decltype(damping_coefficient_dim * period_duration_dim) {} logarithmic_decrement_dim;
-inline constexpr struct attenuation_dim : decltype(1 / length_dim) {} attenuation_dim;
-inline constexpr struct phase_coefficient_dim : decltype(phase_angle_dim / length_dim) {} phase_coefficient_dim;
-inline constexpr struct propagation_coefficient_dim : decltype(1 / length_dim) {} propagation_coefficient_dim;
-// clang-format on
+DERIVED_DIMENSION(speed, decltype(length / time));
+DERIVED_DIMENSION(acceleration, decltype(speed / time));
+DERIVED_DIMENSION(angular_velocity, decltype(angular_displacement / time));
+DERIVED_DIMENSION(angular_acceleration, decltype(angular_velocity / time));
+inline constexpr struct period_duration : time {
+} period_duration;
+inline constexpr struct time_constant : time {
+} time_constant;
+inline constexpr struct rotation : angular_displacement {
+} rotation;
+DERIVED_DIMENSION(frequency, decltype(1 / time));
+DERIVED_DIMENSION(rotational_frequency, decltype(rotation / time));
+DERIVED_DIMENSION(angular_frequency, decltype(angular_measure / time));
+inline constexpr struct wavelength : length {
+} wavelength;
+DERIVED_DIMENSION(repetency, decltype(1 / wavelength));
+DERIVED_DIMENSION(wave_vector, decltype(1 / length));
+DERIVED_DIMENSION(angular_repetency, decltype(1 / wavelength));
+DERIVED_DIMENSION(phase_velocity, decltype(angular_frequency / angular_repetency));
+DERIVED_DIMENSION(damping_coefficient, decltype(1 / time_constant));
+DERIVED_DIMENSION(logarithmic_decrement, decltype(damping_coefficient * period_duration));
+DERIVED_DIMENSION(attenuation, decltype(1 / length));
+DERIVED_DIMENSION(phase_coefficient, decltype(phase_angle / length));
+DERIVED_DIMENSION(propagation_coefficient, decltype(1 / length));
 
 }  // namespace units::isq
-
-
-// inline constexpr struct force_dim : decltype(mass_dim * acceleration_dim) {} force_dim;
-// inline constexpr struct energy_dim : decltype(force_dim * length_dim) {} energy_dim;
-// inline constexpr struct power_dim : decltype(force_dim * speed_dim) {} power_dim;

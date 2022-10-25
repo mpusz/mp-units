@@ -29,18 +29,51 @@
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/magnitude.h>
+#include <units/ratio.h>
 #include <units/symbol_text.h>
 #include <iterator>
 #include <string>
 
-// #include <units/bits/derived_symbol_text.h>
-
-// IWYU pragma: begin_exports
-// #include <units/bits/absolute_magnitude.h>
-// #include <units/ratio.h>
-// IWYU pragma: end_exports
-
 namespace units {
+
+#ifdef __cpp_explicit_this_parameter__
+template<basic_fixed_string Symbol>
+#else
+template<typename Self, basic_fixed_string Symbol>
+#endif
+struct base_dimension;
+
+namespace detail {
+
+#ifdef __cpp_explicit_this_parameter__
+template<basic_fixed_string Symbol>
+void to_base_base_dimension(const volatile base_dimension<Symbol>*);
+#else
+template<typename Self, basic_fixed_string Symbol>
+void to_base_base_dimension(const volatile base_dimension<Self, Symbol>*);
+#endif
+
+template<typename T>
+inline constexpr bool is_specialization_of_base_dimension = false;
+
+#ifdef __cpp_explicit_this_parameter__
+template<basic_fixed_string Symbol>
+inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
+#else
+template<typename Self, basic_fixed_string Symbol>
+inline constexpr bool is_specialization_of_base_dimension<base_dimension<Self, Symbol>> = true;
+#endif
+
+}  // namespace detail
+
+/**
+ * @brief A concept matching all named base dimensions in the library.
+ *
+ * Satisfied by all dimension types derived from a specialization of `base_dimension`.
+ */
+template<typename T>
+concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
+                        (!detail::is_specialization_of_base_dimension<T>);
 
 namespace detail {
 
@@ -86,14 +119,16 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
 /**
  * @brief A named unit
  *
- * Defines a unit with a special name.
+ * Defines a unit with a special name. It may be used to provide a base unit in the system
+ * of units (i.e. `metre`) or a name assigned to another scaled or derived unit
+ * (i.e. `hour`, `joule`).
  * Most of the named units may be composed with a prefix to create a `prefixed_unit`.
  *
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct second : named_unit<"s"> {} second;
- * inline constexpr struct metre : named_unit<"m"> {} metre;
+ * inline constexpr struct second : named_unit<"s", time> {} second;
+ * inline constexpr struct metre : named_unit<"m", length> {} metre;
  * inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
  * inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
  * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"\u00B0C", "`C"}, kelvin> {} degree_Celsius;
@@ -111,11 +146,33 @@ template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
 /**
- * @brief Specialization for base unit
+ * @brief Specialization for unit of a specified base dimension
  *
- * Defines a base unit in the system of units (i.e. `metre`).
- * or a name assigned to another scaled or derived unit (i.e. `hour`, `joule`).
- * Most of the named units may be composed with a prefix to create a `prefixed_unit`.
+ * This is the preferred way to define a measurement unit for a base dimension. For example `si::metre`
+ * is a unit to measure `isq::length` in the SI system.
+ *
+ * @note It does not have to (or sometimes even can't) be a proper system's base unit. For example
+ *       a base unit of mass in the SI is `si::kilogram` but here you are about to provide an `si::gram`
+ *       and it will work just fine as those two are convertible to each other. A similar case would be
+ *       the `cgs::centimetre` that is a base unit for `isq::length` in the CGS system.
+ *
+ * @tparam Symbol a short text representation of the unit
+ * @tparam BaseDimension base dimension measured with this unit
+ */
+template<basic_symbol_text Symbol, BaseDimension auto D>
+  requires(!Symbol.empty())
+struct named_unit<Symbol, D> {
+  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
+  static constexpr auto base_dimension = D;
+};
+
+/**
+ * @brief Specialization for a unit that can be reused by several base dimensions
+ *
+ * This specialization is used in rare cases where more than one base dimension in a specific
+ * system of units uses the same unit. For example in a hypothetical system of units where
+ * constant for speed of light `c = 1`, length and time could be measured in seconds. In such
+ * cases `system_reference` has to be used to explicitly express such a binding.
  *
  * @tparam Symbol a short text representation of the unit
  */
@@ -319,6 +376,9 @@ struct canonical_unit {
   U reference_unit;
 };
 
+template<Unit T, basic_symbol_text Symbol, BaseDimension auto D>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, D>&);
+
 template<Unit T, basic_symbol_text Symbol>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&);
 
@@ -336,6 +396,12 @@ template<Unit T, auto M, typename U>
 {
   auto base = get_canonical_unit_impl(U{}, U{});
   return canonical_unit{M * base.mag, base.reference_unit};
+}
+
+template<Unit T, basic_symbol_text Symbol, BaseDimension auto D>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, D>&)
+{
+  return canonical_unit{mag<1>, t};
 }
 
 template<Unit T, basic_symbol_text Symbol>

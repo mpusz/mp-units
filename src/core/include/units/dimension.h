@@ -25,63 +25,9 @@
 #include <units/bits/expression_template.h>
 #include <units/bits/external/fixed_string.h>
 #include <units/bits/external/type_traits.h>
+#include <units/unit.h>
 
 namespace units {
-
-/**
- * @brief A dimension of a base quantity
- *
- * Base quantity is a quantity in a conventionally chosen subset of a given system of quantities, where no quantity
- * in the subset can be expressed in terms of the other quantities within that subset. They are referred to as
- * being mutually independent since a base quantity cannot be expressed as a product of powers of the other base
- * quantities.
- *
- * Symbol template parameters is an unique identifier of the base dimension. The same identifiers can be multiplied
- * and divided which will result with an adjustment of its factor in an exponent of a derived_dimension
- * (in case of zero the dimension will be simplified and removed from further analysis of current expresion).
- *
- * User should derive a strong type from this class template rather than use it directly in the source code.
- * For example:
- *
- * @code{.cpp}
- * inline constexpr struct length_dim : base_dimension<"L"> {} length_dim;
- * inline constexpr struct time_dim : base_dimension<"T"> {} time_dim;
- * inline constexpr struct mass_dim : base_dimension<"M"> {} mass_dim;
- * @endcode
- *
- * @note A common convention in this library is to assign the same name for a type and an object of this type.
- *       Besides defining them user never works with the dimension types in the source code. All operations
- *       are done on the objects. Contrarily, the dimension types are the only one visible in the compilation
- *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
- *
- * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
- */
-template<basic_fixed_string Symbol>
-struct base_dimension {
-  static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
-};
-
-namespace detail {
-
-template<basic_fixed_string Symbol>
-void to_base_base_dimension(const volatile base_dimension<Symbol>*);
-
-template<typename T>
-inline constexpr bool is_specialization_of_base_dimension = false;
-
-template<basic_fixed_string Symbol>
-inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all named base dimensions in the library.
- *
- * Satisfied by all dimension types derived from a specialization of `base_dimension`.
- */
-template<typename T>
-concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
-                        (!detail::is_specialization_of_base_dimension<T>);
 
 namespace detail {
 
@@ -107,6 +53,66 @@ concept DerivedDimension = detail::is_derived_dimension<T>;
 template<typename T>
 concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
+
+namespace detail {
+
+[[nodiscard]] consteval Dimension auto get_dimension_for(Unit auto);
+
+}
+
+template<Dimension D, Unit U>
+struct reference;
+
+/**
+ * @brief A dimension of a base quantity
+ *
+ * Base quantity is a quantity in a conventionally chosen subset of a given system of quantities, where no quantity
+ * in the subset can be expressed in terms of the other quantities within that subset. They are referred to as
+ * being mutually independent since a base quantity cannot be expressed as a product of powers of the other base
+ * quantities.
+ *
+ * Symbol template parameters is an unique identifier of the base dimension. The same identifiers can be multiplied
+ * and divided which will result with an adjustment of its factor in an exponent of a derived_dimension
+ * (in case of zero the dimension will be simplified and removed from further analysis of current expresion).
+ *
+ * User should derive a strong type from this class template rather than use it directly in the source code.
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct length : base_dimension<"L"> {} length;
+ * inline constexpr struct time : base_dimension<"T"> {} time;
+ * inline constexpr struct mass : base_dimension<"M"> {} mass;
+ * @endcode
+ *
+ * @note A common convention in this library is to assign the same name for a type and an object of this type.
+ *       Besides defining them user never works with the dimension types in the source code. All operations
+ *       are done on the objects. Contrarily, the dimension types are the only one visible in the compilation
+ *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
+ *
+ * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
+ */
+#ifdef __cpp_explicit_this_parameter__
+template<basic_fixed_string Symbol>
+#else
+template<typename Self, basic_fixed_string Symbol>
+#endif
+struct base_dimension {
+  static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
+
+#ifdef __cpp_explicit_this_parameter__
+  template<Unit U, typename Self>
+    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
+#else
+  template<Unit U>
+    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  [[nodiscard]] constexpr reference<Self, U> operator[](U) const
+#endif
+  {
+    return {};
+  }
+};
+
 namespace detail {
 
 template<BaseDimension Lhs, BaseDimension Rhs>
@@ -116,12 +122,13 @@ template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
 template<typename T>
-inline constexpr bool is_one_dim = false;
+inline constexpr bool is_dimensionless = false;
 
 template<typename T>
 inline constexpr bool is_power_of_dim =
   requires {
-    requires is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_one_dim<typename T::factor>);
+    requires is_specialization_of_power<T> &&
+               (BaseDimension<typename T::factor> || is_dimensionless<typename T::factor>);
   };
 
 template<typename T>
@@ -129,15 +136,15 @@ inline constexpr bool is_per_of_dims = false;
 
 template<typename... Ts>
 inline constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_one_dim<Ts> || is_power_of_dim<Ts>));
+  (... && (BaseDimension<Ts> || is_dimensionless<Ts> || is_power_of_dim<Ts>));
 
 }  // namespace detail
 
 template<typename T>
 concept DerivedDimensionSpec =
-  BaseDimension<T> || detail::is_one_dim<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
+  BaseDimension<T> || detail::is_dimensionless<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
 
-template<DerivedDimensionSpec... Ds>
+template<typename...>
 struct derived_dimension;
 
 namespace detail {
@@ -160,47 +167,83 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
  * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
  * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
- * is also one special case. In case all of the exponents are negative than the `one_dim` being a dimension of
+ * is also one special case. In case all of the exponents are negative than the `dimensionless` being a dimension of
  * a dimensionless quantity is put in the front to increase the readability.
  *
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct frequency_dim : decltype(1 / time_dim) {} frequency_dim;
- * inline constexpr struct speed_dim : decltype(length_dim / time_dim) {} speed_dim;
- * inline constexpr struct acceleration_dim : decltype(speed_dim / time_dim) {} acceleration_dim;
- * inline constexpr struct force_dim : decltype(mass_dim * acceleration_dim) {} force_dim;
- * inline constexpr struct energy_dim : decltype(force_dim * length_dim) {} energy_dim;
- * inline constexpr struct moment_of_force_dim : decltype(length_dim * force_dim) {} moment_of_force_dim;
- * inline constexpr struct torque_dim : decltype(moment_of_force_dim) {} torque_dim;
+ * DERIVED_DIMENSION(frequency, 1 / time);
+ * DERIVED_DIMENSION(speed, length / time);
+ * DERIVED_DIMENSION(acceleration, speed / time);
+ * DERIVED_DIMENSION(force, mass * acceleration);
+ * DERIVED_DIMENSION(energy, force * length);
+ * DERIVED_DIMENSION(moment_of_force, length * force);
+ * DERIVED_DIMENSION(torque, moment_of_force);
  * @endcode
  *
- * - `frequency_dim` will be derived from type `derived_dimension<one_dim, per<time_dim>>`
- * - `speed_dim` will be derived from type `derived_dimension<length_dim, per<time_dim>>`
- * - `acceleration_dim` will be derived from type `derived_dimension<length_dim, per<power<time_dim, 2>>>`
- * - `force_dim` will be derived from type `derived_dimension<length_dim, mass_dim, per<power<time_dim, 2>>>`
- * - `energy_dim` will be derived from type `derived_dimension<power<length_dim, 2>, mass_dim, per<power<time_dim, 2>>>`
+ * - `frequency` will be derived from type `derived_dimension<dimensionless, per<time>>`
+ * - `speed` will be derived from type `derived_dimension<length, per<time>>`
+ * - `acceleration` will be derived from type `derived_dimension<length, per<power<time, 2>>>`
+ * - `force` will be derived from type `derived_dimension<length, mass, per<power<time, 2>>>`
+ * - `energy` will be derived from type `derived_dimension<power<length, 2>, mass, per<power<time, 2>>>`
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
  *       Besides defining them user never works with the dimension types in the source code. All operations
  *       are done on the objects. Contrarily, the dimension types are the only one visible in the compilation
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
- * Two dimensions are deemed equal when they are of the same type. With that strong type `speed_dim` and
- * `derived_dimension<length_dim, per<time_dim>>` are considered not equal. They are convertible though.
+ * Two dimensions are deemed equal when they are of the same type. With that strong type `speed` and
+ * `derived_dimension<length, per<time>>` are considered not equal. They are convertible though.
  * User can implicitly convert up and down the inheritance hierarchy between those two.
- * `torque_dim` and `moment_of_force_dim` are convertible as well. However, `energy_dim` and `torque_dim`
+ * `torque` and `moment_of_force` are convertible as well. However, `energy` and `torque`
  * are not convertible as they do not inherit from each other. They are from two separate branches of
  * dimensionally equivalent quantities.
  *
  * @tparam Ds a parameter pack consisting tokens allowed in the dimension specification
- *            (base dimensions, `one_dim`, `power<Dim, Num, Den>`, `per<...>`)
+ *         (base dimensions, `dimensionless`, `power<Dim, Num, Den>`, `per<...>`)
  *
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
+#ifdef __cpp_explicit_this_parameter__
+
 template<DerivedDimensionSpec... Ds>
-struct derived_dimension : detail::derived_dimension_impl<Ds...> {};
+struct derived_dimension : detail::derived_dimension_impl<Ds...> {
+  template<Unit U, typename Self>
+    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
+  {
+    return {};
+  }
+};
+
+#else
+
+template<typename...>
+struct derived_dimension;
+
+template<DerivedDimensionSpec... Ds>
+struct derived_dimension<Ds...> : detail::derived_dimension_impl<Ds...> {
+  template<Unit U>
+    requires(convertible(derived_dimension{}, detail::get_dimension_for(U{})))
+  [[nodiscard]] constexpr reference<derived_dimension, U> operator[](U) const
+  {
+    return {};
+  }
+};
+
+template<typename Self, DerivedDimension D>
+struct derived_dimension<Self, D> : D {
+  template<Unit U>
+    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  [[nodiscard]] constexpr reference<Self, U> operator[](U) const
+  {
+    return {};
+  }
+};
+
+#endif
 
 namespace detail {
 
@@ -223,13 +266,13 @@ inline constexpr bool is_derived_dimension<T> = true;
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */
-inline constexpr struct one_dim : derived_dimension<> {
-} one_dim;
+inline constexpr struct dimensionless : derived_dimension<> {
+} dimensionless;
 
 namespace detail {
 
 template<>
-inline constexpr bool is_one_dim<struct one_dim> = true;
+inline constexpr bool is_dimensionless<struct dimensionless> = true;
 
 template<Dimension T>
 struct dim_type_impl {
@@ -252,14 +295,14 @@ using dim_type = dim_type_impl<T>::type;
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
 {
-  return detail::expr_multiply<derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(
+  return detail::expr_multiply<derived_dimension, struct dimensionless, detail::type_list_of_base_dimension_less>(
     detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
 {
-  return detail::expr_divide<derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(
+  return detail::expr_divide<derived_dimension, struct dimensionless, detail::type_list_of_base_dimension_less>(
     detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
@@ -267,7 +310,7 @@ template<Dimension D>
 [[nodiscard]] consteval Dimension auto operator/(int value, D)
 {
   gsl_Expects(value == 1);
-  return detail::expr_invert<derived_dimension, struct one_dim>(detail::dim_type<D>{});
+  return detail::expr_invert<derived_dimension, struct dimensionless>(detail::dim_type<D>{});
 }
 
 template<Dimension D>
@@ -304,8 +347,37 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
     else
       return derived_dimension<power<D, Num, Den>>{};
   } else
-    return detail::expr_pow<Num, Den, derived_dimension, struct one_dim, detail::type_list_of_base_dimension_less>(d);
+    return detail::expr_pow<Num, Den, derived_dimension, struct dimensionless,
+                            detail::type_list_of_base_dimension_less>(d);
 }
+
+namespace detail {
+
+template<Unit U>
+[[nodiscard]] consteval Dimension auto get_dimension_for_impl(U)
+  requires requires { U::base_dimension; }
+{
+  return U::base_dimension;
+}
+
+template<Unit U>
+  requires requires { U::base_dimension; }
+using to_base_dimension = std::remove_const_t<decltype(U::base_dimension)>;
+
+template<typename... Us>
+[[nodiscard]] consteval Dimension auto get_dimension_for_impl(const derived_unit<Us...>& u)
+{
+  return detail::expr_map<to_base_dimension, derived_dimension, struct dimensionless,
+                          detail::type_list_of_base_dimension_less>(u);
+}
+
+[[nodiscard]] consteval Dimension auto get_dimension_for(Unit auto u)
+{
+  return get_dimension_for_impl(get_canonical_unit(u).reference_unit);
+}
+
+}  // namespace detail
+
 
 // TODO consider adding the support for text output of the dimensional equation
 
@@ -327,3 +399,26 @@ struct common_type<D1, D2> {
 };
 
 }  // namespace std
+
+
+#ifdef __cpp_explicit_this_parameter__
+
+#define BASE_DIMENSION(name, symbol)                      \
+  inline constexpr struct name : base_dimension<symbol> { \
+  } name
+
+#define DERIVED_DIMENSION(name, base)   \
+  inline constexpr struct name : base { \
+  } name
+
+#else
+
+#define BASE_DIMENSION(name, symbol)                            \
+  inline constexpr struct name : base_dimension<name, symbol> { \
+  } name
+
+#define DERIVED_DIMENSION(name, base)                            \
+  inline constexpr struct name : derived_dimension<name, base> { \
+  } name
+
+#endif
