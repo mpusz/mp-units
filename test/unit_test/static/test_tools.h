@@ -137,7 +137,7 @@
 template<auto V, typename T>
 inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 
 #define BASE_DIMENSION_(name, symbol)                        \
   inline constexpr struct name##_ : base_dimension<symbol> { \

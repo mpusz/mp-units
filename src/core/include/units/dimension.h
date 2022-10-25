@@ -91,7 +91,7 @@ struct reference;
  *
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  */
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 template<basic_fixed_string Symbol>
 #else
 template<typename Self, basic_fixed_string Symbol>
@@ -99,7 +99,7 @@ template<typename Self, basic_fixed_string Symbol>
 struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
   template<Unit U, typename Self>
     requires(convertible(Self{}, detail::get_dimension_for(U{})))
   [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
@@ -206,7 +206,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 
 template<DerivedDimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {
@@ -401,7 +401,7 @@ struct common_type<D1, D2> {
 }  // namespace std
 
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 
 #define BASE_DIMENSION(name, symbol)                      \
   inline constexpr struct name : base_dimension<symbol> { \

@@ -36,7 +36,7 @@
 
 namespace units {
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 template<basic_fixed_string Symbol>
 #else
 template<typename Self, basic_fixed_string Symbol>
@@ -45,7 +45,7 @@ struct base_dimension;
 
 namespace detail {
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 template<basic_fixed_string Symbol>
 void to_base_base_dimension(const volatile base_dimension<Symbol>*);
 #else
@@ -56,7 +56,7 @@ void to_base_base_dimension(const volatile base_dimension<Self, Symbol>*);
 template<typename T>
 inline constexpr bool is_specialization_of_base_dimension = false;
 
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 template<basic_fixed_string Symbol>
 inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
 #else

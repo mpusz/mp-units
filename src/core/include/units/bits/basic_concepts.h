@@ -102,7 +102,7 @@ template<typename T>
 concept AliasUnit = requires(T* t) { detail::to_base_alias_unit(t); };
 
 // BaseDimension
-#ifdef __cpp_explicit_this_parameter__
+#ifdef __cpp_explicit_this_parameter
 template<basic_fixed_string Symbol>
 #else
 template<typename Self, basic_fixed_string Symbol>
