@@ -28,22 +28,6 @@
 
 namespace units {
 
-template<Dimension auto Dim, Unit auto CoU>
-struct system_reference;
-
-// namespace detail {
-
-// template<typename Child, auto Dim, auto CoU>
-// void to_base_specialization_of_inline constexpr struct const volatile system_reference<Child : system_reference<Dim,
-// CoU>*> {} const volatile system_reference<Child;
-
-// template<typename T>
-// // inline constexpr bool // TODO: Replace with concept when it works with MSVC
-// concept is_derived_from_specialization_of_system_reference =
-//   requires(T* t) { detail::to_base_specialization_of_system_reference(t); };
-
-// }  // namespace detail
-
 /**
  * @brief The type for quantity references
  *
@@ -83,15 +67,6 @@ struct system_reference;
  * The following syntaxes are not allowed:
  * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
-// template<typename R, Unit U>
-//   requires detail::is_derived_from_specialization_of_system_reference<R>
-// struct reference<R, U> {
-//   using system_reference = R;
-//   static constexpr auto dimension = R::dimension;
-//   static constexpr U unit{};
-//   // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
-// };
-
 template<Dimension D, Unit U>
 struct reference {
   static constexpr D dimension{};
@@ -106,13 +81,6 @@ template<Magnitude M, Reference R>
 {
   return {};
 }
-
-// template<Magnitude M, Reference R>
-//   requires requires { typename R::system_reference; }
-// [[nodiscard]] consteval reference<typename R::system_reference, decltype(M{} * R::unit)> operator*(M, R)
-// {
-//   return {};
-// }
 
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
@@ -142,14 +110,9 @@ template<Reference R1, Reference R2>
   return convertible(R1::dimension, R2::dimension) && convertible(R1::unit, R2::unit);
 }
 
-// template<Reference R1, Reference R2>
-// [[nodiscard]] consteval bool castable(R1, R2)
-// {
-//   return equivalent(R1::dimension, R2::dimension) && convertible(R1::unit, R2::unit);
-// }
-
 
 template<Dimension auto Dim, Unit auto CoU>
+  requires(!detail::associated_unit<std::remove_const_t<decltype(CoU)>>)
 struct system_reference {
   static constexpr auto dimension = Dim;
   static constexpr auto coherent_unit = CoU;

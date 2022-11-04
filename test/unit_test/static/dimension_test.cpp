@@ -22,17 +22,22 @@
 
 #include "test_tools.h"
 #include <units/dimension.h>
+#include <units/quantity.h>
+#include <units/reference.h>
+#include <units/unit.h>
 
 namespace {
 
 using namespace units;
 
-using dimensionless_ = struct dimensionless;
+using dimension_one_ = struct dimension_one;
 
 // clang-format off
 BASE_DIMENSION_(length, "L");
 BASE_DIMENSION_(time, "T");
 BASE_DIMENSION_(mass, "M");
+
+inline constexpr struct second_ : named_unit<"s", time> {} second;
 
 DERIVED_DIMENSION_(frequency, decltype(1 / time));
 DERIVED_DIMENSION_(action, decltype(1 / time));
@@ -60,18 +65,18 @@ static_assert(DerivedDimension<frequency_>);
 static_assert(Dimension<length_>);
 static_assert(Dimension<frequency_>);
 
-static_assert(DerivedDimension<dimensionless_>);
-static_assert(DerivedDimension<decltype(length / length)>);  // dimensionless
+static_assert(DerivedDimension<dimension_one_>);
+static_assert(DerivedDimension<decltype(length / length)>);  // dimension_one
 static_assert(BaseDimension<decltype(speed * time)>);        // length
 
 // derived dimension expression template syntax verification
-static_assert(is_of_type<1 / time, derived_dimension<dimensionless_, per<time_>>>);
+static_assert(is_of_type<1 / time, derived_dimension<dimension_one_, per<time_>>>);
 static_assert(is_of_type<1 / (1 / time), time_>);
 
-static_assert(is_of_type<dimensionless * time, time_>);
-static_assert(is_of_type<time * dimensionless, time_>);
-static_assert(is_of_type<dimensionless * (1 / time), derived_dimension<dimensionless_, per<time_>>>);
-static_assert(is_of_type<1 / time * dimensionless, derived_dimension<dimensionless_, per<time_>>>);
+static_assert(is_of_type<dimension_one * time, time_>);
+static_assert(is_of_type<time * dimension_one, time_>);
+static_assert(is_of_type<dimension_one * (1 / time), derived_dimension<dimension_one_, per<time_>>>);
+static_assert(is_of_type<1 / time * dimension_one, derived_dimension<dimension_one_, per<time_>>>);
 
 static_assert(is_of_type<length * time, derived_dimension<length_, time_>>);
 static_assert(is_of_type<length * length, derived_dimension<units::power<length_, 2>>>);
@@ -83,37 +88,79 @@ static_assert(is_of_type<length*(time* length), derived_dimension<units::power<l
 static_assert(is_of_type<time*(length* length), derived_dimension<units::power<length_, 2>, time_>>);
 
 static_assert(is_of_type<1 / time * length, derived_dimension<length_, per<time_>>>);
-static_assert(is_of_type<1 / time * time, dimensionless_>);
+static_assert(is_of_type<1 / time * time, dimension_one_>);
 
-static_assert(is_of_type<time / dimensionless, time_>);
-static_assert(is_of_type<1 / time / dimensionless, derived_dimension<dimensionless_, per<time_>>>);
+static_assert(is_of_type<time / dimension_one, time_>);
+static_assert(is_of_type<1 / time / dimension_one, derived_dimension<dimension_one_, per<time_>>>);
 
 static_assert(is_of_type<length / time * time, length_>);
-static_assert(is_of_type<1 / time * (1 / time), derived_dimension<dimensionless_, per<units::power<time_, 2>>>>);
-static_assert(is_of_type<1 / (time * time), derived_dimension<dimensionless_, per<units::power<time_, 2>>>>);
+static_assert(is_of_type<1 / time * (1 / time), derived_dimension<dimension_one_, per<units::power<time_, 2>>>>);
+static_assert(is_of_type<1 / (time * time), derived_dimension<dimension_one_, per<units::power<time_, 2>>>>);
 static_assert(is_of_type<1 / (1 / (time * time)), derived_dimension<units::power<time_, 2>>>);
 
 static_assert(is_of_type<length / time * (1 / time), derived_dimension<length_, per<units::power<time_, 2>>>>);
 static_assert(
   is_of_type<length / time*(length / time), derived_dimension<units::power<length_, 2>, per<units::power<time_, 2>>>>);
-static_assert(is_of_type<length / time*(time / length), dimensionless_>);
+static_assert(is_of_type<length / time*(time / length), dimension_one_>);
 
 static_assert(is_of_type<speed / acceleration, time_>);
-static_assert(is_of_type<acceleration / speed, derived_dimension<dimensionless_, per<time_>>>);
+static_assert(is_of_type<acceleration / speed, derived_dimension<dimension_one_, per<time_>>>);
 static_assert(is_of_type<speed * speed / length, derived_dimension<length_, per<units::power<time_, 2>>>>);
 static_assert(is_of_type<1 / (speed * speed) * length, derived_dimension<units::power<time_, 2>, per<length_>>>);
+
+template<auto& t>
+concept invalid_operations = requires {
+                               requires !requires { t < t; };
+                               requires !requires { t / 2; };
+                               requires !requires { 2 * t; };
+                               requires !requires { t * 2; };
+                               requires !requires { t + 2; };
+                               requires !requires { 2 + t; };
+                               requires !requires { t + t; };
+                               requires !requires { t - 2; };
+                               requires !requires { 2 - t; };
+                               requires !requires { t - t; };
+                               requires !requires { t == 2; };
+                               requires !requires { 2 == t; };
+                               requires !requires { t < 2; };
+                               requires !requires { 2 < t; };
+                               requires !requires { t + time[second]; };
+                               requires !requires { t - time[second]; };
+                               requires !requires { t* time[second]; };
+                               requires !requires { t / time[second]; };
+                               requires !requires { t == time[second]; };
+                               requires !requires { t < time[second]; };
+                               requires !requires { time[second] + t; };
+                               requires !requires { time[second] - t; };
+                               requires !requires { time[second] * t; };
+                               requires !requires { time[second] / t; };
+                               requires !requires { time[second] == t; };
+                               requires !requires { time[second] < t; };
+                               requires !requires { t + 1 * time[second]; };
+                               requires !requires { t - 1 * time[second]; };
+                               requires !requires { t * 1 * time[second]; };
+                               requires !requires { t / 1 * time[second]; };
+                               requires !requires { t == 1 * time[second]; };
+                               requires !requires { t == 1 * time[second]; };
+                               requires !requires { 1 * time[second] + t; };
+                               requires !requires { 1 * time[second] - t; };
+                               requires !requires { 1 * time[second] * t; };
+                               requires !requires { 1 * time[second] == t; };
+                               requires !requires { 1 * time[second] < t; };
+                             };
+static_assert(invalid_operations<time>);
 
 // comparisons of the same dimensions
 static_assert(length == length);
 static_assert(speed == speed);
 
 // comparisons of equivalent dimensions (named vs unnamed/derived)
-static_assert(length / length == dimensionless);
+static_assert(length / length == dimension_one);
 
 static_assert(1 / time != frequency);
 static_assert(convertible(1 / time, frequency));
 static_assert(1 / frequency == time);
-static_assert(frequency * time == dimensionless);
+static_assert(frequency * time == dimension_one);
 static_assert(std::is_same_v<std::common_type_t<decltype(1 / time), decltype(frequency)>, frequency_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(frequency), decltype(1 / time)>, frequency_>);
 
@@ -181,10 +228,10 @@ static_assert(frequency != action);
 static_assert(!convertible(frequency, action));
 static_assert(no_common_type<frequency, action>);
 
-// Dimensionless
+// dimension_one
 static_assert(convertible(power / power, efficiency));
 static_assert(power / power != efficiency);
-static_assert(dimensionless != efficiency);
+static_assert(dimension_one != efficiency);
 
 static_assert(!convertible(efficiency, strain));
 static_assert(efficiency != strain);

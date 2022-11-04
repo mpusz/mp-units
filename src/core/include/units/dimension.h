@@ -53,12 +53,15 @@ concept DerivedDimension = detail::is_derived_dimension<T>;
 template<typename T>
 concept Dimension = BaseDimension<T> || DerivedDimension<T>;
 
-
 namespace detail {
 
-[[nodiscard]] consteval Dimension auto get_dimension_for(Unit auto);
+template<Unit auto U, Dimension auto Dim>
+inline constexpr bool is_valid_unit_for_dimension = false;
 
 }
+
+template<typename U, typename Dim>
+concept valid_unit_for_dimension = Unit<U> && Dimension<Dim> && detail::is_valid_unit_for_dimension<U{}, Dim{}>;
 
 template<Dimension D, Unit U>
 struct reference;
@@ -100,12 +103,10 @@ struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
 
 #ifdef __cpp_explicit_this_parameter
-  template<Unit U, typename Self>
-    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  template<typename Self, valid_unit_for_dimension<Self> U>
   [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
 #else
-  template<Unit U>
-    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  template<valid_unit_for_dimension<Self> U>
   [[nodiscard]] constexpr reference<Self, U> operator[](U) const
 #endif
   {
@@ -122,13 +123,13 @@ template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
 template<typename T>
-inline constexpr bool is_dimensionless = false;
+inline constexpr bool is_dimension_one = false;
 
 template<typename T>
 inline constexpr bool is_power_of_dim =
   requires {
     requires is_specialization_of_power<T> &&
-               (BaseDimension<typename T::factor> || is_dimensionless<typename T::factor>);
+               (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>);
   };
 
 template<typename T>
@@ -136,13 +137,13 @@ inline constexpr bool is_per_of_dims = false;
 
 template<typename... Ts>
 inline constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_dimensionless<Ts> || is_power_of_dim<Ts>));
+  (... && (BaseDimension<Ts> || is_dimension_one<Ts> || is_power_of_dim<Ts>));
 
 }  // namespace detail
 
 template<typename T>
 concept DerivedDimensionSpec =
-  BaseDimension<T> || detail::is_dimensionless<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
+  BaseDimension<T> || detail::is_dimension_one<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
 
 template<typename...>
 struct derived_dimension;
@@ -167,7 +168,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
  * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
  * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
- * is also one special case. In case all of the exponents are negative than the `dimensionless` being a dimension of
+ * is also one special case. In case all of the exponents are negative than the `dimension_one` being a dimension of
  * a dimensionless quantity is put in the front to increase the readability.
  *
  * For example:
@@ -182,7 +183,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * DERIVED_DIMENSION(torque, moment_of_force);
  * @endcode
  *
- * - `frequency` will be derived from type `derived_dimension<dimensionless, per<time>>`
+ * - `frequency` will be derived from type `derived_dimension<dimension_one, per<time>>`
  * - `speed` will be derived from type `derived_dimension<length, per<time>>`
  * - `acceleration` will be derived from type `derived_dimension<length, per<power<time, 2>>>`
  * - `force` will be derived from type `derived_dimension<length, mass, per<power<time, 2>>>`
@@ -201,7 +202,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * dimensionally equivalent quantities.
  *
  * @tparam Ds a parameter pack consisting tokens allowed in the dimension specification
- *         (base dimensions, `dimensionless`, `power<Dim, Num, Den>`, `per<...>`)
+ *         (base dimensions, `dimension_one`, `power<Dim, Num, Den>`, `per<...>`)
  *
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
@@ -210,8 +211,8 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
 
 template<DerivedDimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {
-  template<Unit U, typename Self>
-    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+  template<typename Self, Unit U>
+    requires valid_unit_for_dimension<U, Self> || (sizeof...(Ds) == 0 && convertible(U{}, one))
   [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
   {
     return {};
@@ -226,7 +227,7 @@ struct derived_dimension;
 template<DerivedDimensionSpec... Ds>
 struct derived_dimension<Ds...> : detail::derived_dimension_impl<Ds...> {
   template<Unit U>
-    requires(convertible(derived_dimension{}, detail::get_dimension_for(U{})))
+    requires valid_unit_for_dimension<U, derived_dimension> || (sizeof...(Ds) == 0 && convertible(U{}, one))
   [[nodiscard]] constexpr reference<derived_dimension, U> operator[](U) const
   {
     return {};
@@ -236,7 +237,8 @@ struct derived_dimension<Ds...> : detail::derived_dimension_impl<Ds...> {
 template<typename Self, DerivedDimension D>
 struct derived_dimension<Self, D> : D {
   template<Unit U>
-    requires(convertible(Self{}, detail::get_dimension_for(U{})))
+    requires valid_unit_for_dimension<U, Self> ||
+             (convertible(derived_dimension{}, derived_dimension<>{}) && convertible(U{}, one))
   [[nodiscard]] constexpr reference<Self, U> operator[](U) const
   {
     return {};
@@ -266,13 +268,13 @@ inline constexpr bool is_derived_dimension<T> = true;
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */
-inline constexpr struct dimensionless : derived_dimension<> {
-} dimensionless;
+inline constexpr struct dimension_one : derived_dimension<> {
+} dimension_one;
 
 namespace detail {
 
 template<>
-inline constexpr bool is_dimensionless<struct dimensionless> = true;
+inline constexpr bool is_dimension_one<struct dimension_one> = true;
 
 template<Dimension T>
 struct dim_type_impl {
@@ -295,14 +297,14 @@ using dim_type = dim_type_impl<T>::type;
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
 {
-  return detail::expr_multiply<derived_dimension, struct dimensionless, detail::type_list_of_base_dimension_less>(
+  return detail::expr_multiply<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
     detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
 {
-  return detail::expr_divide<derived_dimension, struct dimensionless, detail::type_list_of_base_dimension_less>(
+  return detail::expr_divide<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
     detail::dim_type<Lhs>{}, detail::dim_type<Rhs>{});
 }
 
@@ -310,7 +312,7 @@ template<Dimension D>
 [[nodiscard]] consteval Dimension auto operator/(int value, D)
 {
   gsl_Expects(value == 1);
-  return detail::expr_invert<derived_dimension, struct dimensionless>(detail::dim_type<D>{});
+  return detail::expr_invert<derived_dimension, struct dimension_one>(detail::dim_type<D>{});
 }
 
 template<Dimension D>
@@ -347,7 +349,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
     else
       return derived_dimension<power<D, Num, Den>>{};
   } else
-    return detail::expr_pow<Num, Den, derived_dimension, struct dimensionless,
+    return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one,
                             detail::type_list_of_base_dimension_less>(d);
 }
 
@@ -366,15 +368,23 @@ using to_base_dimension = std::remove_const_t<decltype(U::base_dimension)>;
 
 template<typename... Us>
 [[nodiscard]] consteval Dimension auto get_dimension_for_impl(const derived_unit<Us...>& u)
+  requires detail::expr_projectable<derived_unit<Us...>, to_base_dimension>
 {
-  return detail::expr_map<to_base_dimension, derived_dimension, struct dimensionless,
+  return detail::expr_map<to_base_dimension, derived_dimension, struct dimension_one,
                           detail::type_list_of_base_dimension_less>(u);
 }
 
-[[nodiscard]] consteval Dimension auto get_dimension_for(Unit auto u)
+template<typename U>
+concept associated_unit = Unit<U> && requires(U u) { get_dimension_for_impl(get_canonical_unit(u).reference_unit); };
+
+[[nodiscard]] consteval Dimension auto get_dimension_for(associated_unit auto u)
 {
   return get_dimension_for_impl(get_canonical_unit(u).reference_unit);
 }
+
+template<Unit auto U, Dimension auto Dim>
+  requires requires { detail::get_dimension_for(U); } && (convertible(Dim, detail::get_dimension_for(U)))
+inline constexpr bool is_valid_unit_for_dimension<U, Dim> = true;
 
 }  // namespace detail
 

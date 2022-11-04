@@ -48,7 +48,7 @@ inline constexpr auto make_quantity = [](Representation auto&& v) {
 };
 
 template<typename T>
-concept quantity_one = Quantity<T> && (T::dimension == dimensionless) && (T::unit == one);
+concept quantity_one = Quantity<T> && (T::dimension == dimension_one) && (T::unit == one);
 
 }  // namespace detail
 
@@ -419,7 +419,7 @@ public:
     requires(!Quantity<Value>) && (invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>)
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return detail::make_quantity<dimensionless[::units::one] / reference>(v / q.number());
+    return detail::make_quantity<dimension_one[::units::one] / reference>(v / q.number());
   }
 
   template<typename Value>
@@ -463,7 +463,7 @@ template<auto R, typename Rep>
 explicit(false) quantity(quantity<R, Rep>) -> quantity<R, Rep>;
 
 template<Representation Rep>
-explicit(false) quantity(Rep)->quantity<dimensionless[one], Rep>;
+explicit(false) quantity(Rep)->quantity<dimension_one[one], Rep>;
 
 template<QuantityLike Q>
 explicit quantity(Q)
@@ -506,7 +506,7 @@ template<Quantity Q1, Quantity Q2>
 
 template<Quantity Q1, Quantity Q2>
   requires(!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
-          (std::convertible_to<Q2, Q1> || quantity_of<Q2, dimensionless>) &&
+          (std::convertible_to<Q2, Q1> || quantity_of<Q2, dimension_one>) &&
           (quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>)
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {

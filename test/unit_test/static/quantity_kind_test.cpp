@@ -55,8 +55,8 @@ struct height_kind : kind<height_kind, dim_length> {};
 struct horizontal_area_kind : derived_kind<horizontal_area_kind, dim_area, width_kind> {};
 struct rate_of_climb_kind : derived_kind<rate_of_climb_kind, dim_speed, height_kind> {};
 
-struct apple : kind<apple, dim_one> {};
-struct orange : kind<orange, dim_one> {};
+struct apple : kind<apple, dimension_one> {};
+struct orange : kind<orange, dimension_one> {};
 
 struct time_kind : kind<time_kind, dim_time> {};
 
@@ -420,7 +420,7 @@ static_assert((std::uint8_t(255) * m %= quantity(256)) ==
               (width<metre, std::uint8_t>(255 * m) %= quantity(256)).common());
 // static_assert((std::uint8_t(255) * m %= 256 * m) ==
 //               (width<metre, std::uint8_t>(255 * m) %=
-//                 quantity_kind<downcast_kind<width_kind, dim_one>, one, std::uint8_t>(256)).common());  // UB
+//                 quantity_kind<downcast_kind<width_kind, dimension_one>, one, std::uint8_t>(256)).common());  // UB
 // static_assert((std::uint8_t(255) * m %= 256 * m) !=
 //               (width<metre, std::uint8_t>(255 * m) %= width<metre, std::uint8_t>(256 * m)).common());  // UB
 static_assert((std::uint8_t(255) * m %= 257) == (width<metre, std::uint8_t>(255 * m) %= 257).common());
@@ -428,7 +428,7 @@ static_assert((std::uint8_t(255) * m %= quantity(257)) ==
               (width<metre, std::uint8_t>(255 * m) %= quantity(257)).common());
 static_assert((std::uint8_t(255) * m %= 257 * m) ==
               (width<metre, std::uint8_t>(255 * m) %=
-               quantity_kind<downcast_kind<width_kind, dim_one>, one, std::uint8_t>(257))
+               quantity_kind<downcast_kind<width_kind, dimension_one>, one, std::uint8_t>(257))
                 .common());
 static_assert((std::uint8_t(255) * m %= 257 * m) ==
               (width<metre, std::uint8_t>(255 * m) %= width<metre, std::uint8_t>(257 * m)).common());
@@ -456,9 +456,15 @@ concept invalid_compound_assignments =
     requires !requires { w *= m; };
     requires !requires { w /= m; };
     requires !requires { w %= m; };
-    requires !requires { w *= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<mag<1000>(), one>, int>{1}; };
-    requires !requires { w /= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<mag<1000>(), one>, int>{1}; };
-    requires !requires { w %= quantity_kind<downcast_kind<Width, dim_one>, scaled_unit<mag<1000>(), one>, int>{1}; };
+    requires !requires {
+                w *= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
+              };
+    requires !requires {
+                w /= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
+              };
+    requires !requires {
+                w %= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
+              };
     requires !requires { w %= 1.0; };
     requires !requires { w %= quantity(1.0); };
     requires !requires { w %= 1.0 * (w / w); };
@@ -510,15 +516,15 @@ static_assert(!std::is_invocable_v<std::minus<>, width<metre>, height<metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, width<metre>, reference<dim_length, metre>>);
 
 // clang-format off
-static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
-static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<              height_kind,         metre>>);
-static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
+static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
+static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<              height_kind,         metre>>);
+static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
 static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<              height_kind,         metre>>);
 static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
 static_assert(!std::is_invocable_v<std::plus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
-static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
-static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<              height_kind,         metre>>);
-static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
+static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
+static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<              height_kind,         metre>>);
+static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
 static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<              height_kind,         metre>>);
 static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
 static_assert(!std::is_invocable_v<std::minus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
@@ -538,17 +544,17 @@ static_assert(comp(quantity(2) * width<metre, int>(3 * m), width<metre, int>(6 *
 static_assert(comp(quantity(2) * width<metre, double>(3. * m), width<metre, double>(6. * m)));
 static_assert(comp(quantity(2.) * width<metre, int>(3 * m), width<metre, double>(6. * m)));
 
-static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(3),
                    width<metre, int>(6 * m)));
-static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
+static_assert(comp(width<metre, int>(2 * m) * quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(3.),
                    width<metre, double>(6. * m)));
-static_assert(comp(width<metre, double>(2. * m) * quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, double>(2. * m) * quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(3),
                    width<metre, double>(6. * m)));
-static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, int>(3 * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(2) * width<metre, int>(3 * m),
                    width<metre, int>(6 * m)));
-static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(2) * width<metre, double>(3. * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(2) * width<metre, double>(3. * m),
                    width<metre, double>(6. * m)));
-static_assert(comp(quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(2.) * width<metre, int>(3 * m),
+static_assert(comp(quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(2.) * width<metre, int>(3 * m),
                    width<metre, double>(6. * m)));
 
 static_assert(comp(height<metre, int>(2 * m) * (3 * Hz), rate_of_climb<metre_per_second, int>(6 * (m / s))));
@@ -559,9 +565,9 @@ static_assert(comp((2 * Hz) * height<metre, double>(3. * m), rate_of_climb<metre
 static_assert(comp((2. * Hz) * height<metre, int>(3 * m), rate_of_climb<metre_per_second, double>(6. * (m / s))));
 
 static_assert(comp(quantity_kind<time_kind, second, int>(2 * s) * (3 * Hz),
-                   quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(6)));
+                   quantity_kind<downcast_kind<time_kind, dimension_one>, one, int>(6)));
 static_assert(comp((3 * Hz) * quantity_kind<time_kind, second, int>(2 * s),
-                   quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(6)));
+                   quantity_kind<downcast_kind<time_kind, dimension_one>, one, int>(6)));
 
 static_assert(comp(apples<one, int>(2) * quantity(2), apples<one, int>(4)));
 static_assert(comp(quantity(2) * apples<one, int>(2), apples<one, int>(4)));
@@ -579,7 +585,7 @@ static_assert(comp(apples<one, int>(2) * (2 / apples<one, int>(1)), apples<one, 
 static_assert(comp(width<kilometre>(4 * m) * (1 * mm), horizontal_area<square_metre>(4 * (m * mm))));
 static_assert(comp(width<kilometre>(2 * m) * width<millimetre>(2 * m), horizontal_area<square_metre>(4 * (m * m))));
 static_assert(comp(width<metre>(2 * m) * (1 / width<metre>(2 * m)),
-                   quantity_kind<downcast_kind<width_kind, dim_one>, one>(1)));
+                   quantity_kind<downcast_kind<width_kind, dimension_one>, one>(1)));
 
 static_assert(same(width<metre, int>(2 * m) / 3, width<metre, int>(0 * m)));
 static_assert(same(width<metre, int>(2 * m) / 3., width<metre, double>(2 / 3. * m)));
@@ -589,11 +595,12 @@ static_assert(comp(width<metre, int>(2 * m) / quantity(3), width<metre, int>(0 *
 static_assert(comp(width<metre, int>(2 * m) / quantity(3.), width<metre, double>(2 / 3. * m)));
 static_assert(comp(width<metre, double>(2. * m) / quantity(3), width<metre, double>(2. / 3 * m)));
 
-static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(3),
+static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(3),
                    width<metre, int>(0 * m)));
-static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3.),
+static_assert(comp(width<metre, int>(2 * m) / quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(3.),
                    width<metre, double>(2 / 3. * m)));
-static_assert(comp(width<metre, double>(2. * m) / quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(3),
+static_assert(comp(width<metre, double>(2. * m) /
+                     quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(3),
                    width<metre, double>(2. / 3 * m)));
 
 static_assert(comp(2 / quantity_kind<time_kind, second, int>(3 * s),
@@ -610,13 +617,13 @@ static_assert(comp(quantity(2) / quantity_kind<time_kind, second, double>(3. * s
 static_assert(comp(quantity(2.) / quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
-static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dimension_one>, one, int>(2) /
                      quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, int>(2 / 3 / (1 * s))));
-static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, int>(2) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dimension_one>, one, int>(2) /
                      quantity_kind<time_kind, second, double>(3. * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
-static_assert(comp(quantity_kind<downcast_kind<time_kind, dim_one>, one, double>(2.) /
+static_assert(comp(quantity_kind<downcast_kind<time_kind, dimension_one>, one, double>(2.) /
                      quantity_kind<time_kind, second, int>(3 * s),
                    quantity_kind<downcast_kind<time_kind, dim_frequency>, hertz, double>(2 / 3. / (1 * s))));
 
@@ -631,25 +638,25 @@ static_assert(comp(width<metre, int>(2 * m) / dimensionless<percent, double>(3),
 static_assert(same(width<metre, int>(2 * m) % dimensionless<percent, int>(3), width<metre, int>(2 * m)));
 
 static_assert(comp(height<metre, int>(2 * m) / (3 * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, int>(0)));
 static_assert(comp(height<metre, int>(2 * m) / (3. * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2 / 3.)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, double>(2 / 3.)));
 static_assert(comp(height<metre, double>(2. * m) / (3 * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2. / 3)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, double>(2. / 3)));
 
 static_assert(comp((2 * m) / height<metre, int>(3 * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, int>(0)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, int>(0)));
 static_assert(comp((2 * m) / height<metre, double>(3. * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2 / 3.)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, double>(2 / 3.)));
 static_assert(comp((2. * m) / height<metre, int>(3 * m),
-                   quantity_kind<downcast_kind<height_kind, dim_one>, one, double>(2. / 3)));
+                   quantity_kind<downcast_kind<height_kind, dimension_one>, one, double>(2. / 3)));
 
 static_assert(comp(width<metre, int>(8 * m) / width<metre, int>(2 * m),
-                   quantity_kind<downcast_kind<width_kind, dim_one>, one, int>(4)));
+                   quantity_kind<downcast_kind<width_kind, dimension_one>, one, int>(4)));
 static_assert(comp(width<metre, int>(8 * m) / width<metre, double>(2 * m),
-                   quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(4.0)));
+                   quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(4.0)));
 static_assert(comp(width<metre, double>(8 * m) / width<metre, int>(2 * m),
-                   quantity_kind<downcast_kind<width_kind, dim_one>, one, double>(4.0)));
+                   quantity_kind<downcast_kind<width_kind, dimension_one>, one, double>(4.0)));
 
 static_assert(comp(apples<one, int>(8) / apples<one, int>(2), apples<one, int>(4)));
 static_assert(comp(apples<one, int>(8) / (2 / apples<one, int>(1)), apples<one, int>(4)));
@@ -684,21 +691,21 @@ static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, double>);
 static_assert(!std::is_invocable_v<std::modulus<>, width<metre, int>, width<metre, double>>);
 
 // clang-format off
-static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
-static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<              height_kind,         metre>>);
-static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
+static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
+static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<              height_kind,         metre>>);
+static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<              height_kind,         metre>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
 static_assert(!std::is_invocable_v<std::multiplies<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
-static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
-static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<              height_kind,         metre>>);
-static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
+static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
+static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<              height_kind,         metre>>);
+static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
 static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<              height_kind,         metre>>);
 static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
 static_assert(!std::is_invocable_v<std::divides<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
-static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
-static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dim_one>, one>, quantity_kind<              height_kind,         metre>>);
-static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_one>, one>>);
+static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
+static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dimension_one>, one>, quantity_kind<              height_kind,         metre>>);
+static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dimension_one>, one>>);
 static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<              height_kind,         metre>>);
 static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<              width_kind,         metre>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
 static_assert(!std::is_invocable_v<std::modulus<>, quantity_kind<downcast_kind<width_kind, dim_time>, day>, quantity_kind<downcast_kind<height_kind, dim_time>, day>>);
@@ -834,7 +841,7 @@ concept invalid_cast =
                   quantity_kind<Width, metre, int>(1 * m));
               };
     requires !requires {
-                quantity_kind_cast<quantity_point<dynamic_origin<dim_one>, one, int>>(
+                quantity_kind_cast<quantity_point<dynamic_origin<dimension_one>, one, int>>(
                   quantity_kind<Width, metre, int>(1 * m));
               };
   };

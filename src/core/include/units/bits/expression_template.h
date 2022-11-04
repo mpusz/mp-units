@@ -472,23 +472,47 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
 
 
 // expr_map
+template<typename T, template<typename> typename Proj>
+struct expr_type_map;
 
-template<typename T, template<typename...> typename Proj>
-struct expr_type_map {
+template<typename T, template<typename> typename Proj>
+  requires requires { typename Proj<T>; }
+struct expr_type_map<T, Proj> {
   using type = Proj<T>;
 };
 
-template<typename F, int... Ints, template<typename...> typename Proj>
+template<typename F, int... Ints, template<typename> typename Proj>
+  requires requires { typename Proj<F>; }
 struct expr_type_map<power<F, Ints...>, Proj> {
   using type = power<Proj<F>, Ints...>;
 };
 
-template<template<typename...> typename Proj, template<typename...> typename To, typename OneType,
-         template<typename, typename> typename Pred, typename... Nums, typename... Dens>
+template<typename T, template<typename> typename Proj>
+concept expr_type_projectable = (requires { typename Proj<T>; } ||
+                                 (is_specialization_of_power<T> && requires { typename Proj<typename T::factor>; }));
+
+template<typename T, template<typename> typename Proj>
+inline constexpr bool expr_projectable_impl = false;
+
+template<typename... Ts, template<typename> typename Proj>
+inline constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
+
+template<typename T, template<typename> typename Proj>
+concept expr_projectable = requires {
+                             typename T::_num_;
+                             typename T::_den_;
+                             requires type_list_size<typename T::_num_> + type_list_size<typename T::_den_> > 0;
+                             requires expr_projectable_impl<typename T::_num_, Proj>;
+                             requires expr_projectable_impl<typename T::_den_, Proj>;
+                           };
+
+template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, expr_type_projectable<Proj>... Nums,
+         expr_type_projectable<Proj>... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
 {
-  using nums = type_list_sort<type_list<typename expr_type_map<Nums, Proj>::type...>, Pred>;
-  using dens = type_list_sort<type_list<typename expr_type_map<Dens, Proj>::type...>, Pred>;
+  using nums = type_list_sort<type_list<typename expr_type_map<std::remove_const_t<Nums>, Proj>::type...>, Pred>;
+  using dens = type_list_sort<type_list<typename expr_type_map<std::remove_const_t<Dens>, Proj>::type...>, Pred>;
   return detail::get_optimized_expression<nums, dens, OneType, Pred, To>();
 }
 
@@ -501,8 +525,8 @@ template<template<typename...> typename Proj, template<typename...> typename To,
  * @tparam Pred binary less then predicate
  * @tparam T expression template to map from
  */
-template<template<typename...> typename Proj, template<typename...> typename To, typename OneType,
-         template<typename, typename> typename Pred, typename T>
+template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred, expr_projectable<Proj> T>
 [[nodiscard]] consteval auto expr_map(T)
 {
   return expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});

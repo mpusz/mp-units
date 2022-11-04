@@ -148,8 +148,10 @@ struct named_unit;
 /**
  * @brief Specialization for unit of a specified base dimension
  *
- * This is the preferred way to define a measurement unit for a base dimension. For example `si::metre`
- * is a unit to measure `isq::length` in the SI system.
+ * Associates a unit with a specified base dimension.
+ * For example `si::metre` is a unit to measure `isq::length` in the SI system.
+ *
+ * @note This is the preferred way to define a measurement unit for a specific base dimension.
  *
  * @note It does not have to (or sometimes even can't) be a proper system's base unit. For example
  *       a base unit of mass in the SI is `si::kilogram` but here you are about to provide an `si::gram`
@@ -170,9 +172,9 @@ struct named_unit<Symbol, D> {
  * @brief Specialization for a unit that can be reused by several base dimensions
  *
  * This specialization is used in rare cases where more than one base dimension in a specific
- * system of units uses the same unit. For example in a hypothetical system of units where
- * constant for speed of light `c = 1`, length and time could be measured in seconds. In such
- * cases `system_reference` has to be used to explicitly express such a binding.
+ * system of units uses the same unit. For example in a hypothetical system of natural units
+ * where  constant for speed of light `c = 1`, length and time could be measured in seconds.
+ * In such cases `system_reference` has to be used to explicitly express such a binding.
  *
  * @tparam Symbol a short text representation of the unit
  */
@@ -336,7 +338,6 @@ struct derived_unit : detail::expr_fractions<derived_unit<>, Us...> {};
  */
 inline constexpr struct one : derived_unit<> {
 } one;
-
 
 namespace detail {
 

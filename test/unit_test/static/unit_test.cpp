@@ -22,6 +22,7 @@
 
 #include "test_tools.h"
 #include <units/dimension.h>
+#include <units/reference.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
 
@@ -45,6 +46,9 @@ inline constexpr struct metre_ : named_unit<"m", length> {} metre;
 inline constexpr struct gram_ : named_unit<"g", mass> {} gram;
 inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
 inline constexpr struct kelvin_ : named_unit<"K", thermodynamic_temperature> {} kelvin;
+
+// hypothetical natural units for c=1
+inline constexpr struct nu_second_ : named_unit<"s"> {} nu_second;
 
 // derived named units
 inline constexpr struct radian_ : named_unit<"rad", metre / metre> {} radian;
@@ -79,6 +83,8 @@ inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
 
 // concepts verification
 static_assert(Unit<metre_>);
+static_assert(Unit<second_>);
+static_assert(Unit<nu_second_>);
 static_assert(Unit<kilogram_>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
@@ -87,6 +93,10 @@ static_assert(Unit<decltype(si::kilo<gram>)>);
 static_assert(Unit<decltype(square<metre>)>);
 static_assert(Unit<decltype(cubic<metre>)>);
 static_assert(Unit<decltype(mag<60> * second)>);
+static_assert(Unit<decltype(second * second)>);
+static_assert(Unit<decltype(nu_second * nu_second)>);
+static_assert(Unit<decltype(metre / second)>);
+static_assert(Unit<decltype(nu_second / nu_second)>);
 static_assert(Unit<kilometre_>);
 
 static_assert(NamedUnit<metre_>);
@@ -121,8 +131,12 @@ static_assert(degree_Celsius == kelvin);
 static_assert(is_of_type<radian, radian_>);
 static_assert(is_of_type<get_canonical_unit(radian).reference_unit, one_>);
 static_assert(get_canonical_unit(radian).mag == mag<1>);
-static_assert(convertible(minute, second));
-static_assert(minute != second);
+
+static_assert(is_of_type<degree, degree_>);
+static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
+static_assert(get_canonical_unit(degree).mag == mag_pi / mag<180>);
+static_assert(convertible(radian, degree));
+static_assert(radian != degree);
 
 static_assert(is_of_type<steradian, steradian_>);
 static_assert(is_of_type<get_canonical_unit(steradian).reference_unit, one_>);
@@ -162,6 +176,7 @@ static_assert(convertible(joule, joule));
 static_assert(joule == joule);
 static_assert(joule != newton);
 
+static_assert(is_of_type<nu_second / nu_second, one_>);
 
 // prefixed_unit
 static_assert(is_of_type<kilometre, kilometre_>);
@@ -181,6 +196,10 @@ static_assert(kilojoule.symbol == "kJ");
 
 static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre>>);
 static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule>>);
+
+// TODO Should the below be a scaled version of metre^2?
+static_assert(is_of_type<kilometre * metre, derived_unit<kilometre_, metre_>>);       // !!!
+static_assert(is_of_type<kilometre / metre, derived_unit<kilometre_, per<metre_>>>);  // !!!
 
 
 // prefixes
@@ -313,6 +332,48 @@ constexpr auto u3 = 1 / hour * (mag<1000> * kilometre);
 static_assert(is_of_type<u3, scaled_unit<mag<1000>, derived_unit<kilometre_, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u3).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u3).mag == mag<ratio{1'000'000, 3'600}>);
+
+template<auto& s>
+concept invalid_operations = requires {
+                               requires !requires { s < s; };
+                               requires !requires { s / 2; };
+                               requires !requires { 2 * s; };
+                               requires !requires { s * 2; };
+                               requires !requires { s + 2; };
+                               requires !requires { 2 + s; };
+                               requires !requires { s + s; };
+                               requires !requires { s - 2; };
+                               requires !requires { 2 - s; };
+                               requires !requires { s - s; };
+                               requires !requires { s == 2; };
+                               requires !requires { 2 == s; };
+                               requires !requires { s < 2; };
+                               requires !requires { 2 < s; };
+                               requires !requires { s + time[second]; };
+                               requires !requires { s - time[second]; };
+                               requires !requires { s* time[second]; };
+                               requires !requires { s / time[second]; };
+                               requires !requires { s == time[second]; };
+                               requires !requires { s < time[second]; };
+                               requires !requires { time[second] + s; };
+                               requires !requires { time[second] - s; };
+                               requires !requires { time[second] * s; };
+                               requires !requires { time[second] / s; };
+                               requires !requires { time[second] == s; };
+                               requires !requires { time[second] < s; };
+                               requires !requires { s + 1 * time[second]; };
+                               requires !requires { s - 1 * time[second]; };
+                               requires !requires { s * 1 * time[second]; };
+                               requires !requires { s / 1 * time[second]; };
+                               requires !requires { s == 1 * time[second]; };
+                               requires !requires { s == 1 * time[second]; };
+                               requires !requires { 1 * time[second] + s; };
+                               requires !requires { 1 * time[second] - s; };
+                               requires !requires { 1 * time[second] * s; };
+                               requires !requires { 1 * time[second] == s; };
+                               requires !requires { 1 * time[second] < s; };
+                             };
+static_assert(invalid_operations<second>);
 
 // comparisons of the same units
 static_assert(second == second);
@@ -449,6 +510,12 @@ static_assert(unit_symbol(square<metre>) == "m²");
 static_assert(unit_symbol(square<metre>, {.encoding = ascii}) == "m^2");
 static_assert(unit_symbol(cubic<metre>) == "m³");
 static_assert(unit_symbol(cubic<metre>, {.encoding = ascii}) == "m^3");
+static_assert(unit_symbol(kilometre * metre) == "km m");
+static_assert(unit_symbol(kilometre * metre, {.separator = dot}) == "km⋅m");
+static_assert(unit_symbol(metre / metre) == "");
+static_assert(unit_symbol(kilometre / metre) == "km/m");
+static_assert(unit_symbol(kilometre / metre, {.denominator = always_negative}) == "km m⁻¹");
+static_assert(unit_symbol(kilometre / metre, {.encoding = ascii, .denominator = always_negative}) == "km m^-1");
 static_assert(unit_symbol(metre / second) == "m/s");
 static_assert(unit_symbol(metre / second, {.denominator = always_solidus}) == "m/s");
 static_assert(unit_symbol(metre / second, {.denominator = always_negative}) == "m s⁻¹");

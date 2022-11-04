@@ -44,27 +44,6 @@ static_assert(can_not_be_prefixed<si::milli_, si::kilogram>);
 static_assert(can_not_be_prefixed<si::milli_, si::hectare>);
 static_assert(can_not_be_prefixed<si::milli_, si::metre / si::second>);
 
-// Named quantity/dimension and unit
-static_assert(is_same_v<decltype(5 * isq::power[W]), quantity<reference<struct isq::power, struct si::watt>{}, int>>);
-
-// Named quantity/dimension and derived (unnamed) unit
-static_assert(
-  is_same_v<decltype(5 * isq::speed[m / s]),
-            quantity<reference<struct isq::speed, derived_unit<struct si::metre, per<struct si::second>>>{}, int>>);
-
-// Derived (unnamed) quantity/dimension and derived (unnamed) unit
-static_assert(is_same_v<decltype(10 * isq::length[m] / (2 * isq::time[s])),
-                        quantity<reference<derived_dimension<struct isq::length, per<struct isq::time>>,
-                                           derived_unit<struct si::metre, per<struct si::second>>>{},
-                                 int>>);
-
-// Base quantity as a result of dimensional transformation
-static_assert(is_same_v<decltype(5 * isq::speed[m / s] * (5 * isq::time[s])),
-                        quantity<reference<struct isq::length, struct si::metre>{}, int>>);
-
-// Dimensionless
-static_assert(is_same_v<decltype(20 * isq::speed[m / s] / (10 * isq::length[m]) * (5 * isq::time[s])),
-                        quantity<reference<struct dimensionless, struct one>{}, int>>);
 
 // Comparisons
 
