@@ -237,8 +237,8 @@ template<typename T, typename... NRest, typename... DRest, int... Ints, template
 struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
   using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::exponent>;
-  using num = type_list_join<typename impl::num, typename type::num>;
-  using den = type_list_join<typename impl::den, typename type::den>;
+  using num = type_list_join<typename type::num, typename impl::num>;
+  using den = type_list_join<typename type::den, typename impl::den>;
 };
 
 // in case there are different powers for the same element simplify the power
