@@ -60,6 +60,19 @@ constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
 }
 
 // TODO remove all the below and use std when moved to modules
+template<class InputIt, class ForwardIt>
+constexpr InputIt find_first_of(InputIt first, InputIt last, ForwardIt s_first, ForwardIt s_last)
+{
+  for (; first != last; ++first) {
+    for (ForwardIt it = s_first; it != s_last; ++it) {
+      if (*first == *it) {
+        return first;
+      }
+    }
+  }
+  return last;
+}
+
 template<class InputIt1, class InputIt2>
 constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
 {
