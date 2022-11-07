@@ -24,31 +24,27 @@
 #pragma once
 
 #include <units/quantity.h>
-
-// IWYU pragma: begin_exports
-#include <units/bits/external/fixed_string_io.h>
-#include <units/bits/unit_text.h>
+#include <units/unit.h>
 #include <sstream>
-// IWYU pragma: end_exports
 
 namespace units {
 
 namespace detail {
 
-template<typename CharT, class Traits, typename D, typename U, typename Rep>
-void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
+template<typename CharT, class Traits, auto R, typename Rep>
+void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
 {
   os << q.number();
-  constexpr auto symbol = detail::unit_text<D, U>();
-  if constexpr (!symbol.standard().empty()) {
-    os << " " << symbol.standard();
+  if constexpr (!std::derived_from<decltype(R.unit), derived_unit<>>) {
+    os << " ";
+    unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), R.unit);
   }
 }
 
 }  //  namespace detail
 
-template<typename CharT, typename Traits, typename D, typename U, typename Rep>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<D, U, Rep>& q)
+template<typename CharT, typename Traits, auto R, typename Rep>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
   requires requires { os << q.number(); }
 {
   if (os.width()) {
