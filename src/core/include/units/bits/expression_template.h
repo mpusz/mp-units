@@ -24,6 +24,7 @@
 
 #include <units/bits/external/type_list.h>
 #include <units/bits/external/type_traits.h>
+#include <units/bits/math_concepts.h>
 #include <units/ratio.h>
 
 namespace units {
@@ -65,10 +66,10 @@ template<>
 inline constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
-inline constexpr bool positive_ratio = (Num > 0);
+inline constexpr bool positive_ratio = gt_zero<Num>;
 
 template<int Num, int Den>
-inline constexpr bool positive_ratio<Num, Den> = (Num * Den > 0);
+inline constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
 
 template<int Num, int... Den>
 inline constexpr bool ratio_one = false;

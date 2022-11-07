@@ -26,6 +26,7 @@
 #include <units/bits/external/hacks.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
+#include <units/bits/math_concepts.h>
 #include <units/bits/prime.h>
 #include <units/ratio.h>
 #include <concepts>
@@ -732,7 +733,7 @@ namespace detail {
 
 // Helper to perform prime factorization at compile time.
 template<std::intmax_t N>
-  requires(N > 0)
+  requires gt_zero<N>
 struct prime_factorization {
   [[nodiscard]] static consteval std::intmax_t get_or_compute_first_factor()
   {
@@ -767,16 +768,15 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
  * manually adding base powers.
  */
-
 template<ratio R>
-  requires(R.num > 0)
+  requires detail::gt_zero<R.num>
 inline constexpr Magnitude auto mag = detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 template<ratio Base, ratio Pow>
-  requires(Base.num > 0)
+  requires detail::gt_zero<Base.num>
 inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 
 namespace detail {

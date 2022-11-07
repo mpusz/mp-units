@@ -26,10 +26,10 @@
 
 namespace units::detail {
 
-template<std::intmax_t N>
+template<auto N>
 concept gt_zero = (N > 0);
 
-template<std::intmax_t N>
+template<auto N>
 concept non_zero = (N != 0);
 
 }  // namespace units::detail
