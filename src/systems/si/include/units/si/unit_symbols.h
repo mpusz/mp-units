@@ -637,4 +637,9 @@ inline constexpr auto min = minute;
 inline constexpr auto h = hour;
 inline constexpr auto d = day;
 
+// commonly used squared and cubic units
+inline constexpr auto m2 = square<metre>;
+inline constexpr auto m3 = cubic<metre>;
+inline constexpr auto s2 = square<second>;
+
 }  // namespace units::si::unit_symbols
