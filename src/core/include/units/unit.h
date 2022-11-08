@@ -581,11 +581,11 @@ enum class text_encoding {
   default_encoding = unicode
 };
 
-enum class unit_symbol_denominator {
-  solidus_one,      // m/s;   kg m-1 s-1
-  always_solidus,   // m/s;   kg/(m s)
-  always_negative,  // m s-1; kg m-1 s-1
-  default_denominator = solidus_one
+enum class unit_symbol_solidus {
+  one_denominator,  // m/s;   kg m-1 s-1
+  always,           // m/s;   kg/(m s)
+  never,            // m s-1; kg m-1 s-1
+  default_denominator = one_denominator
 };
 
 enum class unit_symbol_separator {
@@ -596,7 +596,7 @@ enum class unit_symbol_separator {
 
 struct unit_symbol_formatting {
   text_encoding encoding = text_encoding::default_encoding;
-  unit_symbol_denominator denominator = unit_symbol_denominator::default_denominator;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
 
@@ -749,22 +749,22 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     // no denominator
     return unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
   } else {
-    using enum unit_symbol_denominator;
+    using enum unit_symbol_solidus;
     if constexpr (sizeof...(Nums) > 0) {
       unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
     }
 
-    if (fmt.denominator == always_solidus || (fmt.denominator == solidus_one && sizeof...(Dens) == 1)) {
+    if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
       if constexpr (sizeof...(Nums) == 0) *out++ = '1';
       *out++ = '/';
     } else {
       out = print_separator<CharT>(out, fmt);
     }
 
-    if (fmt.denominator == always_solidus && sizeof...(Dens) > 1) *out++ = '(';
-    bool negative_power = fmt.denominator == always_negative || (fmt.denominator == solidus_one && sizeof...(Dens) > 1);
+    if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = '(';
+    bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && sizeof...(Dens) > 1);
     out = unit_symbol_impl<CharT>(out, dens, std::index_sequence_for<Dens...>(), fmt, negative_power);
-    if (fmt.denominator == always_solidus && sizeof...(Dens) > 1) *out++ = ')';
+    if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
     return out;
   }
 }

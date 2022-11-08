@@ -482,7 +482,7 @@ static_assert(
 #ifdef __cpp_lib_constexpr_string
 
 using enum text_encoding;
-using enum unit_symbol_denominator;
+using enum unit_symbol_solidus;
 using enum unit_symbol_separator;
 
 // named units
@@ -514,42 +514,36 @@ static_assert(unit_symbol(kilometre * metre) == "km m");
 static_assert(unit_symbol(kilometre * metre, {.separator = dot}) == "km⋅m");
 static_assert(unit_symbol(metre / metre) == "");
 static_assert(unit_symbol(kilometre / metre) == "km/m");
-static_assert(unit_symbol(kilometre / metre, {.denominator = always_negative}) == "km m⁻¹");
-static_assert(unit_symbol(kilometre / metre, {.encoding = ascii, .denominator = always_negative}) == "km m^-1");
+static_assert(unit_symbol(kilometre / metre, {.solidus = never}) == "km m⁻¹");
+static_assert(unit_symbol(kilometre / metre, {.encoding = ascii, .solidus = never}) == "km m^-1");
 static_assert(unit_symbol(metre / second) == "m/s");
-static_assert(unit_symbol(metre / second, {.denominator = always_solidus}) == "m/s");
-static_assert(unit_symbol(metre / second, {.denominator = always_negative}) == "m s⁻¹");
-static_assert(unit_symbol(metre / second, {.encoding = ascii, .denominator = always_negative}) == "m s^-1");
-static_assert(unit_symbol(metre / second, {.denominator = always_negative, .separator = dot}) == "m⋅s⁻¹");
+static_assert(unit_symbol(metre / second, {.solidus = always}) == "m/s");
+static_assert(unit_symbol(metre / second, {.solidus = never}) == "m s⁻¹");
+static_assert(unit_symbol(metre / second, {.encoding = ascii, .solidus = never}) == "m s^-1");
+static_assert(unit_symbol(metre / second, {.solidus = never, .separator = dot}) == "m⋅s⁻¹");
 static_assert(unit_symbol(metre / square<second>) == "m/s²");
 static_assert(unit_symbol(metre / square<second>, {.encoding = ascii}) == "m/s^2");
-static_assert(unit_symbol(metre / square<second>, {.denominator = always_solidus}) == "m/s²");
-static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) == "m/s^2");
-static_assert(unit_symbol(metre / square<second>, {.denominator = always_negative}) == "m s⁻²");
-static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .denominator = always_negative}) == "m s^-2");
-static_assert(unit_symbol(metre / square<second>, {.denominator = always_negative, .separator = dot}) == "m⋅s⁻²");
+static_assert(unit_symbol(metre / square<second>, {.solidus = always}) == "m/s²");
+static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .solidus = always}) == "m/s^2");
+static_assert(unit_symbol(metre / square<second>, {.solidus = never}) == "m s⁻²");
+static_assert(unit_symbol(metre / square<second>, {.encoding = ascii, .solidus = never}) == "m s^-2");
+static_assert(unit_symbol(metre / square<second>, {.solidus = never, .separator = dot}) == "m⋅s⁻²");
 static_assert(unit_symbol(kilogram * metre / square<second>) == "kg m/s²");
 static_assert(unit_symbol(kilogram * metre / square<second>, {.separator = dot}) == "kg⋅m/s²");
 static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii}) == "kg m/s^2");
-static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_solidus}) == "kg m/s²");
-static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) ==
-              "kg m/s^2");
-static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_negative}) == "kg m s⁻²");
-static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .denominator = always_negative}) ==
-              "kg m s^-2");
-static_assert(unit_symbol(kilogram * metre / square<second>, {.denominator = always_negative, .separator = dot}) ==
-              "kg⋅m⋅s⁻²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.solidus = always}) == "kg m/s²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .solidus = always}) == "kg m/s^2");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.solidus = never}) == "kg m s⁻²");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.encoding = ascii, .solidus = never}) == "kg m s^-2");
+static_assert(unit_symbol(kilogram * metre / square<second>, {.solidus = never, .separator = dot}) == "kg⋅m⋅s⁻²");
 static_assert(unit_symbol(kilogram / metre / square<second>) == "kg m⁻¹ s⁻²");
 static_assert(unit_symbol(kilogram / metre / square<second>, {.separator = dot}) == "kg⋅m⁻¹⋅s⁻²");
 static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii}) == "kg m^-1 s^-2");
-static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_solidus}) == "kg/(m s²)");
-static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .denominator = always_solidus}) ==
-              "kg/(m s^2)");
-static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_negative}) == "kg m⁻¹ s⁻²");
-static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .denominator = always_negative}) ==
-              "kg m^-1 s^-2");
-static_assert(unit_symbol(kilogram / metre / square<second>, {.denominator = always_negative, .separator = dot}) ==
-              "kg⋅m⁻¹⋅s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.solidus = always}) == "kg/(m s²)");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .solidus = always}) == "kg/(m s^2)");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.solidus = never}) == "kg m⁻¹ s⁻²");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.encoding = ascii, .solidus = never}) == "kg m^-1 s^-2");
+static_assert(unit_symbol(kilogram / metre / square<second>, {.solidus = never, .separator = dot}) == "kg⋅m⁻¹⋅s⁻²");
 static_assert(unit_symbol(pow<123>(metre)) == "m¹²³");
 static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
 static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
