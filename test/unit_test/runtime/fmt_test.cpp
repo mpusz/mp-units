@@ -259,6 +259,7 @@ TEST_CASE("format string with only %q should print quantity unit symbol only", "
     SECTION("Unicode text output")
     {
       CHECK(STD_FMT::format("{:%Uq}", 123 * isq::speed[km / h]) == "km/h");
+      // TODO enable this when resistance is defined
       // CHECK(STD_FMT::format("{:%Uq}", 123 * isq::resistance[kilo<ohm>]) == "kΩ");
       CHECK(STD_FMT::format("{:%Uq}", 123 * isq::time[us]) == "µs");
       CHECK(STD_FMT::format("{:%Uq}", 123 * isq::acceleration[m / s2]) == "m/s²");
@@ -335,6 +336,124 @@ TEST_CASE("format string with only %q should print quantity unit symbol only", "
       CHECK(STD_FMT::format("{:%adq}", 123 * isq::pressure[kg / m / s2]) == "kg/(m⋅s²)");
     }
   }
+}
+
+TEST_CASE("unknown unit modifiers should throw", "[text][fmt][exception]")
+{
+  SECTION("only the invalid modifier")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%xq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+
+  SECTION("invalid modifier in the front")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%xUdaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+
+  SECTION("invalid modifier in the end")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%Udaxq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+
+  SECTION("invalid modifier in the middle")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%Udxaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+}
+
+TEST_CASE("repeated unit modifiers should throw", "[text][fmt][exception]")
+{
+  SECTION("text encoding")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%UdaUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dUaUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dUUaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("solidus")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%aUdaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%daUaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%daaUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("separator")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dUadq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dadUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%addUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+  }
+}
+
+TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][exception]")
+{
+  SECTION("text encoding")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%UdaAq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dAaUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dAUaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("solidus")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%aUdnq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dnUaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%daoUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("separator")
+  {
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dUasq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%sadUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%adsUq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                           STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+  }
+}
+
+TEST_CASE("dot separator requested for ASCII encoding should throw", "[text][fmt][exception]")
+{
+  REQUIRE_THROWS_MATCHES(STD_FMT::vformat("{:%dAaq}", STD_FMT::make_format_args(1 * isq::length[m])),
+                         STD_FMT::format_error,
+                         Catch::Matchers::Message("dot unit separator allowed only for Unicode encoding"));
 }
 
 TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
