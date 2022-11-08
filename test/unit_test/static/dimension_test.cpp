@@ -171,14 +171,14 @@ static_assert(speed == speed);
 static_assert(length / length == dimension_one);
 
 static_assert(1 / time != frequency);
-static_assert(convertible(1 / time, frequency));
+static_assert(interconvertible(1 / time, frequency));
 static_assert(1 / frequency == time);
 static_assert(frequency * time == dimension_one);
 static_assert(std::is_same_v<std::common_type_t<decltype(1 / time), decltype(frequency)>, frequency_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(frequency), decltype(1 / time)>, frequency_>);
 
 static_assert(length * length != area);
-static_assert(convertible(length * length, area));
+static_assert(interconvertible(length * length, area));
 static_assert(length * length != volume);
 static_assert(area / length == length);
 static_assert(std::is_same_v<std::common_type_t<decltype(length * length), decltype(area)>, area_>);
@@ -212,7 +212,7 @@ static_assert(acceleration / speed != frequency);
 
 // comparison of convertible named dimensions
 static_assert(velocity != speed);
-static_assert(convertible(speed, velocity));
+static_assert(interconvertible(speed, velocity));
 static_assert(std::is_same_v<std::common_type_t<decltype(velocity), decltype(speed)>, velocity_>);
 static_assert(std::is_same_v<std::common_type_t<decltype(speed), decltype(velocity)>, velocity_>);
 
@@ -220,16 +220,16 @@ static_assert(std::is_same_v<std::common_type_t<decltype(speed), decltype(veloci
 static_assert(is_of_type<mass * acceleration, derived_dimension<length_, mass_, per<units::power<time_, 2>>>>);
 static_assert(is_of_type<acceleration * mass, derived_dimension<length_, mass_, per<units::power<time_, 2>>>>);
 static_assert(mass * acceleration == acceleration * mass);
-static_assert(convertible(mass * acceleration, acceleration* mass));
+static_assert(interconvertible(mass * acceleration, acceleration* mass));
 
 // comparisons of equivalent but not convertible dimensions
 static_assert(energy != torque);
-static_assert(!convertible(energy, torque));
+static_assert(!interconvertible(energy, torque));
 
 static_assert(force * length != energy);
 static_assert(force * length != torque);
-static_assert(convertible(force * length, energy));
-static_assert(convertible(force * length, torque));
+static_assert(interconvertible(force * length, energy));
+static_assert(interconvertible(force * length, torque));
 template<auto T1, auto T2>
 concept no_common_type = requires {
                            requires !requires { typename std::common_type_t<decltype(T1), decltype(T2)>; };
@@ -238,28 +238,28 @@ concept no_common_type = requires {
 static_assert(no_common_type<energy, torque>);
 
 static_assert(frequency != action);
-static_assert(!convertible(frequency, action));
+static_assert(!interconvertible(frequency, action));
 static_assert(no_common_type<frequency, action>);
 
 // dimension_one
-static_assert(convertible(power / power, efficiency));
+static_assert(interconvertible(power / power, efficiency));
 static_assert(power / power != efficiency);
 static_assert(dimension_one != efficiency);
 
-static_assert(!convertible(efficiency, strain));
+static_assert(!interconvertible(efficiency, strain));
 static_assert(efficiency != strain);
 
 static_assert(stress / stress != strain);
 static_assert(stress / stress != efficiency);
-static_assert(convertible(stress / stress, strain));
-static_assert(convertible(stress / stress, efficiency));
+static_assert(interconvertible(stress / stress, strain));
+static_assert(interconvertible(stress / stress, efficiency));
 
 // comparison of not equivalent dimensions
 static_assert(length != time);
-static_assert(!convertible(length, time));
+static_assert(!interconvertible(length, time));
 
 static_assert(acceleration != speed);
-static_assert(!convertible(acceleration, speed));
+static_assert(!interconvertible(acceleration, speed));
 
 // power
 static_assert(is_of_type<pow<2>(length), derived_dimension<units::power<length_, 2>>>);

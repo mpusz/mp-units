@@ -212,7 +212,7 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
 template<DerivedDimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {
   template<typename Self, Unit U>
-    requires valid_unit_for_dimension<U, Self> || (sizeof...(Ds) == 0 && convertible(U{}, one))
+    requires valid_unit_for_dimension<U, Self> || (sizeof...(Ds) == 0 && interconvertible(U{}, one))
   [[nodiscard]] constexpr auto operator[](this const Self, U)
   {
     return reference<Self{}, U{}>{};
@@ -227,7 +227,7 @@ struct derived_dimension;
 template<DerivedDimensionSpec... Ds>
 struct derived_dimension<Ds...> : detail::derived_dimension_impl<Ds...> {
   template<Unit U>
-    requires valid_unit_for_dimension<U, derived_dimension> || (sizeof...(Ds) == 0 && convertible(U{}, one))
+    requires valid_unit_for_dimension<U, derived_dimension> || (sizeof...(Ds) == 0 && interconvertible(U{}, one))
   [[nodiscard]] constexpr auto operator[](U) const
   {
     return reference<derived_dimension{}, U{}>{};
@@ -238,7 +238,7 @@ template<typename Self, DerivedDimension D>
 struct derived_dimension<Self, D> : D {
   template<Unit U>
     requires valid_unit_for_dimension<U, Self> ||
-             (convertible(derived_dimension{}, derived_dimension<>{}) && convertible(U{}, one))
+             (interconvertible(derived_dimension{}, derived_dimension<>{}) && interconvertible(U{}, one))
   [[nodiscard]] constexpr auto operator[](U) const
   {
     return reference<Self{}, U{}>{};
@@ -325,7 +325,7 @@ template<Dimension Lhs, Dimension Rhs>
 }
 
 template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool convertible(D1, D2)
+[[nodiscard]] consteval bool interconvertible(D1, D2)
 {
   return std::derived_from<D1, D2> || std::derived_from<D2, D1>;
 }
@@ -383,7 +383,7 @@ concept associated_unit = Unit<U> && requires(U u) { get_dimension_for_impl(get_
 }
 
 template<Unit auto U, Dimension auto Dim>
-  requires requires { detail::get_dimension_for(U); } && (convertible(Dim, detail::get_dimension_for(U)))
+  requires requires { detail::get_dimension_for(U); } && (interconvertible(Dim, detail::get_dimension_for(U)))
 inline constexpr bool is_valid_unit_for_dimension<U, Dim> = true;
 
 }  // namespace detail
@@ -402,7 +402,7 @@ namespace std {
  * the two provided.
  */
 template<units::Dimension D1, units::Dimension D2>
-  requires(units::convertible(D1{}, D2{}))
+  requires(units::interconvertible(D1{}, D2{}))
 struct common_type<D1, D2> {
   using type = ::units::conditional<std::derived_from<std::remove_const_t<D1>, std::remove_const_t<D2>>,
                                     std::remove_const_t<D1>, std::remove_const_t<D2>>;

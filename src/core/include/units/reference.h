@@ -102,9 +102,9 @@ template<Representation Rep, Reference R>
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
 template<Reference R1, Reference R2>
-[[nodiscard]] consteval bool convertible(R1, R2)
+[[nodiscard]] consteval bool interconvertible(R1, R2)
 {
-  return convertible(R1::dimension, R2::dimension) && convertible(R1::unit, R2::unit);
+  return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
 }
 
 
@@ -115,7 +115,7 @@ struct system_reference {
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-    requires(convertible(coherent_unit, U{}))
+    requires(interconvertible(coherent_unit, U{}))
   [[nodiscard]] constexpr reference<dimension, U{}> operator[](U) const
   {
     return {};

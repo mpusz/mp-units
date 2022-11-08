@@ -70,7 +70,7 @@ concept harmonic_ =  // exposition only
 template<typename QFrom, typename QTo>
 concept quantity_convertible_to_ =  // exposition only
   Quantity<QFrom> && Quantity<QTo> &&
-  convertible(QFrom::reference, QTo::reference) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+  interconvertible(QFrom::reference, QTo::reference) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
   (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>
@@ -470,7 +470,7 @@ explicit quantity(Q) -> quantity<reference<quantity_like_traits<Q>::dimension, q
 
 // non-member binary operators
 template<Quantity Q1, Quantity Q2>
-  requires(convertible(Q1::reference, Q2::reference)) &&
+  requires(interconvertible(Q1::reference, Q2::reference)) &&
           quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
@@ -480,7 +480,7 @@ template<Quantity Q1, Quantity Q2>
 }
 
 template<Quantity Q1, Quantity Q2>
-  requires(convertible(Q1::reference, Q2::reference)) &&
+  requires(interconvertible(Q1::reference, Q2::reference)) &&
           quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
@@ -506,7 +506,7 @@ template<Quantity Q1, Quantity Q2>
 
 template<Quantity Q1, Quantity Q2>
   requires(!floating_point_<typename Q1::rep>) && (!floating_point_<typename Q2::rep>) &&
-          (convertible(Q1::reference, Q2::reference) || quantity_of<Q2, dimension_one>) &&
+          (interconvertible(Q1::reference, Q2::reference) || quantity_of<Q2, dimension_one>) &&
           quantity_value_for_<std::modulus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator%(const Q1& lhs, const Q2& rhs)
 {
@@ -517,7 +517,7 @@ template<Quantity Q1, Quantity Q2>
 }
 
 template<Quantity Q1, Quantity Q2>
-  requires(convertible(Q1::reference, Q2::reference)) &&
+  requires(interconvertible(Q1::reference, Q2::reference)) &&
           std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
@@ -526,7 +526,7 @@ template<Quantity Q1, Quantity Q2>
 }
 
 template<Quantity Q1, Quantity Q2>
-  requires(convertible(Q1::reference, Q2::reference)) &&
+  requires(interconvertible(Q1::reference, Q2::reference)) &&
           std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {

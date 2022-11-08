@@ -85,7 +85,7 @@ struct cast_traits<From, To> {
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, auto R, scalable_with_<typename To::rep> Rep>
-  requires(convertible(To::reference, R))
+  requires(interconvertible(To::reference, R))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   if constexpr (R.unit == To::unit) {
@@ -122,7 +122,7 @@ template<Quantity To, auto R, scalable_with_<typename To::rep> Rep>
  * @tparam ToU a unit type to use for a target quantity
  */
 template<Reference auto ToR, auto R, typename Rep>
-  requires(convertible(ToR, R))
+  requires(interconvertible(ToR, R))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   return quantity_cast<quantity<ToR, Rep>>(q);
@@ -142,7 +142,7 @@ template<Reference auto ToR, auto R, typename Rep>
  * @tparam ToD a dimension type to use for a target quantity
  */
 template<Dimension auto ToD, auto R, typename Rep>
-  requires(convertible(ToD, R.dimension))
+  requires(interconvertible(ToD, R.dimension))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   constexpr reference<ToD, quantity<R, Rep>::unit> r;
@@ -162,7 +162,7 @@ template<Dimension auto ToD, auto R, typename Rep>
  * @tparam ToU a unit type to use for a target quantity
  */
 template<Unit auto ToU, auto R, typename Rep>
-  requires(convertible(ToU, R.unit))
+  requires(interconvertible(ToU, R.unit))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   constexpr reference<quantity<R, Rep>::dimension, ToU> r;

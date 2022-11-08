@@ -118,15 +118,15 @@ static_assert(!NamedUnit<kilometre_>);
 static_assert(is_of_type<metre, metre_>);
 static_assert(is_of_type<get_canonical_unit(metre).reference_unit, metre_>);
 static_assert(get_canonical_unit(metre).mag == mag<1>);
-static_assert(convertible(metre, metre));
-static_assert(!convertible(metre, second));
+static_assert(interconvertible(metre, metre));
+static_assert(!interconvertible(metre, second));
 static_assert(metre == metre);
 static_assert(metre != second);
 
 static_assert(is_of_type<degree_Celsius, degree_Celsius_>);
 static_assert(is_of_type<get_canonical_unit(degree_Celsius).reference_unit, kelvin_>);
 static_assert(get_canonical_unit(degree_Celsius).mag == mag<1>);
-static_assert(convertible(degree_Celsius, kelvin));
+static_assert(interconvertible(degree_Celsius, kelvin));
 static_assert(degree_Celsius == kelvin);
 
 static_assert(is_of_type<radian, radian_>);
@@ -136,28 +136,28 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
 static_assert(get_canonical_unit(degree).mag == mag_pi / mag<180>);
-static_assert(convertible(radian, degree));
+static_assert(interconvertible(radian, degree));
 static_assert(radian != degree);
 
 static_assert(is_of_type<steradian, steradian_>);
 static_assert(is_of_type<get_canonical_unit(steradian).reference_unit, one_>);
 static_assert(get_canonical_unit(steradian).mag == mag<1>);
-static_assert(convertible(radian, steradian));  // !!!
-static_assert(radian == steradian);             // !!!
+static_assert(interconvertible(radian, steradian));  // !!!
+static_assert(radian == steradian);                  // !!!
 
 static_assert(is_of_type<minute, minute_>);
 static_assert(is_of_type<get_canonical_unit(minute).reference_unit, second_>);
 static_assert(get_canonical_unit(minute).mag == mag<60>);
-static_assert(convertible(minute, second));
+static_assert(interconvertible(minute, second));
 static_assert(minute != second);
 
 static_assert(is_of_type<hour, hour_>);
 static_assert(is_of_type<get_canonical_unit(hour).reference_unit, second_>);
 static_assert(get_canonical_unit(hour).mag == mag<3600>);
-static_assert(convertible(hour, second));
+static_assert(interconvertible(hour, second));
 
-static_assert(convertible(hour, minute));
-static_assert(convertible(hour, hour));
+static_assert(interconvertible(hour, minute));
+static_assert(interconvertible(hour, hour));
 static_assert(hour != second);
 static_assert(hour != minute);
 static_assert(hour == hour);
@@ -166,14 +166,14 @@ static_assert(is_of_type<newton, newton_>);
 static_assert(
   is_of_type<get_canonical_unit(newton).reference_unit, derived_unit<gram_, metre_, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(newton).mag == mag<1000>);  // !!! (because of kilogram)
-static_assert(convertible(newton, newton));
+static_assert(interconvertible(newton, newton));
 static_assert(newton == newton);
 
 static_assert(is_of_type<joule, joule_>);
 static_assert(
   is_of_type<get_canonical_unit(joule).reference_unit, derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(joule).mag == mag<1000>);  // !!! (because of kilogram)
-static_assert(convertible(joule, joule));
+static_assert(interconvertible(joule, joule));
 static_assert(joule == joule);
 static_assert(joule != newton);
 
@@ -183,7 +183,7 @@ static_assert(is_of_type<nu_second / nu_second, one_>);
 static_assert(is_of_type<kilometre, kilometre_>);
 static_assert(is_of_type<get_canonical_unit(kilometre).reference_unit, metre_>);
 static_assert(get_canonical_unit(kilometre).mag == mag<1000>);
-static_assert(convertible(kilometre, metre));
+static_assert(interconvertible(kilometre, metre));
 static_assert(kilometre != metre);
 static_assert(kilometre.symbol == "km");
 
@@ -191,7 +191,7 @@ static_assert(is_of_type<kilojoule, kilojoule_>);
 static_assert(is_of_type<get_canonical_unit(kilojoule).reference_unit,
                          derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(kilojoule).mag == mag<1'000'000>);
-static_assert(convertible(kilojoule, joule));
+static_assert(interconvertible(kilojoule, joule));
 static_assert(kilojoule != joule);
 static_assert(kilojoule.symbol == "kJ");
 
@@ -407,30 +407,30 @@ static_assert(si::kilo<metre> * si::milli<metre> == si::deca<metre> * si::deci<m
 
 // comparisons of equivalent units (named vs unnamed/derived)
 static_assert(1 / second == hertz);
-static_assert(convertible(1 / second, hertz));
+static_assert(interconvertible(1 / second, hertz));
 
 // comparisons of equivalent units of different quantities
 static_assert(hertz == becquerel);
-static_assert(convertible(hertz, becquerel));
+static_assert(interconvertible(hertz, becquerel));
 
 // comparisons of scaled units
 static_assert(si::kilo<metre> == kilometre);
 static_assert(mag<1000> * metre == si::kilo<metre>);
 static_assert(mag<1000> * metre == kilometre);
-static_assert(convertible(si::kilo<metre>, kilometre));
-static_assert(convertible(mag<1000> * metre, si::kilo<metre>));
-static_assert(convertible(mag<1000> * metre, kilometre));
+static_assert(interconvertible(si::kilo<metre>, kilometre));
+static_assert(interconvertible(mag<1000> * metre, si::kilo<metre>));
+static_assert(interconvertible(mag<1000> * metre, kilometre));
 
 static_assert(metre != kilometre);
-static_assert(convertible(metre, kilometre));
+static_assert(interconvertible(metre, kilometre));
 static_assert(mag<100> * metre != kilometre);
-static_assert(convertible(mag<100> * metre, kilometre));
+static_assert(interconvertible(mag<100> * metre, kilometre));
 static_assert(si::milli<metre> != kilometre);
-static_assert(convertible(si::milli<metre>, kilometre));
+static_assert(interconvertible(si::milli<metre>, kilometre));
 
 // comparisons of non-convertible units
 static_assert(metre != metre * metre);
-static_assert(!convertible(metre, metre* metre));
+static_assert(!interconvertible(metre, metre* metre));
 
 // one
 static_assert(is_of_type<metre / metre, one_>);

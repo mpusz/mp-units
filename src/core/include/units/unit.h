@@ -531,7 +531,7 @@ template<Unit Lhs, Unit Rhs>
 
 // Convertible
 template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval bool convertible(Lhs lhs, Rhs rhs)
+[[nodiscard]] consteval bool interconvertible(Lhs lhs, Rhs rhs)
 {
   auto canonical_lhs = detail::get_canonical_unit(lhs);
   auto canonical_rhs = detail::get_canonical_unit(rhs);
@@ -827,7 +827,7 @@ template<typename U1, typename U2>
 namespace std {
 
 template<units::Unit U1, units::Unit U2>
-  requires(units::convertible(U1{}, U2{}))
+  requires(units::interconvertible(U1{}, U2{}))
 struct common_type<U1, U2> {
   using type = std::remove_const_t<decltype(::units::detail::common_type_impl(U1{}, U2{}))>;
 };
