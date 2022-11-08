@@ -79,7 +79,7 @@ struct quantity_format_specs {
 
 // Parse a `units-rep-modifier`
 template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
-constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool treat_as_floating_point)
+constexpr It parse_units_rep(It begin, S end, Handler&& handler, bool treat_as_floating_point)
 {
   // parse sign
   begin = parse_sign(begin, end, handler);
