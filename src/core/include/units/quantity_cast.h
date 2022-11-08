@@ -50,39 +50,25 @@ class quantity;
 
 namespace detail {
 
-// template<Quantity Q>
-// inline constexpr Magnitude auto quantity_magnitude = decltype(Q::reference)::mag;
+template<typename From, typename To>
+struct cast_traits;
 
-// template<typename QFrom, typename QTo>
-// inline constexpr Magnitude auto cast_magnitude = [] {
-//   using FromU = TYPENAME QFrom::unit;
-//   using ToU = TYPENAME QTo::unit;
-//   if constexpr (same_unit_reference<FromU, ToU>::value) {
-//     return FromU::mag / ToU::mag;
-//   } else {
-//     return quantity_magnitude<QFrom> / quantity_magnitude<QTo>;
-//   }
-// }();
+template<typename From, typename To>
+  requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
+struct cast_traits<From, To> {
+  using multiplier_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
+  using rep_type = multiplier_type;
+};
 
-// template<typename From, typename To>
-// struct cast_traits;
-
-// template<typename From, typename To>
-//   requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
-// struct cast_traits<From, To> {
-//   using ratio_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
-//   using rep_type = ratio_type;
-// };
-
-// template<typename From, typename To>
-//   requires(!common_type_with_<std::common_type_t<From, To>, std::intmax_t> &&
-//            scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
-//            requires { typename std::common_type_t<From, To>::value_type; } &&
-//            common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>)
-// struct cast_traits<From, To> {
-//   using ratio_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
-//   using rep_type = std::common_type_t<From, To>;
-// };
+template<typename From, typename To>
+  requires(!common_type_with_<std::common_type_t<From, To>, std::intmax_t> &&
+           scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
+           requires { typename std::common_type_t<From, To>::value_type; } &&
+           common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>)
+struct cast_traits<From, To> {
+  using multiplier_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
+  using rep_type = std::common_type_t<From, To>;
+};
 
 }  // namespace detail
 
@@ -105,19 +91,17 @@ template<Quantity To, auto R, scalable_with_<typename To::rep> Rep>
   if constexpr (R.unit == To::unit) {
     return To(static_cast<TYPENAME To::rep>(q.number()));
   } else {
-    // using traits = detail::cast_traits<Rep, typename To::rep>;
-    // using ratio_type = TYPENAME traits::ratio_type;
-    // using rep_type = TYPENAME traits::rep_type;
+    using traits = detail::cast_traits<Rep, typename To::rep>;
+    using multiplier_type = TYPENAME traits::multiplier_type;
+    using rep_type = TYPENAME traits::rep_type;
 
-    // constexpr Magnitude auto c_mag = detail::cast_magnitude<quantity<D, U, Rep>, To>;
-    // constexpr Magnitude auto num = numerator(c_mag);
-    // constexpr Magnitude auto den = denominator(c_mag);
-    // constexpr Magnitude auto irr = c_mag * (den / num);
+    constexpr Magnitude auto c_mag = detail::get_canonical_unit(R.unit).mag / detail::get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto num = numerator(c_mag);
+    constexpr Magnitude auto den = denominator(c_mag);
+    constexpr Magnitude auto irr = c_mag * (den / num);
 
-    // constexpr auto val = [](Magnitude auto m) { return get_value<ratio_type>(m); };
-    // return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)));
-    // TODO implement that
-    return q;
+    constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
+    return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)));
   }
 }
 
@@ -161,7 +145,7 @@ template<Dimension auto ToD, auto R, typename Rep>
   requires(convertible(ToD, R.dimension))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<std::remove_const_t<decltype(ToD)>, std::remove_const_t<decltype(R.unit)>> r;
+  constexpr reference<std::remove_const_t<decltype(ToD)>, typename quantity<R, Rep>::unit_t> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
@@ -181,7 +165,7 @@ template<Unit auto ToU, auto R, typename Rep>
   requires(convertible(ToU, R.unit))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<std::remove_const_t<decltype(R.dimension)>, std::remove_const_t<decltype(ToU)>> r;
+  constexpr reference<typename quantity<R, Rep>::dimension_t, std::remove_const_t<decltype(ToU)>> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
