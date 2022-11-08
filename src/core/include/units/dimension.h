@@ -174,13 +174,13 @@ struct derived_dimension_impl : detail::expr_fractions<derived_dimension<>, Ds..
  * For example:
  *
  * @code{.cpp}
- * DERIVED_DIMENSION(frequency, 1 / time);
- * DERIVED_DIMENSION(speed, length / time);
- * DERIVED_DIMENSION(acceleration, speed / time);
- * DERIVED_DIMENSION(force, mass * acceleration);
- * DERIVED_DIMENSION(energy, force * length);
- * DERIVED_DIMENSION(moment_of_force, length * force);
- * DERIVED_DIMENSION(torque, moment_of_force);
+ * inline constexpr struct frequency : decltype(1 / time) {} frequency;
+ * inline constexpr struct speed : decltype(length / time) {} speed;
+ * inline constexpr struct acceleration : decltype(speed / time) {} acceleration;
+ * inline constexpr struct force : decltype(mass * acceleration) {} force;
+ * inline constexpr struct energy : decltype(force * length) {} energy;
+ * inline constexpr struct moment_of_force : decltype(length * force) {} moment_of_force;
+ * inline constexpr struct torque : decltype(moment_of_force) {} torque;
  * @endcode
  *
  * - `frequency` will be derived from type `derived_dimension<dimension_one, per<time>>`
@@ -283,11 +283,11 @@ struct dim_type_impl {
 
 template<DerivedDimension T>
 struct dim_type_impl<T> {
-  using type = T::_type_;
+  using type = TYPENAME T::_type_;
 };
 
 template<Dimension T>
-using dim_type = dim_type_impl<T>::type;
+using dim_type = TYPENAME dim_type_impl<T>::type;
 
 }  // namespace detail
 
