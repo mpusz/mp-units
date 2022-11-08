@@ -22,29 +22,17 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <units/symbol_text.h>
-// IWYU pragma: end_exports
-
-#include <units/quantity_cast.h>
+#include <units/dimension.h>
+#include <units/unit.h>
 
 namespace units {
 
-struct one : derived_unit<one> {};
-struct percent : named_scaled_unit<percent, "%", mag<ratio(1, 100)>(), one> {};
+struct dimension_one;  // defined in <units/dimension.h>
+struct one;            // defined in <units/unit.h>
 
-/**
- * @brief Dimension one
- *
- * Dimension for which all the exponents of the factors corresponding to the base
- * dimensions are zero. Also commonly named as "dimensionless".
- */
-struct dim_one : derived_dimension<dim_one, one> {};
-
-template<typename T>
-concept Dimensionless = QuantityOf<T, dim_one>;
-
-template<UnitOf<dim_one> U, Representation Rep = double>
-using dimensionless = quantity<dim_one, U, Rep>;
+// clang-format off
+inline constexpr struct percent : named_unit<"%", mag<ratio(1, 100)> * one> {} percent;
+inline constexpr struct per_mille : named_unit<basic_symbol_text{"\u2030", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+// clang-format on
 
 }  // namespace units
