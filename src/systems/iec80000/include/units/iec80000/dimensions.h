@@ -22,9 +22,17 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <units/isq/iec80000/modulation_rate.h>
-#include <units/isq/iec80000/storage_capacity.h>
-#include <units/isq/iec80000/traffic_intensity.h>
-#include <units/isq/iec80000/transfer_rate.h>
-// IWYU pragma: end_exports
+#include <units/dimension.h>
+#include <units/isq/base_dimensions.h>
+
+namespace units::iec80000 {
+
+// clang-format off
+inline constexpr struct storage_capacity : base_dimension<"M"> {} storage_capacity;
+inline constexpr struct traffic_intensity : base_dimension<"A"> {} traffic_intensity;
+// clang-format on
+
+DERIVED_DIMENSION(transfer_rate, decltype(storage_capacity / si::time));
+DERIVED_DIMENSION(modulation_rate, decltype(1 / si::time));
+
+}  // namespace units::iec80000

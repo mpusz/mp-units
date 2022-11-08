@@ -22,17 +22,16 @@
 
 #pragma once
 
-#include <units/prefix.h>
+#include <units/iec80000/dimensions.h>
+#include <units/unit.h>
 
-namespace units::isq::iec80000 {
+namespace units::iec80000 {
 
-struct kibi : prefix<kibi, "Ki", pow<10>(mag<2>())> {};
-struct mebi : prefix<mebi, "Mi", pow<20>(mag<2>())> {};
-struct gibi : prefix<gibi, "Gi", pow<30>(mag<2>())> {};
-struct tebi : prefix<tebi, "Ti", pow<40>(mag<2>())> {};
-struct pebi : prefix<pebi, "Pi", pow<50>(mag<2>())> {};
-struct exbi : prefix<exbi, "Ei", pow<60>(mag<2>())> {};
-struct zebi : prefix<zebi, "Zi", pow<70>(mag<2>())> {};
-struct yobi : prefix<yobi, "Yi", pow<80>(mag<2>())> {};
+// clang-format off
+inline constexpr struct erlang : named_unit<"E", traffic_intensity> {} erlang;
+inline constexpr struct bit : named_unit<"bit", storage_capacity> {} bit;
+inline constexpr struct byte : named_unit<"B", mag<8> * bit> {} byte;
+inline constexpr struct baud : named_unit<"Bd", 1 / si::second> {} baud;
+// clang-format on
 
-}  // namespace units::isq::iec80000
+}  // namespace units::iec80000
