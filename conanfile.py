@@ -152,7 +152,6 @@ class MPUnitsConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
         tc.variables["UNITS_BUILD_DOCS"] = self._build_all and not self._skip_docs
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
