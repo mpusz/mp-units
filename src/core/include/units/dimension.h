@@ -63,7 +63,7 @@ inline constexpr bool is_valid_unit_for_dimension = false;
 template<typename U, typename Dim>
 concept valid_unit_for_dimension = Unit<U> && Dimension<Dim> && detail::is_valid_unit_for_dimension<U{}, Dim{}>;
 
-template<Dimension D, Unit U>
+template<Dimension auto D, Unit auto U>
 struct reference;
 
 /**
@@ -104,13 +104,13 @@ struct base_dimension {
 
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, valid_unit_for_dimension<Self> U>
-  [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
+  [[nodiscard]] constexpr auto operator[](this const Self, U)
 #else
   template<valid_unit_for_dimension<Self> U>
-  [[nodiscard]] constexpr reference<Self, U> operator[](U) const
+  [[nodiscard]] constexpr auto operator[](U) const
 #endif
   {
-    return {};
+    return reference<Self{}, U{}>{};
   }
 };
 
@@ -213,9 +213,9 @@ template<DerivedDimensionSpec... Ds>
 struct derived_dimension : detail::derived_dimension_impl<Ds...> {
   template<typename Self, Unit U>
     requires valid_unit_for_dimension<U, Self> || (sizeof...(Ds) == 0 && convertible(U{}, one))
-  [[nodiscard]] constexpr reference<Self, U> operator[](this const Self, U)
+  [[nodiscard]] constexpr auto operator[](this const Self, U)
   {
-    return {};
+    return reference<Self{}, U{}>{};
   }
 };
 
@@ -228,9 +228,9 @@ template<DerivedDimensionSpec... Ds>
 struct derived_dimension<Ds...> : detail::derived_dimension_impl<Ds...> {
   template<Unit U>
     requires valid_unit_for_dimension<U, derived_dimension> || (sizeof...(Ds) == 0 && convertible(U{}, one))
-  [[nodiscard]] constexpr reference<derived_dimension, U> operator[](U) const
+  [[nodiscard]] constexpr auto operator[](U) const
   {
-    return {};
+    return reference<derived_dimension{}, U{}>{};
   }
 };
 
@@ -239,9 +239,9 @@ struct derived_dimension<Self, D> : D {
   template<Unit U>
     requires valid_unit_for_dimension<U, Self> ||
              (convertible(derived_dimension{}, derived_dimension<>{}) && convertible(U{}, one))
-  [[nodiscard]] constexpr reference<Self, U> operator[](U) const
+  [[nodiscard]] constexpr auto operator[](U) const
   {
-    return {};
+    return reference<Self{}, U{}>{};
   }
 };
 

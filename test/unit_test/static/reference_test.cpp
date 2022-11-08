@@ -91,24 +91,25 @@ inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 // clang-format on
 
 // Named quantity/dimension and unit
-static_assert(is_same_v<decltype(5 * power[watt]), quantity<reference<power_, watt_>{}, int>>);
+static_assert(is_same_v<decltype(5 * power[watt]), quantity<reference<power, watt>{}, int>>);
 
 // Named quantity/dimension and derived (unnamed) unit
 static_assert(is_same_v<decltype(5 * speed[metre / second]),
-                        quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
+                        quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 // Derived (unnamed) quantity/dimension and derived (unnamed) unit
 static_assert(
-  is_same_v<decltype(10 * length[metre] / (2 * time[second])),
-            quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
+  is_same_v<
+    decltype(10 * length[metre] / (2 * time[second])),
+    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 // Base quantity as a result of dimensional transformation
 static_assert(
-  is_same_v<decltype(5 * speed[metre / second] * (5 * time[second])), quantity<reference<length_, metre_>{}, int>>);
+  is_same_v<decltype(5 * speed[metre / second] * (5 * time[second])), quantity<reference<length, metre>{}, int>>);
 
 // dimension_one
 static_assert(is_same_v<decltype(20 * speed[metre / second] / (10 * length[metre]) * (5 * time[second])),
-                        quantity<reference<dimension_one_, one_>{}, int>>);
+                        quantity<reference<dimension_one, one>{}, int>>);
 
 template<auto s>
 concept invalid_operations = requires {
@@ -139,53 +140,58 @@ concept invalid_operations = requires {
 static_assert(invalid_operations<time[second]>);
 
 static_assert(
-  is_same_v<decltype(2 * length[metre] / (1 * time[second])),
-            quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
+  is_same_v<
+    decltype(2 * length[metre] / (1 * time[second])),
+    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 static_assert(
-  is_same_v<decltype(2 * (length[metre] / time[second])),
-            quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
+  is_same_v<
+    decltype(2 * (length[metre] / time[second])),
+    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 static_assert(is_same_v<decltype(2 * (speed[metre / second])),
-                        quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
+                        quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 constexpr auto m_per_s = speed[metre / second];
-static_assert(is_same_v<decltype(2 * m_per_s), quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
+static_assert(
+  is_same_v<decltype(2 * m_per_s), quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 static_assert(
-  is_same_v<decltype(120 * length[kilometre] / (2 * time[hour])),
-            quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
+  is_same_v<
+    decltype(120 * length[kilometre] / (2 * time[hour])),
+    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
 static_assert(
-  is_same_v<decltype([] {
-              const auto distance = 120;
-              const auto duration = 2;
-              return distance * length[kilometre] / (duration * time[hour]);
-            }()),
-            quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
-static_assert(
   is_same_v<
-    decltype(std::int64_t{120} * length[kilometre] / (2 * time[hour])),
-    quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, std::int64_t>>);
+    decltype([] {
+      const auto distance = 120;
+      const auto duration = 2;
+      return distance * length[kilometre] / (duration * time[hour]);
+    }()),
+    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(
-  is_same_v<
-    decltype(120.L * length[kilometre] / (2 * time[hour])),
-    quantity<reference<derived_dimension<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, long double>>);
+  is_same_v<decltype(std::int64_t{120} * length[kilometre] / (2 * time[hour])),
+            quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+                     std::int64_t>>);
+static_assert(
+  is_same_v<decltype(120.L * length[kilometre] / (2 * time[hour])),
+            quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+                     long double>>);
 
 static_assert(is_same_v<decltype(1. / 4 * area[square<metre>]), decltype(1. * area[square<metre>] / 4)>);
 static_assert(1. / 4 * area[square<metre>] == 1. * area[square<metre>] / 4);
 
 // Natural Units
-static_assert(is_same_v<decltype(42 * nu::time[nu::second]), quantity<reference<time_, nu::second_>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::time[nu::minute]), quantity<reference<time_, nu::minute_>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::length[nu::second]), quantity<reference<length_, nu::second_>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::length[nu::minute]), quantity<reference<length_, nu::minute_>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::time[nu::second]), quantity<reference<time, nu::second>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::time[nu::minute]), quantity<reference<time, nu::minute>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::length[nu::second]), quantity<reference<length, nu::second>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::length[nu::minute]), quantity<reference<length, nu::minute>{}, int>>);
 static_assert(is_same_v<decltype(42 * (nu::length[nu::second] / nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, per<time_>>, one_>{}, int>>);
+                        quantity<reference<derived_dimension<length_, per<time_>>{}, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * nu::length[nu::second] / (42 * nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, per<time_>>, one_>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::speed[nu::second / nu::second]), quantity<reference<speed_, one_>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::speed[one]), quantity<reference<speed_, one_>{}, int>>);
+                        quantity<reference<derived_dimension<length_, per<time_>>{}, one>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::speed[nu::second / nu::second]), quantity<reference<speed, one>{}, int>>);
+static_assert(is_same_v<decltype(42 * nu::speed[one]), quantity<reference<speed, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, mass_, per<time_>>, kilogram_>{}, int>>);
+                        quantity<reference<derived_dimension<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };

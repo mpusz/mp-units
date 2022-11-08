@@ -32,8 +32,18 @@
 
 namespace units {
 
-template<Dimension D, Unit U>
+template<Dimension auto D, Unit auto U>
 struct reference;
+
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_reference = false;
+
+template<Dimension auto D, Unit auto U>
+inline constexpr bool is_specialization_of_reference<reference<D, U>> = true;
+
+}  // namespace detail
 
 /**
  * @brief A concept matching all references in the library.
@@ -41,7 +51,7 @@ struct reference;
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = is_specialization_of<T, reference>;
+concept Reference = detail::is_specialization_of_reference<T>;
 
 namespace detail {
 

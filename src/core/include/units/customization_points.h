@@ -91,7 +91,7 @@ struct quantity_values {
 /**
  * @brief Provides support for external quantity-like types
  *
- * The type trait should provide the following nested type aliases: @c dimension, @c unit, @c rep,
+ * The type trait should provide the following nested values @c dimension, @c unit and type alias @c rep,
  * and a static member function @c number(T) that will return the raw value of the quantity.
  *
  * Usage example can be found in @c units/chrono.h header file.

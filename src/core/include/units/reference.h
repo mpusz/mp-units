@@ -67,31 +67,28 @@ namespace units {
  * The following syntaxes are not allowed:
  * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
  */
-template<Dimension D, Unit U>
+template<Dimension auto D, Unit auto U>
 struct reference {
-  static constexpr D dimension{};
-  static constexpr U unit{};
-  // static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
+  static constexpr auto dimension = D;
+  static constexpr auto unit = U;
 };
 
 // Reference
 
 template<Magnitude M, Reference R>
-[[nodiscard]] consteval reference<decltype(R::dimension), decltype(M{} * R::unit)> operator*(M, R)
+[[nodiscard]] consteval reference<R::dimension, M{} * R::unit> operator*(M, R)
 {
   return {};
 }
 
 template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<decltype(R1::dimension * R2::dimension), decltype(R1::unit * R2::unit)> operator*(R1,
-                                                                                                                    R2)
+[[nodiscard]] consteval reference<R1::dimension * R2::dimension, R1::unit * R2::unit> operator*(R1, R2)
 {
   return {};
 }
 
 template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<decltype(R1::dimension / R2::dimension), decltype(R1::unit / R2::unit)> operator/(R1,
-                                                                                                                    R2)
+[[nodiscard]] consteval reference<R1::dimension / R2::dimension, R1::unit / R2::unit> operator/(R1, R2)
 {
   return {};
 }
@@ -119,7 +116,7 @@ struct system_reference {
 
   template<Unit U>
     requires(convertible(coherent_unit, U{}))
-  [[nodiscard]] constexpr reference<std::remove_const_t<decltype(dimension)>, U> operator[](U) const
+  [[nodiscard]] constexpr reference<dimension, U{}> operator[](U) const
   {
     return {};
   }
@@ -139,7 +136,7 @@ private:
   using dim = common_type_t<remove_const_t<decltype(R1::dimension)>, remove_const_t<decltype(R2::dimension)>>;
   using unit = common_type_t<remove_const_t<decltype(R1::unit)>, remove_const_t<decltype(R2::unit)>>;
 public:
-  using type = units::reference<dim, unit>;
+  using type = units::reference<dim{}, unit{}>;
 };
 
 }  // namespace std

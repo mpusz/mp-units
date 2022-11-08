@@ -145,7 +145,7 @@ template<Dimension auto ToD, auto R, typename Rep>
   requires(convertible(ToD, R.dimension))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<std::remove_const_t<decltype(ToD)>, typename quantity<R, Rep>::unit_t> r;
+  constexpr reference<ToD, quantity<R, Rep>::unit> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
@@ -165,7 +165,7 @@ template<Unit auto ToU, auto R, typename Rep>
   requires(convertible(ToU, R.unit))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<typename quantity<R, Rep>::dimension_t, std::remove_const_t<decltype(ToU)>> r;
+  constexpr reference<quantity<R, Rep>::dimension, ToU> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
