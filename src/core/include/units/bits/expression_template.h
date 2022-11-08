@@ -403,14 +403,16 @@ template<template<typename...> typename To, typename OneType, template<typename,
  */
 template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
          typename Rhs>
-[[nodiscard]] consteval auto expr_divide(Lhs, Rhs)
+[[nodiscard]] consteval auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
     return OneType{};
   } else if constexpr (is_same_v<Rhs, OneType>) {
-    return Lhs{};
+    return lhs;
+  } else if constexpr (is_same_v<Lhs, OneType>) {
+    return expr_divide<To, OneType, Pred>(To<>{}, rhs);
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
-    // two derived dimensions
+    // two derived entities
     return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_den_, Pred>,
                                     type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_num_, Pred>, OneType,
                                     Pred, To>();
@@ -421,7 +423,7 @@ template<template<typename...> typename To, typename OneType, template<typename,
     return get_optimized_expression<type_list_merge_sorted<typename Rhs::_den_, type_list<Lhs>, Pred>,
                                     typename Rhs::_num_, OneType, Pred, To>();
   } else {
-    // two base dimensions
+    // two named entities
     return To<Lhs, per<Rhs>>{};
   }
 }

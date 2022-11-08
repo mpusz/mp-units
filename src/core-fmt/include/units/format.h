@@ -22,15 +22,12 @@
 
 #pragma once
 
+#include <units/bits/algorithm.h>
 #include <units/bits/fmt.h>
 #include <units/customization_points.h>
 #include <units/quantity.h>
-#include <algorithm>
+#include <units/unit.h>
 #include <cstdint>
-
-// IWYU pragma: begin_exports
-#include <units/bits/unit_text.h>
-// IWYU pragma: end_exports
 
 // Grammar
 //
@@ -42,37 +39,12 @@
 // conversion-spec     ::=  '%' units-type
 // units-type          ::=  [units-rep-modifier] 'Q'
 //                          [units-unit-modifier] 'q'
-//                          one of "nt%"
 // units-rep-modifier  ::=  [sign] [#] [precision] [L] [units-rep-type]
 // units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
-// units-unit-modifier ::=  'A'
-
-// Guide for editing
-//
-// If you want to add a new `units-type` terminal character (e.g. 'Q', 'q'):
-// -   If needed, write a new `specs` class (e.g. `global_format_specs`)
-// -   Add the new symbol in the `units_types` variable in the `parse_units_format` function
-// -   Add a new case in the `if` following the format_error in `parse_units_format` function;
-//     this should invoke `handler.on_[...]`
-// -   Edit `STD_FMT::formatter`:
-//     - Add a new field for the flag/specs
-//     - Add to the `STD_FMT::formatter::spec_handler` a `on_[...]` function that set the flag/specs if needed
-// -   Edit `quantity_formatter`:
-//     - Add a new field for the flag/specs
-//     - write a `on_[...]` function that writes to the `out` iterator the correct output
-//
-// If you want to add a new `units-rep-type`:
-// -   Add the new symbol in the `valid_rep_types` variable (which is in the
-//         STD_FMT::formatter::spec_handler::on_type member function)
-//     NB: currently this function forward the modifier to the value that must be formatted;
-//         if the symbol has no meaning for STD_FMT::formatter<Rep>, this behavior should be disabled manually
-//         (as is done for '\0')
-// -   Implement the effect of the new flag in `format_units_quantity_value`
-//
-// If you want to add a new `units-unit-modifier`:
-// -   Add the new symbol in the `valid_modifiers` variable (which is in the
-//         STD_FMT::formatter::spec_handler::on_unit_modifier member function)
-// -   Implement the effect of the new flag in the `quantity_formatter::on_quantity_unit` member function
+// units-unit-modifier ::=  [units-text-encoding, units-unit-symbol-denominator, units-unit-symbol-separator]
+// units-text-encoding ::=  one of "UA"
+// units-unit-symbol-solidus   ::=  one of "oan"
+// units-unit-symbol-separator ::=  one of "sd"
 
 namespace units::detail {
 
@@ -96,9 +68,7 @@ struct quantity_rep_format_specs {
 };
 
 // Holds specs about the unit (%[specs]q)
-struct quantity_unit_format_specs {
-  bool ascii_only = false;
-};
+struct quantity_unit_format_specs : unit_symbol_formatting {};
 
 template<typename CharT>
 struct quantity_format_specs {
@@ -159,32 +129,15 @@ constexpr It parse_units_format(It begin, S end, Handler&& handler)
     if (ptr == end) throw STD_FMT::format_error("invalid format");
     c = *ptr++;
 
-    switch (c) {
-      // units-type
-      case '%':
-        handler.on_text(ptr - 1, ptr);
-        break;
-      case 'n': {
-        const char newline[] = "\n";
-        handler.on_text(newline, newline + 1);
-        break;
-      }
-      case 't': {
-        const char tab[] = "\t";
-        handler.on_text(tab, tab + 1);
-        break;
-      }
-      default:
-        constexpr auto units_types = std::string_view{"Qq"};
-        const auto new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
-        if (new_end == end) throw STD_FMT::format_error("invalid format");
-        if (*new_end == 'Q') {
-          handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
-        } else {
-          handler.on_quantity_unit(*begin);  // Edit `on_quantity_unit` to add an unit modifier
-        }
-        ptr = new_end + 1;
+    constexpr auto units_types = std::string_view{"Qq"};
+    const auto new_end = find_first_of(begin, end, units_types.begin(), units_types.end());
+    if (new_end == end) throw STD_FMT::format_error("invalid format");
+    if (*new_end == 'Q') {
+      handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
+    } else {
+      handler.on_quantity_unit(begin, new_end);  // Edit `on_quantity_unit` to add an unit modifier
     }
+    ptr = new_end + 1;
     begin = ptr;
   }
   if (begin != ptr) handler.on_text(begin, ptr);
@@ -264,14 +217,14 @@ OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<C
   return STD_FMT::format_to(out, "}}");
 }
 
-template<typename Dimension, typename Unit, typename Rep, typename Locale, typename CharT, typename OutputIt>
+template<auto Reference, typename Rep, typename Locale, typename CharT, typename OutputIt>
 struct quantity_formatter {
   OutputIt out;
   Rep val;
   const quantity_format_specs<CharT>& specs;
   Locale loc;
 
-  explicit quantity_formatter(OutputIt o, quantity<Dimension, Unit, Rep> q, const quantity_format_specs<CharT>& fspecs,
+  explicit quantity_formatter(OutputIt o, quantity<Reference, Rep> q, const quantity_format_specs<CharT>& fspecs,
                               Locale lc) :
       out(o), val(std::move(q).number()), specs(fspecs), loc(std::move(lc))
   {
@@ -289,23 +242,29 @@ struct quantity_formatter {
     out = format_units_quantity_value<CharT>(out, val, specs.rep, loc);
   }
 
-  void on_quantity_unit([[maybe_unused]] CharT)
+  template<std::input_iterator It, std::sentinel_for<It> S>
+  void on_quantity_unit(It, S)
   {
-    auto txt = unit_text<Dimension, Unit>();
-    if (specs.unit.ascii_only) {
-      STD_FMT::format_to(out, "{}", txt.ascii().c_str());
-    } else {
-      STD_FMT::format_to(out, "{}", txt.standard().c_str());
-    }
+    out = unit_symbol_to<CharT>(out, Reference.unit, specs.unit);
   }
 };
 
+template<std::input_iterator It, std::sentinel_for<It> S>
+[[nodiscard]] constexpr It at_most_one_of(It begin, S end, std::string_view modifiers)
+{
+  auto it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
+    throw STD_FMT::format_error("only one of '" + std::string(modifiers) +
+                                "' unit modifiers may be used in the format spec");
+  return it;
+}
+
 }  // namespace units::detail
 
-template<typename Dimension, typename Unit, typename Rep, typename CharT>
-struct STD_FMT::formatter<units::quantity<Dimension, Unit, Rep>, CharT> {
+template<auto Reference, typename Rep, typename CharT>
+struct STD_FMT::formatter<units::quantity<Reference, Rep>, CharT> {
 private:
-  using quantity = units::quantity<Dimension, Unit, Rep>;
+  using quantity = units::quantity<Reference, Rep>;
   using iterator = TYPENAME STD_FMT::basic_format_parse_context<CharT>::iterator;
 
   bool quantity_value = false;
@@ -335,16 +294,6 @@ private:
       }
     }
 
-    constexpr void on_unit_modifier(char mod)
-    {
-      constexpr auto valid_modifiers = std::string_view{"A"};
-      if (valid_modifiers.find(mod) != std::string_view::npos) {
-        f.specs.unit.ascii_only = true;
-      } else {
-        throw STD_FMT::format_error("invalid unit modifier specified");
-      }
-    }
-
     template<typename T>
     constexpr void on_dynamic_width(T t)
     {
@@ -369,9 +318,43 @@ private:
       f.quantity_value = true;
     }
 
-    constexpr void on_quantity_unit(CharT mod)
+    template<std::input_iterator It, std::sentinel_for<It> S>
+    constexpr void on_quantity_unit(It begin, S end)
     {
-      if (mod != 'q') on_unit_modifier(mod);
+      if (begin == end) return;
+
+      constexpr auto valid_modifiers = std::string_view{"UAoansd"};
+      for (auto it = begin; it != end; ++it) {
+        if (valid_modifiers.find(*it) == std::string_view::npos)
+          throw STD_FMT::format_error("invalid unit modifier specified");
+      }
+
+      if (auto it = units::detail::at_most_one_of(begin, end, "UA"); it != end) {
+        if (*it == 'U')
+          f.specs.unit.encoding = units::text_encoding::unicode;
+        else
+          f.specs.unit.encoding = units::text_encoding::ascii;
+      }
+
+      if (auto it = units::detail::at_most_one_of(begin, end, "oan"); it != end) {
+        if (*it == 'o')
+          f.specs.unit.solidus = units::unit_symbol_solidus::one_denominator;
+        else if (*it == 'a')
+          f.specs.unit.solidus = units::unit_symbol_solidus::always;
+        else
+          f.specs.unit.solidus = units::unit_symbol_solidus::never;
+      }
+
+      if (auto it = units::detail::at_most_one_of(begin, end, "sd"); it != end) {
+        if (*it == 's')
+          f.specs.unit.separator = units::unit_symbol_separator::space;
+        else {
+          if (f.specs.unit.encoding == units::text_encoding::ascii)
+            throw STD_FMT::format_error("dot unit separator allowed only for Unicode encoding");
+          f.specs.unit.separator = units::unit_symbol_separator::dot;
+        }
+      }
+
       f.quantity_unit = true;
     }
   };
@@ -413,10 +396,9 @@ private:
     if (begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
       out = units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
-      constexpr auto symbol = units::detail::unit_text<Dimension, Unit>();
-      if constexpr (symbol.standard().size() > 0) {
+      if constexpr (!std::derived_from<decltype(Reference.unit), units::derived_unit<>>) {
         *out++ = CharT(' ');
-        STD_FMT::format_to(out, "{}", symbol.standard().c_str());
+        out = unit_symbol_to<CharT>(out, Reference.unit);
       }
     } else {
       // user provided format
@@ -436,7 +418,7 @@ public:
   }
 
   template<typename FormatContext>
-  auto format(const quantity& q, FormatContext& ctx)
+  [[nodiscard]] auto format(const quantity& q, FormatContext& ctx)
   {
     // process dynamic width and precision
     if (specs.global.dynamic_width_index >= 0)
