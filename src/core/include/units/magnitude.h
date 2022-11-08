@@ -223,9 +223,10 @@ template<PowerVBase auto V, ratio R>
   }
 }
 
-[[nodiscard]] consteval auto inverse(MagnitudeSpec auto el)
+template<MagnitudeSpec M>
+[[nodiscard]] consteval auto inverse(M)
 {
-  return power_v_or_T<get_base(el), get_exponent(el) * (-1)>();
+  return power_v_or_T<get_base(M{}), -1 * get_exponent(M{})>();
 }
 
 // `widen_t` gives the widest arithmetic type in the same category, for intermediate computations.
