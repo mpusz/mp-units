@@ -52,7 +52,7 @@ DERIVED_DIMENSION(normal_stress, decltype(force / area));
 DERIVED_DIMENSION(strain, decltype(stress / stress));          // TODO what is a correct equation here?
 DERIVED_DIMENSION(poisson_number, decltype(length / length));  // TODO width?
 // TODO modulus quantities
-DERIVED_DIMENSION(compressibility, decltype(volume / pressure));
+DERIVED_DIMENSION(compressibility, decltype(volume / volume / pressure));
 DERIVED_DIMENSION(second_axial_moment_of_area, decltype(area * area));  // TODO what is a correct equation here?
 DERIVED_DIMENSION(section_modulus, decltype(second_axial_moment_of_area / length));  // TODO radial distance
 // TODO friction coefficients?
