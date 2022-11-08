@@ -22,11 +22,8 @@
 
 #pragma once
 
-#include <units/isq/mechanics.h>
-#include <units/isq/space_and_time.h>
-#include <units/isq/thermodynamics.h>
-#include <units/reference.h>
 #include <units/si/units.h>
+#include <units/unit.h>
 
 namespace units::si::cgs {
 
@@ -41,7 +38,6 @@ inline constexpr struct barye : named_unit<"Ba", gram / (centimetre * square<sec
 inline constexpr struct poise : named_unit<"P", gram / (centimetre * second)> {} poise;
 inline constexpr struct stokes : named_unit<"St", square<centimetre> / second> {} stokes;
 inline constexpr struct kayser : decltype(1 / centimetre) {} kayser;
-
 // clang-format on
 
 }  // namespace units::si::cgs
