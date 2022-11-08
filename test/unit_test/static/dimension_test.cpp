@@ -108,6 +108,19 @@ static_assert(is_of_type<acceleration / speed, derived_dimension<dimension_one_,
 static_assert(is_of_type<speed * speed / length, derived_dimension<length_, per<units::power<time_, 2>>>>);
 static_assert(is_of_type<1 / (speed * speed) * length, derived_dimension<units::power<time_, 2>, per<length_>>>);
 
+static_assert(
+  is_of_type<(length * length) * (time * time), derived_dimension<units::power<length_, 2>, units::power<time_, 2>>>);
+static_assert(
+  is_of_type<(time * time) * (length * length), derived_dimension<units::power<length_, 2>, units::power<time_, 2>>>);
+
+static_assert(is_of_type<length * time * time, derived_dimension<length_, units::power<time_, 2>>>);
+static_assert(is_of_type<mass / length / time / time, derived_dimension<mass_, per<length_, units::power<time_, 2>>>>);
+static_assert(
+  is_of_type<mass / (length * time * time), derived_dimension<mass_, per<length_, units::power<time_, 2>>>>);
+static_assert(
+  is_of_type<mass / length / (time * time), derived_dimension<mass_, per<length_, units::power<time_, 2>>>>);
+static_assert(is_of_type<force / area, derived_dimension<mass_, per<length_, units::power<time_, 2>>>>);
+
 template<auto& t>
 concept invalid_operations = requires {
                                requires !requires { t < t; };

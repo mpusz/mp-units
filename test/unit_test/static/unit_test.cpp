@@ -22,6 +22,7 @@
 
 #include "test_tools.h"
 #include <units/dimension.h>
+#include <units/generic/dimensionless.h>
 #include <units/reference.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
@@ -295,6 +296,18 @@ static_assert(is_of_type<metre / second*(second / metre), one_>);
 static_assert(is_of_type<watt / joule, derived_unit<watt_, per<joule_>>>);
 static_assert(is_of_type<joule / watt, derived_unit<joule_, per<watt_>>>);
 
+static_assert(is_of_type<one / second, derived_unit<one_, per<second_>>>);
+static_assert(is_of_type<1 / (1 / second), second_>);
+static_assert(is_of_type<one / (1 / second), second_>);
+
+static_assert(is_of_type<1 / pascal, derived_unit<one_, per<pascal_>>>);
+static_assert(is_of_type<1 / gram * metre * square<second>, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<1 / (gram / (metre * square<second>)), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<one*(metre* square<second> / gram), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<one * metre * square<second> / gram, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<(metre * square<second> / gram) * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<metre * square<second> / gram * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+
 static_assert(std::is_same_v<decltype(1 / second * metre), decltype(metre / second)>);
 static_assert(std::is_same_v<decltype(metre * (1 / second)), decltype(metre / second)>);
 static_assert(std::is_same_v<decltype((metre / second) * (1 / second)), decltype(metre / second / second)>);
@@ -316,6 +329,14 @@ constexpr auto km_per_h = kilometre / hour;
 static_assert(is_of_type<km_per_h, derived_unit<kilometre_, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(km_per_h).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(km_per_h).mag == mag<ratio{1000, 3600}>);
+
+static_assert(is_of_type<get_canonical_unit(1 / metre).reference_unit, derived_unit<one_, per<metre_>>>);
+static_assert(is_of_type<get_canonical_unit(1 / hertz).reference_unit, second_>);
+
+static_assert(
+  is_of_type<get_canonical_unit(pascal).reference_unit, derived_unit<gram_, per<metre_, power<second_, 2>>>>);
+static_assert(
+  is_of_type<get_canonical_unit(1 / pascal).reference_unit, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
@@ -506,6 +527,9 @@ static_assert(unit_symbol(mag<60> * second, {.encoding = ascii}) == "[6 x 10^1] 
 
 // derived units
 static_assert(unit_symbol(one) == "");
+static_assert(unit_symbol(percent) == "%");
+static_assert(unit_symbol(per_mille) == "‰");
+static_assert(unit_symbol(per_mille, {.encoding = ascii}) == "%o");
 static_assert(unit_symbol(square<metre>) == "m²");
 static_assert(unit_symbol(square<metre>, {.encoding = ascii}) == "m^2");
 static_assert(unit_symbol(cubic<metre>) == "m³");
