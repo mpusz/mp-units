@@ -62,16 +62,20 @@ endif()
 # add project code
 add_subdirectory(src)
 
-# add usage example
-add_subdirectory(example)
+option(${projectPrefix}BUILD_EXAMPLES "Build examples" ON)
+if(${projectPrefix}BUILD_EXAMPLES)
+    # add usage example
+    add_subdirectory(example)
+endif()
 
 # generate project documentation
 add_subdirectory(docs)
 
-# add unit tests
 enable_testing()
-add_subdirectory(test)
-
-# tests for standalone headers
-include(TestPublicHeaders)
-add_public_header_test(test_headers mp-units::mp-units)
+if(BUILD_TESTING)
+    # add unit tests
+    add_subdirectory(test)
+    # tests for standalone headers
+    include(TestPublicHeaders)
+    add_public_header_test(test_headers mp-units::mp-units)
+endif()
