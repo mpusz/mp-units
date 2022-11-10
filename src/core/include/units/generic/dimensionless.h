@@ -32,7 +32,7 @@ struct one;            // defined in <units/unit.h>
 
 // clang-format off
 inline constexpr struct percent : named_unit<"%", mag<ratio(1, 100)> * one> {} percent;
-inline constexpr struct per_mille : named_unit<basic_symbol_text{"\u2030", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
 // clang-format on
 
 }  // namespace units

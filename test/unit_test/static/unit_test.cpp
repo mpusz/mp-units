@@ -60,7 +60,7 @@ inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square<seco
 inline constexpr struct pascal_ : named_unit<"Pa", newton / square<metre>> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
-inline constexpr struct degree_Celsius_ : named_unit<basic_symbol_text{"\u00B0C", "`C"}, kelvin> {} degree_Celsius;
+inline constexpr struct degree_Celsius_ : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 
 inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
