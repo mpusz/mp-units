@@ -107,21 +107,20 @@ template<Reference R1, Reference R2>
   return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
 }
 
-}  // namespace units
+namespace detail {
 
-namespace std {
-
-template<units::Reference R1, units::Reference R2>
+[[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2)
   requires requires {
-             typename common_type_t<remove_const_t<decltype(R1::dimension)>, remove_const_t<decltype(R2::dimension)>>;
-             typename common_type_t<remove_const_t<decltype(R1::unit)>, remove_const_t<decltype(R2::unit)>>;
+             {
+               common_dimension(r1.dimension, r2.dimension)
+               } -> Dimension;
+             {
+               common_unit(r1.unit, r2.unit)
+               } -> Unit;
            }
-struct common_type<R1, R2> {
-private:
-  using dim = common_type_t<remove_const_t<decltype(R1::dimension)>, remove_const_t<decltype(R2::dimension)>>;
-  using unit = common_type_t<remove_const_t<decltype(R1::unit)>, remove_const_t<decltype(R2::unit)>>;
-public:
-  using type = units::reference<dim{}, unit{}>;
-};
+{
+  return reference<common_dimension(r1.dimension, r2.dimension), common_unit(r1.unit, r2.unit)>{};
+}
 
-}  // namespace std
+}  // namespace detail
+}  // namespace units

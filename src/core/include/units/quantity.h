@@ -474,8 +474,8 @@ template<Quantity Q1, Quantity Q2>
           quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
-  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
-  using ret = quantity<ref{}, decltype(lhs.number() + rhs.number())>;
+  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  using ret = quantity<ref, decltype(lhs.number() + rhs.number())>;
   return ret(ret(lhs).number() + ret(rhs).number());
 }
 
@@ -484,8 +484,8 @@ template<Quantity Q1, Quantity Q2>
           quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
-  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
-  using ret = quantity<ref{}, decltype(lhs.number() - rhs.number())>;
+  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  using ret = quantity<ref, decltype(lhs.number() - rhs.number())>;
   return ret(ret(lhs).number() - ret(rhs).number());
 }
 
@@ -521,8 +521,8 @@ template<Quantity Q1, Quantity Q2>
           std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
-  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
-  return quantity_cast<ref{}>(lhs).number() <=> quantity_cast<ref{}>(rhs).number();
+  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  return quantity_cast<ref>(lhs).number() <=> quantity_cast<ref>(rhs).number();
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -530,8 +530,8 @@ template<Quantity Q1, Quantity Q2>
           std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
-  using ref = std::common_type_t<decltype(Q1::reference), decltype(Q2::reference)>;
-  return quantity_cast<ref{}>(lhs).number() == quantity_cast<ref{}>(rhs).number();
+  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  return quantity_cast<ref>(lhs).number() == quantity_cast<ref>(rhs).number();
 }
 
 }  // namespace units
@@ -540,14 +540,15 @@ namespace std {
 
 template<units::Quantity Q1, units::Quantity Q2>
   requires requires {
-             typename common_type_t<remove_const_t<decltype(Q1::reference)>, remove_const_t<decltype(Q2::reference)>>;
+             {
+               units::detail::common_reference(Q1::reference, Q2::reference)
+               } -> units::Reference;
              typename common_type_t<typename Q1::rep, typename Q2::rep>;
            }
 struct common_type<Q1, Q2> {
-private:
-  using ref = common_type_t<remove_const_t<decltype(Q1::reference)>, remove_const_t<decltype(Q2::reference)>>;
 public:
-  using type = units::quantity<ref{}, common_type_t<typename Q1::rep, typename Q2::rep>>;
+  using type = units::quantity<units::detail::common_reference(Q1::reference, Q2::reference),
+                               common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 
 }  // namespace std

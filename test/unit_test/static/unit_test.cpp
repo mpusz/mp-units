@@ -469,35 +469,33 @@ static_assert(
   is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
 
 // common_type
-static_assert(std::is_same_v<std::common_type_t<decltype(gram), decltype(gram)>, gram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(kilogram)>, kilogram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(si::kilo<gram>), decltype(kilogram)>, kilogram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(si::kilo<gram>)>, kilogram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(mag<1000> * gram), decltype(kilogram)>, kilogram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(mag<1000> * gram)>, kilogram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(1 / second), decltype(hertz)>, hertz_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(hertz), decltype(1 / second)>, hertz_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(gram), decltype(kilogram)>, gram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(kilogram), decltype(gram)>, gram_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(second), decltype(hour)>, second_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(hour), decltype(second)>, second_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(minute), decltype(hour)>, minute_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(hour), decltype(minute)>, minute_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(si::kilo<metre>), decltype(si::milli<metre>)>,
-                             std::remove_const_t<decltype(si::milli<metre>)>>);
-static_assert(std::is_same_v<std::common_type_t<decltype(si::milli<metre>), decltype(si::kilo<metre>)>,
-                             std::remove_const_t<decltype(si::milli<metre>)>>);
-static_assert(std::is_same_v<std::common_type_t<decltype(yard), decltype(mile)>, yard_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(mile), decltype(yard)>, yard_>);
+static_assert(is_of_type<detail::common_unit(gram, gram), gram_>);
+static_assert(is_of_type<detail::common_unit(kilogram, kilogram), kilogram_>);
+static_assert(is_of_type<detail::common_unit(si::kilo<gram>, kilogram), kilogram_>);
+static_assert(is_of_type<detail::common_unit(kilogram, si::kilo<gram>), kilogram_>);
+static_assert(is_of_type<detail::common_unit(mag<1000>* gram, kilogram), kilogram_>);
+static_assert(is_of_type<detail::common_unit(kilogram, mag<1000>* gram), kilogram_>);
+static_assert(is_of_type<detail::common_unit(1 / second, hertz), hertz_>);
+static_assert(is_of_type<detail::common_unit(hertz, 1 / second), hertz_>);
+static_assert(is_of_type<detail::common_unit(gram, kilogram), gram_>);
+static_assert(is_of_type<detail::common_unit(kilogram, gram), gram_>);
+static_assert(is_of_type<detail::common_unit(second, hour), second_>);
+static_assert(is_of_type<detail::common_unit(hour, second), second_>);
+static_assert(is_of_type<detail::common_unit(minute, hour), minute_>);
+static_assert(is_of_type<detail::common_unit(hour, minute), minute_>);
+static_assert(
+  is_of_type<detail::common_unit(si::kilo<metre>, si::milli<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(
+  is_of_type<detail::common_unit(si::milli<metre>, si::kilo<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(is_of_type<detail::common_unit(yard, mile), yard_>);
+static_assert(is_of_type<detail::common_unit(mile, yard), yard_>);
 // TODO The below have long/unreadable magnitude types
-static_assert(std::is_same_v<std::common_type_t<decltype(kilometre / hour), decltype(metre / second)>,
-                             scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
-static_assert(std::is_same_v<std::common_type_t<decltype(metre / second), decltype(kilometre / hour)>,
-                             scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
-static_assert(
-  std::is_same_v<std::common_type_t<decltype(kilometre), decltype(mile)>, scaled_unit<mag<ratio{8, 125}>, metre_>>);
-static_assert(
-  std::is_same_v<std::common_type_t<decltype(mile), decltype(kilometre)>, scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(is_of_type<detail::common_unit(kilometre / hour, metre / second),
+                         scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
+static_assert(is_of_type<detail::common_unit(metre / second, kilometre / hour),
+                         scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
+static_assert(is_of_type<detail::common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(is_of_type<detail::common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
 
 // unit symbols
 #ifdef __cpp_lib_constexpr_string

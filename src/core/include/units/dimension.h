@@ -386,30 +386,21 @@ template<Unit auto U, Dimension auto Dim>
   requires requires { detail::get_dimension_for(U); } && (interconvertible(Dim, detail::get_dimension_for(U)))
 inline constexpr bool is_valid_unit_for_dimension<U, Dim> = true;
 
-}  // namespace detail
+template<Dimension D1, Dimension D2>
+[[nodiscard]] consteval auto common_dimension(D1 d1, D2 d2)
+  requires(interconvertible(d1, d2))
+{
+  if constexpr (std::derived_from<D1, D2>)
+    return d1;
+  else
+    return d2;
+}
 
+}  // namespace detail
 
 // TODO consider adding the support for text output of the dimensional equation
 
 }  // namespace units
-
-namespace std {
-
-/**
- * @brief Partial specialization of `std::common_type` for dimensions
- *
- * Defined only for convertible types and returns the most derived/specific dimension type of
- * the two provided.
- */
-template<units::Dimension D1, units::Dimension D2>
-  requires(units::interconvertible(D1{}, D2{}))
-struct common_type<D1, D2> {
-  using type = ::units::conditional<std::derived_from<std::remove_const_t<D1>, std::remove_const_t<D2>>,
-                                    std::remove_const_t<D1>, std::remove_const_t<D2>>;
-};
-
-}  // namespace std
-
 
 #ifdef __cpp_explicit_this_parameter
 

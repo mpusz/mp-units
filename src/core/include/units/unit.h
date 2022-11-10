@@ -796,9 +796,9 @@ template<typename CharT = char, Unit U>
 
 namespace detail {
 
-
-template<typename U1, typename U2>
-[[nodiscard]] consteval auto common_type_impl(const U1 u1, const U2 u2)
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval auto common_unit(U1 u1, U2 u2)
+  requires(interconvertible(u1, u2))
 {
   if constexpr (U1{} == U2{}) {
     if constexpr (std::derived_from<U1, U2>)
@@ -821,15 +821,4 @@ template<typename U1, typename U2>
 }
 
 }  // namespace detail
-
 }  // namespace units
-
-namespace std {
-
-template<units::Unit U1, units::Unit U2>
-  requires(units::interconvertible(U1{}, U2{}))
-struct common_type<U1, U2> {
-  using type = std::remove_const_t<decltype(::units::detail::common_type_impl(U1{}, U2{}))>;
-};
-
-}  // namespace std

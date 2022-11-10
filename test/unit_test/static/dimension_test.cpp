@@ -174,15 +174,15 @@ static_assert(1 / time != frequency);
 static_assert(interconvertible(1 / time, frequency));
 static_assert(1 / frequency == time);
 static_assert(frequency * time == dimension_one);
-static_assert(std::is_same_v<std::common_type_t<decltype(1 / time), decltype(frequency)>, frequency_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(frequency), decltype(1 / time)>, frequency_>);
+static_assert(is_of_type<detail::common_dimension(1 / time, frequency), frequency_>);
+static_assert(is_of_type<detail::common_dimension(frequency, 1 / time), frequency_>);
 
 static_assert(length * length != area);
 static_assert(interconvertible(length * length, area));
 static_assert(length * length != volume);
 static_assert(area / length == length);
-static_assert(std::is_same_v<std::common_type_t<decltype(length * length), decltype(area)>, area_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(area), decltype(length * length)>, area_>);
+static_assert(is_of_type<detail::common_dimension(length* length, area), area_>);
+static_assert(is_of_type<detail::common_dimension(area, length* length), area_>);
 
 static_assert(length * length * length != volume);
 static_assert(area * length != volume);
@@ -197,10 +197,9 @@ static_assert(length * time != speed);
 static_assert(length / time / time != speed);
 static_assert(length / speed == time);
 static_assert(speed * time == length);
-static_assert(std::is_same_v<std::common_type_t<decltype(length / time), decltype(speed)>, speed_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(speed), decltype(length / time)>, speed_>);
-static_assert(
-  std::is_same_v<std::common_type_t<decltype(length / time), decltype(length / time)>, decltype(length / time)>);
+static_assert(is_of_type<detail::common_dimension(length / time, speed), speed_>);
+static_assert(is_of_type<detail::common_dimension(speed, length / time), speed_>);
+static_assert(is_of_type<detail::common_dimension(length / time, length / time), decltype(length / time)>);
 
 static_assert(length / time / time != acceleration);
 static_assert(length / (time * time) != acceleration);
@@ -213,8 +212,8 @@ static_assert(acceleration / speed != frequency);
 // comparison of convertible named dimensions
 static_assert(velocity != speed);
 static_assert(interconvertible(speed, velocity));
-static_assert(std::is_same_v<std::common_type_t<decltype(velocity), decltype(speed)>, velocity_>);
-static_assert(std::is_same_v<std::common_type_t<decltype(speed), decltype(velocity)>, velocity_>);
+static_assert(is_of_type<detail::common_dimension(velocity, speed), velocity_>);
+static_assert(is_of_type<detail::common_dimension(speed, velocity), velocity_>);
 
 // comparison of convertible unnamed dimensions
 static_assert(is_of_type<mass * acceleration, derived_dimension<length_, mass_, per<units::power<time_, 2>>>>);
