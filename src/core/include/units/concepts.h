@@ -110,9 +110,17 @@ inline constexpr bool is_quantity<quantity<R, Rep>> = true;
  * Satisfied by all quantities with a dimension being the instantiation derived from
  * the provided dimension type.
  */
-template<typename Q, auto V>
-concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                                      (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension &&
-                                       Q::unit == V.unit));
+template<typename Q, Dimension auto D>
+concept quantity_of = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> && (Q::dimension == D);
+
+/**
+ * @brief A concept matching all quantities with provided dimension or reference
+ *
+ * Satisfied by all quantities with a dimension being the instantiation derived from
+ * the provided dimension type.
+ */
+template<typename Q, Dimension auto D>
+concept quantity_equivalent_to = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> &&
+                                 (interconvertible(Q::dimension, D));
 
 }  // namespace units
