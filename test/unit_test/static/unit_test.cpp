@@ -80,6 +80,11 @@ inline constexpr struct mile_ : named_unit<"mi", mag<1760> * yard> {} mile;
 
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
+
+// physical constant units
+inline constexpr struct standard_gravity_unit_ : constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
+inline constexpr struct speed_of_light_unit_ : constant_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_unit;
+
 // clang-format on
 
 // concepts verification
@@ -178,6 +183,17 @@ static_assert(joule == joule);
 static_assert(joule != newton);
 
 static_assert(is_of_type<nu_second / nu_second, one_>);
+
+// constant_unit
+static_assert(is_of_type<standard_gravity_unit, standard_gravity_unit_>);
+static_assert(
+  is_of_type<get_canonical_unit(standard_gravity_unit).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
+static_assert(get_canonical_unit(standard_gravity_unit).mag == mag<ratio{980'665, 100'000}>);
+static_assert(interconvertible(standard_gravity_unit, standard_gravity_unit));
+static_assert(interconvertible(standard_gravity_unit, metre / square<second>));
+static_assert(standard_gravity_unit == standard_gravity_unit);
+static_assert(standard_gravity_unit != metre / square<second>);  // magnitude is different
+static_assert(standard_gravity_unit.symbol == "[g]");
 
 // prefixed_unit
 static_assert(is_of_type<kilometre, kilometre_>);
@@ -308,6 +324,16 @@ static_assert(is_of_type<one * metre * square<second> / gram, derived_unit<metre
 static_assert(is_of_type<(metre * square<second> / gram) * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 static_assert(is_of_type<metre * square<second> / gram * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 
+static_assert(is_of_type<standard_gravity_unit * gram, derived_unit<standard_gravity_unit_, gram_>>);
+static_assert(is_of_type<gram * standard_gravity_unit, derived_unit<standard_gravity_unit_, gram_>>);
+static_assert(is_of_type<standard_gravity_unit / gram, derived_unit<standard_gravity_unit_, per<gram_>>>);
+static_assert(is_of_type<gram / standard_gravity_unit, derived_unit<gram_, per<standard_gravity_unit_>>>);
+static_assert(is_of_type<standard_gravity_unit * gram / standard_gravity_unit, gram_>);
+static_assert(is_of_type<speed_of_light_unit * gram * standard_gravity_unit,
+                         derived_unit<speed_of_light_unit_, standard_gravity_unit_, gram_>>);
+static_assert(is_of_type<gram * standard_gravity_unit * speed_of_light_unit,
+                         derived_unit<speed_of_light_unit_, standard_gravity_unit_, gram_>>);
+
 static_assert(std::is_same_v<decltype(1 / second * metre), decltype(metre / second)>);
 static_assert(std::is_same_v<decltype(metre * (1 / second)), decltype(metre / second)>);
 static_assert(std::is_same_v<decltype((metre / second) * (1 / second)), decltype(metre / second / second)>);
@@ -337,6 +363,14 @@ static_assert(
   is_of_type<get_canonical_unit(pascal).reference_unit, derived_unit<gram_, per<metre_, power<second_, 2>>>>);
 static_assert(
   is_of_type<get_canonical_unit(1 / pascal).reference_unit, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+
+static_assert(
+  is_of_type<get_canonical_unit(standard_gravity_unit).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
+static_assert(get_canonical_unit(standard_gravity_unit).mag == mag<ratio{980'665, 100'000}>);
+static_assert(is_of_type<get_canonical_unit(standard_gravity_unit* gram).reference_unit,
+                         derived_unit<gram_, metre_, per<power<second_, 2>>>>);
+static_assert(is_of_type<get_canonical_unit(standard_gravity_unit / speed_of_light_unit).reference_unit,
+                         derived_unit<one_, per<second_>>>);
 
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
@@ -496,6 +530,7 @@ static_assert(is_of_type<detail::common_unit(metre / second, kilometre / hour),
                          scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
 static_assert(is_of_type<detail::common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
 static_assert(is_of_type<detail::common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(is_of_type<detail::common_unit(speed_of_light_unit, metre / second), derived_unit<metre_, per<second_>>>);
 
 // unit symbols
 #ifdef __cpp_lib_constexpr_string
@@ -570,6 +605,11 @@ static_assert(unit_symbol(pow<123>(metre)) == "m¹²³");
 static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
 static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
 static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
+
+// Physical constants
+static_assert(unit_symbol(speed_of_light_unit) == "[c]");
+static_assert(unit_symbol(gram * standard_gravity_unit * speed_of_light_unit) == "[c] [g] g");
+static_assert(unit_symbol(gram / standard_gravity_unit) == "g/[g]");
 
 #endif  // __cpp_lib_constexpr_string
 

@@ -220,6 +220,53 @@ template<typename T>
 concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_of_named_unit(t); } &&
                     (!detail::is_specialization_of_named_unit<T>);
 
+
+/**
+ * @brief A unit of a physical constant
+ *
+ * Defines a unit of a physical constant together with its value encoded as a unit ratio.
+ *
+ * This allows moving all of the constant-related ratio manipulation to the compile-time domain
+ * (i.e. multiplying and then dividing by the same constant will eliminate the item from the final
+ * type).
+ * As a result we have faster runtime performance and no precision loss due to eager floating-point
+ * operations. Also, if the user prefers integral types for a quantity representation, this will
+ * not force the user to convert to a floating-point type right away. Only when a final quantity
+ * number needs to actually account for the constant value, the floating-point operation (if any)
+ * can be triggered lazily with the `quantity_cast<U>()`.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * inline constexpr struct standard_gravity_unit :
+ *   constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
+ * @endcode
+ *
+ * @note A common convention in this library is to assign the same name for a type and an object of this type.
+ *       Besides defining them user never works with the unit types in the source code. All operations
+ *       are done on the objects. Contrarily, the unit types are the only one visible in the compilation
+ *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
+ *
+ * @tparam Symbol a short text representation of the constant
+ *
+ * @note Constant symbol is printed in the text output encapsulated inside square brackets `[]`
+ *       and before any regular units
+ */
+template<basic_symbol_text Symbol, Unit auto U>
+  requires(!Symbol.empty())
+struct constant_unit : named_unit<'[' + Symbol + ']', U> {};
+
+namespace detail {
+
+template<basic_symbol_text Symbol, Unit auto U>
+void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol, U>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_constant_unit =
+  requires(T * t) { to_base_specialization_of_constant_unit(t); };
+
+}  // namespace detail
+
 /**
  * @brief Prevents assignment of a prefix to specific units
  *
@@ -444,11 +491,22 @@ template<Unit T, typename... Us>
 
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
 
+template<Unit Lhs, Unit Rhs>
+[[nodiscard]] consteval bool less(Lhs, Rhs)
+{
+  if ((is_derived_from_specialization_of_constant_unit<Lhs> && is_derived_from_specialization_of_constant_unit<Rhs>) ||
+      (!is_derived_from_specialization_of_constant_unit<Lhs> && !is_derived_from_specialization_of_constant_unit<Rhs>))
+    return type_name<Lhs>() < type_name<Rhs>();
+  else
+    return is_derived_from_specialization_of_constant_unit<Lhs>;
+}
+
+
 // TODO What if the same unit will have different types (i.e. user will inherit its own type from `metre`)?
 // Is there a better way to sort units here? Some of them may not have symbol at all (like all units of
 // dimensionless quantities).
 template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
+struct unit_less : std::bool_constant<less(Lhs{}, Rhs{})> {};
 
 template<typename T1, typename T2>
 using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
