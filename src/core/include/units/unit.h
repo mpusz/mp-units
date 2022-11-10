@@ -131,7 +131,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * inline constexpr struct metre : named_unit<"m", length> {} metre;
  * inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
  * inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
- * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"\u00B0C", "`C"}, kelvin> {} degree_Celsius;
+ * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
  * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
@@ -616,44 +616,6 @@ constexpr Out copy(const basic_symbol_text<UnicodeCharT, N, M>& txt, text_encodi
       return copy(txt.ascii(), out).out;
     else
       throw std::invalid_argument("ASCII text can't be copied to CharT output");
-  }
-}
-
-inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
-
-template<Magnitude auto M>
-constexpr auto magnitude_text()
-{
-  constexpr auto exp10 = extract_power_of_10(M);
-
-  constexpr Magnitude auto base = M / mag_power<10, exp10>;
-  constexpr Magnitude auto num = numerator(base);
-  constexpr Magnitude auto den = denominator(base);
-  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
-
-  constexpr auto num_value = get_value<std::intmax_t>(num);
-  constexpr auto den_value = get_value<std::intmax_t>(den);
-
-  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
-    return base_multiplier + superscript<exp10>();
-  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
-    auto txt = basic_fixed_string("[") + regular<num_value>();
-    if constexpr (den_value == 1) {
-      if constexpr (exp10 == 0) {
-        return txt + basic_fixed_string("]");
-      } else {
-        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
-      }
-    } else {
-      if constexpr (exp10 == 0) {
-        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
-      } else {
-        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
-               basic_fixed_string("]");
-      }
-    }
-  } else {
-    return basic_fixed_string("");
   }
 }
 
