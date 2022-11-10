@@ -21,9 +21,10 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <units/isq/si/length.h>
 #include <units/quantity_io.h>
 #include <units/random.h>
+#include <units/si/unit_symbols.h>
+#include <units/si/units.h>
 #include <array>
 #include <initializer_list>
 #include <random>
@@ -31,12 +32,12 @@
 
 
 using namespace units;
-using namespace units::isq::si;
+using namespace units::si::unit_symbols;
 
 TEST_CASE("uniform_int_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -64,7 +65,7 @@ TEST_CASE("uniform_int_distribution")
 TEST_CASE("uniform_real_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -92,7 +93,7 @@ TEST_CASE("uniform_real_distribution")
 TEST_CASE("binomial_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -120,7 +121,7 @@ TEST_CASE("binomial_distribution")
 TEST_CASE("negative_binomial_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -148,7 +149,7 @@ TEST_CASE("negative_binomial_distribution")
 TEST_CASE("geometric_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -173,7 +174,7 @@ TEST_CASE("geometric_distribution")
 TEST_CASE("poisson_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -198,7 +199,7 @@ TEST_CASE("poisson_distribution")
 TEST_CASE("exponential_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -223,7 +224,7 @@ TEST_CASE("exponential_distribution")
 TEST_CASE("gamma_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -251,7 +252,7 @@ TEST_CASE("gamma_distribution")
 TEST_CASE("weibull_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -279,7 +280,7 @@ TEST_CASE("weibull_distribution")
 TEST_CASE("extreme_value_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -307,7 +308,7 @@ TEST_CASE("extreme_value_distribution")
 TEST_CASE("normal_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -335,7 +336,7 @@ TEST_CASE("normal_distribution")
 TEST_CASE("lognormal_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -363,7 +364,7 @@ TEST_CASE("lognormal_distribution")
 TEST_CASE("chi_squared_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -388,7 +389,7 @@ TEST_CASE("chi_squared_distribution")
 TEST_CASE("cauchy_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -416,7 +417,7 @@ TEST_CASE("cauchy_distribution")
 TEST_CASE("fisher_f_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -444,7 +445,7 @@ TEST_CASE("fisher_f_distribution")
 TEST_CASE("student_t_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -469,7 +470,7 @@ TEST_CASE("student_t_distribution")
 TEST_CASE("discrete_distribution")
 {
   using rep = std::int64_t;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   SECTION("default")
   {
@@ -516,10 +517,11 @@ TEST_CASE("discrete_distribution")
 TEST_CASE("piecewise_constant_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   std::vector<rep> intervals_rep_vec = {1.0, 2.0, 3.0};
-  std::vector<q> intervals_qty_vec = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+  std::vector<q> intervals_qty_vec = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                      3.0 * isq::length[si::metre]};
 
   SECTION("default")
   {
@@ -537,7 +539,8 @@ TEST_CASE("piecewise_constant_distribution")
   SECTION("parametrized_input_it")
   {
     constexpr std::array<rep, 3> intervals_rep = {1.0, 2.0, 3.0};
-    constexpr std::array<q, 3> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+    constexpr std::array<q, 3> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                                3.0 * isq::length[si::metre]};
     constexpr std::array<rep, 3> weights = {1.0, 2.0, 3.0};
 
     auto stl_dist =
@@ -553,7 +556,8 @@ TEST_CASE("piecewise_constant_distribution")
   SECTION("parametrized_initializer_list")
   {
     std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+    std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                              3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_constant_distribution<q>(intervals_qty, [](q qty) { return qty.number(); });
@@ -566,7 +570,7 @@ TEST_CASE("piecewise_constant_distribution")
   {
     constexpr std::size_t nw = 2;
     constexpr rep xmin_rep = 1.0, xmax_rep = 3.0;
-    constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
+    constexpr q xmin_qty = 1.0 * isq::length[si::metre], xmax_qty = 3.0 * isq::length[si::metre];
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
     auto units_dist =
@@ -580,10 +584,11 @@ TEST_CASE("piecewise_constant_distribution")
 TEST_CASE("piecewise_linear_distribution")
 {
   using rep = long double;
-  using q = length<metre, rep>;
+  using q = quantity<isq::length[si::metre], rep>;
 
   std::vector<rep> intervals_rep_vec = {1.0, 2.0, 3.0};
-  std::vector<q> intervals_qty_vec = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+  std::vector<q> intervals_qty_vec = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                      3.0 * isq::length[si::metre]};
 
   SECTION("default")
   {
@@ -601,7 +606,8 @@ TEST_CASE("piecewise_linear_distribution")
   SECTION("parametrized_input_it")
   {
     constexpr std::array<rep, 3> intervals_rep = {1.0, 2.0, 3.0};
-    constexpr std::array<q, 3> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+    constexpr std::array<q, 3> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                                3.0 * isq::length[si::metre]};
     constexpr std::array<rep, 3> weights = {1.0, 2.0, 3.0};
 
     auto stl_dist =
@@ -617,7 +623,8 @@ TEST_CASE("piecewise_linear_distribution")
   SECTION("parametrized_initializer_list")
   {
     std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0_q_m, 2.0_q_m, 3.0_q_m};
+    std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+                                              3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = units::piecewise_linear_distribution<q>(intervals_qty, [](q qty) { return qty.number(); });
@@ -630,7 +637,7 @@ TEST_CASE("piecewise_linear_distribution")
   {
     constexpr std::size_t nw = 2;
     constexpr rep xmin_rep = 1.0, xmax_rep = 3.0;
-    constexpr q xmin_qty = 1.0_q_m, xmax_qty = 3.0_q_m;
+    constexpr q xmin_qty = 1.0 * isq::length[si::metre], xmax_qty = 3.0 * isq::length[si::metre];
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
     auto units_dist =
