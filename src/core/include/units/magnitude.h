@@ -24,11 +24,13 @@
 
 #include <units/bits/expression_template.h>
 #include <units/bits/external/hacks.h>
+#include <units/bits/external/text_tools.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/math_concepts.h>
 #include <units/bits/prime.h>
 #include <units/ratio.h>
+#include <units/symbol_text.h>
 #include <concepts>
 #include <cstdint>
 #include <numbers>
@@ -545,12 +547,15 @@ namespace detail {
 
 consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 {
-  if constexpr (is_named_magnitude<decltype(lhs)> && is_named_magnitude<decltype(rhs)>)
-    return type_name(lhs) < type_name(rhs);
-  else if constexpr (!is_named_magnitude<decltype(lhs)> && !is_named_magnitude<decltype(rhs)>)
+  using lhs_base_t = decltype(get_base(lhs));
+  using rhs_base_t = decltype(get_base(rhs));
+
+  if constexpr (is_named_magnitude<lhs_base_t> && is_named_magnitude<rhs_base_t>)
+    return type_name<lhs_base_t>() < type_name<rhs_base_t>();
+  else if constexpr (!is_named_magnitude<lhs_base_t> && !is_named_magnitude<rhs_base_t>)
     return get_base(lhs) < get_base(rhs);
   else
-    return is_named_magnitude<decltype(lhs)>;
+    return is_named_magnitude<lhs_base_t>;
 }
 
 }  // namespace detail
@@ -577,11 +582,10 @@ template<auto H1, auto... T1, auto H2, auto... T2>
   } else if constexpr (less(H2, H1)) {
     return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
   } else {
-    constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
-
     if constexpr (is_same_v<decltype(get_base(H1)), decltype(get_base(H2))>) {
+      constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
       if constexpr (get_exponent(H1) + get_exponent(H2) == 0) {
-        return magnitude<1>{};
+        return partial_product;
       } else {
         // Make a new power_v with the common base of H1 and H2, whose power is their powers' sum.
         constexpr auto new_head = power_v_or_T<get_base(H1), get_exponent(H1) + get_exponent(H2)>();
@@ -682,8 +686,6 @@ template<auto... Ms>
   return (magnitude<>{} * ... * remove_positive_power(magnitude<Ms>{}));
 }
 
-}  // namespace detail
-
 // Base cases, for when either (or both) inputs are the identity.
 [[nodiscard]] consteval auto common_magnitude(magnitude<>, magnitude<>) { return magnitude<>{}; }
 [[nodiscard]] consteval auto common_magnitude(magnitude<>, Magnitude auto m)
@@ -717,6 +719,8 @@ template<auto H1, auto... T1, auto H2, auto... T2>
     }
   }
 }
+
+}  // namespace detail
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `mag()` implementation.
@@ -795,11 +799,48 @@ template<typename T, auto... Ms>
   const auto power_of_2 = get_power(2, m);
   const auto power_of_5 = get_power(5, m);
 
-  if ((power_of_2 * power_of_5).num <= 0) {
-    return 0;
-  }
+  if ((power_of_2 * power_of_5).num <= 0) return 0;
 
   return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
+}
+
+inline constexpr basic_symbol_text base_multiplier("× 10", "x 10");
+
+template<Magnitude auto M>
+[[nodiscard]] consteval auto magnitude_text()
+{
+  constexpr auto exp10 = extract_power_of_10(M);
+
+  constexpr Magnitude auto base = M / mag_power<10, exp10>;
+  constexpr Magnitude auto num = numerator(base);
+  constexpr Magnitude auto den = denominator(base);
+  // TODO address the below
+  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return base_multiplier + superscript<exp10>();
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = basic_fixed_string("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("]");
+      } else {
+        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
+      }
+    } else {
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
+      } else {
+        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
+               basic_fixed_string("]");
+      }
+    }
+  } else {
+    return basic_fixed_string("");
+  }
 }
 
 }  // namespace detail
