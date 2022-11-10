@@ -56,7 +56,8 @@ add_library(
     # include/units/random.h
     include/units/ratio.h
     include/units/reference.h
-    # include/units/symbol_text.h
+    include/units/symbol_text.h
+    include/units/system_reference.h
     include/units/unit.h
 )
 target_compile_features(mp-units-core INTERFACE cxx_std_20)

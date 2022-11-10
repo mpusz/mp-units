@@ -25,6 +25,7 @@
 #include <units/quantity.h>
 #include <units/reference.h>
 #include <units/si/prefixes.h>
+#include <units/system_reference.h>
 #include <units/unit.h>
 
 namespace {

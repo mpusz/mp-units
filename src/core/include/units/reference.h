@@ -107,21 +107,6 @@ template<Reference R1, Reference R2>
   return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
 }
 
-
-template<Dimension auto Dim, Unit auto CoU>
-  requires(!detail::associated_unit<std::remove_const_t<decltype(CoU)>>)
-struct system_reference {
-  static constexpr auto dimension = Dim;
-  static constexpr auto coherent_unit = CoU;
-
-  template<Unit U>
-    requires(interconvertible(coherent_unit, U{}))
-  [[nodiscard]] constexpr reference<dimension, U{}> operator[](U) const
-  {
-    return {};
-  }
-};
-
 }  // namespace units
 
 namespace std {
