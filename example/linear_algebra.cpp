@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/isq/si/energy.h>  // IWYU pragma: keep
-#include <units/isq/si/force.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>  // IWYU pragma: keep
-#include <units/quantity_io.h>
-#include <iostream>
 #include <linear_algebra.hpp>
+// linear_algebra.hpp has to be included first otherwise the header will fail to compile!
+#include <units/format.h>
+#include <units/isq/mechanics.h>
+#include <units/isq/space_and_time.h>
+#include <units/quantity_io.h>
+#include <units/si/units.h>
+#include <iostream>
 
 namespace STD_LA {
 
@@ -59,9 +59,7 @@ std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
 
 namespace {
 
-using namespace units::isq;
-using namespace units::isq::si::length_references;
-using namespace units::isq::si::force_references;
+using namespace units;
 
 template<typename Rep = double>
 using vector = std::math::fs_vector<Rep, 3>;
@@ -69,13 +67,18 @@ using vector = std::math::fs_vector<Rep, 3>;
 template<typename Rep = double>
 using matrix = std::math::fs_matrix<Rep, 3, 3>;
 
+constexpr auto mm = isq::length[si::milli<si::metre>];
+constexpr auto m = isq::length[si::metre];
+constexpr auto km = isq::length[si::kilo<si::metre>];
+constexpr auto N = isq::force[si::newton];
+
 void vector_of_quantity_add()
 {
   std::cout << "\nvector_of_quantity_add:\n";
 
-  vector<si::length<si::metre>> v = {1 * m, 2 * m, 3 * m};
-  vector<si::length<si::metre>> u = {3 * m, 2 * m, 1 * m};
-  vector<si::length<si::kilometre>> t = {3 * km, 2 * km, 1 * km};
+  vector<quantity<m>> v = {1 * m, 2 * m, 3 * m};
+  vector<quantity<m>> u = {3 * m, 2 * m, 1 * m};
+  vector<quantity<km>> t = {3 * km, 2 * km, 1 * km};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -83,15 +86,15 @@ void vector_of_quantity_add()
 
   std::cout << "v + u = " << v + u << "\n";
   std::cout << "v + t = " << v + t << "\n";
-  std::cout << "t[m]  = " << vector<si::length<si::metre>>(t) << "\n";
+  std::cout << "t[m]  = " << vector<quantity<m>>(t) << "\n";
 }
 
 void vector_of_quantity_multiply_same()
 {
   std::cout << "\nvector_of_quantity_multiply_same:\n";
 
-  vector<si::length<si::metre>> v = {1 * m, 2 * m, 3 * m};
-  vector<si::length<si::metre>> u = {3 * m, 2 * m, 1 * m};
+  vector<quantity<m>> v = {1 * m, 2 * m, 3 * m};
+  vector<quantity<m>> u = {3 * m, 2 * m, 1 * m};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -104,8 +107,8 @@ void vector_of_quantity_multiply_different()
 {
   std::cout << "\nvector_of_quantity_multiply_different:\n";
 
-  vector<si::force<si::newton>> v = {1 * N, 2 * N, 3 * N};
-  vector<si::length<si::metre>> u = {3 * m, 2 * m, 1 * m};
+  vector<quantity<N>> v = {1 * N, 2 * N, 3 * N};
+  vector<quantity<m>> u = {3 * m, 2 * m, 1 * m};
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -119,7 +122,7 @@ void vector_of_quantity_divide_by_scalar()
 {
   std::cout << "\nvector_of_quantity_divide_by_scalar:\n";
 
-  vector<si::length<si::metre>> v = {4 * m, 8 * m, 12 * m};
+  vector<quantity<m>> v = {4 * m, 8 * m, 12 * m};
 
   std::cout << "v = " << v << "\n";
 
@@ -140,9 +143,9 @@ void matrix_of_quantity_add()
 {
   std::cout << "\nmatrix_of_quantity_add:\n";
 
-  matrix<si::length<si::metre>> v = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
-  matrix<si::length<si::metre>> u = {{3 * m, 2 * m, 1 * m}, {3 * m, 2 * m, 1 * m}, {3 * m, 2 * m, 1 * m}};
-  matrix<si::length<si::millimetre>> t = {{3 * mm, 2 * mm, 1 * mm}, {3 * mm, 2 * mm, 1 * mm}, {3 * mm, 2 * mm, 1 * mm}};
+  matrix<quantity<m>> v = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
+  matrix<quantity<m>> u = {{3 * m, 2 * m, 1 * m}, {3 * m, 2 * m, 1 * m}, {3 * m, 2 * m, 1 * m}};
+  matrix<quantity<mm>> t = {{3 * mm, 2 * mm, 1 * mm}, {3 * mm, 2 * mm, 1 * mm}, {3 * mm, 2 * mm, 1 * mm}};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -159,8 +162,8 @@ void matrix_of_quantity_multiply_same()
 {
   std::cout << "\nmatrix_of_quantity_multiply_same:\n";
 
-  matrix<si::length<si::metre>> v = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
-  vector<si::length<si::metre>> u = {3 * m, 2 * m, 1 * m};
+  matrix<quantity<m>> v = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
+  vector<quantity<m>> u = {3 * m, 2 * m, 1 * m};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -173,8 +176,8 @@ void matrix_of_quantity_multiply_different()
 {
   std::cout << "\nmatrix_of_quantity_multiply_different:\n";
 
-  vector<si::force<si::newton>> v = {1 * N, 2 * N, 3 * N};
-  matrix<si::length<si::metre>> u = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
+  vector<quantity<N>> v = {1 * N, 2 * N, 3 * N};
+  matrix<quantity<m>> u = {{1 * m, 2 * m, 3 * m}, {4 * m, 5 * m, 6 * m}, {7 * m, 8 * m, 9 * m}};
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";
@@ -188,7 +191,7 @@ void matrix_of_quantity_divide_by_scalar()
 {
   std::cout << "\nmatrix_of_quantity_divide_by_scalar:\n";
 
-  matrix<si::length<si::metre>> v = {{2 * m, 4 * m, 6 * m}, {4 * m, 6 * m, 8 * m}, {8 * m, 4 * m, 2 * m}};
+  matrix<quantity<m>> v = {{2 * m, 4 * m, 6 * m}, {4 * m, 6 * m, 8 * m}, {8 * m, 4 * m, 2 * m}};
 
   std::cout << "v =\n" << v << "\n";
 
@@ -205,11 +208,11 @@ void matrix_of_quantity_tests()
   matrix_of_quantity_divide_by_scalar();
 }
 
-template<units::Unit U = si::metre, units::Representation Rep = double>
-using length_v = si::length<U, vector<Rep>>;
+template<Unit auto U = si::metre, Representation Rep = double>
+using length_v = quantity<isq::length[U], vector<Rep>>;
 
-template<units::Unit U = si::newton, units::Representation Rep = double>
-using force_v = si::force<U, vector<Rep>>;
+template<Unit auto U = si::newton, Representation Rep = double>
+using force_v = quantity<isq::force[U], vector<Rep>>;
 
 void quantity_of_vector_add()
 {
@@ -217,7 +220,7 @@ void quantity_of_vector_add()
 
   length_v<> v(vector<>{1, 2, 3});
   length_v<> u(vector<>{3, 2, 1});
-  length_v<si::kilometre> t(vector<>{3, 2, 1});
+  length_v<si::kilo<si::metre>> t(vector<>{3, 2, 1});
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -278,8 +281,8 @@ void quantity_of_vector_tests()
   quantity_of_vector_divide_by_scalar();
 }
 
-template<units::Unit U = si::metre, units::Representation Rep = double>
-using length_m = si::length<U, matrix<Rep>>;
+template<Unit auto U = si::metre, Representation Rep = double>
+using length_m = quantity<isq::length[U], matrix<Rep>>;
 
 void quantity_of_matrix_add()
 {
@@ -287,7 +290,7 @@ void quantity_of_matrix_add()
 
   length_m<> v(matrix<>{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}});
   length_m<> u(matrix<>{{3, 2, 1}, {3, 2, 1}, {3, 2, 1}});
-  length_m<si::kilometre> t(matrix<>{{3, 2, 1}, {3, 2, 1}, {3, 2, 1}});
+  length_m<si::kilo<si::metre>> t(matrix<>{{3, 2, 1}, {3, 2, 1}, {3, 2, 1}});
 
   std::cout << "v =\n" << v << "\n";
   std::cout << "u =\n" << u << "\n";

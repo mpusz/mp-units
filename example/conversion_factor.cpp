@@ -16,7 +16,8 @@
 */
 
 #include <units/format.h>
-#include <units/isq/si/length.h>
+#include <units/isq/space_and_time.h>
+#include <units/si/units.h>
 #include <iostream>
 #include <type_traits>
 
@@ -28,26 +29,22 @@
 namespace {
 
 template<units::Quantity Target, units::Quantity Source>
-  requires units::equivalent<typename Source::dimension, typename Target::dimension>
-inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
+  requires std::constructible_from<Target, Source>
+inline constexpr double conversion_factor(Target, Source)
 {
-  // get quantities looking like inputs but with Q::rep that doesn't have narrowing conversion
-  typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
-  typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
-  typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
-  return target{source{1}}.number();
+  return quantity_cast<Target::unit>(1. * Source::reference).number();
 }
 
 }  // namespace
 
 int main()
 {
-  using namespace units::isq::si;
+  using namespace units;
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA(2.0);
-  constexpr length<millimetre> lengthB = lengthA;
+  constexpr auto lengthA = 2.0 * isq::length[si::metre];
+  constexpr auto lengthB = lengthA[si::milli<si::metre>];
 
   std::cout << STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";

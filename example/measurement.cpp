@@ -20,11 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/acceleration.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
+#include <units/isq/space_and_time.h>
 #include <units/quantity_io.h>
+#include <units/si/unit_symbols.h>
+#include <units/si/units.h>
 #include <cmath>
 #include <exception>
 #include <iostream>
@@ -45,12 +44,12 @@ public:
     uncertainty_ = abs(err);
   }
 
-  constexpr const value_type& value() const { return value_; }
-  constexpr const value_type& uncertainty() const { return uncertainty_; }
+  [[nodiscard]] constexpr const value_type& value() const { return value_; }
+  [[nodiscard]] constexpr const value_type& uncertainty() const { return uncertainty_; }
 
-  constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
-  constexpr value_type lower_bound() const { return value() - uncertainty(); }
-  constexpr value_type upper_bound() const { return value() + uncertainty(); }
+  [[nodiscard]] constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
+  [[nodiscard]] constexpr value_type lower_bound() const { return value() - uncertainty(); }
+  [[nodiscard]] constexpr value_type upper_bound() const { return value() + uncertainty(); }
 
   [[nodiscard]] constexpr measurement operator-() const { return measurement(-value(), uncertainty()); }
 
@@ -125,20 +124,16 @@ static_assert(units::Representation<measurement<double>>);
 
 void example()
 {
-  using namespace units::isq;
+  using namespace units;
+  using namespace units::si::unit_symbols;
 
-  const auto a = si::acceleration<si::metre_per_second_sq, measurement<double>>(measurement(9.8, 0.1));
-  const auto t = si::time<si::second, measurement<double>>(measurement(1.2, 0.1));
+  const auto a = measurement{9.8, 0.1} * isq::acceleration[m / s2];
+  const auto t = measurement{1.2, 0.1} * isq::time[s];
 
-  const Speed auto v1 = a * t;
-#if UNITS_DOWNCAST_MODE == 0
-  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::dim_speed, si::kilometre_per_hour>(v1)
-            << '\n';
-#else
-  std::cout << a << " * " << t << " = " << v1 << " = " << quantity_cast<si::kilometre_per_hour>(v1) << '\n';
-#endif
+  const weak_quantity_of<isq::speed> auto v = a * t;
+  std::cout << a << " * " << t << " = " << v << " = " << v[km / h] << '\n';
 
-  si::length<si::metre, measurement<double>> length(measurement(123., 1.));
+  const auto length = measurement{123., 1.} * isq::length[si::metre];
   std::cout << "10 * " << length << " = " << 10 * length << '\n';
 }
 
