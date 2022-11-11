@@ -33,48 +33,39 @@ namespace units::si {
 namespace si2019 {
 
 // clang-format off
-inline constexpr struct mag_planck : decltype(mag<ratio(662'607'015, 100'000'000)> * mag_power<10, -34>) {} mag_planck;
-inline constexpr struct mag_speed_of_light : decltype(mag<299'792'458>) {} mag_speed_of_light;
+inline constexpr struct hyperfine_structure_transition_frequency_of_cs_unit :
+  constant_unit<basic_symbol_text{"ΔνCs" "dvCs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs_unit;
+inline constexpr struct speed_of_light_in_vacuum_unit :
+  constant_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum_unit;
+inline constexpr struct planck_constant_unit :
+  constant_unit<"h", mag<ratio{662'607'015, 100'000'000}> * mag_power<10, -34> * joule * second> {} planck_constant_unit;
+inline constexpr struct elementary_charge_unit :
+  constant_unit<"e", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * coulomb> {} elementary_charge_unit;
+inline constexpr struct boltzmann_constant_unit :
+  constant_unit<"k", mag<ratio{1'380'649, 1'000'000}> * mag_power<10, -23> * joule / kelvin> {} boltzmann_constant_unit;
+inline constexpr struct avogadro_constant_unit :
+  constant_unit<"NA", mag<ratio{602'214'076, 100'000'000}> * mag_power<10, 23> * (1 / mole)> {} avogadro_constant_unit;
+inline constexpr struct luminous_efficacy_unit :
+  constant_unit<"Kcd", mag<683> * lumen / watt> {} luminous_efficacy_unit;
 // clang-format on
 
-template<typename Rep = double>
-inline constexpr auto planck_constant = Rep{1} * (mag_planck * isq::energy[joule] * isq::time[second]);
-
-template<typename Rep = double>
-inline constexpr auto speed_of_light = Rep{1} * isq::speed[mag_speed_of_light * metre / second];
-
-// template<Representation Rep = double>
-// inline constexpr auto planck_constant = energy<joule, Rep>(6.62607015e-34) * time<second, Rep>(1);
-
-// template<Representation Rep = double>
-// inline constexpr auto elementary_charge = electric_charge<coulomb, Rep>(1.602176634e-19);
-
-// template<Representation Rep = double>
-// inline constexpr auto boltzmann_constant = energy<joule, Rep>(1.380649e-23) / thermodynamic_temperature<kelvin,
-// Rep>(1);
-
-// template<Representation Rep = double>
-// inline constexpr auto avogadro_constant = Rep(6.02214076e23) / amount_of_substance<mole, Rep>(1);
-
-// template<Representation Rep = double>
-// inline constexpr auto speed_of_light = speed<metre_per_second, Rep>(299'792'458);
-
-// template<Representation Rep = double>
-// inline constexpr auto hyperfine_structure_transition_frequency = frequency<hertz, Rep>(Rep{9'192'631'770});
-
-// template<Representation Rep = double>
-// inline constexpr auto luminous_efficacy = luminous_flux<lumen, Rep>(683) / power<watt, Rep>(1);
-
-// template<Representation Rep = double>
-// inline constexpr auto standard_gravity = acceleration<metre_per_second_sq, Rep>(9.80665);
+inline constexpr auto hyperfine_structure_transition_frequency_of_cs =
+  isq::frequency[hyperfine_structure_transition_frequency_of_cs_unit];
+inline constexpr auto speed_of_light_in_vacuum = isq::speed[speed_of_light_in_vacuum_unit];
+inline constexpr auto planck_constant = isq::action[planck_constant_unit];
+// TODO uncomment the below when all the ISQ is provided
+// inline constexpr auto elementary_charge = isq::electric_charge[elementary_charge_unit];
+// inline constexpr auto boltzmann_constant = isq::heat_capacity[boltzmann_constant_unit];
+inline constexpr auto avogadro_constant = (1 / isq::amount_of_substance)[avogadro_constant_unit];
+// inline constexpr auto luminous_efficacy = isq::luminous_efficacy_of_radiation[luminous_efficacy_unit];
 
 }  // namespace si2019
 
 // clang-format off
-inline constexpr struct mag_standard_gravity : decltype(mag<ratio{980'665, 10'000}>) {} mag_standard_gravity;
+inline constexpr struct standard_gravity_unit :
+  constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
 // clang-format on
 
-template<typename Rep = double>
-inline constexpr auto standard_gravity = Rep{1} * isq::acceleration[mag_standard_gravity * metre / square<second>];
+inline constexpr auto standard_gravity = isq::acceleration[standard_gravity_unit];
 
 }  // namespace units::si
