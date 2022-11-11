@@ -176,6 +176,13 @@ public:
   [[nodiscard]] constexpr rep&& number() && noexcept { return std::move(number_); }
   [[nodiscard]] constexpr const rep&& number() const&& noexcept { return std::move(number_); }
 
+  template<Unit U>
+    requires quantity_convertible_to_<quantity, quantity<::units::reference<dimension, U{}>{}, Rep>>
+  [[nodiscard]] constexpr quantity<::units::reference<dimension, U{}>{}, Rep> operator[](U) const
+  {
+    return quantity<::units::reference<dimension, U{}>{}, Rep>{*this};
+  }
+
   // member unary operators
   [[nodiscard]] constexpr Quantity auto operator+() const
     requires requires(rep v) {
