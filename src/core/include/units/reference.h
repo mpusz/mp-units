@@ -111,13 +111,13 @@ namespace detail {
 
 [[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2)
   requires requires {
-             {
-               common_dimension(r1.dimension, r2.dimension)
-               } -> Dimension;
-             {
-               common_unit(r1.unit, r2.unit)
-               } -> Unit;
-           }
+    {
+      common_dimension(r1.dimension, r2.dimension)
+    } -> Dimension;
+    {
+      common_unit(r1.unit, r2.unit)
+    } -> Unit;
+  }
 {
   return reference<common_dimension(r1.dimension, r2.dimension), common_unit(r1.unit, r2.unit)>{};
 }

@@ -126,11 +126,9 @@ template<typename T>
 inline constexpr bool is_dimension_one = false;
 
 template<typename T>
-inline constexpr bool is_power_of_dim =
-  requires {
-    requires is_specialization_of_power<T> &&
-               (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>);
-  };
+inline constexpr bool is_power_of_dim = requires {
+  requires is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>);
+};
 
 template<typename T>
 inline constexpr bool is_per_of_dims = false;

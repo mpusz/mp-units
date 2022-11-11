@@ -502,12 +502,12 @@ inline constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && ex
 
 template<typename T, template<typename> typename Proj>
 concept expr_projectable = requires {
-                             typename T::_num_;
-                             typename T::_den_;
-                             requires type_list_size<typename T::_num_> + type_list_size<typename T::_den_> > 0;
-                             requires expr_projectable_impl<typename T::_num_, Proj>;
-                             requires expr_projectable_impl<typename T::_den_, Proj>;
-                           };
+  typename T::_num_;
+  typename T::_den_;
+  requires type_list_size<typename T::_num_> + type_list_size<typename T::_den_> > 0;
+  requires expr_projectable_impl<typename T::_num_, Proj>;
+  requires expr_projectable_impl<typename T::_den_, Proj>;
+};
 
 template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
          template<typename, typename> typename Pred, expr_type_projectable<Proj>... Nums,
