@@ -120,7 +120,7 @@ concept quantity_of = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>>
  * the provided dimension type.
  */
 template<typename Q, Dimension auto D>
-concept quantity_equivalent_to = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> &&
-                                 (interconvertible(Q::dimension, D));
+concept weak_quantity_of = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> &&
+                           (interconvertible(Q::dimension, D));
 
 }  // namespace units
