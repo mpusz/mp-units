@@ -90,7 +90,7 @@ public:
   constexpr explicit quantity_point(const QP& qp)
     requires std::is_constructible_v<quantity_type, decltype(quantity_point_like_traits<QP>::relative(qp))> &&
              equivalent<origin, typename quantity_point_like_traits<QP>::origin>
-  : q_(quantity_point_like_traits<QP>::relative(qp))
+      : q_(quantity_point_like_traits<QP>::relative(qp))
   {
   }
 

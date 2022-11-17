@@ -39,8 +39,8 @@ template<Exponent... Es, template<typename...> typename DimTemplate>
 inline constexpr bool same_exponents_of<unknown_dimension<Es...>, DimTemplate> =
   requires {
     typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit<Es...>, typename Es::dimension...>;
-  }&& std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit<Es...>,
-                                                              typename Es::dimension...>::recipe>;
+  } && std::same_as<exponent_list<Es...>, typename DimTemplate<unknown_dimension<Es...>, unknown_coherent_unit<Es...>,
+                                                               typename Es::dimension...>::recipe>;
 
 }  // namespace detail
 

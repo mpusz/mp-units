@@ -124,8 +124,12 @@ constexpr bool ctad_constructible_from(Vs...)
 }
 
 constexpr auto same = []<std::equality_comparable T>(T l, T r) { return l == r; };
-constexpr auto comp = // TODO: Fix #205 to use `std::equality_comparable_with<T> U`.
-  []<typename T, typename U>(T l, U r) requires compare<T, U> { return l == r; };
+constexpr auto comp =  // TODO: Fix #205 to use `std::equality_comparable_with<T> U`.
+  []<typename T, typename U>(T l, U r)
+  requires compare<T, U>
+{
+  return l == r;
+};
 
 template<auto F>
   requires requires { F(); }
