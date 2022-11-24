@@ -51,7 +51,7 @@ public:
   // construction from std::int64_t
   constexpr explicit min_expl(std::intmax_t v) noexcept
     requires(Mode != 2)
-  : value_(v)
+      : value_(v)
   {
   }
 

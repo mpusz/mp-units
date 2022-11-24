@@ -100,7 +100,6 @@ static_assert(1_q_ft_pdl_per_s * 10_q_s == 10_q_ft_pdl);
 static_assert(10_q_ft_pdl / 1_q_ft_pdl_per_s == 10_q_s);
 
 static_assert(detail::unit_text<dim_power, foot_poundal_per_second>() == basic_symbol_text("ft⋅pdl/s", "ft pdl/s"));
-static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() ==
-              basic_symbol_text("ft⋅lbf/s", "ft lbf/s"));
+static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == basic_symbol_text("ft⋅lbf/s", "ft lbf/s"));
 
 }  // namespace

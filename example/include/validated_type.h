@@ -39,7 +39,7 @@ public:
 
   constexpr explicit validated_type(const T& value) noexcept(std::is_nothrow_copy_constructible_v<T>)
     requires std::copyable<T>
-  : value_(value)
+      : value_(value)
   {
     gsl_Expects(validate(value_));
   }
@@ -52,7 +52,7 @@ public:
 
   constexpr validated_type(const T& value, validated_tag) noexcept(std::is_nothrow_copy_constructible_v<T>)
     requires std::copyable<T>
-  : value_(value)
+      : value_(value)
   {
   }
 
