@@ -101,22 +101,25 @@ inline constexpr bool is_quantity<quantity<R, Rep>> = true;
 }  // namespace detail
 
 /**
- * @brief A concept matching all quantities with provided dimension
+ * @brief A concept matching all quantities with provided dimension or reference
  *
- * Satisfied by all quantities with a dimension being the instantiation derived from
- * the provided dimension type.
+ * Satisfied by all quantities with a dimension/reference being the instantiation derived from
+ * the provided dimension/reference type.
  */
-template<typename Q, Dimension auto D>
-concept quantity_of = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> && (Q::dimension == D);
+template<typename Q, auto V>
+concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
+                                      (Reference<std::remove_const_t<decltype(V)>> && Q::reference == V));
 
 /**
  * @brief A concept matching all quantities with provided dimension or reference
  *
- * Satisfied by all quantities with a dimension being the instantiation derived from
- * the provided dimension type.
+ * Satisfied by all quantities with a dimension/reference being the instantiation derived from
+ * the provided dimension/reference type.
  */
-template<typename Q, Dimension auto D>
-concept weak_quantity_of = Quantity<Q> && Dimension<std::remove_const_t<decltype(D)>> &&
-                           (interconvertible(Q::dimension, D));
+template<typename Q, auto V>
+concept weak_quantity_of = Quantity<Q> &&
+                           ((Dimension<std::remove_const_t<decltype(V)>> && interconvertible(Q::dimension, V)) ||
+                            (Reference<std::remove_const_t<decltype(V)>> &&
+                             interconvertible(Q::dimension, V.dimension) && Q::unit == V.unit));
 
 }  // namespace units
