@@ -29,6 +29,7 @@
 #include <units/bits/external/type_traits.h>
 #include <units/bits/math_concepts.h>
 #include <units/bits/prime.h>
+#include <units/customization_points.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
 #include <concepts>
@@ -488,8 +489,7 @@ inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
  * @brief  The value of a Magnitude in a desired type T.
  */
 template<typename T, auto... Ms>
-// TODO(chogg): Migrate this to use `treat_as_floating_point`.
-  requires(!std::integral<T> || is_integral(magnitude<Ms...>{}))
+  requires(is_integral(magnitude<Ms...>{})) || treat_as_floating_point<T>
 constexpr T get_value(const magnitude<Ms...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
