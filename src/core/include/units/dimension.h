@@ -328,6 +328,25 @@ template<Dimension D1, Dimension D2>
   return std::derived_from<D1, D2> || std::derived_from<D2, D1>;
 }
 
+[[nodiscard]] consteval auto common_dimension(Dimension auto d) { return d; }
+
+template<Dimension D1, Dimension D2>
+[[nodiscard]] consteval auto common_dimension(D1 d1, D2 d2)
+  requires(interconvertible(d1, d2))
+{
+  if constexpr (std::derived_from<D1, D2>)
+    return d1;
+  else
+    return d2;
+}
+
+[[nodiscard]] consteval auto common_dimension(Dimension auto d1, Dimension auto d2, Dimension auto d3,
+                                              Dimension auto... rest)
+  requires requires { common_dimension(common_dimension(d1, d2), d3, rest...); }
+{
+  return common_dimension(common_dimension(d1, d2), d3, rest...);
+}
+
 /**
  * @brief Computes the value of a dimension raised to the `Num/Den` power
  *
@@ -383,16 +402,6 @@ concept associated_unit = Unit<U> && requires(U u) { get_dimension_for_impl(get_
 template<Unit auto U, Dimension auto Dim>
   requires requires { detail::get_dimension_for(U); } && (interconvertible(Dim, detail::get_dimension_for(U)))
 inline constexpr bool is_valid_unit_for_dimension<U, Dim> = true;
-
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval auto common_dimension(D1 d1, D2 d2)
-  requires(interconvertible(d1, d2))
-{
-  if constexpr (std::derived_from<D1, D2>)
-    return d1;
-  else
-    return d2;
-}
 
 }  // namespace detail
 

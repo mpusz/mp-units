@@ -107,20 +107,18 @@ template<Reference R1, Reference R2>
   return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
 }
 
-namespace detail {
-
-[[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2)
+[[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2, Reference auto... rest)
   requires requires {
     {
-      common_dimension(r1.dimension, r2.dimension)
+      common_dimension(r1.dimension, r2.dimension, rest.dimension...)
     } -> Dimension;
     {
-      common_unit(r1.unit, r2.unit)
+      common_unit(r1.unit, r2.unit, rest.unit...)
     } -> Unit;
   }
 {
-  return reference<common_dimension(r1.dimension, r2.dimension), common_unit(r1.unit, r2.unit)>{};
+  return reference<common_dimension(r1.dimension, r2.dimension, rest.dimension...),
+                   common_unit(r1.unit, r2.unit, rest.unit...)>{};
 }
 
-}  // namespace detail
 }  // namespace units

@@ -586,16 +586,46 @@ template<Unit Lhs, Unit Rhs>
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
-
-// Convertible
-template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval bool interconvertible(Lhs lhs, Rhs rhs)
+// Interconvertible
+[[nodiscard]] consteval bool interconvertible(Unit auto u1, Unit auto u2)
 {
-  auto canonical_lhs = detail::get_canonical_unit(lhs);
-  auto canonical_rhs = detail::get_canonical_unit(rhs);
+  auto canonical_lhs = detail::get_canonical_unit(u1);
+  auto canonical_rhs = detail::get_canonical_unit(u2);
   return is_same_v<decltype(canonical_lhs.reference_unit), decltype(canonical_rhs.reference_unit)>;
 }
 
+// Common unit
+[[nodiscard]] consteval auto common_unit(Unit auto u) { return u; }
+
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval auto common_unit(U1 u1, U2 u2)
+  requires(interconvertible(u1, u2))
+{
+  if constexpr (U1{} == U2{}) {
+    if constexpr (std::derived_from<U1, U2>)
+      return u1;
+    else
+      return u2;
+  } else {
+    constexpr auto canonical_lhs = detail::get_canonical_unit(U1{});
+    constexpr auto canonical_rhs = detail::get_canonical_unit(U2{});
+
+    if constexpr (is_integral(canonical_lhs.mag / canonical_rhs.mag))
+      return u2;
+    else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
+      return u1;
+    else {
+      constexpr auto cm = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+      return scaled_unit<cm, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
+    }
+  }
+}
+
+[[nodiscard]] consteval auto common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
+  requires requires { common_unit(common_unit(u1, u2), u3, rest...); }
+{
+  return common_unit(common_unit(u1, u2), u3, rest...);
+}
 
 /**
  * @brief Computes the value of a unit raised to the `Num/Den` power
@@ -814,31 +844,4 @@ template<typename CharT = char, Unit U>
   return buffer;
 }
 
-namespace detail {
-
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval auto common_unit(U1 u1, U2 u2)
-  requires(interconvertible(u1, u2))
-{
-  if constexpr (U1{} == U2{}) {
-    if constexpr (std::derived_from<U1, U2>)
-      return u1;
-    else
-      return u2;
-  } else {
-    constexpr auto canonical_lhs = detail::get_canonical_unit(U1{});
-    constexpr auto canonical_rhs = detail::get_canonical_unit(U2{});
-
-    if constexpr (is_integral(canonical_lhs.mag / canonical_rhs.mag))
-      return u2;
-    else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
-      return u1;
-    else {
-      constexpr auto cm = common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-      return scaled_unit<cm, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
-    }
-  }
-}
-
-}  // namespace detail
 }  // namespace units

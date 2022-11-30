@@ -481,7 +481,7 @@ template<Quantity Q1, Quantity Q2>
           quantity_value_for_<std::plus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
 {
-  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   using ret = quantity<ref, decltype(lhs.number() + rhs.number())>;
   return ret(ret(lhs).number() + ret(rhs).number());
 }
@@ -491,7 +491,7 @@ template<Quantity Q1, Quantity Q2>
           quantity_value_for_<std::minus<>, typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)
 {
-  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   using ret = quantity<ref, decltype(lhs.number() - rhs.number())>;
   return ret(ret(lhs).number() - ret(rhs).number());
 }
@@ -528,7 +528,7 @@ template<Quantity Q1, Quantity Q2>
           std::three_way_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
-  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   return quantity_cast<ref>(lhs).number() <=> quantity_cast<ref>(rhs).number();
 }
 
@@ -537,7 +537,7 @@ template<Quantity Q1, Quantity Q2>
           std::equality_comparable_with<typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
-  constexpr auto ref = detail::common_reference(Q1::reference, Q2::reference);
+  constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   return quantity_cast<ref>(lhs).number() == quantity_cast<ref>(rhs).number();
 }
 
@@ -548,13 +548,13 @@ namespace std {
 template<units::Quantity Q1, units::Quantity Q2>
   requires requires {
     {
-      units::detail::common_reference(Q1::reference, Q2::reference)
+      units::common_reference(Q1::reference, Q2::reference)
     } -> units::Reference;
     typename common_type_t<typename Q1::rep, typename Q2::rep>;
   }
 struct common_type<Q1, Q2> {
 public:
-  using type = units::quantity<units::detail::common_reference(Q1::reference, Q2::reference),
+  using type = units::quantity<units::common_reference(Q1::reference, Q2::reference),
                                common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 
