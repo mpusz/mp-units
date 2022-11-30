@@ -34,7 +34,7 @@ namespace si2019 {
 
 // clang-format off
 inline constexpr struct hyperfine_structure_transition_frequency_of_cs_unit :
-  constant_unit<basic_symbol_text{"ΔνCs" "dvCs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs_unit;
+  constant_unit<basic_symbol_text{"ΔνCs", "dvCs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs_unit;
 inline constexpr struct speed_of_light_in_vacuum_unit :
   constant_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum_unit;
 inline constexpr struct planck_constant_unit :
