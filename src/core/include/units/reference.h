@@ -102,6 +102,12 @@ template<Representation Rep, Reference R>
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
 template<Reference R1, Reference R2>
+[[nodiscard]] consteval bool operator==(R1, R2)
+{
+  return R1::dimension == R2::dimension && R1::unit == R2::unit;
+}
+
+template<Reference R1, Reference R2>
 [[nodiscard]] consteval bool interconvertible(R1, R2)
 {
   return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
