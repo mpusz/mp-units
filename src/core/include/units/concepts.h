@@ -81,10 +81,6 @@ concept scalable_ =  // exposition only
   castable_number_<T> || (requires { typename T::value_type; } && castable_number_<typename T::value_type> &&
                           scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
 
-template<typename T, typename U>
-concept scalable_with_ =  // exposition only
-  common_type_with_<T, U> && scalable_<std::common_type_t<T, U>>;
-
 template<typename T>
 concept Representation = (!Quantity<T>) &&
                          // (!QuantityLike<T>) && (!wrapped_quantity_<T>) &&

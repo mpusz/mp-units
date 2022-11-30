@@ -48,30 +48,6 @@ class quantity;
 // template<PointKind PK, UnitOf<typename PK::dimension> U, Representation Rep>
 // class quantity_point_kind;
 
-namespace detail {
-
-template<typename From, typename To>
-struct cast_traits;
-
-template<typename From, typename To>
-  requires common_type_with_<std::common_type_t<From, To>, std::intmax_t>
-struct cast_traits<From, To> {
-  using multiplier_type = std::common_type_t<std::common_type_t<From, To>, std::intmax_t>;
-  using rep_type = multiplier_type;
-};
-
-template<typename From, typename To>
-  requires(!common_type_with_<std::common_type_t<From, To>, std::intmax_t> &&
-           scalable_number_<std::common_type_t<From, To>, std::intmax_t> &&
-           requires { typename std::common_type_t<From, To>::value_type; } &&
-           common_type_with_<typename std::common_type_t<From, To>::value_type, std::intmax_t>)
-struct cast_traits<From, To> {
-  using multiplier_type = std::common_type_t<typename std::common_type_t<From, To>::value_type, std::intmax_t>;
-  using rep_type = std::common_type_t<From, To>;
-};
-
-}  // namespace detail
-
 /**
  * @brief Explicit cast of a quantity
  *
@@ -84,16 +60,41 @@ struct cast_traits<From, To> {
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, auto R, scalable_with_<typename To::rep> Rep>
-  requires(interconvertible(To::reference, R))
+template<Quantity To, auto R, typename Rep>
+  requires(interconvertible(To::reference, R)) &&
+          ((R.unit == To::unit && std::constructible_from<typename To::rep, Rep>) ||
+           (R.unit != To::unit))  // && scalable_with_<typename To::rep>))
+// TODO how to constrain the second part here?
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   if constexpr (R.unit == To::unit) {
-    return To(static_cast<TYPENAME To::rep>(q.number()));
+    // no scaling of the number needed
+    return To(static_cast<TYPENAME To::rep>(q.number()));  // this is the only (and recommended) way to do
+                                                           // a truncating conversion on a number, so we are
+                                                           // using static_cast to suppress all the compiler
+                                                           // warnings on conversions
   } else {
-    using traits = detail::cast_traits<Rep, typename To::rep>;
-    using multiplier_type = TYPENAME traits::multiplier_type;
-    using rep_type = TYPENAME traits::rep_type;
+    // scale the number
+    using rep_type = decltype([] {
+      // determines the best representation type
+      if constexpr (requires { typename std::common_type_t<Rep, typename To::rep>; })
+        // returns a common type of two representation types if available
+        // i.e. `double` and `int` will end up with `double` precision
+        return std::common_type_t<Rep, typename To::rep>{};
+      else
+        return Rep{};
+    }());
+    using multiplier_type = decltype([] {
+      // widen the type to prevent overflows
+      using wider_type = decltype(rep_type{} * std::intmax_t{});
+      // check if `wider_type` supports scaling operations
+      if constexpr (requires(wider_type v) { v* v / v; })
+        // if the `wider_type` can handle scaling operations then use it to improve accuracy
+        return wider_type{};
+      else
+        // needed for example for linear algebra where `op/` on matrix types is not available
+        return std::intmax_t{};
+    }());
 
     constexpr Magnitude auto c_mag = detail::get_canonical_unit(R.unit).mag / detail::get_canonical_unit(To::unit).mag;
     constexpr Magnitude auto num = numerator(c_mag);
@@ -181,8 +182,8 @@ template<Unit auto ToU, auto R, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<Representation ToRep, auto R, scalable_with_<ToRep> Rep>
-// requires(std::constructible_from<ToRep, std::common_type_t<ToRep, Rep>>)
+template<Representation ToRep, auto R, typename Rep>
+  requires std::constructible_from<ToRep, Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   return quantity_cast<quantity<R, ToRep>>(q);
@@ -308,7 +309,8 @@ template<Representation ToRep, auto R, scalable_with_<ToRep> Rep>
 //  * Implicit conversions between quantity point kinds of different types are allowed only for "safe"
 //  * (i.e. non-truncating) conversion. In other cases an explicit cast has to be used.
 //  *
-//  * This cast gets the target (quantity) point kind type to cast to or anything that works for quantity_kind_cast. For
+//  * This cast gets the target (quantity) point kind type to cast to or anything that works for quantity_kind_cast.
+//  For
 //  * example:
 //  *
 //  * auto q1 = units::quantity_point_kind_cast<decltype(ns::x_coordinate{1 * m))>(ns::x_coordinate{1 * mm});

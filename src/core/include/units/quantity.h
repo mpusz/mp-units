@@ -56,10 +56,10 @@ template<typename T>
 concept floating_point_ =  // exposition only
   (Quantity<T> && treat_as_floating_point<typename T::rep>) || (!Quantity<T> && treat_as_floating_point<T>);
 
-template<typename From, typename To>
-concept safe_convertible_to_ =  // exposition only
-  (!Quantity<From>) && (!Quantity<To>) && std::convertible_to<From, To> &&
-  (floating_point_<To> || (!floating_point_<From>));
+template<typename T, typename Arg>
+concept rep_safe_constructible_from_ =  // exposition only
+  (!Quantity<std::remove_cvref_t<Arg>>) && std::constructible_from<T, Arg> &&
+  (floating_point_<T> || (!floating_point_<Arg>));
 
 // QFrom ratio is an exact multiple of QTo
 template<typename QFrom, typename QTo>
@@ -69,16 +69,15 @@ concept harmonic_ =  // exposition only
 
 template<typename QFrom, typename QTo>
 concept quantity_convertible_to_ =  // exposition only
-  Quantity<QFrom> && Quantity<QTo> &&
-  interconvertible(QFrom::reference, QTo::reference) && scalable_with_<typename QFrom::rep, typename QTo::rep> &&
+  Quantity<QFrom> && Quantity<QTo> && requires(QFrom q) { quantity_cast<QTo>(q); } &&
   (floating_point_<QTo> || (!floating_point_<QFrom> && harmonic_<QFrom, QTo>));
 
 template<typename Func, typename T, typename U>
 concept quantity_value_for_ = std::regular_invocable<Func, T, U> && Representation<std::invoke_result_t<Func, T, U>>;
 
 template<typename T, typename Func, typename U, typename V>
-concept invoke_result_convertible_to_ =
-  Representation<T> && quantity_value_for_<Func, U, V> && safe_convertible_to_<T, std::invoke_result_t<Func, U, V>>;
+concept invoke_result_convertible_to_ = Representation<T> && quantity_value_for_<Func, U, V> &&
+                                        rep_safe_constructible_from_<std::invoke_result_t<Func, U, V>, T>;
 
 template<typename Func, typename Q, typename V>
 concept have_quantity_for_ = Quantity<Q> && (!Quantity<V>) && quantity_value_for_<Func, typename Q::rep, V>;
@@ -151,7 +150,7 @@ public:
   quantity(quantity&&) = default;
 
   template<typename Value>
-    requires safe_convertible_to_<std::remove_cvref_t<Value>, rep>
+    requires rep_safe_constructible_from_<rep, Value>
   constexpr explicit(!detail::quantity_one<quantity>) quantity(Value&& v) : number_(std::forward<Value>(v))
   {
   }
