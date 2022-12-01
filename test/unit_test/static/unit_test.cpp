@@ -390,44 +390,44 @@ static_assert(get_canonical_unit(u3).mag == mag<ratio{1'000'000, 3'600}>);
 
 template<auto& s>
 concept invalid_operations = requires {
-                               requires !requires { s < s; };
-                               requires !requires { s / 2; };
-                               requires !requires { 2 * s; };
-                               requires !requires { s * 2; };
-                               requires !requires { s + 2; };
-                               requires !requires { 2 + s; };
-                               requires !requires { s + s; };
-                               requires !requires { s - 2; };
-                               requires !requires { 2 - s; };
-                               requires !requires { s - s; };
-                               requires !requires { s == 2; };
-                               requires !requires { 2 == s; };
-                               requires !requires { s < 2; };
-                               requires !requires { 2 < s; };
-                               requires !requires { s + time[second]; };
-                               requires !requires { s - time[second]; };
-                               requires !requires { s* time[second]; };
-                               requires !requires { s / time[second]; };
-                               requires !requires { s == time[second]; };
-                               requires !requires { s < time[second]; };
-                               requires !requires { time[second] + s; };
-                               requires !requires { time[second] - s; };
-                               requires !requires { time[second] * s; };
-                               requires !requires { time[second] / s; };
-                               requires !requires { time[second] == s; };
-                               requires !requires { time[second] < s; };
-                               requires !requires { s + 1 * time[second]; };
-                               requires !requires { s - 1 * time[second]; };
-                               requires !requires { s * 1 * time[second]; };
-                               requires !requires { s / 1 * time[second]; };
-                               requires !requires { s == 1 * time[second]; };
-                               requires !requires { s == 1 * time[second]; };
-                               requires !requires { 1 * time[second] + s; };
-                               requires !requires { 1 * time[second] - s; };
-                               requires !requires { 1 * time[second] * s; };
-                               requires !requires { 1 * time[second] == s; };
-                               requires !requires { 1 * time[second] < s; };
-                             };
+  requires !requires { s < s; };
+  requires !requires { s / 2; };
+  requires !requires { 2 * s; };
+  requires !requires { s * 2; };
+  requires !requires { s + 2; };
+  requires !requires { 2 + s; };
+  requires !requires { s + s; };
+  requires !requires { s - 2; };
+  requires !requires { 2 - s; };
+  requires !requires { s - s; };
+  requires !requires { s == 2; };
+  requires !requires { 2 == s; };
+  requires !requires { s < 2; };
+  requires !requires { 2 < s; };
+  requires !requires { s + time[second]; };
+  requires !requires { s - time[second]; };
+  requires !requires { s* time[second]; };
+  requires !requires { s / time[second]; };
+  requires !requires { s == time[second]; };
+  requires !requires { s < time[second]; };
+  requires !requires { time[second] + s; };
+  requires !requires { time[second] - s; };
+  requires !requires { time[second] * s; };
+  requires !requires { time[second] / s; };
+  requires !requires { time[second] == s; };
+  requires !requires { time[second] < s; };
+  requires !requires { s + 1 * time[second]; };
+  requires !requires { s - 1 * time[second]; };
+  requires !requires { s * 1 * time[second]; };
+  requires !requires { s / 1 * time[second]; };
+  requires !requires { s == 1 * time[second]; };
+  requires !requires { s == 1 * time[second]; };
+  requires !requires { 1 * time[second] + s; };
+  requires !requires { 1 * time[second] - s; };
+  requires !requires { 1 * time[second] * s; };
+  requires !requires { 1 * time[second] == s; };
+  requires !requires { 1 * time[second] < s; };
+};
 static_assert(invalid_operations<second>);
 
 // comparisons of the same units
@@ -503,35 +503,35 @@ static_assert(
   is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
 
 // common_type
-static_assert(is_of_type<detail::common_unit(gram, gram), gram_>);
-static_assert(is_of_type<detail::common_unit(kilogram, kilogram), kilogram_>);
-static_assert(is_of_type<detail::common_unit(si::kilo<gram>, kilogram), kilogram_>);
-static_assert(is_of_type<detail::common_unit(kilogram, si::kilo<gram>), kilogram_>);
-static_assert(is_of_type<detail::common_unit(mag<1000>* gram, kilogram), kilogram_>);
-static_assert(is_of_type<detail::common_unit(kilogram, mag<1000>* gram), kilogram_>);
-static_assert(is_of_type<detail::common_unit(1 / second, hertz), hertz_>);
-static_assert(is_of_type<detail::common_unit(hertz, 1 / second), hertz_>);
-static_assert(is_of_type<detail::common_unit(gram, kilogram), gram_>);
-static_assert(is_of_type<detail::common_unit(kilogram, gram), gram_>);
-static_assert(is_of_type<detail::common_unit(second, hour), second_>);
-static_assert(is_of_type<detail::common_unit(hour, second), second_>);
-static_assert(is_of_type<detail::common_unit(minute, hour), minute_>);
-static_assert(is_of_type<detail::common_unit(hour, minute), minute_>);
+static_assert(is_of_type<common_unit(gram, gram), gram_>);
+static_assert(is_of_type<common_unit(kilogram, kilogram), kilogram_>);
+static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), kilogram_>);
+static_assert(is_of_type<common_unit(kilogram, si::kilo<gram>), kilogram_>);
+static_assert(is_of_type<common_unit(mag<1000>* gram, kilogram), kilogram_>);
+static_assert(is_of_type<common_unit(kilogram, mag<1000>* gram), kilogram_>);
+static_assert(is_of_type<common_unit(1 / second, hertz), hertz_>);
+static_assert(is_of_type<common_unit(hertz, 1 / second), hertz_>);
+static_assert(is_of_type<common_unit(gram, kilogram), gram_>);
+static_assert(is_of_type<common_unit(kilogram, gram), gram_>);
+static_assert(is_of_type<common_unit(second, hour), second_>);
+static_assert(is_of_type<common_unit(hour, second), second_>);
+static_assert(is_of_type<common_unit(minute, hour), minute_>);
+static_assert(is_of_type<common_unit(hour, minute), minute_>);
 static_assert(
-  is_of_type<detail::common_unit(si::kilo<metre>, si::milli<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
+  is_of_type<common_unit(si::kilo<metre>, si::milli<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
 static_assert(
-  is_of_type<detail::common_unit(si::milli<metre>, si::kilo<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
-static_assert(is_of_type<detail::common_unit(yard, mile), yard_>);
-static_assert(is_of_type<detail::common_unit(mile, yard), yard_>);
+  is_of_type<common_unit(si::milli<metre>, si::kilo<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(is_of_type<common_unit(yard, mile), yard_>);
+static_assert(is_of_type<common_unit(mile, yard), yard_>);
 // TODO The below have long/unreadable magnitude types
-static_assert(is_of_type<detail::common_unit(kilometre / hour, metre / second),
+static_assert(is_of_type<common_unit(kilometre / hour, metre / second),
                          scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
-static_assert(is_of_type<detail::common_unit(metre / second, kilometre / hour),
+static_assert(is_of_type<common_unit(metre / second, kilometre / hour),
                          scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
-static_assert(is_of_type<detail::common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
-static_assert(is_of_type<detail::common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
+static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
 static_assert(
-  is_of_type<detail::common_unit(speed_of_light_in_vacuum_unit, metre / second), derived_unit<metre_, per<second_>>>);
+  is_of_type<common_unit(speed_of_light_in_vacuum_unit, metre / second), derived_unit<metre_, per<second_>>>);
 
 // unit symbols
 #ifdef __cpp_lib_constexpr_string

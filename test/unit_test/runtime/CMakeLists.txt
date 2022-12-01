@@ -26,8 +26,11 @@ find_package(Catch2 3 CONFIG REQUIRED)
 
 add_executable(
     unit_tests_runtime
-    # math_test.cpp
-    magnitude_test.cpp # fmt_test.cpp fmt_units_test.cpp distribution_test.cpp
+    distribution_test.cpp
+    fmt_test.cpp
+
+    # fmt_units_test.cpp
+    math_test.cpp
 )
 target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 

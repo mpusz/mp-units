@@ -30,7 +30,7 @@ template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   AlmostEqualsMatcher(const T& target) : target_{target} {}
 
-  template<QuantityEquivalentTo<T> U>
+  template<std::convertible_to<T> U>
     requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep> bool
   match(const U& other) const
   {

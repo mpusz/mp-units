@@ -123,44 +123,44 @@ static_assert(is_of_type<force / area, derived_dimension<mass_, per<length_, uni
 
 template<auto& t>
 concept invalid_operations = requires {
-                               requires !requires { t < t; };
-                               requires !requires { t / 2; };
-                               requires !requires { 2 * t; };
-                               requires !requires { t * 2; };
-                               requires !requires { t + 2; };
-                               requires !requires { 2 + t; };
-                               requires !requires { t + t; };
-                               requires !requires { t - 2; };
-                               requires !requires { 2 - t; };
-                               requires !requires { t - t; };
-                               requires !requires { t == 2; };
-                               requires !requires { 2 == t; };
-                               requires !requires { t < 2; };
-                               requires !requires { 2 < t; };
-                               requires !requires { t + time[second]; };
-                               requires !requires { t - time[second]; };
-                               requires !requires { t* time[second]; };
-                               requires !requires { t / time[second]; };
-                               requires !requires { t == time[second]; };
-                               requires !requires { t < time[second]; };
-                               requires !requires { time[second] + t; };
-                               requires !requires { time[second] - t; };
-                               requires !requires { time[second] * t; };
-                               requires !requires { time[second] / t; };
-                               requires !requires { time[second] == t; };
-                               requires !requires { time[second] < t; };
-                               requires !requires { t + 1 * time[second]; };
-                               requires !requires { t - 1 * time[second]; };
-                               requires !requires { t * 1 * time[second]; };
-                               requires !requires { t / 1 * time[second]; };
-                               requires !requires { t == 1 * time[second]; };
-                               requires !requires { t == 1 * time[second]; };
-                               requires !requires { 1 * time[second] + t; };
-                               requires !requires { 1 * time[second] - t; };
-                               requires !requires { 1 * time[second] * t; };
-                               requires !requires { 1 * time[second] == t; };
-                               requires !requires { 1 * time[second] < t; };
-                             };
+  requires !requires { t < t; };
+  requires !requires { t / 2; };
+  requires !requires { 2 * t; };
+  requires !requires { t * 2; };
+  requires !requires { t + 2; };
+  requires !requires { 2 + t; };
+  requires !requires { t + t; };
+  requires !requires { t - 2; };
+  requires !requires { 2 - t; };
+  requires !requires { t - t; };
+  requires !requires { t == 2; };
+  requires !requires { 2 == t; };
+  requires !requires { t < 2; };
+  requires !requires { 2 < t; };
+  requires !requires { t + time[second]; };
+  requires !requires { t - time[second]; };
+  requires !requires { t* time[second]; };
+  requires !requires { t / time[second]; };
+  requires !requires { t == time[second]; };
+  requires !requires { t < time[second]; };
+  requires !requires { time[second] + t; };
+  requires !requires { time[second] - t; };
+  requires !requires { time[second] * t; };
+  requires !requires { time[second] / t; };
+  requires !requires { time[second] == t; };
+  requires !requires { time[second] < t; };
+  requires !requires { t + 1 * time[second]; };
+  requires !requires { t - 1 * time[second]; };
+  requires !requires { t * 1 * time[second]; };
+  requires !requires { t / 1 * time[second]; };
+  requires !requires { t == 1 * time[second]; };
+  requires !requires { t == 1 * time[second]; };
+  requires !requires { 1 * time[second] + t; };
+  requires !requires { 1 * time[second] - t; };
+  requires !requires { 1 * time[second] * t; };
+  requires !requires { 1 * time[second] == t; };
+  requires !requires { 1 * time[second] < t; };
+};
 static_assert(invalid_operations<time>);
 
 // comparisons of the same dimensions
@@ -174,15 +174,15 @@ static_assert(1 / time != frequency);
 static_assert(interconvertible(1 / time, frequency));
 static_assert(1 / frequency == time);
 static_assert(frequency * time == dimension_one);
-static_assert(is_of_type<detail::common_dimension(1 / time, frequency), frequency_>);
-static_assert(is_of_type<detail::common_dimension(frequency, 1 / time), frequency_>);
+static_assert(is_of_type<common_dimension(1 / time, frequency), frequency_>);
+static_assert(is_of_type<common_dimension(frequency, 1 / time), frequency_>);
 
 static_assert(length * length != area);
 static_assert(interconvertible(length * length, area));
 static_assert(length * length != volume);
 static_assert(area / length == length);
-static_assert(is_of_type<detail::common_dimension(length* length, area), area_>);
-static_assert(is_of_type<detail::common_dimension(area, length* length), area_>);
+static_assert(is_of_type<common_dimension(length* length, area), area_>);
+static_assert(is_of_type<common_dimension(area, length* length), area_>);
 
 static_assert(length * length * length != volume);
 static_assert(area * length != volume);
@@ -197,9 +197,9 @@ static_assert(length * time != speed);
 static_assert(length / time / time != speed);
 static_assert(length / speed == time);
 static_assert(speed * time == length);
-static_assert(is_of_type<detail::common_dimension(length / time, speed), speed_>);
-static_assert(is_of_type<detail::common_dimension(speed, length / time), speed_>);
-static_assert(is_of_type<detail::common_dimension(length / time, length / time), decltype(length / time)>);
+static_assert(is_of_type<common_dimension(length / time, speed), speed_>);
+static_assert(is_of_type<common_dimension(speed, length / time), speed_>);
+static_assert(is_of_type<common_dimension(length / time, length / time), decltype(length / time)>);
 
 static_assert(length / time / time != acceleration);
 static_assert(length / (time * time) != acceleration);
@@ -212,8 +212,8 @@ static_assert(acceleration / speed != frequency);
 // comparison of convertible named dimensions
 static_assert(velocity != speed);
 static_assert(interconvertible(speed, velocity));
-static_assert(is_of_type<detail::common_dimension(velocity, speed), velocity_>);
-static_assert(is_of_type<detail::common_dimension(speed, velocity), velocity_>);
+static_assert(is_of_type<common_dimension(velocity, speed), velocity_>);
+static_assert(is_of_type<common_dimension(speed, velocity), velocity_>);
 
 // comparison of convertible unnamed dimensions
 static_assert(is_of_type<mass * acceleration, derived_dimension<length_, mass_, per<units::power<time_, 2>>>>);
@@ -231,9 +231,9 @@ static_assert(interconvertible(force * length, energy));
 static_assert(interconvertible(force * length, torque));
 template<auto T1, auto T2>
 concept no_common_type = requires {
-                           requires !requires { typename std::common_type_t<decltype(T1), decltype(T2)>; };
-                           requires !requires { typename std::common_type_t<decltype(T2), decltype(T1)>; };
-                         };
+  requires !requires { typename std::common_type_t<decltype(T1), decltype(T2)>; };
+  requires !requires { typename std::common_type_t<decltype(T2), decltype(T1)>; };
+};
 static_assert(no_common_type<energy, torque>);
 
 static_assert(frequency != action);

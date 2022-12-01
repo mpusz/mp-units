@@ -114,30 +114,29 @@ static_assert(is_same_v<decltype(20 * speed[metre / second] / (10 * length[metre
 
 template<auto s>
 concept invalid_operations = requires {
-                               requires !requires { 2 / s; };
-                               requires !requires { s / 2; };
-                               requires !requires { s * 2; };
-                               requires !requires { s + 2; };
-                               requires !requires { 2 + s; };
-                               requires !requires { s + s; };
-                               requires !requires { s - 2; };
-                               requires !requires { 2 - s; };
-                               requires !requires { s - s; };
-                               requires !requires { s == s; };
-                               requires !requires { s < s; };
-                               requires !requires { s + 1 * time[second]; };
-                               requires !requires { s - 1 * time[second]; };
-                               requires !requires { s * 1 * time[second]; };
-                               requires !requires { s / 1 * time[second]; };
-                               requires !requires { s == 1 * time[second]; };
-                               requires !requires { s < 1 * time[second]; };
-                               requires !requires { 1 * time[second] + s; };
-                               requires !requires { 1 * time[second] - s; };
-                               requires !requires { 1 * time[second] * s; };
-                               requires !requires { 1 * time[second] / s; };
-                               requires !requires { 1 * time[second] == s; };
-                               requires !requires { 1 * time[second] < s; };
-                             };
+  requires !requires { 2 / s; };
+  requires !requires { s / 2; };
+  requires !requires { s * 2; };
+  requires !requires { s + 2; };
+  requires !requires { 2 + s; };
+  requires !requires { s + s; };
+  requires !requires { s - 2; };
+  requires !requires { 2 - s; };
+  requires !requires { s - s; };
+  requires !requires { s < s; };
+  requires !requires { s + 1 * time[second]; };
+  requires !requires { s - 1 * time[second]; };
+  requires !requires { s * 1 * time[second]; };
+  requires !requires { s / 1 * time[second]; };
+  requires !requires { s == 1 * time[second]; };
+  requires !requires { s < 1 * time[second]; };
+  requires !requires { 1 * time[second] + s; };
+  requires !requires { 1 * time[second] - s; };
+  requires !requires { 1 * time[second] * s; };
+  requires !requires { 1 * time[second] / s; };
+  requires !requires { 1 * time[second] == s; };
+  requires !requires { 1 * time[second] < s; };
+};
 static_assert(invalid_operations<time[second]>);
 
 static_assert(
