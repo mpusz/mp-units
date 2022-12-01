@@ -47,9 +47,9 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache Conan data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-conan-data
         with:
@@ -63,7 +63,7 @@ jobs:
         run: |
           sudo apt install -y ninja-build
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       - name: Install Python dependencies

@@ -167,9 +167,9 @@ jobs:
         uses: ASzc/change-string-case-action@v2
         with:
           string: ${{ matrix.build_type }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache Conan data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-conan-data
         with:
@@ -217,7 +217,7 @@ jobs:
             exit 1
           fi
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       - name: Install Conan
