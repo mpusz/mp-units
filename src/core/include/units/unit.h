@@ -528,8 +528,7 @@ template<Magnitude M, Unit U>
     return scaled_unit<mag, U>{};
 }
 
-template<Magnitude M, Unit U>
-[[nodiscard]] consteval Unit auto operator*(U, M) = delete;
+[[nodiscard]] consteval Unit auto operator*(Unit auto, Magnitude auto) = delete;
 
 /**
  * `scaled_unit` specializations have priority in this operation. This means that the library framework
@@ -567,22 +566,53 @@ template<Unit Lhs, Unit Rhs>
     return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
-template<Unit U>
-[[nodiscard]] consteval Unit auto operator/(int value, U u)
+[[nodiscard]] consteval Unit auto operator/(int value, Unit auto u)
 {
   gsl_Expects(value == 1);
   return detail::expr_invert<derived_unit, struct one>(u);
 }
 
-template<Unit U>
-[[nodiscard]] consteval Unit auto operator/(U, int) = delete;
+[[nodiscard]] consteval Unit auto operator/(Unit auto, int) = delete;
 
-template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
+namespace detail {
+
+consteval bool same_canonical_reference_unit(...) { return false; }
+
+template<basic_symbol_text Symbol, auto... D>
+consteval bool same_canonical_reference_unit(const named_unit<Symbol, D...>&, const named_unit<Symbol, D...>&)
+{
+  return true;
+}
+
+template<typename F1, typename F2, auto... Vs>
+consteval bool same_canonical_reference_unit(const power<F1, Vs...>&, const power<F2, Vs...>&)
+{
+  return same_canonical_reference_unit(F1{}, F2{});
+}
+
+template<typename... Us1, typename... Us2>
+  requires(sizeof...(Us1) == sizeof...(Us2))
+consteval bool same_canonical_reference_unit(const type_list<Us1...>&, const type_list<Us2...>&)
+{
+  return (... && same_canonical_reference_unit(Us1{}, Us2{}));
+}
+
+template<typename... Us1, typename... Us2>
+consteval bool same_canonical_reference_unit(const derived_unit<Us1...>&, const derived_unit<Us2...>&)
+{
+  return same_canonical_reference_unit(typename derived_unit<Us1...>::_num_{},
+                                       typename derived_unit<Us2...>::_num_{}) &&
+         same_canonical_reference_unit(typename derived_unit<Us1...>::_den_{}, typename derived_unit<Us2...>::_den_{});
+}
+
+}  // namespace detail
+
+
+[[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
 {
   auto canonical_lhs = detail::get_canonical_unit(lhs);
   auto canonical_rhs = detail::get_canonical_unit(rhs);
-  return is_same_v<decltype(canonical_lhs.reference_unit), decltype(canonical_rhs.reference_unit)> &&
+  return detail::same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
@@ -591,7 +621,7 @@ template<Unit Lhs, Unit Rhs>
 {
   auto canonical_lhs = detail::get_canonical_unit(u1);
   auto canonical_rhs = detail::get_canonical_unit(u2);
-  return is_same_v<decltype(canonical_lhs.reference_unit), decltype(canonical_rhs.reference_unit)>;
+  return detail::same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit);
 }
 
 // Common unit
