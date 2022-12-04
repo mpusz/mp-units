@@ -29,8 +29,8 @@ namespace units::si::cgs {
 
 // clang-format off
 inline constexpr struct centimetre : si::centi_<si::metre> {} centimetre;
-inline constexpr struct gram : si::gram {} gram;
-inline constexpr struct second : si::second {} second;
+inline constexpr struct gram : decltype(si::gram) {} gram;
+inline constexpr struct second : decltype(si::second) {} second;
 inline constexpr struct gal : named_unit<"Gal", centimetre / square<second>> {} gal;
 inline constexpr struct dyne : named_unit<"dyn", gram * centimetre / square<second>> {} dyne;
 inline constexpr struct erg : named_unit<"erg", dyne / centimetre> {} erg;
@@ -39,5 +39,18 @@ inline constexpr struct poise : named_unit<"P", gram / (centimetre * second)> {}
 inline constexpr struct stokes : named_unit<"St", square<centimetre> / second> {} stokes;
 inline constexpr struct kayser : decltype(1 / centimetre) {} kayser;
 // clang-format on
+
+namespace unit_symbols {
+
+inline constexpr auto cm = centimetre;
+inline constexpr auto g = gram;
+inline constexpr auto s = second;
+inline constexpr auto Gal = gal;
+inline constexpr auto dyn = dyne;
+inline constexpr auto Ba = barye;
+inline constexpr auto P = poise;
+inline constexpr auto St = stokes;
+
+}  // namespace unit_symbols
 
 }  // namespace units::si::cgs
