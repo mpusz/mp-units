@@ -81,26 +81,23 @@ tasks:
       cp default clang15
       popd
       conan profile update settings.compiler.version=10 gcc10
-      conan profile update env.CXX=/usr/bin/g++-10 gcc10
-      conan profile update env.CC=/usr/bin/gcc-10 gcc10
+      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-10", "cpp": "g++-10"}' gcc10
       conan profile update settings.compiler.version=11 gcc11
-      conan profile update env.CXX=/usr/bin/g++-11 gcc11
-      conan profile update env.CC=/usr/bin/gcc-11 gcc11
+      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-11", "cpp": "g++-11"}' gcc11
+      conan profile update settings.compiler.version=11 gcc12
+      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-12", "cpp": "g++-12"}' gcc12
       conan profile update settings.compiler=clang clang13
       conan profile update settings.compiler.version=13 clang13
       conan profile update settings.compiler.libcxx=libstdc++11 clang13
-      conan profile update env.CXX=/usr/bin/clang++-13 clang13
-      conan profile update env.CC=/usr/bin/clang-13 clang13
+      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-13", "cpp": "clang++-13"}' clang13
       conan profile update settings.compiler=clang clang14
       conan profile update settings.compiler.version=14 clang14
       conan profile update settings.compiler.libcxx=libstdc++11 clang14
-      conan profile update env.CXX=/usr/bin/clang++-14 clang14
-      conan profile update env.CC=/usr/bin/clang-14 clang14
+      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-14", "cpp": "clang++-14"}' clang14
       conan profile update settings.compiler=clang clang15
       conan profile update settings.compiler.version=15 clang15
       conan profile update settings.compiler.libcxx=libc++ clang15
-      conan profile update env.CXX=/usr/bin/clang++-15 clang15
-      conan profile update env.CC=/usr/bin/clang-15 clang15
+      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-15", "cpp": "clang++-15"}' clang15
       echo 'tools.cmake.cmaketoolchain:generator=Ninja Multi-Config' > /workspace/.conan/global.conf
       echo 'tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version"]' >> /workspace/.conan/global.conf
       gp sync-done conan-init
@@ -110,7 +107,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr gcc10 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr gcc10 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-10 -DCMAKE_C_COMPILER=/usr/bin/gcc-10 -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
+      cmake --preset gcc-10
       cmake --build --preset gcc-10-release -j
       cmake --build --preset gcc-10-debug -j
       ctest -C Release
@@ -121,7 +118,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr gcc11 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr gcc11 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-11 -DCMAKE_C_COMPILER=/usr/bin/gcc-11 -DCMAKE_CXX_COMPILER=/usr/bin/g++-11
+      cmake --preset gcc-11
       cmake --build --preset gcc-11-release -j
       cmake --build --preset gcc-11-debug -j
       ctest -C Release
@@ -132,7 +129,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-12 -DCMAKE_C_COMPILER=/usr/bin/gcc-12 -DCMAKE_CXX_COMPILER=/usr/bin/g++-12
+      cmake --preset gcc-12
       cmake --build --preset gcc-12-release -j
       cmake --build --preset gcc-12-debug -j
       ctest -C Release
@@ -143,7 +140,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-13 -DCMAKE_C_COMPILER=/usr/bin/clang-13 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-13
+      cmake --preset clang-13
       cmake --build --preset clang-13-release -j
       cmake --build --preset clang-13-debug -j
       ctest -C Release
@@ -154,7 +151,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-14 -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14
+      cmake --preset clang-14
       cmake --build --preset clang-14-release -j
       cmake --build --preset clang-14-debug -j
       ctest -C Release
@@ -165,7 +162,7 @@ tasks:
       gp sync-await conan-init
       conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated
       conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-15 -DCMAKE_C_COMPILER=/usr/bin/clang-15 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-15
+      cmake --preset clang-15
       cmake --build --preset clang-15-release -j
       cmake --build --preset clang-15-debug -j
       ctest -C Release
