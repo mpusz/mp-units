@@ -38,7 +38,7 @@
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
+#include <fmt/core.h>
 UNITS_DIAGNOSTIC_POP
 
 #define STD_FMT fmt
@@ -58,5 +58,6 @@ UNITS_DIAGNOSTIC_POP
 #define FMT_LOCALE(loc) loc
 #define FMT_TO_ARG_ID(arg) arg
 #define FMT_FROM_ARG_ID(arg) arg
+#define FMT_THROW(arg) throw arg
 
 #endif

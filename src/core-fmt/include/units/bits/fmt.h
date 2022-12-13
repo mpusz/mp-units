@@ -55,7 +55,7 @@ public:
   constexpr fill_t& operator=(std::basic_string_view<Char> str)
   {
     auto size = str.size();
-    if (size > max_size) throw STD_FMT::format_error("invalid fill");
+    if (size > max_size) FMT_THROW(STD_FMT::format_error("invalid fill"));
     for (size_t i = 0; i < size; ++i) data_[i] = str[i];
     size_ = static_cast<unsigned char>(size);
     return *this;
@@ -98,11 +98,11 @@ struct width_checker {
   {
     if constexpr (is_integer<T>) {
       if constexpr (std::numeric_limits<T>::is_signed) {
-        if (value < 0) throw STD_FMT::format_error("negative width");
+        if (value < 0) FMT_THROW(STD_FMT::format_error("negative width"));
       }
       return static_cast<unsigned long long>(value);
     } else {
-      throw STD_FMT::format_error("width is not integer");
+      FMT_THROW(STD_FMT::format_error("width is not integer"));
     }
   }
 };
@@ -113,11 +113,11 @@ struct precision_checker {
   {
     if constexpr (is_integer<T>) {
       if constexpr (std::numeric_limits<T>::is_signed) {
-        if (value < 0) throw STD_FMT::format_error("negative precision");
+        if (value < 0) FMT_THROW(STD_FMT::format_error("negative precision"));
       }
       return static_cast<unsigned long long>(value);
     } else {
-      throw STD_FMT::format_error("precision is not integer");
+      FMT_THROW(STD_FMT::format_error("precision is not integer"));
     }
   }
 };
@@ -147,7 +147,7 @@ struct dynamic_format_specs : basic_format_specs<Char> {
 [[nodiscard]] constexpr int verify_dynamic_arg_index_in_range(size_t idx)
 {
   if (idx > static_cast<size_t>(std::numeric_limits<int>::max())) {
-    throw STD_FMT::format_error("Dynamic width or precision index too large.");
+    FMT_THROW(STD_FMT::format_error("Dynamic width or precision index too large."));
   }
   return static_cast<int>(idx);
 }
@@ -171,7 +171,7 @@ template<class Handler, typename FormatContext>
   const unsigned long long value =
     STD_FMT::visit_format_arg(Handler{}, ctx.arg(FMT_TO_ARG_ID(static_cast<size_t>(index))));
   if (value > static_cast<unsigned long long>(std::numeric_limits<int>::max())) {
-    throw STD_FMT::format_error("number is too big");
+    FMT_THROW(STD_FMT::format_error("number is too big"));
   }
   return static_cast<int>(value);
 }
@@ -195,7 +195,7 @@ template<std::input_iterator It, std::sentinel_for<It> S>
     ++begin;
   } while (begin != end && '0' <= *begin && *begin <= '9');
 
-  if (value > max_int) throw STD_FMT::format_error("Number is too big");
+  if (value > max_int) FMT_THROW(STD_FMT::format_error("Number is too big"));
 
   return begin;
 }
@@ -222,12 +222,12 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
     else
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
-      throw STD_FMT::format_error("invalid format string");
+      FMT_THROW(STD_FMT::format_error("invalid format string"));
     else
       handler(index);
     return begin;
   }
-  throw STD_FMT::format_error("invalid format string");
+  FMT_THROW(STD_FMT::format_error("invalid format string"));
 }
 
 template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
@@ -278,11 +278,11 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
     if (width != -1)
       handler.on_width(width);
     else
-      throw STD_FMT::format_error("number is too big");
+      FMT_THROW(STD_FMT::format_error("number is too big"));
   } else if (*begin == '{') {
     ++begin;
     if (begin != end) begin = parse_arg_id(begin, end, width_adapter{handler});
-    if (begin == end || *begin != '}') throw STD_FMT::format_error("invalid format string");
+    if (begin == end || *begin != '}') FMT_THROW(STD_FMT::format_error("invalid format string"));
     ++begin;
   }
   return begin;
@@ -305,13 +305,13 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
     if (precision != -1)
       handler.on_precision(precision);
     else
-      throw STD_FMT::format_error("number is too big");
+      FMT_THROW(STD_FMT::format_error("number is too big"));
   } else if (c == '{') {
     ++begin;
     if (begin != end) begin = parse_arg_id(begin, end, precision_adapter{handler});
-    if (begin == end || *begin++ != '}') throw STD_FMT::format_error("invalid format string");
+    if (begin == end || *begin++ != '}') FMT_THROW(STD_FMT::format_error("invalid format string"));
   } else {
-    throw STD_FMT::format_error("missing precision specifier");
+    FMT_THROW(STD_FMT::format_error("missing precision specifier"));
   }
   return begin;
 }
@@ -355,7 +355,7 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
     if (align != fmt_align::none) {
       if (p != begin) {
         auto c = *begin;
-        if (c == '{') throw STD_FMT::format_error("invalid fill character '{'");
+        if (c == '{') FMT_THROW(STD_FMT::format_error("invalid fill character '{'"));
         handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(&*begin, static_cast<size_t>(p - begin)));
         begin = p + 1;
       } else
