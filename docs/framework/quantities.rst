@@ -38,7 +38,7 @@ Quantity Construction Helpers
     quantities of different dimensions and units. Users are encourages to try them
     out, vote, and share feedback in this
     `discussion on GitHub <https://github.com/mpusz/units/discussions/274>`_.
-    
+
     Most probably only one of the options will be included in the final product so
     please do not hesitate to vote on the one that suits you the best.
 
@@ -83,7 +83,7 @@ each and every :term:`unit` in the library::
 
     template<Representation Rep = double> using m_per_s = units::isq::si::speed<units::isq::si::metre_per_second, Rep>;
     template<Representation Rep = double> using km_per_h = units::isq::si::speed<units::isq::si::kilometre_per_hour, Rep>;
-    
+
     }
 
     #endif // UNITS_NO_ALIASES
@@ -159,7 +159,7 @@ It is also possible to easily define custom quantity references from existing on
 
 User Defined Literals (Experimental)
 ++++++++++++++++++++++++++++++++++++
-    
+
 Alternatively, to construct quantities with compile-time known values the library provides
 :abbr:`UDL (User Defined Literal)` s for each :term:`unit` of every :term:`dimension`::
 
@@ -191,7 +191,7 @@ Thanks to them the same code can be as simple as::
     language (i.e. ``F`` (farad), ``J`` (joule), ``W`` (watt), ``K`` (kelvin),
     ``d`` (day), ``l`` or ``L`` (litre), ``erg``, ``ergps``). This is why the
     ``_q_`` prefix was consistently applied to all the UDLs.
-    
+
 UDLs vs Quantity References
 +++++++++++++++++++++++++++
 
@@ -258,12 +258,12 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
 4. UDLs are verbose to define and standardize
 
    - UDLs:
-     
+
      - for each unit an integral and a floating-point UDL have to be defined
      - have to be provided for unnamed derived units (i.e. ``_q_km_per_h``)
-    
+
    - Quantity References:
-   
+
      - one reference per unit
      - unnamed derived units are constructed from base references so no explicit
        definition is required (i.e. ``km / h``)
@@ -276,9 +276,9 @@ UDLs are helpful but they also have some disadvantages compared to Quantity Refe
    by the user so there is no chance for a truncating conversion on a quantity construction.
 
 6. UDLs take long to compile
-   
+
    - UDLs:
-  
+
      Every unit requires two UDLs to be defined which in turns requires two instantiations
      of "heavy" `quantity` class template. Those are then not often used by non-UDL construction
      as most users instantiate `quantity` class template with `int` or `double` which
@@ -298,7 +298,7 @@ Quantity References vs Unit-specific Aliases
 ++++++++++++++++++++++++++++++++++++++++++++
 
 1. Shadowing issues
-   
+
    - Quantity References
 
      References occupy a pool of many short identifiers which sometimes shadow the variables,
@@ -357,11 +357,11 @@ Quantity References vs Unit-specific Aliases
           using namespace units::isq::si::time_references;
           return d * m / (t * s);
         }
-    
+
      Notice that if ``using namespace units::isq::si::references;`` was used instead above it could
      cause a clash of ``t`` function parameter with ``si::tonne`` unit symbol if ``si/mass.h`` was
      included.
-     
+
    - Unit-specific Aliases
 
      The same using aliases can look as follows::
@@ -392,7 +392,7 @@ Quantity References vs Unit-specific Aliases
         static_assert(2 * km / (2 * (km / h)) == 1 * h);
 
    - Unit-specific Aliases
-  
+
      Aliases do not use operator syntax thus they are not affected by the precedence issue.
 
 5. Composition for unnamed derived units
@@ -425,7 +425,7 @@ Quantity References vs Unit-specific Aliases
 
        constexpr auto meter = 1 * m;
        std::cout << " = " << quantity_cast<si::international::foot>(meter) << '\n';
- 
+
    The above code for references may look as follows::
 
        constexpr auto meter = m(1);

@@ -30,13 +30,13 @@ namespace {
 
 /**
  * @brief Representation type meeting minimum requirements
- * 
+ *
  * This type with a default Mode = 0 provides the minimum set of requirements to
  * satisfy @c Representation concept which is used for quantity's representation type.
- * 
+ *
  * In case of Mode != 0 only one of mandatory operation is removed which should
  * result in @c Representation concept not being satisfied.
- * 
+ *
  * @tparam Mode a flag to disable specific type's operations
  */
 template<int Mode = 0>
@@ -44,38 +44,64 @@ class min_expl {
   std::intmax_t value_;
 public:
   // default construction
-  min_expl() requires (Mode != 1) = default;
+  min_expl()
+    requires(Mode != 1)
+  = default;
 
   // construction from std::int64_t
-  constexpr explicit min_expl(std::intmax_t v) noexcept requires (Mode != 2) : value_(v) {}
+  constexpr explicit min_expl(std::intmax_t v) noexcept
+    requires(Mode != 2)
+      : value_(v)
+  {
+  }
 
   // copy construction
-  min_expl(const min_expl&) requires (Mode != 3) = default;
+  min_expl(const min_expl&)
+    requires(Mode != 3)
+  = default;
 
   // move construction
-  min_expl(min_expl&&) requires (Mode != 4) = default;
-  min_expl(min_expl&&) requires (Mode == 4) = delete;
+  min_expl(min_expl&&)
+    requires(Mode != 4)
+  = default;
+  min_expl(min_expl&&)
+    requires(Mode == 4)
+  = delete;
 
   // copy assignment
-  min_expl& operator=(const min_expl&) requires (Mode != 5) = default;
+  min_expl& operator=(const min_expl&)
+    requires(Mode != 5)
+  = default;
 
   // move assignment
-  min_expl& operator=(min_expl&&) requires (Mode != 6) = default;
-  min_expl& operator=(min_expl&&) requires (Mode == 6) = delete;
+  min_expl& operator=(min_expl&&)
+    requires(Mode != 6)
+  = default;
+  min_expl& operator=(min_expl&&)
+    requires(Mode == 6)
+  = delete;
 
   // equality
-  [[nodiscard]] bool operator==(const min_expl&) const requires (Mode != 7) = default;
+  [[nodiscard]] bool operator==(const min_expl&) const
+    requires(Mode != 7)
+  = default;
 
   // scalability - multiplication
-  [[nodiscard]] friend constexpr min_expl operator*(const min_expl& lhs, const min_expl& rhs) requires (Mode != 8)
-  { return min_expl(lhs.value_ * rhs.value_); }
+  [[nodiscard]] friend constexpr min_expl operator*(const min_expl& lhs, const min_expl& rhs)
+    requires(Mode != 8)
+  {
+    return min_expl(lhs.value_ * rhs.value_);
+  }
 
   // scalability - division
-  [[nodiscard]] friend constexpr min_expl operator/(const min_expl& lhs, const min_expl& rhs) requires (Mode != 9)
-  { return min_expl(lhs.value_ / rhs.value_); }
+  [[nodiscard]] friend constexpr min_expl operator/(const min_expl& lhs, const min_expl& rhs)
+    requires(Mode != 9)
+  {
+    return min_expl(lhs.value_ / rhs.value_);
+  }
 };
 
-}
+}  // namespace
 
 template<int Mode>
 struct std::common_type<std::intmax_t, min_expl<Mode>> : std::type_identity<min_expl<Mode>> {};
@@ -161,53 +187,57 @@ static_assert(!Representation<min_expl<9>>);
 // quantity's operators should mirror the representation type capabilities
 template<typename Rep>
 concept invalid_member_operations = requires(length<metre, Rep> lhs) {
-  requires !requires { +lhs; };
-  requires !requires { -lhs; };
-  requires !requires { ++lhs; };
-  requires !requires { lhs++; };
-  requires !requires { --lhs; };
-  requires !requires { lhs--; };
+                                      requires !requires { +lhs; };
+                                      requires !requires { -lhs; };
+                                      requires !requires { ++lhs; };
+                                      requires !requires { lhs++; };
+                                      requires !requires { --lhs; };
+                                      requires !requires { lhs--; };
 
-  requires !requires(length<metre, Rep> rhs) { lhs += rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs -= rhs; };
-  requires !requires(Rep rhs) { lhs *= rhs; };
-  requires !requires(Rep rhs) { lhs /= rhs; };
-  requires !requires(Rep rhs) { lhs %= rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs %= rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs += rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs -= rhs; };
+                                      requires !requires(Rep rhs) { lhs *= rhs; };
+                                      requires !requires(Rep rhs) { lhs /= rhs; };
+                                      requires !requires(Rep rhs) { lhs %= rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs %= rhs; };
 
-  requires !requires(length<metre, Rep> rhs) { lhs + rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs - rhs; };
-  requires !requires(Rep rhs) { lhs % rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs % rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs < rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs > rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs <= rhs; };
-  requires !requires(length<metre, Rep> rhs) { lhs >= rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs + rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs - rhs; };
+                                      requires !requires(Rep rhs) { lhs % rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs % rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs < rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs > rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs <= rhs; };
+                                      requires !requires(length<metre, Rep> rhs) { lhs >= rhs; };
 
-  requires !requires(length<metre, int> rhs) { lhs + rhs; };
-  requires !requires(length<metre, int> rhs) { lhs - rhs; };
-  requires !requires(int rhs) { lhs % rhs; };
-  requires !requires(length<metre, int> rhs) { lhs % rhs; };
-  requires !requires(length<metre, int> rhs) { lhs == rhs; };
-  requires !requires(length<metre, int> rhs) { lhs != rhs; };
-  requires !requires(length<metre, int> rhs) { lhs < rhs; };
-  requires !requires(length<metre, int> rhs) { lhs > rhs; };
-  requires !requires(length<metre, int> rhs) { lhs <= rhs; };
-  requires !requires(length<metre, int> rhs) { lhs >= rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs + rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs - rhs; };
+                                      requires !requires(int rhs) { lhs % rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs % rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs == rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs != rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs < rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs > rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs <= rhs; };
+                                      requires !requires(length<metre, int> rhs) { lhs >= rhs; };
 
-  requires !requires(std::ostream os) { os << lhs; };
-};
+                                      requires !requires(std::ostream os) { os << lhs; };
+                                    };
 static_assert(invalid_member_operations<min_expl<>>);
 
 // equality
 static_assert(length<kilometre, min_expl<>>(min_expl(2)) == length<metre, min_expl<>>(min_expl(2000)));
 static_assert(length<metre, min_expl<>>(min_expl(123)) * min_expl(2) == length<metre, min_expl<>>(min_expl(246)));
-static_assert(length<metre, min_expl<>>(min_expl(123)) * quantity{min_expl(2)} == length<metre, min_expl<>>(min_expl(246)));
+static_assert(length<metre, min_expl<>>(min_expl(123)) * quantity{min_expl(2)} ==
+              length<metre, min_expl<>>(min_expl(246)));
 static_assert(min_expl(2) * length<metre, min_expl<>>(min_expl(123)) == length<metre, min_expl<>>(min_expl(246)));
-static_assert(quantity{min_expl(2)} * length<metre, min_expl<>>(min_expl(123)) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(quantity{min_expl(2)} * length<metre, min_expl<>>(min_expl(123)) ==
+              length<metre, min_expl<>>(min_expl(246)));
 static_assert(length<metre, min_expl<>>(min_expl(246)) / min_expl(2) == length<metre, min_expl<>>(min_expl(123)));
-static_assert(length<metre, min_expl<>>(min_expl(246)) / quantity{min_expl(2)} == length<metre, min_expl<>>(min_expl(123)));
-static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) == quantity{min_expl(123)});
+static_assert(length<metre, min_expl<>>(min_expl(246)) / quantity{min_expl(2)} ==
+              length<metre, min_expl<>>(min_expl(123)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) ==
+              quantity{min_expl(123)});
 static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) == min_expl(123));
 
 }  // namespace

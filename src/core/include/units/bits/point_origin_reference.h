@@ -34,42 +34,38 @@ struct reference_point_origin {
   using type = Orig;
 };
 
-template<PointOrigin Orig> requires requires {typename Orig::reference_point_origin; }
+template<PointOrigin Orig>
+  requires requires { typename Orig::reference_point_origin; }
 struct reference_point_origin<Orig> {
   using type = typename Orig::reference_point_origin;
 };
 
 
 template<PointOrigin Orig>
-using reference_point_origin_t =
-  typename reference_point_origin<Orig>::type;
+using reference_point_origin_t = typename reference_point_origin<Orig>::type;
 
 template<PointOrigin Orig>
 struct ultimate_reference_origin {
-  using type =
-    typename std::conditional_t<
-      std::same_as<reference_point_origin_t<Orig>,Orig>,
-      std::type_identity<Orig>,
-      ultimate_reference_origin<reference_point_origin_t<Orig>>
-      >::type;
+  using type = typename std::conditional_t<std::same_as<reference_point_origin_t<Orig>, Orig>, std::type_identity<Orig>,
+                                           ultimate_reference_origin<reference_point_origin_t<Orig>>>::type;
 };
 
 template<PointOrigin Orig>
 using ultimate_reference_origin_t = typename ultimate_reference_origin<Orig>::type;
 
-template <Quantity Q, PointOrigin Orig>
+template<Quantity Q, PointOrigin Orig>
 struct offset_to_ultimate_reference_origin {
-  static constexpr auto value = [](){
+  static constexpr auto value = []() {
     using RefOrig = reference_point_origin_t<Orig>;
-    if constexpr(std::is_same_v<RefOrig,Orig>) {
+    if constexpr (std::is_same_v<RefOrig, Orig>) {
       return Q::zero();
     } else {
-      return offset_to_ultimate_reference_origin<Q,RefOrig>::value + Orig::offset_to_reference;
+      return offset_to_ultimate_reference_origin<Q, RefOrig>::value + Orig::offset_to_reference;
     }
   }();
 };
 
-template <Quantity Q, PointOrigin Orig>
+template<Quantity Q, PointOrigin Orig>
 inline constexpr auto offset_to_ultimate_reference_origin_v = offset_to_ultimate_reference_origin<Q, Orig>::value;
 
 }  // namespace detail
@@ -77,8 +73,8 @@ inline constexpr auto offset_to_ultimate_reference_origin_v = offset_to_ultimate
 // PointOriginWithFixedOffsetFrom
 
 /**
-* @brief A concept matching all point origin types which have a fixed offset from the reference origin
-*
+ * @brief A concept matching all point origin types which have a fixed offset from the reference origin
+ *
  */
 template<typename T, typename O>
 concept PointOriginWithFixedOffsetFrom =
@@ -86,7 +82,8 @@ concept PointOriginWithFixedOffsetFrom =
   equivalent<detail::ultimate_reference_origin_t<T>, detail::ultimate_reference_origin_t<O>>;
 
 
-template <Quantity Q, PointOrigin To, PointOriginWithFixedOffsetFrom<To> From>
-inline constexpr auto offset_between_origins = detail::offset_to_ultimate_reference_origin_v<Q, To> - detail::offset_to_ultimate_reference_origin_v<Q, From>;
+template<Quantity Q, PointOrigin To, PointOriginWithFixedOffsetFrom<To> From>
+inline constexpr auto offset_between_origins =
+  detail::offset_to_ultimate_reference_origin_v<Q, To> - detail::offset_to_ultimate_reference_origin_v<Q, From>;
 
-} // namespace units
+}  // namespace units

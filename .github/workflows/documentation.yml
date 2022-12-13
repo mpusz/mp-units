@@ -25,16 +25,16 @@ name: Documentation
 on:
   push:
     paths:
-    - '.github/workflows/documentation.yml'
-    - 'docs/**'
-    - 'src/**'
-    - 'example/**'
+      - ".github/workflows/documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "example/**"
   pull_request:
     paths:
-    - '.github/workflows/documentation.yml'
-    - 'docs/**'
-    - 'src/**'
-    - 'example/**'
+      - ".github/workflows/documentation.yml"
+      - "docs/**"
+      - "src/**"
+      - "example/**"
 
 env:
   CC: gcc-10
@@ -47,9 +47,9 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache Conan data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-conan-data
         with:
@@ -63,9 +63,9 @@ jobs:
         run: |
           sudo apt install -y ninja-build
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: "3.8"
       - name: Install Python dependencies
         run: |
           pip install -Ur docs/requirements.txt
@@ -76,19 +76,15 @@ jobs:
         run: |
           conan config init
           conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          conan remote add linear-algebra https://twonington.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          mkdir build && cd build
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -e mp-units:CONAN_RUN_TESTS=True -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
       - name: Configure CMake
-        working-directory: build
         run: |
-          cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake
+          cmake --preset default
       - name: Generate documentation
-        working-directory: build
         run: |
-          cmake --build . --target documentation --config Release
+          cmake --build --preset release --target documentation
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3

@@ -43,7 +43,7 @@ static_assert(1_q_au == 149'597'870'700_q_m);
 static_assert(1_q_km + 1_q_m == 1001_q_m);
 static_assert(10_q_km / 5_q_km == 2);
 static_assert(10_q_km / 5_q_km < 3);
-static_assert(100_q_mm / 5_q_cm == dimensionless<scaled_unit<ratio(1, 1, -1), one>>(20));
+static_assert(100_q_mm / 5_q_cm == dimensionless<scaled_unit<mag<ratio(1, 10)>(), one>>(20));
 static_assert(100_q_mm / 5_q_cm == dimensionless<one>(2));
 static_assert(10_q_km / 2 == 5_q_km);
 
@@ -107,7 +107,7 @@ static_assert(1000 / 1_q_s == 1_q_kHz);
 static_assert(1 / 1_q_ms == 1_q_kHz);
 static_assert(3.2_q_GHz == 3'200'000'000_q_Hz);
 static_assert((10_q_Hz * 1_q_min).number() == 10);
-static_assert(10_q_Hz * 1_q_min == dimensionless<scaled_unit<ratio(60), one>>(10));
+static_assert(10_q_Hz * 1_q_min == dimensionless<scaled_unit<mag<60>(), one>>(10));
 static_assert(10_q_Hz * 1_q_min == dimensionless<one>(600));
 static_assert(2 / 1_q_Hz == 2_q_s);
 
@@ -239,6 +239,11 @@ static_assert(gray::symbol == "Gy");
 static_assert(milligray::symbol == "mGy");
 static_assert(kilogray::symbol == "kGy");
 
+// luminous flux
+
+static_assert(1_q_sr * 1_q_cd == 1_q_lm);
+static_assert(lumen::symbol == "lm");
+
 /* ************** DERIVED DIMENSIONS IN TERMS OF BASE UNITS **************** */
 
 // speed
@@ -276,8 +281,17 @@ static_assert(10_q_m * 10_q_m == 100_q_m2);
 static_assert(100_q_m2 / 10_q_m == 10_q_m);
 static_assert(10_q_km * 10_q_km == 100_q_km2);
 static_assert(1_q_m2 == 10'000_q_cm2);
+
+static_assert(1_q_ca == 1_q_m2);
+static_assert(1_q_da == 10_q_m2);
+static_assert(1_q_a == 100_q_m2);
+static_assert(1_q_daa == 1'000_q_m2);
 static_assert(1_q_ha == 10'000_q_m2);
 
+static_assert(centiare::symbol == "ca");
+static_assert(deciare::symbol == "da");
+static_assert(are::symbol == "a");
+static_assert(decare::symbol == "daa");
 static_assert(hectare::symbol == "ha");
 
 static_assert(detail::unit_text<dim_area, square_metre>() == basic_symbol_text("m²", "m^2"));
@@ -325,7 +339,7 @@ static_assert(detail::unit_text<dim_luminance, candela_per_metre_sq>() == basic_
 // dynamic viscosity
 
 static_assert(1_q_Pa_s == 1_q_N * 1_q_s / 1_q_m2);
-static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa ⋅ s", "Pa s"));
+static_assert(detail::unit_text<dim_dynamic_viscosity, pascal_second>() == basic_symbol_text("Pa⋅s", "Pa s"));
 
 // [specific|molar] heath capacity
 
@@ -334,16 +348,18 @@ static_assert(1_q_J_per_K * 1_q_K == 1_q_s * 1_q_N * 1_q_m_per_s);
 static_assert(1_q_J_per_mol_K == 1_q_J_per_K / 1_q_mol);
 
 static_assert(detail::unit_text<dim_heat_capacity, joule_per_kelvin>() == "J/K");
-static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() == basic_symbol_text("J ⋅ K⁻¹ ⋅ kg⁻¹", "J K^-1 kg^-1"));
+static_assert(detail::unit_text<dim_specific_heat_capacity, joule_per_kilogram_kelvin>() ==
+              basic_symbol_text("J⋅K⁻¹⋅kg⁻¹", "J K^-1 kg^-1"));
 
 // thermal conductivity
 
 static_assert(20_q_W_per_m_K * 10_q_m * 300_q_K == 60'000_q_W);
-static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() == basic_symbol_text("W ⋅ m⁻¹ ⋅ K⁻¹", "W m^-1 K^-1"));
+static_assert(detail::unit_text<dim_thermal_conductivity, watt_per_metre_kelvin>() ==
+              basic_symbol_text("W⋅m⁻¹⋅K⁻¹", "W m^-1 K^-1"));
 
 // electric field strength
 
-static_assert(100_q_N/20_q_C == 5_q_V_per_m);
+static_assert(100_q_N / 20_q_C == 5_q_V_per_m);
 static_assert(1_q_C * 10_q_V_per_m * 3_q_m == 30_q_J);
 
 static_assert(detail::unit_text<dim_electric_field_strength, volt_per_metre>() == "V/m");
@@ -358,12 +374,13 @@ static_assert(1_q_C_per_m2 == 1_q_C_per_m3 * 1_q_m);
 static_assert(1_q_V_per_m * 10_q_C_per_m3 * 1_q_m3 == 10_q_N);
 
 static_assert(detail::unit_text<dim_charge_density, coulomb_per_metre_cub>() == basic_symbol_text("C/m³", "C/m^3"));
-static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() == basic_symbol_text("C/m²", "C/m^2"));
+static_assert(detail::unit_text<dim_surface_charge_density, coulomb_per_metre_sq>() ==
+              basic_symbol_text("C/m²", "C/m^2"));
 
 // permittivity
 
 static_assert(1_q_F_per_m == 1_q_F / 1_q_m);
-static_assert(1/(1_q_F_per_m) * 1_q_C * 1_q_C / 1_q_m2 == 1_q_N);
+static_assert(1 / (1_q_F_per_m) * 1_q_C * 1_q_C / 1_q_m2 == 1_q_N);
 static_assert(1_q_C_per_m3 / 1_q_F_per_m * 1_q_m == 1_q_V_per_m);
 
 static_assert(detail::unit_text<dim_permittivity, farad_per_metre>() == "F/m");
@@ -384,6 +401,12 @@ static_assert(detail::unit_text<dim_molar_energy, joule_per_mole>() == "J/mol");
 // angular velocity
 
 static_assert(1_q_rad / 1_q_s == 1_q_rad_per_s);
-static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == basic_symbol_text("ω", "w"));
+static_assert(detail::unit_text<dim_angular_velocity, radian_per_second>() == "rad/s");
+
+// angular acceleration
+
+static_assert(1_q_rad_per_s / 1_q_s == 1_q_rad_per_s2);
+static_assert(detail::unit_text<dim_angular_acceleration, radian_per_second_sq>() ==
+              basic_symbol_text("rad/s²", "rad/s^2"));
 
 }  // namespace

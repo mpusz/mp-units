@@ -39,15 +39,15 @@ void simple_quantities()
   using distance = si::length<si::metre>;
   using duration = si::time<si::second>;
 
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_SHADOW
+  UNITS_DIAGNOSTIC_PUSH
+  UNITS_DIAGNOSTIC_IGNORE_SHADOW
   constexpr distance km = 1.0 * references::km;
   constexpr distance miles = 1.0 * mi;
 
   constexpr duration sec = 1 * s;
   constexpr duration min = 1 * references::min;
   constexpr duration hr = 1 * h;
-UNITS_DIAGNOSTIC_POP
+  UNITS_DIAGNOSTIC_POP
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -66,8 +66,8 @@ void quantities_with_typed_units()
   using namespace units::isq::si::international;
   using namespace units::isq::si::international::references;
 
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_SHADOW
+  UNITS_DIAGNOSTIC_PUSH
+  UNITS_DIAGNOSTIC_IGNORE_SHADOW
   constexpr length<kilometre> km = 1.0 * si::references::km;
   constexpr length<mile> miles = 1.0 * mi;
 
@@ -76,7 +76,7 @@ UNITS_DIAGNOSTIC_IGNORE_SHADOW
   constexpr si::time<second> sec = 1 * s;
   constexpr si::time<minute> min = 1 * si::references::min;
   constexpr si::time<hour> hr = 1 * h;
-UNITS_DIAGNOSTIC_POP
+  UNITS_DIAGNOSTIC_POP
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
@@ -123,7 +123,7 @@ void calcs_comparison()
   const length<femtometre, float> L1A = 2.f * fm;
   const length<femtometre, float> L2A = 3.f * fm;
   const length<femtometre, float> LrA = L1A + L2A;
-  fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
@@ -132,17 +132,17 @@ void calcs_comparison()
   const length<metre, float> L1B = L1A;
   const length<metre, float> L2B = L2A;
   const length<metre, float> LrB = L1B + L2B;
-  fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
   const area<square_femtometre, float> ArA = L1A * L2A;
-  fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
   const area<square_metre, float> ArB = L1B * L2B;
-  fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 
 }  // namespace

@@ -15,6 +15,69 @@ Base quantities are expressed in terms of :term:`base units <base unit>`
 in terms of :term:`derived units <derived unit>`.
 
 
+Class Hierarchy
+---------------
+
+All of the described here class templates to produce unit types inherit from some instance
+of a `scaled_unit` class template:
+
+.. raw:: html
+
+    <object data="../_images/units.svg" type="image/svg+xml" class="align-center" style="max-width: 100%;"></object>
+
+..
+    https://www.planttext.com
+
+    @startuml
+
+    skinparam monochrome true
+    skinparam shadowing false
+    skinparam backgroundColor #fcfcfc
+
+    hide members
+    hide circle
+
+    left to right direction
+
+    package Unit <<Frame>> [[../../framework/units.html]] {
+
+    abstract scaled_unit<UnitRatio, Unit>
+
+    abstract prefixed_alias_unit<Unit, Prefix, AliasUnit> [[../../framework/units.html#aliased-units]]
+    abstract alias_unit<Unit, Symbol> [[../../framework/units.html#aliased-units]]
+    abstract derived_scaled_unit<Dimension, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract derived_unit [[../../framework/units.html#derived-unnamed-units]]
+    abstract prefixed_unit<Prefix, Unit> [[../../framework/units.html#prefixed-unit]]
+    abstract named_scaled_unit<Symbol, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
+    abstract named_unit<Symbol> [[../../framework/units.html#base-units]]
+
+    scaled_unit <|-- named_unit
+    scaled_unit <|-- named_scaled_unit
+    scaled_unit <|-- prefixed_unit
+    scaled_unit <|-- derived_unit
+    scaled_unit <|-- derived_scaled_unit
+    scaled_unit <|-- alias_unit
+    scaled_unit <|-- prefixed_alias_unit
+    }
+
+    @enduml
+
+`scaled_unit` is a class template used exclusively by the library's framework
+and user should not instantiate it by him/her-self. However the user can sometimes
+observe this type in case an unit/dimension conversion expression will end up with an
+unknown/undefined unit type like in the below example::
+
+    using namespace units::isq::si::references;
+
+    Length auto l = 100 * (km / h) * (10 * s);
+
+The type of ``l`` above will be
+``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused
+by the fact that the library does not define a unit of a length quantity that has the
+ratio ``10/36`` of a ``si::metre``. If such a unit was predefined we would see its concrete
+type here instead.
+
+
 Base Units
 ----------
 
@@ -59,8 +122,6 @@ definitions of prefixed units using ``si::metre`` as a reference (i.e.
     :abbr:`CRTP (Curiously Recurring Template Parameter)` Idiom and is used
     in many places in this library to provide
     :ref:`design/downcasting:The Downcasting Facility`.
-    Hopefully if [P0847]_ will land in C++23 the additional CRTP-related
-    template parameter will be removed from this definition.
 
 
 It is important to notice here that :term:`SI` is not the only system used
@@ -112,14 +173,11 @@ Those units are the scaled versions of a time dimension's base unit,
 namely second. Those can be defined easily in the library using
 `named_scaled_unit` class template::
 
-    struct minute : named_scaled_unit<minute, "min", no_prefix, ratio(60), second> {};
-    struct hour : named_scaled_unit<hour, "h", no_prefix, ratio(60), minute> {};
-    struct day : named_scaled_unit<hour, "d", no_prefix, ratio(24), hour> {};
+    struct minute : named_scaled_unit<minute, "min", ratio(60), second> {};
+    struct hour : named_scaled_unit<hour, "h", ratio(60), minute> {};
+    struct day : named_scaled_unit<day, "d", ratio(24), hour> {};
 
-where `no_prefix` is a special tag type describing that the library should
-not allow to define a new prefixed unit that would use this unit as a
-reference ("kilohours" does not have much sense, right?). The `ratio` type
-used in the definition is really similar to ``std::ratio`` but it takes
+The `ratio` type used in the definition is really similar to ``std::ratio`` but it takes
 an additional ``Exponent`` template parameter that defines the exponent of the ratio.
 Another important difference is the fact that the objects of that class are used
 as class NTTPs rather then a type template parameter kind.
@@ -129,9 +187,6 @@ and define units like::
 
     struct electronvolt : named_scaled_unit<electronvolt, "eV", prefix,
                                             ratio(1'602'176'634, 1'000'000'000, -19), joule> {};
-
-.. 
-    TODO Submit a bug for above lexing problem
 
 Finally, the last of the `named_scaled_unit` class template parameters
 provide a reference unit for scaling. Please note that it can be a dimension's
@@ -148,28 +203,27 @@ complete list of all the :term:`SI` prefixes supported by the library::
 
     namespace si {
 
-    struct prefix : prefix_family {};
-
-    struct yocto  : units::prefix<yocto,  prefix, "y",  ratio(1, 1, -24)> {};
-    struct zepto  : units::prefix<zepto,  prefix, "z",  ratio(1, 1, -21)> {};
-    struct atto   : units::prefix<atto,   prefix, "a",  ratio(1, 1, -18)> {};
-    struct femto  : units::prefix<femto,  prefix, "f",  ratio(1, 1, -15)> {};
-    struct pico   : units::prefix<pico,   prefix, "p",  ratio(1, 1, -12)> {};
-    struct nano   : units::prefix<nano,   prefix, "n",  ratio(1, 1,  -9)> {};
-    struct micro  : units::prefix<micro,  prefix, "µ",  ratio(1, 1,  -6)> {};
-    struct milli  : units::prefix<milli,  prefix, "m",  ratio(1, 1,  -3)> {};
-    struct centi  : units::prefix<centi,  prefix, "c",  ratio(1, 1,  -2)> {};
-    struct deci   : units::prefix<deci,   prefix, "d",  ratio(1, 1,  -1)> {};
-    struct deca   : units::prefix<deca,   prefix, "da", ratio(1, 1,   1)> {};
-    struct hecto  : units::prefix<hecto,  prefix, "h",  ratio(1, 1,   2)> {};
-    struct kilo   : units::prefix<kilo,   prefix, "k",  ratio(1, 1,   3)> {};
-    struct mega   : units::prefix<mega,   prefix, "M",  ratio(1, 1,   6)> {};
-    struct giga   : units::prefix<giga,   prefix, "G",  ratio(1, 1,   9)> {};
-    struct tera   : units::prefix<tera,   prefix, "T",  ratio(1, 1,  12)> {};
-    struct peta   : units::prefix<peta,   prefix, "P",  ratio(1, 1,  15)> {};
-    struct exa    : units::prefix<exa,    prefix, "E",  ratio(1, 1,  18)> {};
-    struct zetta  : units::prefix<zetta,  prefix, "Z",  ratio(1, 1,  21)> {};
-    struct yotta  : units::prefix<yotta,  prefix, "Y",  ratio(1, 1,  24)> {};
+    struct yocto  : prefix<yocto, "y",             mag_power<10, -24>()> {};
+    struct zepto  : prefix<zepto, "z",             mag_power<10, -21>()> {};
+    struct atto   : prefix<atto,  "a",             mag_power<10, -18>()> {};
+    struct femto  : prefix<femto, "f",             mag_power<10, -15>()> {};
+    struct pico   : prefix<pico,  "p",             mag_power<10, -12>()> {};
+    struct nano   : prefix<nano,  "n",             mag_power<10, -9>()> {};
+    struct micro  : prefix<micro, basic_symbol_text{"\u00b5", "u"},
+                                                   mag_power<10, -6>()> {};
+    struct milli  : prefix<milli, "m",             mag_power<10, -3>()> {};
+    struct centi  : prefix<centi, "c",             mag_power<10, -2>()> {};
+    struct deci   : prefix<deci,  "d",             mag_power<10, -1>()> {};
+    struct deca   : prefix<deca,  "da",            mag_power<10, 1>()> {};
+    struct hecto  : prefix<hecto, "h",             mag_power<10, 2>()> {};
+    struct kilo   : prefix<kilo,  "k",             mag_power<10, 3>()> {};
+    struct mega   : prefix<mega,  "M",             mag_power<10, 6>()> {};
+    struct giga   : prefix<giga,  "G",             mag_power<10, 9>()> {};
+    struct tera   : prefix<tera,  "T",             mag_power<10, 12>()> {};
+    struct peta   : prefix<peta,  "P",             mag_power<10, 15>()> {};
+    struct exa    : prefix<exa,   "E",             mag_power<10, 18>()> {};
+    struct zetta  : prefix<zetta, "Z",             mag_power<10, 21>()> {};
+    struct yotta  : prefix<yotta, "Y",             mag_power<10, 24>()> {};
 
     }
 
@@ -177,16 +231,16 @@ Alternative hierarchy of prefixes is the one used in data information
 domain::
 
     namespace iec80000 {
-    
-    struct binary_prefix : prefix_family {};
-    
-    struct kibi : units::prefix<kibi, binary_prefix, "Ki", ratio(                    1'024)> {};
-    struct mebi : units::prefix<mebi, binary_prefix, "Mi", ratio(                1'048'576)> {};
-    struct gibi : units::prefix<gibi, binary_prefix, "Gi", ratio(            1'073'741'824)> {};
-    struct tebi : units::prefix<tebi, binary_prefix, "Ti", ratio(        1'099'511'627'776)> {};
-    struct pebi : units::prefix<pebi, binary_prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
-    struct exbi : units::prefix<exbi, binary_prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
-    
+
+    struct kibi : prefix<kibi, "Ki", mag_power<2, 10>()> {};
+    struct mebi : prefix<mebi, "Mi", mag_power<2, 20>()> {};
+    struct gibi : prefix<gibi, "Gi", mag_power<2, 30>()> {};
+    struct tebi : prefix<tebi, "Ti", mag_power<2, 40>()> {};
+    struct pebi : prefix<pebi, "Pi", mag_power<2, 50>()> {};
+    struct exbi : prefix<exbi, "Ei", mag_power<2, 60>()> {};
+    struct zebi : prefix<zebi, "Zi", mag_power<2, 70>()> {};
+    struct yobi : prefix<yobi, "Yi", mag_power<2, 80>()> {};
+
     }
 
 With the definitions like above we can easily define prefixed unit. For
@@ -247,19 +301,19 @@ will result in a different unnamed unit symbol:
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exponent<si::dim_mass, 1>,
                                             exponent<si::dim_length, 1>,
-                                            exponent<si::dim_time, -1>> {};    // kg ⋅ m/s
+                                            exponent<si::dim_time, -1>> {};    // kg⋅m/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exponent<si::dim_length, 1>,
                                             exponent<si::dim_mass, 1>,
-                                            exponent<si::dim_time, -1>> {};    // m ⋅ kg/s
+                                            exponent<si::dim_time, -1>> {};    // m⋅kg/s
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exponent<si::dim_time, -1>,
                                             exponent<si::dim_length, 1>,
-                                            exponent<si::dim_mass, 1>> {};     // 1/s ⋅ m ⋅ kg
+                                            exponent<si::dim_mass, 1>> {};     // 1/s⋅m⋅kg
 
 where ``kilogram_metre_per_second`` is defined as::
 
-    struct kilogram_metre_per_second : unit<kilogram_metre_per_second> {};
+    struct kilogram_metre_per_second : derived_unit<kilogram_metre_per_second> {};
 
 However, the easiest way to define momentum is just to use the
 ``si::dim_speed`` derived dimension in the recipe:
@@ -269,7 +323,7 @@ However, the easiest way to define momentum is just to use the
 
     struct dim_momentum : derived_dimension<dim_momentum, kilogram_metre_per_second,
                                             exponent<si::dim_mass, 1>,
-                                            exponent<si::dim_speed, 1>> {}; // kg ⋅ m/s
+                                            exponent<si::dim_speed, 1>> {}; // kg⋅m/s
 
 In such a case the library will do its magic and will automatically
 unpack a provided derived dimension to its base dimensions in order to
@@ -306,12 +360,12 @@ ratio in reference to the "metre per second":
 
 Whichever, we choose there will always be someone not happy with our choice.
 
-Thanks to a `derived_unit` class template provided by the library this problem
+Thanks to a `derived_scaled_unit` class template provided by the library this problem
 does not exist at all. With it ``si::kilometre_per_hour`` can be defined as::
 
     namespace si {
 
-    struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+    struct kilometre_per_hour : derived_scaled_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
     }
 
@@ -321,7 +375,7 @@ by him/her-self::
 
     namespace si::fps {
 
-    struct knot : named_derived_unit<knot, dim_speed, "knot", no_prefix, nautical_mile, hour> {};
+    struct knot : named_derived_unit<knot, dim_speed, "knot", nautical_mile, hour> {};
 
     }
 
@@ -358,44 +412,6 @@ class template::
 
     }
 
-
-Class Hierarchy
----------------
-
-All of the above class templates to produce unit types inherit from some instance
-of a `scaled_unit` class template:
-
-.. image:: /_static/img/units.png
-    :align: center
-
-.. 
-    http://www.nomnoml.com
-
-    #direction: right
-
-    [scaled_unit<UnitRatio, Unit>]<:-[unit<Child>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_unit<Child, Symbol, PrefixFamily>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_scaled_unit<Child, Symbol, PrefixFamily, Ratio, Unit>]
-    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_unit<Child, Prefix, Unit>]
-    [scaled_unit<UnitRatio, Unit>]<:-[derived_unit<Child, Dimension, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[named_derived_unit<Child, Dimension, Symbol, PrefixFamily, Unit, Unit...>]
-    [scaled_unit<UnitRatio, Unit>]<:-[alias_unit<Unit, Symbol, PrefixFamily>]
-    [scaled_unit<UnitRatio, Unit>]<:-[prefixed_alias_unit<Unit, Prefix, AliasUnit>]
-
-`scaled_unit` is a class template used exclusively by the library's framework
-and user should not instantiate it by him/her-self. However the user can sometimes
-observe this type in case an unit/dimension conversion expression will end up with an
-unknown/undefined unit type like in the below example::
-
-    using namespace units::isq::si::references;
-
-    Length auto l = 100 * (km / h) * (10 * s);
-
-The type of ``l`` above will be
-``si::length<scaled_unit<ratio(1, 36, 1), si::metre>, long double>``. This is caused
-by the fact that the library does not define a unit of a length quantity that has the
-ratio ``10/36`` of a ``si::metre``. If such a unit was predefined we would see its concrete
-type here instead.
 
 .. seealso::
 

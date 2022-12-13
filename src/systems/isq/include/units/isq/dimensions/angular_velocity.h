@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <units/generic/angle.h>
 #include <units/concepts.h>
+#include <units/generic/angle.h>
 #include <units/isq/dimensions/time.h>
 
 namespace units::isq {
@@ -34,7 +34,7 @@ struct dim_angular_velocity;
 template<typename Child, Unit U, DimensionOfT<dim_angle> A, DimensionOfT<dim_time> T>
 struct dim_angular_velocity<Child, U, A, T> : derived_dimension<Child, U, exponent<A, 1>, exponent<T, -1>> {};
 
-template <typename T>
+template<typename T>
 concept AngularVelocity = QuantityOfT<T, dim_angular_velocity>;
 
 }  // namespace units::isq

@@ -20,32 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include <catch2/matchers/catch_matchers_templated.hpp>
+#include <units/format.h>
+#include <units/quantity.h>
 
-#include <units/base_dimension.h>
-#include <units/exponent.h>
-#include <units/ratio.h>
+namespace units {
 
-namespace units::detail {
+template<Quantity T>
+struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
+  AlmostEqualsMatcher(const T& target) : target_{target} {}
 
-template<Exponent E>
-  requires (E::den == 1 || E::den == 2) // TODO provide support for any den
-constexpr ratio exp_ratio()
+  template<QuantityEquivalentTo<T> U>
+    requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep> bool
+  match(const U& other) const
+  {
+    using std::abs;
+    using common = std::common_type_t<T, U>;
+    const auto x = common(target_).number();
+    const auto y = common(other).number();
+    const auto maxXYOne = std::max({typename T::rep{1}, abs(x), abs(y)});
+    return abs(x - y) <= std::numeric_limits<typename T::rep>::epsilon() * maxXYOne;
+  }
+
+  std::string describe() const override { return "almost equals: " + STD_FMT::format("{}", target_); }
+
+private:
+  const T& target_;
+};
+
+template<Quantity T>
+AlmostEqualsMatcher<T> AlmostEquals(const T& target)
 {
-  const ratio base_ratio = E::dimension::base_unit::ratio;
-  const ratio positive_ratio = E::num * E::den < 0 ? ratio(base_ratio.den, base_ratio.num, -base_ratio.exp) : base_ratio;
-  const std::intmax_t N = E::num * E::den < 0 ? -E::num : E::num;
-  const ratio ratio_pow = pow<N>(positive_ratio);
-  return E::den == 2 ? sqrt(ratio_pow) : ratio_pow;
+  return {target};
 }
 
-/**
- * @brief Calculates the common ratio of all the references of base units in the derived dimension
- */
-template<typename... Es>
-constexpr ratio base_units_ratio(exponent_list<Es...>)
-{
-  return (exp_ratio<Es>() * ... * ratio(1));
-}
-
-}  // namespace units::detail
+}  // namespace units

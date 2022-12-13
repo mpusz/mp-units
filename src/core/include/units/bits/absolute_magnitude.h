@@ -22,56 +22,27 @@
 
 #pragma once
 
-#include <cstdint>
-#include <cassert>
+#include <units/base_dimension.h>
+#include <units/exponent.h>
+#include <units/magnitude.h>
+#include <units/ratio.h>
 
 namespace units::detail {
 
-constexpr std::intmax_t ipow10(std::intmax_t exp)
+/**
+ * @brief Calculates the "absolute" magnitude of the derived dimension defined by this list.
+ *
+ * "Absolute" magnitudes are not physically observable: only ratios of magnitudes are.  For example: if we multiplied
+ * all magnitudes in the system by the same constant, no meaningful results would change.  However, in practice, we need
+ * to make some global choice for the "absolute" values of magnitudes, so that we can compute their ratios.
+ *
+ * The point of this function is to compute the absolute magnitude of a derived dimension, in terms of the absolute
+ * magnitudes of its constituent dimensions.
+ */
+template<typename... Es>
+constexpr Magnitude auto absolute_magnitude(exponent_list<Es...>)
 {
-  assert(exp >= 0);
-  if (exp == 0) return 1;
-  std::intmax_t result = 1;
-  while (exp > 0) {
-    result *= 10;
-    --exp;
-  }
-  return result;
-}
-
-template<typename Rep>
-constexpr Rep fpow10(std::intmax_t exp)
-{
-  if (exp == 0) return Rep(1.0);
-  Rep result = Rep(1.0);
-  if (exp < 0) {
-    while (exp < 0) {
-      result = result / Rep(10.0);
-      ++exp;
-    }
-  } else {
-    while (exp > 0) {
-      result = result * Rep(10.0);
-      --exp;
-    }
-  }
-  return result;
-}
-
-template<std::intmax_t N, typename T>
-constexpr T pow_impl(const T& v) noexcept
-{
-  if constexpr (N == 0) {
-    return T(1);
-  } else if constexpr (N == 1) {
-    return v;
-  } else if constexpr (N < 0) {
-    return 1 / pow_impl<-N>(v);
-  } else if constexpr (N % 2 == 0) {  // even
-    return pow_impl<N / 2>(v * v);
-  } else {  // odd
-    return v * pow_impl<(N - 1) / 2>(v * v);
-  }
+  return (magnitude<>{} * ... * pow<ratio{Es::num, Es::den}>(Es::dimension::base_unit::mag));
 }
 
 }  // namespace units::detail

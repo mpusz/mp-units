@@ -1,6 +1,7 @@
 [![GitHub license](https://img.shields.io/github/license/mpusz/units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
 [![Conan CI](https://img.shields.io/github/workflow/status/mpusz/units/Conan%20CI/master?label=Conan%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
 [![CMake CI](https://img.shields.io/github/workflow/status/mpusz/units/CMake%20Test%20Package%20CI/master?label=CMake%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
+[![Check CI](https://img.shields.io/github/workflow/status/mpusz/units/Check%20CI/master?label=Check%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Check%20CI%22+branch%3Amaster)
 [![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=Documentation%20CI)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 [![Conan stable](https://img.shields.io/badge/ConanCenter-0.7.0%3Astable-blue)](https://conan.io/center/mp-units)
 [![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-0.8.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/0.8.0)
@@ -9,8 +10,10 @@
 
 **The mp-units library is the subject of ISO standardization for C++23/26. More on this can
 be found in ISO C++ paper [P1935](https://wg21.link/p1935) and
-[CppCon 2020 talk](https://www.youtube.com/watch?v=7dExYGSOJzo). We are actively looking for
+[NDC TechTown 2021 talk](https://www.youtube.com/watch?v=nudq58d0TFc). We are actively looking for
 parties interested in field trialing the library.**
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/units)
 
 
 ## Documentation
@@ -90,23 +93,18 @@ int main()
   constexpr Speed auto v2 = mi_per_h(70.);
   constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
   constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
-#if UNITS_DOWNCAST_MODE == 0
-  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
-  constexpr Speed auto v6 = quantity_cast<si::dim_speed, si::metre_per_second>(v4);
-#else
   constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
   constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
-#endif
   constexpr Speed auto v7 = quantity_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
   std::cout << v2 << '\n';                                  // 70 mi/h
-  std::cout << fmt::format("{}", v3) << '\n';               // 110 km/h
-  std::cout << fmt::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
-  std::cout << fmt::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
-  std::cout << fmt::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
-  std::cout << fmt::format("{:%Q}", v7) << '\n';            // 31
+  std::cout << std::format("{}", v3) << '\n';               // 110 km/h
+  std::cout << std::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
+  std::cout << std::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
+  std::cout << std::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
+  std::cout << std::format("{:%Q}", v7) << '\n';            // 31
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/9fnzfbhb6)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/bcb87Kvea)._

@@ -22,23 +22,20 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-add_library(unit_tests_static_truncating
-    quantity_test.cpp
-)
-if(NOT UNITS_LIBCXX)
-    target_sources(unit_tests_static_truncating PRIVATE
-        quantity_kind_test.cpp
-        quantity_point_kind_test.cpp
-    )
+add_library(unit_tests_static_truncating quantity_test.cpp)
+
+if(NOT ${projectPrefix}LIBCXX)
+    target_sources(unit_tests_static_truncating PRIVATE quantity_kind_test.cpp quantity_point_kind_test.cpp)
 endif()
-target_link_libraries(unit_tests_static_truncating PRIVATE
-    mp-units::mp-units
-)
-target_compile_options(unit_tests_static_truncating PRIVATE
-    $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+
+target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
+target_compile_options(
+    unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
 
-add_library(unit_tests_static
+add_library(
+    unit_tests_static
+    angle_test.cpp
     cgs_test.cpp
     chrono_test.cpp
     concepts_test.cpp
@@ -52,6 +49,7 @@ add_library(unit_tests_static
     kind_test.cpp
     math_test.cpp
     point_origin_test.cpp
+    prime_test.cpp
     ratio_test.cpp
     references_test.cpp
     si_test.cpp
@@ -64,14 +62,8 @@ add_library(unit_tests_static
     us_test.cpp
 )
 
-if(NOT UNITS_LIBCXX)
-    target_sources(unit_tests_static PRIVATE
-        custom_rep_test_min_impl.cpp
-        quantity_point_test.cpp
-    )
+if(NOT ${projectPrefix}LIBCXX)
+    target_sources(unit_tests_static PRIVATE custom_rep_test_min_impl.cpp quantity_point_test.cpp)
 endif()
 
-target_link_libraries(unit_tests_static PRIVATE
-    unit_tests_static_truncating
-    mp-units::mp-units
-)
+target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating mp-units::mp-units)

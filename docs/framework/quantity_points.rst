@@ -120,4 +120,3 @@ Unlike `quantity` and with the exception of temperatures, the library provides:
 - the set of operations on quantity points is more limited than on quantities on purpose,
   excluding physically ill-defined operations
   (see the :ref:`framework/dimensions:Quantity Points` chapter)
-

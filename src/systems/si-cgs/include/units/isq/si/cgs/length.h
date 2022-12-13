@@ -46,12 +46,16 @@ using length = quantity<dim_length, U, Rep>;
 inline namespace literals {
 
 // cm
-constexpr auto operator"" _q_cm(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<centimetre, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_cm(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<centimetre, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_cm(long double l) { return length<centimetre, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -67,7 +71,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::cgs
 
@@ -75,8 +79,9 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::cgs::inline length {
 
-template<Representation Rep = double> using cm = units::isq::si::cgs::length<units::isq::si::cgs::centimetre, Rep>;
+template<Representation Rep = double>
+using cm = units::isq::si::cgs::length<units::isq::si::cgs::centimetre, Rep>;
 
 }  // namespace units::aliases::isq::si::cgs::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

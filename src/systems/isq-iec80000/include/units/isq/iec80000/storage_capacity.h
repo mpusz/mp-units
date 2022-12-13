@@ -35,7 +35,8 @@
 
 namespace units::isq::iec80000 {
 
-struct bit : named_unit<bit, "bit", si::prefix> {};
+struct bit : named_unit<bit, "bit"> {};
+
 struct kilobit : prefixed_unit<kilobit, si::kilo, bit> {};
 struct megabit : prefixed_unit<megabit, si::mega, bit> {};
 struct gigabit : prefixed_unit<gigabit, si::giga, bit> {};
@@ -45,15 +46,15 @@ struct exabit : prefixed_unit<exabit, si::exa, bit> {};
 struct zettabit : prefixed_unit<zettabit, si::zetta, bit> {};
 struct yottabit : prefixed_unit<yottabit, si::yotta, bit> {};
 
-struct binary_prefix_bit : alias_unit<bit, "bit", binary_prefix> {};
-struct kibibit : prefixed_unit<kibibit, kibi, binary_prefix_bit> {};
-struct mebibit : prefixed_unit<mebibit, mebi, binary_prefix_bit> {};
-struct gibibit : prefixed_unit<gibibit, gibi, binary_prefix_bit> {};
-struct tebibit : prefixed_unit<tebibit, tebi, binary_prefix_bit> {};
-struct pebibit : prefixed_unit<pebibit, pebi, binary_prefix_bit> {};
-struct exbibit : prefixed_unit<exbibit, exbi, binary_prefix_bit> {};
+struct kibibit : prefixed_unit<kibibit, kibi, bit> {};
+struct mebibit : prefixed_unit<mebibit, mebi, bit> {};
+struct gibibit : prefixed_unit<gibibit, gibi, bit> {};
+struct tebibit : prefixed_unit<tebibit, tebi, bit> {};
+struct pebibit : prefixed_unit<pebibit, pebi, bit> {};
+struct exbibit : prefixed_unit<exbibit, exbi, bit> {};
 
-struct byte : named_scaled_unit<byte, "B", si::prefix, ratio(8), bit> {};
+struct byte : named_scaled_unit<byte, "B", mag<8>(), bit> {};
+
 struct kilobyte : prefixed_unit<kilobyte, si::kilo, byte> {};
 struct megabyte : prefixed_unit<megabyte, si::mega, byte> {};
 struct gigabyte : prefixed_unit<gigabyte, si::giga, byte> {};
@@ -63,13 +64,12 @@ struct exabyte : prefixed_unit<exabyte, si::exa, byte> {};
 struct zettabyte : prefixed_unit<zettabyte, si::zetta, byte> {};
 struct yottabyte : prefixed_unit<yottabyte, si::yotta, byte> {};
 
-struct binary_prefix_byte : alias_unit<byte, "B", binary_prefix> {};
-struct kibibyte : prefixed_unit<kibibyte, kibi, binary_prefix_byte> {};
-struct mebibyte : prefixed_unit<mebibyte, mebi, binary_prefix_byte> {};
-struct gibibyte : prefixed_unit<gibibyte, gibi, binary_prefix_byte> {};
-struct tebibyte : prefixed_unit<tebibyte, tebi, binary_prefix_byte> {};
-struct pebibyte : prefixed_unit<pebibyte, pebi, binary_prefix_byte> {};
-// struct exbibyte : prefixed_unit<exbibyte, exbi, binary_prefix_byte> {};
+struct kibibyte : prefixed_unit<kibibyte, kibi, byte> {};
+struct mebibyte : prefixed_unit<mebibyte, mebi, byte> {};
+struct gibibyte : prefixed_unit<gibibyte, gibi, byte> {};
+struct tebibyte : prefixed_unit<tebibyte, tebi, byte> {};
+struct pebibyte : prefixed_unit<pebibyte, pebi, byte> {};
+// struct exbibyte : prefixed_unit<exbibyte, exbi, byte> {};
 
 struct dim_storage_capacity : base_dimension<"M", byte> {};
 
@@ -84,46 +84,163 @@ using storage_capacity = quantity<dim_storage_capacity, U, Rep>;
 inline namespace literals {
 
 // bits
-constexpr auto operator"" _q_bit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<bit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_bit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<bit, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
-constexpr auto operator"" _q_kbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<kilobit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Mbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<megabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Gbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<gigabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Tbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<terabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Pbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<petabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Ebit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<exabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Zbit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<zettabit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Ybit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<yottabit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<kilobit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Mbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<megabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Gbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<gigabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Tbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<terabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Pbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<petabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Ebit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<exabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Zbit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<zettabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Ybit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<yottabit, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
-constexpr auto operator"" _q_Kibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<kibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Mibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<mebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Gibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<gibibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Tibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<tebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Pibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<pebibit, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_Eibit(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<exbibit, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_Kibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<kibibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Mibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<mebibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Gibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<gibibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Tibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<tebibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Pibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<pebibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_Eibit(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<exbibit, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
 // bytes
-constexpr auto operator"" _q_B(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<byte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_B(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<byte, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
-constexpr auto operator"" _q_kB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<kilobyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_MB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<megabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_GB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<gigabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_TB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<terabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_PB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<petabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_EB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<exabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_ZB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<zettabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_YB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<yottabyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<kilobyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_MB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<megabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_GB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<gigabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_TB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<terabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_PB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<petabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_EB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<exabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_ZB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<zettabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_YB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<yottabyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
 
-constexpr auto operator"" _q_KiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<kibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_MiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<mebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_GiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<gibibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_TiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<tebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-constexpr auto operator"" _q_PiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<pebibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
-// constexpr auto operator"" _q_EiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return storage_capacity<exbibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_KiB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<kibibyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_MiB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<mebibyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_GiB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<gibibyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_TiB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<tebibyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+constexpr auto operator"" _q_PiB(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return storage_capacity<pebibyte, std::int64_t>(static_cast<std::int64_t>(l));
+}
+// constexpr auto operator"" _q_EiB(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return
+// storage_capacity<exbibyte, std::int64_t>(static_cast<std::int64_t>(l)); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -175,7 +292,7 @@ using namespace storage_capacity_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::iec80000
 
@@ -184,43 +301,73 @@ using namespace storage_capacity_references;
 namespace units::aliases::isq::iec80000::inline storage_capacity {
 
 // bits
-template<Representation Rep = double> using bit = units::isq::iec80000::storage_capacity<units::isq::iec80000::bit, Rep>;
+template<Representation Rep = double>
+using bit = units::isq::iec80000::storage_capacity<units::isq::iec80000::bit, Rep>;
 
-template<Representation Rep = double> using kbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobit, Rep>;
-template<Representation Rep = double> using Mbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabit, Rep>;
-template<Representation Rep = double> using Gbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabit, Rep>;
-template<Representation Rep = double> using Tbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabit, Rep>;
-template<Representation Rep = double> using Pbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabit, Rep>;
-template<Representation Rep = double> using Ebit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabit, Rep>;
-template<Representation Rep = double> using Zbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabit, Rep>;
-template<Representation Rep = double> using Ybit = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabit, Rep>;
+template<Representation Rep = double>
+using kbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobit, Rep>;
+template<Representation Rep = double>
+using Mbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabit, Rep>;
+template<Representation Rep = double>
+using Gbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabit, Rep>;
+template<Representation Rep = double>
+using Tbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabit, Rep>;
+template<Representation Rep = double>
+using Pbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabit, Rep>;
+template<Representation Rep = double>
+using Ebit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabit, Rep>;
+template<Representation Rep = double>
+using Zbit = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabit, Rep>;
+template<Representation Rep = double>
+using Ybit = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabit, Rep>;
 
-template<Representation Rep = double> using Kibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibit, Rep>;
-template<Representation Rep = double> using Mibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibit, Rep>;
-template<Representation Rep = double> using Gibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibit, Rep>;
-template<Representation Rep = double> using Tibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibit, Rep>;
-template<Representation Rep = double> using Pibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibit, Rep>;
-template<Representation Rep = double> using Eibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibit, Rep>;
+template<Representation Rep = double>
+using Kibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibit, Rep>;
+template<Representation Rep = double>
+using Mibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibit, Rep>;
+template<Representation Rep = double>
+using Gibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibit, Rep>;
+template<Representation Rep = double>
+using Tibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibit, Rep>;
+template<Representation Rep = double>
+using Pibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibit, Rep>;
+template<Representation Rep = double>
+using Eibit = units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibit, Rep>;
 
 // bytes
-template<Representation Rep = double> using B = units::isq::iec80000::storage_capacity<units::isq::iec80000::byte, Rep>;
+template<Representation Rep = double>
+using B = units::isq::iec80000::storage_capacity<units::isq::iec80000::byte, Rep>;
 
-template<Representation Rep = double> using kB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobyte, Rep>;
-template<Representation Rep = double> using MB = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabyte, Rep>;
-template<Representation Rep = double> using GB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabyte, Rep>;
-template<Representation Rep = double> using TB = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabyte, Rep>;
-template<Representation Rep = double> using PB = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabyte, Rep>;
-template<Representation Rep = double> using EB = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabyte, Rep>;
-template<Representation Rep = double> using ZB = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabyte, Rep>;
-template<Representation Rep = double> using YB = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabyte, Rep>;
+template<Representation Rep = double>
+using kB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kilobyte, Rep>;
+template<Representation Rep = double>
+using MB = units::isq::iec80000::storage_capacity<units::isq::iec80000::megabyte, Rep>;
+template<Representation Rep = double>
+using GB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gigabyte, Rep>;
+template<Representation Rep = double>
+using TB = units::isq::iec80000::storage_capacity<units::isq::iec80000::terabyte, Rep>;
+template<Representation Rep = double>
+using PB = units::isq::iec80000::storage_capacity<units::isq::iec80000::petabyte, Rep>;
+template<Representation Rep = double>
+using EB = units::isq::iec80000::storage_capacity<units::isq::iec80000::exabyte, Rep>;
+template<Representation Rep = double>
+using ZB = units::isq::iec80000::storage_capacity<units::isq::iec80000::zettabyte, Rep>;
+template<Representation Rep = double>
+using YB = units::isq::iec80000::storage_capacity<units::isq::iec80000::yottabyte, Rep>;
 
-template<Representation Rep = double> using KiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibyte, Rep>;
-template<Representation Rep = double> using MiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibyte, Rep>;
-template<Representation Rep = double> using GiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibyte, Rep>;
-template<Representation Rep = double> using TiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibyte, Rep>;
-template<Representation Rep = double> using PiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibyte, Rep>;
-// template<Representation Rep = double> using EiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibyte, Rep>;
+template<Representation Rep = double>
+using KiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::kibibyte, Rep>;
+template<Representation Rep = double>
+using MiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::mebibyte, Rep>;
+template<Representation Rep = double>
+using GiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::gibibyte, Rep>;
+template<Representation Rep = double>
+using TiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::tebibyte, Rep>;
+template<Representation Rep = double>
+using PiB = units::isq::iec80000::storage_capacity<units::isq::iec80000::pebibyte, Rep>;
+// template<Representation Rep = double> using EiB =
+// units::isq::iec80000::storage_capacity<units::isq::iec80000::exbibyte, Rep>;
 
 }  // namespace units::aliases::isq::iec80000::inline storage_capacity
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

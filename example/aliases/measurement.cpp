@@ -38,8 +38,7 @@ public:
 
   measurement() = default;
 
-  constexpr explicit measurement(const value_type& val, const value_type& err = {}) :
-      value_(val)
+  constexpr explicit measurement(const value_type& val, const value_type& err = {}) : value_(val)
   {
     // it sucks that using declaration cannot be provided for a constructor initializer list
     using namespace std;

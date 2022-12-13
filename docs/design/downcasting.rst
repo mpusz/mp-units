@@ -45,7 +45,7 @@ to use inheritance:
 .. image:: /_static/img/downcast_1.png
     :align: center
 
-.. 
+..
     http://www.nomnoml.com
 
     [derived_dimension_base<exponent<si::dim_length, 2>>]<:-[dim_area]
@@ -76,7 +76,7 @@ The downcasting facility is provided by injecting two classes into our hierarchy
 .. image:: /_static/img/downcast_2.png
     :align: center
 
-.. 
+..
     http://www.nomnoml.com
 
     [downcast_base<detail::derived_dimension_base<exponent<si::dim_length, 2>>>]<:-[detail::derived_dimension_base<exponent<si::dim_length, 2>>]
@@ -93,7 +93,7 @@ In the above example:
   idiom, stores the base of a downcasting operation in a ``downcast_base_type`` member type,
   and provides only a Hidden Friend non-member function declaration of ``downcast_guide`` which is an
   :abbr:`ADL (Argument Dependent Lookup)` entry  point for the downcasting operation::
-  
+
       template<typename BaseType>
       struct downcast_base {
         using downcast_base_type = BaseType;

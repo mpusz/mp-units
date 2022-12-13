@@ -22,7 +22,7 @@ Defining a New Unit
 My working desk is of ``180 cm x 60 cm`` which gives an area of ``0.3 m²``. I would like to
 make it a unit of area for my project::
 
-    struct desk : named_scaled_unit<desk, "desk", no_prefix, ratio(3, 10), si::square_metre> {};
+    struct desk : named_scaled_unit<desk, "desk", ratio(3, 10), si::square_metre> {};
 
 With the above I can define a quantity with the area of ``2 desks``::
 
@@ -56,28 +56,22 @@ In case I would like to check how much area ``6 desks`` take in SI units::
 Enabling a Unit for Prefixing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In case I decide it is reasonable to express my desks with SI prefixes the only thing I have
-to change in the above code is to replace `no_prefix` with `isq::si::prefix`::
-
-    struct desk : named_scaled_unit<desk, "desk", si::prefix, ratio(3, 10), si::square_metre> {};
-
-Now I can define a new unit named ``kilodesk``::
+In case I decide it is reasonable to express my desks with SI prefixes, I can define
+a new unit named ``kilodesk``::
 
     struct kilodesk : prefixed_unit<kilodesk, si::kilo, desk> {};
     static_assert(3_d * 1000 == si::area<kilodesk>(3));
 
 But maybe SI prefixes are not good for me. Maybe I always pack ``6`` desks into one package
-for shipment and ``40`` such packages fit into my lorry. To express this with prefixes a new
-prefix family and prefixes are needed::
+for shipment and ``40`` such packages fit into my lorry. To express this new prefix definitions
+are needed::
 
-    struct shipping_prefix : prefix_family {};
-
-    struct package : prefix<package, shipping_prefix, "pkg", ratio(6)> {};
-    struct lorry : prefix<lorry, shipping_prefix, "lorry", ratio(6 * 40)> {};
+    struct package : prefix<package, "pkg", ratio(6)> {};
+    struct lorry : prefix<lorry, "lorry", ratio(6 * 40)> {};
 
 Now we can use it for our unit::
 
-    struct desk : named_scaled_unit<desk, "desk", shipping_prefix, ratio(3, 10), si::square_metre> {};
+    struct desk : named_scaled_unit<desk, "desk", ratio(3, 10), si::square_metre> {};
     struct packagedesk : prefixed_unit<packagedesk, package, desk> {};
     struct lorrydesk : prefixed_unit<lorrydesk, lorry, desk> {};
 
@@ -111,14 +105,14 @@ rate of wood during production I need to define a new derived dimension together
 coherent unit::
 
     // coherent unit must apply to the system rules (in this case SI)
-    struct square_metre_per_second : unit<square_metre_per_second> {};
+    struct square_metre_per_second : derived_unit<square_metre_per_second> {};
 
     // new derived dimensions
     struct dim_desk_rate : derived_dimension<dim_desk_rate, square_metre_per_second,
                                              exponent<si::dim_area, 1>, exponent<si::dim_time, -1>> {};
 
     // our unit of interest for a new derived dimension
-    struct desk_per_hour : derived_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
+    struct desk_per_hour : derived_scaled_unit<desk_per_hour, dim_desk_rate, desk, si::hour> {};
 
     // a quantity of our dimension
     template<UnitOf<dim_desk_rate> U, Representation Rep = double>
@@ -147,7 +141,7 @@ a customer's office I would need a unit called ``person_per_desk`` of a new deri
 dimension. However, our library does not know what a ``person`` is. For this I need to
 define a new base dimension, its units, quantity helper, concept, and UDLs::
 
-    struct person : named_unit<person, "person", no_prefix> {};
+    struct person : named_unit<person, "person"> {};
     struct dim_people : base_dimension<"people", person> {};
 
     template<UnitOf<dim_people> U, Representation Rep = double>
@@ -162,12 +156,12 @@ define a new base dimension, its units, quantity helper, concept, and UDLs::
 
 With the above we can now define a new derived dimension::
 
-    struct person_per_square_metre : unit<person_per_square_metre> {};
+    struct person_per_square_metre : derived_unit<person_per_square_metre> {};
     struct dim_occupancy_rate : derived_dimension<dim_occupancy_rate, person_per_square_metre,
                                                   exponent<dim_people, 1>,
                                                   exponent<si::dim_area, -1>> {};
 
-    struct person_per_desk : derived_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
+    struct person_per_desk : derived_scaled_unit<person_per_desk, dim_occupancy_rate, person, desk> {};
 
     template<UnitOf<dim_occupancy_rate> U, Representation Rep = double>
     using occupancy_rate = quantity<dim_occupancy_rate, U, Rep>;
@@ -211,8 +205,8 @@ Such units do not share their references with base units of other systems:
 
     namespace fps {
 
-    struct foot : named_unit<foot, "ft", no_prefix> {};
-    struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+    struct foot : named_unit<foot, "ft"> {};
+    struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
 
     struct dim_length : base_dimension<"L", foot> {};
 
@@ -231,7 +225,7 @@ different systems:
 
     namespace si {
 
-    struct metre : named_unit<metre, "m", units::isq::si::prefix> {};
+    struct metre : named_unit<metre, "m"> {};
     struct kilometre : prefixed_unit<kilometre, units::isq::si::kilo, metre> {};
 
     struct dim_length : base_dimension<"L", metre> {};
@@ -241,8 +235,8 @@ different systems:
 
     namespace fps {
 
-    struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(3'048, 1'000, -1), metre> {};
-    struct yard : named_scaled_unit<yard, "yd", no_prefix, ratio(3), foot> {};
+    struct foot : named_scaled_unit<foot, "ft", ratio(3'048, 1'000, -1), metre> {};
+    struct yard : named_scaled_unit<yard, "yd", ratio(3), foot> {};
 
     struct dim_length : base_dimension<"L", foot> {};
 
@@ -264,14 +258,14 @@ Even though the base dimension of ``si::fps`` is defined in terms of
 ``si::metre`` foot is preserved as the base unit of length in both systems::
 
     constexpr auto fps_yard = fps::length<fps::yard>(1.);
-    constexpr auto fps_area = quantity_cast<unknown_coherent_unit>(fps_yard * fps_yard);
-    std::cout << fps_yard << "\n";     // 1 yd
-    std::cout << fps_area << "\n";     // 9 ft²
+    constexpr auto fps_area = fps_yard * fps_yard;
+    std::cout << fps_yard << "\n";                                                               // 1 yd
+    std::cout << quantity_cast<decltype(fps_area)::dimension::coherent_unit>(fps_area) << "\n";  // 9 ft²
 
     constexpr auto si_fps_yard = si::fps::length<si::fps::yard>(1.);
-    constexpr auto si_fps_area = quantity_cast<unknown_coherent_unit>(si_fps_yard * si_fps_yard);
-    std::cout << si_fps_yard << "\n";  // 1 yd
-    std::cout << si_fps_area << "\n";  // 9 ft²
+    constexpr auto si_fps_area = si_fps_yard * si_fps_yard;
+    std::cout << si_fps_yard << "\n";                                                                  // 1 yd
+    std::cout << quantity_cast<decltype(si_fps_area)::dimension::coherent_unit>(si_fps_area) << "\n";  // 9 ft²
 
 In most cases we want conversions between systems and that is why nearly all
 systems provided with this library are implemented in terms on the :term:`SI`
@@ -300,7 +294,7 @@ the library always keeps the ratio relative to the primary reference unit
 which in this case is ``si::metre``. This results in much bigger ratios
 and in case of some units may result with a problem of limited resolution
 of ``std::int64_t`` used to store numerator, denominator, and exponent
-values of ratio. For example the ``si::fps::qubic_foot`` already has the
+values of ratio. For example the ``si::fps::cubic_foot`` already has the
 ratio of ``ratio{55306341, 1953125, -3}``. In case of more complicated
 conversion ratio we can overflow `ratio` and get a compile-time error.
 In such a situation the standalone system may be a better choice here.

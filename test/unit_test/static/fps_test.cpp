@@ -52,12 +52,16 @@ static_assert(10_q_ft == 2_q_ft_per_s * 5_q_s);
 static_assert(detail::unit_text<dim_speed, foot_per_second>() == "ft/s");
 
 // area
-static_assert(foot::ratio / dimension_unit<dim_length>::ratio == ratio(1));
+static_assert(as_ratio(foot::mag / dimension_unit<dim_length>::mag) == ratio(1));
 
 static_assert(1_q_ft * 1_q_ft == 1_q_ft2);
 static_assert(100_q_ft2 / 10_q_ft == 10_q_ft);
 
 static_assert(detail::unit_text<dim_area, square_foot>() == basic_symbol_text("ft²", "ft^2"));
+
+// volume
+static_assert(1_q_yd * 1_q_yd * 1_q_yd == 1_q_yd3);
+static_assert(as_ratio(cubic_yard::mag / cubic_foot::mag) == ratio(27));
 
 /* ************** DERIVED DIMENSIONS WITH NAMED UNITS **************** */
 
@@ -84,8 +88,8 @@ static_assert(10_q_pdl * 10_q_ft == 100_q_ft_pdl);
 static_assert(100_q_ft_pdl / 10_q_ft == 10_q_pdl);
 static_assert(100_q_ft_pdl / 10_q_pdl == 10_q_ft);
 
-static_assert(detail::unit_text<dim_energy, foot_poundal>() == basic_symbol_text("ft ⋅ pdl", "ft pdl"));
-static_assert(detail::unit_text<dim_energy, foot_pound_force>() == basic_symbol_text("ft ⋅ lbf", "ft lbf"));
+static_assert(detail::unit_text<dim_energy, foot_poundal>() == basic_symbol_text("ft⋅pdl", "ft pdl"));
+static_assert(detail::unit_text<dim_energy, foot_pound_force>() == basic_symbol_text("ft⋅lbf", "ft lbf"));
 
 /* ************** DERIVED DIMENSIONS IN TERMS OF OTHER UNITS **************** */
 
@@ -95,7 +99,7 @@ static_assert(10_q_ft_pdl / 10_q_s == 1_q_ft_pdl_per_s);
 static_assert(1_q_ft_pdl_per_s * 10_q_s == 10_q_ft_pdl);
 static_assert(10_q_ft_pdl / 1_q_ft_pdl_per_s == 10_q_s);
 
-static_assert(detail::unit_text<dim_power, foot_poundal_per_second>() == basic_symbol_text("ft ⋅ pdl/s", "ft pdl/s"));
-static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == basic_symbol_text("ft ⋅ lbf/s", "ft lbf/s"));
+static_assert(detail::unit_text<dim_power, foot_poundal_per_second>() == basic_symbol_text("ft⋅pdl/s", "ft pdl/s"));
+static_assert(detail::unit_text<dim_power, foot_pound_force_per_second>() == basic_symbol_text("ft⋅lbf/s", "ft lbf/s"));
 
-}
+}  // namespace

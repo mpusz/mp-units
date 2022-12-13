@@ -36,33 +36,45 @@
 namespace units::isq::si::iau {
 
 // https://en.wikipedia.org/wiki/Light-year
-struct light_year : named_scaled_unit<light_year, "ly", no_prefix, ratio(9460730472580800), si::metre> {};
+struct light_year : named_scaled_unit<light_year, "ly", mag<9460730472580800>(), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Parsec
-struct parsec : named_scaled_unit<parsec, "pc", si::prefix, ratio(30'856'775'814'913'673), si::metre> {};
+struct parsec : named_scaled_unit<parsec, "pc", mag<30'856'775'814'913'673>(), si::metre> {};
 
 // https://en.wikipedia.org/wiki/Angstrom
-struct angstrom : named_scaled_unit<angstrom, "angstrom", no_prefix, ratio(1, 1, -10), si::metre> {};
+struct angstrom : named_scaled_unit<angstrom, "angstrom", mag_power<10, -10>(), si::metre> {};
 
 #ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
 // ly
-constexpr auto operator"" _q_ly(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<light_year, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ly(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<light_year, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ly(long double l) { return si::length<light_year, long double>(l); }
 
 // pc
-constexpr auto operator"" _q_pc(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<parsec, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pc(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<parsec, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pc(long double l) { return si::length<parsec, long double>(l); }
 
 // angstrom
-constexpr auto operator"" _q_angstrom(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<angstrom, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_angstrom(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<angstrom, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_angstrom(long double l) { return si::length<angstrom, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -80,7 +92,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::iau
 
@@ -88,10 +100,13 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::iau::inline length {
 
-template<Representation Rep = double> using ly = units::isq::si::length<units::isq::si::iau::light_year, Rep>;
-template<Representation Rep = double> using pc = units::isq::si::length<units::isq::si::iau::parsec, Rep>;
-template<Representation Rep = double> using angstrom = units::isq::si::length<units::isq::si::iau::angstrom, Rep>;
+template<Representation Rep = double>
+using ly = units::isq::si::length<units::isq::si::iau::light_year, Rep>;
+template<Representation Rep = double>
+using pc = units::isq::si::length<units::isq::si::iau::parsec, Rep>;
+template<Representation Rep = double>
+using angstrom = units::isq::si::length<units::isq::si::iau::angstrom, Rep>;
 
-}  // namespace units::aliases::isq::si::iau
+}  // namespace units::aliases::isq::si::iau::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -30,8 +30,8 @@ namespace units::detail {
 
 /**
  * @brief Unpacks the list of potentially derived dimensions to a list containing only base dimensions
- * 
- * @tparam Es Exponents of potentially derived dimensions 
+ *
+ * @tparam Es Exponents of potentially derived dimensions
  */
 template<Exponent... Es>
 struct dim_unpack;

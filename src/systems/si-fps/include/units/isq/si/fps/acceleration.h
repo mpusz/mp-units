@@ -33,7 +33,7 @@
 
 namespace units::isq::si::fps {
 
-struct foot_per_second_sq : unit<foot_per_second_sq> {};
+struct foot_per_second_sq : derived_unit<foot_per_second_sq> {};
 struct dim_acceleration : isq::dim_acceleration<dim_acceleration, foot_per_second_sq, dim_length, dim_time> {};
 
 template<UnitOf<dim_acceleration> U, Representation Rep = double>
@@ -44,12 +44,16 @@ using acceleration = quantity<dim_acceleration, U, Rep>;
 inline namespace literals {
 
 // ft/s2
-constexpr auto operator"" _q_ft_per_s2(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return acceleration<foot_per_second_sq, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft_per_s2(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return acceleration<foot_per_second_sq, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft_per_s2(long double l) { return acceleration<foot_per_second_sq, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si::fps
 
@@ -57,8 +61,9 @@ constexpr auto operator"" _q_ft_per_s2(long double l) { return acceleration<foot
 
 namespace units::aliases::isq::si::fps::inline acceleration {
 
-template<Representation Rep = double> using ft_per_s2 = units::isq::si::fps::acceleration<units::isq::si::fps::foot_per_second_sq, Rep>;
+template<Representation Rep = double>
+using ft_per_s2 = units::isq::si::fps::acceleration<units::isq::si::fps::foot_per_second_sq, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline acceleration
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

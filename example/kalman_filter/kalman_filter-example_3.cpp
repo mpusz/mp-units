@@ -21,12 +21,13 @@
 // SOFTWARE.
 
 #include "kalman.h"
+#include <units/format.h>
+#include <units/generic/dimensionless.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/speed.h>
 #include <units/isq/si/time.h>
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
 #include <array>
+#include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex3
 
@@ -34,13 +35,13 @@ using namespace units;
 
 void print_header(const kalman::State auto& initial)
 {
-  fmt::print("Initial: {}\n", initial);
-  fmt::print("{:>2} | {:>8} | {:>24} | {:>24}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
+  std::cout << STD_FMT::format("Initial: {}\n", initial);
+  std::cout << STD_FMT::format("{:>2} | {:>8} | {:>24} | {:>24}\n", "N", "Measured", "Curr. Estimate", "Next Estimate");
 }
 
 void print(auto iteration, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
 {
-  fmt::print("{:2} | {:8} | {:>24.1} | {:>24.1}\n", iteration, measured, current, next);
+  std::cout << STD_FMT::format("{:2} | {:8} | {:>24.1} | {:>24.1}\n", iteration, measured, current, next);
 }
 
 int main()
@@ -50,14 +51,14 @@ int main()
   using state = kalman::state<si::length<si::metre>, si::speed<si::metre_per_second>>;
 
   const auto interval = 5 * s;
-  const state initial = { 30 * km, 50 * (m / s) };
-  const std::array measurements = { 30160 * m, 30365 * m, 30890 * m, 31050 * m, 31785 * m,
-                                    32215 * m, 33130 * m, 34510 * m, 36010 * m, 37265 * m };
+  const state initial = {30 * km, 50 * (m / s)};
+  const std::array measurements = {30160 * m, 30365 * m, 30890 * m, 31050 * m, 31785 * m,
+                                   32215 * m, 33130 * m, 34510 * m, 36010 * m, 37265 * m};
   std::array gain = {dimensionless<one>(0.2), dimensionless<one>(0.1)};
 
   print_header(initial);
   state next = state_extrapolation(initial, interval);
-  for(int index = 1; const auto& measured : measurements) {
+  for (int index = 1; const auto& measured : measurements) {
     const auto& previous = next;
     const auto current = state_update(previous, measured, gain, interval);
     next = state_extrapolation(current, interval);

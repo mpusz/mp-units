@@ -53,7 +53,7 @@ static_assert(10_q_cm == 2_q_cm_per_s * 5_q_s);
 static_assert(detail::unit_text<dim_speed, centimetre_per_second>() == "cm/s");
 
 // area
-static_assert(centimetre::ratio / dimension_unit<dim_length>::ratio == ratio(1));
+static_assert(as_ratio(centimetre::mag / dimension_unit<dim_length>::mag) == ratio(1));
 
 static_assert((1_q_cm * 1_q_cm).number() == 1);
 static_assert((1_q_cm2).number() == 1);
@@ -100,4 +100,4 @@ static_assert(10_q_erg / 1_q_erg_per_s == 10_q_s);
 
 static_assert(detail::unit_text<dim_power, erg_per_second>() == "erg/s");
 
-}
+}  // namespace

@@ -29,30 +29,26 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/length.h>
+#include <units/isq/si/international/length.h>
 #include <units/unit.h>
 
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Foot_(unit)
-struct foot : named_scaled_unit<foot, "ft", no_prefix, ratio(3'048, 1'000, -1), si::metre> {};
-
-struct inch : named_scaled_unit<inch, "in", no_prefix, ratio(1, 12), foot> {};
+using si::international::fathom;
+using si::international::foot;
+using si::international::inch;
+using si::international::mil;
+using si::international::mile;
+using si::international::thou;
+using si::international::yard;
 
 // thousandth of an inch
-struct thousandth : named_scaled_unit<thousandth, "thou", no_prefix, ratio(1, 1'000), inch> {};
-struct thou : alias_unit<thousandth, "thou", no_prefix>{};
-struct mil : alias_unit<thousandth, "mil", no_prefix>{};
-
-struct yard : named_scaled_unit<yard, "yd", si::prefix, ratio(3, 1), foot> {};
-
-struct fathom : named_scaled_unit<fathom, "ftm", no_prefix, ratio(6, 1), foot> {};
+struct thousandth : alias_unit<thou, "thou"> {};
 
 struct kiloyard : prefixed_unit<kiloyard, si::kilo, yard> {};
 
-struct mile : named_scaled_unit<mile, "mile", no_prefix, ratio(5'280), foot> {};
-
-struct nautical_mile : named_scaled_unit<nautical_mile, "mi(naut)", no_prefix, ratio(2'000), yard> {};
+struct nautical_mile : named_scaled_unit<nautical_mile, "nmi", mag<2'000>(), yard> {};
 
 struct dim_length : isq::dim_length<foot> {};
 
@@ -64,43 +60,79 @@ using length = quantity<dim_length, U, Rep>;
 inline namespace literals {
 
 // Thousandth
-constexpr auto operator"" _q_thou(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<thousandth, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_thou(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<thousandth, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_thou(long double l) { return length<thousandth, long double>(l); }
-constexpr auto operator"" _q_mil(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<thousandth, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mil(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<thousandth, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mil(long double l) { return length<thousandth, long double>(l); }
 
 
 // Inch
-constexpr auto operator"" _q_in(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<inch, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_in(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<inch, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_in(long double l) { return length<inch, long double>(l); }
 
 // Foot
-constexpr auto operator"" _q_ft(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<foot, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft(long double l) { return length<foot, long double>(l); }
 
 // Yard
-constexpr auto operator"" _q_yd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<yard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<yard, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yd(long double l) { return length<yard, long double>(l); }
 
 // Fathom
-constexpr auto operator"" _q_ftm(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<fathom, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ftm(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<fathom, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ftm(long double l) { return length<fathom, long double>(l); }
 
 // Kiloyard
-constexpr auto operator"" _q_kyd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<kiloyard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kyd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<kiloyard, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kyd(long double l) { return length<kiloyard, long double>(l); }
 
 // Mile
-constexpr auto operator"" _q_mile(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mile(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<mile, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mile(long double l) { return length<mile, long double>(l); }
 
 // Nautical mile
-constexpr auto operator"" _q_naut_mi(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_naut_mi(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return length<nautical_mile, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_naut_mi(long double l) { return length<nautical_mile, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -125,7 +157,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -133,17 +165,26 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::fps::inline length {
 
-template<Representation Rep = double> using thou = units::isq::si::fps::length<units::isq::si::fps::thousandth, Rep>;
-template<Representation Rep = double> using mil = thou<Rep>;
+template<Representation Rep = double>
+using thou = units::isq::si::fps::length<units::isq::si::fps::thousandth, Rep>;
+template<Representation Rep = double>
+using mil = thou<Rep>;
 
-template<Representation Rep = double> using in = units::isq::si::fps::length<units::isq::si::fps::inch, Rep>;
-template<Representation Rep = double> using ft = units::isq::si::fps::length<units::isq::si::fps::foot, Rep>;
-template<Representation Rep = double> using yd = units::isq::si::fps::length<units::isq::si::fps::yard, Rep>;
-template<Representation Rep = double> using ftm = units::isq::si::fps::length<units::isq::si::fps::fathom, Rep>;
-template<Representation Rep = double> using kyd = units::isq::si::fps::length<units::isq::si::fps::kiloyard, Rep>;
-template<Representation Rep = double> using mile = units::isq::si::fps::length<units::isq::si::fps::mile, Rep>;
-template<Representation Rep = double> using naut_mi = units::isq::si::fps::length<units::isq::si::fps::nautical_mile, Rep>;
+template<Representation Rep = double>
+using in = units::isq::si::fps::length<units::isq::si::fps::inch, Rep>;
+template<Representation Rep = double>
+using ft = units::isq::si::fps::length<units::isq::si::fps::foot, Rep>;
+template<Representation Rep = double>
+using yd = units::isq::si::fps::length<units::isq::si::fps::yard, Rep>;
+template<Representation Rep = double>
+using ftm = units::isq::si::fps::length<units::isq::si::fps::fathom, Rep>;
+template<Representation Rep = double>
+using kyd = units::isq::si::fps::length<units::isq::si::fps::kiloyard, Rep>;
+template<Representation Rep = double>
+using mile = units::isq::si::fps::length<units::isq::si::fps::mile, Rep>;
+template<Representation Rep = double>
+using naut_mi = units::isq::si::fps::length<units::isq::si::fps::nautical_mile, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

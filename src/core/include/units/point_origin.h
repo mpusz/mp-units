@@ -38,24 +38,28 @@ struct point_origin {
  *
  * An origin, unspecified in the type system, from which an absolute quantity is measured from.
  * The type system considers all unspecified_origin<D> with equivalent dimensions to refer to the same abstract origin.
- * (that is, the types `unspecified_origin<D>` and `unspecified_origin<D2>` are equivalent exactly iff `D` is equivalent to `D2`.
+ * (that is, the types `unspecified_origin<D>` and `unspecified_origin<D2>` are equivalent exactly iff `D` is equivalent
+ * to `D2`.
  *
  * @tparam D a dimension of the quantity point (can be either a BaseDimension or a DerivedDimension)
  */
 template<Dimension D>
 struct unspecified_origin : point_origin<D> {
-  template<Dimension D2> requires equivalent<D,D2>
+  template<Dimension D2>
+    requires equivalent<D, D2>
   using rebind = unspecified_origin<D2>;
 };
 
 
 namespace detail {
 
-template <Unit U> struct customary_origin_spec_for_unit {};
+template<Unit U>
+struct customary_origin_spec_for_unit {};
 
-} // namespace detail
+}  // namespace detail
 
-template <Unit U> requires requires { typename detail::customary_origin_spec_for_unit<U>::type; }
+template<Unit U>
+  requires requires { typename detail::customary_origin_spec_for_unit<U>::type; }
 struct customary_origin_for_unit : point_origin<typename detail::customary_origin_spec_for_unit<U>::type::dimension> {
   // equivalence of instantiations of customary_unit_origin is determined by equality of canonical_point_origin
   using canonical_point_origin = typename detail::customary_origin_spec_for_unit<U>::type;
@@ -65,20 +69,21 @@ struct customary_origin_for_unit : point_origin<typename detail::customary_origi
 
 namespace detail {
 
-template <Dimension D, UnitOf<D> U>
+template<Dimension D, UnitOf<D> U>
 struct default_point_origin_for_dim_and_unit {
   using type = unspecified_origin<D>;
 };
 
-template <Dimension D, UnitOf<D> U> requires requires { typename detail::customary_origin_spec_for_unit<U>::type; }
+template<Dimension D, UnitOf<D> U>
+  requires requires { typename detail::customary_origin_spec_for_unit<U>::type; }
 struct default_point_origin_for_dim_and_unit<D, U> {
   using type = customary_origin_for_unit<U>;
 };
 
-template <Dimension D, UnitOf<D> U>
+template<Dimension D, UnitOf<D> U>
 using default_point_origin_for_dim_and_unit_t = typename default_point_origin_for_dim_and_unit<D, U>::type;
 
-} // namespace detail
+}  // namespace detail
 
 
 }  // namespace units

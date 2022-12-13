@@ -20,22 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
-project(mp-units
-    VERSION 0.8.0
-    LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.19)
+project(mp-units VERSION 0.8.0 LANGUAGES CXX)
 
-option(UNITS_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-message(STATUS "UNITS_AS_SYSTEM_HEADERS: ${UNITS_AS_SYSTEM_HEADERS}")
+set(projectPrefix UNITS_)
+
+option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
 include(GNUInstallDirs)
 
-if(UNITS_AS_SYSTEM_HEADERS)
-    set(units_as_system SYSTEM)
+if(${projectPrefix}AS_SYSTEM_HEADERS)
+    set(unitsAsSystem SYSTEM)
 endif()
 
 add_subdirectory(core)
@@ -45,24 +44,19 @@ add_subdirectory(systems)
 
 # project-wide wrapper
 add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE
-    mp-units::core
-    mp-units::core-io
-    mp-units::core-fmt
-    mp-units::systems
-)
+target_link_libraries(mp-units INTERFACE mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems)
 add_library(mp-units::mp-units ALIAS mp-units)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
 
-# installation
-install(EXPORT mp-unitsTargets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
-    NAMESPACE mp-units::
-)
-
+# local build
+export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
+configure_file("mp-unitsConfig.cmake" "." COPYONLY)
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
+# installation
+install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
+
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )

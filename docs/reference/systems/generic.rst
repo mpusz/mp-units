@@ -7,3 +7,4 @@ Generic
     generic/unknown
     generic/dimensionless
     generic/angle
+    generic/solid_angle

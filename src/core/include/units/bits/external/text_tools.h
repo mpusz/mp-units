@@ -28,19 +28,29 @@
 namespace units::detail {
 
 template<std::intmax_t Value>
-  requires (0 <= Value) && (Value < 10)
+  requires(0 <= Value) && (Value < 10)
 inline constexpr basic_fixed_string superscript_number = "";
 
-template<> inline constexpr basic_fixed_string superscript_number<0> = "\u2070";
-template<> inline constexpr basic_fixed_string superscript_number<1> = "\u00b9";
-template<> inline constexpr basic_fixed_string superscript_number<2> = "\u00b2";
-template<> inline constexpr basic_fixed_string superscript_number<3> = "\u00b3";
-template<> inline constexpr basic_fixed_string superscript_number<4> = "\u2074";
-template<> inline constexpr basic_fixed_string superscript_number<5> = "\u2075";
-template<> inline constexpr basic_fixed_string superscript_number<6> = "\u2076";
-template<> inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
-template<> inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
-template<> inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
+template<>
+inline constexpr basic_fixed_string superscript_number<0> = "\u2070";
+template<>
+inline constexpr basic_fixed_string superscript_number<1> = "\u00b9";
+template<>
+inline constexpr basic_fixed_string superscript_number<2> = "\u00b2";
+template<>
+inline constexpr basic_fixed_string superscript_number<3> = "\u00b3";
+template<>
+inline constexpr basic_fixed_string superscript_number<4> = "\u2074";
+template<>
+inline constexpr basic_fixed_string superscript_number<5> = "\u2075";
+template<>
+inline constexpr basic_fixed_string superscript_number<6> = "\u2076";
+template<>
+inline constexpr basic_fixed_string superscript_number<7> = "\u2077";
+template<>
+inline constexpr basic_fixed_string superscript_number<8> = "\u2078";
+template<>
+inline constexpr basic_fixed_string superscript_number<9> = "\u2079";
 
 inline constexpr basic_symbol_text superscript_minus("\u207b", "-");
 
@@ -49,9 +59,9 @@ inline constexpr basic_symbol_text superscript_prefix("", "^");
 template<std::intmax_t Value>
 constexpr auto superscript_helper()
 {
-  if constexpr(Value < 0)
+  if constexpr (Value < 0)
     return superscript_minus + superscript_helper<-Value>();
-  else if constexpr(Value < 10)
+  else if constexpr (Value < 10)
     return basic_symbol_text(superscript_number<Value>, basic_fixed_string(static_cast<char>('0' + Value)));
   else
     return superscript_helper<Value / 10>() + superscript_helper<Value % 10>();

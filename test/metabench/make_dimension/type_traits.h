@@ -26,23 +26,23 @@
 
 namespace units {
 
-  namespace detail {
+namespace detail {
 
-    template<bool>
-    struct conditional_impl {
-      template<typename T, typename F>
-      using type = F;
-    };
+template<bool>
+struct conditional_impl {
+  template<typename T, typename F>
+  using type = F;
+};
 
-    template<>
-    struct conditional_impl<true> {
-      template<typename T, typename F>
-      using type = T;
-    };
+template<>
+struct conditional_impl<true> {
+  template<typename T, typename F>
+  using type = T;
+};
 
-  }
+}  // namespace detail
 
-  template<bool B, typename T, typename F>
-  using conditional = TYPENAME detail::conditional_impl<B>::template type<T, F>;
+template<bool B, typename T, typename F>
+using conditional = TYPENAME detail::conditional_impl<B>::template type<T, F>;
 
-}
+}  // namespace units

@@ -23,9 +23,11 @@
 cmake_minimum_required(VERSION 3.4)
 
 function(ensure_entry_point)
-  if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-      message(FATAL_ERROR "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
-              "as a CMake entry point and should not be included from other CMake files. "
-              "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMaskeLists.txt' directly instead.")
-  endif()
+    if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        message(FATAL_ERROR
+                    "'${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt' is meant to be used only "
+                    "as a CMake entry point and should not be included from other CMake files. "
+                    "Include '${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt' directly instead."
+        )
+    endif()
 endfunction()

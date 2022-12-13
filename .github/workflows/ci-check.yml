@@ -20,33 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# The following environment variables are required
-# - CONAN_USERNAME
-# - CONAN_UPLOAD
-# - CONAN_LOGIN_USERNAME
-# - CONAN_PASSWORD
+name: Check CI
 
-from cpt.packager import ConanMultiPackager
+on: [push, pull_request]
 
-if __name__ == "__main__":
-    builder = ConanMultiPackager(
-        # package id
-        channel = "testing",
-        stable_branch_pattern = r"v\d+\.\d+\.\d+.*",
-
-        # dependencies
-        remotes = [
-            ("https://twonington.jfrog.io/artifactory/api/conan/conan-oss", True, "linear-algebra")
-        ],
-        build_policy = ["mp-units", "outdated"],
-        upload_dependencies = "all",
-        pip_install = ["sphinx", "recommonmark", "breathe"],
-
-        # build configurations
-        archs = ["x86_64"], #  limit to 64-bit only
-    )
-    builder.add_common_builds(pure_c=True)
-    for settings, options, env_vars, build_requires, reference in builder.items:
-        settings["compiler.cppstd"] = "20"
-        env_vars["mp-units:CONAN_RUN_TESTS"] = "True"
-    builder.run()
+jobs:
+  check:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Check
+      run: |
+        pre-commit run --all-files

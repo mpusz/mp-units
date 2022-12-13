@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
-add_units_module(si-uscs mp-units::si)
+add_units_module(
+    si-uscs DEPENDENCIES mp-units::si HEADERS include/units/isq/si/uscs/length.h include/units/isq/si/uscs/uscs.h
+)

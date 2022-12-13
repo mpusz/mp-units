@@ -34,10 +34,10 @@
 
 namespace units::isq::si::fps {
 
-struct cubic_foot : unit<cubic_foot> {};
+struct cubic_foot : derived_unit<cubic_foot> {};
 struct dim_volume : isq::dim_volume<dim_volume, cubic_foot, dim_length> {};
 
-struct cubic_yard : derived_unit<cubic_yard, dim_volume, yard> {};
+struct cubic_yard : derived_scaled_unit<cubic_yard, dim_volume, yard> {};
 
 template<UnitOf<dim_volume> U, Representation Rep = double>
 using volume = quantity<dim_volume, U, Rep>;
@@ -47,16 +47,24 @@ using volume = quantity<dim_volume, U, Rep>;
 inline namespace literals {
 
 // ft3
-constexpr auto operator"" _q_ft3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ft3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return volume<cubic_foot, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ft3(long double l) { return volume<cubic_foot, long double>(l); }
 
 // yd3
-constexpr auto operator"" _q_yd3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return volume<cubic_yard, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_yd3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return volume<cubic_yard, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_yd3(long double l) { return volume<cubic_yard, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -73,7 +81,7 @@ using namespace volume_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -81,9 +89,11 @@ using namespace volume_references;
 
 namespace units::aliases::isq::si::fps::inline volume {
 
-template<Representation Rep = double> using ft3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_foot, Rep>;
-template<Representation Rep = double> using yd3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_yard, Rep>;
+template<Representation Rep = double>
+using ft3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_foot, Rep>;
+template<Representation Rep = double>
+using yd3 = units::isq::si::fps::volume<units::isq::si::fps::cubic_yard, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline volume
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

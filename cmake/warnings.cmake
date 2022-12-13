@@ -24,7 +24,7 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(${projectPrefix}WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 macro(_set_flags)
     set(MSVC_WARNINGS
@@ -68,11 +68,10 @@ macro(_set_flags)
         -Wsign-conversion # warn on sign conversions
         -Wnull-dereference # warn if a null dereference is detected
         -Wformat=2 # warn on security issues around functions that format output (ie printf)
+        -Wdangling-else # warn about constructions where there may be confusion to which if statement an else branch belongs
     )
 
-    set(CLANG_WARNINGS
-        ${GCC_COMMON_WARNINGS}
-    )
+    set(CLANG_WARNINGS ${GCC_COMMON_WARNINGS})
 
     set(GCC_WARNINGS
         ${GCC_COMMON_WARNINGS}
@@ -81,9 +80,11 @@ macro(_set_flags)
         -Wduplicated-cond # warn if if / else chain has duplicated conditions
         -Wduplicated-branches # warn if if / else branches have duplicated code
         -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
+        -Wduplicated-branches # warn when an if-else has identical branches
+        -Wduplicated-cond # warn about duplicated conditions in an if-else-if chain
     )
 
-    if(WARNINGS_AS_ERRORS)
+    if(${projectPrefix}WARNINGS_AS_ERRORS)
         set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
         set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
         set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
@@ -106,7 +107,7 @@ function(set_warnings)
     _set_flags()
 
     message(STATUS "Setting restrictive compilation warnings")
-    message(STATUS "  Treat warnings as errors: ${WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting restrictive compilation warnings - done")
 
@@ -116,6 +117,7 @@ endfunction()
 # Set compiler warning level for a provided CMake target
 function(set_target_warnings target scope)
     set(scopes PUBLIC INTERFACE PRIVATE)
+
     if(NOT scope IN_LIST scopes)
         message(FATAL_ERROR "'scope' argument should be one of ${scopes} ('${scope}' received)")
     endif()
@@ -123,7 +125,7 @@ function(set_target_warnings target scope)
     _set_flags()
 
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}'")
-    message(STATUS "  Treat warnings as errors: ${WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}' - done")
 

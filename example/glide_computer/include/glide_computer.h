@@ -32,14 +32,14 @@
 
 #include <units/chrono.h>
 #include <units/format.h>
-#include <units/math.h> // IWYU pragma: keep
+#include <units/math.h>  // IWYU pragma: keep
 #include <algorithm>
 #include <array>
 #include <initializer_list>
 #include <iterator>
 #include <ostream>
 #include <ranges>
-#include <string> // IWYU pragma: keep
+#include <string>  // IWYU pragma: keep
 #include <vector>
 
 // An example of a really simplified tactical glide computer
@@ -57,7 +57,7 @@
 // - flight path exactly on a shortest possible line to destination
 
 template<units::QuantityKind QK>
-struct fmt::formatter<QK> : formatter<typename QK::quantity_type> {
+struct STD_FMT::formatter<QK> : formatter<typename QK::quantity_type> {
   template<typename FormatContext>
   auto format(const QK& v, FormatContext& ctx)
   {
@@ -69,7 +69,7 @@ namespace glide_computer {
 
 template<units::QuantityKind QK1, units::QuantityKind QK2>
 constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
-  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common();}
+  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); }
 {
   return lhs.common() / rhs.common();
 }
@@ -105,12 +105,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 }  // namespace glide_computer
 
 template<>
-struct fmt::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
+struct STD_FMT::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
   template<typename FormatContext>
   auto format(glide_computer::altitude a, FormatContext& ctx)
   {
     formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
-    return format_to(ctx.out(), " AMSL");
+    return STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
 
@@ -136,7 +136,7 @@ struct weather {
 
 struct waypoint {
   std::string name;
-  geographic::position pos;
+  geographic::position<long double> pos;
   altitude alt;
 };
 
@@ -149,7 +149,7 @@ public:
     const waypoint* end_;
     distance length_ = geographic::spherical_distance(begin().pos, end().pos);
   public:
-    leg(const waypoint& b, const waypoint& e) noexcept: begin_(&b), end_(&e) {}
+    leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
     constexpr const waypoint& begin() const { return *begin_; };
     constexpr const waypoint& end() const { return *end_; }
     constexpr const distance get_length() const { return length_; }
@@ -158,7 +158,9 @@ public:
 
   template<std::ranges::input_range R>
     requires std::same_as<std::ranges::range_value_t<R>, waypoint>
-  explicit task(const R& r) : waypoints_(std::ranges::begin(r), std::ranges::end(r)) {}
+  explicit task(const R& r) : waypoints_(std::ranges::begin(r), std::ranges::end(r))
+  {
+  }
 
   task(std::initializer_list<waypoint> wpts) : waypoints_(wpts) {}
 
@@ -170,10 +172,14 @@ public:
 
   distance get_length() const { return length_; }
 
-  distance get_leg_dist_offset(std::size_t leg_index) const { return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1]; }
+  distance get_leg_dist_offset(std::size_t leg_index) const
+  {
+    return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1];
+  }
   std::size_t get_leg_index(distance dist) const
   {
-    return static_cast<std::size_t>(std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
+    return static_cast<std::size_t>(
+      std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));
   }
 
 private:
@@ -208,12 +214,12 @@ constexpr height agl(altitude glider_alt, altitude terrain_level) { return glide
 
 inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist, height h)
 {
-  // TODO support for hypot(q, q)
-  return sqrt(pow<2>(dist.common()) + pow<2>(h.common()));
+  return hypot(dist.common(), h.common());
 }
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);
 
-void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s, const aircraft_tow& at);
+void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
+              const aircraft_tow& at);
 
 }  // namespace glide_computer

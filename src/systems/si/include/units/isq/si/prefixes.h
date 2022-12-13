@@ -26,29 +26,27 @@
 
 namespace units::isq::si {
 
-struct prefix : prefix_family {};
-
 // clang-format off
-struct yocto  : units::prefix<yocto,  prefix, "y",             ratio(1, 1, -24)> {};
-struct zepto  : units::prefix<zepto,  prefix, "z",             ratio(1, 1, -21)> {};
-struct atto   : units::prefix<atto,   prefix, "a",             ratio(1, 1, -18)> {};
-struct femto  : units::prefix<femto,  prefix, "f",             ratio(1, 1, -15)> {};
-struct pico   : units::prefix<pico,   prefix, "p",             ratio(1, 1, -12)> {};
-struct nano   : units::prefix<nano,   prefix, "n",             ratio(1, 1,  -9)> {};
-struct micro  : units::prefix<micro,  prefix, basic_symbol_text{"\u00b5", "u"}, ratio(1, 1,  -6)> {};
-struct milli  : units::prefix<milli,  prefix, "m",             ratio(1, 1,  -3)> {};
-struct centi  : units::prefix<centi,  prefix, "c",             ratio(1, 1,  -2)> {};
-struct deci   : units::prefix<deci,   prefix, "d",             ratio(1, 1,  -1)> {};
-struct deca   : units::prefix<deca,   prefix, "da",            ratio(1, 1,   1)> {};
-struct hecto  : units::prefix<hecto,  prefix, "h",             ratio(1, 1,   2)> {};
-struct kilo   : units::prefix<kilo,   prefix, "k",             ratio(1, 1,   3)> {};
-struct mega   : units::prefix<mega,   prefix, "M",             ratio(1, 1,   6)> {};
-struct giga   : units::prefix<giga,   prefix, "G",             ratio(1, 1,   9)> {};
-struct tera   : units::prefix<tera,   prefix, "T",             ratio(1, 1,  12)> {};
-struct peta   : units::prefix<peta,   prefix, "P",             ratio(1, 1,  15)> {};
-struct exa    : units::prefix<exa,    prefix, "E",             ratio(1, 1,  18)> {};
-struct zetta  : units::prefix<zetta,  prefix, "Z",             ratio(1, 1,  21)> {};
-struct yotta  : units::prefix<yotta,  prefix, "Y",             ratio(1, 1,  24)> {};
+struct yocto  : prefix<yocto, "y",             mag_power<10, -24>()> {};
+struct zepto  : prefix<zepto, "z",             mag_power<10, -21>()> {};
+struct atto   : prefix<atto,  "a",             mag_power<10, -18>()> {};
+struct femto  : prefix<femto, "f",             mag_power<10, -15>()> {};
+struct pico   : prefix<pico,  "p",             mag_power<10, -12>()> {};
+struct nano   : prefix<nano,  "n",             mag_power<10, -9>()> {};
+struct micro  : prefix<micro, basic_symbol_text{"\u00b5", "u"}, mag_power<10, -6>()> {};
+struct milli  : prefix<milli, "m",             mag_power<10, -3>()> {};
+struct centi  : prefix<centi, "c",             mag_power<10, -2>()> {};
+struct deci   : prefix<deci,  "d",             mag_power<10, -1>()> {};
+struct deca   : prefix<deca,  "da",            mag_power<10, 1>()> {};
+struct hecto  : prefix<hecto, "h",             mag_power<10, 2>()> {};
+struct kilo   : prefix<kilo,  "k",             mag_power<10, 3>()> {};
+struct mega   : prefix<mega,  "M",             mag_power<10, 6>()> {};
+struct giga   : prefix<giga,  "G",             mag_power<10, 9>()> {};
+struct tera   : prefix<tera,  "T",             mag_power<10, 12>()> {};
+struct peta   : prefix<peta,  "P",             mag_power<10, 15>()> {};
+struct exa    : prefix<exa,   "E",             mag_power<10, 18>()> {};
+struct zetta  : prefix<zetta, "Z",             mag_power<10, 21>()> {};
+struct yotta  : prefix<yotta, "Y",             mag_power<10, 24>()> {};
 // clang-format on
 
 }  // namespace units::isq::si

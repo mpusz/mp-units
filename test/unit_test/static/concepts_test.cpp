@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <units/chrono.h>
 #include <units/isq/si/cgs/length.h>
-#include <units/isq/si/cgs/speed.h> // IWYU pragma: keep
+#include <units/isq/si/cgs/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/fps/length.h>
-#include <units/isq/si/fps/speed.h> // IWYU pragma: keep
-#include <units/isq/si/length.h> // IWYU pragma: keep
+#include <units/isq/si/fps/speed.h>  // IWYU pragma: keep
+#include <units/isq/si/length.h>     // IWYU pragma: keep
 #include <units/isq/si/prefixes.h>
 #include <units/isq/si/speed.h>
 #include <units/quantity_point_kind.h>
-#include <units/chrono.h>
 #include <chrono>
 #include <complex>
 #include <mutex>
@@ -42,25 +42,10 @@ namespace {
 using namespace units;
 using namespace units::isq;
 
-// Prefix family
-
-static_assert(PrefixFamily<si::prefix>);
-static_assert(!PrefixFamily<si::kilo>);
-
 // Prefix
 
 static_assert(Prefix<si::kilo>);
-static_assert(!Prefix<si::prefix>);
 static_assert(!Prefix<std::kilo>);
-
-// UnitRatio
-
-static_assert(UnitRatio<ratio(1000)>);
-static_assert(!UnitRatio<ratio(0)>);
-// static_assert(UnitRatio<ratio(1000, 0)>);  // static_assert in ratio
-static_assert(UnitRatio<ratio(-1000, -1)>);
-static_assert(!UnitRatio<ratio(-1000, 1)>);
-static_assert(!UnitRatio<ratio(1, -1000)>);
 
 // BaseDimension
 
@@ -91,6 +76,13 @@ static_assert(Unit<si::metre_per_second>);
 static_assert(!Unit<si::dim_length>);
 static_assert(!Unit<int>);
 static_assert(!Unit<std::chrono::seconds>);
+
+// NamedUnit
+
+static_assert(NamedUnit<si::metre>);
+static_assert(NamedUnit<si::kilometre>);
+static_assert(NamedUnit<si::fps::mile>);
+static_assert(!NamedUnit<si::metre_per_second>);
 
 // UnitOf
 

@@ -1,0 +1,47 @@
+parse:
+  additional_commands:
+    add_documentation:
+      pargs:
+        nargs: 1
+        flags:
+          - ALL
+      kwargs:
+        BREATHE_PROJECT: 1
+        CODE_SOURCE_DIR: 1
+        INSTALL_DIR: 1
+        CODE_DEPENDS: 1
+        DOCS_DEPENDS: 1
+    add_units_module:
+      pargs:
+        nargs: 1
+      kwargs:
+        DEPENDENCIES: +
+        HEADERS: +
+    enable_iwyu:
+      pargs:
+        flags:
+          - NO_FORWARD_DECLARATIONS
+          - QUOTED_INCLUDES_FIRST
+          - NO_COMMENTS
+      kwargs:
+        MAPPING_FILE: 1
+        MAX_LINE_LENGTH: 1
+    metabench_add_chart:
+      pargs:
+        nargs: 1
+      kwargs:
+        TITLE: 1
+        SUBTITLE: 1
+        DATASETS: +
+format:
+  line_width: 120
+  tab_size: 4
+  max_subgroups_hwrap: 3
+  max_pargs_hwrap: 6
+  max_rows_cmdline: 2
+  dangle_parens: true
+  min_prefix_chars: 8
+  max_prefix_chars: 8
+  max_lines_hwrap: 2
+markup:
+  enable_markup: false

@@ -29,7 +29,7 @@
 #include <units/isq/si/force.h>
 #include <units/isq/si/length.h>
 #include <units/isq/si/mass.h>
-#include <units/isq/si/speed.h> // IWYU pragma: keep
+#include <units/isq/si/speed.h>  // IWYU pragma: keep
 #include <units/isq/si/time.h>
 #include <units/isq/si/volume.h>
 #include <cassert>
@@ -42,7 +42,7 @@ using namespace units::isq;
 using namespace si::mass_references;
 using namespace si::volume_references;
 
-inline constexpr Acceleration auto g = si::si2019::standard_gravity<>;
+inline constexpr Acceleration auto g = si::standard_gravity<>;
 inline constexpr Density auto air_density = 1.225 * (kg / m3);
 
 class Box {
@@ -50,7 +50,10 @@ class Box {
   si::length<si::metre> height_;
   si::density<si::kilogram_per_metre_cub> density_ = air_density;
 public:
-  constexpr Box(const si::length<si::metre>& length, const si::length<si::metre>& width, si::length<si::metre> height) : base_(length * width), height_(std::move(height)) {}
+  constexpr Box(const si::length<si::metre>& length, const si::length<si::metre>& width, si::length<si::metre> height) :
+      base_(length * width), height_(std::move(height))
+  {
+  }
 
   [[nodiscard]] constexpr si::force<si::newton> filled_weight() const
   {
@@ -90,20 +93,20 @@ int main()
   auto box = Box(1000.0 * mm, 500.0 * mm, height);
   box.set_contents_density(1000.0 * (kg / m3));
 
-  const auto fill_time = 200.0 * s;        // time since starting fill
-  const auto measured_mass = 20.0 * kg;    // measured mass at fill_time
+  const auto fill_time = 200.0 * s;      // time since starting fill
+  const auto measured_mass = 20.0 * kg;  // measured mass at fill_time
 
   const Length auto fill_level = box.fill_level(measured_mass);
   const Dimensionless auto fill_percent = quantity_cast<percent>(fill_level / height);
   const Volume auto spare_capacity = box.spare_capacity(measured_mass);
-  const auto input_flow_rate = measured_mass / fill_time;    // unknown dimension
+  const auto input_flow_rate = measured_mass / fill_time;  // unknown dimension
   const Speed auto float_rise_rate = fill_level / fill_time;
   const Time auto fill_time_left = (height / fill_level - 1) * fill_time;
 
   std::cout << "mp-units box example...\n";
-  std::cout << fmt::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_percent);
-  std::cout << fmt::format("spare_capacity at {} = {}\n", fill_time, spare_capacity);
-  std::cout << fmt::format("input flow rate after {} = {}\n", fill_time, input_flow_rate);
-  std::cout << fmt::format("float rise rate = {}\n", float_rise_rate);
-  std::cout << fmt::format("box full E.T.A. at current flow rate = {}\n", fill_time_left);
+  std::cout << STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_percent);
+  std::cout << STD_FMT::format("spare_capacity at {} = {}\n", fill_time, spare_capacity);
+  std::cout << STD_FMT::format("input flow rate after {} = {}\n", fill_time, input_flow_rate);
+  std::cout << STD_FMT::format("float rise rate = {}\n", float_rise_rate);
+  std::cout << STD_FMT::format("box full E.T.A. at current flow rate = {}\n", fill_time_left);
 }

@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.15)
-project(mp-units-dev
-    LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.19)
+project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+set(projectPrefix UNITS_)
 
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
@@ -43,18 +43,17 @@ set_warnings()
 add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 
 # enable include-what-you-use
-option(UNITS_IWYU "Enables include-what-you-use" OFF)
-if(UNITS_IWYU)
+option(${projectPrefix}IWYU "Enables include-what-you-use" OFF)
+if(${projectPrefix}IWYU)
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
-        NO_FORWARD_DECLARATIONS
-        QUOTED_INCLUDES_FIRST
+        NO_FORWARD_DECLARATIONS QUOTED_INCLUDES_FIRST
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(UNITS_AS_SYSTEM_HEADERS ON)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(${projectPrefix}AS_SYSTEM_HEADERS ON)
     endif()
 endif()
 
@@ -72,3 +71,7 @@ add_subdirectory(docs)
 # add unit tests
 enable_testing()
 add_subdirectory(test)
+
+# tests for standalone headers
+include(TestPublicHeaders)
+add_public_header_test(test_headers mp-units::mp-units)

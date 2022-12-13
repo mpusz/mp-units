@@ -34,10 +34,10 @@
 
 namespace units::isq::si {
 
-struct metre_per_second : unit<metre_per_second> {};
+struct metre_per_second : derived_unit<metre_per_second> {};
 struct dim_speed : isq::dim_speed<dim_speed, metre_per_second, dim_length, dim_time> {};
 
-struct kilometre_per_hour : derived_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
+struct kilometre_per_hour : derived_scaled_unit<kilometre_per_hour, dim_speed, kilometre, hour> {};
 
 template<UnitOf<dim_speed> U, Representation Rep = double>
 using speed = quantity<dim_speed, U, Rep>;
@@ -47,16 +47,24 @@ using speed = quantity<dim_speed, U, Rep>;
 inline namespace literals {
 
 // m/s
-constexpr auto operator"" _q_m_per_s(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<metre_per_second, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_m_per_s(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return speed<metre_per_second, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_m_per_s(long double l) { return speed<metre_per_second, long double>(l); }
 
 // km/h
-constexpr auto operator"" _q_km_per_h(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return speed<kilometre_per_hour, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_km_per_h(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return speed<kilometre_per_hour, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_per_hour, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -64,9 +72,11 @@ constexpr auto operator"" _q_km_per_h(long double l) { return speed<kilometre_pe
 
 namespace units::aliases::isq::si::inline speed {
 
-template<Representation Rep = double> using m_per_s = units::isq::si::speed<units::isq::si::metre_per_second, Rep>;
-template<Representation Rep = double> using km_per_h = units::isq::si::speed<units::isq::si::kilometre_per_hour, Rep>;
+template<Representation Rep = double>
+using m_per_s = units::isq::si::speed<units::isq::si::metre_per_second, Rep>;
+template<Representation Rep = double>
+using km_per_h = units::isq::si::speed<units::isq::si::kilometre_per_hour, Rep>;
 
 }  // namespace units::aliases::isq::si::inline speed
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

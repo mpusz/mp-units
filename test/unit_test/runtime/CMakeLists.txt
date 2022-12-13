@@ -22,23 +22,16 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-find_package(Catch2 CONFIG REQUIRED)
+find_package(Catch2 3 CONFIG REQUIRED)
 
-add_executable(unit_tests_runtime
-    catch_main.cpp
-    math_test.cpp
-    fmt_test.cpp
-    fmt_units_test.cpp
-    distribution_test.cpp
+add_executable(
+    unit_tests_runtime math_test.cpp magnitude_test.cpp fmt_test.cpp fmt_units_test.cpp distribution_test.cpp
 )
-target_link_libraries(unit_tests_runtime PRIVATE
-    mp-units::mp-units
-    Catch2::Catch2
-)
+target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(unit_tests_runtime PRIVATE
-        /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+    target_compile_options(
+        unit_tests_runtime PRIVATE /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
     )
 endif()
 

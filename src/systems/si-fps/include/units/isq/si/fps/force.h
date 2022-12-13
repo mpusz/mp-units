@@ -37,15 +37,15 @@
 namespace units::isq::si::fps {
 
 // https://en.wikipedia.org/wiki/Poundal
-struct poundal : named_unit<poundal, "pdl", no_prefix> {};
+struct poundal : named_unit<poundal, "pdl"> {};
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-struct pound_force : named_scaled_unit<pound_force, "lbf", si::prefix, ratio(32'174'049, 1'000'000), poundal> {};
+struct pound_force : named_scaled_unit<pound_force, "lbf", mag<ratio(32'174'049, 1'000'000)>(), poundal> {};
 
 struct kilopound_force : prefixed_unit<kilopound_force, si::kilo, pound_force> {};
 
-// https://en.wikipedia.org/wiki/Kip_(unit), 
-struct kip : alias_unit<kilopound_force, "klbf", no_prefix> {};
+// https://en.wikipedia.org/wiki/Kip_(unit),
+struct kip : alias_unit<kilopound_force, "klbf"> {};
 
 struct dim_force : isq::dim_force<dim_force, poundal, dim_mass, dim_acceleration> {};
 
@@ -57,20 +57,32 @@ using force = quantity<dim_force, U, Rep>;
 inline namespace literals {
 
 // poundal
-constexpr auto operator"" _q_pdl(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<poundal, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_pdl(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<poundal, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_pdl(long double l) { return force<poundal, long double>(l); }
 
 // pound force
-constexpr auto operator"" _q_lbf(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<pound_force, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_lbf(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<pound_force, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_lbf(long double l) { return force<pound_force, long double>(l); }
 
 // kilopound force
-constexpr auto operator"" _q_klbf(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return force<kilopound_force, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_klbf(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return force<kilopound_force, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_klbf(long double l) { return force<kilopound_force, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -88,7 +100,7 @@ using namespace force_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::fps
 
@@ -96,10 +108,13 @@ using namespace force_references;
 
 namespace units::aliases::isq::si::fps::inline force {
 
-template<Representation Rep = double> using pdl = units::isq::si::fps::force<units::isq::si::fps::poundal, Rep>;
-template<Representation Rep = double> using lbf = units::isq::si::fps::force<units::isq::si::fps::pound_force, Rep>;
-template<Representation Rep = double> using klbf = units::isq::si::fps::force<units::isq::si::fps::kilopound_force, Rep>;
+template<Representation Rep = double>
+using pdl = units::isq::si::fps::force<units::isq::si::fps::poundal, Rep>;
+template<Representation Rep = double>
+using lbf = units::isq::si::fps::force<units::isq::si::fps::pound_force, Rep>;
+template<Representation Rep = double>
+using klbf = units::isq::si::fps::force<units::isq::si::fps::kilopound_force, Rep>;
 
 }  // namespace units::aliases::isq::si::fps::inline force
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

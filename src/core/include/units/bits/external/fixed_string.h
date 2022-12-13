@@ -22,22 +22,23 @@
 
 #pragma once
 
-#include <units/bits/external/hacks.h> // IWYU pragma: keep
+#include <units/bits/external/hacks.h>  // IWYU pragma: keep
+// TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
+#include <units/bits/algorithm.h>
 
 // IWYU pragma: begin_exports
-#include <cstdlib>
 #include <compare>
+#include <cstdlib>
 // IWYU pragma: end_exports
 
 #include <cstddef>
 
-// TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 
 namespace units {
 
 /**
  * @brief A compile-time fixed string
- * 
+ *
  * @tparam CharT Character type to be used by the string
  * @tparam N The size of the string
  */
@@ -70,7 +71,7 @@ struct basic_fixed_string {
 
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
-      const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
+    const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
   {
     CharT txt[N + N2 + 1] = {};
 
@@ -82,36 +83,22 @@ struct basic_fixed_string {
 
   [[nodiscard]] constexpr bool operator==(const basic_fixed_string& other) const
   {
-    if (size() != other.size())
-      return false;
-    for (size_t i = 0; i != size(); ++i) {
-      if ((*this)[i] != other[i])
-        return false;
-    }
-    return true;
-    // return std::ranges::equal(*this, other);
+    if (size() != other.size()) return false;
+    return detail::equal(begin(), end(), other.begin());  // TODO std::ranges::equal(*this, other)
   }
 
   template<std::size_t N2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT, N2>&) { return false; }
+  [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string&, const basic_fixed_string<CharT, N2>&)
+  {
+    return false;
+  }
 
   template<std::size_t N2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs)
+  [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
+                                                  const basic_fixed_string<CharT, N2>& rhs)
   {
-    auto first1 = lhs.begin();
-    const auto last1 = lhs.end();
-    auto first2 = rhs.begin();
-    const auto last2 = rhs.end();
-    auto comp = std::compare_three_way();
-
-    for (; first1 != last1 && first2 != last2; ++first1, ++first2)
-      if (auto cmp = comp(*first1, *first2); cmp != 0)
-        return cmp;
- 
-    return first1 != last1 ? std::strong_ordering::greater :
-           first2 != last2 ? std::strong_ordering::less :
-                             std::strong_ordering::equal;
-    // return std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    // TODO std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return detail::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
 };
 

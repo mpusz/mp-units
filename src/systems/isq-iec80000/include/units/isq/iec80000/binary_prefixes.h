@@ -26,13 +26,13 @@
 
 namespace units::isq::iec80000 {
 
-struct binary_prefix : prefix_family {};
-
-struct kibi : units::prefix<kibi, binary_prefix, "Ki", ratio(                    1'024)> {};
-struct mebi : units::prefix<mebi, binary_prefix, "Mi", ratio(                1'048'576)> {};
-struct gibi : units::prefix<gibi, binary_prefix, "Gi", ratio(            1'073'741'824)> {};
-struct tebi : units::prefix<tebi, binary_prefix, "Ti", ratio(        1'099'511'627'776)> {};
-struct pebi : units::prefix<pebi, binary_prefix, "Pi", ratio(    1'125'899'906'842'624)> {};
-struct exbi : units::prefix<exbi, binary_prefix, "Ei", ratio(1'152'921'504'606'846'976)> {};
+struct kibi : prefix<kibi, "Ki", mag_power<2, 10>()> {};
+struct mebi : prefix<mebi, "Mi", mag_power<2, 20>()> {};
+struct gibi : prefix<gibi, "Gi", mag_power<2, 30>()> {};
+struct tebi : prefix<tebi, "Ti", mag_power<2, 40>()> {};
+struct pebi : prefix<pebi, "Pi", mag_power<2, 50>()> {};
+struct exbi : prefix<exbi, "Ei", mag_power<2, 60>()> {};
+struct zebi : prefix<zebi, "Zi", mag_power<2, 70>()> {};
+struct yobi : prefix<yobi, "Yi", mag_power<2, 80>()> {};
 
 }  // namespace units::isq::iec80000

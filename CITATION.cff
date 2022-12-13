@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+
+title: mp-units
+abstract: >-
+  A compile-time enabled Modern C++ library that provides compile-time
+  dimensional analysis and unit/quantity manipulation.
+keywords:
+  - c++
+  - library
+  - dimensional-analysis
+  - system-of-units
+  - units
+  - quantities
+  - physical-quantities
+  - physical-units
+  - units-of-measurement
+  - quantity-manipulation
+type: software
+license: MIT
+
+# The below lists individual authors that contributed at least 50 commits to the source code repository.
+# The rest of project's contributors are collectively referred to as "The mp-units project team".
+authors:
+  - given-names: Mateusz
+    family-names: Pusz
+    orcid: https://orcid.org/0000-0003-0680-0765
+  - given-names: "Johel Ernesto"
+    family-names: "Guerrero Peña"
+  - given-names: "Chip"
+    family-names: "Hogg"
+  - name: "The mp-units project team"
+
+contact:
+  - email: mateusz.pusz@gmail.com
+    given-names: Mateusz
+    family-names: Pusz
+
+repository-code: "https://github.com/mpusz/units"
+url: "https://mpusz.github.io/units"
+repository-artifact: "https://conan.io/center/mp-units"
+
+version: 0.7.0
+date-released: "2021-05-11"
+identifiers:
+  - description: "The GitHub release URL of tag 0.7.0"
+    type: url
+    value: "https://github.com/mpusz/units/releases/tag/v0.7.0"

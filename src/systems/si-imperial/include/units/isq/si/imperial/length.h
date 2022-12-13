@@ -35,26 +35,34 @@
 namespace units::isq::si::imperial {
 
 // https://en.wikipedia.org/wiki/Chain_(unit)
-struct chain : named_scaled_unit<chain, "ch", no_prefix, ratio(22, 1), si::international::yard> {};
+struct chain : named_scaled_unit<chain, "ch", mag<22>(), si::international::yard> {};
 
 // https://en.wikipedia.org/wiki/Rod_(unit)
-struct rod : named_scaled_unit<rod, "rd", no_prefix, ratio(1, 4), chain> {};
+struct rod : named_scaled_unit<rod, "rd", mag<ratio(1, 4)>(), chain> {};
 
 #ifndef UNITS_NO_LITERALS
 
 inline namespace literals {
 
 // ch
-constexpr auto operator"" _q_ch(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<chain, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_ch(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<chain, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_ch(long double l) { return si::length<chain, long double>(l); }
 
 // rd
-constexpr auto operator"" _q_rd(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return si::length<rod, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_rd(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return si::length<rod, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_rd(long double l) { return si::length<rod, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -71,7 +79,7 @@ using namespace length_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si::imperial
 
@@ -79,9 +87,11 @@ using namespace length_references;
 
 namespace units::aliases::isq::si::imperial::inline length {
 
-template<Representation Rep = double> using ch = units::isq::si::length<units::isq::si::imperial::chain, Rep>;
-template<Representation Rep = double> using rd = units::isq::si::length<units::isq::si::imperial::rod, Rep>;
+template<Representation Rep = double>
+using ch = units::isq::si::length<units::isq::si::imperial::chain, Rep>;
+template<Representation Rep = double>
+using rd = units::isq::si::length<units::isq::si::imperial::rod, Rep>;
 
 }  // namespace units::aliases::isq::si::imperial::inline length
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

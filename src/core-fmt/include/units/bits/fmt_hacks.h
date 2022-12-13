@@ -20,37 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+// Formatting library for C++ - the core API for char/UTF-8
+//
+// Copyright (c) 2012 - present, Victor Zverovich
+// All rights reserved.
+//
+// For the license information refer to format.h.
 
-#include <units/derived_dimension.h>
+#include <units/bits/external/hacks.h>
 
-namespace units::detail {
+#ifndef UNITS_USE_LIBFMT
+#define UNITS_USE_LIBFMT 1
+#endif
 
-// same_scaled_units
-template<typename ExpList, Unit... Us>
-inline constexpr bool same_scaled_units = false;
+#if UNITS_USE_LIBFMT
 
-template<typename... Es, Unit... Us>
-inline constexpr bool same_scaled_units<exponent_list<Es...>, Us...> = (UnitOf<Us, typename Es::dimension> && ...);
+UNITS_DIAGNOSTIC_PUSH
+UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+UNITS_DIAGNOSTIC_POP
 
-// derived_unit
+#define STD_FMT fmt
+#define FMT_LOCALE(loc) (loc).template get<std::locale>()
+#define FMT_TO_ARG_ID(arg) static_cast<int>(arg)
+#define FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
 
-template<Exponent E>
-constexpr ratio inverse_if_negative(const ratio& r)
-{
-  if constexpr(E::num * E::den > 0)
-    return r;
-  else
-    return inverse(r);
-}
+#else
 
-template<Unit... Us, typename... Es>
-constexpr ratio derived_ratio(exponent_list<Es...>)
-{
-  return (... * inverse_if_negative<Es>(pow<detail::abs(Es::num)>(Us::ratio) / dimension_unit<typename Es::dimension>::ratio));
-}
+#ifndef __cpp_lib_format
+#error "std::formatting facility not supported"
+#endif
 
-template<DerivedDimension D, Unit... Us>
-using derived_unit = scaled_unit<derived_ratio<Us...>(typename D::recipe()), typename D::coherent_unit::reference>;
+#include <format>
 
-}  // namespace units::detail
+#define STD_FMT std
+#define FMT_LOCALE(loc) loc
+#define FMT_TO_ARG_ID(arg) arg
+#define FMT_FROM_ARG_ID(arg) arg
+
+#endif

@@ -52,7 +52,7 @@ dimensions used in the division operation:
     static_assert(std::is_same_v<decltype(result)::dimension,
                                  unknown_dimension<exponent<dim_length, 1>, exponent<dim_time, -1>>>);
     static_assert(std::is_same_v<decltype(result)::unit,
-                                 scaled_unit<ratio(1, 36, 1), unknown_coherent_unit>>);
+                                 scaled_unit<ratio(1, 36, 1), unknown_coherent_unit<exponent<dim_length, 1>, exponent<dim_time, -1>>>>>);
 
 .. important::
 
@@ -81,7 +81,7 @@ this particular unknown derived dimension.
 In case we would like to print the result in terms of base units we can simply do the
 following::
 
-    auto s = quantity_cast<unknown_coherent_unit>(result);
+    auto s = quantity_cast<decltype(result)::dimension::coherent_unit>(result);
     std::cout << "Speed: " << s << '\n';  // prints 'Speed: 20 m/s'
 
 .. seealso::

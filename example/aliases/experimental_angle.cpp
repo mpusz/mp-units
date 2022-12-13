@@ -21,20 +21,25 @@
 // SOFTWARE.
 
 #include <units/generic/angle.h>
-#include <units/isq/si/energy.h>
+#include <units/isq/si/force.h>
+#include <units/isq/si/length.h>
 #include <units/isq/si/torque.h>
+#include <units/math.h>
 #include <units/quantity_io.h>
 #include <iostream>
 
 int main()
 {
+  using namespace units;
   using namespace units::isq;
+  using namespace units::aliases;
   using namespace units::aliases::isq::si;
 
-  const auto torque = N_m_per_rad<>(20.0);
-  const auto energy = J<>(20.0);
+  const Length auto lever = cm<>(20);
+  const Force auto force = N<>(500);
+  const Angle auto angle = deg<>(90);
+  const Torque auto torque = lever * force * sin(angle) / cotes_angle<>;
 
-  units::Angle auto angle = energy / torque;
-
-  std::cout << angle << '\n';
+  std::cout << "Applying a perpendicular force of " << force << " to a " << lever << " long lever results in "
+            << quantity_cast<si::newton_metre_per_radian>(torque) << " of torque.\n";
 }

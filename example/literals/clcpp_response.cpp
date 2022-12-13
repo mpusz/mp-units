@@ -114,7 +114,7 @@ void calcs_comparison()
   const length<femtometre, float> L1A = 2._q_fm;
   const length<femtometre, float> L2A = 3._q_fm;
   const length<femtometre, float> LrA = L1A + L2A;
-  fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
@@ -123,17 +123,17 @@ void calcs_comparison()
   const length<metre, float> L1B = L1A;
   const length<metre, float> L2B = L2A;
   const length<metre, float> LrB = L1B + L2B;
-  fmt::print("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
   const area<square_femtometre, float> ArA = L1A * L2A;
-  fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
   const area<square_metre, float> ArB = L1B * L2B;
-  fmt::print("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
+  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 
 }  // namespace

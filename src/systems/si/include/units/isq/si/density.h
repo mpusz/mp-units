@@ -28,14 +28,14 @@
 #include <units/symbol_text.h>
 // IWYU pragma: end_exports
 
-#include <units/isq/si/mass.h>
 #include <units/isq/si/length.h>
+#include <units/isq/si/mass.h>
 #include <units/isq/si/prefixes.h>
 #include <units/unit.h>
 
 namespace units::isq::si {
 
-struct kilogram_per_metre_cub : unit<kilogram_per_metre_cub> {};
+struct kilogram_per_metre_cub : derived_unit<kilogram_per_metre_cub> {};
 
 struct dim_density : isq::dim_density<dim_density, kilogram_per_metre_cub, dim_mass, dim_length> {};
 
@@ -47,12 +47,16 @@ using density = quantity<dim_density, U, Rep>;
 inline namespace literals {
 
 // kg / m³
-constexpr auto operator"" _q_kg_per_m3(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return density<kilogram_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_kg_per_m3(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return density<kilogram_per_metre_cub, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_kg_per_m3(long double l) { return density<kilogram_per_metre_cub, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 }  // namespace units::isq::si
 
@@ -60,8 +64,9 @@ constexpr auto operator"" _q_kg_per_m3(long double l) { return density<kilogram_
 
 namespace units::aliases::isq::si::inline density {
 
-template<Representation Rep = double> using kg_per_m3 = units::isq::si::density<units::isq::si::kilogram_per_metre_cub, Rep>;
+template<Representation Rep = double>
+using kg_per_m3 = units::isq::si::density<units::isq::si::kilogram_per_metre_cub, Rep>;
 
 }  // namespace units::aliases::isq::si::inline density
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

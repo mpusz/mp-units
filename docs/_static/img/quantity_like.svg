@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="348px" preserveAspectRatio="none" style="width:288px;height:348px;background:#FCFCFC;" version="1.1" viewBox="0 0 288 348" width="288px" zoomAndPan="magnify"><defs/><g><!--MD5=[da1b011f603b1fa92adce02fc4bac354]
+class quantity--><a href="../framework/quantities.html" target="_top" title="../framework/quantities.html" xlink:actuate="onRequest" xlink:href="../framework/quantities.html" xlink:show="new" xlink:title="../framework/quantities.html" xlink:type="simple"><g id="elem_quantity"><rect codeLine="8" fill="#F1F1F1" height="26.2969" id="quantity" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="66" x="80" y="110"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="60" x="83" y="127.9951">quantity</text></g></a><!--MD5=[18fbdc711d33f9ff282e1f4c30c050e6]
+class quantity_point--><a href="../framework/quantity_points.html" target="_top" title="../framework/quantity_points.html" xlink:actuate="onRequest" xlink:href="../framework/quantity_points.html" xlink:show="new" xlink:title="../framework/quantity_points.html" xlink:type="simple"><g id="elem_quantity_point"><rect codeLine="9" fill="#F1F1F1" height="26.2969" id="quantity_point" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="112" x="7" y="213"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="106" x="10" y="230.9951">quantity_point</text></g></a><!--MD5=[5b6ab379e9f247363b208f7c72246136]
+class quantity_kind--><a href="../framework/quantity_kinds.html" target="_top" title="../framework/quantity_kinds.html" xlink:actuate="onRequest" xlink:href="../framework/quantity_kinds.html" xlink:show="new" xlink:title="../framework/quantity_kinds.html" xlink:type="simple"><g id="elem_quantity_kind"><rect codeLine="10" fill="#F1F1F1" height="26.2969" id="quantity_kind" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="104" x="154" y="213"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="157" y="230.9951">quantity_kind</text></g></a><!--MD5=[6d322596e71f19471be4dbdd0c5e34a1]
+class quantity_point_kind--><a href="../framework/quantity_kinds.html#quantity-point-kinds" target="_top" title="../framework/quantity_kinds.html#quantity-point-kinds" xlink:actuate="onRequest" xlink:href="../framework/quantity_kinds.html#quantity-point-kinds" xlink:show="new" xlink:title="../framework/quantity_kinds.html#quantity-point-kinds" xlink:type="simple"><g id="elem_quantity_point_kind"><rect codeLine="11" fill="#F1F1F1" height="26.2969" id="quantity_point_kind" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="150" x="131" y="316"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="144" x="134" y="333.9951">quantity_point_kind</text></g></a><!--MD5=[b2a694e6474a2a9b22a2e31fbfd4909a]
+class Rep--><g id="elem_Rep"><rect fill="#F1F1F1" height="26.2969" id="Rep" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="35" x="95.5" y="7"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="29" x="98.5" y="24.9951">Rep</text></g><!--MD5=[e24fe1f9fefda9999290bb447fae99e3]
+reverse link Rep to quantity--><g id="link_Rep_quantity"><path codeLine="13" d="M113,38.526 C113,58.92 113,92.061 113,109.83 " fill="none" id="Rep-backto-quantity" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="113,33.385,109,42.385,113,38.385,117,42.385,113,33.385" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="60" x="114" y="76.0669">number()</text></g><!--MD5=[90d8d95e9adcc8fc2f6906e762b4a14d]
+reverse link quantity to quantity_point--><g id="link_quantity_quantity_point"><path codeLine="14" d="M98.633,140.033 C92.5205,147.508 85.7271,156.776 81,166 C73.1851,181.249 68.1076,200.483 65.3984,212.765 " fill="none" id="quantity-backto-quantity_point" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="101.9413,136.076,93.0996,140.4147,98.7341,139.9118,99.2369,145.5463,101.9413,136.076" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="82" y="179.0669">relative()</text></g><!--MD5=[dd075b90f0ec4f5db24762fad9b93a06]
+reverse link quantity to quantity_kind--><g id="link_quantity_quantity_kind"><path codeLine="15" d="M127.956,140.242 C146.612,160.503 178.084,194.683 194.794,212.83 " fill="none" id="quantity-backto-quantity_kind" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="124.404,136.385,127.5577,145.7153,127.7908,140.0632,133.4429,140.2964,124.404,136.385" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="67" x="167" y="179.0669">common()</text></g><!--MD5=[1acbd4671b34e1d8b20d7848e474454e]
+reverse link quantity_kind to quantity_point_kind--><g id="link_quantity_kind_quantity_point_kind"><path codeLine="16" d="M206,244.5264 C206,264.9203 206,298.0611 206,315.8296 " fill="none" id="quantity_kind-backto-quantity_point_kind" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="206,239.385,202,248.385,206,244.385,210,248.385,206,239.385" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="207" y="282.0669">relative()</text></g><!--MD5=[abc9f5195c71d2db961c2d927d457aba]
+@startuml
+skinparam monochrome true
+    skinparam shadowing false
+    skinparam backgroundColor #fcfcfc
+
+    hide members
+    hide circle
+
+    class quantity [[../framework/quantities.html]]
+    class quantity_point [[../framework/quantity_points.html]]
+    class quantity_kind [[../framework/quantity_kinds.html]]
+    class quantity_point_kind [[../framework/quantity_kinds.html#quantity-point-kinds]]
+
+    Rep <- - quantity : number()
+    quantity <- - quantity_point : relative()
+    quantity <- - quantity_kind : common()
+    quantity_kind <- - quantity_point_kind : relative()
+@enduml
+
+PlantUML version 1.2022.6beta5(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -23,8 +23,8 @@
 #pragma once
 
 #include <units/concepts.h>
-#include <units/isq/dimensions/length.h>
 #include <units/isq/dimensions/amount_of_substance.h>
+#include <units/isq/dimensions/length.h>
 
 namespace units::isq {
 

@@ -30,12 +30,12 @@
 
 namespace units {
 
-struct one : named_unit<one, "", no_prefix> {};
-struct percent : named_scaled_unit<percent, "%", no_prefix, ratio(1, 100), one> {};
+struct one : derived_unit<one> {};
+struct percent : named_scaled_unit<percent, "%", mag<ratio(1, 100)>(), one> {};
 
 /**
  * @brief Dimension one
- * 
+ *
  * Dimension for which all the exponents of the factors corresponding to the base
  * dimensions are zero. Also commonly named as "dimensionless".
  */

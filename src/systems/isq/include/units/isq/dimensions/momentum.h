@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/concepts.h>
+#include <units/isq/dimensions/mass.h>
 #include <units/isq/dimensions/speed.h>
 
 namespace units::isq {

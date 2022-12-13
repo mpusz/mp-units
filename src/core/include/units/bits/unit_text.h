@@ -24,76 +24,68 @@
 
 #include <units/bits/derived_symbol_text.h>
 #include <units/bits/external/text_tools.h>
-#include <units/prefix.h>
 #include <units/derived_dimension.h>
+#include <units/prefix.h>
+#include <units/unit.h>
 
 namespace units::detail {
 
 inline constexpr basic_symbol_text base_multiplier("\u00D7 10", "x 10");
 
-template<ratio R>
-constexpr auto ratio_text()
+template<Magnitude auto M>
+constexpr auto magnitude_text()
 {
-  if constexpr(R.num == 1 && R.den == 1 && R.exp != 0) {
-    return base_multiplier + superscript<R.exp>();
-  }
-  else if constexpr(R.num != 1 || R.den != 1 || R.exp != 0) {
-    auto txt = basic_fixed_string("[") + regular<R.num>();
-    if constexpr(R.den == 1) {
-      if constexpr(R.exp == 0) {
+  constexpr auto exp10 = extract_power_of_10(M);
+
+  constexpr Magnitude auto base = M / pow<exp10>(mag<10>());
+  constexpr Magnitude auto num = numerator(base);
+  constexpr Magnitude auto den = denominator(base);
+  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return base_multiplier + superscript<exp10>();
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = basic_fixed_string("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
+      if constexpr (exp10 == 0) {
         return txt + basic_fixed_string("]");
+      } else {
+        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
       }
-      else {
-        return txt + " " + base_multiplier + superscript<R.exp>() +
-            basic_fixed_string("]");
-      }
-    }
-    else {
-      if constexpr(R.exp == 0) {
-        return txt + basic_fixed_string("/") + regular<R.den>() +
-            basic_fixed_string("]");
-      }
-      else {
-        return txt + basic_fixed_string("/") + regular<R.den>() +
-            " " + base_multiplier + superscript<R.exp>() +
-            basic_fixed_string("]");
+    } else {
+      if constexpr (exp10 == 0) {
+        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
+      } else {
+        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
+               basic_fixed_string("]");
       }
     }
-  }
-  else {
+  } else {
     return basic_fixed_string("");
   }
 }
 
-template<ratio R, typename PrefixFamily, std::size_t SymbolLen>
-constexpr auto prefix_or_ratio_text()
+template<Unit U, Magnitude auto M, std::size_t SymbolLen>
+constexpr auto prefix_or_magnitude_text()
 {
-  if constexpr(R.num == 1 && R.den == 1 && R.exp == 0) {
+  if constexpr (M == mag<1>()) {
     // no ratio/prefix
     return basic_fixed_string("");
-  }
-  else {
-    if constexpr (!is_same_v<PrefixFamily, no_prefix>) {
-      // try to form a prefix
-      using prefix = downcast<detail::prefix_base<PrefixFamily, R>>;
+  } else {
+    // try to form a prefix
+    using prefix = downcast<detail::prefix_base<M>>;
 
-      if constexpr(!is_same_v<prefix, prefix_base<PrefixFamily, R>>) {
-        // print as a prefixed unit
-        return prefix::symbol;
-      }
-      else {
-        // print as a ratio of the coherent unit
-        constexpr auto txt = ratio_text<R>();
-        if constexpr(SymbolLen > 0 && txt.standard().size() > 0)
-          return txt + basic_fixed_string(" ");
-        else
-          return txt;
-      }
-    }
-    else {
+    if constexpr (can_be_prefixed<U> && !is_same_v<prefix, prefix_base<M>>) {
+      // print as a prefixed unit
+      return prefix::symbol;
+    } else {
       // print as a ratio of the coherent unit
-      constexpr auto txt = ratio_text<R>();
-      if constexpr(SymbolLen > 0 && txt.standard().size() > 0)
+      constexpr auto txt = magnitude_text<M>();
+      if constexpr (SymbolLen > 0 && txt.standard().size() > 0)
         return txt + basic_fixed_string(" ");
       else
         return txt;
@@ -104,7 +96,8 @@ constexpr auto prefix_or_ratio_text()
 template<typename... Es, std::size_t... Idxs>
 constexpr auto derived_dimension_unit_text(exponent_list<Es...>, std::index_sequence<Idxs...>)
 {
-  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, negative_exp_count<Es...>, Idxs>() + ... + basic_symbol_text(basic_fixed_string("")));
+  return (exp_text<Es, dimension_unit<typename Es::dimension>::symbol, negative_exp_count<Es...>, Idxs>() + ... +
+          basic_symbol_text(basic_fixed_string("")));
 }
 
 template<typename... Es>
@@ -120,10 +113,9 @@ template<Exponent Exp>
 constexpr auto exponent_list_with_named_units(Exp)
 {
   using dim = TYPENAME Exp::dimension;
-  if constexpr(dimension_unit<dim>::is_named) {
+  if constexpr (NamedUnit<dimension_unit<dim>>) {
     return exponent_list<Exp>();
-  }
-  else {
+  } else {
     using recipe = TYPENAME dim::recipe;
     return exponent_list_with_named_units(recipe());
   }
@@ -135,10 +127,7 @@ constexpr auto exponent_list_with_named_units(exponent_list<Es...>)
   return type_list_join<decltype(exponent_list_with_named_units(Es()))...>();
 }
 
-constexpr auto exponent_list_with_named_units(exponent_list<> empty)
-{
-  return empty;
-}
+constexpr auto exponent_list_with_named_units(exponent_list<> empty) { return empty; }
 
 template<Dimension Dim>
 constexpr auto derived_dimension_unit_text()
@@ -149,31 +138,28 @@ constexpr auto derived_dimension_unit_text()
 
 template<typename T>
 // TODO replace with `inline constexpr bool has_symbol` when MSVC cathes up
-concept has_symbol = requires{ T::symbol; };
+concept has_symbol = requires { T::symbol; };
 
 template<Dimension Dim, Unit U>
 constexpr auto unit_text()
 {
-  if constexpr(has_symbol<U>) {
+  if constexpr (has_symbol<U>) {
     // already has a symbol so print it
     return U::symbol;
-  }
-  else {
+  } else {
     // print as a prefix or ratio of a coherent unit
     using coherent_unit = dimension_unit<Dim>;
 
-    if constexpr(has_symbol<coherent_unit>) {
-      // use predefined coherent unit symbol
-      constexpr auto symbol_text = coherent_unit::symbol;
-      constexpr auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family, symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    }
-    else {
-      // use derived dimension ingredients to create a unit symbol
-      constexpr auto symbol_text = derived_dimension_unit_text<Dim>();
-      constexpr auto prefix_txt = prefix_or_ratio_text<U::ratio / coherent_unit::ratio, typename U::reference::prefix_family, symbol_text.standard().size()>();
-      return prefix_txt + symbol_text;
-    }
+    constexpr auto symbol_text = []() {
+      if constexpr (has_symbol<coherent_unit>)
+        return coherent_unit::symbol;
+      else
+        return derived_dimension_unit_text<Dim>();
+    }();
+
+    constexpr auto prefix_txt =
+      prefix_or_magnitude_text<U, U::mag / coherent_unit::mag, symbol_text.standard().size()>();
+    return prefix_txt + symbol_text;
   }
 }
 

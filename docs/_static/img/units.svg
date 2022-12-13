@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="456px" preserveAspectRatio="none" style="width:591px;height:456px;background:#FCFCFC;" version="1.1" viewBox="0 0 591 456" width="591px" zoomAndPan="magnify">
+    <defs />
+    <g>
+        <!--MD5=[197a77df23d290968e58c76a2239d979]
+cluster Unit-->
+        <g id="cluster_Unit">
+            <a href="../../framework/units.html" target="_top" title="../../framework/units.html" xlink:actuate="onRequest" xlink:href="../../framework/units.html" xlink:show="new" xlink:title="../../framework/units.html" xlink:type="simple">
+                <rect height="443" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:1.0;fill:none;" width="578" x="7" y="7" />
+                <path d="M51,7 L51,16.2969 L41,26.2969 L7,26.2969 " fill="none" style="stroke:#181818;stroke-width:1.0;" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="34" x="10" y="20.9951">Unit</text>
+            </a>
+        </g> <!--MD5=[124cbcdfdb408a63d08476bd52d3bb38]
+class scaled_unit-->
+        <g id="elem_scaled_unit">
+            <rect codeLine="12" fill="#F1F1F1" height="26.2969" id="scaled_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="178" x="23" y="225" />
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="80" x="26" y="242.9951">scaled_unit</text>
+            <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="90" x="114" y="222" />
+            <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="88" x="115" y="234.1387">UnitRatio, Unit</text>
+        </g> <!--MD5=[c262fc293e71d96455ecd38c5cba51e9]
+class prefixed_alias_unit-->
+        <a href="../../framework/units.html#aliased-units" target="_top" title="../../framework/units.html#aliased-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#aliased-units" xlink:show="new" xlink:title="../../framework/units.html#aliased-units" xlink:type="simple">
+            <g id="elem_prefixed_alias_unit">
+                <rect codeLine="14" fill="#F1F1F1" height="26.2969" id="prefixed_alias_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="269" x="280.5" y="408" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="133" x="283.5" y="425.9951">prefixed_alias_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="128" x="424.5" y="405" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="126" x="425.5" y="417.1387">Unit, Prefix, AliasUnit</text>
+            </g>
+        </a> <!--MD5=[80b1f1fe027b66c9bd530ac9502a064a]
+class alias_unit-->
+        <a href="../../framework/units.html#aliased-units" target="_top" title="../../framework/units.html#aliased-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#aliased-units" xlink:show="new" xlink:title="../../framework/units.html#aliased-units" xlink:type="simple">
+            <g id="elem_alias_unit">
+                <rect codeLine="15" fill="#F1F1F1" height="26.2969" id="alias_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="155" x="337.5" y="347" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="67" x="340.5" y="364.9951">alias_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="80" x="415.5" y="344" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78" x="416.5" y="356.1387">Unit, Symbol</text>
+            </g>
+        </a> <!--MD5=[26e0af737c6dfe4c6ad8ee7c79493d2e]
+class derived_scaled_unit-->
+        <a href="../../framework/units.html#derived-scaled-units" target="_top" title="../../framework/units.html#derived-scaled-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#derived-scaled-units" xlink:show="new" xlink:title="../../framework/units.html#derived-scaled-units" xlink:type="simple">
+            <g id="elem_derived_deduced_unit">
+                <rect codeLine="16" fill="#F1F1F1" height="26.2969" id="derived_scaled_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="308" x="261" y="286" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="157" x="264" y="303.9951">derived_scaled_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="143" x="429" y="283" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="141" x="430" y="295.1387">Dimension, Unit, Unit...</text>
+            </g>
+        </a> <!--MD5=[21a38f8b465de3a6a580896bb83abf03]
+class derived_unit-->
+        <a href="../../framework/units.html#derived-unnamed-units" target="_top" title="../../framework/units.html#derived-unnamed-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#derived-unnamed-units" xlink:show="new" xlink:title="../../framework/units.html#derived-unnamed-units" xlink:type="simple">
+            <g id="elem_derived_unit">
+                <rect codeLine="17" fill="#F1F1F1" height="26.2969" id="derived_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="94" x="368" y="225" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="88" x="371" y="242.9951">derived_unit</text>
+            </g>
+        </a> <!--MD5=[002996a525ad7ee43e1a2ae0bbb7adb6]
+class prefixed_unit-->
+        <a href="../../framework/units.html#prefixed-unit" target="_top" title="../../framework/units.html#prefixed-unit" xlink:actuate="onRequest" xlink:href="../../framework/units.html#prefixed-unit" xlink:show="new" xlink:title="../../framework/units.html#prefixed-unit" xlink:type="simple">
+            <g id="elem_prefixed_unit">
+                <rect codeLine="18" fill="#F1F1F1" height="26.2969" id="prefixed_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="169" x="330.5" y="164" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="93" x="333.5" y="181.9951">prefixed_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="68" x="434.5" y="161" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="66" x="435.5" y="173.1387">Prefix, Unit</text>
+            </g>
+        </a> <!--MD5=[3a0c8cf47fc662100af5bce8b7f7e204]
+class named_scaled_unit-->
+        <a href="../../framework/units.html#named-scaled-units" target="_top" title="../../framework/units.html#named-scaled-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#named-scaled-units" xlink:show="new" xlink:title="../../framework/units.html#named-scaled-units" xlink:type="simple">
+            <g id="elem_named_scaled_unit">
+                <rect codeLine="19" fill="#F1F1F1" height="26.2969" id="named_scaled_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="263" x="283.5" y="103" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="137" x="286.5" y="120.9951">named_scaled_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="118" x="431.5" y="100" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="116" x="432.5" y="112.1387">Symbol, Ratio, Unit</text>
+            </g>
+        </a> <!--MD5=[5e57872b30d77ee0da3206dd3d117986]
+class named_unit-->
+        <a href="../../framework/units.html#base-units" target="_top" title="../../framework/units.html#base-units" xlink:actuate="onRequest" xlink:href="../../framework/units.html#base-units" xlink:show="new" xlink:title="../../framework/units.html#base-units" xlink:type="simple">
+            <g id="elem_named_unit">
+                <rect codeLine="20" fill="#F1F1F1" height="26.2969" id="named_unit" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="139" x="345.5" y="42" />
+                <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing" textLength="84" x="348.5" y="59.9951">named_unit</text>
+                <rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="47" x="440.5" y="39" />
+                <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="45" x="441.5" y="51.1387">Symbol</text>
+            </g>
+        </a> <!--MD5=[d10f3427b03caf67d8b4e569e5f4936e]
+reverse link scaled_unit to named_unit-->
+        <g id="link_scaled_unit_named_unit">
+            <path codeLine="22" d="M133.027,208.194 C158.437,172.883 205.676,115.067 261,85 C286.686,71.041 317.93,63.52 345.471,59.49 " fill="none" id="scaled_unit-backto-named_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="138.679,212.326,121.521,224.76,127.181,204.34,138.679,212.326" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[c4573f7b87c3262f7d3adc92106a39ed]
+reverse link scaled_unit to named_scaled_unit-->
+        <g id="link_scaled_unit_named_scaled_unit">
+            <path codeLine="23" d="M145.911,212.637 C174.734,191.666 218.536,162.71 261,146 C279.262,138.814 299.451,133.292 319.011,129.068 " fill="none" id="scaled_unit-backto-named_scaled_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="149.884,218.407,129.672,224.769,141.505,207.191,149.884,218.407" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[65b74da07c0359a7bcc888d9c9b6e7d5]
+reverse link scaled_unit to prefixed_unit-->
+        <g id="link_scaled_unit_prefixed_unit">
+            <path codeLine="24" d="M194.254,220.784 C215.93,216.246 239.344,211.391 261,207 C288.988,201.325 319.892,195.233 346.556,190.03 " fill="none" id="scaled_unit-backto-prefixed_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="195.542,227.667,174.53,224.927,192.664,213.966,195.542,227.667" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[29a2e6b65a8256359df6b41e4d3b7c7c]
+reverse link scaled_unit to derived_unit-->
+        <g id="link_scaled_unit_derived_unit">
+            <path codeLine="25" d="M221.579,238 C271.79,238 328.764,238 367.604,238 " fill="none" id="scaled_unit-backto-derived_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="221.276,245,201.276,238,221.276,231,221.276,245" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[1916bf928027667941dfca121ed1aff3]
+reverse link scaled_unit to derived_scaled_unit-->
+        <g id="link_scaled_unit_derived_deduced_unit">
+            <path codeLine="26" d="M197.3,255.089 C218.121,259.31 240.369,263.819 261,268 C290.086,273.894 322.282,280.418 349.606,285.954 " fill="none" id="scaled_unit-backto-derived_scaled_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="195.683,261.904,177.472,251.07,198.464,248.183,195.683,261.904" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[19d99332ae619b76851ceaa34f4e9014]
+reverse link scaled_unit to alias_unit-->
+        <g id="link_scaled_unit_alias_unit">
+            <path codeLine="27" d="M145.982,263.005 C174.849,283.698 218.676,312.311 261,329 C285.078,338.494 312.484,345.219 337.384,349.919 " fill="none" id="scaled_unit-backto-alias_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="141.677,268.529,129.714,251.039,149.972,257.251,141.677,268.529" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[a61d68e6008f4d1392d92030b50774f1]
+reverse link scaled_unit to prefixed_alias_unit-->
+        <g id="link_scaled_unit_prefixed_alias_unit">
+            <path codeLine="28" d="M133.104,267.552 C158.592,302.572 205.908,359.952 261,390 C275.157,397.7215 290.998,403.5283 306.976,407.8934 " fill="none" id="scaled_unit-backto-prefixed_alias_unit" style="stroke:#181818;stroke-width:1.0;" />
+            <polygon fill="none" points="127.332,271.513,121.559,251.125,138.786,263.462,127.332,271.513" style="stroke:#181818;stroke-width:1.0;" />
+        </g> <!--MD5=[f18d7856f7539404df991684234dc7ed]
+@startuml
+skinparam monochrome true
+    skinparam shadowing false
+    skinparam backgroundColor #fcfcfc
+
+    hide members
+    hide circle
+
+    left to right direction
+
+    package Unit <<Frame>> [[../../framework/units.html]] {
+
+    abstract scaled_unit<UnitRatio, Unit>
+
+    abstract prefixed_alias_unit<Unit, Prefix, AliasUnit> [[../../framework/units.html#aliased-units]]
+    abstract alias_unit<Unit, Symbol> [[../../framework/units.html#aliased-units]]
+    abstract derived_scaled_unit<Dimension, Unit, Unit...> [[../../framework/units.html#derived-scaled-units]]
+    abstract derived_unit [[../../framework/units.html#derived-unnamed-units]]
+    abstract prefixed_unit<Prefix, Unit> [[../../framework/units.html#prefixed-unit]]
+    abstract named_scaled_unit<Symbol, Ratio, Unit> [[../../framework/units.html#named-scaled-units]]
+    abstract named_unit<Symbol> [[../../framework/units.html#base-units]]
+
+    scaled_unit <|- - named_unit
+    scaled_unit <|- - named_scaled_unit
+    scaled_unit <|- - prefixed_unit
+    scaled_unit <|- - derived_unit
+    scaled_unit <|- - derived_scaled_unit
+    scaled_unit <|- - alias_unit
+    scaled_unit <|- - prefixed_alias_unit
+    }
+@enduml
+
+PlantUML version 1.2022.5(Sat Apr 30 10:55:52 UTC 2022)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+-->
+    </g>
+</svg>

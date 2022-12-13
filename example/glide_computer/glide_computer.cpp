@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
+#include <iostream>
 #include <numeric>
 #include <string_view>
 
@@ -33,7 +34,8 @@ task::legs task::make_legs(const waypoints& wpts)
   task::legs res;
   res.reserve(wpts.size() - 1);
   auto to_leg = [](const waypoint& w1, const waypoint& w2) { return task::leg(w1, w2); };
-  std::ranges::transform(wpts.cbegin(), prev(wpts.cend()), next(wpts.cbegin()), wpts.cend(), std::back_inserter(res), to_leg);
+  std::ranges::transform(wpts.cbegin(), prev(wpts.cend()), next(wpts.cbegin()), wpts.cend(), std::back_inserter(res),
+                         to_leg);
   return res;
 }
 
@@ -63,24 +65,23 @@ distance glide_distance(const flight_point& pos, const glider& g, const task& t,
                   ((ground_alt - t.get_finish().alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
 }
 
-}
+}  // namespace glide_computer
 
 namespace {
 
 using namespace glide_computer;
 
-void print(std::string_view phase_name, timestamp start_ts, const glide_computer::flight_point& point, const glide_computer::flight_point& new_point)
+void print(std::string_view phase_name, timestamp start_ts, const glide_computer::flight_point& point,
+           const glide_computer::flight_point& new_point)
 {
-  fmt::print(
-      "| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) |\n",
-      phase_name, quantity_cast<si::minute>(new_point.ts - point.ts), quantity_cast<si::minute>(new_point.ts - start_ts),
-      new_point.dist - point.dist, new_point.dist, new_point.alt - point.alt, new_point.alt);
+  std::cout << STD_FMT::format(
+    "| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) "
+    "|\n",
+    phase_name, quantity_cast<si::minute>(new_point.ts - point.ts), quantity_cast<si::minute>(new_point.ts - start_ts),
+    new_point.dist - point.dist, new_point.dist, new_point.alt - point.alt, new_point.alt);
 }
 
-flight_point takeoff(timestamp start_ts, const task& t)
-{
-  return {start_ts, t.get_start().alt};
-}
+flight_point takeoff(timestamp start_ts, const task& t) { return {start_ts, t.get_start().alt}; }
 
 flight_point tow(timestamp start_ts, const flight_point& pos, const aircraft_tow& at)
 {
@@ -91,7 +92,8 @@ flight_point tow(timestamp start_ts, const flight_point& pos, const aircraft_tow
   return new_pos;
 }
 
-flight_point circle(timestamp start_ts, const flight_point& pos, const glider& g, const weather& w, const task& t, height& height_to_gain)
+flight_point circle(timestamp start_ts, const flight_point& pos, const glider& g, const weather& w, const task& t,
+                    height& height_to_gain)
 {
   const height h_agl = agl(pos.alt, terrain_level_alt(t, pos));
   const height circling_height = std::min(w.cloud_base - h_agl, height_to_gain);
@@ -113,7 +115,8 @@ flight_point glide(timestamp start_ts, const flight_point& pos, const glider& g,
   const auto alt = ground_alt + s.min_agl_height;
   const auto l3d = length_3d(dist, pos.alt - alt);
   const duration d = l3d / g.polar[0].v.common();
-  const flight_point new_pos{pos.ts + d, terrain_level_alt(t, pos) + s.min_agl_height, t.get_leg_index(new_distance), new_distance};
+  const flight_point new_pos{pos.ts + d, terrain_level_alt(t, pos) + s.min_agl_height, t.get_leg_index(new_distance),
+                             new_distance};
 
   print("Glide", start_ts, pos, new_pos);
   return new_pos;
@@ -134,10 +137,12 @@ flight_point final_glide(timestamp start_ts, const flight_point& pos, const glid
 
 namespace glide_computer {
 
-void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s, const aircraft_tow& at)
+void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
+              const aircraft_tow& at)
 {
-  fmt::print("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance", "Height");
-  fmt::print("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
+  std::cout << STD_FMT::format("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance",
+                               "Height");
+  std::cout << STD_FMT::format("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
 
   // ready to takeoff
   flight_point pos = takeoff(start_ts, t);

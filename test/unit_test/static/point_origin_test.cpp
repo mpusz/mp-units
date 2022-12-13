@@ -22,10 +22,10 @@
 
 #include <units/bits/equivalent.h>
 #include <units/chrono.h>
+#include <units/isq/si/cgs/length.h>
+#include <units/isq/si/length.h>
 #include <units/kind.h>
 #include <units/quantity_point.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/cgs/length.h>
 
 using namespace units;
 namespace si = isq::si;

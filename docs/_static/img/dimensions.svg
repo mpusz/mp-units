@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="256px" preserveAspectRatio="none" style="width:271px;height:256px;background:#FCFCFC;" version="1.1" viewBox="0 0 271 256" width="271px" zoomAndPan="magnify"><defs/><g><!--MD5=[3235af1cc77a6acc457ea7021772201c]
+cluster Dimension--><rect fill="#FCFCFC" height="243" style="stroke:#000000;stroke-width:1.5;" width="258" x="7" y="7"/><path d="M101,7 L101,16.2969 L91,26.2969 L7,26.2969 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="84" x="10" y="20.9951">Dimension</text><!--MD5=[418e3bda8d8c8b7ad8dc503f3566e869]
+class base_dimension--><a href="../../framework/units.html" target="_top" title="../../framework/units.html" xlink:actuate="onRequest" xlink:href="../../framework/units.html" xlink:show="new" xlink:title="../../framework/units.html" xlink:type="simple"><rect codeLine="9" fill="#F8F8F8" height="23.9688" id="base_dimension" style="stroke:#383838;stroke-width:1.5;" width="184" x="44" y="42"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="96" x="47" y="58.1387">base_dimension</text><rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="80" x="151" y="39"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78" x="152" y="51.1387">Symbol, Unit</text></a><!--MD5=[68f31181282be310d7d3efc1882b33d4]
+class exponent--><a href="../../framework/dimensions.html#derived-dimensions" target="_top" title="../../framework/dimensions.html#derived-dimensions" xlink:actuate="onRequest" xlink:href="../../framework/dimensions.html#derived-dimensions" xlink:show="new" xlink:title="../../framework/dimensions.html#derived-dimensions" xlink:type="simple"><rect codeLine="10" fill="#F8F8F8" height="23.9688" id="exponent" style="stroke:#383838;stroke-width:1.5;" width="199" x="36.5" y="126"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="57" x="39.5" y="142.1387">exponent</text><rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="134" x="104.5" y="123"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="132" x="105.5" y="135.1387">Dimension, Num, Den</text></a><!--MD5=[21e724ef10c67d921f6b3fcb22c06f35]
+class derived_dimension--><a href="../../framework/dimensions.html#derived-dimensions" target="_top" title="../../framework/dimensions.html#derived-dimensions" xlink:actuate="onRequest" xlink:href="../../framework/dimensions.html#derived-dimensions" xlink:show="new" xlink:title="../../framework/dimensions.html#derived-dimensions" xlink:type="simple"><rect codeLine="11" fill="#F8F8F8" height="23.9688" id="derived_dimension" style="stroke:#383838;stroke-width:1.5;" width="226" x="23" y="210"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113" x="26" y="226.1387">derived_dimension</text><rect fill="#FCFCFC" height="15.9688" style="stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;" width="105" x="147" y="207"/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="103" x="148" y="219.1387">Unit, Exponent...</text></a><!--MD5=[a178719c9c6142e046a1431351c96a28]
+reverse link base_dimension to exponent--><path codeLine="13" d="M136,71.197 C136,87.356 136,111.751 136,125.854 " fill="none" id="base_dimension-backto-exponent" style="stroke:#383838;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#383838" points="136,66.059,132,75.059,136,71.059,140,75.059,136,66.059" style="stroke:#383838;stroke-width:1.0;"/><!--MD5=[cd03d9c68e1638ad57e35f0e1135acfc]
+reverse link exponent to derived_dimension--><path codeLine="14" d="M125.605,155.197 C122.073,171.3561 122.514,195.7514 126.928,209.8544 " fill="none" id="exponent-backto-derived_dimension" style="stroke:#383838;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#383838" points="126.955,150.059,120.8001,157.7477,125.6849,154.895,128.5377,159.7799,126.955,150.059" style="stroke:#383838;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="24" x="94.2358" y="198.8513">0..n</text><!--MD5=[1f4f10499975d495bfeb71f1fbda2882]
+link exponent to derived_dimension--><path codeLine="15" d="M145.577,150.059 C150.268,164.12 150.752,188.5106 147.03,204.7039 " fill="none" id="exponent-to-derived_dimension" style="stroke:#383838;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#383838" points="145.606,209.8544,151.859,202.2452,146.938,205.0351,144.1481,200.1141,145.606,209.8544" style="stroke:#383838;stroke-width:1.0;"/><!--MD5=[da6c529a5f75ef54a9908f22b56975b6]
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam backgroundColor #fcfcfc
+
+hide members
+hide circle
+
+package Dimension <<Frame>> {
+  abstract base_dimension<Symbol, Unit> [[../../framework/units.html]]
+  abstract exponent<Dimension, Num, Den> [[../../framework/dimensions.html#derived-dimensions]]
+  abstract derived_dimension<Unit, Exponent...> [[../../framework/dimensions.html#derived-dimensions]]
+
+  base_dimension <.. exponent
+  exponent <.. "0..n" derived_dimension
+  exponent ..> derived_dimension
+}
+@enduml
+
+PlantUML version 1.2021.12(Tue Oct 05 16:01:58 UTC 2021)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -34,7 +34,7 @@
 
 namespace units::isq::si {
 
-struct mole : named_unit<mole, "mol", prefix> {};
+struct mole : named_unit<mole, "mol"> {};
 
 struct dim_amount_of_substance : isq::dim_amount_of_substance<mole> {};
 
@@ -46,12 +46,16 @@ using amount_of_substance = quantity<dim_amount_of_substance, U, Rep>;
 inline namespace literals {
 
 // mol
-constexpr auto operator"" _q_mol(unsigned long long l) { gsl_ExpectsAudit(std::in_range<std::int64_t>(l)); return amount_of_substance<mole, std::int64_t>(static_cast<std::int64_t>(l)); }
+constexpr auto operator"" _q_mol(unsigned long long l)
+{
+  gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+  return amount_of_substance<mole, std::int64_t>(static_cast<std::int64_t>(l));
+}
 constexpr auto operator"" _q_mol(long double l) { return amount_of_substance<mole, long double>(l); }
 
 }  // namespace literals
 
-#endif // UNITS_NO_LITERALS
+#endif  // UNITS_NO_LITERALS
 
 #ifndef UNITS_NO_REFERENCES
 
@@ -67,7 +71,7 @@ using namespace amount_of_substance_references;
 
 }  // namespace references
 
-#endif // UNITS_NO_REFERENCES
+#endif  // UNITS_NO_REFERENCES
 
 }  // namespace units::isq::si
 
@@ -75,8 +79,9 @@ using namespace amount_of_substance_references;
 
 namespace units::aliases::isq::si::inline amount_of_substance {
 
-template<Representation Rep = double> using mol = units::isq::si::amount_of_substance<units::isq::si::mole, Rep>;
+template<Representation Rep = double>
+using mol = units::isq::si::amount_of_substance<units::isq::si::mole, Rep>;
 
 }  // namespace units::aliases::isq::si::inline amount_of_substance
 
-#endif // UNITS_NO_ALIASES
+#endif  // UNITS_NO_ALIASES

@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 function(check_libcxx_in_use variable)
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         message(CHECK_START "Checking if libc++ is being used")
         list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
@@ -32,7 +32,7 @@ function(check_libcxx_in_use variable)
         set(${variable} ${${variable}} PARENT_SCOPE)
 
         list(POP_BACK CMAKE_MESSAGE_INDENT)
-        if(UNITS_LIBCXX)
+        if(${variable})
             message(CHECK_PASS "found")
         else()
             message(CHECK_FAIL "not found")

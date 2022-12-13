@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/quantity_point.h>
 #include "test_tools.h"
 #include <units/bits/common_type.h>
 #include <units/bits/external/type_traits.h>
@@ -29,6 +28,7 @@
 #include <units/isq/si/speed.h>
 #include <units/isq/si/uscs/length.h>
 #include <units/isq/si/volume.h>
+#include <units/quantity_point.h>
 #include <limits>
 #include <type_traits>
 #include <utility>
@@ -69,7 +69,6 @@ concept invalid_types = requires
   // dimension used as origin:
   requires !requires { typename quantity_point<DimLength, second, int>; };
 };
-
 static_assert(invalid_types<dim_length>);
 
 // member types
@@ -166,7 +165,6 @@ static_assert((quantity_point(1_q_m) += 1_q_m).relative().number() == 2);
 static_assert((quantity_point(2_q_m) -= 1_q_m).relative().number() == 1);
 
 // non-member arithmetic operators
-
 
 static_assert(compare<decltype(quantity_point<unspecified_origin<dim_length>, metre, int>() + length<metre, double>()),
                              quantity_point<unspecified_origin<dim_length>, metre, double>>);
@@ -289,7 +287,8 @@ static_assert(quantity_point_cast<length<metre, int>>(quantity_point(1.23_q_m)).
 static_assert(quantity_point_cast<metre>(quantity_point(2_q_km)).relative().number() == 2000);
 static_assert(quantity_point_cast<kilometre>(quantity_point(2000_q_m)).relative().number() == 2);
 static_assert(quantity_point_cast<int>(quantity_point(1.23_q_m)).relative().number() == 1);
-static_assert(quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().number() == 2);
+static_assert(
+  quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().number() == 2);
 
 template<typename Int>
 concept invalid_cast = requires(Int i) {
@@ -303,10 +302,7 @@ static_assert(invalid_cast<int>);
 static_assert(quantity_point{1_q_h} == quantity_point{3600_q_s});
 
 template<typename Metre>
-concept no_crossdimensional_equality = !requires
-{
-    quantity_point(1_q_s) == quantity_point(length<Metre, int>(1));
-};
+concept no_crossdimensional_equality = !requires { quantity_point(1_q_s) == quantity_point(length<Metre, int>(1)); };
 
 static_assert(no_crossdimensional_equality<metre>);
 
@@ -318,10 +314,7 @@ static_assert(quantity_point(1_q_km) + 1_q_m == quantity_point(1001_q_m));
 static_assert(1_q_km + quantity_point(1_q_m) == quantity_point(1001_q_m));
 
 template<class T>
-concept dimensional_analysis = requires(T t)
-{
-  pow<2>(t);
-};
+concept dimensional_analysis = requires(T t) { pow<2>(t); };
 
 static_assert(!dimensional_analysis<quantity_point<unspecified_origin<dim_length>, metre, int>>);
 
