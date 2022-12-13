@@ -126,7 +126,7 @@ constexpr const It parse_units_rep(It begin, S end, Handler&& handler, bool trea
     if (treat_as_floating_point) {
       begin = parse_precision(begin, end, handler);
     } else
-      throw STD_FMT::format_error("precision not allowed for integral quantity representation");
+      FMT_THROW(STD_FMT::format_error("precision not allowed for integral quantity representation"));
     if (begin == end) return begin;
   }
 
@@ -156,7 +156,7 @@ constexpr It parse_units_format(It begin, S end, Handler&& handler)
     }
     if (begin != ptr) handler.on_text(begin, ptr);
     begin = ++ptr;  // consume '%'
-    if (ptr == end) throw STD_FMT::format_error("invalid format");
+    if (ptr == end) FMT_THROW(STD_FMT::format_error("invalid format"));
     c = *ptr++;
 
     switch (c) {
@@ -177,7 +177,7 @@ constexpr It parse_units_format(It begin, S end, Handler&& handler)
       default:
         constexpr auto units_types = std::string_view{"Qq"};
         const auto new_end = std::find_first_of(begin, end, units_types.begin(), units_types.end());
-        if (new_end == end) throw STD_FMT::format_error("invalid format");
+        if (new_end == end) FMT_THROW(STD_FMT::format_error("invalid format"));
         if (*new_end == 'Q') {
           handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
         } else {
@@ -331,7 +331,7 @@ private:
       if (valid_rep_types.find(type) != std::string_view::npos) {
         f.specs.rep.type = type;
       } else {
-        throw STD_FMT::format_error("invalid quantity type specifier");
+        FMT_THROW(STD_FMT::format_error("invalid quantity type specifier"));
       }
     }
 
@@ -341,7 +341,7 @@ private:
       if (valid_modifiers.find(mod) != std::string_view::npos) {
         f.specs.unit.ascii_only = true;
       } else {
-        throw STD_FMT::format_error("invalid unit modifier specified");
+        FMT_THROW(STD_FMT::format_error("invalid unit modifier specified"));
       }
     }
 
