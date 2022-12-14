@@ -367,7 +367,7 @@ Checks whether the quantity is exactly of a specific property where property can
 
 ```cpp
 static_assert(quantity_of<decltype(10 * isq::speed[m/s] / (2 * isq::length[m]) * (4 * isq::time[s])), dimension_one>);
-static_assert(!quantity_of<decltype(10 * isq::length[m]), isq::height>);   // kind of
+static_assert(!quantity_of<decltype(10 * isq::length[m]), isq::height>);   // convertible kinds
 static_assert(!quantity_of<decltype(10 * isq::width[m]), isq::height>);    // different kinds
 static_assert(quantity_of<decltype(10 * isq::speed[m/s]), isq::speed>);
 static_assert(!quantity_of<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
@@ -383,7 +383,7 @@ and unit (in case of `reference`). It will fail for non-equivalent but inconvert
 
 ```cpp
 static_assert(weak_quantity_of<decltype(10 * isq::speed[m/s] / (2 * isq::length[m]) * (4 * isq::time[s])), dimension_one>);
-static_assert(weak_quantity_of<decltype(10 * isq::length[m]), isq::height>);   // kind of
+static_assert(weak_quantity_of<decltype(10 * isq::length[m]), isq::height>);    // convertible kinds
 static_assert(!weak_quantity_of<decltype(10 * isq::width[m]), isq::height>);    // different kinds
 static_assert(weak_quantity_of<decltype(10 * isq::speed[m/s]), isq::speed>);
 static_assert(weak_quantity_of<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
@@ -579,11 +579,7 @@ template<typename T>
 inline constexpr bool is_scalar = false;
 
 template<typename T>
-  requires std::is_floating_point_v<T> ||
-             (std::is_integral_v<T> && one_of_types<T,
-                                                    signed char, short, int, long, long long,
-                                                    unsigned char, unsigned short, unsigned,
-                                                    unsigned long, unsigned long long>())
+  requires std::is_floating_point_v<T> || (std::is_integral_v<T> && !same_as<T, bool>)
 inline constexpr bool is_scalar = true;
 
 template<typename T>
@@ -595,7 +591,15 @@ inline constexpr bool is_tensor = is_vector<T>;
 
 Quantities will preserve their characteristics:
 - quantity kinds will have the same characteristics as the parent quantity (unless overridden)
-- derived quantities will have the most restrictive characteristics from its ingredients (unless overridden)
+- derived quantities will have the result determined from its ingredients (unless overridden)
 
-It is still under analysis if the vector multiplied by the vector quantity should result
+By default the following rules will apply:
+- `scalar * scalar` -> `scalar`
+- `scalar * vector` -> `vector`
+- `scalar * tensor` -> `tensor`
+- `vector * vector` -> ???
+- `vector * tensor` -> `tensor`
+- `tensor * tensor` -> `tensor`
+
+It is still under investigation if the vector multiplied by the vector quantity should result
 in a tensor quantity or a vector one by default.
