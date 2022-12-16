@@ -152,7 +152,7 @@ public:
     leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
     constexpr const waypoint& begin() const { return *begin_; };
     constexpr const waypoint& end() const { return *end_; }
-    constexpr const distance get_length() const { return length_; }
+    constexpr distance get_length() const { return length_; }
   };
   using legs = std::vector<leg>;
 

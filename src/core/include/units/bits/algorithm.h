@@ -24,6 +24,7 @@
 
 #include <units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <compare>
+#include <initializer_list>
 #include <iterator>
 #include <ranges>
 
@@ -109,6 +110,26 @@ template<class I1, class I2>
 constexpr auto lexicographical_compare_three_way(I1 f1, I1 l1, I2 f2, I2 l2)
 {
   return ::units::detail::lexicographical_compare_three_way(f1, l1, f2, l2, std::compare_three_way());
+}
+
+template<class ForwardIt>
+constexpr ForwardIt max_element(ForwardIt first, ForwardIt last)
+{
+  if (first == last) return last;
+
+  ForwardIt largest = first;
+  ++first;
+
+  for (; first != last; ++first)
+    if (*largest < *first) largest = first;
+
+  return largest;
+}
+
+template<class T>
+constexpr T max(std::initializer_list<T> ilist)
+{
+  return *max_element(ilist.begin(), ilist.end());
 }
 
 template<class I, class O>

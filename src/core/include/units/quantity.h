@@ -29,6 +29,7 @@
 #include <units/concepts.h>
 #include <units/customization_points.h>
 #include <units/dimension.h>
+#include <units/quantity_spec.h>
 #include <units/reference.h>
 #include <units/unit.h>
 #include <compare>
@@ -115,9 +116,10 @@ class quantity {
 public:
   // member types and values
   using rep = Rep;
-  static constexpr auto reference = R;
-  static constexpr auto dimension = R.dimension;
-  static constexpr auto unit = R.unit;
+  static constexpr Reference auto reference = R;
+  static constexpr QuantitySpec auto quantity_spec = R.quantity_spec;
+  static constexpr Dimension auto dimension = R.dimension;
+  static constexpr Unit auto unit = R.unit;
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
@@ -176,10 +178,10 @@ public:
   [[nodiscard]] constexpr const rep&& number() const&& noexcept { return std::move(number_); }
 
   template<Unit U>
-    requires quantity_convertible_to_<quantity, quantity<::units::reference<dimension, U{}>{}, Rep>>
-  [[nodiscard]] constexpr quantity<::units::reference<dimension, U{}>{}, Rep> operator[](U) const
+    requires quantity_convertible_to_<quantity, quantity<::units::reference<quantity_spec, U{}>{}, Rep>>
+  [[nodiscard]] constexpr quantity<::units::reference<quantity_spec, U{}>{}, Rep> operator[](U) const
   {
-    return quantity<::units::reference<dimension, U{}>{}, Rep>{*this};
+    return quantity<::units::reference<quantity_spec, U{}>{}, Rep>{*this};
   }
 
   // member unary operators
@@ -424,7 +426,7 @@ public:
     requires(!Quantity<Value>) && invoke_result_convertible_to_<rep, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return detail::make_quantity<dimension_one[::units::one] / reference>(v / q.number());
+    return detail::make_quantity<dimensionless[::units::one] / reference>(v / q.number());
   }
 
   template<typename Value>
@@ -459,16 +461,11 @@ public:
 };
 
 // CTAD
-#if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 16
-template<auto R, typename Rep>
-explicit(false) quantity(Rep&&) -> quantity<R, Rep>;
-#endif
-
 template<auto R, typename Rep>
 explicit(false) quantity(quantity<R, Rep>) -> quantity<R, Rep>;
 
 template<Representation Rep>
-explicit(false) quantity(Rep)->quantity<dimension_one[one], Rep>;
+explicit(false) quantity(Rep)->quantity<dimensionless[one], Rep>;
 
 template<QuantityLike Q>
 explicit quantity(Q) -> quantity<reference<quantity_like_traits<Q>::dimension, quantity_like_traits<Q>::unit>{},

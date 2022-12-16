@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/isq/base_dimensions.h>
+#include <units/isq/base_quantities.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
 

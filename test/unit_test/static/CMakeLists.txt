@@ -35,7 +35,6 @@ cmake_minimum_required(VERSION 3.2)
 add_library(
     unit_tests_static
     dimension_test.cpp
-
     # angle_test.cpp
     # cgs_test.cpp
     # chrono_test.cpp
@@ -43,27 +42,26 @@ add_library(
     # custom_rep_test_min_expl.cpp
     # custom_unit_test.cpp
     # dimension_op_test.cpp
+    dimension_test.cpp
     # dimensions_concepts_test.cpp
     # fixed_string_test.cpp
     # fps_test.cpp
     # iec80000_test.cpp
     # kind_test.cpp
     magnitude_test.cpp
-
     # math_test.cpp
     # point_origin_test.cpp
     # prime_test.cpp
+    quantity_spec_test.cpp
     ratio_test.cpp
     reference_test.cpp
-
-    # si_test.cpp
     # si_cgs_test.cpp
     # si_fps_test.cpp
     # si_hep_test.cpp
+    # si_test.cpp
     # symbol_text_test.cpp
     type_list_test.cpp
     unit_test.cpp
-
     # us_test.cpp
 )
 

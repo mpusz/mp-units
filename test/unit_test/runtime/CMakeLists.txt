@@ -26,9 +26,7 @@ find_package(Catch2 3 CONFIG REQUIRED)
 
 add_executable(
     unit_tests_runtime
-    distribution_test.cpp
-    fmt_test.cpp
-
+    distribution_test.cpp fmt_test.cpp
     # fmt_units_test.cpp
     math_test.cpp
 )

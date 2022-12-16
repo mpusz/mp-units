@@ -23,50 +23,86 @@
 #pragma once
 
 #include <units/dimension.h>
-#include <units/isq/base_dimensions.h>
+#include <units/isq/base_quantities.h>
 #include <units/isq/space_and_time.h>
 
 namespace units::isq {
 
 // inline constexpr struct mass : base_dimension<"M"> {} mass;
-DERIVED_DIMENSION(mass_density, decltype(mass / volume));
-DERIVED_DIMENSION(specific_volume, decltype(1 / mass_density));
-DERIVED_DIMENSION(relative_mass_density, decltype(mass_density / mass_density));
-DERIVED_DIMENSION(surface_mass_density, decltype(mass / area));
-DERIVED_DIMENSION(linear_mass_density, decltype(mass / length));
-DERIVED_DIMENSION(momentum, decltype(mass * speed));      // TODO velocity?
-DERIVED_DIMENSION(force, decltype(mass * acceleration));  // TODO what is a correct equation here?
-// DERIVED_DIMENSION(weight, decltype(mass * acceleration));  // TODO should we add it as a quantity or should it be a
-// quantity_kind?
-// TODO Should we add other forces as well: static_friction_force, kinematic_friction_force, rolling_resistance,
-// drag_force
-DERIVED_DIMENSION(impulse, decltype(force / time));
-DERIVED_DIMENSION(angular_momentum, decltype(length * momentum));  // TODO position_vector
-DERIVED_DIMENSION(moment_of_inertia, decltype(angular_momentum * angular_velocity));
-DERIVED_DIMENSION(moment_of_force, decltype(length * force));  // TODO position_vector
-DERIVED_DIMENSION(torque, decltype(moment_of_force));          // TODO angle?
-DERIVED_DIMENSION(angular_impulse, decltype(moment_of_force * time));
-DERIVED_DIMENSION(pressure, decltype(force / area));
-DERIVED_DIMENSION(stress, decltype(pressure));  // TODO tensor?
-DERIVED_DIMENSION(normal_stress, decltype(force / area));
-DERIVED_DIMENSION(strain, decltype(stress / stress));          // TODO what is a correct equation here?
-DERIVED_DIMENSION(poisson_number, decltype(length / length));  // TODO width?
-// TODO modulus quantities
-DERIVED_DIMENSION(compressibility, decltype(volume / volume / pressure));
-DERIVED_DIMENSION(second_axial_moment_of_area, decltype(area * area));  // TODO what is a correct equation here?
-DERIVED_DIMENSION(section_modulus, decltype(second_axial_moment_of_area / length));  // TODO radial distance
-// TODO friction coefficients?
-DERIVED_DIMENSION(dynamic_viscosity, decltype(stress * length / speed));  // TODO shear stress, velocity
-DERIVED_DIMENSION(kinematic_viscosity, decltype(dynamic_viscosity / mass_density));
-DERIVED_DIMENSION(surface_tension, decltype(force / length));  // TODO what is a correct equation here?
-DERIVED_DIMENSION(power, decltype(force * speed));
-// TODO what about energy (potential and kinetic as separate quantities will prevent an equation for mechanical one, is
-// it expected?)
-DERIVED_DIMENSION(efficiency, decltype(power / power));
-DERIVED_DIMENSION(mass_flow, decltype(mass_density * speed));  // TODO velocity
-DERIVED_DIMENSION(mass_flow_rate, decltype(mass_flow * area));
-DERIVED_DIMENSION(mass_change_rate, decltype(mass / time));
-DERIVED_DIMENSION(volume_flow_rate, decltype(speed * area));  // TODO velocity
-// DERIVED_DIMENSION(action, decltype(energy * time));  // TODO make it compile
+QUANTITY_SPEC(mass_density, mass / volume);
+inline constexpr auto density = mass_density;
+QUANTITY_SPEC(specific_volume, 1 / mass_density);
+QUANTITY_SPEC(relative_mass_density, mass_density / mass_density);
+inline constexpr auto relative_density = relative_mass_density;
+QUANTITY_SPEC(surface_mass_density, mass / area);
+inline constexpr auto surface_density = surface_mass_density;
+QUANTITY_SPEC(linear_mass_density, mass / length);
+inline constexpr auto linear_density = linear_mass_density;
+QUANTITY_SPEC(momentum, mass* velocity);
+QUANTITY_SPEC(force, mass* acceleration);     // vector  // TODO what is a correct equation here?
+QUANTITY_SPEC(weight, force);                 // vector  // TODO g?
+QUANTITY_SPEC(static_friction_force, force);  // vector
+inline constexpr auto static_friction = static_friction_force;
+QUANTITY_SPEC(kinetic_friction_force, force);  // vector
+inline constexpr auto dynamic_friction_force = kinetic_friction_force;
+QUANTITY_SPEC(rolling_resistance, force);  // vector
+inline constexpr auto rolling_drag = rolling_resistance;
+inline constexpr auto rolling_friction_force = rolling_resistance;
+QUANTITY_SPEC(drag_force, force);                            // vector
+QUANTITY_SPEC(impulse, force* time);                         // vector
+QUANTITY_SPEC(angular_momentum, position_vector* momentum);  // vector
+QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_character::tensor);
+QUANTITY_SPEC(moment_of_force, position_vector* force);  // vector
+QUANTITY_SPEC(torque, moment_of_force, quantity_character::scalar);
+QUANTITY_SPEC(angular_impulse, moment_of_force* time);  // vector
+QUANTITY_SPEC(pressure, force / area, quantity_character::scalar);
+QUANTITY_SPEC(gauge_pressure, pressure);
+QUANTITY_SPEC(stress, pressure, quantity_character::tensor);
+QUANTITY_SPEC(normal_stress, pressure, quantity_character::scalar);
+QUANTITY_SPEC(shear_stress, pressure, quantity_character::scalar);
+QUANTITY_SPEC(strain, dimensionless, quantity_character::tensor);
+QUANTITY_SPEC(relative_linear_strain, length / length);
+QUANTITY_SPEC(shear_strain, displacement / thickness);
+QUANTITY_SPEC(relative_volume_strain, volume / volume);
+QUANTITY_SPEC(Poisson_number, width / length);
+QUANTITY_SPEC(modulus_of_elasticity, normal_stress / relative_linear_strain);
+inline constexpr auto Young_modulus = modulus_of_elasticity;
+QUANTITY_SPEC(modulus_of_rigidity, shear_stress / shear_strain);
+inline constexpr auto shear_modulus = modulus_of_rigidity;
+QUANTITY_SPEC(modulus_of_compression, pressure / relative_volume_strain);
+// QUANTITY_SPEC(modulus_of_compression, -pressure / relative_volume_strain);  // TODO how to handle "negative" part
+inline constexpr auto bulk_modulus = modulus_of_compression;
+QUANTITY_SPEC(compressibility, 1 / volume * (volume / pressure));
+// QUANTITY_SPEC(compressibility, -1 / volume * (volume / pressure));  // TODO how to handle "negative" part
+QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area);
+QUANTITY_SPEC(second_polar_moment_of_area, pow<2>(radial_distance) * area);
+QUANTITY_SPEC(section_modulus, second_axial_moment_of_area / radial_distance);
+QUANTITY_SPEC(static_friction_coefficient, static_friction_force / force, quantity_character::scalar);
+inline constexpr auto static_friction_factor = static_friction_coefficient;
+inline constexpr auto coefficient_of_static_friction = static_friction_coefficient;
+QUANTITY_SPEC(kinetic_friction_factor, kinetic_friction_force / force, quantity_character::scalar);
+inline constexpr auto dynamic_friction_factor = kinetic_friction_factor;
+QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scalar);
+// QUANTITY_SPEC(drag_coefficient, mag<2>* drag_force / (mass_density * pow<2>(speed) * area));
+// inline constexpr auto drag_factor = drag_coefficient;
+QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity);
+QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
+QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
+QUANTITY_SPEC(power, force* velocity, quantity_character::scalar);
+// QUANTITY_SPEC(energy, force* length);
+QUANTITY_SPEC(potential_energy, mass* acceleration* height);  // TODO what is a correct equation here?
+QUANTITY_SPEC(kinetic_energy, mass* pow<2>(speed));
+// QUANTITY_SPEC(kinetic_energy, mag<1, 2>* mass* pow<2>(speed));
+// TODO how to implement that?
+// QUANTITY_SPEC(mechanical_energy, potential_energy + kinetic_energy);
+QUANTITY_SPEC(mechanical_energy, potential_energy);
+QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
+inline constexpr auto work = mechanical_work;
+QUANTITY_SPEC(efficiency, power / power);
+QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
+QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);
+QUANTITY_SPEC(mass_change_rate, mass / time);
+QUANTITY_SPEC(volume_flow_rate, velocity* area, quantity_character::scalar);
+QUANTITY_SPEC(action, mechanical_energy* time);
 
 }  // namespace units::isq

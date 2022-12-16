@@ -23,20 +23,48 @@
 #pragma once
 
 #include <units/concepts.h>
+#include <units/quantity_spec.h>
 #include <units/reference.h>
 #include <units/unit.h>
 
 namespace units {
 
-template<Dimension auto Dim, Unit auto CoU>
-  requires(!detail::associated_unit<std::remove_const_t<decltype(CoU)>>)
+/**
+ * @brief System-specific reference
+ *
+ * This type is used in rare cases where more than one base quantity in a specific
+ * system of units uses the same unit. For example in a hypothetical system of natural units
+ * where  constant for speed of light `c = 1`, length and time could be measured in seconds.
+ * In such cases `system_reference` has to be used to explicitly express such a binding.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * // hypothetical natural system of units for c=1
+ *
+ * inline constexpr struct second : named_unit<"s"> {} second;
+ * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct gram : named_unit<"g"> {} gram;
+ * inline constexpr struct kilogram : decltype(si::kilo<gram>) {} kilogram;
+ *
+ * inline constexpr struct time : system_reference<isq::time, second> {} time;
+ * inline constexpr struct length : system_reference<isq::length, second> {} length;
+ * inline constexpr struct speed : system_reference<isq::speed, second / second> {} speed;
+ * inline constexpr struct force : system_reference<isq::force, kilogram / second> {} force;
+ * @endcode
+ *
+ * @tparam Q quantity for which a unit is being assigned
+ * @tparam CoU coherent unit for a quantity in this system
+ */
+template<QuantitySpec auto Q, Unit auto CoU>
+  requires(!detail::associated_unit<std::remove_const_t<decltype(CoU)>>) || (CoU == one)
 struct system_reference {
-  static constexpr auto dimension = Dim;
+  static constexpr auto quantity_spec = Q;
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
     requires(interconvertible(coherent_unit, U{}))
-  [[nodiscard]] constexpr reference<dimension, U{}> operator[](U) const
+  [[nodiscard]] constexpr reference<quantity_spec, U{}> operator[](U) const
   {
     return {};
   }

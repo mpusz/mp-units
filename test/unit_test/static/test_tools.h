@@ -139,22 +139,14 @@ inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V
 
 #ifdef __cpp_explicit_this_parameter
 
-#define BASE_DIMENSION_(name, symbol)                        \
-  inline constexpr struct name##_ : base_dimension<symbol> { \
-  } name
-
-#define DERIVED_DIMENSION_(name, base)     \
-  inline constexpr struct name##_ : base { \
+#define QUANTITY_SPEC_(name, ...)                                  \
+  inline constexpr struct name##_ : quantity_spec<##__VA_ARGS__> { \
   } name
 
 #else
 
-#define BASE_DIMENSION_(name, symbol)                                 \
-  inline constexpr struct name##_ : base_dimension<name##_, symbol> { \
-  } name
-
-#define DERIVED_DIMENSION_(name, base)                                 \
-  inline constexpr struct name##_ : derived_dimension<name##_, base> { \
+#define QUANTITY_SPEC_(name, ...)                                           \
+  inline constexpr struct name##_ : quantity_spec<name##_, ##__VA_ARGS__> { \
   } name
 
 #endif

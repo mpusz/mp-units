@@ -28,6 +28,7 @@
 #include <units/bits/external/text_tools.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
+#include <units/dimension.h>
 #include <units/magnitude.h>
 #include <units/ratio.h>
 #include <units/symbol_text.h>
@@ -37,43 +38,57 @@
 namespace units {
 
 #ifdef __cpp_explicit_this_parameter
-template<basic_fixed_string Symbol>
+template<auto...>
 #else
-template<typename Self, basic_fixed_string Symbol>
+template<typename, auto...>
 #endif
-struct base_dimension;
+struct quantity_spec;
 
 namespace detail {
 
 #ifdef __cpp_explicit_this_parameter
-template<basic_fixed_string Symbol>
-void to_base_base_dimension(const volatile base_dimension<Symbol>*);
+template<auto... Args>
+void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
 #else
-template<typename Self, basic_fixed_string Symbol>
-void to_base_base_dimension(const volatile base_dimension<Self, Symbol>*);
+template<typename T, auto... Args>
+void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Args...>*);
+#endif
+
+#ifdef __cpp_explicit_this_parameter
+template<BaseDimension auto Dim, auto... Args>
+template<auto... Args>
+void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Dim, Args...>*);
+#else
+template<typename Self, BaseDimension auto Dim, auto... Args>
+void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Self, Dim, Args...>*);
 #endif
 
 template<typename T>
-inline constexpr bool is_specialization_of_base_dimension = false;
+inline constexpr bool is_specialization_of_quantity_spec = false;
 
 #ifdef __cpp_explicit_this_parameter
-template<basic_fixed_string Symbol>
-inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
+template<auto... Args>
+inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<Args...>> = true;
 #else
-template<typename Self, basic_fixed_string Symbol>
-inline constexpr bool is_specialization_of_base_dimension<base_dimension<Self, Symbol>> = true;
+template<typename T, auto... Args>
+inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args...>> = true;
 #endif
 
 }  // namespace detail
 
 /**
- * @brief A concept matching all named base dimensions in the library.
+ * @brief Concept matching quantity specification types
  *
- * Satisfied by all dimension types derived from a specialization of `base_dimension`.
+ * Satisfied by all types that derive from `quantity_spec`.
  */
 template<typename T>
-concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
-                        (!detail::is_specialization_of_base_dimension<T>);
+concept NamedQuantitySpec = requires(T* t) { detail::to_base_specialization_of_quantity_spec(t); } &&
+                            (!detail::is_specialization_of_quantity_spec<T>);
+
+template<typename T>
+concept BaseQuantitySpec =
+  NamedQuantitySpec<T> && requires(T* t) { detail::to_base_specialization_of_base_quantity_spec(t); };
+
 
 namespace detail {
 
@@ -146,12 +161,12 @@ template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
 /**
- * @brief Specialization for unit of a specified base dimension
+ * @brief Specialization for unit of a specified base quantity
  *
- * Associates a unit with a specified base dimension.
+ * Associates a unit with a specified base quantity.
  * For example `si::metre` is a unit to measure `isq::length` in the SI system.
  *
- * @note This is the preferred way to define a measurement unit for a specific base dimension.
+ * @note This is the preferred way to define a measurement unit for a specific base quantity.
  *
  * @note It does not have to (or sometimes even can't) be a proper system's base unit. For example
  *       a base unit of mass in the SI is `si::kilogram` but here you are about to provide an `si::gram`
@@ -159,19 +174,19 @@ struct named_unit;
  *       the `cgs::centimetre` that is a base unit for `isq::length` in the CGS system.
  *
  * @tparam Symbol a short text representation of the unit
- * @tparam BaseDimension base dimension measured with this unit
+ * @tparam BaseQuantitySpec base quantity measured with this unit
  */
-template<basic_symbol_text Symbol, BaseDimension auto D>
+template<basic_symbol_text Symbol, BaseQuantitySpec auto Q>
   requires(!Symbol.empty())
-struct named_unit<Symbol, D> {
+struct named_unit<Symbol, Q> {
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
-  static constexpr auto base_dimension = D;
+  static constexpr auto base_quantity = Q;
 };
 
 /**
- * @brief Specialization for a unit that can be reused by several base dimensions
+ * @brief Specialization for a unit that can be reused by several base quantities
  *
- * This specialization is used in rare cases where more than one base dimension in a specific
+ * This specialization is used in rare cases where more than one base quantity in a specific
  * system of units uses the same unit. For example in a hypothetical system of natural units
  * where  constant for speed of light `c = 1`, length and time could be measured in seconds.
  * In such cases `system_reference` has to be used to explicitly express such a binding.
@@ -328,7 +343,7 @@ inline constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_powe
 }  // namespace detail
 
 template<typename T>
-concept DerivedUnitSpec = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
+concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
 
 /**
  * @brief Measurement unit for a derived quantity
@@ -375,7 +390,7 @@ concept DerivedUnitSpec = Unit<T> || detail::is_power_of_unit<T> || detail::is_p
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<DerivedUnitSpec... Us>
+template<DerivedUnitExpr... Us>
 struct derived_unit : detail::expr_fractions<derived_unit<>, Us...> {};
 
 /**
@@ -424,8 +439,8 @@ struct canonical_unit {
   U reference_unit;
 };
 
-template<Unit T, basic_symbol_text Symbol, BaseDimension auto D>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, D>&);
+template<Unit T, basic_symbol_text Symbol, BaseQuantitySpec auto Q>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&);
 
 template<Unit T, basic_symbol_text Symbol>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&);
@@ -446,8 +461,8 @@ template<Unit T, auto M, typename U>
   return canonical_unit{M * base.mag, base.reference_unit};
 }
 
-template<Unit T, basic_symbol_text Symbol, BaseDimension auto D>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, D>&)
+template<Unit T, basic_symbol_text Symbol, BaseQuantitySpec auto Q>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&)
 {
   return canonical_unit{mag<1>, t};
 }
@@ -498,6 +513,7 @@ template<Unit Lhs, Unit Rhs>
       (!is_derived_from_specialization_of_constant_unit<Lhs> && !is_derived_from_specialization_of_constant_unit<Rhs>))
     return type_name<Lhs>() < type_name<Rhs>();
   else
+    // put constants at the front of units list in the expression
     return is_derived_from_specialization_of_constant_unit<Lhs>;
 }
 
@@ -804,21 +820,21 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, unit_symb
   }
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec M>
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr M>
 constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, unit_symbol_formatting fmt, bool negative_power)
 {
   if (Idx > 0) out = print_separator<CharT>(out, fmt);
   return unit_symbol_impl<CharT>(out, m, fmt, negative_power);
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec... Ms, std::size_t... Idxs>
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Ms, std::size_t... Idxs>
 constexpr Out unit_symbol_impl(Out out, const type_list<Ms...>&, std::index_sequence<Idxs...>,
                                unit_symbol_formatting fmt, bool negative_power)
 {
   return (..., (out = unit_symbol_impl<CharT>(out, Ms{}, Idxs, fmt, negative_power)));
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitSpec... Nums, DerivedUnitSpec... Dens>
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Nums, DerivedUnitExpr... Dens>
 constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
                                unit_symbol_formatting fmt)
 {

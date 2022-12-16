@@ -34,15 +34,14 @@
 namespace {
 
 using namespace units;
-using namespace units::si;
 using namespace units::si::unit_symbols;
 
-inline constexpr auto g = 1 * standard_gravity;
+inline constexpr auto g = 1 * si::standard_gravity;
 inline constexpr auto air_density = 1.225 * isq::mass_density[kg / m3];
 
 class Box {
   quantity<isq::area[m2]> base_;
-  quantity<isq::length[m]> height_;
+  quantity<isq::height[m]> height_;
   quantity<isq::mass_density[kg / m3]> density_ = air_density;
 public:
   constexpr Box(const quantity<isq::length[m]>& length, const quantity<isq::length[m]>& width,
@@ -51,11 +50,11 @@ public:
   {
   }
 
-  [[nodiscard]] constexpr auto filled_weight() const
+  [[nodiscard]] constexpr quantity_of<isq::weight> auto filled_weight() const
   {
     const weak_quantity_of<isq::volume> auto volume = base_ * height_;
-    const quantity_of<isq::mass> auto mass = density_ * volume;
-    return mass * g;
+    const weak_quantity_of<isq::mass> auto mass = density_ * volume;
+    return quantity_cast<isq::weight>(mass * g);
   }
 
   [[nodiscard]] constexpr quantity<isq::length[m]> fill_level(const quantity<isq::mass[kg]>& measured_mass) const
@@ -80,7 +79,9 @@ public:
 
 int main()
 {
-  const auto mm = isq::length[unit_symbols::mm];  // helper reference value
+  using namespace units::si;
+
+  constexpr auto mm = isq::length[unit_symbols::mm];  // helper reference object
 
   const auto height = (200.0 * mm)[metre];
   auto box = Box(1000.0 * mm, 500.0 * mm, height);

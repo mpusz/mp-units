@@ -22,10 +22,7 @@
 
 #pragma once
 
-#include <units/bits/dimension_op.h>
 #include <units/bits/external/hacks.h>
-#include <units/generic/angle.h>
-#include <units/generic/dimensionless.h>
 #include <units/quantity.h>
 #include <units/unit.h>
 
@@ -39,9 +36,9 @@
 namespace units {
 
 /**
- * @brief Computes the value of a quantity raised to the power `N`
+ * @brief Computes the value of a quantity raised to the `Num/Den` power
  *
- * Both the quantity value and its dimension are the base of the operation.
+ * Both the quantity value and its quantity specification are the base of the operation.
  *
  * @tparam Num Exponent numerator
  * @tparam Den Exponent denominator
@@ -56,11 +53,11 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
   using rep = TYPENAME Q::rep;
   if constexpr (Num == 0) {
     return rep(1);
+  } else if constexpr (ratio{Num, Den} == 1) {
+    return q;
   } else {
-    using dim = dimension_pow<typename Q::dimension, Num, Den>;
-    using unit = downcast_unit<dim, pow<ratio{Num, Den}>(Q::unit::mag)>;
     using std::pow;
-    return quantity<dim, unit, rep>(
+    return quantity<reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{}, rep>(
       static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
@@ -68,7 +65,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
 /**
  * @brief Computes the square root of a quantity
  *
- * Both the quantity value and its dimension are the base of the operation.
+ * Both the quantity value and its quantity specification are the base of the operation.
  *
  * @param q Quantity being the base of the operation
  * @return Quantity The result of computation
@@ -77,17 +74,16 @@ template<Quantity Q>
 [[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
   requires requires { sqrt(q.number()); } || requires { std::sqrt(q.number()); }
 {
-  using dim = dimension_pow<typename Q::dimension, 1, 2>;
-  using unit = downcast_unit<dim, pow<ratio{1, 2}>(Q::unit::mag)>;
   using rep = TYPENAME Q::rep;
   using std::sqrt;
-  return quantity<dim, unit, rep>(static_cast<rep>(sqrt(q.number())));
+  return quantity<reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{}, rep>(
+    static_cast<rep>(sqrt(q.number())));
 }
 
 /**
  * @brief Computes the cubic root of a quantity
  *
- * Both the quantity value and its dimension are the base of the operation.
+ * Both the quantity value and its quantity specification are the base of the operation.
  *
  * @param q Quantity being the base of the operation
  * @return Quantity The result of computation
@@ -96,11 +92,10 @@ template<Quantity Q>
 [[nodiscard]] inline Quantity auto cbrt(const Q& q) noexcept
   requires requires { cbrt(q.number()); } || requires { std::cbrt(q.number()); }
 {
-  using dim = dimension_pow<typename Q::dimension, 1, 3>;
-  using unit = downcast_unit<dim, pow<ratio{1, 3}>(Q::unit::mag)>;
   using rep = TYPENAME Q::rep;
   using std::cbrt;
-  return quantity<dim, unit, rep>(static_cast<rep>(cbrt(q.number())));
+  return quantity<reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{}, rep>(
+    static_cast<rep>(cbrt(q.number())));
 }
 
 /**
@@ -111,12 +106,12 @@ template<Quantity Q>
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
-template<typename U, typename Rep>
-[[nodiscard]] inline dimensionless<U, Rep> exp(const dimensionless<U, Rep>& q)
+template<quantity_of<dimensionless> Q, typename Rep>
+[[nodiscard]] inline Q exp(const Q& q)
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {
   using std::exp;
-  return quantity_cast<U>(dimensionless<one, Rep>(exp(quantity_cast<one>(q).number())));
+  return quantity_cast<Q::unit>(exp(quantity_cast<one>(q).number()) * dimensionless[one]);
 }
 
 /**
@@ -125,12 +120,12 @@ template<typename U, typename Rep>
  * @param q Quantity being the base of the operation
  * @return Quantity The absolute value of a provided quantity
  */
-template<typename D, typename U, typename Rep>
-[[nodiscard]] inline quantity<D, U, Rep> abs(const quantity<D, U, Rep>& q) noexcept
+template<Quantity Q>
+[[nodiscard]] inline Q abs(const Q& q) noexcept
   requires requires { abs(q.number()); } || requires { std::abs(q.number()); }
 {
   using std::abs;
-  return quantity<D, U, Rep>(abs(q.number()));
+  return Q(abs(q.number()));
 }
 
 /**
@@ -141,11 +136,11 @@ template<typename D, typename U, typename Rep>
  * @tparam Q Quantity type being the base of the operation
  * @return Quantity The epsilon value for quantity's representation type
  */
-template<Quantity Q>
-  requires requires { std::numeric_limits<typename Q::rep>::epsilon(); }
-[[nodiscard]] constexpr Quantity auto epsilon() noexcept
+template<Representation Rep, Reference R>
+  requires requires { std::numeric_limits<Rep>::epsilon(); }
+[[nodiscard]] constexpr Quantity auto epsilon(R r) noexcept
 {
-  return Q(std::numeric_limits<typename Q::rep>::epsilon());
+  return std::numeric_limits<Rep>::epsilon() * r;
 }
 
 /**
@@ -154,14 +149,14 @@ template<Quantity Q>
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
  */
-template<Unit To, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr quantity<D, To, Rep> floor(const quantity<D, U, Rep>& q) noexcept
+template<Unit auto To, auto R, typename Rep>
+[[nodiscard]] constexpr quantity<reference<R.quantity_spec, To>{}, Rep> floor(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { floor(q.number()); } ||
            requires { std::floor(q.number()); }) &&
-          (std::same_as<To, U> || requires {
-                                    ::units::quantity_cast<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+          (To == R.unit || requires {
+            ::units::quantity_cast<To>(q);
+            quantity<reference<R.quantity_spec, To>{}, Rep>::one();
+          })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q) {
@@ -171,31 +166,19 @@ template<Unit To, typename D, typename U, typename Rep>
   };
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
-    if constexpr (std::is_same_v<To, U>) {
-      return quantity<D, To, Rep>(floor(q.number()));
+    if constexpr (To == R.unit) {
+      return quantity<reference<R.quantity_spec, To>{}, Rep>(floor(q.number()));
     } else {
-      return handle_signed_results(quantity<D, To, Rep>(floor(quantity_cast<To>(q).number())));
+      return handle_signed_results(
+        quantity<reference<R.quantity_spec, To>{}, Rep>(floor(quantity_cast<To>(q).number())));
     }
   } else {
-    if constexpr (std::is_same_v<To, U>) {
-      return q;
+    if constexpr (To == R.unit) {
+      return quantity_cast<To>(q);
     } else {
       return handle_signed_results(quantity_cast<To>(q));
     }
   }
-}
-
-/**
- * @brief Overload of @c ::units::floor<Unit>() using the unit type of To
- *
- * @tparam q Quantity being the base of the operation
- * @return Quantity The rounded quantity with unit type of quantity To
- */
-template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
-[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> floor(const quantity<D, U, Rep>& q) noexcept
-  requires requires { ::units::floor<typename To::unit>(q); }
-{
-  return ::units::floor<typename To::unit>(q);
 }
 
 /**
@@ -204,13 +187,13 @@ template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::s
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
  */
-template<Unit To, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr quantity<D, To, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
+template<Unit auto To, auto R, typename Rep>
+[[nodiscard]] constexpr quantity<reference<R.quantity_spec, To>{}, Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { ceil(q.number()); } || requires { std::ceil(q.number()); }) &&
-          (std::same_as<To, U> || requires {
-                                    ::units::quantity_cast<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+          (To == R.unit || requires {
+            ::units::quantity_cast<To>(q);
+            quantity<reference<R.quantity_spec, To>{}, Rep>::one();
+          })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res < q) {
@@ -220,31 +203,19 @@ template<Unit To, typename D, typename U, typename Rep>
   };
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
-    if constexpr (std::is_same_v<To, U>) {
-      return quantity<D, To, Rep>(ceil(q.number()));
+    if constexpr (To == R.unit) {
+      return quantity<reference<R.quantity_spec, To>{}, Rep>(ceil(q.number()));
     } else {
-      return handle_signed_results(quantity<D, To, Rep>(ceil(quantity_cast<To>(q).number())));
+      return handle_signed_results(
+        quantity<reference<R.quantity_spec, To>{}, Rep>(ceil(quantity_cast<To>(q).number())));
     }
   } else {
-    if constexpr (std::is_same_v<To, U>) {
-      return q;
+    if constexpr (To == R.unit) {
+      return quantity_cast<To>(q);
     } else {
       return handle_signed_results(quantity_cast<To>(q));
     }
   }
-}
-
-/**
- * @brief Overload of @c ::units::ceil<Unit>() using the unit type of To
- *
- * @tparam q Quantity being the base of the operation
- * @return Quantity The rounded quantity with unit type of quantity To
- */
-template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
-[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
-  requires requires { ::units::ceil<typename To::unit>(q); }
-{
-  return ::units::ceil<typename To::unit>(q);
 }
 
 /**
@@ -255,25 +226,25 @@ template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::s
  * @tparam q Quantity being the base of the operation
  * @return Quantity The rounded quantity with unit type To
  */
-template<Unit To, typename D, typename U, typename Rep>
-[[nodiscard]] constexpr quantity<D, To, Rep> round(const quantity<D, U, Rep>& q) noexcept
+template<Unit auto To, auto R, typename Rep>
+[[nodiscard]] constexpr quantity<reference<R.quantity_spec, To>{}, Rep> round(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { round(q.number()); } ||
            requires { std::round(q.number()); }) &&
-          (std::same_as<To, U> || requires {
-                                    ::units::floor<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+          (To == R.unit || requires {
+            ::units::floor<To>(q);
+            quantity<reference<R.quantity_spec, To>{}, Rep>::one();
+          })
 {
-  if constexpr (std::is_same_v<To, U>) {
+  if constexpr (To == R.unit) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
-      return quantity<D, To, Rep>(round(q.number()));
+      return quantity<reference<R.quantity_spec, To>{}, Rep>(round(q.number()));
     } else {
-      return q;
+      return quantity_cast<To>(q);
     }
   } else {
     const auto res_low = units::floor<To>(q);
-    const auto res_high = res_low + decltype(res_low)::one();
+    const auto res_high = res_low + res_low.one();
     const auto diff0 = q - res_low;
     const auto diff1 = res_high - q;
     if (diff0 == diff1) {
@@ -290,34 +261,19 @@ template<Unit To, typename D, typename U, typename Rep>
 }
 
 /**
- * @brief Overload of @c ::units::round<Unit>() using the unit type of To
- *
- * @tparam q Quantity being the base of the operation
- * @return Quantity The rounded quantity with unit type of quantity To
- */
-template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::same_as<typename To::rep> Rep>
-[[nodiscard]] constexpr quantity<D, typename To::unit, Rep> round(const quantity<D, U, Rep>& q) noexcept
-  requires requires { ::units::round<typename To::unit>(q); }
-{
-  return ::units::round<typename To::unit>(q);
-}
-
-/**
  * @brief Computes the square root of the sum of the squares of x and y,
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2>
-[[nodiscard]] inline std::common_type_t<Q1, Q2> hypot(const Q1& x, const Q2& y) noexcept
-  requires requires { typename std::common_type_t<Q1, Q2>; } &&
-           requires(std::common_type_t<Q1, Q2> q) {
-             requires requires { hypot(q.number(), q.number()); } || requires { std::hypot(q.number(), q.number()); };
-           }
+[[nodiscard]] inline quantity_of<common_reference(Q1::reference, Q2::reference)> auto hypot(const Q1& x,
+                                                                                            const Q2& y) noexcept
+  requires requires { common_reference(Q1::reference, Q2::reference); } &&
+           (
+             requires { hypot(x.number(), y.number()); } || requires { std::hypot(x.number(), y.number()); })
 {
-  using type = std::common_type_t<Q1, Q2>;
-  type xx = x;
-  type yy = y;
   using std::hypot;
-  return type(hypot(xx.number(), yy.number()));
+  using type = quantity<common_reference(Q1::reference, Q2::reference), decltype(hypot(x.number(), y.number()))>;
+  return type{hypot(x.number(), y.number())};
 }
 
 /**
@@ -325,75 +281,17 @@ template<Quantity Q1, Quantity Q2>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2, Quantity Q3>
-[[nodiscard]] inline std::common_type_t<Q1, Q2, Q3> hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
-  requires requires { typename std::common_type_t<Q1, Q2, Q3>; } &&
-           requires(std::common_type_t<Q1, Q2, Q3> q) {
-             requires requires { hypot(q.number(), q.number(), q.number()); } ||
-                        requires { std::hypot(q.number(), q.number(), q.number()); };
-           }
+[[nodiscard]] inline quantity_of<common_reference(Q1::reference, Q2::reference, Q3::reference)> auto hypot(
+  const Q1& x, const Q2& y, const Q3& z) noexcept
+  requires requires { common_reference(Q1::reference, Q2::reference, Q3::reference); } &&
+           (
+             requires { hypot(x.number(), y.number(), z.number()); } ||
+             requires { std::hypot(x.number(), y.number(), z.number()); })
 {
-  using type = std::common_type_t<Q1, Q2, Q3>;
-  type xx = x;
-  type yy = y;
-  type zz = z;
   using std::hypot;
-  return type(hypot(xx.number(), yy.number(), zz.number()));
-}
-
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline dimensionless<one, Rep> sin(const angle<U, Rep>& q) noexcept
-  requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
-{
-  using std::sin;
-  return sin(quantity_cast<radian>(q).number());
-}
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline dimensionless<one, Rep> cos(const angle<U, Rep>& q) noexcept
-  requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
-{
-  using std::cos;
-  return cos(quantity_cast<radian>(q).number());
-}
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline dimensionless<one, Rep> tan(const angle<U, Rep>& q) noexcept
-  requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
-{
-  using std::tan;
-  return tan(quantity_cast<radian>(q).number());
-}
-
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline angle<radian, Rep> asin(const dimensionless<U, Rep>& q) noexcept
-  requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
-{
-  using std::asin;
-  return angle<radian, Rep>(asin(quantity_cast<one>(q).number()));
-}
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline angle<radian, Rep> acos(const dimensionless<U, Rep>& q) noexcept
-  requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
-{
-  using std::acos;
-  return angle<radian, Rep>(acos(quantity_cast<one>(q).number()));
-}
-
-template<typename U, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline angle<radian, Rep> atan(const dimensionless<U, Rep>& q) noexcept
-  requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
-{
-  using std::atan;
-  return angle<radian, Rep>(atan(quantity_cast<one>(q).number()));
+  using type = quantity<common_reference(Q1::reference, Q2::reference, Q3::reference),
+                        decltype(hypot(x.number(), y.number(), z.number()))>;
+  return type{hypot(x.number(), y.number(), z.number())};
 }
 
 }  // namespace units

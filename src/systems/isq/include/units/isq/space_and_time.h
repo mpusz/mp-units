@@ -23,44 +23,64 @@
 #pragma once
 
 #include <units/dimension.h>
-#include <units/isq/base_dimensions.h>
+#include <units/isq/base_quantities.h>
 
 namespace units::isq {
 
-// inline constexpr struct length : base_dimension<"L"> {} length;
-DERIVED_DIMENSION(curvature, decltype(1 / length));
-DERIVED_DIMENSION(area, decltype(length * length));
-DERIVED_DIMENSION(volume, decltype(length * length * length));
-DERIVED_DIMENSION(angular_measure, decltype(length / length));
-DERIVED_DIMENSION(angular_displacement, decltype(length / length));
-DERIVED_DIMENSION(phase_angle, decltype(length / length));
-inline constexpr struct solid_angular_measure : decltype(area / (length * length)) {
-} solid_angular_measure;
-// inline constexpr struct time : base_dimension<"T"> {} time;  // TODO called duration in ISO 80000
-// TODO there is also a velocity in ISO 80000
-DERIVED_DIMENSION(speed, decltype(length / time));
-DERIVED_DIMENSION(acceleration, decltype(speed / time));
-DERIVED_DIMENSION(angular_velocity, decltype(angular_displacement / time));
-DERIVED_DIMENSION(angular_acceleration, decltype(angular_velocity / time));
-inline constexpr struct period_duration : time {
-} period_duration;
-inline constexpr struct time_constant : time {
-} time_constant;
-inline constexpr struct rotation : angular_displacement {
-} rotation;
-DERIVED_DIMENSION(frequency, decltype(1 / time));
-DERIVED_DIMENSION(rotational_frequency, decltype(rotation / time));
-DERIVED_DIMENSION(angular_frequency, decltype(angular_measure / time));
-inline constexpr struct wavelength : length {
-} wavelength;
-DERIVED_DIMENSION(repetency, decltype(1 / wavelength));
-DERIVED_DIMENSION(wave_vector, decltype(1 / length));
-DERIVED_DIMENSION(angular_repetency, decltype(1 / wavelength));
-DERIVED_DIMENSION(phase_velocity, decltype(angular_frequency / angular_repetency));
-DERIVED_DIMENSION(damping_coefficient, decltype(1 / time_constant));
-DERIVED_DIMENSION(logarithmic_decrement, decltype(damping_coefficient * period_duration));
-DERIVED_DIMENSION(attenuation, decltype(1 / length));
-DERIVED_DIMENSION(phase_coefficient, decltype(phase_angle / length));
-DERIVED_DIMENSION(propagation_coefficient, decltype(1 / length));
+// clang-format off
+QUANTITY_SPEC(width, length);
+inline constexpr auto breadth = width;
+QUANTITY_SPEC(height, length);
+inline constexpr auto depth = height;
+inline constexpr auto altitude = height;
+QUANTITY_SPEC(thickness, width);
+QUANTITY_SPEC(diameter, width);
+// QUANTITY_SPEC(radius, mag<ratio{1, 2}> * diameter);
+QUANTITY_SPEC(radius, diameter);
+QUANTITY_SPEC(path_length, length);
+inline constexpr auto arc_length = path_length;
+QUANTITY_SPEC(distance, path_length);
+QUANTITY_SPEC(radial_distance, distance);
+QUANTITY_SPEC(position_vector, length, quantity_character::vector);
+QUANTITY_SPEC(displacement, length, quantity_character::vector);
+QUANTITY_SPEC(radius_of_curvature, radius);
+QUANTITY_SPEC(curvature, 1 / radius_of_curvature);
+QUANTITY_SPEC(area, pow<2>(length));
+QUANTITY_SPEC(volume, pow<3>(length));
+QUANTITY_SPEC(angular_measure, arc_length / radius);
+QUANTITY_SPEC(rotational_displacement, path_length / radius);
+inline constexpr auto angular_displacement = rotational_displacement;
+QUANTITY_SPEC(phase_angle, angular_measure);
+QUANTITY_SPEC(solid_angular_measure, angular_measure * angular_measure);
+inline constexpr auto duration = time;
+QUANTITY_SPEC(velocity, position_vector / duration);  // vector
+QUANTITY_SPEC(speed, distance / duration);   // TODO length, path_length?
+QUANTITY_SPEC(acceleration, velocity / duration);  // vector
+QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
+QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
+QUANTITY_SPEC(period_duration, duration);
+inline constexpr auto period = period_duration;
+QUANTITY_SPEC(time_constant, duration);
+QUANTITY_SPEC(rotation, rotational_displacement);
+QUANTITY_SPEC(frequency, 1 / period_duration);
+QUANTITY_SPEC(rotational_frequency, rotation / duration);
+QUANTITY_SPEC(angular_frequency, phase_angle / duration);
+QUANTITY_SPEC(wavelength, length);
+QUANTITY_SPEC(repetency, 1 / wavelength);
+inline constexpr auto wavenumber = repetency;
+QUANTITY_SPEC(wave_vector, repetency, quantity_character::vector);
+QUANTITY_SPEC(angular_repetency, 1 / wavelength);
+inline constexpr auto angular_wavenumber = angular_repetency;
+QUANTITY_SPEC(phase_velocity, angular_frequency / angular_repetency);
+inline constexpr auto phase_speed = phase_velocity;
+QUANTITY_SPEC(group_velocity, angular_frequency / angular_repetency);
+inline constexpr auto group_speed = group_velocity;
+QUANTITY_SPEC(damping_coefficient, 1 / time_constant);
+QUANTITY_SPEC(logarithmic_decrement, damping_coefficient * period_duration);
+QUANTITY_SPEC(attenuation, 1 / distance);
+inline constexpr auto extinction = attenuation;
+QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
+QUANTITY_SPEC(propagation_coefficient, 1 / length);  // γ = α + iβ where α denotes attenuation and β the phase coefficient of a plane wave
+// clang-format on
 
 }  // namespace units::isq

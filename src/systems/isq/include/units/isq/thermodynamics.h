@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/dimension.h>
-#include <units/isq/base_dimensions.h>
+#include <units/isq/base_quantities.h>
 #include <units/isq/space_and_time.h>
 
 namespace units::isq {
@@ -34,6 +34,6 @@ namespace units::isq {
 // DERIVED_DIMENSION(mass_density, decltype(mass / volume));
 
 
-DERIVED_DIMENSION(energy, decltype(force * length));
+// DERIVED_DIMENSION(energy, decltype(force * length));  // defined in a mechanics header
 
 }  // namespace units::isq

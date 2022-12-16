@@ -23,72 +23,52 @@
 #pragma once
 
 #include <units/concepts.h>
-#include <units/dimension.h>
+#include <units/quantity_spec.h>
 #include <units/unit.h>
 
 namespace units {
 
 /**
- * @brief The type for quantity references
+ * @brief Quantity reference type
  *
- * This type is intended to be used in the quantity references definition:
+ * Quantity reference describes all the properties of a quantity besides its
+ * representation type.
  *
- * @code{.cpp}
- * namespace length_references {
- *
- * inline constexpr auto m = reference<dim_length, metre>{};
- * inline constexpr auto km = reference<dim_length, kilometre>{};
- *
- * }
- *
- * namespace references {
- *
- * using namespace length_references;
- *
- * }
- * @endcode
- *
- * Quantity references simplify quantity creation:
+ * In most cases this class template is not explicitly instantiated by the user.
+ * It is implicitly instantiated by the library's framework while binding a quantity
+ * specification with a compatible unit.
  *
  * @code{.cpp}
- * using namespace units::isq::si::references;
- *
- * auto d = 123 * m;
- * auto v = 70 * (km / h);
- * @endcode
- *
- * Also, it is allowed to define custom quantity references from existing ones:
- *
- * @code{.cpp}
- * constexpr auto Nm = N * m;
- * constexpr auto mph = mi / h;
+ * Reference auto kmph = isq::speed[km / h];
+ * quantity_of<isq::speed[km / h]> auto speed = 90 * kmph;
  * @endcode
  *
  * The following syntaxes are not allowed:
- * `2 / s`, `km * 3`, `s / 4`, `70 * km / h`.
+ * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
-template<Dimension auto D, Unit auto U>
+template<QuantitySpec auto Q, Unit auto U>
 struct reference {
-  static constexpr auto dimension = D;
-  static constexpr auto unit = U;
+  static constexpr QuantitySpec auto quantity_spec = Q;
+  static constexpr Dimension auto dimension = Q.dimension;
+  static constexpr Unit auto unit = U;
 };
 
 // Reference
 
 template<Magnitude M, Reference R>
-[[nodiscard]] consteval reference<R::dimension, M{} * R::unit> operator*(M, R)
+[[nodiscard]] consteval reference<R::quantity_spec, M{} * R::unit> operator*(M, R)
 {
   return {};
 }
 
 template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<R1::dimension * R2::dimension, R1::unit * R2::unit> operator*(R1, R2)
+[[nodiscard]] consteval reference<R1::quantity_spec * R2::quantity_spec, R1::unit * R2::unit> operator*(R1, R2)
 {
   return {};
 }
 
 template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<R1::dimension / R2::dimension, R1::unit / R2::unit> operator/(R1, R2)
+[[nodiscard]] consteval reference<R1::quantity_spec / R2::quantity_spec, R1::unit / R2::unit> operator/(R1, R2)
 {
   return {};
 }
@@ -104,26 +84,26 @@ void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Referen
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval bool operator==(R1, R2)
 {
-  return R1::dimension == R2::dimension && R1::unit == R2::unit;
+  return R1::quantity_spec == R2::quantity_spec && R1::unit == R2::unit;
 }
 
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval bool interconvertible(R1, R2)
 {
-  return interconvertible(R1::dimension, R2::dimension) && interconvertible(R1::unit, R2::unit);
+  return interconvertible(R1::quantity_spec, R2::quantity_spec) && interconvertible(R1::unit, R2::unit);
 }
 
 [[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2, Reference auto... rest)
   requires requires {
     {
-      common_dimension(r1.dimension, r2.dimension, rest.dimension...)
-    } -> Dimension;
+      common_quantity_spec(r1.quantity_spec, r2.quantity_spec, rest.quantity_spec...)
+    } -> QuantitySpec;
     {
       common_unit(r1.unit, r2.unit, rest.unit...)
     } -> Unit;
   }
 {
-  return reference<common_dimension(r1.dimension, r2.dimension, rest.dimension...),
+  return reference<common_quantity_spec(r1.quantity_spec, r2.quantity_spec, rest.quantity_spec...),
                    common_unit(r1.unit, r2.unit, rest.unit...)>{};
 }
 

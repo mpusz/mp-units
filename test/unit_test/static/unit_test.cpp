@@ -35,12 +35,18 @@ using namespace units::detail;
 using one_ = struct one;
 
 // base dimensions
-BASE_DIMENSION_(length, "L");
-BASE_DIMENSION_(time, "T");
-BASE_DIMENSION_(mass, "M");
-BASE_DIMENSION_(thermodynamic_temperature, "Θ");
-
 // clang-format off
+inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_thermodynamic_temperature_ : base_dimension<basic_symbol_text{"Θ", "O"}> {} dim_thermodynamic_temperature;
+
+// quantities specification
+QUANTITY_SPEC_(length, dim_length);
+QUANTITY_SPEC_(mass, dim_mass);
+QUANTITY_SPEC_(time, dim_time);
+QUANTITY_SPEC_(thermodynamic_temperature, dim_thermodynamic_temperature);
+
 // base units
 inline constexpr struct second_ : named_unit<"s", time> {} second;
 inline constexpr struct metre_ : named_unit<"m", length> {} metre;

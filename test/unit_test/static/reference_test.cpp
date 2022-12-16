@@ -23,6 +23,7 @@
 #include "test_tools.h"
 #include <units/dimension.h>
 #include <units/quantity.h>
+#include <units/quantity_spec.h>
 #include <units/reference.h>
 #include <units/si/prefixes.h>
 #include <units/system_reference.h>
@@ -31,30 +32,34 @@
 namespace {
 
 using namespace units;
-using namespace units::detail;
 
-using dimension_one_ = struct dimension_one;
+using dimensionless_ = struct dimensionless;
 using one_ = struct one;
 
 // base dimensions
-BASE_DIMENSION_(length, "L");
-BASE_DIMENSION_(time, "T");
-BASE_DIMENSION_(mass, "M");
-
-DERIVED_DIMENSION_(frequency, decltype(1 / time));
-DERIVED_DIMENSION_(action, decltype(1 / time));
-DERIVED_DIMENSION_(area, decltype(length * length));
-DERIVED_DIMENSION_(volume, decltype(area * length));
-DERIVED_DIMENSION_(speed, decltype(length / time));
-DERIVED_DIMENSION_(acceleration, decltype(speed / time));
-DERIVED_DIMENSION_(force, decltype(mass * acceleration));
-DERIVED_DIMENSION_(moment_of_force, decltype(length * force));
-DERIVED_DIMENSION_(torque, decltype(moment_of_force));
-DERIVED_DIMENSION_(power, decltype(force * speed));
-DERIVED_DIMENSION_(efficiency, decltype(power / power));
-DERIVED_DIMENSION_(energy, decltype(force * length));
-
 // clang-format off
+inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
+
+// quantities specification
+QUANTITY_SPEC_(length, dim_length);
+QUANTITY_SPEC_(mass, dim_mass);
+QUANTITY_SPEC_(time, dim_time);
+
+QUANTITY_SPEC_(frequency, 1 / time);
+QUANTITY_SPEC_(action, 1 / time);
+QUANTITY_SPEC_(area, length* length);
+QUANTITY_SPEC_(volume, area* length);
+QUANTITY_SPEC_(speed, length / time);
+QUANTITY_SPEC_(acceleration, speed / time);
+QUANTITY_SPEC_(force, mass* acceleration);
+QUANTITY_SPEC_(moment_of_force, length* force);
+QUANTITY_SPEC_(torque, moment_of_force);
+QUANTITY_SPEC_(power, force* speed);
+QUANTITY_SPEC_(efficiency, power / power);
+QUANTITY_SPEC_(energy, force* length);
+
 // base units
 inline constexpr struct second_ : named_unit<"s", time> {} second;
 inline constexpr struct metre_ : named_unit<"m", length> {} metre;
@@ -102,15 +107,15 @@ static_assert(is_same_v<decltype(5 * speed[metre / second]),
 static_assert(
   is_same_v<
     decltype(10 * length[metre] / (2 * time[second])),
-    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 // Base quantity as a result of dimensional transformation
-static_assert(
-  is_same_v<decltype(5 * speed[metre / second] * (5 * time[second])), quantity<reference<length, metre>{}, int>>);
+static_assert(is_same_v<decltype(5 * speed[metre / second] * (5 * time[second])),
+                        quantity<reference<derived_quantity_spec<speed_, time_>{}, metre>{}, int>>);
 
-// dimension_one
+// dimensionless
 static_assert(is_same_v<decltype(20 * speed[metre / second] / (10 * length[metre]) * (5 * time[second])),
-                        quantity<reference<dimension_one, one>{}, int>>);
+                        quantity<reference<derived_quantity_spec<speed_, time_, per<length_>>{}, one>{}, int>>);
 
 template<auto s>
 concept invalid_operations = requires {
@@ -142,11 +147,11 @@ static_assert(invalid_operations<time[second]>);
 static_assert(
   is_same_v<
     decltype(2 * length[metre] / (1 * time[second])),
-    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 static_assert(
   is_same_v<
     decltype(2 * (length[metre] / time[second])),
-    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 static_assert(is_same_v<decltype(2 * (speed[metre / second])),
                         quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
@@ -157,7 +162,7 @@ static_assert(
 static_assert(
   is_same_v<
     decltype(120 * length[kilometre] / (2 * time[hour])),
-    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
 static_assert(
   is_same_v<
@@ -166,14 +171,14 @@ static_assert(
       const auto duration = 2;
       return distance * length[kilometre] / (duration * time[hour]);
     }()),
-    quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(
   is_same_v<decltype(std::int64_t{120} * length[kilometre] / (2 * time[hour])),
-            quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+            quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
                      std::int64_t>>);
 static_assert(
   is_same_v<decltype(120.L * length[kilometre] / (2 * time[hour])),
-            quantity<reference<derived_dimension<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+            quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
                      long double>>);
 
 static_assert(is_same_v<decltype(1. / 4 * area[square<metre>]), decltype(1. * area[square<metre>] / 4)>);
@@ -185,13 +190,13 @@ static_assert(is_same_v<decltype(42 * nu::time[nu::minute]), quantity<reference<
 static_assert(is_same_v<decltype(42 * nu::length[nu::second]), quantity<reference<length, nu::second>{}, int>>);
 static_assert(is_same_v<decltype(42 * nu::length[nu::minute]), quantity<reference<length, nu::minute>{}, int>>);
 static_assert(is_same_v<decltype(42 * (nu::length[nu::second] / nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, per<time_>>{}, one>{}, int>>);
+                        quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * nu::length[nu::second] / (42 * nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, per<time_>>{}, one>{}, int>>);
+                        quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * nu::speed[nu::second / nu::second]), quantity<reference<speed, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * nu::speed[one]), quantity<reference<speed, one>{}, int>>);
 static_assert(is_same_v<decltype(42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second])),
-                        quantity<reference<derived_dimension<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
+                        quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };

@@ -23,16 +23,28 @@
 #pragma once
 
 #include <units/dimension.h>
+#include <units/quantity_spec.h>
 
 namespace units::isq {
 
-BASE_DIMENSION(length, "L");
-BASE_DIMENSION(mass, "M");
-BASE_DIMENSION(time, "T");
-BASE_DIMENSION(electric_current, "I");
-// TODO Should the below use basic_symbol_text? How to name it for ASCII?
-BASE_DIMENSION(thermodynamic_temperature, "Θ");
-BASE_DIMENSION(amount_of_substance, "N");
-BASE_DIMENSION(luminous_intensity, "J");
+// clang-format off
+// dimensions of base quantities
+inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_electric_current : base_dimension<"I"> {} dim_electric_current;
+inline constexpr struct dim_thermodynamic_temperature : base_dimension<basic_symbol_text{"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {} dim_amount_of_substance;
+inline constexpr struct dim_luminous_intensity : base_dimension<"J"> {} dim_luminous_intensity;
+// clang-format on
+
+// base quantities
+QUANTITY_SPEC(length, dim_length);
+QUANTITY_SPEC(mass, dim_mass);
+QUANTITY_SPEC(time, dim_time);
+QUANTITY_SPEC(electric_current, dim_electric_current);
+QUANTITY_SPEC(thermodynamic_temperature, dim_thermodynamic_temperature);
+QUANTITY_SPEC(amount_of_substance, dim_amount_of_substance);
+QUANTITY_SPEC(luminous_intensity, dim_luminous_intensity);
 
 }  // namespace units::isq

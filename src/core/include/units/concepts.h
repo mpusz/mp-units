@@ -22,17 +22,14 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-// #include <units/bits/basic_concepts.h>
-// #include <units/bits/quantity_of.h>
-// IWYU pragma: end_exports
 #include <units/bits/external/type_traits.h>
 #include <units/dimension.h>
+#include <units/quantity_spec.h>
 #include <units/unit.h>
 
 namespace units {
 
-template<Dimension auto D, Unit auto U>
+template<QuantitySpec auto Q, Unit auto U>
 struct reference;
 
 namespace detail {
@@ -40,8 +37,8 @@ namespace detail {
 template<typename T>
 inline constexpr bool is_specialization_of_reference = false;
 
-template<Dimension auto D, Unit auto U>
-inline constexpr bool is_specialization_of_reference<reference<D, U>> = true;
+template<auto Q, auto U>
+inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
 
 }  // namespace detail
 
@@ -92,11 +89,15 @@ class quantity;
 
 namespace detail {
 
+// TODO make the below code from the comment to compile and replace it
 template<auto R, typename Rep>
 inline constexpr bool is_quantity<quantity<R, Rep>> = true;
 
+// template<auto R, typename Rep>
+// void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
+
 // template<typename T>
-//   requires units::is_derived_from_specialization_of<T, units::quantity>
+//   requires requires(T* t) { to_base_specialization_of_quantity(t); }
 // inline constexpr bool is_quantity<T> = true;
 
 }  // namespace detail
@@ -109,6 +110,7 @@ inline constexpr bool is_quantity<quantity<R, Rep>> = true;
  */
 template<typename Q, auto V>
 concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
+                                      (QuantitySpec<std::remove_const_t<decltype(V)>> && Q::quantity_spec == V) ||
                                       (Reference<std::remove_const_t<decltype(V)>> && Q::reference == V));
 
 /**
@@ -119,8 +121,9 @@ concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)
  */
 template<typename Q, auto V>
 concept weak_quantity_of = Quantity<Q> &&
-                           ((Dimension<std::remove_const_t<decltype(V)>> && interconvertible(Q::dimension, V)) ||
-                            (Reference<std::remove_const_t<decltype(V)>> &&
-                             interconvertible(Q::dimension, V.dimension) && Q::unit == V.unit));
+                           ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
+                            (QuantitySpec<std::remove_const_t<decltype(V)>> && interconvertible(Q::quantity_spec, V)) ||
+                            (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension &&
+                             Q::unit == V.unit));
 
 }  // namespace units

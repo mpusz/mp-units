@@ -52,11 +52,12 @@ class quantity;
  * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
  * This cast gets the target quantity type to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::isq::si::time<units::isq::si::second>>(1_q_ms);
+ * auto q1 = 1234. * isq::length[mm];
+ * auto q2 = quantity_cast<quantity<isq::height[m], int>>(q1);
  *
  * @tparam To a target quantity type to cast to
  */
@@ -110,17 +111,13 @@ template<Quantity To, auto R, typename Rep>
  * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * This cast gets both the target dimension and unit to cast to. For example:
+ * This cast gets a target reference to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::isq::si::dim_speed, units::isq::si::kilometre_per_hour>(v1);
+ * auto v = quantity_cast<isq::velocity[km / h]>(q);
  *
- * @note This cast is especially useful when working with quantities of unknown dimensions
- * (@c unknown_dimension).
- *
- * @tparam ToD a dimension type to use for a target quantity
- * @tparam ToU a unit type to use for a target quantity
+ * @tparam ToR a reference to use for a target quantity
  */
 template<Reference auto ToR, auto R, typename Rep>
   requires(interconvertible(ToR, R))
@@ -134,19 +131,19 @@ template<Reference auto ToR, auto R, typename Rep>
  * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * This cast gets only the target dimension to cast to. For example:
+ * This cast gets only the target quantity specification to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::isq::si::dim_acceleration>(200_q_Gal);
+ * auto v = quantity_cast<isq::velocity>(120 * isq::length[km] / (2 * isq::time[h]));
  *
- * @tparam ToD a dimension type to use for a target quantity
+ * @tparam ToQS a quantity specification to use for a target quantity
  */
-template<Dimension auto ToD, auto R, typename Rep>
-  requires(interconvertible(ToD, R.dimension))
+template<QuantitySpec auto ToQS, auto R, typename Rep>
+  requires(interconvertible(ToQS, R.quantity_spec))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<ToD, quantity<R, Rep>::unit> r;
+  constexpr reference<ToQS, quantity<R, Rep>::unit> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
@@ -154,19 +151,19 @@ template<Dimension auto ToD, auto R, typename Rep>
  * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
  * This cast gets only the target unit to cast to. For example:
  *
- * auto q1 = units::quantity_cast<units::isq::si::second>(1_q_ms);
+ * auto d = quantity_cast<si::second>(1234 * isq::time[ms]);
  *
- * @tparam ToU a unit type to use for a target quantity
+ * @tparam ToU a unit to use for a target quantity
  */
 template<Unit auto ToU, auto R, typename Rep>
   requires(interconvertible(ToU, R.unit))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<quantity<R, Rep>::dimension, ToU> r;
+  constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
   return quantity_cast<quantity<r, Rep>>(q);
 }
 
@@ -174,11 +171,11 @@ template<Unit auto ToU, auto R, typename Rep>
  * @brief Explicit cast of a quantity
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In such cases an explicit cast have to be used.
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
  * This cast gets only representation to cast to. For example:
  *
- * auto q1 = units::quantity_cast<int>(1_q_ms);
+ * auto q = quantity_cast<int>(1.23 * isq::time[ms]);
  *
  * @tparam ToRep a representation type to use for a target quantity
  */

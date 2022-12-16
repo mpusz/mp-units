@@ -30,7 +30,7 @@
 
 using namespace units;
 
-constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::length> auto d, quantity_of<isq::time> auto t)
+constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::distance> auto d, quantity_of<isq::duration> auto t)
 {
   return quantity_cast<isq::speed>(d / t);
 }
@@ -42,8 +42,8 @@ int main()
 
   constexpr auto v1 = 110 * isq::speed[km / h];
   constexpr auto v2 = 70. * isq::speed[mph];
-  constexpr auto v3 = avg_speed(220 * isq::length[km], 2 * isq::time[h]);
-  constexpr auto v4 = avg_speed(quantity<isq::length[mi]>{140}, quantity<isq::time[h]>{2});
+  constexpr auto v3 = avg_speed(220 * isq::distance[km], 2 * isq::duration[h]);
+  constexpr auto v4 = avg_speed(quantity<isq::distance[mi]>{140}, quantity<isq::duration[h]>{2});
   constexpr auto v5 = quantity_cast<quantity<isq::speed[m / s]>>(v3);
   constexpr auto v6 = quantity_cast<m / s>(v4);
   constexpr auto v7 = quantity_cast<int>(v6);

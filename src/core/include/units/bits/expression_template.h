@@ -105,6 +105,19 @@ struct power {
 namespace detail {
 
 template<typename T>
+struct expr_type_impl : std::type_identity<T> {};
+
+template<typename T, int... Ints>
+struct expr_type_impl<power<T, Ints...>> : std::type_identity<T> {};
+
+}  // namespace detail
+
+template<typename T>
+using expr_type = TYPENAME detail::expr_type_impl<T>::type;
+
+namespace detail {
+
+template<typename T>
 inline constexpr bool is_specialization_of_power = false;
 
 template<typename F, int... Ints>
@@ -256,16 +269,7 @@ struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T,
 
 // expr_less
 template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
-struct expr_less_impl : Pred<Lhs, Rhs> {};
-
-template<typename Lhs, int... Ints1, typename Rhs, int... Ints2, template<typename, typename> typename Pred>
-struct expr_less_impl<power<Lhs, Ints1...>, power<Rhs, Ints2...>, Pred> : Pred<Lhs, Rhs> {};
-
-template<typename Lhs, int... Ints, typename Rhs, template<typename, typename> typename Pred>
-struct expr_less_impl<power<Lhs, Ints...>, Rhs, Pred> : Pred<Lhs, Rhs> {};
-
-template<typename Lhs, typename Rhs, int... Ints, template<typename, typename> typename Pred>
-struct expr_less_impl<Lhs, power<Rhs, Ints...>, Pred> : Pred<Lhs, Rhs> {};
+struct expr_less_impl : Pred<expr_type<Lhs>, expr_type<Rhs>> {};
 
 template<typename T, int... Ints, template<typename, typename> typename Pred>
 struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
@@ -504,19 +508,29 @@ template<typename T, template<typename> typename Proj>
 concept expr_projectable = requires {
   typename T::_num_;
   typename T::_den_;
-  requires type_list_size<typename T::_num_> + type_list_size<typename T::_den_> > 0;
   requires expr_projectable_impl<typename T::_num_, Proj>;
   requires expr_projectable_impl<typename T::_den_, Proj>;
 };
+
+template<typename T>
+[[nodiscard]] consteval auto map_power(T t)
+{
+  return t;
+}
+
+template<typename T, auto... Ints>
+[[nodiscard]] consteval auto map_power(power<T, Ints...>)
+{
+  return pow<Ints...>(T{});
+}
 
 template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
          template<typename, typename> typename Pred, expr_type_projectable<Proj>... Nums,
          expr_type_projectable<Proj>... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
 {
-  using nums = type_list_sort<type_list<typename expr_type_map<std::remove_const_t<Nums>, Proj>::type...>, Pred>;
-  using dens = type_list_sort<type_list<typename expr_type_map<std::remove_const_t<Dens>, Proj>::type...>, Pred>;
-  return detail::get_optimized_expression<nums, dens, OneType, Pred, To>();
+  return (OneType{} * ... * map_power(typename expr_type_map<std::remove_const_t<Nums>, Proj>::type{})) /
+         (OneType{} * ... * map_power(typename expr_type_map<std::remove_const_t<Dens>, Proj>::type{}));
 }
 
 /**
@@ -532,7 +546,10 @@ template<template<typename> typename Proj, template<typename...> typename To, ty
          template<typename, typename> typename Pred, expr_projectable<Proj> T>
 [[nodiscard]] consteval auto expr_map(T)
 {
-  return expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  if constexpr (type_list_size<typename T::_num_> + type_list_size<typename T::_den_> == 0)
+    return OneType{};
+  else
+    return expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
 }
 
 }  // namespace detail

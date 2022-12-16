@@ -27,7 +27,7 @@
 
 namespace units {
 
-struct dimension_one;  // defined in <units/dimension.h>
+struct dimensionless;  // defined in <units/quantity_spec.h>
 struct one;            // defined in <units/unit.h>
 
 // clang-format off
