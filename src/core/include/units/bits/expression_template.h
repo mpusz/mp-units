@@ -262,8 +262,8 @@ template<typename T, typename... NRest, int... Ints1, typename... DRest, int... 
 struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T, Ints2...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
   using type = expr_simplify_power<T, power<T, Ints1...>::exponent, power<T, Ints2...>::exponent>;
-  using num = type_list_join<typename impl::num, typename type::num>;
-  using den = type_list_join<typename impl::den, typename type::den>;
+  using num = type_list_join<typename type::num, typename impl::num>;
+  using den = type_list_join<typename type::den, typename impl::den>;
 };
 
 
