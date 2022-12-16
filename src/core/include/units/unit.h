@@ -592,29 +592,30 @@ template<Unit Lhs, Unit Rhs>
 
 namespace detail {
 
-consteval bool same_canonical_reference_unit(...) { return false; }
+[[nodiscard]] consteval bool same_canonical_reference_unit(...) { return false; }
 
 template<basic_symbol_text Symbol, auto... D>
-consteval bool same_canonical_reference_unit(const named_unit<Symbol, D...>&, const named_unit<Symbol, D...>&)
+[[nodiscard]] consteval bool same_canonical_reference_unit(const named_unit<Symbol, D...>&,
+                                                           const named_unit<Symbol, D...>&)
 {
   return true;
 }
 
 template<typename F1, typename F2, auto... Vs>
-consteval bool same_canonical_reference_unit(const power<F1, Vs...>&, const power<F2, Vs...>&)
+[[nodiscard]] consteval bool same_canonical_reference_unit(const power<F1, Vs...>&, const power<F2, Vs...>&)
 {
   return same_canonical_reference_unit(F1{}, F2{});
 }
 
 template<typename... Us1, typename... Us2>
   requires(sizeof...(Us1) == sizeof...(Us2))
-consteval bool same_canonical_reference_unit(const type_list<Us1...>&, const type_list<Us2...>&)
+[[nodiscard]] consteval bool same_canonical_reference_unit(const type_list<Us1...>&, const type_list<Us2...>&)
 {
   return (... && same_canonical_reference_unit(Us1{}, Us2{}));
 }
 
 template<typename... Us1, typename... Us2>
-consteval bool same_canonical_reference_unit(const derived_unit<Us1...>&, const derived_unit<Us2...>&)
+[[nodiscard]] consteval bool same_canonical_reference_unit(const derived_unit<Us1...>&, const derived_unit<Us2...>&)
 {
   return same_canonical_reference_unit(typename derived_unit<Us1...>::_num_{},
                                        typename derived_unit<Us2...>::_num_{}) &&
