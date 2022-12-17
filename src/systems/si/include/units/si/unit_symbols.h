@@ -640,6 +640,7 @@ inline constexpr auto d = day;
 // commonly used squared and cubic units
 inline constexpr auto m2 = square<metre>;
 inline constexpr auto m3 = cubic<metre>;
+inline constexpr auto m4 = pow<4>(metre);
 inline constexpr auto s2 = square<second>;
 inline constexpr auto s3 = cubic<second>;
 

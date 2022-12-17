@@ -22,13 +22,12 @@
 
 #pragma once
 
-#include <units/dimension.h>
 #include <units/isq/base_quantities.h>
 #include <units/isq/space_and_time.h>
+#include <units/quantity_spec.h>
 
 namespace units::isq {
 
-// inline constexpr struct mass : base_dimension<"M"> {} mass;
 QUANTITY_SPEC(mass_density, mass / volume);
 inline constexpr auto density = mass_density;
 QUANTITY_SPEC(specific_volume, 1 / mass_density);
@@ -38,7 +37,7 @@ QUANTITY_SPEC(surface_mass_density, mass / area);
 inline constexpr auto surface_density = surface_mass_density;
 QUANTITY_SPEC(linear_mass_density, mass / length);
 inline constexpr auto linear_density = linear_mass_density;
-QUANTITY_SPEC(momentum, mass* velocity);
+QUANTITY_SPEC(momentum, mass* velocity);      // TODO vector?
 QUANTITY_SPEC(force, mass* acceleration);     // vector  // TODO what is a correct equation here?
 QUANTITY_SPEC(weight, force);                 // vector  // TODO g?
 QUANTITY_SPEC(static_friction_force, force);  // vector
@@ -62,7 +61,7 @@ QUANTITY_SPEC(normal_stress, pressure, quantity_character::scalar);
 QUANTITY_SPEC(shear_stress, pressure, quantity_character::scalar);
 QUANTITY_SPEC(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC(relative_linear_strain, length / length);
-QUANTITY_SPEC(shear_strain, displacement / thickness);
+QUANTITY_SPEC(shear_strain, displacement / thickness);  // TODO scalar or vector?
 QUANTITY_SPEC(relative_volume_strain, volume / volume);
 QUANTITY_SPEC(Poisson_number, width / length);
 QUANTITY_SPEC(modulus_of_elasticity, normal_stress / relative_linear_strain);
@@ -83,16 +82,18 @@ inline constexpr auto coefficient_of_static_friction = static_friction_coefficie
 QUANTITY_SPEC(kinetic_friction_factor, kinetic_friction_force / force, quantity_character::scalar);
 inline constexpr auto dynamic_friction_factor = kinetic_friction_factor;
 QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scalar);
-// QUANTITY_SPEC(drag_coefficient, mag<2>* drag_force / (mass_density * pow<2>(speed) * area));
-// inline constexpr auto drag_factor = drag_coefficient;
+QUANTITY_SPEC(drag_coefficient, drag_force / (mass_density * pow<2>(speed) * area));  // TODO scalar or vector?
+// QUANTITY_SPEC(drag_coefficient, mag<2>* drag_force / (mass_density * pow<2>(speed) * area));  // TODO should we
+// support that?
+inline constexpr auto drag_factor = drag_coefficient;
 QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(power, force* velocity, quantity_character::scalar);
 // QUANTITY_SPEC(energy, force* length);
-QUANTITY_SPEC(potential_energy, mass* acceleration* height);  // TODO what is a correct equation here?
+QUANTITY_SPEC(potential_energy, mass* pow<2>(length) / pow<2>(time));  // TODO what is a correct equation here?
 QUANTITY_SPEC(kinetic_energy, mass* pow<2>(speed));
-// QUANTITY_SPEC(kinetic_energy, mag<1, 2>* mass* pow<2>(speed));
+// QUANTITY_SPEC(kinetic_energy, mag<1, 2>* mass* pow<2>(speed)); // TODO should we support that?
 // TODO how to implement that?
 // QUANTITY_SPEC(mechanical_energy, potential_energy + kinetic_energy);
 QUANTITY_SPEC(mechanical_energy, potential_energy);

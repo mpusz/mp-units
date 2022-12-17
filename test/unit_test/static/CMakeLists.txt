@@ -47,6 +47,7 @@ add_library(
     # fixed_string_test.cpp
     # fps_test.cpp
     # iec80000_test.cpp
+    isq_test.cpp
     # kind_test.cpp
     magnitude_test.cpp
     # math_test.cpp

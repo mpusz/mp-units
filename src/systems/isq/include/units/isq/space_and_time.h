@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include <units/dimension.h>
 #include <units/isq/base_quantities.h>
+#include <units/quantity_spec.h>
 
 namespace units::isq {
 
-// clang-format off
 QUANTITY_SPEC(width, length);
 inline constexpr auto breadth = width;
 QUANTITY_SPEC(height, length);
@@ -35,7 +34,7 @@ inline constexpr auto depth = height;
 inline constexpr auto altitude = height;
 QUANTITY_SPEC(thickness, width);
 QUANTITY_SPEC(diameter, width);
-// QUANTITY_SPEC(radius, mag<ratio{1, 2}> * diameter);
+// QUANTITY_SPEC(radius, mag<ratio{1, 2}> * diameter); // TODO should we support that?
 QUANTITY_SPEC(radius, diameter);
 QUANTITY_SPEC(path_length, length);
 inline constexpr auto arc_length = path_length;
@@ -51,11 +50,11 @@ QUANTITY_SPEC(angular_measure, arc_length / radius);
 QUANTITY_SPEC(rotational_displacement, path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
-QUANTITY_SPEC(solid_angular_measure, angular_measure * angular_measure);
+QUANTITY_SPEC(solid_angular_measure, angular_measure* angular_measure);
 inline constexpr auto duration = time;
 QUANTITY_SPEC(velocity, position_vector / duration);  // vector
-QUANTITY_SPEC(speed, distance / duration);   // TODO length, path_length?
-QUANTITY_SPEC(acceleration, velocity / duration);  // vector
+QUANTITY_SPEC(speed, distance / duration);            // TODO length, path_length?
+QUANTITY_SPEC(acceleration, velocity / duration);     // vector
 QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
 QUANTITY_SPEC(period_duration, duration);
@@ -76,11 +75,11 @@ inline constexpr auto phase_speed = phase_velocity;
 QUANTITY_SPEC(group_velocity, angular_frequency / angular_repetency);
 inline constexpr auto group_speed = group_velocity;
 QUANTITY_SPEC(damping_coefficient, 1 / time_constant);
-QUANTITY_SPEC(logarithmic_decrement, damping_coefficient * period_duration);
+QUANTITY_SPEC(logarithmic_decrement, damping_coefficient* period_duration);
 QUANTITY_SPEC(attenuation, 1 / distance);
 inline constexpr auto extinction = attenuation;
 QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
-QUANTITY_SPEC(propagation_coefficient, 1 / length);  // γ = α + iβ where α denotes attenuation and β the phase coefficient of a plane wave
-// clang-format on
+QUANTITY_SPEC(propagation_coefficient, 1 / length);  // γ = α + iβ where α denotes attenuation
+                                                     // and β the phase coefficient of a plane wave
 
 }  // namespace units::isq
