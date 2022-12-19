@@ -25,7 +25,7 @@
 #include <units/bits/external/type_list.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/math_concepts.h>
-#include <units/ratio.h>
+#include <units/bits/ratio.h>
 
 namespace units {
 

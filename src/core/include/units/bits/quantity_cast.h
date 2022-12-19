@@ -23,10 +23,10 @@
 #pragma once
 
 #include <units/bits/external/type_traits.h>
-#include <units/concepts.h>
+#include <units/bits/magnitude.h>
+#include <units/bits/quantity_concepts.h>
 #include <units/customization_points.h>
 #include <units/dimension.h>
-#include <units/magnitude.h>
 #include <units/reference.h>
 #include <units/unit.h>
 

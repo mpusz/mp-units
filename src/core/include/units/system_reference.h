@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <units/concepts.h>
 #include <units/quantity_spec.h>
 #include <units/reference.h>
 #include <units/unit.h>

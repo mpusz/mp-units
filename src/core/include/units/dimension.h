@@ -24,7 +24,7 @@
 
 #include <units/bits/expression_template.h>
 #include <units/bits/external/type_traits.h>
-#include <units/symbol_text.h>
+#include <units/bits/symbol_text.h>
 
 namespace units {
 

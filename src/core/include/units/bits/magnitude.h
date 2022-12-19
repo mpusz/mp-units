@@ -24,14 +24,14 @@
 
 #include <units/bits/expression_template.h>
 #include <units/bits/external/hacks.h>
-#include <units/bits/external/text_tools.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/math_concepts.h>
 #include <units/bits/prime.h>
+#include <units/bits/ratio.h>
+#include <units/bits/symbol_text.h>
+#include <units/bits/text_tools.h>
 #include <units/customization_points.h>
-#include <units/ratio.h>
-#include <units/symbol_text.h>
 #include <concepts>
 #include <cstdint>
 #include <numbers>

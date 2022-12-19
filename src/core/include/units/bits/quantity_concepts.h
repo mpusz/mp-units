@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/bits/external/type_traits.h>
+#include <units/customization_points.h>
 #include <units/dimension.h>
 #include <units/quantity_spec.h>
 #include <units/unit.h>
@@ -50,16 +51,6 @@ inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
 template<typename T>
 concept Reference = detail::is_specialization_of_reference<T>;
 
-namespace detail {
-
-template<typename T>
-inline constexpr bool is_quantity = false;
-
-}
-
-template<typename T>
-concept Quantity = detail::is_quantity<T>;
-
 template<typename T, typename U>
 concept common_type_with_ =  // exposition only
   (std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>>) &&
@@ -80,25 +71,33 @@ concept scalable_ =  // exposition only
                           scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
 
 template<typename T>
-concept Representation = (!Quantity<T>) &&
-                         // (!QuantityLike<T>) && (!wrapped_quantity_<T>) &&
-                         std::regular<T> && scalable_<T>;
+concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>) && std::regular<T> && scalable_<T>;
 
-template<Reference auto R, Representation Rep>
+template<typename T, quantity_character Ch>
+concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
+                                                 (Ch == quantity_character::vector && is_vector<T>) ||
+                                                 (Ch == quantity_character::tensor && is_tensor<T>));
+
+template<Reference auto R, RepresentationOf<R.quantity_spec.character> Rep>
 class quantity;
 
 namespace detail {
 
-// TODO make the below code from the comment to compile and replace it
 template<auto R, typename Rep>
-inline constexpr bool is_quantity<quantity<R, Rep>> = true;
+void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
 
-// template<auto R, typename Rep>
-// void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
+}  // namespace detail
 
-// template<typename T>
-//   requires requires(T* t) { to_base_specialization_of_quantity(t); }
-// inline constexpr bool is_quantity<T> = true;
+template<typename T>
+concept Quantity = requires(T* t) { detail::to_base_specialization_of_quantity(t); };
+
+namespace detail {
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+[[nodiscard]] consteval bool is_kind_of(Q1, Q2)
+{
+  return std::derived_from<Q1, Q2>;
+}
 
 }  // namespace detail
 
@@ -109,9 +108,10 @@ inline constexpr bool is_quantity<quantity<R, Rep>> = true;
  * the provided dimension/reference type.
  */
 template<typename Q, auto V>
-concept quantity_of = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                                      (QuantitySpec<std::remove_const_t<decltype(V)>> && Q::quantity_spec == V) ||
-                                      (Reference<std::remove_const_t<decltype(V)>> && Q::reference == V));
+concept quantity_of = Quantity<Q> &&
+                      ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
+                       (QuantitySpec<std::remove_const_t<decltype(V)>> && detail::is_kind_of(Q::quantity_spec, V)) ||
+                       (Reference<std::remove_const_t<decltype(V)>> && Q::reference == V));
 
 /**
  * @brief A concept matching all quantities with provided dimension or reference

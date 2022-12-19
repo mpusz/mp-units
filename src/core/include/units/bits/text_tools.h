@@ -23,7 +23,7 @@
 #pragma once
 
 #include <units/bits/external/fixed_string.h>
-#include <units/symbol_text.h>
+#include <units/bits/symbol_text.h>
 
 namespace units::detail {
 

@@ -38,26 +38,17 @@ add_library(
     mp-units-core
     INTERFACE
     # include/units/chrono.h
-    include/units/concepts.h
     include/units/customization_points.h
     include/units/dimension.h
     # include/units/generic/angle.h
     include/units/generic/dimensionless.h
     # include/units/generic/solid_angle.h
-    # include/units/kind.h
-    include/units/magnitude.h
     include/units/math.h
-    # include/units/point_origin.h
     include/units/quantity.h
-    include/units/quantity_cast.h
-    # include/units/quantity_kind.h
     # include/units/quantity_point.h
-    # include/units/quantity_point_kind.h
     include/units/quantity_spec.h
     include/units/random.h
-    include/units/ratio.h
     include/units/reference.h
-    include/units/symbol_text.h
     include/units/system_reference.h
     include/units/unit.h
 )

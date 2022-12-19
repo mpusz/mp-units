@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <units/concepts.h>
+#include <units/bits/quantity_concepts.h>
 #include <units/quantity_spec.h>
 #include <units/unit.h>
 

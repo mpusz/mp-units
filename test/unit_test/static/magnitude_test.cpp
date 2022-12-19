@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/magnitude.h>
-#include <units/ratio.h>
+#include <units/bits/magnitude.h>
+#include <units/bits/ratio.h>
 #include <type_traits>
 
 using namespace units;
