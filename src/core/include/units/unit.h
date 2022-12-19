@@ -479,29 +479,43 @@ template<Unit T, basic_symbol_text Symbol, Unit auto U>
   return get_canonical_unit_impl(U, U);
 }
 
+template<typename F, int Num, int... Den, typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(const power<F, Num, Den...>&, const type_list<Us...>&)
+{
+  auto mag = (units::mag<1> * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
+  auto u = (one * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).reference_unit));
+  return canonical_unit{mag, u};
+}
+
 template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&)
 {
   auto base = get_canonical_unit_impl(F{}, F{});
-  return canonical_unit{
-    pow<power<F, Num, Den...>::exponent>(base.mag),
-    derived_unit<power_or_T<std::remove_const_t<decltype(base.reference_unit)>, power<F, Num, Den...>::exponent>>{}};
+  if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
+    auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
+    auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
+    return canonical_unit{pow<power<F, Num, Den...>::exponent>(base.mag) * num.mag / den.mag,
+                          num.reference_unit / den.reference_unit};
+  } else {
+    return canonical_unit{pow<power<F, Num, Den...>::exponent>(base.mag),
+                          derived_unit<power<std::remove_const_t<decltype(base.reference_unit)>, Num, Den...>>{}};
+  }
+}
+
+template<typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
+{
+  auto mag = (units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
+  return canonical_unit{mag, u};
 }
 
 template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Us...>&)
 {
-  if constexpr (type_list_size<typename derived_unit<Us...>::_den_> != 0) {
-    using num_type = type_list_map<typename derived_unit<Us...>::_num_, derived_unit>;
-    using den_type = type_list_map<typename derived_unit<Us...>::_den_, derived_unit>;
-    auto num = get_canonical_unit_impl(num_type{}, num_type{});
-    auto den = get_canonical_unit_impl(den_type{}, den_type{});
-    return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
-  } else {
-    auto num = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-    auto mag = (units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
-    return canonical_unit{mag, num};
-  }
+  auto num = get_canonical_unit_impl(typename derived_unit<Us...>::_num_{});
+  auto den = get_canonical_unit_impl(typename derived_unit<Us...>::_den_{});
+  return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
 }
 
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
