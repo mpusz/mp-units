@@ -23,6 +23,7 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
+#include <units/bits/external/type_traits.h>
 #include <limits>
 #include <type_traits>
 
@@ -40,9 +41,46 @@ namespace units {
 template<typename Rep>
 inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
-template<typename T>
-  requires requires { typename T::value_type; }
-inline constexpr bool treat_as_floating_point<T> = treat_as_floating_point<typename T::value_type>;
+template<typename Rep>
+  requires requires { typename Rep::value_type; }
+inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<typename Rep::value_type>;
+
+/**
+ * @brief Specifies a type to have a scalar character
+ *
+ * A scalar is a physical quantity that has magnitude but no direction.
+ */
+template<typename Rep>
+inline constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+
+/**
+ * @brief Specifies a type to have a vector character
+ *
+ * Vectors are physical quantities that possess both magnitude and direction
+ * and whose operations obey the axioms of a vector space.
+ *
+ * In specific cases a scalar can represent a vector with the default direction.
+ * If that is the intent, a user should provide a partial specialization:
+ *
+ * @code{.cpp}
+ * template<class T>
+ *   requires units::is_scalar<T>
+ * inline constexpr bool units::is_vector<T> = true;
+ * @endcode
+ */
+template<typename Rep>
+inline constexpr bool is_vector = false;
+
+/**
+ * @brief Specifies a type to have a tensor character
+ *
+ * Tensors can be used to describe more general physical quantities.
+ *
+ * A vector is a tensor of the first order and a scalar is a tensor of order zero.
+ * Similarly to `is_vector` a partial specialization is needed in such cases.
+ */
+template<typename Rep>
+inline constexpr bool is_tensor = false;
 
 /**
  * @brief A type trait that defines zero, one, min, and max for a representation type
