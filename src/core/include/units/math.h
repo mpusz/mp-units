@@ -106,7 +106,7 @@ template<Quantity Q>
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
-template<quantity_of<dimensionless> Q, typename Rep>
+template<weak_quantity_of<dimensionless> Q>
 [[nodiscard]] inline Q exp(const Q& q)
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {

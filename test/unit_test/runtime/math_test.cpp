@@ -66,6 +66,8 @@ TEST_CASE("'pow<Num, Den>()' on quantity changes the value and the dimension acc
   REQUIRE(pow<1, 4>(16 * isq::area[m2]) == sqrt(4 * isq::length[m]));
 }
 
+// TODO add tests for exp()
+
 TEST_CASE("absolute functions on quantity returns the absolute value", "[math][abs][fabs]")
 {
   SECTION("'abs()' on a negative quantity returns the abs")
