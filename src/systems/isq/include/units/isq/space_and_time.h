@@ -35,7 +35,7 @@ inline constexpr auto altitude = height;
 QUANTITY_SPEC(thickness, width);
 QUANTITY_SPEC(diameter, width);
 // QUANTITY_SPEC(radius, mag<ratio{1, 2}> * diameter); // TODO should we support that?
-QUANTITY_SPEC(radius, diameter);
+QUANTITY_SPEC(radius, width);
 QUANTITY_SPEC(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC(distance, path_length);
