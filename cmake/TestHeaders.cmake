@@ -115,7 +115,7 @@ function(add_header_test target)
         set(source "${CMAKE_CURRENT_BINARY_DIR}/headers/${directory}/${filename}.cpp")
         if(NOT EXISTS "${source}")
             file(WRITE "${source}" "#include <${header}>")
-            file(WRITE "${source}" "#include <${header}>") # do it twice to ensure that header guards are provided
+            file(APPEND "${source}" "\n#include <${header}>") # do it twice to ensure that header guards are provided
         endif()
         list(APPEND sources "${source}")
     endforeach()
