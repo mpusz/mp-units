@@ -22,14 +22,39 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <units/isq/natural/acceleration.h>
-#include <units/isq/natural/constants.h>
-#include <units/isq/natural/energy.h>
-#include <units/isq/natural/force.h>
-#include <units/isq/natural/length.h>
-#include <units/isq/natural/mass.h>
-#include <units/isq/natural/momentum.h>
-#include <units/isq/natural/speed.h>
-#include <units/isq/natural/time.h>
-// IWYU pragma: end_exports
+#include <units/isq/mechanics.h>
+#include <units/isq/space_and_time.h>
+#include <units/si/prefixes.h>
+#include <units/system_reference.h>
+#include <units/unit.h>
+
+namespace units::natural {
+
+// clang-format off
+// units
+inline constexpr struct electronvolt : named_unit<"eV"> {} electronvolt;
+inline constexpr struct gigaelectronvolt : decltype(si::giga<electronvolt>) {} gigaelectronvolt;
+
+// system references
+inline constexpr struct time : system_reference<isq::time, 1 / gigaelectronvolt> {} time;
+inline constexpr struct length : system_reference<isq::length, 1 / gigaelectronvolt> {} length;
+inline constexpr struct mass : system_reference<isq::mass, gigaelectronvolt> {} mass;
+inline constexpr struct velocity : system_reference<isq::velocity, one> {} velocity;
+inline constexpr struct speed : system_reference<isq::speed, one> {} speed;
+inline constexpr struct acceleration : system_reference<isq::acceleration, gigaelectronvolt> {} acceleration;
+inline constexpr struct momentum : system_reference<isq::momentum, gigaelectronvolt> {} momentum;
+inline constexpr struct force : system_reference<isq::force, square<gigaelectronvolt>> {} force;
+inline constexpr struct energy : system_reference<isq::mechanical_energy, gigaelectronvolt> {} energy;
+// clang-format on
+
+// constants
+inline constexpr auto speed_of_light_in_vacuum = speed[one];
+
+namespace unit_symbols {
+
+inline constexpr auto GeV = gigaelectronvolt;
+inline constexpr auto GeV2 = square<gigaelectronvolt>;
+
+}  // namespace unit_symbols
+
+}  // namespace units::natural

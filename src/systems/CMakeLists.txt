@@ -25,8 +25,7 @@ cmake_minimum_required(VERSION 3.19)
 # systems
 add_subdirectory(isq)
 
-# add_subdirectory(isq-iec80000)
-# add_subdirectory(isq-natural)
+add_subdirectory(natural)
 add_subdirectory(si)
 add_subdirectory(si-cgs)
 
