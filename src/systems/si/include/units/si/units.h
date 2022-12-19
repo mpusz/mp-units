@@ -91,7 +91,7 @@ inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634,
 namespace units {
 
 template<>
-inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;  // TODO Is it true?
+inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;
 template<>
 inline constexpr bool unit_can_be_prefixed<si::minute> = false;
 template<>
