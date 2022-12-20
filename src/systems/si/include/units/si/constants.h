@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <units/isq/mechanics.h>
-#include <units/isq/space_and_time.h>
-#include <units/isq/thermodynamics.h>
+#include <units/isq/isq.h>
 #include <units/quantity.h>
 #include <units/si/units.h>
 
@@ -51,12 +49,12 @@ inline constexpr struct luminous_efficacy_unit :
 
 inline constexpr auto hyperfine_structure_transition_frequency_of_cs =
   isq::frequency[hyperfine_structure_transition_frequency_of_cs_unit];
-inline constexpr auto speed_of_light_in_vacuum = isq::speed[speed_of_light_in_vacuum_unit];
+inline constexpr auto speed_of_light_in_vacuum = isq::speed_of_light[speed_of_light_in_vacuum_unit];
 inline constexpr auto planck_constant = isq::action[planck_constant_unit];
-// TODO uncomment the below when all the ISQ is provided
-// inline constexpr auto elementary_charge = isq::electric_charge[elementary_charge_unit];
-// inline constexpr auto boltzmann_constant = isq::heat_capacity[boltzmann_constant_unit];
+inline constexpr auto elementary_charge = isq::electric_charge[elementary_charge_unit];
+inline constexpr auto boltzmann_constant = isq::entropy[boltzmann_constant_unit];
 inline constexpr auto avogadro_constant = (1 / isq::amount_of_substance)[avogadro_constant_unit];
+// TODO uncomment the below when all the ISQ is provided
 // inline constexpr auto luminous_efficacy = isq::luminous_efficacy_of_radiation[luminous_efficacy_unit];
 
 }  // namespace si2019
