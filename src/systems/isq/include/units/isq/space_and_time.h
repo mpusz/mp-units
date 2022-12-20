@@ -25,7 +25,7 @@
 #include <units/isq/base_quantities.h>
 #include <units/quantity_spec.h>
 
-namespace units::isq {
+namespace units::isq::inline space_and_time {
 
 QUANTITY_SPEC(width, length);
 inline constexpr auto breadth = width;
@@ -82,4 +82,4 @@ QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
 QUANTITY_SPEC(propagation_coefficient, 1 / length);  // γ = α + iβ where α denotes attenuation
                                                      // and β the phase coefficient of a plane wave
 
-}  // namespace units::isq
+}  // namespace units::isq::inline space_and_time
