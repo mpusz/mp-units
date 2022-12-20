@@ -34,6 +34,10 @@
 #include <limits>
 #include <locale>
 
+template<class T>
+  requires units::is_scalar<T>
+inline constexpr bool units::is_vector<T> = true;
+
 using namespace units;
 using namespace units::si::unit_symbols;
 

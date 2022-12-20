@@ -25,6 +25,10 @@
 #include <units/si/unit_symbols.h>
 #include <iostream>
 
+template<class T>
+  requires units::is_scalar<T>
+inline constexpr bool units::is_vector<T> = true;
+
 int main()
 {
   using namespace units::si;

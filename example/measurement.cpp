@@ -117,10 +117,14 @@ private:
 
 }  // namespace
 
+template<class T>
+inline constexpr bool units::is_scalar<measurement<T>> = true;
+template<class T>
+inline constexpr bool units::is_vector<measurement<T>> = true;
+
+static_assert(units::RepresentationOf<measurement<double>, units::quantity_character::scalar>);
 
 namespace {
-
-static_assert(units::Representation<measurement<double>>);
 
 void example()
 {
@@ -130,7 +134,7 @@ void example()
   const auto a = measurement{9.8, 0.1} * isq::acceleration[m / s2];
   const auto t = measurement{1.2, 0.1} * isq::time[s];
 
-  const weak_quantity_of<isq::speed> auto v = a * t;
+  const weak_quantity_of<isq::velocity> auto v = a * t;
   std::cout << a << " * " << t << " = " << v << " = " << v[km / h] << '\n';
 
   const auto length = measurement{123., 1.} * isq::length[si::metre];

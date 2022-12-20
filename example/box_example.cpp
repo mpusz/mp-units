@@ -31,6 +31,10 @@
 #include <iostream>
 #include <utility>
 
+template<class T>
+  requires units::is_scalar<T>
+inline constexpr bool units::is_vector<T> = true;
+
 namespace {
 
 using namespace units;
@@ -57,7 +61,7 @@ public:
     return quantity_cast<isq::weight>(mass * g);
   }
 
-  [[nodiscard]] constexpr quantity<isq::length[m]> fill_level(const quantity<isq::mass[kg]>& measured_mass) const
+  [[nodiscard]] constexpr quantity<isq::height[m]> fill_level(const quantity<isq::mass[kg]>& measured_mass) const
   {
     return height_ * measured_mass * g / filled_weight();
   }
