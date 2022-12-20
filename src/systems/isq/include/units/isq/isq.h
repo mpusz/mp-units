@@ -24,6 +24,7 @@
 
 // IWYU pragma: begin_exports
 #include <units/isq/base_quantities.h>
+#include <units/isq/electromagnetism.h>
 #include <units/isq/mechanics.h>
 #include <units/isq/space_and_time.h>
 #include <units/isq/thermodynamics.h>
