@@ -24,8 +24,7 @@
 
 #include <units/bits/fmt_hacks.h>
 #include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/dimensions/time.h>
+#include <units/isq/space_and_time.h>
 #include <units/math.h>
 #include <units/quantity.h>
 #include <units/quantity_point.h>
@@ -37,21 +36,19 @@ template<typename T>
 concept QuantityOrQuantityPoint =
   units::Quantity<T> || units::QuantityPoint<T>;  // TODO Should it also account for `kinds`?
 
-template<typename... Qs>
+template<units::Dimension auto... Ds>
 inline constexpr bool are_time_derivatives = false;
 
-template<typename Q>
-inline constexpr bool are_time_derivatives<Q> = true;
+template<units::Dimension auto D>
+inline constexpr bool are_time_derivatives<D> = true;
 
-template<typename Q1, typename Q2, typename... Qs>
-inline constexpr bool are_time_derivatives<Q1, Q2, Qs...> =
-  units::DimensionOfT<typename decltype(Q1::reference / Q2::reference)::dimension,
-                      units::isq::dim_time> &&  // TODO Think on how to simplify this
-  are_time_derivatives<Q2, Qs...>;
+template<units::Dimension auto D1, units::Dimension auto D2, units::Dimension auto... Ds>
+inline constexpr bool are_time_derivatives<D1, D2, Ds...> =
+  (D1 / D2 == units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
 
 // state
 template<QuantityOrQuantityPoint... QQPs>
-  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs...>
+  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs::dimension...>
 struct state {
   std::tuple<QQPs...> variables_;
   constexpr state(QQPs... qqps) : variables_(std::move(qqps)...) {}
@@ -76,11 +73,10 @@ constexpr const auto& get(const state<Qs...>& s)
 template<QuantityOrQuantityPoint QQP, QuantityOrQuantityPoint... QQPs>
 struct estimation {
 private:
-  using uncertainty_ref = decltype(QQP::reference * QQP::reference);
-  using uncertainty_type =
-    units::quantity<typename uncertainty_ref::dimension, typename uncertainty_ref::unit, typename QQP::rep>;
+  static constexpr auto uncertainty_ref = QQP::reference * QQP::reference;
+  using uncertainty_type = units::quantity<uncertainty_ref, typename QQP::rep>;
 public:
-  kalman::state<QQP, QQPs...> state;  // TODO extend kalman functions to work with this variadic patermater list
+  kalman::state<QQP, QQPs...> state;  // TODO extend kalman functions to work with this variadic parameter list
   uncertainty_type uncertainty;
 };
 
@@ -93,21 +89,23 @@ estimation(state<QQP>, U) -> estimation<QQP>;
 
 // kalman gain
 template<units::Quantity Q>
-constexpr units::dimensionless<units::one> kalman_gain(Q estimate_uncertainty, Q measurement_uncertainty)
+constexpr units::quantity<units::dimensionless[units::one]> kalman_gain(Q estimate_uncertainty,
+                                                                        Q measurement_uncertainty)
 {
   return estimate_uncertainty / (estimate_uncertainty + measurement_uncertainty);
 }
 
 // state update
-template<typename Q, QuantityOrQuantityPoint QM, units::Dimensionless K>
-  requires units::equivalent<typename Q::dimension, typename QM::dimension>
+template<typename Q, QuantityOrQuantityPoint QM, units::quantity_of<units::dimensionless> K>
+  requires(Q::quantity_spec == QM::quantity_spec)
 constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
 {
   return {get<0>(predicted) + gain * (measured - get<0>(predicted))};
 }
 
-template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, units::Dimensionless K, units::isq::Time T>
-  requires units::equivalent<typename Q1::dimension, typename QM::dimension>
+template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, units::quantity_of<units::dimensionless> K,
+         units::quantity_of<units::isq::time> T>
+  requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured, std::array<K, 2> gain, T interval)
 {
   const auto q1 = get<0>(predicted) + get<0>(gain) * (measured - get<0>(predicted));
@@ -115,8 +113,9 @@ constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured
   return {q1, q2};
 }
 
-template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM, units::Dimensionless K, units::isq::Time T>
-  requires units::equivalent<typename Q1::dimension, typename QM::dimension>
+template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM, units::quantity_of<units::dimensionless> K,
+         units::quantity_of<units::isq::time> T>
+  requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM measured, std::array<K, 3> gain,
                                          T interval)
 {
@@ -127,14 +126,14 @@ constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM 
 }
 
 // covariance update
-template<units::Quantity Q, units::Dimensionless K>
+template<units::Quantity Q, units::quantity_of<units::dimensionless> K>
 constexpr Q covariance_update(Q uncertainty, K gain)
 {
   return (1 - gain) * uncertainty;
 }
 
 // state extrapolation
-template<typename Q1, typename Q2, units::isq::Time T>
+template<typename Q1, typename Q2, units::quantity_of<units::isq::time> T>
 constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval;
@@ -142,7 +141,7 @@ constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T in
   return {q1, q2};
 }
 
-template<typename Q1, typename Q2, typename Q3, units::isq::Time T>
+template<typename Q1, typename Q2, typename Q3, units::quantity_of<units::isq::time> T>
 constexpr state<Q1, Q2, Q3> state_extrapolation(const state<Q1, Q2, Q3>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval + get<2>(estimated) * pow<2>(interval) / 2;

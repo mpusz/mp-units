@@ -22,8 +22,8 @@
 
 #include "kalman.h"
 #include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/si/mass.h>
+#include <units/isq/space_and_time.h>
+#include <units/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
@@ -38,27 +38,27 @@ void print_header(const kalman::State auto& initial)
                                "Next Estimate");
 }
 
-void print(auto iteration, Dimensionless auto gain, Quantity auto measured, const kalman::State auto& current,
-           const kalman::State auto& next)
+void print(auto iteration, quantity_of<dimensionless> auto gain, Quantity auto measured,
+           const kalman::State auto& current, const kalman::State auto& next)
 {
   std::cout << STD_FMT::format("{:2} | {:9} | {:8} | {:14} | {:14}\n", iteration, gain, measured, current, next);
 }
 
 int main()
 {
-  using namespace units::isq;
-  using namespace units::isq::si::references;
-  using state = kalman::state<si::mass<si::gram>>;
+  using namespace units::si::unit_symbols;
+  using state = kalman::state<quantity<isq::mass[g]>>;
 
-  const state initial = {1 * kg};
-  const std::array measurements = {1030 * g, 989 * g,  1017 * g, 1009 * g, 1013 * g,
-                                   979 * g,  1008 * g, 1042 * g, 1012 * g, 1011 * g};
+  const state initial = {1 * isq::mass[kg]};
+  const std::array measurements = {1030 * isq::mass[g], 989 * isq::mass[g], 1017 * isq::mass[g], 1009 * isq::mass[g],
+                                   1013 * isq::mass[g], 979 * isq::mass[g], 1008 * isq::mass[g], 1042 * isq::mass[g],
+                                   1012 * isq::mass[g], 1011 * isq::mass[g]};
 
   print_header(initial);
   state next = initial;
   for (int index = 1; const auto& m : measurements) {
     const auto& previous = next;
-    const dimensionless<one> gain = 1. / index;
+    const quantity gain = 1. / index;
     const auto current = state_update(previous, m, gain);
     next = current;
     print(index++, gain, m, current, next);

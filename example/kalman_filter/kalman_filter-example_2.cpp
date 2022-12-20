@@ -22,14 +22,16 @@
 
 #include "kalman.h"
 #include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
+#include <units/isq/space_and_time.h>
+#include <units/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex2
+
+template<class T>
+  requires units::is_scalar<T>
+inline constexpr bool units::is_vector<T> = true;
 
 using namespace units;
 
@@ -46,15 +48,17 @@ void print(auto iteration, Quantity auto measured, const kalman::State auto& cur
 
 int main()
 {
-  using namespace units::isq;
-  using namespace units::isq::si::references;
-  using state = kalman::state<si::length<si::metre>, si::speed<si::metre_per_second>>;
+  using namespace units::si::unit_symbols;
+  using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
-  const auto interval = 5 * s;
-  const state initial = {30 * km, 40 * (m / s)};
-  const std::array measurements = {30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
-                                   31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m};
-  std::array gain = {dimensionless<one>(0.2), dimensionless<one>(0.1)};
+  const auto interval = 5 * isq::period_duration[s];
+  const state initial = {30 * isq::position_vector[km], 40 * isq::velocity[m / s]};
+  const std::array measurements = {30110 * isq::position_vector[m], 30265 * isq::position_vector[m],
+                                   30740 * isq::position_vector[m], 30750 * isq::position_vector[m],
+                                   31135 * isq::position_vector[m], 31015 * isq::position_vector[m],
+                                   31180 * isq::position_vector[m], 31610 * isq::position_vector[m],
+                                   31960 * isq::position_vector[m], 31865 * isq::position_vector[m]};
+  std::array gain = {quantity{0.2}, quantity{0.1}};
 
   print_header(initial);
   state next = state_extrapolation(initial, interval);
