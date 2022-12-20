@@ -126,4 +126,17 @@ concept weak_quantity_of = Quantity<Q> &&
                             (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension &&
                              Q::unit == V.unit));
 
+template<typename T>
+concept quantity_like = requires(T q) {
+  quantity_like_traits<T>::dimension;
+  quantity_like_traits<T>::unit;
+  typename quantity_like_traits<T>::rep;
+  requires Dimension<std::remove_const_t<decltype(quantity_like_traits<T>::dimension)>>;
+  requires Unit<std::remove_const_t<decltype(quantity_like_traits<T>::unit)>>;
+  requires Representation<typename quantity_like_traits<T>::rep>;
+  {
+    quantity_like_traits<T>::number(q)
+  } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+};
+
 }  // namespace units
