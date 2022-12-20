@@ -45,7 +45,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("integral representation")
     {
-      const auto q = 60 * isq::mechanics::power[W];
+      const auto q = 60 * isq::power[W];
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "60 W"); }

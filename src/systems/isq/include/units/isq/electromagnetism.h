@@ -27,7 +27,7 @@
 #include <units/isq/space_and_time.h>
 #include <units/quantity_spec.h>
 
-namespace units::isq::inline electromagnetism {
+namespace units::isq {
 
 QUANTITY_SPEC(electric_charge, electric_current* time);
 QUANTITY_SPEC(electric_charge_density, electric_charge / volume);
@@ -106,8 +106,9 @@ QUANTITY_SPEC(coupling_factor, mutual_inductance / pow<1, 2>(pow<2>(self_inducta
 QUANTITY_SPEC(leakage_factor, pow<2>(coupling_factor));
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(resistivity, 1 / conductivity);
-QUANTITY_SPEC(power, voltage* electric_current);
-inline constexpr auto instantaneous_power = power;
+// QUANTITY_SPEC(power, voltage* electric_current);  // TODO conflicts with mechanical power
+// inline constexpr auto instantaneous_power = power;
+QUANTITY_SPEC(instantaneous_power, voltage* electric_current);
 QUANTITY_SPEC(resistance, voltage / electric_current);
 QUANTITY_SPEC(conductance, 1 / resistance);
 QUANTITY_SPEC(phase_difference, phase_angle);
@@ -134,4 +135,4 @@ QUANTITY_SPEC(reactive_power, complex_power);
 QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));
 QUANTITY_SPEC(active_energy, instantaneous_power* time);
 
-}  // namespace units::isq::inline electromagnetism
+}  // namespace units::isq

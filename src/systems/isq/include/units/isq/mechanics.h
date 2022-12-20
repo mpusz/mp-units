@@ -26,7 +26,7 @@
 #include <units/isq/space_and_time.h>
 #include <units/quantity_spec.h>
 
-namespace units::isq::inline mechanics {
+namespace units::isq {
 
 QUANTITY_SPEC(mass_density, mass / volume);
 inline constexpr auto density = mass_density;
@@ -99,11 +99,11 @@ QUANTITY_SPEC(kinetic_energy, mass* pow<2>(speed));
 QUANTITY_SPEC(mechanical_energy, potential_energy);
 QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
 inline constexpr auto work = mechanical_work;
-QUANTITY_SPEC(efficiency, power / power);
+QUANTITY_SPEC(efficiency_mechanics, power / power);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);
 QUANTITY_SPEC(mass_change_rate, mass / time);
 QUANTITY_SPEC(volume_flow_rate, velocity* area, quantity_character::scalar);
 QUANTITY_SPEC(action, mechanical_energy* time);
 
-}  // namespace units::isq::inline mechanics
+}  // namespace units::isq

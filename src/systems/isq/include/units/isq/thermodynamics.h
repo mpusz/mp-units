@@ -27,7 +27,7 @@
 #include <units/isq/space_and_time.h>
 #include <units/quantity_spec.h>
 
-namespace units::isq::inline thermodynamics {
+namespace units::isq {
 
 QUANTITY_SPEC(Celsius_temperature, thermodynamic_temperature);  // TODO should we account for T0 here?
 QUANTITY_SPEC(linear_expansion_coefficient, 1 / length * (length / thermodynamic_temperature));
@@ -79,7 +79,7 @@ inline constexpr auto specific_Gibbs_function = specific_Gibbs_energy;
 QUANTITY_SPEC(Massieu_function, Helmholtz_energy / thermodynamic_temperature);  // TODO how to handle "negative" part
 QUANTITY_SPEC(Planck_function, Gibbs_energy / thermodynamic_temperature);       // TODO how to handle "negative" part
 QUANTITY_SPEC(Joule_Thomson_coefficient, thermodynamic_temperature / pressure);
-QUANTITY_SPEC(efficiency, work / heat);
+QUANTITY_SPEC(efficiency_thermodynamics, work / heat);
 QUANTITY_SPEC(maximum_efficiency, thermodynamic_temperature / thermodynamic_temperature);
 QUANTITY_SPEC(specific_gas_constant, entropy / mass);
 QUANTITY_SPEC(mass_concentration_of_water, mass / volume);
@@ -95,4 +95,4 @@ QUANTITY_SPEC(relative_mass_ratio_of_vapour,
               mass_ratio_of_water_vapour_to_dry_gas / mass_ratio_of_water_vapour_to_dry_gas);
 QUANTITY_SPEC(dew_point_temperature, thermodynamic_temperature);
 
-}  // namespace units::isq::inline thermodynamics
+}  // namespace units::isq
