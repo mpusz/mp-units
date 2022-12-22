@@ -213,10 +213,10 @@ struct derived_quantity_spec : detail::expr_fractions<derived_quantity_spec<>, Q
 #endif
 
   template<RepresentationOf<character> Rep, Unit U>
-  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+  [[nodiscard]] constexpr Quantity auto operator()(Rep&& v, U u) const
     requires(dimension == detail::get_dimension_for(u))
   {
-    return (*this)[u](std::forward<Rep>(v));
+    return derived_quantity_spec{}[u](std::forward<Rep>(v));
   }
 };
 
@@ -302,10 +302,10 @@ struct quantity_spec<Self, Dim, Args...> {
   }
 
   template<RepresentationOf<character> Rep, Unit U>
-  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+  [[nodiscard]] constexpr Quantity auto operator()(Rep&& v, U u) const
     requires(dimension == detail::get_dimension_for(u))
   {
-    return (*this)[u](std::forward<Rep>(v));
+    return Self{}[u](std::forward<Rep>(v));
   }
 };
 
@@ -371,10 +371,10 @@ struct quantity_spec<Self, Q, Args...> : std::remove_const_t<decltype(Q)> {
   }
 
   template<RepresentationOf<character> Rep, Unit U>
-  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+  [[nodiscard]] constexpr Quantity auto operator()(Rep&& v, U u) const
     requires(this->dimension == detail::get_dimension_for(u))
   {
-    return (*this)[u](std::forward<Rep>(v));
+    return Self{}[u](std::forward<Rep>(v));
   }
 #endif
 };
