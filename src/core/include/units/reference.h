@@ -55,12 +55,6 @@ struct reference {
 
 // Reference
 
-template<Magnitude M, Reference R>
-[[nodiscard]] consteval reference<R::quantity_spec, M{} * R::unit> operator*(M, R)
-{
-  return {};
-}
-
 template<Reference R1, Reference R2>
 [[nodiscard]] consteval reference<R1::quantity_spec * R2::quantity_spec, R1::unit * R2::unit> operator*(R1, R2)
 {
