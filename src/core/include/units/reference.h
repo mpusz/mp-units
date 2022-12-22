@@ -53,7 +53,7 @@ struct reference {
 
   template<RepresentationOf<Q.character> Rep>
   // TODO can we somehow return an explicit quantity type here?
-  [[nodiscard]] constexpr Quantity auto operator()(Rep&& value) const
+  [[nodiscard]] constexpr std::same_as<quantity<reference{}, Rep>> auto operator()(Rep&& value) const
   {
     return quantity<reference{}, Rep>(std::forward<Rep>(value));
   }
