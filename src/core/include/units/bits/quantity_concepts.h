@@ -25,10 +25,47 @@
 #include <units/bits/external/type_traits.h>
 #include <units/customization_points.h>
 #include <units/dimension.h>
-#include <units/quantity_spec.h>
 #include <units/unit.h>
 
 namespace units {
+
+/**
+ * @brief Quantity character
+ *
+ * Scalars, vectors and tensors are mathematical objects that can be used to
+ * denote certain physical quantities and their values. They are as such
+ * independent of the particular choice of a coordinate system, whereas
+ * each scalar component of a vector or a tensor and each component vector and
+ * component tensor depend on that choice.
+ *
+ * A scalar is a physical quantity that has magnitude but no direction.
+ *
+ * Vectors are physical quantities that possess both magnitude and direction
+ * and whose operations obey the axioms of a vector space.
+ *
+ * Tensors can be used to describe more general physical quantities.
+ * For example, the Cauchy stress tensor possess magnitude, direction,
+ * and orientation qualities.
+ */
+enum class quantity_character { scalar, vector, tensor };
+
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_derived_quantity_spec = false;
+
+}
+
+/**
+ * @brief Concept matching quantity specification types
+ *
+ * Satisfied by all `derived_quantity_spec` specializations.
+ */
+template<typename T>
+concept DerivedQuantitySpec = detail::is_specialization_of_derived_quantity_spec<T>;
+
+template<typename T>
+concept QuantitySpec = NamedQuantitySpec<T> || DerivedQuantitySpec<T>;
 
 template<QuantitySpec auto Q, Unit auto U>
 struct reference;

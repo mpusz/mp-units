@@ -23,7 +23,6 @@
 #pragma once
 
 #include <units/bits/quantity_concepts.h>
-#include <units/quantity_spec.h>
 #include <units/unit.h>
 
 namespace units {
@@ -51,6 +50,13 @@ struct reference {
   static constexpr QuantitySpec auto quantity_spec = Q;
   static constexpr Dimension auto dimension = Q.dimension;
   static constexpr Unit auto unit = U;
+
+  template<RepresentationOf<Q.character> Rep>
+  // TODO can we somehow return an explicit quantity type here?
+  [[nodiscard]] constexpr Quantity auto operator()(Rep&& value) const
+  {
+    return quantity<reference{}, Rep>(std::forward<Rep>(value));
+  }
 };
 
 // Reference
@@ -67,12 +73,14 @@ template<Reference R1, Reference R2>
   return {};
 }
 
+// TODO remove when all code is refactored to a new syntax
 template<Representation Rep, Reference R>
 [[nodiscard]] constexpr quantity<R{}, Rep> operator*(const Rep& lhs, R)
 {
   return quantity<R{}, Rep>(lhs);
 }
 
+// TODO remove when all code is refactored to a new syntax
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
 template<Reference R1, Reference R2>

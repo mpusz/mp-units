@@ -26,31 +26,12 @@
 #include <units/bits/expression_template.h>
 #include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
+#include <units/bits/quantity_concepts.h>
 #include <units/dimension.h>
 #include <units/unit.h>
 #include <tuple>
 
 namespace units {
-
-/**
- * @brief Quantity character
- *
- * Scalars, vectors and tensors are mathematical objects that can be used to
- * denote certain physical quantities and their values. They are as such
- * independent of the particular choice of a coordinate system, whereas
- * each scalar component of a vector or a tensor and each component vector and
- * component tensor depend on that choice.
- *
- * A scalar is a physical quantity that has magnitude but no direction.
- *
- * Vectors are physical quantities that possess both magnitude and direction
- * and whose operations obey the axioms of a vector space.
- *
- * Tensors can be used to describe more general physical quantities.
- * For example, the Cauchy stress tensor possess magnitude, direction,
- * and orientation qualities.
- */
-enum class quantity_character { scalar, vector, tensor };
 
 namespace detail {
 
@@ -91,9 +72,6 @@ template<auto... Args>
 }
 
 template<typename T>
-inline constexpr bool is_specialization_of_derived_quantity_spec = false;
-
-template<typename T>
 inline constexpr bool is_dimensionless = false;
 
 template<typename T>
@@ -110,17 +88,6 @@ inline constexpr bool is_per_of_quantity_specs<per<Ts...>> =
   (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts> || is_power_of_quantity_spec<Ts>));
 
 }  // namespace detail
-
-/**
- * @brief Concept matching quantity specification types
- *
- * Satisfied by all `derived_quantity_spec` specializations.
- */
-template<typename T>
-concept DerivedQuantitySpec = detail::is_specialization_of_derived_quantity_spec<T>;
-
-template<typename T>
-concept QuantitySpec = NamedQuantitySpec<T> || DerivedQuantitySpec<T>;
 
 template<typename T>
 concept DerivedQuantitySpecExpr = NamedQuantitySpec<T> || detail::is_dimensionless<T> ||
@@ -166,9 +133,6 @@ concept associated_unit = Unit<U> && requires(U u) { get_dimension_for_impl(get_
 }
 
 }  // namespace detail
-
-template<QuantitySpec auto Q, Unit auto U>
-struct reference;
 
 /**
  * @brief A specification of a derived quantity
@@ -247,6 +211,13 @@ struct derived_quantity_spec : detail::expr_fractions<derived_quantity_spec<>, Q
     return reference<derived_quantity_spec{}, u>{};
   }
 #endif
+
+  template<RepresentationOf<character> Rep, Unit U>
+  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+    requires(dimension == detail::get_dimension_for(u))
+  {
+    return (*this)[u](std::forward<Rep>(v));
+  }
 };
 
 namespace detail {
@@ -329,6 +300,13 @@ struct quantity_spec<Self, Dim, Args...> {
   {
     return reference<Self{}, u>{};
   }
+
+  template<RepresentationOf<character> Rep, Unit U>
+  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+    requires(dimension == detail::get_dimension_for(u))
+  {
+    return (*this)[u](std::forward<Rep>(v));
+  }
 };
 
 /**
@@ -390,6 +368,13 @@ struct quantity_spec<Self, Q, Args...> : std::remove_const_t<decltype(Q)> {
     requires(this->dimension == detail::get_dimension_for(u))
   {
     return reference<Self{}, u>{};
+  }
+
+  template<RepresentationOf<character> Rep, Unit U>
+  [[nodiscard]] consteval Quantity auto operator()(Rep&& v, U u) const
+    requires(this->dimension == detail::get_dimension_for(u))
+  {
+    return (*this)[u](std::forward<Rep>(v));
   }
 #endif
 };
