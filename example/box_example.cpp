@@ -40,8 +40,8 @@ namespace {
 using namespace units;
 using namespace units::si::unit_symbols;
 
-inline constexpr auto g = 1 * si::standard_gravity;
-inline constexpr auto air_density = 1.225 * isq::mass_density[kg / m3];
+inline constexpr auto g = si::standard_gravity(1);
+inline constexpr auto air_density = isq::mass_density(1.225, kg / m3);
 
 class Box {
   quantity<isq::area[m2]> base_;
@@ -87,12 +87,12 @@ int main()
 
   constexpr auto mm = isq::length[unit_symbols::mm];  // helper reference object
 
-  const auto height = (200.0 * mm)[metre];
-  auto box = Box(1000.0 * mm, 500.0 * mm, height);
-  box.set_contents_density(1000.0 * isq::mass_density[kg / m3]);
+  const auto height = mm(200.0)[metre];
+  auto box = Box(mm(1000.0), mm(500.0), height);
+  box.set_contents_density(isq::mass_density(1000.0, kg / m3));
 
-  const auto fill_time = 200.0 * isq::time[s];      // time since starting fill
-  const auto measured_mass = 20.0 * isq::mass[kg];  // measured mass at fill_time
+  const auto fill_time = isq::time(200.0, s);      // time since starting fill
+  const auto measured_mass = isq::mass(20.0, kg);  // measured mass at fill_time
   const auto fill_level = box.fill_level(measured_mass);
   const auto spare_capacity = box.spare_capacity(measured_mass);
   const auto filled_weight = box.filled_weight();

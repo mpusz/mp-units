@@ -49,9 +49,9 @@ void si_example()
   using namespace units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
 
-  constexpr quantity_of<isq::speed> auto c = 1. * si::si2019::speed_of_light_in_vacuum;
-  const weak_quantity_of<isq::momentum> auto p1 = 4. * isq::mechanical_energy[GeV] / c;
-  const weak_quantity_of<isq::mass> auto m1 = 3. * isq::mechanical_energy[GeV] / pow<2>(c);
+  constexpr quantity_of<isq::speed> auto c = si::si2019::speed_of_light_in_vacuum(1.);
+  const weak_quantity_of<isq::momentum> auto p1 = isq::mechanical_energy(4., GeV) / c;
+  const weak_quantity_of<isq::mass> auto m1 = isq::mechanical_energy(3., GeV) / pow<2>(c);
   const auto E = total_energy(p1, m1, c);
 
   std::cout << "\n*** SI units (c = " << c << " = " << c[si::metre / s] << ") ***\n";

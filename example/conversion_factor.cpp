@@ -43,7 +43,7 @@ int main()
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr auto lengthA = 2.0 * isq::length[si::metre];
+  constexpr auto lengthA = isq::length(2.0, si::metre);
   constexpr auto lengthB = lengthA[si::milli<si::metre>];
 
   std::cout << STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)

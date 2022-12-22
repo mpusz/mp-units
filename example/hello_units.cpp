@@ -40,9 +40,9 @@ int main()
   using namespace units::si::unit_symbols;
   using namespace units::si::international::unit_symbols;
 
-  constexpr auto v1 = 110 * isq::speed[km / h];
-  constexpr auto v2 = 70. * isq::speed[mph];
-  constexpr auto v3 = avg_speed(220 * isq::distance[km], 2 * isq::duration[h]);
+  constexpr auto v1 = isq::speed(110, km / h);
+  constexpr auto v2 = isq::speed(70., mph);
+  constexpr auto v3 = avg_speed(isq::distance(220, km), isq::duration(2, h));
   constexpr auto v4 = avg_speed(quantity<isq::distance[mi]>{140}, quantity<isq::duration[h]>{2});
   constexpr auto v5 = quantity_cast<quantity<isq::speed[m / s]>>(v3);
   constexpr auto v6 = quantity_cast<m / s>(v4);

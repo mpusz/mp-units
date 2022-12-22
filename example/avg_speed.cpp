@@ -61,8 +61,8 @@ void example()
 {
   // SI (int)
   {
-    constexpr auto distance = 220 * isq::length[km];
-    constexpr auto duration = 2 * isq::time[h];
+    constexpr auto distance = isq::length(220, km);
+    constexpr auto duration = isq::time(2, h);
 
     std::cout << "SI units with 'int' as representation\n";
 
@@ -73,8 +73,8 @@ void example()
 
   // SI (double)
   {
-    constexpr auto distance = 220. * isq::length[km];
-    constexpr auto duration = 2. * isq::time[h];
+    constexpr auto distance = isq::length(220., km);
+    constexpr auto duration = isq::time(2., h);
 
     std::cout << "\nSI units with 'double' as representation\n";
 
@@ -89,8 +89,8 @@ void example()
   {
     using namespace units::si::international::unit_symbols;
 
-    constexpr auto distance = 140 * isq::length[mi];
-    constexpr auto duration = 2 * isq::time[h];
+    constexpr auto distance = isq::length(140, mi);
+    constexpr auto duration = isq::time(2, h);
 
     std::cout << "\nUS Customary Units with 'int' as representation\n";
 
@@ -104,8 +104,8 @@ void example()
   // Customary Units (double)
   {
     using namespace units::si::international::unit_symbols;
-    constexpr auto distance = 140. * isq::length[mi];
-    constexpr auto duration = 2. * isq::time[h];
+    constexpr auto distance = isq::length(140., mi);
+    constexpr auto duration = isq::time(2., h);
 
     std::cout << "\nUS Customary Units with 'double' as representation\n";
 
@@ -121,8 +121,8 @@ void example()
 
   // CGS (int)
   {
-    constexpr auto distance = 22'000'000 * isq::length[si::cgs::centimetre];
-    constexpr auto duration = 7200 * isq::time[si::cgs::second];
+    constexpr auto distance = isq::length(22'000'000, si::cgs::centimetre);
+    constexpr auto duration = isq::time(7200, si::cgs::second);
 
     std::cout << "\nCGS units with 'int' as representation\n";
 
@@ -135,8 +135,8 @@ void example()
 
   // CGS (double)
   {
-    constexpr auto distance = 22'000'000. * isq::length[si::cgs::centimetre];
-    constexpr auto duration = 7200. * isq::time[si::cgs::second];
+    constexpr auto distance = isq::length(22'000'000., si::cgs::centimetre);
+    constexpr auto duration = isq::time(7200., si::cgs::second);
 
     std::cout << "\nCGS units with 'double' as representation\n";
 

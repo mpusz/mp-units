@@ -35,22 +35,22 @@ int main()
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = 0.47 * isq::capacitance[uF];
-  constexpr auto V0 = 5.0 * isq::voltage[V];
-  constexpr auto R = 4.7 * isq::resistance[si::kilo<si::ohm>];
+  constexpr auto C = isq::capacitance(0.47, uF);
+  constexpr auto V0 = isq::voltage(5.0, V);
+  constexpr auto R = isq::resistance(4.7, si::kilo<si::ohm>);
 
-  for (auto t = 0 * isq::time[ms]; t <= 50 * isq::time[ms]; ++t) {
+  for (auto t = isq::time(0, ms); t <= isq::time(50, ms); ++t) {
     const weak_quantity_of<isq::voltage> auto Vt = V0 * units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
-    if (Vt >= 1 * isq::voltage[V])
+    if (Vt >= isq::voltage(1, V))
       std::cout << Vt[V];
-    else if (Vt >= 1 * isq::voltage[mV])
+    else if (Vt >= isq::voltage(1, mV))
       std::cout << Vt[mV];
-    else if (Vt >= 1 * isq::voltage[uV])
+    else if (Vt >= isq::voltage(1, uV))
       std::cout << Vt[uV];
-    else if (Vt >= 1 * isq::voltage[nV])
+    else if (Vt >= isq::voltage(1, nV))
       std::cout << Vt[nV];
     else
       std::cout << Vt[pV];

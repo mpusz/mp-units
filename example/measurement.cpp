@@ -131,13 +131,13 @@ void example()
   using namespace units;
   using namespace units::si::unit_symbols;
 
-  const auto a = measurement{9.8, 0.1} * isq::acceleration[m / s2];
-  const auto t = measurement{1.2, 0.1} * isq::time[s];
+  const auto a = isq::acceleration(measurement{9.8, 0.1}, m / s2);
+  const auto t = isq::time(measurement{1.2, 0.1}, s);
 
   const weak_quantity_of<isq::velocity> auto v = a * t;
   std::cout << a << " * " << t << " = " << v << " = " << v[km / h] << '\n';
 
-  const auto length = measurement{123., 1.} * isq::length[si::metre];
+  const auto length = isq::length(measurement{123., 1.}, si::metre);
   std::cout << "10 * " << length << " = " << 10 * length << '\n';
 }
 
