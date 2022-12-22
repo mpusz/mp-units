@@ -233,7 +233,7 @@ struct derived_quantity_spec : detail::expr_fractions<derived_quantity_spec<>, Q
 
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, Unit U>
-  [[nodiscard]] consteval auto operator[](this const Self, U u)
+  [[nodiscard]] consteval Reference auto operator[](this const Self, U u)
     requires(dimension == detail::get_dimension_for(u))
   {
     return reference<Self{}, u>{};
@@ -241,7 +241,7 @@ struct derived_quantity_spec : detail::expr_fractions<derived_quantity_spec<>, Q
 #else
   // TODO can we somehow return an explicit reference type here?
   template<Unit U>
-  [[nodiscard]] consteval auto operator[](U u) const
+  [[nodiscard]] consteval Reference auto operator[](U u) const
     requires(dimension == detail::get_dimension_for(u))
   {
     return reference<derived_quantity_spec{}, u>{};
@@ -318,12 +318,12 @@ struct quantity_spec<Self, Dim, Args...> {
 
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, Unit U>
-  [[nodiscard]] consteval auto operator[](this const Self, U u)
+  [[nodiscard]] consteval Reference auto operator[](this const Self, U u)
     requires(dimension == detail::get_dimension_for(u))
 #else
   template<Unit U>
   // TODO can we somehow return an explicit reference type here?
-  [[nodiscard]] consteval auto operator[](U u) const
+  [[nodiscard]] consteval Reference auto operator[](U u) const
     requires(dimension == detail::get_dimension_for(u))
 #endif
   {
@@ -386,7 +386,7 @@ struct quantity_spec<Self, Q, Args...> : std::remove_const_t<decltype(Q)> {
 #ifndef __cpp_explicit_this_parameter
   template<Unit U>
   // TODO can we somehow return an explicit reference type here?
-  [[nodiscard]] consteval auto operator[](U u) const
+  [[nodiscard]] consteval Reference auto operator[](U u) const
     requires(this->dimension == detail::get_dimension_for(u))
   {
     return reference<Self{}, u>{};
