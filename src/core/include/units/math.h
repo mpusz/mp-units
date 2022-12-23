@@ -273,7 +273,7 @@ template<Quantity Q1, Quantity Q2>
 {
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference), decltype(hypot(x.number(), y.number()))>;
-  return type{hypot(x.number(), y.number())};
+  return type{hypot(type{x}.number(), type{y}.number())};
 }
 
 /**
@@ -291,7 +291,7 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference, Q3::reference),
                         decltype(hypot(x.number(), y.number(), z.number()))>;
-  return type{hypot(x.number(), y.number(), z.number())};
+  return type{hypot(type{x}.number(), type{y}.number(), type{z}.number())};
 }
 
 }  // namespace units
