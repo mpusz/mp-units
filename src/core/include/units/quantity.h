@@ -42,6 +42,9 @@ namespace detail {
 template<typename T>
 concept quantity_one = quantity_of<T, dimensionless[one]>;
 
+template<quantity_like Q>
+using quantity_like_type = quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+
 }  // namespace detail
 
 template<typename T, typename Arg>
@@ -63,10 +66,6 @@ concept quantity_convertible_to_ =  // exposition only
 template<quantity_character Ch, typename Func, typename T, typename U>
 concept invoke_result_of_ =
   std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
-
-template<quantity_like Q>
-using quantity_like_type = quantity<reference<quantity_like_traits<Q>::dimension, quantity_like_traits<Q>::unit>{},
-                                    typename quantity_like_traits<Q>::rep>;
 
 /**
  * @brief A quantity
@@ -131,8 +130,8 @@ public:
   }
 
   template<quantity_like Q>
-    requires quantity_convertible_to_<quantity_like_type<Q>, quantity>
-  constexpr explicit quantity(const Q& q) : quantity(quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
+    requires quantity_convertible_to_<detail::quantity_like_type<Q>, quantity>
+  constexpr explicit quantity(const Q& q): quantity(detail::quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
   {
   }
 
@@ -452,8 +451,7 @@ explicit(false) quantity(Rep&&) -> quantity<R, Rep>;
 #endif
 
 template<quantity_like Q>
-explicit quantity(Q) -> quantity<reference<quantity_like_traits<Q>::dimension, quantity_like_traits<Q>::unit>{},
-                                 typename quantity_like_traits<Q>::rep>;
+explicit quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 // non-member binary operators
 template<Quantity Q1, Quantity Q2>

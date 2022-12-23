@@ -165,12 +165,11 @@ concept weak_quantity_of = Quantity<Q> &&
 
 template<typename T>
 concept quantity_like = requires(T q) {
-  quantity_like_traits<T>::dimension;
-  quantity_like_traits<T>::unit;
+  quantity_like_traits<T>::reference;
   typename quantity_like_traits<T>::rep;
-  requires Dimension<std::remove_const_t<decltype(quantity_like_traits<T>::dimension)>>;
-  requires Unit<std::remove_const_t<decltype(quantity_like_traits<T>::unit)>>;
-  requires Representation<typename quantity_like_traits<T>::rep>;
+  requires Reference<std::remove_const_t<decltype(quantity_like_traits<T>::reference)>>;
+  requires RepresentationOf<typename quantity_like_traits<T>::rep,
+                            quantity_like_traits<T>::reference.quantity_spec.character>;
   {
     quantity_like_traits<T>::number(q)
   } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
