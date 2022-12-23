@@ -78,8 +78,9 @@ concept invoke_result_of_ =
  */
 template<Reference auto R, RepresentationOf<R.quantity_spec.character> Rep = double>
 class quantity {
-  Rep number_;
 public:
+  Rep number_;
+
   // member types and values
   static constexpr Reference auto reference = R;
   static constexpr QuantitySpec auto quantity_spec = reference.quantity_spec;
