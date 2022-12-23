@@ -24,6 +24,7 @@
 
 #include "validated_type.h"
 #include <units/bits/external/hacks.h>
+#include <units/customization_points.h>
 #include <algorithm>
 #include <type_traits>
 
@@ -41,6 +42,9 @@ public:
 
   [[nodiscard]] constexpr ranged_representation operator-() const { return ranged_representation(-this->value()); }
 };
+
+template<typename T, auto Min, auto Max>
+inline constexpr bool units::is_scalar<ranged_representation<T, Min, Max>> = units::is_scalar<T>;
 
 template<typename T, auto Min, auto Max>
 struct std::common_type<std::intmax_t, ranged_representation<T, Min, Max>> :

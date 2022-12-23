@@ -22,17 +22,12 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
 #include "geographic.h"
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
-#include <units/quantity_point_kind.h>
-// IWYU pragma: end_exports
-
 #include <units/chrono.h>
 #include <units/format.h>
+#include <units/isq/space_and_time.h>
 #include <units/math.h>  // IWYU pragma: keep
+#include <units/quantity_point.h>
 #include <algorithm>
 #include <array>
 #include <initializer_list>
@@ -56,60 +51,43 @@
 // - no ground obstacles (i.e. mountains) to pass
 // - flight path exactly on a shortest possible line to destination
 
-template<units::QuantityKind QK>
-struct STD_FMT::formatter<QK> : formatter<typename QK::quantity_type> {
-  template<typename FormatContext>
-  auto format(const QK& v, FormatContext& ctx)
-  {
-    return formatter<typename QK::quantity_type>::format(v.common(), ctx);
-  }
-};
-
 namespace glide_computer {
 
-template<units::QuantityKind QK1, units::QuantityKind QK2>
-constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
-  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); }
-{
-  return lhs.common() / rhs.common();
-}
-
-// kinds
-using horizontal_kind = geographic::horizontal_kind;
-struct vertical_kind : units::kind<vertical_kind, units::isq::si::dim_length> {};
-struct vertical_point_kind : units::point_kind<vertical_point_kind, vertical_kind> {};
-struct velocity_kind : units::derived_kind<velocity_kind, units::isq::si::dim_speed, horizontal_kind> {};
-struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, units::isq::si::dim_speed, vertical_kind> {};
-
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
+inline constexpr struct mean_sea_level : units::absolute_point_origin<units::isq::height> {
+} mean_sea_level;
+QUANTITY_SPEC(rate_of_climb_speed, units::isq::height / units::isq::time);
+
 // length
-using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
-using height = units::quantity_kind<vertical_kind, units::isq::si::metre>;
-using altitude = units::quantity_point_kind<vertical_point_kind, units::isq::si::metre>;
+using distance = units::quantity<units::isq::distance[units::si::kilo<units::si::metre>]>;
+using height = units::quantity<units::isq::height[units::si::metre]>;
+using altitude = units::quantity_point<units::isq::altitude[units::si::metre], mean_sea_level>;
 
 // time
-using duration = units::isq::si::time<units::isq::si::second>;
-using timestamp = units::quantity_point<units::clock_origin<std::chrono::system_clock>, units::isq::si::second>;
+using duration = units::quantity<units::isq::duration[units::si::second]>;
+using timestamp =
+  units::quantity_point<units::isq::time[units::si::second], units::chrono_point_origin<std::chrono::system_clock>{}>;
 
 // speed
-using velocity = units::quantity_kind<velocity_kind, units::isq::si::kilometre_per_hour>;
-using rate_of_climb = units::quantity_kind<rate_of_climb_kind, units::isq::si::metre_per_second>;
+using velocity = units::quantity<units::isq::speed[units::si::kilo<units::si::metre> / units::si::hour]>;
+using rate_of_climb = units::quantity<rate_of_climb_speed[units::si::metre / units::si::second]>;
 
 // text output
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const altitude& a)
 {
-  return os << a.relative().common() << " AMSL";
+  return os << a.absolute() << " AMSL";
 }
 
 }  // namespace glide_computer
 
 template<>
-struct STD_FMT::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
+struct STD_FMT::formatter<glide_computer::altitude> :
+    formatter<units::quantity<units::isq::altitude[units::si::metre]>> {
   template<typename FormatContext>
-  auto format(glide_computer::altitude a, FormatContext& ctx)
+  auto format(const glide_computer::altitude& a, FormatContext& ctx)
   {
-    formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
+    formatter<units::quantity<units::isq::altitude[units::si::metre]>>::format(a.absolute(), ctx);
     return STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
@@ -127,7 +105,10 @@ struct glider {
   std::array<polar_point, 1> polar;
 };
 
-constexpr units::Dimensionless auto glide_ratio(const glider::polar_point& polar) { return polar.v / -polar.climb; }
+constexpr units::weak_quantity_of<units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
+{
+  return polar.v / -polar.climb;
+}
 
 struct weather {
   height cloud_base;
@@ -212,9 +193,10 @@ altitude terrain_level_alt(const task& t, const flight_point& pos);
 
 constexpr height agl(altitude glider_alt, altitude terrain_level) { return glider_alt - terrain_level; }
 
-inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist, height h)
+inline units::quantity<units::isq::length[units::si::kilo<units::si::metre>]> length_3d(distance dist, height h)
 {
-  return hypot(dist.common(), h.common());
+  // TODO Should we be able to calculate this on quantity of different kinds? What to return?
+  return hypot(quantity_cast<units::isq::length>(dist), quantity_cast<units::isq::length>(h));
 }
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);

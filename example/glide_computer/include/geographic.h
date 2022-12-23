@@ -23,26 +23,22 @@
 #pragma once
 
 #include "ranged_representation.h"
-#include <units/bits/external/hacks.h>
 #include <units/bits/fmt_hacks.h>
-#include <units/generic/angle.h>
-#include <units/isq/si/length.h>
-#include <units/quantity_kind.h>
+#include <units/isq/space_and_time.h>
+#include <units/quantity.h>
+#include <units/si/units.h>
+#include <compare>
 #include <limits>
 #include <numbers>
 #include <ostream>
 
-// IWYU pragma: begin_exports
-#include <compare>
-// IWYU pragma: end_exports
-
 namespace geographic {
 
 template<typename T = double>
-using latitude = units::angle<units::degree, ranged_representation<T, -90, 90>>;
+using latitude = units::quantity<units::isq::angular_measure[units::si::degree], ranged_representation<T, -90, 90>>;
 
 template<typename T = double>
-using longitude = units::angle<units::degree, ranged_representation<T, -180, 180>>;
+using longitude = units::quantity<units::isq::angular_measure[units::si::degree], ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
@@ -129,8 +125,7 @@ struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
 
 namespace geographic {
 
-struct horizontal_kind : units::kind<horizontal_kind, units::isq::si::dim_length> {};
-using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
+using distance = units::quantity<units::isq::distance[units::si::kilo<units::si::metre>]>;
 
 template<typename T>
 struct position {
@@ -141,8 +136,8 @@ struct position {
 template<typename T>
 distance spherical_distance(position<T> from, position<T> to)
 {
-  using namespace units::isq::si;
-  constexpr length<kilometre> earth_radius(6371);
+  using namespace units;
+  constexpr auto earth_radius = 6371 * isq::radius[si::kilo<si::metre>];
 
   constexpr auto p = std::numbers::pi_v<T> / 180;
   const auto lat1_rad = from.lat.number() * p;
@@ -159,13 +154,19 @@ distance spherical_distance(position<T> from, position<T> to)
       acos(sin(lat1_rad) * sin(lat2_rad) + cos(lat1_rad) * cos(lat2_rad) * cos(lon2_rad - lon1_rad));
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2_rad - lat1_rad) / 2 + cos(lat1_rad) * cos(lat2_rad) * (1
     // - cos(lon2_rad - lon1_rad)) / 2));
-    return distance(earth_radius * central_angle);
+
+    // TODO can we improve the below
+    // return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return earth_radius.number() * central_angle * isq::distance[earth_radius.unit];
   } else {
     // the haversine formula
     const auto sin_lat = sin((lat2_rad - lat1_rad) / 2);
     const auto sin_lon = sin((lon2_rad - lon1_rad) / 2);
     const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(lat1_rad) * cos(lat2_rad) * sin_lon * sin_lon));
-    return distance(earth_radius * central_angle);
+
+    // TODO can we improve the below
+    // return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return earth_radius.number() * central_angle * isq::distance[earth_radius.unit];
   }
 }
 
