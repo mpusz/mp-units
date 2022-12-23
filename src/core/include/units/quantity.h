@@ -79,7 +79,7 @@ concept invoke_result_of_ =
 template<Reference auto R, RepresentationOf<R.quantity_spec.character> Rep = double>
 class quantity {
 public:
-  Rep number_;
+  Rep number_;  // needs to be public for a structural type
 
   // member types and values
   static constexpr Reference auto reference = R;
@@ -131,7 +131,7 @@ public:
 
   template<quantity_like Q>
     requires quantity_convertible_to_<detail::quantity_like_type<Q>, quantity>
-  constexpr explicit quantity(const Q& q): quantity(detail::quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
+  constexpr explicit quantity(const Q& q) : quantity(detail::quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
   {
   }
 
