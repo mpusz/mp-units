@@ -23,7 +23,9 @@
 #pragma once
 
 #include <units/bits/external/hacks.h>
+#include <units/isq/space_and_time.h>
 #include <units/quantity.h>
+#include <units/si/units.h>
 #include <units/unit.h>
 
 // IWYU pragma: begin_exports
@@ -293,5 +295,63 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
                         decltype(hypot(x.number(), y.number(), z.number()))>;
   return type{hypot(type{x}.number(), type{y}.number(), type{z}.number())};
 }
+
+namespace isq {
+
+template<quantity_of<angular_measure> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto sin(const Q& q) noexcept
+  requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
+{
+  using std::sin;
+  return quantity{sin(q[si::radian].number())};
+}
+
+template<quantity_of<angular_measure> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto cos(const Q& q) noexcept
+  requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
+{
+  using std::cos;
+  return quantity{cos(q[si::radian].number())};
+}
+
+template<quantity_of<angular_measure> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto tan(const Q& q) noexcept
+  requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
+{
+  using std::tan;
+  return quantity{tan(q[si::radian].number())};
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto asin(const Q& q) noexcept
+  requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
+{
+  using std::asin;
+  return asin(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto acos(const Q& q) noexcept
+  requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
+{
+  using std::acos;
+  return acos(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto atan(const Q& q) noexcept
+  requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
+{
+  using std::atan;
+  return atan(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+}
+
+}  // namespace isq
 
 }  // namespace units
