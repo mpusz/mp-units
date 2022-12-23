@@ -39,13 +39,6 @@ namespace units {
 
 namespace detail {
 
-// TODO: Replace with `v * R` pending https://github.com/BobSteagall/wg21/issues/58.
-template<Reference auto R>
-inline constexpr auto make_quantity = [](Representation auto&& v) {
-  using Rep = std::remove_cvref_t<decltype(v)>;
-  return quantity<R, Rep>(std::forward<decltype(v)>(v));
-};
-
 template<typename T>
 concept quantity_one = quantity_of<T, dimensionless[one]>;
 
@@ -412,7 +405,7 @@ public:
     requires(!Quantity<Value>) && invoke_result_of_<R.quantity_spec.character, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return detail::make_quantity<dimensionless[::units::one] / reference>(v / q.number());
+    return (dimensionless[::units::one] / reference)(v / q.number());
   }
 
   template<typename Value>
@@ -490,7 +483,7 @@ template<Quantity Q1, Quantity Q2>
                              typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
-  return detail::make_quantity<Q1::reference * Q2::reference>(lhs.number() * rhs.number());
+  return (Q1::reference * Q2::reference)(lhs.number() * rhs.number());
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -499,7 +492,7 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] constexpr Quantity auto operator/(const Q1& lhs, const Q2& rhs)
 {
   gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
-  return detail::make_quantity<Q1::reference / Q2::reference>(lhs.number() / rhs.number());
+  return (Q1::reference / Q2::reference)(lhs.number() / rhs.number());
 }
 
 template<Quantity Q1, Quantity Q2>
