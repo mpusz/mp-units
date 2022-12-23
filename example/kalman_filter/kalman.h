@@ -33,8 +33,7 @@
 namespace kalman {
 
 template<typename T>
-concept QuantityOrQuantityPoint =
-  units::Quantity<T> || units::QuantityPoint<T>;  // TODO Should it also account for `kinds`?
+concept QuantityOrQuantityPoint = units::Quantity<T> || units::QuantityPoint<T>;
 
 template<units::Dimension auto... Ds>
 inline constexpr bool are_time_derivatives = false;
