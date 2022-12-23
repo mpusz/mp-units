@@ -381,14 +381,14 @@ struct quantity_spec<Self, Q, Args...> : std::remove_const_t<decltype(Q)> {
 
 #ifdef __cpp_explicit_this_parameter
 
-#define QUANTITY_SPEC(name, ...)                                \
-  inline constexpr struct name : quantity_spec<##__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                         \
+  inline constexpr struct name : ::units::quantity_spec<##__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC(name, ...)                                      \
-  inline constexpr struct name : quantity_spec<name, ##__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                               \
+  inline constexpr struct name : ::units::quantity_spec<name, ##__VA_ARGS__> { \
   } name
 
 #endif
