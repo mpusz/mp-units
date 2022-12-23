@@ -175,4 +175,72 @@ concept quantity_like = requires(T q) {
   } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
 };
 
+
+template<QuantitySpec auto Q>
+struct absolute_point_origin {
+  static constexpr QuantitySpec auto quantity_spec = Q;
+};
+
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_quantity_point = false;
+
+template<auto Q>
+void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<Q>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_absolute_point_origin =
+  requires(T * t) { to_base_specialization_of_absolute_point_origin(t); };
+
+}  // namespace detail
+
+template<typename T>
+concept QuantityPoint = detail::is_quantity_point<T>;
+
+template<typename T>
+concept point_origin = QuantityPoint<T> || detail::is_derived_from_specialization_of_absolute_point_origin<T>;
+
+template<typename T, auto Q>
+concept point_origin_for = point_origin<T> && QuantitySpec<std::remove_const_t<decltype(Q)>> &&
+                           detail::is_kind_of(Q, T::quantity_spec);
+
+template<Reference auto R, point_origin_for<R.quantity_spec> auto PO, RepresentationOf<R.quantity_spec.character> Rep>
+class quantity_point;
+
+namespace detail {
+
+template<auto R, auto PO, typename Rep>
+void to_base_specialization_of_quantity_point(const volatile quantity_point<R, PO, Rep>*);
+
+template<typename T>
+  requires requires(T* t) { detail::to_base_specialization_of_quantity_point(t); }
+inline constexpr bool is_quantity_point<T> = true;
+
+}  // namespace detail
+
+template<typename QP, auto V>
+concept quantity_point_of =
+  QuantityPoint<QP> &&
+  ((Dimension<std::remove_const_t<decltype(V)>> && QP::dimension == V) ||
+   (QuantitySpec<std::remove_const_t<decltype(V)>> && detail::is_kind_of(QP::quantity_spec, V)) ||
+   (Reference<std::remove_const_t<decltype(V)>> && QP::reference == V) ||
+   (point_origin<std::remove_const_t<decltype(V)>> &&
+    std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
+
+template<typename T>
+concept quantity_point_like = requires(T q) {
+  quantity_point_like_traits<T>::reference;
+  quantity_point_like_traits<T>::point_origin;
+  typename quantity_point_like_traits<T>::rep;
+  requires Reference<std::remove_const_t<decltype(quantity_point_like_traits<T>::reference)>>;
+  requires point_origin<std::remove_const_t<decltype(quantity_point_like_traits<T>::point_origin)>>;
+  requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
+                            quantity_point_like_traits<T>::reference.quantity_spec.character>;
+  requires std::constructible_from<
+    typename quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
+                            typename quantity_point_like_traits<T>::rep>::quantity_type,
+    decltype(quantity_point_like_traits<T>::relative(q))>;
+};
+
 }  // namespace units

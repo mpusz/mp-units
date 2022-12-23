@@ -142,8 +142,9 @@ struct quantity_like_traits;
 /**
  * @brief Provides support for external quantity point-like types
  *
- * The type trait should provide the following nested type aliases: @c origin, @c unit, @c rep,
- * and a static member function @c relative(T) that will return the quantity-like value of the quantity point.
+ * The type trait should provide nested @c reference and @c origin objects,
+ * a type alias @c rep, and a static member function @c relative(T) that will return
+ * the quantity-like value of the quantity point.
  *
  * Usage example can be found in @c units/chrono.h header file.
  *
