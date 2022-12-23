@@ -418,7 +418,7 @@ public:
   }
 
   template<typename FormatContext>
-  [[nodiscard]] auto format(const quantity& q, FormatContext& ctx)
+  auto format(const quantity& q, FormatContext& ctx)
   {
     // process dynamic width and precision
     if (specs.global.dynamic_width_index >= 0)
