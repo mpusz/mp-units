@@ -71,10 +71,9 @@ concept invoke_result_of_ =
  * @brief A quantity
  *
  * Property of a phenomenon, body, or substance, where the property has a magnitude that can be
- * expressed by means of a number and a measurement unit.
+ * expressed by means of a number and a reference.
  *
- * @tparam D a dimension of the quantity (can be either a BaseDimension or a DerivedDimension)
- * @tparam U a measurement unit of the quantity
+ * @tparam R a reference of the quantity providing all information about quantity properties
  * @tparam Rep a type to be used to represent values of a quantity
  */
 template<Reference auto R, RepresentationOf<R.quantity_spec.character> Rep = double>
@@ -82,11 +81,11 @@ class quantity {
   Rep number_;
 public:
   // member types and values
-  using rep = Rep;
   static constexpr Reference auto reference = R;
-  static constexpr QuantitySpec auto quantity_spec = R.quantity_spec;
-  static constexpr Dimension auto dimension = R.dimension;
-  static constexpr Unit auto unit = R.unit;
+  static constexpr QuantitySpec auto quantity_spec = reference.quantity_spec;
+  static constexpr Dimension auto dimension = reference.dimension;
+  static constexpr Unit auto unit = reference.unit;
+  using rep = Rep;
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
@@ -253,6 +252,7 @@ public:
     number_ *= rhs;
     return *this;
   }
+
   template<detail::quantity_one Q>
   constexpr quantity& operator*=(const Q& rhs)
     requires requires(rep a, const typename Q::rep b) {
@@ -277,6 +277,7 @@ public:
     number_ /= rhs;
     return *this;
   }
+
   template<detail::quantity_one Q>
   constexpr quantity& operator/=(const Q& rhs)
     requires requires(rep a, const typename Q::rep b) {
