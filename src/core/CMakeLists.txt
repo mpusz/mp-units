@@ -37,17 +37,11 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 add_library(
     mp-units-core
     INTERFACE
-    # include/units/chrono.h
     include/units/customization_points.h
     include/units/dimension.h
-    # include/units/generic/angle.h
-    include/units/generic/dimensionless.h
-    # include/units/generic/solid_angle.h
-    include/units/math.h
     include/units/quantity.h
-    # include/units/quantity_point.h
+    include/units/quantity_point.h
     include/units/quantity_spec.h
-    include/units/random.h
     include/units/reference.h
     include/units/system_reference.h
     include/units/unit.h

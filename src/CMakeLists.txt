@@ -41,10 +41,13 @@ add_subdirectory(core)
 add_subdirectory(core-fmt)
 add_subdirectory(core-io)
 add_subdirectory(systems)
+add_subdirectory(utility)
 
 # project-wide wrapper
 add_library(mp-units INTERFACE)
-target_link_libraries(mp-units INTERFACE mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems)
+target_link_libraries(
+    mp-units INTERFACE mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems mp-units::utility
+)
 add_library(mp-units::mp-units ALIAS mp-units)
 install(TARGETS mp-units EXPORT mp-unitsTargets)
 

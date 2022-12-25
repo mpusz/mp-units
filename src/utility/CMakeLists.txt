@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.19)
 
-add_library(glide_computer STATIC include/geographic.h glide_computer.cpp include/glide_computer.h)
-target_link_libraries(glide_computer PRIVATE mp-units::core-fmt PUBLIC mp-units::si mp-units::utility example_utils)
-target_include_directories(glide_computer PUBLIC include)
+add_units_module(utility DEPENDENCIES mp-units::core mp-units::isq mp-units::si mp-units::angular HEADERS include/units/chrono.h
+    include/units/math.h
+    include/units/random.h)

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <units/angular/angular.h>
 #include <units/bits/external/hacks.h>
 #include <units/isq/space_and_time.h>
 #include <units/quantity.h>
@@ -353,5 +354,63 @@ template<weak_quantity_of<dimensionless> Q>
 }
 
 }  // namespace isq
+
+namespace angular {
+
+template<quantity_of<angle> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto sin(const Q& q) noexcept
+  requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
+{
+  using std::sin;
+  return quantity{sin(q[radian].number())};
+}
+
+template<quantity_of<angle> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto cos(const Q& q) noexcept
+  requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
+{
+  using std::cos;
+  return quantity{cos(q[radian].number())};
+}
+
+template<quantity_of<angle> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<dimensionless[one]> auto tan(const Q& q) noexcept
+  requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
+{
+  using std::tan;
+  return quantity{tan(q[radian].number())};
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angle[radian]> auto asin(const Q& q) noexcept
+  requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
+{
+  using std::asin;
+  return asin(quantity_cast<one>(q).number()) * angle[radian];
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angle[radian]> auto acos(const Q& q) noexcept
+  requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
+{
+  using std::acos;
+  return acos(quantity_cast<one>(q).number()) * angle[radian];
+}
+
+template<weak_quantity_of<dimensionless> Q>
+  requires treat_as_floating_point<typename Q::rep>
+[[nodiscard]] inline quantity_of<angle[radian]> auto atan(const Q& q) noexcept
+  requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
+{
+  using std::atan;
+  return atan(quantity_cast<one>(q).number()) * angle[radian];
+}
+
+}  // namespace angular
 
 }  // namespace units
