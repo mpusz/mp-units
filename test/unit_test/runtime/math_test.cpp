@@ -22,6 +22,7 @@
 
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
+#include <units/angular/angular.h>
 #include <units/isq/space_and_time.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
@@ -303,5 +304,131 @@ TEST_CASE("hypot functions", "[hypot]")
   {
     REQUIRE(hypot(3. * isq::length[km], 4000. * isq::length[m]) == 5. * isq::length[km]);
     REQUIRE(hypot(2. * isq::length[km], 3000. * isq::length[m], 6. * isq::length[km]) == 7. * isq::length[km]);
+  }
+}
+
+TEST_CASE("ISQ trigonometric functions", "[trig][isq]")
+{
+  SECTION("sin")
+  {
+    REQUIRE_THAT(isq::sin(isq::angular_measure[deg](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(isq::sin(isq::angular_measure[deg](90.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(isq::sin(isq::angular_measure[deg](180.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(isq::sin(isq::angular_measure[deg](270.)), AlmostEquals(quantity{-1.}));
+  }
+
+  SECTION("cos")
+  {
+    REQUIRE_THAT(isq::cos(isq::angular_measure[deg](0.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(isq::cos(isq::angular_measure[deg](90.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(isq::cos(isq::angular_measure[deg](180.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(isq::cos(isq::angular_measure[deg](270.)), AlmostEquals(quantity{0.}));
+  }
+
+  SECTION("tan")
+  {
+    REQUIRE_THAT(isq::tan(isq::angular_measure[deg](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(isq::tan(isq::angular_measure[deg](45.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(isq::tan(isq::angular_measure[deg](135.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(isq::tan(isq::angular_measure[deg](180.)), AlmostEquals(quantity{0.}));
+  }
+}
+
+TEST_CASE("ISQ inverse trigonometric functions", "[inv trig][isq]")
+{
+  SECTION("asin")
+  {
+    REQUIRE_THAT(isq::asin(quantity{-1.}), AlmostEquals(isq::angular_measure[deg](-90.)));
+    REQUIRE_THAT(isq::asin(quantity{0.}), AlmostEquals(isq::angular_measure[deg](0.)));
+    REQUIRE_THAT(isq::asin(quantity{1.}), AlmostEquals(isq::angular_measure[deg](90.)));
+  }
+
+  SECTION("acos")
+  {
+    REQUIRE_THAT(isq::asin(quantity{-1.}), AlmostEquals(isq::angular_measure[deg](-90.)));
+    REQUIRE_THAT(isq::asin(quantity{0.}), AlmostEquals(isq::angular_measure[deg](0.)));
+    REQUIRE_THAT(isq::asin(quantity{1.}), AlmostEquals(isq::angular_measure[deg](90.)));
+  }
+
+  SECTION("atan")
+  {
+    REQUIRE_THAT(isq::atan(quantity{-1.}), AlmostEquals(isq::angular_measure[deg](-45.)));
+    REQUIRE_THAT(isq::atan(quantity{0.}), AlmostEquals(isq::angular_measure[deg](0.)));
+    REQUIRE_THAT(isq::atan(quantity{1.}), AlmostEquals(isq::angular_measure[deg](45.)));
+  }
+}
+
+
+TEST_CASE("Angle trigonometric functions", "[trig][angle]")
+{
+  using namespace units::angular;
+  using namespace units::angular::unit_symbols;
+  using units::angular::unit_symbols::deg;
+
+  SECTION("sin")
+  {
+    REQUIRE_THAT(sin(angle[deg](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(angle[deg](90.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(sin(angle[deg](180.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(angle[deg](270.)), AlmostEquals(quantity{-1.}));
+
+    REQUIRE_THAT(sin(angle[grad](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(angle[grad](100.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(sin(angle[grad](200.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(sin(angle[grad](300.)), AlmostEquals(quantity{-1.}));
+  }
+
+  SECTION("cos")
+  {
+    REQUIRE_THAT(cos(angle[deg](0.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(cos(angle[deg](90.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(cos(angle[deg](180.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(cos(angle[deg](270.)), AlmostEquals(quantity{0.}));
+
+    REQUIRE_THAT(cos(angle[grad](0.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(cos(angle[grad](100.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(cos(angle[grad](200.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(cos(angle[grad](300.)), AlmostEquals(quantity{0.}));
+  }
+
+  SECTION("tan")
+  {
+    REQUIRE_THAT(tan(angle[deg](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(tan(angle[deg](45.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(tan(angle[deg](135.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(tan(angle[deg](180.)), AlmostEquals(quantity{0.}));
+
+    REQUIRE_THAT(tan(angle[grad](0.)), AlmostEquals(quantity{0.}));
+    REQUIRE_THAT(tan(angle[grad](50.)), AlmostEquals(quantity{1.}));
+    REQUIRE_THAT(tan(angle[grad](150.)), AlmostEquals(quantity{-1.}));
+    REQUIRE_THAT(tan(angle[grad](200.)), AlmostEquals(quantity{0.}));
+  }
+}
+
+TEST_CASE("Angle inverse trigonometric functions", "[inv trig][angle]")
+{
+  using namespace units::angular;
+  using namespace units::angular::unit_symbols;
+  using units::angular::unit_symbols::deg;
+
+  SECTION("asin")
+  {
+    REQUIRE_THAT(asin(quantity{-1.}), AlmostEquals(angle[deg](-90.)));
+    REQUIRE_THAT(asin(quantity{0.}), AlmostEquals(angle[deg](0.)));
+    REQUIRE_THAT(asin(quantity{1.}), AlmostEquals(angle[deg](90.)));
+  }
+
+  SECTION("acos")
+  {
+    REQUIRE_THAT(asin(quantity{-1.}), AlmostEquals(angle[deg](-90.)));
+    REQUIRE_THAT(asin(quantity{0.}), AlmostEquals(angle[deg](0.)));
+    REQUIRE_THAT(asin(quantity{1.}), AlmostEquals(angle[deg](90.)));
+  }
+
+  SECTION("atan")
+  {
+    REQUIRE_THAT(atan(quantity{-1.}), AlmostEquals(angle[deg](-45.)));
+    REQUIRE_THAT(atan(quantity{0.}), AlmostEquals(angle[deg](0.)));
+    REQUIRE_THAT(atan(quantity{1.}), AlmostEquals(angle[deg](45.)));
   }
 }
