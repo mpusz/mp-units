@@ -22,10 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-# core library options
-set(${projectPrefix}DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE ${projectPrefix}DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
-
 # find dependencies
 find_package(gsl-lite CONFIG REQUIRED)
 
@@ -63,20 +59,6 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         mp-units-core
         INTERFACE /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
-endif()
-
-if(DEFINED ${projectPrefix}DOWNCAST_MODE)
-    set(downcast_mode_options OFF ON AUTO)
-    list(FIND downcast_mode_options "${${projectPrefix}DOWNCAST_MODE}" downcast_mode)
-
-    if(downcast_mode EQUAL -1)
-        message(FATAL_ERROR
-                    "'${projectPrefix}DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${${projectPrefix}DOWNCAST_MODE}' received)"
-        )
-    else()
-        message(STATUS "${projectPrefix}DOWNCAST_MODE: ${${projectPrefix}DOWNCAST_MODE}")
-        target_compile_definitions(mp-units-core INTERFACE ${projectPrefix}DOWNCAST_MODE=${downcast_mode})
-    endif()
 endif()
 
 set_target_properties(mp-units-core PROPERTIES EXPORT_NAME core)

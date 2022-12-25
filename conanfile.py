@@ -54,8 +54,6 @@ class MPUnitsConan(ConanFile):
     url = "https://github.com/mpusz/units"
     settings = "os", "compiler", "build_type", "arch"
     requires = "gsl-lite/0.40.0"
-    options = {"downcast_mode": ["off", "on", "auto"]}
-    default_options = {"downcast_mode": "on"}
     exports = ["LICENSE.md"]
     exports_sources = [
         "docs/*",
