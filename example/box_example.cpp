@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/generic/dimensionless.h>
 #include <units/isq/mechanics.h>
 #include <units/isq/space_and_time.h>
 #include <units/si/constants.h>

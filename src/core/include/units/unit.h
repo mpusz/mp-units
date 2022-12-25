@@ -398,8 +398,9 @@ struct derived_unit : detail::expr_fractions<derived_unit<>, Us...> {};
  *
  * Unit of a dimensionless quantity.
  */
-inline constexpr struct one : derived_unit<> {
-} one;
+// clang-format off
+inline constexpr struct one : derived_unit<> {} one;
+// clang-format on
 
 namespace detail {
 
@@ -720,6 +721,12 @@ inline constexpr decltype(U * U) square;
 
 template<Unit auto U>
 inline constexpr decltype(U * U * U) cubic;
+
+// common dimensionless units
+// clang-format off
+inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
+inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+// clang-format on
 
 
 // get_unit_symbol

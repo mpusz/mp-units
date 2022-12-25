@@ -22,7 +22,6 @@
 
 #include "test_tools.h"
 #include <units/dimension.h>
-#include <units/generic/dimensionless.h>
 #include <units/reference.h>
 #include <units/si/prefixes.h>
 #include <units/unit.h>
