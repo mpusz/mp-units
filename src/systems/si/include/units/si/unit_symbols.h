@@ -624,6 +624,7 @@ inline constexpr auto Ykat = yotta<katal>;
 
 // TODO Should the following non-SI units have prefixes symbols predefiend as well?
 inline constexpr auto au = astronomical_unit;
+inline constexpr auto deg = degree;
 inline constexpr auto a = are;
 inline constexpr auto ha = hectare;
 inline constexpr auto l = litre;
