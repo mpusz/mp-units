@@ -22,8 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(
-    natural
-    DEPENDENCIES mp-units::isq
-    HEADERS include/units/natural/natural.h
-)
+add_units_module(natural DEPENDENCIES mp-units::isq HEADERS include/units/natural/natural.h)
