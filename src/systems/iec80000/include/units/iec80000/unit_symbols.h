@@ -45,6 +45,25 @@ inline constexpr auto Tibit = tebi<bit>;
 inline constexpr auto Pibit = pebi<bit>;
 inline constexpr auto Eibit = exbi<bit>;
 
+// octet
+inline constexpr auto o = octet;
+
+inline constexpr auto ko = si::kilo<octet>;
+inline constexpr auto Mo = si::mega<octet>;
+inline constexpr auto Go = si::giga<octet>;
+inline constexpr auto To = si::tera<octet>;
+inline constexpr auto Po = si::peta<octet>;
+inline constexpr auto Eo = si::exa<octet>;
+inline constexpr auto Zo = si::zetta<octet>;
+inline constexpr auto Yo = si::yotta<octet>;
+
+inline constexpr auto Kio = kibi<octet>;
+inline constexpr auto Mio = mebi<octet>;
+inline constexpr auto Gio = gibi<octet>;
+inline constexpr auto Tio = tebi<octet>;
+inline constexpr auto Pio = pebi<octet>;
+inline constexpr auto Eio = exbi<octet>;
+
 // byte
 inline constexpr auto B = byte;
 

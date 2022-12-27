@@ -24,7 +24,7 @@
 
 // IWYU pragma: begin_exports
 #include <units/iec80000/binary_prefixes.h>
-#include <units/iec80000/dimensions.h>
+#include <units/iec80000/quantities.h>
 #include <units/iec80000/unit_symbols.h>
 #include <units/iec80000/units.h>
 // IWYU pragma: end_exports

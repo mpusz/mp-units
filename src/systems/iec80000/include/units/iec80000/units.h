@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <units/iec80000/dimensions.h>
+#include <units/iec80000/quantities.h>
+#include <units/si/units.h>
 #include <units/unit.h>
 
 namespace units::iec80000 {
@@ -30,6 +31,7 @@ namespace units::iec80000 {
 // clang-format off
 inline constexpr struct erlang : named_unit<"E", traffic_intensity> {} erlang;
 inline constexpr struct bit : named_unit<"bit", storage_capacity> {} bit;
+inline constexpr struct octet : named_unit<"o", mag<8> * bit> {} octet;
 inline constexpr struct byte : named_unit<"B", mag<8> * bit> {} byte;
 inline constexpr struct baud : named_unit<"Bd", 1 / si::second> {} baud;
 // clang-format on
