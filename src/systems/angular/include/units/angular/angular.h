@@ -47,6 +47,7 @@ inline constexpr auto rev = revolution;
 inline constexpr auto deg = degree;
 inline constexpr auto grad = gradian;
 inline constexpr auto sr = steradian;
+inline constexpr auto rad2 = square<radian>;
 inline constexpr auto deg2 = square<degree>;
 
 }  // namespace unit_symbols
