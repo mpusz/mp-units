@@ -109,7 +109,7 @@ template<Quantity Q>
  * @param q Quantity being the base of the operation
  * @return Quantity The value of the same quantity type
  */
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
 [[nodiscard]] inline Q exp(const Q& q)
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {
@@ -299,7 +299,7 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
 
 namespace isq {
 
-template<quantity_of<angular_measure> Q>
+template<weak_quantity_of<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto sin(const Q& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
@@ -308,7 +308,7 @@ template<quantity_of<angular_measure> Q>
   return quantity{sin(q[si::radian].number())};
 }
 
-template<quantity_of<angular_measure> Q>
+template<weak_quantity_of<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto cos(const Q& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
@@ -317,7 +317,7 @@ template<quantity_of<angular_measure> Q>
   return quantity{cos(q[si::radian].number())};
 }
 
-template<quantity_of<angular_measure> Q>
+template<weak_quantity_of<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto tan(const Q& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
@@ -326,7 +326,7 @@ template<quantity_of<angular_measure> Q>
   return quantity{tan(q[si::radian].number())};
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto asin(const Q& q) noexcept
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
@@ -335,7 +335,7 @@ template<weak_quantity_of<dimensionless> Q>
   return asin(quantity_cast<one>(q).number()) * angular_measure[si::radian];
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto acos(const Q& q) noexcept
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
@@ -344,7 +344,7 @@ template<weak_quantity_of<dimensionless> Q>
   return acos(quantity_cast<one>(q).number()) * angular_measure[si::radian];
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angular_measure[si::radian]> auto atan(const Q& q) noexcept
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
@@ -357,7 +357,8 @@ template<weak_quantity_of<dimensionless> Q>
 
 namespace angular {
 
-template<quantity_of<angle> Q>
+// TODO cannot use `weak_quantity_of<angle>` as it is not interconvertible with `isq_angle::angular_measure`
+template<quantity_of<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto sin(const Q& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
@@ -366,7 +367,7 @@ template<quantity_of<angle> Q>
   return quantity{sin(q[radian].number())};
 }
 
-template<quantity_of<angle> Q>
+template<quantity_of<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto cos(const Q& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
@@ -375,7 +376,7 @@ template<quantity_of<angle> Q>
   return quantity{cos(q[radian].number())};
 }
 
-template<quantity_of<angle> Q>
+template<quantity_of<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<dimensionless[one]> auto tan(const Q& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
@@ -384,7 +385,7 @@ template<quantity_of<angle> Q>
   return quantity{tan(q[radian].number())};
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angle[radian]> auto asin(const Q& q) noexcept
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
@@ -393,7 +394,7 @@ template<weak_quantity_of<dimensionless> Q>
   return asin(quantity_cast<one>(q).number()) * angle[radian];
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angle[radian]> auto acos(const Q& q) noexcept
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
@@ -402,7 +403,7 @@ template<weak_quantity_of<dimensionless> Q>
   return acos(quantity_cast<one>(q).number()) * angle[radian];
 }
 
-template<weak_quantity_of<dimensionless> Q>
+template<quantity_of<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline quantity_of<angle[radian]> auto atan(const Q& q) noexcept
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
