@@ -25,7 +25,6 @@
 #include <units/bits/algorithm.h>
 #include <units/bits/expression_template.h>
 #include <units/bits/external/fixed_string.h>
-#include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/magnitude.h>
 #include <units/bits/ratio.h>
@@ -526,7 +525,7 @@ template<Unit Lhs, Unit Rhs>
 {
   if ((is_derived_from_specialization_of_constant_unit<Lhs> && is_derived_from_specialization_of_constant_unit<Rhs>) ||
       (!is_derived_from_specialization_of_constant_unit<Lhs> && !is_derived_from_specialization_of_constant_unit<Rhs>))
-    return type_name<Lhs>() < type_name<Rhs>();
+    return Lhs::symbol < Rhs::symbol;
   else
     // put constants at the front of units list in the expression
     return is_derived_from_specialization_of_constant_unit<Lhs>;
