@@ -31,26 +31,29 @@ namespace units::isq_angle {
 using namespace isq;
 
 // ISQ angular derived quantities redefinition
-QUANTITY_SPEC(cotes_angle, angular::angle);  // 1 rad
-QUANTITY_SPEC(arc_length, length*(angular::angle / cotes_angle));
-QUANTITY_SPEC(angular_measure, cotes_angle* arc_length / radius);
-QUANTITY_SPEC(rotational_displacement, cotes_angle* path_length / radius);
+QUANTITY_SPEC(cotes_angle_constant, angular::angle);  // 1 rad
+QUANTITY_SPEC(arc_length, length*(angular::angle / cotes_angle_constant));
+QUANTITY_SPEC(angular_measure, cotes_angle_constant* arc_length / radius);
+QUANTITY_SPEC(rotational_displacement, cotes_angle_constant* path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
-QUANTITY_SPEC(solid_angular_measure, pow<2>(cotes_angle) * area / pow<2>(radius));
+QUANTITY_SPEC(solid_angular_measure, pow<2>(cotes_angle_constant) * area / pow<2>(radius));
 QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
 QUANTITY_SPEC(rotation, rotational_displacement);
 QUANTITY_SPEC(angular_frequency, phase_angle / duration);
-QUANTITY_SPEC(angular_repetency, cotes_angle / wavelength);
+QUANTITY_SPEC(angular_repetency, cotes_angle_constant / wavelength);
 inline constexpr auto angular_wavenumber = angular_repetency;
 QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
-QUANTITY_SPEC(propagation_coefficient, cotes_angle / length);
-QUANTITY_SPEC(angular_momentum, position_vector* momentum / cotes_angle);  // vector
+QUANTITY_SPEC(propagation_coefficient, cotes_angle_constant / length);
+QUANTITY_SPEC(angular_momentum, position_vector* momentum / cotes_angle_constant);  // vector
 QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_character::tensor);
-QUANTITY_SPEC(moment_of_force, position_vector* force / cotes_angle);  // vector
+QUANTITY_SPEC(moment_of_force, position_vector* force / cotes_angle_constant);  // vector
 QUANTITY_SPEC(torque, moment_of_force, quantity_character::scalar);
 QUANTITY_SPEC(angular_impulse, moment_of_force* time);  // vector
 QUANTITY_SPEC(loss_angle, angular_measure);
+
+// constants
+inline constexpr auto cotes_angle = cotes_angle_constant[angular::radian];
 
 }  // namespace units::isq_angle
