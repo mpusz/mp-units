@@ -50,7 +50,7 @@ QUANTITY_SPEC(angular_measure, arc_length / radius);
 QUANTITY_SPEC(rotational_displacement, path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
-QUANTITY_SPEC(solid_angular_measure, angular_measure* angular_measure);
+QUANTITY_SPEC(solid_angular_measure, area / pow<2>(radius));
 inline constexpr auto duration = time;
 QUANTITY_SPEC(velocity, position_vector / duration);  // vector
 QUANTITY_SPEC(speed, distance / duration);            // TODO length, path_length?
