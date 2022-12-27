@@ -23,8 +23,8 @@
 #pragma once
 
 #include <units/dimension.h>
+#include <units/quantity.h>
 #include <units/quantity_spec.h>
-#include <units/reference.h>
 
 namespace units::isq {
 
