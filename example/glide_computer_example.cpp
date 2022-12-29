@@ -23,9 +23,9 @@
 #include "glide_computer.h"
 #include <units/bits/fmt_hacks.h>
 #include <units/chrono.h>
-#include <units/international/international.h>
+#include <units/systems/international/international.h>
 #include <units/math.h>
-#include <units/si/unit_symbols.h>
+#include <units/systems/si/unit_symbols.h>
 #include <array>
 #include <exception>
 #include <iostream>

@@ -22,10 +22,10 @@
 
 #include "kalman.h"
 #include <units/format.h>
-#include <units/isq/thermodynamics.h>
 #include <units/math.h>
 #include <units/quantity_point.h>
-#include <units/si/unit_symbols.h>
+#include <units/systems/isq/thermodynamics.h>
+#include <units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
@@ -63,7 +63,8 @@ int main()
                                    quantity_point{54.523 * deg_C}, quantity_point{54.99 * deg_C}};
   const auto measurement_uncertainty = pow<2>(0.1 * deg_C);
 
-  auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement, quantity_of<dimensionless> auto gain) {
+  auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement,
+                                      quantity_of<dimensionless> auto gain) {
     return estimation{state_update(previous.state, meassurement, gain), covariance_update(previous.uncertainty, gain)};
   };
 

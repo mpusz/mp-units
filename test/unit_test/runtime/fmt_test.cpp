@@ -22,13 +22,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
-#include <units/cgs/cgs.h>
 #include <units/customization_points.h>
 #include <units/format.h>
-#include <units/isq/mechanics.h>
-#include <units/isq/space_and_time.h>
 #include <units/quantity_io.h>
-#include <units/si/si.h>
+#include <units/systems/cgs/cgs.h>
+#include <units/systems/isq/mechanics.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/si.h>
 #include <iomanip>
 #include <limits>
 #include <locale>

@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/si/constants.h>
-#include <units/si/unit_symbols.h>
+#include <units/systems/si/constants.h>
+#include <units/systems/si/unit_symbols.h>
 #include <iostream>
 
 template<class T>

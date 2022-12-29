@@ -22,12 +22,12 @@
 
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
-#include <units/angular/angular.h>
-#include <units/isq/space_and_time.h>
 #include <units/math.h>
 #include <units/quantity_io.h>
-#include <units/si/unit_symbols.h>
-#include <units/si/units.h>
+#include <units/systems/angular/angular.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/unit_symbols.h>
+#include <units/systems/si/units.h>
 #include <limits>
 
 using namespace units;

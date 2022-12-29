@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/space_and_time.h>
-#include <units/si/unit_symbols.h>
-#include <units/usc/usc.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/unit_symbols.h>
+#include <units/systems/usc/usc.h>
 
 namespace {
 

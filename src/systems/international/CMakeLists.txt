@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(international DEPENDENCIES mp-units::si HEADERS include/units/international/international.h)
+add_units_module(international DEPENDENCIES mp-units::si HEADERS include/units/systems/international/international.h)

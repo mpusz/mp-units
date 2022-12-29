@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/isq/mechanics.h>
-#include <units/isq/space_and_time.h>
-#include <units/si/constants.h>
-#include <units/si/unit_symbols.h>
-#include <units/si/units.h>
+#include <units/systems/isq/mechanics.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/constants.h>
+#include <units/systems/si/unit_symbols.h>
+#include <units/systems/si/units.h>
 #include <cassert>
 #include <iostream>
 #include <utility>

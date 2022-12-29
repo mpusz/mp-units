@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 #include <units/format.h>
-#include <units/international/international.h>
-#include <units/isq/space_and_time.h>
+#include <units/systems/international/international.h>
+#include <units/systems/isq/space_and_time.h>
 #include <units/quantity_io.h>
-#include <units/si/unit_symbols.h>
+#include <units/systems/si/unit_symbols.h>
 #include <iostream>
 
 using namespace units;

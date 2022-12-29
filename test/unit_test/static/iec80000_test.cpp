@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/iec80000/iec80000.h>
-#include <units/si/unit_symbols.h>
+#include <units/systems/iec80000/iec80000.h>
+#include <units/systems/si/unit_symbols.h>
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 

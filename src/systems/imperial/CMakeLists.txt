@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(imperial DEPENDENCIES mp-units::si mp-units::international HEADERS include/units/imperial/imperial.h)
+add_units_module(imperial DEPENDENCIES mp-units::si mp-units::international HEADERS include/units/systems/imperial/imperial.h)

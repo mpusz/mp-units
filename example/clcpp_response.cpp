@@ -16,14 +16,14 @@
 */
 
 #include <units/format.h>
-#include <units/iau/iau.h>
-#include <units/imperial/imperial.h>
-#include <units/international/international.h>
-#include <units/isq/space_and_time.h>
 #include <units/quantity_io.h>
-#include <units/si/si.h>
-#include <units/typographic/typographic.h>
-#include <units/usc/usc.h>
+#include <units/systems/iau/iau.h>
+#include <units/systems/imperial/imperial.h>
+#include <units/systems/international/international.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/si.h>
+#include <units/systems/typographic/typographic.h>
+#include <units/systems/usc/usc.h>
 #include <iostream>
 
 namespace {

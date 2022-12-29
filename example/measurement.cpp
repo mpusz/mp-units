@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/space_and_time.h>
+#include <units/systems/isq/space_and_time.h>
 #include <units/quantity_io.h>
-#include <units/si/unit_symbols.h>
-#include <units/si/units.h>
+#include <units/systems/si/unit_symbols.h>
+#include <units/systems/si/units.h>
 #include <cmath>
 #include <exception>
 #include <iostream>

@@ -23,8 +23,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <units/quantity_io.h>
 #include <units/random.h>
-#include <units/si/unit_symbols.h>
-#include <units/si/units.h>
+#include <units/systems/si/unit_symbols.h>
+#include <units/systems/si/units.h>
 #include <array>
 #include <initializer_list>
 #include <random>

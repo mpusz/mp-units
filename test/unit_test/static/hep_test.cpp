@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/hep/hep.h>
-#include <units/isq/mechanics.h>
-#include <units/isq/space_and_time.h>
-#include <units/si/si.h>
+#include <units/systems/hep/hep.h>
+#include <units/systems/isq/mechanics.h>
+#include <units/systems/isq/space_and_time.h>
+#include <units/systems/si/si.h>
 
 template<class T>
   requires units::is_scalar<T>
