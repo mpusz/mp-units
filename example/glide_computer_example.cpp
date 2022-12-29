@@ -23,8 +23,8 @@
 #include "glide_computer.h"
 #include <units/bits/fmt_hacks.h>
 #include <units/chrono.h>
+#include <units/international/international.h>
 #include <units/math.h>
-#include <units/si/international/length.h>
 #include <units/si/unit_symbols.h>
 #include <array>
 #include <exception>
@@ -67,7 +67,7 @@ auto get_weather_conditions()
 auto get_waypoints()
 {
   using namespace geographic::literals;
-  using namespace units::si::international::unit_symbols;
+  using namespace units::international::unit_symbols;
   static const std::array waypoints = {
     waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude{16. * isq::altitude[ft]}},   // N54°14'51.8" E18°40'28.2"
     waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude{115. * isq::altitude[ft]}}  // N53°31'27.9" E18°50'58.1"

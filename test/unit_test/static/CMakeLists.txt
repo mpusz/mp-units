@@ -46,7 +46,9 @@ add_library(
     # dimensions_concepts_test.cpp
     fixed_string_test.cpp
     # fps_test.cpp
-    # iec80000_test.cpp
+    hep_test.cpp
+    iec80000_test.cpp
+    imperial_test.cpp
     isq_test.cpp
     isq_angle_test.cpp
     # kind_test.cpp
@@ -59,12 +61,11 @@ add_library(
     reference_test.cpp
     # si_cgs_test.cpp
     # si_fps_test.cpp
-    # si_hep_test.cpp
     # si_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
     unit_test.cpp
-    # us_test.cpp
+    usc_test.cpp
 )
 
 # if(NOT ${projectPrefix}LIBCXX)

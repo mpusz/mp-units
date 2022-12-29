@@ -22,40 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-# systems
-add_subdirectory(angular)
-add_subdirectory(iec80000)
-add_subdirectory(isq)
-add_subdirectory(isq_angle)
-add_subdirectory(natural)
-add_subdirectory(si)
-add_subdirectory(cgs)
-add_subdirectory(hep)
-add_subdirectory(iau)
-add_subdirectory(imperial)
-add_subdirectory(international)
-add_subdirectory(typographic)
-add_subdirectory(usc)
-
-# wrapper for all the systems
-add_library(mp-units-systems INTERFACE)
-target_link_libraries(
-    mp-units-systems
-    INTERFACE
-        mp-units::angular
-        mp-units::iec80000
-        mp-units::isq
-        mp-units::isq_angle
-        mp-units::natural
-        mp-units::si
-        mp-units::cgs
-        mp-units::hep
-        mp-units::iau
-        mp-units::imperial
-        mp-units::international
-        mp-units::typographic
-        mp-units::usc
+add_units_module(
+    iau DEPENDENCIES mp-units::si HEADERS include/units/iau/iau.h
 )
-add_library(mp-units::systems ALIAS mp-units-systems)
-set_target_properties(mp-units-systems PROPERTIES EXPORT_NAME systems)
-install(TARGETS mp-units-systems EXPORT mp-unitsTargets)

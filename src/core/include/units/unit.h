@@ -25,6 +25,7 @@
 #include <units/bits/algorithm.h>
 #include <units/bits/expression_template.h>
 #include <units/bits/external/fixed_string.h>
+#include <units/bits/external/type_name.h>
 #include <units/bits/external/type_traits.h>
 #include <units/bits/magnitude.h>
 #include <units/bits/ratio.h>
@@ -523,12 +524,23 @@ template<Unit T, typename... Us>
 template<Unit Lhs, Unit Rhs>
 [[nodiscard]] consteval bool less(Lhs, Rhs)
 {
-  if ((is_derived_from_specialization_of_constant_unit<Lhs> && is_derived_from_specialization_of_constant_unit<Rhs>) ||
-      (!is_derived_from_specialization_of_constant_unit<Lhs> && !is_derived_from_specialization_of_constant_unit<Rhs>))
-    return Lhs::symbol < Rhs::symbol;
-  else
+  if constexpr ((is_derived_from_specialization_of_constant_unit<Lhs> &&
+                 is_derived_from_specialization_of_constant_unit<Rhs>) ||
+                (!is_derived_from_specialization_of_constant_unit<Lhs> &&
+                 !is_derived_from_specialization_of_constant_unit<Rhs>)) {
+    if constexpr (requires {
+                    Lhs::symbol;
+                    Rhs::symbol;
+                  })
+      // prefer symbols comparison if possible as it gives typically better results
+      // i.e. it puts upper case in from so `N m` is correct
+      return Lhs::symbol < Rhs::symbol;
+    else
+      return type_name<Lhs>() < type_name<Rhs>();
+  } else {
     // put constants at the front of units list in the expression
     return is_derived_from_specialization_of_constant_unit<Lhs>;
+  }
 }
 
 

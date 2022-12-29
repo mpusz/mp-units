@@ -21,10 +21,9 @@
 // SOFTWARE.
 
 #include <units/format.h>
+#include <units/international/international.h>
 #include <units/isq/space_and_time.h>
 #include <units/quantity_io.h>
-#include <units/si/international/length.h>
-#include <units/si/international/speed.h>
 #include <units/si/unit_symbols.h>
 #include <iostream>
 
@@ -38,7 +37,7 @@ constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::distance> auto
 int main()
 {
   using namespace units::si::unit_symbols;
-  using namespace units::si::international::unit_symbols;
+  using namespace units::international::unit_symbols;
 
   constexpr auto v1 = isq::speed(110, km / h);
   constexpr auto v2 = isq::speed(70., mph);
