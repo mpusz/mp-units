@@ -21,19 +21,19 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex2
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
-using namespace units;
+using namespace mp_units;
 
 void print_header(const kalman::State auto& initial)
 {
@@ -48,7 +48,7 @@ void print(auto iteration, Quantity auto measured, const kalman::State auto& cur
 
 int main()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
   using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
   const auto interval = 5 * isq::period_duration[s];

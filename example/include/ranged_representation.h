@@ -23,8 +23,8 @@
 #pragma once
 
 #include "validated_type.h"
-#include <units/bits/external/hacks.h>
-#include <units/customization_points.h>
+#include <mp_units/bits/external/hacks.h>
+#include <mp_units/customization_points.h>
 #include <algorithm>
 #include <type_traits>
 
@@ -44,7 +44,7 @@ public:
 };
 
 template<typename T, auto Min, auto Max>
-inline constexpr bool units::is_scalar<ranged_representation<T, Min, Max>> = units::is_scalar<T>;
+inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
 
 template<typename T, auto Min, auto Max>
 struct std::common_type<std::intmax_t, ranged_representation<T, Min, Max>> :

@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/prime.h>
+#include <mp_units/bits/prime.h>
 #include <type_traits>
 #include <utility>
 
-using namespace units::detail;
+using namespace mp_units::detail;
 
 namespace {
 

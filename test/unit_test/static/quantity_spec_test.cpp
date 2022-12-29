@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/quantity.h>
-#include <units/quantity_spec.h>
-#include <units/reference.h>
-#include <units/unit.h>
+#include <mp_units/quantity.h>
+#include <mp_units/quantity_spec.h>
+#include <mp_units/reference.h>
+#include <mp_units/unit.h>
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 using dimensionless_ = struct dimensionless;
 using dim_one_ = struct dimension_one;
@@ -113,13 +113,13 @@ static_assert(is_of_type<dimensionless * (1 / time), derived_quantity_spec<dimen
 static_assert(is_of_type<1 / time * dimensionless, derived_quantity_spec<dimensionless_, per<time_>>>);
 
 static_assert(is_of_type<length * time, derived_quantity_spec<length_, time_>>);
-static_assert(is_of_type<length * length, derived_quantity_spec<units::power<length_, 2>>>);
+static_assert(is_of_type<length * length, derived_quantity_spec<mp_units::power<length_, 2>>>);
 
-static_assert(is_of_type<length * length * time, derived_quantity_spec<units::power<length_, 2>, time_>>);
-static_assert(is_of_type<length * time * length, derived_quantity_spec<units::power<length_, 2>, time_>>);
+static_assert(is_of_type<length * length * time, derived_quantity_spec<mp_units::power<length_, 2>, time_>>);
+static_assert(is_of_type<length * time * length, derived_quantity_spec<mp_units::power<length_, 2>, time_>>);
 
-static_assert(is_of_type<length*(time* length), derived_quantity_spec<units::power<length_, 2>, time_>>);
-static_assert(is_of_type<time*(length* length), derived_quantity_spec<units::power<length_, 2>, time_>>);
+static_assert(is_of_type<length*(time* length), derived_quantity_spec<mp_units::power<length_, 2>, time_>>);
+static_assert(is_of_type<time*(length* length), derived_quantity_spec<mp_units::power<length_, 2>, time_>>);
 
 static_assert(is_of_type<1 / time * length, derived_quantity_spec<length_, per<time_>>>);
 static_assert(is_of_type<1 / time * time, dimensionless_>);
@@ -128,42 +128,43 @@ static_assert(is_of_type<time / dimensionless, time_>);
 static_assert(is_of_type<1 / time / dimensionless, derived_quantity_spec<dimensionless_, per<time_>>>);
 
 static_assert(is_of_type<length / time * time, length_>);
-static_assert(is_of_type<1 / time * (1 / time), derived_quantity_spec<dimensionless_, per<units::power<time_, 2>>>>);
-static_assert(is_of_type<1 / (time * time), derived_quantity_spec<dimensionless_, per<units::power<time_, 2>>>>);
-static_assert(is_of_type<1 / (1 / (time * time)), derived_quantity_spec<units::power<time_, 2>>>);
+static_assert(is_of_type<1 / time * (1 / time), derived_quantity_spec<dimensionless_, per<mp_units::power<time_, 2>>>>);
+static_assert(is_of_type<1 / (time * time), derived_quantity_spec<dimensionless_, per<mp_units::power<time_, 2>>>>);
+static_assert(is_of_type<1 / (1 / (time * time)), derived_quantity_spec<mp_units::power<time_, 2>>>);
 
-static_assert(is_of_type<length / time * (1 / time), derived_quantity_spec<length_, per<units::power<time_, 2>>>>);
+static_assert(is_of_type<length / time * (1 / time), derived_quantity_spec<length_, per<mp_units::power<time_, 2>>>>);
 static_assert(is_of_type<length / time*(length / time),
-                         derived_quantity_spec<units::power<length_, 2>, per<units::power<time_, 2>>>>);
+                         derived_quantity_spec<mp_units::power<length_, 2>, per<mp_units::power<time_, 2>>>>);
 static_assert(is_of_type<length / time*(time / length), dimensionless_>);
 
 static_assert(is_of_type<speed / acceleration, derived_quantity_spec<speed_, per<acceleration_>>>);
 static_assert(is_of_type<(speed / acceleration).dimension, dim_time_>);
 static_assert(is_of_type<acceleration / speed, derived_quantity_spec<acceleration_, per<speed_>>>);
 static_assert(is_of_type<(acceleration / speed).dimension, derived_dimension<dim_one_, per<dim_time_>>>);
-static_assert(is_of_type<speed * speed / length, derived_quantity_spec<units::power<speed_, 2>, per<length_>>>);
+static_assert(is_of_type<speed * speed / length, derived_quantity_spec<mp_units::power<speed_, 2>, per<length_>>>);
 static_assert(
-  is_of_type<(speed * speed / length).dimension, derived_dimension<dim_length_, per<units::power<dim_time_, 2>>>>);
-static_assert(is_of_type<1 / (speed * speed) * length, derived_quantity_spec<length_, per<units::power<speed_, 2>>>>);
+  is_of_type<(speed * speed / length).dimension, derived_dimension<dim_length_, per<mp_units::power<dim_time_, 2>>>>);
+static_assert(
+  is_of_type<1 / (speed * speed) * length, derived_quantity_spec<length_, per<mp_units::power<speed_, 2>>>>);
 static_assert(is_of_type<(1 / (speed * speed) * length).dimension,
-                         derived_dimension<units::power<dim_time_, 2>, per<dim_length_>>>);
+                         derived_dimension<mp_units::power<dim_time_, 2>, per<dim_length_>>>);
 
 static_assert(is_of_type<(length * length) * (time * time),
-                         derived_quantity_spec<units::power<length_, 2>, units::power<time_, 2>>>);
+                         derived_quantity_spec<mp_units::power<length_, 2>, mp_units::power<time_, 2>>>);
 static_assert(is_of_type<(time * time) * (length * length),
-                         derived_quantity_spec<units::power<length_, 2>, units::power<time_, 2>>>);
+                         derived_quantity_spec<mp_units::power<length_, 2>, mp_units::power<time_, 2>>>);
 
-static_assert(is_of_type<length * time * time, derived_quantity_spec<length_, units::power<time_, 2>>>);
+static_assert(is_of_type<length * time * time, derived_quantity_spec<length_, mp_units::power<time_, 2>>>);
 static_assert(
-  is_of_type<mass / length / time / time, derived_quantity_spec<mass_, per<length_, units::power<time_, 2>>>>);
+  is_of_type<mass / length / time / time, derived_quantity_spec<mass_, per<length_, mp_units::power<time_, 2>>>>);
 static_assert(
-  is_of_type<mass / (length * time * time), derived_quantity_spec<mass_, per<length_, units::power<time_, 2>>>>);
+  is_of_type<mass / (length * time * time), derived_quantity_spec<mass_, per<length_, mp_units::power<time_, 2>>>>);
 static_assert(
-  is_of_type<mass / length / (time * time), derived_quantity_spec<mass_, per<length_, units::power<time_, 2>>>>);
+  is_of_type<mass / length / (time * time), derived_quantity_spec<mass_, per<length_, mp_units::power<time_, 2>>>>);
 
 static_assert(is_of_type<force / area, derived_quantity_spec<force_, per<area_>>>);
 static_assert(
-  is_of_type<(force / area).dimension, derived_dimension<dim_mass_, per<dim_length_, units::power<dim_time_, 2>>>>);
+  is_of_type<(force / area).dimension, derived_dimension<dim_mass_, per<dim_length_, mp_units::power<dim_time_, 2>>>>);
 
 template<auto& t>
 concept invalid_operations = requires {
@@ -272,18 +273,20 @@ static_assert(is_of_type<common_quantity_spec(length / time, 1 / (time / length)
 
 static_assert(length / time / time != acceleration);
 static_assert(interconvertible(length / time / time, acceleration));
-static_assert(length / (time * time) != acceleration);
-static_assert(interconvertible(length / (time * time), acceleration));
-static_assert(speed / time != acceleration);
-static_assert(interconvertible(speed / time, acceleration));
-static_assert(speed / acceleration != time);
-static_assert(interconvertible(speed / acceleration, time));
-static_assert(acceleration * time != speed);
-static_assert(interconvertible(acceleration * time, speed));
-static_assert(acceleration * (time * time) != length);
-static_assert(interconvertible(acceleration * (time * time), length));
+static_assert(position_vector / time / time != acceleration);
+static_assert(interconvertible(position_vector / time / time, acceleration));
+static_assert(position_vector / (time * time) != acceleration);
+static_assert(interconvertible(position_vector / (time * time), acceleration));
+static_assert(velocity / time != acceleration);
+static_assert(interconvertible(velocity / time, acceleration));
+static_assert(velocity / acceleration != time);
+static_assert(interconvertible(velocity / acceleration, time));  // TODO should the vector character cancel here?
+static_assert(acceleration * time != velocity);
+static_assert(interconvertible(acceleration * time, velocity));
+static_assert(acceleration * (time * time) != position_vector);
+static_assert(interconvertible(acceleration * (time * time), position_vector));
 static_assert(acceleration / speed != frequency);
-static_assert(interconvertible(acceleration / speed, frequency));
+static_assert(interconvertible(acceleration / velocity, frequency));  // TODO should the vector character cancel here?
 
 // comparison of convertible named dimensions
 static_assert(velocity != speed);
@@ -292,10 +295,10 @@ static_assert(!interconvertible(speed, velocity));
 // comparison of convertible unnamed dimensions
 static_assert(is_of_type<mass * acceleration, derived_quantity_spec<acceleration_, mass_>>);
 static_assert(is_of_type<(mass * acceleration).dimension,
-                         derived_dimension<dim_length_, dim_mass_, per<units::power<dim_time_, 2>>>>);
+                         derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 static_assert(is_of_type<acceleration * mass, derived_quantity_spec<acceleration_, mass_>>);
 static_assert(is_of_type<(acceleration * mass).dimension,
-                         derived_dimension<dim_length_, dim_mass_, per<units::power<dim_time_, 2>>>>);
+                         derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 static_assert(mass * acceleration == acceleration * mass);
 static_assert(interconvertible(mass * acceleration, acceleration* mass));
 
@@ -305,8 +308,13 @@ static_assert(!interconvertible(energy, torque));
 
 static_assert(force * length != energy);
 static_assert(force * length != torque);
+static_assert(force * position_vector != energy);
+static_assert(force * position_vector != torque);
 static_assert(interconvertible(force * length, energy));
+static_assert(interconvertible(force * position_vector, energy));
 static_assert(interconvertible(force * length, torque));
+static_assert(interconvertible(force * position_vector, torque));
+
 template<auto T1, auto T2>
 concept no_common_type = requires {
   requires !requires { typename std::common_type_t<decltype(T1), decltype(T2)>; };
@@ -339,17 +347,26 @@ static_assert(acceleration != speed);
 static_assert(!interconvertible(acceleration, speed));
 
 // power
-static_assert(is_of_type<pow<2>(length), derived_quantity_spec<units::power<length_, 2>>>);
-static_assert(is_of_type<pow<1, 2>(length), derived_quantity_spec<units::power<length_, 1, 2>>>);
+static_assert(is_of_type<pow<2>(length), derived_quantity_spec<mp_units::power<length_, 2>>>);
+static_assert(is_of_type<pow<1, 2>(length), derived_quantity_spec<mp_units::power<length_, 1, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length* length), length_>);
 static_assert(is_of_type<pow<1, 3>(length* length* length), length_>);
-static_assert(is_of_type<pow<1, 3>(length* length), derived_quantity_spec<units::power<length_, 2, 3>>>);
+static_assert(is_of_type<pow<1, 3>(length* length), derived_quantity_spec<mp_units::power<length_, 2, 3>>>);
 static_assert(is_of_type<pow<1, 2>(length / time),
-                         derived_quantity_spec<units::power<length_, 1, 2>, per<units::power<time_, 1, 2>>>>);
+                         derived_quantity_spec<mp_units::power<length_, 1, 2>, per<mp_units::power<time_, 1, 2>>>>);
 static_assert(
-  is_of_type<pow<1, 2>(length / (time * time)), derived_quantity_spec<units::power<length_, 1, 2>, per<time_>>>);
+  is_of_type<pow<1, 2>(length / (time * time)), derived_quantity_spec<mp_units::power<length_, 1, 2>, per<time_>>>);
 
 static_assert(is_same_v<decltype(pow<2>(length)), decltype(length * length)>);
 static_assert(is_same_v<decltype(pow<2>(length / time)), decltype(length * length / time / time)>);
+
+// derived kinds
+QUANTITY_SPEC(rate_of_climb, height / time);
+static_assert(rate_of_climb != speed);
+static_assert(!interconvertible(rate_of_climb, speed));
+static_assert(rate_of_climb != distance / time);
+static_assert(interconvertible(rate_of_climb, distance / time));  // !!!
+static_assert(rate_of_climb != length / time);
+static_assert(interconvertible(rate_of_climb, length / time));  // !!!
 
 }  // namespace

@@ -21,17 +21,17 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/math.h>
-#include <units/quantity_point.h>
-#include <units/systems/isq/thermodynamics.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/math.h>
+#include <mp_units/quantity_point.h>
+#include <mp_units/systems/isq/thermodynamics.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex8
 
-using namespace units;
+using namespace mp_units;
 
 template<QuantityPoint QP>
 void print_header(kalman::estimation<QP> initial)

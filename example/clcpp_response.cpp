@@ -15,24 +15,24 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/format.h>
-#include <units/quantity_io.h>
-#include <units/systems/iau/iau.h>
-#include <units/systems/imperial/imperial.h>
-#include <units/systems/international/international.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/si.h>
-#include <units/systems/typographic/typographic.h>
-#include <units/systems/usc/usc.h>
+#include <mp_units/format.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/iau/iau.h>
+#include <mp_units/systems/imperial/imperial.h>
+#include <mp_units/systems/international/international.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/si.h>
+#include <mp_units/systems/typographic/typographic.h>
+#include <mp_units/systems/usc/usc.h>
 #include <iostream>
 
 namespace {
 
 void simple_quantities()
 {
-  using namespace units;
-  using namespace units::si;
-  using namespace units::international;
+  using namespace mp_units;
+  using namespace mp_units::si;
+  using namespace mp_units::international;
 
   using distance = quantity<isq::distance[kilo<metre>]>;
   using duration = quantity<isq::duration[second]>;
@@ -55,9 +55,9 @@ void simple_quantities()
 
 void quantities_with_typed_units()
 {
-  using namespace units;
-  using namespace units::si;
-  using namespace units::international;
+  using namespace mp_units;
+  using namespace mp_units::si;
+  using namespace mp_units::international;
 
   constexpr auto km = isq::distance[kilo<metre>](1.0);
   constexpr auto miles = isq::distance[mile](1.0);
@@ -103,8 +103,8 @@ void quantities_with_typed_units()
 
 void calcs_comparison()
 {
-  using namespace units;
-  using namespace units::si::unit_symbols;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
   std::cout << "\nA distinct unit for each type is efficient and accurate\n"
                "when adding two values of the same very big\n"

@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 #include <catch2/matchers/catch_matchers_templated.hpp>
-#include <units/format.h>
-#include <units/quantity.h>
+#include <mp_units/format.h>
+#include <mp_units/quantity.h>
 
-namespace units {
+namespace mp_units {
 
 template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
@@ -54,4 +54,4 @@ AlmostEqualsMatcher<T> AlmostEquals(const T& target)
   return {target};
 }
 
-}  // namespace units
+}  // namespace mp_units

@@ -20,17 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/systems/imperial/imperial.h>
-#include <units/systems/international/international.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/imperial/imperial.h>
+#include <mp_units/systems/international/international.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>
 #include <string_view>
 
-using namespace units;
-using namespace units::international::unit_symbols;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::international::unit_symbols;
+using namespace mp_units::si::unit_symbols;
 
 
 // Some basic specs for the warship
@@ -74,7 +74,7 @@ void print_details(std::string_view description, const Ship& ship)
 
 int main()
 {
-  using units::international::unit_symbols::ft;  // collides with si::femto<si::tonne>
+  using mp_units::international::unit_symbols::ft;  // collides with si::femto<si::tonne>
 
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{isq::length[m](251.)},

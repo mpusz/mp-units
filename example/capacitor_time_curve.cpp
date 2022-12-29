@@ -20,16 +20,16 @@
     physical_quantities
 */
 
-#include <units/math.h>  // IWYU pragma: keep
-#include <units/quantity_io.h>
-#include <units/systems/isq/electromagnetism.h>
-#include <units/systems/si/si.h>
+#include <mp_units/math.h>  // IWYU pragma: keep
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/isq/electromagnetism.h>
+#include <mp_units/systems/si/si.h>
 #include <iostream>
 
 int main()
 {
-  using namespace units;
-  using namespace units::si::unit_symbols;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
   std::cout << "mp-units capacitor time curve example...\n";
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
@@ -40,7 +40,7 @@ int main()
   constexpr auto R = isq::resistance(4.7, si::kilo<si::ohm>);
 
   for (auto t = isq::time(0, ms); t <= isq::time(50, ms); ++t) {
-    const weak_quantity_of<isq::voltage> auto Vt = V0 * units::exp(-t / (R * C));
+    const weak_quantity_of<isq::voltage> auto Vt = V0 * mp_units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 

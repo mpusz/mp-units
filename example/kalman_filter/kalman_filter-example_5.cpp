@@ -21,16 +21,16 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/math.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/math.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex5
 
-using namespace units;
+using namespace mp_units;
 
 template<Quantity Q>
 void print_header(kalman::estimation<Q> initial)
@@ -50,7 +50,7 @@ void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, ka
 int main()
 {
   using namespace kalman;
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
 
   const estimation initial = {state{60. * isq::height[m]}, pow<2>(15. * isq::height[m])};
   const std::array measurements = {48.54 * isq::height[m], 47.11 * isq::height[m], 55.01 * isq::height[m],

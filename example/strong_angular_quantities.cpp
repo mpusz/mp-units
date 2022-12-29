@@ -20,23 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/math.h>
-#include <units/quantity_io.h>
-#include <units/systems/isq_angle/isq_angle.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/math.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/isq_angle/isq_angle.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
 int main()
 {
-  using namespace units;
-  using namespace units::si::unit_symbols;
-  using namespace units::angular::unit_symbols;
-  using units::angular::unit_symbols::deg;
-  using units::angular::unit_symbols::rad;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
+  using namespace mp_units::angular::unit_symbols;
+  using mp_units::angular::unit_symbols::deg;
+  using mp_units::angular::unit_symbols::rad;
 
   const auto lever = isq_angle::position_vector[cm](20);
   const auto force = isq_angle::force[N](500);

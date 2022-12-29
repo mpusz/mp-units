@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(cgs DEPENDENCIES mp-units::si HEADERS include/units/systems/cgs/cgs.h)
+add_units_module(cgs DEPENDENCIES mp-units::si HEADERS include/mp_units/systems/cgs/cgs.h)

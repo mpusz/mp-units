@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/systems/isq/space_and_time.h>
-#include <units/quantity_io.h>
-#include <units/systems/si/unit_symbols.h>
-#include <units/systems/si/units.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
+#include <mp_units/systems/si/units.h>
 #include <cmath>
 #include <exception>
 #include <iostream>
@@ -118,18 +118,18 @@ private:
 }  // namespace
 
 template<class T>
-inline constexpr bool units::is_scalar<measurement<T>> = true;
+inline constexpr bool mp_units::is_scalar<measurement<T>> = true;
 template<class T>
-inline constexpr bool units::is_vector<measurement<T>> = true;
+inline constexpr bool mp_units::is_vector<measurement<T>> = true;
 
-static_assert(units::RepresentationOf<measurement<double>, units::quantity_character::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
 
 namespace {
 
 void example()
 {
-  using namespace units;
-  using namespace units::si::unit_symbols;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
   const auto a = isq::acceleration(measurement{9.8, 0.1}, m / s2);
   const auto t = isq::time(measurement{1.2, 0.1}, s);

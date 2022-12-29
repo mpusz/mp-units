@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/external/type_list.h>
-#include <units/bits/external/type_traits.h>
+#include <mp_units/bits/external/type_list.h>
+#include <mp_units/bits/external/type_traits.h>
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 template<typename... Types>
 struct type_list;

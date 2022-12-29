@@ -20,22 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/math.h>
-#include <units/quantity_io.h>
-#include <units/systems/isq/mechanics.h>
-#include <units/systems/natural/natural.h>
-#include <units/systems/si/constants.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/math.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/isq/mechanics.h>
+#include <mp_units/systems/natural/natural.h>
+#include <mp_units/systems/si/constants.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <exception>
 #include <iostream>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 quantity_of<isq::mechanical_energy> auto total_energy(weak_quantity_of<isq::momentum> auto p,
                                                       weak_quantity_of<isq::mass> auto m,
@@ -46,7 +46,7 @@ quantity_of<isq::mechanical_energy> auto total_energy(weak_quantity_of<isq::mome
 
 void si_example()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
 
   constexpr quantity_of<isq::speed> auto c = si::si2019::speed_of_light_in_vacuum(1.);
@@ -85,8 +85,8 @@ void si_example()
 
 void natural_example()
 {
-  using namespace units::natural;
-  using namespace units::natural::unit_symbols;
+  using namespace mp_units::natural;
+  using namespace mp_units::natural::unit_symbols;
 
   constexpr quantity_of<isq::speed> auto c = 1. * speed_of_light_in_vacuum;
   const quantity_of<isq::momentum> auto p = 4. * momentum[GeV];

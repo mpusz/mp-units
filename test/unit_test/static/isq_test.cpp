@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/systems/isq/isq.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/systems/isq/isq.h>
+#include <mp_units/systems/si/unit_symbols.h>
 
 namespace {
 
-using namespace units;
-using namespace units::si::unit_symbols;
-using enum units::quantity_character;
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+using enum mp_units::quantity_character;
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
 {

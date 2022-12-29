@@ -23,7 +23,9 @@
 cmake_minimum_required(VERSION 3.19)
 
 add_units_module(
-    isq DEPENDENCIES mp-units::core
-    HEADERS include/units/systems/isq/base_quantities.h include/units/systems/isq/electromagnetism.h include/units/systems/isq/isq.h
-            include/units/systems/isq/mechanics.h include/units/systems/isq/space_and_time.h include/units/systems/isq/thermodynamics.h
+    isq
+    DEPENDENCIES mp-units::core
+    HEADERS include/mp_units/systems/isq/base_quantities.h include/mp_units/systems/isq/electromagnetism.h
+            include/mp_units/systems/isq/isq.h include/mp_units/systems/isq/mechanics.h
+            include/mp_units/systems/isq/space_and_time.h include/mp_units/systems/isq/thermodynamics.h
 )

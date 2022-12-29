@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/systems/imperial/imperial.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/systems/imperial/imperial.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 
 namespace {
 
-using namespace units;
-using namespace units::imperial;
-using namespace units::imperial::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::imperial;
+using namespace mp_units::imperial::unit_symbols;
 
 /* ************** BASE DIMENSIONS **************** */
 

@@ -22,6 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(
-    iau DEPENDENCIES mp-units::si HEADERS include/units/systems/iau/iau.h
-)
+add_units_module(iau DEPENDENCIES mp-units::si HEADERS include/mp_units/systems/iau/iau.h)

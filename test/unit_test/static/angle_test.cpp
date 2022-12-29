@@ -20,16 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/generic/angle.h>
-#include <units/generic/solid_angle.h>
+#include <mp_units/generic/angle.h>
+#include <mp_units/generic/solid_angle.h>
 #include <numbers>
 
 namespace {
 
 // plane angle
 
-using namespace units::references;
-using namespace units::literals;
+using namespace mp_units::references;
+using namespace mp_units::literals;
 
 static_assert(360 * deg == 1 * rev);
 static_assert(400 * grad == 1 * rev);
@@ -39,10 +39,10 @@ static_assert(360_q_deg == 1_q_rev);
 static_assert(400_q_grad == 1_q_rev);
 static_assert(std::numbers::pi * quantity_cast<double>(2._q_rad) == quantity_cast<double>(1._q_rev));
 
-static_assert(units::aliases::deg<>(360.) == units::aliases::rev<>(1.));
-static_assert(units::aliases::deg<int>(360) == units::aliases::rev<int>(1));
-static_assert(units::aliases::grad<int>(400) == units::aliases::rev<int>(1));
-static_assert(std::numbers::pi * units::aliases::rad<>(2.) == units::aliases::rev<>(1.));
+static_assert(mp_units::aliases::deg<>(360.) == mp_units::aliases::rev<>(1.));
+static_assert(mp_units::aliases::deg<int>(360) == mp_units::aliases::rev<int>(1));
+static_assert(mp_units::aliases::grad<int>(400) == mp_units::aliases::rev<int>(1));
+static_assert(std::numbers::pi * mp_units::aliases::rad<>(2.) == mp_units::aliases::rev<>(1.));
 
 // solid angle
 

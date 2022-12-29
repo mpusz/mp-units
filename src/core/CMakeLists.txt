@@ -33,14 +33,14 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 add_library(
     mp-units-core
     INTERFACE
-    include/units/customization_points.h
-    include/units/dimension.h
-    include/units/quantity.h
-    include/units/quantity_point.h
-    include/units/quantity_spec.h
-    include/units/reference.h
-    include/units/system_reference.h
-    include/units/unit.h
+    include/mp_units/customization_points.h
+    include/mp_units/dimension.h
+    include/mp_units/quantity.h
+    include/mp_units/quantity_point.h
+    include/mp_units/quantity_spec.h
+    include/mp_units/reference.h
+    include/mp_units/system_reference.h
+    include/mp_units/unit.h
 )
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)

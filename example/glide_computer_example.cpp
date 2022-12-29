@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
-#include <units/bits/fmt_hacks.h>
-#include <units/chrono.h>
-#include <units/systems/international/international.h>
-#include <units/math.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/bits/fmt_hacks.h>
+#include <mp_units/chrono.h>
+#include <mp_units/math.h>
+#include <mp_units/systems/international/international.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <array>
 #include <exception>
 #include <iostream>
@@ -38,11 +38,11 @@ namespace {
 
 using namespace glide_computer;
 
-using namespace units;
+using namespace mp_units;
 
 auto get_gliders()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
   UNITS_DIAGNOSTIC_PUSH
   UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {
@@ -56,7 +56,7 @@ auto get_gliders()
 
 auto get_weather_conditions()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
   static const std::array weather_conditions = {
     std::pair{"Good", weather{1900 * isq::height[m], 4.3 * rate_of_climb_speed[m / s]}},
     std::pair{"Medium", weather{1550 * isq::height[m], 2.8 * rate_of_climb_speed[m / s]}},
@@ -67,7 +67,7 @@ auto get_weather_conditions()
 auto get_waypoints()
 {
   using namespace geographic::literals;
-  using namespace units::international::unit_symbols;
+  using namespace mp_units::international::unit_symbols;
   static const std::array waypoints = {
     waypoint{"EPPR", {54.24772_N, 18.6745_E}, altitude{16. * isq::altitude[ft]}},   // N54°14'51.8" E18°40'28.2"
     waypoint{"EPGI", {53.52442_N, 18.84947_E}, altitude{115. * isq::altitude[ft]}}  // N53°31'27.9" E18°50'58.1"
@@ -157,7 +157,7 @@ void print(const aircraft_tow& tow)
 
 void example()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
 
   const safety sfty = {300 * isq::height[m]};
   const auto gliders = get_gliders();

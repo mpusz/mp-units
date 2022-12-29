@@ -27,7 +27,7 @@
 
 namespace glide_computer {
 
-using namespace units;
+using namespace mp_units;
 
 task::legs task::make_legs(const waypoints& wpts)
 {

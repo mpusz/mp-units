@@ -21,15 +21,15 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex1
 
-using namespace units;
+using namespace mp_units;
 
 void print_header(const kalman::State auto& initial)
 {
@@ -46,7 +46,7 @@ void print(auto iteration, quantity_of<dimensionless> auto gain, Quantity auto m
 
 int main()
 {
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
   using state = kalman::state<quantity<isq::mass[g]>>;
 
   const state initial = {1 * isq::mass[kg]};

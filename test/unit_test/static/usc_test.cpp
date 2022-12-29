@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
-#include <units/systems/usc/usc.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
+#include <mp_units/systems/usc/usc.h>
 
 namespace {
 
-using namespace units;
-using namespace units::usc;
-using namespace units::usc::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::usc;
+using namespace mp_units::usc::unit_symbols;
 
 /* ************** BASE DIMENSIONS **************** */
 

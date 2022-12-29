@@ -22,16 +22,16 @@
 
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
-#include <units/math.h>
-#include <units/quantity_io.h>
-#include <units/systems/angular/angular.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
-#include <units/systems/si/units.h>
+#include <mp_units/math.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/angular/angular.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
+#include <mp_units/systems/si/units.h>
 #include <limits>
 
-using namespace units;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 // classical
 
@@ -361,9 +361,9 @@ TEST_CASE("ISQ inverse trigonometric functions", "[inv trig][isq]")
 
 TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 {
-  using namespace units::angular;
-  using namespace units::angular::unit_symbols;
-  using units::angular::unit_symbols::deg;
+  using namespace mp_units::angular;
+  using namespace mp_units::angular::unit_symbols;
+  using mp_units::angular::unit_symbols::deg;
 
   SECTION("sin")
   {
@@ -407,9 +407,9 @@ TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 
 TEST_CASE("Angle inverse trigonometric functions", "[inv trig][angle]")
 {
-  using namespace units::angular;
-  using namespace units::angular::unit_symbols;
-  using units::angular::unit_symbols::deg;
+  using namespace mp_units::angular;
+  using namespace mp_units::angular::unit_symbols;
+  using mp_units::angular::unit_symbols::deg;
 
   SECTION("asin")
   {

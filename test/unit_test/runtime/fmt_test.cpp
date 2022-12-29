@@ -22,23 +22,23 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
-#include <units/customization_points.h>
-#include <units/format.h>
-#include <units/quantity_io.h>
-#include <units/systems/cgs/cgs.h>
-#include <units/systems/isq/mechanics.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/si.h>
+#include <mp_units/customization_points.h>
+#include <mp_units/format.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/cgs/cgs.h>
+#include <mp_units/systems/isq/mechanics.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/si.h>
 #include <iomanip>
 #include <limits>
 #include <locale>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
-using namespace units;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {

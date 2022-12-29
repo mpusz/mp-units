@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/ratio.h>
+#include <mp_units/bits/ratio.h>
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 static_assert(ratio(2, 4) == ratio(1, 2));
 

@@ -15,9 +15,9 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/format.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/units.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/units.h>
 #include <iostream>
 #include <type_traits>
 
@@ -28,7 +28,7 @@
 
 namespace {
 
-template<units::Quantity Target, units::Quantity Source>
+template<mp_units::Quantity Target, mp_units::Quantity Source>
   requires std::constructible_from<Target, Source>
 inline constexpr double conversion_factor(Target, Source)
 {
@@ -39,7 +39,7 @@ inline constexpr double conversion_factor(Target, Source)
 
 int main()
 {
-  using namespace units;
+  using namespace mp_units;
 
   std::cout << "conversion factor in mp-units...\n\n";
 

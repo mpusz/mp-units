@@ -21,21 +21,21 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/isq/si/area.h>
-#include <units/isq/si/international/area.h>
-#include <units/isq/si/international/length.h>
-#include <units/isq/si/international/volume.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/time.h>
-#include <units/isq/si/volume.h>
-#include <units/math.h>  // IWYU pragma: keep
+#include <mp_units/isq/si/area.h>
+#include <mp_units/isq/si/international/area.h>
+#include <mp_units/isq/si/international/length.h>
+#include <mp_units/isq/si/international/volume.h>
+#include <mp_units/isq/si/length.h>
+#include <mp_units/isq/si/time.h>
+#include <mp_units/isq/si/volume.h>
+#include <mp_units/math.h>  // IWYU pragma: keep
 
 namespace {
 
-using namespace units;
-using namespace units::isq;
-using namespace units::isq::si::literals;
-using namespace units::isq::si::international::literals;
+using namespace mp_units;
+using namespace mp_units::isq;
+using namespace mp_units::isq::si::literals;
+using namespace mp_units::isq::si::international::literals;
 
 static_assert(compare<decltype(pow<0>(2_q_m)), std::int64_t>);
 static_assert(compare<decltype(pow<1>(2_q_m)), decltype(2_q_m)>);

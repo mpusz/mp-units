@@ -21,17 +21,17 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <units/dimension.h>
-#include <units/quantity.h>
-#include <units/quantity_spec.h>
-#include <units/reference.h>
-#include <units/system_reference.h>
-#include <units/systems/si/prefixes.h>
-#include <units/unit.h>
+#include <mp_units/dimension.h>
+#include <mp_units/quantity.h>
+#include <mp_units/quantity_spec.h>
+#include <mp_units/reference.h>
+#include <mp_units/system_reference.h>
+#include <mp_units/systems/si/prefixes.h>
+#include <mp_units/unit.h>
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 using dimensionless_ = struct dimensionless;
 using one_ = struct one;

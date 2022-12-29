@@ -20,18 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/quantity_io.h>
-#include <units/systems/cgs/cgs.h>
-#include <units/systems/international/international.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/cgs/cgs.h>
+#include <mp_units/systems/international/international.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <exception>
 #include <iostream>
 
 namespace {
 
-using namespace units;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 constexpr quantity<isq::speed[m / s], int> fixed_int_si_avg_speed(quantity<isq::length[m], int> d,
                                                                   quantity<isq::time[s], int> t)
@@ -87,7 +87,7 @@ void example()
 
   // Customary Units (int)
   {
-    using namespace units::international::unit_symbols;
+    using namespace mp_units::international::unit_symbols;
 
     constexpr auto distance = isq::length(140, mi);
     constexpr auto duration = isq::time(2, h);
@@ -103,7 +103,7 @@ void example()
 
   // Customary Units (double)
   {
-    using namespace units::international::unit_symbols;
+    using namespace mp_units::international::unit_symbols;
 
     constexpr auto distance = isq::length(140., mi);
     constexpr auto duration = isq::time(2., h);

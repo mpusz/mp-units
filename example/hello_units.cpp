@@ -20,14 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/systems/international/international.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/quantity_io.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/quantity_io.h>
+#include <mp_units/systems/international/international.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>
 
-using namespace units;
+using namespace mp_units;
 
 constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::distance> auto d, quantity_of<isq::duration> auto t)
 {
@@ -36,8 +36,8 @@ constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::distance> auto
 
 int main()
 {
-  using namespace units::si::unit_symbols;
-  using namespace units::international::unit_symbols;
+  using namespace mp_units::si::unit_symbols;
+  using namespace mp_units::international::unit_symbols;
 
   constexpr auto v1 = isq::speed(110, km / h);
   constexpr auto v2 = isq::speed(70., mph);

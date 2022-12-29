@@ -23,10 +23,10 @@
 #pragma once
 
 #include "ranged_representation.h"
-#include <units/bits/fmt_hacks.h>
-#include <units/quantity.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/units.h>
+#include <mp_units/bits/fmt_hacks.h>
+#include <mp_units/quantity.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/units.h>
 #include <compare>
 #include <limits>
 #include <numbers>
@@ -35,10 +35,12 @@
 namespace geographic {
 
 template<typename T = double>
-using latitude = units::quantity<units::isq::angular_measure[units::si::degree], ranged_representation<T, -90, 90>>;
+using latitude =
+  mp_units::quantity<mp_units::isq::angular_measure[mp_units::si::degree], ranged_representation<T, -90, 90>>;
 
 template<typename T = double>
-using longitude = units::quantity<units::isq::angular_measure[units::si::degree], ranged_representation<T, -180, 180>>;
+using longitude =
+  mp_units::quantity<mp_units::isq::angular_measure[mp_units::si::degree], ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
@@ -125,7 +127,7 @@ struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
 
 namespace geographic {
 
-using distance = units::quantity<units::isq::distance[units::si::kilo<units::si::metre>]>;
+using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;
 
 template<typename T>
 struct position {
@@ -136,7 +138,7 @@ struct position {
 template<typename T>
 distance spherical_distance(position<T> from, position<T> to)
 {
-  using namespace units;
+  using namespace mp_units;
   constexpr auto earth_radius = 6371 * isq::radius[si::kilo<si::metre>];
 
   constexpr auto p = std::numbers::pi_v<T> / 180;

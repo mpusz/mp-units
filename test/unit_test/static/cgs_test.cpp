@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/unit_text.h>
-#include <units/concepts.h>
-#include <units/isq/si/cgs/cgs.h>
-#include <units/unit.h>
+#include <mp_units/bits/unit_text.h>
+#include <mp_units/concepts.h>
+#include <mp_units/isq/si/cgs/cgs.h>
+#include <mp_units/unit.h>
 
 namespace {
 
-using namespace units;
-using namespace units::isq::si::cgs;
+using namespace mp_units;
+using namespace mp_units::isq::si::cgs;
 
 /* ************** BASE DIMENSIONS **************** */
 

@@ -20,24 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/systems/isq/mechanics.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/constants.h>
-#include <units/systems/si/unit_symbols.h>
-#include <units/systems/si/units.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/isq/mechanics.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/constants.h>
+#include <mp_units/systems/si/unit_symbols.h>
+#include <mp_units/systems/si/units.h>
 #include <cassert>
 #include <iostream>
 #include <utility>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 
-using namespace units;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 inline constexpr auto g = si::standard_gravity(1);
 inline constexpr auto air_density = isq::mass_density(1.225, kg / m3);
@@ -82,7 +82,7 @@ public:
 
 int main()
 {
-  using namespace units::si;
+  using namespace mp_units::si;
 
   constexpr auto mm = isq::length[unit_symbols::mm];  // helper reference object
 

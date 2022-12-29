@@ -20,19 +20,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/systems/si/constants.h>
-#include <units/systems/si/unit_symbols.h>
+#include <mp_units/format.h>
+#include <mp_units/systems/si/constants.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
 int main()
 {
-  using namespace units::si;
-  using namespace units::si::unit_symbols;
+  using namespace mp_units::si;
+  using namespace mp_units::si::unit_symbols;
 
   std::cout << "The seven defining constants of the SI and the seven corresponding units they define:\n";
   std::cout << STD_FMT::format("- hyperfine transition frequency of Cs: {} = {:%.0Q %q}\n",

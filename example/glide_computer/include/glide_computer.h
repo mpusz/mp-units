@@ -23,11 +23,11 @@
 #pragma once
 
 #include "geographic.h"
-#include <units/chrono.h>
-#include <units/format.h>
-#include <units/math.h>  // IWYU pragma: keep
-#include <units/quantity_point.h>
-#include <units/systems/isq/space_and_time.h>
+#include <mp_units/chrono.h>
+#include <mp_units/format.h>
+#include <mp_units/math.h>  // IWYU pragma: keep
+#include <mp_units/quantity_point.h>
+#include <mp_units/systems/isq/space_and_time.h>
 #include <algorithm>
 #include <array>
 #include <initializer_list>
@@ -54,23 +54,23 @@
 namespace glide_computer {
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
-inline constexpr struct mean_sea_level : units::absolute_point_origin<units::isq::height> {
+inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::height> {
 } mean_sea_level;
-QUANTITY_SPEC(rate_of_climb_speed, units::isq::height / units::isq::time);
+QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::height / mp_units::isq::time);
 
 // length
-using distance = units::quantity<units::isq::distance[units::si::kilo<units::si::metre>]>;
-using height = units::quantity<units::isq::height[units::si::metre]>;
-using altitude = units::quantity_point<units::isq::altitude[units::si::metre], mean_sea_level>;
+using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;
+using height = mp_units::quantity<mp_units::isq::height[mp_units::si::metre]>;
+using altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::metre], mean_sea_level>;
 
 // time
-using duration = units::quantity<units::isq::duration[units::si::second]>;
-using timestamp =
-  units::quantity_point<units::isq::time[units::si::second], units::chrono_point_origin<std::chrono::system_clock>{}>;
+using duration = mp_units::quantity<mp_units::isq::duration[mp_units::si::second]>;
+using timestamp = mp_units::quantity_point<mp_units::isq::time[mp_units::si::second],
+                                           mp_units::chrono_point_origin<std::chrono::system_clock>{}>;
 
 // speed
-using velocity = units::quantity<units::isq::speed[units::si::kilo<units::si::metre> / units::si::hour]>;
-using rate_of_climb = units::quantity<rate_of_climb_speed[units::si::metre / units::si::second]>;
+using velocity = mp_units::quantity<mp_units::isq::speed[mp_units::si::kilo<mp_units::si::metre> / mp_units::si::hour]>;
+using rate_of_climb = mp_units::quantity<rate_of_climb_speed[mp_units::si::metre / mp_units::si::second]>;
 
 // text output
 template<class CharT, class Traits>
@@ -83,11 +83,11 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 template<>
 struct STD_FMT::formatter<glide_computer::altitude> :
-    formatter<units::quantity<units::isq::altitude[units::si::metre]>> {
+    formatter<mp_units::quantity<mp_units::isq::altitude[mp_units::si::metre]>> {
   template<typename FormatContext>
   auto format(const glide_computer::altitude& a, FormatContext& ctx)
   {
-    formatter<units::quantity<units::isq::altitude[units::si::metre]>>::format(a.absolute(), ctx);
+    formatter<mp_units::quantity<mp_units::isq::altitude[mp_units::si::metre]>>::format(a.absolute(), ctx);
     return STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
@@ -105,7 +105,7 @@ struct glider {
   std::array<polar_point, 1> polar;
 };
 
-constexpr units::weak_quantity_of<units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
+constexpr mp_units::weak_quantity_of<mp_units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
 {
   return polar.v / -polar.climb;
 }
@@ -193,10 +193,11 @@ altitude terrain_level_alt(const task& t, const flight_point& pos);
 
 constexpr height agl(altitude glider_alt, altitude terrain_level) { return glider_alt - terrain_level; }
 
-inline units::quantity<units::isq::length[units::si::kilo<units::si::metre>]> length_3d(distance dist, height h)
+inline mp_units::quantity<mp_units::isq::length[mp_units::si::kilo<mp_units::si::metre>]> length_3d(distance dist,
+                                                                                                    height h)
 {
   // TODO Should we be able to calculate this on quantity of different kinds? What to return?
-  return hypot(quantity_cast<units::isq::length>(dist), quantity_cast<units::isq::length>(h));
+  return hypot(quantity_cast<mp_units::isq::length>(dist), quantity_cast<mp_units::isq::length>(h));
 }
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);

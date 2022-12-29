@@ -20,20 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/systems/hep/hep.h>
-#include <units/systems/isq/mechanics.h>
-#include <units/systems/isq/space_and_time.h>
-#include <units/systems/si/si.h>
+#include <mp_units/systems/hep/hep.h>
+#include <mp_units/systems/isq/mechanics.h>
+#include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/si.h>
 
 template<class T>
-  requires units::is_scalar<T>
-inline constexpr bool units::is_vector<T> = true;
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 
-using namespace units;
-using namespace units::hep::unit_symbols;
-using namespace units::si::unit_symbols;
+using namespace mp_units;
+using namespace mp_units::hep::unit_symbols;
+using namespace mp_units::si::unit_symbols;
 
 // mass
 static_assert(isq::mass[eV / c2](1'000) == isq::mass[keV / c2](1));
