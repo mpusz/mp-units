@@ -38,7 +38,6 @@ using enum units::quantity_character;
 }
 
 static_assert(verify(isq_angle::cotes_angle_constant, scalar, rad));
-static_assert(verify(isq_angle::arc_length, scalar, m));
 static_assert(verify(isq_angle::angular_measure, scalar, rad));
 static_assert(verify(isq_angle::rotational_displacement, scalar, rad));
 static_assert(verify(isq_angle::angular_displacement, scalar, rad));
@@ -51,7 +50,7 @@ static_assert(verify(isq_angle::angular_repetency, scalar, rad / m));
 static_assert(verify(isq_angle::angular_wavenumber, scalar, rad / m));
 static_assert(verify(isq_angle::phase_coefficient, scalar, rad / m));
 static_assert(verify(isq_angle::propagation_coefficient, scalar, rad / m));
-static_assert(verify(isq_angle::moment_of_inertia, tensor, kg* m2 / rad2));  // TODO steradian?
+static_assert(verify(isq_angle::moment_of_inertia, tensor, kg* m2 / rad2));
 static_assert(verify(isq_angle::angular_momentum, vector, J* s / rad));
 static_assert(verify(isq_angle::moment_of_force, vector, J / rad));
 static_assert(verify(isq_angle::torque, scalar, J / rad));

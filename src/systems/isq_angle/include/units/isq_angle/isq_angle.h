@@ -32,7 +32,6 @@ using namespace isq;
 
 // ISQ angular derived quantities redefinition
 QUANTITY_SPEC(cotes_angle_constant, angular::angle);  // 1 rad
-QUANTITY_SPEC(arc_length, length*(angular::angle / cotes_angle_constant));
 QUANTITY_SPEC(angular_measure, cotes_angle_constant* arc_length / radius);
 QUANTITY_SPEC(rotational_displacement, cotes_angle_constant* path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
