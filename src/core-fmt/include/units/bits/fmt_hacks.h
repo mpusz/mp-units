@@ -41,10 +41,19 @@ UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <fmt/format.h>
 UNITS_DIAGNOSTIC_POP
 
-#define STD_FMT fmt
-#define FMT_LOCALE(loc) (loc).template get<std::locale>()
-#define FMT_TO_ARG_ID(arg) static_cast<int>(arg)
-#define FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
+#define UNITS_STD_FMT fmt
+#define UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
+#define UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
+#define UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
+
+// just reuse FMT_THROW - we're anyway only throwing from within string formatting code
+#if FMT_EXCEPTIONS && (FMT_MSC_VERSION || defined(__NVCC__))
+// work around FMT_THROW being defined without a fully qualified namespace
+#define UNITS_THROW(x) ::fmt::detail::do_throw(x)
+#else
+#define UNITS_THROW(x) FMT_THROW(x)
+#endif
+
 
 #else
 
@@ -54,10 +63,10 @@ UNITS_DIAGNOSTIC_POP
 
 #include <format>
 
-#define STD_FMT std
-#define FMT_LOCALE(loc) loc
-#define FMT_TO_ARG_ID(arg) arg
-#define FMT_FROM_ARG_ID(arg) arg
-#define FMT_THROW(arg) throw arg
+#define UNITS_STD_FMT std
+#define UNITS_FMT_LOCALE(loc) loc
+#define UNITS_FMT_TO_ARG_ID(arg) arg
+#define UNITS_FMT_FROM_ARG_ID(arg) arg
+#define UNITS_THROW(arg) throw arg
 
 #endif

@@ -49,13 +49,13 @@ int main()
   constexpr length<metre> lengthA(2.0);
   constexpr length<millimetre> lengthB = lengthA;
 
-  std::cout << STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
+  std::cout << UNITS_STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";
 
-  std::cout << STD_FMT::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
+  std::cout << UNITS_STD_FMT::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
 
-  std::cout << STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n", lengthA,
+  std::cout << UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n", lengthA,
                                lengthB)
-            << STD_FMT::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
+            << UNITS_STD_FMT::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
                                lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
 }

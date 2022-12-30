@@ -29,12 +29,12 @@ int main()
   using namespace units::isq::si::si2019;
 
   std::cout << "The seven defining constants of the SI and the seven corresponding units they define:\n";
-  std::cout << STD_FMT::format("- hyperfine transition frequency of Cs: {:%.0Q %q}\n",
+  std::cout << UNITS_STD_FMT::format("- hyperfine transition frequency of Cs: {:%.0Q %q}\n",
                                hyperfine_structure_transition_frequency<>);
-  std::cout << STD_FMT::format("- speed of light in vacuum:             {:%.0Q %q}\n", speed_of_light<>);
-  std::cout << STD_FMT::format("- Planck constant:                      {}\n", planck_constant<>);
-  std::cout << STD_FMT::format("- elementary charge:                    {}\n", elementary_charge<>);
-  std::cout << STD_FMT::format("- Boltzmann constant:                   {}\n", boltzmann_constant<>);
-  std::cout << STD_FMT::format("- Avogadro constant:                    {}\n", avogadro_constant<>);
-  std::cout << STD_FMT::format("- luminous efficacy:                    {}\n", luminous_efficacy<>);
+  std::cout << UNITS_STD_FMT::format("- speed of light in vacuum:             {:%.0Q %q}\n", speed_of_light<>);
+  std::cout << UNITS_STD_FMT::format("- Planck constant:                      {}\n", planck_constant<>);
+  std::cout << UNITS_STD_FMT::format("- elementary charge:                    {}\n", elementary_charge<>);
+  std::cout << UNITS_STD_FMT::format("- Boltzmann constant:                   {}\n", boltzmann_constant<>);
+  std::cout << UNITS_STD_FMT::format("- Avogadro constant:                    {}\n", avogadro_constant<>);
+  std::cout << UNITS_STD_FMT::format("- luminous efficacy:                    {}\n", luminous_efficacy<>);
 }

@@ -36,7 +36,7 @@ std::ostream& operator<<(std::ostream& os, const vector<ET, OT>& v)
 {
   os << "|";
   for (auto i = 0U; i < v.size(); ++i) {
-    os << STD_FMT::format(" {:>9}", v(i));
+    os << UNITS_STD_FMT::format(" {:>9}", v(i));
   }
   os << " |";
   return os;
@@ -48,7 +48,7 @@ std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
   for (auto i = 0U; i < v.rows(); ++i) {
     os << "|";
     for (auto j = 0U; j < v.columns(); ++j) {
-      os << STD_FMT::format(" {:>9}", v(i, j));
+      os << UNITS_STD_FMT::format(" {:>9}", v(i, j));
     }
     os << (i != v.rows() - 1U ? " |\n" : " |");
   }
