@@ -46,6 +46,8 @@ UNITS_DIAGNOSTIC_POP
 #define UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
 #define UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
 
+#if false
+
 // just reuse FMT_THROW - we're anyway only throwing from within string formatting code
 #if FMT_EXCEPTIONS && (FMT_MSC_VERSION || defined(__NVCC__))
 // work around FMT_THROW being defined without a fully qualified namespace
@@ -54,6 +56,22 @@ UNITS_DIAGNOSTIC_POP
 #define UNITS_THROW(x) FMT_THROW(x)
 #endif
 
+#else
+
+#  if FMT_EXCEPTIONS
+#    if FMT_MSC_VERSION || defined(__NVCC__)
+#      define UNITS_THROW(x) ::fmt::detail::do_throw(x)
+#    else
+#      define UNITS_THROW(x) throw x
+#    endif
+#  else
+#    define UNITS_THROW(x)               \
+      do {                             \
+        FMT_ASSERT(false, (x).what()); \
+      } while (false)
+#  endif
+
+#endif
 
 #else
 
