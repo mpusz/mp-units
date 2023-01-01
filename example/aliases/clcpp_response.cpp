@@ -115,7 +115,7 @@ void calcs_comparison()
   length::fm<float> L1A = fm<>(2.f);
   length::fm<float> L2A = fm<>(3.f);
   length::fm<float> LrA = L1A + L2A;
-  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
+  std::cout << UNITS_STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 
   std::cout << "The single unit method must convert large\n"
                "or small values in other units to the base unit.\n"
@@ -124,17 +124,17 @@ void calcs_comparison()
   length::m<float> L1B = L1A;
   length::m<float> L2B = L2A;
   length::m<float> LrB = L1B + L2B;
-  std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
+  std::cout << UNITS_STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, LrB);
 
   std::cout << "In multiplication and division:\n\n";
 
   area::fm2<float> ArA = L1A * L2A;
-  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
+  std::cout << UNITS_STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
 
   area::m2<float> ArB = L1B * L2B;
-  std::cout << STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
+  std::cout << UNITS_STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1B, L2B, ArB);
 }
 
 }  // namespace

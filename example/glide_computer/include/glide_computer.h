@@ -57,7 +57,7 @@
 // - flight path exactly on a shortest possible line to destination
 
 template<units::QuantityKind QK>
-struct STD_FMT::formatter<QK> : formatter<typename QK::quantity_type> {
+struct UNITS_STD_FMT::formatter<QK> : formatter<typename QK::quantity_type> {
   template<typename FormatContext>
   auto format(const QK& v, FormatContext& ctx)
   {
@@ -105,12 +105,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 }  // namespace glide_computer
 
 template<>
-struct STD_FMT::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
+struct UNITS_STD_FMT::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
   template<typename FormatContext>
   auto format(glide_computer::altitude a, FormatContext& ctx)
   {
     formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
-    return STD_FMT::format_to(ctx.out(), " AMSL");
+    return UNITS_STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
 
