@@ -30,7 +30,7 @@ int main()
 
   std::cout << "The seven defining constants of the SI and the seven corresponding units they define:\n";
   std::cout << UNITS_STD_FMT::format("- hyperfine transition frequency of Cs: {:%.0Q %q}\n",
-                               hyperfine_structure_transition_frequency<>);
+                                     hyperfine_structure_transition_frequency<>);
   std::cout << UNITS_STD_FMT::format("- speed of light in vacuum:             {:%.0Q %q}\n", speed_of_light<>);
   std::cout << UNITS_STD_FMT::format("- Planck constant:                      {}\n", planck_constant<>);
   std::cout << UNITS_STD_FMT::format("- elementary charge:                    {}\n", elementary_charge<>);

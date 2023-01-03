@@ -34,8 +34,8 @@ using namespace units;
 void print_header(const kalman::State auto& initial)
 {
   std::cout << UNITS_STD_FMT::format("Initial: {}\n", initial);
-  std::cout << UNITS_STD_FMT::format("{:>2} | {:>9} | {:>8} | {:>14} | {:>14}\n", "N", "Gain", "Measured", "Curr. Estimate",
-                               "Next Estimate");
+  std::cout << UNITS_STD_FMT::format("{:>2} | {:>9} | {:>8} | {:>14} | {:>14}\n", "N", "Gain", "Measured",
+                                     "Curr. Estimate", "Next Estimate");
 }
 
 void print(auto iteration, Dimensionless auto gain, Quantity auto measured, const kalman::State auto& current,

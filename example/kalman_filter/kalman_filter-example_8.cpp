@@ -56,15 +56,15 @@ template<QuantityPoint QP>
 void print_header(kalman::estimation<QP> initial)
 {
   std::cout << UNITS_STD_FMT::format("Initial: {}\n", initial);
-  std::cout << UNITS_STD_FMT::format("{:>2} | {:>7} | {:>10} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate",
-                               "Next Estimate");
+  std::cout << UNITS_STD_FMT::format("{:>2} | {:>7} | {:>10} | {:>16} | {:>16}\n", "N", "Gain", "Measured",
+                                     "Curr. Estimate", "Next Estimate");
 }
 
 template<QuantityPoint QP, Dimensionless K>
 void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, kalman::estimation<QP> next)
 {
   std::cout << UNITS_STD_FMT::format("{:2} | {:7%.3Q} | {:10%.3Q %q} | {:>16.2} | {:>16.2}\n", iteration, gain,
-                               measured.relative(), current, next);
+                                     measured.relative(), current, next);
 }
 
 int main()

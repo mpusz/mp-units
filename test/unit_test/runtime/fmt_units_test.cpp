@@ -320,8 +320,8 @@ TEST_CASE("std::format on synthesized unit symbols", "[text][fmt]")
     // CHECK(UNITS_STD_FMT::format("{}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 × 10⁹] m³");
     // CHECK(UNITS_STD_FMT::format("{}", 1_q_au * 1_q_au) == "1 [2237952291797391849 × 10⁴] m²");
     //
-    // CHECK(UNITS_STD_FMT::format("{:%Q %Aq}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 x 10^9] m^3");
-    // CHECK(UNITS_STD_FMT::format("{:%Q %Aq}", 1_q_au * 1_q_au) == "1 [2237952291797391849 x 10^4] m^2");
+    // CHECK(UNITS_STD_FMT::format("{:%Q %Aq}", 1_q_mi * 1_q_mi * 1_q_mi) == "1 [15900351812136/3814697265625 x 10^9]
+    // m^3"); CHECK(UNITS_STD_FMT::format("{:%Q %Aq}", 1_q_au * 1_q_au) == "1 [2237952291797391849 x 10^4] m^2");
   }
 
   SECTION("unknown scaled unit with reference different than the dimension's coherent unit")

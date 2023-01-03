@@ -141,7 +141,7 @@ void estimate(timestamp start_ts, const glider& g, const weather& w, const task&
               const aircraft_tow& at)
 {
   std::cout << UNITS_STD_FMT::format("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance",
-                               "Height");
+                                     "Height");
   std::cout << UNITS_STD_FMT::format("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
 
   // ready to takeoff

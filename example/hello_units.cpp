@@ -52,8 +52,8 @@ int main()
 #endif
   constexpr Speed auto v7 = quantity_cast<int>(v6);
 
-  std::cout << v1 << '\n';                                       // 110 km/h
-  std::cout << v2 << '\n';                                       // 70 mi/h
+  std::cout << v1 << '\n';                                             // 110 km/h
+  std::cout << v2 << '\n';                                             // 70 mi/h
   std::cout << UNITS_STD_FMT::format("{}", v3) << '\n';                // 110 km/h
   std::cout << UNITS_STD_FMT::format("{:*^14}", v4) << '\n';           // ***70 mi/h****
   std::cout << UNITS_STD_FMT::format("{:%Q in %q}", v5) << '\n';       // 30.5556 in m/s

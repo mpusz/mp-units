@@ -66,28 +66,29 @@ void print_details(std::string_view description, const Ship& ship)
   using namespace units::isq::si::fps::literals;
   const auto waterDensity = 62.4_q_lb_per_ft3;
   std::cout << UNITS_STD_FMT::format("{}\n", description);
-  std::cout << UNITS_STD_FMT::format("{:20} : {}\n", "length",
-                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "draft",
-                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "beam",
-                               fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "mass",
-                               fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
-            << UNITS_STD_FMT::format(
-                 "{:20} : {}\n", "speed",
-                 fmt_line<si::speed<si::international::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "power",
-                               fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "main guns",
-                               fmt_line<si::fps::length<si::fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "fire shells weighing",
-                               fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
-            << UNITS_STD_FMT::format(
-                 "{:20} : {}\n", "fire shells at",
-                 fmt_line<si::fps::speed<si::fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
-            << UNITS_STD_FMT::format("{:20} : {}\n", "volume underwater",
-                               fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
+  std::cout
+    << UNITS_STD_FMT::format("{:20} : {}\n", "length",
+                             fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.length))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "draft",
+                             fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.draft))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "beam",
+                             fmt_line<si::fps::length<si::fps::yard>, si::length<si::metre>>(ship.beam))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "mass",
+                             fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::tonne>>(ship.mass))
+    << UNITS_STD_FMT::format(
+         "{:20} : {}\n", "speed",
+         fmt_line<si::speed<si::international::knot>, si::speed<si::kilometre_per_hour>>(ship.speed))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "power",
+                             fmt_line<si::fps::power<si::fps::horse_power>, si::power<si::kilowatt>>(ship.power))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "main guns",
+                             fmt_line<si::fps::length<si::fps::inch>, si::length<si::millimetre>>(ship.mainGuns))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "fire shells weighing",
+                             fmt_line<si::fps::mass<si::fps::long_ton>, si::mass<si::kilogram>>(ship.shellMass))
+    << UNITS_STD_FMT::format(
+         "{:20} : {}\n", "fire shells at",
+         fmt_line<si::fps::speed<si::fps::mile_per_hour>, si::speed<si::kilometre_per_hour>>(ship.shellSpeed))
+    << UNITS_STD_FMT::format("{:20} : {}\n", "volume underwater",
+                             fmt_line<si::volume<si::cubic_metre>, si::volume<si::litre>>(ship.mass / waterDensity));
 }
 
 int main()

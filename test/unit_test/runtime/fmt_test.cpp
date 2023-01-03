@@ -493,7 +493,10 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
       CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
     }
 
-    SECTION("inf") { CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(std::numeric_limits<double>::infinity())) == "inf"); }
+    SECTION("inf")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(std::numeric_limits<double>::infinity())) == "inf");
+    }
 
     SECTION("-inf")
     {
@@ -695,13 +698,15 @@ TEST_CASE("precision specification for integral representation should throw", "[
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q %q}", UNITS_STD_FMT::make_format_args(1_q_m)), UNITS_STD_FMT::format_error,
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q %q}", UNITS_STD_FMT::make_format_args(1_q_m)),
+                           UNITS_STD_FMT::format_error,
                            Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q}", UNITS_STD_FMT::make_format_args(1_q_m)), UNITS_STD_FMT::format_error,
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q}", UNITS_STD_FMT::make_format_args(1_q_m)),
+                           UNITS_STD_FMT::format_error,
                            Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 }

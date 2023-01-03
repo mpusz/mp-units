@@ -177,11 +177,11 @@ struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
       if constexpr (sizeof...(Qs) == 1)
         UNITS_STD_FMT::format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
       else if constexpr (sizeof...(Qs) == 2)
-        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision, kalman::get<0>(s),
-                           kalman::get<1>(s));
+        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision,
+                                 kalman::get<0>(s), kalman::get<1>(s));
       else
         UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", specs.precision,
-                           kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+                                 kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
     } else {
       if constexpr (sizeof...(Qs) == 1)
         UNITS_STD_FMT::format_to(to_value_buffer, "{}", kalman::get<0>(s));
@@ -189,7 +189,7 @@ struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
         UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
       else
         UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s),
-                           kalman::get<2>(s));
+                                 kalman::get<2>(s));
     }
 
     std::string global_format_buffer;
@@ -223,7 +223,8 @@ struct UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
     std::string value_buffer;
     auto to_value_buffer = std::back_inserter(value_buffer);
     if (specs.precision != -1) {
-      UNITS_STD_FMT::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty), specs.precision);
+      UNITS_STD_FMT::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty),
+                               specs.precision);
     } else {
       UNITS_STD_FMT::format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
     }
