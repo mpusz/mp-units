@@ -86,7 +86,7 @@ void print(const R& gliders)
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
       const auto ratio = units::quantity_cast<units::one>(glide_ratio(g.polar[0]));
-      std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v, ratio,
+      std::cout << UNITS_STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v, ratio,
                                    units::quantity_cast<units::degree>(asin(1 / ratio)));
     }
     std::cout << "\n";
@@ -102,8 +102,8 @@ void print(const R& conditions)
   for (const auto& c : conditions) {
     std::cout << "- " << c.first << "\n";
     const auto& w = c.second;
-    std::cout << "  * Cloud base:        " << STD_FMT::format("{:%.0Q %q}", w.cloud_base) << " AGL\n";
-    std::cout << "  * Thermals strength: " << STD_FMT::format("{:%.1Q %q}", w.thermal_strength) << "\n";
+    std::cout << "  * Cloud base:        " << UNITS_STD_FMT::format("{:%.0Q %q}", w.cloud_base) << " AGL\n";
+    std::cout << "  * Thermals strength: " << UNITS_STD_FMT::format("{:%.1Q %q}", w.thermal_strength) << "\n";
     std::cout << "\n";
   }
 }
@@ -115,7 +115,7 @@ void print(const R& waypoints)
   std::cout << "Waypoints:\n";
   std::cout << "==========\n";
   for (const auto& w : waypoints)
-    std::cout << STD_FMT::format("- {}: {} {}, {:%.1Q %q}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
+    std::cout << UNITS_STD_FMT::format("- {}: {} {}, {:%.1Q %q}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
   std::cout << "\n";
 }
 
@@ -126,12 +126,12 @@ void print(const task& t)
 
   std::cout << "- Start: " << t.get_start().name << "\n";
   std::cout << "- Finish: " << t.get_finish().name << "\n";
-  std::cout << "- Length:  " << STD_FMT::format("{:%.1Q %q}", t.get_length()) << "\n";
+  std::cout << "- Length:  " << UNITS_STD_FMT::format("{:%.1Q %q}", t.get_length()) << "\n";
 
   std::cout << "- Legs: "
             << "\n";
   for (const auto& l : t.get_legs())
-    std::cout << STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_length());
+    std::cout << UNITS_STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_length());
   std::cout << "\n";
 }
 
@@ -139,7 +139,7 @@ void print(const safety& s)
 {
   std::cout << "Safety:\n";
   std::cout << "=======\n";
-  std::cout << "- Min AGL separation: " << STD_FMT::format("{:%.0Q %q}", s.min_agl_height) << "\n";
+  std::cout << "- Min AGL separation: " << UNITS_STD_FMT::format("{:%.0Q %q}", s.min_agl_height) << "\n";
   std::cout << "\n";
 }
 
@@ -148,8 +148,8 @@ void print(const aircraft_tow& tow)
   std::cout << "Tow:\n";
   std::cout << "====\n";
   std::cout << "- Type:        aircraft\n";
-  std::cout << "- Height:      " << STD_FMT::format("{:%.0Q %q}", tow.height_agl) << "\n";
-  std::cout << "- Performance: " << STD_FMT::format("{:%.1Q %q}", tow.performance) << "\n";
+  std::cout << "- Height:      " << UNITS_STD_FMT::format("{:%.0Q %q}", tow.height_agl) << "\n";
+  std::cout << "- Performance: " << UNITS_STD_FMT::format("{:%.1Q %q}", tow.performance) << "\n";
   std::cout << "\n";
 }
 
@@ -178,7 +178,7 @@ void example()
     for (const auto& c : weather_conditions) {
       std::string txt = "Scenario: Glider = " + g.name + ", Weather = " + c.first;
       std::cout << txt << "\n";
-      std::cout << STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
+      std::cout << UNITS_STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
 
       estimate(start_time, g, c.second, t, sfty, tow);
 
