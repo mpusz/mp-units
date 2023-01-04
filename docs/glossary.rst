@@ -73,9 +73,9 @@ ISO 80000 [1]_ definitions
         tensor character.
       - In a given `system of quantities`:
 
-        - `quantities <quantity>` of the same `kind` have the same quantity dimension,
-        - `quantities <quantity>` of different quantity dimensions are always of different `kinds <kind>`,
-        - `quantities <quantity>` having the same quantity dimension are not necessarily of the same `kind`.
+          - `quantities <quantity>` of the same `kind` have the same quantity dimension,
+          - `quantities <quantity>` of different quantity dimensions are always of different `kinds <kind>`,
+          - `quantities <quantity>` having the same quantity dimension are not necessarily of the same `kind`.
 
     quantity of dimension one
     dimensionless quantity
@@ -168,7 +168,15 @@ ISO 80000 [1]_ definitions
     value of a quantity
     value
       - Number and reference together expressing magnitude of a `quantity`.
+      - The number can be complex.
       - A quantity value can be presented in more than one way.
+      - In the case of vector or tensor quantities, each component has a quantity value.
+      
+          - For example, force acting on a given particle, e.g. in Cartesian components
+            :math:`(F_x; F_y; F_z) = (−31,5; 43,2; 17,0) N`, where
+            :math:`(−31,5; 43,2; 17,0)` is a numerical-value vector and :math:`N` (newton)
+            is the unit, or :math:`(F_x; F_y; F_z) = (−31,5 N; 43,2 N; 17,0 N)`
+            where each component is a quantity.
 
 
 Other definitions
