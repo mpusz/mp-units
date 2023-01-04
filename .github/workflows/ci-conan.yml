@@ -50,7 +50,7 @@ jobs:
             }
           - {
               name: "Ubuntu GCC-10",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
@@ -63,7 +63,7 @@ jobs:
             }
           - {
               name: "Ubuntu GCC-11",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
@@ -75,8 +75,21 @@ jobs:
               lib: "libstdc++11",
             }
           - {
+              name: "Ubuntu GCC-12",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 12,
+                  cc: "gcc-12",
+                  cxx: "g++-12",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
               name: "Ubuntu Clang-12 + libstdc++11",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -89,7 +102,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-12 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -102,7 +115,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-13 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -115,7 +128,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-14 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -128,7 +141,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-15 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -176,8 +189,8 @@ jobs:
         with:
           key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
           max-size: 50M
-      - name: Install gcc-11
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '11'
+      - name: Install gcc-12
+        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '12'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
