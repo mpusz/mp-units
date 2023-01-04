@@ -138,7 +138,7 @@ consteval auto power_or_T_impl()
       return power<T, R.num, R.den>{};
     }
   }
-};
+}
 
 template<typename T, auto R>
 // template<typename T, ratio R>  // TODO ICE gcc 12
