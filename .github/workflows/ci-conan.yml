@@ -89,7 +89,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-12 + libstdc++11",
-              os: ubuntu-22.04,
+              os: ubuntu-20.04,
               compiler:
                 {
                   type: CLANG,
@@ -102,7 +102,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-12 + libc++",
-              os: ubuntu-22.04,
+              os: ubuntu-20.04,
               compiler:
                 {
                   type: CLANG,
