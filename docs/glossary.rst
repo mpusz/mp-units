@@ -171,7 +171,7 @@ ISO 80000 [1]_ definitions
       - The number can be complex.
       - A quantity value can be presented in more than one way.
       - In the case of vector or tensor quantities, each component has a quantity value.
-      
+
           - For example, force acting on a given particle, e.g. in Cartesian components
             :math:`(F_x; F_y; F_z) = (−31,5; 43,2; 17,0) N`, where
             :math:`(−31,5; 43,2; 17,0)` is a numerical-value vector and :math:`N` (newton)
