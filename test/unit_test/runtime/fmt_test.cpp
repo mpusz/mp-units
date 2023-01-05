@@ -143,7 +143,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         const auto q = 123 * isq::angular_impulse[N * m * s];
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "123 m N s"); }
+        SECTION("iostream") { CHECK(os.str() == "123 N m s"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
