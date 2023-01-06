@@ -49,17 +49,7 @@ env:
 jobs:
   docs:
     name: Generate documentation
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ "ubuntu-22.04" ]
-        build_type: [ "Debug" ]
-        compiler:
-        - {
-            type: GCC,
-            version: "10",
-            lib: libstdc++11
-          } 
+    runs-on: ${{ OS }}
     steps:
       - uses: actions/checkout@v3
       - name: Cache Conan data
