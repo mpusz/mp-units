@@ -25,11 +25,10 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ${{ OS }}
+    runs-on: ${{ matrix.os }}
     env:
       CC: gcc-10
       CXX: g++-10
-      OS: ubuntu-22.04
       BUILD_TYPE: Debug
       COMPILER_TYPE: GCC
       COMPILER_VERSION: 10

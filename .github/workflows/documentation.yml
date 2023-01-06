@@ -35,21 +35,24 @@ on:
       - "docs/**"
       - "src/**"
       - "example/**"
-
-env:
-  CC: gcc-10
-  CXX: g++-10
-  CMAKE_GENERATOR: Ninja
-  CONAN_CMAKE_GENERATOR: Ninja
-  OS: ubuntu-22.04
-  BUILD_TYPE: Debug
-  COMPILER_TYPE: GCC
-  COMPILER_VERSION: 10
-  STDLIB: libstdc++11
+  
 jobs:
   docs:
     name: Generate documentation
-    runs-on: ${{ OS }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CC: gcc-10
+      CXX: g++-10
+      CMAKE_GENERATOR: Ninja
+      CONAN_CMAKE_GENERATOR: Ninja
+      BUILD_TYPE: Debug
+      COMPILER_TYPE: GCC
+      COMPILER_VERSION: 10
+      STDLIB: libstdc++11
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest" ]
     steps:
       - uses: actions/checkout@v3
       - name: Cache Conan data
@@ -58,13 +61,12 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan/data
-          key: build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-${{ STDLIB }}
+          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
           restore-keys: |
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-${{ STDLIB }}
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-
-            build-${{ OS }}-${{ BUILD_TYPE }}-
-            build-${{ OS }}-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
+            build-${{ matrix.os }}-$BUILD_TYPE-
+            build-${{ matrix.os }}-
       - name: Install Ninja
         run: |
           sudo apt install -y ninja-build
