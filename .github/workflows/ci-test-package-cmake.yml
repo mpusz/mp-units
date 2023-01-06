@@ -54,7 +54,7 @@ jobs:
             }
           - {
               name: "Ubuntu GCC-10",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
@@ -67,13 +67,26 @@ jobs:
             }
           - {
               name: "Ubuntu GCC-11",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
                   version: 11,
                   cc: "gcc-11",
                   cxx: "g++-11",
+                  std: 20,
+                },
+              lib: "libstdc++11",
+            }
+          - {
+              name: "Ubuntu GCC-12",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 12,
+                  cc: "gcc-12",
+                  cxx: "g++-12",
                   std: 20,
                 },
               lib: "libstdc++11",
@@ -106,7 +119,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-13 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -119,7 +132,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-14 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -132,7 +145,7 @@ jobs:
             }
           - {
               name: "Ubuntu Clang-15 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
