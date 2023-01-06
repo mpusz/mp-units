@@ -29,7 +29,7 @@ on:
       - "docs/**"
       - "src/**"
       - "example/**"
-  pull_request:
+  pull_request:STDLIB
     paths:
       - ".github/workflows/documentation.yml"
       - "docs/**"
@@ -84,7 +84,7 @@ jobs:
           conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          conan install . -s compiler.cppstd=20 -s compiler.libcxx=${{ env.STDLIB }} -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=${{ STDLIB }} -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
       - name: Configure CMake
         run: |
           cmake --preset default

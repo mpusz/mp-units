@@ -91,7 +91,7 @@ jobs:
           conan config init
           conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=${{ env.STDLIB }} -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=${{ STDLIB }} -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
           conan build ..
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
