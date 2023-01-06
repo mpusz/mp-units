@@ -35,7 +35,6 @@ on:
       - "docs/**"
       - "src/**"
       - "example/**"
-  
 jobs:
   docs:
     name: Generate documentation
@@ -45,6 +44,7 @@ jobs:
       CXX: g++-10
       CMAKE_GENERATOR: Ninja
       CONAN_CMAKE_GENERATOR: Ninja
+      OS: ubuntu-22.04
       BUILD_TYPE: Debug
       COMPILER_TYPE: GCC
       COMPILER_VERSION: 10
