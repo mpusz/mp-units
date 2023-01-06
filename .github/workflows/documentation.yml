@@ -29,7 +29,7 @@ on:
       - "docs/**"
       - "src/**"
       - "example/**"
-  pull_request:STDLIB
+  pull_request:
     paths:
       - ".github/workflows/documentation.yml"
       - "docs/**"
