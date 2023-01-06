@@ -41,11 +41,15 @@ env:
   CXX: g++-10
   CMAKE_GENERATOR: Ninja
   CONAN_CMAKE_GENERATOR: Ninja
-
+  OS: ubuntu-22.04
+  BUILD_TYPE: Debug
+  COMPILER_TYPE: GCC
+  COMPILER_VERSION: 10
+  STDLIB: libstdc++11
 jobs:
   docs:
     name: Generate documentation
-    runs-on: ubuntu-22.04
+    runs-on: ${{ env.OS }}
     steps:
       - uses: actions/checkout@v3
       - name: Cache Conan data
@@ -54,11 +58,13 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          key: build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-${{ env.STDLIB }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-${{ env.STDLIB }}
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-
+            build-${{ env.OS }}-
       - name: Install Ninja
         run: |
           sudo apt install -y ninja-build
@@ -78,7 +84,7 @@ jobs:
           conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          conan install . -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=${{ env.STDLIB }} -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
       - name: Configure CMake
         run: |
           cmake --preset default

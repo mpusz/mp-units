@@ -25,11 +25,15 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-22.04
+    runs-on: ${{ env.OS }}
     env:
       CC: gcc-10
       CXX: g++-10
-
+      OS: ubuntu-22.04
+      BUILD_TYPE: Debug
+      COMPILER_TYPE: GCC
+      COMPILER_VERSION: 10
+      STDLIB: libstdc++11
     strategy:
       fail-fast: false
       matrix:
@@ -68,11 +72,13 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          key: build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-${{ env.STDLIB }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-${{ env.STDLIB }}
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-${{ env.COMPILER_VERSION }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-${{ env.COMPILER_TYPE }}-
+            build-${{ env.OS }}-${{ env.BUILD_TYPE }}-
+            build-${{ env.OS }}-
       - name: Set up Python
         if: matrix.language == 'cpp'
         uses: actions/setup-python@v4
@@ -85,7 +91,7 @@ jobs:
           conan config init
           conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=${{ env.STDLIB }} -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
           conan build ..
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1

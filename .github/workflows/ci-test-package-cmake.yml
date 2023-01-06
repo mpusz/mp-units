@@ -187,11 +187,13 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          key: build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-
+            build-${{ matrix.config.os }}-
       - name: Install gcc-11
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '11'
         shell: bash
