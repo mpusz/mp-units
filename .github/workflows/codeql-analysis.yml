@@ -71,13 +71,12 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan/data
-          key: build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-${{ STDLIB }}
+          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
           restore-keys: |
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-${{ STDLIB }}
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-${{ COMPILER_VERSION }}-
-            build-${{ OS }}-${{ BUILD_TYPE }}-${{ COMPILER_TYPE }}-
-            build-${{ OS }}-${{ BUILD_TYPE }}-
-            build-${{ OS }}-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
+            build-${{ matrix.os }}-$BUILD_TYPE-
+            build-${{ matrix.os }}-
       - name: Set up Python
         if: matrix.language == 'cpp'
         uses: actions/setup-python@v4
