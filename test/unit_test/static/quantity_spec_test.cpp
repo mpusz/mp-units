@@ -51,8 +51,8 @@ QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
 
-QUANTITY_SPEC_(frequency, 1 / period_duration);
-QUANTITY_SPEC_(action, 1 / time);
+QUANTITY_SPEC_(frequency, 1 / period_duration, kind_of<frequency_>());
+QUANTITY_SPEC_(action, 1 / time, kind_of<action_>());
 QUANTITY_SPEC_(area, pow<2>(length));
 QUANTITY_SPEC_(volume, pow<3>(length));
 QUANTITY_SPEC_(velocity, position_vector / time);
@@ -66,8 +66,9 @@ QUANTITY_SPEC_(stress, pressure, quantity_character::tensor);
 QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC_(power, force* velocity, quantity_character::scalar);
 QUANTITY_SPEC_(efficiency, power / power);
-QUANTITY_SPEC_(potential_energy, mass* acceleration* height);
-QUANTITY_SPEC_(energy, force * length);
+QUANTITY_SPEC_(energy, force * length, kind_of<energy_>());
+QUANTITY_SPEC_(potential_energy, mass* acceleration* height, kind_of<energy>());
+QUANTITY_SPEC_(kinetic_energy, mass* pow<2>(speed), kind_of<energy>());
 // clang-format on
 
 // concepts verification
@@ -207,6 +208,23 @@ concept invalid_operations = requires {
   requires !requires { 1 * time[second] < t; };
 };
 static_assert(invalid_operations<time>);
+
+// get_kind
+static_assert(get_kind(length) == length);
+static_assert(get_kind(distance) == length);
+static_assert(get_kind(time) == time);
+static_assert(get_kind(period_duration) == time);
+static_assert(get_kind(length / time) == length / time);
+static_assert(get_kind(speed) == length / time);
+static_assert(get_kind(height / time) == length / time);
+static_assert(get_kind(1 / time) == 1 / time);
+static_assert(get_kind(1 / period_duration) == 1 / time);
+static_assert(get_kind(frequency) == frequency);
+static_assert(get_kind(mass * frequency) == mass * frequency);
+static_assert(get_kind(moment_of_force) == mass * pow<2>(length) / pow<2>(time));
+static_assert(get_kind(energy) == energy);
+static_assert(get_kind(potential_energy) == energy);
+static_assert(get_kind(kinetic_energy) == energy);
 
 // comparisons of the same dimensions
 static_assert(length == length);

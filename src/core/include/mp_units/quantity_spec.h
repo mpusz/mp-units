@@ -29,9 +29,25 @@
 #include <mp_units/bits/quantity_concepts.h>
 #include <mp_units/dimension.h>
 #include <mp_units/unit.h>
-#include <tuple>
 
 namespace mp_units {
+
+template<typename Q>
+struct kind_of_ {
+  using type = Q;
+};
+
+template<QuantitySpec auto Q>
+consteval kind_of_<std::remove_const_t<decltype(Q)>> kind_of()
+{
+  return {};
+}
+
+template<typename Q>
+consteval kind_of_<Q> kind_of()
+{
+  return {};
+}
 
 namespace detail {
 
@@ -65,8 +81,8 @@ template<typename... Qs1, typename... Qs2>
 template<auto... Args>
 [[nodiscard]] consteval quantity_character quantity_character_init(quantity_character ch)
 {
-  if constexpr (one_of<quantity_character, std::remove_const_t<decltype(Args)>...>)
-    return std::get<quantity_character>(std::make_tuple(Args...));
+  if constexpr (contains<quantity_character, Args...>())
+    return get<quantity_character, Args...>();
   else
     return ch;
 }
@@ -411,6 +427,56 @@ inline constexpr bool is_dimensionless<struct dimensionless> = true;
 
 }  // namespace detail
 
+namespace detail {
+
+#ifdef __cpp_explicit_this_parameter
+template<QuantitySpec auto Q, auto... Args>
+[[nodiscard]] consteval bool defines_kind(quantity_spec<Q, Args...>)
+#else
+template<typename Self, QuantitySpec auto Q, auto... Args>
+[[nodiscard]] consteval bool defines_kind(quantity_spec<Self, Q, Args...>)
+#endif
+{
+  return contains<kind_of_, std::remove_const_t<decltype(Args)>...>();
+}
+
+#ifdef __cpp_explicit_this_parameter
+template<QuantitySpec auto Q, auto... Args>
+[[nodiscard]] consteval QuantitySpec auto fetch_kind(quantity_spec<Q, Args...>)
+#else
+template<typename Self, QuantitySpec auto Q, auto... Args>
+[[nodiscard]] consteval QuantitySpec auto fetch_kind(quantity_spec<Self, Q, Args...>)
+#endif
+{
+  return typename decltype(get<kind_of_, std::remove_const_t<decltype(Args)>...>())::type{};
+}
+
+template<QuantitySpec Q>
+  requires requires(Q q) { get_kind(q); }
+using to_kind = std::remove_const_t<decltype(get_kind(Q{}))>;
+
+}  // namespace detail
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind(Q q)
+{
+  if constexpr (requires { Q::_parent_; }) {
+    // named non-base quantity
+    if constexpr (detail::defines_kind(q))
+      return detail::fetch_kind(q);
+    else
+      return get_kind(Q::_parent_);
+  } else if constexpr (requires {
+                         typename Q::_equation_;
+                       }) {  // TODO can we just check if it is derived from the derived_quantity_spec?
+    // derived quantity
+    return detail::expr_map<detail::to_kind, mp_units::derived_quantity_spec, struct dimensionless,
+                            detail::type_list_of_quantity_spec_less>(typename Q::_base_{});
+  } else {
+    // base quantity
+    return q;
+  }
+}
 
 // Operators
 
@@ -460,17 +526,13 @@ template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval auto common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-[[nodiscard]] consteval auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(interconvertible(q1, q2))
+[[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
+  requires(get_kind(q1) == get_kind(q2))
 {
-  if constexpr (std::derived_from<Q1, Q2>)
-    return q1;
-  else if constexpr (std::derived_from<Q2, Q1>)
-    return q2;
-  else if constexpr (NamedQuantitySpec<Q1>)
-    return q1;
+  if constexpr (detail::have_common_base(q1, q2))
+    return detail::find_common_base(q1, q2);
   else
-    return q2;
+    return get_kind(q1);
 }
 
 [[nodiscard]] consteval auto common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2, QuantitySpec auto q3,
