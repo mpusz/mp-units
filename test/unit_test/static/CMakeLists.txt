@@ -65,6 +65,7 @@ add_library(
     symbol_text_test.cpp
     type_list_test.cpp
     unit_test.cpp
+    unit_symbol_test.cpp
     usc_test.cpp
 )
 
