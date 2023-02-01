@@ -59,7 +59,7 @@ static_assert(10 * km / (5 * km) == 2);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/5dvY8Woh1)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/qbbbnfK3s)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -107,4 +107,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/bcb87Kvea)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/b4a3Ya6dY)._
