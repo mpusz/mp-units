@@ -157,6 +157,8 @@ class MPUnitsConan(ConanFile):
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
+        if self._build_all and not self._skip_docs:
+            deps.build_context_activated = ["doxygen"]
         deps.generate()
 
     def build(self):
