@@ -111,7 +111,7 @@ generators. For example:
 
 .. note::
 
-  *~/.conan/global.conf* file may also set ``tools.cmake.cmake_layout:build_folder_vars``` which
+  *~/.conan/global.conf* file may also set ``tools.cmake.cmake_layout:build_folder_vars`` which
   `makes working with several compilers or build configurations easier
   <https://docs.conan.io/en/latest/reference/conanfile/tools/cmake/cmake_layout.html#multi-setting-option-cmake-layout>`_.
   For example the below line will force Conan to generate separate CMake presets and folders for each compiler:
