@@ -397,7 +397,6 @@ template<auto& s>
 concept invalid_operations = requires {
   requires !requires { s < s; };
   requires !requires { s / 2; };
-  requires !requires { 2 * s; };
   requires !requires { s * 2; };
   requires !requires { s + 2; };
   requires !requires { 2 + s; };
@@ -411,16 +410,9 @@ concept invalid_operations = requires {
   requires !requires { 2 < s; };
   requires !requires { s + time[second]; };
   requires !requires { s - time[second]; };
-  requires !requires { s* time[second]; };
-  requires !requires { s / time[second]; };
-  requires !requires { s == time[second]; };
   requires !requires { s < time[second]; };
   requires !requires { time[second] + s; };
   requires !requires { time[second] - s; };
-  requires !requires { time[second] * s; };
-  requires !requires { time[second] / s; };
-  requires !requires { time[second] == s; };
-  requires !requires { time[second] < s; };
   requires !requires { s + 1 * time[second]; };
   requires !requires { s - 1 * time[second]; };
   requires !requires { s * 1 * time[second]; };

@@ -23,9 +23,64 @@
 #pragma once
 
 #include <mp_units/bits/quantity_concepts.h>
-#include <mp_units/unit.h>
+#include <mp_units/bits/reference_concepts.h>
+#include <mp_units/bits/representation_concepts.h>
+#include <mp_units/quantity_spec.h>
 
 namespace mp_units {
+
+namespace detail {
+
+template<AssociatedUnit U>
+[[nodiscard]] consteval auto get_associated_quantity(U);
+
+template<typename U, auto... Vs>
+[[nodiscard]] consteval auto get_associated_quantity(power<U, Vs...>)
+{
+  return get_associated_quantity(U{});
+}
+
+template<typename... Us>
+[[nodiscard]] consteval auto get_associated_quantity(type_list<Us...>)
+{
+  return (dimensionless * ... * get_associated_quantity(Us{}));
+}
+
+template<AssociatedUnit U>
+[[nodiscard]] consteval auto get_associated_quantity(U)
+{
+  if constexpr (requires { U::reference_unit; })
+    return get_associated_quantity(U::reference_unit);
+  else if constexpr (requires { typename U::_num_; })
+    return get_associated_quantity(typename U::_num_{}) / get_associated_quantity(typename U::_den_{});
+  else if constexpr (requires { U::base_quantity; })
+    return U::base_quantity;
+}
+
+}  // namespace detail
+
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
+{
+  return detail::get_associated_quantity(u);
+}
+
+template<auto Q, auto U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)
+{
+  return Q;
+}
+
+[[nodiscard]] consteval Unit auto get_unit(AssociatedUnit auto u) { return u; }
+
+template<auto Q, auto U>
+[[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
+{
+  return U;
+}
+
+
+template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
+class quantity;
 
 /**
  * @brief Quantity reference type
@@ -39,7 +94,7 @@ namespace mp_units {
  *
  * @code{.cpp}
  * Reference auto kmph = isq::speed[km / h];
- * quantity_of<isq::speed[km / h]> auto speed = 90 * kmph;
+ * QuantityOf<isq::speed[km / h]> auto speed = 90 * kmph;
  * @endcode
  *
  * The following syntaxes are not allowed:
@@ -47,10 +102,6 @@ namespace mp_units {
  */
 template<QuantitySpec auto Q, Unit auto U>
 struct reference {
-  static constexpr QuantitySpec auto quantity_spec = Q;
-  static constexpr Dimension auto dimension = Q.dimension;
-  static constexpr Unit auto unit = U;
-
   template<RepresentationOf<Q.character> Rep>
   // TODO can we somehow return an explicit quantity type here?
   [[nodiscard]] constexpr std::same_as<quantity<reference{}, Rep>> auto operator()(Rep&& value) const
@@ -59,54 +110,103 @@ struct reference {
   }
 };
 
-// Reference
+template<auto Q1, auto U1, auto Q2, auto U2>
+[[nodiscard]] consteval bool operator==(reference<Q1, U1>, reference<Q2, U2>)
+{
+  return Q1 == Q2 && U1 == U2;
+}
 
-template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<R1::quantity_spec * R2::quantity_spec, R1::unit * R2::unit> operator*(R1, R2)
+template<auto Q1, auto U1, AssociatedUnit U2>
+[[nodiscard]] consteval bool operator==(reference<Q1, U1>, U2 u2)
+{
+  return Q1 == get_quantity_spec(u2) && U1 == u2;
+}
+
+template<auto Q1, auto U1, auto Q2, auto U2>
+[[nodiscard]] consteval reference<Q1 * Q2, U1 * U2> operator*(reference<Q1, U1>, reference<Q2, U2>)
 {
   return {};
 }
 
-template<Reference R1, Reference R2>
-[[nodiscard]] consteval reference<R1::quantity_spec / R2::quantity_spec, R1::unit / R2::unit> operator/(R1, R2)
+template<auto Q1, auto U1, AssociatedUnit U2>
+[[nodiscard]] consteval reference<Q1 * get_quantity_spec(U2{}), U1* U2{}> operator*(reference<Q1, U1>, U2)
 {
   return {};
 }
 
-// TODO remove when all code is refactored to a new syntax
-template<Representation Rep, Reference R>
+template<AssociatedUnit U1, auto Q2, auto U2>
+[[nodiscard]] consteval reference<get_quantity_spec(U1{}) * Q2, U1{} * U2> operator*(U1, reference<Q2, U2>)
+{
+  return {};
+}
+
+template<auto Q1, auto U1, auto Q2, auto U2>
+[[nodiscard]] consteval reference<Q1 / Q2, U1 / U2> operator/(reference<Q1, U1>, reference<Q2, U2>)
+{
+  return {};
+}
+
+template<auto Q1, auto U1, AssociatedUnit U2>
+[[nodiscard]] consteval reference<Q1 / get_quantity_spec(U2{}), U1 / U2{}> operator/(reference<Q1, U1>, U2)
+{
+  return {};
+}
+
+template<AssociatedUnit U1, auto Q2, auto U2>
+[[nodiscard]] consteval reference<get_quantity_spec(U1{}) / Q2, U1{} / U2> operator/(U1, reference<Q2, U2>)
+{
+  return {};
+}
+
+template<Reference R, RepresentationOf<get_quantity_spec(R{}).character> Rep>
 [[nodiscard]] constexpr quantity<R{}, Rep> operator*(const Rep& lhs, R)
 {
   return quantity<R{}, Rep>(lhs);
 }
 
-// TODO remove when all code is refactored to a new syntax
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
-template<Reference R1, Reference R2>
-[[nodiscard]] consteval bool operator==(R1, R2)
+template<auto Q1, auto U1, auto Q2, auto U2>
+[[nodiscard]] consteval bool interconvertible(reference<Q1, U1>, reference<Q2, U2>)
 {
-  return R1::quantity_spec == R2::quantity_spec && R1::unit == R2::unit;
+  return interconvertible(Q1, Q2) && interconvertible(U1, U2);
 }
 
-template<Reference R1, Reference R2>
-[[nodiscard]] consteval bool interconvertible(R1, R2)
+template<auto Q1, auto U1, AssociatedUnit U2>
+[[nodiscard]] consteval bool interconvertible(reference<Q1, U1>, U2 u2)
 {
-  return interconvertible(R1::quantity_spec, R2::quantity_spec) && interconvertible(R1::unit, R2::unit);
+  return interconvertible(Q1, get_quantity_spec(u2)) && interconvertible(U1, u2);
+}
+
+template<AssociatedUnit U1, auto Q2, auto U2>
+[[nodiscard]] consteval bool interconvertible(U1 u1, reference<Q2, U2> r2)
+{
+  return interconvertible(r2, u1);
+}
+
+[[nodiscard]] consteval auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
+                                              AssociatedUnit auto... rest)
+  requires requires {
+    {
+      common_unit(u1, u2, rest...)
+    } -> AssociatedUnit;
+  }
+{
+  return common_unit(u1, u2, rest...);
 }
 
 [[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2, Reference auto... rest)
   requires requires {
     {
-      common_quantity_spec(r1.quantity_spec, r2.quantity_spec, rest.quantity_spec...)
+      common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
     } -> QuantitySpec;
     {
-      common_unit(r1.unit, r2.unit, rest.unit...)
+      common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)
     } -> Unit;
   }
 {
-  return reference<common_quantity_spec(r1.quantity_spec, r2.quantity_spec, rest.quantity_spec...),
-                   common_unit(r1.unit, r2.unit, rest.unit...)>{};
+  return reference<common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...),
+                   common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
 }
 
 }  // namespace mp_units

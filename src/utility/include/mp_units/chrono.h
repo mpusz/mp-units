@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp_units/customization_points.h>
+#include <mp_units/quantity_point.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/prefixes.h>
 #include <mp_units/systems/si/units.h>
@@ -80,7 +81,7 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
   }
 };
 
-template<quantity_of<isq::time> Q>
+template<QuantityOf<isq::time> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
   constexpr auto canonical = detail::get_canonical_unit(Q::unit);
@@ -88,7 +89,7 @@ template<quantity_of<isq::time> Q>
   return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.number()};
 }
 
-template<quantity_point_of<isq::time> QP>
+template<QuantityPointOf<isq::time> QP>
   requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {

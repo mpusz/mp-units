@@ -36,7 +36,7 @@ UNITS_DIAGNOSTIC_IGNORE_LOSS_OF_DATA
 
 namespace mp_units {
 
-template<Reference auto R, RepresentationOf<R.quantity_spec.character> Rep>
+template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
 // template<PointOrigin O, UnitOf<typename O::dimension> U, Representation Rep>
@@ -57,12 +57,12 @@ class quantity;
  */
 template<Quantity To, auto R, typename Rep>
   requires(interconvertible(To::reference, R)) &&
-          ((R.unit == To::unit && std::constructible_from<typename To::rep, Rep>) ||
-           (R.unit != To::unit))  // && scalable_with_<typename To::rep>))
+          ((get_unit(R) == To::unit && std::constructible_from<typename To::rep, Rep>) ||
+           (get_unit(R) != To::unit))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
-  if constexpr (R.unit == To::unit) {
+  if constexpr (get_unit(R) == To::unit) {
     // no scaling of the number needed
     return To(static_cast<TYPENAME To::rep>(q.number()));  // this is the only (and recommended) way to do
                                                            // a truncating conversion on a number, so we are
@@ -91,7 +91,8 @@ template<Quantity To, auto R, typename Rep>
         return std::intmax_t{};
     }());
 
-    constexpr Magnitude auto c_mag = detail::get_canonical_unit(R.unit).mag / detail::get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto c_mag =
+      detail::get_canonical_unit(get_unit(R)).mag / detail::get_canonical_unit(To::unit).mag;
     constexpr Magnitude auto num = numerator(c_mag);
     constexpr Magnitude auto den = denominator(c_mag);
     constexpr Magnitude auto irr = c_mag * (den / num);
@@ -107,26 +108,6 @@ template<Quantity To, auto R, typename Rep>
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * This cast gets a target reference to cast to. For example:
- *
- * auto v = quantity_cast<isq::velocity[km / h]>(q);
- *
- * @tparam ToR a reference to use for a target quantity
- */
-template<Reference auto ToR, auto R, typename Rep>
-  requires(interconvertible(ToR, R))
-[[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
-{
-  return quantity_cast<quantity<ToR, Rep>>(q);
-}
-
-
-/**
- * @brief Explicit cast of a quantity
- *
- * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
- *
  * This cast gets only the target quantity specification to cast to. For example:
  *
  * auto v = quantity_cast<isq::velocity>(120 * isq::length[km] / (2 * isq::time[h]));
@@ -134,7 +115,7 @@ template<Reference auto ToR, auto R, typename Rep>
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, auto R, typename Rep>
-  requires(interconvertible(ToQS, R.quantity_spec))
+  requires(interconvertible(ToQS, get_quantity_spec(R)))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   constexpr reference<ToQS, quantity<R, Rep>::unit> r;
@@ -154,7 +135,7 @@ template<QuantitySpec auto ToQS, auto R, typename Rep>
  * @tparam ToU a unit to use for a target quantity
  */
 template<Unit auto ToU, auto R, typename Rep>
-  requires(interconvertible(ToU, R.unit))
+  requires(interconvertible(ToU, get_unit(R)))
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
@@ -174,7 +155,7 @@ template<Unit auto ToU, auto R, typename Rep>
  * @tparam ToRep a representation type to use for a target quantity
  */
 template<Representation ToRep, auto R, typename Rep>
-  requires RepresentationOf<ToRep, R.quantity_spec.character> && std::constructible_from<ToRep, Rep>
+  requires RepresentationOf<ToRep, get_quantity_spec(R).character> && std::constructible_from<ToRep, Rep>
 [[nodiscard]] constexpr auto quantity_cast(const quantity<R, Rep>& q)
 {
   return quantity_cast<quantity<R, ToRep>>(q);
@@ -189,7 +170,8 @@ template<Representation ToRep, auto R, typename Rep>
 //  * This cast gets the target quantity point type to cast to or anything that works for quantity_cast. For example:
 //  *
 //  * auto q1 = mp_units::quantity_point_cast<decltype(quantity_point{0_q_s})>(quantity_point{1_q_ms});
-//  * auto q1 = mp_units::quantity_point_cast<mp_units::isq::si::time<mp_units::isq::si::second>>(quantity_point{1_q_ms});
+//  * auto q1 =
+//  mp_units::quantity_point_cast<mp_units::isq::si::time<mp_units::isq::si::second>>(quantity_point{1_q_ms});
 //  * auto q1 = mp_units::quantity_point_cast<mp_units::isq::si::dim_acceleration>(quantity_point{200_q_Gal});
 //  * auto q1 = mp_units::quantity_point_cast<mp_units::isq::si::second>(quantity_point{1_q_ms});
 //  * auto q1 = mp_units::quantity_point_cast<int>(quantity_point{1_q_ms});

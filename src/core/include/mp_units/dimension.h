@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp_units/bits/dimension_concepts.h>
 #include <mp_units/bits/expression_template.h>
 #include <mp_units/bits/external/type_traits.h>
 #include <mp_units/bits/symbol_text.h>
@@ -63,54 +64,13 @@ struct base_dimension {
 
 namespace detail {
 
-template<basic_symbol_text Symbol>
-void to_base_base_dimension(const volatile base_dimension<Symbol>*);
-
-template<typename T>
-inline constexpr bool is_specialization_of_base_dimension = false;
-
-template<basic_symbol_text Symbol>
-inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all named base dimensions in the library.
- *
- * Satisfied by all dimension types derived from a specialization of `base_dimension`.
- */
-template<typename T>
-concept BaseDimension = requires(T* t) { detail::to_base_base_dimension(t); } &&
-                        (!detail::is_specialization_of_base_dimension<T>);
-
-namespace detail {
-
 template<BaseDimension Lhs, BaseDimension Rhs>
 struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
 
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
-template<typename T>
-inline constexpr bool is_dimension_one = false;
-
-template<typename T>
-inline constexpr bool is_power_of_dim = requires {
-  requires is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>);
-};
-
-template<typename T>
-inline constexpr bool is_per_of_dims = false;
-
-template<typename... Ts>
-inline constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_dimension_one<Ts> || is_power_of_dim<Ts>));
-
 }  // namespace detail
-
-template<typename T>
-concept DerivedDimensionExpr =
-  BaseDimension<T> || detail::is_dimension_one<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
 
 /**
  * @brief A dimension of a derived quantity
@@ -154,8 +114,8 @@ concept DerivedDimensionExpr =
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<DerivedDimensionExpr... Ds>
-struct derived_dimension : detail::expr_fractions<derived_dimension<>, Ds...> {};
+template<DerivedDimensionExpr... Expr>
+struct derived_dimension : detail::expr_fractions<derived_dimension<>, Expr...> {};
 
 /**
  * @brief Dimension one
@@ -172,32 +132,7 @@ namespace detail {
 template<>
 inline constexpr bool is_dimension_one<struct dimension_one> = true;
 
-template<typename... Ds>
-void to_base_specialization_of_derived_dimension(const volatile derived_dimension<Ds...>*);
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_derived_dimension =
-  requires(T * t) { to_base_specialization_of_derived_dimension(t); };
-
 }  // namespace detail
-
-/**
- * @brief A concept matching all derived dimensions in the library.
- *
- * Satisfied by all dimension types either being a specialization of `derived_dimension`
- * or derived from it (inheritance needed to properly handle `dimension_one`).
- */
-template<typename T>
-concept DerivedDimension = detail::is_derived_from_specialization_of_derived_dimension<T>;
-
-/**
- * @brief A concept matching all dimensions in the library.
- *
- * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
- */
-template<typename T>
-concept Dimension = BaseDimension<T> || DerivedDimension<T>;
-
 
 // Operators
 

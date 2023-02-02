@@ -1,4 +1,3 @@
-
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -23,42 +22,30 @@
 
 #pragma once
 
-#include <mp_units/quantity.h>
-#include <mp_units/unit.h>
-#include <sstream>
+#include <mp_units/bits/quantity_spec_concepts.h>
+#include <mp_units/bits/unit_concepts.h>
 
 namespace mp_units {
 
+template<QuantitySpec auto Q, Unit auto U>
+struct reference;
+
 namespace detail {
 
-template<typename CharT, class Traits, auto R, typename Rep>
-void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
-{
-  os << q.number();
-  if constexpr (!std::derived_from<decltype(get_unit(R)), derived_unit<>>) {
-    os << " ";
-    unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), get_unit(R));
-  }
-}
+template<typename T>
+inline constexpr bool is_specialization_of_reference = false;
 
-}  //  namespace detail
+template<auto Q, auto U>
+inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
 
-template<typename CharT, typename Traits, auto R, typename Rep>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
-  requires requires { os << q.number(); }
-{
-  if (os.width()) {
-    // std::setw() applies to the whole quantity output so it has to be first put into std::string
-    std::basic_ostringstream<CharT, Traits> s;
-    s.flags(os.flags());
-    s.imbue(os.getloc());
-    s.precision(os.precision());
-    detail::to_stream(s, q);
-    return os << s.str();
-  }
+}  // namespace detail
 
-  detail::to_stream(os, q);
-  return os;
-}
+/**
+ * @brief A concept matching all references in the library.
+ *
+ * Satisfied by all specializations of @c reference.
+ */
+template<typename T>
+concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>;
 
 }  // namespace mp_units

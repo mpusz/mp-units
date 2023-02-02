@@ -95,15 +95,15 @@ constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain
 }
 
 // state update
-template<typename Q, QuantityOrQuantityPoint QM, mp_units::quantity_of<mp_units::dimensionless> K>
+template<typename Q, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
   requires(Q::quantity_spec == QM::quantity_spec)
 constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
 {
   return {get<0>(predicted) + gain * (measured - get<0>(predicted))};
 }
 
-template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, mp_units::quantity_of<mp_units::dimensionless> K,
-         mp_units::quantity_of<mp_units::isq::time> T>
+template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
+         mp_units::QuantityOf<mp_units::isq::time> T>
   requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured, std::array<K, 2> gain, T interval)
 {
@@ -113,7 +113,7 @@ constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured
 }
 
 template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM,
-         mp_units::quantity_of<mp_units::dimensionless> K, mp_units::quantity_of<mp_units::isq::time> T>
+         mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
   requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM measured, std::array<K, 3> gain,
                                          T interval)
@@ -125,14 +125,14 @@ constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM 
 }
 
 // covariance update
-template<mp_units::Quantity Q, mp_units::quantity_of<mp_units::dimensionless> K>
+template<mp_units::Quantity Q, mp_units::QuantityOf<mp_units::dimensionless> K>
 constexpr Q covariance_update(Q uncertainty, K gain)
 {
   return (1 - gain) * uncertainty;
 }
 
 // state extrapolation
-template<typename Q1, typename Q2, mp_units::quantity_of<mp_units::isq::time> T>
+template<typename Q1, typename Q2, mp_units::QuantityOf<mp_units::isq::time> T>
 constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval;
@@ -140,7 +140,7 @@ constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T in
   return {q1, q2};
 }
 
-template<typename Q1, typename Q2, typename Q3, mp_units::quantity_of<mp_units::isq::time> T>
+template<typename Q1, typename Q2, typename Q3, mp_units::QuantityOf<mp_units::isq::time> T>
 constexpr state<Q1, Q2, Q3> state_extrapolation(const state<Q1, Q2, Q3>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval + get<2>(estimated) * pow<2>(interval) / 2;

@@ -56,7 +56,7 @@ namespace mp_units {
  * @tparam CoU coherent unit for a quantity in this system
  */
 template<QuantitySpec auto Q, Unit auto CoU>
-  requires(!detail::associated_unit<std::remove_const_t<decltype(CoU)>>) || (CoU == one)
+  requires(!AssociatedUnit<std::remove_const_t<decltype(CoU)>>) || (CoU == one)
 struct system_reference {
   static constexpr auto quantity_spec = Q;
   static constexpr auto coherent_unit = CoU;

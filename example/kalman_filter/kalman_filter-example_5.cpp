@@ -40,7 +40,7 @@ void print_header(kalman::estimation<Q> initial)
                                "Next Estimate");
 }
 
-template<Quantity Q, quantity_of<dimensionless> K>
+template<Quantity Q, QuantityOf<dimensionless> K>
 void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, kalman::estimation<Q> next)
 {
   std::cout << STD_FMT::format("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured, current,
@@ -60,7 +60,7 @@ int main()
   const auto measurement_uncertainty = pow<2>(5. * isq::height[m]);
 
   auto update = [=]<Quantity Q>(const estimation<Q>& previous, const Q& measurement,
-                                quantity_of<dimensionless> auto gain) {
+                                QuantityOf<dimensionless> auto gain) {
     return estimation{state_update(previous.state, measurement, gain), covariance_update(previous.uncertainty, gain)};
   };
 

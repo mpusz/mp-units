@@ -38,7 +38,7 @@ void print_header(const kalman::State auto& initial)
                                "Next Estimate");
 }
 
-void print(auto iteration, quantity_of<dimensionless> auto gain, Quantity auto measured,
+void print(auto iteration, QuantityOf<dimensionless> auto gain, Quantity auto measured,
            const kalman::State auto& current, const kalman::State auto& next)
 {
   std::cout << STD_FMT::format("{:2} | {:9} | {:8} | {:14} | {:14}\n", iteration, gain, measured, current, next);

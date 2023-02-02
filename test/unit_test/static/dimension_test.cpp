@@ -60,13 +60,13 @@ inline constexpr auto energy = force * length;
 // concepts verification
 static_assert(BaseDimension<length_>);
 static_assert(!BaseDimension<std::remove_const_t<decltype(frequency)>>);
-static_assert(!DerivedDimension<length_>);
-static_assert(DerivedDimension<std::remove_const_t<decltype(frequency)>>);
+static_assert(!detail::DerivedDimension<length_>);
+static_assert(detail::DerivedDimension<std::remove_const_t<decltype(frequency)>>);
 static_assert(Dimension<length_>);
 static_assert(Dimension<std::remove_const_t<decltype(frequency)>>);
 
-static_assert(DerivedDimension<dimension_one_>);
-static_assert(DerivedDimension<decltype(length / length)>);  // dimension_one
+static_assert(detail::DerivedDimension<dimension_one_>);
+static_assert(detail::DerivedDimension<decltype(length / length)>);  // dimension_one
 static_assert(BaseDimension<decltype(speed * time)>);        // length
 
 // derived dimension expression template syntax verification

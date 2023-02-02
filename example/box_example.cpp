@@ -53,10 +53,10 @@ public:
   {
   }
 
-  [[nodiscard]] constexpr quantity_of<isq::weight> auto filled_weight() const
+  [[nodiscard]] constexpr QuantityOf<isq::weight> auto filled_weight() const
   {
-    const weak_quantity_of<isq::volume> auto volume = base_ * height_;
-    const weak_quantity_of<isq::mass> auto mass = density_ * volume;
+    const WeakQuantityOf<isq::volume> auto volume = base_ * height_;
+    const WeakQuantityOf<isq::mass> auto mass = density_ * volume;
     return quantity_cast<isq::weight>(mass * g);
   }
 
@@ -96,9 +96,9 @@ int main()
   const auto spare_capacity = box.spare_capacity(measured_mass);
   const auto filled_weight = box.filled_weight();
 
-  const weak_quantity_of<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
-  const weak_quantity_of<isq::speed> auto float_rise_rate = fill_level / fill_time;
-  const quantity_of<isq::time> auto fill_time_left = (height / fill_level - 1) * fill_time;
+  const WeakQuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
+  const WeakQuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
+  const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1) * fill_time;
 
   const auto fill_percent = (fill_level / height)[percent];
 

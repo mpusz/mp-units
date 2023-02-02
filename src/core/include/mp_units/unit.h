@@ -28,83 +28,16 @@
 #include <mp_units/bits/external/type_name.h>
 #include <mp_units/bits/external/type_traits.h>
 #include <mp_units/bits/magnitude.h>
+#include <mp_units/bits/quantity_spec_concepts.h>
 #include <mp_units/bits/ratio.h>
 #include <mp_units/bits/symbol_text.h>
 #include <mp_units/bits/text_tools.h>
+#include <mp_units/bits/unit_concepts.h>
 #include <mp_units/dimension.h>
 #include <iterator>
 #include <string>
 
 namespace mp_units {
-
-#ifdef __cpp_explicit_this_parameter
-template<auto...>
-#else
-template<typename, auto...>
-#endif
-struct quantity_spec;
-
-namespace detail {
-
-#ifdef __cpp_explicit_this_parameter
-template<auto... Args>
-void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
-#else
-template<typename T, auto... Args>
-void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Args...>*);
-#endif
-
-#ifdef __cpp_explicit_this_parameter
-template<BaseDimension auto Dim, auto... Args>
-template<auto... Args>
-void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Dim, Args...>*);
-#else
-template<typename Self, BaseDimension auto Dim, auto... Args>
-void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Self, Dim, Args...>*);
-#endif
-
-template<typename T>
-inline constexpr bool is_specialization_of_quantity_spec = false;
-
-#ifdef __cpp_explicit_this_parameter
-template<auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<Args...>> = true;
-#else
-template<typename T, auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args...>> = true;
-#endif
-
-}  // namespace detail
-
-/**
- * @brief Concept matching quantity specification types
- *
- * Satisfied by all types that derive from `quantity_spec`.
- */
-template<typename T>
-concept NamedQuantitySpec = requires(T* t) { detail::to_base_specialization_of_quantity_spec(t); } &&
-                            (!detail::is_specialization_of_quantity_spec<T>);
-
-template<typename T>
-concept BaseQuantitySpec =
-  NamedQuantitySpec<T> && requires(T* t) { detail::to_base_specialization_of_base_quantity_spec(t); };
-
-
-namespace detail {
-
-template<typename T>
-inline constexpr bool is_unit = false;
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all unit types in the library
- *
- * Satisfied by all unit types provided by the library.
- */
-template<typename T>
-concept Unit = detail::is_unit<T>;
-
 
 /**
  * @brief Unit being a scaled version of another unit
@@ -213,29 +146,6 @@ struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
 
-namespace detail {
-
-template<basic_symbol_text Symbol, auto... Args>
-void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
-
-template<typename T>
-inline constexpr bool is_specialization_of_named_unit = false;
-
-template<basic_symbol_text Symbol, auto... Args>
-inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all units with special names
- *
- * Satisfied by all unit types derived from the specialization of `named_unit`.
- */
-template<typename T>
-concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_of_named_unit(t); } &&
-                    (!detail::is_specialization_of_named_unit<T>);
-
-
 /**
  * @brief A unit of a physical constant
  *
@@ -278,27 +188,9 @@ void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol
 
 template<typename T>
 inline constexpr bool is_derived_from_specialization_of_constant_unit =
-  requires(T * t) { to_base_specialization_of_constant_unit(t); };
+  requires(T* t) { to_base_specialization_of_constant_unit(t); };
 
 }  // namespace detail
-
-/**
- * @brief Prevents assignment of a prefix to specific units
- *
- * By default all named units allow assigning a prefix for them. There are some notable exceptions like
- * `hour` or `degree_Celsius`. For those a partial specialization with the value `false` should be
- * provided.
- */
-template<NamedUnit auto V>
-inline constexpr bool unit_can_be_prefixed = true;
-
-
-/**
- * @brief A concept to be used to define prefixes for a unit
- */
-template<typename T>
-concept PrefixableUnit = NamedUnit<T> && unit_can_be_prefixed<T{}>;
-
 
 /**
  * @brief A prefixed unit
@@ -327,23 +219,6 @@ template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
   static constexpr auto symbol = Symbol + U.symbol;
 };
-
-namespace detail {
-
-template<typename T>
-inline constexpr bool is_power_of_unit =
-  requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
-
-template<typename T>
-inline constexpr bool is_per_of_units = false;
-
-template<typename... Ts>
-inline constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
-
-}  // namespace detail
-
-template<typename T>
-concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
 
 /**
  * @brief Measurement unit for a derived quantity
@@ -390,8 +265,8 @@ concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_p
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<DerivedUnitExpr... Us>
-struct derived_unit : detail::expr_fractions<derived_unit<>, Us...> {};
+template<DerivedUnitExpr... Expr>
+struct derived_unit : detail::expr_fractions<derived_unit<>, Expr...> {};
 
 /**
  * @brief Unit one
@@ -403,19 +278,6 @@ inline constexpr struct one : derived_unit<> {} one;
 // clang-format on
 
 namespace detail {
-
-template<auto M, typename U>
-void is_unit_impl(const volatile scaled_unit<M, U>*);
-
-template<basic_symbol_text Symbol, auto... Args>
-void is_unit_impl(const volatile named_unit<Symbol, Args...>*);
-
-template<typename... Us>
-void is_unit_impl(const volatile derived_unit<Us...>*);
-
-template<typename T>
-  requires requires(T* t) { is_unit_impl(t); }
-inline constexpr bool is_unit<T> = true;
 
 /**
  * @brief A canonical representation of a unit
@@ -452,8 +314,8 @@ template<Unit T, basic_symbol_text Symbol, Unit auto U>
 template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
 
-template<Unit T, typename... Us>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Us...>&);
+template<Unit T, typename... Expr>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Expr...>&);
 
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit<M, U>&)
@@ -511,15 +373,38 @@ template<typename... Us>
   return canonical_unit{mag, u};
 }
 
-template<Unit T, typename... Us>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Us...>&)
+template<Unit T, typename... Expr>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Expr...>&)
 {
-  auto num = get_canonical_unit_impl(typename derived_unit<Us...>::_num_{});
-  auto den = get_canonical_unit_impl(typename derived_unit<Us...>::_den_{});
+  auto num = get_canonical_unit_impl(typename derived_unit<Expr...>::_num_{});
+  auto den = get_canonical_unit_impl(typename derived_unit<Expr...>::_den_{});
   return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
 }
 
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
+
+template<Unit U>
+  requires requires { U::base_quantity.dimension; }
+using to_base_dimension = std::remove_const_t<decltype(U::base_quantity.dimension)>;
+
+template<Unit U>
+  requires requires { U::base_quantity.dimension; }
+[[nodiscard]] consteval Dimension auto get_dimension_for_impl(U)
+{
+  return U::base_quantity.dimension;
+}
+
+template<typename... Expr>
+  requires expr_projectable<derived_unit<Expr...>, to_base_dimension>
+[[nodiscard]] consteval Dimension auto get_dimension_for_impl(const derived_unit<Expr...>& u)
+{
+  return expr_map<to_base_dimension, derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(u);
+}
+
+[[nodiscard]] consteval Dimension auto get_dimension_for(AssociatedUnit auto u)
+{
+  return get_dimension_for_impl(get_canonical_unit(u).reference_unit);
+}
 
 template<Unit Lhs, Unit Rhs>
 [[nodiscard]] consteval bool less(Lhs, Rhs)
@@ -640,12 +525,13 @@ template<typename... Us1, typename... Us2>
   return (... && same_canonical_reference_unit(Us1{}, Us2{}));
 }
 
-template<typename... Us1, typename... Us2>
-[[nodiscard]] consteval bool same_canonical_reference_unit(const derived_unit<Us1...>&, const derived_unit<Us2...>&)
+template<typename... Expr1, typename... Expr2>
+[[nodiscard]] consteval bool same_canonical_reference_unit(const derived_unit<Expr1...>&, const derived_unit<Expr2...>&)
 {
-  return same_canonical_reference_unit(typename derived_unit<Us1...>::_num_{},
-                                       typename derived_unit<Us2...>::_num_{}) &&
-         same_canonical_reference_unit(typename derived_unit<Us1...>::_den_{}, typename derived_unit<Us2...>::_den_{});
+  return same_canonical_reference_unit(typename derived_unit<Expr1...>::_num_{},
+                                       typename derived_unit<Expr2...>::_num_{}) &&
+         same_canonical_reference_unit(typename derived_unit<Expr1...>::_den_{},
+                                       typename derived_unit<Expr2...>::_den_{});
 }
 
 }  // namespace detail
@@ -898,11 +784,11 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
   }
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, typename... Us>
-constexpr Out unit_symbol_impl(Out out, const derived_unit<Us...>&, unit_symbol_formatting fmt, bool negative_power)
+template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
+constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbol_formatting fmt, bool negative_power)
 {
   gsl_Expects(negative_power == false);
-  return unit_symbol_impl<CharT>(out, typename derived_unit<Us...>::_num_{}, typename derived_unit<Us...>::_den_{},
+  return unit_symbol_impl<CharT>(out, typename derived_unit<Expr...>::_num_{}, typename derived_unit<Expr...>::_den_{},
                                  fmt);
 }
 

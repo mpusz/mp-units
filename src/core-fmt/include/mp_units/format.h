@@ -245,7 +245,7 @@ struct quantity_formatter {
   template<std::input_iterator It, std::sentinel_for<It> S>
   void on_quantity_unit(It, S)
   {
-    out = unit_symbol_to<CharT>(out, Reference.unit, specs.unit);
+    out = unit_symbol_to<CharT>(out, get_unit(Reference), specs.unit);
   }
 };
 
@@ -396,9 +396,9 @@ private:
     if (begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
       out = mp_units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
-      if constexpr (!std::derived_from<decltype(Reference.unit), mp_units::derived_unit<>>) {
+      if constexpr (!std::derived_from<decltype(get_unit(Reference)), mp_units::derived_unit<>>) {
         *out++ = CharT(' ');
-        out = unit_symbol_to<CharT>(out, Reference.unit);
+        out = unit_symbol_to<CharT>(out, get_unit(Reference));
       }
     } else {
       // user provided format

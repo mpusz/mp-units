@@ -33,6 +33,32 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 add_library(
     mp-units-core
     INTERFACE
+
+    include/mp_units/bits/external/fixed_string.h
+    include/mp_units/bits/external/hacks.h
+    include/mp_units/bits/external/type_list.h
+    include/mp_units/bits/external/type_name.h
+    include/mp_units/bits/external/type_traits.h
+
+    include/mp_units/bits/algorithm.h
+    include/mp_units/bits/dimension_concepts.h
+    include/mp_units/bits/expression_template.h
+    include/mp_units/bits/magnitude.h
+    include/mp_units/bits/math_concepts.h
+    include/mp_units/bits/prime.h
+    include/mp_units/bits/quantity_cast.h
+    include/mp_units/bits/quantity_concepts.h
+    include/mp_units/bits/quantity_point_concepts.h
+    include/mp_units/bits/quantity_spec_concepts.h
+    include/mp_units/bits/ratio_maths.h
+    include/mp_units/bits/ratio.h
+    include/mp_units/bits/reference_concepts.h
+    include/mp_units/bits/representation_concepts.h
+    include/mp_units/bits/symbol_text.h
+    include/mp_units/bits/text_tools.h
+    include/mp_units/bits/unit_concepts.h
+
+    include/mp_units/concepts.h
     include/mp_units/customization_points.h
     include/mp_units/dimension.h
     include/mp_units/quantity.h

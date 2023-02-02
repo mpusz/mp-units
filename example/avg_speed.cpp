@@ -44,15 +44,16 @@ constexpr quantity<isq::speed[m / s]> fixed_double_si_avg_speed(quantity<isq::le
   return d / t;
 }
 
-constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::length> auto d, quantity_of<isq::time> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::time> auto t)
 {
   return quantity_cast<isq::speed>(d / t);
 }
 
-template<quantity_of<isq::length> D, quantity_of<isq::time> T, quantity_of<isq::speed> V>
+template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
-  const auto result_in_kmph = quantity_cast<km / h>(speed);
+  constexpr auto kmph = si::kilo<si::metre> / si::hour;
+  const auto result_in_kmph = quantity_cast<kmph>(speed);
   std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
             << ".\n";
 }
