@@ -25,6 +25,7 @@
 #include <mp_units/bits/quantity_concepts.h>
 #include <mp_units/bits/reference_concepts.h>
 #include <mp_units/bits/representation_concepts.h>
+#include <mp_units/bits/sudo_cast.h>
 #include <mp_units/bits/unit_concepts.h>
 
 namespace mp_units {
@@ -46,7 +47,7 @@ template<Unit auto ToU, auto R, typename Rep>
   requires(interconvertible(ToU, get_unit(R)))
 [[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
 {
-  if constexpr (detail::is_specialization_of_reference<R> || !AssociatedUnit<ToU>) {
+  if constexpr (detail::is_specialization_of_reference<R> || !AssociatedUnit<std::remove_const_t<decltype(ToU)>>) {
     constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
     return detail::sudo_cast<quantity<r, Rep>>(q);
   } else {
