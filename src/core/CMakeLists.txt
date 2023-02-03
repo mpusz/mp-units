@@ -61,6 +61,7 @@ add_library(
     include/mp_units/bits/value_cast.h
 
     include/mp_units/concepts.h
+    include/mp_units/core.h
     include/mp_units/customization_points.h
     include/mp_units/dimension.h
     include/mp_units/quantity.h
