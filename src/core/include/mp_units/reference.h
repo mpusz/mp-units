@@ -158,10 +158,11 @@ template<AssociatedUnit U1, auto Q2, auto U2>
   return {};
 }
 
-template<Reference R, RepresentationOf<get_quantity_spec(R{}).character> Rep>
-[[nodiscard]] constexpr quantity<R{}, Rep> operator*(Rep&& lhs, R)
+template<Reference R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
-  return quantity<R{}, Rep>(std::forward<Rep>(lhs));
+  return quantity<R{}, std::remove_cvref_t<Rep>>(std::forward<Rep>(lhs));
 }
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
