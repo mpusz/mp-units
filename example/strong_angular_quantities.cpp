@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp_units/math.h>
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/isq_angle/isq_angle.h>
 #include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>

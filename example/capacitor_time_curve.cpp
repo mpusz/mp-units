@@ -21,7 +21,7 @@
 */
 
 #include <mp_units/math.h>  // IWYU pragma: keep
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/isq/electromagnetism.h>
 #include <mp_units/systems/si/si.h>
 #include <iostream>

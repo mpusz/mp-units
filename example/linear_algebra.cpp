@@ -24,7 +24,7 @@
 // linear_algebra.hpp has to be included first otherwise the header will fail to compile!
 #include <mp_units/customization_points.h>
 #include <mp_units/format.h>
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/isq/mechanics.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/unit_symbols.h>

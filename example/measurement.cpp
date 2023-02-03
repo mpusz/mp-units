@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/unit_symbols.h>
 #include <mp_units/systems/si/units.h>

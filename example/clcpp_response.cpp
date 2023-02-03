@@ -16,7 +16,7 @@
 */
 
 #include <mp_units/format.h>
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/iau/iau.h>
 #include <mp_units/systems/imperial/imperial.h>
 #include <mp_units/systems/international/international.h>

@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp_units/iostream.h>
 #include <mp_units/math.h>
-#include <mp_units/quantity_io.h>
 #include <mp_units/systems/isq/mechanics.h>
 #include <mp_units/systems/natural/natural.h>
 #include <mp_units/systems/si/constants.h>

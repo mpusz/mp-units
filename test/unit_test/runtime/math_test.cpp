@@ -23,7 +23,7 @@
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
 #include <mp_units/math.h>
-#include <mp_units/quantity_io.h>
+#include <mp_units/iostream.h>
 #include <mp_units/systems/angular/angular.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/unit_symbols.h>
