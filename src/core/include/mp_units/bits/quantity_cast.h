@@ -55,12 +55,12 @@ class quantity;
  *
  * @tparam ToQS a quantity specification to use for a target quantity
  */
-template<QuantitySpec auto ToQ, auto R, typename Rep>
-  requires(interconvertible(ToQ, get_quantity_spec(R)))
-[[nodiscard]] constexpr Quantity auto quantity_cast(const quantity<R, Rep>& q)
+template<QuantitySpec auto ToQS, Quantity Q>
+  requires(interconvertible(ToQS, get_quantity_spec(Q::reference)))
+[[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
-  constexpr reference<ToQ, quantity<R, Rep>::unit> r;
-  return q.count() * r;
+  constexpr reference<ToQS, Q::unit> r;
+  return std::forward<Q>(q).number() * r;
 }
 
 }  // namespace mp_units

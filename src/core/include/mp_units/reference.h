@@ -159,9 +159,9 @@ template<AssociatedUnit U1, auto Q2, auto U2>
 }
 
 template<Reference R, RepresentationOf<get_quantity_spec(R{}).character> Rep>
-[[nodiscard]] constexpr quantity<R{}, Rep> operator*(const Rep& lhs, R)
+[[nodiscard]] constexpr quantity<R{}, Rep> operator*(Rep&& lhs, R)
 {
-  return quantity<R{}, Rep>(lhs);
+  return quantity<R{}, Rep>(std::forward<Rep>(lhs));
 }
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
