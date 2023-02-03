@@ -37,9 +37,9 @@ namespace {
 
 using namespace mp_units;
 
-quantity_of<isq::mechanical_energy> auto total_energy(weak_quantity_of<isq::momentum> auto p,
-                                                      weak_quantity_of<isq::mass> auto m,
-                                                      weak_quantity_of<isq::speed> auto c)
+QuantityOf<isq::mechanical_energy> auto total_energy(WeakQuantityOf<isq::momentum> auto p,
+                                                     WeakQuantityOf<isq::mass> auto m,
+                                                     WeakQuantityOf<isq::speed> auto c)
 {
   return quantity_cast<isq::mechanical_energy>(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
 }
@@ -49,9 +49,9 @@ void si_example()
   using namespace mp_units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
 
-  constexpr quantity_of<isq::speed> auto c = si::si2019::speed_of_light_in_vacuum(1.);
-  const weak_quantity_of<isq::momentum> auto p1 = isq::mechanical_energy(4., GeV) / c;
-  const weak_quantity_of<isq::mass> auto m1 = isq::mechanical_energy(3., GeV) / pow<2>(c);
+  constexpr QuantityOf<isq::speed> auto c = si::si2019::speed_of_light_in_vacuum(1.);
+  const WeakQuantityOf<isq::momentum> auto p1 = isq::mechanical_energy(4., GeV) / c;
+  const WeakQuantityOf<isq::mass> auto m1 = isq::mechanical_energy(3., GeV) / pow<2>(c);
   const auto E = total_energy(p1, m1, c);
 
   std::cout << "\n*** SI units (c = " << c << " = " << c[si::metre / s] << ") ***\n";
@@ -88,9 +88,9 @@ void natural_example()
   using namespace mp_units::natural;
   using namespace mp_units::natural::unit_symbols;
 
-  constexpr quantity_of<isq::speed> auto c = 1. * speed_of_light_in_vacuum;
-  const quantity_of<isq::momentum> auto p = 4. * momentum[GeV];
-  const quantity_of<isq::mass> auto m = 3. * mass[GeV];
+  constexpr QuantityOf<isq::speed> auto c = 1. * speed_of_light_in_vacuum;
+  const QuantityOf<isq::momentum> auto p = 4. * momentum[GeV];
+  const QuantityOf<isq::mass> auto m = 3. * mass[GeV];
   const auto E = total_energy(p, m, c);
 
   std::cout << "\n*** Natural units (c = " << c << ") ***\n"

@@ -29,7 +29,7 @@
 
 using namespace mp_units;
 
-constexpr quantity_of<isq::speed> auto avg_speed(quantity_of<isq::distance> auto d, quantity_of<isq::duration> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
 {
   return quantity_cast<isq::speed>(d / t);
 }

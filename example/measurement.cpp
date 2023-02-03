@@ -134,7 +134,7 @@ void example()
   const auto a = isq::acceleration(measurement{9.8, 0.1}, m / s2);
   const auto t = isq::time(measurement{1.2, 0.1}, s);
 
-  const weak_quantity_of<isq::velocity> auto v = a * t;
+  const WeakQuantityOf<isq::velocity> auto v = a * t;
   std::cout << a << " * " << t << " = " << v << " = " << v[km / h] << '\n';
 
   const auto length = isq::length(measurement{123., 1.}, si::metre);
