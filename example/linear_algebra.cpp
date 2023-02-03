@@ -95,7 +95,7 @@ void quantity_of_vector_cast()
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
 
-  std::cout << "v[km] = " << quantity_cast<km>(v) << "\n";
+  std::cout << "v[km] = " << value_cast<km>(v) << "\n";
   std::cout << "u[m]  = " << u[m] << "\n";
 }
 

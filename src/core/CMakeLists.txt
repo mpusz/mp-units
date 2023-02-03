@@ -54,9 +54,11 @@ add_library(
     include/mp_units/bits/ratio.h
     include/mp_units/bits/reference_concepts.h
     include/mp_units/bits/representation_concepts.h
+    include/mp_units/bits/sudo_cast.h
     include/mp_units/bits/symbol_text.h
     include/mp_units/bits/text_tools.h
     include/mp_units/bits/unit_concepts.h
+    include/mp_units/bits/value_cast.h
 
     include/mp_units/concepts.h
     include/mp_units/customization_points.h

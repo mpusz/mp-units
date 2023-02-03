@@ -52,7 +52,7 @@ struct Ship {
 template<Unit auto... Us, Quantity Q>
 auto fmt_line(const Q& q)
 {
-  return STD_FMT::format("{:22}", q) + (STD_FMT::format(",{:20}", quantity_cast<Us>(q)) + ...);
+  return STD_FMT::format("{:22}", q) + (STD_FMT::format(",{:20}", value_cast<Us>(q)) + ...);
 }
 
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI

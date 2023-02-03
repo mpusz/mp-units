@@ -63,7 +63,7 @@ template<typename T>
 concept castable_number_ =  // exposition only
   common_type_with_<T, std::intmax_t> && scalable_number_<std::common_type_t<T, std::intmax_t>>;
 
-// TODO Fix it according to quantity_cast implementation
+// TODO Fix it according to sudo_cast implementation
 template<typename T>
 concept scalable_ =  // exposition only
   castable_number_<T> || (requires { typename T::value_type; } && castable_number_<typename T::value_type> &&

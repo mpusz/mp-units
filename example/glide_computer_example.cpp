@@ -85,11 +85,11 @@ void print(const R& gliders)
     std::cout << "- Name: " << g.name << "\n";
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
-      const auto ratio = quantity_cast<one>(glide_ratio(g.polar[0]));
+      const auto ratio = value_cast<one>(glide_ratio(g.polar[0]));
       std::cout << STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v, ratio,
                                    // TODO is it possible to make ADL work below (we need another set of trig functions
                                    // for strong angle in a different namespace)
-                                   quantity_cast<si::degree>(isq::asin(1 / ratio)));
+                                   value_cast<si::degree>(isq::asin(1 / ratio)));
     }
     std::cout << "\n";
   }

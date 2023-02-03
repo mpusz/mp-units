@@ -77,7 +77,7 @@ void print(std::string_view phase_name, timestamp start_ts, const glide_computer
   std::cout << STD_FMT::format(
     "| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) "
     "|\n",
-    phase_name, quantity_cast<si::minute>(new_point.ts - point.ts), quantity_cast<si::minute>(new_point.ts - start_ts),
+    phase_name, value_cast<si::minute>(new_point.ts - point.ts), value_cast<si::minute>(new_point.ts - start_ts),
     new_point.dist - point.dist, new_point.dist, new_point.alt - point.alt, new_point.alt);
 }
 

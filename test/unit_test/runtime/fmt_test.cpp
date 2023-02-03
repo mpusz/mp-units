@@ -205,7 +205,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("percents")
     {
-      const auto q = quantity_cast<percent>(15. * isq::length[m] / (100. * isq::length[m]));
+      const auto q = value_cast<percent>(15. * isq::length[m] / (100. * isq::length[m]));
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "15 %"); }
@@ -724,7 +724,7 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
   }
 }
 
-TEST_CASE("quantity_cast", "[text][ostream]")
+TEST_CASE("value_cast", "[text][ostream]")
 {
   std::ostringstream os;
 
@@ -740,13 +740,13 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("int")
     {
-      os << quantity_cast<int>(q);
+      os << value_cast<int>(q);
       CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      os << quantity_cast<double>(q);
+      os << value_cast<double>(q);
       CHECK(os.str() == "60 km/h");
     }
   }
@@ -763,13 +763,13 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("int")
     {
-      os << quantity_cast<int>(q);
+      os << value_cast<int>(q);
       CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      os << quantity_cast<double>(q);
+      os << value_cast<double>(q);
       CHECK(os.str() == "60.5 km/h");
     }
   }

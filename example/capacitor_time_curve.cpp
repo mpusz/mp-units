@@ -40,7 +40,7 @@ int main()
   constexpr auto R = isq::resistance(4.7, si::kilo<si::ohm>);
 
   for (auto t = isq::time(0, ms); t <= isq::time(50, ms); ++t) {
-    const weak_quantity_of<isq::voltage> auto Vt = V0 * mp_units::exp(-t / (R * C));
+    const WeakQuantityOf<isq::voltage> auto Vt = V0 * mp_units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 

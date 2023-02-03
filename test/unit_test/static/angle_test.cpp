@@ -37,7 +37,7 @@ static_assert(std::numbers::pi * 2 * rad == 1. * rev);
 
 static_assert(360_q_deg == 1_q_rev);
 static_assert(400_q_grad == 1_q_rev);
-static_assert(std::numbers::pi * quantity_cast<double>(2._q_rad) == quantity_cast<double>(1._q_rev));
+static_assert(std::numbers::pi * value_cast<double>(2._q_rad) == value_cast<double>(1._q_rev));
 
 static_assert(mp_units::aliases::deg<>(360.) == mp_units::aliases::rev<>(1.));
 static_assert(mp_units::aliases::deg<int>(360) == mp_units::aliases::rev<int>(1));

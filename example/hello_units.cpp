@@ -43,9 +43,9 @@ int main()
   constexpr auto v2 = isq::speed(70., mph);
   constexpr auto v3 = avg_speed(isq::distance(220, km), isq::duration(2, h));
   constexpr auto v4 = avg_speed(quantity<isq::distance[mi]>{140}, quantity<isq::duration[h]>{2});
-  constexpr auto v5 = quantity_cast<quantity<isq::speed[m / s]>>(v3);
-  constexpr auto v6 = quantity_cast<m / s>(v4);
-  constexpr auto v7 = quantity_cast<int>(v6);
+  constexpr auto v5 = value_cast<m / s>(v3);
+  constexpr auto v6 = value_cast<m / s>(v4);
+  constexpr auto v7 = value_cast<int>(v6);
 
   std::cout << v1 << '\n';                                       // 110 km/h
   std::cout << v2 << '\n';                                       // 70 mi/h

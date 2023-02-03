@@ -80,7 +80,7 @@ void si_example()
             << "E = " << E3 << "\n";
 
   std::cout << "\n[converted from SI units back to GeV]\n"
-            << "E = " << quantity_cast<GeV>(E3) << "\n";
+            << "E = " << value_cast<GeV>(E3) << "\n";
 }
 
 void natural_example()

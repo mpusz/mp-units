@@ -22,16 +22,10 @@
 
 #pragma once
 
-#include <mp_units/bits/external/type_traits.h>
-#include <mp_units/bits/magnitude.h>
 #include <mp_units/bits/quantity_concepts.h>
 #include <mp_units/bits/reference_concepts.h>
 #include <mp_units/bits/representation_concepts.h>
 #include <mp_units/bits/unit_concepts.h>
-#include <mp_units/customization_points.h>
-#include <mp_units/dimension.h>
-#include <mp_units/reference.h>
-#include <mp_units/unit.h>
 
 namespace mp_units {
 
@@ -39,28 +33,42 @@ template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
 /**
- * @brief Explicit cast of a quantity type
+ * @brief Explicit cast of a quantity's unit
  *
- * This cast converts only a quantity type. It might be used to force some quantity type
- * conversions that are not implicitly allowed but are allowed explicitly.
+ * Implicit conversions between quantities of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * For example:
+ * auto d = value_cast<si::second>(1234 * ms);
  *
- * @code{.cpp}
- * auto length = isq::length(42 * m);
- * auto distance = quantity_cast<isq::distance>(length);
- * @endcode
- *
- * @note This cast does not affect the underlying value of a number stored in a quantity.
- *
- * @tparam ToQS a quantity specification to use for a target quantity
+ * @tparam ToU a unit to use for a target quantity
  */
-template<QuantitySpec auto ToQ, auto R, typename Rep>
-  requires(interconvertible(ToQ, get_quantity_spec(R)))
-[[nodiscard]] constexpr Quantity auto quantity_cast(const quantity<R, Rep>& q)
+template<Unit auto ToU, auto R, typename Rep>
+  requires(interconvertible(ToU, get_unit(R)))
+[[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
 {
-  constexpr reference<ToQ, quantity<R, Rep>::unit> r;
-  return q.count() * r;
+  if constexpr (detail::is_specialization_of_reference<R> || !AssociatedUnit<ToU>) {
+    constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
+    return detail::sudo_cast<quantity<r, Rep>>(q);
+  } else {
+    return detail::sudo_cast<quantity<ToU, Rep>>(q);
+  }
+}
+
+/**
+ * @brief Explicit cast of a quantity's representation type
+ *
+ * Implicit conversions between quantities of different types are allowed only for "safe"
+ * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ *
+ * auto q = value_cast<int>(1.23 * ms);
+ *
+ * @tparam ToRep a representation type to use for a target quantity
+ */
+template<Representation ToRep, auto R, typename Rep>
+  requires RepresentationOf<ToRep, get_quantity_spec(R).character> && std::constructible_from<ToRep, Rep>
+[[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
+{
+  return detail::sudo_cast<quantity<R, ToRep>>(q);
 }
 
 }  // namespace mp_units

@@ -158,7 +158,7 @@ struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
  * operations. Also, if the user prefers integral types for a quantity representation, this will
  * not force the user to convert to a floating-point type right away. Only when a final quantity
  * number needs to actually account for the constant value, the floating-point operation (if any)
- * can be triggered lazily with the `quantity_cast<U>()`.
+ * can be triggered lazily with the `value_cast<U>()`.
  *
  * For example:
  *

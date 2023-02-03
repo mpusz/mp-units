@@ -24,11 +24,11 @@
 #pragma once
 
 #include <mp_units/bits/dimension_concepts.h>
-#include <mp_units/bits/quantity_cast.h>
 #include <mp_units/bits/quantity_concepts.h>
 #include <mp_units/bits/quantity_spec_concepts.h>
 #include <mp_units/bits/reference_concepts.h>
 #include <mp_units/bits/representation_concepts.h>
+#include <mp_units/bits/sudo_cast.h>
 #include <mp_units/bits/unit_concepts.h>
 #include <mp_units/customization_points.h>
 #include <mp_units/dimension.h>
@@ -36,8 +36,6 @@
 #include <mp_units/reference.h>
 #include <mp_units/unit.h>
 #include <compare>
-// IWYU pragma: end_exports
-
 #include <utility>
 
 namespace mp_units {
@@ -62,7 +60,7 @@ concept Harmonic =  // exposition only
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =  // exposition only
-  Quantity<QFrom> && Quantity<QTo> && requires(QFrom q) { quantity_cast<QTo>(q); } &&
+  Quantity<QFrom> && Quantity<QTo> && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
   (treat_as_floating_point<typename QTo::rep> ||
    (!treat_as_floating_point<typename QFrom::rep> && Harmonic<QFrom, QTo>));
 
@@ -129,7 +127,7 @@ public:
   }
 
   template<detail::QuantityConvertibleTo<quantity> Q>
-  constexpr explicit(false) quantity(const Q& q) : number_(quantity_cast<quantity>(q).number())
+  constexpr explicit(false) quantity(const Q& q) : number_(detail::sudo_cast<quantity>(q).number())
   {
   }
 
@@ -514,7 +512,7 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] constexpr auto operator<=>(const Q1& lhs, const Q2& rhs)
 {
   constexpr auto ref = common_reference(Q1::reference, Q2::reference);
-  return quantity_cast<ref>(lhs).number() <=> quantity_cast<ref>(rhs).number();
+  return quantity<ref, typename Q1::rep>(lhs).number() <=> quantity<ref, typename Q2::rep>(rhs).number();
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -523,7 +521,7 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] constexpr bool operator==(const Q1& lhs, const Q2& rhs)
 {
   constexpr auto ref = common_reference(Q1::reference, Q2::reference);
-  return quantity_cast<ref>(lhs).number() == quantity_cast<ref>(rhs).number();
+  return quantity<ref, typename Q1::rep>(lhs).number() == quantity<ref, typename Q2::rep>(rhs).number();
 }
 
 }  // namespace mp_units

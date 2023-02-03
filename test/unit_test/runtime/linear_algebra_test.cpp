@@ -105,7 +105,7 @@ TEST_CASE("vector quantity", "[la]")
     SECTION("truncating")
     {
       const quantity<isq::position_vector[m], vector<int>> v{vector<int>{1001, 1002, 1003}};
-      CHECK(quantity_cast<km>(v).number() == vector<int>{1, 1, 1});
+      CHECK(value_cast<km>(v).number() == vector<int>{1, 1, 1});
     }
   }
 
