@@ -101,14 +101,7 @@ class quantity;
  * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
 template<QuantitySpec auto Q, Unit auto U>
-struct reference {
-  template<RepresentationOf<Q.character> Rep>
-  // TODO can we somehow return an explicit quantity type here?
-  [[nodiscard]] constexpr std::same_as<quantity<reference{}, Rep>> auto operator()(Rep&& value) const
-  {
-    return quantity<reference{}, Rep>(std::forward<Rep>(value));
-  }
-};
+struct reference {};
 
 template<auto Q1, auto U1, auto Q2, auto U2>
 [[nodiscard]] consteval bool operator==(reference<Q1, U1>, reference<Q2, U2>)

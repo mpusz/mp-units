@@ -483,7 +483,7 @@ template<Quantity Q1, Quantity Q2>
                                   typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Q1& lhs, const Q2& rhs)
 {
-  return (Q1::reference * Q2::reference)(lhs.number() * rhs.number());
+  return lhs.number() * rhs.number() * (Q1::reference * Q2::reference);
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -492,7 +492,7 @@ template<Quantity Q1, Quantity Q2>
 [[nodiscard]] constexpr Quantity auto operator/(const Q1& lhs, const Q2& rhs)
 {
   gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q2::rep>::zero());
-  return (Q1::reference / Q2::reference)(lhs.number() / rhs.number());
+  return lhs.number() / rhs.number() * (Q1::reference / Q2::reference);
 }
 
 template<Quantity Q1, Quantity Q2>
