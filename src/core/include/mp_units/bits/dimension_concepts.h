@@ -81,13 +81,6 @@ struct derived_dimension;
 
 namespace detail {
 
-template<typename... Expr>
-void to_base_specialization_of_derived_dimension(const volatile derived_dimension<Expr...>*);
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_derived_dimension =
-  requires(T* t) { to_base_specialization_of_derived_dimension(t); };
-
 /**
  * @brief A concept matching all derived dimensions in the library.
  *
@@ -95,7 +88,7 @@ inline constexpr bool is_derived_from_specialization_of_derived_dimension =
  * or derived from it (inheritance needed to properly handle `dimension_one`).
  */
 template<typename T>
-concept DerivedDimension = detail::is_derived_from_specialization_of_derived_dimension<T>;
+concept DerivedDimension = is_derived_from_specialization_of<T, derived_dimension>;
 
 }  // namespace detail
 
