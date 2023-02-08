@@ -115,19 +115,13 @@ struct derived_quantity_spec;
 
 namespace detail {
 
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_derived_quantity_spec = false;
-
-template<typename... Args>
-inline constexpr bool is_derived_from_specialization_of_derived_quantity_spec<derived_quantity_spec<Args...>> = true;
-
 /**
  * @brief Concept matching all derived quantity specification types
  *
  * Satisfied by all `derived_quantity_spec` specializations.
  */
 template<typename T>
-concept DerivedQuantitySpec = detail::is_derived_from_specialization_of_derived_quantity_spec<T>;
+concept DerivedQuantitySpec = is_derived_from_specialization_of<T, derived_quantity_spec>;
 
 }  // namespace detail
 
