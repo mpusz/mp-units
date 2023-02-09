@@ -383,29 +383,6 @@ template<Unit T, typename... Expr>
 
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
 
-template<Unit U>
-  requires requires { U::base_quantity.dimension; }
-using to_base_dimension = std::remove_const_t<decltype(U::base_quantity.dimension)>;
-
-template<Unit U>
-  requires requires { U::base_quantity.dimension; }
-[[nodiscard]] consteval Dimension auto get_dimension_for_impl(U)
-{
-  return U::base_quantity.dimension;
-}
-
-template<typename... Expr>
-  requires expr_projectable<derived_unit<Expr...>, to_base_dimension>
-[[nodiscard]] consteval Dimension auto get_dimension_for_impl(const derived_unit<Expr...>& u)
-{
-  return expr_map<to_base_dimension, derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(u);
-}
-
-[[nodiscard]] consteval Dimension auto get_dimension_for(AssociatedUnit auto u)
-{
-  return get_dimension_for_impl(get_canonical_unit(u).reference_unit);
-}
-
 template<Unit Lhs, Unit Rhs>
 [[nodiscard]] consteval bool less(Lhs, Rhs)
 {
