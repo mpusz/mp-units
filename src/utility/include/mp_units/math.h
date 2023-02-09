@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp_units/bits/external/hacks.h>
+#include <mp_units/bits/value_cast.h>
 #include <mp_units/quantity.h>
 #include <mp_units/systems/angular/angular.h>
 #include <mp_units/systems/isq/space_and_time.h>
@@ -114,7 +115,7 @@ template<QuantityOf<dimension_one> Q>
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {
   using std::exp;
-  return quantity_cast<Q::unit>(exp(quantity_cast<one>(q).number()) * dimensionless[one]);
+  return value_cast<Q::unit>(exp(value_cast<one>(q).number()) * dimensionless[one]);
 }
 
 /**
@@ -157,7 +158,7 @@ template<Unit auto To, auto R, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires { floor(q.number()); } ||
            requires { std::floor(q.number()); }) &&
           (To == get_unit(R) || requires {
-            ::mp_units::quantity_cast<To>(q);
+            ::mp_units::value_cast<To>(q);
             quantity<reference<get_quantity_spec(R), To>{}, Rep>::one();
           })
 {
@@ -173,13 +174,13 @@ template<Unit auto To, auto R, typename Rep>
       return quantity<reference<get_quantity_spec(R), To>{}, Rep>(floor(q.number()));
     } else {
       return handle_signed_results(
-        quantity<reference<get_quantity_spec(R), To>{}, Rep>(floor(quantity_cast<To>(q).number())));
+        quantity<reference<get_quantity_spec(R), To>{}, Rep>(floor(value_cast<To>(q).number())));
     }
   } else {
     if constexpr (To == get_unit(R)) {
-      return quantity_cast<To>(q);
+      return value_cast<To>(q);
     } else {
-      return handle_signed_results(quantity_cast<To>(q));
+      return handle_signed_results(value_cast<To>(q));
     }
   }
 }
@@ -194,7 +195,7 @@ template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<reference<get_quantity_spec(R), To>{}, Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { ceil(q.number()); } || requires { std::ceil(q.number()); }) &&
           (To == get_unit(R) || requires {
-            ::mp_units::quantity_cast<To>(q);
+            ::mp_units::value_cast<To>(q);
             quantity<reference<get_quantity_spec(R), To>{}, Rep>::one();
           })
 {
@@ -210,13 +211,13 @@ template<Unit auto To, auto R, typename Rep>
       return quantity<reference<get_quantity_spec(R), To>{}, Rep>(ceil(q.number()));
     } else {
       return handle_signed_results(
-        quantity<reference<get_quantity_spec(R), To>{}, Rep>(ceil(quantity_cast<To>(q).number())));
+        quantity<reference<get_quantity_spec(R), To>{}, Rep>(ceil(value_cast<To>(q).number())));
     }
   } else {
     if constexpr (To == get_unit(R)) {
-      return quantity_cast<To>(q);
+      return value_cast<To>(q);
     } else {
-      return handle_signed_results(quantity_cast<To>(q));
+      return handle_signed_results(value_cast<To>(q));
     }
   }
 }
@@ -243,7 +244,7 @@ template<Unit auto To, auto R, typename Rep>
       using std::round;
       return quantity<reference<get_quantity_spec(R), To>{}, Rep>(round(q.number()));
     } else {
-      return quantity_cast<To>(q);
+      return value_cast<To>(q);
     }
   } else {
     const auto res_low = mp_units::floor<To>(q);
@@ -268,15 +269,15 @@ template<Unit auto To, auto R, typename Rep>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2>
-[[nodiscard]] inline QuantityOf<common_reference(Q1::reference, Q2::reference)> auto hypot(const Q1& x,
-                                                                                            const Q2& y) noexcept
+[[nodiscard]] inline QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> auto hypot(
+  const Q1& x, const Q2& y) noexcept
   requires requires { common_reference(Q1::reference, Q2::reference); } &&
            (
              requires { hypot(x.number(), y.number()); } || requires { std::hypot(x.number(), y.number()); })
 {
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference), decltype(hypot(x.number(), y.number()))>;
-  return type{hypot(type{x}.number(), type{y}.number())};
+  return hypot(type{x}.number(), type{y}.number()) * type::reference;
 }
 
 /**
@@ -284,8 +285,8 @@ template<Quantity Q1, Quantity Q2>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2, Quantity Q3>
-[[nodiscard]] inline QuantityOf<common_reference(Q1::reference, Q2::reference, Q3::reference)> auto hypot(
-  const Q1& x, const Q2& y, const Q3& z) noexcept
+[[nodiscard]] inline QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec, Q3::quantity_spec)> auto
+hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
   requires requires { common_reference(Q1::reference, Q2::reference, Q3::reference); } &&
            (
              requires { hypot(x.number(), y.number(), z.number()); } ||
@@ -294,32 +295,32 @@ template<Quantity Q1, Quantity Q2, Quantity Q3>
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference, Q3::reference),
                         decltype(hypot(x.number(), y.number(), z.number()))>;
-  return type{hypot(type{x}.number(), type{y}.number(), type{z}.number())};
+  return hypot(type{x}.number(), type{y}.number(), type{z}.number()) * type::reference;
 }
 
 namespace isq {
 
-template<WeakQuantityOf<angular_measure> Q>
+template<QuantityOf<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto sin(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto sin(const Q& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
   return quantity{sin(q[si::radian].number())};
 }
 
-template<WeakQuantityOf<angular_measure> Q>
+template<QuantityOf<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto cos(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto cos(const Q& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
   return quantity{cos(q[si::radian].number())};
 }
 
-template<WeakQuantityOf<angular_measure> Q>
+template<QuantityOf<angular_measure> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto tan(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto tan(const Q& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
@@ -328,88 +329,88 @@ template<WeakQuantityOf<angular_measure> Q>
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angular_measure[si::radian]> auto asin(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angular_measure> auto asin(const Q& q) noexcept
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
 {
   using std::asin;
-  return asin(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+  return asin(value_cast<one>(q).number()) * angular_measure[si::radian];
 }
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angular_measure[si::radian]> auto acos(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angular_measure> auto acos(const Q& q) noexcept
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
 {
   using std::acos;
-  return acos(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+  return acos(value_cast<one>(q).number()) * angular_measure[si::radian];
 }
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angular_measure[si::radian]> auto atan(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angular_measure> auto atan(const Q& q) noexcept
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
 {
   using std::atan;
-  return atan(quantity_cast<one>(q).number()) * angular_measure[si::radian];
+  return atan(value_cast<one>(q).number()) * angular_measure[si::radian];
 }
 
 }  // namespace isq
 
 namespace angular {
 
-// TODO cannot use `WeakQuantityOf<angle>` as it is not interconvertible with `isq_angle::angular_measure`
+// TODO cannot use `QuantityOf<angle>` as it is not interconvertible with `isq_angle::angular_measure`
 template<QuantityOf<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto sin(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto sin(const Q& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
-  return quantity{sin(q[radian].number())};
+  return sin(q[radian].number()) * one;
 }
 
 template<QuantityOf<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto cos(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto cos(const Q& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
-  return quantity{cos(q[radian].number())};
+  return cos(q[radian].number()) * one;
 }
 
 template<QuantityOf<dim_angle> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<dimensionless[one]> auto tan(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto tan(const Q& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
-  return quantity{tan(q[radian].number())};
+  return tan(q[radian].number()) * one;
 }
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angle[radian]> auto asin(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto asin(const Q& q) noexcept
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
 {
   using std::asin;
-  return asin(quantity_cast<one>(q).number()) * angle[radian];
+  return asin(value_cast<one>(q).number()) * angle[radian];
 }
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angle[radian]> auto acos(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto acos(const Q& q) noexcept
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
 {
   using std::acos;
-  return acos(quantity_cast<one>(q).number()) * angle[radian];
+  return acos(value_cast<one>(q).number()) * angle[radian];
 }
 
 template<QuantityOf<dimension_one> Q>
   requires treat_as_floating_point<typename Q::rep>
-[[nodiscard]] inline QuantityOf<angle[radian]> auto atan(const Q& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto atan(const Q& q) noexcept
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
 {
   using std::atan;
-  return atan(quantity_cast<one>(q).number()) * angle[radian];
+  return atan(value_cast<one>(q).number()) * angle[radian];
 }
 
 }  // namespace angular
