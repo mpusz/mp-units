@@ -410,7 +410,7 @@ public:
     requires(!Quantity<Value>) && detail::InvokeResultOf<quantity_spec.character, std::divides<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& v, const quantity& q)
   {
-    return (dimensionless[::mp_units::one] / reference)(v / q.number());
+    return v / q.number() * (dimensionless[::mp_units::one] / reference);
   }
 
   template<typename Value>
