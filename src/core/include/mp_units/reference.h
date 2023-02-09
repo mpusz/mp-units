@@ -70,55 +70,73 @@ class quantity;
  * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
 template<QuantitySpec auto Q, Unit auto U>
-struct reference {};
+struct reference {
+  template<auto Q2, auto U2>
+  [[nodiscard]] friend consteval bool operator==(reference, reference<Q2, U2>)
+  {
+    return Q == Q2 && U == U2;
+  }
 
-template<auto Q1, auto U1, auto Q2, auto U2>
-[[nodiscard]] consteval bool operator==(reference<Q1, U1>, reference<Q2, U2>)
-{
-  return Q1 == Q2 && U1 == U2;
-}
+  template<AssociatedUnit U2>
+  [[nodiscard]] friend consteval bool operator==(reference, U2 u2)
+  {
+    return Q == get_quantity_spec(u2) && U == u2;
+  }
 
-template<auto Q1, auto U1, AssociatedUnit U2>
-[[nodiscard]] consteval bool operator==(reference<Q1, U1>, U2 u2)
-{
-  return Q1 == get_quantity_spec(u2) && U1 == u2;
-}
+  template<auto Q2, auto U2>
+  [[nodiscard]] friend consteval reference<Q * Q2, U * U2> operator*(reference, reference<Q2, U2>)
+  {
+    return {};
+  }
 
-template<auto Q1, auto U1, auto Q2, auto U2>
-[[nodiscard]] consteval reference<Q1 * Q2, U1 * U2> operator*(reference<Q1, U1>, reference<Q2, U2>)
-{
-  return {};
-}
+  template<AssociatedUnit U2>
+  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U* U2{}> operator*(reference, U2)
+  {
+    return {};
+  }
 
-template<auto Q1, auto U1, AssociatedUnit U2>
-[[nodiscard]] consteval reference<Q1 * get_quantity_spec(U2{}), U1* U2{}> operator*(reference<Q1, U1>, U2)
-{
-  return {};
-}
+  template<AssociatedUnit U1>
+  [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) * Q, U1{} * U> operator*(U1, reference)
+  {
+    return {};
+  }
 
-template<AssociatedUnit U1, auto Q2, auto U2>
-[[nodiscard]] consteval reference<get_quantity_spec(U1{}) * Q2, U1{} * U2> operator*(U1, reference<Q2, U2>)
-{
-  return {};
-}
+  template<auto Q2, auto U2>
+  [[nodiscard]] friend consteval reference<Q / Q2, U / U2> operator/(reference, reference<Q2, U2>)
+  {
+    return {};
+  }
 
-template<auto Q1, auto U1, auto Q2, auto U2>
-[[nodiscard]] consteval reference<Q1 / Q2, U1 / U2> operator/(reference<Q1, U1>, reference<Q2, U2>)
-{
-  return {};
-}
+  template<AssociatedUnit U2>
+  [[nodiscard]] friend consteval reference<Q / get_quantity_spec(U2{}), U / U2{}> operator/(reference, U2)
+  {
+    return {};
+  }
 
-template<auto Q1, auto U1, AssociatedUnit U2>
-[[nodiscard]] consteval reference<Q1 / get_quantity_spec(U2{}), U1 / U2{}> operator/(reference<Q1, U1>, U2)
-{
-  return {};
-}
+  template<AssociatedUnit U1>
+  [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) / Q, U1{} / U> operator/(U1, reference)
+  {
+    return {};
+  }
 
-template<AssociatedUnit U1, auto Q2, auto U2>
-[[nodiscard]] consteval reference<get_quantity_spec(U1{}) / Q2, U1{} / U2> operator/(U1, reference<Q2, U2>)
-{
-  return {};
-}
+  template<auto Q2, auto U2>
+  [[nodiscard]] friend consteval bool convertible_to(reference, reference<Q2, U2>)
+  {
+    return convertible_to(Q, Q2) && convertible_to(U, U2);
+  }
+
+  template<AssociatedUnit U2>
+  [[nodiscard]] friend consteval bool convertible_to(reference, U2 u2)
+  {
+    return convertible_to(Q, get_quantity_spec(u2)) && convertible_to(U, u2);
+  }
+
+  template<AssociatedUnit U1>
+  [[nodiscard]] friend consteval bool convertible_to(U1 u1, reference)
+  {
+    return convertible_to(get_quantity_spec(u1), Q) && convertible_to(u1, U);
+  }
+};
 
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
@@ -128,24 +146,6 @@ template<Reference R, typename Rep>
 }
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
-
-template<auto Q1, auto U1, auto Q2, auto U2>
-[[nodiscard]] consteval bool convertible_to(reference<Q1, U1>, reference<Q2, U2>)
-{
-  return convertible_to(Q1, Q2) && convertible_to(U1, U2);
-}
-
-template<auto Q1, auto U1, AssociatedUnit U2>
-[[nodiscard]] consteval bool convertible_to(reference<Q1, U1>, U2 u2)
-{
-  return convertible_to(Q1, get_quantity_spec(u2)) && convertible_to(U1, u2);
-}
-
-template<AssociatedUnit U1, auto Q2, auto U2>
-[[nodiscard]] consteval bool convertible_to(U1 u1, reference<Q2, U2>)
-{
-  return convertible_to(get_quantity_spec(u1), Q2) && convertible_to(u1, U2);
-}
 
 [[nodiscard]] consteval auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
                                               AssociatedUnit auto... rest)
