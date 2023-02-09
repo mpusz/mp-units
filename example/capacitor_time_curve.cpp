@@ -20,8 +20,8 @@
     physical_quantities
 */
 
-#include <mp_units/math.h>  // IWYU pragma: keep
 #include <mp_units/iostream.h>
+#include <mp_units/math.h>  // IWYU pragma: keep
 #include <mp_units/systems/isq/electromagnetism.h>
 #include <mp_units/systems/si/si.h>
 #include <iostream>
@@ -35,22 +35,22 @@ int main()
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = isq::capacitance(0.47, uF);
-  constexpr auto V0 = isq::voltage(5.0, V);
-  constexpr auto R = isq::resistance(4.7, si::kilo<si::ohm>);
+  constexpr auto C = isq::capacitance(0.47 * uF);
+  constexpr auto V0 = isq::voltage(5.0 * V);
+  constexpr auto R = isq::resistance(4.7 * si::kilo<si::ohm>);
 
-  for (auto t = isq::time(0, ms); t <= isq::time(50, ms); ++t) {
-    const WeakQuantityOf<isq::voltage> auto Vt = V0 * mp_units::exp(-t / (R * C));
+  for (auto t = 0 * ms; t <= 50 * ms; ++t) {
+    const QuantityOf<isq::voltage> auto Vt = V0 * mp_units::exp(-t / (R * C));
 
     std::cout << "at " << t << " voltage is ";
 
-    if (Vt >= isq::voltage(1, V))
+    if (Vt >= 1 * V)
       std::cout << Vt[V];
-    else if (Vt >= isq::voltage(1, mV))
+    else if (Vt >= 1 * mV)
       std::cout << Vt[mV];
-    else if (Vt >= isq::voltage(1, uV))
+    else if (Vt >= 1 * uV)
       std::cout << Vt[uV];
-    else if (Vt >= isq::voltage(1, nV))
+    else if (Vt >= 1 * nV)
       std::cout << Vt[nV];
     else
       std::cout << Vt[pV];

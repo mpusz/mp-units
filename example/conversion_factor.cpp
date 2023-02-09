@@ -17,6 +17,7 @@
 
 #include <mp_units/format.h>
 #include <mp_units/systems/isq/space_and_time.h>
+#include <mp_units/systems/si/unit_symbols.h>
 #include <mp_units/systems/si/units.h>
 #include <iostream>
 #include <type_traits>
@@ -40,11 +41,12 @@ inline constexpr double conversion_factor(Target, Source)
 int main()
 {
   using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr auto lengthA = isq::length(2.0, si::metre);
-  constexpr auto lengthB = lengthA[si::milli<si::metre>];
+  constexpr auto lengthA = 2.0 * m;
+  constexpr auto lengthB = lengthA[mm];
 
   std::cout << STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";

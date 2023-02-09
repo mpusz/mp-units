@@ -52,12 +52,10 @@ int main()
   using namespace kalman;
   using namespace mp_units::si::unit_symbols;
 
-  const estimation initial = {state{60. * isq::height[m]}, pow<2>(15. * isq::height[m])};
-  const std::array measurements = {48.54 * isq::height[m], 47.11 * isq::height[m], 55.01 * isq::height[m],
-                                   55.15 * isq::height[m], 49.89 * isq::height[m], 40.85 * isq::height[m],
-                                   46.72 * isq::height[m], 50.05 * isq::height[m], 51.27 * isq::height[m],
-                                   49.95 * isq::height[m]};
-  const auto measurement_uncertainty = pow<2>(5. * isq::height[m]);
+  const estimation initial = {state{isq::height(60. * m)}, pow<2>(isq::height(15. * m))};
+  const quantity<isq::height[m]> measurements[] = {48.54 * m, 47.11 * m, 55.01 * m, 55.15 * m, 49.89 * m,
+                                                   40.85 * m, 46.72 * m, 50.05 * m, 51.27 * m, 49.95 * m};
+  const auto measurement_uncertainty = pow<2>(isq::height(5. * m));
 
   auto update = [=]<Quantity Q>(const estimation<Q>& previous, const Q& measurement,
                                 QuantityOf<dimensionless> auto gain) {

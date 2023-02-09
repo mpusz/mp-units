@@ -37,9 +37,8 @@ namespace {
 
 using namespace mp_units;
 
-QuantityOf<isq::mechanical_energy> auto total_energy(WeakQuantityOf<isq::momentum> auto p,
-                                                     WeakQuantityOf<isq::mass> auto m,
-                                                     WeakQuantityOf<isq::speed> auto c)
+QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> auto p, QuantityOf<isq::mass> auto m,
+                                                     QuantityOf<isq::speed> auto c)
 {
   return quantity_cast<isq::mechanical_energy>(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
 }
@@ -49,9 +48,9 @@ void si_example()
   using namespace mp_units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
 
-  constexpr QuantityOf<isq::speed> auto c = si::si2019::speed_of_light_in_vacuum(1.);
-  const WeakQuantityOf<isq::momentum> auto p1 = isq::mechanical_energy(4., GeV) / c;
-  const WeakQuantityOf<isq::mass> auto m1 = isq::mechanical_energy(3., GeV) / pow<2>(c);
+  constexpr QuantityOf<isq::speed> auto c = 1. * si::si2019::speed_of_light_in_vacuum;
+  const QuantityOf<isq::momentum> auto p1 = isq::mechanical_energy(4. * GeV) / c;
+  const QuantityOf<isq::mass> auto m1 = isq::mechanical_energy(3. * GeV) / pow<2>(c);
   const auto E = total_energy(p1, m1, c);
 
   std::cout << "\n*** SI units (c = " << c << " = " << c[si::metre / s] << ") ***\n";
@@ -74,7 +73,7 @@ void si_example()
   const auto m3 = m1[kg];
   const auto E3 = total_energy(p3, m3, c)[J];
 
-  std::cout << "\n[in SI units]\n"
+  std::cout << "\n[in SI base units]\n"
             << "p = " << p3 << "\n"
             << "m = " << m3 << "\n"
             << "E = " << E3 << "\n";

@@ -37,12 +37,12 @@ void simple_quantities()
   using distance = quantity<isq::distance[kilo<metre>]>;
   using duration = quantity<isq::duration[second]>;
 
-  constexpr distance km = isq::distance[kilo<metre>](1.0);
-  constexpr distance miles = isq::distance[mile](1.0);
+  constexpr distance km = 1. * kilo<metre>;
+  constexpr distance miles = 1. * mile;
 
-  constexpr duration sec = isq::duration[second](1);
-  constexpr duration min = isq::duration[minute](1);
-  constexpr duration hr = isq::duration[hour](1);
+  constexpr duration sec = 1 * second;
+  constexpr duration min = 1 * minute;
+  constexpr duration hr = 1 * hour;
 
   std::cout << "A physical quantities library can choose the simple\n";
   std::cout << "option to provide output using a single type for each base unit:\n\n";
@@ -59,14 +59,14 @@ void quantities_with_typed_units()
   using namespace mp_units::si;
   using namespace mp_units::international;
 
-  constexpr auto km = isq::distance[kilo<metre>](1.0);
-  constexpr auto miles = isq::distance[mile](1.0);
+  constexpr auto km = 1.0 * kilo<metre>;
+  constexpr auto miles = 1.0 * mile;
 
   std::cout.precision(6);
 
-  constexpr auto sec = isq::duration[second](1);
-  constexpr auto min = isq::duration[minute](1);
-  constexpr auto hr = isq::duration[hour](1);
+  constexpr auto sec = 1 * second;
+  constexpr auto min = 1 * minute;
+  constexpr auto hr = 1 * hour;
 
   std::cout << "A more flexible option is to provide separate types for each unit,\n\n";
   std::cout << km << '\n';
@@ -75,7 +75,7 @@ void quantities_with_typed_units()
   std::cout << min << '\n';
   std::cout << hr << "\n\n";
 
-  constexpr quantity<isq::length[metre]> meter{1};
+  constexpr auto meter = 1. * metre;
   std::cout << "then a wide range of pre-defined units can be defined and converted,\n"
                " for consistency and repeatability across applications:\n\n";
 
@@ -110,8 +110,8 @@ void calcs_comparison()
                "when adding two values of the same very big\n"
                "or very small type:\n\n";
 
-  const auto L1A = isq::length[fm](2.f);
-  const auto L2A = isq::length[fm](3.f);
+  const auto L1A = 2.f * fm;
+  const auto L2A = 3.f * fm;
   const auto LrA = L1A + L2A;
   std::cout << STD_FMT::format("{:%.30Q %q}\n + {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, LrA);
 

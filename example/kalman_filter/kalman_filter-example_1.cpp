@@ -49,16 +49,15 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using state = kalman::state<quantity<isq::mass[g]>>;
 
-  const state initial = {1 * isq::mass[kg]};
-  const std::array measurements = {1030 * isq::mass[g], 989 * isq::mass[g], 1017 * isq::mass[g], 1009 * isq::mass[g],
-                                   1013 * isq::mass[g], 979 * isq::mass[g], 1008 * isq::mass[g], 1042 * isq::mass[g],
-                                   1012 * isq::mass[g], 1011 * isq::mass[g]};
+  const state initial = {1 * kg};
+  const std::array measurements = {1030 * g, 989 * g,  1017 * g, 1009 * g, 1013 * g,
+                                   979 * g,  1008 * g, 1042 * g, 1012 * g, 1011 * g};
 
   print_header(initial);
   state next = initial;
   for (int index = 1; const auto& m : measurements) {
     const auto& previous = next;
-    const quantity gain = 1. / index;
+    const auto gain = 1. / index * one;
     const auto current = state_update(previous, m, gain);
     next = current;
     print(index++, gain, m, current, next);

@@ -58,7 +58,7 @@ auto fmt_line(const Q& q)
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
-  const auto waterDensity = isq::density[lb / cubic<ft>](62.4);
+  const auto waterDensity = 62.4 * isq::density[lb / cubic<ft>];
   std::cout << STD_FMT::format("{}\n", description);
   std::cout << STD_FMT::format("{:20} : {}\n", "length", fmt_line<yd, m>(ship.length))
             << STD_FMT::format("{:20} : {}\n", "draft", fmt_line<yd, m>(ship.draft))
@@ -77,37 +77,37 @@ int main()
   using mp_units::international::unit_symbols::ft;  // collides with si::femto<si::tonne>
 
   // KMS Bismark, using the units the Germans would use, taken from Wiki
-  auto bismark = Ship{.length{isq::length[m](251.)},
-                      .draft{isq::length[m](9.3)},
-                      .beam{isq::length[m](36)},
-                      .speed{isq::speed[km / h](56)},
-                      .mass{isq::mass[t](50'300)},
-                      .mainGuns{isq::length[mm](380)},
-                      .shellMass{isq::mass[kg](800)},
-                      .shellSpeed{isq::speed[m / s](820.)},
-                      .power{isq::power[kW](110.45)}};
+  auto bismark = Ship{.length{251. * m},
+                      .draft{9.3 * m},
+                      .beam{36 * m},
+                      .speed{56 * (km / h)},
+                      .mass{50'300 * t},
+                      .mainGuns{380 * mm},
+                      .shellMass{800 * kg},
+                      .shellSpeed{820. * (m / s)},
+                      .power{110.45 * kW}};
 
   // USS Iowa, using units from the foot-pound-second system
-  auto iowa = Ship{.length{isq::length[ft](860.)},
-                   .draft{isq::length[ft](37.) + isq::length[in](2.)},
-                   .beam{isq::length[ft](108.) + isq::length[in](2.)},
-                   .speed{isq::speed[kt](33)},
-                   .mass{isq::mass[imperial::long_ton](57'540)},
-                   .mainGuns{isq::length[in](16)},
-                   .shellMass{isq::mass[lb](2700)},
-                   .shellSpeed{isq::speed[ft / s](2690.)},
-                   .power{isq::power[hp](212'000)}};
+  auto iowa = Ship{.length{860. * ft},
+                   .draft{37. * ft + 2. * in},
+                   .beam{108. * ft + 2. * in},
+                   .speed{33 * kt},
+                   .mass{57'540 * imperial::long_ton},
+                   .mainGuns{16 * in},
+                   .shellMass{2700 * lb},
+                   .shellSpeed{2690. * (ft / s)},
+                   .power{212'000 * hp}};
 
   // HMS King George V, using units from the foot-pound-second system
-  auto kgv = Ship{.length{isq::length[ft](745.1)},
-                  .draft{isq::length[ft](33.) + isq::length[in](7.5)},
-                  .beam{isq::length[ft](103.2) + isq::length[in](2.5)},
-                  .speed{isq::speed[kt](28.3)},
-                  .mass{isq::mass[imperial::long_ton](42'245)},
-                  .mainGuns{isq::length[in](14)},
-                  .shellMass{isq::mass[lb](1'590)},
-                  .shellSpeed{isq::speed[ft / s](2483.)},
-                  .power{isq::power[hp](110'000)}};
+  auto kgv = Ship{.length{745.1 * ft},
+                  .draft{33. * ft + 7.5 * in},
+                  .beam{103.2 * ft + 2.5 * in},
+                  .speed{28.3 * kt},
+                  .mass{42'245 * imperial::long_ton},
+                  .mainGuns{14 * in},
+                  .shellMass{1'590 * lb},
+                  .shellSpeed{2483. * (ft / s)},
+                  .power{110'000 * hp}};
 
   print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);
   std::cout << "\n\n";

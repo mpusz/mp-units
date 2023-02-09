@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/math.h>
 #include <mp_units/iostream.h>
+#include <mp_units/math.h>
 #include <mp_units/systems/isq_angle/isq_angle.h>
 #include <mp_units/systems/si/unit_symbols.h>
 #include <iostream>
@@ -38,11 +38,11 @@ int main()
   using mp_units::angular::unit_symbols::deg;
   using mp_units::angular::unit_symbols::rad;
 
-  const auto lever = isq_angle::position_vector[cm](20);
-  const auto force = isq_angle::force[N](500);
-  const auto angle = isq_angle::angular_measure[deg](90.);
-  const WeakQuantityOf<isq_angle::torque> auto torque =
-    lever * force * angular::sin(angle) / isq_angle::cotes_angle(1);
+  const auto lever = isq_angle::position_vector(20 * cm);
+  const auto force = isq_angle::force(500 * N);
+  const auto angle = isq_angle::angular_measure(90. * deg);
+  const auto torque =
+    quantity_cast<isq_angle::torque>(lever * force * angular::sin(angle) / (1 * isq_angle::cotes_angle));
 
   std::cout << "Applying a perpendicular force of " << force << " to a " << lever << " long lever results in "
             << torque[N * m / rad] << " of torque.\n";

@@ -105,7 +105,7 @@ struct glider {
   std::array<polar_point, 1> polar;
 };
 
-constexpr mp_units::WeakQuantityOf<mp_units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
+constexpr mp_units::QuantityOf<mp_units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
 {
   return polar.v / -polar.climb;
 }

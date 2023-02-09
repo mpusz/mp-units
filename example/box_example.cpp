@@ -39,24 +39,24 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-inline constexpr auto g = si::standard_gravity(1);
-inline constexpr auto air_density = isq::mass_density(1.225, kg / m3);
+inline constexpr auto g = 1 * si::standard_gravity;
+inline constexpr auto air_density = isq::mass_density(1.225 * (kg / m3));
 
 class Box {
   quantity<isq::area[m2]> base_;
   quantity<isq::height[m]> height_;
   quantity<isq::mass_density[kg / m3]> density_ = air_density;
 public:
-  constexpr Box(const quantity<isq::length[m]>& length, const quantity<isq::length[m]>& width,
-                quantity<isq::length[m]> height) :
+  constexpr Box(const quantity<isq::length[m]>& length, const quantity<isq::width[m]>& width,
+                quantity<isq::height[m]> height) :
       base_(length * width), height_(std::move(height))
   {
   }
 
   [[nodiscard]] constexpr QuantityOf<isq::weight> auto filled_weight() const
   {
-    const WeakQuantityOf<isq::volume> auto volume = base_ * height_;
-    const WeakQuantityOf<isq::mass> auto mass = density_ * volume;
+    const QuantityOf<isq::volume> auto volume = isq::volume(base_ * height_);
+    const QuantityOf<isq::mass> auto mass = density_ * volume;
     return quantity_cast<isq::weight>(mass * g);
   }
 
@@ -82,22 +82,21 @@ public:
 
 int main()
 {
-  using namespace mp_units::si;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
-  constexpr auto mm = isq::length[unit_symbols::mm];  // helper reference object
+  const quantity<isq::height[m]> height = 200. * mm;
+  auto box = Box(isq::length(1000. * mm), isq::width(500. * mm), height);
+  box.set_contents_density(1000.0 * isq::mass_density[kg / m3]);
 
-  const auto height = mm(200.0)[metre];
-  auto box = Box(mm(1000.0), mm(500.0), height);
-  box.set_contents_density(isq::mass_density(1000.0, kg / m3));
-
-  const auto fill_time = isq::time(200.0, s);      // time since starting fill
-  const auto measured_mass = isq::mass(20.0, kg);  // measured mass at fill_time
+  const auto fill_time = 200. * s;       // time since starting fill
+  const auto measured_mass = 20.0 * kg;  // measured mass at fill_time
   const auto fill_level = box.fill_level(measured_mass);
   const auto spare_capacity = box.spare_capacity(measured_mass);
   const auto filled_weight = box.filled_weight();
 
-  const WeakQuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
-  const WeakQuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
+  const QuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
+  const QuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
   const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1) * fill_time;
 
   const auto fill_percent = (fill_level / height)[percent];

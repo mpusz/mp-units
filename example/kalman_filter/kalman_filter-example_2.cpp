@@ -51,14 +51,11 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
-  const auto interval = 5 * isq::period_duration[s];
-  const state initial = {30 * isq::position_vector[km], 40 * isq::velocity[m / s]};
-  const std::array measurements = {30110 * isq::position_vector[m], 30265 * isq::position_vector[m],
-                                   30740 * isq::position_vector[m], 30750 * isq::position_vector[m],
-                                   31135 * isq::position_vector[m], 31015 * isq::position_vector[m],
-                                   31180 * isq::position_vector[m], 31610 * isq::position_vector[m],
-                                   31960 * isq::position_vector[m], 31865 * isq::position_vector[m]};
-  std::array gain = {quantity{0.2}, quantity{0.1}};
+  const auto interval = isq::period_duration(5 * s);
+  const state initial = {30 * km, 40 * (m / s)};
+  const quantity<isq::position_vector[m], int> measurements[] = {30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
+                                                                 31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m};
+  std::array gain = {0.2 * one, 0.1 * one};
 
   print_header(initial);
   state next = state_extrapolation(initial, interval);

@@ -31,15 +31,14 @@
 namespace {
 
 using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
 
-constexpr quantity<isq::speed[m / s], int> fixed_int_si_avg_speed(quantity<isq::length[m], int> d,
-                                                                  quantity<isq::time[s], int> t)
+constexpr quantity<si::metre / si::second, int> fixed_int_si_avg_speed(quantity<si::metre, int> d,
+                                                                       quantity<si::second, int> t)
 {
   return d / t;
 }
 
-constexpr quantity<isq::speed[m / s]> fixed_double_si_avg_speed(quantity<isq::length[m]> d, quantity<isq::time[s]> t)
+constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<si::metre> d, quantity<si::second> t)
 {
   return d / t;
 }
@@ -52,6 +51,7 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, 
 template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
+  using namespace mp_units::si::unit_symbols;
   const auto result_in_kmph = value_cast<km / h>(speed);
   std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
             << ".\n";
@@ -59,10 +59,12 @@ void print_result(D distance, T duration, V speed)
 
 void example()
 {
+  using namespace mp_units::si::unit_symbols;
+
   // SI (int)
   {
-    constexpr auto distance = isq::length(220, km);
-    constexpr auto duration = isq::time(2, h);
+    constexpr auto distance = 220 * km;
+    constexpr auto duration = 2 * h;
 
     std::cout << "SI units with 'int' as representation\n";
 
@@ -73,8 +75,8 @@ void example()
 
   // SI (double)
   {
-    constexpr auto distance = isq::length(220., km);
-    constexpr auto duration = isq::time(2., h);
+    constexpr auto distance = 220. * km;
+    constexpr auto duration = 2. * h;
 
     std::cout << "\nSI units with 'double' as representation\n";
 
@@ -88,8 +90,8 @@ void example()
   {
     using namespace mp_units::international::unit_symbols;
 
-    constexpr auto distance = isq::length(140, mi);
-    constexpr auto duration = isq::time(2, h);
+    constexpr auto distance = 140 * mi;
+    constexpr auto duration = 2 * h;
 
     std::cout << "\nUS Customary Units with 'int' as representation\n";
 
@@ -104,8 +106,8 @@ void example()
   {
     using namespace mp_units::international::unit_symbols;
 
-    constexpr auto distance = isq::length(140., mi);
-    constexpr auto duration = isq::time(2., h);
+    constexpr auto distance = 140. * mi;
+    constexpr auto duration = 2. * h;
 
     std::cout << "\nUS Customary Units with 'double' as representation\n";
 
@@ -120,8 +122,8 @@ void example()
 
   // CGS (int)
   {
-    constexpr auto distance = isq::length(22'000'000, cgs::centimetre);
-    constexpr auto duration = isq::time(7200, cgs::second);
+    constexpr auto distance = 22'000'000 * cgs::centimetre;
+    constexpr auto duration = 7200 * cgs::second;
 
     std::cout << "\nCGS units with 'int' as representation\n";
 
@@ -134,8 +136,8 @@ void example()
 
   // CGS (double)
   {
-    constexpr auto distance = isq::length(22'000'000., cgs::centimetre);
-    constexpr auto duration = isq::time(7200., cgs::second);
+    constexpr auto distance = 22'000'000. * cgs::centimetre;
+    constexpr auto duration = 7200. * cgs::second;
 
     std::cout << "\nCGS units with 'double' as representation\n";
 
