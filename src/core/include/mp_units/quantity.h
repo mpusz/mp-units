@@ -121,12 +121,6 @@ public:
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
-  template<typename Value>
-    requires detail::RepSafeConstructibleFrom<rep, Value>
-  constexpr explicit(!detail::QuantityOne<quantity>) quantity(Value&& v) : number_(std::forward<Value>(v))
-  {
-  }
-
   template<detail::QuantityConvertibleTo<quantity> Q>
   constexpr explicit(false) quantity(const Q& q) : number_(detail::sudo_cast<quantity>(q).number())
   {
@@ -439,6 +433,17 @@ public:
 #endif
 
   [[nodiscard]] friend constexpr bool operator==(const quantity& lhs, const quantity& rhs) = default;
+
+private:
+  template<Reference R2, typename Rep2>
+    requires RepresentationOf<std::remove_cvref_t<Rep2>, get_quantity_spec(R2{}).character>
+  friend constexpr quantity<R2{}, std::remove_cvref_t<Rep2>> operator*(Rep2&& lhs, R2);
+
+  template<typename Value>
+    requires detail::RepSafeConstructibleFrom<rep, Value>
+  constexpr explicit quantity(Value&& v) : number_(std::forward<Value>(v))
+  {
+  }
 };
 
 // CTAD
@@ -465,7 +470,7 @@ template<Quantity Q1, Quantity Q2>
 {
   constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   using ret = quantity<ref, decltype(lhs.number() + rhs.number())>;
-  return ret(ret(lhs).number() + ret(rhs).number());
+  return (ret(lhs).number() + ret(rhs).number()) * ref;
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -476,7 +481,7 @@ template<Quantity Q1, Quantity Q2>
 {
   constexpr auto ref = common_reference(Q1::reference, Q2::reference);
   using ret = quantity<ref, decltype(lhs.number() - rhs.number())>;
-  return ret(ret(lhs).number() - ret(rhs).number());
+  return (ret(lhs).number() - ret(rhs).number()) * ref;
 }
 
 template<Quantity Q1, Quantity Q2>

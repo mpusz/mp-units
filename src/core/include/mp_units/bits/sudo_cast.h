@@ -51,10 +51,10 @@ template<Quantity To, auto R, typename Rep>
 {
   if constexpr (get_unit(R) == To::unit) {
     // no scaling of the number needed
-    return To(static_cast<TYPENAME To::rep>(q.number()));  // this is the only (and recommended) way to do
-                                                           // a truncating conversion on a number, so we are
-                                                           // using static_cast to suppress all the compiler
-                                                           // warnings on conversions
+    return static_cast<TYPENAME To::rep>(q.number()) * To::reference;  // this is the only (and recommended) way to do
+                                                                       // a truncating conversion on a number, so we are
+                                                                       // using static_cast to suppress all the compiler
+                                                                       // warnings on conversions
   } else {
     // scale the number
     using rep_type = decltype([] {
@@ -85,7 +85,8 @@ template<Quantity To, auto R, typename Rep>
     constexpr Magnitude auto irr = c_mag * (den / num);
 
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
-    return To(static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)));
+    return static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)) *
+           To::reference;
   }
 }
 

@@ -89,8 +89,8 @@ void quantity_of_vector_cast()
 {
   std::cout << "\nquantity_of_vector_cast:\n";
 
-  quantity<isq::position_vector[m], vector<int>> v{vector<int>{1001, 1002, 1003}};
-  quantity<isq::position_vector[km], vector<int>> u{vector<int>{3, 2, 1}};
+  auto v = vector<int>{1001, 1002, 1003} * isq::position_vector[m];
+  auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -103,7 +103,7 @@ void quantity_of_vector_multiply_by_scalar_value()
 {
   std::cout << "\nquantity_of_vector_multiply_scalar_value:\n";
 
-  quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
+  auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
 
   std::cout << "v = " << v << "\n";
 
@@ -114,7 +114,7 @@ void quantity_of_vector_divide_by_scalar_value()
 {
   std::cout << "\nquantity_of_vector_divide_scalar_value:\n";
 
-  quantity<isq::position_vector[m], vector<int>> v{vector<int>{2, 4, 6}};
+  auto v = vector<int>{2, 4, 6} * isq::position_vector[m];
 
   std::cout << "v = " << v << "\n";
 
@@ -131,9 +131,9 @@ void quantity_of_vector_add()
   // auto t = vector<int>{3, 2, 1} * isq::position_vector[km];
 
   // quantity<isq::distance[m], vector<int>> v{vector<int>{1, 2, 3}};  // should not compile
-  quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
-  quantity<isq::position_vector[m], vector<int>> u{vector<int>{3, 2, 1}};
-  quantity<isq::position_vector[km], vector<int>> t{vector<int>{3, 2, 1}};
+  auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+  auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
+  auto t = vector<int>{3, 2, 1} * isq::position_vector[km];
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -147,9 +147,9 @@ void quantity_of_vector_subtract()
 {
   std::cout << "\nquantity_of_vector_subtract:\n";
 
-  quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
-  quantity<isq::position_vector[m], vector<int>> u{vector<int>{3, 2, 1}};
-  quantity<isq::position_vector[km], vector<int>> t{vector<int>{3, 2, 1}};
+  auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+  auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
+  auto t = vector<int>{3, 2, 1} * isq::position_vector[km];
 
   std::cout << "v = " << v << "\n";
   std::cout << "u = " << u << "\n";
@@ -163,7 +163,7 @@ void quantity_of_vector_divide_by_scalar_quantity()
 {
   std::cout << "\nquantity_of_vector_divide_scalar:\n";
 
-  quantity<isq::position_vector[km], vector<int>> pos{vector<int>{30, 20, 10}};
+  auto pos = vector<int>{30, 20, 10} * isq::position_vector[km];
   auto dur = 2 * isq::duration[h];
   quantity<isq::velocity[km / h], vector<int>> v = pos / dur;
 

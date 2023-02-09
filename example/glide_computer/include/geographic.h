@@ -62,29 +62,29 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 inline namespace literals {
 
-constexpr auto operator"" _N(long double v) { return latitude<long double>(latitude<long double>::rep(v)); }
-constexpr auto operator"" _S(long double v) { return latitude<long double>(latitude<long double>::rep(v)); }
-constexpr auto operator"" _E(long double v) { return longitude<long double>(longitude<long double>::rep(v)); }
-constexpr auto operator"" _W(long double v) { return longitude<long double>(longitude<long double>::rep(v)); }
-constexpr auto operator"" _N(unsigned long long v)
+constexpr latitude<long double> operator"" _N(long double v) { return v * mp_units::si::degree; }
+constexpr latitude<long double> operator"" _S(long double v) { return -v * mp_units::si::degree; }
+constexpr longitude<long double> operator"" _E(long double v) { return v * mp_units::si::degree; }
+constexpr longitude<long double> operator"" _W(long double v) { return -v * mp_units::si::degree; }
+constexpr latitude<std::int64_t> operator"" _N(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return latitude<std::int64_t>(latitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+  return static_cast<std::int64_t>(v) * mp_units::si::degree;
 }
-constexpr auto operator"" _S(unsigned long long v)
+constexpr latitude<std::int64_t> operator"" _S(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return latitude<std::int64_t>(-latitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+  return -static_cast<std::int64_t>(v) * mp_units::si::degree;
 }
-constexpr auto operator"" _E(unsigned long long v)
+constexpr longitude<std::int64_t> operator"" _E(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return longitude<std::int64_t>(longitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+  return static_cast<std::int64_t>(v) * mp_units::si::degree;
 }
-constexpr auto operator"" _W(unsigned long long v)
+constexpr longitude<std::int64_t> operator"" _W(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return longitude<std::int64_t>(-longitude<std::int64_t>::rep(static_cast<std::int64_t>(v)));
+  return -static_cast<std::int64_t>(v) * mp_units::si::degree;
 }
 
 }  // namespace literals

@@ -61,8 +61,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
     return q;
   } else {
     using std::pow;
-    return quantity<reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{}, rep>(
-      static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
+    return static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))) *
+           reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{};
   }
 }
 
@@ -80,8 +80,7 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::sqrt;
-  return quantity<reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{}, rep>(
-    static_cast<rep>(sqrt(q.number())));
+  return static_cast<rep>(sqrt(q.number())) * reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{};
 }
 
 /**
@@ -98,8 +97,7 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::cbrt;
-  return quantity<reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{}, rep>(
-    static_cast<rep>(cbrt(q.number())));
+  return static_cast<rep>(cbrt(q.number())) * reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{};
 }
 
 /**
@@ -171,10 +169,9 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
     if constexpr (To == get_unit(R)) {
-      return quantity<reference<get_quantity_spec(R), To>{}, Rep>(floor(q.number()));
+      return floor(q.number()) * reference<get_quantity_spec(R), To>{};
     } else {
-      return handle_signed_results(
-        quantity<reference<get_quantity_spec(R), To>{}, Rep>(floor(value_cast<To>(q).number())));
+      return handle_signed_results(floor(value_cast<To>(q).number()) * reference<get_quantity_spec(R), To>{});
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -208,10 +205,9 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
     if constexpr (To == get_unit(R)) {
-      return quantity<reference<get_quantity_spec(R), To>{}, Rep>(ceil(q.number()));
+      return ceil(q.number()) * reference<get_quantity_spec(R), To>{};
     } else {
-      return handle_signed_results(
-        quantity<reference<get_quantity_spec(R), To>{}, Rep>(ceil(value_cast<To>(q).number())));
+      return handle_signed_results(ceil(value_cast<To>(q).number()) * reference<get_quantity_spec(R), To>{});
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -242,7 +238,7 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (To == get_unit(R)) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
-      return quantity<reference<get_quantity_spec(R), To>{}, Rep>(round(q.number()));
+      return round(q.number()) * reference<get_quantity_spec(R), To>{};
     } else {
       return value_cast<To>(q);
     }
@@ -306,7 +302,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
-  return quantity{sin(q[si::radian].number())};
+  return sin(q[si::radian].number()) * one;
 }
 
 template<QuantityOf<angular_measure> Q>
@@ -315,7 +311,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
-  return quantity{cos(q[si::radian].number())};
+  return cos(q[si::radian].number()) * one;
 }
 
 template<QuantityOf<angular_measure> Q>
@@ -324,7 +320,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
-  return quantity{tan(q[si::radian].number())};
+  return tan(q[si::radian].number()) * one;
 }
 
 template<QuantityOf<dimension_one> Q>
