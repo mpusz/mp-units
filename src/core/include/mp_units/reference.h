@@ -130,21 +130,21 @@ template<Reference R, typename Rep>
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
 template<auto Q1, auto U1, auto Q2, auto U2>
-[[nodiscard]] consteval bool interconvertible(reference<Q1, U1>, reference<Q2, U2>)
+[[nodiscard]] consteval bool convertible_to(reference<Q1, U1>, reference<Q2, U2>)
 {
-  return interconvertible(Q1, Q2) && interconvertible(U1, U2);
+  return convertible_to(Q1, Q2) && convertible_to(U1, U2);
 }
 
 template<auto Q1, auto U1, AssociatedUnit U2>
-[[nodiscard]] consteval bool interconvertible(reference<Q1, U1>, U2 u2)
+[[nodiscard]] consteval bool convertible_to(reference<Q1, U1>, U2 u2)
 {
-  return interconvertible(Q1, get_quantity_spec(u2)) && interconvertible(U1, u2);
+  return convertible_to(Q1, get_quantity_spec(u2)) && convertible_to(U1, u2);
 }
 
 template<AssociatedUnit U1, auto Q2, auto U2>
-[[nodiscard]] consteval bool interconvertible(U1 u1, reference<Q2, U2> r2)
+[[nodiscard]] consteval bool convertible_to(U1 u1, reference<Q2, U2>)
 {
-  return interconvertible(r2, u1);
+  return convertible_to(get_quantity_spec(u1), Q2) && convertible_to(u1, U2);
 }
 
 [[nodiscard]] consteval auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
