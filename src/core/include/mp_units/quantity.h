@@ -38,6 +38,10 @@
 #include <compare>
 #include <utility>
 
+// the below is not used in this header but should be exposed with it
+#include <mp_units/bits/quantity_cast.h>
+#include <mp_units/bits/value_cast.h>
+
 namespace mp_units {
 
 namespace detail {
