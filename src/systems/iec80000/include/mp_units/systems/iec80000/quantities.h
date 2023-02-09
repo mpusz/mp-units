@@ -29,11 +29,12 @@
 
 namespace mp_units::iec80000 {
 
+// dimensions of base quantities
 // clang-format off
 inline constexpr struct dim_traffic_intensity : base_dimension<"A"> {} dim_traffic_intensity;
-inline constexpr struct dim_storage_capacity : base_dimension<"M"> {} dim_storage_capacity;
 // clang-format on
 
+// quantities
 QUANTITY_SPEC(traffic_intensity, dim_traffic_intensity);
 QUANTITY_SPEC(traffic_offered_intensity, traffic_intensity);
 QUANTITY_SPEC(traffic_carried_intensity, traffic_intensity);
