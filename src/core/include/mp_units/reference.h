@@ -158,8 +158,9 @@ template<AssociatedUnit U1, auto Q2, auto U2>
   return common_unit(u1, u2, rest...);
 }
 
-[[nodiscard]] consteval auto common_reference(Reference auto r1, Reference auto r2, Reference auto... rest)
-  requires requires {
+template<Reference R1, Reference R2, Reference... Rest>
+[[nodiscard]] consteval auto common_reference(R1 r1, R2 r2, Rest... rest)
+  requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
     {
       common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
     } -> QuantitySpec;
