@@ -27,6 +27,8 @@
 namespace mp_units::si {
 
 // clang-format off
+template<PrefixableUnit auto U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U> {};
+template<PrefixableUnit auto U> struct ronto_ : prefixed_unit<"r", mag_power<10, -27>, U> {};
 template<PrefixableUnit auto U> struct yocto_ : prefixed_unit<"y", mag_power<10, -24>, U> {};
 template<PrefixableUnit auto U> struct zepto_ : prefixed_unit<"z", mag_power<10, -21>, U> {};
 template<PrefixableUnit auto U> struct atto_  : prefixed_unit<"a", mag_power<10, -18>, U> {};
@@ -47,7 +49,11 @@ template<PrefixableUnit auto U> struct peta_  : prefixed_unit<"P", mag_power<10,
 template<PrefixableUnit auto U> struct exa_   : prefixed_unit<"E", mag_power<10, 18>, U> {};
 template<PrefixableUnit auto U> struct zetta_ : prefixed_unit<"Z", mag_power<10, 21>, U> {};
 template<PrefixableUnit auto U> struct yotta_ : prefixed_unit<"Y", mag_power<10, 24>, U> {};
+template<PrefixableUnit auto U> struct ronna_ : prefixed_unit<"R", mag_power<10, 27>, U> {};
+template<PrefixableUnit auto U> struct quetta_ : prefixed_unit<"Q", mag_power<10, 30>, U> {};
 
+template<PrefixableUnit auto U> inline constexpr quecto_<U> quecto;
+template<PrefixableUnit auto U> inline constexpr ronto_<U> ronto;
 template<PrefixableUnit auto U> inline constexpr yocto_<U> yocto;
 template<PrefixableUnit auto U> inline constexpr zepto_<U> zepto;
 template<PrefixableUnit auto U> inline constexpr atto_<U> atto;
@@ -68,6 +74,8 @@ template<PrefixableUnit auto U> inline constexpr peta_<U> peta;
 template<PrefixableUnit auto U> inline constexpr exa_<U> exa;
 template<PrefixableUnit auto U> inline constexpr zetta_<U> zetta;
 template<PrefixableUnit auto U> inline constexpr yotta_<U> yotta;
+template<PrefixableUnit auto U> inline constexpr ronna_<U> ronna;
+template<PrefixableUnit auto U> inline constexpr quetta_<U> quetta;
 // clang-format on
 
 }  // namespace mp_units::si
