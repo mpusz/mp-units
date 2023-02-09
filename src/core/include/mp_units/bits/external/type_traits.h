@@ -65,6 +65,12 @@ inline constexpr bool is_specialization_of = false;
 template<typename... Params, template<typename...> typename Type>
 inline constexpr bool is_specialization_of<Type<Params...>, Type> = true;
 
+template<typename T, template<auto...> typename Type>
+inline constexpr bool is_specialization_of_v = false;
+
+template<auto... Params, template<auto...> typename Type>
+inline constexpr bool is_specialization_of_v<Type<Params...>, Type> = true;
+
 // is_derived_from_specialization_of
 namespace detail {
 
@@ -92,6 +98,12 @@ consteval bool contains()
   return (false || ... || is_specialization_of<Ts, T>);
 }
 
+template<template<auto...> typename T, typename... Ts>
+consteval bool contains()
+{
+  return (false || ... || is_specialization_of_v<Ts, T>);
+}
+
 template<typename T, std::same_as<T> auto V>
 consteval auto get()
 {
@@ -117,7 +129,23 @@ consteval auto get()
 template<template<typename...> typename T, typename T1, typename T2, typename... Ts>
 consteval auto get()
 {
-  if constexpr (is_specialization_of<T1, T2, T>)
+  if constexpr (is_specialization_of<T1, T>)
+    return T1{};
+  else
+    return get<T, T2, Ts...>();
+}
+
+template<template<auto...> typename T, typename T1>
+  requires is_specialization_of_v<T1, T>
+consteval auto get()
+{
+  return T1{};
+}
+
+template<template<auto...> typename T, typename T1, typename T2, typename... Ts>
+consteval auto get()
+{
+  if constexpr (is_specialization_of_v<T1, T>)
     return T1{};
   else
     return get<T, T2, Ts...>();
