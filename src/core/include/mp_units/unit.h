@@ -480,35 +480,43 @@ template<Unit Lhs, Unit Rhs>
 
 namespace detail {
 
-[[nodiscard]] consteval bool same_canonical_reference_unit(...) { return false; }
+[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(...) { return false; }
 
 template<basic_symbol_text Symbol, auto... D>
-[[nodiscard]] consteval bool same_canonical_reference_unit(const named_unit<Symbol, D...>&,
-                                                           const named_unit<Symbol, D...>&)
+[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const named_unit<Symbol, D...>&,
+                                                                     const named_unit<Symbol, D...>&)
 {
   return true;
 }
 
 template<typename F1, typename F2, auto... Vs>
-[[nodiscard]] consteval bool same_canonical_reference_unit(const power<F1, Vs...>&, const power<F2, Vs...>&)
+[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const power<F1, Vs...>&, const power<F2, Vs...>&)
 {
-  return same_canonical_reference_unit(F1{}, F2{});
+  return have_same_canonical_reference_unit_impl(F1{}, F2{});
 }
 
 template<typename... Us1, typename... Us2>
   requires(sizeof...(Us1) == sizeof...(Us2))
-[[nodiscard]] consteval bool same_canonical_reference_unit(const type_list<Us1...>&, const type_list<Us2...>&)
+[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const type_list<Us1...>&, const type_list<Us2...>&)
 {
-  return (... && same_canonical_reference_unit(Us1{}, Us2{}));
+  return (... && have_same_canonical_reference_unit_impl(Us1{}, Us2{}));
 }
 
 template<typename... Expr1, typename... Expr2>
-[[nodiscard]] consteval bool same_canonical_reference_unit(const derived_unit<Expr1...>&, const derived_unit<Expr2...>&)
+[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const derived_unit<Expr1...>&,
+                                                                     const derived_unit<Expr2...>&)
 {
-  return same_canonical_reference_unit(typename derived_unit<Expr1...>::_num_{},
-                                       typename derived_unit<Expr2...>::_num_{}) &&
-         same_canonical_reference_unit(typename derived_unit<Expr1...>::_den_{},
-                                       typename derived_unit<Expr2...>::_den_{});
+  return have_same_canonical_reference_unit_impl(typename derived_unit<Expr1...>::_num_{},
+                                                 typename derived_unit<Expr2...>::_num_{}) &&
+         have_same_canonical_reference_unit_impl(typename derived_unit<Expr1...>::_den_{},
+                                                 typename derived_unit<Expr2...>::_den_{});
+}
+
+[[nodiscard]] consteval bool have_same_canonical_reference_unit(Unit auto u1, Unit auto u2)
+{
+  auto canonical_lhs = detail::get_canonical_unit(u1);
+  auto canonical_rhs = detail::get_canonical_unit(u2);
+  return have_same_canonical_reference_unit_impl(canonical_lhs.reference_unit, canonical_rhs.reference_unit);
 }
 
 }  // namespace detail
@@ -518,16 +526,14 @@ template<typename... Expr1, typename... Expr2>
 {
   auto canonical_lhs = detail::get_canonical_unit(lhs);
   auto canonical_rhs = detail::get_canonical_unit(rhs);
-  return detail::same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
+  return detail::have_same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
-// Interconvertible
-[[nodiscard]] consteval bool interconvertible(Unit auto u1, Unit auto u2)
+// convertible_to
+[[nodiscard]] consteval bool convertible_to(Unit auto u1, Unit auto u2)
 {
-  auto canonical_lhs = detail::get_canonical_unit(u1);
-  auto canonical_rhs = detail::get_canonical_unit(u2);
-  return detail::same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit);
+  return detail::have_same_canonical_reference_unit(u1, u2);
 }
 
 // Common unit
@@ -535,7 +541,7 @@ template<typename... Expr1, typename... Expr2>
 
 template<Unit U1, Unit U2>
 [[nodiscard]] consteval auto common_unit(U1 u1, U2 u2)
-  requires(interconvertible(u1, u2))
+  requires(detail::have_same_canonical_reference_unit(u1, u2))
 {
   if constexpr (U1{} == U2{}) {
     if constexpr (std::derived_from<U1, U2>)
