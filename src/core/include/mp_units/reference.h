@@ -22,42 +22,12 @@
 
 #pragma once
 
+#include <mp_units/bits/get_associated_quantity.h>
 #include <mp_units/bits/quantity_concepts.h>
 #include <mp_units/bits/reference_concepts.h>
 #include <mp_units/bits/representation_concepts.h>
-#include <mp_units/quantity_spec.h>
 
 namespace mp_units {
-
-namespace detail {
-
-template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity(U);
-
-template<typename U, auto... Vs>
-[[nodiscard]] consteval auto get_associated_quantity(power<U, Vs...>)
-{
-  return get_associated_quantity(U{});
-}
-
-template<typename... Us>
-[[nodiscard]] consteval auto get_associated_quantity(type_list<Us...>)
-{
-  return (dimensionless * ... * get_associated_quantity(Us{}));
-}
-
-template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity(U)
-{
-  if constexpr (requires { U::reference_unit; })
-    return get_associated_quantity(U::reference_unit);
-  else if constexpr (requires { typename U::_num_; })
-    return get_associated_quantity(typename U::_num_{}) / get_associated_quantity(typename U::_den_{});
-  else if constexpr (requires { U::base_quantity; })
-    return U::base_quantity;
-}
-
-}  // namespace detail
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
@@ -77,7 +47,6 @@ template<auto Q, auto U>
 {
   return U;
 }
-
 
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
