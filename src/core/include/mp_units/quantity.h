@@ -31,10 +31,7 @@
 #include <mp_units/bits/sudo_cast.h>
 #include <mp_units/bits/unit_concepts.h>
 #include <mp_units/customization_points.h>
-#include <mp_units/dimension.h>
-#include <mp_units/quantity_spec.h>
 #include <mp_units/reference.h>
-#include <mp_units/unit.h>
 #include <compare>
 #include <utility>
 

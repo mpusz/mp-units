@@ -33,7 +33,6 @@
 #include <mp_units/bits/symbol_text.h>
 #include <mp_units/bits/text_tools.h>
 #include <mp_units/bits/unit_concepts.h>
-#include <mp_units/dimension.h>
 #include <iterator>
 #include <string>
 
@@ -183,7 +182,7 @@ struct constant_unit : named_unit<'[' + Symbol + ']', U> {};
 
 namespace detail {
 
-template<basic_symbol_text Symbol, Unit auto U>
+template<basic_symbol_text Symbol, auto U>
 void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol, U>*);
 
 template<typename T>
