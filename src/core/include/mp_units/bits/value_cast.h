@@ -47,7 +47,8 @@ template<Unit auto ToU, auto R, typename Rep>
   requires(convertible_to(get_unit(R), ToU))
 [[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
 {
-  if constexpr (detail::is_specialization_of_reference<R> || !AssociatedUnit<std::remove_const_t<decltype(ToU)>>) {
+  if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(R)>> ||
+                !AssociatedUnit<std::remove_const_t<decltype(ToU)>>) {
     constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
     return detail::sudo_cast<quantity<r, Rep>>(q);
   } else {
