@@ -32,7 +32,6 @@
 
 
 using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("uniform_int_distribution")
 {
@@ -53,12 +52,12 @@ TEST_CASE("uniform_int_distribution")
     constexpr rep b = 5;
 
     auto stl_dist = std::uniform_int_distribution(a, b);
-    auto units_dist = mp_units::uniform_int_distribution(q(a), q(b));
+    auto units_dist = mp_units::uniform_int_distribution(a * si::metre, b * si::metre);
 
-    CHECK(units_dist.a() == q(stl_dist.a()));
-    CHECK(units_dist.b() == q(stl_dist.b()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.a() == stl_dist.a() * si::metre);
+    CHECK(units_dist.b() == stl_dist.b() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -81,12 +80,12 @@ TEST_CASE("uniform_real_distribution")
     constexpr rep b = 5.0;
 
     auto stl_dist = std::uniform_real_distribution(a, b);
-    auto units_dist = mp_units::uniform_real_distribution(q(a), q(b));
+    auto units_dist = mp_units::uniform_real_distribution(a * si::metre, b * si::metre);
 
-    CHECK(units_dist.a() == q(stl_dist.a()));
-    CHECK(units_dist.b() == q(stl_dist.b()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.a() == stl_dist.a() * si::metre);
+    CHECK(units_dist.b() == stl_dist.b() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -109,12 +108,12 @@ TEST_CASE("binomial_distribution")
     constexpr double p = 0.25;
 
     auto stl_dist = std::binomial_distribution(t, p);
-    auto units_dist = mp_units::binomial_distribution(q(t), p);
+    auto units_dist = mp_units::binomial_distribution(t * si::metre, p);
 
     CHECK(units_dist.p() == stl_dist.p());
-    CHECK(units_dist.t() == q(stl_dist.t()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.t() == stl_dist.t() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -137,12 +136,12 @@ TEST_CASE("negative_binomial_distribution")
     constexpr double p = 0.25;
 
     auto stl_dist = std::negative_binomial_distribution(k, p);
-    auto units_dist = mp_units::negative_binomial_distribution(q(k), p);
+    auto units_dist = mp_units::negative_binomial_distribution(k * si::metre, p);
 
     CHECK(units_dist.p() == stl_dist.p());
-    CHECK(units_dist.k() == q(stl_dist.k()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.k() == stl_dist.k() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -166,8 +165,8 @@ TEST_CASE("geometric_distribution")
     auto units_dist = mp_units::geometric_distribution<q>(p);
 
     CHECK(units_dist.p() == stl_dist.p());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -191,8 +190,8 @@ TEST_CASE("poisson_distribution")
     auto units_dist = mp_units::poisson_distribution<q>(mean);
 
     CHECK(units_dist.mean() == stl_dist.mean());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -216,8 +215,8 @@ TEST_CASE("exponential_distribution")
     auto units_dist = mp_units::exponential_distribution<q>(lambda);
 
     CHECK(units_dist.lambda() == stl_dist.lambda());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -244,8 +243,8 @@ TEST_CASE("gamma_distribution")
 
     CHECK(units_dist.alpha() == stl_dist.alpha());
     CHECK(units_dist.beta() == stl_dist.beta());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -272,8 +271,8 @@ TEST_CASE("weibull_distribution")
 
     CHECK(units_dist.a() == stl_dist.a());
     CHECK(units_dist.b() == stl_dist.b());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -296,12 +295,12 @@ TEST_CASE("extreme_value_distribution")
     constexpr rep b = 2.0;
 
     auto stl_dist = std::extreme_value_distribution(a, b);
-    auto units_dist = mp_units::extreme_value_distribution<q>(q(a), b);
+    auto units_dist = mp_units::extreme_value_distribution<q>(a * si::metre, b);
 
-    CHECK(units_dist.a() == q(stl_dist.a()));
+    CHECK(units_dist.a() == stl_dist.a() * si::metre);
     CHECK(units_dist.b() == stl_dist.b());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -324,12 +323,12 @@ TEST_CASE("normal_distribution")
     constexpr rep stddev = 2.0;
 
     auto stl_dist = std::normal_distribution(mean, stddev);
-    auto units_dist = mp_units::normal_distribution(q(mean), q(stddev));
+    auto units_dist = mp_units::normal_distribution(mean * si::metre, stddev * si::metre);
 
-    CHECK(units_dist.mean() == q(stl_dist.mean()));
-    CHECK(units_dist.stddev() == q(stl_dist.stddev()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.mean() == stl_dist.mean() * si::metre);
+    CHECK(units_dist.stddev() == stl_dist.stddev() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -352,12 +351,12 @@ TEST_CASE("lognormal_distribution")
     constexpr rep s = 2.0;
 
     auto stl_dist = std::lognormal_distribution(m, s);
-    auto units_dist = mp_units::lognormal_distribution(q(m), q(s));
+    auto units_dist = mp_units::lognormal_distribution(m * si::metre, s * si::metre);
 
-    CHECK(units_dist.m() == q(stl_dist.m()));
-    CHECK(units_dist.s() == q(stl_dist.s()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.m() == stl_dist.m() * si::metre);
+    CHECK(units_dist.s() == stl_dist.s() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -381,8 +380,8 @@ TEST_CASE("chi_squared_distribution")
     auto units_dist = mp_units::chi_squared_distribution<q>(n);
 
     CHECK(units_dist.n() == stl_dist.n());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -405,12 +404,12 @@ TEST_CASE("cauchy_distribution")
     constexpr rep b = 2.0;
 
     auto stl_dist = std::cauchy_distribution(a, b);
-    auto units_dist = mp_units::cauchy_distribution(q(a), q(b));
+    auto units_dist = mp_units::cauchy_distribution(a * si::metre, b * si::metre);
 
-    CHECK(units_dist.a() == q(stl_dist.a()));
-    CHECK(units_dist.b() == q(stl_dist.b()));
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.a() == stl_dist.a() * si::metre);
+    CHECK(units_dist.b() == stl_dist.b() * si::metre);
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -437,8 +436,8 @@ TEST_CASE("fisher_f_distribution")
 
     CHECK(units_dist.m() == stl_dist.m());
     CHECK(units_dist.n() == stl_dist.n());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -462,8 +461,8 @@ TEST_CASE("student_t_distribution")
     auto units_dist = mp_units::student_t_distribution<q>(n);
 
     CHECK(units_dist.n() == stl_dist.n());
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
   }
 }
 
@@ -477,8 +476,8 @@ TEST_CASE("discrete_distribution")
     auto stl_dist = std::discrete_distribution<rep>();
     auto units_dist = mp_units::discrete_distribution<q>();
 
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
     CHECK(units_dist.probabilities() == stl_dist.probabilities());
   }
 
@@ -528,8 +527,8 @@ TEST_CASE("piecewise_constant_distribution")
     auto stl_dist = std::piecewise_constant_distribution<rep>();
     auto units_dist = mp_units::piecewise_constant_distribution<q>();
 
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
     CHECK(stl_dist.intervals().size() == 2);
     CHECK(units_dist.intervals().size() == 2);
     CHECK(stl_dist.densities().size() == 1);
@@ -595,8 +594,8 @@ TEST_CASE("piecewise_linear_distribution")
     auto stl_dist = std::piecewise_linear_distribution<rep>();
     auto units_dist = mp_units::piecewise_linear_distribution<q>();
 
-    CHECK(units_dist.min() == q(stl_dist.min()));
-    CHECK(units_dist.max() == q(stl_dist.max()));
+    CHECK(units_dist.min() == stl_dist.min() * si::metre);
+    CHECK(units_dist.max() == stl_dist.max() * si::metre);
     CHECK(stl_dist.intervals().size() == 2);
     CHECK(units_dist.intervals().size() == 2);
     CHECK(stl_dist.densities().size() == 2);

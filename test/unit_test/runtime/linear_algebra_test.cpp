@@ -85,7 +85,7 @@ template<typename T, typename U>
 template<Quantity Q1, Quantity Q2>
   requires is_vector<typename Q1::rep> && is_vector<typename Q2::rep> &&
            requires(typename Q1::rep v1, typename Q2::rep v2) { cross_product(v1, v2); }
-[[nodiscard]] quantity_of<Q1::reference * Q2::reference> auto cross_product(const Q1& q1, const Q2& q2)
+[[nodiscard]] QuantityOf<Q1::reference * Q2::reference> auto cross_product(const Q1& q1, const Q2& q2)
 {
   return (Q1::reference * Q2::reference)(cross_product(q1.number(), q2.number()));
 }

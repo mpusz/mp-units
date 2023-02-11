@@ -35,46 +35,46 @@ using namespace mp_units::imperial::unit_symbols;
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
 
 // International
-static_assert(isq::length[twip](17'280) == isq::length[ft](1));
-static_assert(isq::length[th](12'000) == isq::length[ft](1));
-static_assert(isq::length[Bc](3) == isq::length[th](1'000));
-static_assert(isq::length[in](1) == isq::length[Bc](3));
-static_assert(isq::length[hh](1) == isq::length[in](4));
-static_assert(isq::length[ft](1) == isq::length[hh](3));
-static_assert(isq::length[yd](1) == isq::length[ft](3));
-static_assert(isq::length[ch](1) == isq::length[yd](22));
-static_assert(isq::length[fur](1) == isq::length[ch](10));
-static_assert(isq::length[mi](1) == isq::length[fur](8));
-static_assert(isq::length[le](1) == isq::length[mi](3));
+static_assert(17'280 * isq::length[twip] == 1 * isq::length[ft]);
+static_assert(12'000 * isq::length[th] == 1 * isq::length[ft]);
+static_assert(3 * isq::length[Bc] == 1'000 * isq::length[th]);
+static_assert(1 * isq::length[in] == 3 * isq::length[Bc]);
+static_assert(1 * isq::length[hh] == 4 * isq::length[in]);
+static_assert(1 * isq::length[ft] == 3 * isq::length[hh]);
+static_assert(1 * isq::length[yd] == 3 * isq::length[ft]);
+static_assert(1 * isq::length[ch] == 22 * isq::length[yd]);
+static_assert(1 * isq::length[fur] == 10 * isq::length[ch]);
+static_assert(1 * isq::length[mi] == 8 * isq::length[fur]);
+static_assert(1 * isq::length[le] == 3 * isq::length[mi]);
 
 // International Nautical
-static_assert(isq::length[cb](1) == isq::length[ftm](100));
-static_assert(isq::length[nmi](1) == isq::length[cb](10));
+static_assert(1 * isq::length[cb] == 100 * isq::length[ftm]));
+static_assert(1 * isq::length[nmi] == 10 * isq::length[cb]));
 
 // survey
-static_assert(isq::length[li](100) == isq::length[ch](1));
-static_assert(isq::length[rd](1) == isq::length[li](25));
+static_assert(100 * isq::length[li] == 1 * isq::length[ch]);
+static_assert(1 * isq::length[rd] == 25 * isq::length[li]);
 
 // Area
-static_assert(isq::area[perch](1) == isq::length[rd](1) * isq::length[rd](1));
-static_assert(isq::area[rood](1) == isq::length[fur](1) * isq::length[rd](1));
-static_assert(isq::area[acre](1) == isq::length[fur](1) * isq::length[ch](1));
+static_assert(1 * isq::area[perch] == 1 * isq::length[rd] * (1 * isq::length[rd]));
+static_assert(1 * isq::area[rood] == 1 * isq::length[fur] * (1 * isq::length[rd]));
+static_assert(1 * isq::area[acre] == 1 * isq::length[fur] * (1 * isq::length[ch]));
 
 // Volume
-static_assert(isq::volume[fl_oz](20) == isq::volume[pt](1));
-static_assert(isq::volume[gi](1) == isq::volume[fl_oz](5));
-static_assert(isq::volume[pt](1) == isq::volume[fl_oz](20));
-static_assert(isq::volume[qt](1) == isq::volume[pt](2));
-static_assert(isq::volume[gal](1) == isq::volume[pt](8));
+static_assert(20 * isq::volume[fl_oz] == 1 * isq::volume[pt]);
+static_assert(1 * isq::volume[gi] == 5 * isq::volume[fl_oz]);
+static_assert(1 * isq::volume[pt] == 20 * isq::volume[fl_oz]);
+static_assert(1 * isq::volume[qt] == 2 * isq::volume[pt]);
+static_assert(1 * isq::volume[gal] == 8 * isq::volume[pt]);
 
 // Mass
-static_assert(isq::mass[gr](7'000) == isq::mass[lb](1));
-static_assert(isq::mass[dr](256) == isq::mass[lb](1));
-static_assert(isq::mass[oz](1) == isq::mass[dr](16));
-static_assert(isq::mass[lb](1) == isq::mass[oz](16));
-static_assert(isq::mass[st](1) == isq::mass[lb](14));
-static_assert(isq::mass[qr](1) == isq::mass[st](2));
-static_assert(isq::mass[cwt](1) == isq::mass[lb](112));
-static_assert(isq::mass[t](1) == isq::mass[cwt](20));
+static_assert(7'000 * isq::mass[gr] == 1 * isq::mass[lb]);
+static_assert(256 * isq::mass[dr] == 1 * isq::mass[lb]);
+static_assert(1 * isq::mass[oz] == 16 * isq::mass[dr]);
+static_assert(1 * isq::mass[lb] == 16 * isq::mass[oz]);
+static_assert(1 * isq::mass[st] == 14 * isq::mass[lb]);
+static_assert(1 * isq::mass[qr] == 2 * isq::mass[st]);
+static_assert(1 * isq::mass[cwt] == 112 * isq::mass[lb]);
+static_assert(1 * isq::mass[t] == 20 * isq::mass[cwt]);
 
 }  // namespace

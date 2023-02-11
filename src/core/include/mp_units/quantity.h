@@ -336,7 +336,7 @@ public:
       requires detail::InvokeResultOf<quantity_spec.character, std::plus<>, rep, Value>;
     }
   {
-    return ::mp_units::quantity(lhs.number() + rhs);
+    return (lhs.number() + rhs) * R;
   }
 
   template<typename Value>
@@ -347,7 +347,7 @@ public:
       requires detail::InvokeResultOf<quantity_spec.character, std::plus<>, Value, rep>;
     }
   {
-    return ::mp_units::quantity(lhs + rhs.number());
+    return (lhs + rhs.number()) * R;
   }
 
   template<typename Value>
@@ -358,7 +358,7 @@ public:
       requires detail::InvokeResultOf<quantity_spec.character, std::minus<>, rep, Value>;
     }
   {
-    return ::mp_units::quantity(lhs.number() - rhs);
+    return (lhs.number() - rhs) * R;
   }
 
   template<typename Value>
@@ -369,7 +369,7 @@ public:
       requires detail::InvokeResultOf<quantity_spec.character, std::minus<>, Value, rep>;
     }
   {
-    return ::mp_units::quantity(lhs - rhs.number());
+    return (lhs - rhs.number()) * R;
   }
 
   template<Representation Value>

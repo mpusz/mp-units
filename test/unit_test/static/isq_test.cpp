@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp_units/reference.h>
 #include <mp_units/systems/isq/isq.h>
 #include <mp_units/systems/si/unit_symbols.h>
 

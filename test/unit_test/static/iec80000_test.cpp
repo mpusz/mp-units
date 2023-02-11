@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp_units/quantity.h>
+#include <mp_units/reference.h>
 #include <mp_units/systems/iec80000/iec80000.h>
 #include <mp_units/systems/si/unit_symbols.h>
 
@@ -73,28 +75,28 @@ static_assert(verify(decision_content, scalar, one));
 
 
 // unit conversions
-static_assert(storage_capacity[B](1) == storage_capacity[bit](8));
-static_assert(storage_capacity[bit](1024) == storage_capacity[Kibit](1));
-static_assert(storage_capacity[B](1024) == storage_capacity[KiB](1));
-static_assert(storage_capacity[bit](8 * 1024) == storage_capacity[KiB](1));
-static_assert(storage_capacity[Kibit](8) == storage_capacity[KiB](1));
+static_assert(storage_capacity(1 * B) == storage_capacity(8 * bit));
+static_assert(storage_capacity(1024 * bit) == storage_capacity(1 * Kibit));
+static_assert(storage_capacity(1024 * B) == storage_capacity(1 * KiB));
+static_assert(storage_capacity(8 * 1024 * bit) == storage_capacity(1 * KiB));
+static_assert(storage_capacity(8 * Kibit) == storage_capacity(1 * KiB));
 
-static_assert(storage_capacity[kbit](1) == storage_capacity[bit](1000));
-static_assert(storage_capacity[Mibit](2000) == storage_capacity[kbit](2097152));
+static_assert(storage_capacity(1 * kbit) == storage_capacity(1000 * bit));
+static_assert(storage_capacity(2000 * Mibit) == storage_capacity(2097152 * kbit));
 
-static_assert(storage_capacity[Kibit](1) == storage_capacity[bit](1024));
-static_assert(storage_capacity[Mibit](1) == storage_capacity[Kibit](1024));
-static_assert(storage_capacity[Gibit](1) == storage_capacity[Mibit](1024));
-static_assert(storage_capacity[Tibit](1) == storage_capacity[Gibit](1024));
-static_assert(storage_capacity[Pibit](1) == storage_capacity[Tibit](1024));
-static_assert(storage_capacity[Eibit](1) == storage_capacity[Pibit](1024));
+static_assert(storage_capacity(1 * Kibit) == storage_capacity(1024 * bit));
+static_assert(storage_capacity(1 * Mibit) == storage_capacity(1024 * Kibit));
+static_assert(storage_capacity(1 * Gibit) == storage_capacity(1024 * Mibit));
+static_assert(storage_capacity(1 * Tibit) == storage_capacity(1024 * Gibit));
+static_assert(storage_capacity(1 * Pibit) == storage_capacity(1024 * Tibit));
+static_assert(storage_capacity(1 * Eibit) == storage_capacity(1024 * Pibit));
 
 // transfer rate
-static_assert(storage_capacity[B](16) / isq::duration[s](2) == transfer_rate[B / s](8));
-static_assert(storage_capacity[kB](120) / isq::duration[min](2) == transfer_rate[B / s](1000));
+static_assert(storage_capacity(16 * B) / isq::duration(2 * s) == transfer_rate(8 * (B / s)));
+static_assert(storage_capacity(120 * kB) / isq::duration(2 * min) == transfer_rate(1000 * (B / s)));
 
 // modulation rate
-static_assert(12 / isq::duration[s](2) == modulation_rate[Bd](6));
-static_assert(6000 / isq::duration[s](3) == modulation_rate[kBd](2));
+static_assert(12 / isq::duration(2 * s) == modulation_rate(6 * Bd));
+static_assert(6000 / isq::duration(3 * s) == modulation_rate(2 * kBd));
 
 }  // namespace
