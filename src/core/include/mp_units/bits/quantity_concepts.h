@@ -54,21 +54,9 @@ concept Quantity = requires(T* t) { detail::to_base_specialization_of_quantity(t
  * the provided dimension/reference type.
  */
 template<typename Q, auto V>
-concept QuantityOf = Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                                     (QuantitySpec<std::remove_const_t<decltype(V)>> && Q::quantity_spec == V) ||
-                                     (Reference<std::remove_const_t<decltype(V)>> && Q::reference == V));
-
-/**
- * @brief A concept matching all quantities with provided dimension or reference
- *
- * Satisfied by all quantities with a dimension/reference being the instantiation derived from
- * the provided dimension/reference type.
- */
-template<typename Q, auto V>
-concept WeakQuantityOf =
+concept QuantityOf =
   Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                  (QuantitySpec<std::remove_const_t<decltype(V)>> && interconvertible(Q::quantity_spec, V)) ||
-                  (Reference<std::remove_const_t<decltype(V)>> && Q::dimension == V.dimension && Q::unit == V.unit));
+                  (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible_to(Q::quantity_spec, V)));
 
 /**
  * @brief A concept matching all external quantities like types

@@ -43,7 +43,7 @@ namespace detail {
  * @tparam To a target quantity type to cast to
  */
 template<Quantity To, auto R, typename Rep>
-  requires(interconvertible(To::reference, R)) &&
+  requires(castable_to(get_quantity_spec(R), To::quantity_spec)) &&
           ((get_unit(R) == To::unit && std::constructible_from<typename To::rep, Rep>) ||
            (get_unit(R) != To::unit))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?

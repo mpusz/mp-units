@@ -55,11 +55,11 @@ class quantity;
  *
  * @tparam ToQS a quantity specification to use for a target quantity
  */
-template<QuantitySpec auto ToQS, Quantity Q>
-  requires(interconvertible(ToQS, get_quantity_spec(Q::reference)))
+template<QuantitySpec auto ToQS, typename Q>
+  requires Quantity<std::remove_cvref_t<Q>> && castable_to(get_quantity_spec(Q::reference), ToQS)
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
-  constexpr reference<ToQS, Q::unit> r;
+  constexpr reference<ToQS, std::remove_cvref_t<Q>::unit> r;
   return std::forward<Q>(q).number() * r;
 }
 

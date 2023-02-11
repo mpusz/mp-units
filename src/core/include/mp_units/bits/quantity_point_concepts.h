@@ -95,8 +95,7 @@ template<typename QP, auto V>
 concept QuantityPointOf =
   QuantityPoint<QP> &&
   ((Dimension<std::remove_const_t<decltype(V)>> && QP::dimension == V) ||
-   (QuantitySpec<std::remove_const_t<decltype(V)>> && QP::quantity_spec == V) ||
-   (Reference<std::remove_const_t<decltype(V)>> && QP::reference == V) ||
+   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible_to(QP::quantity_spec, V)) ||
    (PointOrigin<std::remove_const_t<decltype(V)>> &&
     std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
 
