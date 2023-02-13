@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp_units/systems/isq/base_quantities.h>
+#include <mp_units/systems/isq/isq.h>
 #include <mp_units/systems/si/prefixes.h>
 #include <mp_units/unit.h>
 
@@ -30,21 +30,20 @@ namespace mp_units::si {
 
 // clang-format off
 // base units
-inline constexpr struct second : named_unit<"s", isq::time> {} second;
-inline constexpr struct metre : named_unit<"m", isq::length> {} metre;
-inline constexpr struct gram : named_unit<"g", isq::mass> {} gram;
+inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
-inline constexpr struct ampere : named_unit<"A", isq::electric_current> {} ampere;
-inline constexpr struct kelvin : named_unit<"K", isq::thermodynamic_temperature> {} kelvin;
-// inline constexpr struct kelvin : named_unit<"K", isq::thermodynamic_temperature, not_for<isq::Celsius_temperature>> {} kelvin;
-inline constexpr struct mole : named_unit<"mol", isq::amount_of_substance> {} mole;
-inline constexpr struct candela : named_unit<"cd", isq::luminous_intensity> {} candela;
+inline constexpr struct ampere : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
+inline constexpr struct kelvin : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
+// inline constexpr struct kelvin : named_unit<"K", isq::thermodynamic_temperature, not_for<isq::Celsius_temperature> {} kelvin;
+inline constexpr struct mole : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
+inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
 
 // derived named units
-inline constexpr struct radian : named_unit<"rad", metre / metre> {} radian;
-inline constexpr struct steradian : named_unit<"sr", square<metre> / square<metre>> {} steradian;
-inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
-// inline constexpr struct hertz : named_unit<"Hz", 1 / second, only_for<isq::frequency>> {} hertz;
+inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
+inline constexpr struct steradian : named_unit<"sr", square<metre> / square<metre>, kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct hertz : named_unit<"Hz", 1 / second, kind_of<isq::frequency>> {} hertz; 
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
 inline constexpr struct pascal : named_unit<"Pa", newton / square<metre>> {} pascal;
 inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
@@ -57,10 +56,11 @@ inline constexpr struct siemens : named_unit<"S", 1 / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square<metre>> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
-// inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, offset<-mag<273150> * milli<kelvin>>, only_for<isq::Celsius_temperature>> {} degree_Celsius;
+// inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, offset<-mag<273150> * milli<kelvin>, only_for<isq::Celsius_temperature> {} degree_Celsius;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square<metre>> {} lux;
+// inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
 inline constexpr struct becquerel : named_unit<"Bq", 1 / second> {} becquerel;
 inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
 inline constexpr struct sievert : named_unit<"Sv", joule / kilogram> {} sievert;

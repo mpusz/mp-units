@@ -33,7 +33,7 @@ inline constexpr struct dim_angle : base_dimension<"A"> {} dim_angle;
 QUANTITY_SPEC(angle, dim_angle);
 QUANTITY_SPEC(solid_angle, pow<2>(angle));
 
-inline constexpr struct radian : named_unit<"rad", angle> {} radian;
+inline constexpr struct radian : named_unit<"rad", kind_of<angle>> {} radian;
 inline constexpr struct revolution : named_unit<"rev", mag<2> * mag_pi * radian> {} revolution;
 inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}> * revolution> {} degree;
 inline constexpr struct gradian : named_unit<basic_symbol_text{"ᵍ", "grad"}, mag<ratio{1, 400}> * revolution> {} gradian;
