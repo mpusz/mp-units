@@ -107,13 +107,13 @@ struct named_unit;
  *       the `cgs::centimetre` that is a base unit for `isq::length` in the CGS system.
  *
  * @tparam Symbol a short text representation of the unit
- * @tparam BaseQuantitySpec base quantity measured with this unit
+ * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
-template<basic_symbol_text Symbol, BaseQuantitySpec auto Q>
-  requires(!Symbol.empty())
-struct named_unit<Symbol, Q> {
+template<basic_symbol_text Symbol, QuantityKindSpec auto QS>
+  requires(!Symbol.empty()) && BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+struct named_unit<Symbol, QS> {
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
-  static constexpr auto base_quantity = Q;
+  static constexpr auto quantity_spec = QS;
 };
 
 /**
@@ -556,6 +556,45 @@ template<typename... Expr1, typename... Expr2>
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
+/**
+ * @brief Computes the value of a unit raised to the `Num/Den` power
+ *
+ * @tparam Num Exponent numerator
+ * @tparam Den Exponent denominator
+ * @param u Unit being the base of the operation
+ *
+ * @return Unit The result of computation
+ */
+template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
+  requires detail::non_zero<Den>
+[[nodiscard]] consteval Unit auto pow(U u)
+{
+  if constexpr (requires { U::symbol; }) {
+    if constexpr (Den == 1)
+      return derived_unit<power<U, Num>>{};
+    else
+      return derived_unit<power<U, Num, Den>>{};
+  } else if constexpr (detail::is_specialization_of_scaled_unit<U>) {
+    return scaled_unit<pow<ratio{Num, Den}>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
+  } else {
+    return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
+  }
+}
+
+// Helper variable templates to create common powers
+template<Unit auto U>
+inline constexpr decltype(U * U) square;
+
+template<Unit auto U>
+inline constexpr decltype(U * U * U) cubic;
+
+// common dimensionless units
+// clang-format off
+inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
+inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+// clang-format on
+
+
 // convertible_to
 [[nodiscard]] consteval bool convertible_to(Unit auto u1, Unit auto u2)
 {
@@ -594,45 +633,6 @@ template<Unit U1, Unit U2>
 {
   return common_unit(common_unit(u1, u2), u3, rest...);
 }
-
-/**
- * @brief Computes the value of a unit raised to the `Num/Den` power
- *
- * @tparam Num Exponent numerator
- * @tparam Den Exponent denominator
- * @param u Unit being the base of the operation
- *
- * @return Unit The result of computation
- */
-template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
-  requires detail::non_zero<Den>
-[[nodiscard]] consteval Unit auto pow(U u)
-{
-  if constexpr (requires { U::symbol; }) {
-    if constexpr (Den == 1)
-      return derived_unit<power<U, Num>>{};
-    else
-      return derived_unit<power<U, Num, Den>>{};
-  } else if constexpr (detail::is_specialization_of_scaled_unit<U>) {
-    return scaled_unit<pow<ratio{Num, Den}>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
-  } else {
-    return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
-  }
-}
-
-
-// Helper variable templates to create common powers
-template<Unit auto U>
-inline constexpr decltype(U * U) square;
-
-template<Unit auto U>
-inline constexpr decltype(U * U * U) cubic;
-
-// common dimensionless units
-// clang-format off
-inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
-inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
-// clang-format on
 
 
 // get_unit_symbol
