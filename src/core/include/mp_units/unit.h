@@ -27,6 +27,7 @@
 #include <mp_units/bits/external/fixed_string.h>
 #include <mp_units/bits/external/type_name.h>
 #include <mp_units/bits/external/type_traits.h>
+#include <mp_units/bits/get_associated_quantity.h>
 #include <mp_units/bits/magnitude.h>
 #include <mp_units/bits/quantity_spec_concepts.h>
 #include <mp_units/bits/ratio.h>
@@ -143,6 +144,22 @@ template<basic_symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
 struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
+};
+
+/**
+ * @brief Specialization for a unit with special name valid only for a specific quantity
+ *
+ * The same as the above but additionally limits the usage of this unit to provided quantities.
+ *
+ * @tparam Symbol a short text representation of the unit
+ * @tparam Unit a unit for which we provide a special name
+ * @tparam QuantitySpec a specification of a quantity to be measured with this unit
+ */
+template<basic_symbol_text Symbol, AssociatedUnit auto U, QuantityKindSpec auto QS>
+  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
+struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
+  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
+  static constexpr auto quantity_spec = QS;
 };
 
 /**
