@@ -140,12 +140,14 @@ template<typename... Us>
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U)
 {
+  if constexpr (requires { U::quantity_spec; })
+      return true;
   if constexpr (requires { U::reference_unit; })
     return has_associated_quantity(U::reference_unit);
   else if constexpr (requires { typename U::_num_; })
     return has_associated_quantity(typename U::_num_{}) && has_associated_quantity(typename U::_den_{});
   else
-    return requires { U::base_quantity; };
+    return false;
 }
 
 }  // namespace detail
