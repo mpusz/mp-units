@@ -120,13 +120,54 @@ namespace detail {
  * @brief Concept matching all derived quantity specification types
  *
  * Satisfied by all `derived_quantity_spec` specializations.
+ *
+ * @note Deriving a strong type from it is considered a logic error and thus is
+ * explicitly not supported here.
  */
 template<typename T>
-concept DerivedQuantitySpec = is_derived_from_specialization_of<T, derived_quantity_spec>;
+concept IntermediateDerivedQuantitySpec = is_specialization_of<T, derived_quantity_spec>;
 
 }  // namespace detail
 
 template<typename T>
-concept QuantitySpec = detail::NamedQuantitySpec<T> || detail::DerivedQuantitySpec<T>;
+concept QuantitySpec = detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T>;
 
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_quantity_spec_with_no_specifiers = false;
+
+template<typename T>
+concept QuantitySpecWithNoSpecifiers = is_quantity_spec_with_no_specifiers<T>;
+
+}  // namespace detail
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind(Q q);
+
+template<detail::QuantitySpecWithNoSpecifiers auto Q>
+  requires(get_kind(Q) == Q)
+struct kind_of_;
+
+namespace detail {
+
+template<auto Q>
+void to_base_specialization_of_kind_of(const volatile kind_of_<Q>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_kind_of =
+  requires(T* t) { to_base_specialization_of_kind_of(t); };
+
+}  // namespace detail
+
+template<typename T>
+concept QuantityKindSpec = QuantitySpec<T> && detail::is_derived_from_specialization_of_kind_of<T>;
+
+namespace detail {
+
+template<typename T>
+  requires QuantitySpec<T> && (!QuantityKindSpec<T>)
+inline constexpr bool is_quantity_spec_with_no_specifiers<T> = true;
+
+}  // namespace detail
 }  // namespace mp_units
