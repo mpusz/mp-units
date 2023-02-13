@@ -47,10 +47,16 @@ QUANTITY_SPEC_(length, dim_length);
 QUANTITY_SPEC_(mass, dim_mass);
 QUANTITY_SPEC_(time, dim_time);
 
+QUANTITY_SPEC_(width, length);
+QUANTITY_SPEC_(radius, width);
+QUANTITY_SPEC_(arc_length, length);
+
 QUANTITY_SPEC_(frequency, 1 / time);
 QUANTITY_SPEC_(action, 1 / time);
 QUANTITY_SPEC_(area, length* length);
 QUANTITY_SPEC_(volume, area* length);
+QUANTITY_SPEC_(angular_measure, arc_length / radius);
+QUANTITY_SPEC_(solid_angular_measure, area / pow<2>(radius));
 QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(acceleration, speed / time);
 QUANTITY_SPEC_(force, mass* acceleration);
@@ -61,9 +67,9 @@ QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, force* length);
 
 // base units
-inline constexpr struct second_ : named_unit<"s", time> {} second;
-inline constexpr struct metre_ : named_unit<"m", length> {} metre;
-inline constexpr struct gram_ : named_unit<"g", mass> {} gram;
+inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
+inline constexpr struct metre_ : named_unit<"m", kind_of<length>> {} metre;
+inline constexpr struct gram_ : named_unit<"g", kind_of<mass>> {} gram;
 inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
 
 namespace nu {
@@ -82,9 +88,9 @@ inline constexpr struct force : system_reference<force_{}, kilogram / second> {}
 }
 
 // derived named units
-inline constexpr struct radian_ : named_unit<"rad", metre / metre> {} radian;
-inline constexpr struct steradian_ : named_unit<"sr", square<metre> / square<metre>> {} steradian;
-inline constexpr struct hertz_ : named_unit<"Hz", 1 / second> {} hertz;
+inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
+inline constexpr struct steradian_ : named_unit<"sr", square<metre> / square<metre>, kind_of<solid_angular_measure>> {} steradian;
+inline constexpr struct hertz_ : named_unit<"Hz", 1 / second, kind_of<frequency>> {} hertz;
 inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second> {} becquerel;
 inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square<second>> {} newton;
 inline constexpr struct pascal_ : named_unit<"Pa", newton / square<metre>> {} pascal;
@@ -95,6 +101,18 @@ inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 // clang-format on
+
+// Unit as a reference
+static_assert(is_of_type<42 * metre, quantity<metre, int>>);
+static_assert(quantity<metre, int>::quantity_spec == length);
+static_assert(is_of_type<42 * square<metre>, quantity<square<metre>, int>>);
+static_assert(quantity<square<metre>, int>::quantity_spec == pow<2>(length));
+static_assert(is_of_type<42 * (metre / second), quantity<metre / second, int>>);
+static_assert(quantity<metre / second, int>::quantity_spec == length / time);
+static_assert(is_of_type<42 * newton, quantity<newton, int>>);
+static_assert(quantity<newton, int>::quantity_spec == mass * length / pow<2>(time));
+static_assert(is_of_type<42 * hertz, quantity<hertz, int>>);
+static_assert(quantity<hertz, int>::quantity_spec == frequency);
 
 // Named quantity/dimension and unit
 static_assert(is_same_v<decltype(5 * power[watt]), quantity<reference<power, watt>{}, int>>);
@@ -208,5 +226,17 @@ static_assert(invalid_nu_unit<speed, nu::second / nu::second>);
 static_assert(invalid_nu_unit<speed, nu::second / second>);
 static_assert(invalid_nu_unit<mass * length / time, kilogram * nu::second / nu::second>);
 static_assert(invalid_nu_unit<force, kilogram * nu::second / nu::second>);
+
+// mixing associated units and references
+static_assert(second == time[second]);
+static_assert(time[second] == second);
+static_assert(second * second == time[second] * time[second]);
+static_assert(second * time[second] == time[second] * second);
+static_assert(std::is_same_v<decltype(second * time[second]), decltype(time[second] * second)>);
+static_assert(std::is_same_v<decltype(second * time[second]), decltype(time[second] * time[second])>);
+static_assert(metre / second == length[metre] / time[second]);
+static_assert(metre / time[second] == length[metre] / second);
+static_assert(std::is_same_v<decltype(metre / time[second]), decltype(length[metre] / second)>);
+static_assert(std::is_same_v<decltype(metre / time[second]), decltype(length[metre] / time[second])>);
 
 }  // namespace
