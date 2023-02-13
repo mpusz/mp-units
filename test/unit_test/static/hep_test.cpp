@@ -36,12 +36,12 @@ using namespace mp_units::hep::unit_symbols;
 using namespace mp_units::si::unit_symbols;
 
 // mass
-static_assert(isq::mass[eV / c2](1'000) == isq::mass[keV / c2](1));
+static_assert(isq::mass(1'000 * (eV / c2)) == isq::mass(1 * (keV / c2)));
 
 // momentum
-static_assert(isq::momentum[eV / c](1'000'000) == isq::momentum[MeV / c](1));
+static_assert(isq::momentum(1'000'000 * (eV / c)) == isq::momentum(1 * (MeV / c)));
 
 // area
-static_assert(isq::area[b](1e28) == isq::area[m2](1.));
+static_assert(isq::area(1e28 * b) == isq::area(1. * m2));
 
 }  // namespace

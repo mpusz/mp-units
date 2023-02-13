@@ -98,27 +98,27 @@ TEST_CASE("vector quantity", "[la]")
   {
     SECTION("non-truncating")
     {
-      const quantity<isq::position_vector[km], vector<int>> v{vector<int>{3, 2, 1}};
+      const auto v = vector<int>{3, 2, 1} * isq::position_vector[km];
       CHECK(v[m].number() == vector<int>{3000, 2000, 1000});
     }
 
     SECTION("truncating")
     {
-      const quantity<isq::position_vector[m], vector<int>> v{vector<int>{1001, 1002, 1003}};
+      const auto v = vector<int>{1001, 1002, 1003} * isq::position_vector[m];
       CHECK(value_cast<km>(v).number() == vector<int>{1, 1, 1});
     }
   }
 
   SECTION("to scalar magnitude")
   {
-    const quantity<isq::velocity[km / h], vector<int>> v{vector<int>{2, 3, 6}};
+    const auto v = vector<int>{2, 3, 6} * isq::velocity[km / h];
     const auto speed = get_magnitude(v.number()) * isq::speed[v.unit];  // TODO can we do better here?
     CHECK(speed.number() == 7);
   }
 
   SECTION("multiply by scalar value")
   {
-    const quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
+    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
 
     SECTION("integral")
     {
@@ -135,7 +135,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("divide by scalar value")
   {
-    const quantity<isq::position_vector[m], vector<int>> v{vector<int>{2, 4, 6}};
+    const auto v = vector<int>{2, 4, 6} * isq::position_vector[m];
 
     SECTION("integral") { CHECK((v / 2).number() == vector<int>{1, 2, 3}); }
     SECTION("floating-point") { CHECK((v / 0.5).number() == vector<double>{4., 8., 12.}); }
@@ -143,39 +143,39 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("add")
   {
-    const quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
+    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
 
     SECTION("same unit")
     {
-      const quantity<isq::position_vector[m], vector<int>> u{vector<int>{3, 2, 1}};
+      const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
       CHECK((v + u).number() == vector<int>{4, 4, 4});
     }
     SECTION("different units")
     {
-      const quantity<isq::position_vector[km], vector<int>> u{vector<int>{3, 2, 1}};
+      const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
       CHECK((v + u).number() == vector<int>{3001, 2002, 1003});
     }
   }
 
   SECTION("subtract")
   {
-    const quantity<isq::position_vector[m], vector<int>> v{vector<int>{1, 2, 3}};
+    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
 
     SECTION("same unit")
     {
-      const quantity<isq::position_vector[m], vector<int>> u{vector<int>{3, 2, 1}};
+      const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
       CHECK((v - u).number() == vector<int>{-2, 0, 2});
     }
     SECTION("different units")
     {
-      const quantity<isq::position_vector[km], vector<int>> u{vector<int>{3, 2, 1}};
+      const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
       CHECK((v - u).number() == vector<int>{-2999, -1998, -997});
     }
   }
 
   SECTION("multiply by scalar quantity")
   {
-    const quantity<isq::velocity[m / s], vector<int>> v{vector<int>{1, 2, 3}};
+    const auto v = vector<int>{1, 2, 3} * isq::velocity[m / s];
 
     SECTION("integral")
     {
@@ -244,7 +244,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("divide by scalar quantity")
   {
-    const quantity<isq::position_vector[km], vector<int>> pos{vector<int>{30, 20, 10}};
+    const auto pos = vector<int>{30, 20, 10} * isq::position_vector[km];
 
     SECTION("integral")
     {

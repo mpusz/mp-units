@@ -48,8 +48,8 @@ static_assert(1 * isq::length[mi] == 8 * isq::length[fur]);
 static_assert(1 * isq::length[le] == 3 * isq::length[mi]);
 
 // International Nautical
-static_assert(1 * isq::length[cb] == 100 * isq::length[ftm]));
-static_assert(1 * isq::length[nmi] == 10 * isq::length[cb]));
+static_assert(1 * isq::length[cb] == 100 * isq::length[ftm]);
+static_assert(1 * isq::length[nmi] == 10 * isq::length[cb]);
 
 // survey
 static_assert(100 * isq::length[li] == 1 * isq::length[ch]);

@@ -35,87 +35,87 @@ using namespace mp_units::usc::unit_symbols;
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
 
 // International
-static_assert(isq::length[twip](20) == isq::length[p](1));
-static_assert(isq::length[mil](1000) == isq::length[in](1));
-static_assert(isq::length[p](72) == isq::length[in](1));
-static_assert(isq::length[P](1) == isq::length[p](12));
-static_assert(isq::length[in](1) == isq::length[P](6));
-static_assert(isq::length[ft](1) == isq::length[in](12));
-static_assert(isq::length[yd](1) == isq::length[ft](3));
-static_assert(isq::length[mi](1) == isq::length[ft](5280));
-static_assert(isq::length[le](1) == isq::length[yd](5280));
+static_assert(isq::length(20 * twip) == isq::length(1 * p));
+static_assert(isq::length(1000 * mil) == isq::length(1 * in));
+static_assert(isq::length(72 * p) == isq::length(1 * in));
+static_assert(isq::length(1 * P) == isq::length(12 * p));
+static_assert(isq::length(1 * in) == isq::length(6 * P));
+static_assert(isq::length(1 * ft) == isq::length(12 * in));
+static_assert(isq::length(1 * yd) == isq::length(3 * ft));
+static_assert(isq::length(1 * mi) == isq::length(5280 * ft));
+static_assert(isq::length(1 * le) == isq::length(5280 * yd));
 
 // International Nautical
-static_assert(isq::length[ftm](1) == isq::length[yd](2));
-static_assert(isq::length[cb](1) == isq::length[ftm](120));
-static_assert(isq::length[nmi](1) == isq::length[si::metre](1852));
+static_assert(isq::length(1 * ftm) == isq::length(2 * yd));
+static_assert(isq::length(1 * cb) == isq::length(120 * ftm));
+static_assert(isq::length(1 * nmi) == isq::length(1852 * si::metre));
 
 // US survey
 UNITS_DIAGNOSTIC_PUSH
 UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
-static_assert(isq::length[us_ft](3937) == isq::length[si::metre](1200));
-static_assert(isq::length[us_mi](3937) == isq::length[si::kilo<si::metre>](6336));
+static_assert(isq::length(3937 * us_ft) == isq::length(1200 * si::metre));
+static_assert(isq::length(3937 * us_mi) == isq::length(6336 * si::kilo<si::metre>));
 UNITS_DIAGNOSTIC_POP
 
-static_assert(isq::length[li](50) == isq::length[ft](33));
-static_assert(isq::length[rd](1) == isq::length[li](25));
-static_assert(isq::length[ch](1) == isq::length[rd](4));
-static_assert(isq::length[fur](1) == isq::length[ch](10));
-static_assert(isq::length[lea](1) == isq::length[mi](3));
+static_assert(isq::length(50 * li) == isq::length(33 * ft));
+static_assert(isq::length(1 * rd) == isq::length(25 * li));
+static_assert(isq::length(1 * ch) == isq::length(4 * rd));
+static_assert(isq::length(1 * fur) == isq::length(10 * ch));
+static_assert(isq::length(1 * lea) == isq::length(3 * mi));
 
-static_assert(isq::length[survey1893::link](50) == isq::length[survey1893::us_survey_foot](33));
-static_assert(isq::length[survey1893::us_survey_foot](3937) == isq::length[si::metre](1200));
-static_assert(isq::length[survey1893::rod](1) == isq::length[survey1893::link](25));
-static_assert(isq::length[survey1893::chain](1) == isq::length[survey1893::rod](4));
-static_assert(isq::length[survey1893::furlong](1) == isq::length[survey1893::chain](10));
-static_assert(isq::length[survey1893::us_survey_mile](1) == isq::length[survey1893::furlong](8));
-static_assert(isq::length[survey1893::league](1) == isq::length[survey1893::us_survey_mile](3));
+static_assert(isq::length(50 * survey1893::link) == isq::length(33 * survey1893::us_survey_foot));
+static_assert(isq::length(3937 * survey1893::us_survey_foot) == isq::length(1200 * si::metre));
+static_assert(isq::length(1 * survey1893::rod) == isq::length(25 * survey1893::link));
+static_assert(isq::length(1 * survey1893::chain) == isq::length(4 * survey1893::rod));
+static_assert(isq::length(1 * survey1893::furlong) == isq::length(10 * survey1893::chain));
+static_assert(isq::length(1 * survey1893::us_survey_mile) == isq::length(8 * survey1893::furlong));
+static_assert(isq::length(1 * survey1893::league) == isq::length(3 * survey1893::us_survey_mile));
 
 // Area
-// static_assert(isq::area[square<survey1893::us_survey_foot>](1) == isq::area[square<inch>](144));
-static_assert(isq::area[square<survey1893::chain>](1) == isq::area[square<survey1893::us_survey_foot>](4356));
-static_assert(isq::area[acre](1) == isq::area[square<survey1893::us_survey_foot>](43560));
-static_assert(isq::area[section](1) == isq::area[square<survey1893::us_survey_mile>](1));
+// static_assert(isq::area(1 * square<survey1893::us_survey_foot>) == isq::area(144 * square<inch>));
+static_assert(isq::area(1 * square<survey1893::chain>) == isq::area(4356 * square<survey1893::us_survey_foot>));
+static_assert(isq::area(1 * acre) == isq::area(43560 * square<survey1893::us_survey_foot>));
+static_assert(isq::area(1 * section) == isq::area(1 * square<survey1893::us_survey_mile>));
 
 // Volume
-static_assert(isq::volume[cubic<foot>](1) == isq::volume[cubic<inch>](1'728));
-static_assert(isq::volume[cubic<yard>](1) == isq::volume[cubic<foot>](27));
-static_assert(isq::volume[acre * survey1893::us_survey_foot](1) ==
-              isq::volume[cubic<survey1893::us_survey_foot>](43'560));
+static_assert(isq::volume(1 * cubic<foot>) == isq::volume(1'728 * cubic<inch>));
+static_assert(isq::volume(1 * cubic<yard>) == isq::volume(27 * cubic<foot>));
+static_assert(isq::volume(1 * (acre * survey1893::us_survey_foot)) ==
+              isq::volume(43'560 * cubic<survey1893::us_survey_foot>));
 
 // Fluid volume
-static_assert(isq::volume[fl_dr](1) == isq::volume[min](60));
-static_assert(isq::volume[tsp](1) == isq::volume[min](80));
-static_assert(isq::volume[tbsp](1) == isq::volume[tsp](3));
-static_assert(isq::volume[fl_oz](1) == isq::volume[tbsp](2));
-static_assert(isq::volume[jig](1) == isq::volume[tbsp](3));
-static_assert(isq::volume[gi](1) == isq::volume[fl_oz](4));
-static_assert(isq::volume[c](1) == isq::volume[gi](2));
-static_assert(isq::volume[pt](1) == isq::volume[c](2));
-static_assert(isq::volume[qt](1) == isq::volume[pt](2));
-static_assert(isq::volume[pot](1) == isq::volume[qt](2));
-static_assert(isq::volume[gal](1) == isq::volume[qt](4));
-static_assert(isq::volume[bbl](2) == isq::volume[gal](63));
-static_assert(isq::volume[oil_barrel](3) == isq::volume[bbl](4));
-static_assert(isq::volume[hogshead](2) == isq::volume[oil_barrel](3));
+static_assert(isq::volume(1 * fl_dr) == isq::volume(60 * min));
+static_assert(isq::volume(1 * tsp) == isq::volume(80 * min));
+static_assert(isq::volume(1 * tbsp) == isq::volume(3 * tsp));
+static_assert(isq::volume(1 * fl_oz) == isq::volume(2 * tbsp));
+static_assert(isq::volume(1 * jig) == isq::volume(3 * tbsp));
+static_assert(isq::volume(1 * gi) == isq::volume(4 * fl_oz));
+static_assert(isq::volume(1 * c) == isq::volume(2 * gi));
+static_assert(isq::volume(1 * pt) == isq::volume(2 * c));
+static_assert(isq::volume(1 * qt) == isq::volume(2 * pt));
+static_assert(isq::volume(1 * pot) == isq::volume(2 * qt));
+static_assert(isq::volume(1 * gal) == isq::volume(4 * qt));
+static_assert(isq::volume(2 * bbl) == isq::volume(63 * gal));
+static_assert(isq::volume(3 * oil_barrel) == isq::volume(4 * bbl));
+static_assert(isq::volume(2 * hogshead) == isq::volume(3 * oil_barrel));
 
 // Dry volume
-static_assert(isq::volume[dry_qt](1) == isq::volume[dry_pt](2));
-static_assert(isq::volume[dry_gal](1) == isq::volume[dry_qt](4));
-static_assert(isq::volume[pk](1) == isq::volume[dry_gal](2));
-static_assert(isq::volume[bu](1) == isq::volume[pk](4));
-static_assert(isq::volume[dry_bbl](1) == isq::volume[cubic<inch>](7056));
+static_assert(isq::volume(1 * dry_qt) == isq::volume(2 * dry_pt));
+static_assert(isq::volume(1 * dry_gal) == isq::volume(4 * dry_qt));
+static_assert(isq::volume(1 * pk) == isq::volume(2 * dry_gal));
+static_assert(isq::volume(1 * bu) == isq::volume(4 * pk));
+static_assert(isq::volume(1 * dry_bbl) == isq::volume(7056 * cubic<inch>));
 
 // Mass
-static_assert(isq::mass[gr](7'000) == isq::mass[lb](1));
-static_assert(isq::mass[dr](32) == isq::mass[gr](875));
-static_assert(isq::mass[oz](1) == isq::mass[dr](16));
-static_assert(isq::mass[lb](1) == isq::mass[oz](16));
-static_assert(isq::mass[qr](1) == isq::mass[lb](25));
-static_assert(isq::mass[cwt](1) == isq::mass[qr](4));
-static_assert(isq::mass[t](1) == isq::mass[cwt](20));
-static_assert(isq::mass[dwt](1) == isq::mass[gr](24));
-static_assert(isq::mass[oz_t](1) == isq::mass[dwt](20));
-static_assert(isq::mass[lb_t](1) == isq::mass[oz_t](12));
+static_assert(isq::mass(7'000 * gr) == isq::mass(1 * lb));
+static_assert(isq::mass(32 * dr) == isq::mass(875 * gr));
+static_assert(isq::mass(1 * oz) == isq::mass(16 * dr));
+static_assert(isq::mass(1 * lb) == isq::mass(16 * oz));
+static_assert(isq::mass(1 * qr) == isq::mass(25 * lb));
+static_assert(isq::mass(1 * cwt) == isq::mass(4 * qr));
+static_assert(isq::mass(1 * t) == isq::mass(20 * cwt));
+static_assert(isq::mass(1 * dwt) == isq::mass(24 * gr));
+static_assert(isq::mass(1 * oz_t) == isq::mass(20 * dwt));
+static_assert(isq::mass(1 * lb_t) == isq::mass(12 * oz_t));
 
 }  // namespace

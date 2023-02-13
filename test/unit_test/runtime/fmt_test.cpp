@@ -562,8 +562,8 @@ TEST_CASE("fill and align specification", "[text][fmt][ostream]")
 
 TEST_CASE("sign specification", "[text][fmt]")
 {
-  quantity<isq::length[m]> inf(std::numeric_limits<double>::infinity());
-  quantity<isq::length[m]> nan(std::numeric_limits<double>::quiet_NaN());
+  auto inf = std::numeric_limits<double>::infinity() * si::metre;
+  auto nan = std::numeric_limits<double>::quiet_NaN() * si::metre;
 
   SECTION("full format {:%Q %q} on a quantity")
   {
