@@ -51,7 +51,7 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
-  const auto interval = isq::period_duration(5 * s);
+  const auto interval = isq::duration(5 * s);
   const state initial = {30 * km, 40 * (m / s)};
   const quantity<isq::position_vector[m], int> measurements[] = {30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
                                                                  31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m};
