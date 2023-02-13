@@ -23,6 +23,7 @@
 #include "test_tools.h"
 #include <mp_units/dimension.h>
 #include <mp_units/quantity.h>
+#include <mp_units/quantity_spec.h>
 #include <mp_units/reference.h>
 #include <mp_units/unit.h>
 
@@ -38,7 +39,7 @@ inline constexpr struct mass_ : base_dimension<"M"> {} mass;
 inline constexpr struct time_ : base_dimension<"T"> {} time;
 
 QUANTITY_SPEC_(q_time, time);
-inline constexpr struct second_ : named_unit<"s", q_time> {} second;
+inline constexpr struct second_ : named_unit<"s", kind_of<q_time>> {} second;
 
 inline constexpr auto frequency = 1 / time;
 inline constexpr auto action = 1 / time;
@@ -67,7 +68,7 @@ static_assert(Dimension<std::remove_const_t<decltype(frequency)>>);
 
 static_assert(detail::DerivedDimension<dimension_one_>);
 static_assert(detail::DerivedDimension<decltype(length / length)>);  // dimension_one
-static_assert(BaseDimension<decltype(speed * time)>);        // length
+static_assert(BaseDimension<decltype(speed * time)>);                // length
 
 // derived dimension expression template syntax verification
 static_assert(is_of_type<1 / time, derived_dimension<dimension_one_, per<time_>>>);
