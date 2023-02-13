@@ -56,7 +56,7 @@ class quantity;
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename Q>
-  requires Quantity<std::remove_cvref_t<Q>> && castable_to(get_quantity_spec(Q::reference), ToQS)
+  requires Quantity<std::remove_cvref_t<Q>> && (castable_to(std::remove_cvref_t<Q>::quantity_spec, ToQS))
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
   constexpr reference<ToQS, std::remove_cvref_t<Q>::unit> r;
