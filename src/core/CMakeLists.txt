@@ -44,6 +44,7 @@ add_library(
     include/mp_units/bits/dimension_concepts.h
     include/mp_units/bits/expression_template.h
     include/mp_units/bits/get_associated_quantity.h
+    include/mp_units/bits/get_common_base.h
     include/mp_units/bits/magnitude.h
     include/mp_units/bits/math_concepts.h
     include/mp_units/bits/prime.h
