@@ -378,16 +378,14 @@ public:
     requires detail::InvokeResultOf<quantity_spec.character, std::multiplies<>, rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& q, const Value& v)
   {
-    using ret = quantity<R, std::invoke_result_t<std::multiplies<>, rep, Value>>;
-    return ret(q.number() * v);
+    return q.number() * v * R;
   }
 
   template<Representation Value>
     requires detail::InvokeResultOf<quantity_spec.character, std::multiplies<>, const Value&, rep>
   [[nodiscard]] friend constexpr Quantity auto operator*(const Value& v, const quantity& q)
   {
-    using ret = quantity<R, std::invoke_result_t<std::multiplies<>, Value, rep>>;
-    return ret(v * q.number());
+    return v * q.number() * R;
   }
 
   template<typename Value>
@@ -395,8 +393,7 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& q, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    using ret = quantity<R, std::invoke_result_t<std::divides<>, rep, Value>>;
-    return ret(q.number() / v);
+    return q.number() / v * R;
   }
 
   template<typename Value>
@@ -412,16 +409,14 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    using ret = quantity<R, std::invoke_result_t<std::modulus<>, rep, Value>>;
-    return ret(q.number() % v);
+    return q.number() % v * R;
   }
 
   [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity& rhs)
     requires(!treat_as_floating_point<rep>) && detail::InvokeResultOf<quantity_spec.character, std::modulus<>, rep, rep>
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
-    using ret = quantity<R, std::invoke_result_t<std::modulus<>, rep, rep>>;
-    return ret(lhs.number() % rhs.number());
+    return lhs.number() % rhs.number() * R;
   }
 
   [[nodiscard]] friend constexpr auto operator<=>(const quantity& lhs, const quantity& rhs)
