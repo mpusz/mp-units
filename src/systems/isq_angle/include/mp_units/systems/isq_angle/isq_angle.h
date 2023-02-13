@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp_units/quantity_spec.h>
+#include <mp_units/reference.h>
 #include <mp_units/systems/angular/angular.h>
 #include <mp_units/systems/isq/isq.h>
 
