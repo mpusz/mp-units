@@ -45,7 +45,7 @@ constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<si
 
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::time> auto t)
 {
-  return quantity_cast<isq::speed>(d / t);
+  return d / t;
 }
 
 template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
