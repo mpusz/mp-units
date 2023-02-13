@@ -56,11 +56,12 @@ concept BaseDimension =
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_dimension_one = false;
+struct is_dimension_one : std::false_type {};
 
 template<typename T>
 inline constexpr bool is_power_of_dim = requires {
-  requires is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>);
+  requires is_specialization_of_power<T> &&
+             (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>::value);
 };
 
 template<typename T>
@@ -68,13 +69,13 @@ inline constexpr bool is_per_of_dims = false;
 
 template<typename... Ts>
 inline constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_dimension_one<Ts> || is_power_of_dim<Ts>));
+  (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || is_power_of_dim<Ts>));
 
 }  // namespace detail
 
 template<typename T>
 concept DerivedDimensionExpr =
-  BaseDimension<T> || detail::is_dimension_one<T> || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
+  BaseDimension<T> || detail::is_dimension_one<T>::value || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
 
 template<DerivedDimensionExpr... Expr>
 struct derived_dimension;

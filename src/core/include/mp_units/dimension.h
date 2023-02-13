@@ -115,7 +115,7 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
 template<DerivedDimensionExpr... Expr>
-struct derived_dimension : detail::expr_fractions<derived_dimension<>, Expr...> {};
+struct derived_dimension : detail::expr_fractions<detail::is_dimension_one, Expr...> {};
 
 /**
  * @brief Dimension one
@@ -130,7 +130,7 @@ inline constexpr struct dimension_one : derived_dimension<> {
 namespace detail {
 
 template<>
-inline constexpr bool is_dimension_one<struct dimension_one> = true;
+struct is_dimension_one<struct dimension_one> : std::true_type {};
 
 }  // namespace detail
 

@@ -219,6 +219,13 @@ struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
   static constexpr auto symbol = Symbol + U.symbol;
 };
 
+namespace detail {
+
+template<typename T>
+struct is_one : std::false_type {};
+
+}  // namespace detail
+
 /**
  * @brief Measurement unit for a derived quantity
  *
@@ -265,7 +272,7 @@ struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<DerivedUnitExpr... Expr>
-struct derived_unit : detail::expr_fractions<derived_unit<>, Expr...> {};
+struct derived_unit : detail::expr_fractions<detail::is_one, Expr...> {};
 
 /**
  * @brief Unit one
@@ -277,6 +284,9 @@ inline constexpr struct one : derived_unit<> {} one;
 // clang-format on
 
 namespace detail {
+
+template<>
+struct is_one<struct one> : std::true_type {};
 
 /**
  * @brief A canonical representation of a unit
