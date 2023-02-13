@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include <mp_units/quantity_spec.h>
 #include <mp_units/systems/isq/base_quantities.h>
 #include <mp_units/systems/isq/mechanics.h>
 #include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/quantity_spec.h>
 
 namespace mp_units::isq {
 

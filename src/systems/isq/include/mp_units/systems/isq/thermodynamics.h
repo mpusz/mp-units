@@ -36,8 +36,8 @@ QUANTITY_SPEC(relative_pressure_coefficient, 1 / pressure * (pressure / thermody
 QUANTITY_SPEC(pressure_coefficient, pressure / thermodynamic_temperature);
 QUANTITY_SPEC(isothermal_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
 QUANTITY_SPEC(isentropic_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
-QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time));
-QUANTITY_SPEC(heat, energy);  // TODO what is a correct equation here?
+// energy definition moved to mechanics
+QUANTITY_SPEC(heat, mass* pow<2>(length) / pow<2>(time));  // TODO what is a correct equation here?
 inline constexpr auto amount_of_heat = heat;
 QUANTITY_SPEC(latent_heat, heat);  // TODO what is a correct equation here?
 QUANTITY_SPEC(heat_flow_rate, heat / time);
@@ -61,12 +61,12 @@ QUANTITY_SPEC(isentropic_exponent, volume / pressure * (pressure / volume));  //
 inline constexpr auto isentropic_expansion_factor = isentropic_exponent;
 QUANTITY_SPEC(entropy, kinetic_energy / thermodynamic_temperature);
 QUANTITY_SPEC(specific_entropy, entropy / mass);
-QUANTITY_SPEC(internal_energy, energy);
+QUANTITY_SPEC(enthalpy, energy);           // differs from ISO 80000
+QUANTITY_SPEC(internal_energy, enthalpy);  // differs from ISO 80000
 inline constexpr auto thermodynamic_energy = internal_energy;
-QUANTITY_SPEC(enthalpy, energy);
-QUANTITY_SPEC(Helmholtz_energy, energy);
+QUANTITY_SPEC(Helmholtz_energy, internal_energy);
 inline constexpr auto Helmholtz_function = Helmholtz_energy;
-QUANTITY_SPEC(Gibbs_energy, energy);
+QUANTITY_SPEC(Gibbs_energy, enthalpy);
 inline constexpr auto Gibbs_function = Gibbs_energy;
 QUANTITY_SPEC(specific_energy, energy / mass);
 QUANTITY_SPEC(specific_internal_energy, internal_energy / mass);

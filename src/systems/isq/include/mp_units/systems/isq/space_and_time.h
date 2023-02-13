@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp_units/systems/isq/base_quantities.h>
 #include <mp_units/quantity_spec.h>
+#include <mp_units/systems/isq/base_quantities.h>
 
 namespace mp_units::isq {
 
@@ -34,8 +34,7 @@ inline constexpr auto depth = height;
 inline constexpr auto altitude = height;
 QUANTITY_SPEC(thickness, width);
 QUANTITY_SPEC(diameter, width);
-// QUANTITY_SPEC(radius, mag<ratio{1, 2}> * diameter); // TODO should we support that?
-QUANTITY_SPEC(radius, width);
+QUANTITY_SPEC(radius, width);  // differs from ISO 80000
 QUANTITY_SPEC(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC(distance, path_length);
@@ -52,9 +51,10 @@ inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
 QUANTITY_SPEC(solid_angular_measure, area / pow<2>(radius));
 inline constexpr auto duration = time;
-QUANTITY_SPEC(velocity, position_vector / duration);  // vector
-QUANTITY_SPEC(speed, distance / duration);            // TODO length, path_length?
-QUANTITY_SPEC(acceleration, velocity / duration);     // vector
+QUANTITY_SPEC(speed, length / time);                         // differs from ISO 80000
+QUANTITY_SPEC(velocity, speed, position_vector / duration);  // vector  // differs from ISO 80000
+QUANTITY_SPEC(acceleration, velocity / duration);            // vector
+QUANTITY_SPEC(acceleration_of_free_fall, acceleration);      // not in ISO 80000
 QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
 QUANTITY_SPEC(period_duration, duration);

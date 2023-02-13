@@ -22,9 +22,9 @@
 
 #pragma once
 
+#include <mp_units/quantity_spec.h>
 #include <mp_units/systems/isq/base_quantities.h>
 #include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/quantity_spec.h>
 
 namespace mp_units::isq {
 
@@ -37,10 +37,10 @@ QUANTITY_SPEC(surface_mass_density, mass / area);
 inline constexpr auto surface_density = surface_mass_density;
 QUANTITY_SPEC(linear_mass_density, mass / length);
 inline constexpr auto linear_density = linear_mass_density;
-QUANTITY_SPEC(momentum, mass* velocity);      // vector
-QUANTITY_SPEC(force, mass* acceleration);     // vector  // TODO what is a correct equation here?
-QUANTITY_SPEC(weight, force);                 // vector  // TODO g?
-QUANTITY_SPEC(static_friction_force, force);  // vector
+QUANTITY_SPEC(momentum, mass* velocity);                        // vector
+QUANTITY_SPEC(force, mass* acceleration);                       // vector  // TODO what is a correct equation here?
+QUANTITY_SPEC(weight, force, mass* acceleration_of_free_fall);  // vector  // differs from ISO 80000
+QUANTITY_SPEC(static_friction_force, force);                    // vector
 inline constexpr auto static_friction = static_friction_force;
 QUANTITY_SPEC(kinetic_friction_force, force);  // vector
 inline constexpr auto dynamic_friction_force = kinetic_friction_force;
@@ -69,10 +69,8 @@ inline constexpr auto Young_modulus = modulus_of_elasticity;
 QUANTITY_SPEC(modulus_of_rigidity, shear_stress / shear_strain);
 inline constexpr auto shear_modulus = modulus_of_rigidity;
 QUANTITY_SPEC(modulus_of_compression, pressure / relative_volume_strain);
-// QUANTITY_SPEC(modulus_of_compression, -pressure / relative_volume_strain);  // TODO how to handle "negative" part
 inline constexpr auto bulk_modulus = modulus_of_compression;
 QUANTITY_SPEC(compressibility, 1 / volume * (volume / pressure));
-// QUANTITY_SPEC(compressibility, -1 / volume * (volume / pressure));  // TODO how to handle "negative" part
 QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(second_polar_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(section_modulus, second_axial_moment_of_area / radial_distance);
@@ -83,20 +81,15 @@ QUANTITY_SPEC(kinetic_friction_factor, kinetic_friction_force / force, quantity_
 inline constexpr auto dynamic_friction_factor = kinetic_friction_factor;
 QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scalar);
 QUANTITY_SPEC(drag_coefficient, drag_force / (mass_density * pow<2>(speed) * area), quantity_character::scalar);
-// QUANTITY_SPEC(drag_coefficient, mag<2>* drag_force / (mass_density * pow<2>(speed) * area),
-// quantity_character::scalar);  // TODO should we support that?
 inline constexpr auto drag_factor = drag_coefficient;
 QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(power, force* velocity, quantity_character::scalar);
-// QUANTITY_SPEC(energy, force* length);
-QUANTITY_SPEC(potential_energy, mass* pow<2>(length) / pow<2>(time));  // TODO what is a correct equation here?
-QUANTITY_SPEC(kinetic_energy, mass* pow<2>(speed));
-// QUANTITY_SPEC(kinetic_energy, mag<1, 2>* mass* pow<2>(speed)); // TODO should we support that?
-// TODO how to implement that?
-// QUANTITY_SPEC(mechanical_energy, potential_energy + kinetic_energy);
-QUANTITY_SPEC(mechanical_energy, potential_energy);
+QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time));             // ISO 80000 defines this in thermodynamics
+QUANTITY_SPEC(mechanical_energy, energy);                               // differs from ISO 80000
+QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
+QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
 QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
 inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC(efficiency_mechanics, power / power);
@@ -104,6 +97,6 @@ QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);
 QUANTITY_SPEC(mass_change_rate, mass / time);
 QUANTITY_SPEC(volume_flow_rate, velocity* area, quantity_character::scalar);
-QUANTITY_SPEC(action, mechanical_energy* time);
+QUANTITY_SPEC(action, energy* time);
 
 }  // namespace mp_units::isq
