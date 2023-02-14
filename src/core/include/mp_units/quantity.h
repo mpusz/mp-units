@@ -61,7 +61,7 @@ concept Harmonic =  // exposition only
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =  // exposition only
-  Quantity<QFrom> && Quantity<QTo> && explicitly_convertible_to(QFrom::quantity_spec, QTo::quantity_spec) &&
+  Quantity<QFrom> && Quantity<QTo> && implicitly_convertible_to(QFrom::quantity_spec, QTo::quantity_spec) &&
   requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
   (treat_as_floating_point<typename QTo::rep> ||
    (!treat_as_floating_point<typename QFrom::rep> && Harmonic<QFrom, QTo>));
@@ -123,8 +123,7 @@ public:
   quantity(quantity&&) = default;
 
   template<detail::QuantityConvertibleTo<quantity> Q>
-  constexpr explicit(!implicitly_convertible_to(Q::quantity_spec, quantity_spec)) quantity(const Q& q) :
-      number_(detail::sudo_cast<quantity>(q).number())
+  constexpr explicit(false) quantity(const Q& q) : number_(detail::sudo_cast<quantity>(q).number())
   {
   }
 
