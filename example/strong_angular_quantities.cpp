@@ -41,8 +41,7 @@ int main()
   const auto lever = isq_angle::position_vector(20 * cm);
   const auto force = isq_angle::force(500 * N);
   const auto angle = isq_angle::angular_measure(90. * deg);
-  const auto torque =
-    quantity_cast<isq_angle::torque>(lever * force * angular::sin(angle) / (1 * isq_angle::cotes_angle));
+  const auto torque = isq_angle::torque(lever * force * angular::sin(angle) / (1 * isq_angle::cotes_angle));
 
   std::cout << "Applying a perpendicular force of " << force << " to a " << lever << " long lever results in "
             << torque[N * m / rad] << " of torque.\n";

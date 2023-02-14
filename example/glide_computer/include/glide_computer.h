@@ -56,7 +56,7 @@ namespace glide_computer {
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
 inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::height> {
 } mean_sea_level;
-QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::height / mp_units::isq::time);
+QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, mp_units::isq::height / mp_units::isq::time);
 
 // length
 using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;
@@ -196,8 +196,7 @@ constexpr height agl(altitude glider_alt, altitude terrain_level) { return glide
 inline mp_units::quantity<mp_units::isq::length[mp_units::si::kilo<mp_units::si::metre>]> length_3d(distance dist,
                                                                                                     height h)
 {
-  // TODO Should we be able to calculate this on quantity of different kinds? What to return?
-  return hypot(quantity_cast<mp_units::isq::length>(dist), quantity_cast<mp_units::isq::length>(h));
+  return hypot(dist, h);
 }
 
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);

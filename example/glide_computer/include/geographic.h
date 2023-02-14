@@ -157,18 +157,14 @@ distance spherical_distance(position<T> from, position<T> to)
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2_rad - lat1_rad) / 2 + cos(lat1_rad) * cos(lat2_rad) * (1
     // - cos(lon2_rad - lon1_rad)) / 2));
 
-    // TODO can we improve the below
-    // return quantity_cast<isq::distance>(earth_radius * central_angle);
-    return earth_radius.number() * central_angle * isq::distance[earth_radius.unit];
+    return quantity_cast<isq::distance>(earth_radius * central_angle);
   } else {
     // the haversine formula
     const auto sin_lat = sin((lat2_rad - lat1_rad) / 2);
     const auto sin_lon = sin((lon2_rad - lon1_rad) / 2);
     const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(lat1_rad) * cos(lat2_rad) * sin_lon * sin_lon));
 
-    // TODO can we improve the below
-    // return quantity_cast<isq::distance>(earth_radius * central_angle);
-    return earth_radius.number() * central_angle * isq::distance[earth_radius.unit];
+    return quantity_cast<isq::distance>(earth_radius * central_angle);
   }
 }
 

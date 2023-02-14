@@ -40,17 +40,18 @@ using namespace mp_units;
 QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> auto p, QuantityOf<isq::mass> auto m,
                                                      QuantityOf<isq::speed> auto c)
 {
-  return quantity_cast<isq::mechanical_energy>(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
+  return isq::mechanical_energy(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
 }
 
 void si_example()
 {
   using namespace mp_units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
-
   constexpr QuantityOf<isq::speed> auto c = 1. * si::si2019::speed_of_light_in_vacuum;
-  const QuantityOf<isq::momentum> auto p1 = isq::mechanical_energy(4. * GeV) / c;
-  const QuantityOf<isq::mass> auto m1 = isq::mechanical_energy(3. * GeV) / pow<2>(c);
+  auto c2 = pow<2>(c);
+
+  const auto p1 = isq::momentum(4. * GeV / c);
+  const QuantityOf<isq::mass> auto m1 = 3. * GeV / c2;
   const auto E = total_energy(p1, m1, c);
 
   std::cout << "\n*** SI units (c = " << c << " = " << c[si::metre / s] << ") ***\n";
@@ -60,8 +61,8 @@ void si_example()
             << "m = " << m1 << "\n"
             << "E = " << E << "\n";
 
-  const auto p2 = p1[GeV / (si::metre / s)];
-  const auto m2 = m1[si::giga<si::electronvolt> / pow<2>(si::metre / s)];
+  const auto p2 = p1[GeV / (m / s)];
+  const auto m2 = m1[GeV / pow<2>(m / s)];
   const auto E2 = total_energy(p2, m2, c)[GeV];
 
   std::cout << "\n[in `GeV`]\n"
@@ -69,7 +70,7 @@ void si_example()
             << "m = " << m2 << "\n"
             << "E = " << E2 << "\n";
 
-  const auto p3 = p1[kg * si::metre / s];
+  const auto p3 = p1[kg * m / s];
   const auto m3 = m1[kg];
   const auto E3 = total_energy(p3, m3, c)[J];
 
@@ -87,9 +88,9 @@ void natural_example()
   using namespace mp_units::natural;
   using namespace mp_units::natural::unit_symbols;
 
-  constexpr QuantityOf<isq::speed> auto c = 1. * speed_of_light_in_vacuum;
-  const QuantityOf<isq::momentum> auto p = 4. * momentum[GeV];
-  const QuantityOf<isq::mass> auto m = 3. * mass[GeV];
+  constexpr auto c = 1. * speed_of_light_in_vacuum;
+  const auto p = 4. * momentum[GeV];
+  const auto m = 3. * mass[GeV];
   const auto E = total_energy(p, m, c);
 
   std::cout << "\n*** Natural units (c = " << c << ") ***\n"

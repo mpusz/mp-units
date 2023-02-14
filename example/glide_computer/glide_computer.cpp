@@ -61,7 +61,7 @@ altitude terrain_level_alt(const task& t, const flight_point& pos)
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt)
 {
   const auto dist_to_finish = t.get_length() - pos.dist;
-  return distance((ground_alt + s.min_agl_height - pos.alt) /
+  return distance(quantity_cast<isq::distance>(ground_alt + s.min_agl_height - pos.alt) /
                   ((ground_alt - t.get_finish().alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
 }
 
@@ -151,7 +151,8 @@ void estimate(timestamp start_ts, const glider& g, const weather& w, const task&
   pos = tow(start_ts, pos, at);
 
   // estimate the altitude needed to reach the finish line from this place
-  const altitude final_glide_alt = t.get_finish().alt + height(t.get_length() / glide_ratio(g.polar[0]));
+  const altitude final_glide_alt =
+    t.get_finish().alt + quantity_cast<isq::height>(t.get_length()) / glide_ratio(g.polar[0]);
 
   // how much height we still need to gain in the thermalls to reach the destination?
   height height_to_gain = final_glide_alt - pos.alt;

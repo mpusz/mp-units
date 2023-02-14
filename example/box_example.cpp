@@ -55,9 +55,9 @@ public:
 
   [[nodiscard]] constexpr QuantityOf<isq::weight> auto filled_weight() const
   {
-    const QuantityOf<isq::volume> auto volume = isq::volume(base_ * height_);
+    const auto volume = isq::volume(base_ * height_);
     const QuantityOf<isq::mass> auto mass = density_ * volume;
-    return quantity_cast<isq::weight>(mass * g);
+    return isq::weight(mass * g);
   }
 
   [[nodiscard]] constexpr quantity<isq::height[m]> fill_level(const quantity<isq::mass[kg]>& measured_mass) const
