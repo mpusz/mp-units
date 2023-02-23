@@ -56,7 +56,8 @@ if(NOT ${projectPrefix}LIBCXX)
         glide_computer_example-references PRIVATE ${projectPrefix}NO_LITERALS ${projectPrefix}NO_ALIASES
     )
 
-    find_package(wg21_linear_algebra CONFIG REQUIRED)
-    add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
-    target_link_libraries(linear_algebra-references PRIVATE wg21_linear_algebra::wg21_linear_algebra)
+    # TODO uncomment the below when recipes in ConanCenter are fixed
+    # find_package(wg21_linear_algebra CONFIG REQUIRED)
+    # add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
+    # target_link_libraries(linear_algebra-references PRIVATE wg21_linear_algebra::wg21_linear_algebra)
 endif()
