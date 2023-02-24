@@ -59,7 +59,6 @@ jobs:
                   cxx: "g++-10",
                   std: 20,
                 },
-              lib: "libstdc++11",
             }
           - {
               name: "Ubuntu GCC-11",
@@ -72,7 +71,6 @@ jobs:
                   cxx: "g++-11",
                   std: 20,
                 },
-              lib: "libstdc++11",
             }
           - {
               name: "Ubuntu GCC-12",
@@ -85,7 +83,6 @@ jobs:
                   cxx: "g++-12",
                   std: 20,
                 },
-              lib: "libstdc++11",
             }
           - {
               name: "Ubuntu Clang-12 + libstdc++11",
@@ -178,7 +175,7 @@ jobs:
         env:
           cache-name: cache-conan-data
         with:
-          path: ~/.conan/data
+          path: ~/.conan2/data
           key: build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
           restore-keys: |
             build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
@@ -239,15 +236,14 @@ jobs:
       - name: Configure Conan
         shell: bash
         run: |
-          conan config init
+          conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
-            conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
+          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
           fi
-          conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
-          conan profile update settings.build_type=${{ matrix.build_type }} default
-          conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
-          conan profile show default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.config.compiler.std }}/' ~/.conan2/profiles/default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
+          conan profile show -pr default
       # - name: Add support for clang-13 to Conan's settings.yml
       #   # TODO Remove when Conan will support clang-13
       #   if: matrix.config.compiler.type == 'CLANG'
@@ -262,7 +258,8 @@ jobs:
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . mpusz/testing -o mp-units:downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True -b mp-units -b outdated -u
+          conan create . --user mpusz --channel testing -b mp-units -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+                                                        -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
       - name: Upload mp-units Conan package
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash

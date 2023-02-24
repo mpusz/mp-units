@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ "ubuntu-latest" ]
+        os: ["ubuntu-latest"]
     steps:
       - uses: actions/checkout@v3
       - name: Cache Conan data
@@ -60,7 +60,7 @@ jobs:
         env:
           cache-name: cache-conan-data
         with:
-          path: ~/.conan/data
+          path: ~/.conan2/data
           key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
           restore-keys: |
             build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
@@ -82,17 +82,17 @@ jobs:
           pip install -U conan
       - name: Configure Conan
         run: |
-          conan config init
-          conan remote add -i 0 upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan profile detect --force
+          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
       - name: Install Conan dependencies
         run: |
-          conan install . -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b outdated -u
+          conan install . -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b missing
       - name: Configure CMake
         run: |
-          cmake --preset default
+          cmake --preset conan-default
       - name: Generate documentation
         run: |
-          cmake --build --preset release --target documentation
+          cmake --build --preset conan-release --target documentation
       - name: Deploy documentation
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3

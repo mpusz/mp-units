@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         language: ["cpp", "python"]
-        os: [ "ubuntu-latest" ]
+        os: ["ubuntu-latest"]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
@@ -71,7 +71,7 @@ jobs:
         env:
           cache-name: cache-conan-data
         with:
-          path: ~/.conan/data
+          path: ~/.conan2/data
           key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
           restore-keys: |
             build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
@@ -87,10 +87,10 @@ jobs:
         if: matrix.language == 'cpp'
         run: |
           pip install -U conan
-          conan config init
-          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan profile detect --force
+          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
+          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c user.build:skip_docs=True -b missing
           conan build ..
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
