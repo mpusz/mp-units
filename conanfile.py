@@ -54,7 +54,6 @@ class MPUnitsConan(ConanFile):
     license = "MIT"
     url = "https://github.com/mpusz/units"
     settings = "os", "arch", "compiler", "build_type"
-    requires = "gsl-lite/0.40.0"
     options = {"downcast_mode": ["off", "on", "auto"]}
     default_options = {"downcast_mode": "on"}
     exports = ["LICENSE.md"]
@@ -66,6 +65,7 @@ class MPUnitsConan(ConanFile):
         "example/*",
         "CMakeLists.txt",
     ]
+    package_type = "header-library"
     no_copy_source = True
 
     @property
@@ -116,6 +116,7 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
+        self.requires("gsl-lite/0.40.0")
         if self._use_libfmt:
             self.requires("fmt/8.1.1")
         if self._use_range_v3:
