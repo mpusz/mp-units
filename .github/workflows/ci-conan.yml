@@ -264,9 +264,9 @@ jobs:
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash
         run: |
-          conan user ${{ secrets.CONAN_LOGIN_USERNAME }} -r artifactory -p ${{ secrets.CONAN_PASSWORD }}
-          conan upload "mp-units*" --all -r artifactory --confirm
+          conan remote login artifactory ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
+          conan upload "mp-units*" -r artifactory --confirm
       - name: Remove mp-units package from Conan local cache
         shell: bash
         run: |
-          conan remove mp-units -c
+          conan remove mp-units --confirm
