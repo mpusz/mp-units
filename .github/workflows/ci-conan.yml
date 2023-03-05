@@ -244,4 +244,4 @@ jobs:
       - name: Remove mp-units package from Conan local cache
         shell: bash
         run: |
-          conan remove mp-units -f
+          conan remove mp-units -c
