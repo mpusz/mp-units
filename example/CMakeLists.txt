@@ -34,7 +34,7 @@ function(add_example target)
 endfunction()
 
 add_example(avg_speed mp-units::core-io mp-units::si mp-units::cgs mp-units::usc)
-add_example(box_example mp-units::core-fmt mp-units::si)
+add_example(storage_tank_example mp-units::core-fmt mp-units::si)
 add_example(capacitor_time_curve mp-units::core-io mp-units::si mp-units::utility)
 add_example(
     clcpp_response

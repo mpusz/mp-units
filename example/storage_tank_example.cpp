@@ -42,20 +42,25 @@ using namespace mp_units::si::unit_symbols;
 inline constexpr auto g = 1 * si::standard_gravity;
 inline constexpr auto air_density = isq::mass_density(1.225 * (kg / m3));
 
-class Box {
+class StorageTank {
   quantity<isq::area[m2]> base_;
   quantity<isq::height[m]> height_;
   quantity<isq::mass_density[kg / m3]> density_ = air_density;
 public:
-  constexpr Box(const quantity<isq::length[m]>& length, const quantity<isq::width[m]>& width,
-                quantity<isq::height[m]> height) :
-      base_(length * width), height_(std::move(height))
+  constexpr StorageTank(const quantity<isq::area[m2]>& base, const quantity<isq::height[m]>& height) :
+      base_(base), height_(height)
   {
+  }
+
+  constexpr void set_contents_density(const quantity<isq::mass_density[kg / m3]>& density)
+  {
+    assert(density > air_density);
+    density_ = density;
   }
 
   [[nodiscard]] constexpr QuantityOf<isq::weight> auto filled_weight() const
   {
-    const auto volume = isq::volume(base_ * height_);
+    const auto volume = isq::volume(base_ * height_);  // TODO check if we can remove that cast
     const QuantityOf<isq::mass> auto mass = density_ * volume;
     return isq::weight(mass * g);
   }
@@ -69,11 +74,23 @@ public:
   {
     return (height_ - fill_level(measured_mass)) * base_;
   }
+};
 
-  constexpr void set_contents_density(const quantity<isq::mass_density[kg / m3]>& density_in)
+
+class CylindricalStorageTank : public StorageTank {
+public:
+  constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius, const quantity<isq::height[m]>& height) :
+      StorageTank(std::numbers::pi * radius * radius, height)
   {
-    assert(density_in > air_density);
-    density_ = density_in;
+  }
+};
+
+class RectangularStorageTank : public StorageTank {
+public:
+  constexpr RectangularStorageTank(const quantity<isq::length[m]>& length, const quantity<isq::width[m]>& width,
+                                   const quantity<isq::height[m]>& height) :
+      StorageTank(length * width, height)
+  {
   }
 };
 
@@ -85,27 +102,27 @@ int main()
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
-  const quantity<isq::height[m]> height = 200. * mm;
-  auto box = Box(isq::length(1000. * mm), isq::width(500. * mm), height);
-  box.set_contents_density(1000.0 * isq::mass_density[kg / m3]);
+  const auto height = isq::height(200 * mm);
+  auto tank = RectangularStorageTank(isq::length(1000 * mm), isq::width(500 * mm), height);
+  tank.set_contents_density(1000 * isq::mass_density[kg / m3]);
 
-  const auto fill_time = 200. * s;       // time since starting fill
-  const auto measured_mass = 20.0 * kg;  // measured mass at fill_time
-  const auto fill_level = box.fill_level(measured_mass);
-  const auto spare_capacity = box.spare_capacity(measured_mass);
-  const auto filled_weight = box.filled_weight();
+  const auto fill_time = 200 * s;       // time since starting fill
+  const auto measured_mass = 20. * kg;  // measured mass at fill_time
+
+  const auto fill_level = tank.fill_level(measured_mass);
+  const auto spare_capacity = tank.spare_capacity(measured_mass);
+  const auto filled_weight = tank.filled_weight();
 
   const QuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
   const QuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
   const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1) * fill_time;
 
-  const auto fill_percent = (fill_level / height)[percent];
+  const auto fill_ratio = fill_level / height;
 
-  std::cout << "mp-units box example...\n";
-  std::cout << STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_percent);
+  std::cout << STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_ratio[percent]);
   std::cout << STD_FMT::format("fill weight at {} = {} ({})\n", fill_time, filled_weight, filled_weight[N]);
   std::cout << STD_FMT::format("spare capacity at {} = {}\n", fill_time, spare_capacity);
-  std::cout << STD_FMT::format("input flow rate after {} = {}\n", fill_time, input_flow_rate);
+  std::cout << STD_FMT::format("input flow rate = {}\n", input_flow_rate);
   std::cout << STD_FMT::format("float rise rate = {}\n", float_rise_rate);
-  std::cout << STD_FMT::format("box full E.T.A. at current flow rate = {}\n", fill_time_left);
+  std::cout << STD_FMT::format("tank full E.T.A. at current flow rate = {}\n", fill_time_left[s]);
 }
