@@ -62,11 +62,14 @@ UNITS_DIAGNOSTIC_POP
 
 #else
 
+// TODO Unconditionally include after the #error below when Libc++ and Libstdc++ <version>'s defines __cpp_lib_format.
+#if __has_include(<format>)
+#include <format>
+#endif
+
 #ifndef __cpp_lib_format
 #error "std::formatting facility not supported"
 #endif
-
-#include <format>
 
 #define UNITS_STD_FMT std
 #define UNITS_FMT_LOCALE(loc) loc
