@@ -120,8 +120,7 @@ class MPUnitsConan(ConanFile):
         #     self.tool_requires("doxygen/1.9.4")
 
     def validate(self):
-        if self.settings.get_safe("compiler.cppstd"):
-            check_min_cppstd(self, self._min_cppstd)
+        check_min_cppstd(self, self._min_cppstd)
 
         def loose_lt_semver(v1, v2):
             lv1 = [int(v) for v in v1.split(".")]
