@@ -146,7 +146,7 @@ class MPUnitsConan(ConanFile):
             str(self._full_compiler_version), min_version
         ):
             raise ConanInvalidConfiguration(
-                f"{self.ref} requires at least {compiler} {min_version}"
+                f"{self.ref} requires at least {compiler} {min_version} ({self._full_compiler_version} in use)"
             )
 
     def layout(self):
