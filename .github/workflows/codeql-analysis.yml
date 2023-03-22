@@ -90,7 +90,6 @@ jobs:
           conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c user.build:skip_docs=True -b missing
-          conan build ..
+          conan build .. -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c user.build:skip_docs=True -b missing
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
