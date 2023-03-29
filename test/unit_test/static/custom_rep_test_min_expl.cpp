@@ -187,42 +187,42 @@ static_assert(!Representation<min_expl<9>>);
 // quantity's operators should mirror the representation type capabilities
 template<typename Rep>
 concept invalid_member_operations = requires(length<metre, Rep> lhs) {
-                                      requires !requires { +lhs; };
-                                      requires !requires { -lhs; };
-                                      requires !requires { ++lhs; };
-                                      requires !requires { lhs++; };
-                                      requires !requires { --lhs; };
-                                      requires !requires { lhs--; };
+  requires !requires { +lhs; };
+  requires !requires { -lhs; };
+  requires !requires { ++lhs; };
+  requires !requires { lhs++; };
+  requires !requires { --lhs; };
+  requires !requires { lhs--; };
 
-                                      requires !requires(length<metre, Rep> rhs) { lhs += rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs -= rhs; };
-                                      requires !requires(Rep rhs) { lhs *= rhs; };
-                                      requires !requires(Rep rhs) { lhs /= rhs; };
-                                      requires !requires(Rep rhs) { lhs %= rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs %= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs += rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs -= rhs; };
+  requires !requires(Rep rhs) { lhs *= rhs; };
+  requires !requires(Rep rhs) { lhs /= rhs; };
+  requires !requires(Rep rhs) { lhs %= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs %= rhs; };
 
-                                      requires !requires(length<metre, Rep> rhs) { lhs + rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs - rhs; };
-                                      requires !requires(Rep rhs) { lhs % rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs % rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs < rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs > rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs <= rhs; };
-                                      requires !requires(length<metre, Rep> rhs) { lhs >= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs + rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs - rhs; };
+  requires !requires(Rep rhs) { lhs % rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs % rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs < rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs > rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs <= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs >= rhs; };
 
-                                      requires !requires(length<metre, int> rhs) { lhs + rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs - rhs; };
-                                      requires !requires(int rhs) { lhs % rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs % rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs == rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs != rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs < rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs > rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs <= rhs; };
-                                      requires !requires(length<metre, int> rhs) { lhs >= rhs; };
+  requires !requires(length<metre, int> rhs) { lhs + rhs; };
+  requires !requires(length<metre, int> rhs) { lhs - rhs; };
+  requires !requires(int rhs) { lhs % rhs; };
+  requires !requires(length<metre, int> rhs) { lhs % rhs; };
+  requires !requires(length<metre, int> rhs) { lhs == rhs; };
+  requires !requires(length<metre, int> rhs) { lhs != rhs; };
+  requires !requires(length<metre, int> rhs) { lhs < rhs; };
+  requires !requires(length<metre, int> rhs) { lhs > rhs; };
+  requires !requires(length<metre, int> rhs) { lhs <= rhs; };
+  requires !requires(length<metre, int> rhs) { lhs >= rhs; };
 
-                                      requires !requires(std::ostream os) { os << lhs; };
-                                    };
+  requires !requires(std::ostream os) { os << lhs; };
+};
 static_assert(invalid_member_operations<min_expl<>>);
 
 // equality

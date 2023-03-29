@@ -313,11 +313,9 @@ struct pairwise_all {
     }(sizeof...(Ts));
 
     // Compare zero or more pairs of neighbours as needed.
-    return [this]<std::size_t... Is>(std::tuple<Ts...> && t, std::index_sequence<Is...>)
-    {
+    return [this]<std::size_t... Is>(std::tuple<Ts...>&& t, std::index_sequence<Is...>) {
       return (predicate(std::get<Is>(t), std::get<Is + 1>(t)) && ...);
-    }
-    (std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
+    }(std::make_tuple(std::forward<Ts>(ts)...), std::make_index_sequence<num_comparisons>());
   }
 };
 

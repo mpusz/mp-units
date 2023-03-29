@@ -213,10 +213,10 @@ template<Representation ToRep, typename D, typename U, scalable_with_<ToRep> Rep
 template<typename CastSpec, typename O, typename U, typename Rep>
 [[nodiscard]] constexpr auto quantity_point_cast(const quantity_point<O, U, Rep>& qp)
   requires requires {
-             requires is_specialization_of<CastSpec, quantity_point>;
-             requires requires { quantity_cast<typename CastSpec::quantity_type>(qp.relative()); };
-             requires equivalent<O, typename CastSpec::origin>;
-           } ||  // TODO: Simplify when Clang catches up.
+    requires is_specialization_of<CastSpec, quantity_point>;
+    requires requires { quantity_cast<typename CastSpec::quantity_type>(qp.relative()); };
+    requires equivalent<O, typename CastSpec::origin>;
+  } ||  // TODO: Simplify when Clang catches up.
            requires { quantity_cast<CastSpec>(qp.relative()); }
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point>)
@@ -268,12 +268,12 @@ template<Dimension ToD, Unit ToU, typename O, typename U, typename Rep>
 template<typename CastSpec, typename K, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityKind auto quantity_kind_cast(const quantity_kind<K, U, Rep>& qk)
   requires requires {
-             requires is_specialization_of<CastSpec, quantity_kind>;
-             requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); };
-           } || requires {
-                  requires Kind<CastSpec>;
-                  requires UnitOf<U, typename CastSpec::dimension>;
-                } || requires { quantity_cast<CastSpec>(qk.common()); }  // TODO: Simplify when Clang catches up.
+    requires is_specialization_of<CastSpec, quantity_kind>;
+    requires requires { quantity_cast<typename CastSpec::quantity_type>(qk.common()); };
+  } || requires {
+    requires Kind<CastSpec>;
+    requires UnitOf<U, typename CastSpec::dimension>;
+  } || requires { quantity_cast<CastSpec>(qk.common()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_kind>)
     return CastSpec(quantity_cast<typename CastSpec::quantity_type>(qk.common()));
@@ -331,10 +331,10 @@ template<Kind ToK, Unit ToU, typename K, typename U, typename Rep>
 template<typename CastSpec, typename PK, typename U, typename Rep>
 [[nodiscard]] constexpr QuantityPointKind auto quantity_point_kind_cast(const quantity_point_kind<PK, U, Rep>& qpk)
   requires requires {
-             requires is_specialization_of<CastSpec, quantity_point_kind>;
-             requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); };
-             requires equivalent<typename PK::origin, typename CastSpec::point_kind_type::origin>;
-           } || requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
+    requires is_specialization_of<CastSpec, quantity_point_kind>;
+    requires requires { quantity_kind_cast<typename CastSpec::quantity_kind_type>(qpk.relative()); };
+    requires equivalent<typename PK::origin, typename CastSpec::point_kind_type::origin>;
+  } || requires { requires PointKind<CastSpec> && UnitOf<U, typename CastSpec::dimension>; } ||
            requires { quantity_kind_cast<CastSpec>(qpk.relative()); }  // TODO: Simplify when Clang catches up.
 {
   if constexpr (is_specialization_of<CastSpec, quantity_point_kind>)

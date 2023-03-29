@@ -69,20 +69,20 @@ struct quantity_values {
 
   static constexpr Rep min() noexcept
     requires requires {
-               {
-                 std::numeric_limits<Rep>::lowest()
-                 } -> std::same_as<Rep>;
-             }
+      {
+        std::numeric_limits<Rep>::lowest()
+      } -> std::same_as<Rep>;
+    }
   {
     return std::numeric_limits<Rep>::lowest();
   }
 
   static constexpr Rep max() noexcept
     requires requires {
-               {
-                 std::numeric_limits<Rep>::max()
-                 } -> std::same_as<Rep>;
-             }
+      {
+        std::numeric_limits<Rep>::max()
+      } -> std::same_as<Rep>;
+    }
   {
     return std::numeric_limits<Rep>::max();
   }

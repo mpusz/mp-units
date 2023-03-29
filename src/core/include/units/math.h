@@ -159,9 +159,9 @@ template<Unit To, typename D, typename U, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires { floor(q.number()); } ||
            requires { std::floor(q.number()); }) &&
           (std::same_as<To, U> || requires {
-                                    ::units::quantity_cast<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+            ::units::quantity_cast<To>(q);
+            quantity<D, To, Rep>::one();
+          })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q) {
@@ -208,9 +208,9 @@ template<Unit To, typename D, typename U, typename Rep>
 [[nodiscard]] constexpr quantity<D, To, Rep> ceil(const quantity<D, U, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { ceil(q.number()); } || requires { std::ceil(q.number()); }) &&
           (std::same_as<To, U> || requires {
-                                    ::units::quantity_cast<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+            ::units::quantity_cast<To>(q);
+            quantity<D, To, Rep>::one();
+          })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res < q) {
@@ -260,9 +260,9 @@ template<Unit To, typename D, typename U, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires { round(q.number()); } ||
            requires { std::round(q.number()); }) &&
           (std::same_as<To, U> || requires {
-                                    ::units::floor<To>(q);
-                                    quantity<D, To, Rep>::one();
-                                  })
+            ::units::floor<To>(q);
+            quantity<D, To, Rep>::one();
+          })
 {
   if constexpr (std::is_same_v<To, U>) {
     if constexpr (treat_as_floating_point<Rep>) {
@@ -308,10 +308,9 @@ template<Quantity To, std::same_as<typename To::dimension> D, typename U, std::s
  */
 template<Quantity Q1, Quantity Q2>
 [[nodiscard]] inline std::common_type_t<Q1, Q2> hypot(const Q1& x, const Q2& y) noexcept
-  requires requires { typename std::common_type_t<Q1, Q2>; } &&
-           requires(std::common_type_t<Q1, Q2> q) {
-             requires requires { hypot(q.number(), q.number()); } || requires { std::hypot(q.number(), q.number()); };
-           }
+  requires requires { typename std::common_type_t<Q1, Q2>; } && requires(std::common_type_t<Q1, Q2> q) {
+    requires requires { hypot(q.number(), q.number()); } || requires { std::hypot(q.number(), q.number()); };
+  }
 {
   using type = std::common_type_t<Q1, Q2>;
   type xx = x;
@@ -326,11 +325,10 @@ template<Quantity Q1, Quantity Q2>
  */
 template<Quantity Q1, Quantity Q2, Quantity Q3>
 [[nodiscard]] inline std::common_type_t<Q1, Q2, Q3> hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
-  requires requires { typename std::common_type_t<Q1, Q2, Q3>; } &&
-           requires(std::common_type_t<Q1, Q2, Q3> q) {
-             requires requires { hypot(q.number(), q.number(), q.number()); } ||
-                        requires { std::hypot(q.number(), q.number(), q.number()); };
-           }
+  requires requires { typename std::common_type_t<Q1, Q2, Q3>; } && requires(std::common_type_t<Q1, Q2, Q3> q) {
+    requires requires { hypot(q.number(), q.number(), q.number()); } ||
+               requires { std::hypot(q.number(), q.number(), q.number()); };
+  }
 {
   using type = std::common_type_t<Q1, Q2, Q3>;
   type xx = x;

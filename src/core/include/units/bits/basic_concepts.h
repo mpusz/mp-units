@@ -217,14 +217,13 @@ struct point_origin;
  * Satisfied by types derived from an specialization of @c point_origin.
  */
 template<typename T>
-concept PointOrigin = is_derived_from_specialization_of<T, point_origin> &&
-                      requires {
-                        typename T::dimension;
-                        requires Dimension<typename T::dimension>;
-                        typename T::point_origin;
-                        requires std::same_as<typename T::point_origin, point_origin<typename T::dimension>>;
-                        requires !std::same_as<T, point_origin<typename T::dimension>>;
-                      };
+concept PointOrigin = is_derived_from_specialization_of<T, point_origin> && requires {
+  typename T::dimension;
+  requires Dimension<typename T::dimension>;
+  typename T::point_origin;
+  requires std::same_as<typename T::point_origin, point_origin<typename T::dimension>>;
+  requires !std::same_as<T, point_origin<typename T::dimension>>;
+};
 
 // RebindablePointOriginFor
 
@@ -261,10 +260,10 @@ struct _kind_base;
 
 template<typename T, template<typename...> typename Base>
 concept kind_impl_ = is_derived_from_specialization_of<T, Base> && requires {
-                                                                     typename T::base_kind;
-                                                                     typename T::dimension;
-                                                                     requires Dimension<typename T::dimension>;
-                                                                   };
+  typename T::base_kind;
+  typename T::dimension;
+  requires Dimension<typename T::dimension>;
+};
 
 /**
  * @brief A concept matching all kind types
@@ -389,12 +388,12 @@ concept QuantityPointLike = detail::is_quantity_point_like<T>;
 
 template<typename T, typename U>
 concept common_type_with_ =  // exposition only
-  (std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>>) &&
-  (std::constructible_from<std::common_type_t<T, U>, T>) && (std::constructible_from<std::common_type_t<T, U>, U>);
+  (std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>>)&&(
+    std::constructible_from<std::common_type_t<T, U>, T>)&&(std::constructible_from<std::common_type_t<T, U>, U>);
 
 template<typename T, typename U = T>
 concept scalable_number_ =  // exposition only
-  (std::regular_invocable<std::multiplies<>, T, U>) && (std::regular_invocable<std::divides<>, T, U>);
+  (std::regular_invocable<std::multiplies<>, T, U>)&&(std::regular_invocable<std::divides<>, T, U>);
 
 template<typename T>
 concept castable_number_ =  // exposition only
@@ -443,37 +442,36 @@ concept wrapped_quantity_ =  // exposition only
  * Satisfied by types that satisfy `(!Quantity<T>) && (!WrappedQuantity<T>) && std::regular<T>`.
  */
 template<typename T>
-concept Representation = (!Quantity<T>) && (!QuantityLike<T>) &&
-                         (!wrapped_quantity_<T>) && std::regular<T> && scalable_<T>;
+concept Representation = (!Quantity<T>)&&(!QuantityLike<T>)&&(!wrapped_quantity_<T>)&&std::regular<T> && scalable_<T>;
 
 namespace detail {
 
 template<typename T>
   requires requires(T q) {
-             typename quantity_like_traits<T>::dimension;
-             typename quantity_like_traits<T>::unit;
-             typename quantity_like_traits<T>::rep;
-             requires Dimension<typename quantity_like_traits<T>::dimension>;
-             requires Unit<typename quantity_like_traits<T>::unit>;
-             requires Representation<typename quantity_like_traits<T>::rep>;
-             {
-               quantity_like_traits<T>::number(q)
-               } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
-           }
+    typename quantity_like_traits<T>::dimension;
+    typename quantity_like_traits<T>::unit;
+    typename quantity_like_traits<T>::rep;
+    requires Dimension<typename quantity_like_traits<T>::dimension>;
+    requires Unit<typename quantity_like_traits<T>::unit>;
+    requires Representation<typename quantity_like_traits<T>::rep>;
+    {
+      quantity_like_traits<T>::number(q)
+    } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+  }
 inline constexpr bool is_quantity_like<T> = true;
 
 template<typename T>
   requires requires(T q) {
-             typename quantity_point_like_traits<T>::dimension;
-             typename quantity_point_like_traits<T>::unit;
-             typename quantity_point_like_traits<T>::rep;
-             requires Dimension<typename quantity_point_like_traits<T>::dimension>;
-             requires Unit<typename quantity_point_like_traits<T>::unit>;
-             requires Representation<typename quantity_point_like_traits<T>::rep>;
-             {
-               quantity_point_like_traits<T>::relative(q)
-               } -> QuantityLike;
-           }
+    typename quantity_point_like_traits<T>::dimension;
+    typename quantity_point_like_traits<T>::unit;
+    typename quantity_point_like_traits<T>::rep;
+    requires Dimension<typename quantity_point_like_traits<T>::dimension>;
+    requires Unit<typename quantity_point_like_traits<T>::unit>;
+    requires Representation<typename quantity_point_like_traits<T>::rep>;
+    {
+      quantity_point_like_traits<T>::relative(q)
+    } -> QuantityLike;
+  }
 inline constexpr bool is_quantity_point_like<T> = true;
 
 }  // namespace detail

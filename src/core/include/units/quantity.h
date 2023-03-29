@@ -51,8 +51,8 @@ inline constexpr auto make_quantity = [](auto&& v) {
 template<typename T>
 concept quantity_one =
   Quantity<T> &&
-  (std::same_as<typename T::dimension, dim_one> || std::same_as<typename T::dimension, unknown_dimension<>>) &&
-  detail::equivalent_unit<typename T::unit, typename T::dimension, ::units::one, typename T::dimension>::value;
+  (std::same_as<typename T::dimension, dim_one> || std::same_as<typename T::dimension, unknown_dimension<>>)&&detail::
+    equivalent_unit<typename T::unit, typename T::dimension, ::units::one, typename T::dimension>::value;
 
 }  // namespace detail
 
@@ -62,7 +62,7 @@ concept floating_point_ =  // exposition only
 
 template<typename From, typename To>
 concept safe_convertible_to_ =  // exposition only
-  (!Quantity<From>) && (!Quantity<To>) && std::convertible_to<From, To> &&
+  (!Quantity<From>)&&(!Quantity<To>)&&std::convertible_to<From, To> &&
   (floating_point_<To> || (!floating_point_<From>));
 
 // QFrom ratio is an exact multiple of QTo
@@ -84,7 +84,7 @@ concept invoke_result_convertible_to_ =
   Representation<T> && quantity_value_for_<Func, U, V> && safe_convertible_to_<T, std::invoke_result_t<Func, U, V>>;
 
 template<typename Func, typename Q, typename V>
-concept have_quantity_for_ = Quantity<Q> && (!Quantity<V>) && quantity_value_for_<Func, typename Q::rep, V>;
+concept have_quantity_for_ = Quantity<Q> && (!Quantity<V>)&&quantity_value_for_<Func, typename Q::rep, V>;
 
 template<QuantityLike Q>
 using quantity_like_type = quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit,
@@ -169,10 +169,10 @@ public:
   // member unary operators
   [[nodiscard]] constexpr Quantity auto operator+() const
     requires requires(rep v) {
-               {
-                 +v
-                 } -> std::common_with<rep>;
-             }
+      {
+        +v
+      } -> std::common_with<rep>;
+    }
   {
     using ret = quantity<D, U, decltype(+number())>;
     return ret(+number());
@@ -187,10 +187,10 @@ public:
 
   constexpr quantity& operator++()
     requires requires(rep v) {
-               {
-                 ++v
-                 } -> std::same_as<rep&>;
-             }
+      {
+        ++v
+      } -> std::same_as<rep&>;
+    }
   {
     ++number_;
     return *this;
@@ -198,20 +198,20 @@ public:
 
   [[nodiscard]] constexpr quantity operator++(int)
     requires requires(rep v) {
-               {
-                 v++
-                 } -> std::same_as<rep>;
-             }
+      {
+        v++
+      } -> std::same_as<rep>;
+    }
   {
     return quantity(number_++);
   }
 
   constexpr quantity& operator--()
     requires requires(rep v) {
-               {
-                 --v
-                 } -> std::same_as<rep&>;
-             }
+      {
+        --v
+      } -> std::same_as<rep&>;
+    }
   {
     --number_;
     return *this;
@@ -219,20 +219,20 @@ public:
 
   [[nodiscard]] constexpr quantity operator--(int)
     requires requires(rep v) {
-               {
-                 v--
-                 } -> std::same_as<rep>;
-             }
+      {
+        v--
+      } -> std::same_as<rep>;
+    }
   {
     return quantity(number_--);
   }
 
   constexpr quantity& operator+=(const quantity& q)
     requires requires(rep a, rep b) {
-               {
-                 a += b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a += b
+      } -> std::same_as<rep&>;
+    }
   {
     number_ += q.number();
     return *this;
@@ -240,10 +240,10 @@ public:
 
   constexpr quantity& operator-=(const quantity& q)
     requires requires(rep a, rep b) {
-               {
-                 a -= b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a -= b
+      } -> std::same_as<rep&>;
+    }
   {
     number_ -= q.number();
     return *this;
@@ -252,10 +252,10 @@ public:
   template<typename Rep2>
   constexpr quantity& operator*=(const Rep2& rhs)
     requires requires(rep a, const Rep2 b) {
-               {
-                 a *= b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a *= b
+      } -> std::same_as<rep&>;
+    }
   {
     number_ *= rhs;
     return *this;
@@ -263,10 +263,10 @@ public:
   template<detail::quantity_one Q>
   constexpr quantity& operator*=(const Q& rhs)
     requires requires(rep a, const typename Q::rep b) {
-               {
-                 a *= b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a *= b
+      } -> std::same_as<rep&>;
+    }
   {
     number_ *= rhs.number();
     return *this;
@@ -275,10 +275,10 @@ public:
   template<typename Rep2>
   constexpr quantity& operator/=(const Rep2& rhs)
     requires requires(rep a, const Rep2 b) {
-               {
-                 a /= b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a /= b
+      } -> std::same_as<rep&>;
+    }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     number_ /= rhs;
@@ -287,10 +287,10 @@ public:
   template<detail::quantity_one Q>
   constexpr quantity& operator/=(const Q& rhs)
     requires requires(rep a, const typename Q::rep b) {
-               {
-                 a /= b
-                 } -> std::same_as<rep&>;
-             }
+      {
+        a /= b
+      } -> std::same_as<rep&>;
+    }
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q::rep>::zero());
     number_ /= rhs.number();
@@ -300,10 +300,10 @@ public:
   template<typename Rep2>
   constexpr quantity& operator%=(const Rep2& rhs)
     requires(!floating_point_<rep>) && (!floating_point_<Rep2>) && requires(rep a, const Rep2 b) {
-                                                                     {
-                                                                       a %= b
-                                                                       } -> std::same_as<rep&>;
-                                                                   }
+      {
+        a %= b
+      } -> std::same_as<rep&>;
+    }
   {
     gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
     number_ %= rhs;
@@ -313,10 +313,10 @@ public:
   template<detail::quantity_one Q>
   constexpr quantity& operator%=(const Q& rhs)
     requires(!floating_point_<rep>) && (!floating_point_<typename Q::rep>) && requires(rep a, const typename Q::rep b) {
-                                                                                {
-                                                                                  a %= b
-                                                                                  } -> std::same_as<rep&>;
-                                                                              }
+      {
+        a %= b
+      } -> std::same_as<rep&>;
+    }
   {
     gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q::rep>::zero());
     number_ %= rhs.number();
@@ -325,10 +325,10 @@ public:
 
   constexpr quantity& operator%=(const quantity& q)
     requires(!floating_point_<rep>) && requires(rep a, rep b) {
-                                         {
-                                           a %= b
-                                           } -> std::same_as<rep&>;
-                                       }
+      {
+        a %= b
+      } -> std::same_as<rep&>;
+    }
   {
     gsl_ExpectsAudit(q.number() != quantity_values<rep>::zero());
     number_ %= q.number();
@@ -340,20 +340,20 @@ public:
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
-               requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;
-               requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>;
-             }
+      requires !Quantity<Value>;
+      requires is_same_v<unit, units::one>;
+      requires invoke_result_convertible_to_<rep, std::plus<>, rep, Value>;
+    }
   {
     return units::quantity(lhs.number() + rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
-               requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;
-               requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>;
-             }
+      requires !Quantity<Value>;
+      requires is_same_v<unit, units::one>;
+      requires invoke_result_convertible_to_<rep, std::plus<>, Value, rep>;
+    }
   {
     return units::quantity(lhs + rhs.number());
   }
@@ -361,20 +361,20 @@ public:
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const Value& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
-               requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;
-               requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>;
-             }
+      requires !Quantity<Value>;
+      requires is_same_v<unit, units::one>;
+      requires invoke_result_convertible_to_<rep, std::minus<>, rep, Value>;
+    }
   {
     return units::quantity(lhs.number() - rhs);
   }
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
-               requires !Quantity<Value>;
-               requires is_same_v<unit, units::one>;
-               requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>;
-             }
+      requires !Quantity<Value>;
+      requires is_same_v<unit, units::one>;
+      requires invoke_result_convertible_to_<rep, std::minus<>, Value, rep>;
+    }
   {
     return units::quantity(lhs - rhs.number());
   }
@@ -445,14 +445,14 @@ public:
 // CTAD
 #if !UNITS_COMP_CLANG || UNITS_COMP_CLANG > 17
 template<typename D, typename U, typename Rep>
-explicit(false) quantity(Rep&&)->quantity<D, U, Rep>;
+explicit(false) quantity(Rep&&) -> quantity<D, U, Rep>;
 #endif
 
 template<typename D, typename U, typename Rep>
-explicit(false) quantity(quantity<D, U, Rep>)->quantity<D, U, Rep>;
+explicit(false) quantity(quantity<D, U, Rep>) -> quantity<D, U, Rep>;
 
 template<Representation Rep>
-explicit(false) quantity(Rep)->quantity<dim_one, one, Rep>;
+explicit(false) quantity(Rep) -> quantity<dim_one, one, Rep>;
 
 template<QuantityLike Q>
 explicit quantity(Q) -> quantity<typename quantity_like_traits<Q>::dimension, typename quantity_like_traits<Q>::unit,

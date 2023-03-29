@@ -162,7 +162,7 @@ struct basic_symbol_text {
   }
 };
 
-basic_symbol_text(char)->basic_symbol_text<char, 1, 1>;
+basic_symbol_text(char) -> basic_symbol_text<char, 1, 1>;
 
 template<typename StandardCharT>
 basic_symbol_text(StandardCharT, char) -> basic_symbol_text<StandardCharT, 1, 1>;

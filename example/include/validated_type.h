@@ -61,7 +61,7 @@ public:
   {
   }
 
-  constexpr explicit(false) operator T() const & noexcept(std::is_nothrow_copy_constructible_v<T>)
+  constexpr explicit(false) operator T() const& noexcept(std::is_nothrow_copy_constructible_v<T>)
     requires std::copyable<T>
   {
     return value_;

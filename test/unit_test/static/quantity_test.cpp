@@ -58,11 +58,11 @@ static_assert(sizeof(length<metre, short>) == sizeof(short));
 #if UNITS_COMP_GCC != 10 || UNITS_COMP_GCC_MINOR > 2
 template<template<typename, typename, typename> typename Q>
 concept invalid_types = requires {
-                          requires !requires { typename Q<dim_length, second, int>; };  // unit of a different dimension
-                          requires !requires { typename Q<dim_length, metre, length<metre>>; };  // quantity used as Rep
-                          requires !requires { typename Q<metre, dim_length, double>; };         // reordered arguments
-                          requires !requires { typename Q<metre, double, dim_length>; };         // reordered arguments
-                        };
+  requires !requires { typename Q<dim_length, second, int>; };           // unit of a different dimension
+  requires !requires { typename Q<dim_length, metre, length<metre>>; };  // quantity used as Rep
+  requires !requires { typename Q<metre, dim_length, double>; };         // reordered arguments
+  requires !requires { typename Q<metre, double, dim_length>; };         // reordered arguments
+};
 static_assert(invalid_types<quantity>);
 #endif
 
@@ -408,44 +408,43 @@ static_assert((22_q_m /= quantity(3.33)).number() == 6);
 #endif
 
 template<typename Metre, typename Kilometre>
-concept invalid_compound_assignments =
-  requires() {
-    // truncating not allowed
-    requires !requires(length<Metre, int> l) { l += 2.5_q_m; };
-    requires !requires(length<Metre, int> l) { l -= 2.5_q_m; };
-    requires !requires(length<Kilometre, int> l) { l += length<Metre, int>(2); };
-    requires !requires(length<Kilometre, int> l) { l -= length<Metre, int>(2); };
-    requires !requires(length<Kilometre, int> l) { l %= length<Metre, int>(2); };
-    requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, int>(2); };
-    requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, double>(2); };
+concept invalid_compound_assignments = requires() {
+  // truncating not allowed
+  requires !requires(length<Metre, int> l) { l += 2.5_q_m; };
+  requires !requires(length<Metre, int> l) { l -= 2.5_q_m; };
+  requires !requires(length<Kilometre, int> l) { l += length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l -= length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= length<Metre, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, int>(2); };
+  requires !requires(length<Kilometre, int> l) { l %= dimensionless<percent, double>(2); };
 
-    // TODO: accept non-truncating argument
-    requires !requires(length<Kilometre, int> l) { l *= 1 * (km / m); };
-    requires !requires(length<Kilometre, int> l) { l /= 1 * (km / m); };
-    requires !requires(length<Kilometre, int> l) { l %= 1 * (km / m); };
+  // TODO: accept non-truncating argument
+  requires !requires(length<Kilometre, int> l) { l *= 1 * (km / m); };
+  requires !requires(length<Kilometre, int> l) { l /= 1 * (km / m); };
+  requires !requires(length<Kilometre, int> l) { l %= 1 * (km / m); };
 
-    // only quantities can be added or subtracted
-    requires !requires(length<Metre, int> l) { l += 2; };
-    requires !requires(length<Metre, int> l) { l -= 2; };
+  // only quantities can be added or subtracted
+  requires !requires(length<Metre, int> l) { l += 2; };
+  requires !requires(length<Metre, int> l) { l -= 2; };
 
-    // compound multiply/divide by another quantity not allowed
-    requires !requires(length<Metre, int> l) { l *= 2_q_m; };
-    requires !requires(length<Metre, int> l) { l /= 2_q_m; };
+  // compound multiply/divide by another quantity not allowed
+  requires !requires(length<Metre, int> l) { l *= 2_q_m; };
+  requires !requires(length<Metre, int> l) { l /= 2_q_m; };
 
-    // modulo operations on a floating point representation not allowed
-    requires !requires(length<Metre, double> l) { l %= 2.; };
-    requires !requires(length<Metre, double> l) { l %= 2; };
-    requires !requires(length<Metre, double> l) { l %= 2._q_m; };
-    requires !requires(length<Metre, double> l) { l %= 2_q_m; };
-    requires !requires(length<Metre, int> l) { l %= 2._q_m; };
+  // modulo operations on a floating point representation not allowed
+  requires !requires(length<Metre, double> l) { l %= 2.; };
+  requires !requires(length<Metre, double> l) { l %= 2; };
+  requires !requires(length<Metre, double> l) { l %= 2._q_m; };
+  requires !requires(length<Metre, double> l) { l %= 2_q_m; };
+  requires !requires(length<Metre, int> l) { l %= 2._q_m; };
 
-    // no unit constants
-    requires !requires(length<Metre, int> l) { l += m; };
-    requires !requires(length<Metre, int> l) { l -= m; };
-    requires !requires(length<Metre, int> l) { l *= m; };
-    requires !requires(length<Metre, int> l) { l /= m; };
-    requires !requires(length<Metre, int> l) { l %= m; };
-  };
+  // no unit constants
+  requires !requires(length<Metre, int> l) { l += m; };
+  requires !requires(length<Metre, int> l) { l -= m; };
+  requires !requires(length<Metre, int> l) { l *= m; };
+  requires !requires(length<Metre, int> l) { l /= m; };
+  requires !requires(length<Metre, int> l) { l %= m; };
+};
 static_assert(invalid_compound_assignments<metre, kilometre>);
 
 
@@ -455,26 +454,26 @@ static_assert(invalid_compound_assignments<metre, kilometre>);
 
 template<typename Metre>
 concept invalid_binary_operations = requires {
-                                      // no crossdimensional addition and subtraction
-                                      requires !requires { 1_q_s + length<Metre, int>(1); };
-                                      requires !requires { 1_q_s - length<Metre, int>(1); };
+  // no crossdimensional addition and subtraction
+  requires !requires { 1_q_s + length<Metre, int>(1); };
+  requires !requires { 1_q_s - length<Metre, int>(1); };
 
-                                      // no floating-point modulo
-                                      requires !requires(length<Metre, double> a) { a % 2_q_m; };
-                                      requires !requires(length<Metre, double> a) { 2_q_m % a; };
-                                      requires !requires(length<Metre, double> a) { a % 2; };
-                                      requires !requires(length<Metre, double> a, length<Metre, double> b) { a % b; };
-                                      requires !requires(length<Metre, double> a, length<Metre, int> b) { a % b; };
-                                      requires !requires(length<Metre, double> a, length<Metre, int> b) { b % a; };
+  // no floating-point modulo
+  requires !requires(length<Metre, double> a) { a % 2_q_m; };
+  requires !requires(length<Metre, double> a) { 2_q_m % a; };
+  requires !requires(length<Metre, double> a) { a % 2; };
+  requires !requires(length<Metre, double> a, length<Metre, double> b) { a % b; };
+  requires !requires(length<Metre, double> a, length<Metre, int> b) { a % b; };
+  requires !requires(length<Metre, double> a, length<Metre, int> b) { b % a; };
 
-                                      // unit constants
-                                      requires !requires { length<Metre, int>(1) + m; };
-                                      requires !requires { length<Metre, int>(1) - m; };
-                                      requires !requires { length<Metre, int>(1) % m; };
-                                      requires !requires { m + length<Metre, int>(1); };
-                                      requires !requires { m - length<Metre, int>(1); };
-                                      requires !requires { m % length<Metre, int>(1); };
-                                    };
+  // unit constants
+  requires !requires { length<Metre, int>(1) + m; };
+  requires !requires { length<Metre, int>(1) - m; };
+  requires !requires { length<Metre, int>(1) % m; };
+  requires !requires { m + length<Metre, int>(1); };
+  requires !requires { m - length<Metre, int>(1); };
+  requires !requires { m % length<Metre, int>(1); };
+};
 static_assert(invalid_binary_operations<metre>);
 
 // same representation type
@@ -725,9 +724,9 @@ static_assert(quantity{2} / (1 * m) == 2 / 1_q_m);
 
 template<typename Metre>
 concept no_crossdimensional_equality = requires {
-                                         requires !requires { 1_q_s == length<Metre, int>(1); };
-                                         requires !requires { 1_q_s != length<Metre, int>(1); };
-                                       };
+  requires !requires { 1_q_s == length<Metre, int>(1); };
+  requires !requires { 1_q_s != length<Metre, int>(1); };
+};
 static_assert(no_crossdimensional_equality<metre>);
 
 // same type
@@ -761,11 +760,11 @@ static_assert(123 != quantity{321});
 
 template<typename Metre>
 concept no_crossdimensional_ordering = requires {
-                                         requires !requires { 1_q_s < length<Metre, int>(1); };
-                                         requires !requires { 1_q_s > length<Metre, int>(1); };
-                                         requires !requires { 1_q_s <= length<Metre, int>(1); };
-                                         requires !requires { 1_q_s >= length<Metre, int>(1); };
-                                       };
+  requires !requires { 1_q_s < length<Metre, int>(1); };
+  requires !requires { 1_q_s > length<Metre, int>(1); };
+  requires !requires { 1_q_s <= length<Metre, int>(1); };
+  requires !requires { 1_q_s >= length<Metre, int>(1); };
+};
 static_assert(no_crossdimensional_ordering<metre>);
 
 // same type
@@ -837,9 +836,9 @@ static_assert(!std::equality_comparable_with<dimensionless<one, int>, double>);
 
 template<typename Int>
 concept invalid_dimensionless_operations = requires {
-                                             requires !requires(dimensionless<percent, Int> d) { 1 + d; };
-                                             requires !requires(dimensionless<percent, Int> d) { d + 1; };
-                                           };
+  requires !requires(dimensionless<percent, Int> d) { 1 + d; };
+  requires !requires(dimensionless<percent, Int> d) { d + 1; };
+};
 static_assert(invalid_dimensionless_operations<int>);
 
 static_assert(compare<decltype(10_q_km / 5_q_km), quantity<dim_one, one, std::int64_t>>);

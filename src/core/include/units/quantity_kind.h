@@ -250,10 +250,10 @@ public:
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const quantity_kind& qk, const Value& v)
     requires requires(quantity_type q) {
-               {
-                 q* v
-                 } -> Quantity;
-             }
+      {
+        q* v
+      } -> Quantity;
+    }
   {
     return detail::make_quantity_kind<quantity_kind>(qk.common() * v);
   }
@@ -261,10 +261,10 @@ public:
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator*(const Value& v, const quantity_kind& qk)
     requires requires(quantity_type q) {
-               {
-                 v* q
-                 } -> Quantity;
-             }
+      {
+        v* q
+      } -> Quantity;
+    }
   {
     return detail::make_quantity_kind<quantity_kind>(v * qk.common());
   }
@@ -272,10 +272,10 @@ public:
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const quantity_kind& qk, const Value& v)
     requires requires(quantity_type q) {
-               {
-                 q / v
-                 } -> Quantity;
-             }
+      {
+        q / v
+      } -> Quantity;
+    }
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     return detail::make_quantity_kind<quantity_kind>(qk.common() / v);
@@ -284,10 +284,10 @@ public:
   template<Representation Value>
   [[nodiscard]] friend constexpr QuantityKind auto operator/(const Value& v, const quantity_kind& qk)
     requires requires(quantity_type q) {
-               {
-                 v / q
-                 } -> Quantity;
-             }
+      {
+        v / q
+      } -> Quantity;
+    }
   {
     gsl_ExpectsAudit(qk.common().number() != quantity_values<rep>::zero());
     return detail::downcasted_kind<quantity_kind>(v / qk.common());

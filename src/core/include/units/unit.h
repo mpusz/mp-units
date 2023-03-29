@@ -211,7 +211,7 @@ template<typename U, typename P, typename AU>
 void is_named_impl(const volatile prefixed_alias_unit<U, P, AU>*);
 
 template<Unit U>
-inline constexpr bool is_named<U> = requires(U * u) { is_named_impl(u); };
+inline constexpr bool is_named<U> = requires(U* u) { is_named_impl(u); };
 
 template<typename Child, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile named_unit<Child, Symbol>*);
@@ -223,7 +223,7 @@ template<typename U, basic_symbol_text Symbol>
 void can_be_prefixed_impl(const volatile alias_unit<U, Symbol>*);
 
 template<Unit U>
-inline constexpr bool can_be_prefixed<U> = requires(U * u) { can_be_prefixed_impl(u); };
+inline constexpr bool can_be_prefixed<U> = requires(U* u) { can_be_prefixed_impl(u); };
 
 template<Magnitude auto M, typename U>
 inline constexpr bool can_be_prefixed<scaled_unit<M, U>> = can_be_prefixed<typename U::reference>;
