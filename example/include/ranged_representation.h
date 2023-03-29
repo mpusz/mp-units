@@ -25,21 +25,26 @@
 #include "validated_type.h"
 #include <units/bits/external/hacks.h>
 #include <algorithm>
+#include <concepts>
 #include <type_traits>
 
-template<typename T, auto Min, auto Max>
+template<std::movable T, std::convertible_to<T> auto Min, std::convertible_to<T> auto Max>
 inline constexpr auto is_in_range = [](const auto& v) { return std::clamp(v, T{Min}, T{Max}) == v; };
 
-template<typename T, auto Min, auto Max>
+template<std::movable T, std::convertible_to<T> auto Min, std::convertible_to<T> auto Max>
 using is_in_range_t = decltype(is_in_range<T, Min, Max>);
 
-template<typename T, auto Min, auto Max>
+template<std::movable T, std::convertible_to<T> auto Min, std::convertible_to<T> auto Max>
 class ranged_representation : public validated_type<T, is_in_range_t<T, Min, Max>> {
 public:
   using validated_type<T, is_in_range_t<T, Min, Max>>::validated_type;
   constexpr ranged_representation() : validated_type<T, is_in_range_t<T, Min, Max>>(T{}) {}
 
-  [[nodiscard]] constexpr ranged_representation operator-() const { return ranged_representation(-this->value()); }
+  [[nodiscard]] constexpr ranged_representation operator-() const
+    requires requires(T t) { -t; }
+  {
+    return ranged_representation(-this->value());
+  }
 };
 
 template<typename T, auto Min, auto Max>
