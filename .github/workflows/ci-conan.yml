@@ -271,7 +271,7 @@ jobs:
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . --user mpusz --channel testing -b mp-units -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+          conan create . --user mpusz --channel testing -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                                                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
       - name: Upload mp-units Conan package
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
