@@ -61,9 +61,9 @@ inline constexpr auto avogadro_constant = (1 / isq::amount_of_substance)[avogadr
 
 // clang-format off
 inline constexpr struct standard_gravity_unit :
-  constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
+  constant_unit<basic_symbol_text{"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
 inline constexpr struct magnetic_constant_unit :
-  constant_unit<basic_symbol_text{"μ₀", "u0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant_unit;
+  constant_unit<basic_symbol_text{"μ₀", "u_0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant_unit;
 // clang-format on
 
 inline constexpr auto standard_gravity = isq::acceleration_of_free_fall[standard_gravity_unit];
