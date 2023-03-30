@@ -94,7 +94,7 @@
 #include <compare>
 #include <concepts>
 
-#if UNITS_COMP_MSVC || UNITS_COMP_CLANG < 16
+#if UNITS_COMP_MSVC || (UNITS_COMP_CLANG && UNITS_COMP_CLANG < 16)
 
 #define TYPENAME typename
 
@@ -114,7 +114,7 @@
 
 #endif
 
-#if UNITS_COMP_MSVC || UNITS_COMP_GCC < 11
+#if UNITS_COMP_MSVC || (UNITS_COMP_GCC && UNITS_COMP_GCC < 11)
 
 #define UNITS_CONSTRAINED_NTTP_WORKAROUND(X)
 
