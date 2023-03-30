@@ -94,7 +94,7 @@ template<Dimension D, UnitOf<D> U>
 struct reference {
   using dimension = D;
   using unit = U;
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
+  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = dimension::mag * unit::mag;
 
   // Hidden Friends
   // Below friend functions are to be found via argument-dependent lookup only

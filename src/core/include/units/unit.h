@@ -64,7 +64,7 @@ inline constexpr bool can_be_prefixed = false;
  */
 template<Magnitude auto M, typename U>
 struct scaled_unit : downcast_base<scaled_unit<M, U>> {
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   using reference = U;
 };
 

@@ -54,7 +54,7 @@ template<basic_fixed_string Symbol, NamedUnit U>
 struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
   using base_unit = U;                    ///< Base unit adopted for this dimension
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = magnitude{};
+  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = magnitude{};
 };
 
 // base_dimension_less

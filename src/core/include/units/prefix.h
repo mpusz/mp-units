@@ -36,7 +36,7 @@ namespace detail {
 
 template<Magnitude auto M>
 struct prefix_base : downcast_base<prefix_base<M>> {
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
 };
 
 }  // namespace detail
