@@ -333,44 +333,44 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator+(const quantity& lhs, const Value& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
       requires !Quantity<Value>;
-      requires unit == ::mp_units::one;
+      requires dimension == dimension_one;
       requires detail::InvokeResultOf<quantity_spec.character, std::plus<>, rep, Value>;
     }
   {
-    return (lhs.number() + rhs) * R;
+    return lhs + rhs * ::mp_units::one;
   }
 
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const quantity& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
       requires !Quantity<Value>;
-      requires unit == ::mp_units::one;
+      requires dimension == dimension_one;
       requires detail::InvokeResultOf<quantity_spec.character, std::plus<>, Value, rep>;
     }
   {
-    return (lhs + rhs.number()) * R;
+    return lhs * ::mp_units::one + rhs;
   }
 
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const quantity& lhs, const Value& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
       requires !Quantity<Value>;
-      requires unit == ::mp_units::one;
+      requires dimension == dimension_one;
       requires detail::InvokeResultOf<quantity_spec.character, std::minus<>, rep, Value>;
     }
   {
-    return (lhs.number() - rhs) * R;
+    return lhs - rhs * ::mp_units::one;
   }
 
   template<typename Value>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const quantity& rhs)
     requires requires {  // TODO: Simplify when Clang catches up.
       requires !Quantity<Value>;
-      requires unit == ::mp_units::one;
+      requires dimension == dimension_one;
       requires detail::InvokeResultOf<quantity_spec.character, std::minus<>, Value, rep>;
     }
   {
-    return (lhs - rhs.number()) * R;
+    return lhs * ::mp_units::one - rhs;
   }
 
   template<Representation Value>
