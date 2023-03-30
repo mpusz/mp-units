@@ -61,6 +61,17 @@ public:
   {
   }
 
+
+#if UNITS_COMP_MSVC && UNITS_COMP_MSVC < 1930
+
+  constexpr explicit(false) operator T() const noexcept(std::is_nothrow_copy_constructible_v<T>)
+    requires std::copyable<T>
+  {
+    return value_;
+  }
+
+#else
+
   constexpr explicit(false) operator T() const& noexcept(std::is_nothrow_copy_constructible_v<T>)
     requires std::copyable<T>
   {
@@ -71,6 +82,8 @@ public:
   {
     return std::move(value_);
   }
+
+#endif
 
   constexpr T& value() & noexcept = delete;
   constexpr const T& value() const& noexcept { return value_; }
