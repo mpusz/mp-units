@@ -284,8 +284,9 @@ jobs:
           conan remove *#!latest --confirm
           conan remove *:*#!latest --confirm
           conan cache clean "*" -s -b -d
+
   promote_package:
-    if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs: build
     name: Promote Conan package
     runs-on: ubuntu-22.04
