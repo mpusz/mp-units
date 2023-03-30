@@ -30,6 +30,9 @@ on:
     paths-ignore:
       - "docs/**"
 
+env:
+  CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
+
 jobs:
   build:
     name: ${{ matrix.config.name }} ${{ matrix.build_type }} [downcast=${{ matrix.downcast_mode }}]
@@ -250,7 +253,6 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
-          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
           fi
@@ -263,23 +265,52 @@ jobs:
       #   shell: bash
       #   run: |
       #     sed -i -e 's/"8", "9", "10", "11", "12"]/"8", "9", "10", "11", "12", "13"]/' ~/.conan/settings.yml
-      - name: Set channel
-        shell: bash
-        run: |
-          [[ `git tag --contains ${{ github.sha }}` =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && CHANNEL=stable || CHANNEL=testing
-          echo "CHANNEL=${CHANNEL}" >> ${GITHUB_ENV}
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . --user mpusz --channel testing -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                                                        -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
-      - name: Upload mp-units Conan package
+          conan create . --user mpusz --channel ${CHANNEL} -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+                                                           -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
+      - name: Upload mp-units Conan package to Conan CI repository
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash
         run: |
-          conan remote login artifactory ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
-          conan upload "mp-units*" -r artifactory --confirm
-      - name: Remove mp-units package from Conan local cache
+          conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
+          conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
+          conan upload mp-units -r conan-mpusz-ci --confirm
+      - name: Clean Conan cache before backup
         shell: bash
         run: |
           conan remove mp-units --confirm
+          conan remove *#!latest --confirm
+          conan remove *:*#!latest --confirm
+          conan cache clean "*" -s -b -d
+  promote_package:
+    if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
+    needs: build
+    name: Promote Conan package
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Install Conan
+        shell: bash
+        run: |
+          pip install -U conan
+      - name: Configure Conan
+        shell: bash
+        run: |
+          conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
+          conan remote add conan-mpusz-oss https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+      - name: Set version
+        shell: bash
+        run: |
+          echo "VERSION=`grep 'project(.* VERSION.*)' src/CMakeLists.txt | egrep -o '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'` >> ${GITHUB_ENV}
+      - name: Promote mp-units Conan package
+        shell: bash
+        run: |
+          conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
+          conan remote login conan-mpusz-oss ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
+          conan download mp-units/${VERSION}@mpusz/${CHANNEL} -r conan-mpusz-ci
+          conan upload mp-units/${VERSION}@mpusz/${CHANNEL} -r conan-mpusz-oss --confirm
