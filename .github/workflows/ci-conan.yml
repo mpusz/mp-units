@@ -268,15 +268,20 @@ jobs:
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . --user mpusz --channel ${CHANNEL} -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                                                           -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
+          conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
+                         -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
+      - name: Obtain package reference
+        shell: bash
+        run: |
+          echo "PACKAGE_REF=`egrep -o mp-units[^%]+ package.lock`" >> ${GITHUB_ENV}
       - name: Upload mp-units Conan package to Conan CI repository
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash
         run: |
           conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
           conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
-          conan upload mp-units -r conan-mpusz-ci --confirm
+          conan upload ${PACKAGE_REF} -r conan-mpusz-ci --confirm
       - name: Clean Conan cache before backup
         shell: bash
         run: |
@@ -305,14 +310,15 @@ jobs:
         run: |
           conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
           conan remote add conan-mpusz-oss https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-      - name: Set version
-        shell: bash
-        run: |
-          echo "VERSION=`grep 'project(.* VERSION.*)' src/CMakeLists.txt | egrep -o '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'`" >> ${GITHUB_ENV}
       - name: Promote mp-units Conan package
         shell: bash
         run: |
           conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
           conan remote login conan-mpusz-oss ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
-          conan download mp-units/${VERSION}@mpusz/${CHANNEL} -r conan-mpusz-ci
-          conan upload mp-units/${VERSION}@mpusz/${CHANNEL} -r conan-mpusz-oss --confirm
+          conan download ${PACKAGE_REF} -r conan-mpusz-ci
+          conan upload ${PACKAGE_REF} -r conan-mpusz-oss --confirm
+      - name: Do housekeeping on conan-mpusz-oss
+        shell: bash
+        run: |
+          conan remove mp-units/*#!latest --confirm -r conan-mpusz-oss
+          conan remove mp-units/*:*#!latest --confirm -r conan-mpusz-oss
