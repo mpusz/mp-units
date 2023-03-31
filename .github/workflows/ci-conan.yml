@@ -272,16 +272,17 @@ jobs:
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                          -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
       - name: Obtain package reference
+        id: get-package-ref
         shell: bash
         run: |
-          echo "PACKAGE_REF=`egrep -o mp-units[^%]+ package.lock`" >> ${GITHUB_ENV}
+          echo "PACKAGE_REF=`egrep -o mp-units[^%]+ package.lock`" >> ${GITHUB_OUTPUT}
       - name: Upload mp-units Conan package to Conan CI repository
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash
         run: |
           conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
           conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
-          conan upload ${PACKAGE_REF} -r conan-mpusz-ci --confirm
+          conan upload ${{ steps.get-package-ref.outputs.package_ref }} -r conan-mpusz-ci --confirm
       - name: Clean Conan cache before backup
         shell: bash
         run: |
@@ -289,6 +290,8 @@ jobs:
           conan remove *#!latest --confirm
           conan remove *:*#!latest --confirm
           conan cache clean "*" -s -b -d
+    outputs:
+      package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
 
   promote_package:
     if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
@@ -315,8 +318,8 @@ jobs:
         run: |
           conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
           conan remote login conan-mpusz-oss ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
-          conan download ${PACKAGE_REF} -r conan-mpusz-ci
-          conan upload ${PACKAGE_REF} -r conan-mpusz-oss --confirm
+          conan download ${{ needs.build.outputs.package_ref }} -r conan-mpusz-ci
+          conan upload ${{ needs.build.outputs.package_ref }} -r conan-mpusz-oss --confirm
       - name: Do housekeeping on conan-mpusz-oss
         shell: bash
         run: |
