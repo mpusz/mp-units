@@ -307,7 +307,7 @@ jobs:
       - name: Set version
         shell: bash
         run: |
-          echo "VERSION=`grep 'project(.* VERSION.*)' src/CMakeLists.txt | egrep -o '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'` >> ${GITHUB_ENV}
+          echo "VERSION=`grep 'project(.* VERSION.*)' src/CMakeLists.txt | egrep -o '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'`" >> ${GITHUB_ENV}
       - name: Promote mp-units Conan package
         shell: bash
         run: |
