@@ -34,8 +34,7 @@ cmake_minimum_required(VERSION 3.2)
 # )
 add_library(
     unit_tests_static
-    dimension_test.cpp
-    # angle_test.cpp
+    angle_test.cpp
     # cgs_test.cpp
     chrono_test.cpp
     # concepts_test.cpp
