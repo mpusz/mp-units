@@ -610,7 +610,8 @@ template<QuantitySpec Q>
 template<QuantitySpec Q, int... Ints>
 [[nodiscard]] consteval auto get_equation(power<Q, Ints...>)
 {
-  return pow<power<Q, Ints...>::exponent>(Q::_equation_);
+  constexpr ratio exp = power<Q, Ints...>::exponent;
+  return pow<exp.num, exp.den>(Q::_equation_);
 }
 
 template<ratio Complexity, IntermediateDerivedQuantitySpec Q>
