@@ -127,7 +127,7 @@ template<Quantity Q>
   requires requires { abs(q.number()); } || requires { std::abs(q.number()); }
 {
   using std::abs;
-  return Q(abs(q.number()));
+  return abs(q.number()) * Q::reference;
 }
 
 /**
