@@ -782,12 +782,15 @@ template<QuantitySpec Q>
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(get_kind(q1) == get_kind(q2))
+  requires(implicitly_convertible_to(get_kind(q1), get_kind(q2)) ||
+           implicitly_convertible_to(get_kind(q2), get_kind(q1)))
 {
   if constexpr (q1 == q2)
     return q1;
   else if constexpr (detail::have_common_base(q1, q2))
     return detail::get_common_base(q1, q2);
+  else if constexpr (implicitly_convertible_to(get_kind(q1), get_kind(q2)))
+    return get_kind(q2);
   else
     return get_kind(q1);
 }
