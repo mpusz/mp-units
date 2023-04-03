@@ -66,7 +66,7 @@ using altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::
 // time
 using duration = mp_units::quantity<mp_units::isq::duration[mp_units::si::second]>;
 using timestamp = mp_units::quantity_point<mp_units::isq::time[mp_units::si::second],
-                                           mp_units::chrono_point_origin<std::chrono::system_clock>{}>;
+                                           mp_units::chrono_point_origin<std::chrono::system_clock>>;
 
 // speed
 using velocity = mp_units::quantity<mp_units::isq::speed[mp_units::si::kilo<mp_units::si::metre> / mp_units::si::hour]>;

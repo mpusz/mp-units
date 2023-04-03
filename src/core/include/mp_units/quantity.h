@@ -459,7 +459,8 @@ explicit quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename qu
 
 // non-member binary operators
 template<Quantity Q1, Quantity Q2>
-  requires(get_kind(Q1::quantity_spec) == get_kind(Q2::quantity_spec)) &&
+  requires(implicitly_convertible_to(get_kind(Q1::quantity_spec), get_kind(Q2::quantity_spec)) ||
+           implicitly_convertible_to(get_kind(Q2::quantity_spec), get_kind(Q1::quantity_spec))) &&
           detail::InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, std::plus<>,
                                  typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator+(const Q1& lhs, const Q2& rhs)
@@ -470,7 +471,8 @@ template<Quantity Q1, Quantity Q2>
 }
 
 template<Quantity Q1, Quantity Q2>
-  requires(get_kind(Q1::quantity_spec) == get_kind(Q2::quantity_spec)) &&
+  requires(implicitly_convertible_to(get_kind(Q1::quantity_spec), get_kind(Q2::quantity_spec)) ||
+           implicitly_convertible_to(get_kind(Q2::quantity_spec), get_kind(Q1::quantity_spec))) &&
           detail::InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, std::minus<>,
                                  typename Q1::rep, typename Q2::rep>
 [[nodiscard]] constexpr Quantity auto operator-(const Q1& lhs, const Q2& rhs)

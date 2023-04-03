@@ -66,14 +66,17 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
 };
 
 template<typename C>
-struct chrono_point_origin : absolute_point_origin<isq::time> {
+struct chrono_point_origin_ : absolute_point_origin<isq::time> {
   using clock = C;
 };
+template<typename C>
+inline constexpr chrono_point_origin_<C> chrono_point_origin;
+
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
   static constexpr auto reference = isq::time[detail::time_unit_from_chrono_period<Period>()];
-  static constexpr auto point_origin = chrono_point_origin<C>{};
+  static constexpr auto point_origin = chrono_point_origin<C>;
   using rep = Rep;
   [[nodiscard]] static constexpr auto relative(const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
   {
@@ -90,7 +93,7 @@ template<QuantityOf<isq::time> Q>
 }
 
 template<QuantityPointOf<isq::time> QP>
-  requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin>
+  requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
   using clock = TYPENAME decltype(QP::absolute_point_origin)::clock;
@@ -98,7 +101,7 @@ template<QuantityPointOf<isq::time> QP>
   constexpr auto canonical = detail::get_canonical_unit(QP::unit);
   constexpr ratio r = as_ratio(canonical.mag);
   using ret_type = std::chrono::time_point<clock, std::chrono::duration<rep, std::ratio<r.num, r.den>>>;
-  return ret_type(to_std_duration(qp.absolute()));
+  return ret_type(to_chrono_duration(qp.absolute()));
 }
 
 }  // namespace mp_units
