@@ -37,7 +37,7 @@ using sys_days =
   std::chrono::time_point<std::chrono::system_clock,
                           std::chrono::duration<long, std::ratio_multiply<std::ratio<24>, std::chrono::hours::period>>>;
 template<Unit auto U, typename C, typename Rep = double>
-using time_point = quantity_point<isq::time[U], chrono_point_origin<C>, Rep>;
+using time_point = quantity_point<U, chrono_point_origin<C>, Rep>;
 
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityPointLike<sys_seconds>);
@@ -82,8 +82,8 @@ static_assert(!std::convertible_to<sys_seconds, time_point<si::day, std::chrono:
 
 
 // CTAD
-static_assert(is_of_type<quantity{1s}, quantity<isq::time[si::second], std::chrono::seconds::rep>>);
-static_assert(is_of_type<quantity{1h}, quantity<isq::time[si::hour], std::chrono::hours::rep>>);
+static_assert(is_of_type<quantity{1s}, quantity<si::second, std::chrono::seconds::rep>>);
+static_assert(is_of_type<quantity{1h}, quantity<si::hour, std::chrono::hours::rep>>);
 static_assert(
   is_of_type<quantity_point{sys_seconds{1s}}, time_point<si::second, std::chrono::system_clock, sys_seconds::rep>>);
 static_assert(is_of_type<quantity_point{sys_days{sys_days::duration{1}}},
