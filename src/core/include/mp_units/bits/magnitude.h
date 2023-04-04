@@ -640,14 +640,14 @@ template<auto... Ms>
 [[nodiscard]] consteval auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
 // Implementation of conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
-// constexpr ratio as_ratio(Magnitude auto m)
-//   requires(is_rational(decltype(m){}))
-// {
-//   return ratio{
-//     get_value<std::intmax_t>(numerator(m)),
-//     get_value<std::intmax_t>(denominator(m)),
-//   };
-// }
+constexpr ratio as_ratio(Magnitude auto m)
+  requires(is_rational(decltype(m){}))
+{
+  return ratio{
+    get_value<std::intmax_t>(numerator(m)),
+    get_value<std::intmax_t>(denominator(m)),
+  };
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
