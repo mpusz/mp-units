@@ -61,8 +61,8 @@ altitude terrain_level_alt(const task& t, const flight_point& pos)
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt)
 {
   const auto dist_to_finish = t.get_length() - pos.dist;
-  return distance(quantity_cast<isq::distance>(ground_alt + s.min_agl_height - pos.alt) /
-                  ((ground_alt - t.get_finish().alt) / dist_to_finish - 1 / glide_ratio(g.polar[0])));
+  return quantity_cast<isq::distance>(ground_alt + s.min_agl_height - pos.alt) /
+         ((ground_alt - t.get_finish().alt) / dist_to_finish - 1 / glide_ratio(g.polar[0]));
 }
 
 }  // namespace glide_computer
