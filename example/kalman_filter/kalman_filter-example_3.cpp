@@ -53,8 +53,8 @@ int main()
 
   const auto interval = isq::duration(5 * s);
   const state initial = {30 * km, 50 * (m / s)};
-  const quantity<isq::position_vector[m], int> measurements[] = {30160 * m, 30365 * m, 30890 * m, 31050 * m, 31785 * m,
-                                                                 32215 * m, 33130 * m, 34510 * m, 36010 * m, 37265 * m};
+  const quantity<isq::position_vector[m], int> measurements[] = {30'160 * m, 30'365 * m, 30'890 * m, 31'050 * m, 31'785 * m,
+                                                                 32'215 * m, 33'130 * m, 34'510 * m, 36'010 * m, 37'265 * m};
   std::array gain = {0.2 * one, 0.1 * one};
 
   print_header(initial);
