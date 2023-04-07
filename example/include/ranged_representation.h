@@ -45,11 +45,3 @@ public:
 
 template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
-
-template<typename T, auto Min, auto Max>
-struct std::common_type<std::intmax_t, ranged_representation<T, Min, Max>> :
-    std::type_identity<ranged_representation<std::common_type_t<std::intmax_t, T>, Min, Max>> {};
-
-template<typename T, auto Min, auto Max>
-struct std::common_type<ranged_representation<T, Min, Max>, std::intmax_t> :
-    std::type_identity<ranged_representation<std::common_type_t<T, std::intmax_t>, Min, Max>> {};
