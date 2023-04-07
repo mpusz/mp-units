@@ -24,6 +24,7 @@
 
 #include "ranged_representation.h"
 #include <mp_units/bits/fmt_hacks.h>
+#include <mp_units/math.h>
 #include <mp_units/quantity.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/units.h>
@@ -139,30 +140,23 @@ template<typename T>
 distance spherical_distance(position<T> from, position<T> to)
 {
   using namespace mp_units;
-  constexpr auto earth_radius = 6371 * isq::radius[si::kilo<si::metre>];
+  constexpr auto earth_radius = 6'371 * isq::radius[si::kilo<si::metre>];
 
-  constexpr auto p = std::numbers::pi_v<T> / 180;
-  const auto lat1_rad = from.lat.number() * p;
-  const auto lon1_rad = from.lon.number() * p;
-  const auto lat2_rad = to.lat.number() * p;
-  const auto lon2_rad = to.lon.number() * p;
-
-  using std::sin, std::cos, std::asin, std::acos, std::sqrt;
+  using isq::sin, isq::cos, isq::asin, isq::acos;
 
   // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
   if constexpr (sizeof(T) >= 8) {
     // spherical law of cosines
-    const auto central_angle =
-      acos(sin(lat1_rad) * sin(lat2_rad) + cos(lat1_rad) * cos(lat2_rad) * cos(lon2_rad - lon1_rad));
-    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(lat2_rad - lat1_rad) / 2 + cos(lat1_rad) * cos(lat2_rad) * (1
-    // - cos(lon2_rad - lon1_rad)) / 2));
+    const auto central_angle = acos(sin(from.lat) * sin(to.lat) + cos(from.lat) * cos(to.lat) * cos(to.lon - from.lon));
+    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to.lat - from.lat) / 2 + cos(from.lat) * cos(to.lat) * (1
+    // - cos(lon2_rad - from.lon)) / 2));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   } else {
     // the haversine formula
-    const auto sin_lat = sin((lat2_rad - lat1_rad) / 2);
-    const auto sin_lon = sin((lon2_rad - lon1_rad) / 2);
-    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(lat1_rad) * cos(lat2_rad) * sin_lon * sin_lon));
+    const auto sin_lat = sin((to.lat - from.lat) / 2);
+    const auto sin_lon = sin((to.lon - from.lon) / 2);
+    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from.lat) * cos(to.lat) * sin_lon * sin_lon));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   }
