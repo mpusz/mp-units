@@ -45,6 +45,10 @@ static_assert(unit_symbol(kilogram) == "kg");
 static_assert(unit_symbol(hour) == "h");
 
 // prefixed units
+static_assert(unit_symbol(quecto<ohm>) == "qΩ");
+static_assert(unit_symbol(quecto<ohm>, {.encoding = ascii}) == "qohm");
+static_assert(unit_symbol(ronto<ohm>) == "rΩ");
+static_assert(unit_symbol(ronto<ohm>, {.encoding = ascii}) == "rohm");
 static_assert(unit_symbol(yocto<ohm>) == "yΩ");
 static_assert(unit_symbol(yocto<ohm>, {.encoding = ascii}) == "yohm");
 static_assert(unit_symbol(zepto<ohm>) == "zΩ");
@@ -85,6 +89,10 @@ static_assert(unit_symbol(zetta<ohm>) == "ZΩ");
 static_assert(unit_symbol(zetta<ohm>, {.encoding = ascii}) == "Zohm");
 static_assert(unit_symbol(yotta<ohm>) == "YΩ");
 static_assert(unit_symbol(yotta<ohm>, {.encoding = ascii}) == "Yohm");
+static_assert(unit_symbol(ronna<ohm>) == "RΩ");
+static_assert(unit_symbol(ronna<ohm>, {.encoding = ascii}) == "Rohm");
+static_assert(unit_symbol(quetta<ohm>) == "QΩ");
+static_assert(unit_symbol(quetta<ohm>, {.encoding = ascii}) == "Qohm");
 
 static_assert(unit_symbol(kibi<bit>) == "Kibit");
 static_assert(unit_symbol(mebi<bit>) == "Mibit");

@@ -48,6 +48,8 @@ namespace unit_symbols {
 
 using si::unit_symbols::eV;
 
+inline constexpr auto qeV = si::quecto<electronvolt>;
+inline constexpr auto reV = si::ronto<electronvolt>;
 inline constexpr auto yeV = si::yocto<electronvolt>;
 inline constexpr auto zeV = si::zepto<electronvolt>;
 inline constexpr auto aeV = si::atto<electronvolt>;
@@ -68,7 +70,11 @@ inline constexpr auto PeV = si::peta<electronvolt>;
 inline constexpr auto EeV = si::exa<electronvolt>;
 inline constexpr auto ZeV = si::zetta<electronvolt>;
 inline constexpr auto YeV = si::yotta<electronvolt>;
+inline constexpr auto ReV = si::ronna<electronvolt>;
+inline constexpr auto QeV = si::quetta<electronvolt>;
 
+inline constexpr auto qb = si::quecto<barn>;
+inline constexpr auto rb = si::ronto<barn>;
 inline constexpr auto yb = si::yocto<barn>;
 inline constexpr auto zb = si::zepto<barn>;
 inline constexpr auto ab = si::atto<barn>;

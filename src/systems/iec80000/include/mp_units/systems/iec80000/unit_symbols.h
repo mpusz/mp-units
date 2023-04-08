@@ -37,6 +37,8 @@ inline constexpr auto Pbit = si::peta<bit>;
 inline constexpr auto Ebit = si::exa<bit>;
 inline constexpr auto Zbit = si::zetta<bit>;
 inline constexpr auto Ybit = si::yotta<bit>;
+inline constexpr auto Rbit = si::ronna<bit>;
+inline constexpr auto Qbit = si::quetta<bit>;
 
 inline constexpr auto Kibit = kibi<bit>;
 inline constexpr auto Mibit = mebi<bit>;
@@ -56,6 +58,8 @@ inline constexpr auto Po = si::peta<octet>;
 inline constexpr auto Eo = si::exa<octet>;
 inline constexpr auto Zo = si::zetta<octet>;
 inline constexpr auto Yo = si::yotta<octet>;
+inline constexpr auto Ro = si::ronna<octet>;
+inline constexpr auto Qo = si::quetta<octet>;
 
 inline constexpr auto Kio = kibi<octet>;
 inline constexpr auto Mio = mebi<octet>;
@@ -75,6 +79,8 @@ inline constexpr auto PB = si::peta<byte>;
 inline constexpr auto EB = si::exa<byte>;
 inline constexpr auto ZB = si::zetta<byte>;
 inline constexpr auto YB = si::yotta<byte>;
+inline constexpr auto RB = si::ronna<byte>;
+inline constexpr auto QB = si::quetta<byte>;
 
 inline constexpr auto KiB = kibi<byte>;
 inline constexpr auto MiB = mebi<byte>;
@@ -93,6 +99,8 @@ inline constexpr auto PBd = si::peta<baud>;
 inline constexpr auto EBd = si::exa<baud>;
 inline constexpr auto ZBd = si::zetta<baud>;
 inline constexpr auto YBd = si::yotta<baud>;
+inline constexpr auto RBd = si::ronna<baud>;
+inline constexpr auto QBd = si::quetta<baud>;
 
 // erlang
 // TODO do we need prefixed versions of Erlang?

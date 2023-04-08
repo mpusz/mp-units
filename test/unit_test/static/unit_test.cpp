@@ -225,6 +225,8 @@ static_assert(is_of_type<kilometre / metre, derived_unit<kilometre_, per<metre_>
 
 
 // prefixes
+static_assert(si::quecto<metre>.symbol == "qm");
+static_assert(si::ronto<metre>.symbol == "rm");
 static_assert(si::yocto<metre>.symbol == "ym");
 static_assert(si::zepto<metre>.symbol == "zm");
 static_assert(si::atto<metre>.symbol == "am");
@@ -245,6 +247,8 @@ static_assert(si::peta<metre>.symbol == "Pm");
 static_assert(si::exa<metre>.symbol == "Em");
 static_assert(si::zetta<metre>.symbol == "Zm");
 static_assert(si::yotta<metre>.symbol == "Ym");
+static_assert(si::ronna<metre>.symbol == "Rm");
+static_assert(si::quetta<metre>.symbol == "Qm");
 
 
 // scaled_unit
