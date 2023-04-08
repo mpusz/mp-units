@@ -56,7 +56,7 @@ concept Quantity = requires(T* t) { detail::to_base_specialization_of_quantity(t
 template<typename Q, auto V>
 concept QuantityOf =
   Quantity<Q> && ((Dimension<std::remove_const_t<decltype(V)>> && Q::dimension == V) ||
-                  (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible_to(Q::quantity_spec, V)));
+                  (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(Q::quantity_spec, V)));
 
 /**
  * @brief A concept matching all external quantities like types

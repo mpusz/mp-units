@@ -323,12 +323,12 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
 #ifdef __cpp_explicit_this_parameter
 template<detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
          one_of<quantity_character> auto... Args>
-  requires requires { QS._equation_; } && (implicitly_convertible_to(Eq, QS._equation_))
+  requires requires { QS._equation_; } && (implicitly_convertible(Eq, QS._equation_))
 struct quantity_spec<QS, Eq, Args...> : quantity_spec<QS, Args...> {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
          auto... Args>
-  requires requires { QS._equation_; } && (implicitly_convertible_to(Eq, QS._equation_))
+  requires requires { QS._equation_; } && (implicitly_convertible(Eq, QS._equation_))
 struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
 #endif
   static constexpr auto _equation_ = Eq;
@@ -684,7 +684,7 @@ template<ratio Complexity, IntermediateDerivedQuantitySpec Q>
 }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-[[nodiscard]] consteval convertible_to_result convertible_to_impl(Q1 q1, Q2 q2)
+[[nodiscard]] consteval convertible_to_result convertible_impl(Q1 q1, Q2 q2)
 {
   using enum convertible_to_result;
 
@@ -695,9 +695,9 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   else if constexpr (QuantityKindSpec<Q1> || QuantityKindSpec<Q2>) {
     if constexpr (IntermediateDerivedQuantitySpec<Q1> &&
                   NamedQuantitySpec<std::remove_const_t<decltype(remove_kind(q2))>>)
-      return convertible_to_impl(get_kind(q1), remove_kind(q2));
+      return convertible_impl(get_kind(q1), remove_kind(q2));
     else
-      return convertible_to_impl(get_kind(q1), get_kind(q2)) != no ? yes : no;
+      return convertible_impl(get_kind(q1), get_kind(q2)) != no ? yes : no;
   } else if constexpr (IntermediateDerivedQuantitySpec<Q1> && IntermediateDerivedQuantitySpec<Q2>)
     return are_ingredients_convertible_to(q1, q2);
   else if constexpr (NamedQuantitySpec<Q1> && NamedQuantitySpec<Q2>) {
@@ -710,15 +710,15 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   } else if constexpr (IntermediateDerivedQuantitySpec<Q1>) {
     auto q1_exploded = explode<get_complexity(q2)>(q1);
     if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(q1_exploded)>>)
-      return convertible_to_impl(q1_exploded, q2);
+      return convertible_impl(q1_exploded, q2);
     else if constexpr (requires { q2._equation_; })
-      return convertible_to_impl(q1_exploded, q2._equation_);
+      return convertible_impl(q1_exploded, q2._equation_);
   } else if constexpr (IntermediateDerivedQuantitySpec<Q2>) {
     auto q2_exploded = explode<get_complexity(q1)>(q2);
     if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(q2_exploded)>>)
-      return convertible_to_impl(q2_exploded, q1);
+      return convertible_impl(q1, q2_exploded);
     else if constexpr (requires { q1._equation_; })
-      return std::min(explicit_conversion, convertible_to_impl(q1._equation_, q2_exploded));
+      return std::min(explicit_conversion, convertible_impl(q1._equation_, q2_exploded));
   }
   return no;
 }
@@ -726,21 +726,21 @@ template<QuantitySpec Q1, QuantitySpec Q2>
 }  // namespace detail
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-[[nodiscard]] consteval bool implicitly_convertible_to(Q1 q1, Q2 q2)
+[[nodiscard]] consteval bool implicitly_convertible(Q1 q1, Q2 q2)
 {
-  return detail::convertible_to_impl(q1, q2) == detail::convertible_to_result::yes;
+  return detail::convertible_impl(q1, q2) == detail::convertible_to_result::yes;
 }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-[[nodiscard]] consteval bool explicitly_convertible_to(Q1 q1, Q2 q2)
+[[nodiscard]] consteval bool explicitly_convertible(Q1 q1, Q2 q2)
 {
-  return detail::convertible_to_impl(q1, q2) >= detail::convertible_to_result::explicit_conversion;
+  return detail::convertible_impl(q1, q2) >= detail::convertible_to_result::explicit_conversion;
 }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-[[nodiscard]] consteval bool castable_to(Q1 q1, Q2 q2)
+[[nodiscard]] consteval bool castable(Q1 q1, Q2 q2)
 {
-  return detail::convertible_to_impl(q1, q2) >= detail::convertible_to_result::cast;
+  return detail::convertible_impl(q1, q2) >= detail::convertible_to_result::cast;
 }
 
 namespace detail {
@@ -783,14 +783,13 @@ template<QuantitySpec Q>
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(implicitly_convertible_to(get_kind(q1), get_kind(q2)) ||
-           implicitly_convertible_to(get_kind(q2), get_kind(q1)))
+  requires(implicitly_convertible(get_kind(q1), get_kind(q2)) || implicitly_convertible(get_kind(q2), get_kind(q1)))
 {
   if constexpr (q1 == q2)
     return q1;
   else if constexpr (detail::have_common_base(q1, q2))
     return detail::get_common_base(q1, q2);
-  else if constexpr (implicitly_convertible_to(get_kind(q1), get_kind(q2)))
+  else if constexpr (implicitly_convertible(get_kind(q1), get_kind(q2)))
     return get_kind(q2);
   else
     return get_kind(q1);

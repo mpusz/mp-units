@@ -68,7 +68,7 @@ concept PointOrigin = QuantityPoint<T> || detail::is_derived_from_specialization
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 template<typename T, auto Q>
-concept PointOriginFor = PointOrigin<T> && QuantitySpec<std::remove_const_t<decltype(Q)>> && Q == T::quantity_spec;
+concept PointOriginFor = PointOrigin<T> && QuantitySpec<std::remove_const_t<decltype(Q)>> && implicitly_convertible(Q, T::quantity_spec);
 
 template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
          RepresentationOf<get_quantity_spec(R).character> Rep>
@@ -95,7 +95,7 @@ template<typename QP, auto V>
 concept QuantityPointOf =
   QuantityPoint<QP> &&
   ((Dimension<std::remove_const_t<decltype(V)>> && QP::dimension == V) ||
-   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible_to(QP::quantity_spec, V)) ||
+   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(QP::quantity_spec, V)) ||
    (PointOrigin<std::remove_const_t<decltype(V)>> &&
     std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
 
