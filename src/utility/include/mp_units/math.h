@@ -354,8 +354,7 @@ template<QuantityOf<dimension_one> Q>
 
 namespace angular {
 
-// TODO cannot use `QuantityOf<angle>` as it is not interconvertible with `isq_angle::angular_measure`
-template<QuantityOf<dim_angle> Q>
+template<QuantityOf<angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto sin(const Q& q) noexcept
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
@@ -364,7 +363,7 @@ template<QuantityOf<dim_angle> Q>
   return sin(q[radian].number()) * one;
 }
 
-template<QuantityOf<dim_angle> Q>
+template<QuantityOf<angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto cos(const Q& q) noexcept
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
@@ -373,7 +372,7 @@ template<QuantityOf<dim_angle> Q>
   return cos(q[radian].number()) * one;
 }
 
-template<QuantityOf<dim_angle> Q>
+template<QuantityOf<angle> Q>
   requires treat_as_floating_point<typename Q::rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto tan(const Q& q) noexcept
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
