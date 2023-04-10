@@ -376,10 +376,8 @@ static_assert((1 * m += 1 * m).number() == 2);
 static_assert((2 * m -= 1 * m).number() == 1);
 static_assert((1 * m *= 2).number() == 2);
 static_assert((2 * m /= 2).number() == 1);
-static_assert((7 * m %= 2).number() == 1);
 static_assert((1 * m *= 2 * one).number() == 2);
 static_assert((2 * m /= 2 * one).number() == 1);
-static_assert((7 * m %= 2 * one).number() == 1);
 static_assert((7 * m %= 2 * m).number() == 1);
 
 // different types
@@ -393,24 +391,8 @@ static_assert((2.5 * m *= 3 * one).number() == 7.5);
 static_assert((7.5 * m /= 3 * one).number() == 2.5);
 static_assert((3500 * m %= 1 * km).number() == 500);
 
-static_assert((std::uint8_t(255) * m %= 256).number() == [] {
-  std::uint8_t ui(255);
-  return ui %= 256;
-}());
-static_assert((std::uint8_t(255) * m %= 256 * one).number() == [] {
-  std::uint8_t ui(255);
-  return ui %= 256;
-}());
 // static_assert((std::uint8_t(255) * m %= 256 * m).number() != [] { std::uint8_t ui(255); return ui %= 256; }());  //
 // UB
-static_assert((std::uint8_t(255) * m %= 257).number() == [] {
-  std::uint8_t ui(255);
-  return ui %= 257;
-}());
-static_assert((std::uint8_t(255) * m %= 257 * one).number() == [] {
-  std::uint8_t ui(255);
-  return ui %= 257;
-}());
 // TODO: Fix
 static_assert((std::uint8_t(255) * m %= 257 * m).number() != [] {
   std::uint8_t ui(255);
@@ -532,7 +514,6 @@ static_assert(is_of_type<4 * m % (2 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<1'234 * m % (1 * km), quantity<si::metre, int>>);
 static_assert(is_of_type<1 * km % (300 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<4 * one % (2 * one), quantity<one, int>>);
-static_assert(is_of_type<4 * one % 2, quantity<one, int>>);
 
 // check for integral types promotion
 static_assert(is_same_v<decltype((std::uint8_t(0) * m + std::uint8_t(0) * m).number()), int&&>);
@@ -669,7 +650,6 @@ static_assert((7 * m % (2 * m)).number() == 1);
 static_assert((7 * km % (2000 * m)).number() == 1000);
 static_assert((1300 * m % (1 * km)).number() == 300);
 static_assert((7 * one % (2 * one)).number() == 1);
-static_assert((7 * one % 2).number() == 1);
 
 static_assert((10 * m2 * (10 * m2)) / (50 * m2) == 2 * m2);
 
@@ -699,6 +679,10 @@ static_assert(4 % (2 * one) == 0);
 
 // modulo arithmetics
 
+static_assert(5 * h % (120 * min) == 60 * min);
+static_assert(300 * min % (2 * h) == 60 * min);
+static_assert(300 * min % (120 * min) == 60 * min);
+
 constexpr auto quotient_remainder_theorem(auto q1, auto q2)
 {
   auto quotient = q1 / q2;
@@ -707,26 +691,9 @@ constexpr auto quotient_remainder_theorem(auto q1, auto q2)
   return q;
 }
 
+// this works only if two quantities have the same unit
+static_assert(quotient_remainder_theorem(7 * m, 3 * m) == 7 * m);
 static_assert(quotient_remainder_theorem(3'000 * m, 400 * m) == 3'000 * m);
-// static_assert(quotient_remainder_theorem(3 * km, 400 * m) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 2 * m) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 400'000 * mm) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 2'000 * mm) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 400 * mm) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 2 * mm) == 3 * km);
-// static_assert(quotient_remainder_theorem(3'000 * m, 400) == 3'000 * m);
-// static_assert(quotient_remainder_theorem(3'000 * m, 400 * one) == 3'000 * m);
-// static_assert(quotient_remainder_theorem(3 * km, 400 * one) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 2 * one) == 3 * km);
-// static_assert(quotient_remainder_theorem(3 * km, 400 * (mag<ratio{1, 1000}> * one)) == 3 * km);
-
-static_assert((7 * m / (3 * m)) * (3 * m) + (7 * m) % (3 * m) == 7 * m);
-static_assert((7 * m / 3) * 3 + (7 * m) % 3 == 7 * m);
-static_assert((7 * m / (3 * one)) * (3 * one) + (7 * m) % (3 * one) == 7 * m);
-static_assert((7 / (3 * one)) * (3 * one) + 7 % (3 * one) == 7);
-
-// static_assert((7 * km / (2500 * m)) * (2500 * m) + (7 * km) % (2500 * m) == 7 * km);
-// static_assert((7500 * m / (3 * km)) * (3 * km) + (75000 * m) % (3 * km) == 7500 * m);
 
 static_assert(is_same_v<decltype(0 * one + 0.0), decltype(0.0 * one)>);
 static_assert(is_same_v<decltype(0 * one - 0.0), decltype(0.0 * one)>);

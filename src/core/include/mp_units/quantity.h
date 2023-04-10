@@ -284,34 +284,6 @@ public:
     return *this;
   }
 
-  template<typename Rep2>
-    requires(!Quantity<Rep2>) && (!treat_as_floating_point<rep>) && (!treat_as_floating_point<Rep2>) &&
-            requires(rep a, const Rep2 b) {
-              {
-                a %= b
-              } -> std::same_as<rep&>;
-            }
-  constexpr quantity& operator%=(const Rep2& rhs)
-  {
-    gsl_ExpectsAudit(rhs != quantity_values<Rep2>::zero());
-    number_ %= rhs;
-    return *this;
-  }
-
-  template<QuantityOf<dimension_one> Q>
-    requires(Q::unit == ::mp_units::one) && (!treat_as_floating_point<rep>) &&
-            (!treat_as_floating_point<typename Q::rep>) && requires(rep a, const typename Q::rep b) {
-              {
-                a %= b
-              } -> std::same_as<rep&>;
-            }
-  constexpr quantity& operator%=(const Q& rhs)
-  {
-    gsl_ExpectsAudit(rhs.number() != quantity_values<typename Q::rep>::zero());
-    number_ %= rhs.number();
-    return *this;
-  }
-
   constexpr quantity& operator%=(const quantity& q)
     requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
       {
@@ -398,23 +370,6 @@ public:
     return v / q.number() * (::mp_units::one / reference);
   }
 
-  template<typename Value>
-    requires(!Quantity<Value>) && (!treat_as_floating_point<rep>) && (!treat_as_floating_point<Value>) &&
-            detail::InvokeResultIsRepresentationOf<quantity_spec.character, std::modulus<>, rep, Value>
-  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& q, const Value& v)
-  {
-    gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    return (q.number() % v) * reference;
-  }
-
-  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const quantity& rhs)
-    requires(!treat_as_floating_point<rep>) &&
-            detail::InvokeResultIsRepresentationOf<quantity_spec.character, std::modulus<>, rep, rep>
-  {
-    gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
-    return (lhs.number() % rhs.number()) * reference;
-  }
-
   template<Quantity Q>
     requires(!treat_as_floating_point<rep>) && (!treat_as_floating_point<typename Q::rep>) &&
             requires {
@@ -426,16 +381,6 @@ public:
     constexpr auto ref = common_reference(reference, Q::reference);
     using ret = quantity<ref, decltype(lhs.number() % rhs.number())>;
     return (ret(lhs).number() % ret(rhs).number()) * ref;
-  }
-
-  template<Quantity Q>
-    requires(!treat_as_floating_point<rep>) && (!treat_as_floating_point<typename Q::rep>) &&
-            (Q::dimension == dimension_one) && (Q::unit == ::mp_units::one) &&
-            detail::InvokeResultIsRepresentationOf<quantity_spec.character, std::modulus<>, rep, typename Q::rep>
-  [[nodiscard]] friend constexpr Quantity auto operator%(const quantity& lhs, const Q& rhs)
-  {
-    gsl_ExpectsAudit(rhs.number() != quantity_values<rep>::zero());
-    return (lhs.number() % rhs.number()) * reference;
   }
 
   template<Quantity Q>
