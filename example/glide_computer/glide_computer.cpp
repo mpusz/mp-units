@@ -43,7 +43,7 @@ std::vector<distance> task::make_leg_total_distances(const legs& legs)
 {
   std::vector<distance> res;
   res.reserve(legs.size());
-  auto to_length = [](const leg& l) { return l.get_length(); };
+  auto to_length = [](const leg& l) { return l.get_distance(); };
   std::transform_inclusive_scan(legs.cbegin(), legs.cend(), std::back_inserter(res), std::plus(), to_length);
   return res;
 }
@@ -52,7 +52,7 @@ altitude terrain_level_alt(const task& t, const flight_point& pos)
 {
   const task::leg& l = t.get_legs()[pos.leg_idx];
   const height alt_diff = l.end().alt - l.begin().alt;
-  return l.begin().alt + alt_diff * ((pos.dist - t.get_leg_dist_offset(pos.leg_idx)) / l.get_length());
+  return l.begin().alt + alt_diff * ((pos.dist - t.get_leg_dist_offset(pos.leg_idx)) / l.get_distance());
 }
 
 // Returns `x` of the intersection of a glide line and a terrain line.
@@ -60,7 +60,7 @@ altitude terrain_level_alt(const task& t, const flight_point& pos)
 // y = (finish_alt - ground_alt) / dist_to_finish * x + ground_alt + min_agl_height;
 distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt)
 {
-  const auto dist_to_finish = t.get_length() - pos.dist;
+  const auto dist_to_finish = t.get_distance() - pos.dist;
   return quantity_cast<isq::distance>(ground_alt + s.min_agl_height - pos.alt) /
          ((ground_alt - t.get_finish().alt) / dist_to_finish - 1 / glide_ratio(g.polar[0]));
 }
@@ -124,7 +124,7 @@ flight_point glide(timestamp start_ts, const flight_point& pos, const glider& g,
 
 flight_point final_glide(timestamp start_ts, const flight_point& pos, const glider& g, const task& t)
 {
-  const auto dist = t.get_length() - pos.dist;
+  const auto dist = t.get_distance() - pos.dist;
   const auto l3d = length_3d(dist, pos.alt - t.get_finish().alt);
   const duration d = l3d / g.polar[0].v;
   const flight_point new_pos{pos.ts + d, t.get_finish().alt, t.get_legs().size() - 1, pos.dist + dist};
@@ -152,7 +152,7 @@ void estimate(timestamp start_ts, const glider& g, const weather& w, const task&
 
   // estimate the altitude needed to reach the finish line from this place
   const altitude final_glide_alt =
-    t.get_finish().alt + quantity_cast<isq::height>(t.get_length()) / glide_ratio(g.polar[0]);
+    t.get_finish().alt + quantity_cast<isq::height>(t.get_distance() / glide_ratio(g.polar[0]));
 
   // how much height we still need to gain in the thermalls to reach the destination?
   height height_to_gain = final_glide_alt - pos.alt;

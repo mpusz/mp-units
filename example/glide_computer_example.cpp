@@ -126,12 +126,12 @@ void print(const task& t)
 
   std::cout << "- Start: " << t.get_start().name << "\n";
   std::cout << "- Finish: " << t.get_finish().name << "\n";
-  std::cout << "- Length:  " << STD_FMT::format("{:%.1Q %q}", t.get_length()) << "\n";
+  std::cout << "- Length:  " << STD_FMT::format("{:%.1Q %q}", t.get_distance()) << "\n";
 
   std::cout << "- Legs: "
             << "\n";
   for (const auto& l : t.get_legs())
-    std::cout << STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_length());
+    std::cout << STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_distance());
   std::cout << "\n";
 }
 

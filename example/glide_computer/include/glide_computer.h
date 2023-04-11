@@ -133,7 +133,7 @@ public:
     leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
     constexpr const waypoint& begin() const { return *begin_; };
     constexpr const waypoint& end() const { return *end_; }
-    constexpr distance get_length() const { return length_; }
+    constexpr distance get_distance() const { return length_; }
   };
   using legs = std::vector<leg>;
 
@@ -151,7 +151,7 @@ public:
   const waypoint& get_start() const { return waypoints_.front(); }
   const waypoint& get_finish() const { return waypoints_.back(); }
 
-  distance get_length() const { return length_; }
+  distance get_distance() const { return length_; }
 
   distance get_leg_dist_offset(std::size_t leg_index) const
   {
