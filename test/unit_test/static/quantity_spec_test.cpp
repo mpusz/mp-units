@@ -47,20 +47,25 @@ inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
 
 QUANTITY_SPEC_(height, length);
 QUANTITY_SPEC_(width, length);
+QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(path_length, length);
+inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
-
+QUANTITY_SPEC_(angular_measure, arc_length / radius);
 QUANTITY_SPEC_(frequency, 1 / period_duration);
 QUANTITY_SPEC_(activity, 1 / time);
 QUANTITY_SPEC_(area, pow<2>(length));
-QUANTITY_SPEC_(volume, area * length);
-QUANTITY_SPEC_(speed, distance / time);
+QUANTITY_SPEC_(volume, pow<3>(length));
+QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(velocity, speed, position_vector / time);
+QUANTITY_SPEC_(special_speed, speed);
 QUANTITY_SPEC_(rate_of_climb, speed, height / time);
+QUANTITY_SPEC_(special_rate_of_climb, rate_of_climb);
 QUANTITY_SPEC_(acceleration, velocity / time);
 QUANTITY_SPEC_(acceleration_of_free_fall, acceleration);
+QUANTITY_SPEC_(mass_density, mass / volume);
 QUANTITY_SPEC_(force, mass * acceleration);
 QUANTITY_SPEC_(weight, force, mass * acceleration_of_free_fall);
 QUANTITY_SPEC_(moment_of_force, position_vector* force);
@@ -70,10 +75,10 @@ QUANTITY_SPEC_(stress, pressure, quantity_character::tensor);
 QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC_(power, force* velocity, quantity_character::scalar);
 QUANTITY_SPEC_(efficiency, power / power);
-QUANTITY_SPEC_(energy, force * length);
+QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(mechanical_energy, energy);
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
-QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall / height);
+QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height);
 QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 // clang-format on
 
@@ -323,8 +328,6 @@ static_assert(mass * acceleration == acceleration * mass);
 static_assert(length / length == width / width);
 static_assert(length / length == time / time);
 static_assert(length * time / time == length);
-// static_assert(length * time / period_duration == time);
-// static_assert(length * height / width == length);
 
 static_assert(length != time);
 static_assert(length != width);
@@ -366,6 +369,9 @@ static_assert(position_vector / time != speed);
 static_assert(length / time != velocity);
 static_assert(position_vector / time != velocity);
 
+static_assert(length * time / period_duration != time);
+static_assert(length * height / width != length);
+
 static_assert(length * time != speed);
 static_assert(length / time / time != speed);
 static_assert(length / speed != time);
@@ -396,6 +402,7 @@ static_assert(get_kind(moment_of_force) == moment_of_force);
 static_assert(get_kind(energy) == energy);
 static_assert(get_kind(potential_energy) == energy);
 static_assert(get_kind(kinetic_energy) == energy);
+static_assert(get_kind(pow<1, 2>(area)) == pow<1, 2>(area));
 
 // comparisons of the same dimensions
 static_assert(length == length);
@@ -404,35 +411,73 @@ static_assert(speed == speed);
 // comparisons of equivalent dimensions (named vs unnamed/derived)
 static_assert(length / length == dimensionless);
 
+using namespace detail;
+
+// defines_equation
+static_assert(defines_equation(speed));
+static_assert(defines_equation(rate_of_climb));
+static_assert(defines_equation(velocity));
+static_assert(!defines_equation(special_speed));
+static_assert(!defines_equation(special_rate_of_climb));
+
+static_assert(defines_equation(energy));
+static_assert(defines_equation(kinetic_energy));
+static_assert(defines_equation(gravitational_potential_energy));
+static_assert(!defines_equation(mechanical_energy));
+static_assert(!defines_equation(potential_energy));
+
 // get_complexity
-static_assert(detail::get_complexity(dimensionless) == 1);
-static_assert(detail::get_complexity(length) == 1);
-static_assert(detail::get_complexity(frequency) == 2);
-static_assert(detail::get_complexity(area) == 3);
-static_assert(detail::get_complexity(volume) == 5);
-static_assert(detail::get_complexity(speed) == 3);
-static_assert(detail::get_complexity(velocity) == 3);
-static_assert(detail::get_complexity(acceleration) == 5);
-static_assert(detail::get_complexity(force) == 7);
+static_assert(get_complexity(dimensionless) == 1);
+static_assert(get_complexity(length) == 1);
+static_assert(get_complexity(frequency) == 2);
+static_assert(get_complexity(area) == 2);
+static_assert(get_complexity(volume) == 2);
+static_assert(get_complexity(speed) == 3);
+static_assert(get_complexity(velocity) == 3);
+static_assert(get_complexity(acceleration) == 5);
+static_assert(get_complexity(force) == 7);
 
-static_assert(detail::get_complexity(acceleration * time) == 6);
-static_assert(detail::get_complexity(acceleration / time) == 6);
+static_assert(get_complexity(acceleration * time) == 6);
+static_assert(get_complexity(acceleration / time) == 6);
 
-// TODO complexity for integrated types (1/2)
-
+static_assert(get_complexity(pow<4>(length)) == 1);
+static_assert(get_complexity(pow<2>(area)) == 2);
 
 // explode
-static_assert(detail::explode<detail::get_complexity(velocity)>(acceleration * time) == velocity);
-static_assert(detail::explode<detail::get_complexity(area)>(volume / length) == area);
-static_assert(detail::explode<detail::get_complexity(area)>(volume / height) == area * length / height);
-static_assert(detail::explode<detail::get_complexity(area)>(pow<3>(length) / height) == pow<3>(length) / height);
-static_assert(detail::explode<detail::get_complexity(area)>(area * time / period_duration) ==
-              area * time / period_duration);
-static_assert(detail::explode<detail::get_complexity(area)>(pow<2>(length) * time / period_duration) ==
+static_assert(explode<get_complexity(1 / time)>(frequency).quantity == 1 / period_duration);
+static_assert(explode<get_complexity(kind_of<length / time>)>(speed).quantity == length / time);
+static_assert(explode<get_complexity(kind_of<length / time>)>(velocity).quantity == position_vector / time);
+static_assert(explode<get_complexity(dimensionless)>(angular_measure).quantity == arc_length / radius);
+static_assert(explode<get_complexity(velocity)>(acceleration * time).quantity == velocity);
+static_assert(explode<get_complexity(area)>(area).quantity == area);
+static_assert(explode<get_complexity(area)>(volume / length).quantity == volume / length);
+static_assert(explode<get_complexity(area)>(volume / height).quantity == volume / height);
+static_assert(explode<get_complexity(area)>(pow<3>(length) / height).quantity == pow<3>(length) / height);
+static_assert(explode<get_complexity(area)>(area * time / period_duration).quantity == area * time / period_duration);
+static_assert(explode<get_complexity(area)>(pow<2>(length) * time / period_duration).quantity ==
               pow<2>(length) * time / period_duration);
 
-using namespace detail;
 using enum convertible_to_result;
+
+static_assert(are_ingredients_convertible(length / time, length / time) == yes);
+static_assert(are_ingredients_convertible(mass * length / time, mass* length / time) == yes);
+static_assert(are_ingredients_convertible(area / length, area / length) == yes);
+
+static_assert(are_ingredients_convertible(volume * length, area* area) == yes);
+static_assert(are_ingredients_convertible(pow<4>(length), area* area) == yes);
+static_assert(are_ingredients_convertible(dimensionless / (length * length), dimensionless / area) == yes);
+
+static_assert(are_ingredients_convertible(width * height, length* length) == yes);
+static_assert(are_ingredients_convertible(dimensionless / (width * height), dimensionless / (length * length)) == yes);
+
+static_assert(are_ingredients_convertible(dimensionless / (width * height), dimensionless / area) == yes);
+
+static_assert(are_ingredients_convertible(length * length, width* height) == explicit_conversion);
+static_assert(are_ingredients_convertible(dimensionless / (length * length), dimensionless / (width * height)) ==
+              explicit_conversion);
+
+static_assert(are_ingredients_convertible(dimensionless / area, dimensionless / (length * length)) == yes);
+
 
 // different dimensions
 static_assert(convertible_impl(mass, length) == no);
@@ -469,22 +514,31 @@ static_assert(convertible_impl(width, length) == yes);
 static_assert(convertible_impl(path_length, length) == yes);
 static_assert(convertible_impl(distance, length) == yes);
 static_assert(convertible_impl(distance, path_length) == yes);
+static_assert(convertible_impl(special_speed, speed) == yes);
+static_assert(convertible_impl(rate_of_climb, speed) == yes);
+static_assert(convertible_impl(special_rate_of_climb, speed) == yes);
+static_assert(convertible_impl(velocity, speed) == yes);
 static_assert(convertible_impl(potential_energy, energy) == yes);
 static_assert(convertible_impl(kinetic_energy, energy) == yes);
 
 // upcasting beyond the hierarchy/kind
-static_assert(convertible_impl(frequency, 1 / time) == explicit_conversion);
-static_assert(convertible_impl(speed, length / time) == explicit_conversion);
-static_assert(convertible_impl(speed, length / time) == explicit_conversion);
-static_assert(convertible_impl(velocity, length / time) == explicit_conversion);
-static_assert(convertible_impl(rate_of_climb, length / time) == explicit_conversion);
-static_assert(convertible_impl(rate_of_climb, height / time) == explicit_conversion);
+static_assert(convertible_impl(frequency, 1 / time) == yes);
+static_assert(convertible_impl(speed, length / time) == yes);
+static_assert(convertible_impl(speed, length / time) == yes);
+static_assert(convertible_impl(velocity, length / time) == yes);
+static_assert(convertible_impl(rate_of_climb, length / time) == yes);
+static_assert(convertible_impl(rate_of_climb, height / time) == yes);
+static_assert(convertible_impl(gravitational_potential_energy, mass* acceleration* length) == yes);
 
 // downcasting same hierarchy branch
 static_assert(convertible_impl(length, width) == explicit_conversion);
 static_assert(convertible_impl(path_length, distance) == explicit_conversion);
 static_assert(convertible_impl(length, distance) == explicit_conversion);
 static_assert(convertible_impl(path_length, distance) == explicit_conversion);
+static_assert(convertible_impl(speed, special_speed) == explicit_conversion);
+static_assert(convertible_impl(speed, rate_of_climb) == explicit_conversion);
+static_assert(convertible_impl(speed, special_rate_of_climb) == explicit_conversion);
+static_assert(convertible_impl(rate_of_climb, special_rate_of_climb) == explicit_conversion);
 static_assert(convertible_impl(energy, potential_energy) == explicit_conversion);
 static_assert(convertible_impl(energy, kinetic_energy) == explicit_conversion);
 
@@ -503,11 +557,10 @@ static_assert(convertible_impl(area * length, volume) == yes);
 static_assert(convertible_impl(volume / length, area) == yes);
 static_assert(convertible_impl(volume / area, length) == yes);
 static_assert(convertible_impl(volume / length / length, length) == yes);
-// static_assert(convertible_impl(area * area / length, volume) == yes);
-// static_assert(convertible_impl(area * (area / length), volume) == yes);
+static_assert(convertible_impl(area * area / length, volume) == yes);
+static_assert(convertible_impl(area * (area / length), volume) == yes);
 static_assert(convertible_impl(volume / (length * length), length) == yes);
-static_assert(convertible_impl(distance / speed, time) == yes);
-// static_assert(convertible_impl(length / speed, time) == yes);
+static_assert(convertible_impl(length / speed, time) == yes);
 static_assert(convertible_impl(speed * time, length) == yes);
 static_assert(convertible_impl(position_vector / time / time, acceleration) == yes);
 static_assert(convertible_impl(position_vector / (time * time), acceleration) == yes);
@@ -515,40 +568,59 @@ static_assert(convertible_impl(velocity / time, acceleration) == yes);
 static_assert(convertible_impl(velocity / acceleration, time) == yes);
 static_assert(convertible_impl(acceleration * time, velocity) == yes);
 static_assert(convertible_impl(acceleration * (time * time), position_vector) == yes);
-static_assert(convertible_impl(acceleration / velocity, frequency) == yes);
+static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), energy) == yes);
 static_assert(convertible_impl(force * length, energy) == yes);
-static_assert(convertible_impl(force * position_vector, energy) == yes);
-static_assert(convertible_impl(force * length, torque) == yes);
-static_assert(convertible_impl(force * position_vector, torque) == yes);
+static_assert(convertible_impl(force * position_vector, moment_of_force) == yes);
 static_assert(convertible_impl(width * height, area) == yes);
 static_assert(convertible_impl(pow<1, 2>(area), length) == yes);
 static_assert(convertible_impl(length, pow<1, 2>(area)) == yes);
+static_assert(convertible_impl(mass * acceleration_of_free_fall * height, gravitational_potential_energy) == yes);
+static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == yes);
+
+// additional dimensionless remainder
+static_assert(convertible_impl(length / speed, time) == yes);
 
 // derived quantities to more constrained type
-// static_assert(convertible_impl(1 / time, frequency) == explicit_conversion);
-// static_assert(convertible_impl(length / time / time, acceleration) == explicit_conversion);
-// static_assert(convertible_impl(length / time, velocity) == explicit_conversion);
-// static_assert(convertible_impl(length / time, rate_of_climb) == explicit_conversion);
+static_assert(convertible_impl(1 / time, frequency) == explicit_conversion);
+static_assert(convertible_impl(length / time / time, acceleration) == explicit_conversion);
+static_assert(convertible_impl(length / time, velocity) == explicit_conversion);
+static_assert(convertible_impl(length / time, rate_of_climb) == explicit_conversion);
+static_assert(convertible_impl(acceleration / velocity, frequency) == explicit_conversion);
+static_assert(convertible_impl(force * length, torque) == explicit_conversion);
+static_assert(convertible_impl(mass * acceleration * length, gravitational_potential_energy) == explicit_conversion);
+
+// derived quantities to more specialized type
+static_assert(convertible_impl(force * position_vector, torque) == explicit_conversion);
+static_assert(convertible_impl(length / time, special_speed) == explicit_conversion);
+static_assert(convertible_impl(height / time, special_rate_of_climb) == explicit_conversion);
+static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), mechanical_energy) == explicit_conversion);
+static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), potential_energy) == explicit_conversion);
+static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), gravitational_potential_energy) ==
+              explicit_conversion);
 
 // quantities derived from dimensionless
 static_assert(convertible_impl(power / power, efficiency) == explicit_conversion);
 static_assert(convertible_impl(stress / stress, strain) == explicit_conversion);
 static_assert(convertible_impl(stress / stress, efficiency) == explicit_conversion);
 
+// derived with dimensionless remainder after explosion
+// TODO revise that
+static_assert(convertible_impl(distance / speed, time) == yes);
+
 // derived quantities to incompatible type
-// static_assert(convertible_impl(height / time, velocity) == cast);
-// static_assert(convertible_impl(position_vector / time, rate_of_climb) == cast);
+static_assert(convertible_impl(height / time, velocity) == cast);
+static_assert(convertible_impl(position_vector / time, rate_of_climb) == cast);
 
 // type to compatible derived
 static_assert(convertible_impl(distance, speed* time) == yes);
 
 // type to more specialized derived quantity
-// static_assert(convertible_impl(speed, height / time) == explicit_conversion);
-// static_assert(convertible_impl(speed, position_vector / time) == explicit_conversion);
+static_assert(convertible_impl(speed, height / time) == explicit_conversion);
+static_assert(convertible_impl(speed, position_vector / time) == explicit_conversion);
 
 // type to a derived quantity on a different branch
-// static_assert(convertible_impl(velocity, height / time) == cast);
-// static_assert(convertible_impl(rate_of_climb, position_vector / time) == cast);
+static_assert(convertible_impl(velocity, height / time) == cast);
+static_assert(convertible_impl(rate_of_climb, position_vector / time) == cast);
 
 // derived quantities requiring explosion to a type
 static_assert(convertible_impl(acceleration * time, velocity) == yes);
@@ -568,23 +640,27 @@ static_assert(convertible_impl(height / width, length / length) == yes);
 static_assert(convertible_impl(height * width, length* length) == yes);
 static_assert(convertible_impl(1 / (path_length * distance), 1 / pow<2>(path_length)) == yes);
 
+static_assert(convertible_impl(volume * length, pow<2>(area)) == yes);
+static_assert(convertible_impl(pow<4>(length), pow<2>(area)) == yes);
+static_assert(convertible_impl(pow<2>(radius), pow<2>(length)) == yes);
+
 // derived to more specialized derived
-// static_assert(convertible_impl(length / time, height / period_duration) == explicit_conversion);
-// static_assert(convertible_impl(length * length, height / width) == explicit_conversion);
+static_assert(convertible_impl(length / time, height / period_duration) == explicit_conversion);
+static_assert(convertible_impl(length * length, height* width) == explicit_conversion);
 
 // derived to incompatible specialized derived
-// static_assert(convertible_impl(height / time, distance / time) == cast);
+static_assert(convertible_impl(height / time, distance / time) == cast);
 
 // when more than one possible combination is present
-// static_assert(convertible_impl(width * height, pow<2>(height)) == cast);
-// static_assert(convertible_impl(1 / (width * height), 1 / pow<2>(height)) == cast);
-// static_assert(convertible_impl(width * distance, path_length* width) == cast);
-// static_assert(convertible_impl(height * distance, path_length* height) == cast);
-// static_assert(convertible_impl(width * length, length* height) == cast);
-// static_assert(convertible_impl(length * distance, path_length* height) == cast);
-// static_assert(convertible_impl(width * distance, width* path_length) == cast);
-// static_assert(convertible_impl(altitude * distance, height* path_length) == cast);
-// static_assert(convertible_impl(length * distance, altitude* path_length) == cast);
+// TODO revise that
+static_assert(convertible_impl(width * height, pow<2>(height)) == cast);
+static_assert(convertible_impl(1 / (width * height), 1 / pow<2>(height)) == cast);
+static_assert(convertible_impl(width * distance, path_length* width) == yes);
+static_assert(convertible_impl(height * distance, path_length* height) == cast);
+static_assert(convertible_impl(width * length, length* height) == explicit_conversion);
+static_assert(convertible_impl(length * distance, path_length* height) == cast);
+static_assert(convertible_impl(width * distance, width* path_length) == yes);
+static_assert(convertible_impl(length * distance, height* path_length) == cast);
 
 // kind to its type
 static_assert(convertible_impl(kind_of<length>, length) == yes);
@@ -624,7 +700,6 @@ static_assert(convertible_impl(speed, kind_of<energy>) == no);
 static_assert(convertible_impl(moment_of_force, kind_of<energy>) == no);
 static_assert(convertible_impl(frequency, kind_of<activity>) == no);
 static_assert(convertible_impl(activity, kind_of<frequency>) == no);
-static_assert(convertible_impl(moment_of_force, kind_of<energy>) == no);
 
 // converting type to a kind
 static_assert(convertible_impl(length, kind_of<length>) == yes);
@@ -650,6 +725,7 @@ static_assert(convertible_impl(kind_of<length / pow<2>(time)>, kind_of<accelerat
 static_assert(convertible_impl(speed, kind_of<length / time>) == yes);
 static_assert(convertible_impl(velocity, kind_of<length / time>) == yes);
 static_assert(convertible_impl(energy, kind_of<mass * pow<2>(length) / pow<2>(time)>) == yes);
+static_assert(convertible_impl(mass_density, kind_of<mass / pow<3>(length)>) == yes);
 
 // kinds of different dimensions
 static_assert(convertible_impl(kind_of<mass>, kind_of<length>) == no);
@@ -668,42 +744,37 @@ static_assert(convertible_impl(efficiency, strain) == cast);
 // quantity character checks
 static_assert((position_vector / time).character == quantity_character::vector);
 static_assert((position_vector / position_vector * time).character == quantity_character::scalar);
-// static_assert((velocity / acceleration).character == quantity_character::scalar);
+static_assert((velocity / acceleration).character == quantity_character::scalar);
 
 // common_quantity_spec
-static_assert(is_of_type<common_quantity_spec(width, height), length_>);
-static_assert(is_of_type<common_quantity_spec(distance, path_length), path_length_>);
-static_assert(is_of_type<common_quantity_spec(potential_energy, kinetic_energy), mechanical_energy_>);
+static_assert(common_quantity_spec(length, length) == length);
+static_assert(common_quantity_spec(kind_of<length>, length) == length);
+static_assert(common_quantity_spec(length, kind_of<length>) == length);
+static_assert(common_quantity_spec(width, kind_of<length>) == width);
+static_assert(common_quantity_spec(kind_of<length>, width) == width);
 
-static_assert(is_of_type<common_quantity_spec(length / time, length / time), decltype(length / time)>);
-static_assert(is_of_type<common_quantity_spec(length / time, 1 / (time / length)), decltype(length / time)>);
+static_assert(common_quantity_spec(width, height) == length);
+static_assert(common_quantity_spec(distance, path_length) == path_length);
+static_assert(common_quantity_spec(potential_energy, kinetic_energy) == mechanical_energy);
 
-// static_assert(is_of_type<common_quantity_spec(speed, length / time), speed_>);
-// static_assert(is_of_type<common_quantity_spec(length / time, speed), speed_>);
+static_assert(common_quantity_spec(length / time, length / time) == length / time);
+static_assert(common_quantity_spec(length / time, 1 / (time / length)) == length / time);
 
+static_assert(common_quantity_spec(speed, length / time) == speed);
+static_assert(common_quantity_spec(length / time, speed) == speed);
+static_assert(common_quantity_spec(area, length* length) == area);
+static_assert(common_quantity_spec(length * length, area) == area);
+static_assert(common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
+static_assert(common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == kinetic_energy);
+static_assert(common_quantity_spec(gravitational_potential_energy, mass* acceleration_of_free_fall* height) ==
+              gravitational_potential_energy);
+static_assert(common_quantity_spec(mass * acceleration_of_free_fall * height, gravitational_potential_energy) ==
+              gravitational_potential_energy);
 
-// static_assert(
-//   is_of_type<common_quantity_spec(length* length, area), derived_quantity_spec<mp_units::power<length_, 2>>>);
-// static_assert(
-//   is_of_type<common_quantity_spec(area, length* length), derived_quantity_spec<mp_units::power<length_, 2>>>);
-
-
-// static_assert(is_of_type<common_quantity_spec(length / time, speed), derived_quantity_spec<length_, per<time_>>>);
-// static_assert(is_of_type<common_quantity_spec(speed, length / time), derived_quantity_spec<length_, per<time_>>>);
-// static_assert(is_of_type<common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)), energy_>);
-// static_assert(
-//   is_of_type<common_quantity_spec(kinetic_energy, kind_of<mass * pow<2>(length) / pow<2>(time)>), kinetic_energy_>);
-// static_assert(is_of_type<common_quantity_spec(kinetic_energy, mass* pow<2>(speed)), kinetic_energy_>);
-// static_assert(is_of_type<common_quantity_spec(gravitational_potential_energy, mass* acceleration / length),
-// energy_>);
-// static_assert(
-//   is_of_type<common_quantity_spec(gravitational_potential_energy, kind_of(mass* pow<2>(length) / pow<2>(time))),
-//              gravitational_potential_energy_>);
-// static_assert(is_of_type<common_quantity_spec(gravitational_potential_energy, mass* acceleration / height),
-// energy_>);
-// static_assert(is_of_type<common_quantity_spec(gravitational_potential_energy, mass* acceleration_of_free_fall /
-// height),
-//                          gravitational_potential_energy_>);
+static_assert(common_quantity_spec(gravitational_potential_energy, mass* acceleration* length) ==
+              mass * acceleration * length);
+static_assert(common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
+              mass * acceleration * length);
 
 template<auto T1, auto T2>
 concept no_common_type = requires {
