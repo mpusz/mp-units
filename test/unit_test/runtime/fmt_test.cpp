@@ -167,7 +167,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         const auto q = 123 * isq::angular_acceleration[rad / s2];
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "123 1/s²"); }
+        SECTION("iostream") { CHECK(os.str() == "123 rad/s²"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(STD_FMT::format("{}", q) == os.str()); }
 
