@@ -22,21 +22,39 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp_units/bits/math_concepts.h>
-#include <mp_units/bits/ratio_maths.h>
-#include <cstdint>
-// IWYU pragma: end_exports
-
 #include <gsl/gsl-lite.hpp>
-#include <array>
 #include <compare>
+#include <cstdint>
 #include <numeric>
 
 namespace mp_units {
 
-struct ratio;
-constexpr ratio inverse(const ratio& r);
+namespace detail {
+
+template<typename T>
+[[nodiscard]] consteval T abs(T v) noexcept
+{
+  return v < 0 ? -v : v;
+}
+
+[[nodiscard]] consteval std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
+{
+  constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
+
+  const std::intmax_t a0 = abs(lhs) % c;
+  const std::intmax_t a1 = abs(lhs) / c;
+  const std::intmax_t b0 = abs(rhs) % c;
+  const std::intmax_t b1 = abs(rhs) / c;
+
+  gsl_Assert(a1 == 0 || b1 == 0);                               // overflow in multiplication
+  gsl_Assert(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
+  gsl_Assert(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
+  gsl_Assert((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
+
+  return lhs * rhs;
+}
+
+}  // namespace detail
 
 /**
  * @brief Provides compile-time rational arithmetic support.
@@ -48,45 +66,56 @@ struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 
-  constexpr explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num(n), den(d)
+  consteval explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
     gsl_Expects(den != 0);
-    detail::normalize(num, den);
+    if (num == 0)
+      den = 1;
+    else {
+      std::intmax_t gcd = std::gcd(num, den);
+      num = num * (den < 0 ? -1 : 1) / gcd;
+      den = detail::abs(den) / gcd;
+    }
   }
 
-  [[nodiscard]] friend constexpr bool operator==(const ratio&, const ratio&) = default;
+  [[nodiscard]] friend consteval bool operator==(ratio, ratio) = default;
+  [[nodiscard]] friend consteval auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
 
-  [[nodiscard]] friend constexpr auto operator<=>(const ratio& lhs, const ratio& rhs) { return (lhs - rhs).num <=> 0; }
+  [[nodiscard]] friend consteval ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
 
-  [[nodiscard]] friend constexpr ratio operator-(const ratio& r) { return ratio(-r.num, r.den); }
-
-  [[nodiscard]] friend constexpr ratio operator+(ratio lhs, ratio rhs)
+  [[nodiscard]] friend consteval ratio operator+(ratio lhs, ratio rhs)
   {
     return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den};
   }
 
-  [[nodiscard]] friend constexpr ratio operator-(const ratio& lhs, const ratio& rhs) { return lhs + (-rhs); }
+  [[nodiscard]] friend consteval ratio operator-(ratio lhs, ratio rhs) { return lhs + (-rhs); }
 
-  [[nodiscard]] friend constexpr ratio operator*(const ratio& lhs, const ratio& rhs)
+  [[nodiscard]] friend consteval ratio operator*(ratio lhs, ratio rhs)
   {
     const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);
     const std::intmax_t gcd2 = std::gcd(rhs.num, lhs.den);
-    return ratio(detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),
-                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1));
+    return ratio{detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),
+                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1)};
   }
 
-  [[nodiscard]] friend constexpr ratio operator/(const ratio& lhs, const ratio& rhs) { return lhs * inverse(rhs); }
+  [[nodiscard]] friend consteval ratio operator/(ratio lhs, ratio rhs) { return lhs* ratio{rhs.den, rhs.num}; }
 };
 
-[[nodiscard]] constexpr ratio inverse(const ratio& r) { return ratio(r.den, r.num); }
+[[nodiscard]] consteval bool is_integral(ratio r) { return r.num % r.den == 0; }
 
-[[nodiscard]] constexpr bool is_integral(const ratio& r) { return r.num % r.den == 0; }
-
-// common_ratio
-[[nodiscard]] constexpr ratio common_ratio(const ratio& r1, const ratio& r2)
+[[nodiscard]] consteval ratio common_ratio(ratio r1, ratio r2)
 {
-  const auto res = detail::gcd_frac(r1.num, r1.den, r2.num, r2.den);
-  return ratio(res[0], res[1]);
+  if (r1.num == r2.num && r1.den == r2.den) return ratio{r1.num, r1.den};
+
+  // gcd(a/b,c/d) = gcd(a⋅d, c⋅b) / b⋅d
+  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r1.num > r2.den);
+  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r2.num > r1.den);
+  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r1.den > r2.den);
+
+  std::intmax_t num = std::gcd(r1.num * r2.den, r2.num * r1.den);
+  std::intmax_t den = r1.den * r2.den;
+  std::intmax_t gcd = std::gcd(num, den);
+  return ratio{num / gcd, den / gcd};
 }
 
 }  // namespace mp_units

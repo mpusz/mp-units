@@ -53,6 +53,7 @@ static_assert(common_ratio(ratio(1), ratio(1, 1000)) == ratio(1, 1000));
 static_assert(common_ratio(ratio(1, 1000), ratio(1)) == ratio(1, 1000));
 static_assert(common_ratio(ratio(100, 1), ratio(10, 1)) == ratio(10, 1));
 static_assert(common_ratio(ratio(100, 1), ratio(1, 10)) == ratio(1, 10));
+static_assert(common_ratio(ratio(2), ratio(4)) == ratio(2));
 
 // comparison
 static_assert((ratio(3, 4) <=> ratio(6, 8)) == (0 <=> 0));
