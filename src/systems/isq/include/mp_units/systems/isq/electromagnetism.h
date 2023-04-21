@@ -65,12 +65,12 @@ inline constexpr auto light_speed = speed_of_light;
 QUANTITY_SPEC(electric_constant, 1 / (magnetic_constant * pow<2>(speed_of_light)));
 inline constexpr auto permittivity_of_vacuum = electric_constant;
 QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_character::scalar);
-QUANTITY_SPEC(relative_permittivity, permittivity / electric_constant);
-QUANTITY_SPEC(electric_susceptibility, electric_polarization / electric_constant / electric_field_strength,
-              quantity_character::scalar);
+QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
+QUANTITY_SPEC(electric_susceptibility, dimensionless,
+              electric_polarization / electric_constant / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(electric_flux, electric_flux_density* area, quantity_character::scalar);
 QUANTITY_SPEC(displacement_current_density, electric_flux_density / time);  // vector
-QUANTITY_SPEC(displacement_current, displacement_current_density* area, quantity_character::scalar);
+QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area, quantity_character::scalar);
 QUANTITY_SPEC(total_current, electric_current);
 QUANTITY_SPEC(total_current_density, electric_current_density);  // vector
 QUANTITY_SPEC(magnetic_flux, magnetic_flux_density* area, quantity_character::scalar);
@@ -80,8 +80,9 @@ QUANTITY_SPEC(magnetization, magnetic_moment / volume);  // vector
 QUANTITY_SPEC(magnetic_field_strength, magnetization);   // vector
 inline constexpr auto magnetizing_field = magnetic_field_strength;
 QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_character::scalar);
-QUANTITY_SPEC(relative_permeability, permeability / magnetic_constant);
-QUANTITY_SPEC(magnetic_susceptibility, magnetization / magnetic_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(relative_permeability, dimensionless, permeability / magnetic_constant);
+QUANTITY_SPEC(magnetic_susceptibility, dimensionless, magnetization / magnetic_field_strength,
+              quantity_character::scalar);
 QUANTITY_SPEC(magnetic_polarization, magnetic_constant* magnetization);     // vector
 QUANTITY_SPEC(magnetic_dipole_moment, magnetic_constant* magnetic_moment);  // vector
 QUANTITY_SPEC(coercivity, magnetic_field_strength, quantity_character::scalar);
@@ -102,8 +103,8 @@ QUANTITY_SPEC(permeance, 1 / reluctance);
 QUANTITY_SPEC(inductance, linked_flux / electric_current);
 inline constexpr auto self_inductance = inductance;
 QUANTITY_SPEC(mutual_inductance, linked_flux / electric_current);
-QUANTITY_SPEC(coupling_factor, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)));
-QUANTITY_SPEC(leakage_factor, pow<2>(coupling_factor));
+QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)));
+QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor));
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(resistivity, 1 / conductivity);
 // QUANTITY_SPEC(power, voltage* electric_current);  // TODO conflicts with mechanical power
@@ -124,12 +125,12 @@ inline constexpr auto complex_admittance = admittance;
 QUANTITY_SPEC(conductance_for_alternating_current, admittance);
 QUANTITY_SPEC(susceptance, admittance);
 QUANTITY_SPEC(modulus_of_admittance, admittance);
-QUANTITY_SPEC(quality_factor, reactance / resistance);
-QUANTITY_SPEC(loss_factor, 1 / quality_factor);
+QUANTITY_SPEC(quality_factor, dimensionless, reactance / resistance);
+QUANTITY_SPEC(loss_factor, dimensionless, 1 / quality_factor);
 QUANTITY_SPEC(loss_angle, angular_measure);
 QUANTITY_SPEC(active_power, 1 / period * (instantaneous_power * time));
 QUANTITY_SPEC(apparent_power, voltage* electric_current);
-QUANTITY_SPEC(power_factor, active_power / apparent_power);
+QUANTITY_SPEC(power_factor, dimensionless, active_power / apparent_power);
 QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);
 QUANTITY_SPEC(reactive_power, complex_power);
 QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));

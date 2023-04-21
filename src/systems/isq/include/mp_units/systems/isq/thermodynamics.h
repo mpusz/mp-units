@@ -55,9 +55,10 @@ QUANTITY_SPEC(specific_heat_capacity_at_constant_pressure, specific_heat_capacit
 QUANTITY_SPEC(specific_heat_capacity_at_constant_volume, specific_heat_capacity);
 QUANTITY_SPEC(specific_heat_capacity_at_saturated_vapour_pressure, specific_heat_capacity);
 QUANTITY_SPEC(thermal_diffusivity, thermal_conductivity / (mass_density * specific_heat_capacity_at_constant_pressure));
-QUANTITY_SPEC(ratio_of_specific_heat_capacities,
+QUANTITY_SPEC(ratio_of_specific_heat_capacities, dimensionless,
               specific_heat_capacity_at_constant_pressure / specific_heat_capacity_at_constant_volume);
-QUANTITY_SPEC(isentropic_exponent, volume / pressure * (pressure / volume));  // TODO how to handle "negative" part
+QUANTITY_SPEC(isentropic_exponent,
+              volume / pressure * (pressure / volume));  // TODO how to handle "negative" part
 inline constexpr auto isentropic_expansion_factor = isentropic_exponent;
 QUANTITY_SPEC(entropy, kinetic_energy / thermodynamic_temperature);
 QUANTITY_SPEC(specific_entropy, entropy / mass);
@@ -79,7 +80,7 @@ inline constexpr auto specific_Gibbs_function = specific_Gibbs_energy;
 QUANTITY_SPEC(Massieu_function, Helmholtz_energy / thermodynamic_temperature);  // TODO how to handle "negative" part
 QUANTITY_SPEC(Planck_function, Gibbs_energy / thermodynamic_temperature);       // TODO how to handle "negative" part
 QUANTITY_SPEC(Joule_Thomson_coefficient, thermodynamic_temperature / pressure);
-QUANTITY_SPEC(efficiency_thermodynamics, work / heat);
+QUANTITY_SPEC(efficiency_thermodynamics, dimensionless, work / heat);
 QUANTITY_SPEC(maximum_efficiency, thermodynamic_temperature / thermodynamic_temperature);
 QUANTITY_SPEC(specific_gas_constant, entropy / mass);
 QUANTITY_SPEC(mass_concentration_of_water, mass / volume);
