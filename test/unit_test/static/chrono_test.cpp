@@ -98,7 +98,7 @@ static_assert(quantity_point{sys_seconds{1s}} + 1 * s ==
 static_assert(quantity_point{sys_seconds{1s}} + 1 * min ==
               time_point<si::second, std::chrono::system_clock, sys_seconds::rep>{61 * s});
 
-// to_std_duration
+// to_chrono_duration
 static_assert(to_chrono_duration(1 * s) == 1s);
 static_assert(to_chrono_duration(2 * h) == 2h);
 static_assert(to_chrono_duration(3 * ns) == 3ns);
@@ -109,7 +109,7 @@ static_assert(is_same_v<decltype(to_chrono_duration(1 * s))::period, std::ratio<
 static_assert(is_same_v<decltype(to_chrono_duration(2 * h))::period, std::ratio<3600>>);
 static_assert(is_same_v<decltype(to_chrono_duration(3 * ns))::period, std::nano>);
 
-// to_std_time_point
+// to_chrono_time_point
 static_assert(to_chrono_time_point(quantity_point{sys_seconds{1s}}) == sys_seconds{1s});
 static_assert(to_chrono_time_point(quantity_point{sys_days{sys_days::duration{1}}}) == sys_days{sys_days::duration{1}});
 
