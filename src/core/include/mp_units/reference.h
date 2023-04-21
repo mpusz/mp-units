@@ -48,9 +48,6 @@ template<auto Q, auto U>
   return U;
 }
 
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
-
 /**
  * @brief Quantity reference type
  *
@@ -138,11 +135,18 @@ struct reference {
   }
 };
 
-template<Reference R, typename Rep>
+template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
+class quantity;
+
+template<Reference auto R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
+[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
+
+template<typename Rep, Reference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
-  return quantity<R{}, std::remove_cvref_t<Rep>>(std::forward<Rep>(lhs));
+  return make_quantity<R{}>(std::forward<Rep>(lhs));
 }
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;

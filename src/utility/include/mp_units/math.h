@@ -61,8 +61,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
     return q;
   } else {
     using std::pow;
-    return static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))) *
-           reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{};
+    return make_quantity<reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{}>(
+      static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
 
@@ -80,7 +80,8 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::sqrt;
-  return static_cast<rep>(sqrt(q.number())) * reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{};
+  return make_quantity<reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{}>(
+    static_cast<rep>(sqrt(q.number())));
 }
 
 /**
@@ -97,7 +98,8 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::cbrt;
-  return static_cast<rep>(cbrt(q.number())) * reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{};
+  return make_quantity<reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{}>(
+    static_cast<rep>(cbrt(q.number())));
 }
 
 /**
@@ -113,7 +115,7 @@ template<QuantityOf<dimension_one> Q>
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {
   using std::exp;
-  return value_cast<Q::unit>(exp(value_cast<one>(q).number()) * dimensionless[one]);
+  return value_cast<Q::unit>(make_quantity<dimensionless[one]>(exp(value_cast<one>(q).number())));
 }
 
 /**
@@ -127,7 +129,7 @@ template<Quantity Q>
   requires requires { abs(q.number()); } || requires { std::abs(q.number()); }
 {
   using std::abs;
-  return abs(q.number()) * Q::reference;
+  return make_quantity<Q::reference>(abs(q.number()));
 }
 
 /**
@@ -142,7 +144,7 @@ template<Representation Rep, Reference R>
   requires requires { std::numeric_limits<Rep>::epsilon(); }
 [[nodiscard]] constexpr Quantity auto epsilon(R r) noexcept
 {
-  return std::numeric_limits<Rep>::epsilon() * r;
+  return make_quantity<r>(std::numeric_limits<Rep>::epsilon());
 }
 
 /**
@@ -169,9 +171,10 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
     if constexpr (To == get_unit(R)) {
-      return floor(q.number()) * reference<get_quantity_spec(R), To>{};
+      return make_quantity<reference<get_quantity_spec(R), To>{}>(floor(q.number()));
     } else {
-      return handle_signed_results(floor(value_cast<To>(q).number()) * reference<get_quantity_spec(R), To>{});
+      return handle_signed_results(
+        make_quantity<reference<get_quantity_spec(R), To>{}>(floor(value_cast<To>(q).number())));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -205,9 +208,10 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
     if constexpr (To == get_unit(R)) {
-      return ceil(q.number()) * reference<get_quantity_spec(R), To>{};
+      return make_quantity<reference<get_quantity_spec(R), To>{}>(ceil(q.number()));
     } else {
-      return handle_signed_results(ceil(value_cast<To>(q).number()) * reference<get_quantity_spec(R), To>{});
+      return handle_signed_results(
+        make_quantity<reference<get_quantity_spec(R), To>{}>(ceil(value_cast<To>(q).number())));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -238,7 +242,7 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (To == get_unit(R)) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
-      return round(q.number()) * reference<get_quantity_spec(R), To>{};
+      return make_quantity<reference<get_quantity_spec(R), To>{}>(round(q.number()));
     } else {
       return value_cast<To>(q);
     }
@@ -273,7 +277,7 @@ template<Quantity Q1, Quantity Q2>
 {
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference), decltype(hypot(x.number(), y.number()))>;
-  return hypot(type{x}.number(), type{y}.number()) * type::reference;
+  return make_quantity<type::reference>(hypot(type{x}.number(), type{y}.number()));
 }
 
 /**
@@ -291,7 +295,7 @@ hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
   using std::hypot;
   using type = quantity<common_reference(Q1::reference, Q2::reference, Q3::reference),
                         decltype(hypot(x.number(), y.number(), z.number()))>;
-  return hypot(type{x}.number(), type{y}.number(), type{z}.number()) * type::reference;
+  return make_quantity<type::reference>(hypot(type{x}.number(), type{y}.number(), type{z}.number()));
 }
 
 namespace isq {
@@ -302,7 +306,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
-  return sin(q[si::radian].number()) * one;
+  return make_quantity<one>(sin(q[si::radian].number()));
 }
 
 template<QuantityOf<angular_measure> Q>
@@ -311,7 +315,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
-  return cos(q[si::radian].number()) * one;
+  return make_quantity<one>(cos(q[si::radian].number()));
 }
 
 template<QuantityOf<angular_measure> Q>
@@ -320,7 +324,7 @@ template<QuantityOf<angular_measure> Q>
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
-  return tan(q[si::radian].number()) * one;
+  return make_quantity<one>(tan(q[si::radian].number()));
 }
 
 template<QuantityOf<dimension_one> Q>
@@ -329,7 +333,7 @@ template<QuantityOf<dimension_one> Q>
   requires requires { asin(q.number()); } || requires { std::asin(q.number()); }
 {
   using std::asin;
-  return asin(value_cast<one>(q).number()) * angular_measure[si::radian];
+  return make_quantity<angular_measure[si::radian]>(asin(value_cast<one>(q).number()));
 }
 
 template<QuantityOf<dimension_one> Q>
@@ -338,7 +342,7 @@ template<QuantityOf<dimension_one> Q>
   requires requires { acos(q.number()); } || requires { std::acos(q.number()); }
 {
   using std::acos;
-  return acos(value_cast<one>(q).number()) * angular_measure[si::radian];
+  return make_quantity<angular_measure[si::radian]>(acos(value_cast<one>(q).number()));
 }
 
 template<QuantityOf<dimension_one> Q>
@@ -347,7 +351,7 @@ template<QuantityOf<dimension_one> Q>
   requires requires { atan(q.number()); } || requires { std::atan(q.number()); }
 {
   using std::atan;
-  return atan(value_cast<one>(q).number()) * angular_measure[si::radian];
+  return make_quantity<angular_measure[si::radian]>(atan(value_cast<one>(q).number()));
 }
 
 }  // namespace isq
