@@ -40,7 +40,7 @@ int main()
   constexpr auto R = isq::resistance(4.7 * si::kilo<si::ohm>);
 
   for (auto t = 0 * ms; t <= 50 * ms; ++t) {
-    const QuantityOf<isq::voltage> auto Vt = V0 * exp(-t / (R * C));
+    const QuantityOf<isq::voltage> auto Vt = V0 * exp(dimensionless(-t / (R * C)));
 
     std::cout << "at " << t << " voltage is ";
 

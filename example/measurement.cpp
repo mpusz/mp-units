@@ -30,14 +30,14 @@
 
 namespace {
 
-template<class T>
+template<typename T>
 class measurement {
 public:
   using value_type = T;
 
   measurement() = default;
 
-  constexpr explicit measurement(const value_type& val, const value_type& err = {}) : value_(val)
+  constexpr explicit measurement(value_type val, const value_type& err = {}) : value_(std::move(val))
   {
     // it sucks that using declaration cannot be provided for a constructor initializer list
     using namespace std;
