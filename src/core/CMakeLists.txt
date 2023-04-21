@@ -52,7 +52,6 @@ add_library(
     include/mp_units/bits/quantity_concepts.h
     include/mp_units/bits/quantity_point_concepts.h
     include/mp_units/bits/quantity_spec_concepts.h
-    include/mp_units/bits/ratio_maths.h
     include/mp_units/bits/ratio.h
     include/mp_units/bits/reference_concepts.h
     include/mp_units/bits/representation_concepts.h
