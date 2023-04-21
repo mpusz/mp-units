@@ -83,11 +83,15 @@ static_assert(std::three_way_comparable<quantity<isq::length[m]>>);
 // member values
 //////////////////
 
+static_assert(quantity<si::metre>::reference == si::metre);
+static_assert(quantity<si::metre>::quantity_spec == kind_of<isq::length>);
+static_assert(quantity<si::metre>::dimension == isq::dim_length);
+static_assert(quantity<si::metre>::unit == si::metre);
+
 static_assert(quantity<isq::length[m]>::reference == isq::length[m]);
 static_assert(quantity<isq::length[m]>::quantity_spec == isq::length);
 static_assert(quantity<isq::length[m]>::dimension == isq::dim_length);
 static_assert(quantity<isq::length[m]>::unit == si::metre);
-
 
 //////////////////
 // member types
@@ -155,8 +159,7 @@ static_assert(!std::convertible_to<int, quantity<dimensionless[percent]>>);
 static_assert(!std::constructible_from<quantity<dimensionless[percent]>, short>);
 static_assert(!std::convertible_to<short, quantity<dimensionless[percent]>>);
 
-static_assert(!std::constructible_from<quantity<dimensionless[percent], short>,
-                                       int>);  // truncating implicit conversions int -> short allowed
+static_assert(!std::constructible_from<quantity<dimensionless[percent], short>, int>);
 static_assert(!std::convertible_to<int, quantity<dimensionless[percent], short>>);
 
 
