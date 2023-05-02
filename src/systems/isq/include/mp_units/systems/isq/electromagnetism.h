@@ -52,7 +52,7 @@ QUANTITY_SPEC(electric_flux_density, electric_polarization);  // vector
 inline constexpr auto electric_displacement = electric_flux_density;
 QUANTITY_SPEC(capacitance, electric_charge / voltage);
 // TODO how to calculate an argument of a vector product?
-QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity));  // vector
+QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity), quantity_character::vector);
 QUANTITY_SPEC(magnetic_vector_potential,
               magnetic_flux_density* length);  // vector // TODO what is a correct equation here?
 QUANTITY_SPEC(linked_flux, magnetic_vector_potential* displacement, quantity_character::scalar);

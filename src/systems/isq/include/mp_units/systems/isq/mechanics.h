@@ -83,7 +83,7 @@ QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scal
 QUANTITY_SPEC(drag_coefficient, dimensionless, drag_force / (mass_density * pow<2>(speed) * area),
               quantity_character::scalar);
 inline constexpr auto drag_factor = drag_coefficient;
-QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity);
+QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_character::scalar);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(power, force* velocity, quantity_character::scalar);
