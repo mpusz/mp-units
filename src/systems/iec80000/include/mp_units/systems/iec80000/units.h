@@ -30,7 +30,7 @@ namespace mp_units::iec80000 {
 
 // clang-format off
 inline constexpr struct erlang : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
-inline constexpr struct bit : named_unit<"bit", one> {} bit;
+inline constexpr struct bit : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 inline constexpr struct octet : named_unit<"o", mag<8> * bit> {} octet;
 inline constexpr struct byte : named_unit<"B", mag<8> * bit> {} byte;
 inline constexpr struct baud : named_unit<"Bd", 1 / si::second, kind_of<modulation_rate>> {} baud;

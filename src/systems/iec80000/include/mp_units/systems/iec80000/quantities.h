@@ -45,7 +45,7 @@ QUANTITY_SPEC(waiting_probability, dimensionless);
 QUANTITY_SPEC(call_intensity, 1 / isq::duration);
 inline constexpr auto calling_rate = call_intensity;
 QUANTITY_SPEC(completed_call_intensity, call_intensity);
-QUANTITY_SPEC(storage_capacity, dimensionless);
+QUANTITY_SPEC(storage_capacity, dimensionless, is_kind);
 inline constexpr auto storage_size = storage_capacity;
 QUANTITY_SPEC(equivalent_binary_storage_capacity, storage_capacity);
 QUANTITY_SPEC(transfer_rate, storage_capacity / isq::duration);

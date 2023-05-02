@@ -45,11 +45,11 @@ QUANTITY_SPEC(radius_of_curvature, radius);
 QUANTITY_SPEC(curvature, 1 / radius_of_curvature);
 QUANTITY_SPEC(area, pow<2>(length));
 QUANTITY_SPEC(volume, pow<3>(length));
-QUANTITY_SPEC(angular_measure, arc_length / radius);
+QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, is_kind);
 QUANTITY_SPEC(rotational_displacement, angular_measure, path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
-QUANTITY_SPEC(solid_angular_measure, area / pow<2>(radius));
+QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 inline constexpr auto duration = time;
 QUANTITY_SPEC(speed, length / time);                         // differs from ISO 80000
 QUANTITY_SPEC(velocity, speed, position_vector / duration);  // vector  // differs from ISO 80000
