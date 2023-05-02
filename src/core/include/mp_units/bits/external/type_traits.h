@@ -87,31 +87,31 @@ template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
 
 template<typename T, auto... Vs>
-consteval bool contains()
+[[nodiscard]] consteval bool contains()
 {
   return (false || ... || is_same_v<std::remove_const_t<decltype(Vs)>, T>);
 }
 
 template<template<typename...> typename T, typename... Ts>
-consteval bool contains()
+[[nodiscard]] consteval bool contains()
 {
   return (false || ... || is_specialization_of<Ts, T>);
 }
 
 template<template<auto...> typename T, typename... Ts>
-consteval bool contains()
+[[nodiscard]] consteval bool contains()
 {
   return (false || ... || is_specialization_of_v<Ts, T>);
 }
 
 template<typename T, std::same_as<T> auto V>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   return V;
 }
 
 template<typename T, auto V1, auto V2, auto... Vs>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   if constexpr (is_same_v<T, std::remove_const_t<decltype(V1)>>)
     return V1;
@@ -121,13 +121,13 @@ consteval auto get()
 
 template<template<typename...> typename T, typename T1>
   requires is_specialization_of<T1, T>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   return T1{};
 }
 
 template<template<typename...> typename T, typename T1, typename T2, typename... Ts>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   if constexpr (is_specialization_of<T1, T>)
     return T1{};
@@ -137,13 +137,13 @@ consteval auto get()
 
 template<template<auto...> typename T, typename T1>
   requires is_specialization_of_v<T1, T>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   return T1{};
 }
 
 template<template<auto...> typename T, typename T1, typename T2, typename... Ts>
-consteval auto get()
+[[nodiscard]] consteval auto get()
 {
   if constexpr (is_specialization_of_v<T1, T>)
     return T1{};
