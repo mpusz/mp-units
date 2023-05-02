@@ -155,6 +155,9 @@ template<typename, auto...>
 #endif
 struct quantity_spec;
 
+inline constexpr struct is_kind {
+} is_kind;
+
 /**
  * @brief Specialization defining a base quantity
  *
@@ -236,7 +239,7 @@ template<detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_charac
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Eq, Args...> : detail::quantity_spec_interface {
 #else
-template<typename Self, detail::IntermediateDerivedQuantitySpec auto Eq, auto... Args>
+template<typename Self, detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
@@ -270,13 +273,14 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
  *
  * @tparam Q quantity specification of a parent quantity
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
+ *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #ifdef __cpp_explicit_this_parameter
-template<detail::NamedQuantitySpec auto Q, one_of<quantity_character> auto... Args>
+template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
-struct quantity_spec<Q, Args...> : std::remove_const_t<decltype(Q)> {
+struct quantity_spec<QS, Args...> : std::remove_const_t<decltype(QS)> {
 #else
-template<typename Self, detail::NamedQuantitySpec auto QS, auto... Args>
+template<typename Self, detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
 #endif
@@ -325,17 +329,18 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
  *
  * @tparam Q quantity specification of a parent quantity
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
+ *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #ifdef __cpp_explicit_this_parameter
 template<detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
-         one_of<quantity_character> auto... Args>
+         one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } ||
            (requires { QS._equation_; } && (explicitly_convertible(Eq, QS._equation_)))) &&
           (... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<QS, Eq, Args...> : quantity_spec<QS, Args...> {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
-         auto... Args>
+         one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } ||
            (requires { QS._equation_; } && (explicitly_convertible(Eq, QS._equation_)))) &&
           (... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
@@ -442,7 +447,6 @@ struct kind_of_ : quantity_spec<kind_of_<Q>, Q> {
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(get_kind(Q) == Q)
 inline constexpr kind_of_<Q> kind_of;
-
 
 namespace detail {
 
@@ -589,7 +593,7 @@ template<QuantitySpec Q>
   requires requires { Q::_equation_; }
 [[nodiscard]] consteval bool defines_equation(Q)
 {
-  if constexpr (requires { Q::_parent_; })
+  if constexpr (requires { Q::_parent_._equation_; })
     return Q::_parent_._equation_ != Q::_equation_;
   else
     return true;
@@ -1263,14 +1267,14 @@ template<QuantitySpec From, QuantitySpec To>
     else
       return convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity));
   } else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
-    if constexpr (get_kind(from) != get_kind(to))
-      return no;
-    else if constexpr (have_common_base(from, to)) {
+    if constexpr (have_common_base(from, to)) {
       if (std::derived_from<From, To>)
         return yes;
       else
         return std::derived_from<To, From> ? explicit_conversion : cast;
-    } else if constexpr (get_complexity(from) != get_complexity(to)) {
+    } else if constexpr (get_kind(from) != get_kind(to))
+      return no;
+    else if constexpr (get_complexity(from) != get_complexity(to)) {
       if constexpr (get_complexity(from) > get_complexity(to))
         return convertible_impl(explode<get_complexity(to)>(from).quantity, to);
       else {
@@ -1327,7 +1331,18 @@ template<QuantitySpec Q>
   requires requires(Q q) { get_kind(q); }
 using to_kind = std::remove_const_t<decltype(get_kind(Q{}))>;
 
+#ifdef __cpp_explicit_this_parameter
+template<NamedQuantitySpec auto QS, auto... Args>
+[[nodiscard]] consteval bool defined_as_kind(quantity_spec<QS, Args...>)
+#else
+template<typename Self, NamedQuantitySpec auto QS, auto... Args>
+[[nodiscard]] consteval bool defined_as_kind(quantity_spec<Self, QS, Args...>)
+#endif
+{
+  return contains<struct is_kind, Args...>();
 }
+
+}  // namespace detail
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q)
@@ -1344,8 +1359,17 @@ template<QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind(Q q)
 {
+  auto defined_as_kind = [](auto qq) {
+    if constexpr (requires { detail::defined_as_kind(qq); })
+      return detail::defined_as_kind(qq);
+    else
+      return false;
+  };
+
   if constexpr (QuantityKindSpec<Q>) {
     return remove_kind(q);
+  } else if constexpr (defined_as_kind(q)) {
+    return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind(Q::_parent_);
   } else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>) {
