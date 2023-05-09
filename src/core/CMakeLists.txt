@@ -22,10 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-# core library options
-set(${projectPrefix}DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE ${projectPrefix}DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
-
 # find dependencies
 if(NOT TARGET gsl::gsl-lite)
     find_package(gsl-lite CONFIG REQUIRED)
@@ -33,7 +29,7 @@ endif()
 
 # check if libc++ is being used
 include(CheckLibcxxInUse)
-check_libcxx_in_use(${projectPrefix}LIBCXX)
+check_libcxx_in_use("${UNITS_LIBCXX}")
 
 # core library definition
 add_library(
@@ -67,15 +63,16 @@ add_library(
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
 target_include_directories(
-    mp-units-core ${unitsAsSystem} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                                             $<INSTALL_INTERFACE:include>
+    mp-units-core ${UNITS_AS_SYSTEM_HEADERS_INTERNAL} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if(${projectPrefix}LIBCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
+    if(${UNITS_LIBCXX} AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
         if(NOT TARGET range-v3::range-v3)
             find_package(range-v3 CONFIG REQUIRED)
         endif()
+
         target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -85,17 +82,17 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-if(DEFINED ${projectPrefix}DOWNCAST_MODE)
-    set(downcast_mode_options OFF ON AUTO)
-    list(FIND downcast_mode_options "${${projectPrefix}DOWNCAST_MODE}" downcast_mode)
+if(DEFINED ${UNITS_DOWNCAST_MODE})
+    set(DOWNCAST_MODE_OPTIONS OFF ON AUTO)
+    list(FIND DOWNCAST_MODE_OPTIONS "${UNITS_DOWNCAST_MODE}" downcast_mode)
 
     if(downcast_mode EQUAL -1)
         message(FATAL_ERROR
-                    "'${projectPrefix}DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${${projectPrefix}DOWNCAST_MODE}' received)"
+            "'${UNITS_DOWNCAST_MODE}' should be one of ${DOWNCAST_MODE_OPTIONS} ('${UNITS_DOWNCAST_MODE}' received)"
         )
     else()
-        message(STATUS "${projectPrefix}DOWNCAST_MODE: ${${projectPrefix}DOWNCAST_MODE}")
-        target_compile_definitions(mp-units-core INTERFACE ${projectPrefix}DOWNCAST_MODE=${downcast_mode})
+        message(STATUS "${UNITS_DOWNCAST_MODE}: ${UNITS_DOWNCAST_MODE}")
+        target_compile_definitions(mp-units-core INTERFACE ${UNITS_DOWNCAST_MODE}=${downcast_mode})
     endif()
 endif()
 

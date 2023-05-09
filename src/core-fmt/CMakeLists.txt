@@ -22,15 +22,13 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-option(${projectPrefix}USE_LIBFMT "Enables usage of libfmt instead of the one from 'std'" ON)
-message(STATUS "${projectPrefix}USE_LIBFMT: ${${projectPrefix}USE_LIBFMT}")
-
 add_units_module(core-fmt DEPENDENCIES mp-units::core HEADERS include/units/format.h)
-target_compile_definitions(mp-units-core-fmt INTERFACE ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>)
+target_compile_definitions(mp-units-core-fmt INTERFACE ${UNITS_USE_LIB_FMT}=$<BOOL:${UNITS_USE_LIB_FMT}>)
 
-if(${projectPrefix}USE_LIBFMT)
+if(${UNITS_USE_LIB_FMT})
     if(NOT TARGET fmt::fmt)
         find_package(fmt CONFIG REQUIRED)
     endif()
+
     target_link_libraries(mp-units-core-fmt INTERFACE fmt::fmt)
 endif()

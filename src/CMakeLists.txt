@@ -21,20 +21,14 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.19)
-project(mp-units VERSION 0.8.0 LANGUAGES CXX)
 
-set(projectPrefix UNITS_)
-
-option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
-
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
 include(GNUInstallDirs)
 
-if(${projectPrefix}AS_SYSTEM_HEADERS)
-    set(unitsAsSystem SYSTEM)
+if(UNITS_AS_SYSTEM_HEADERS)
+    set(UNITS_AS_SYSTEM_HEADERS_INTERNAL SYSTEM)
 endif()
 
 add_subdirectory(core)
@@ -58,5 +52,5 @@ write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameM
 install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )

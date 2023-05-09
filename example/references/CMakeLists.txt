@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 3.2)
 function(add_example target)
     add_executable(${target}-references ${target}.cpp)
     target_link_libraries(${target}-references PRIVATE ${ARGN})
-    target_compile_definitions(${target}-references PRIVATE ${projectPrefix}NO_LITERALS ${projectPrefix}NO_ALIASES)
+    target_compile_definitions(${target}-references PRIVATE UNITS_NO_LITERALS UNITS_NO_ALIASES)
 endfunction()
 
 add_example(avg_speed mp-units::core-io mp-units::si mp-units::si-cgs mp-units::si-international)
@@ -50,10 +50,10 @@ add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
-if(NOT ${projectPrefix}LIBCXX)
+if(NOT ${UNITS_LIBCXX})
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
     target_compile_definitions(
-        glide_computer_example-references PRIVATE ${projectPrefix}NO_LITERALS ${projectPrefix}NO_ALIASES
+        glide_computer_example-references PRIVATE UNITS_NO_LITERALS UNITS_NO_ALIASES
     )
 
     # TODO uncomment the below when recipes in ConanCenter are fixed

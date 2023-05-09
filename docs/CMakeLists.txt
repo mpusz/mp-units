@@ -22,13 +22,6 @@
 
 cmake_minimum_required(VERSION 3.2)
 
-option(${projectPrefix}BUILD_DOCS "Generate project documentation" ON)
-message(STATUS "${projectPrefix}BUILD_DOCS: ${${projectPrefix}BUILD_DOCS}")
-
-if(NOT ${projectPrefix}BUILD_DOCS)
-    return()
-endif()
-
 # set paths to Conan packages (needed for doxygen)
 # TODO: remove when Conan will learn how to properly create imported build tools targets
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake OPTIONAL)
@@ -104,6 +97,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/concepts.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/customization_points.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/downcasting.rst"
+
     # "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/functions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/metafunctions.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types.rst"
@@ -120,6 +114,7 @@ set(unitsSphinxDocs
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/basic_fixed_string.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/basic_symbol_text.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/core/types/utilities/ratio.rst"
+
     # "${CMAKE_CURRENT_SOURCE_DIR}/reference/math.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/random.rst"
     "${CMAKE_CURRENT_SOURCE_DIR}/reference/systems.rst"
@@ -254,5 +249,5 @@ add_documentation(
 
 add_custom_command(
     TARGET documentation POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/_static/img/*.svg
-                                            ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_images
+    ${CMAKE_CURRENT_BINARY_DIR}/sphinx/_images
 )
