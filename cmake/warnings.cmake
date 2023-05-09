@@ -107,7 +107,7 @@ function(set_warnings)
     _set_flags()
 
     message(STATUS "Setting restrictive compilation warnings")
-    message(STATUS "  Treat warnings as errors: ${${UNITS_WARNINGS_AS_ERRORS}}")
+    message(STATUS "  Treat warnings as errors: ${UNITS_WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting restrictive compilation warnings - done")
 
@@ -125,7 +125,7 @@ function(set_target_warnings target scope)
     _set_flags()
 
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}'")
-    message(STATUS "  Treat warnings as errors: ${${UNITS_WARNINGS_AS_ERRORS}}")
+    message(STATUS "  Treat warnings as errors: ${UNITS_WARNINGS_AS_ERRORS}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}' - done")
 
