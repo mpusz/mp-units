@@ -66,21 +66,6 @@ macro(units_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
-macro(units_option_string OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
-    set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
-
-    if(DEFINED ENV{${OPTION_NAME}})
-        # Allow setting the option through an environment variable
-        set(${OPTION_NAME} $ENV{${OPTION_NAME}})
-    endif()
-
-    if(${OPTION_NAME})
-        add_definitions(-D${OPTION_NAME})
-    endif()
-
-    message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
-endmacro()
-
 macro(units_option_downcast OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
     set_property(CACHE ${OPTION_NAME} PROPERTY STRINGS AUTO ON OFF)
