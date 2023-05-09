@@ -23,22 +23,22 @@
 cmake_minimum_required(VERSION 3.19)
 project(mp-units VERSION 0.8.0 LANGUAGES CXX)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 # Only change the folder behavior if cpr is not a subproject
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
     set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
     set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+
+    # use ccache if available
+    include(ccache)
+    enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 endif()
 
 # Avoid the dll boilerplate code for windows
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-# use ccache if available
-include(ccache)
-enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 
 # set restrictive compilation warnings
 include(warnings)
