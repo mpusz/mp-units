@@ -46,3 +46,6 @@ CMakeUserPresets.json
 # Conan
 *.pyc
 /test_package/build/
+
+# clangd
+.cache/
