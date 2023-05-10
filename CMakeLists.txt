@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.19)
-project(mp-units VERSION 0.8.0 LANGUAGES CXX)
+set(UNITS_VERSION "0.8.0")
+project(mp-units VERSION "${UNITS_VERSION}" LANGUAGES CXX)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
