@@ -52,9 +52,7 @@ add_example(unknown_dimension mp-units::core-io mp-units::si)
 
 if(NOT ${UNITS_LIBCXX})
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
-    target_compile_definitions(
-        glide_computer_example-literals PRIVATE UNITS_NO_REFERENCES UNITS_NO_ALIASES
-    )
+    target_compile_definitions(glide_computer_example-literals PRIVATE UNITS_NO_REFERENCES UNITS_NO_ALIASES)
 
     # TODO uncomment the below when recipes in ConanCenter are fixed
     # find_package(wg21_linear_algebra CONFIG REQUIRED)

@@ -58,8 +58,8 @@ function(add_units_module name)
     add_library(mp-units-${name} INTERFACE ${ARG_HEADERS})
     target_link_libraries(mp-units-${name} INTERFACE ${ARG_DEPENDENCIES})
     target_include_directories(
-        mp-units-${name} ${UNITS_AS_SYSTEM_HEADERS_INTERNAL} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        mp-units-${name} ${UNITS_AS_SYSTEM_HEADERS_INTERNAL}
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
     )
     set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
     add_library(mp-units::${name} ALIAS mp-units-${name})

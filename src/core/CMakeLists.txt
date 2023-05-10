@@ -64,7 +64,7 @@ target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
 target_include_directories(
     mp-units-core ${UNITS_AS_SYSTEM_HEADERS_INTERNAL} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+                                                                $<INSTALL_INTERFACE:include>
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -88,7 +88,7 @@ if(DEFINED ${UNITS_DOWNCAST_MODE})
 
     if(downcast_mode EQUAL -1)
         message(FATAL_ERROR
-            "'${UNITS_DOWNCAST_MODE}' should be one of ${DOWNCAST_MODE_OPTIONS} ('${UNITS_DOWNCAST_MODE}' received)"
+                    "'${UNITS_DOWNCAST_MODE}' should be one of ${DOWNCAST_MODE_OPTIONS} ('${UNITS_DOWNCAST_MODE}' received)"
         )
     else()
         message(STATUS "${UNITS_DOWNCAST_MODE}: ${UNITS_DOWNCAST_MODE}")
