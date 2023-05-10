@@ -51,7 +51,7 @@ find_dependency(gsl-lite)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     __check_libcxx_in_use(__units_libcxx)
 
-    if(__units_libcxx AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
+    if(__units_libcxx AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "14")
         find_dependency(range-v3)
     endif()
 
