@@ -29,7 +29,7 @@ endif()
 
 # check if libc++ is being used
 include(CheckLibcxxInUse)
-check_libcxx_in_use("${UNITS_LIBCXX}")
+check_libcxx_in_use(UNITS_LIBCXX)
 
 # core library definition
 add_library(
@@ -68,7 +68,7 @@ target_include_directories(
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if(${UNITS_LIBCXX} AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "14")
+    if("${UNITS_LIBCXX}" AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "14")
         if(NOT TARGET range-v3::range-v3)
             find_package(range-v3 CONFIG REQUIRED)
         endif()

@@ -49,13 +49,13 @@ find_dependency(gsl-lite)
 
 # add range-v3 dependency only for clang + libc++
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    __check_libcxx_in_use(__units_libcxx)
+    __check_libcxx_in_use(LIBCXX_INTERNAL)
 
-    if(__units_libcxx AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "14")
+    if("${LIBCXX_INTERNAL}" AND "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "14")
         find_dependency(range-v3)
     endif()
 
-    unset(__units_libcxx)
+    unset(LIBCXX_INTERNAL)
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/mp-unitsTargets.cmake")

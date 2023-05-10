@@ -50,7 +50,7 @@ add_example(foot_pound_second mp-units::core-fmt mp-units::si-fps)
 add_example(total_energy mp-units::core-io mp-units::si mp-units::isq-natural)
 add_example(unknown_dimension mp-units::core-io mp-units::si)
 
-if(NOT ${UNITS_LIBCXX})
+if(NOT "${UNITS_LIBCXX}")
     add_example(glide_computer_example mp-units::core-fmt mp-units::si-international glide_computer)
     target_compile_definitions(glide_computer_example-references PRIVATE UNITS_NO_LITERALS UNITS_NO_ALIASES)
 
