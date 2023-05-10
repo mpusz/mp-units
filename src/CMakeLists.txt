@@ -46,7 +46,9 @@ install(TARGETS mp-units EXPORT mp-unitsTargets)
 export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
 configure_file("mp-unitsConfig.cmake" "." COPYONLY)
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file(mp-unitsConfigVersion.cmake VERSION "${CMAKE_PROJECT_VERSION}" COMPATIBILITY SameMajorVersion)
+write_basic_package_version_file(
+    mp-unitsConfigVersion.cmake VERSION "${CMAKE_PROJECT_VERSION}" COMPATIBILITY SameMajorVersion
+)
 
 # installation
 install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
