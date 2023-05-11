@@ -269,7 +269,7 @@ jobs:
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
+          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:skip_docs=True
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
