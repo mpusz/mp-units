@@ -387,8 +387,8 @@ differences:
   .. code-block:: shell
 
       conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=outdated -u
-      cmake --preset default
-      cmake --build --preset release
+      cmake --preset conan-default
+      cmake --build --preset conan-release
 
 
 Install
@@ -403,8 +403,8 @@ to find it, it is enough to perform the following steps:
     conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
     mv CMakeUserPresets.json src
     cd src
-    cmake --preset default -DCMAKE_INSTALL_PREFIX=<your_installation_path>
-    cmake --build --preset release --target install
+    cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=<your_installation_path>
+    cmake --build --preset conan-release --target install
 
 
 Contributing (or just building all the tests and examples)
@@ -420,7 +420,7 @@ you should:
 .. code-block:: shell
 
     git clone https://github.com/mpusz/units.git && cd units
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
+    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b missing
     conan build .
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -431,9 +431,9 @@ step with the explicit CMake build:
 
 .. code-block:: shell
 
-    cmake --preset default
-    cmake --build --preset release
-    cmake --build --preset release --target test
+    cmake --preset conan-default
+    cmake --build --preset conan-release
+    cmake --build --preset conan-release --target test
 
 
 Building documentation
@@ -450,8 +450,8 @@ In case you would like to build the project's documentation, you should:
     git clone https://github.com/mpusz/units.git && cd units
     pip3 install -r docs/requirements.txt
     conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
-    cmake --preset default
-    cmake --build --preset release --target documentation
+    cmake --preset conan-default
+    cmake --build --preset conan-release --target documentation
 
 The above will download and install all of the dependencies needed and build the documentation.
 
@@ -463,7 +463,7 @@ To test CMake installation and Conan packaging or create a Conan package run:
 
 .. code-block:: shell
 
-    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
+    conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -c user.build:skip_docs=True -b missing
 
 The above will create a Conan package and run tests provided in *./test_package* directory.
 
