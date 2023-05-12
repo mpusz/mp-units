@@ -61,8 +61,9 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
+          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB-docs
           restore-keys: |
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
             build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
             build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
             build-${{ matrix.os }}-$BUILD_TYPE-
