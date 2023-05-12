@@ -165,7 +165,7 @@ user.build:skip_la
 
 **Defaulted to**: ``False``
 
-If `user.build:all`_ is enabled, among others, Conan installs the external `wg21-linear_algebra<https://conan.io/center/wg21-linear_algebra>`_
+If `user.build:all`_ is enabled, among others, Conan installs the external `wg21-linear_algebra <https://conan.io/center/wg21-linear_algebra>`_
 dependency and enables compilation of linear algebra based usage examples. Such behavior can be disabled with this option.
 
 user.build:skip_docs
