@@ -146,8 +146,8 @@ Specifies how :ref:`design/downcasting:The Downcasting Facility` works:
 Conan Configuration Properties
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-build_all
-+++++++++
+user.build:all
+++++++++++++++
 
 **Values**: ``True``/``False``
 
@@ -158,14 +158,24 @@ To support this it requires some additional Conan build dependencies described i
 `Repository Structure and Dependencies`_.
 It also runs unit tests during Conan build (unless ``tools.build:skip_test`` configuration property is set to ``True``)
 
-skip_docs
-+++++++++
+user.build:skip_la
+++++++++++++++++++
 
 **Values**: ``True``/``False``
 
 **Defaulted to**: ``False``
 
-If `build_all`_ is enabled, among others, Conan installs the documentation generation dependencies (i.e. doxygen) and
+If `user.build:all`_ is enabled, among others, Conan installs the external `wg21-linear_algebra<https://conan.io/center/wg21-linear_algebra>`_
+dependency and enables compilation of linear algebra based usage examples. Such behavior can be disabled with this option.
+
+user.build:skip_docs
+++++++++++++++++++++
+
+**Values**: ``True``/``False``
+
+**Defaulted to**: ``False``
+
+If `user.build:all`_ is enabled, among others, Conan installs the documentation generation dependencies (i.e. doxygen) and
 turns on the project documentation generation. Such behavior can be disabled with this option.
 
 CMake Options
@@ -179,6 +189,16 @@ UNITS_AS_SYSTEM_HEADERS
 **Defaulted to**: ``OFF``
 
 Exports library as system headers.
+
+
+UNITS_BUILD_LA
+++++++++++++++
+
+**Values**: ``ON``/``OFF``
+
+**Defaulted to**: ``ON``
+
+Enables building code depending on the linear algebra library.
 
 
 UNITS_BUILD_DOCS
@@ -414,8 +434,8 @@ In case you would like to build all the source code (with unit tests and example
 you should:
 
 1. Use the *CMakeLists.txt* from the top-level directory.
-2. Run Conan with `build_all`_ = ``True``
-   (use ``-o build_docs=False`` if you want to skip the documentation generation).
+2. Run Conan with `user.build:all`_ = ``True``
+   (use ``-c user.build:skip_docs=True`` if you want to skip the documentation generation).
 
 .. code-block:: shell
 
@@ -443,7 +463,7 @@ In case you would like to build the project's documentation, you should:
 
 1. Use the *CMakeLists.txt* from the top-level directory.
 2. Obtain Python dependencies.
-3. Run Conan with `build_all`_ = ``True``.
+3. Run Conan with `user.build:all`_ = ``True``.
 
 .. code-block:: shell
 

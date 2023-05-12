@@ -78,7 +78,11 @@ class MPUnitsConan(ConanFile):
 
     @property
     def _build_all(self):
-        return bool(self.conf.get("user.build:all", default=True))
+        return bool(self.conf.get("user.build:all", default=False))
+
+    @property
+    def _skip_la(self):
+        return bool(self.conf.get("user.build:skip_la", default=False))
 
     @property
     def _skip_docs(self):
@@ -114,9 +118,10 @@ class MPUnitsConan(ConanFile):
     def build_requirements(self):
         if self._build_all:
             self.test_requires("catch2/3.1.0")
-            self.test_requires("wg21-linear_algebra/0.7.3")
-        if not self._skip_docs:
-            self.tool_requires("doxygen/1.9.4")
+            if not self._skip_la:
+                self.test_requires("wg21-linear_algebra/0.7.3")
+            if not self._skip_docs:
+                self.tool_requires("doxygen/1.9.4")
 
     def validate(self):
         check_min_cppstd(self, self._min_cppstd)
@@ -140,6 +145,7 @@ class MPUnitsConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables["UNITS_DOWNCAST_MODE"] = str(self.options.downcast_mode).upper()
+        tc.variables["UNITS_BUILD_LA"] = self._build_all and not self._skip_la
         tc.variables["UNITS_BUILD_DOCS"] = self._build_all and not self._skip_docs
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()

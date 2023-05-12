@@ -28,6 +28,9 @@ set(projectPrefix UNITS_)
 option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
+option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
+message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)

@@ -401,8 +401,11 @@ concept castable_number_ =  // exposition only
 
 template<typename T>
 concept scalable_ =  // exposition only
-  castable_number_<T> || (requires { typename T::value_type; } && castable_number_<typename T::value_type> &&
-                          scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
+  castable_number_<T> ||
+  (requires { typename T::value_type; } && castable_number_<typename T::value_type> &&
+   scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>) ||
+  (requires { typename T::element_type; } && castable_number_<typename T::element_type> &&
+   scalable_number_<T, std::common_type_t<typename T::element_type, std::intmax_t>>);
 
 template<typename T, typename U>
 concept scalable_with_ =  // exposition only
@@ -421,6 +424,12 @@ inline constexpr bool is_wrapped_quantity<T> =
   is_wrapped_quantity<typename T::value_type>;
 
 template<typename T>
+  requires requires { typename T::element_type; }
+inline constexpr bool is_wrapped_quantity<T> =
+  Quantity<typename T::element_type> || QuantityLike<typename T::element_type> ||
+  is_wrapped_quantity<typename T::element_type>;
+
+template<typename T>
   requires requires { typename T::quantity_type; }
 inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::quantity_type>;
 
@@ -429,8 +438,9 @@ inline constexpr bool is_wrapped_quantity<T> = Quantity<typename T::quantity_typ
 /**
  * @brief A concept matching types that wrap quantity objects.
  *
- * Satisfied by all wrapper types that satisfy `Quantity<typename T::value_type>`
- * recursively (i.e. `std::optional<si::length<si::metre>>`).
+ * Satisfied by all wrapper types that satisfy `Quantity<typename T::value_type>` or
+ * `Quantity<typename T::element_type>` recursively
+ * (i.e. `std::optional<si::length<si::metre>>`).
  */
 template<typename T>
 concept wrapped_quantity_ =  // exposition only
