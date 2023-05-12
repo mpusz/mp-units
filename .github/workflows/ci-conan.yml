@@ -45,11 +45,13 @@ jobs:
               name: "Windows MSVC 14.2",
               os: windows-2019,
               compiler: { type: VISUAL, version: 16, cc: "", cxx: "", std: 20 },
+              conan-config: "-c user.build:skip_la=True",
             }
           - {
               name: "Windows MSVC 14.3",
               os: windows-2022,
               compiler: { type: MSVC, version: 193, cc: "", cxx: "", std: 23 },
+              conan-config: "",
             }
           - {
               name: "Ubuntu GCC-10",
@@ -62,6 +64,7 @@ jobs:
                   cxx: "g++-10",
                   std: 20,
                 },
+              conan-config: "",
             }
           - {
               name: "Ubuntu GCC-11",
@@ -74,6 +77,7 @@ jobs:
                   cxx: "g++-11",
                   std: 20,
                 },
+              conan-config: "",
             }
           - {
               name: "Ubuntu GCC-12",
@@ -86,6 +90,7 @@ jobs:
                   cxx: "g++-12",
                   std: 20,
                 },
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-12 + libstdc++11",
@@ -99,6 +104,7 @@ jobs:
                   std: 20,
                 },
               lib: "libstdc++11",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-12 + libc++",
@@ -112,6 +118,7 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-13 + libc++",
@@ -125,6 +132,7 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-14 + libc++",
@@ -138,6 +146,7 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-15 + libc++",
@@ -151,6 +160,7 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-16 + libc++",
@@ -164,6 +174,7 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "MacOS Apple Clang 13",
@@ -176,6 +187,7 @@ jobs:
                   cxx: "clang++",
                   std: 20,
                 },
+              conan-config: "",
             }
         build_type: ["Release", "Debug"]
         downcast_mode: ["on", "auto"]
@@ -270,7 +282,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True
+                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash
