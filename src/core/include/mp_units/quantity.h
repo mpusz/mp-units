@@ -59,7 +59,7 @@ concept Harmonic =  // exposition only
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =  // exposition only
   Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
-  convertible_to(QFrom::unit, QTo::unit) && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
+  convertible(QFrom::unit, QTo::unit) && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
   (treat_as_floating_point<typename QTo::rep> ||
    (!treat_as_floating_point<typename QFrom::rep> && Harmonic<QFrom::unit, QTo::unit>));
 
@@ -73,9 +73,11 @@ concept InvocableQuantities =
                  typename Q2::rep> &&
   requires { common_reference(Q1::reference, Q2::reference); } &&
   std::constructible_from<quantity<common_reference(Q1::reference, Q2::reference),
-                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>, Q1> &&
+                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>,
+                          Q1> &&
   std::constructible_from<quantity<common_reference(Q1::reference, Q2::reference),
-                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>, Q2>;
+                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>,
+                          Q2>;
 
 template<typename Func, Quantity Q1, Quantity Q2>
   requires detail::InvocableQuantities<Func, Q1, Q2>
@@ -523,7 +525,6 @@ public:
 template<mp_units::Quantity Q, typename Value>
   requires(!mp_units::Quantity<Value>) && (Q::dimension == mp_units::dimension_one) && (Q::unit == mp_units::one) &&
           requires { typename common_type_t<typename Q::rep, Value>; }
-struct common_type<Value, Q> : common_type<Q, Value> {
-};
+struct common_type<Value, Q> : common_type<Q, Value> {};
 
 }  // namespace std

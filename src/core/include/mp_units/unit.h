@@ -596,7 +596,7 @@ inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, m
 
 
 // convertible_to
-[[nodiscard]] consteval bool convertible_to(Unit auto u1, Unit auto u2)
+[[nodiscard]] consteval bool convertible(Unit auto from, Unit auto to)
 {
   return detail::have_same_canonical_reference_unit(u1, u2);
 }

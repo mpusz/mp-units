@@ -73,7 +73,7 @@ struct reference {
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U* U2{}> operator*(reference, U2)
+  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U * U2{}> operator*(reference, U2)
   {
     return {};
   }
@@ -103,21 +103,21 @@ struct reference {
   }
 
   template<auto Q2, auto U2>
-  [[nodiscard]] friend consteval bool convertible_to(reference, reference<Q2, U2>)
+  [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
   {
-    return implicitly_convertible(Q, Q2) && convertible_to(U, U2);
+    return implicitly_convertible(Q, Q2) && convertible(U, U2);
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval bool convertible_to(reference, U2 u2)
+  [[nodiscard]] friend consteval bool convertible(reference, U2 u2)
   {
-    return implicitly_convertible(Q, get_quantity_spec(u2)) && convertible_to(U, u2);
+    return implicitly_convertible(Q, get_quantity_spec(u2)) && convertible(U, u2);
   }
 
   template<AssociatedUnit U1>
-  [[nodiscard]] friend consteval bool convertible_to(U1 u1, reference)
+  [[nodiscard]] friend consteval bool convertible(U1 u1, reference)
   {
-    return implicitly_convertible(get_quantity_spec(u1), Q) && convertible_to(u1, U);
+    return implicitly_convertible(get_quantity_spec(u1), Q) && convertible(u1, U);
   }
 };
 

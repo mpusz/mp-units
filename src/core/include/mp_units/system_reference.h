@@ -62,7 +62,7 @@ struct system_reference {
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-    requires(convertible_to(coherent_unit, U{}))
+    requires(convertible(coherent_unit, U{}))
   [[nodiscard]] constexpr reference<quantity_spec, U{}> operator[](U) const
   {
     return {};

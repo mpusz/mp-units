@@ -44,7 +44,7 @@ class quantity;
  * @tparam ToU a unit to use for a target quantity
  */
 template<Unit auto ToU, auto R, typename Rep>
-  requires(convertible_to(get_unit(R), ToU))
+  requires(convertible(get_unit(R), ToU))
 [[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
 {
   if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(R)>> ||
