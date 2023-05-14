@@ -48,4 +48,32 @@ inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
 template<typename T>
 concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>;
 
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
+
+template<auto Q, auto U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)
+{
+  return Q;
+}
+
+[[nodiscard]] consteval Unit auto get_unit(AssociatedUnit auto u) { return u; }
+
+template<auto Q, auto U>
+[[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
+{
+  return U;
+}
+
+/**
+ * @brief A concept matching all references with provided dimension or quantity spec
+ *
+ * Satisfied by all references with a dimension/quantity_spec being the instantiation derived from
+ * the provided dimension/quantity_spec type.
+ */
+template<typename T, auto V>
+concept ReferenceOf =
+  Reference<T> &&
+  ((Dimension<std::remove_const_t<decltype(V)>> && get_quantity_spec(T{}).dimension == V) ||
+   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(get_quantity_spec(T{}), V)));
+
 }  // namespace mp_units

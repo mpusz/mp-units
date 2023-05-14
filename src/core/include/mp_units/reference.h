@@ -34,20 +34,6 @@ namespace mp_units {
   return detail::get_associated_quantity(u);
 }
 
-template<auto Q, auto U>
-[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)
-{
-  return Q;
-}
-
-[[nodiscard]] consteval Unit auto get_unit(AssociatedUnit auto u) { return u; }
-
-template<auto Q, auto U>
-[[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
-{
-  return U;
-}
-
 /**
  * @brief Quantity reference type
  *
