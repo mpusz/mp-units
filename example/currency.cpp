@@ -22,6 +22,7 @@
 
 #include <mp_units/iostream.h>
 #include <mp_units/quantity.h>
+#include <mp_units/quantity_point.h>
 #include <iostream>
 #include <map>
 
@@ -68,17 +69,23 @@ double exchange_rate()
 
 #endif
 
-template<ReferenceOf<currency> auto To>
-quantity<To, int> exchange_to(QuantityOf<currency> auto q)
+template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, typename Rep>
+quantity<To, Rep> exchange_to(quantity<From, Rep> q)
 {
-  return static_cast<int>(exchange_rate<q.unit, get_unit(To)>() * q.number()) * euro;
+  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.number()) * To;
+}
+
+template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
+quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
+{
+  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.absolute().number()) * To;
 }
 
 int main()
 {
-  auto price_usd = 100 * us_dollar;
-  auto price_euro = exchange_to<euro>(price_usd);
+  auto price_usd = quantity_point{100 * us_dollar};
+  auto price_euro = quantity_point{exchange_to<euro>(price_usd)};
 
-  std::cout << price_usd << " -> " << price_euro << "\n";
-  // std::cout << price_usd + price_euro << "\n";  // does not compile
+  std::cout << price_usd.absolute() << " -> " << price_euro.absolute() << "\n";
+  // std::cout << price_usd.absolute() + price_euro.absolute() << "\n";  // does not compile
 }
