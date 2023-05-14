@@ -457,7 +457,7 @@ static_assert(explode<get_complexity(area)>(area * time / period_duration).quant
 static_assert(explode<get_complexity(area)>(pow<2>(length) * time / period_duration).quantity ==
               pow<2>(length) * time / period_duration);
 
-using enum convertible_to_result;
+using enum convertible_result;
 
 static_assert(are_ingredients_convertible(length / time, length / time) == yes);
 static_assert(are_ingredients_convertible(mass * length / time, mass* length / time) == yes);

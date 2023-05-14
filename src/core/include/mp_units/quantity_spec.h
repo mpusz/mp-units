@@ -80,8 +80,7 @@ template<auto... Args>
 }
 
 template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
-struct quantity_spec_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {
-};
+struct quantity_spec_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
@@ -451,8 +450,7 @@ inline constexpr kind_of_<Q> kind_of;
 namespace detail {
 
 template<>
-struct is_dimensionless<struct dimensionless> : std::true_type {
-};
+struct is_dimensionless<struct dimensionless> : std::true_type {};
 
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
@@ -540,7 +538,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
 
 namespace detail {
 
-enum class convertible_to_result { no, cast, explicit_conversion, yes };
+enum class convertible_result { no, cast, explicit_conversion, yes };
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q);
@@ -583,8 +581,7 @@ struct ingredients_less :
       (lhs_compl == rhs_compl && (Lhs::dimension != Rhs::dimension && Rhs::dimension == dimension_one) ||
        type_name<std::remove_const_t<decltype(Lhs::dimension)>>() <
          type_name<std::remove_const_t<decltype(Rhs::dimension)>>()) ||
-      (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension && type_name<Lhs>() < type_name<Rhs>())> {
-};
+      (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension && type_name<Lhs>() < type_name<Rhs>())> {};
 
 template<typename T1, typename T2>
 using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;
@@ -602,7 +599,7 @@ template<QuantitySpec Q>
 template<QuantitySpec Q>
 struct explode_to_equation_result {
   Q equation;
-  convertible_to_result convertible_result;
+  convertible_result result;
 };
 
 template<QuantitySpec Q>
@@ -610,7 +607,7 @@ template<QuantitySpec Q>
 [[nodiscard]] consteval auto explode_to_equation(Q q)
 {
   return explode_to_equation_result{
-    Q::_equation_, defines_equation(q) ? convertible_to_result::yes : convertible_to_result::explicit_conversion};
+    Q::_equation_, defines_equation(q) ? convertible_result::yes : convertible_result::explicit_conversion};
 }
 
 template<QuantitySpec Q, int... Ints>
@@ -618,20 +615,20 @@ template<QuantitySpec Q, int... Ints>
 [[nodiscard]] consteval auto explode_to_equation(power<Q, Ints...>)
 {
   constexpr ratio exp = power<Q, Ints...>::exponent;
-  return explode_to_equation_result{
-    pow<exp.num, exp.den>(Q::_equation_),
-    defines_equation(Q{}) ? convertible_to_result::yes : convertible_to_result::explicit_conversion};
+  return explode_to_equation_result{pow<exp.num, exp.den>(Q::_equation_), defines_equation(Q{})
+                                                                            ? convertible_result::yes
+                                                                            : convertible_result::explicit_conversion};
 }
 
 template<QuantitySpec Q>
 struct explode_result {
   Q quantity;
-  convertible_to_result convertible_result = convertible_to_result::yes;
+  convertible_result result = convertible_result::yes;
 
   template<typename T>
   [[nodiscard]] consteval explode_result common_convertibility_with(explode_to_equation_result<T> res) const
   {
-    return {quantity, std::min(convertible_result, res.convertible_result)};
+    return {quantity, std::min(result, res.result)};
   }
 };
 
@@ -721,67 +718,66 @@ template<int Complexity, NamedQuantitySpec Q>
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
          typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                          type_list<DenFrom, DensFrom...> den_from,
-                                                                          type_list<NumTo, NumsTo...> num_to,
-                                                                          type_list<DenTo, DensTo...> den_to);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
+                                                                       type_list<DenFrom, DensFrom...> den_from,
+                                                                       type_list<NumTo, NumsTo...> num_to,
+                                                                       type_list<DenTo, DensTo...> den_to);
 
 template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<DenFrom, DensFrom...>,
-                                                                          type_list<NumTo, NumsTo...>,
-                                                                          type_list<DenTo, DensTo...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<DenFrom, DensFrom...>,
+                                                                       type_list<NumTo, NumsTo...>,
+                                                                       type_list<DenTo, DensTo...>);
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>, type_list<>,
-                                                                          type_list<NumTo, NumsTo...>,
-                                                                          type_list<DenTo, DensTo...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>, type_list<>,
+                                                                       type_list<NumTo, NumsTo...>,
+                                                                       type_list<DenTo, DensTo...>);
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename DenTo,
          typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                          type_list<DenFrom, DensFrom...>, type_list<>,
-                                                                          type_list<DenTo, DensTo...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
+                                                                       type_list<DenFrom, DensFrom...>, type_list<>,
+                                                                       type_list<DenTo, DensTo...>);
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
          typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                          type_list<DenFrom, DensFrom...>,
-                                                                          type_list<NumTo, NumsTo...>, type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
+                                                                       type_list<DenFrom, DensFrom...>,
+                                                                       type_list<NumTo, NumsTo...>, type_list<>);
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>, type_list<>,
-                                                                          type_list<NumTo, NumsTo...>, type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>, type_list<>,
+                                                                       type_list<NumTo, NumsTo...>, type_list<>);
 
 template<typename DenFrom, typename... DensFrom, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<DenFrom, DensFrom...>,
-                                                                          type_list<>, type_list<DenTo, DensTo...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<DenFrom, DensFrom...>,
+                                                                       type_list<>, type_list<DenTo, DensTo...>);
 
 template<typename... NumsFrom, typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumsFrom...>,
-                                                                          type_list<DensFrom...>, type_list<>,
-                                                                          type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<DensFrom...>,
+                                                                       type_list<>, type_list<>);
 
 template<typename... NumsTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                          type_list<NumsTo...>, type_list<DensTo...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<NumsTo...>,
+                                                                       type_list<DensTo...>);
 
 template<typename... NumsFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>,
-                                                                          type_list<>, type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>, type_list<>,
+                                                                       type_list<>);
 template<typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>,
-                                                                          type_list<>, type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>, type_list<>,
+                                                                       type_list<>);
 
 template<typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                          type_list<NumsTo...>, type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<NumsTo...>,
+                                                                       type_list<>);
 
 template<typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                          type_list<DensFrom...>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
+                                                                       type_list<DensFrom...>);
 
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                          type_list<>);
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
+                                                                       type_list<>);
 
 enum class prepend_rest { no, first, second };
 
@@ -837,8 +833,8 @@ template<typename From, typename To>
 enum class process_entities { numerators, denominators, from, to };
 
 template<process_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] consteval convertible_to_result process_extracted(NumFrom num_from, DenFrom den_from, NumTo num_to,
-                                                                DenTo den_to)
+[[nodiscard]] consteval convertible_result process_extracted(NumFrom num_from, DenFrom den_from, NumTo num_to,
+                                                             DenTo den_to)
 {
   if constexpr (Entities == process_entities::numerators || Entities == process_entities::denominators) {
     constexpr auto res = convertible_impl(Ext.from, Ext.to);
@@ -884,10 +880,10 @@ template<process_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
          typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                          type_list<DenFrom, DensFrom...> den_from,
-                                                                          type_list<NumTo, NumsTo...> num_to,
-                                                                          type_list<DenTo, DensTo...> den_to)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
+                                                                       type_list<DenFrom, DensFrom...> den_from,
+                                                                       type_list<NumTo, NumsTo...> num_to,
+                                                                       type_list<DenTo, DensTo...> den_to)
 {
   if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
     return process_extracted<process_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
@@ -920,27 +916,27 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                                   (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                                 (res.equation * ... * map_power(NumsTo{})) /
-                                                                   (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                     (res.equation * ... * map_power(NumsTo{})) /
+                                                       (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                                   (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                                 (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                                   (res.equation * ... * map_power(DensTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                     (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                                       (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<> num_from,
-                                                                          type_list<DenFrom, DensFrom...> den_from,
-                                                                          type_list<NumTo, NumsTo...> num_to,
-                                                                          type_list<DenTo, DensTo...>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<> num_from,
+                                                                       type_list<DenFrom, DensFrom...> den_from,
+                                                                       type_list<NumTo, NumsTo...> num_to,
+                                                                       type_list<DenTo, DensTo...>)
 {
   if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_dimension)
     return process_extracted<process_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
@@ -961,27 +957,27 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.convertible_result,
-                        convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                         (res.equation * ... * map_power(NumsTo{})) /
-                                           (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return std::min(
+          res.result, convertible_impl(
+                        dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                        (res.equation * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.convertible_result,
-                        convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                         (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                           (res.equation * ... * map_power(DensTo{}))));
+        return std::min(
+          res.result, convertible_impl(
+                        dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                        (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                          type_list<> den_from,
-                                                                          type_list<NumTo, NumsTo...>,
-                                                                          type_list<DenTo, DensTo...> den_to)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
+                                                                       type_list<> den_from,
+                                                                       type_list<NumTo, NumsTo...>,
+                                                                       type_list<DenTo, DensTo...> den_to)
 {
   if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
     return process_extracted<process_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
@@ -1002,26 +998,26 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                                 (res.equation * ... * map_power(NumsTo{})) /
-                                                                   (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                     (res.equation * ... * map_power(NumsTo{})) /
+                                                       (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                                 (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                                   (res.equation * ... * map_power(DensTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                     (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                                       (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename DenTo,
          typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                          type_list<DenFrom, DensFrom...>,
-                                                                          type_list<> num_to,
-                                                                          type_list<DenTo, DensTo...> den_to)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
+                                                                       type_list<DenFrom, DensFrom...>,
+                                                                       type_list<> num_to,
+                                                                       type_list<DenTo, DensTo...> den_to)
 {
   if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_dimension)
     return process_extracted<process_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
@@ -1047,22 +1043,21 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.convertible_result,
-                        convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                           (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                         dimensionless / (res.equation * ... * map_power(DensTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                     dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
          typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                          type_list<DenFrom, DensFrom...> den_from,
-                                                                          type_list<NumTo, NumsTo...> num_to,
-                                                                          type_list<> den_to)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
+                                                                       type_list<DenFrom, DensFrom...> den_from,
+                                                                       type_list<NumTo, NumsTo...> num_to,
+                                                                       type_list<> den_to)
 {
   if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
     return process_extracted<process_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
@@ -1088,20 +1083,19 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                                   (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                                 (res.equation * ... * map_power(NumsTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                     (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                          type_list<> den_from,
-                                                                          type_list<NumTo, NumsTo...>,
-                                                                          type_list<> den_to)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
+                                                                       type_list<> den_from,
+                                                                       type_list<NumTo, NumsTo...>, type_list<> den_to)
 {
   if constexpr (constexpr auto ext = extract_convertible_quantities(NumFrom{}, NumTo{}); ext.same_dimension) {
     return process_extracted<process_entities::numerators, ext>(type_list<NumsFrom...>{}, den_from,
@@ -1117,19 +1111,18 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
                                 (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.convertible_result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                                 (res.equation * ... * map_power(NumsTo{}))));
+        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                     (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename DenFrom, typename... DensFrom, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<> num_from,
-                                                                          type_list<DenFrom, DensFrom...>,
-                                                                          type_list<> num_to,
-                                                                          type_list<DenTo, DensTo...>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<> num_from,
+                                                                       type_list<DenFrom, DensFrom...>,
+                                                                       type_list<> num_to, type_list<DenTo, DensTo...>)
 {
   if constexpr (constexpr auto ext = extract_convertible_quantities(DenFrom{}, DenTo{}); ext.same_dimension)
     return process_extracted<process_entities::denominators, ext>(num_from, type_list<DensFrom...>{}, num_to,
@@ -1145,84 +1138,83 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
                                 dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.convertible_result,
+        return std::min(res.result,
                         convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
                                          dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
-  return convertible_to_result::no;
+  return convertible_result::no;
 }
 
 template<typename... NumsFrom, typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumsFrom...>,
-                                                                          type_list<DensFrom...>, type_list<>,
-                                                                          type_list<>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<DensFrom...>,
+                                                                       type_list<>, type_list<>)
 {
   if constexpr (((... * map_power(NumsFrom{})) / (... * map_power(DensFrom{}))).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
 template<typename... NumsTo, typename... DensTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                          type_list<NumsTo...>, type_list<DensTo...>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<NumsTo...>,
+                                                                       type_list<DensTo...>)
 {
   if constexpr (((... * map_power(NumsTo{})) / (... * map_power(DensTo{}))).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
 template<typename... NumsFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>,
-                                                                          type_list<>, type_list<>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>, type_list<>,
+                                                                       type_list<>)
 {
   if constexpr ((... * map_power(NumsFrom{})).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
 template<typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>,
-                                                                          type_list<>, type_list<>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>, type_list<>,
+                                                                       type_list<>)
 {
   if constexpr ((... * map_power(DensFrom{})).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
 template<typename... NumsTo>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                          type_list<NumsTo...>, type_list<>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<NumsTo...>,
+                                                                       type_list<>)
 {
   if constexpr ((... * map_power(NumsTo{})).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
 template<typename... DensFrom>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                          type_list<DensFrom...>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
+                                                                       type_list<DensFrom...>)
 {
   if constexpr ((... * map_power(DensFrom{})).dimension == dimension_one)
-    return convertible_to_result::yes;
+    return convertible_result::yes;
   else
-    return convertible_to_result::no;
+    return convertible_result::no;
 }
 
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                          type_list<>)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
+                                                                       type_list<>)
 {
-  return convertible_to_result::yes;
+  return convertible_result::yes;
 }
 
 template<IntermediateDerivedQuantitySpec From, IntermediateDerivedQuantitySpec To>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(From, To)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
                                      type_list_sort<typename From::_den_, type_list_of_ingredients_less>{},
@@ -1231,7 +1223,7 @@ template<IntermediateDerivedQuantitySpec From, IntermediateDerivedQuantitySpec T
 }
 
 template<IntermediateDerivedQuantitySpec From, NamedQuantitySpec To>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(From, To)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
                                      type_list_sort<typename From::_den_, type_list_of_ingredients_less>{},
@@ -1239,7 +1231,7 @@ template<IntermediateDerivedQuantitySpec From, NamedQuantitySpec To>
 }
 
 template<NamedQuantitySpec From, IntermediateDerivedQuantitySpec To>
-[[nodiscard]] consteval convertible_to_result are_ingredients_convertible(From, To)
+[[nodiscard]] consteval convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list<From>{}, type_list<>{},
                                      type_list_sort<typename To::_num_, type_list_of_ingredients_less>{},
@@ -1247,9 +1239,9 @@ template<NamedQuantitySpec From, IntermediateDerivedQuantitySpec To>
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval convertible_to_result convertible_impl(From from, To to)
+[[nodiscard]] consteval convertible_result convertible_impl(From from, To to)
 {
-  using enum convertible_to_result;
+  using enum convertible_result;
 
   if constexpr (From::dimension != To::dimension)
     return no;
@@ -1279,7 +1271,7 @@ template<QuantitySpec From, QuantitySpec To>
         return convertible_impl(explode<get_complexity(to)>(from).quantity, to);
       else {
         constexpr auto res = explode<get_complexity(from)>(to);
-        return std::min(res.convertible_result, convertible_impl(from, res.quantity));
+        return std::min(res.result, convertible_impl(from, res.quantity));
       }
     }
   } else if constexpr (IntermediateDerivedQuantitySpec<From> && IntermediateDerivedQuantitySpec<To>) {
@@ -1290,17 +1282,17 @@ template<QuantitySpec From, QuantitySpec To>
       return convertible_impl(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
       constexpr auto eq = explode_to_equation(to);
-      return std::min(eq.convertible_result, convertible_impl(res.quantity, eq.equation));
+      return std::min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
       return are_ingredients_convertible(from, to);
   } else if constexpr (IntermediateDerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(from)>(to);
     if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(res.quantity)>>)
-      return std::min(res.convertible_result, convertible_impl(from, res.quantity));
+      return std::min(res.result, convertible_impl(from, res.quantity));
     else if constexpr (requires { from._equation_; })
-      return std::min(res.convertible_result, convertible_impl(from._equation_, res.quantity));
+      return std::min(res.result, convertible_impl(from._equation_, res.quantity));
     else
-      return std::min(res.convertible_result, are_ingredients_convertible(from, to));
+      return std::min(res.result, are_ingredients_convertible(from, to));
   }
   return no;
 }
@@ -1310,19 +1302,19 @@ template<QuantitySpec From, QuantitySpec To>
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool implicitly_convertible(From from, To to)
 {
-  return detail::convertible_impl(from, to) == detail::convertible_to_result::yes;
+  return detail::convertible_impl(from, to) == detail::convertible_result::yes;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to)
 {
-  return detail::convertible_impl(from, to) >= detail::convertible_to_result::explicit_conversion;
+  return detail::convertible_impl(from, to) >= detail::convertible_result::explicit_conversion;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool castable(From from, To to)
 {
-  return detail::convertible_impl(from, to) >= detail::convertible_to_result::cast;
+  return detail::convertible_impl(from, to) >= detail::convertible_result::cast;
 }
 
 namespace detail {
