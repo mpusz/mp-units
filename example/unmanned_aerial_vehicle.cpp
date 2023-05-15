@@ -58,38 +58,28 @@ constexpr const char* to_text(earth_gravity_model m)
   }
 }
 
-// TODO Why gcc does not deduce `M`? Is it a gcc bug?
-// template<class CharT, class Traits, auto M>
-// std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hae_altitude<M>& a)
-// {
-//   return os << a.absolute() << " HAE(" << to_text(M) << ")";
-// }
-
-// template<auto M>
-// struct STD_FMT::formatter<hae_altitude<M>> : formatter<typename hae_altitude<M>::quantity_type> {
-//   template<typename FormatContext>
-//   auto format(const hae_altitude<M>& a, FormatContext& ctx)
-//   {
-//     formatter<typename hae_altitude<M>::quantity_type>::format(a.absolute(), ctx);
-//     return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(M));
-//   }
-// };
-
-template<class CharT, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
-                                              const hae_altitude<earth_gravity_model::egm2008_1>& a)
+template<earth_gravity_model M>
+[[nodiscard]] consteval bool is_hae(height_above_ellipsoid_t<M>)
 {
-  return os << a.absolute() << " HAE(" << to_text(earth_gravity_model::egm2008_1) << ")";
+  return true;
+}
+[[nodiscard]] consteval bool is_hae(...) { return false; }
+
+template<class CharT, class Traits, QuantityPoint QP>
+  requires(is_hae(QP::absolute_point_origin))
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const QP& a)
+{
+  return os << a.absolute() << " HAE(" << to_text(a.absolute_point_origin.egm) << ")";
 }
 
-template<>
-struct STD_FMT::formatter<hae_altitude<earth_gravity_model::egm2008_1>> :
-    formatter<typename hae_altitude<earth_gravity_model::egm2008_1>::quantity_type> {
+template<QuantityPoint QP>
+  requires(is_hae(QP::absolute_point_origin))
+struct STD_FMT::formatter<QP> : formatter<typename QP::quantity_type> {
   template<typename FormatContext>
-  auto format(const hae_altitude<earth_gravity_model::egm2008_1>& a, FormatContext& ctx)
+  auto format(const QP& a, FormatContext& ctx)
   {
-    formatter<typename hae_altitude<earth_gravity_model::egm2008_1>::quantity_type>::format(a.absolute(), ctx);
-    return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(earth_gravity_model::egm2008_1));
+    formatter<typename QP::quantity_type>::format(a.absolute(), ctx);
+    return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(QP::absolute_point_origin.egm));
   }
 };
 
