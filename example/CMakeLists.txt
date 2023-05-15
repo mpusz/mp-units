@@ -58,7 +58,7 @@ add_example(
     strong_angular_quantities mp-units::core-fmt mp-units::core-io mp-units::si mp-units::isq_angle mp-units::utility
 )
 add_example(total_energy mp-units::core-io mp-units::si mp-units::natural mp-units::utility)
-add_example(unmanned_aerial_vehicle mp-units::core-io mp-units::si mp-units::international)
+add_example(unmanned_aerial_vehicle mp-units::core-fmt mp-units::core-io mp-units::si mp-units::international mp-units::utility example_utils)
 
 find_package(wg21_linear_algebra CONFIG REQUIRED)
 add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)

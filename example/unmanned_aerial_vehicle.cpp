@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "geographic.h"
 #include <mp_units/iostream.h>
 #include <mp_units/quantity_point.h>
 #include <mp_units/systems/international/international.h>
@@ -28,16 +29,113 @@
 #include <iostream>
 
 using namespace mp_units;
+using namespace geographic;
+
+// **** HAE ****
+
+enum class earth_gravity_model { egm84_15, egm95_5, egm2008_1 };
+
+template<earth_gravity_model M>
+struct height_above_ellipsoid_t : absolute_point_origin<isq::altitude> {
+  static constexpr earth_gravity_model egm = M;
+};
+template<earth_gravity_model M>
+inline constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;
+
+template<earth_gravity_model M>
+using hae_altitude = quantity_point<isq::altitude[si::metre], height_above_ellipsoid<M>>;
+
+constexpr const char* to_text(earth_gravity_model m)
+{
+  switch (m) {
+    using enum earth_gravity_model;
+    case egm84_15:
+      return "EGM84-15";
+    case egm95_5:
+      return "EGM95-5";
+    case egm2008_1:
+      return "EGM2008-1";
+  }
+}
+
+// TODO Why gcc does not deduce `M`? Is it a gcc bug?
+// template<class CharT, class Traits, auto M>
+// std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hae_altitude<M>& a)
+// {
+//   return os << a.absolute() << " HAE(" << to_text(M) << ")";
+// }
+
+// template<auto M>
+// struct STD_FMT::formatter<hae_altitude<M>> : formatter<typename hae_altitude<M>::quantity_type> {
+//   template<typename FormatContext>
+//   auto format(const hae_altitude<M>& a, FormatContext& ctx)
+//   {
+//     formatter<typename hae_altitude<M>::quantity_type>::format(a.absolute(), ctx);
+//     return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(M));
+//   }
+// };
+
+template<class CharT, class Traits>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                              const hae_altitude<earth_gravity_model::egm2008_1>& a)
+{
+  return os << a.absolute() << " HAE(" << to_text(earth_gravity_model::egm2008_1) << ")";
+}
+
+template<>
+struct STD_FMT::formatter<hae_altitude<earth_gravity_model::egm2008_1>> :
+    formatter<typename hae_altitude<earth_gravity_model::egm2008_1>::quantity_type> {
+  template<typename FormatContext>
+  auto format(const hae_altitude<earth_gravity_model::egm2008_1>& a, FormatContext& ctx)
+  {
+    formatter<typename hae_altitude<earth_gravity_model::egm2008_1>::quantity_type>::format(a.absolute(), ctx);
+    return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(earth_gravity_model::egm2008_1));
+  }
+};
+
+double GeographicLibWhatsMyOffset(long double /* lat */, long double /* lon */)
+{
+  // for example use GeographicLib for that:
+  // - https://geographiclib.sourceforge.io/C++/doc/geoid.html
+  // - https://conan.io/center/geographiclib
+  return 29.49;
+}
+
+template<earth_gravity_model M>
+hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
+{
+  const auto geoid_undulation =
+    isq::height(GeographicLibWhatsMyOffset(pos.lat.number_in(si::degree), pos.lon.number_in(si::degree)) * si::metre);
+  return msl.absolute() - geoid_undulation;
+}
+
+
+// **** HAL ****
 
 // clang-format off
-inline constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
 inline constexpr struct height_above_launch : absolute_point_origin<isq::altitude> {} height_above_launch;
 // clang-format on
 
-using msl_altitude = quantity_point<isq::altitude[si::metre], mean_sea_level>;
 using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launch>;
 
-static_assert(!std::equality_comparable_with<msl_altitude, hal_altitude>);
+template<class CharT, class Traits>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hal_altitude& a)
+{
+  return os << a.absolute() << " HAL";
+}
+
+template<>
+struct STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quantity_type> {
+  template<typename FormatContext>
+  auto format(const hal_altitude& a, FormatContext& ctx)
+  {
+    formatter<hal_altitude::quantity_type>::format(a.absolute(), ctx);
+    return STD_FMT::format_to(ctx.out(), " HAL");
+  }
+};
+
+
+// **** UAV ****
 
 class unmanned_aerial_vehicle {
   msl_altitude current_ = 0 * si::metre;
@@ -61,8 +159,18 @@ int main()
   unmanned_aerial_vehicle uav;
   uav.take_off(6'000 * ft);
   uav.current(10'000 * ft);
-  std::cout << "hal = " << uav.hal().relative() << "\n";
+  std::cout << STD_FMT::format("hal = {}\n", uav.hal());
 
   msl_altitude ground_level = 123 * m;
-  std::cout << "agl = " << uav.current() - ground_level << "\n";
+  std::cout << STD_FMT::format("agl = {}\n", uav.current() - ground_level);
+
+  struct waypoint {
+    std::string name;
+    geographic::position<long double> pos;
+    msl_altitude msl_alt;
+  };
+
+  waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, msl_altitude{16. * ft}};
+  std::cout << STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon, wpt.msl_alt,
+                               to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }
