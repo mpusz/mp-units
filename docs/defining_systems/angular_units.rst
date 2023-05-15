@@ -63,7 +63,7 @@ Angular quantities in the :term:`SI`
 ------------------------------------
 
 Even though the :term:`SI` somehow ignores the dimensionality of angle:
-    
+
     Plane and solid angles, when expressed in radians and steradians respectively, are in effect
     also treated within the SI as quantities with the unit one. The symbols :math:`rad`
     and :math:`sr` are written explicitly where appropriate, in order to emphasize that, for radians or
