@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
+#include <mp_units/format.h>
 #include <iostream>
 #include <numeric>
 #include <string_view>
@@ -48,7 +49,7 @@ std::vector<distance> task::make_leg_total_distances(const legs& legs)
   return res;
 }
 
-altitude terrain_level_alt(const task& t, const flight_point& pos)
+geographic::msl_altitude terrain_level_alt(const task& t, const flight_point& pos)
 {
   const task::leg& l = t.get_legs()[pos.leg_idx];
   const height alt_diff = l.end().alt - l.begin().alt;
@@ -58,7 +59,8 @@ altitude terrain_level_alt(const task& t, const flight_point& pos)
 // Returns `x` of the intersection of a glide line and a terrain line.
 // y = -x / glide_ratio + pos.alt;
 // y = (finish_alt - ground_alt) / dist_to_finish * x + ground_alt + min_agl_height;
-distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt)
+distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s,
+                        geographic::msl_altitude ground_alt)
 {
   const auto dist_to_finish = t.get_distance() - pos.dist;
   return quantity_cast<isq::distance>(ground_alt + s.min_agl_height - pos.alt) /
@@ -150,8 +152,8 @@ void estimate(timestamp start_ts, const glider& g, const weather& w, const task&
   // estimate aircraft towing
   pos = tow(start_ts, pos, at);
 
-  // estimate the altitude needed to reach the finish line from this place
-  const altitude final_glide_alt =
+  // estimate the msl_altitude needed to reach the finish line from this place
+  const geographic::msl_altitude final_glide_alt =
     t.get_finish().alt + quantity_cast<isq::height>(t.get_distance() / glide_ratio(g.polar[0]));
 
   // how much height we still need to gain in the thermalls to reach the destination?

@@ -24,14 +24,43 @@
 
 #include "ranged_representation.h"
 #include <mp_units/bits/fmt_hacks.h>
+#include <mp_units/format.h>
 #include <mp_units/math.h>
 #include <mp_units/quantity.h>
+#include <mp_units/quantity_point.h>
 #include <mp_units/systems/isq/space_and_time.h>
 #include <mp_units/systems/si/units.h>
 #include <compare>
 #include <limits>
 #include <numbers>
 #include <ostream>
+
+namespace geographic {
+
+// clang-format off
+inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::altitude> {} mean_sea_level;
+// clang-format on
+
+using msl_altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::metre], mean_sea_level>;
+
+// text output
+template<class CharT, class Traits>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const msl_altitude& a)
+{
+  return os << a.absolute() << " AMSL";
+}
+
+}  // namespace geographic
+
+template<>
+struct STD_FMT::formatter<geographic::msl_altitude> : formatter<geographic::msl_altitude::quantity_type> {
+  template<typename FormatContext>
+  auto format(const geographic::msl_altitude& a, FormatContext& ctx)
+  {
+    formatter<geographic::msl_altitude::quantity_type>::format(a.absolute(), ctx);
+    return STD_FMT::format_to(ctx.out(), " AMSL");
+  }
+};
 
 namespace geographic {
 

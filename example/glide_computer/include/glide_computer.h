@@ -24,7 +24,6 @@
 
 #include "geographic.h"
 #include <mp_units/chrono.h>
-#include <mp_units/format.h>
 #include <mp_units/math.h>  // IWYU pragma: keep
 #include <mp_units/quantity_point.h>
 #include <mp_units/systems/isq/space_and_time.h>
@@ -54,14 +53,11 @@
 namespace glide_computer {
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
-inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::height> {
-} mean_sea_level;
 QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, mp_units::isq::height / mp_units::isq::time);
 
 // length
 using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;
 using height = mp_units::quantity<mp_units::isq::height[mp_units::si::metre]>;
-using altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::metre], mean_sea_level>;
 
 // time
 using duration = mp_units::quantity<mp_units::isq::duration[mp_units::si::second]>;
@@ -72,29 +68,7 @@ using timestamp = mp_units::quantity_point<mp_units::isq::time[mp_units::si::sec
 using velocity = mp_units::quantity<mp_units::isq::speed[mp_units::si::kilo<mp_units::si::metre> / mp_units::si::hour]>;
 using rate_of_climb = mp_units::quantity<rate_of_climb_speed[mp_units::si::metre / mp_units::si::second]>;
 
-// text output
-template<class CharT, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const altitude& a)
-{
-  return os << a.absolute() << " AMSL";
-}
-
-}  // namespace glide_computer
-
-template<>
-struct STD_FMT::formatter<glide_computer::altitude> :
-    formatter<mp_units::quantity<mp_units::isq::altitude[mp_units::si::metre]>> {
-  template<typename FormatContext>
-  auto format(const glide_computer::altitude& a, FormatContext& ctx)
-  {
-    formatter<mp_units::quantity<mp_units::isq::altitude[mp_units::si::metre]>>::format(a.absolute(), ctx);
-    return STD_FMT::format_to(ctx.out(), " AMSL");
-  }
-};
-
 // definition of glide computer databases and utilities
-namespace glide_computer {
-
 struct glider {
   struct polar_point {
     velocity v;
@@ -118,7 +92,7 @@ struct weather {
 struct waypoint {
   std::string name;
   geographic::position<long double> pos;
-  altitude alt;
+  geographic::msl_altitude alt;
 };
 
 class task {
@@ -184,14 +158,17 @@ struct aircraft_tow {
 
 struct flight_point {
   timestamp ts;
-  altitude alt;
+  geographic::msl_altitude alt;
   std::size_t leg_idx = 0;
   distance dist{};
 };
 
-altitude terrain_level_alt(const task& t, const flight_point& pos);
+geographic::msl_altitude terrain_level_alt(const task& t, const flight_point& pos);
 
-constexpr height agl(altitude glider_alt, altitude terrain_level) { return glider_alt - terrain_level; }
+constexpr height agl(geographic::msl_altitude glider_alt, geographic::msl_altitude terrain_level)
+{
+  return glider_alt - terrain_level;
+}
 
 inline mp_units::quantity<mp_units::isq::length[mp_units::si::kilo<mp_units::si::metre>]> length_3d(distance dist,
                                                                                                     height h)
@@ -199,7 +176,8 @@ inline mp_units::quantity<mp_units::isq::length[mp_units::si::kilo<mp_units::si:
   return hypot(dist, h);
 }
 
-distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);
+distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s,
+                        geographic::msl_altitude ground_alt);
 
 void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
               const aircraft_tow& at);
