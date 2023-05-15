@@ -260,6 +260,14 @@ example we can define ``si::kilometre`` as::
     as ``km²`` would be invalid).
 
 
+.. note::
+
+    [SIBrochure]_ states:
+
+        However, when prefixes are used with SI units, the resulting units are no
+        longer coherent, because the prefix introduces a numerical factor other than one.
+
+
 Derived Units
 -------------
 
@@ -268,9 +276,20 @@ Derived Units
 names (i.e. ``N`` (newton)) or can be composed from the names of units of quantities
 used to define thier derived quantity (i.e. ``km/h``).
 
+The [SIBrochure]_ states:
+
+    Derived units are defined as products of powers of the base units. When the numerical
+    factor of this product is one, the derived units are called coherent derived units. The base
+    and coherent derived units of the SI form a coherent set, designated the set of coherent SI
+    units. The word “coherent” here means that equations between the numerical values of
+    quantities take exactly the same form as the equations between the quantities themselves.
 
 Derived Named Units
 ^^^^^^^^^^^^^^^^^^^
+
+The [SIBrochure]_ also says:
+
+    Some of the coherent derived units in the SI are given special names.
 
 Derived named units have a unique symbol (i.e. ``N`` (newton) or ``Pa``
 (pascal)) and they are defined in the same way as base units (which

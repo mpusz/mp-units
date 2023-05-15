@@ -22,5 +22,4 @@ Framework Basics
     framework/arithmetics
     framework/constants
     framework/conversions_and_casting
-    framework/angular_units
     framework/text_output
