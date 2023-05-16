@@ -50,13 +50,18 @@ template<typename T, typename Arg>
 concept RepSafeConstructibleFrom =  // exposition only
   std::constructible_from<T, Arg> && (treat_as_floating_point<T> || !treat_as_floating_point<Arg>);
 
+// UFrom ratio is an exact multiple of UTo
+template<auto UFrom, auto UTo>
+concept Harmonic =  // exposition only
+  Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
+  is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
+
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =  // exposition only
   Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   convertible(QFrom::unit, QTo::unit) && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
   (treat_as_floating_point<typename QTo::rep> ||
-   (!treat_as_floating_point<typename QFrom::rep> &&
-    is_unit_convertible<QFrom::unit, QTo::unit> == is_unit_convertible_result::integral_factor));
+   (!treat_as_floating_point<typename QFrom::rep> && Harmonic<QFrom::unit, QTo::unit>));
 
 template<quantity_character Ch, typename Func, typename T, typename U>
 concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
