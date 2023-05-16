@@ -133,6 +133,13 @@ public:
       return point_origin.absolute() + relative();
   }
 
+  template<Unit U>
+    requires detail::QuantityConvertibleTo<quantity_type, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
+  [[nodiscard]] constexpr quantity_point<::mp_units::reference<quantity_spec, U{}>{}, PO, Rep> operator[](U) const
+  {
+    return quantity_point<quantity_spec[U{}], PO, Rep>{*this};
+  }
+
   // member unary operators
   constexpr quantity_point& operator++()
     requires requires { ++q_; }
