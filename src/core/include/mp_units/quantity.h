@@ -138,7 +138,8 @@ public:
   quantity(quantity&&) = default;
 
   template<detail::QuantityConvertibleTo<quantity> Q>
-  constexpr explicit(false) quantity(const Q& q) : number_(detail::sudo_cast<quantity>(q).number())
+  constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
+      number_(detail::sudo_cast<quantity>(q).number())
   {
   }
 

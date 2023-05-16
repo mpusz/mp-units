@@ -92,29 +92,38 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 inline namespace literals {
 
-constexpr latitude<long double> operator"" _N(long double v) { return v * mp_units::si::degree; }
-constexpr latitude<long double> operator"" _S(long double v) { return -v * mp_units::si::degree; }
-constexpr longitude<long double> operator"" _E(long double v) { return v * mp_units::si::degree; }
-constexpr longitude<long double> operator"" _W(long double v) { return -v * mp_units::si::degree; }
+constexpr latitude<long double> operator"" _N(long double v) { return latitude<long double>{v * mp_units::si::degree}; }
+constexpr latitude<long double> operator"" _S(long double v)
+{
+  return latitude<long double>{-v * mp_units::si::degree};
+}
+constexpr longitude<long double> operator"" _E(long double v)
+{
+  return longitude<long double>{v * mp_units::si::degree};
+}
+constexpr longitude<long double> operator"" _W(long double v)
+{
+  return longitude<long double>{-v * mp_units::si::degree};
+}
 constexpr latitude<std::int64_t> operator"" _N(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return static_cast<std::int64_t>(v) * mp_units::si::degree;
+  return latitude<std::int64_t>{static_cast<std::int64_t>(v) * mp_units::si::degree};
 }
 constexpr latitude<std::int64_t> operator"" _S(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return -static_cast<std::int64_t>(v) * mp_units::si::degree;
+  return latitude<std::int64_t>{-static_cast<std::int64_t>(v) * mp_units::si::degree};
 }
 constexpr longitude<std::int64_t> operator"" _E(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return static_cast<std::int64_t>(v) * mp_units::si::degree;
+  return longitude<std::int64_t>{static_cast<std::int64_t>(v) * mp_units::si::degree};
 }
 constexpr longitude<std::int64_t> operator"" _W(unsigned long long v)
 {
   gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return -static_cast<std::int64_t>(v) * mp_units::si::degree;
+  return longitude<std::int64_t>{-static_cast<std::int64_t>(v) * mp_units::si::degree};
 }
 
 }  // namespace literals
