@@ -148,6 +148,13 @@ public:
   {
   }
 
+  template<typename Value>
+    requires(dimension == dimension_one) &&
+            (unit == ::mp_units::one) && detail::RepSafeConstructibleFrom<rep, std::remove_cvref_t<Value>>
+  constexpr explicit(!std::convertible_to<Value, Rep>) quantity(Value&& v) : number_(std::forward<Value>(v))
+  {
+  }
+
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
