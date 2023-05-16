@@ -180,54 +180,6 @@ public:
     q_ -= q;
     return *this;
   }
-
-  // Hidden Friends
-  // Below friend functions are to be found via argument-dependent lookup only
-  template<Quantity Q>
-  [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity_point& lhs, const Q& rhs)
-    requires requires(quantity_type q) { q + rhs; }
-  {
-    const auto q = lhs.relative() + rhs;
-    using q_type = decltype(q);
-    return quantity_point<q_type::reference, point_origin, typename q_type::rep>(q);
-  }
-
-  template<Quantity Q>
-  [[nodiscard]] friend constexpr QuantityPoint auto operator+(const Q& lhs, const quantity_point& rhs)
-    requires requires { rhs + lhs; }
-  {
-    return rhs + lhs;
-  }
-
-  template<Quantity Q>
-  [[nodiscard]] friend constexpr QuantityPoint auto operator-(const quantity_point& lhs, const Q& rhs)
-    requires requires(quantity_type q) { q - rhs; }
-  {
-    const auto q = lhs.relative() - rhs;
-    using q_type = decltype(q);
-    return quantity_point<q_type::reference, point_origin, typename q_type::rep>(q);
-  }
-
-  template<QuantityPointOf<absolute_point_origin> QP>
-  [[nodiscard]] friend constexpr Quantity auto operator-(const quantity_point& lhs, const QP& rhs)
-    requires requires(quantity_type q) { q - rhs.absolute(); }
-  {
-    return lhs.absolute() - rhs.absolute();
-  }
-
-  template<QuantityPointOf<absolute_point_origin> QP>
-    requires std::three_way_comparable_with<quantity_type, typename QP::quantity_type>
-  [[nodiscard]] friend constexpr auto operator<=>(const quantity_point& lhs, const QP& rhs)
-  {
-    return lhs.relative() <=> rhs.relative();
-  }
-
-  template<QuantityPointOf<absolute_point_origin> QP>
-    requires std::equality_comparable_with<quantity_type, typename QP::quantity_type>
-  [[nodiscard]] friend constexpr bool operator==(const quantity_point& lhs, const QP& rhs)
-  {
-    return lhs.relative() == rhs.relative();
-  }
 };
 
 // CTAD
@@ -246,5 +198,54 @@ template<QuantityPointLike QP>
 explicit quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
                     typename quantity_point_like_traits<QP>::rep>;
+
+template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
+[[nodiscard]] constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& lhs,
+                                                     const quantity<R2, Rep2>& rhs)
+  requires requires { lhs.relative() + rhs; }
+{
+  const auto q = lhs.relative() + rhs;
+  using q_type = decltype(q);
+  return quantity_point<q_type::reference, PO1, typename q_type::rep>(q);
+}
+
+template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
+[[nodiscard]] constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& lhs,
+                                                     const quantity_point<R2, PO2, Rep2>& rhs)
+  requires requires { rhs + lhs; }
+{
+  return rhs + lhs;
+}
+
+template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
+[[nodiscard]] constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& lhs,
+                                                     const quantity<R2, Rep2>& rhs)
+  requires requires { lhs.relative() - rhs; }
+{
+  const auto q = lhs.relative() - rhs;
+  using q_type = decltype(q);
+  return quantity_point<q_type::reference, PO1, typename q_type::rep>(q);
+}
+
+template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
+[[nodiscard]] constexpr Quantity auto operator-(const QP1& lhs, const QP2& rhs)
+  requires requires { lhs.absolute() - rhs.absolute(); }
+{
+  return lhs.absolute() - rhs.absolute();
+}
+
+template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
+  requires std::three_way_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
+[[nodiscard]] constexpr auto operator<=>(const QP1& lhs, const QP2& rhs)
+{
+  return lhs.relative() <=> rhs.relative();
+}
+
+template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
+  requires std::equality_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
+[[nodiscard]] constexpr bool operator==(const QP1& lhs, const QP2& rhs)
+{
+  return lhs.relative() == rhs.relative();
+}
 
 }  // namespace mp_units
