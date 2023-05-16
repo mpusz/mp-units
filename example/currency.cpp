@@ -39,8 +39,6 @@ inline constexpr struct great_british_pound : named_unit<"GBP", kind_of<currency
 inline constexpr struct japanese_jen : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
 // clang-format on
 
-static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
-
 #if 0
 
 // if you have only a few currencies to handle
@@ -53,6 +51,11 @@ template<Unit auto From, Unit auto To>
 }
 
 #else
+
+template<AssociatedUnit auto From, AssociatedUnit auto To>
+  requires(get_quantity_spec(From) == currency && get_quantity_spec(To) == currency)
+inline constexpr is_unit_convertible_result mp_units::is_unit_convertible<From, To> =
+  is_unit_convertible_result::non_integral_factor;
 
 [[nodiscard]] std::string_view to_string_view(Unit auto u) { return u.symbol.ascii().c_str(); }
 
@@ -69,23 +72,21 @@ template<Unit auto From, Unit auto To>
 
 #endif
 
-template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, typename Rep>
-quantity<To, Rep> exchange_to(quantity<From, Rep> q)
+template<typename Rep, AssociatedUnit From, AssociatedUnit To>
+[[nodiscard]] Rep scale_quantity_number(Rep v, From from, To to)
+  requires(get_quantity_spec(from) == currency && get_quantity_spec(to) == currency)
 {
-  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.number()) * To;
+  return static_cast<Rep>(exchange_rate<from, to>() * v);
 }
 
-template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
-quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
-{
-  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.absolute().number()) * To;
-}
+static_assert(!std::equality_comparable_with<quantity<euro>, quantity<us_dollar>>);
 
 int main()
 {
-  auto price_usd = quantity_point{100 * us_dollar};
-  auto price_euro = quantity_point{exchange_to<euro>(price_usd)};
+  auto price_usd = quantity_point{100. * us_dollar};
+  auto price_euro = quantity_point{price_usd[euro]};
 
   std::cout << price_usd.absolute() << " -> " << price_euro.absolute() << "\n";
   // std::cout << price_usd.absolute() + price_euro.absolute() << "\n";  // does not compile
+  // std::cout << price_euro.absolute() + price_usd.absolute() << "\n";  // does not compile
 }

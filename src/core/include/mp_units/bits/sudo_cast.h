@@ -35,6 +35,32 @@ class quantity;
 
 namespace detail {
 
+// The default implementation for the number scaling customization point
+template<typename Rep, Unit From, Unit To>
+[[nodiscard]] constexpr auto scale_quantity_number(Rep v, From from, To to)
+  requires(have_same_canonical_reference_unit(from, to))
+{
+  using multiplier_type = decltype([] {
+    // widen the type to prevent overflows
+    using wider_type = decltype(Rep{} * std::intmax_t{});
+    // check if `wider_type` supports scaling operations
+    if constexpr (requires(wider_type v) { v* v / v; })
+      // if the `wider_type` can handle scaling operations then use it to improve accuracy
+      return wider_type{};
+    else
+      // needed for example for linear algebra where `op/` on matrix types is not available
+      return std::intmax_t{};
+  }());
+
+  constexpr Magnitude auto c_mag = detail::get_canonical_unit(from).mag / detail::get_canonical_unit(to).mag;
+  constexpr Magnitude auto num = numerator(c_mag);
+  constexpr Magnitude auto den = denominator(c_mag);
+  constexpr Magnitude auto irr = c_mag * (den / num);
+
+  constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
+  return v * val(num) / val(den) * val(irr);
+}
+
 /**
  * @brief Explicit cast of entire quantity
  *
@@ -45,7 +71,7 @@ namespace detail {
 template<Quantity To, auto R, typename Rep>
   requires(castable(get_quantity_spec(R), To::quantity_spec)) &&
           ((get_unit(R) == To::unit && std::constructible_from<typename To::rep, Rep>) ||
-           (get_unit(R) != To::unit))  // && scalable_with_<typename To::rep>))
+           (get_unit(R) != To::unit && convertible(get_unit(R), To::unit)))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr Quantity auto sudo_cast(const quantity<R, Rep>& q)
 {
@@ -66,26 +92,11 @@ template<Quantity To, auto R, typename Rep>
       else
         return Rep{};
     }());
-    using multiplier_type = decltype([] {
-      // widen the type to prevent overflows
-      using wider_type = decltype(rep_type{} * std::intmax_t{});
-      // check if `wider_type` supports scaling operations
-      if constexpr (requires(wider_type v) { v* v / v; })
-        // if the `wider_type` can handle scaling operations then use it to improve accuracy
-        return wider_type{};
-      else
-        // needed for example for linear algebra where `op/` on matrix types is not available
-        return std::intmax_t{};
-    }());
 
-    constexpr Magnitude auto c_mag =
-      detail::get_canonical_unit(get_unit(R)).mag / detail::get_canonical_unit(To::unit).mag;
-    constexpr Magnitude auto num = numerator(c_mag);
-    constexpr Magnitude auto den = denominator(c_mag);
-    constexpr Magnitude auto irr = c_mag * (den / num);
-
-    constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
-    return static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)) *
+    // `scale_quantity_number` is a customization point
+    // Will be found only via ADL (if provided) for user-defined units
+    return static_cast<TYPENAME To::rep>(
+             scale_quantity_number(static_cast<rep_type>(q.number()), get_unit(R), To::unit)) *
            To::reference;
   }
 }

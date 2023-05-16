@@ -594,11 +594,21 @@ inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} p
 inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
 // clang-format on
 
+// is_unit_convertible customization point
+enum class is_unit_convertible_result { no, integral_factor, non_integral_factor };
 
-// convertible_to
+template<Unit auto From, Unit auto To>
+inline constexpr is_unit_convertible_result is_unit_convertible =
+  detail::have_same_canonical_reference_unit(From, To)
+    ? (is_integral(detail::get_canonical_unit(From).mag / detail::get_canonical_unit(To).mag)
+         ? is_unit_convertible_result::integral_factor
+         : is_unit_convertible_result::non_integral_factor)
+    : is_unit_convertible_result::no;
+
+// convertible
 [[nodiscard]] consteval bool convertible(Unit auto from, Unit auto to)
 {
-  return detail::have_same_canonical_reference_unit(from, to);
+  return is_unit_convertible<from, to> != is_unit_convertible_result::no;
 }
 
 // Common unit
