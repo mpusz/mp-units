@@ -45,7 +45,7 @@ static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_do
 
 // if you have only a few currencies to handle
 template<Unit auto From, Unit auto To>
-double exchange_rate()
+[[nodiscard]] double exchange_rate()
 {
   if constexpr (From == us_dollar && To == euro) return 0.9215;
   else if constexpr (From == euro && To == us_dollar) return 1.0848;
@@ -54,10 +54,10 @@ double exchange_rate()
 
 #else
 
-std::string_view to_string_view(Unit auto u) { return u.symbol.ascii().c_str(); }
+[[nodiscard]] std::string_view to_string_view(Unit auto u) { return u.symbol.ascii().c_str(); }
 
 template<Unit auto From, Unit auto To>
-double exchange_rate()
+[[nodiscard]] double exchange_rate()
 {
   static std::map<std::pair<std::string_view, std::string_view>, double> rates = {
     {{"USD", "EUR"}, 0.9215}, {{"EUR", "USD"}, 1.0848},
