@@ -101,9 +101,10 @@ public:
   {
   }
 
-  template<QuantityPointOf<point_origin> QP2>
-    requires std::convertible_to<typename QP2::quantity_type, quantity_type>
-  constexpr explicit(false) quantity_point(const QP2& qp) : q_(qp.relative())
+  template<QuantityPointOf<point_origin> QP>
+    requires std::constructible_from<quantity_type, typename QP::quantity_type>
+  constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
+      q_(qp.relative())
   {
   }
 
