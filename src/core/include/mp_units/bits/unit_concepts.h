@@ -140,8 +140,7 @@ template<typename... Us>
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U)
 {
-  if constexpr (requires { U::quantity_spec; })
-      return true;
+  if constexpr (requires { U::quantity_spec; }) return true;
   if constexpr (requires { U::reference_unit; })
     return has_associated_quantity(U::reference_unit);
   else if constexpr (requires { typename U::_num_; })
@@ -157,5 +156,15 @@ template<Unit U>
  */
 template<typename U>
 concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
+
+/**
+ * @brief A concept matching all units associated with the provided quantity spec
+ *
+ * Satisfied by all units associated with the quantity_spec being the instantiation derived from
+ * the provided quantity_spec type.
+ */
+template<typename U, auto V>
+concept UnitOf = AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(V)>> &&
+                 implicitly_convertible(get_quantity_spec(U{}), V);
 
 }  // namespace mp_units
