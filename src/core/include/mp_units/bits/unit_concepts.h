@@ -24,6 +24,7 @@
 
 #include <mp_units/bits/expression_template.h>
 #include <mp_units/bits/magnitude.h>
+#include <mp_units/bits/quantity_spec_concepts.h>
 #include <mp_units/bits/symbol_text.h>
 
 namespace mp_units {
