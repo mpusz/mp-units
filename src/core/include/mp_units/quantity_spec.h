@@ -97,9 +97,8 @@ template<typename Self>
 #endif
 struct quantity_spec_interface {
 #ifdef __cpp_explicit_this_parameter
-  template<typename Self, AssociatedUnit U>
+  template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u) const
-    requires(implicitly_convertible(self, detail::get_associated_quantity(u)))
   {
     return reference<self, u>{};
   }
@@ -111,9 +110,8 @@ struct quantity_spec_interface {
     return std::forward<Q>(q).number() * reference<self, std::remove_cvref_t<Q>::unit>{};
   }
 #else
-  template<AssociatedUnit U>
+  template<UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](U u) const
-    requires(implicitly_convertible(Self{}, detail::get_associated_quantity(u)))
   {
     return reference<Self{}, u>{};
   }
@@ -287,9 +285,8 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
 
 #ifndef __cpp_explicit_this_parameter
-  template<AssociatedUnit U>
+  template<UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](U u) const
-    requires(implicitly_convertible(Self{}, detail::get_associated_quantity(u)))
   {
     return reference<Self{}, u>{};
   }
