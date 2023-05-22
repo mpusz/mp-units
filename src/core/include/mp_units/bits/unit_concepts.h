@@ -164,8 +164,12 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  * Satisfied by all units associated with the quantity_spec being the instantiation derived from
  * the provided quantity_spec type.
  */
-template<typename U, auto V>
-concept UnitOf = AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(V)>> &&
-                 implicitly_convertible(get_quantity_spec(U{}), V);
+template<typename U, auto QS>
+concept UnitOf = AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
+                 implicitly_convertible(get_quantity_spec(U{}), QS) &&
+                 // the below is to make `dimensionless[radian]` invalid
+                 (get_kind(QS) == get_kind(get_quantity_spec(U{})) ||
+                  !std::derived_from<std::remove_const_t<decltype(get_quantity_spec(U{}))>,
+                                     std::remove_const_t<decltype(get_kind(QS))>>);
 
 }  // namespace mp_units
