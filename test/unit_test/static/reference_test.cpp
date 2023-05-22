@@ -52,11 +52,11 @@ QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(arc_length, length);
 
 QUANTITY_SPEC_(frequency, 1 / time);
-QUANTITY_SPEC_(action, 1 / time);
+QUANTITY_SPEC_(activity, 1 / time);
 QUANTITY_SPEC_(area, length* length);
 QUANTITY_SPEC_(volume, area* length);
-QUANTITY_SPEC_(angular_measure, arc_length / radius);
-QUANTITY_SPEC_(solid_angular_measure, area / pow<2>(radius));
+QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
+QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(acceleration, speed / time);
 QUANTITY_SPEC_(force, mass* acceleration);
@@ -65,6 +65,7 @@ QUANTITY_SPEC_(torque, moment_of_force);
 QUANTITY_SPEC_(power, force* speed);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, force* length);
+QUANTITY_SPEC_(storage_capacity, dimensionless, is_kind);
 
 // base units
 inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
@@ -91,7 +92,7 @@ inline constexpr struct force : system_reference<force_{}, kilogram / second> {}
 inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
 inline constexpr struct steradian_ : named_unit<"sr", square<metre> / square<metre>, kind_of<solid_angular_measure>> {} steradian;
 inline constexpr struct hertz_ : named_unit<"Hz", 1 / second, kind_of<frequency>> {} hertz;
-inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second> {} becquerel;
+inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
 inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square<second>> {} newton;
 inline constexpr struct pascal_ : named_unit<"Pa", newton / square<metre>> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
@@ -100,6 +101,8 @@ inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
 inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
+
+inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 // clang-format on
 
 // Unit as a reference
@@ -115,25 +118,25 @@ static_assert(is_of_type<42 * hertz, quantity<hertz, int>>);
 static_assert(quantity<hertz, int>::quantity_spec == frequency);
 
 // Named quantity/dimension and unit
-static_assert(is_same_v<decltype(5 * power[watt]), quantity<reference<power, watt>{}, int>>);
+static_assert(is_of_type<5 * power[watt], quantity<reference<power, watt>{}, int>>);
 
 // Named quantity/dimension and derived (unnamed) unit
-static_assert(is_same_v<decltype(5 * speed[metre / second]),
-                        quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+static_assert(
+  is_of_type<5 * speed[metre / second], quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 // Derived (unnamed) quantity/dimension and derived (unnamed) unit
 static_assert(
-  is_same_v<
-    decltype(10 * length[metre] / (2 * time[second])),
+  is_of_type<
+    10 * length[metre] / (2 * time[second]),
     quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 // Base quantity as a result of dimensional transformation
-static_assert(is_same_v<decltype(5 * speed[metre / second] * (5 * time[second])),
-                        quantity<reference<derived_quantity_spec<speed_, time_>{}, metre>{}, int>>);
+static_assert(is_of_type<5 * speed[metre / second] * (5 * time[second]),
+                         quantity<reference<derived_quantity_spec<speed_, time_>{}, metre>{}, int>>);
 
 // dimensionless
-static_assert(is_same_v<decltype(20 * speed[metre / second] / (10 * length[metre]) * (5 * time[second])),
-                        quantity<reference<derived_quantity_spec<speed_, time_, per<length_>>{}, one>{}, int>>);
+static_assert(is_of_type<20 * speed[metre / second] / (10 * length[metre]) * (5 * time[second]),
+                         quantity<reference<derived_quantity_spec<speed_, time_, per<length_>>{}, one>{}, int>>);
 
 template<auto s>
 concept invalid_operations = requires {
@@ -163,58 +166,57 @@ concept invalid_operations = requires {
 static_assert(invalid_operations<time[second]>);
 
 static_assert(
-  is_same_v<
-    decltype(2 * length[metre] / (1 * time[second])),
+  is_of_type<
+    2 * length[metre] / (1 * time[second]),
     quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
 static_assert(
-  is_same_v<
-    decltype(2 * (length[metre] / time[second])),
+  is_of_type<
+    2 * (length[metre] / time[second]),
     quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
-static_assert(is_same_v<decltype(2 * (speed[metre / second])),
-                        quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+static_assert(
+  is_of_type<2 * (speed[metre / second]), quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 constexpr auto m_per_s = speed[metre / second];
-static_assert(
-  is_same_v<decltype(2 * m_per_s), quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+static_assert(is_of_type<2 * m_per_s, quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
 
 static_assert(
-  is_same_v<
-    decltype(120 * length[kilometre] / (2 * time[hour])),
+  is_of_type<
+    120 * length[kilometre] / (2 * time[hour]),
     quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
 static_assert(
-  is_same_v<
-    decltype([] {
+  is_of_type<
+    [] {
       const auto distance = 120;
       const auto duration = 2;
       return distance * length[kilometre] / (duration * time[hour]);
-    }()),
+    }(),
     quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
 static_assert(
-  is_same_v<decltype(std::int64_t{120} * length[kilometre] / (2 * time[hour])),
-            quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
-                     std::int64_t>>);
+  is_of_type<std::int64_t{120} * length[kilometre] / (2 * time[hour]),
+             quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+                      std::int64_t>>);
 static_assert(
-  is_same_v<decltype(120.L * length[kilometre] / (2 * time[hour])),
-            quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
-                     long double>>);
+  is_of_type<120.L * length[kilometre] / (2 * time[hour]),
+             quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+                      long double>>);
 
-static_assert(is_same_v<decltype(1. / 4 * area[square<metre>]), decltype(1. * area[square<metre>] / 4)>);
+static_assert(is_of_type<1. / 4 * area[square<metre>], decltype(1. * area[square<metre>] / 4)>);
 static_assert(1. / 4 * area[square<metre>] == 1. * area[square<metre>] / 4);
 
 // Natural Units
-static_assert(is_same_v<decltype(42 * nu::time[nu::second]), quantity<reference<time, nu::second>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::time[nu::minute]), quantity<reference<time, nu::minute>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::length[nu::second]), quantity<reference<length, nu::second>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::length[nu::minute]), quantity<reference<length, nu::minute>{}, int>>);
-static_assert(is_same_v<decltype(42 * (nu::length[nu::second] / nu::time[nu::second])),
-                        quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::length[nu::second] / (42 * nu::time[nu::second])),
-                        quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::speed[nu::second / nu::second]), quantity<reference<speed, one>{}, int>>);
-static_assert(is_same_v<decltype(42 * nu::speed[one]), quantity<reference<speed, one>{}, int>>);
-static_assert(is_same_v<decltype(42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second])),
-                        quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
+static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time, nu::second>{}, int>>);
+static_assert(is_of_type<42 * nu::time[nu::minute], quantity<reference<time, nu::minute>{}, int>>);
+static_assert(is_of_type<42 * nu::length[nu::second], quantity<reference<length, nu::second>{}, int>>);
+static_assert(is_of_type<42 * nu::length[nu::minute], quantity<reference<length, nu::minute>{}, int>>);
+static_assert(is_of_type<42 * (nu::length[nu::second] / nu::time[nu::second]),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
+static_assert(is_of_type<42 * nu::length[nu::second] / (42 * nu::time[nu::second]),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
+static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed, one>{}, int>>);
+static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed, one>{}, int>>);
+static_assert(is_of_type<42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
+                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };
@@ -232,11 +234,152 @@ static_assert(second == time[second]);
 static_assert(time[second] == second);
 static_assert(second * second == time[second] * time[second]);
 static_assert(second * time[second] == time[second] * second);
-static_assert(std::is_same_v<decltype(second * time[second]), decltype(time[second] * second)>);
-static_assert(std::is_same_v<decltype(second * time[second]), decltype(time[second] * time[second])>);
+static_assert(is_of_type<second * time[second], decltype(time[second] * second)>);
+static_assert(is_of_type<second * time[second], decltype(time[second] * time[second])>);
 static_assert(metre / second == length[metre] / time[second]);
 static_assert(metre / time[second] == length[metre] / second);
-static_assert(std::is_same_v<decltype(metre / time[second]), decltype(length[metre] / second)>);
-static_assert(std::is_same_v<decltype(metre / time[second]), decltype(length[metre] / time[second])>);
+static_assert(is_of_type<metre / time[second], decltype(length[metre] / second)>);
+static_assert(is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
+
+template<auto QS, auto U>
+concept invalid_unit = !requires { QS[U]; };
+
+static_assert(invalid_unit<frequency, becquerel>);
+static_assert(invalid_unit<activity, hertz>);
+
+static_assert(invalid_unit<dimensionless, radian>);
+static_assert(invalid_unit<dimensionless, steradian>);
+static_assert(invalid_unit<dimensionless, bit>);
+static_assert(invalid_unit<angular_measure, steradian>);
+static_assert(invalid_unit<angular_measure, bit>);
+static_assert(invalid_unit<solid_angular_measure, radian>);
+static_assert(invalid_unit<solid_angular_measure, bit>);
+static_assert(invalid_unit<storage_capacity, radian>);
+static_assert(invalid_unit<storage_capacity, steradian>);
+
+static_assert(is_of_type<common_reference(dimensionless[one], one), reference<dimensionless, one>>);
+static_assert(is_of_type<common_reference(radian, one), radian_>);
+static_assert(is_of_type<common_reference(one, radian), radian_>);
+static_assert(is_of_type<common_reference(radian, dimensionless[one]), reference<angular_measure, radian>>);
+static_assert(is_of_type<common_reference(dimensionless[one], radian), reference<angular_measure, radian>>);
+static_assert(is_of_type<common_reference(angular_measure[radian], one), reference<angular_measure, radian>>);
+static_assert(is_of_type<common_reference(one, angular_measure[radian]), reference<angular_measure, radian>>);
+static_assert(
+  is_of_type<common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure, radian>>);
+static_assert(
+  is_of_type<common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure, radian>>);
+
+template<auto R1, auto R2>
+concept no_common_reference = requires {
+  requires !requires { common_reference(R1, R2); };
+  requires !requires { common_reference(R2, R1); };
+};
+
+static_assert(no_common_reference<hertz, becquerel>);
+static_assert(no_common_reference<frequency[hertz], becquerel>);
+static_assert(no_common_reference<hertz, activity[becquerel]>);
+static_assert(no_common_reference<frequency[hertz], activity[becquerel]>);
+static_assert(no_common_reference<radian, steradian>);
+static_assert(no_common_reference<angular_measure[radian], steradian>);
+static_assert(no_common_reference<radian, solid_angular_measure[steradian]>);
+static_assert(no_common_reference<angular_measure[radian], solid_angular_measure[steradian]>);
+
+// addition of various dimensionless quantities
+static_assert(is_of_type<1 * one + 1, quantity<one, int>>);
+static_assert(is_of_type<dimensionless(1 * one) + 1, quantity<dimensionless[one], int>>);
+
+static_assert(is_of_type<1 * radian + 1, quantity<radian, int>>);
+static_assert(is_of_type<1 * radian + 1 * one, quantity<radian, int>>);
+static_assert(is_of_type<1 * radian + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) + 1, quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) + 1 * one, quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
+
+static_assert(is_of_type<1 * steradian + 1, quantity<steradian, int>>);
+static_assert(is_of_type<1 * steradian + 1 * one, quantity<steradian, int>>);
+static_assert(is_of_type<1 * steradian + dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
+static_assert(is_of_type<solid_angular_measure(1 * steradian) + 1, quantity<solid_angular_measure[steradian], int>>);
+static_assert(
+  is_of_type<solid_angular_measure(1 * steradian) + 1 * one, quantity<solid_angular_measure[steradian], int>>);
+static_assert(is_of_type<solid_angular_measure(1 * steradian) + dimensionless(1 * one),
+                         quantity<solid_angular_measure[steradian], int>>);
+
+// subtraction of various dimensionless quantities
+static_assert(is_of_type<1 * one - 1, quantity<one, int>>);
+static_assert(is_of_type<dimensionless(1 * one) - 1, quantity<dimensionless[one], int>>);
+
+static_assert(is_of_type<1 * radian - 1, quantity<radian, int>>);
+static_assert(is_of_type<1 * radian - 1 * one, quantity<radian, int>>);
+static_assert(is_of_type<1 * radian - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) - 1, quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) - 1 * one, quantity<angular_measure[radian], int>>);
+static_assert(is_of_type<angular_measure(1 * radian) - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
+
+static_assert(is_of_type<1 * steradian - 1, quantity<steradian, int>>);
+static_assert(is_of_type<1 * steradian - 1 * one, quantity<steradian, int>>);
+static_assert(is_of_type<1 * steradian - dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
+static_assert(is_of_type<solid_angular_measure(1 * steradian) - 1, quantity<solid_angular_measure[steradian], int>>);
+static_assert(
+  is_of_type<solid_angular_measure(1 * steradian) - 1 * one, quantity<solid_angular_measure[steradian], int>>);
+static_assert(is_of_type<solid_angular_measure(1 * steradian) - dimensionless(1 * one),
+                         quantity<solid_angular_measure[steradian], int>>);
+
+// comparison of various dimensionless quantities
+static_assert(1 * one == 1);
+static_assert(dimensionless(1 * one) == 1);
+
+static_assert(1 * radian == 1);
+static_assert(1 * radian == 1 * one);
+static_assert(1 * radian == dimensionless(1 * one));
+static_assert(angular_measure(1 * radian) == 1);
+static_assert(angular_measure(1 * radian) == 1 * one);
+static_assert(angular_measure(1 * radian) == dimensionless(1 * one));
+
+static_assert(1 * steradian == 1);
+static_assert(1 * steradian == 1 * one);
+static_assert(1 * steradian == dimensionless(1 * one));
+static_assert(solid_angular_measure(1 * steradian) == 1);
+static_assert(solid_angular_measure(1 * steradian) == 1 * one);
+static_assert(solid_angular_measure(1 * steradian) == dimensionless(1 * one));
+
+// invalid operations on dimensionless quantities
+template<auto Q1, auto Q2>
+concept invalid_addition = requires {
+  requires !requires { Q1 + Q2; };
+  requires !requires { Q2 + Q1; };
+};
+
+static_assert(invalid_addition<1 * hertz, 1 * becquerel>);
+static_assert(invalid_addition<1 * radian, 1 * steradian>);
+static_assert(invalid_addition<1 * radian, 1 * bit>);
+static_assert(invalid_addition<frequency(1 * hertz), activity(1 * becquerel)>);
+static_assert(invalid_addition<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
+static_assert(invalid_addition<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+
+template<auto Q1, auto Q2>
+concept invalid_subtraction = requires {
+  requires !requires { Q1 - Q2; };
+  requires !requires { Q2 - Q1; };
+};
+
+static_assert(invalid_subtraction<1 * hertz, 1 * becquerel>);
+static_assert(invalid_subtraction<1 * radian, 1 * steradian>);
+static_assert(invalid_subtraction<1 * radian, 1 * bit>);
+static_assert(invalid_subtraction<frequency(1 * hertz), activity(1 * becquerel)>);
+static_assert(invalid_subtraction<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
+static_assert(invalid_subtraction<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+
+template<auto Q1, auto Q2>
+concept invalid_comparison = requires {
+  requires !requires { Q1 == Q2; };
+  requires !requires { Q2 == Q1; };
+};
+
+static_assert(invalid_comparison<1 * hertz, 1 * becquerel>);
+static_assert(invalid_comparison<1 * radian, 1 * steradian>);
+static_assert(invalid_comparison<1 * radian, 1 * bit>);
+static_assert(invalid_comparison<frequency(1 * hertz), activity(1 * becquerel)>);
+static_assert(invalid_comparison<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
+static_assert(invalid_comparison<angular_measure(1 * radian), storage_capacity(1 * bit)>);
 
 }  // namespace
