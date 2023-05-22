@@ -1389,7 +1389,7 @@ template<QuantitySpec Q>
   }
 }
 
-[[nodiscard]] consteval auto common_quantity_spec(QuantitySpec auto q) { return q; }
+[[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
@@ -1399,6 +1399,12 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   using QQ2 = std::remove_const_t<decltype(remove_kind(q2))>;
   if constexpr (is_same_v<Q1, Q2>)
     return q1;
+  else if constexpr (get_kind(q1) != get_kind(q2) && std::derived_from<std::remove_const_t<decltype(get_kind(q1))>,
+                                                                       std::remove_const_t<decltype(get_kind(q2))>>)
+    return remove_kind(q1);
+  else if constexpr (get_kind(q1) != get_kind(q2) && std::derived_from<std::remove_const_t<decltype(get_kind(q2))>,
+                                                                       std::remove_const_t<decltype(get_kind(q1))>>)
+    return remove_kind(q2);
   else if constexpr ((QuantityKindSpec<Q1> && !QuantityKindSpec<Q2>) ||
                      (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
                       implicitly_convertible(q1, q2)))
