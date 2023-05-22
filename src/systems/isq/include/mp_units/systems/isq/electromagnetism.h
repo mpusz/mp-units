@@ -92,10 +92,11 @@ inline constexpr auto volumic_electromagnetic_energy = electromagnetic_energy_de
 QUANTITY_SPEC(Poynting_vector, electric_field_strength* magnetic_field_strength);  // vector
 QUANTITY_SPEC(source_voltage, voltage);
 inline constexpr auto source_tension = source_voltage;
-QUANTITY_SPEC(scalar_magnetic_potential, magnetic_field_strength* length,
+QUANTITY_SPEC(scalar_magnetic_potential, electric_current, magnetic_field_strength* length,
               quantity_character::scalar);  // TODO what is a correct equation here?
-QUANTITY_SPEC(magnetic_tension, magnetic_field_strength* position_vector, quantity_character::scalar);
-QUANTITY_SPEC(magnetomotive_force, magnetic_field_strength* position_vector, quantity_character::scalar);
+QUANTITY_SPEC(magnetic_tension, electric_current, magnetic_field_strength* position_vector, quantity_character::scalar);
+QUANTITY_SPEC(magnetomotive_force, electric_current, magnetic_field_strength* position_vector,
+              quantity_character::scalar);
 QUANTITY_SPEC(current_linkage, electric_current);
 QUANTITY_SPEC(number_of_turns_in_a_winding, dimensionless);
 QUANTITY_SPEC(reluctance, magnetic_tension / magnetic_flux);
