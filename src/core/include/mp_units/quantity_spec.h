@@ -1255,20 +1255,31 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>) {
     constexpr auto from_kind = get_kind(from);
     constexpr auto to_kind = get_kind(to);
+    constexpr auto exploded_kind_result = [](specs_convertible_result res) {
+      using enum specs_convertible_result;
+      return res == no ? no : yes;
+    };
     if constexpr ((NamedQuantitySpec<std::remove_cvref_t<decltype(from_kind)>> &&
                    NamedQuantitySpec<std::remove_cvref_t<decltype(to_kind)>>) ||
                   get_complexity(from_kind) == get_complexity(to_kind))
       return convertible_impl(from_kind, to_kind);
     else if constexpr (get_complexity(from_kind) > get_complexity(to_kind))
-      return convertible_impl(get_kind(explode<get_complexity(to_kind)>(from_kind).quantity), to_kind);
+      return exploded_kind_result(
+        convertible_impl(get_kind(explode<get_complexity(to_kind)>(from_kind).quantity), to_kind));
     else
-      return convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity));
-  } else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
+      return exploded_kind_result(
+        convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity)));
+  } else if constexpr (get_kind(from) != get_kind(to) &&
+                       std::derived_from<std::remove_cvref_t<decltype(get_kind(to))>,
+                                         std::remove_cvref_t<decltype(get_kind(from))>> &&
+                       get_kind(to) == to)
+    return yes;
+  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
     if constexpr (have_common_base(from, to)) {
       if (std::derived_from<From, To>)
         return yes;
       else
-        return std::derived_from<To, From> ? explicit_conversion : cast;
+        return std::derived_from<To, From> ? explicit_conversion : (get_kind(from) == get_kind(to) ? cast : no);
     } else if constexpr (get_kind(from) != get_kind(to))
       return no;
     else if constexpr (get_complexity(from) != get_complexity(to)) {
