@@ -66,17 +66,10 @@ template<quantity_character Ch, typename Func, typename T, typename U>
 concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
 
 template<typename Func, typename Q1, typename Q2>
-concept InvocableQuantities =
-  Quantity<Q1> && Quantity<Q2> &&
-  InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, Func, typename Q1::rep,
-                 typename Q2::rep> &&
-  requires { common_reference(Q1::reference, Q2::reference); } &&
-  std::constructible_from<quantity<common_reference(Q1::reference, Q2::reference),
-                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>,
-                          Q1> &&
-  std::constructible_from<quantity<common_reference(Q1::reference, Q2::reference),
-                                   std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>,
-                          Q2>;
+concept InvocableQuantities = Quantity<Q1> && Quantity<Q2> &&
+                              InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, Func,
+                                             typename Q1::rep, typename Q2::rep> &&
+                              requires { common_reference(Q1::reference, Q2::reference); };
 
 template<typename Func, Quantity Q1, Quantity Q2>
   requires detail::InvocableQuantities<Func, Q1, Q2>
@@ -340,6 +333,7 @@ private:
 template<QuantityLike Q>
 explicit quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
+// binary operators on quantities
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvocableQuantities<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
@@ -433,6 +427,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   return ct(lhs).number() <=> ct(rhs).number();
 }
 
+// binary operators on dimensionless quantities
 template<auto R, typename Rep, typename Value>
   requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::plus<>, Rep, Value>
@@ -491,6 +486,7 @@ template<auto R, typename Rep, typename Value>
   return q <=> make_quantity<::mp_units::one>(v);
 }
 
+// make_quantity
 template<Reference auto R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v)
