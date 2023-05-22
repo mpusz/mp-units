@@ -53,11 +53,14 @@ inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
-QUANTITY_SPEC_(angular_measure, arc_length / radius);
 QUANTITY_SPEC_(frequency, 1 / period_duration);
 QUANTITY_SPEC_(activity, 1 / time);
 QUANTITY_SPEC_(area, pow<2>(length));
 QUANTITY_SPEC_(volume, pow<3>(length));
+QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
+QUANTITY_SPEC_(rotational_displacement, angular_measure, path_length / radius);
+QUANTITY_SPEC_(phase_angle, angular_measure);
+QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(velocity, speed, position_vector / time);
 QUANTITY_SPEC_(special_speed, speed);
@@ -403,6 +406,9 @@ static_assert(get_kind(energy) == energy);
 static_assert(get_kind(potential_energy) == energy);
 static_assert(get_kind(kinetic_energy) == energy);
 static_assert(get_kind(pow<1, 2>(area)) == pow<1, 2>(area));
+static_assert(get_kind(angular_measure) == angular_measure);
+static_assert(get_kind(phase_angle) == angular_measure);
+static_assert(get_kind(rotational_displacement) == angular_measure);
 
 // comparisons of the same dimensions
 static_assert(length == length);
@@ -508,6 +514,7 @@ static_assert(convertible_impl(frequency, activity) == no);
 static_assert(convertible_impl(activity, frequency) == no);
 static_assert(convertible_impl(energy, moment_of_force) == no);
 static_assert(convertible_impl(energy, torque) == no);
+static_assert(convertible_impl(angular_measure, solid_angular_measure) == no);
 
 // upcasting same hierarchy branch
 static_assert(convertible_impl(width, length) == yes);
@@ -520,6 +527,7 @@ static_assert(convertible_impl(special_rate_of_climb, speed) == yes);
 static_assert(convertible_impl(velocity, speed) == yes);
 static_assert(convertible_impl(potential_energy, energy) == yes);
 static_assert(convertible_impl(kinetic_energy, energy) == yes);
+static_assert(convertible_impl(angular_measure, dimensionless) == yes);
 
 // upcasting beyond the hierarchy/kind
 static_assert(convertible_impl(frequency, 1 / time) == yes);
@@ -541,6 +549,12 @@ static_assert(convertible_impl(speed, special_rate_of_climb) == explicit_convers
 static_assert(convertible_impl(rate_of_climb, special_rate_of_climb) == explicit_conversion);
 static_assert(convertible_impl(energy, potential_energy) == explicit_conversion);
 static_assert(convertible_impl(energy, kinetic_energy) == explicit_conversion);
+
+// downcasting to a different kind
+static_assert(convertible_impl(dimensionless, angular_measure) == yes);
+static_assert(convertible_impl(dimensionless, kind_of<angular_measure>) == yes);
+static_assert(convertible_impl(kind_of<dimensionless>, angular_measure) == yes);
+static_assert(convertible_impl(kind_of<dimensionless>, kind_of<angular_measure>) == yes);
 
 // derived quantities to type
 static_assert(convertible_impl(1 / frequency, time) == yes);
