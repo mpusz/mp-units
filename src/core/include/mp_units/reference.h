@@ -137,9 +137,12 @@ template<typename Rep, Reference R>
 
 void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
 
-[[nodiscard]] consteval auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
-                                              AssociatedUnit auto... rest)
+[[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
+                                                             AssociatedUnit auto... rest)
   requires requires {
+    {
+      common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
+    } -> QuantitySpec;
     {
       common_unit(u1, u2, rest...)
     } -> AssociatedUnit;
@@ -149,7 +152,7 @@ void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Referen
 }
 
 template<Reference R1, Reference R2, Reference... Rest>
-[[nodiscard]] consteval auto common_reference(R1 r1, R2 r2, Rest... rest)
+[[nodiscard]] consteval Reference auto common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
     {
       common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
