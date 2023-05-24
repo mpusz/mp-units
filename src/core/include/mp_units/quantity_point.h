@@ -102,7 +102,7 @@ public:
 
   template<typename T>
     requires std::constructible_from<quantity_type, T>
-  constexpr explicit(!std::convertible_to<T, quantity_type>) quantity_point(T&& v) : q_(std::forward<T>(v))
+  constexpr explicit quantity_point(T&& v) : q_(std::forward<T>(v))
   {
   }
 

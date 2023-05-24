@@ -97,7 +97,7 @@ hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 {
   const auto geoid_undulation =
     isq::height(GeographicLibWhatsMyOffset(pos.lat.number_in(si::degree), pos.lon.number_in(si::degree)) * si::metre);
-  return msl.absolute() - geoid_undulation;
+  return hae_altitude<M>{msl.absolute() - geoid_undulation};
 }
 
 
@@ -129,7 +129,7 @@ struct STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quantity_type>
 // **** UAV ****
 
 class unmanned_aerial_vehicle {
-  msl_altitude current_ = 0 * si::metre;
+  msl_altitude current_{0 * si::metre};
   msl_altitude launch_ = current_;
 public:
   void take_off(msl_altitude alt) { launch_ = alt; }
@@ -138,7 +138,7 @@ public:
   void current(msl_altitude alt) { current_ = alt; }
   msl_altitude current() const { return current_; }
 
-  hal_altitude hal() const { return current_ - launch_; }
+  hal_altitude hal() const { return hal_altitude{current_ - launch_}; }
 };
 
 
@@ -148,11 +148,11 @@ int main()
   using namespace mp_units::international::unit_symbols;
 
   unmanned_aerial_vehicle uav;
-  uav.take_off(6'000 * ft);
-  uav.current(10'000 * ft);
+  uav.take_off(msl_altitude{6'000 * ft});
+  uav.current(msl_altitude{10'000 * ft});
   std::cout << STD_FMT::format("hal = {}\n", uav.hal());
 
-  msl_altitude ground_level = 123 * m;
+  msl_altitude ground_level{123 * m};
   std::cout << STD_FMT::format("agl = {}\n", uav.current() - ground_level);
 
   struct waypoint {
