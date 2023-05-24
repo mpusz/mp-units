@@ -37,9 +37,9 @@
 
 namespace geographic {
 
-// clang-format off
-inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::altitude> {} mean_sea_level;
-// clang-format on
+inline constexpr struct mean_sea_level : mp_units::absolute_point_origin<mp_units::isq::altitude> {
+  using mp_units::absolute_point_origin<mp_units::isq::altitude>::absolute_point_origin;
+} mean_sea_level;
 
 using msl_altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::metre], mean_sea_level>;
 

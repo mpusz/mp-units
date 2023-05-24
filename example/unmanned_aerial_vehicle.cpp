@@ -38,6 +38,7 @@ enum class earth_gravity_model { egm84_15, egm95_5, egm2008_1 };
 template<earth_gravity_model M>
 struct height_above_ellipsoid_t : absolute_point_origin<isq::altitude> {
   static constexpr earth_gravity_model egm = M;
+  using absolute_point_origin<isq::altitude>::absolute_point_origin;
 };
 template<earth_gravity_model M>
 inline constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;

@@ -98,7 +98,7 @@ concept QuantityPointOf =
   QuantityPoint<QP> &&
   (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
    (PointOrigin<std::remove_const_t<decltype(V)>> &&
-    std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
+    std::convertible_to<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
 
 /**
  * @brief A concept matching all external quantity point like types
