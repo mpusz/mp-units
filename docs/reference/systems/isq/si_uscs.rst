@@ -5,3 +5,4 @@ U.S. Customary Units (based on SI)
     :maxdepth: 2
 
     si/uscs/length
+    si/uscs/pressure

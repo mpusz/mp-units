@@ -24,4 +24,5 @@
 
 // IWYU pragma: begin_exports
 #include <units/isq/si/uscs/length.h>
+#include <units/isq/si/uscs/pressure.h>
 // IWYU pragma: end_exports
