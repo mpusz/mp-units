@@ -569,16 +569,29 @@ template<QuantitySpec Q>
     return 1;
 }
 
+// dimension_one is always the last one
+// otherwise, sort by typename
+template<Dimension D1, Dimension D2>
+[[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
+{
+  if constexpr (lhs == rhs)
+    return false;
+  else if constexpr (lhs == dimension_one)
+    return false;
+  else if constexpr (rhs == dimension_one)
+    return true;
+  else
+    return type_name<D1>() < type_name<D2>();
+}
+
 template<QuantitySpec Lhs, QuantitySpec Rhs, bool lhs_eq = requires { Lhs::_equation_; },
          bool rhs_eq = requires { Rhs::_equation_; }, ratio lhs_compl = get_complexity(Lhs{}),
          ratio rhs_compl = get_complexity(Rhs{})>
 struct ingredients_less :
-    std::bool_constant<
-      (lhs_compl > rhs_compl) ||
-      (lhs_compl == rhs_compl && (Lhs::dimension != Rhs::dimension && Rhs::dimension == dimension_one) ||
-       type_name<std::remove_const_t<decltype(Lhs::dimension)>>() <
-         type_name<std::remove_const_t<decltype(Rhs::dimension)>>()) ||
-      (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension && type_name<Lhs>() < type_name<Rhs>())> {};
+    std::bool_constant<(lhs_compl > rhs_compl) ||
+                       (lhs_compl == rhs_compl && ingredients_dimension_less(Lhs::dimension, Rhs::dimension)) ||
+                       (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension &&
+                        type_name<Lhs>() < type_name<Rhs>())> {};
 
 template<typename T1, typename T2>
 using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;
