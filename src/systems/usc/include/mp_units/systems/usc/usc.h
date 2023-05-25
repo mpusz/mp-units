@@ -106,6 +106,9 @@ inline constexpr struct pennyweight : named_unit<"dwt", mag<24> * grain> {} penn
 inline constexpr struct troy_once : named_unit<"oz t", mag<20> * pennyweight> {} troy_once;
 inline constexpr struct troy_pound : named_unit<"lb t", mag<12> * troy_once> {} troy_pound;
 
+// https://en.wikipedia.org/wiki/Inch_of_mercury
+inline constexpr struct inch_of_mercury : named_unit<"inHg", mag<ratio(3'386'389, 1'000)> * si::pascal> {} inch_of_mercury;
+
 // https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
 inline constexpr struct degree_Fahrenheit : named_unit<basic_symbol_text{"°F", "`F"}, mag<ratio{9, 5}> * si::degree_Celsius> {} degree_Fahrenheit;
 // clang-format on
@@ -155,6 +158,8 @@ inline constexpr auto t = ton;
 inline constexpr auto dwt = pennyweight;
 inline constexpr auto oz_t = troy_once;
 inline constexpr auto lb_t = troy_pound;
+
+inline constexpr auto inHg = inch_of_mercury;
 
 inline constexpr auto deg_F = degree_Fahrenheit;
 
