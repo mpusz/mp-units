@@ -23,7 +23,9 @@
 #include <units/isq/si/international/length.h>
 #include <units/isq/si/international/speed.h>
 #include <units/isq/si/length.h>
+#include <units/isq/si/pressure.h>
 #include <units/isq/si/time.h>
+#include <units/isq/si/uscs/pressure.h>
 #include <units/unit.h>
 
 namespace {
@@ -31,6 +33,7 @@ namespace {
 using namespace units;
 using namespace units::isq::si;
 using namespace units::isq::si::international;
+using namespace units::isq::si::uscs;
 
 /* ************** BASE DIMENSIONS **************** */
 
@@ -51,5 +54,13 @@ static_assert(5_q_in + 8_q_cm == 207_q_mm);
 static_assert(10.0_q_mi / 2_q_h == 5_q_mi_per_h);
 
 static_assert(mile_per_hour::symbol == "mi/h");
+
+
+/* ************** US CUSTOMARY UNITS **************** */
+
+// pressure
+
+// 29.9213 inHg = 1013.25 hPa
+static_assert(1_q_inHg == 3386.389_q_Pa);
 
 }  // namespace
