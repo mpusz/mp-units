@@ -23,8 +23,8 @@
 #pragma once
 
 #include "validated_type.h"
-#include <mp_units/bits/external/hacks.h>
-#include <mp_units/customization_points.h>
+#include <mp-units/bits/external/hacks.h>
+#include <mp-units/customization_points.h>
 #include <algorithm>
 #include <type_traits>
 

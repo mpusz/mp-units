@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp_units/bits/external/type_traits.h>
-#include <mp_units/chrono.h>
-#include <mp_units/quantity_point.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/bits/external/type_traits.h>
+#include <mp-units/chrono.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <ratio>
 
 namespace {

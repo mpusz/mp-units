@@ -20,10 +20,10 @@
     physical_quantities
 */
 
-#include <mp_units/iostream.h>
-#include <mp_units/math.h>  // IWYU pragma: keep
-#include <mp_units/systems/isq/electromagnetism.h>
-#include <mp_units/systems/si/si.h>
+#include <mp-units/iostream.h>
+#include <mp-units/math.h>  // IWYU pragma: keep
+#include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/si/si.h>
 #include <iostream>
 
 int main()

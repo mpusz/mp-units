@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <catch2/matchers/catch_matchers_templated.hpp>
-#include <mp_units/format.h>
-#include <mp_units/quantity.h>
+#include <mp-units/format.h>
+#include <mp-units/quantity.h>
 
 namespace mp_units {
 

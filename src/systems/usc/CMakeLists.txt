@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(usc DEPENDENCIES mp-units::si mp-units::international HEADERS include/mp_units/systems/usc/usc.h)
+add_units_module(usc DEPENDENCIES mp-units::si mp-units::international HEADERS include/mp-units/systems/usc/usc.h)

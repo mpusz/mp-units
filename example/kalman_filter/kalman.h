@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <mp_units/bits/fmt_hacks.h>
-#include <mp_units/format.h>
-#include <mp_units/math.h>
-#include <mp_units/quantity.h>
-#include <mp_units/quantity_point.h>
-#include <mp_units/systems/isq/space_and_time.h>
+#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/quantity.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <tuple>
 
 namespace kalman {

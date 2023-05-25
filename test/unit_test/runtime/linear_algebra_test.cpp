@@ -20,17 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <linear_algebra.hpp>
-// linear_algebra.hpp has to be included first otherwise the header will fail to compile!
 #include <catch2/catch_test_macros.hpp>
-#include <mp_units/customization_points.h>
-#include <mp_units/format.h>
-#include <mp_units/iostream.h>
-#include <mp_units/math.h>
-#include <mp_units/systems/isq/mechanics.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/si.h>
+#include <mp-units/customization_points.h>
+#include <mp-units/format.h>
+#include <mp-units/iostream.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
 #include <cmath>
+#include <matrix>
 
 namespace STD_LA {
 

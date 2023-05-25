@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <mp_units/format.h>
-#include <mp_units/math.h>
-#include <mp_units/quantity_point.h>
-#include <mp_units/systems/isq/thermodynamics.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/thermodynamics.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 

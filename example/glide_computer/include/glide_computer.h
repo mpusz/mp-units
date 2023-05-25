@@ -23,10 +23,10 @@
 #pragma once
 
 #include "geographic.h"
-#include <mp_units/chrono.h>
-#include <mp_units/math.h>  // IWYU pragma: keep
-#include <mp_units/quantity_point.h>
-#include <mp_units/systems/isq/space_and_time.h>
+#include <mp-units/chrono.h>
+#include <mp-units/math.h>  // IWYU pragma: keep
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <algorithm>
 #include <array>
 #include <initializer_list>

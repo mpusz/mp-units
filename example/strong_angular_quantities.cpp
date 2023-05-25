@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/iostream.h>
-#include <mp_units/math.h>
-#include <mp_units/systems/isq_angle/isq_angle.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/iostream.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/isq_angle/isq_angle.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <iostream>
 
 template<class T>

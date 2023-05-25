@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(typographic DEPENDENCIES mp-units::usc HEADERS include/mp_units/systems/typographic/typographic.h)
+add_units_module(typographic DEPENDENCIES mp-units::usc HEADERS include/mp-units/systems/typographic/typographic.h)

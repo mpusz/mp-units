@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include "geographic.h"
-#include <mp_units/iostream.h>
-#include <mp_units/quantity_point.h>
-#include <mp_units/systems/international/international.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/iostream.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <iostream>
 
 using namespace mp_units;

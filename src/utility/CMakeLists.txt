@@ -24,5 +24,5 @@ cmake_minimum_required(VERSION 3.19)
 
 add_units_module(
     utility DEPENDENCIES mp-units::core mp-units::isq mp-units::si mp-units::angular
-    HEADERS include/mp_units/chrono.h include/mp_units/math.h include/mp_units/random.h
+    HEADERS include/mp-units/chrono.h include/mp-units/math.h include/mp-units/random.h
 )

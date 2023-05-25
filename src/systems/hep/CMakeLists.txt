@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(hep DEPENDENCIES mp-units::si HEADERS include/mp_units/systems/hep/hep.h)
+add_units_module(hep DEPENDENCIES mp-units::si HEADERS include/mp-units/systems/hep/hep.h)

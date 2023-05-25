@@ -23,7 +23,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
-#include <mp_units/bits/external/hacks.h>
+#include <mp-units/bits/external/hacks.h>
 #include <utility>
 
 inline constexpr struct validated_tag {

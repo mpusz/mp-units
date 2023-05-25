@@ -34,43 +34,43 @@ add_library(
     mp-units-core
     INTERFACE
 
-    include/mp_units/bits/external/fixed_string.h
-    include/mp_units/bits/external/hacks.h
-    include/mp_units/bits/external/type_list.h
-    include/mp_units/bits/external/type_name.h
-    include/mp_units/bits/external/type_traits.h
+    include/mp-units/bits/external/fixed_string.h
+    include/mp-units/bits/external/hacks.h
+    include/mp-units/bits/external/type_list.h
+    include/mp-units/bits/external/type_name.h
+    include/mp-units/bits/external/type_traits.h
 
-    include/mp_units/bits/algorithm.h
-    include/mp_units/bits/dimension_concepts.h
-    include/mp_units/bits/expression_template.h
-    include/mp_units/bits/get_associated_quantity.h
-    include/mp_units/bits/get_common_base.h
-    include/mp_units/bits/magnitude.h
-    include/mp_units/bits/math_concepts.h
-    include/mp_units/bits/prime.h
-    include/mp_units/bits/quantity_cast.h
-    include/mp_units/bits/quantity_concepts.h
-    include/mp_units/bits/quantity_point_concepts.h
-    include/mp_units/bits/quantity_spec_concepts.h
-    include/mp_units/bits/ratio.h
-    include/mp_units/bits/reference_concepts.h
-    include/mp_units/bits/representation_concepts.h
-    include/mp_units/bits/sudo_cast.h
-    include/mp_units/bits/symbol_text.h
-    include/mp_units/bits/text_tools.h
-    include/mp_units/bits/unit_concepts.h
-    include/mp_units/bits/value_cast.h
+    include/mp-units/bits/algorithm.h
+    include/mp-units/bits/dimension_concepts.h
+    include/mp-units/bits/expression_template.h
+    include/mp-units/bits/get_associated_quantity.h
+    include/mp-units/bits/get_common_base.h
+    include/mp-units/bits/magnitude.h
+    include/mp-units/bits/math_concepts.h
+    include/mp-units/bits/prime.h
+    include/mp-units/bits/quantity_cast.h
+    include/mp-units/bits/quantity_concepts.h
+    include/mp-units/bits/quantity_point_concepts.h
+    include/mp-units/bits/quantity_spec_concepts.h
+    include/mp-units/bits/ratio.h
+    include/mp-units/bits/reference_concepts.h
+    include/mp-units/bits/representation_concepts.h
+    include/mp-units/bits/sudo_cast.h
+    include/mp-units/bits/symbol_text.h
+    include/mp-units/bits/text_tools.h
+    include/mp-units/bits/unit_concepts.h
+    include/mp-units/bits/value_cast.h
 
-    include/mp_units/concepts.h
-    include/mp_units/core.h
-    include/mp_units/customization_points.h
-    include/mp_units/dimension.h
-    include/mp_units/quantity.h
-    include/mp_units/quantity_point.h
-    include/mp_units/quantity_spec.h
-    include/mp_units/reference.h
-    include/mp_units/system_reference.h
-    include/mp_units/unit.h
+    include/mp-units/concepts.h
+    include/mp-units/core.h
+    include/mp-units/customization_points.h
+    include/mp-units/dimension.h
+    include/mp-units/quantity.h
+    include/mp-units/quantity_point.h
+    include/mp-units/quantity_spec.h
+    include/mp-units/reference.h
+    include/mp-units/system_reference.h
+    include/mp-units/unit.h
 )
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
@@ -96,4 +96,4 @@ add_library(mp-units::core ALIAS mp-units-core)
 
 # installation
 install(TARGETS mp-units-core EXPORT mp-unitsTargets)
-install(DIRECTORY include/units TYPE INCLUDE)
+install(DIRECTORY include/mp-units TYPE INCLUDE)

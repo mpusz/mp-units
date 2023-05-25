@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
-#include <mp_units/format.h>
+#include <mp-units/format.h>
 #include <iostream>
 #include <numeric>
 #include <string_view>

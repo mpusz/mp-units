@@ -65,5 +65,5 @@ function(add_units_module name)
     add_library(mp-units::${name} ALIAS mp-units-${name})
 
     install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
-    install(DIRECTORY include/units TYPE INCLUDE)
+    install(DIRECTORY include/mp-units TYPE INCLUDE)
 endfunction()

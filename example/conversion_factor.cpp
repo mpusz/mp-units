@@ -15,10 +15,10 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <mp_units/format.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/unit_symbols.h>
-#include <mp_units/systems/si/units.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/units.h>
 #include <iostream>
 #include <type_traits>
 

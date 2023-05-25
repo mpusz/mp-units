@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp_units/dimension.h>
-#include <mp_units/reference.h>
-#include <mp_units/systems/si/prefixes.h>
-#include <mp_units/unit.h>
+#include <mp-units/dimension.h>
+#include <mp-units/reference.h>
+#include <mp-units/systems/si/prefixes.h>
+#include <mp-units/unit.h>
 
 namespace {
 
@@ -504,7 +504,7 @@ static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
 static_assert(
   is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
 
-// common_type
+// common_unit
 static_assert(is_of_type<common_unit(gram, gram), gram_>);
 static_assert(is_of_type<common_unit(kilogram, kilogram), kilogram_>);
 static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), kilogram_>);

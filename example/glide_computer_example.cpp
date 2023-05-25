@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 #include "glide_computer.h"
-#include <mp_units/bits/fmt_hacks.h>
-#include <mp_units/chrono.h>
-#include <mp_units/math.h>
-#include <mp_units/systems/international/international.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/chrono.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <exception>
 #include <iostream>

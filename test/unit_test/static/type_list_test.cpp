@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/bits/external/type_list.h>
-#include <mp_units/bits/external/type_traits.h>
+#include <mp-units/bits/external/type_list.h>
+#include <mp-units/bits/external/type_traits.h>
 
 namespace {
 

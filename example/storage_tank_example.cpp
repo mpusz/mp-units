@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/format.h>
-#include <mp_units/systems/isq/mechanics.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/constants.h>
-#include <mp_units/systems/si/unit_symbols.h>
-#include <mp_units/systems/si/units.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/units.h>
 #include <cassert>
 #include <iostream>
 #include <utility>

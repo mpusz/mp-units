@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/systems/imperial/imperial.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/systems/imperial/imperial.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 
 namespace {
 

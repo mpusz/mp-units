@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.19)
 add_units_module(
     si
     DEPENDENCIES mp-units::isq
-    HEADERS include/mp_units/systems/si/constants.h include/mp_units/systems/si/prefixes.h
-            include/mp_units/systems/si/si.h include/mp_units/systems/si/unit_symbols.h
-            include/mp_units/systems/si/units.h
+    HEADERS include/mp-units/systems/si/constants.h include/mp-units/systems/si/prefixes.h
+            include/mp-units/systems/si/si.h include/mp-units/systems/si/unit_symbols.h
+            include/mp-units/systems/si/units.h
 )

@@ -23,5 +23,5 @@
 cmake_minimum_required(VERSION 3.19)
 
 add_units_module(
-    isq_angle DEPENDENCIES mp-units::angular mp-units::isq HEADERS include/mp_units/systems/isq_angle/isq_angle.h
+    isq_angle DEPENDENCIES mp-units::angular mp-units::isq HEADERS include/mp-units/systems/isq_angle/isq_angle.h
 )

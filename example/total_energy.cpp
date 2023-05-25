@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp_units/iostream.h>
-#include <mp_units/math.h>
-#include <mp_units/systems/isq/mechanics.h>
-#include <mp_units/systems/natural/natural.h>
-#include <mp_units/systems/si/constants.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/iostream.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/natural/natural.h>
+#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <exception>
 #include <iostream>
 

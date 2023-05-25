@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <mp_units/format.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/unit_symbols.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 

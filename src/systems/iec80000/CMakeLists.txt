@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.19)
 add_units_module(
     iec80000
     DEPENDENCIES mp-units::isq mp-units::si
-    HEADERS include/mp_units/systems/iec80000/binary_prefixes.h include/mp_units/systems/iec80000/quantities.h
-            include/mp_units/systems/iec80000/iec80000.h include/mp_units/systems/iec80000/unit_symbols.h
-            include/mp_units/systems/iec80000/units.h
+    HEADERS include/mp-units/systems/iec80000/binary_prefixes.h include/mp-units/systems/iec80000/quantities.h
+            include/mp-units/systems/iec80000/iec80000.h include/mp-units/systems/iec80000/unit_symbols.h
+            include/mp-units/systems/iec80000/units.h
 )

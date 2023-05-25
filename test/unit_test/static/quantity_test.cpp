@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp_units/chrono.h>
-#include <mp_units/systems/si/si.h>
+#include <mp-units/chrono.h>
+#include <mp-units/systems/si/si.h>
 #include <limits>
 #include <utility>
 

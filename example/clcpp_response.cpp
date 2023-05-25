@@ -15,15 +15,15 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <mp_units/format.h>
-#include <mp_units/iostream.h>
-#include <mp_units/systems/iau/iau.h>
-#include <mp_units/systems/imperial/imperial.h>
-#include <mp_units/systems/international/international.h>
-#include <mp_units/systems/isq/space_and_time.h>
-#include <mp_units/systems/si/si.h>
-#include <mp_units/systems/typographic/typographic.h>
-#include <mp_units/systems/usc/usc.h>
+#include <mp-units/format.h>
+#include <mp-units/iostream.h>
+#include <mp-units/systems/iau/iau.h>
+#include <mp-units/systems/imperial/imperial.h>
+#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/typographic/typographic.h>
+#include <mp-units/systems/usc/usc.h>
 #include <iostream>
 
 namespace {
