@@ -313,7 +313,8 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
+ * inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {}
+ * angular_measure; inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
  * inline constexpr struct weight : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
  * inline constexpr struct kinetic_energy : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
  * @endcode
@@ -517,6 +518,11 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
+  // TODO Does the below make sense?
+  // `2 * 2` should compare to `4`
+  // `2 * one * (2 * one)` should compare to `4 * one`
+  // `2 * rad * (2 * rad)` should compare to `4 * rad^2`
+  // all are dimensionless quantities :-(
   if constexpr (q == dimensionless)
     return q;
   else if constexpr (Num == 1 && Den == 1)
