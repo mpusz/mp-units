@@ -85,14 +85,14 @@ static_assert(is_named_magnitude<mag_2_>);
 // power_v
 template<template<auto, int, int...> typename P>
 concept invalid_power_v = requires {
-                            requires !requires { typename P<123, 0>; };
-                            requires !requires { typename P<123, 0, 2>; };
-                            requires !requires { typename P<123, 1, 0>; };
-                            requires !requires { typename P<123, 0, 0>; };
-                            requires !requires { typename P<123, 1>; };
-                            requires !requires { typename P<123, 1, 1>; };
-                            requires !requires { typename P<123, 5, 5>; };
-                          };
+  requires !requires { typename P<123, 0>; };
+  requires !requires { typename P<123, 0, 2>; };
+  requires !requires { typename P<123, 1, 0>; };
+  requires !requires { typename P<123, 0, 0>; };
+  requires !requires { typename P<123, 1>; };
+  requires !requires { typename P<123, 1, 1>; };
+  requires !requires { typename P<123, 5, 5>; };
+};
 static_assert(invalid_power_v<power_v>);
 
 // get_base

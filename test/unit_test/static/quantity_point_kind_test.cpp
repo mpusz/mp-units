@@ -150,21 +150,20 @@ static_assert(sizeof(abscissa<metre, double>) == sizeof(double));
 static_assert(sizeof(ordinate<metre, short>) == sizeof(short));
 
 template<typename Width, typename Abscissa>
-concept invalid_types =
-  requires {
-    requires !requires { typename quantity_point_kind<Width, metre, int>; };      // width_kind is not a point kind
-    requires !requires { typename quantity_point_kind<Abscissa, second, int>; };  // unit of a different dimension
-    requires !requires { typename quantity_point_kind<Abscissa, metre, length<metre>>; };  // quantity used as Rep
-    requires !requires {
-                typename quantity_point_kind<Abscissa, metre, quantity_point<dynamic_origin<dim_length>, metre>>;
-              };                                                                          // quantity point used as Rep
-    requires !requires { typename quantity_point_kind<Abscissa, metre, width<metre>>; };  // quantity kind used as Rep
-    requires !requires {
-                typename quantity_point_kind<Abscissa, metre, abscissa<metre>>;
-              };                                                                    // quantity point kind used as Rep
-    requires !requires { typename quantity_point_kind<metre, Abscissa, double>; };  // reordered arguments
-    requires !requires { typename quantity_point_kind<metre, double, Abscissa>; };  // reordered arguments
-  };
+concept invalid_types = requires {
+  requires !requires { typename quantity_point_kind<Width, metre, int>; };      // width_kind is not a point kind
+  requires !requires { typename quantity_point_kind<Abscissa, second, int>; };  // unit of a different dimension
+  requires !requires { typename quantity_point_kind<Abscissa, metre, length<metre>>; };  // quantity used as Rep
+  requires !requires {
+    typename quantity_point_kind<Abscissa, metre, quantity_point<dynamic_origin<dim_length>, metre>>;
+  };                                                                                    // quantity point used as Rep
+  requires !requires { typename quantity_point_kind<Abscissa, metre, width<metre>>; };  // quantity kind used as Rep
+  requires !requires {
+    typename quantity_point_kind<Abscissa, metre, abscissa<metre>>;
+  };                                                                              // quantity point kind used as Rep
+  requires !requires { typename quantity_point_kind<metre, Abscissa, double>; };  // reordered arguments
+  requires !requires { typename quantity_point_kind<metre, double, Abscissa>; };  // reordered arguments
+};
 static_assert(invalid_types<width_kind, abscissa_kind>);
 
 static_assert(std::is_trivially_default_constructible_v<abscissa<metre>>);
@@ -474,20 +473,19 @@ static_assert([]() {
 
 template<typename PK, typename U, typename Qx>
 concept invalid_compound_assignments_ = requires(quantity_point_kind<PK, U, int> x, Qx q) {
-                                          requires !requires { x += q; };
-                                          requires !requires { x -= q; };
-                                        };
+  requires !requires { x += q; };
+  requires !requires { x -= q; };
+};
 template<typename Abscissa>
-concept invalid_compound_assignments =
-  requires(quantity_point_kind<Abscissa, metre, int> x) {
-    requires !requires { x += 1; };
-    requires !requires { x -= 1; };
-    requires invalid_compound_assignments_<Abscissa, metre, length<metre, int>>;
-    requires invalid_compound_assignments_<Abscissa, metre, height<metre, int>>;
-    requires invalid_compound_assignments_<Abscissa, metre, rate_of_climb<metre_per_second, int>>;
-    requires invalid_compound_assignments_<Abscissa, metre, quantity_point<dynamic_origin<dim_length>, metre, int>>;
-    requires invalid_compound_assignments_<Abscissa, metre, std::chrono::seconds>;
-  };
+concept invalid_compound_assignments = requires(quantity_point_kind<Abscissa, metre, int> x) {
+  requires !requires { x += 1; };
+  requires !requires { x -= 1; };
+  requires invalid_compound_assignments_<Abscissa, metre, length<metre, int>>;
+  requires invalid_compound_assignments_<Abscissa, metre, height<metre, int>>;
+  requires invalid_compound_assignments_<Abscissa, metre, rate_of_climb<metre_per_second, int>>;
+  requires invalid_compound_assignments_<Abscissa, metre, quantity_point<dynamic_origin<dim_length>, metre, int>>;
+  requires invalid_compound_assignments_<Abscissa, metre, std::chrono::seconds>;
+};
 static_assert(invalid_compound_assignments<abscissa_kind>);
 static_assert(invalid_compound_assignments_<time_point_kind, second, std::chrono::seconds>);
 #if __cpp_lib_chrono >= 201907L
@@ -564,26 +562,26 @@ static_assert(std::equality_comparable_with<abscissa<metre>, abscissa<cgs::centi
 // clang-format on
 template<typename Int>
 concept invalid_equality = requires(quantity_point_kind<abscissa_kind, metre, Int> x, Int i) {
-                             requires !requires { x == 1; };
-                             requires !requires { x != 1.0; };
-                             requires !requires { x == 1 * m; };
-                             requires !requires { x != 1.0 * cgs_cm; };
-                             requires !requires { x == 1 * km; };
-                             requires !requires { x != quantity(1); };
-                             requires !requires { x == dimensionless<percent>(1.0); };
-                             requires !requires { x != width<metre, int>(1 * m); };
-                             requires !requires { x == width<kilometre, double>(1.0 * km); };
-                             requires !requires { x != height<metre, int>(1 * m); };
-                             requires !requires { x == height<kilometre, double>(1.0 * km); };
-                             requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
-                             requires !requires { x != quantity_point(1 * m); };
-                             requires !requires { x == quantity_point(1.0 * mm); };
-                             requires !requires { x != quantity_point(quantity(1)); };
-                             requires !requires { x == quantity_point(dimensionless<percent>(1.0)); };
-                             requires !requires { x != quantity_point_kind(cgs_width<metre, int>(1 * m)); };
-                             requires !requires { x == ordinate<metre, int>(1 * m); };
-                             requires !requires { screen_si_width<metre, Int>{} != screen_si_cgs_width<metre, Int>{}; };
-                           };
+  requires !requires { x == 1; };
+  requires !requires { x != 1.0; };
+  requires !requires { x == 1 * m; };
+  requires !requires { x != 1.0 * cgs_cm; };
+  requires !requires { x == 1 * km; };
+  requires !requires { x != quantity(1); };
+  requires !requires { x == dimensionless<percent>(1.0); };
+  requires !requires { x != width<metre, int>(1 * m); };
+  requires !requires { x == width<kilometre, double>(1.0 * km); };
+  requires !requires { x != height<metre, int>(1 * m); };
+  requires !requires { x == height<kilometre, double>(1.0 * km); };
+  requires !requires { x == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
+  requires !requires { x != quantity_point(1 * m); };
+  requires !requires { x == quantity_point(1.0 * mm); };
+  requires !requires { x != quantity_point(quantity(1)); };
+  requires !requires { x == quantity_point(dimensionless<percent>(1.0)); };
+  requires !requires { x != quantity_point_kind(cgs_width<metre, int>(1 * m)); };
+  requires !requires { x == ordinate<metre, int>(1 * m); };
+  requires !requires { screen_si_width<metre, Int>{} != screen_si_cgs_width<metre, Int>{}; };
+};
 static_assert(invalid_equality<int>);
 
 // clang-format off
@@ -599,28 +597,27 @@ static_assert(std::three_way_comparable_with<abscissa<cgs::centimetre, int>, abs
 static_assert(std::three_way_comparable_with<abscissa<metre>, abscissa<cgs::centimetre>>);
 // clang-format on
 template<typename Int>
-concept invalid_relational =
-  requires(quantity_point_kind<abscissa_kind, metre, Int> x, Int i) {
-    requires !requires { x < 1; };
-    requires !requires { x <= 1.0; };
-    requires !requires { x >= 1 * m; };
-    requires !requires { x > 1.0 * cgs_cm; };
-    requires !requires { x <=> 1 * km; };
-    requires !requires { x < quantity(1); };
-    requires !requires { x <= dimensionless<percent>(1.0); };
-    requires !requires { x >= width<metre, int>(1 * m); };
-    requires !requires { x > width<kilometre, double>(1.0 * km); };
-    requires !requires { x <=> height<metre, int>(1 * m); };
-    requires !requires { x < height<kilometre, double>(1.0 * km); };
-    requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
-    requires !requires { x >= quantity_point(1 * m); };
-    requires !requires { x > quantity_point(1.0 * mm); };
-    requires !requires { x <=> quantity_point(quantity(1)); };
-    requires !requires { x < quantity_point(dimensionless<percent>(1.0)); };
-    requires !requires { x <= quantity_point_kind(cgs_width<metre, int>(1 * m)); };
-    requires !requires { x >= ordinate<metre, int>(1 * m); };
-    requires !requires { screen_si_width<metre, Int>{} > screen_si_cgs_width<metre, Int>{}; };
-  };
+concept invalid_relational = requires(quantity_point_kind<abscissa_kind, metre, Int> x, Int i) {
+  requires !requires { x < 1; };
+  requires !requires { x <= 1.0; };
+  requires !requires { x >= 1 * m; };
+  requires !requires { x > 1.0 * cgs_cm; };
+  requires !requires { x <=> 1 * km; };
+  requires !requires { x < quantity(1); };
+  requires !requires { x <= dimensionless<percent>(1.0); };
+  requires !requires { x >= width<metre, int>(1 * m); };
+  requires !requires { x > width<kilometre, double>(1.0 * km); };
+  requires !requires { x <=> height<metre, int>(1 * m); };
+  requires !requires { x < height<kilometre, double>(1.0 * km); };
+  requires !requires { x <= rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
+  requires !requires { x >= quantity_point(1 * m); };
+  requires !requires { x > quantity_point(1.0 * mm); };
+  requires !requires { x <=> quantity_point(quantity(1)); };
+  requires !requires { x < quantity_point(dimensionless<percent>(1.0)); };
+  requires !requires { x <= quantity_point_kind(cgs_width<metre, int>(1 * m)); };
+  requires !requires { x >= ordinate<metre, int>(1 * m); };
+  requires !requires { screen_si_width<metre, Int>{} > screen_si_cgs_width<metre, Int>{}; };
+};
 static_assert(invalid_relational<int>);
 
 
@@ -672,35 +669,32 @@ static_assert(comp(quantity_point_kind_cast<length<centimetre, int>>(abscissa<cg
 static_assert(same(quantity_point_kind_cast<screen_si_cgs_width<metre, int>>(screen_si_width<metre, int>(1 * m)), screen_si_cgs_width<metre, int>(1 * m)));
 // clang-format on
 template<typename Int>
-concept invalid_cast =
-  requires(Int i) {
-    requires !requires { quantity_point_kind_cast<apples<one, Int>>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<rate_of_climb<metre_per_second, Int>>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<apple>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<rate_of_climb_kind>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<apple, one>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<width_kind, metre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<width_kind, kilometre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<height_kind, metre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<height_kind, kilometre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<cgs_width_kind, cgs::centimetre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<rate_of_climb_kind, metre_per_second>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<dimensionless<one>>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<square_metre>(abscissa<metre, Int>(i * m)); };
-    requires !requires { quantity_point_kind_cast<second>(abscissa<metre, Int>(i * m)); };
-    requires !requires {
-                quantity_point_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(
-                  abscissa<metre, Int>(i * m));
-              };
-    requires !requires {
-                quantity_point_kind_cast<quantity_point<dynamic_origin<dim_one>, one, Int>>(
-                  abscissa<metre, Int>(i * m));
-              };
-    requires !requires {
-                quantity_point_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(
-                  screen_si_width<metre, Int>(i * m));
-              };
+concept invalid_cast = requires(Int i) {
+  requires !requires { quantity_point_kind_cast<apples<one, Int>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<rate_of_climb<metre_per_second, Int>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<apple>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<rate_of_climb_kind>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<apple, one>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<width_kind, metre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<width_kind, kilometre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<height_kind, metre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<height_kind, kilometre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<cgs_width_kind, cgs::centimetre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<rate_of_climb_kind, metre_per_second>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<dimensionless<one>>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<square_metre>(abscissa<metre, Int>(i * m)); };
+  requires !requires { quantity_point_kind_cast<second>(abscissa<metre, Int>(i * m)); };
+  requires !requires {
+    quantity_point_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(abscissa<metre, Int>(i * m));
   };
+  requires !requires {
+    quantity_point_kind_cast<quantity_point<dynamic_origin<dim_one>, one, Int>>(abscissa<metre, Int>(i * m));
+  };
+  requires !requires {
+    quantity_point_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(
+      screen_si_width<metre, Int>(i * m));
+  };
+};
 static_assert(invalid_cast<int>);
 
 

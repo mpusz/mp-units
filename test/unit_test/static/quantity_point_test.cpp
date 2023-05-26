@@ -46,22 +46,20 @@ struct sea_level_origin : point_origin<dim_length> {};
 // class invariants
 
 template<typename DimLength>
-concept invalid_types =
-  requires {
-    // unit of a different dimension:
-    requires !requires { typename quantity_point<dynamic_origin<DimLength>, second, int>; };
-    // quantity used as Rep:
-    requires !requires { typename quantity_point<dynamic_origin<DimLength>, metre, quantity<DimLength, metre, int>>; };
-    // quantity point used as Rep:
-    requires !requires {
-                typename quantity_point<dynamic_origin<DimLength>, metre,
-                                        quantity_point<dynamic_origin<DimLength>, metre, int>>;
-              };
-    // reordered arguments:
-    requires !requires { typename quantity_point<metre, dynamic_origin<DimLength>, double>; };
-    // dimension used as origin:
-    requires !requires { typename quantity_point<DimLength, second, int>; };
+concept invalid_types = requires {
+  // unit of a different dimension:
+  requires !requires { typename quantity_point<dynamic_origin<DimLength>, second, int>; };
+  // quantity used as Rep:
+  requires !requires { typename quantity_point<dynamic_origin<DimLength>, metre, quantity<DimLength, metre, int>>; };
+  // quantity point used as Rep:
+  requires !requires {
+    typename quantity_point<dynamic_origin<DimLength>, metre, quantity_point<dynamic_origin<DimLength>, metre, int>>;
   };
+  // reordered arguments:
+  requires !requires { typename quantity_point<metre, dynamic_origin<DimLength>, double>; };
+  // dimension used as origin:
+  requires !requires { typename quantity_point<DimLength, second, int>; };
+};
 
 static_assert(invalid_types<dim_length>);
 
@@ -237,9 +235,9 @@ static_assert(quantity_point(1000_q_m) <= quantity_point(1_q_km));
 template<typename Int>
 concept invalid_comparisons = requires(quantity_point<dynamic_origin<dim_length>, metre, Int> lhs,
                                        quantity_point<sea_level_origin, metre, Int> rhs) {
-                                requires !requires { lhs == rhs; };
-                                requires !requires { lhs < rhs; };
-                              };
+  requires !requires { lhs == rhs; };
+  requires !requires { lhs < rhs; };
+};
 static_assert(invalid_comparisons<int>);
 
 // alias units
@@ -295,16 +293,15 @@ static_assert(
   quantity_point_cast<dim_speed, kilometre_per_hour>(quantity_point(2000.0_q_m / 3600.0_q_s)).relative().number() == 2);
 
 template<typename Int>
-concept invalid_cast =
-  requires(Int i) {
-    requires !requires {
-                quantity_point_cast<quantity_point<dynamic_origin<dim_time>, second, Int>>(quantity_point(i * m));
-              };
-    requires !requires {
-                quantity_point_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(
-                  quantity_point<sea_level_origin, metre, Int>(i * m));
-              };
+concept invalid_cast = requires(Int i) {
+  requires !requires {
+    quantity_point_cast<quantity_point<dynamic_origin<dim_time>, second, Int>>(quantity_point(i * m));
   };
+  requires !requires {
+    quantity_point_cast<quantity_point<dynamic_origin<dim_length>, metre, Int>>(
+      quantity_point<sea_level_origin, metre, Int>(i * m));
+  };
+};
 static_assert(invalid_cast<int>);
 
 // time

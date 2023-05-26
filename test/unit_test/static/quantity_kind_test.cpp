@@ -110,17 +110,16 @@ static_assert(sizeof(width<metre, double>) == sizeof(double));
 static_assert(sizeof(height<metre, short>) == sizeof(short));
 
 template<typename Width>
-concept invalid_types =
-  requires {
-    requires !requires { typename quantity_kind<Width, second, int>; };           // unit of a different dimension
-    requires !requires { typename quantity_kind<Width, metre, length<metre>>; };  // quantity used as Rep
-    requires !requires {                                                          // quantity point used as Rep
-                typename quantity_kind<Width, metre, quantity_point<dynamic_origin<dim_length>, metre>>;
-              };
-    requires !requires { typename quantity_kind<Width, metre, width<metre>>; };  // quantity kind used as Rep
-    requires !requires { typename quantity_kind<metre, Width, double>; };        // reordered arguments
-    requires !requires { typename quantity_kind<metre, double, Width>; };        // reordered arguments
+concept invalid_types = requires {
+  requires !requires { typename quantity_kind<Width, second, int>; };           // unit of a different dimension
+  requires !requires { typename quantity_kind<Width, metre, length<metre>>; };  // quantity used as Rep
+  requires !requires {                                                          // quantity point used as Rep
+    typename quantity_kind<Width, metre, quantity_point<dynamic_origin<dim_length>, metre>>;
   };
+  requires !requires { typename quantity_kind<Width, metre, width<metre>>; };  // quantity kind used as Rep
+  requires !requires { typename quantity_kind<metre, Width, double>; };        // reordered arguments
+  requires !requires { typename quantity_kind<metre, double, Width>; };        // reordered arguments
+};
 static_assert(invalid_types<width_kind>);
 
 static_assert(std::is_trivially_default_constructible_v<width<metre>>);
@@ -437,45 +436,44 @@ static_assert(same((-width<metre, short>(short{1} * m)).common(), int{-1} * m));
 
 template<typename K, typename U, typename Qx>
 concept invalid_compound_assignments_ = requires(quantity_kind<K, U, int> w, Qx q) {
-                                          requires !requires { w += q; };
-                                          requires !requires { w -= q; };
-                                          requires !requires { w *= q; };
-                                          requires !requires { w /= q; };
-                                          requires !requires { w %= q; };
-                                        };
+  requires !requires { w += q; };
+  requires !requires { w -= q; };
+  requires !requires { w *= q; };
+  requires !requires { w /= q; };
+  requires !requires { w %= q; };
+};
 template<typename Width>
-concept invalid_compound_assignments =
-  requires(quantity_kind<Width, metre, int> w, height<metre, int> h) {
-    requires !requires { w += 1; };
-    requires !requires { w -= 1; };
-    requires !requires { w *= 1 * (km / m); };
-    requires !requires { w /= 1 * (km / m); };
-    requires !requires { w %= 1 * (km / m); };
-    requires !requires { w += m; };
-    requires !requires { w -= m; };
-    requires !requires { w *= m; };
-    requires !requires { w /= m; };
-    requires !requires { w %= m; };
-    requires !requires {
-                w *= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
-              };
-    requires !requires {
-                w /= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
-              };
-    requires !requires {
-                w %= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
-              };
-    requires !requires { w %= 1.0; };
-    requires !requires { w %= quantity(1.0); };
-    requires !requires { w %= 1.0 * (w / w); };
-    requires !requires { w %= 1.0 * w; };
-    requires !requires { w %= h / h; };
-    requires invalid_compound_assignments_<Width, metre, length<metre, int>>;
-    requires invalid_compound_assignments_<Width, metre, height<metre, int>>;
-    requires invalid_compound_assignments_<Width, metre, horizontal_area<square_metre, int>>;
-    requires invalid_compound_assignments_<Width, metre, quantity_point<dynamic_origin<dim_length>, metre, int>>;
-    requires invalid_compound_assignments_<Width, metre, std::chrono::seconds>;
+concept invalid_compound_assignments = requires(quantity_kind<Width, metre, int> w, height<metre, int> h) {
+  requires !requires { w += 1; };
+  requires !requires { w -= 1; };
+  requires !requires { w *= 1 * (km / m); };
+  requires !requires { w /= 1 * (km / m); };
+  requires !requires { w %= 1 * (km / m); };
+  requires !requires { w += m; };
+  requires !requires { w -= m; };
+  requires !requires { w *= m; };
+  requires !requires { w /= m; };
+  requires !requires { w %= m; };
+  requires !requires {
+    w *= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
   };
+  requires !requires {
+    w /= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
+  };
+  requires !requires {
+    w %= quantity_kind<downcast_kind<Width, dimension_one>, scaled_unit<mag<1000>(), one>, int>{1};
+  };
+  requires !requires { w %= 1.0; };
+  requires !requires { w %= quantity(1.0); };
+  requires !requires { w %= 1.0 * (w / w); };
+  requires !requires { w %= 1.0 * w; };
+  requires !requires { w %= h / h; };
+  requires invalid_compound_assignments_<Width, metre, length<metre, int>>;
+  requires invalid_compound_assignments_<Width, metre, height<metre, int>>;
+  requires invalid_compound_assignments_<Width, metre, horizontal_area<square_metre, int>>;
+  requires invalid_compound_assignments_<Width, metre, quantity_point<dynamic_origin<dim_length>, metre, int>>;
+  requires invalid_compound_assignments_<Width, metre, std::chrono::seconds>;
+};
 static_assert(invalid_compound_assignments<width_kind>);
 static_assert(invalid_compound_assignments_<time_kind, second, std::chrono::seconds>);
 
@@ -728,24 +726,24 @@ static_assert(std::equality_comparable_with<width<cgs::centimetre, int>, width<m
 static_assert(std::equality_comparable_with<width<metre>, width<cgs::centimetre>>);
 template<typename Width>
 concept invalid_equality = requires(quantity_kind<Width, metre, int> w) {
-                             requires !requires { w == 1; };
-                             requires !requires { w != 1.0; };
-                             requires !requires { w == 1 * m; };
-                             requires !requires { w != 1.0 * cgs_cm; };
-                             requires !requires { w == 1 * km; };
-                             requires !requires { w != m; };
-                             requires !requires { w == km; };
-                             requires !requires { w != quantity(1); };
-                             requires !requires { w == dimensionless<percent>(1.0); };
-                             requires !requires { w != height<metre, int>(1 * m); };
-                             requires !requires { w == height<kilometre, double>(1.0 * km); };
-                             requires !requires { w != horizontal_area<square_metre, int>(1 * (m * m)); };
-                             requires !requires { w == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
-                             requires !requires { w != quantity_point(1 * m); };
-                             requires !requires { w == quantity_point(1.0 * mm); };
-                             requires !requires { w != quantity_point(quantity(1)); };
-                             requires !requires { w == quantity_point(dimensionless<percent>(1.0)); };
-                           };
+  requires !requires { w == 1; };
+  requires !requires { w != 1.0; };
+  requires !requires { w == 1 * m; };
+  requires !requires { w != 1.0 * cgs_cm; };
+  requires !requires { w == 1 * km; };
+  requires !requires { w != m; };
+  requires !requires { w == km; };
+  requires !requires { w != quantity(1); };
+  requires !requires { w == dimensionless<percent>(1.0); };
+  requires !requires { w != height<metre, int>(1 * m); };
+  requires !requires { w == height<kilometre, double>(1.0 * km); };
+  requires !requires { w != horizontal_area<square_metre, int>(1 * (m * m)); };
+  requires !requires { w == rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
+  requires !requires { w != quantity_point(1 * m); };
+  requires !requires { w == quantity_point(1.0 * mm); };
+  requires !requires { w != quantity_point(quantity(1)); };
+  requires !requires { w == quantity_point(dimensionless<percent>(1.0)); };
+};
 static_assert(invalid_equality<width_kind>);
 
 static_assert(width<metre, int>(1 * m) < width<metre, int>(2 * m));
@@ -760,22 +758,22 @@ static_assert(std::three_way_comparable_with<width<cgs::centimetre, int>, width<
 static_assert(std::three_way_comparable_with<width<metre>, width<cgs::centimetre>>);
 template<typename Width>
 concept invalid_relational = requires(quantity_kind<Width, metre, int> w) {
-                               requires !requires { w < 1; };
-                               requires !requires { w <= 1.0; };
-                               requires !requires { w >= 1 * m; };
-                               requires !requires { w > 1.0 * cgs_cm; };
-                               requires !requires { w <=> 1 * km; };
-                               requires !requires { w < quantity(1); };
-                               requires !requires { w <= dimensionless<percent>(1.0); };
-                               requires !requires { w >= height<metre, int>(1 * m); };
-                               requires !requires { w > height<kilometre, double>(1.0 * km); };
-                               requires !requires { w <=> horizontal_area<square_metre, int>(1 * (m * m)); };
-                               requires !requires { w < rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
-                               requires !requires { w <= quantity_point(1 * m); };
-                               requires !requires { w >= quantity_point(1.0 * mm); };
-                               requires !requires { w > quantity_point(quantity(1)); };
-                               requires !requires { w <=> quantity_point(dimensionless<percent>(1.0)); };
-                             };
+  requires !requires { w < 1; };
+  requires !requires { w <= 1.0; };
+  requires !requires { w >= 1 * m; };
+  requires !requires { w > 1.0 * cgs_cm; };
+  requires !requires { w <=> 1 * km; };
+  requires !requires { w < quantity(1); };
+  requires !requires { w <= dimensionless<percent>(1.0); };
+  requires !requires { w >= height<metre, int>(1 * m); };
+  requires !requires { w > height<kilometre, double>(1.0 * km); };
+  requires !requires { w <=> horizontal_area<square_metre, int>(1 * (m * m)); };
+  requires !requires { w < rate_of_climb<kilometre_per_hour, double>(1.0 * (km / h)); };
+  requires !requires { w <= quantity_point(1 * m); };
+  requires !requires { w >= quantity_point(1.0 * mm); };
+  requires !requires { w > quantity_point(quantity(1)); };
+  requires !requires { w <=> quantity_point(dimensionless<percent>(1.0)); };
+};
 static_assert(invalid_relational<width_kind>);
 
 
@@ -814,37 +812,35 @@ static_assert(same(quantity_kind_cast<length<centimetre, int>>(width<metre, doub
 static_assert(same(quantity_kind_cast<length<centimetre, int>>(width<cgs::centimetre, int>(1 * cgs_cm)), width<cgs::centimetre, int>(1 * cgs_cm)));
 // clang-format on
 template<typename Width>
-concept invalid_cast =
-  requires {
-    requires !requires { quantity_kind_cast<apples<one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires {
-                quantity_kind_cast<horizontal_area<square_metre, int>>(quantity_kind<Width, metre, int>(1 * m));
-              };
-    requires !requires {
-                quantity_kind_cast<rate_of_climb<metre_per_second, int>>(quantity_kind<Width, metre, int>(1 * m));
-              };
-    requires !requires { quantity_kind_cast<apple>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires { quantity_kind_cast<horizontal_area_kind>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires { quantity_kind_cast<rate_of_climb_kind>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires { quantity_kind_cast<apple, one>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires {
-                quantity_kind_cast<horizontal_area_kind, square_metre>(quantity_kind<Width, metre, int>(1 * m));
-              };
-    requires !requires {
-                quantity_kind_cast<rate_of_climb_kind, metre_per_second>(quantity_kind<Width, metre, int>(1 * m));
-              };
-    requires !requires { quantity_kind_cast<dimensionless<one>>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires { quantity_kind_cast<square_metre>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires { quantity_kind_cast<second>(quantity_kind<Width, metre, int>(1 * m)); };
-    requires !requires {
-                quantity_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, int>>(
-                  quantity_kind<Width, metre, int>(1 * m));
-              };
-    requires !requires {
-                quantity_kind_cast<quantity_point<dynamic_origin<dimension_one>, one, int>>(
-                  quantity_kind<Width, metre, int>(1 * m));
-              };
+concept invalid_cast = requires {
+  requires !requires { quantity_kind_cast<apples<one, int>>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires {
+    quantity_kind_cast<horizontal_area<square_metre, int>>(quantity_kind<Width, metre, int>(1 * m));
   };
+  requires !requires {
+    quantity_kind_cast<rate_of_climb<metre_per_second, int>>(quantity_kind<Width, metre, int>(1 * m));
+  };
+  requires !requires { quantity_kind_cast<apple>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<horizontal_area_kind>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<rate_of_climb_kind>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<apple, one>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires {
+    quantity_kind_cast<horizontal_area_kind, square_metre>(quantity_kind<Width, metre, int>(1 * m));
+  };
+  requires !requires {
+    quantity_kind_cast<rate_of_climb_kind, metre_per_second>(quantity_kind<Width, metre, int>(1 * m));
+  };
+  requires !requires { quantity_kind_cast<dimensionless<one>>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<square_metre>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires { quantity_kind_cast<second>(quantity_kind<Width, metre, int>(1 * m)); };
+  requires !requires {
+    quantity_kind_cast<quantity_point<dynamic_origin<dim_length>, metre, int>>(quantity_kind<Width, metre, int>(1 * m));
+  };
+  requires !requires {
+    quantity_kind_cast<quantity_point<dynamic_origin<dimension_one>, one, int>>(
+      quantity_kind<Width, metre, int>(1 * m));
+  };
+};
 static_assert(invalid_cast<width_kind>);
 
 
