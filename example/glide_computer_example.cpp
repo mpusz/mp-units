@@ -84,10 +84,11 @@ void print(const R& gliders)
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
       const auto ratio = value_cast<one>(glide_ratio(g.polar[0]));
-      std::cout << UNITS_STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v, ratio,
-                                   // TODO is it possible to make ADL work below (we need another set of trig functions
-                                   // for strong angle in a different namespace)
-                                   value_cast<si::degree>(isq::asin(1 / ratio)));
+      std::cout << UNITS_STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v,
+                                         ratio,
+                                         // TODO is it possible to make ADL work below (we need another set of trig
+                                         // functions for strong angle in a different namespace)
+                                         value_cast<si::degree>(isq::asin(1 / ratio)));
     }
     std::cout << "\n";
   }

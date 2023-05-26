@@ -162,6 +162,6 @@ int main()
   };
 
   waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, msl_altitude{16. * ft}};
-  std::cout << UNITS_STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon, wpt.msl_alt,
-                               to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
+  std::cout << UNITS_STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
+                                     wpt.msl_alt, to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }

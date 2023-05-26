@@ -74,16 +74,16 @@ BraceWrapping:
   #   SplitEmptyFunction: true
   SplitEmptyRecord: false
 #   SplitEmptyNamespace: true
+# BreakAfterAttributes: Never
 # BreakAfterJavaFieldAnnotations: false
 # BreakArrays:     true
 # BreakBeforeBinaryOperators: None
 # BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
-# BreakBeforeInheritanceComma: false
-BreakInheritanceList: AfterColon
+# BreakBeforeInlineASMColon: OnlyMultiline
 # BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
-# BreakInheritanceList: BeforeColon
+BreakInheritanceList: AfterColon
 # BreakStringLiterals: true
 ColumnLimit: 120
 CommentPragmas: "^ NOLINT"
@@ -92,7 +92,6 @@ CommentPragmas: "^ NOLINT"
 # ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 2
 # Cpp11BracedListStyle: true
-DeriveLineEnding: false
 DerivePointerAlignment: false
 # DisableFormat:   false
 # EmptyLineAfterAccessModifier: Never
@@ -129,11 +128,20 @@ IncludeCategories:
 # IndentWidth:     2
 # IndentWrappedFunctionNames: false
 # InsertBraces:    false
+# InsertNewlineAtEOF: false
 # InsertTrailingCommas: None
+# IntegerLiteralSeparator:
+#   Binary:          0
+#   BinaryMinDigits: 0
+#   Decimal:         0
+#   DecimalMinDigits: 0
+#   Hex:             0
+#   HexMinDigits:    0
 # JavaScriptQuotes: Leave
 # JavaScriptWrapImports: true
 # KeepEmptyLinesAtTheStartOfBlocks: false
 # LambdaBodyIndentation: Signature
+# LineEnding:      DeriveLF
 # MacroBlockBegin: ''
 # MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 2
@@ -197,7 +205,7 @@ QualifierAlignment: Left
 # ShortNamespaceLines: 1
 # SortIncludes:    CaseSensitive
 # SortJavaStaticImport: Before
-# SortUsingDeclarations: true
+# SortUsingDeclarations: LexicographicNumeric
 # SpaceAfterCStyleCast: false
 # SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
@@ -239,7 +247,6 @@ SpaceBeforeParensOptions:
 #   - Q_UNUSED
 #   - QT_REQUIRE_VERSION
 # TabWidth:        8
-# UseCRLF:         false
 # UseTab:          Never
 # WhitespaceSensitiveMacros:
 #   - BOOST_PP_STRINGIZE

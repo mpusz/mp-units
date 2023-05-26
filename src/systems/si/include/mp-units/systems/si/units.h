@@ -43,7 +43,7 @@ inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensi
 // derived named units
 inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct steradian : named_unit<"sr", square<metre> / square<metre>, kind_of<isq::solid_angular_measure>> {} steradian;
-inline constexpr struct hertz : named_unit<"Hz", 1 / second, kind_of<isq::frequency>> {} hertz; 
+inline constexpr struct hertz : named_unit<"Hz", 1 / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
 #ifdef pascal
 #pragma push_macro("pascal")

@@ -167,7 +167,7 @@ struct basic_symbol_text {
   }
 };
 
-basic_symbol_text(char)->basic_symbol_text<char, 1, 1>;
+basic_symbol_text(char) -> basic_symbol_text<char, 1, 1>;
 
 template<typename UnicodeCharT>
 basic_symbol_text(UnicodeCharT, char) -> basic_symbol_text<UnicodeCharT, 1, 1>;

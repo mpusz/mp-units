@@ -103,8 +103,8 @@ int main()
   using namespace mp_units::si::unit_symbols;
 
   const auto height = isq::height(200 * mm);
-  auto tank = RectangularStorageTank(isq::length(1000 * mm), isq::width(500 * mm), height);
-  tank.set_contents_density(1000 * isq::mass_density[kg / m3]);
+  auto tank = RectangularStorageTank(isq::length(1'000 * mm), isq::width(500 * mm), height);
+  tank.set_contents_density(1'000 * isq::mass_density[kg / m3]);
 
   const auto fill_time = 200 * s;       // time since starting fill
   const auto measured_mass = 20. * kg;  // measured mass at fill_time

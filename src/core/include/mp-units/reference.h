@@ -73,7 +73,7 @@ struct reference {
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U * U2{}> operator*(reference, U2)
+  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U* U2{}> operator*(reference, U2)
   {
     return {};
   }

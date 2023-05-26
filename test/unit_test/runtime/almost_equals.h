@@ -31,8 +31,8 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   AlmostEqualsMatcher(const T& target) : target_{target} {}
 
   template<std::convertible_to<T> U>
-    requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep> bool
-  match(const U& other) const
+    requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep>
+  bool match(const U& other) const
   {
     using std::abs;
     using common = std::common_type_t<T, U>;

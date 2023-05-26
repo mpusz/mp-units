@@ -44,7 +44,7 @@ static_assert(check_primes<2>(std::make_index_sequence<122>{}));
 // using numbers of the form (210 * n + 121) as trial divisors, which is a problem if any are prime.  For n = 1, we have
 // a divisor of (210 + 121 = 331), which happens to be prime but will not be used.  Thus, (331 * 331 = 109561) is a
 // composite number which could wrongly appear prime if we skip over 331.
-static_assert(wheel_factorizer<4>::is_prime(109561) == is_prime_by_trial_division(109561));
+static_assert(wheel_factorizer<4>::is_prime(109'561) == is_prime_by_trial_division(109'561));
 
 static_assert(wheel_factorizer<1>::coprimes_in_first_wheel.size() == 1);
 static_assert(wheel_factorizer<2>::coprimes_in_first_wheel.size() == 2);

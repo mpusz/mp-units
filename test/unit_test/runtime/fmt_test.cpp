@@ -722,8 +722,8 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
 
   SECTION("full format {:%LQ %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format(grp2, "{:%LQ %q}", 299792458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
-    CHECK(UNITS_STD_FMT::format(grp3, "{:%LQ %q}", 299792458 * isq::speed[m / s]) == "299'792'458 m/s");
+    CHECK(UNITS_STD_FMT::format(grp2, "{:%LQ %q}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
+    CHECK(UNITS_STD_FMT::format(grp3, "{:%LQ %q}", 299'792'458 * isq::speed[m / s]) == "299'792'458 m/s");
   }
 }
 

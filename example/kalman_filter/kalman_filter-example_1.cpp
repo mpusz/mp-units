@@ -50,8 +50,8 @@ int main()
   using state = kalman::state<quantity<isq::mass[g]>>;
 
   const state initial = {1 * kg};
-  const std::array measurements = {1'030 * g,   989 * g, 1'017 * g, 1'009 * g, 1'013 * g,
-                                     979 * g, 1'008 * g, 1'042 * g, 1'012 * g, 1'011 * g};
+  const std::array measurements = {1'030 * g, 989 * g,   1'017 * g, 1'009 * g, 1'013 * g,
+                                   979 * g,   1'008 * g, 1'042 * g, 1'012 * g, 1'011 * g};
 
   print_header(initial);
   state next = initial;

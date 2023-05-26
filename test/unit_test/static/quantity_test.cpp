@@ -760,10 +760,10 @@ static_assert(321. * m != 123 * m);
 static_assert(!(123. * m == 321 * m));
 static_assert(!(123. * m != 123 * m));
 
-static_assert(123 * km == 123000 * m);
-static_assert(321 * km != 123000 * m);
-static_assert(!(123 * km == 321000 * m));
-static_assert(!(123 * km != 123000 * m));
+static_assert(123 * km == 123'000 * m);
+static_assert(321 * km != 123'000 * m);
+static_assert(!(123 * km == 321'000 * m));
+static_assert(!(123 * km != 123'000 * m));
 
 // dimensionless
 static_assert(std::equality_comparable_with<quantity<dimensionless[one]>, double>);
@@ -818,18 +818,18 @@ static_assert(!(123. * m > 321 * m));
 static_assert(!(123. * m > 123 * m));
 static_assert(!(123. * m >= 321 * m));
 
-static_assert(123 * km < 321000 * m);
-static_assert(123 * km <= 123000 * m);
-static_assert(123 * km <= 321000 * m);
-static_assert(321 * km > 123000 * m);
-static_assert(123 * km >= 123000 * m);
-static_assert(321 * km >= 123000 * m);
-static_assert(!(321 * km < 123000 * m));
-static_assert(!(123 * km < 123000 * m));
-static_assert(!(321 * km <= 123000 * m));
-static_assert(!(123 * km > 321000 * m));
-static_assert(!(123 * km > 123000 * m));
-static_assert(!(123 * km >= 321000 * m));
+static_assert(123 * km < 321'000 * m);
+static_assert(123 * km <= 123'000 * m);
+static_assert(123 * km <= 321'000 * m);
+static_assert(321 * km > 123'000 * m);
+static_assert(123 * km >= 123'000 * m);
+static_assert(321 * km >= 123'000 * m);
+static_assert(!(321 * km < 123'000 * m));
+static_assert(!(123 * km < 123'000 * m));
+static_assert(!(321 * km <= 123'000 * m));
+static_assert(!(123 * km > 321'000 * m));
+static_assert(!(123 * km > 123'000 * m));
+static_assert(!(123 * km >= 321'000 * m));
 
 // dimensionless
 static_assert(123 * one < 321);

@@ -106,7 +106,7 @@ int main()
                   .speed{28.3 * kt},
                   .mass{42'245 * imperial::long_ton},
                   .mainGuns{14 * in},
-                  .shellMass{1'590 * lb},
+                  .shellMass{1590 * lb},
                   .shellSpeed{2483. * (ft / s)},
                   .power{110'000 * hp}};
 
