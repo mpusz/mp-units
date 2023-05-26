@@ -27,6 +27,8 @@ authors:
     orcid: https://orcid.org/0000-0003-0680-0765
   - given-names: "Johel Ernesto"
     family-names: "Guerrero Peña"
+  - given-names: "Chip"
+    family-names: "Hogg"
   - name: "The mp-units project team"
 
 contact:
@@ -34,9 +36,9 @@ contact:
     given-names: Mateusz
     family-names: Pusz
 
-repository-code: 'https://github.com/mpusz/units'
-url: 'https://mpusz.github.io/units'
-repository-artifact: 'https://conan.io/center/mp-units'
+repository-code: "https://github.com/mpusz/units"
+url: "https://mpusz.github.io/units"
+repository-artifact: "https://conan.io/center/mp-units"
 
 version: 0.7.0
 date-released: "2021-05-11"

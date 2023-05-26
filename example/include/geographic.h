@@ -53,12 +53,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 }  // namespace geographic
 
 template<>
-struct STD_FMT::formatter<geographic::msl_altitude> : formatter<geographic::msl_altitude::quantity_type> {
+struct UNITS_STD_FMT::formatter<geographic::msl_altitude> : formatter<geographic::msl_altitude::quantity_type> {
   template<typename FormatContext>
   auto format(const geographic::msl_altitude& a, FormatContext& ctx)
   {
     formatter<geographic::msl_altitude::quantity_type>::format(a.absolute(), ctx);
-    return STD_FMT::format_to(ctx.out(), " AMSL");
+    return UNITS_STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
 
@@ -145,21 +145,21 @@ class std::numeric_limits<geographic::longitude<T>> : public numeric_limits<T> {
 };
 
 template<typename T>
-struct STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
+struct UNITS_STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
+    UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
     return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.number() : -lat.number(), ctx);
   }
 };
 
 template<typename T>
-struct STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
+struct UNITS_STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
+    UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
     return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.number() : -lon.number(), ctx);
   }
 };

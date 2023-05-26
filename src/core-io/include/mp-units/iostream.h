@@ -49,12 +49,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 {
   if (os.width()) {
     // std::setw() applies to the whole quantity output so it has to be first put into std::string
-    std::basic_ostringstream<CharT, Traits> s;
-    s.flags(os.flags());
-    s.imbue(os.getloc());
-    s.precision(os.precision());
-    detail::to_stream(s, q);
-    return os << s.str();
+    std::basic_ostringstream<CharT, Traits> oss;
+    oss.flags(os.flags());
+    oss.imbue(os.getloc());
+    oss.precision(os.precision());
+    detail::to_stream(oss, q);
+    return os << std::move(oss).str();
   }
 
   detail::to_stream(os, q);

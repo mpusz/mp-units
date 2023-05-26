@@ -36,7 +36,6 @@
 #include <cstdint>
 #include <numbers>
 #include <optional>
-#include <stdexcept>
 
 namespace mp_units {
 
@@ -243,10 +242,10 @@ using widen_t = conditional<std::is_arithmetic_v<T>,
 template<typename T>
 [[nodiscard]] consteval T int_power(T base, std::integral auto exp)
 {
-  // As this function should only be called at compile time, the exceptions herein function as
-  // "parameter-compatible static_asserts", and should not result in exceptions at runtime.
+  // As this function should only be called at compile time, the terminations herein function as
+  // "parameter-compatible static_asserts", and should not result in terminations at runtime.
   if (exp < 0) {
-    throw std::invalid_argument{"int_power only supports positive integer powers"};
+    std::terminate();  // int_power only supports positive integer powers
   }
 
   constexpr auto checked_multiply = [](auto a, auto b) {
@@ -254,7 +253,7 @@ template<typename T>
     UNITS_DIAGNOSTIC_PUSH
     UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     if (result / a != b) {
-      throw std::overflow_error{"Wraparound detected"};
+      std::terminate();  // Wraparound detected
     }
     UNITS_DIAGNOSTIC_POP
     return result;
@@ -284,15 +283,15 @@ template<typename T>
   // need to write a custom function.
   //
   // Note that since this function should only be called at compile time, the point of these
-  // exceptions is to act as "static_assert substitutes", not to throw actual exceptions at runtime.
+  // terminations is to act as "static_assert substitutes", not to actually terminate at runtime.
   const auto exp = get_exponent(el);
   if (exp.den != 1) {
-    throw std::invalid_argument{"Rational powers not yet supported"};
+    std::terminate();  // Rational powers not yet supported
   }
 
   if (exp.num < 0) {
     if constexpr (std::is_integral_v<T>) {
-      throw std::invalid_argument{"Cannot represent reciprocal as integer"};
+      std::terminate();  // Cannot represent reciprocal as integer
     } else {
       return T{1} / compute_base_power<T>(inverse(el));
     }
@@ -311,11 +310,11 @@ template<typename To, typename From>
   requires(!std::is_integral_v<To> || std::is_integral_v<From>)
 [[nodiscard]] consteval To checked_static_cast(From x)
 {
-  // This function should only ever be called at compile time.  The purpose of these exceptions is
+  // This function should only ever be called at compile time.  The purpose of these terminations is
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (!std::in_range<To>(x)) {
-      throw std::invalid_argument{"Cannot represent magnitude in this type"};
+      std::terminate();  // Cannot represent magnitude in this type
     }
   }
 
@@ -473,7 +472,7 @@ void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
 
 template<typename T>
 inline constexpr bool is_derived_from_specialization_of_magnitude =
-  requires(T * t) { to_base_specialization_of_magnitude(t); };
+  requires(T* t) { to_base_specialization_of_magnitude(t); };
 
 template<typename T>
   requires is_derived_from_specialization_of_magnitude<T>

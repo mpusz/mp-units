@@ -42,7 +42,7 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
     return abs(x - y) <= std::numeric_limits<typename T::rep>::epsilon() * maxXYOne;
   }
 
-  std::string describe() const override { return "almost equals: " + STD_FMT::format("{}", target_); }
+  std::string describe() const override { return "almost equals: " + UNITS_STD_FMT::format("{}", target_); }
 
 private:
   const T& target_;

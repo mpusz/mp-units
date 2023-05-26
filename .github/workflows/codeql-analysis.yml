@@ -25,22 +25,26 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     env:
       CC: gcc-10
       CXX: g++-10
-
+      BUILD_TYPE: Debug
+      COMPILER_TYPE: GCC
+      COMPILER_VERSION: 10
+      STDLIB: libstdc++11
     strategy:
       fail-fast: false
       matrix:
         language: ["cpp", "python"]
+        os: ["ubuntu-latest"]
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
@@ -63,29 +67,29 @@ jobs:
 
       - name: Cache Conan data
         if: matrix.language == 'cpp'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-conan-data
         with:
-          path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          path: ~/.conan2/p
+          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
+            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
+            build-${{ matrix.os }}-$BUILD_TYPE-
+            build-${{ matrix.os }}-
       - name: Set up Python
         if: matrix.language == 'cpp'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       - name: Conan build
         if: matrix.language == 'cpp'
         run: |
           pip install -U conan
-          conan config init
-          conan remote add upload https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          conan profile detect --force
+          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
           mkdir _lgtm_build_dir && cd _lgtm_build_dir
-          conan install .. -s compiler.cppstd=20 -s compiler.libcxx=libstdc++11 -c user.build:all=True -c user.build:skip_docs=True -b outdated -u
-          conan build ..
+          conan build .. -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c user.build:skip_docs=True -b missing
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1

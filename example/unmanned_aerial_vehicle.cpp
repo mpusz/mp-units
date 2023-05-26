@@ -75,12 +75,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 template<QuantityPoint QP>
   requires(is_hae(QP::absolute_point_origin))
-struct STD_FMT::formatter<QP> : formatter<typename QP::quantity_type> {
+struct UNITS_STD_FMT::formatter<QP> : formatter<typename QP::quantity_type> {
   template<typename FormatContext>
   auto format(const QP& a, FormatContext& ctx)
   {
     formatter<typename QP::quantity_type>::format(a.absolute(), ctx);
-    return STD_FMT::format_to(ctx.out(), " HAE({})", to_text(QP::absolute_point_origin.egm));
+    return UNITS_STD_FMT::format_to(ctx.out(), " HAE({})", to_text(QP::absolute_point_origin.egm));
   }
 };
 
@@ -116,12 +116,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 }
 
 template<>
-struct STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quantity_type> {
+struct UNITS_STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quantity_type> {
   template<typename FormatContext>
   auto format(const hal_altitude& a, FormatContext& ctx)
   {
     formatter<hal_altitude::quantity_type>::format(a.absolute(), ctx);
-    return STD_FMT::format_to(ctx.out(), " HAL");
+    return UNITS_STD_FMT::format_to(ctx.out(), " HAL");
   }
 };
 
@@ -150,10 +150,10 @@ int main()
   unmanned_aerial_vehicle uav;
   uav.take_off(msl_altitude{6'000 * ft});
   uav.current(msl_altitude{10'000 * ft});
-  std::cout << STD_FMT::format("hal = {}\n", uav.hal());
+  std::cout << UNITS_STD_FMT::format("hal = {}\n", uav.hal());
 
   msl_altitude ground_level{123 * m};
-  std::cout << STD_FMT::format("agl = {}\n", uav.current() - ground_level);
+  std::cout << UNITS_STD_FMT::format("agl = {}\n", uav.current() - ground_level);
 
   struct waypoint {
     std::string name;
@@ -162,6 +162,6 @@ int main()
   };
 
   waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, msl_altitude{16. * ft}};
-  std::cout << STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon, wpt.msl_alt,
+  std::cout << UNITS_STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon, wpt.msl_alt,
                                to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }

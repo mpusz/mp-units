@@ -119,10 +119,10 @@ int main()
 
   const auto fill_ratio = fill_level / height;
 
-  std::cout << STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_ratio[percent]);
-  std::cout << STD_FMT::format("fill weight at {} = {} ({})\n", fill_time, filled_weight, filled_weight[N]);
-  std::cout << STD_FMT::format("spare capacity at {} = {}\n", fill_time, spare_capacity);
-  std::cout << STD_FMT::format("input flow rate = {}\n", input_flow_rate);
-  std::cout << STD_FMT::format("float rise rate = {}\n", float_rise_rate);
-  std::cout << STD_FMT::format("tank full E.T.A. at current flow rate = {}\n", fill_time_left[s]);
+  std::cout << UNITS_STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level, fill_ratio[percent]);
+  std::cout << UNITS_STD_FMT::format("fill weight at {} = {} ({})\n", fill_time, filled_weight, filled_weight[N]);
+  std::cout << UNITS_STD_FMT::format("spare capacity at {} = {}\n", fill_time, spare_capacity);
+  std::cout << UNITS_STD_FMT::format("input flow rate = {}\n", input_flow_rate);
+  std::cout << UNITS_STD_FMT::format("float rise rate = {}\n", float_rise_rate);
+  std::cout << UNITS_STD_FMT::format("tank full E.T.A. at current flow rate = {}\n", fill_time_left[s]);
 }

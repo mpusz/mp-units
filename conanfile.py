@@ -24,19 +24,19 @@ import os
 import re
 
 from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
-from conans.errors import ConanInvalidConfiguration
 
-required_conan_version = ">=1.50.0"
+required_conan_version = ">=2.0.0"
 
 
 class MPUnitsConan(ConanFile):
     name = "mp-units"
     homepage = "https://github.com/mpusz/units"
-    description = "Physical Units library for C++"
+    description = "Physical Quantities and Units library for C++"
     topics = (
         "units",
         "dimensions",
@@ -45,15 +45,15 @@ class MPUnitsConan(ConanFile):
         "physical-quantities",
         "physical-units",
         "system-of-units",
-        "cpp23",
-        "cpp20",
+        "system-of-quantities",
+        "isq",
+        "si",
         "library",
         "quantity-manipulation",
     )
     license = "MIT"
     url = "https://github.com/mpusz/units"
-    settings = "os", "compiler", "build_type", "arch"
-    requires = "gsl-lite/0.40.0"
+    settings = "os", "arch", "compiler", "build_type"
     exports = ["LICENSE.md"]
     exports_sources = [
         "docs/*",
@@ -63,24 +63,34 @@ class MPUnitsConan(ConanFile):
         "example/*",
         "CMakeLists.txt",
     ]
+    package_type = "header-library"
     no_copy_source = True
-    generators = "cmake_paths"
+
+    @property
+    def _min_cppstd(self):
+        return "20"
+
+    @property
+    def _minimum_compilers_version(self):
+        return {"gcc": "10.3", "clang": "12", "apple-clang": "13", "msvc": "192"}
 
     @property
     def _build_all(self):
-        return bool(self.conf["user.build:all"])
+        return bool(self.conf.get("user.build:all", default=False))
+
+    @property
+    def _skip_la(self):
+        return bool(self.conf.get("user.build:skip_la", default=False))
 
     @property
     def _skip_docs(self):
-        return bool(self.conf["user.build:skip_docs"])
+        return bool(self.conf.get("user.build:skip_docs", default=True))
 
     @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
-        std_support = (
-            compiler == "Visual Studio" and version >= 17 and compiler.cppstd == 23
-        ) or (compiler == "msvc" and version >= 193 and compiler.cppstd == 23)
+        std_support = compiler == "msvc" and version >= 193 and compiler.cppstd == 23
         return not std_support
 
     @property
@@ -88,14 +98,6 @@ class MPUnitsConan(ConanFile):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
         return "clang" in compiler and compiler.libcxx == "libc++" and version < 14
-
-    @property
-    def _msvc_version(self):
-        compiler = self.settings.compiler
-        if compiler.update:
-            return int(f"{compiler.version}{compiler.update}")
-        else:
-            return int(f"{compiler.version}0")
 
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
@@ -105,51 +107,42 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
+        self.requires("gsl-lite/0.40.0")
         if self._use_libfmt:
             self.requires("fmt/8.1.1")
-
         if self._use_range_v3:
             self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
         if self._build_all:
             self.test_requires("catch2/3.1.0")
-            self.test_requires("wg21-linear_algebra/0.7.2")
+            if not self._skip_la:
+                self.test_requires("wg21-linear_algebra/0.7.3")
             if not self._skip_docs:
                 self.tool_requires("doxygen/1.9.4")
 
-    # TODO Replace with `valdate()` for Conan 2.0 (https://github.com/conan-io/conan/issues/10723)
-    def configure(self):
+    def validate(self):
+        check_min_cppstd(self, self._min_cppstd)
+
+        def loose_lt_semver(v1, v2):
+            lv1 = [int(v) for v in v1.split(".")]
+            lv2 = [int(v) for v in v2.split(".")]
+            min_length = min(len(lv1), len(lv2))
+            return lv1[:min_length] < lv2[:min_length]
+
         compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
-        if compiler == "gcc":
-            if version < 10:
-                raise ConanInvalidConfiguration("mp-units requires at least g++-10")
-        elif compiler == "clang":
-            if version < 12:
-                raise ConanInvalidConfiguration("mp-units requires at least clang++-12")
-        elif compiler == "apple-clang":
-            if version < 13:
-                raise ConanInvalidConfiguration(
-                    "mp-units requires at least AppleClang 13"
-                )
-        elif compiler == "Visual Studio":
-            if version < 16:
-                raise ConanInvalidConfiguration(
-                    "mp-units requires at least Visual Studio 16.9"
-                )
-        elif compiler == "msvc":
-            if self._msvc_version < 1928:
-                raise ConanInvalidConfiguration("mp-units requires at least MSVC 19.28")
-        else:
-            raise ConanInvalidConfiguration("Unsupported compiler")
-        check_min_cppstd(self, 20)
+        min_version = self._minimum_compilers_version.get(str(compiler))
+        if min_version and loose_lt_semver(str(compiler.version), min_version):
+            raise ConanInvalidConfiguration(
+                f"{self.ref} requires at least {compiler} {min_version} ({compiler.version} in use)"
+            )
 
     def layout(self):
         cmake_layout(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
+        tc.variables["UNITS_BUILD_LA"] = self._build_all and not self._skip_la
         tc.variables["UNITS_BUILD_DOCS"] = self._build_all and not self._skip_docs
         tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
@@ -182,7 +175,7 @@ class MPUnitsConan(ConanFile):
 
         # core
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        if compiler == "Visual Studio":
+        if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
         if self._use_range_v3:
             self.cpp_info.components["core"].requires.append("range-v3::range-v3")
@@ -192,29 +185,32 @@ class MPUnitsConan(ConanFile):
         self.cpp_info.components["core-fmt"].requires = ["core"]
         if self._use_libfmt:
             self.cpp_info.components["core-fmt"].requires.append("fmt::fmt")
+        self.cpp_info.components["utility"].requires = ["core", "isq", "si", "angular"]
         self.cpp_info.components["isq"].requires = ["core"]
-        self.cpp_info.components["isq-natural"].requires = ["isq"]
+        self.cpp_info.components["angular"].requires = ["isq"]
+        self.cpp_info.components["isq_angular"].requires = ["isq", "angular"]
+        self.cpp_info.components["natural"].requires = ["isq"]
         self.cpp_info.components["si"].requires = ["isq"]
-        self.cpp_info.components["si-cgs"].requires = ["si"]
-        self.cpp_info.components["si-fps"].requires = ["si-international"]
-        self.cpp_info.components["si-hep"].requires = ["si"]
-        self.cpp_info.components["si-iau"].requires = ["si"]
-        self.cpp_info.components["si-imperial"].requires = ["si"]
-        self.cpp_info.components["si-international"].requires = ["si"]
-        self.cpp_info.components["si-typographic"].requires = ["si"]
-        self.cpp_info.components["si-uscs"].requires = ["si"]
-        self.cpp_info.components["isq-iec80000"].requires = ["si"]
+        self.cpp_info.components["cgs"].requires = ["si"]
+        self.cpp_info.components["hep"].requires = ["si"]
+        self.cpp_info.components["iau"].requires = ["si"]
+        self.cpp_info.components["imperial"].requires = ["si"]
+        self.cpp_info.components["international"].requires = ["si"]
+        self.cpp_info.components["typographic"].requires = ["usc"]
+        self.cpp_info.components["usc"].requires = ["international"]
+        self.cpp_info.components["iec80000"].requires = ["isq", "si"]
         self.cpp_info.components["systems"].requires = [
             "isq",
-            "isq-natural",
+            "angular",
+            "isq_angular",
+            "natural",
             "si",
-            "si-cgs",
-            "si-fps",
-            "si-hep",
-            "si-iau",
-            "si-imperial",
-            "si-international",
-            "si-typographic",
-            "si-uscs",
-            "isq-iec80000",
+            "cgs",
+            "hep",
+            "iau",
+            "imperial",
+            "international",
+            "typographic",
+            "usc",
+            "iec80000",
         ]

@@ -52,24 +52,25 @@ struct Ship {
 template<Unit auto... Us, Quantity Q>
 auto fmt_line(const Q& q)
 {
-  return STD_FMT::format("{:22}", q) + (STD_FMT::format(",{:20}", value_cast<Us>(q)) + ...);
+  return UNITS_STD_FMT::format("{:22}", q) + (UNITS_STD_FMT::format(",{:20}", value_cast<Us>(q)) + ...);
 }
 
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
   const auto waterDensity = 62.4 * isq::density[lb / cubic<ft>];
-  std::cout << STD_FMT::format("{}\n", description);
-  std::cout << STD_FMT::format("{:20} : {}\n", "length", fmt_line<yd, m>(ship.length))
-            << STD_FMT::format("{:20} : {}\n", "draft", fmt_line<yd, m>(ship.draft))
-            << STD_FMT::format("{:20} : {}\n", "beam", fmt_line<yd, m>(ship.beam))
-            << STD_FMT::format("{:20} : {}\n", "mass", fmt_line<imperial::long_ton, t>(ship.mass))
-            << STD_FMT::format("{:20} : {}\n", "speed", fmt_line<kt, km / h>(ship.speed))
-            << STD_FMT::format("{:20} : {}\n", "power", fmt_line<hp, kW>(ship.power))
-            << STD_FMT::format("{:20} : {}\n", "main guns", fmt_line<in, mm>(ship.mainGuns))
-            << STD_FMT::format("{:20} : {}\n", "fire shells weighing", fmt_line<imperial::long_ton, kg>(ship.shellMass))
-            << STD_FMT::format("{:20} : {}\n", "fire shells at", fmt_line<mph, km / h>(ship.shellSpeed))
-            << STD_FMT::format("{:20} : {}\n", "volume underwater", fmt_line<m3, l>(ship.mass / waterDensity));
+  std::cout << UNITS_STD_FMT::format("{}\n", description);
+  std::cout << UNITS_STD_FMT::format("{:20} : {}\n", "length", fmt_line<yd, m>(ship.length))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "draft", fmt_line<yd, m>(ship.draft))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "beam", fmt_line<yd, m>(ship.beam))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "mass", fmt_line<imperial::long_ton, t>(ship.mass))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "speed", fmt_line<kt, km / h>(ship.speed))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "power", fmt_line<hp, kW>(ship.power))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "main guns", fmt_line<in, mm>(ship.mainGuns))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "fire shells weighing",
+                                     fmt_line<imperial::long_ton, kg>(ship.shellMass))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "fire shells at", fmt_line<mph, km / h>(ship.shellSpeed))
+            << UNITS_STD_FMT::format("{:20} : {}\n", "volume underwater", fmt_line<m3, l>(ship.mass / waterDensity));
 }
 
 int main()

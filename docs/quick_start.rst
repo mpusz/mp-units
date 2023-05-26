@@ -32,7 +32,7 @@ Here is a small example of possible operations::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #1 <https://godbolt.org/z/5dvY8Woh1>`_
+    `Example #1 <https://godbolt.org/z/qbbbnfK3s>`_
 
 This library requires some C++20 features (concepts, classes as
 :abbr:`NTTP (Non-Type Template Parameter)`, ...). Thanks to them the user gets a powerful
@@ -81,7 +81,7 @@ of basic library features::
 
 .. admonition:: Try it on Compiler Explorer
 
-    `Example #2 <https://godbolt.org/z/bcb87Kvea>`_
+    `Example #2 <https://godbolt.org/z/b4a3Ya6dY>`_
 
 .. seealso::
 

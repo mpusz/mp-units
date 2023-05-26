@@ -60,9 +60,5 @@ add_example(
 add_example(total_energy mp-units::core-io mp-units::si mp-units::natural mp-units::utility)
 add_example(unmanned_aerial_vehicle mp-units::core-fmt mp-units::core-io mp-units::si mp-units::international mp-units::utility example_utils)
 
-find_package(wg21_linear_algebra CONFIG REQUIRED)
-add_example(linear_algebra mp-units::core-fmt mp-units::core-io mp-units::si)
-target_link_libraries(linear_algebra PRIVATE wg21_linear_algebra::wg21_linear_algebra)
-
 add_subdirectory(glide_computer)
 add_subdirectory(kalman_filter)

@@ -50,7 +50,7 @@ namespace mp_units {
  */
 template<Magnitude auto M, Unit U>
 struct scaled_unit {
-  static constexpr UNITS_MSVC_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   static constexpr U reference_unit{};
 };
 

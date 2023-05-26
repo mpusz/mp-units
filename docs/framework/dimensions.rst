@@ -50,6 +50,20 @@ The quantities of derived dimensions are called
 quantities. This means that they are created by multiplying or dividing
 quantities of other dimensions.
 
+The [SIBrochure]_ states:
+
+    All other quantities, with the exception of counts, are derived quantities, which may be
+    written in terms of base quantities according to the equations of physics. The dimensions of
+    the derived quantities are written as products of powers of the dimensions of the base
+    quantities using the equations that relate the derived quantities to the base quantities.
+    In general the dimension of any quantity :math:`Q` is written in the form of a dimensional product,
+
+    :math:`dim Q = T^\alpha L^\beta M^\gamma I^\delta \Theta^\varepsilon N^\zeta J^\eta`
+
+    where the exponents :math:`\alpha`, :math:`\beta`, :math:`\gamma`, :math:`\delta`, :math:`\varepsilon`,
+    :math:`\zeta` and :math:`\eta`, which are generally small integers, which can be positive,
+    negative, or zero, are called the dimensional exponents.
+
 Looking at the previous code snippets the area, speed, or frequency are
 the examples of such quantities. Each derived quantity can be represented
 as a unique list of exponents of base quantities. For example:

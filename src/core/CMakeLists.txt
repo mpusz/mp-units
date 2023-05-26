@@ -23,7 +23,9 @@
 cmake_minimum_required(VERSION 3.19)
 
 # find dependencies
-find_package(gsl-lite CONFIG REQUIRED)
+if(NOT TARGET gsl::gsl-lite)
+    find_package(gsl-lite CONFIG REQUIRED)
+endif()
 
 # check if libc++ is being used
 include(CheckLibcxxInUse)
@@ -81,7 +83,9 @@ target_include_directories(
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     if(${projectPrefix}LIBCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
-        find_package(range-v3 CONFIG REQUIRED)
+        if(NOT TARGET range-v3::range-v3)
+            find_package(range-v3 CONFIG REQUIRED)
+        endif()
         target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)
     endif()
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

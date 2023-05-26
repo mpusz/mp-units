@@ -49,4 +49,4 @@ Unlike `quantity`, the library provides:
 - no dimension-specific concepts, such as ``LengthPoint``
   (there's the dimension-agnostic `QuantityPoint`),
 - a more limited set of operations on quantity points
-  (see the :ref:`framework/dimensions:Quantity Points` chapter)
+  (see the :ref:`framework/arithmetics:Quantity Points` chapter)

@@ -29,6 +29,8 @@ add_units_module(core-fmt DEPENDENCIES mp-units::core HEADERS include/mp-units/f
 target_compile_definitions(mp-units-core-fmt INTERFACE ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>)
 
 if(${projectPrefix}USE_LIBFMT)
-    find_package(fmt CONFIG REQUIRED)
+    if(NOT TARGET fmt::fmt)
+        find_package(fmt CONFIG REQUIRED)
+    endif()
     target_link_libraries(mp-units-core-fmt INTERFACE fmt::fmt)
 endif()

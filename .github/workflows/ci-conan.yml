@@ -30,6 +30,9 @@ on:
     paths-ignore:
       - "docs/**"
 
+env:
+  CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
+
 jobs:
   build:
     name: ${{ matrix.config.name }} ${{ matrix.build_type }} [downcast=${{ matrix.downcast_mode }}]
@@ -42,15 +45,17 @@ jobs:
               name: "Windows MSVC 14.2",
               os: windows-2019,
               compiler: { type: VISUAL, version: 16, cc: "", cxx: "", std: 20 },
+              conan-config: "-c user.build:skip_la=True",
             }
           - {
               name: "Windows MSVC 14.3",
               os: windows-2022,
               compiler: { type: MSVC, version: 193, cc: "", cxx: "", std: 23 },
+              conan-config: "",
             }
           - {
               name: "Ubuntu GCC-10",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
@@ -59,11 +64,11 @@ jobs:
                   cxx: "g++-10",
                   std: 20,
                 },
-              lib: "libstdc++11",
+              conan-config: "",
             }
           - {
               name: "Ubuntu GCC-11",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: GCC,
@@ -72,7 +77,20 @@ jobs:
                   cxx: "g++-11",
                   std: 20,
                 },
-              lib: "libstdc++11",
+              conan-config: "",
+            }
+          - {
+              name: "Ubuntu GCC-12",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 12,
+                  cc: "gcc-12",
+                  cxx: "g++-12",
+                  std: 20,
+                },
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-12 + libstdc++11",
@@ -86,6 +104,7 @@ jobs:
                   std: 20,
                 },
               lib: "libstdc++11",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-12 + libc++",
@@ -99,10 +118,11 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-13 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -112,10 +132,11 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "Ubuntu Clang-14 + libc++",
-              os: ubuntu-20.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
@@ -125,6 +146,35 @@ jobs:
                   std: 20,
                 },
               lib: "libc++",
+              conan-config: "",
+            }
+          - {
+              name: "Ubuntu Clang-15 + libc++",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 15,
+                  cc: "clang-15",
+                  cxx: "clang++-15",
+                  std: 20,
+                },
+              lib: "libc++",
+              conan-config: "",
+            }
+          - {
+              name: "Ubuntu Clang-16 + libc++",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 16,
+                  cc: "clang-16",
+                  cxx: "clang++-16",
+                  std: 20,
+                },
+              lib: "libc++",
+              conan-config: "",
             }
           - {
               name: "MacOS Apple Clang 13",
@@ -137,6 +187,7 @@ jobs:
                   cxx: "clang++",
                   std: 20,
                 },
+              conan-config: "",
             }
         build_type: ["Release", "Debug"]
         downcast_mode: ["on", "auto"]
@@ -146,25 +197,27 @@ jobs:
       CXX: ${{ matrix.config.compiler.cxx }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache Conan data
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-conan-data
         with:
-          path: ~/.conan/data
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/metadata.json') }}
+          path: ~/.conan2/p
+          key: build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - uses: hendrikmuhs/ccache-action@v1
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-
+            build-${{ matrix.config.os }}-${{ matrix.build_type }}-
+            build-${{ matrix.config.os }}-
+      - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
           key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
           max-size: 50M
-      - name: Install gcc-11
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '11'
+      - name: Install gcc-12
+        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '12'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
@@ -201,7 +254,7 @@ jobs:
             exit 1
           fi
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       - name: Install Conan
@@ -211,37 +264,76 @@ jobs:
       - name: Configure Conan
         shell: bash
         run: |
-          conan config init
-          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          if [[ "${{ matrix.config.compiler.type }}" == "GCC" || "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
-            conan profile update settings.compiler.libcxx=${{ matrix.config.lib }} default
+          conan profile detect --force
+          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
           fi
-          conan profile update settings.compiler.cppstd=${{ matrix.config.compiler.std }} default
-          conan profile update settings.build_type=${{ matrix.build_type }} default
-          conan profile update conf.tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" default
-          conan profile show default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.config.compiler.std }}/' ~/.conan2/profiles/default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
+          conan profile show -pr default
       # - name: Add support for clang-13 to Conan's settings.yml
       #   # TODO Remove when Conan will support clang-13
       #   if: matrix.config.compiler.type == 'CLANG'
       #   shell: bash
       #   run: |
       #     sed -i -e 's/"8", "9", "10", "11", "12"]/"8", "9", "10", "11", "12", "13"]/' ~/.conan/settings.yml
-      - name: Set channel
-        shell: bash
-        run: |
-          [[ `git tag --contains ${{ github.sha }}` =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && CHANNEL=stable || CHANNEL=testing
-          echo "CHANNEL=${CHANNEL}" >> ${GITHUB_ENV}
       - name: Create Conan package
         shell: bash
         run: |
-          conan create . mpusz/testing -o mp-units:downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True -b mp-units -b outdated -u
-      - name: Upload mp-units Conan package
+          conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
+                         -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True ${{ matrix.config.conan-config }}
+      - name: Obtain package reference
+        id: get-package-ref
+        shell: bash
+        run: |
+          echo "PACKAGE_REF=`egrep -o mp-units[^%]+ package.lock`" >> ${GITHUB_OUTPUT}
+      - name: Upload mp-units Conan package to Conan CI repository
         if: github.ref == 'refs/heads/master' || env.CHANNEL == 'stable'
         shell: bash
         run: |
-          conan user ${{ secrets.CONAN_LOGIN_USERNAME }} -r artifactory -p ${{ secrets.CONAN_PASSWORD }}
-          conan upload "mp-units*" --all -r artifactory --confirm
-      - name: Remove mp-units package from Conan local cache
+          conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
+          conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
+          conan upload ${{ steps.get-package-ref.outputs.package_ref }} -r conan-mpusz-ci --confirm
+      - name: Clean Conan cache before backup
         shell: bash
         run: |
-          conan remove mp-units -c
+          conan remove mp-units --confirm
+          conan remove *#!latest --confirm
+          conan remove *:*#!latest --confirm
+          conan cache clean "*" -s -b -d
+    outputs:
+      package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
+
+  promote_package:
+    if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
+    needs: build
+    name: Promote Conan package
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Install Conan
+        shell: bash
+        run: |
+          pip install -U conan
+      - name: Configure Conan
+        shell: bash
+        run: |
+          conan remote add conan-mpusz-ci https://mpusz.jfrog.io/artifactory/api/conan/conan-ci
+          conan remote add conan-mpusz-oss https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+      - name: Promote mp-units Conan package
+        shell: bash
+        run: |
+          conan remote login conan-mpusz-ci ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_CI_PASSWORD }}
+          conan remote login conan-mpusz-oss ${{ secrets.CONAN_LOGIN_USERNAME }} -p ${{ secrets.CONAN_PASSWORD }}
+          conan download ${{ needs.build.outputs.package_ref }} -r conan-mpusz-ci
+          conan upload ${{ needs.build.outputs.package_ref }} -r conan-mpusz-oss --confirm
+      - name: Do housekeeping on conan-mpusz-oss
+        shell: bash
+        run: |
+          conan remove mp-units/*#!latest --confirm -r conan-mpusz-oss
+          conan remove mp-units/*:*#!latest --confirm -r conan-mpusz-oss

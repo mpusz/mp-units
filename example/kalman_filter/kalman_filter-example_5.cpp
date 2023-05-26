@@ -35,16 +35,16 @@ using namespace mp_units;
 template<Quantity Q>
 void print_header(kalman::estimation<Q> initial)
 {
-  std::cout << STD_FMT::format("Initial: {}\n", initial);
-  std::cout << STD_FMT::format("{:>2} | {:>5} | {:>8} | {:>16} | {:>16}\n", "N", "Gain", "Measured", "Curr. Estimate",
-                               "Next Estimate");
+  std::cout << UNITS_STD_FMT::format("Initial: {}\n", initial);
+  std::cout << UNITS_STD_FMT::format("{:>2} | {:>5} | {:>8} | {:>16} | {:>16}\n", "N", "Gain", "Measured",
+                                     "Curr. Estimate", "Next Estimate");
 }
 
 template<Quantity Q, QuantityOf<dimensionless> K>
 void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, kalman::estimation<Q> next)
 {
-  std::cout << STD_FMT::format("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured, current,
-                               next);
+  std::cout << UNITS_STD_FMT::format("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured,
+                                     current, next);
 }
 
 int main()

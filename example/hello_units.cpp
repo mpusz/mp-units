@@ -47,11 +47,11 @@ int main()
   constexpr auto v6 = value_cast<m / s>(v4);
   constexpr auto v7 = value_cast<int>(v6);
 
-  std::cout << v1 << '\n';                                       // 110 km/h
-  std::cout << v2 << '\n';                                       // 70 mi/h
-  std::cout << STD_FMT::format("{}", v3) << '\n';                // 110 km/h
-  std::cout << STD_FMT::format("{:*^14}", v4) << '\n';           // ***70 mi/h****
-  std::cout << STD_FMT::format("{:%Q in %q}", v5) << '\n';       // 30.5556 in m/s
-  std::cout << STD_FMT::format("{0:%Q} in {0:%q}", v6) << '\n';  // 31.2928 in m/s
-  std::cout << STD_FMT::format("{:%Q}", v7) << '\n';             // 31
+  std::cout << v1 << '\n';                                             // 110 km/h
+  std::cout << v2 << '\n';                                             // 70 mi/h
+  std::cout << UNITS_STD_FMT::format("{}", v3) << '\n';                // 110 km/h
+  std::cout << UNITS_STD_FMT::format("{:*^14}", v4) << '\n';           // ***70 mi/h****
+  std::cout << UNITS_STD_FMT::format("{:%Q in %q}", v5) << '\n';       // 30.5556 in m/s
+  std::cout << UNITS_STD_FMT::format("{0:%Q} in {0:%q}", v6) << '\n';  // 31.2928 in m/s
+  std::cout << UNITS_STD_FMT::format("{:%Q}", v7) << '\n';             // 31
 }

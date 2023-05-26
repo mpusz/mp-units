@@ -1,10 +1,14 @@
 [![GitHub license](https://img.shields.io/github/license/mpusz/units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
-[![Conan CI](https://img.shields.io/github/workflow/status/mpusz/units/Conan%20CI/master?label=Conan%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
-[![CMake CI](https://img.shields.io/github/workflow/status/mpusz/units/CMake%20Test%20Package%20CI/master?label=CMake%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
-[![Check CI](https://img.shields.io/github/workflow/status/mpusz/units/Check%20CI/master?label=Check%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Check%20CI%22+branch%3Amaster)
-[![GitHub Workflow Documentation](https://img.shields.io/github/workflow/status/mpusz/units/Documentation/master?label=Documentation%20CI)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
-[![Conan stable](https://img.shields.io/badge/ConanCenter-0.7.0%3Astable-blue)](https://conan.io/center/mp-units)
+[![GitHub license](https://img.shields.io/badge/C%2B%2B-20-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
+
+[![Conan CI](https://img.shields.io/github/actions/workflow/status/mpusz/units/ci-conan.yml?branch=master&label=Conan%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
+[![CMake CI](https://img.shields.io/github/actions/workflow/status/mpusz/units/ci-test-package-cmake.yml?branch=master&label=CMake%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
+[![Check CI](https://img.shields.io/github/actions/workflow/status/mpusz/units/ci-check.yml?branch=master&label=Check%20CI)](https://github.com/mpusz/units/actions?query=workflow%3A%22Check%20CI%22+branch%3Amaster)
+[![GitHub Workflow Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/units/actions?query=workflow%3ADocumentation+branch%3Amaster)
+
+[![Conan stable](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
 [![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-0.8.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/0.8.0)
+
 
 # `mp-units` - A Units Library for C++
 
@@ -21,6 +25,15 @@ parties interested in field trialing the library.**
 An extensive project documentation including installation instructions and user's
 guide can be found on [mp-units GitHub Pages](https://mpusz.github.io/units).
 
+
+## Terms and Definitions
+
+This project uses the official metrology vocabulary defined by the ISO and BIPM.
+Please familiarize yourself with those terms to better understand the documentation
+and improve domain-related communication and discussions. You can find essential
+project-related definitions in [our documentation's "Glossary" chapter](https://mpusz.github.io/units/glossary.html).
+Even more terms are provided in the official vocabulary of the [ISO](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en)
+and [BIPM](https://jcgm.bipm.org/vim/en).
 
 ## TL;DR
 
@@ -59,7 +72,7 @@ static_assert(10 * km / (5 * km) == 2);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/5dvY8Woh1)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/qbbbnfK3s)._
 
 This library requires some C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interface and all unit conversions
@@ -107,4 +120,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/bcb87Kvea)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/b4a3Ya6dY)._

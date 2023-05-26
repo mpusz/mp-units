@@ -59,6 +59,36 @@ Paul Quincey summarizes that with the above in action:
     can be measured in terms of the Planck constant.
 
 
+Angular quantities in the :term:`SI`
+------------------------------------
+
+Even though the :term:`SI` somehow ignores the dimensionality of angle:
+
+    Plane and solid angles, when expressed in radians and steradians respectively, are in effect
+    also treated within the SI as quantities with the unit one. The symbols :math:`rad`
+    and :math:`sr` are written explicitly where appropriate, in order to emphasize that, for radians or
+    steradians, the quantity being considered is, or involves the plane angle or solid angle
+    respectively. For steradians it emphasizes the distinction between units of flux and intensity
+    in radiometry and photometry for example. However, it is a long-established practice in
+    mathematics and across all areas of science to make use of :math:`rad = 1` and :math:`sr = 1`.
+    For historical reasons the radian and steradian are treated as derived units.
+
+It also explicitly states:
+
+    The SI unit of frequency is hertz, the SI unit of angular velocity and angular frequency is
+    radian per second, and the SI unit of activity is becquerel, implying counts per second.
+    Although it is formally correct to write all three of these units as the reciprocal second, the
+    use of the different names emphasizes the different nature of the quantities concerned. It is
+    especially important to carefully distinguish frequencies from angular frequencies, because
+    by definition their numerical values differ by a factor of :math:`2\pi`. Ignoring this fact may cause
+    an error of :math:`2\pi`. Note that in some countries, frequency values are conventionally expressed
+    using “cycle/s” or “cps” instead of the SI unit :math:`Hz`, although “cycle” and “cps” are not units
+    in the SI. Note also that it is common, although not recommended, to use the term
+    frequency for quantities expressed in :math:`rad/s`. Because of this, it is recommended that
+    quantities called “frequency”, “angular frequency”, and “angular velocity” always be given
+    explicit units of :math:`Hz` or :math:`rad/s`` and not :math:`s^{-1}`.
+
+
 Angular quantities in the library
 ---------------------------------
 

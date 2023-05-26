@@ -30,6 +30,7 @@ with a permissive `MIT license <https://github.com/mpusz/units/blob/master/LICEN
     introduction
     quick_start
     framework
+    defining_systems
     use_cases
     design
     examples

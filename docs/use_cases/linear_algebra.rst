@@ -14,7 +14,7 @@ enough to be used with other Linear Algebra libraries existing on the market.
     or `Conan <https://conan.io/center/wg21-linear_algebra>`_.
     Also, to simplify the examples all of them assume::
 
-        using namespace std::math;
+        using namespace STD_LA;
 
 
 Linear Algebra of Quantities
@@ -27,16 +27,16 @@ The official :term:`quantity` definition states:
 
 So the most common use case would be to create a vector or matrix of quantities::
 
-    fs_vector<si::length<si::metre>, 3> v = { 1 * m, 2 * m, 3 * m };
-    fs_vector<si::length<si::metre>, 3> u = { 3 * m, 2 * m, 1 * m };
-    fs_vector<si::length<si::kilometre>, 3> t = { 3 * km, 2 * km, 1 * km };
+    fixed_size_column_vector<si::length<si::metre>, 3> v = { 1 * m, 2 * m, 3 * m };
+    fixed_size_column_vector<si::length<si::metre>, 3> u = { 3 * m, 2 * m, 1 * m };
+    fixed_size_column_vector<si::length<si::kilometre>, 3> t = { 3 * km, 2 * km, 1 * km };
 
 Having such definitions we can perform full dimensional analysis operations for the operations
 allowed by the Linear Algebra rules. For example::
 
     std::cout << "v + u     = " << v + u << "\n";
     std::cout << "v + t     = " << v + t << "\n";
-    std::cout << "t[m]      = " << fs_vector<si::length<si::metre>, 3>(t) << "\n";
+    std::cout << "t[m]      = " << fixed_size_column_vector<si::length<si::metre>, 3>(t) << "\n";
     std::cout << "v * u     = " << v * u << "\n";
     std::cout << "2 * m * v = " << 2 * m * v << "\n";
 
@@ -66,9 +66,9 @@ types provided to a `quantity` class template.
 
 With this the above vector definitions can be rewritten as follows::
 
-    si::length<si::metre, fs_vector<int, 3>> v(fs_vector<int, 3>{ 1, 2, 3 });
-    si::length<si::metre, fs_vector<int, 3>> u(fs_vector<int, 3>{ 3, 2, 1 });
-    si::length<si::kilometre, fs_vector<int, 3>> t(fs_vector<int, 3>{ 3, 2, 1 });
+    si::length<si::metre, fixed_size_column_vector<int, 3>> v(fixed_size_column_vector<int, 3>{ 1, 2, 3 });
+    si::length<si::metre, fixed_size_column_vector<int, 3>> u(fixed_size_column_vector<int, 3>{ 3, 2, 1 });
+    si::length<si::kilometre, fixed_size_column_vector<int, 3>> t(fixed_size_column_vector<int, 3>{ 3, 2, 1 });
 
 Now the same code doing basic Linear Algebra operations will provide the following
 output:
