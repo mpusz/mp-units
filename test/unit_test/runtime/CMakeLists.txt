@@ -23,12 +23,9 @@
 cmake_minimum_required(VERSION 3.2)
 
 find_package(Catch2 3 CONFIG REQUIRED)
-find_package(wg21_linear_algebra CONFIG REQUIRED)
 
-add_executable(unit_tests_runtime distribution_test.cpp fmt_test.cpp linear_algebra_test.cpp math_test.cpp)
-target_link_libraries(
-    unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain wg21_linear_algebra::wg21_linear_algebra
-)
+add_executable(unit_tests_runtime distribution_test.cpp fmt_test.cpp math_test.cpp)
+target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(

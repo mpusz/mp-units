@@ -27,6 +27,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(projectPrefix UNITS_)
 
+option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
+message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
+
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
 ensure_entry_point()
