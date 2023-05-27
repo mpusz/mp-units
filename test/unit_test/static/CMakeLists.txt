@@ -35,7 +35,7 @@ target_compile_options(
 add_library(
     unit_tests_static
     angle_test.cpp
-    # cgs_test.cpp
+    cgs_test.cpp
     chrono_test.cpp
     # concepts_test.cpp
     # custom_rep_test_min_expl.cpp
