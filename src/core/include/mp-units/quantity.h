@@ -47,16 +47,15 @@ template<QuantityLike Q>
 using quantity_like_type = quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 template<typename T, typename Arg>
-concept RepSafeConstructibleFrom =  // exposition only
+concept RepSafeConstructibleFrom =
   std::constructible_from<T, Arg> && (treat_as_floating_point<T> || !treat_as_floating_point<Arg>);
 
 template<auto UFrom, auto UTo>
-concept IntegralConversionFactor =  // exposition only
-  Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
-  is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
+concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
+                                   is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
 
 template<typename QFrom, typename QTo>
-concept QuantityConvertibleTo =  // exposition only
+concept QuantityConvertibleTo =
   Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   convertible(QFrom::unit, QTo::unit) && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
   (treat_as_floating_point<typename QTo::rep> ||

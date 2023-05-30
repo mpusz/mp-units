@@ -114,7 +114,7 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<DerivedDimensionExpr... Expr>
+template<detail::DerivedDimensionExpr... Expr>
 struct derived_dimension : detail::expr_fractions<detail::is_dimension_one, Expr...> {};
 
 /**
@@ -179,7 +179,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  if constexpr (BaseDimension<D>) {
+  if constexpr (detail::BaseDimension<D>) {
     if constexpr (Den == 1)
       return derived_dimension<power<D, Num>>{};
     else

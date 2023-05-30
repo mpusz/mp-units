@@ -50,10 +50,18 @@ struct scaled_unit;
 template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
+template<basic_symbol_text Symbol, Unit auto U>
+  requires(!Symbol.empty())
+struct constant_unit;
+
 namespace detail {
 
 template<basic_symbol_text Symbol, auto... Args>
 void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_named_unit =
+  requires(T* t) { to_base_specialization_of_named_unit(t); };
 
 template<typename T>
 inline constexpr bool is_specialization_of_named_unit = false;
@@ -61,16 +69,23 @@ inline constexpr bool is_specialization_of_named_unit = false;
 template<basic_symbol_text Symbol, auto... Args>
 inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
 
-}  // namespace detail
+template<basic_symbol_text Symbol, auto U>
+void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol, U>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_constant_unit =
+  requires(T* t) { to_base_specialization_of_constant_unit(t); };
 
 /**
  * @brief A concept matching all units with special names
  *
- * Satisfied by all unit types derived from the specialization of `named_unit`.
+ * Satisfied by all unit types derived from the specialization of `named_unit` (but not constant units).
  */
 template<typename T>
-concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_of_named_unit(t); } &&
-                    (!detail::is_specialization_of_named_unit<T>);
+concept NamedUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T> &&
+                    (!detail::is_derived_from_specialization_of_constant_unit<T>);
+
+}  // namespace detail
 
 /**
  * @brief Prevents assignment of a prefix to specific units
@@ -79,14 +94,14 @@ concept NamedUnit = Unit<T> && requires(T* t) { detail::to_base_specialization_o
  * `hour` or `degree_Celsius`. For those a partial specialization with the value `false` should be
  * provided.
  */
-template<NamedUnit auto V>
-inline constexpr bool unit_can_be_prefixed = true;
+template<Unit auto V>
+inline constexpr bool unit_can_be_prefixed = detail::NamedUnit<std::remove_const_t<decltype(V)>>;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
  */
 template<typename T>
-concept PrefixableUnit = NamedUnit<T> && unit_can_be_prefixed<T{}>;
+concept PrefixableUnit = detail::NamedUnit<T> && unit_can_be_prefixed<T{}>;
 
 namespace detail {
 
@@ -100,13 +115,17 @@ inline constexpr bool is_per_of_units = false;
 template<typename... Ts>
 inline constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
 
-}  // namespace detail
-
 template<typename T>
 concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
 
-template<DerivedUnitExpr... Expr>
+}  // namespace detail
+
+template<detail::DerivedUnitExpr... Expr>
 struct derived_unit;
+
+template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+  requires(!Symbol.empty())
+struct prefixed_unit;
 
 namespace detail {
 
@@ -120,8 +139,27 @@ template<typename... Expr>
 void is_unit_impl(const derived_unit<Expr...>*);
 
 template<typename T>
+inline constexpr bool is_specialization_of_unit = false;
+
+template<basic_symbol_text Symbol, auto... Args>
+inline constexpr bool is_specialization_of_unit<named_unit<Symbol, Args...>> = true;
+
+template<typename T>
+inline constexpr bool is_specialization_of_constant_unit = false;
+
+template<basic_symbol_text Symbol, auto U>
+inline constexpr bool is_specialization_of_constant_unit<constant_unit<Symbol, U>> = true;
+
+template<typename T>
+inline constexpr bool is_specialization_of_prefixed_unit = false;
+
+template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M, U>> = true;
+
+template<typename T>
   requires requires(T* t) { is_unit_impl(t); }
-inline constexpr bool is_unit<T> = true;
+inline constexpr bool is_unit<T> = !is_specialization_of_named_unit<T> && !is_specialization_of_constant_unit<T> &&
+                                   !is_specialization_of_prefixed_unit<T>;
 
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U);

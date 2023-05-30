@@ -50,27 +50,30 @@ namespace mp_units {
  */
 enum class quantity_character { scalar, vector, tensor };
 
+namespace detail {
+
 template<typename T, typename U>
-concept common_type_with_ =  // exposition only
+concept CommonTypeWith =
   std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
   std::constructible_from<std::common_type_t<T, U>, T> && std::constructible_from<std::common_type_t<T, U>, U>;
 
 template<typename T, typename U = T>
-concept scalable_number_ =  // exposition only
+concept ScalableNumber =
   std::regular_invocable<std::multiplies<>, T, U> && std::regular_invocable<std::divides<>, T, U>;
 
 template<typename T>
-concept castable_number_ =  // exposition only
-  common_type_with_<T, std::intmax_t> && scalable_number_<std::common_type_t<T, std::intmax_t>>;
+concept CastableNumber = CommonTypeWith<T, std::intmax_t> && ScalableNumber<std::common_type_t<T, std::intmax_t>>;
 
 // TODO Fix it according to sudo_cast implementation
 template<typename T>
-concept scalable_ =  // exposition only
-  castable_number_<T> || (requires { typename T::value_type; } && castable_number_<typename T::value_type> &&
-                          scalable_number_<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
+concept Scalable =
+  CastableNumber<T> || (requires { typename T::value_type; } && CastableNumber<typename T::value_type> &&
+                        ScalableNumber<T, std::common_type_t<typename T::value_type, std::intmax_t>>);
+
+}  // namespace detail
 
 template<typename T>
-concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && scalable_<T>;
+concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && detail::Scalable<T>;
 
 template<typename T, quantity_character Ch>
 concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||

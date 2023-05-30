@@ -42,18 +42,13 @@ inline constexpr bool is_specialization_of_base_dimension = false;
 template<basic_symbol_text Symbol>
 inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
 
-}  // namespace detail
-
 /**
  * @brief A concept matching all named base dimensions in the library.
  *
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension =
-  requires(T* t) { detail::to_base_base_dimension(t); } && (!detail::is_specialization_of_base_dimension<T>);
-
-namespace detail {
+concept BaseDimension = requires(T* t) { to_base_base_dimension(t); } && (!is_specialization_of_base_dimension<T>);
 
 template<typename T>
 struct is_dimension_one : std::false_type {};
@@ -71,13 +66,13 @@ template<typename... Ts>
 inline constexpr bool is_per_of_dims<per<Ts...>> =
   (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || is_power_of_dim<Ts>));
 
-}  // namespace detail
-
 template<typename T>
 concept DerivedDimensionExpr =
-  BaseDimension<T> || detail::is_dimension_one<T>::value || detail::is_power_of_dim<T> || detail::is_per_of_dims<T>;
+  BaseDimension<T> || is_dimension_one<T>::value || is_power_of_dim<T> || is_per_of_dims<T>;
 
-template<DerivedDimensionExpr... Expr>
+}  // namespace detail
+
+template<detail::DerivedDimensionExpr... Expr>
 struct derived_dimension;
 
 namespace detail {
@@ -99,6 +94,6 @@ concept DerivedDimension = is_derived_from_specialization_of<T, derived_dimensio
  * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
  */
 template<typename T>
-concept Dimension = BaseDimension<T> || detail::DerivedDimension<T>;
+concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
 
 }  // namespace mp_units

@@ -109,8 +109,8 @@ struct named_unit;
  * @tparam Symbol a short text representation of the unit
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
-template<basic_symbol_text Symbol, QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+template<basic_symbol_text Symbol, detail::QuantityKindSpec auto QS>
+  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
 struct named_unit<Symbol, QS> {
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
   static constexpr auto quantity_spec = QS;
@@ -155,7 +155,7 @@ struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
  * @tparam Unit a unit for which we provide a special name
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
-template<basic_symbol_text Symbol, AssociatedUnit auto U, QuantityKindSpec auto QS>
+template<basic_symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
@@ -196,17 +196,6 @@ struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
 template<basic_symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
 struct constant_unit : named_unit<'[' + Symbol + ']', U> {};
-
-namespace detail {
-
-template<basic_symbol_text Symbol, auto U>
-void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol, U>*);
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_constant_unit =
-  requires(T* t) { to_base_specialization_of_constant_unit(t); };
-
-}  // namespace detail
 
 /**
  * @brief A prefixed unit
@@ -288,7 +277,7 @@ struct is_one : std::false_type {};
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<DerivedUnitExpr... Expr>
+template<detail::DerivedUnitExpr... Expr>
 struct derived_unit : detail::expr_fractions<detail::is_one, Expr...> {};
 
 /**
@@ -328,7 +317,7 @@ struct canonical_unit {
   U reference_unit;
 };
 
-template<Unit T, basic_symbol_text Symbol, BaseQuantitySpec auto Q>
+template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&);
 
 template<Unit T, basic_symbol_text Symbol>
@@ -350,7 +339,7 @@ template<Unit T, auto M, typename U>
   return canonical_unit{M * base.mag, base.reference_unit};
 }
 
-template<Unit T, basic_symbol_text Symbol, BaseQuantitySpec auto Q>
+template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&)
 {
   return canonical_unit{mag<1>, t};

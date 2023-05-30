@@ -189,15 +189,15 @@ inline constexpr struct is_kind {
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
 #ifdef __cpp_explicit_this_parameter
-template<BaseDimension auto Dim, one_of<quantity_character> auto... Args>
+template<detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Dim, Args...> : detail::quantity_spec_interface {
 #else
-template<typename Self, BaseDimension auto Dim, one_of<quantity_character> auto... Args>
+template<typename Self, detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self> {
 #endif
-  static constexpr BaseDimension auto dimension = Dim;
+  static constexpr detail::BaseDimension auto dimension = Dim;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(quantity_character::scalar);
 };
 
@@ -405,7 +405,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<IntermediateDerivedQuantitySpecExpr... Expr>
+template<detail::IntermediateDerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec :
     detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
     detail::expr_fractions<detail::is_dimensionless, Expr...> {
@@ -426,18 +426,31 @@ struct derived_quantity_spec :
  */
 QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind(Q q);
+
 /**
  * @brief Quantity kind specifier
  *
  * Specifies that the provided `Q` should be treated as a quantity kind.
  */
+template<auto Q>
+struct kind_of_;
+
+namespace detail {
+
+template<typename T>
+concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T>;
+
+}  // namespace detail
+
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(get_kind(Q) == Q)
 #ifdef __cpp_explicit_this_parameter
-struct kind_of_ : Q {
+struct kind_of_<Q> : Q {
 };
 #else
-struct kind_of_ : quantity_spec<kind_of_<Q>, Q> {
+struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
 };
 #endif
 
@@ -492,13 +505,13 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
   return is_same_v<Lhs, Rhs>;
 }
 
-template<QuantityKindSpec Lhs, QuantityKindSpec Rhs>
+template<detail::QuantityKindSpec Lhs, detail::QuantityKindSpec Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs)
 {
   return is_same_v<Lhs, Rhs>;
 }
 
-template<QuantitySpec Lhs, QuantityKindSpec Rhs>
+template<QuantitySpec Lhs, detail::QuantityKindSpec Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs rhs)
 {
   return is_same_v<Lhs, std::remove_const_t<decltype(remove_kind(rhs))>>;
@@ -1374,7 +1387,7 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q)
 {
-  if constexpr (QuantityKindSpec<Q>) {
+  if constexpr (detail::QuantityKindSpec<Q>) {
     if constexpr (requires { Q::_parent_; })
       return Q::_parent_;
     else
@@ -1393,7 +1406,7 @@ template<QuantitySpec Q>
       return false;
   };
 
-  if constexpr (QuantityKindSpec<Q>) {
+  if constexpr (detail::QuantityKindSpec<Q>) {
     return remove_kind(q);
   } else if constexpr (defined_as_kind(q)) {
     return q;
@@ -1424,11 +1437,11 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   else if constexpr (get_kind(q1) != get_kind(q2) && std::derived_from<std::remove_const_t<decltype(get_kind(q2))>,
                                                                        std::remove_const_t<decltype(get_kind(q1))>>)
     return remove_kind(q2);
-  else if constexpr ((QuantityKindSpec<Q1> && !QuantityKindSpec<Q2>) ||
+  else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
                      (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
                       implicitly_convertible(q1, q2)))
     return q2;
-  else if constexpr ((!QuantityKindSpec<Q1> && QuantityKindSpec<Q2>) ||
+  else if constexpr ((!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>) ||
                      (detail::NamedQuantitySpec<QQ1> && detail::IntermediateDerivedQuantitySpec<QQ2> &&
                       implicitly_convertible(q2, q1)))
     return q1;
