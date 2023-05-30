@@ -36,6 +36,10 @@
 
 namespace mp_units {
 
+template<Reference auto R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
+[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
+
 namespace detail {
 
 // TODO revise the note in the below comment
@@ -107,7 +111,7 @@ struct quantity_spec_interface {
   [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q) const
     requires Quantity<std::remove_cvref_t<Q>> && (explicitly_convertible(std::remove_cvref_t<Q>::quantity_spec, self))
   {
-    return std::forward<Q>(q).number() * reference<self, std::remove_cvref_t<Q>::unit>{};
+    return make_quantity<reference<self, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
   }
 #else
   template<UnitOf<Self{}> U>
@@ -120,7 +124,7 @@ struct quantity_spec_interface {
     requires Quantity<std::remove_cvref_t<Q>> && (explicitly_convertible(std::remove_cvref_t<Q>::quantity_spec, Self{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
-    return std::forward<Q>(q).number() * reference<Self{}, std::remove_cvref_t<Q>::unit>{};
+    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
   }
 #endif
 };
@@ -295,7 +299,7 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
     requires Quantity<std::remove_cvref_t<Q>> && (explicitly_convertible(std::remove_cvref_t<Q>::quantity_spec, Self{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
-    return std::forward<Q>(q).number() * reference<Self{}, std::remove_cvref_t<Q>::unit>{};
+    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
   }
 #endif
 };
