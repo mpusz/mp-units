@@ -37,7 +37,7 @@ add_library(
     angle_test.cpp
     cgs_test.cpp
     chrono_test.cpp
-    # concepts_test.cpp
+    concepts_test.cpp
     # custom_rep_test_min_expl.cpp
     # custom_unit_test.cpp
     # dimension_op_test.cpp

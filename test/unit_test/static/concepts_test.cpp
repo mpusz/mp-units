@@ -20,126 +20,427 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/chrono.h>
-#include <units/isq/si/cgs/length.h>
-#include <units/isq/si/cgs/speed.h>  // IWYU pragma: keep
-#include <units/isq/si/fps/length.h>
-#include <units/isq/si/fps/speed.h>  // IWYU pragma: keep
-#include <units/isq/si/length.h>     // IWYU pragma: keep
-#include <units/isq/si/prefixes.h>
-#include <units/isq/si/speed.h>
-#include <units/quantity_point_kind.h>
+#include <mp-units/chrono.h>
+#include <mp-units/concepts.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/natural/natural.h>
+#include <mp-units/systems/si/si.h>
 #include <chrono>
 #include <complex>
-#include <mutex>
 #include <optional>
-#include <ratio>
 #include <string>
-#include <utility>
+
+template<typename T>
+inline constexpr bool mp_units::is_scalar<std::complex<T>> = true;
 
 namespace {
 
-using namespace units;
-using namespace units::isq;
+using namespace mp_units;
 
-// Prefix
-
-static_assert(Prefix<si::kilo>);
-static_assert(!Prefix<std::kilo>);
+struct dim_speed : decltype(isq::dim_length / isq::dim_time) {};
 
 // BaseDimension
-
-static_assert(BaseDimension<si::dim_length>);
-static_assert(!BaseDimension<si::dim_speed>);
-static_assert(!BaseDimension<int>);
+static_assert(detail::BaseDimension<struct isq::dim_length>);
+static_assert(!detail::BaseDimension<std::remove_const_t<decltype(isq::dim_length / isq::dim_time)>>);
+static_assert(!detail::BaseDimension<std::remove_const_t<decltype(1 / isq::dim_time)>>);
+static_assert(!detail::BaseDimension<std::remove_const_t<decltype(pow<2>(isq::dim_length))>>);
+static_assert(!detail::BaseDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
+static_assert(!detail::BaseDimension<dim_speed>);
+static_assert(!detail::BaseDimension<base_dimension<"L">>);
+static_assert(!detail::BaseDimension<struct si::metre>);
+static_assert(!detail::BaseDimension<int>);
 
 // DerivedDimension
-
-static_assert(DerivedDimension<si::dim_speed>);
-static_assert(!DerivedDimension<si::dim_length>);
-static_assert(!DerivedDimension<int>);
+static_assert(detail::DerivedDimension<std::remove_const_t<decltype(isq::dim_length / isq::dim_time)>>);
+static_assert(detail::DerivedDimension<std::remove_const_t<decltype(1 / isq::dim_time)>>);
+static_assert(detail::DerivedDimension<std::remove_const_t<decltype(pow<2>(isq::dim_length))>>);
+static_assert(detail::DerivedDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
+static_assert(detail::DerivedDimension<dim_speed>);
+static_assert(detail::DerivedDimension<struct dimension_one>);
+static_assert(!detail::DerivedDimension<struct isq::dim_length>);
+static_assert(!detail::DerivedDimension<struct si::metre>);
+static_assert(!detail::DerivedDimension<int>);
 
 // Dimension
-
-static_assert(Dimension<si::dim_length>);
-static_assert(Dimension<si::dim_speed>);
-static_assert(!Dimension<si::metre>);
+static_assert(Dimension<struct isq::dim_length>);
+static_assert(Dimension<std::remove_const_t<decltype(isq::dim_length / isq::dim_time)>>);
+static_assert(Dimension<std::remove_const_t<decltype(1 / isq::dim_time)>>);
+static_assert(Dimension<std::remove_const_t<decltype(pow<2>(isq::dim_length))>>);
+static_assert(Dimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
+static_assert(Dimension<dim_speed>);
+static_assert(Dimension<struct dimension_one>);
+static_assert(!Dimension<base_dimension<"L">>);
+static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
-static_assert(!Dimension<std::chrono::seconds>);
+
+// QuantitySpec
+struct speed : decltype(isq::length / isq::time) {};  // this is not recommended
+
+static_assert(QuantitySpec<struct isq::length>);
+static_assert(QuantitySpec<struct isq::radius>);
+static_assert(QuantitySpec<struct isq::speed>);
+static_assert(QuantitySpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(QuantitySpec<std::remove_const_t<decltype(isq::length / isq::time)>>);
+static_assert(QuantitySpec<std::remove_const_t<decltype(pow<2>(isq::length))>>);
+static_assert(QuantitySpec<struct dimensionless>);
+static_assert(!QuantitySpec<speed>);
+static_assert(!QuantitySpec<struct isq::dim_length>);
+static_assert(!QuantitySpec<int>);
+
+// NamedQuantitySpec
+static_assert(detail::NamedQuantitySpec<struct isq::length>);
+static_assert(detail::NamedQuantitySpec<struct isq::radius>);
+static_assert(detail::NamedQuantitySpec<struct isq::speed>);
+static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(isq::length / isq::time)>>);
+static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(pow<2>(isq::length))>>);
+static_assert(detail::NamedQuantitySpec<struct dimensionless>);
+static_assert(!detail::NamedQuantitySpec<speed>);
+static_assert(!detail::NamedQuantitySpec<struct isq::dim_length>);
+static_assert(!detail::NamedQuantitySpec<int>);
+
+// BaseQuantitySpec
+static_assert(detail::BaseQuantitySpec<struct isq::length>);
+static_assert(detail::BaseQuantitySpec<struct isq::radius>);
+static_assert(!detail::BaseQuantitySpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!detail::BaseQuantitySpec<struct isq::speed>);
+static_assert(!detail::BaseQuantitySpec<std::remove_const_t<decltype(isq::length / isq::time)>>);
+static_assert(!detail::BaseQuantitySpec<std::remove_const_t<decltype(pow<2>(isq::length))>>);
+static_assert(!detail::BaseQuantitySpec<struct dimensionless>);
+static_assert(!detail::BaseQuantitySpec<speed>);
+static_assert(!detail::BaseQuantitySpec<struct isq::dim_length>);
+static_assert(!detail::BaseQuantitySpec<int>);
+
+// IntermediateDerivedQuantitySpec
+static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::length>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::radius>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::speed>);
+static_assert(detail::IntermediateDerivedQuantitySpec<std::remove_const_t<decltype(isq::length / isq::time)>>);
+static_assert(detail::IntermediateDerivedQuantitySpec<std::remove_const_t<decltype(pow<2>(isq::length))>>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<struct dimensionless>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<speed>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::dim_length>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<int>);
+
+// QuantityKindSpec
+static_assert(!detail::QuantityKindSpec<struct isq::length>);
+static_assert(!detail::QuantityKindSpec<struct isq::radius>);
+static_assert(detail::QuantityKindSpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!detail::QuantityKindSpec<struct isq::speed>);
+static_assert(!detail::QuantityKindSpec<std::remove_const_t<decltype(isq::length / isq::time)>>);
+static_assert(!detail::QuantityKindSpec<std::remove_const_t<decltype(pow<2>(isq::length))>>);
+static_assert(!detail::QuantityKindSpec<struct dimensionless>);
+static_assert(!detail::QuantityKindSpec<speed>);
+static_assert(!detail::QuantityKindSpec<struct isq::dim_length>);
+static_assert(!detail::QuantityKindSpec<int>);
 
 // Unit
+struct metre_per_second : decltype(si::metre / si::second) {};
 
-static_assert(Unit<si::metre>);
-static_assert(Unit<si::kilometre>);
-static_assert(Unit<si::fps::mile>);
-static_assert(Unit<si::metre_per_second>);
-static_assert(!Unit<si::dim_length>);
+static_assert(Unit<struct si::metre>);
+static_assert(Unit<struct si::kilogram>);
+static_assert(Unit<std::remove_const_t<decltype(si::kilo<si::gram>)>>);
+static_assert(Unit<struct natural::electronvolt>);
+static_assert(Unit<std::remove_const_t<decltype(si::metre / si::second)>>);
+static_assert(Unit<std::remove_const_t<decltype(1 / si::second)>>);
+static_assert(Unit<std::remove_const_t<decltype(mag<10> * si::second)>>);
+static_assert(Unit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(Unit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
+static_assert(Unit<struct si::standard_gravity_unit>);
+static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
+static_assert(Unit<metre_per_second>);
+static_assert(Unit<derived_unit<struct si::metre, per<struct si::second>>>);
+static_assert(Unit<struct one>);
+static_assert(!Unit<named_unit<"?", isq::length>>);
+static_assert(!Unit<named_unit<"?">>);
+static_assert(!Unit<named_unit<"?", si::metre / si::second>>);
+static_assert(!Unit<named_unit<"?", si::metre, isq::length>>);
+static_assert(!Unit<constant_unit<"?", si::metre / si::second>>);
+static_assert(!Unit<prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!Unit<struct isq::dim_length>);
 static_assert(!Unit<int>);
 static_assert(!Unit<std::chrono::seconds>);
 
 // NamedUnit
+static_assert(detail::NamedUnit<struct si::metre>);
+static_assert(detail::NamedUnit<struct natural::electronvolt>);
+static_assert(!detail::NamedUnit<struct si::kilogram>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(si::kilo<si::gram>)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(1 / si::second)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
+static_assert(!detail::NamedUnit<struct si::standard_gravity_unit>);
+static_assert(!detail::NamedUnit<scaled_unit<mag<10>, struct si::second>>);
+static_assert(!detail::NamedUnit<metre_per_second>);
+static_assert(!detail::NamedUnit<derived_unit<struct si::metre, per<struct si::second>>>);
+static_assert(!detail::NamedUnit<struct one>);
+static_assert(!detail::NamedUnit<named_unit<"?", isq::length>>);
+static_assert(!detail::NamedUnit<named_unit<"?">>);
+static_assert(!detail::NamedUnit<named_unit<"?", si::metre / si::second>>);
+static_assert(!detail::NamedUnit<named_unit<"?", si::metre, isq::length>>);
+static_assert(!detail::NamedUnit<constant_unit<"?", si::metre / si::second>>);
+static_assert(!detail::NamedUnit<prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!detail::NamedUnit<struct isq::dim_length>);
+static_assert(!detail::NamedUnit<int>);
+static_assert(!detail::NamedUnit<std::chrono::seconds>);
 
-static_assert(NamedUnit<si::metre>);
-static_assert(NamedUnit<si::kilometre>);
-static_assert(NamedUnit<si::fps::mile>);
-static_assert(!NamedUnit<si::metre_per_second>);
+// PrefixableUnit
+static_assert(PrefixableUnit<struct si::metre>);
+static_assert(PrefixableUnit<struct natural::electronvolt>);
+static_assert(!PrefixableUnit<struct si::kilogram>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(si::kilo<si::gram>)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(1 / si::second)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
+static_assert(!PrefixableUnit<struct si::standard_gravity_unit>);
+static_assert(!PrefixableUnit<scaled_unit<mag<10>, struct si::second>>);
+static_assert(!PrefixableUnit<metre_per_second>);
+static_assert(!PrefixableUnit<derived_unit<struct si::metre, per<struct si::second>>>);
+static_assert(!PrefixableUnit<struct one>);
+static_assert(!PrefixableUnit<named_unit<"?", isq::length>>);
+static_assert(!PrefixableUnit<named_unit<"?">>);
+static_assert(!PrefixableUnit<named_unit<"?", si::metre / si::second>>);
+static_assert(!PrefixableUnit<named_unit<"?", si::metre, isq::length>>);
+static_assert(!PrefixableUnit<constant_unit<"?", si::metre / si::second>>);
+static_assert(!PrefixableUnit<prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!PrefixableUnit<struct isq::dim_length>);
+static_assert(!PrefixableUnit<int>);
+static_assert(!PrefixableUnit<std::chrono::seconds>);
+
+// AssociatedUnit
+static_assert(AssociatedUnit<struct si::metre>);
+static_assert(!AssociatedUnit<struct natural::electronvolt>);
+static_assert(AssociatedUnit<struct si::kilogram>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(si::kilo<si::gram>)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(1 / si::second)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
+static_assert(AssociatedUnit<struct si::standard_gravity_unit>);
+static_assert(AssociatedUnit<scaled_unit<mag<10>, struct si::second>>);
+static_assert(AssociatedUnit<metre_per_second>);
+static_assert(AssociatedUnit<derived_unit<struct si::metre, per<struct si::second>>>);
+static_assert(AssociatedUnit<struct one>);
+static_assert(!AssociatedUnit<named_unit<"?", isq::length>>);
+static_assert(!AssociatedUnit<named_unit<"?">>);
+static_assert(!AssociatedUnit<named_unit<"?", si::metre / si::second>>);
+static_assert(!AssociatedUnit<named_unit<"?", si::metre, isq::length>>);
+static_assert(!AssociatedUnit<constant_unit<"?", si::metre / si::second>>);
+static_assert(!AssociatedUnit<prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!AssociatedUnit<struct isq::dim_length>);
+static_assert(!AssociatedUnit<int>);
+static_assert(!AssociatedUnit<std::chrono::seconds>);
 
 // UnitOf
+static_assert(UnitOf<struct si::metre, isq::length>);
+static_assert(UnitOf<struct si::metre, isq::radius>);
+static_assert(UnitOf<struct si::kilogram, isq::mass>);
+static_assert(UnitOf<struct si::hertz, isq::frequency>);
+static_assert(UnitOf<struct si::hertz, 1 / isq::time>);
+static_assert(UnitOf<struct one, dimensionless>);
+static_assert(UnitOf<struct percent, dimensionless>);
+static_assert(UnitOf<struct si::radian, isq::angular_measure>);
+static_assert(UnitOf<struct one, isq::angular_measure>);
+static_assert(UnitOf<struct percent, isq::angular_measure>);
+static_assert(!UnitOf<struct si::radian, dimensionless>);
+static_assert(!UnitOf<struct si::metre, isq::time>);
+static_assert(!UnitOf<struct natural::electronvolt, isq::energy>);
 
-static_assert(UnitOf<si::metre, si::dim_length>);
-static_assert(UnitOf<si::kilometre, si::dim_length>);
-static_assert(UnitOf<si::fps::mile, si::dim_length>);
-static_assert(!UnitOf<si::second, si::dim_length>);
+// Reference
+static_assert(Reference<struct si::metre>);
+static_assert(Reference<std::remove_const_t<decltype(si::metre / si::second)>>);
+static_assert(Reference<std::remove_const_t<decltype(isq::length[si::metre])>>);
+static_assert(Reference<std::remove_const_t<decltype(isq::radius[si::metre])>>);
+static_assert(Reference<std::remove_const_t<decltype(isq::radius[si::metre] / isq::time[si::second])>>);
+static_assert(!Reference<struct natural::electronvolt>);
+static_assert(!Reference<struct isq::length>);
+static_assert(!Reference<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!Reference<struct isq::dim_length>);
+static_assert(!Reference<int>);
+
+// ReferenceOf
+static_assert(ReferenceOf<struct si::metre, isq::length>);
+static_assert(ReferenceOf<struct si::metre, isq::radius>);
+static_assert(!ReferenceOf<struct si::second, isq::length>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::length[si::metre])>, isq::length>);
+static_assert(!ReferenceOf<std::remove_const_t<decltype(isq::length[si::metre])>, isq::radius>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::radius[si::metre])>, isq::length>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::radius[si::metre])>, isq::radius>);
+static_assert(ReferenceOf<struct si::metre, isq::dim_length>);
+static_assert(!ReferenceOf<struct si::second, isq::dim_length>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::length[si::metre])>, isq::dim_length>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::radius[si::metre])>, isq::dim_length>);
 
 // Representation
-
 static_assert(Representation<int>);
+static_assert(Representation<double>);
 static_assert(Representation<std::complex<double>>);
-static_assert(!Representation<si::length<si::metre>>);
-static_assert(!Representation<std::optional<si::length<si::metre>>>);
-static_assert(!Representation<std::mutex>);
+static_assert(!Representation<bool>);
+static_assert(!Representation<std::optional<int>>);
+static_assert(!Representation<std::chrono::seconds>);
 static_assert(!Representation<std::string>);
 
+// RepresentationOf
+static_assert(RepresentationOf<int, quantity_character::scalar>);
+static_assert(RepresentationOf<double, quantity_character::scalar>);
+static_assert(RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<bool, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
+
 // Quantity
-
-static_assert(Quantity<si::length<si::metre>>);
+static_assert(Quantity<quantity<si::metre>>);
+static_assert(Quantity<quantity<isq::length[si::metre]>>);
+static_assert(Quantity<quantity<si::metre, int>>);
+static_assert(Quantity<quantity<isq::length[si::metre], int>>);
 static_assert(!Quantity<std::chrono::seconds>);
-static_assert(!Quantity<quantity_point<dynamic_origin<si::dim_length>, si::metre>>);
-
-// QuantityPoint
-
-static_assert(QuantityPoint<quantity_point<dynamic_origin<si::dim_length>, si::metre>>);
-static_assert(!QuantityPoint<si::length<si::metre>>);
-static_assert(!QuantityPoint<std::chrono::seconds>);
-
-// QuantityLike
-
-static_assert(QuantityLike<std::chrono::seconds>);
-static_assert(QuantityLike<std::chrono::hours>);
-static_assert(!QuantityLike<si::time<si::second>>);
-static_assert(!QuantityLike<int>);
-
-// WrappedQuantity
-
-static_assert(wrapped_quantity_<std::optional<si::length<si::metre>>>);
-static_assert(!wrapped_quantity_<std::pair<si::length<si::metre>, si::length<si::metre>>>);
+static_assert(!Quantity<quantity_point<si::metre>>);
+static_assert(!Quantity<std::remove_const_t<decltype(isq::length[si::metre])>>);
 
 // QuantityOf
+static_assert(QuantityOf<quantity<si::metre>, isq::length>);
+static_assert(QuantityOf<quantity<si::metre>, isq::radius>);
+static_assert(!QuantityOf<quantity<si::second>, isq::length>);
+static_assert(QuantityOf<quantity<isq::length[si::metre]>, isq::length>);
+static_assert(!QuantityOf<quantity<isq::length[si::metre]>, isq::radius>);
+static_assert(QuantityOf<quantity<isq::radius[si::metre]>, isq::length>);
+static_assert(QuantityOf<quantity<isq::radius[si::metre]>, isq::radius>);
+static_assert(QuantityOf<quantity<si::metre>, isq::dim_length>);
+static_assert(!QuantityOf<quantity<si::second>, isq::dim_length>);
+static_assert(QuantityOf<quantity<isq::length[si::metre]>, isq::dim_length>);
+static_assert(QuantityOf<quantity<isq::radius[si::metre]>, isq::dim_length>);
 
-static_assert(QuantityOf<si::length<si::metre>, si::dim_length>);
-// TODO it seems `QuantityOf` is a bad name if `si::cgs::length<si::cgs::centimetre>` matches `si::fps::dim_length`
-static_assert(QuantityOf<si::cgs::length<si::cgs::centimetre>, si::dim_length>);
-static_assert(QuantityOf<si::cgs::length<si::metre>, si::dim_length>);
-static_assert(QuantityOf<si::cgs::length<si::cgs::centimetre>, si::fps::dim_length>);
-static_assert(!QuantityOf<si::cgs::length<si::cgs::centimetre>, si::dim_time>);
+// QuantityLike
+static_assert(QuantityLike<std::chrono::seconds>);
+static_assert(QuantityLike<std::chrono::hours>);
+static_assert(!QuantityLike<quantity<isq::time[si::second]>>);
+static_assert(!QuantityLike<quantity_point<isq::time[si::second]>>);
+static_assert(!QuantityLike<int>);
 
+// QuantityPoint
+inline constexpr struct my_origin : absolute_point_origin<isq::length> {
+  using absolute_point_origin<isq::length>::absolute_point_origin;
+} my_origin;
+
+static_assert(QuantityPoint<quantity_point<si::metre>>);
+static_assert(QuantityPoint<quantity_point<isq::length[si::metre]>>);
+static_assert(QuantityPoint<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], my_origin>>);
+static_assert(!QuantityPoint<std::remove_const_t<decltype(isq::length[si::metre])>>);
+static_assert(!QuantityPoint<absolute_point_origin<isq::length>>);
+static_assert(!QuantityPoint<struct my_origin>);
+static_assert(!QuantityPoint<std::chrono::seconds>);
+static_assert(!QuantityPoint<std::chrono::time_point<std::chrono::system_clock>>);
+static_assert(!QuantityPoint<int>);
+
+// QuantityPointOf
+static_assert(QuantityPointOf<quantity_point<si::metre>, isq::length>);
+static_assert(QuantityPointOf<quantity_point<si::metre>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre]>, isq::length>);
+static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, isq::length>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, isq::radius>);
 static_assert(
-  QuantityPointOf<quantity_point<dynamic_origin<si::dim_time>, si::second, int>, dynamic_origin<si::dim_time>>);
-static_assert(QuantityPointOf<quantity_point<clock_origin<std::chrono::system_clock>, si::second, int>,
-                              clock_origin<std::chrono::system_clock>>);
-static_assert(!QuantityPointOf<quantity_point<dynamic_origin<si::dim_time>, si::second, int>,
-                               clock_origin<std::chrono::system_clock>>);
-static_assert(!QuantityPointOf<quantity_point<clock_origin<std::chrono::system_clock>, si::second, int>,
-                               dynamic_origin<si::dim_time>>);
+  QuantityPointOf<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
+static_assert(
+  !QuantityPointOf<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
+static_assert(
+  QuantityPointOf<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
+static_assert(
+  QuantityPointOf<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, isq::length>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<si::metre>, absolute_point_origin<isq::length>{}>);
+static_assert(QuantityPointOf<quantity_point<si::metre>, absolute_point_origin<isq::radius>{}>);
+static_assert(QuantityPointOf<quantity_point<si::metre>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre]>, absolute_point_origin<isq::length>{}>);
+static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, absolute_point_origin<isq::radius>{}>);
+static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, absolute_point_origin<isq::length>{}>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, absolute_point_origin<isq::radius>{}>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, absolute_point_origin<isq::length>{}>);
+static_assert(
+  !QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, absolute_point_origin<isq::radius>{}>);
+
+// PointOrigin
+static_assert(PointOrigin<absolute_point_origin<isq::length>>);
+static_assert(PointOrigin<struct my_origin>);
+static_assert(PointOrigin<quantity_point<si::metre>>);
+static_assert(PointOrigin<quantity_point<isq::length[si::metre]>>);
+static_assert(PointOrigin<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(PointOrigin<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(PointOrigin<quantity_point<isq::radius[si::metre], my_origin>>);
+static_assert(!PointOrigin<std::remove_const_t<decltype(isq::length[si::metre])>>);
+static_assert(!PointOrigin<std::chrono::seconds>);
+static_assert(!PointOrigin<std::chrono::time_point<std::chrono::system_clock>>);
+static_assert(!PointOrigin<int>);
+
+// PointOriginFor
+static_assert(PointOriginFor<absolute_point_origin<isq::length>, isq::length>);
+static_assert(!PointOriginFor<absolute_point_origin<isq::radius>, isq::length>);
+static_assert(PointOriginFor<absolute_point_origin<isq::length>, isq::radius>);
+static_assert(PointOriginFor<absolute_point_origin<isq::radius>, isq::radius>);
+static_assert(!PointOriginFor<absolute_point_origin<isq::length>, isq::time>);
+static_assert(PointOriginFor<struct my_origin, isq::length>);
+static_assert(PointOriginFor<struct my_origin, isq::radius>);
+static_assert(!PointOriginFor<struct my_origin, isq::time>);
+static_assert(PointOriginFor<quantity_point<si::metre>, isq::length>);
+static_assert(PointOriginFor<quantity_point<si::metre>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<si::metre>, isq::time>);
+static_assert(PointOriginFor<quantity_point<isq::length[si::metre]>, isq::length>);
+static_assert(PointOriginFor<quantity_point<isq::length[si::metre]>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<isq::length[si::metre]>, isq::time>);
+static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::length>);
+static_assert(PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::time>);
+static_assert(
+  PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
+static_assert(
+  PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
+static_assert(
+  !PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::time>);
+static_assert(
+  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::length>);
+static_assert(
+  PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::radius>);
+static_assert(
+  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::time>);
+static_assert(PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>,
+                             isq::length>);
+static_assert(PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>,
+                             isq::radius>);
+static_assert(!PointOriginFor<
+              quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::time>);
+static_assert(!PointOriginFor<
+              quantity_point<isq::radius[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::length>);
+static_assert(PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>,
+                             isq::radius>);
+static_assert(
+  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::time>);
+static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::length>);
+static_assert(PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::time>);
+static_assert(!PointOriginFor<std::remove_const_t<decltype(isq::length[si::metre])>, isq::length>);
+static_assert(!PointOriginFor<std::chrono::seconds, isq::length>);
+static_assert(!PointOriginFor<std::chrono::time_point<std::chrono::system_clock>, isq::length>);
+static_assert(!PointOriginFor<int, isq::length>);
+
+// QuantityPointLike
+static_assert(QuantityPointLike<std::chrono::time_point<std::chrono::system_clock>>);
+static_assert(!QuantityPointLike<std::chrono::seconds>);
+static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
+static_assert(!QuantityPointLike<quantity_point<isq::time[si::second]>>);
+static_assert(!QuantityPointLike<int>);
 
 }  // namespace
