@@ -29,6 +29,10 @@
 
 namespace mp_units {
 
+template<Reference auto R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
+[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
+
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
   return detail::get_associated_quantity(u);
@@ -73,7 +77,7 @@ struct reference {
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U* U2{}> operator*(reference, U2)
+  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U * U2{}> operator*(reference, U2)
   {
     return {};
   }
@@ -123,10 +127,6 @@ struct reference {
 
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
-
-template<Reference auto R, typename Rep>
-  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
-[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
 
 template<typename Rep, Reference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
