@@ -556,6 +556,27 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
       derived_quantity_spec<power<std::remove_const_t<decltype(remove_kind(Q{}))>, Num, Den>>{});
 }
 
+
+/**
+ * @brief Computes the square root of a quantity specification
+ *
+ * @param q Quantity specification being the base of the operation
+ *
+ * @return QuantitySpec The result of computation
+ */
+[[nodiscard]] consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
+
+
+/**
+ * @brief Computes the cubic root of a quantity specification
+ *
+ * @param q Quantity specification being the base of the operation
+ *
+ * @return QuantitySpec The result of computation
+ */
+[[nodiscard]] consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
+
+
 namespace detail {
 
 enum class specs_convertible_result { no, cast, explicit_conversion, yes };

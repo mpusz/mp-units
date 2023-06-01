@@ -570,6 +570,24 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 }
 
 /**
+ * @brief Computes the square root of a unit
+ *
+ * @param u Unit being the base of the operation
+ *
+ * @return Unit The result of computation
+ */
+[[nodiscard]] consteval Unit auto sqrt(Unit auto u) { return pow<1, 2>(u); }
+
+/**
+ * @brief Computes the cubic root of a unit
+ *
+ * @param u Unit being the base of the operation
+ *
+ * @return Unit The result of computation
+ */
+[[nodiscard]] consteval Unit auto cbrt(Unit auto u) { return pow<1, 3>(u); }
+
+/**
  * @brief Computes the square power of a unit
  *
  * @param u Unit being the base of the operation

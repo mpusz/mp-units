@@ -189,6 +189,25 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
                             detail::type_list_of_base_dimension_less>(d);
 }
 
+/**
+ * @brief Computes the square root of a dimension
+ *
+ * @param d Dimension being the base of the operation
+ *
+ * @return Dimension The result of computation
+ */
+[[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
+
+/**
+ * @brief Computes the cubic root of a dimension
+ *
+ * @param d Dimension being the base of the operation
+ *
+ * @return Dimension The result of computation
+ */
+[[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
+
+
 // TODO consider adding the support for text output of the dimensional equation
 
 }  // namespace mp_units
