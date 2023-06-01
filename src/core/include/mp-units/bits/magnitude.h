@@ -517,26 +517,26 @@ template<Magnitude M1, Magnitude M2>
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude rational powers implementation.
 
-template<ratio E, auto... Ms>
+template<std::intmax_t Num, std::intmax_t Den = 1, auto... Ms>
 [[nodiscard]] consteval auto pow(magnitude<Ms...>)
 {
-  if constexpr (E.num == 0) {
+  if constexpr (Num == 0) {
     return magnitude<>{};
   } else {
-    return magnitude<detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * E>()...>{};
+    return magnitude<detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * ratio{Num, Den}>()...>{};
   }
 }
 
 template<auto... Ms>
 [[nodiscard]] consteval auto sqrt(magnitude<Ms...> m)
 {
-  return pow<ratio{1, 2}>(m);
+  return pow<1, 2>(m);
 }
 
 template<auto... Ms>
 [[nodiscard]] consteval auto cbrt(magnitude<Ms...> m)
 {
-  return pow<ratio{1, 3}>(m);
+  return pow<1, 3>(m);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -781,7 +781,7 @@ inline constexpr Magnitude auto mag = detail::prime_factorization_v<R.num> / det
  */
 template<ratio Base, ratio Pow>
   requires detail::gt_zero<Base.num>
-inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
+inline constexpr Magnitude auto mag_power = pow<Pow.num, Pow.den>(mag<Base>);
 
 namespace detail {
 

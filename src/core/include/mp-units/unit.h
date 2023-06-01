@@ -372,10 +372,9 @@ template<typename T, typename F, int Num, int... Den>
   if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
     auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
     auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
-    return canonical_unit{pow<power<F, Num, Den...>::exponent>(base.mag) * num.mag / den.mag,
-                          num.reference_unit / den.reference_unit};
+    return canonical_unit{pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
-    return canonical_unit{pow<power<F, Num, Den...>::exponent>(base.mag),
+    return canonical_unit{pow<Num, Den...>(base.mag),
                           derived_unit<power<std::remove_const_t<decltype(base.reference_unit)>, Num, Den...>>{}};
   }
 }
