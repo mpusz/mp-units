@@ -146,7 +146,7 @@ static_assert(Unit<struct natural::electronvolt>);
 static_assert(Unit<std::remove_const_t<decltype(si::metre / si::second)>>);
 static_assert(Unit<std::remove_const_t<decltype(1 / si::second)>>);
 static_assert(Unit<std::remove_const_t<decltype(mag<10> * si::second)>>);
-static_assert(Unit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(Unit<std::remove_const_t<decltype(square(si::metre))>>);
 static_assert(Unit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
 static_assert(Unit<struct si::standard_gravity_unit>);
 static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
@@ -171,7 +171,7 @@ static_assert(!detail::NamedUnit<std::remove_const_t<decltype(si::kilo<si::gram>
 static_assert(!detail::NamedUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
 static_assert(!detail::NamedUnit<std::remove_const_t<decltype(1 / si::second)>>);
 static_assert(!detail::NamedUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
-static_assert(!detail::NamedUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(!detail::NamedUnit<std::remove_const_t<decltype(square(si::metre))>>);
 static_assert(!detail::NamedUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
 static_assert(!detail::NamedUnit<struct si::standard_gravity_unit>);
 static_assert(!detail::NamedUnit<scaled_unit<mag<10>, struct si::second>>);
@@ -196,7 +196,7 @@ static_assert(!PrefixableUnit<std::remove_const_t<decltype(si::kilo<si::gram>)>>
 static_assert(!PrefixableUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
 static_assert(!PrefixableUnit<std::remove_const_t<decltype(1 / si::second)>>);
 static_assert(!PrefixableUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
-static_assert(!PrefixableUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(square(si::metre))>>);
 static_assert(!PrefixableUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
 static_assert(!PrefixableUnit<struct si::standard_gravity_unit>);
 static_assert(!PrefixableUnit<scaled_unit<mag<10>, struct si::second>>);
@@ -221,7 +221,7 @@ static_assert(AssociatedUnit<std::remove_const_t<decltype(si::kilo<si::gram>)>>)
 static_assert(AssociatedUnit<std::remove_const_t<decltype(si::metre / si::second)>>);
 static_assert(AssociatedUnit<std::remove_const_t<decltype(1 / si::second)>>);
 static_assert(AssociatedUnit<std::remove_const_t<decltype(mag<10> * si::second)>>);
-static_assert(AssociatedUnit<std::remove_const_t<decltype(square<si::metre>)>>);
+static_assert(AssociatedUnit<std::remove_const_t<decltype(square(si::metre))>>);
 static_assert(AssociatedUnit<std::remove_const_t<decltype(pow<2>(si::metre))>>);
 static_assert(AssociatedUnit<struct si::standard_gravity_unit>);
 static_assert(AssociatedUnit<scaled_unit<mag<10>, struct si::second>>);

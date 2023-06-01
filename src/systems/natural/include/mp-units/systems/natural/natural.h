@@ -43,7 +43,7 @@ inline constexpr struct velocity : system_reference<isq::velocity, one> {} veloc
 inline constexpr struct speed : system_reference<isq::speed, one> {} speed;
 inline constexpr struct acceleration : system_reference<isq::acceleration, gigaelectronvolt> {} acceleration;
 inline constexpr struct momentum : system_reference<isq::momentum, gigaelectronvolt> {} momentum;
-inline constexpr struct force : system_reference<isq::force, square<gigaelectronvolt>> {} force;
+inline constexpr struct force : system_reference<isq::force, square(gigaelectronvolt)> {} force;
 inline constexpr struct energy : system_reference<isq::mechanical_energy, gigaelectronvolt> {} energy;
 // clang-format on
 
@@ -53,7 +53,7 @@ inline constexpr auto speed_of_light_in_vacuum = speed[one];
 namespace unit_symbols {
 
 inline constexpr auto GeV = gigaelectronvolt;
-inline constexpr auto GeV2 = square<gigaelectronvolt>;
+inline constexpr auto GeV2 = square(gigaelectronvolt);
 
 }  // namespace unit_symbols
 

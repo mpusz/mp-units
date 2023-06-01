@@ -72,16 +72,16 @@ static_assert(isq::length(1 * survey1893::us_survey_mile) == isq::length(8 * sur
 static_assert(isq::length(1 * survey1893::league) == isq::length(3 * survey1893::us_survey_mile));
 
 // Area
-// static_assert(isq::area(1 * square<survey1893::us_survey_foot>) == isq::area(144 * square<inch>));
-static_assert(isq::area(1 * square<survey1893::chain>) == isq::area(4356 * square<survey1893::us_survey_foot>));
-static_assert(isq::area(1 * acre) == isq::area(43560 * square<survey1893::us_survey_foot>));
-static_assert(isq::area(1 * section) == isq::area(1 * square<survey1893::us_survey_mile>));
+// static_assert(isq::area(1 * square(survey1893::us_survey_foot)) == isq::area(144 * square(inch)));
+static_assert(isq::area(1 * square(survey1893::chain)) == isq::area(4356 * square(survey1893::us_survey_foot)));
+static_assert(isq::area(1 * acre) == isq::area(43560 * square(survey1893::us_survey_foot)));
+static_assert(isq::area(1 * section) == isq::area(1 * square(survey1893::us_survey_mile)));
 
 // Volume
-static_assert(isq::volume(1 * cubic<foot>) == isq::volume(1'728 * cubic<inch>));
-static_assert(isq::volume(1 * cubic<yard>) == isq::volume(27 * cubic<foot>));
+static_assert(isq::volume(1 * cubic(foot)) == isq::volume(1'728 * cubic(inch)));
+static_assert(isq::volume(1 * cubic(yard)) == isq::volume(27 * cubic(foot)));
 static_assert(isq::volume(1 * (acre * survey1893::us_survey_foot)) ==
-              isq::volume(43'560 * cubic<survey1893::us_survey_foot>));
+              isq::volume(43'560 * cubic(survey1893::us_survey_foot)));
 
 // Fluid volume
 static_assert(isq::volume(1 * fl_dr) == isq::volume(60 * min));
@@ -104,7 +104,7 @@ static_assert(isq::volume(1 * dry_qt) == isq::volume(2 * dry_pt));
 static_assert(isq::volume(1 * dry_gal) == isq::volume(4 * dry_qt));
 static_assert(isq::volume(1 * pk) == isq::volume(2 * dry_gal));
 static_assert(isq::volume(1 * bu) == isq::volume(4 * pk));
-static_assert(isq::volume(1 * dry_bbl) == isq::volume(7056 * cubic<inch>));
+static_assert(isq::volume(1 * dry_bbl) == isq::volume(7056 * cubic(inch)));
 
 // Mass
 static_assert(isq::mass(7'000 * gr) == isq::mass(1 * lb));

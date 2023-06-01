@@ -90,11 +90,11 @@ inline constexpr struct force : system_reference<force_{}, kilogram / second> {}
 
 // derived named units
 inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
-inline constexpr struct steradian_ : named_unit<"sr", square<metre> / square<metre>, kind_of<solid_angular_measure>> {} steradian;
+inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
 inline constexpr struct hertz_ : named_unit<"Hz", 1 / second, kind_of<frequency>> {} hertz;
 inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
-inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square<second>> {} newton;
-inline constexpr struct pascal_ : named_unit<"Pa", newton / square<metre>> {} pascal;
+inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct pascal_ : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
 
@@ -108,8 +108,8 @@ inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>>
 // Unit as a reference
 static_assert(is_of_type<42 * metre, quantity<metre, int>>);
 static_assert(quantity<metre, int>::quantity_spec == length);
-static_assert(is_of_type<42 * square<metre>, quantity<square<metre>, int>>);
-static_assert(quantity<square<metre>, int>::quantity_spec == pow<2>(length));
+static_assert(is_of_type<42 * square(metre), quantity<square(metre), int>>);
+static_assert(quantity<square(metre), int>::quantity_spec == pow<2>(length));
 static_assert(is_of_type<42 * (metre / second), quantity<metre / second, int>>);
 static_assert(quantity<metre / second, int>::quantity_spec == length / time);
 static_assert(is_of_type<42 * newton, quantity<newton, int>>);
@@ -201,8 +201,8 @@ static_assert(
              quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
                       long double>>);
 
-static_assert(is_of_type<1. / 4 * area[square<metre>], decltype(1. * area[square<metre>] / 4)>);
-static_assert(1. / 4 * area[square<metre>] == 1. * area[square<metre>] / 4);
+static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
+static_assert(1. / 4 * area[square(metre)] == 1. * area[square(metre)] / 4);
 
 // Natural Units
 static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time, nu::second>{}, int>>);

@@ -37,7 +37,7 @@ inline constexpr struct radian : named_unit<"rad", kind_of<angle>> {} radian;
 inline constexpr struct revolution : named_unit<"rev", mag<2> * mag_pi * radian> {} revolution;
 inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag<ratio{1, 360}> * revolution> {} degree;
 inline constexpr struct gradian : named_unit<basic_symbol_text{"ᵍ", "grad"}, mag<ratio{1, 400}> * revolution> {} gradian;
-inline constexpr struct steradian : named_unit<"sr", square<radian>> {} steradian;
+inline constexpr struct steradian : named_unit<"sr", square(radian)> {} steradian;
 // clang-format on
 
 namespace unit_symbols {
@@ -47,8 +47,8 @@ inline constexpr auto rev = revolution;
 inline constexpr auto deg = degree;
 inline constexpr auto grad = gradian;
 inline constexpr auto sr = steradian;
-inline constexpr auto rad2 = square<radian>;
-inline constexpr auto deg2 = square<degree>;
+inline constexpr auto rad2 = square(radian);
+inline constexpr auto deg2 = square(degree);
 
 }  // namespace unit_symbols
 

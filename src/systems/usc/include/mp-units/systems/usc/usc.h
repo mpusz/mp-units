@@ -68,11 +68,11 @@ inline constexpr struct league : named_unit<"lea", mag<3> * us_survey_mile> {} l
 
 // clang-format off
 // https://en.wikipedia.org/wiki/United_States_customary_units#Area
-inline constexpr struct acre : named_unit<"acre", mag<10> * square<survey1893::chain>> {} acre;
+inline constexpr struct acre : named_unit<"acre", mag<10> * square(survey1893::chain)> {} acre;
 inline constexpr struct section : named_unit<"section", mag<640> * acre> {} section;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Fluid_volume
-inline constexpr struct gallon : named_unit<"gal", mag<231> * cubic<inch>> {} gallon;
+inline constexpr struct gallon : named_unit<"gal", mag<231> * cubic(inch)> {} gallon;
 inline constexpr struct pottle : named_unit<"pot", mag<ratio{1, 2}> * gallon> {} pottle;
 inline constexpr struct quart : named_unit<"qt", mag<ratio{1, 2}> * pottle> {} quart;
 inline constexpr struct pint : named_unit<"pt", mag<ratio{1, 2}> * quart> {} pint;
@@ -89,7 +89,7 @@ inline constexpr struct oil_barrel : named_unit<"bbl", mag<ratio{4, 3}> * barrel
 inline constexpr struct hogshead : decltype(mag<63> * gallon) {} hogshead;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Dry_volume
-inline constexpr struct dry_barrel : named_unit<"bbl", mag<7056> * cubic<inch>> {} dry_barrel;
+inline constexpr struct dry_barrel : named_unit<"bbl", mag<7056> * cubic(inch)> {} dry_barrel;
 inline constexpr struct bushel : named_unit<"bu", mag<ratio{3'523'907'016'688, 100'000'000'000}> * si::litre> {} bushel;
 inline constexpr struct peck : named_unit<"pk", mag<ratio{1, 4}> * bushel> {} peck;
 inline constexpr struct dry_gallon : named_unit<"gal", mag<ratio{1, 2}> * peck> {} dry_gallon;

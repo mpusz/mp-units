@@ -40,13 +40,13 @@ static_assert(isq::length(100 * cm) == isq::length(1 * si::metre));
 static_assert(isq::mass(1000 * g) == isq::mass(1 * si::kilogram));
 static_assert(isq::time(1 * s) == isq::time(1 * si::second));
 static_assert(isq::speed(100 * (cm / s)) == isq::speed(1 * (si::metre / si::second)));
-static_assert(isq::acceleration(100 * Gal) == isq::acceleration(1 * (si::metre / square<si::second>)));
+static_assert(isq::acceleration(100 * Gal) == isq::acceleration(1 * (si::metre / square(si::second))));
 static_assert(isq::force(100'000 * dyn) == isq::force(1 * si::newton));
 static_assert(isq::energy(10'000'000 * erg) == isq::energy(1 * si::joule));
 static_assert(isq::power(10'000'000 * (erg / s)) == isq::power(1 * si::watt));
 static_assert(isq::pressure(10 * Ba) == isq::pressure(1 * si::pascal));
 static_assert(isq::dynamic_viscosity(10 * P) == isq::dynamic_viscosity(1 * (si::pascal * si::second)));
-static_assert(isq::kinematic_viscosity(10'000 * St) == isq::kinematic_viscosity(1 * (square<si::metre> / si::second)));
+static_assert(isq::kinematic_viscosity(10'000 * St) == isq::kinematic_viscosity(1 * (square(si::metre) / si::second)));
 static_assert(isq::wavenumber(1 * K) == isq::wavenumber(100 * (1 / si::metre)));
 
 }  // namespace

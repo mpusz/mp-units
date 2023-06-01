@@ -58,7 +58,7 @@ auto fmt_line(const Q& q)
 // Print the ship details in the units as defined in the Ship struct, in other si::imperial units, and in SI
 void print_details(std::string_view description, const Ship& ship)
 {
-  const auto waterDensity = 62.4 * isq::density[lb / cubic<ft>];
+  const auto waterDensity = 62.4 * isq::density[lb / cubic(ft)];
   std::cout << UNITS_STD_FMT::format("{}\n", description);
   std::cout << UNITS_STD_FMT::format("{:20} : {}\n", "length", fmt_line<yd, m>(ship.length))
             << UNITS_STD_FMT::format("{:20} : {}\n", "draft", fmt_line<yd, m>(ship.draft))

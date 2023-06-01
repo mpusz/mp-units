@@ -36,7 +36,7 @@ using si::electronvolt;
 // effective cross-sectional area according to EU council directive 80/181/EEC
 // https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:01980L0181-20090527#page=10
 // https://www.fedlex.admin.ch/eli/cc/1994/3109_3109_3109/de
-inline constexpr struct barn : named_unit<"b", mag_power<10, -28> * square<si::metre>> {} barn;
+inline constexpr struct barn : named_unit<"b", mag_power<10, -28> * square(si::metre)> {} barn;
 
 // mass
 inline constexpr struct electron_mass : named_unit<"m_e", mag<ratio{9'109'383'701'528, 1'000'000'000'000}> * mag_power<10, -31> * si::kilogram> {} electron_mass;
@@ -90,7 +90,7 @@ inline constexpr auto m_p = proton_mass;
 inline constexpr auto m_n = neutron_mass;
 
 inline constexpr auto c = si::si2019::speed_of_light_in_vacuum_unit;
-inline constexpr auto c2 = square<si::si2019::speed_of_light_in_vacuum_unit>;
+inline constexpr auto c2 = square(si::si2019::speed_of_light_in_vacuum_unit);
 
 }  // namespace unit_symbols
 

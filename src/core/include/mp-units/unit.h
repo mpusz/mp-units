@@ -78,7 +78,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * inline constexpr struct second : named_unit<"s", time> {} second;
  * inline constexpr struct metre : named_unit<"m", length> {} metre;
  * inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
- * inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
+ * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
  * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
  * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
@@ -180,7 +180,7 @@ struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
  *
  * @code{.cpp}
  * inline constexpr struct standard_gravity_unit :
- *   constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square<second>> {} standard_gravity_unit;
+ *   constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity_unit;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -253,7 +253,7 @@ struct is_one : std::false_type {};
  * static_assert(is_of_type<metre * metre, derived_unit<power<metre, 2>>>);
  * static_assert(is_of_type<metre * second, derived_unit<metre, second>>);
  * static_assert(is_of_type<metre / second, derived_unit<metre, per<second>>>);
- * static_assert(is_of_type<metre / square<second>, derived_unit<metre, per<power<second, 2>>>>);
+ * static_assert(is_of_type<metre / square(second), derived_unit<metre, per<power<second, 2>>>>);
  * static_assert(is_of_type<watt / joule, derived_unit<watt, per<joule>>>);
  * @endcode
  *
@@ -564,18 +564,30 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
     else
       return derived_unit<power<U, Num, Den>>{};
   } else if constexpr (detail::is_specialization_of_scaled_unit<U>) {
-    return scaled_unit<pow<ratio{Num, Den}>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
+    return scaled_unit<pow<Num, Den>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
   } else {
     return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
   }
 }
 
-// Helper variable templates to create common powers
-template<Unit auto U>
-inline constexpr decltype(U * U) square;
+/**
+ * @brief Computes the square power of a unit
+ *
+ * @param u Unit being the base of the operation
+ *
+ * @return Unit The result of computation
+ */
+[[nodiscard]] consteval Unit auto square(Unit auto u) { return pow<2>(u); }
 
-template<Unit auto U>
-inline constexpr decltype(U * U * U) cubic;
+/**
+ * @brief Computes the cubic power of a unit
+ *
+ * @param u Unit being the base of the operation
+ *
+ * @return Unit The result of computation
+ */
+[[nodiscard]] consteval Unit auto cubic(Unit auto u) { return pow<3>(u); }
+
 
 // common dimensionless units
 // clang-format off

@@ -42,15 +42,15 @@ inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensi
 
 // derived named units
 inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct steradian : named_unit<"sr", square<metre> / square<metre>, kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct hertz : named_unit<"Hz", 1 / second, kind_of<isq::frequency>> {} hertz;
-inline constexpr struct newton : named_unit<"N", kilogram * metre / square<second>> {} newton;
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
 #ifdef pascal
 #pragma push_macro("pascal")
 #undef pascal
 #define UNITS_REDEFINE_PASCAL
 #endif
-inline constexpr struct pascal : named_unit<"Pa", newton / square<metre>> {} pascal;
+inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
 #ifdef UNITS_REDEFINE_PASCAL
 #pragma pop_macro("pascal")
 #undef UNITS_REDEFINE_PASCAL
@@ -63,12 +63,12 @@ inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
 inline constexpr struct ohm : named_unit<basic_symbol_text{"Ω", "ohm"}, volt / ampere> {} ohm;
 inline constexpr struct siemens : named_unit<"S", 1 / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
-inline constexpr struct tesla : named_unit<"T", weber / square<metre>> {} tesla;
+inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 // inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, offset<-mag<273150> * milli<kelvin>, only_for<isq::Celsius_temperature> {} degree_Celsius;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
-inline constexpr struct lux : named_unit<"lx", lumen / square<metre>> {} lux;
+inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
 // inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
 inline constexpr struct becquerel : named_unit<"Bq", 1 / second> {} becquerel;
 inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
@@ -84,9 +84,9 @@ inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_
 // TODO how to disambiguate below angular units from time units (inline namespace `plane_angle`?)
 // inline constexpr struct minute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} minute;
 // inline constexpr struct second : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * minute> {} second;
-inline constexpr struct are : named_unit<"a", square<deca<metre>>> {} are;
+inline constexpr struct are : named_unit<"a", square(deca<metre>)> {} are;
 inline constexpr struct hectare : decltype(hecto<are>) {} hectare;
-inline constexpr struct litre : named_unit<"l", cubic<deci<metre>>> {} litre;
+inline constexpr struct litre : named_unit<"l", cubic(deci<metre>)> {} litre;
 inline constexpr struct tonne : named_unit<"t", mag<1000> * kilogram> {} tonne;
 inline constexpr struct dalton : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * kilogram> {} dalton;
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000

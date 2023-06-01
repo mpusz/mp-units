@@ -52,7 +52,7 @@ inline constexpr struct knot : named_unit<"kn", nautical_mile / si::hour> {} kno
 
 // force
 // https://en.wikipedia.org/wiki/Poundal
-inline constexpr struct poundal : named_unit<"pdl", pound * foot / square<si::second>> {} poundal;
+inline constexpr struct poundal : named_unit<"pdl", pound * foot / square(si::second)> {} poundal;
 
 // https://en.wikipedia.org/wiki/Pound_(force)
 inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gravity_unit> {} pound_force;
@@ -61,7 +61,7 @@ inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gra
 inline constexpr struct kip : decltype(si::kilo<pound_force>) {} kip;
 
 // pressure
-inline constexpr struct psi : named_unit<"psi", pound_force / square<inch>> {} psi;
+inline constexpr struct psi : named_unit<"psi", pound_force / square(inch)> {} psi;
 
 // power
 // https://en.wikipedia.org/wiki/Horsepower#Definitions

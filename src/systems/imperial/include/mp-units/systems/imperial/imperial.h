@@ -46,7 +46,7 @@ inline constexpr struct link : named_unit<"li", mag<ratio{1, 100}> * chain> {} l
 inline constexpr struct rod : named_unit<"rd", mag<25> * link> {} rod;
 
 // https://en.wikipedia.org/wiki/Imperial_units#Area
-inline constexpr struct perch : decltype(square<rod>) {} perch;
+inline constexpr struct perch : decltype(square(rod)) {} perch;
 inline constexpr struct rood : decltype(mag<40> * perch) {} rood;
 inline constexpr struct acre : decltype(mag<4> * rood) {} acre;
 

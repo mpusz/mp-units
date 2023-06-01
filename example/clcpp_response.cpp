@@ -126,7 +126,7 @@ void calcs_comparison()
 
   std::cout << "In multiplication and division:\n\n";
 
-  const quantity<isq::area[square<fm>], float> ArA = L1A * L2A;
+  const quantity<isq::area[square(fm)], float> ArA = L1A * L2A;
   std::cout << UNITS_STD_FMT::format("{:%.30Q %q}\n * {:%.30Q %q}\n   = {:%.30Q %q}\n\n", L1A, L2A, ArA);
 
   std::cout << "similar problems arise\n\n";
