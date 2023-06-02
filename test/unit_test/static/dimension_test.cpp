@@ -59,8 +59,8 @@ inline constexpr auto energy = force * length;
 // clang-format on
 
 // concepts verification
-static_assert(BaseDimension<length_>);
-static_assert(!BaseDimension<std::remove_const_t<decltype(frequency)>>);
+static_assert(detail::BaseDimension<length_>);
+static_assert(!detail::BaseDimension<std::remove_const_t<decltype(frequency)>>);
 static_assert(!detail::DerivedDimension<length_>);
 static_assert(detail::DerivedDimension<std::remove_const_t<decltype(frequency)>>);
 static_assert(Dimension<length_>);
@@ -68,7 +68,7 @@ static_assert(Dimension<std::remove_const_t<decltype(frequency)>>);
 
 static_assert(detail::DerivedDimension<dimension_one_>);
 static_assert(detail::DerivedDimension<decltype(length / length)>);  // dimension_one
-static_assert(BaseDimension<decltype(speed * time)>);                // length
+static_assert(detail::BaseDimension<decltype(speed * time)>);        // length
 
 // derived dimension expression template syntax verification
 static_assert(is_of_type<1 / time, derived_dimension<dimension_one_, per<time_>>>);
