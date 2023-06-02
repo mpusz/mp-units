@@ -39,12 +39,12 @@ add_library(
     chrono_test.cpp
     concepts_test.cpp
     # custom_rep_test_min_expl.cpp
-    # custom_unit_test.cpp
     # dimension_op_test.cpp
     dimension_test.cpp
     # dimensions_concepts_test.cpp
     fixed_string_test.cpp
     # fps_test.cpp
+    fractional_exponent_quantity.cpp
     hep_test.cpp
     iec80000_test.cpp
     imperial_test.cpp
