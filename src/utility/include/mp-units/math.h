@@ -51,7 +51,7 @@ namespace mp_units {
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
   requires detail::non_zero<Den>
-[[nodiscard]] inline auto pow(const Q& q) noexcept
+[[nodiscard]] constexpr auto pow(const Q& q) noexcept
   requires requires { pow(q.number(), 1.0); } || requires { std::pow(q.number(), 1.0); }
 {
   using rep = TYPENAME Q::rep;
@@ -75,7 +75,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
  * @return Quantity The result of computation
  */
 template<Quantity Q>
-[[nodiscard]] inline Quantity auto sqrt(const Q& q) noexcept
+[[nodiscard]] constexpr Quantity auto sqrt(const Q& q) noexcept
   requires requires { sqrt(q.number()); } || requires { std::sqrt(q.number()); }
 {
   using rep = TYPENAME Q::rep;
@@ -93,7 +93,7 @@ template<Quantity Q>
  * @return Quantity The result of computation
  */
 template<Quantity Q>
-[[nodiscard]] inline Quantity auto cbrt(const Q& q) noexcept
+[[nodiscard]] constexpr Quantity auto cbrt(const Q& q) noexcept
   requires requires { cbrt(q.number()); } || requires { std::cbrt(q.number()); }
 {
   using rep = TYPENAME Q::rep;
@@ -111,7 +111,7 @@ template<Quantity Q>
  * @return Quantity The value of the same quantity type
  */
 template<QuantityOf<dimension_one> Q>
-[[nodiscard]] inline Q exp(const Q& q)
+[[nodiscard]] constexpr Q exp(const Q& q)
   requires requires { exp(q.number()); } || requires { std::exp(q.number()); }
 {
   using std::exp;
@@ -125,7 +125,7 @@ template<QuantityOf<dimension_one> Q>
  * @return Quantity The absolute value of a provided quantity
  */
 template<Quantity Q>
-[[nodiscard]] inline Q abs(const Q& q) noexcept
+[[nodiscard]] constexpr Q abs(const Q& q) noexcept
   requires requires { abs(q.number()); } || requires { std::abs(q.number()); }
 {
   using std::abs;
@@ -269,7 +269,7 @@ template<Unit auto To, auto R, typename Rep>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2>
-[[nodiscard]] inline QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> auto hypot(
+[[nodiscard]] constexpr QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> auto hypot(
   const Q1& x, const Q2& y) noexcept
   requires requires { common_reference(Q1::reference, Q2::reference); } &&
            (
@@ -285,7 +285,7 @@ template<Quantity Q1, Quantity Q2>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<Quantity Q1, Quantity Q2, Quantity Q3>
-[[nodiscard]] inline QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec, Q3::quantity_spec)> auto
+[[nodiscard]] constexpr QuantityOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec, Q3::quantity_spec)> auto
 hypot(const Q1& x, const Q2& y, const Q3& z) noexcept
   requires requires { common_reference(Q1::reference, Q2::reference, Q3::reference); } &&
            (
