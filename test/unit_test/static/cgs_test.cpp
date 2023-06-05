@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "test_tools.h"
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
@@ -48,5 +49,15 @@ static_assert(isq::pressure(10 * Ba) == isq::pressure(1 * si::pascal));
 static_assert(isq::dynamic_viscosity(10 * P) == isq::dynamic_viscosity(1 * (si::pascal * si::second)));
 static_assert(isq::kinematic_viscosity(10'000 * St) == isq::kinematic_viscosity(1 * (square(si::metre) / si::second)));
 static_assert(isq::wavenumber(1 * K) == isq::wavenumber(100 * (1 / si::metre)));
+
+static_assert(10'000'000 * erg + 1 * si::joule == 2 * si::joule);
+static_assert(1 * si::joule + 10'000'000 * erg == 2 * si::joule);
+static_assert(is_of_type<10'000'000 * erg + 1 * si::joule, quantity<erg, int>>);
+static_assert(is_of_type<1 * si::joule + 10'000'000 * erg, quantity<erg, int>>);
+
+static_assert(1 * K + 100 * (1 / si::metre) == 2 * K);
+static_assert(100 * (1 / si::metre) + 1 * K == 2 * K);
+static_assert(is_of_type<1 * K + 100 * (1 / si::metre), quantity<1 / si::metre, int>>);
+static_assert(is_of_type<100 * (1 / si::metre) + 1 * K, quantity<1 / si::metre, int>>);
 
 }  // namespace

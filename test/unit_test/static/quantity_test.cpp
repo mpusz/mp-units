@@ -22,14 +22,20 @@
 
 #include "test_tools.h"
 #include <mp-units/chrono.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
 #include <limits>
 #include <utility>
+
+template<>
+inline constexpr bool mp_units::is_vector<int> = true;
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
+
+QUANTITY_SPEC(activity, 1 / isq::time);
 
 //////////////////////////////
 // quantity class invariants
@@ -660,6 +666,55 @@ static_assert((10 * km / (5 * m)).number() == 2);
 static_assert((10 * km / (5 * m))[one].number() == 2000);
 static_assert((10 * s * (2 * kHz)).number() == 20);
 
+// commutativity and associativity
+static_assert(10 * isq::length[si::metre] / (2 * isq::time[s]) + 5 * isq::speed[m / s] == 10 * isq::speed[m / s]);
+static_assert(5 * isq::speed[m / s] + 10 * isq::length[m] / (2 * isq::time[s]) == 10 * isq::speed[m / s]);
+static_assert(10 * isq::length[m] / (2 * isq::time[s]) - 5 * isq::speed[m / s] == 0 * isq::speed[m / s]);
+static_assert(5 * isq::speed[m / s] - 10 * isq::length[m] / (2 * isq::time[s]) == 0 * isq::speed[m / s]);
+
+static_assert(
+  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) + 5 * isq::speed[m / s],
+             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+static_assert(
+  is_of_type<5 * isq::speed[m / s] + 10 * isq::length[m] / (2 * isq::time[s]),
+             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+static_assert(
+  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) - 5 * isq::speed[m / s],
+             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+static_assert(
+  is_of_type<5 * isq::speed[m / s] - 10 * isq::length[m] / (2 * isq::time[s]),
+             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+
+static_assert(10 / (2 * isq::time[s]) + 5 * isq::frequency[Hz] == 10 * isq::frequency[Hz]);
+static_assert(5 * isq::frequency[Hz] + 10 / (2 * isq::time[s]) == 10 * isq::frequency[Hz]);
+static_assert(10 / (2 * isq::time[s]) - 5 * isq::frequency[Hz] == 0 * isq::frequency[Hz]);
+static_assert(5 * isq::frequency[Hz] - 10 / (2 * isq::time[s]) == 0 * isq::frequency[Hz]);
+
+static_assert(is_of_type<10 / (2 * isq::period_duration[s]) + 5 * isq::frequency[Hz],
+                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
+static_assert(is_of_type<5 * isq::frequency[Hz] + 10 / (2 * isq::period_duration[s]),
+                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
+static_assert(is_of_type<10 / (2 * isq::period_duration[s]) - 5 * isq::frequency[Hz],
+                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
+static_assert(is_of_type<5 * isq::frequency[Hz] - 10 / (2 * isq::period_duration[s]),
+                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
+
+// Different named dimensions
+template<typename... Ts>
+consteval bool invalid_arithmetic(Ts... ts)
+{
+  return !requires { (... + ts); } && !requires { (... - ts); };
+}
+static_assert(invalid_arithmetic(5 * activity[Bq], 5 * isq::frequency[Hz]));
+static_assert(invalid_arithmetic(5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+
+// Physical constants
+static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] == 299'792'468 * isq::speed[m / s]);
+
+// Implicit conversions allowed between quantities of `convertible` references
+constexpr quantity<isq::speed[km / h]> speed = 120 * isq::length[km] / (2 * isq::time[h]);
+
+
 // dimensionless
 
 static_assert((3 * one *= 2 * one) == 6);
@@ -776,6 +831,27 @@ static_assert(321 * one != 123);
 static_assert(123 == 123 * one);
 static_assert(123 != 321 * one);
 
+// Named and derived dimensions (same units)
+static_assert(10 * isq::length[m] / (2 * isq::time[s]) == 5 * isq::speed[m / s]);
+static_assert(5 * isq::speed[m / s] == 10 * isq::length[m] / (2 * isq::time[s]));
+
+// Same named dimension & different but equivalent unit
+static_assert(10 * isq::frequency[1 / s] == 10 * isq::frequency[Hz]);
+static_assert(10 * isq::frequency[Hz] == 10 * isq::frequency[1 / s]);
+
+// Named and derived dimensions (different but equivalent units)
+static_assert(10 / (2 * isq::time[s]) == 5 * isq::frequency[Hz]);
+static_assert(5 * isq::frequency[Hz] == 10 / (2 * isq::time[s]));
+static_assert(5 * isq::force[N] * (2 * isq::length[m]) == 10 * isq::mechanical_energy[J]);
+static_assert(10 * isq::mechanical_energy[J] == 5 * isq::force[N] * (2 * isq::length[m]));
+
+// Physical constants
+static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::speed[m / s]);
+
+// Different named dimensions
+template<Reference auto R1, Reference auto R2>
+concept invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
+static_assert(invalid_comparison<activity[Bq], isq::frequency[Hz]>);
 
 ///////////////////////
 // ordering operators
@@ -867,5 +943,38 @@ static_assert(value_cast<m>(2 * km).number() == 2000);
 static_assert(value_cast<km>(2000 * m).number() == 2);
 static_assert(value_cast<int>(1.23 * m).number() == 1);
 static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).number() == 2);
+
+
+// QuantityOf
+static_assert(QuantityOf<quantity<isq::length[m]>, isq::length>);
+static_assert(QuantityOf<quantity<isq::width[m]>, isq::length>);
+static_assert(QuantityOf<quantity<isq::position_vector[m], int>, isq::length>);
+static_assert(!QuantityOf<quantity<isq::length[m]>, isq::width>);
+static_assert(QuantityOf<quantity<m>, isq::width>);
+static_assert(QuantityOf<quantity<m>, isq::position_vector>);
+static_assert(QuantityOf<quantity<kind_of<isq::length>[m]>, isq::width>);
+static_assert(QuantityOf<quantity<kind_of<isq::length>[m]>, isq::position_vector>);
+static_assert(!QuantityOf<quantity<isq::width[m]>, isq::altitude>);
+
+static_assert(QuantityOf<quantity<isq::speed[m / s]>, isq::speed>);
+static_assert(QuantityOf<quantity<isq::speed[m / s]>, isq::length / isq::time>);
+static_assert(QuantityOf<quantity<m / s>, isq::length / isq::time>);
+static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::length / isq::time>);
+static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::distance / isq::duration>);
+static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::width / isq::duration>);
+static_assert(QuantityOf<quantity<m / s>, isq::width / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::width / isq::duration>);
+static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::position_vector / isq::duration>);
+
+static_assert(QuantityOf<decltype(10 * isq::speed[m / s] / (2 * isq::length[m]) * (4 * isq::time[s])), dimension_one>);
+static_assert(QuantityOf<decltype(10 * m), isq::height>);                        // kind of
+static_assert(QuantityOf<decltype(10 * kind_of<isq::length>[m]), isq::height>);  // kind of
+static_assert(!QuantityOf<decltype(10 * isq::length[m]), isq::height>);          // different kinds
+static_assert(!QuantityOf<decltype(10 * isq::width[m]), isq::height>);           // different kinds
+static_assert(QuantityOf<decltype(10 * isq::speed[m / s]), isq::speed>);
+static_assert(QuantityOf<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
 
 }  // namespace
