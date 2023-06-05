@@ -48,6 +48,7 @@ add_library(
     hep_test.cpp
     iec80000_test.cpp
     imperial_test.cpp
+    international_test.cpp
     isq_test.cpp
     isq_angle_test.cpp
     # kind_test.cpp

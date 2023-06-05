@@ -35,6 +35,7 @@ inline constexpr struct dram : named_unit<"dr", mag<ratio(1, 16)> * ounce> {} dr
 inline constexpr struct grain : named_unit<"gr", mag<ratio(1, 7'000)> * pound> {} grain;
 
 // length
+// https://en.wikipedia.org/wiki/United_States_customary_units#Length
 inline constexpr struct yard : named_unit<"yd", mag<ratio{9'144, 10'000}> * si::metre> {} yard;
 inline constexpr struct foot : named_unit<"ft", mag<ratio{1, 3}> * yard> {} foot;
 inline constexpr struct inch : named_unit<"in", mag<ratio{1, 12}> * foot> {} inch;
