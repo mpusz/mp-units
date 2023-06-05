@@ -25,3 +25,16 @@ template<typename T>
   name.remove_suffix(suffix.size());
   return name;
 }
+
+template<typename T1, typename T2>
+[[nodiscard]] consteval auto better_type_name(T1 v1, T2 v2)
+{
+  if constexpr (type_name<T1>().size() < type_name<T2>().size())
+    return v1;
+  else if constexpr (type_name<T2>().size() < type_name<T1>().size())
+    return v2;
+  else if constexpr (type_name<T1>() < type_name<T2>())
+    return v1;
+  else
+    return v2;
+}

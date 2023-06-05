@@ -629,8 +629,11 @@ template<Unit U1, Unit U2>
   if constexpr (U1{} == U2{}) {
     if constexpr (std::derived_from<U1, U2>)
       return u1;
-    else
+    else if constexpr (std::derived_from<U2, U1>)
       return u2;
+    else
+      // TODO Check if there is a better choice here
+      return better_type_name(u1, u2);
   } else {
     constexpr auto canonical_lhs = detail::get_canonical_unit(U1{});
     constexpr auto canonical_rhs = detail::get_canonical_unit(U2{});
