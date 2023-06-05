@@ -30,8 +30,6 @@ using namespace mp_units;
 using namespace mp_units::imperial;
 using namespace mp_units::imperial::unit_symbols;
 
-/* ************** BASE DIMENSIONS **************** */
-
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
 
 // International
