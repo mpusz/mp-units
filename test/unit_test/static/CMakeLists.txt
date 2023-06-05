@@ -34,7 +34,7 @@ target_compile_options(
 )
 add_library(
     unit_tests_static
-    angle_test.cpp
+    angular_test.cpp
     cgs_test.cpp
     chrono_test.cpp
     concepts_test.cpp
