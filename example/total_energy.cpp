@@ -88,7 +88,7 @@ void natural_example()
   using namespace mp_units::natural;
   using namespace mp_units::natural::unit_symbols;
 
-  constexpr auto c = 1. * speed_of_light_in_vacuum;
+  constexpr auto c = 1. * speed_of_light;
   const auto p = 4. * momentum[GeV];
   const auto m = 3. * mass[GeV];
   const auto E = total_energy(p, m, c);

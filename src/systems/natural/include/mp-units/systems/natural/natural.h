@@ -48,7 +48,7 @@ inline constexpr struct energy : system_reference<isq::mechanical_energy, gigael
 // clang-format on
 
 // constants
-inline constexpr auto speed_of_light_in_vacuum = speed[one];
+inline constexpr auto speed_of_light = speed[one];
 
 namespace unit_symbols {
 
