@@ -56,7 +56,7 @@ inline constexpr struct knot : named_unit<"kn", nautical_mile / si::hour> {} kno
 inline constexpr struct poundal : named_unit<"pdl", pound * foot / square(si::second)> {} poundal;
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gravity_unit> {} pound_force;
+inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gravity> {} pound_force;
 
 // https://en.wikipedia.org/wiki/Kip_(unit),
 inline constexpr struct kip : decltype(si::kilo<pound_force>) {} kip;

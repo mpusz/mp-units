@@ -87,8 +87,8 @@ inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
 
 // physical constant units
-inline constexpr struct standard_gravity_unit_ : constant_unit<"g", mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity_unit;
-inline constexpr struct speed_of_light_in_vacuum_unit_ : constant_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum_unit;
+inline constexpr struct standard_gravity_ : named_unit<basic_symbol_text{"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
+inline constexpr struct speed_of_light_in_vacuum_ : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 
 // clang-format on
 
@@ -190,15 +190,15 @@ static_assert(joule != newton);
 static_assert(is_of_type<nu_second / nu_second, one_>);
 
 // constant_unit
-static_assert(is_of_type<standard_gravity_unit, standard_gravity_unit_>);
+static_assert(is_of_type<standard_gravity, standard_gravity_>);
 static_assert(
-  is_of_type<get_canonical_unit(standard_gravity_unit).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
-static_assert(get_canonical_unit(standard_gravity_unit).mag == mag<ratio{980'665, 100'000}>);
-static_assert(convertible(standard_gravity_unit, standard_gravity_unit));
-static_assert(convertible(standard_gravity_unit, metre / square(second)));
-static_assert(standard_gravity_unit == standard_gravity_unit);
-static_assert(standard_gravity_unit != metre / square(second));  // magnitude is different
-static_assert(standard_gravity_unit.symbol == "[g]");
+  is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
+static_assert(get_canonical_unit(standard_gravity).mag == mag<ratio{980'665, 100'000}>);
+static_assert(convertible(standard_gravity, standard_gravity));
+static_assert(convertible(standard_gravity, metre / square(second)));
+static_assert(standard_gravity == standard_gravity);
+static_assert(standard_gravity != metre / square(second));  // magnitude is different
+static_assert(standard_gravity.symbol == basic_symbol_text{"g₀", "g_0"});
 
 // prefixed_unit
 static_assert(is_of_type<kilometre, kilometre_>);
@@ -333,15 +333,15 @@ static_assert(is_of_type<one * metre * square(second) / gram, derived_unit<metre
 static_assert(is_of_type<(metre * square(second) / gram) * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 static_assert(is_of_type<metre * square(second) / gram * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 
-static_assert(is_of_type<standard_gravity_unit * gram, derived_unit<standard_gravity_unit_, gram_>>);
-static_assert(is_of_type<gram * standard_gravity_unit, derived_unit<standard_gravity_unit_, gram_>>);
-static_assert(is_of_type<standard_gravity_unit / gram, derived_unit<standard_gravity_unit_, per<gram_>>>);
-static_assert(is_of_type<gram / standard_gravity_unit, derived_unit<gram_, per<standard_gravity_unit_>>>);
-static_assert(is_of_type<standard_gravity_unit * gram / standard_gravity_unit, gram_>);
-static_assert(is_of_type<speed_of_light_in_vacuum_unit * gram * standard_gravity_unit,
-                         derived_unit<speed_of_light_in_vacuum_unit_, standard_gravity_unit_, gram_>>);
-static_assert(is_of_type<gram * standard_gravity_unit * speed_of_light_in_vacuum_unit,
-                         derived_unit<speed_of_light_in_vacuum_unit_, standard_gravity_unit_, gram_>>);
+static_assert(is_of_type<standard_gravity * gram, derived_unit<gram_, standard_gravity_>>);
+static_assert(is_of_type<gram * standard_gravity, derived_unit<gram_, standard_gravity_>>);
+static_assert(is_of_type<standard_gravity / gram, derived_unit<standard_gravity_, per<gram_>>>);
+static_assert(is_of_type<gram / standard_gravity, derived_unit<gram_, per<standard_gravity_>>>);
+static_assert(is_of_type<standard_gravity * gram / standard_gravity, gram_>);
+static_assert(is_of_type<speed_of_light_in_vacuum * gram * standard_gravity,
+                         derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
+static_assert(is_of_type<gram * standard_gravity * speed_of_light_in_vacuum,
+                         derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
 
 static_assert(std::is_same_v<decltype(1 / second * metre), decltype(metre / second)>);
 static_assert(std::is_same_v<decltype(metre * (1 / second)), decltype(metre / second)>);
@@ -374,11 +374,11 @@ static_assert(
   is_of_type<get_canonical_unit(1 / pascal).reference_unit, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 
 static_assert(
-  is_of_type<get_canonical_unit(standard_gravity_unit).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
-static_assert(get_canonical_unit(standard_gravity_unit).mag == mag<ratio{980'665, 100'000}>);
-static_assert(is_of_type<get_canonical_unit(standard_gravity_unit* gram).reference_unit,
+  is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
+static_assert(get_canonical_unit(standard_gravity).mag == mag<ratio{980'665, 100'000}>);
+static_assert(is_of_type<get_canonical_unit(standard_gravity* gram).reference_unit,
                          derived_unit<gram_, metre_, per<power<second_, 2>>>>);
-static_assert(is_of_type<get_canonical_unit(standard_gravity_unit / speed_of_light_in_vacuum_unit).reference_unit,
+static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in_vacuum).reference_unit,
                          derived_unit<one_, per<second_>>>);
 
 // operations commutativity
@@ -532,7 +532,6 @@ static_assert(is_of_type<common_unit(metre / second, kilometre / hour),
                          scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
 static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
 static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
-static_assert(
-  is_of_type<common_unit(speed_of_light_in_vacuum_unit, metre / second), derived_unit<metre_, per<second_>>>);
+static_assert(is_of_type<common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
 }  // namespace

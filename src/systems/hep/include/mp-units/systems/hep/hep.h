@@ -42,6 +42,9 @@ inline constexpr struct barn : named_unit<"b", mag_power<10, -28> * square(si::m
 inline constexpr struct electron_mass : named_unit<"m_e", mag<ratio{9'109'383'701'528, 1'000'000'000'000}> * mag_power<10, -31> * si::kilogram> {} electron_mass;
 inline constexpr struct proton_mass : named_unit<"m_p", mag<ratio{1'672'621'923'695, 1'000'000'000'000}> * mag_power<10, -27> * si::kilogram> {} proton_mass;
 inline constexpr struct neutron_mass : named_unit<"m_n", mag<ratio{1'674'927'498'049, 1'000'000'000'000}> * mag_power<10, -27> * si::kilogram> {} neutron_mass;
+
+// speed
+inline constexpr struct speed_of_light : decltype(si::si2019::speed_of_light_in_vacuum) {} speed_of_light;
 // clang-format on
 
 namespace unit_symbols {
@@ -89,8 +92,8 @@ inline constexpr auto m_e = electron_mass;
 inline constexpr auto m_p = proton_mass;
 inline constexpr auto m_n = neutron_mass;
 
-inline constexpr auto c = si::si2019::speed_of_light_in_vacuum_unit;
-inline constexpr auto c2 = square(si::si2019::speed_of_light_in_vacuum_unit);
+inline constexpr auto c = speed_of_light;
+inline constexpr auto c2 = square(speed_of_light);
 
 }  // namespace unit_symbols
 

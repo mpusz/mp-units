@@ -159,9 +159,9 @@ static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
 static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
 
 // Physical constants
-static_assert(unit_symbol(si2019::speed_of_light_in_vacuum_unit) == "[c]");
-static_assert(unit_symbol(gram * standard_gravity_unit * si2019::speed_of_light_in_vacuum_unit) == "[c] [g₀] g");
-static_assert(unit_symbol(gram / standard_gravity_unit) == "g/[g₀]");
+static_assert(unit_symbol(si2019::speed_of_light_in_vacuum) == "c");
+static_assert(unit_symbol(gram * standard_gravity * si2019::speed_of_light_in_vacuum) == "c g g₀");
+static_assert(unit_symbol(gram / standard_gravity) == "g/g₀");
 
 #endif  // __cpp_lib_constexpr_string
 

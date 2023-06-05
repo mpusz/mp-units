@@ -50,10 +50,6 @@ struct scaled_unit;
 template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
-template<basic_symbol_text Symbol, Unit auto U>
-  requires(!Symbol.empty())
-struct constant_unit;
-
 namespace detail {
 
 template<basic_symbol_text Symbol, auto... Args>
@@ -69,21 +65,13 @@ inline constexpr bool is_specialization_of_named_unit = false;
 template<basic_symbol_text Symbol, auto... Args>
 inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
 
-template<basic_symbol_text Symbol, auto U>
-void to_base_specialization_of_constant_unit(const volatile constant_unit<Symbol, U>*);
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_constant_unit =
-  requires(T* t) { to_base_specialization_of_constant_unit(t); };
-
 /**
  * @brief A concept matching all units with special names
  *
  * Satisfied by all unit types derived from the specialization of `named_unit` (but not constant units).
  */
 template<typename T>
-concept NamedUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T> &&
-                    (!detail::is_derived_from_specialization_of_constant_unit<T>);
+concept NamedUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T>;
 
 }  // namespace detail
 
@@ -145,12 +133,6 @@ template<basic_symbol_text Symbol, auto... Args>
 inline constexpr bool is_specialization_of_unit<named_unit<Symbol, Args...>> = true;
 
 template<typename T>
-inline constexpr bool is_specialization_of_constant_unit = false;
-
-template<basic_symbol_text Symbol, auto U>
-inline constexpr bool is_specialization_of_constant_unit<constant_unit<Symbol, U>> = true;
-
-template<typename T>
 inline constexpr bool is_specialization_of_prefixed_unit = false;
 
 template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
@@ -158,8 +140,7 @@ inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M
 
 template<typename T>
   requires requires(T* t) { is_unit_impl(t); }
-inline constexpr bool is_unit<T> = !is_specialization_of_named_unit<T> && !is_specialization_of_constant_unit<T> &&
-                                   !is_specialization_of_prefixed_unit<T>;
+inline constexpr bool is_unit<T> = !is_specialization_of_named_unit<T> && !is_specialization_of_prefixed_unit<T>;
 
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U);
