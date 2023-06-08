@@ -52,9 +52,7 @@ inline constexpr struct lunar_distance : named_unit<"LD", mag<384'399> * si::kil
 inline constexpr struct light_year : named_unit<"ly", mag<9'460'730'472'580'800> * si::metre> {} light_year;
 
 // https://en.wikipedia.org/wiki/Parsec
-// inline constexpr struct parsec : named_unit<"pc", mag<180 * 60 * 60> / mag_pi * astronomical_unit> {} parsec;
-inline constexpr struct parsec : named_unit<"pc", mag<60 * 60> * astronomical_unit / si::degree> {} parsec;
-// inline constexpr struct parsec : named_unit<"pc", astronomical_unit / (mag<ratio{1, 60 * 60}> * si::degree)> {} parsec;
+inline constexpr struct parsec : named_unit<"pc", astronomical_unit / (mag<ratio{1, 60 * 60}> * si::degree)> {} parsec;
 
 // https://en.wikipedia.org/wiki/Angstrom
 inline constexpr struct angstrom : named_unit<basic_symbol_text{"Å", "A"}, mag_power<10, -10> * si::metre> {} angstrom;
