@@ -46,9 +46,10 @@ namespace detail {
 template<QuantityLike Q>
 using quantity_like_type = quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
-template<typename T, typename Arg>
+template<typename T, typename Arg, auto U>
 concept RepSafeConstructibleFrom =
-  std::constructible_from<T, Arg> && (treat_as_floating_point<T> || !treat_as_floating_point<Arg>);
+  Unit<std::remove_const_t<decltype(U)>> && std::constructible_from<T, Arg> &&
+  (treat_as_floating_point<T> || (!treat_as_floating_point<Arg> && is_rational(get_canonical_unit(U).mag)));
 
 template<auto UFrom, auto UTo>
 concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
