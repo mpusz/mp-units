@@ -105,26 +105,6 @@ constexpr longitude<long double> operator"" _W(long double v)
 {
   return longitude<long double>{-v * mp_units::si::degree};
 }
-constexpr latitude<std::int64_t> operator"" _N(unsigned long long v)
-{
-  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return latitude<std::int64_t>{static_cast<std::int64_t>(v) * mp_units::si::degree};
-}
-constexpr latitude<std::int64_t> operator"" _S(unsigned long long v)
-{
-  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return latitude<std::int64_t>{-static_cast<std::int64_t>(v) * mp_units::si::degree};
-}
-constexpr longitude<std::int64_t> operator"" _E(unsigned long long v)
-{
-  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return longitude<std::int64_t>{static_cast<std::int64_t>(v) * mp_units::si::degree};
-}
-constexpr longitude<std::int64_t> operator"" _W(unsigned long long v)
-{
-  gsl_ExpectsAudit(std::in_range<std::int64_t>(v));
-  return longitude<std::int64_t>{-static_cast<std::int64_t>(v) * mp_units::si::degree};
-}
 
 }  // namespace literals
 
