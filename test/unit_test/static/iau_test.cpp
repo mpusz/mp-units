@@ -39,6 +39,7 @@ static_assert(isq::time(1 * a) == 365.25 * D);
 static_assert(isq::length(1 * au) == 149'597'870'700 * si::metre);
 static_assert(isq::length(1 * LD) == 384'399 * si::kilo<si::metre>);
 static_assert(isq::length(1 * ly) == 9'460'730'472'580'800 * si::metre);
+static_assert(isq::length(10'000'000'000 * A) == 1 * si::metre);
 
 // TODO Should the below work for `1 * pc`? If yes, how to extent the type and how to convert it to a floating-point
 // representation for comparison purposes?
