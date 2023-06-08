@@ -457,6 +457,8 @@ static_assert(convertible(si::kilo<metre>, kilometre));
 static_assert(convertible(mag<1000> * metre, si::kilo<metre>));
 static_assert(convertible(mag<1000> * metre, kilometre));
 
+static_assert(mag<60> * metre / second == metre / (mag<ratio{1, 60}> * second));
+
 static_assert(metre != kilometre);
 static_assert(convertible(metre, kilometre));
 static_assert(mag<100> * metre != kilometre);

@@ -436,7 +436,7 @@ template<Unit Lhs, Unit Rhs>
   else if constexpr (detail::is_specialization_of_scaled_unit<Lhs>)
     return Lhs::mag * (Lhs::reference_unit / rhs);
   else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
-    return Rhs::mag * (lhs / Rhs::reference_unit);
+    return mag<1> / Rhs::mag * (lhs / Rhs::reference_unit);
   else
     return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
