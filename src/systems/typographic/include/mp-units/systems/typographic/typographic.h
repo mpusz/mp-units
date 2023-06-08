@@ -22,17 +22,17 @@
 
 #pragma once
 
-#include <mp-units/systems/usc/usc.h>
+#include <mp-units/systems/international/international.h>
 #include <mp-units/unit.h>
 
 namespace mp_units::typographic {
 
 // clang-format off
 // https://en.wikipedia.org/wiki/Point_(typography)
-inline constexpr struct pica_us : named_unit<"pica(us)", mag<ratio{166'044, 1'000'000}> * usc::inch> {} pica_us;
+inline constexpr struct pica_us : named_unit<"pica(us)", mag<ratio{166'044, 1'000'000}> * international::inch> {} pica_us;
 inline constexpr struct point_us : named_unit<"point(us)", mag<ratio{1, 12}> * pica_us> {} point_us;
 
-inline constexpr struct point_dtp : named_unit<"point(dtp)", mag<ratio{1, 72}> * usc::inch> {} point_dtp;
+inline constexpr struct point_dtp : named_unit<"point(dtp)", mag<ratio{1, 72}> * international::inch> {} point_dtp;
 inline constexpr struct pica_dtp : named_unit<"pica(dtp)", mag<12> * point_dtp> {} pica_dtp;
 // clang-format on
 
