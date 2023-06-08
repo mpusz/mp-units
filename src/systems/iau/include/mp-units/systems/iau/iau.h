@@ -59,7 +59,7 @@ inline constexpr struct angstrom : named_unit<basic_symbol_text{"Å", "A"}, mag_
 
 // selected constants
 // https://en.wikipedia.org/wiki/Astronomical_constant
-inline constexpr struct gaussian_gravitational_constant : 
+inline constexpr struct gaussian_gravitational_constant :
     named_unit<"k", mag<ratio{1'720'209'895, 100'000'000'000}> * pow<3, 2>(astronomical_unit) / pow<1,2>(solar_mass) / day> {} gaussian_gravitational_constant;
 
 inline constexpr struct speed_of_light :

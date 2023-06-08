@@ -98,7 +98,7 @@ struct ratio {
                  detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1)};
   }
 
-  [[nodiscard]] friend consteval ratio operator/(ratio lhs, ratio rhs) { return lhs* ratio{rhs.den, rhs.num}; }
+  [[nodiscard]] friend consteval ratio operator/(ratio lhs, ratio rhs) { return lhs * ratio{rhs.den, rhs.num}; }
 };
 
 [[nodiscard]] consteval bool is_integral(ratio r) { return r.num % r.den == 0; }
