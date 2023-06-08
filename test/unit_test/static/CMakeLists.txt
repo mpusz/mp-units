@@ -55,6 +55,7 @@ add_library(
     # kind_test.cpp
     # magnitude_test.cpp
     # math_test.cpp
+    natural_test.cpp
     # point_origin_test.cpp
     prime_test.cpp
     quantity_spec_test.cpp
