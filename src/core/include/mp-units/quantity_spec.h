@@ -452,9 +452,11 @@ template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(get_kind(Q) == Q)
 #ifdef __cpp_explicit_this_parameter
 struct kind_of_<Q> : Q {
+  static constexpr auto _quantity_spec_ = Q;
 };
 #else
 struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
+  static constexpr auto _quantity_spec_ = Q;
 };
 #endif
 
