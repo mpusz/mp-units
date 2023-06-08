@@ -46,6 +46,7 @@ add_library(
     # fps_test.cpp
     fractional_exponent_quantity.cpp
     hep_test.cpp
+    iau_test.cpp
     iec80000_test.cpp
     imperial_test.cpp
     international_test.cpp
