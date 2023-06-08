@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/units.h>
 #include <mp-units/unit.h>
 
 namespace mp_units::iau {
@@ -32,15 +33,17 @@ namespace mp_units::iau {
 // clang-format off
 // time
 inline constexpr struct day : named_unit<"D", si::day> {} day;
-inline constexpr struct Julian_year : named_unit<"a", mag<86400> * si::second> {} Julian_year;
+inline constexpr struct Julian_year : named_unit<"a", mag<ratio{365'25, 100}> * day> {} Julian_year;
 
 // mass
-inline constexpr struct solar_mass : named_unit<basic_symbol_text{"M_☉", "M_SUN"}, mag<ratio{198'892, 100'000}> * mag_power<10, 30> * si::kilogram> {} solar_mass;
+// https://en.wikipedia.org/wiki/Solar_mass
+// TODO What is the official mass of sun (every source in the Internet provides a different value)
+inline constexpr struct solar_mass : named_unit<basic_symbol_text{"M_☉", "M_SUN"}, mag<ratio{198'847, 100'000}> * mag_power<10, 30> * si::kilogram> {} solar_mass;
 inline constexpr struct Jupiter_mass : named_unit<"M_JUP", mag<ratio{1'898, 1'000}> * mag_power<10, 27> * si::kilogram> {} Jupiter_mass;
 inline constexpr struct Earth_mass : named_unit<"M_EARTH", mag<ratio{59'742, 10'000}> * mag_power<10, 24> * si::kilogram> {} Earth_mass;
 
 // length
-using si::astronomical_unit;
+inline constexpr struct astronomical_unit : decltype(si::astronomical_unit) {} astronomical_unit;
 
 // https://en.wikipedia.org/wiki/Lunar_distance_(astronomy)
 inline constexpr struct lunar_distance : named_unit<"LD", mag<384'399> * si::kilo<si::metre>> {} lunar_distance;
@@ -49,15 +52,26 @@ inline constexpr struct lunar_distance : named_unit<"LD", mag<384'399> * si::kil
 inline constexpr struct light_year : named_unit<"ly", mag<9'460'730'472'580'800> * si::metre> {} light_year;
 
 // https://en.wikipedia.org/wiki/Parsec
-inline constexpr struct parsec : named_unit<"pc", mag<30'856'775'814'913'673> * si::metre> {} parsec;
+// inline constexpr struct parsec : named_unit<"pc", mag<180 * 60 * 60> / mag_pi * astronomical_unit> {} parsec;
+inline constexpr struct parsec : named_unit<"pc", mag<60 * 60> * astronomical_unit / si::degree> {} parsec;
+// inline constexpr struct parsec : named_unit<"pc", astronomical_unit / (mag<ratio{1, 60 * 60}> * si::degree)> {} parsec;
 
 // https://en.wikipedia.org/wiki/Angstrom
 inline constexpr struct angstrom : named_unit<basic_symbol_text{"Å", "A"}, mag_power<10, -10> * si::metre> {} angstrom;
 
-// speed
-inline constexpr struct speed_of_light_unit : constant_unit<"c_0", si::si2019::speed_of_light_in_vacuum_unit> {} speed_of_light_unit;
-inline constexpr auto speed_of_light = isq::speed_of_light[speed_of_light_unit];
+// selected constants
+// https://en.wikipedia.org/wiki/Astronomical_constant
+inline constexpr struct gaussian_gravitational_constant : 
+    named_unit<"k", mag<ratio{1'720'209'895, 100'000'000'000}> * pow<3, 2>(astronomical_unit) / pow<1,2>(solar_mass) / day> {} gaussian_gravitational_constant;
 
+inline constexpr struct speed_of_light :
+    named_unit<basic_symbol_text{"c₀", "c_0"}, si::si2019::speed_of_light_in_vacuum> {} speed_of_light;
+
+inline constexpr struct constant_of_gravitation :
+    named_unit<"G", mag<ratio{667'430, 100'000}> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second)> {} constant_of_gravitation;
+
+inline constexpr struct hubble_constant :
+    named_unit<basic_symbol_text{"H₀", "H_0"}, mag<ratio{701, 10}> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
 // clang-format on
 
 namespace unit_symbols {
@@ -75,7 +89,10 @@ inline constexpr auto ly = light_year;
 inline constexpr auto pc = parsec;
 inline constexpr auto A = angstrom;
 
-inline constexpr auto c_0 = speed_of_light_unit;
+inline constexpr auto k = gaussian_gravitational_constant;
+inline constexpr auto c_0 = speed_of_light;
+inline constexpr auto G = constant_of_gravitation;
+inline constexpr auto H_0 = hubble_constant;
 
 }  // namespace unit_symbols
 
