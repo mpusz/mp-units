@@ -27,12 +27,12 @@ namespace {
 
 using namespace mp_units::angular::unit_symbols;
 
-static_assert(360 * deg == 1 * rev);
-static_assert(400 * grad == 1 * rev);
+static_assert(360. * deg == 1. * rev);
+static_assert(400. * grad == 1. * rev);
 static_assert(std::numbers::pi * 2 * rad == 1. * rev);
 
 static_assert(1 * rad * (1 * rad) == 1 * sr);
 static_assert(1 * rad * (1 * rad) == 1 * rad2);
-static_assert(1 * deg * (1 * deg) == 1 * deg2);
+static_assert(1. * deg * (1. * deg) == 1. * deg2);
 
 }  // namespace
