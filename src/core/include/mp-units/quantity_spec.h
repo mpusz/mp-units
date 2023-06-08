@@ -37,7 +37,7 @@
 namespace mp_units {
 
 template<Reference auto R, typename Rep>
-  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
+  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
 
 namespace detail {

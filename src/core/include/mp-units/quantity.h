@@ -99,6 +99,9 @@ public:
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;
 
+  // helper used to constrain `make_quantity()` and `operator*(Representation, Unit)`
+  static constexpr bool _rep_safe_constructible_ = detail::RepSafeConstructibleFrom<Rep, Rep&&, unit>;
+
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
     requires requires { quantity_values<rep>::zero(); }
@@ -319,7 +322,7 @@ public:
 
 private:
   template<Reference auto R2, typename Rep2>
-    requires RepresentationOf<std::remove_cvref_t<Rep2>, get_quantity_spec(R2).character>
+    requires quantity<R2, std::remove_cvref_t<Rep2>>::_rep_safe_constructible_
   friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&& v);
 
   template<typename Value>
@@ -488,7 +491,7 @@ template<auto R, typename Rep, typename Value>
 
 // make_quantity
 template<Reference auto R, typename Rep>
-  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R).character>
+  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v)
 {
   return quantity<R, std::remove_cvref_t<Rep>>(std::forward<Rep>(v));
