@@ -142,7 +142,7 @@ public:
 
   template<typename Value>
     requires(dimension == dimension_one) &&
-            (unit == ::mp_units::one) && detail::RepSafeConstructibleFrom<rep, std::remove_cvref_t<Value>>
+            (unit == ::mp_units::one) && detail::RepSafeConstructibleFrom<rep, Value&&, unit>
   constexpr explicit(!std::convertible_to<Value, Rep>) quantity(Value&& v) : number_(std::forward<Value>(v))
   {
   }
@@ -322,7 +322,7 @@ private:
   friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&& v);
 
   template<typename Value>
-    requires detail::RepSafeConstructibleFrom<rep, std::remove_cvref_t<Value>>
+    requires detail::RepSafeConstructibleFrom<rep, Value&&, unit>
   constexpr explicit quantity(Value&& v) : number_(std::forward<Value>(v))
   {
   }
