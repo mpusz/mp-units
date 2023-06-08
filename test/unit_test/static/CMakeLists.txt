@@ -39,11 +39,8 @@ add_library(
     chrono_test.cpp
     concepts_test.cpp
     # custom_rep_test_min_expl.cpp
-    # dimension_op_test.cpp
     dimension_test.cpp
-    # dimensions_concepts_test.cpp
     fixed_string_test.cpp
-    # fps_test.cpp
     fractional_exponent_quantity.cpp
     hep_test.cpp
     iau_test.cpp
@@ -61,8 +58,6 @@ add_library(
     quantity_spec_test.cpp
     ratio_test.cpp
     reference_test.cpp
-    # si_cgs_test.cpp
-    # si_fps_test.cpp
     # si_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
