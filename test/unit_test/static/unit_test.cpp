@@ -22,6 +22,7 @@
 
 #include "test_tools.h"
 #include <mp-units/dimension.h>
+#include <mp-units/quantity.h>
 #include <mp-units/reference.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/unit.h>
