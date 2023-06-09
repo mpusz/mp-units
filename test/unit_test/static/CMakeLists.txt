@@ -58,7 +58,7 @@ add_library(
     quantity_spec_test.cpp
     ratio_test.cpp
     reference_test.cpp
-    # si_test.cpp
+    si_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
     typographic_test.cpp
