@@ -23,15 +23,11 @@
 cmake_minimum_required(VERSION 3.2)
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
-
-# if(NOT ${projectPrefix}LIBCXX)
-# target_sources(unit_tests_static_truncating PRIVATE quantity_kind_test.cpp quantity_point_kind_test.cpp)
-# endif()
-
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
 target_compile_options(
     unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
+
 add_library(
     unit_tests_static
     angular_test.cpp
@@ -49,7 +45,6 @@ add_library(
     international_test.cpp
     isq_test.cpp
     isq_angle_test.cpp
-    # kind_test.cpp
     # magnitude_test.cpp
     # math_test.cpp
     natural_test.cpp
