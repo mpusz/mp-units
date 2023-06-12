@@ -28,67 +28,71 @@
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/unit.h>
 
-namespace mp_units {
+namespace mp_units::detail {
 
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
+// determines the best available representation type
+template<Quantity From, Quantity To>
+[[nodiscard]] consteval auto common_rep_type(From, To)
+{
+  if constexpr (requires { typename std::common_type_t<typename From::rep, typename To::rep>; })
+    // returns a common type of two representation types if available
+    // i.e. `double` and `int` will end up with `double` precision
+    return std::common_type_t<typename From::rep, typename To::rep>{};
+  else
+    return typename From::rep{};
+}
 
-namespace detail {
+// determines the value type used by the representation type
+template<typename Rep>
+[[nodiscard]] consteval auto rep_value_type(Rep)
+{
+  if constexpr (requires { typename Rep::value_type; })
+    return typename Rep::value_type{};
+  else if constexpr (requires { typename Rep::element_type; })
+    return typename Rep::element_type{};
+  else
+    return Rep{};
+}
 
 /**
- * @brief Explicit cast of entire quantity
+ * @brief Explicit cast between different quantity types
  *
- * @note This is too powerful to be used by users.
+ * @note This is a low-level facility and is too powerful to be used by the users directly. They should either use
+ * `value_cast` or `quantity_cast`.
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, auto R, typename Rep>
-  requires(castable(get_quantity_spec(R), To::quantity_spec)) &&
-          ((get_unit(R) == To::unit && std::constructible_from<typename To::rep, Rep>) ||
-           (get_unit(R) != To::unit))  // && scalable_with_<typename To::rep>))
+template<Quantity To, typename From>
+  requires Quantity<std::remove_cvref_t<From>> &&
+           (castable(std::remove_reference_t<From>::quantity_spec, To::quantity_spec)) &&
+           ((std::remove_reference_t<From>::unit == To::unit &&
+             std::constructible_from<typename To::rep, typename std::remove_reference_t<From>::rep>) ||
+            (std::remove_reference_t<From>::unit != To::unit))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
-[[nodiscard]] constexpr Quantity auto sudo_cast(const quantity<R, Rep>& q)
+[[nodiscard]] constexpr Quantity auto sudo_cast(From&& q)
 {
-  if constexpr (get_unit(R) == To::unit) {
+  if constexpr (q.unit == To::unit) {
     // no scaling of the number needed
-    return static_cast<TYPENAME To::rep>(q.number()) * To::reference;  // this is the only (and recommended) way to do
+    return make_quantity<To::reference>(
+      static_cast<TYPENAME To::rep>(std::forward<From>(q).number()));  // this is the only (and recommended) way to do
                                                                        // a truncating conversion on a number, so we are
                                                                        // using static_cast to suppress all the compiler
                                                                        // warnings on conversions
   } else {
     // scale the number
-    using rep_type = decltype([] {
-      // determines the best representation type
-      if constexpr (requires { typename std::common_type_t<Rep, typename To::rep>; })
-        // returns a common type of two representation types if available
-        // i.e. `double` and `int` will end up with `double` precision
-        return std::common_type_t<Rep, typename To::rep>{};
-      else
-        return Rep{};
-    }());
-    using multiplier_type = decltype([] {
-      // widen the type to prevent overflows
-      using wider_type = decltype(rep_type{} * std::intmax_t{});
-      // check if `wider_type` supports scaling operations
-      if constexpr (requires(wider_type v) { v* v / v; })
-        // if the `wider_type` can handle scaling operations then use it to improve accuracy
-        return wider_type{};
-      else
-        // needed for example for linear algebra where `op/` on matrix types is not available
-        return std::intmax_t{};
-    }());
-
-    constexpr Magnitude auto c_mag =
-      detail::get_canonical_unit(get_unit(R)).mag / detail::get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto c_mag = get_canonical_unit(q.unit).mag / get_canonical_unit(To::unit).mag;
     constexpr Magnitude auto num = numerator(c_mag);
     constexpr Magnitude auto den = denominator(c_mag);
     constexpr Magnitude auto irr = c_mag * (den / num);
-
+    using c_mag_type = common_magnitude_type<c_mag>;
+    using c_rep_type = decltype(common_rep_type(q, To{}));
+    using v_type = decltype(rep_value_type(c_rep_type{}));
+    using multiplier_type = decltype(v_type{} * c_mag_type{});
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
-    return static_cast<TYPENAME To::rep>(static_cast<rep_type>(q.number()) * val(num) / val(den) * val(irr)) *
+    return static_cast<TYPENAME To::rep>(static_cast<c_rep_type>(std::forward<From>(q).number()) * val(num) / val(den) *
+                                         val(irr)) *
            To::reference;
   }
 }
 
-}  // namespace detail
-}  // namespace mp_units
+}  // namespace mp_units::detail

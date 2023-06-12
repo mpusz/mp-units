@@ -719,6 +719,16 @@ template<auto H1, auto... T1, auto H2, auto... T2>
   }
 }
 
+template<auto... Ms>
+[[nodiscard]] consteval auto common_magnitude_type_impl(magnitude<Ms...>)
+{
+  return (... * decltype(get_base(Ms)){}) * std::intmax_t{};
+}
+
+// Returns the most precise type to express the magnitude factor
+template<Magnitude auto M>
+using common_magnitude_type = decltype(common_magnitude_type_impl(M));
+
 }  // namespace detail
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -764,6 +774,7 @@ struct prime_factorization<1> {
 
 template<std::intmax_t N>
 inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
+
 }  // namespace detail
 
 /**

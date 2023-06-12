@@ -23,15 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 #include <mp-units/bits/sudo_cast.h>
 #include <mp-units/bits/unit_concepts.h>
+#include <mp-units/reference.h>
 
 namespace mp_units {
-
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
 
 /**
  * @brief Explicit cast of a quantity's unit
@@ -43,17 +40,19 @@ class quantity;
  *
  * @tparam ToU a unit to use for a target quantity
  */
-template<Unit auto ToU, auto R, typename Rep>
-  requires(convertible(get_unit(R), ToU))
-[[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
+template<Unit auto ToU, typename Q>
+[[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
+  requires Quantity<std::remove_cvref_t<Q>> && (convertible(q.reference, ToU))
 {
-  if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(R)>> ||
-                !AssociatedUnit<std::remove_const_t<decltype(ToU)>>) {
-    constexpr reference<quantity<R, Rep>::quantity_spec, ToU> r;
-    return detail::sudo_cast<quantity<r, Rep>>(q);
-  } else {
-    return detail::sudo_cast<quantity<ToU, Rep>>(q);
-  }
+  using q_type = std::remove_reference_t<Q>;
+  constexpr auto r = [] {
+    if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(q_type::reference)>> ||
+                  !AssociatedUnit<std::remove_const_t<decltype(ToU)>>)
+      return reference<q_type::quantity_spec, ToU>{};
+    else
+      return ToU;
+  }();
+  return detail::sudo_cast<quantity<r, typename q_type::rep>>(std::forward<Q>(q));
 }
 
 /**
@@ -66,11 +65,13 @@ template<Unit auto ToU, auto R, typename Rep>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<Representation ToRep, auto R, typename Rep>
-  requires RepresentationOf<ToRep, get_quantity_spec(R).character> && std::constructible_from<ToRep, Rep>
-[[nodiscard]] constexpr Quantity auto value_cast(const quantity<R, Rep>& q)
+template<Representation ToRep, typename Q>
+  requires Quantity<std::remove_cvref_t<Q>> &&
+           RepresentationOf<ToRep, std::remove_reference_t<Q>::quantity_spec.character> &&
+           std::constructible_from<ToRep, typename std::remove_reference_t<Q>::rep>
+[[nodiscard]] constexpr quantity<std::remove_reference_t<Q>::reference, ToRep> value_cast(Q&& q)
 {
-  return detail::sudo_cast<quantity<R, ToRep>>(q);
+  return detail::sudo_cast<quantity<q.reference, ToRep>>(std::forward<Q>(q));
 }
 
 }  // namespace mp_units

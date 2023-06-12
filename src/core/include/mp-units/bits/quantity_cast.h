@@ -22,21 +22,11 @@
 
 #pragma once
 
-#include <mp-units/bits/external/type_traits.h>
-#include <mp-units/bits/magnitude.h>
 #include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/bits/representation_concepts.h>
-#include <mp-units/bits/unit_concepts.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/dimension.h>
 #include <mp-units/reference.h>
-#include <mp-units/unit.h>
+#include <type_traits>
 
 namespace mp_units {
-
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
 
 /**
  * @brief Explicit cast of a quantity type
@@ -56,11 +46,10 @@ class quantity;
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename Q>
-  requires Quantity<std::remove_cvref_t<Q>> && (castable(std::remove_cvref_t<Q>::quantity_spec, ToQS))
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
+  requires Quantity<std::remove_cvref_t<Q>> && (castable(q.quantity_spec, ToQS))
 {
-  constexpr reference<ToQS, std::remove_cvref_t<Q>::unit> r;
-  return std::forward<Q>(q).number() * r;
+  return make_quantity<reference<ToQS, q.unit>{}>(std::forward<Q>(q).number());
 }
 
 }  // namespace mp_units
