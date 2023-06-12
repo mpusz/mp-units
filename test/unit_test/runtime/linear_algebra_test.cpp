@@ -38,12 +38,6 @@ using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 template<typename Rep>
 inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
 
-template<typename Rep, mp_units::Reference R>
-[[nodiscard]] constexpr mp_units::quantity<R{}, vector<Rep>> operator*(const vector<Rep>& lhs, R)
-{
-  return mp_units::make_quantity<R{}>(lhs);
-}
-
 namespace STD_LA {
 
 template<typename Rep>
