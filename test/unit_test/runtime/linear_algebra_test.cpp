@@ -31,56 +31,50 @@
 #include <cmath>
 #include <matrix>
 
+
+template<typename Rep = double>
+using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
+
+template<typename Rep>
+inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
+
+template<typename Rep, mp_units::Reference R>
+[[nodiscard]] constexpr mp_units::quantity<R{}, vector<Rep>> operator*(const vector<Rep>& lhs, R)
+{
+  return mp_units::make_quantity<R{}>(lhs);
+}
+
 namespace STD_LA {
 
-template<class ET, class OT>
-std::ostream& operator<<(std::ostream& os, const vector<ET, OT>& v)
+template<typename Rep>
+std::ostream& operator<<(std::ostream& os, const ::vector<Rep>& v)
 {
   os << "|";
   for (auto i = 0U; i < v.size(); ++i) {
-    os << STD_FMT::format(" {:>9}", v(i));
+    os << UNITS_STD_FMT::format(" {:>9}", v(i));
   }
   os << " |";
   return os;
 }
 
-template<class ET, class OT>
-std::ostream& operator<<(std::ostream& os, const matrix<ET, OT>& v)
-{
-  for (auto i = 0U; i < v.rows(); ++i) {
-    os << "|";
-    for (auto j = 0U; j < v.columns(); ++j) {
-      os << STD_FMT::format(" {:>9}", v(i, j));
-    }
-    os << (i != v.rows() - 1U ? " |\n" : " |");
-  }
-  return os;
-}
-
 }  // namespace STD_LA
+
+namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
-
-template<typename Rep = double>
-using vector = std::math::fs_vector<Rep, 3>;
-
-template<typename Rep>
-inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
-
-namespace {
 
 template<typename T>
 [[nodiscard]] auto get_magnitude(const vector<T>& v)
 {
   using namespace std;
-  return hypot(v[0], v[1], v[2]);
+  return hypot(v(0), v(1), v(2));
 }
 
 template<typename T, typename U>
 [[nodiscard]] vector<decltype(T{} * U{})> cross_product(const vector<T>& a, const vector<U>& b)
 {
-  return {a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]};
+  return {a(1) * b(2) - a(2) * b(1), a(2) * b(0) - a(0) * b(2), a(0) * b(1) - a(1) * b(0)};
 }
 
 template<Quantity Q1, Quantity Q2>
@@ -311,7 +305,7 @@ TEST_CASE("vector of quantities", "[la]")
   SECTION("to scalar magnitude")
   {
     const vector<quantity<isq::velocity[km / h], int>> v = {2 * (km / h), 3 * (km / h), 6 * (km / h)};
-    const auto speed = get_magnitude(v).number() * isq::speed[v[0].unit];  // TODO can we do better here?
+    const auto speed = get_magnitude(v).number() * isq::speed[v(0).unit];  // TODO can we do better here?
     CHECK(speed.number() == 7);
   }
 
@@ -336,23 +330,16 @@ TEST_CASE("vector of quantities", "[la]")
     }
   }
 
-  // TODO check if the below is a bug in mp-units or LA
-  // SECTION("divide by scalar value")
-  // {
-  //   const vector<quantity<isq::position_vector[m], int>> v = {isq::position_vector[m](2), isq::position_vector[m](4),
-  //                                                             isq::position_vector[m](6)};
+  SECTION("divide by scalar value")
+  {
+    const vector<quantity<isq::position_vector[m], int>> v = {2 * m, 4 * m, 6 * m};
 
-  //   SECTION("integral")
-  //   {
-  //     CHECK(v / 2 == vector<quantity<isq::position_vector[m], int>>{
-  //                      isq::position_vector[m](1), isq::position_vector[m](2), isq::position_vector[m](3)});
-  //   }
-  //   SECTION("floating-point")
-  //   {
-  //     CHECK(v / 0.5 == vector<quantity<isq::position_vector[m], double>>{
-  //                        isq::position_vector[m](4.), isq::position_vector[m](8.), isq::position_vector[m](12.)});
-  //   }
-  // }
+    SECTION("integral") { CHECK(v / 2 == vector<quantity<isq::position_vector[m], int>>{1 * m, 2 * m, 3 * m}); }
+    SECTION("floating-point")
+    {
+      CHECK(v / 0.5 == vector<quantity<isq::position_vector[m], double>>{4. * m, 8. * m, 12. * m});
+    }
+  }
 
   SECTION("add")
   {
@@ -449,59 +436,54 @@ TEST_CASE("vector of quantities", "[la]")
     }
   }
 
-  // TODO check if the below is a bug in mp-units or LA
-  // SECTION("divide by scalar quantity")
-  // {
-  //   const vector<quantity<isq::position_vector[km], int>> pos = {
-  //     isq::position_vector[km](30), isq::position_vector[km](20), isq::position_vector[km](10)};
+  SECTION("divide by scalar quantity")
+  {
+    const vector<quantity<isq::position_vector[km], int>> pos = {30 * km, 20 * km, 10 * km};
 
-  //   SECTION("integral")
-  //   {
-  //     const auto dur = 2 * isq::duration[h];
+    SECTION("integral")
+    {
+      const auto dur = 2 * isq::duration[h];
 
-  //     SECTION("derived_quantity_spec")
-  //     {
-  //       CHECK(pos / dur == vector<quantity<isq::velocity[km / h], int>>{
-  //                            isq::velocity[km / h](15), isq::velocity[km / h](10), isq::velocity[km / h](5)});
-  //     }
+      SECTION("derived_quantity_spec")
+      {
+        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], int>>{15 * (km / h), 10 * (km / h), 5 * (km / h)});
+      }
 
-  //     // no way to apply quantity_cast to sub-components
+      // no way to apply quantity_cast to sub-components
 
-  //     SECTION("quantity of velocity")
-  //     {
-  //       const vector<quantity<isq::velocity[km / h], int>> v = pos / dur;
-  //       CHECK(v == vector<quantity<isq::velocity[km / h], int>>{isq::velocity[km / h](15), isq::velocity[km / h](10),
-  //                                                               isq::velocity[km / h](5)});
-  //     }
-  //   }
+      SECTION("quantity of velocity")
+      {
+        const vector<quantity<isq::velocity[km / h], int>> v = pos / dur;
+        CHECK(v == vector<quantity<isq::velocity[km / h], int>>{15 * (km / h), 10 * (km / h), 5 * (km / h)});
+      }
+    }
 
-  //   SECTION("floating-point")
-  //   {
-  //     const auto dur = 0.5 * isq::duration[h];
+    SECTION("floating-point")
+    {
+      const auto dur = 0.5 * isq::duration[h];
 
-  //     SECTION("derived_quantity_spec")
-  //     {
-  //       CHECK(pos / dur == vector<quantity<isq::velocity[km / h], double>>{
-  //                            isq::velocity[km / h](60.), isq::velocity[km / h](40.), isq::velocity[km / h](20)});
-  //     }
+      SECTION("derived_quantity_spec")
+      {
+        CHECK(pos / dur ==
+              vector<quantity<isq::velocity[km / h], double>>{60. * (km / h), 40. * (km / h), 20. * (km / h)});
+      }
 
-  //     // no way to apply quantity_cast to sub-components
+      // no way to apply quantity_cast to sub-components
 
-  //     SECTION("quantity of velocity")
-  //     {
-  //       const vector<quantity<isq::velocity[km / h], double>> v = pos / dur;
-  //       CHECK(v == vector<quantity<isq::velocity[km / h], double>>{
-  //                    isq::velocity[km / h](60.), isq::velocity[km / h](40.), isq::velocity[km / h](20)});
-  //     }
-  //   }
-  // }
+      SECTION("quantity of velocity")
+      {
+        const vector<quantity<isq::velocity[km / h], double>> v = pos / dur;
+        CHECK(v == vector<quantity<isq::velocity[km / h], double>>{60. * (km / h), 40. * (km / h), 20. * (km / h)});
+      }
+    }
+  }
 
-  // SECTION("cross product with a vector of quantities")
-  // {
-  //   const vector<quantity<isq::position_vector[m], int>> r{
-  //     vector<int>{isq::position_vector[m](3), isq::position_vector[m](0), isq::position_vector[m](0)}};
-  //   const vector<quantity<isq::force[N], int>> f{vector<int>{isq::force[N](0), isq::force[N](10), isq::force[N](0)}};
+  SECTION("cross product with a vector of quantities")
+  {
+    const vector<quantity<isq::position_vector[m], int>> r = {3 * m, 0 * m, 0 * m};
+    const vector<quantity<isq::force[N], int>> f = {0 * N, 10 * N, 0 * N};
 
-  //   CHECK(cross_product(r, f) == vector<quantity<isq::moment_of_force[N * m], int>>{0, 0, 30}));
-  // }
+    CHECK(cross_product(r, f) ==
+          vector<quantity<isq::moment_of_force[N * m], int>>{0 * (N * m), 0 * (N * m), 30 * (N * m)});
+  }
 }

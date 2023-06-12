@@ -80,7 +80,7 @@ class MPUnitsConan(ConanFile):
 
     @property
     def _skip_la(self):
-        return bool(self.conf.get("user.build:skip_la", default=True))
+        return bool(self.conf.get("user.build:skip_la", default=False))
 
     @property
     def _skip_docs(self):

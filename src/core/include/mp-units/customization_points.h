@@ -45,6 +45,10 @@ template<typename Rep>
   requires requires { typename Rep::value_type; }
 inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<typename Rep::value_type>;
 
+template<typename Rep>
+  requires requires { typename Rep::element_type; }
+inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<typename Rep::element_type>;
+
 /**
  * @brief Specifies a type to have a scalar character
  *
