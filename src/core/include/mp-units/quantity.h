@@ -58,9 +58,12 @@ concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
   Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
-  convertible(QFrom::unit, QTo::unit) && requires(QFrom q) { detail::sudo_cast<QTo>(q); } &&
+  convertible(QFrom::unit, QTo::unit) &&
   (treat_as_floating_point<typename QTo::rep> ||
-   (!treat_as_floating_point<typename QFrom::rep> && IntegralConversionFactor<QFrom::unit, QTo::unit>));
+   (!treat_as_floating_point<typename QFrom::rep> && IntegralConversionFactor<QFrom::unit, QTo::unit>)) &&
+  // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
+  // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
+  requires(QFrom q) { detail::sudo_cast<QTo>(q); };
 
 template<quantity_character Ch, typename Func, typename T, typename U>
 concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
