@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/si/units.h>
+#include <units/generic/dimensionless.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/prefixes.h>
 #include <ostream>
 #include <type_traits>
 
@@ -41,8 +43,6 @@ template<int Mode = 0>
 class min_expl {
   std::intmax_t value_;
 public:
-  using value_type = std::intmax_t;
-
   // default construction
   min_expl()
     requires(Mode != 1)
@@ -104,77 +104,69 @@ public:
 }  // namespace
 
 template<int Mode>
-inline constexpr bool mp_units::is_scalar<min_expl<Mode>> = true;
-
-template<int Mode>
 struct std::common_type<std::intmax_t, min_expl<Mode>> : std::type_identity<min_expl<Mode>> {};
 template<int Mode>
 struct std::common_type<min_expl<Mode>, std::intmax_t> : std::type_identity<min_expl<Mode>> {};
 
 namespace {
 
-using namespace mp_units;
+using namespace units;
+using namespace units::isq::si;
 
 // quantity explicitly constructible (not convertible) from the representation type
-static_assert(!std::constructible_from<quantity<si::metre, min_expl<>>, min_expl<>>);
-static_assert(!std::convertible_to<min_expl<>, quantity<si::metre, min_expl<>>>);
+static_assert(std::constructible_from<length<metre, min_expl<>>, min_expl<>>);
+static_assert(!std::convertible_to<min_expl<>, length<metre, min_expl<>>>);
 
 // not constructible from an underlying type
-static_assert(!std::constructible_from<quantity<si::metre, min_expl<>>, int>);
-static_assert(!std::convertible_to<int, quantity<si::metre, min_expl<>>>);
-
-// multiply syntax should work
-template<typename T, Unit auto U>
-concept creates_quantity = requires { T{} * U; };
-
-static_assert(creates_quantity<min_expl<>, si::metre>);
+static_assert(!std::constructible_from<length<metre, min_expl<>>, int>);
+static_assert(!std::convertible_to<int, length<metre, min_expl<>>>);
 
 // dimensionless quantity implicitly convertible from the representation type
-static_assert(std::constructible_from<quantity<one, min_expl<>>, min_expl<>>);
-static_assert(std::convertible_to<min_expl<>, quantity<one, min_expl<>>>);
+static_assert(std::constructible_from<dimensionless<one, min_expl<>>, min_expl<>>);
+static_assert(std::convertible_to<min_expl<>, dimensionless<one, min_expl<>>>);
 
 // but not from an underlying type
-static_assert(std::constructible_from<quantity<one, min_expl<>>, int>);
-static_assert(!std::convertible_to<int, quantity<one, min_expl<>>>);
+static_assert(!std::constructible_from<dimensionless<one, min_expl<>>, int>);
+static_assert(!std::convertible_to<int, dimensionless<one, min_expl<>>>);
 
 // or for ratio != 1
-static_assert(!std::constructible_from<quantity<percent, min_expl<>>, min_expl<>>);
-static_assert(!std::convertible_to<min_expl<>, quantity<percent, min_expl<>>>);
+static_assert(std::constructible_from<dimensionless<percent, min_expl<>>, min_expl<>>);
+static_assert(!std::convertible_to<min_expl<>, dimensionless<percent, min_expl<>>>);
 
 // quantity convertible from itself
-static_assert(std::constructible_from<quantity<si::metre, min_expl<>>, quantity<si::metre, min_expl<>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_expl<>>, quantity<si::metre, min_expl<>>>);
+static_assert(std::constructible_from<length<metre, min_expl<>>, length<metre, min_expl<>>>);
+static_assert(std::convertible_to<length<metre, min_expl<>>, length<metre, min_expl<>>>);
 
 // not convertible from an underlying type
-static_assert(std::constructible_from<quantity<si::metre, min_expl<>>, quantity<si::metre, int>>);
-static_assert(!std::convertible_to<quantity<si::metre, int>, quantity<si::metre, min_expl<>>>);
+static_assert(!std::constructible_from<length<metre, min_expl<>>, length<metre, int>>);
+static_assert(!std::convertible_to<length<metre, int>, length<metre, min_expl<>>>);
 
 // quantity convertible from another non truncating unit
-static_assert(std::constructible_from<quantity<si::metre, min_expl<>>, quantity<si::kilo<si::metre>, min_expl<>>>);
-static_assert(std::convertible_to<quantity<si::kilo<si::metre>, min_expl<>>, quantity<si::metre, min_expl<>>>);
+static_assert(std::constructible_from<length<metre, min_expl<>>, length<kilometre, min_expl<>>>);
+static_assert(std::convertible_to<length<kilometre, min_expl<>>, length<metre, min_expl<>>>);
 
 // quantity not convertible from another truncating unit
-static_assert(!std::constructible_from<quantity<si::kilo<si::metre>, min_expl<>>, quantity<si::metre, min_expl<>>>);
-static_assert(!std::convertible_to<quantity<si::metre, min_expl<>>, quantity<si::kilo<si::metre>, min_expl<>>>);
+static_assert(!std::constructible_from<length<kilometre, min_expl<>>, length<metre, min_expl<>>>);
+static_assert(!std::convertible_to<length<metre, min_expl<>>, length<kilometre, min_expl<>>>);
 
 // rep type with explicit constructor - implicit construction of rep not allowed
-static_assert(!std::constructible_from<quantity<si::metre, min_expl<>>, int>);
-static_assert(!std::convertible_to<int, quantity<si::metre, min_expl<>>>);
+static_assert(!std::constructible_from<length<metre, min_expl<>>, int>);
+static_assert(!std::convertible_to<int, length<metre, min_expl<>>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, min_expl<>>, quantity<si::metre, int>>);
-static_assert(!std::convertible_to<quantity<si::metre, int>, quantity<si::metre, min_expl<>>>);
+static_assert(!std::constructible_from<length<metre, min_expl<>>, length<metre, int>>);
+static_assert(!std::convertible_to<length<metre, int>, length<metre, min_expl<>>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, int>, min_expl<>>);
-static_assert(!std::convertible_to<min_expl<>, quantity<si::metre, int>>);
+static_assert(!std::constructible_from<length<metre, int>, min_expl<>>);
+static_assert(!std::convertible_to<min_expl<>, length<metre, int>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, int>, quantity<si::metre, min_expl<>>>);
-static_assert(!std::convertible_to<quantity<si::metre, min_expl<>>, quantity<si::metre, int>>);
+static_assert(!std::constructible_from<length<metre, int>, length<metre, min_expl<>>>);
+static_assert(!std::convertible_to<length<metre, min_expl<>>, length<metre, int>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, min_expl<>>, quantity<one>>);
-static_assert(!std::convertible_to<quantity<one>, quantity<si::metre, min_expl<>>>);
+static_assert(!std::constructible_from<length<metre, min_expl<>>, dimensionless<one>>);
+static_assert(!std::convertible_to<dimensionless<one>, length<metre, min_expl<>>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, int>, quantity<one, min_expl<>>>);
-static_assert(!std::convertible_to<quantity<one, min_expl<>>, quantity<si::metre, int>>);
+static_assert(!std::constructible_from<length<metre, int>, dimensionless<one, min_expl<>>>);
+static_assert(!std::convertible_to<dimensionless<one, min_expl<>>, length<metre, int>>);
 
 // all operations needed to satisfy concept
 static_assert(Representation<min_expl<>>);
@@ -194,7 +186,7 @@ static_assert(!Representation<min_expl<9>>);
 
 // quantity's operators should mirror the representation type capabilities
 template<typename Rep>
-concept invalid_member_operations = requires(quantity<si::metre, Rep> lhs) {
+concept invalid_member_operations = requires(length<metre, Rep> lhs) {
   requires !requires { +lhs; };
   requires !requires { -lhs; };
   requires !requires { ++lhs; };
@@ -202,55 +194,50 @@ concept invalid_member_operations = requires(quantity<si::metre, Rep> lhs) {
   requires !requires { --lhs; };
   requires !requires { lhs--; };
 
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs += rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs -= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs += rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs -= rhs; };
   requires !requires(Rep rhs) { lhs *= rhs; };
   requires !requires(Rep rhs) { lhs /= rhs; };
   requires !requires(Rep rhs) { lhs %= rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs %= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs %= rhs; };
 
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs + rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs - rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs + rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs - rhs; };
   requires !requires(Rep rhs) { lhs % rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs % rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs < rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs > rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs <= rhs; };
-  requires !requires(quantity<si::metre, Rep> rhs) { lhs >= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs % rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs < rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs > rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs <= rhs; };
+  requires !requires(length<metre, Rep> rhs) { lhs >= rhs; };
 
-  requires !requires(quantity<si::metre, int> rhs) { lhs + rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs - rhs; };
+  requires !requires(length<metre, int> rhs) { lhs + rhs; };
+  requires !requires(length<metre, int> rhs) { lhs - rhs; };
   requires !requires(int rhs) { lhs % rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs % rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs == rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs != rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs < rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs > rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs <= rhs; };
-  requires !requires(quantity<si::metre, int> rhs) { lhs >= rhs; };
+  requires !requires(length<metre, int> rhs) { lhs % rhs; };
+  requires !requires(length<metre, int> rhs) { lhs == rhs; };
+  requires !requires(length<metre, int> rhs) { lhs != rhs; };
+  requires !requires(length<metre, int> rhs) { lhs < rhs; };
+  requires !requires(length<metre, int> rhs) { lhs > rhs; };
+  requires !requires(length<metre, int> rhs) { lhs <= rhs; };
+  requires !requires(length<metre, int> rhs) { lhs >= rhs; };
 
   requires !requires(std::ostream os) { os << lhs; };
 };
 static_assert(invalid_member_operations<min_expl<>>);
 
 // equality
-static_assert(quantity<si::kilo<si::metre>, min_expl<>>(min_expl(2)) ==
-              quantity<si::metre, min_expl<>>(min_expl(2'000)));
-static_assert(quantity<si::metre, min_expl<>>(min_expl(123)) * min_expl(2) ==
-              quantity<si::metre, min_expl<>>(min_expl(246)));
-static_assert(quantity<si::metre, min_expl<>>(min_expl(123)) * quantity{min_expl(2)} ==
-              quantity<si::metre, min_expl<>>(min_expl(246)));
-static_assert(min_expl(2) * quantity<si::metre, min_expl<>>(min_expl(123)) ==
-              quantity<si::metre, min_expl<>>(min_expl(246)));
-static_assert(quantity{min_expl(2)} * quantity<si::metre, min_expl<>>(min_expl(123)) ==
-              quantity<si::metre, min_expl<>>(min_expl(246)));
-static_assert(quantity<si::metre, min_expl<>>(min_expl(246)) / min_expl(2) ==
-              quantity<si::metre, min_expl<>>(min_expl(123)));
-static_assert(quantity<si::metre, min_expl<>>(min_expl(246)) / quantity{min_expl(2)} ==
-              quantity<si::metre, min_expl<>>(min_expl(123)));
-static_assert(quantity<si::metre, min_expl<>>(min_expl(246)) / quantity<si::metre, min_expl<>>(min_expl(2)) ==
+static_assert(length<kilometre, min_expl<>>(min_expl(2)) == length<metre, min_expl<>>(min_expl(2000)));
+static_assert(length<metre, min_expl<>>(min_expl(123)) * min_expl(2) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(length<metre, min_expl<>>(min_expl(123)) * quantity{min_expl(2)} ==
+              length<metre, min_expl<>>(min_expl(246)));
+static_assert(min_expl(2) * length<metre, min_expl<>>(min_expl(123)) == length<metre, min_expl<>>(min_expl(246)));
+static_assert(quantity{min_expl(2)} * length<metre, min_expl<>>(min_expl(123)) ==
+              length<metre, min_expl<>>(min_expl(246)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / min_expl(2) == length<metre, min_expl<>>(min_expl(123)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / quantity{min_expl(2)} ==
+              length<metre, min_expl<>>(min_expl(123)));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) ==
               quantity{min_expl(123)});
-static_assert(quantity<si::metre, min_expl<>>(min_expl(246)) / quantity<si::metre, min_expl<>>(min_expl(2)) ==
-              min_expl(123));
+static_assert(length<metre, min_expl<>>(min_expl(246)) / length<metre, min_expl<>>(min_expl(2)) == min_expl(123));
 
 }  // namespace

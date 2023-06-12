@@ -35,7 +35,6 @@ add_library(
     chrono_test.cpp
     concepts_test.cpp
     # custom_rep_test_min_expl.cpp
-    custom_rep_test_min_impl.cpp
     dimension_test.cpp
     fixed_string_test.cpp
     fractional_exponent_quantity.cpp
