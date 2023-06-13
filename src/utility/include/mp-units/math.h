@@ -51,17 +51,17 @@ namespace mp_units {
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
   requires detail::non_zero<Den>
-[[nodiscard]] constexpr auto pow(const Q& q) noexcept
+[[nodiscard]] constexpr Quantity auto pow(const Q& q) noexcept
   requires requires { pow(q.number(), 1.0); } || requires { std::pow(q.number(), 1.0); }
 {
   using rep = TYPENAME Q::rep;
   if constexpr (Num == 0) {
-    return rep(1);
+    return make_quantity<pow<Num, Den>(Q::reference)>(rep(1));
   } else if constexpr (ratio{Num, Den} == 1) {
     return q;
   } else {
     using std::pow;
-    return make_quantity<reference<pow<Num, Den>(Q::quantity_spec), pow<Num, Den>(Q::unit)>{}>(
+    return make_quantity<pow<Num, Den>(Q::reference)>(
       static_cast<rep>(pow(q.number(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
@@ -80,8 +80,7 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::sqrt;
-  return make_quantity<reference<pow<1, 2>(Q::quantity_spec), pow<1, 2>(Q::unit)>{}>(
-    static_cast<rep>(sqrt(q.number())));
+  return make_quantity<sqrt(Q::reference)>(static_cast<rep>(sqrt(q.number())));
 }
 
 /**
@@ -98,8 +97,7 @@ template<Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   using std::cbrt;
-  return make_quantity<reference<pow<1, 3>(Q::quantity_spec), pow<1, 3>(Q::unit)>{}>(
-    static_cast<rep>(cbrt(q.number())));
+  return make_quantity<cbrt(Q::reference)>(static_cast<rep>(cbrt(q.number())));
 }
 
 /**
