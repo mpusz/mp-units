@@ -56,7 +56,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Quantity Q>
 {
   using rep = TYPENAME Q::rep;
   if constexpr (Num == 0) {
-    return make_quantity<pow<Num, Den>(Q::reference)>(rep(1));
+    return quantity<pow<Num, Den>(Q::reference), rep>::one();
   } else if constexpr (ratio{Num, Den} == 1) {
     return q;
   } else {
