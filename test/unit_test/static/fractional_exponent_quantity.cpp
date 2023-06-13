@@ -40,7 +40,13 @@ static_assert(power_spectral_density.dimension == pow<2>(amplitude_spectral_dens
 static_assert(sqrt(square(si::volt) / si::hertz) == si::volt / sqrt(si::hertz));
 static_assert(square(si::volt) / si::hertz == pow<2>(si::volt / sqrt(si::hertz)));
 
-// TODO Should there be `pow()` and `sqrt()` for references as well? How to compare the results?
+constexpr auto sqrt_res = sqrt(power_spectral_density[square(si::volt) / si::hertz]);
+static_assert(implicitly_convertible(get_quantity_spec(sqrt_res), amplitude_spectral_density));
+static_assert(get_unit(sqrt_res) == si::volt / sqrt(si::hertz));
+
+constexpr auto pow_res = pow<2>(amplitude_spectral_density[si::volt / sqrt(si::hertz)]);
+static_assert(implicitly_convertible(power_spectral_density, get_quantity_spec(pow_res)));
+static_assert(square(si::volt) / si::hertz == get_unit(pow_res));
 
 static_assert(sqrt(16 * power_spectral_density[square(si::volt) / si::hertz]) ==
               4 * amplitude_spectral_density[si::volt / sqrt(si::hertz)]);
