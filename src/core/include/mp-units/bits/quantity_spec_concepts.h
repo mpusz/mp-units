@@ -143,4 +143,17 @@ template<typename T>
 concept QuantitySpec =
   detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T> || detail::QuantityKindSpec<T>;
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind(Q q);
+
+namespace detail {
+
+template<auto To, auto From>
+concept DerivedFromQuantityKindSpecOf =
+  QuantitySpec<std::remove_const_t<decltype(From)>> && QuantitySpec<std::remove_const_t<decltype(To)>> &&
+  get_kind(From) != get_kind(To) &&
+  std::derived_from<std::remove_cvref_t<decltype(To)>, std::remove_cvref_t<decltype(get_kind(From))>>;
+
+}
+
 }  // namespace mp_units

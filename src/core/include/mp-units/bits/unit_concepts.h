@@ -188,7 +188,6 @@ concept UnitOf = AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(
                  implicitly_convertible(get_quantity_spec(U{}), QS) &&
                  // the below is to make `dimensionless[radian]` invalid
                  (get_kind(QS) == get_kind(get_quantity_spec(U{})) ||
-                  !std::derived_from<std::remove_const_t<decltype(get_quantity_spec(U{}))>,
-                                     std::remove_const_t<decltype(get_kind(QS))>>);
+                  !detail::DerivedFromQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
 
 }  // namespace mp_units
