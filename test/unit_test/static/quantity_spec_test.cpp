@@ -53,6 +53,7 @@ inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
+QUANTITY_SPEC_(rotation, dimensionless);
 QUANTITY_SPEC_(frequency, 1 / period_duration);
 QUANTITY_SPEC_(activity, 1 / time);
 QUANTITY_SPEC_(area, pow<2>(length));
@@ -566,6 +567,8 @@ static_assert(convertible_impl(speed, special_rate_of_climb) == explicit_convers
 static_assert(convertible_impl(rate_of_climb, special_rate_of_climb) == explicit_conversion);
 static_assert(convertible_impl(energy, potential_energy) == explicit_conversion);
 static_assert(convertible_impl(energy, kinetic_energy) == explicit_conversion);
+static_assert(convertible_impl(dimensionless, rotation) == explicit_conversion);
+static_assert(convertible_impl(dimensionless, rotational_displacement) == explicit_conversion);
 
 // downcasting to a different kind
 static_assert(convertible_impl(dimensionless, angular_measure) == yes);
@@ -702,6 +705,9 @@ static_assert(convertible_impl(kind_of<speed>, velocity) == yes);
 static_assert(convertible_impl(kind_of<energy>, energy) == yes);
 static_assert(convertible_impl(kind_of<energy>, potential_energy) == yes);
 static_assert(convertible_impl(kind_of<energy>, kinetic_energy) == yes);
+static_assert(convertible_impl(kind_of<dimensionless>, rotation) == yes);
+static_assert(convertible_impl(kind_of<dimensionless>, angular_measure) == yes);
+static_assert(convertible_impl(kind_of<dimensionless>, rotational_displacement) == yes);
 
 // kind to a type of a different dimension
 static_assert(convertible_impl(kind_of<length>, mass) == no);
@@ -741,11 +747,18 @@ static_assert(convertible_impl(frequency, kind_of<activity>) == no);
 static_assert(convertible_impl(energy, kind_of<energy>) == yes);
 static_assert(convertible_impl(potential_energy, kind_of<energy>) == yes);
 static_assert(convertible_impl(kinetic_energy, kind_of<energy>) == yes);
+static_assert(convertible_impl(rotation, kind_of<dimensionless>) == yes);
+static_assert(convertible_impl(angular_measure, kind_of<dimensionless>) == yes);
+static_assert(convertible_impl(rotational_displacement, kind_of<dimensionless>) == yes);
 
 // converting derived type to a kind
 static_assert(convertible_impl(1 / time, kind_of<frequency>) == yes);
 static_assert(convertible_impl(length / time, kind_of<speed>) == yes);
 static_assert(convertible_impl(length / pow<2>(time), kind_of<acceleration>) == yes);
+
+// converting kind to a kind
+static_assert(convertible_impl(kind_of<dimensionless>, kind_of<angular_measure>) == yes);
+static_assert(convertible_impl(kind_of<angular_measure>, kind_of<dimensionless>) == yes);
 
 // converting derived kind to a kind
 static_assert(convertible_impl(kind_of<1 / time>, kind_of<frequency>) == yes);
