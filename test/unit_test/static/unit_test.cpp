@@ -33,6 +33,7 @@ using namespace mp_units;
 using namespace mp_units::detail;
 
 using one_ = struct one;
+using percent_ = struct percent;
 
 // base dimensions
 // clang-format off
@@ -475,6 +476,12 @@ static_assert(is_of_type<metre / metre, one_>);
 static_assert(is_of_type<si::kilo<metre> / metre, derived_unit<si::kilo_<metre>, per<metre_>>>);
 static_assert(metre / metre == one);
 static_assert(hertz * second == one);
+static_assert(one * one == one);
+static_assert(is_of_type<one * one, one_>);
+static_assert(one * percent == percent);
+static_assert(percent * one == percent);
+static_assert(is_of_type<one * percent, percent_>);
+static_assert(is_of_type<percent * one, percent_>);
 
 static_assert(hertz == 1 / second);
 static_assert(newton == kilogram * metre / square(second));
@@ -492,6 +499,12 @@ static_assert(is_same_v<decltype(pow<2>(mag<3600> * second)), decltype((mag<3600
 static_assert(is_same_v<decltype(pow<2>(metre / second)), decltype(metre * metre / second / second)>);
 static_assert(is_same_v<decltype(pow<2>(kilometre / hour)), decltype(kilometre * kilometre / hour / hour)>);
 
+static_assert(is_of_type<pow<0>(metre), one_>);
+static_assert(is_of_type<pow<1>(metre), metre_>);
+static_assert(is_of_type<pow<2, 2>(metre), metre_>);
+static_assert(is_of_type<pow<2>(one), one_>);
+static_assert(is_of_type<pow<2>(percent), derived_unit<power<percent_, 2>>>);
+static_assert(is_of_type<pow<2>(radian), derived_unit<power<radian_, 2>>>);
 static_assert(is_of_type<pow<2>(metre), derived_unit<power<metre_, 2>>>);
 static_assert(is_of_type<pow<1, 2>(metre), derived_unit<power<metre_, 1, 2>>>);
 static_assert(is_of_type<pow<1, 2>(metre* metre), metre_>);

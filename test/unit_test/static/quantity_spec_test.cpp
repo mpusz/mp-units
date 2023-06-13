@@ -280,6 +280,10 @@ static_assert(is_of_type<kind_of<length> / kind_of<time>, kind_of_<derived_quant
 static_assert(is_of_type<kind_of<length / time>, kind_of_<derived_quantity_spec<length_, per<time_>>{}>>);
 
 // power
+static_assert(is_of_type<pow<0>(length), dimensionless_>);
+static_assert(is_of_type<pow<1>(length), length_>);
+static_assert(is_of_type<pow<2, 2>(length), length_>);
+static_assert(is_of_type<pow<2>(dimensionless), dimensionless_>);
 static_assert(is_of_type<pow<2>(length), derived_quantity_spec<mp_units::power<length_, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length), derived_quantity_spec<mp_units::power<length_, 1, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length* length), length_>);
@@ -292,6 +296,10 @@ static_assert(
 
 static_assert(is_same_v<decltype(pow<2>(length)), decltype(length * length)>);
 static_assert(is_same_v<decltype(pow<2>(length / time)), decltype(length * length / time / time)>);
+
+static_assert(dimensionless * dimensionless == dimensionless);
+static_assert(is_of_type<dimensionless * dimensionless, dimensionless_>);
+
 
 template<auto& t>
 concept invalid_operations = requires {
