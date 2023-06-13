@@ -274,6 +274,24 @@ static_assert(!ReferenceOf<struct si::second, isq::dim_length>);
 static_assert(ReferenceOf<std::remove_const_t<decltype(isq::length[si::metre])>, isq::dim_length>);
 static_assert(ReferenceOf<std::remove_const_t<decltype(isq::radius[si::metre])>, isq::dim_length>);
 
+static_assert(ReferenceOf<struct one, dimensionless>);
+static_assert(ReferenceOf<struct one, dimension_one>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, dimensionless>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, dimension_one>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::rotation[one])>, isq::rotation>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::rotation[one])>, dimensionless>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::rotation[one])>, dimension_one>);
+static_assert(ReferenceOf<struct si::radian, isq::angular_measure>);
+static_assert(!ReferenceOf<struct si::radian, dimensionless>);
+static_assert(ReferenceOf<struct si::radian, dimension_one>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::angular_measure[si::radian])>, isq::angular_measure>);
+static_assert(!ReferenceOf<std::remove_const_t<decltype(isq::angular_measure[si::radian])>, dimensionless>);
+static_assert(ReferenceOf<std::remove_const_t<decltype(isq::angular_measure[si::radian])>, dimension_one>);
+static_assert(ReferenceOf<struct one, isq::rotation>);
+static_assert(ReferenceOf<struct one, isq::angular_measure>);
+static_assert(!ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, isq::rotation>);
+static_assert(!ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, isq::angular_measure>);
+
 // Representation
 static_assert(Representation<int>);
 static_assert(Representation<double>);
@@ -313,6 +331,24 @@ static_assert(QuantityOf<quantity<si::metre>, isq::dim_length>);
 static_assert(!QuantityOf<quantity<si::second>, isq::dim_length>);
 static_assert(QuantityOf<quantity<isq::length[si::metre]>, isq::dim_length>);
 static_assert(QuantityOf<quantity<isq::radius[si::metre]>, isq::dim_length>);
+
+static_assert(QuantityOf<quantity<one>, dimensionless>);
+static_assert(QuantityOf<quantity<one>, dimension_one>);
+static_assert(QuantityOf<quantity<dimensionless[one]>, dimensionless>);
+static_assert(QuantityOf<quantity<dimensionless[one]>, dimension_one>);
+static_assert(QuantityOf<quantity<isq::rotation[one]>, isq::rotation>);
+static_assert(QuantityOf<quantity<isq::rotation[one]>, dimensionless>);
+static_assert(QuantityOf<quantity<isq::rotation[one]>, dimension_one>);
+static_assert(QuantityOf<quantity<si::radian>, isq::angular_measure>);
+static_assert(!QuantityOf<quantity<si::radian>, dimensionless>);
+static_assert(QuantityOf<quantity<si::radian>, dimension_one>);
+static_assert(QuantityOf<quantity<isq::angular_measure[si::radian]>, isq::angular_measure>);
+static_assert(!QuantityOf<quantity<isq::angular_measure[si::radian]>, dimensionless>);
+static_assert(QuantityOf<quantity<isq::angular_measure[si::radian]>, dimension_one>);
+static_assert(QuantityOf<quantity<one>, isq::rotation>);
+static_assert(QuantityOf<quantity<one>, isq::angular_measure>);
+static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::rotation>);
+static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::angular_measure>);
 
 // QuantityLike
 static_assert(QuantityLike<std::chrono::seconds>);
