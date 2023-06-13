@@ -501,6 +501,16 @@ template<typename... Expr1, typename... Expr2>
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_derived_unit = false;
+
+template<typename... Expr>
+inline constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> = true;
+
+}  // namespace detail
+
 /**
  * @brief Computes the value of a unit raised to the `Num/Den` power
  *
@@ -514,16 +524,18 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Unit auto pow(U u)
 {
-  if constexpr (requires { U::symbol; }) {
-    if constexpr (Den == 1)
-      return derived_unit<power<U, Num>>{};
-    else
-      return derived_unit<power<U, Num, Den>>{};
-  } else if constexpr (detail::is_specialization_of_scaled_unit<U>) {
+  if constexpr (Num == 0 || is_same_v<U, struct one>)
+    return one;
+  else if constexpr (ratio{Num, Den} == 1)
+    return u;
+  else if constexpr (detail::is_specialization_of_scaled_unit<U>)
     return scaled_unit<pow<Num, Den>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
-  } else {
+  else if constexpr (detail::is_specialization_of_derived_unit<U>)
     return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
-  }
+  else if constexpr (Den == 1)
+    return derived_unit<power<U, Num>>{};
+  else
+    return derived_unit<power<U, Num, Den>>{};
 }
 
 /**

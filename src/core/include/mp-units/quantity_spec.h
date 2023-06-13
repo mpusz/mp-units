@@ -545,9 +545,9 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   // `2 * one * (2 * one)` should compare to `4 * one`
   // `2 * rad * (2 * rad)` should compare to `4 * rad^2`
   // all are dimensionless quantities :-(
-  if constexpr (q == dimensionless)
-    return q;
-  else if constexpr (Num == 1 && Den == 1)
+  if constexpr (Num == 0 || q == dimensionless)
+    return dimensionless;
+  else if constexpr (ratio{Num, Den} == 1)
     return q;
   else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>)
     return detail::clone_kind_of<Q{}>(
