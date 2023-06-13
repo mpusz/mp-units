@@ -106,6 +106,40 @@ struct reference {
     return {};
   }
 
+  /**
+   * @brief Computes the value of a reference raised to the `Num/Den` power
+   *
+   * @tparam Num Exponent numerator
+   * @tparam Den Exponent denominator
+   * @param r Reference being the base of the operation
+   *
+   * @return The result of computation
+   */
+  template<std::intmax_t Num, std::intmax_t Den = 1>
+    requires detail::non_zero<Den>
+  [[nodiscard]] friend consteval reference<pow<Num, Den>(Q), pow<Num, Den>(U)> pow(reference)
+  {
+    return {};
+  }
+
+  /**
+   * @brief Computes the square root of a reference
+   *
+   * @param r Reference being the base of the operation
+   *
+   * @return The result of computation
+   */
+  [[nodiscard]] friend consteval reference<sqrt(Q), sqrt(U)> sqrt(reference) { return {}; }
+
+  /**
+   * @brief Computes the cubic root of a reference
+   *
+   * @param r Reference being the base of the operation
+   *
+   * @return The result of computation
+   */
+  [[nodiscard]] friend consteval reference<cbrt(Q), cbrt(U)> cbrt(reference) { return {}; }
+
   template<auto Q2, auto U2>
   [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
   {
