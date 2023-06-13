@@ -396,7 +396,7 @@ private:
     if (begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
       out = mp_units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
-      if constexpr (!std::derived_from<decltype(get_unit(Reference)), mp_units::derived_unit<>>) {
+      if constexpr (mp_units::detail::has_unit_symbol(get_unit(Reference))) {
         *out++ = CharT(' ');
         out = unit_symbol_to<CharT>(out, get_unit(Reference));
       }

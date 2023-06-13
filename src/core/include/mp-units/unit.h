@@ -684,6 +684,12 @@ constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
   return out;
 }
 
+template<Unit U>
+[[nodiscard]] consteval bool has_unit_symbol(U)
+{
+  return !std::derived_from<U, derived_unit<>>;
+}
+
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::symbol; }
 constexpr Out unit_symbol_impl(Out out, U, unit_symbol_formatting fmt, bool negative_power)
@@ -706,11 +712,11 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_
     constexpr auto mag_txt = magnitude_text<M>();
     out = copy<CharT>(mag_txt, fmt.encoding, out);
 
-    if constexpr (std::derived_from<std::remove_const_t<decltype(u.reference_unit)>, derived_unit<>>)
-      return out;
-    else {
+    if constexpr (has_unit_symbol(u.reference_unit)) {
       *out++ = ' ';
       return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
+    } else {
+      return out;
     }
   }
 }

@@ -35,7 +35,7 @@ template<typename CharT, class Traits, auto R, typename Rep>
 void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
 {
   os << q.number();
-  if constexpr (!std::derived_from<decltype(get_unit(R)), derived_unit<>>) {
+  if constexpr (has_unit_symbol(get_unit(R))) {
     os << " ";
     unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), get_unit(R));
   }
