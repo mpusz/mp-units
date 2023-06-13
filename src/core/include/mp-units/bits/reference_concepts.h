@@ -74,6 +74,9 @@ template<typename T, auto V>
 concept ReferenceOf =
   Reference<T> &&
   ((Dimension<std::remove_const_t<decltype(V)>> && get_quantity_spec(T{}).dimension == V) ||
-   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(get_quantity_spec(T{}), V)));
+   (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(get_quantity_spec(T{}), V) &&
+    !detail::DerivedFromQuantityKindSpecOf<get_quantity_spec(T{}), V> &&
+    (detail::QuantityKindSpec<std::remove_const_t<decltype(get_quantity_spec(T{}))>> ||
+     !detail::DerivedFromQuantityKindSpecOf<V, get_quantity_spec(T{})>)));
 
 }  // namespace mp_units
