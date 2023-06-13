@@ -298,7 +298,7 @@ static_assert(verify(isq::coupling_factor, scalar, one));
 static_assert(verify(isq::leakage_factor, scalar, one));
 static_assert(verify(isq::conductivity, scalar, S / m));
 static_assert(verify(isq::resistivity, scalar, si::ohm* m));
-// static_assert(verify(isq::power, scalar, W));
+static_assert(verify(isq::power, scalar, W));
 static_assert(verify(isq::instantaneous_power, scalar, W));
 static_assert(verify(isq::resistance, scalar, si::ohm));
 static_assert(verify(isq::conductance, scalar, S));
