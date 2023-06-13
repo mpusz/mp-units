@@ -42,18 +42,6 @@ template<Quantity From, Quantity To>
     return typename From::rep{};
 }
 
-// determines the value type used by the representation type
-template<typename Rep>
-[[nodiscard]] consteval auto rep_value_type(Rep)
-{
-  if constexpr (requires { typename Rep::value_type; })
-    return typename Rep::value_type{};
-  else if constexpr (requires { typename Rep::element_type; })
-    return typename Rep::element_type{};
-  else
-    return Rep{};
-}
-
 /**
  * @brief Explicit cast between different quantity types
  *
@@ -84,10 +72,10 @@ template<Quantity To, typename From>
     constexpr Magnitude auto num = numerator(c_mag);
     constexpr Magnitude auto den = denominator(c_mag);
     constexpr Magnitude auto irr = c_mag * (den / num);
-    using c_mag_type = common_magnitude_type<c_mag>;
     using c_rep_type = decltype(common_rep_type(q, To{}));
-    using v_type = decltype(rep_value_type(c_rep_type{}));
-    using multiplier_type = decltype(v_type{} * c_mag_type{});
+    using c_mag_type = common_magnitude_type<c_mag>;
+    using multiplier_type =
+      conditional<treat_as_floating_point<c_rep_type>, std::common_type_t<c_mag_type, long double>, c_mag_type>;
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
     return static_cast<TYPENAME To::rep>(static_cast<c_rep_type>(std::forward<From>(q).number()) * val(num) / val(den) *
                                          val(irr)) *
