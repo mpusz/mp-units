@@ -200,4 +200,20 @@ template<Reference R1, Reference R2, Reference... Rest>
                    common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
 }
 
+namespace detail {
+
+template<AssociatedUnit auto To, AssociatedUnit From>
+[[nodiscard]] consteval std::remove_const_t<decltype(To)> clone_reference_with(From)
+{
+  return {};
+}
+
+template<Unit auto To, QuantitySpec auto QS, Unit auto U>
+[[nodiscard]] consteval reference<QS, To> clone_reference_with(reference<QS, U>)
+{
+  return {};
+}
+
+}  // namespace detail
+
 }  // namespace mp_units
