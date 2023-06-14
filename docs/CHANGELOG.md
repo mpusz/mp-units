@@ -1,6 +1,6 @@
 # Release notes
 
-- **0.8.0 WIP**
+- **0.8.0 June 14, 2023**
   - (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`, `common_quantity_kind`, and `common_quantity_point_kind` removed
   - (!) refactor: `named_derived_unit` removed as it was not used
   - (!) refactor: `derived_unit` renamed to `derived_scaled_unit`
