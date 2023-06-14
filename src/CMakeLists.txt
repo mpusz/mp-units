@@ -28,9 +28,6 @@ set(projectPrefix UNITS_)
 option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
-option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
-message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
-
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include(AddUnitsModule)
@@ -64,5 +61,5 @@ write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameM
 install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
 install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
 )

@@ -86,10 +86,6 @@ inline constexpr bool is_vector = false;
 template<typename Rep>
 inline constexpr bool is_tensor = false;
 
-template<typename T>
-  requires requires { typename T::element_type; }
-inline constexpr bool treat_as_floating_point<T> = treat_as_floating_point<typename T::element_type>;
-
 /**
  * @brief A type trait that defines zero, one, min, and max for a representation type
  *
