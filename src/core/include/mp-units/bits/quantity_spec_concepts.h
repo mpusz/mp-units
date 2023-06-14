@@ -56,6 +56,10 @@ template<typename T, auto... Args>
 void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Args...>*);
 #endif
 
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_quantity_spec =
+  requires(T* t) { to_base_specialization_of_quantity_spec(t); };
+
 #ifdef __cpp_explicit_this_parameter
 template<BaseDimension auto Dim, auto... Args>
 template<auto... Args>
@@ -64,6 +68,10 @@ void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<D
 template<typename Self, BaseDimension auto Dim, auto... Args>
 void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Self, Dim, Args...>*);
 #endif
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_base_quantity_spec =
+  requires(T* t) { to_base_specialization_of_base_quantity_spec(t); };
 
 template<typename T>
 inline constexpr bool is_specialization_of_quantity_spec = false;
@@ -82,7 +90,7 @@ inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args..
  * Satisfied by all types that derive from `quantity_spec`.
  */
 template<typename T>
-concept NamedQuantitySpec = requires(T* t) { to_base_specialization_of_quantity_spec(t); } &&
+concept NamedQuantitySpec = is_derived_from_specialization_of_quantity_spec<T> &&
                             (!is_specialization_of_quantity_spec<T>)&&(!QuantityKindSpec<T>);
 
 /**
@@ -92,7 +100,7 @@ concept NamedQuantitySpec = requires(T* t) { to_base_specialization_of_quantity_
  * as a template parameter.
  */
 template<typename T>
-concept BaseQuantitySpec = NamedQuantitySpec<T> && requires(T* t) { to_base_specialization_of_base_quantity_spec(t); };
+concept BaseQuantitySpec = NamedQuantitySpec<T> && is_derived_from_specialization_of_base_quantity_spec<T>;
 
 template<typename T>
 struct is_dimensionless : std::false_type {};

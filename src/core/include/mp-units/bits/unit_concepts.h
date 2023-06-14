@@ -68,10 +68,11 @@ inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...
 /**
  * @brief A concept matching all units with special names
  *
- * Satisfied by all unit types derived from the specialization of `named_unit` (but not constant units).
+ * Satisfied by all unit types derived from the specialization of `named_unit`.
  */
 template<typename T>
-concept NamedUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T>;
+concept NamedUnit =
+  Unit<T> && detail::is_derived_from_specialization_of_named_unit<T> && (!detail::is_specialization_of_named_unit<T>);
 
 }  // namespace detail
 

@@ -34,7 +34,11 @@ struct base_dimension;
 namespace detail {
 
 template<basic_symbol_text Symbol>
-void to_base_base_dimension(const volatile base_dimension<Symbol>*);
+void to_base_specialization_of_base_dimension(const volatile base_dimension<Symbol>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_base_dimension =
+  requires(T* t) { to_base_specialization_of_base_dimension(t); };
 
 template<typename T>
 inline constexpr bool is_specialization_of_base_dimension = false;
@@ -48,7 +52,8 @@ inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = requires(T* t) { to_base_base_dimension(t); } && (!is_specialization_of_base_dimension<T>);
+concept BaseDimension =
+  is_derived_from_specialization_of_base_dimension<T> && (!is_specialization_of_base_dimension<T>);
 
 template<typename T>
 struct is_dimension_one : std::false_type {};

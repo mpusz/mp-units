@@ -37,6 +37,10 @@ namespace detail {
 template<auto R, typename Rep>
 void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
 
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_quantity =
+  requires(T* t) { to_base_specialization_of_quantity(t); };
+
 }  // namespace detail
 
 /**
@@ -45,7 +49,7 @@ void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
  * Satisfied by all types being a either specialization or derived from `quantity`
  */
 template<typename T>
-concept Quantity = requires(T* t) { detail::to_base_specialization_of_quantity(t); };
+concept Quantity = detail::is_derived_from_specialization_of_quantity<T>;
 
 /**
  * @brief A concept matching all quantities with provided dimension or quantity spec

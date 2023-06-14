@@ -81,7 +81,11 @@ template<auto R, auto PO, typename Rep>
 void to_base_specialization_of_quantity_point(const volatile quantity_point<R, PO, Rep>*);
 
 template<typename T>
-  requires requires(T* t) { detail::to_base_specialization_of_quantity_point(t); }
+inline constexpr bool is_derived_from_specialization_of_quantity_point =
+  requires(T* t) { to_base_specialization_of_quantity_point(t); };
+
+template<typename T>
+  requires is_derived_from_specialization_of_quantity_point<T>
 inline constexpr bool is_quantity_point<T> = true;
 
 }  // namespace detail
