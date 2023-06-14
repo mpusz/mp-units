@@ -22,17 +22,11 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
 #include "geographic.h"
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
-#include <units/quantity_point_kind.h>
-// IWYU pragma: end_exports
-
-#include <units/chrono.h>
-#include <units/format.h>
-#include <units/math.h>  // IWYU pragma: keep
+#include <mp-units/chrono.h>
+#include <mp-units/math.h>  // IWYU pragma: keep
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <algorithm>
 #include <array>
 #include <initializer_list>
@@ -56,67 +50,25 @@
 // - no ground obstacles (i.e. mountains) to pass
 // - flight path exactly on a shortest possible line to destination
 
-template<units::QuantityKind QK>
-struct UNITS_STD_FMT::formatter<QK> : formatter<typename QK::quantity_type> {
-  template<typename FormatContext>
-  auto format(const QK& v, FormatContext& ctx)
-  {
-    return formatter<typename QK::quantity_type>::format(v.common(), ctx);
-  }
-};
-
 namespace glide_computer {
-
-template<units::QuantityKind QK1, units::QuantityKind QK2>
-constexpr units::Dimensionless auto operator/(const QK1& lhs, const QK2& rhs)
-  requires(!units::QuantityKindRelatedTo<QK1, QK2>) && requires { lhs.common() / rhs.common(); }
-{
-  return lhs.common() / rhs.common();
-}
-
-// kinds
-using horizontal_kind = geographic::horizontal_kind;
-struct vertical_kind : units::kind<vertical_kind, units::isq::si::dim_length> {};
-struct vertical_point_kind : units::point_kind<vertical_point_kind, vertical_kind> {};
-struct velocity_kind : units::derived_kind<velocity_kind, units::isq::si::dim_speed, horizontal_kind> {};
-struct rate_of_climb_kind : units::derived_kind<rate_of_climb_kind, units::isq::si::dim_speed, vertical_kind> {};
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
+QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, mp_units::isq::height / mp_units::isq::time);
+
 // length
-using distance = units::quantity_kind<horizontal_kind, units::isq::si::kilometre>;
-using height = units::quantity_kind<vertical_kind, units::isq::si::metre>;
-using altitude = units::quantity_point_kind<vertical_point_kind, units::isq::si::metre>;
+using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;
+using height = mp_units::quantity<mp_units::isq::height[mp_units::si::metre]>;
 
 // time
-using duration = units::isq::si::time<units::isq::si::second>;
-using timestamp = units::quantity_point<units::clock_origin<std::chrono::system_clock>, units::isq::si::second>;
+using duration = mp_units::quantity<mp_units::isq::duration[mp_units::si::second]>;
+using timestamp = mp_units::quantity_point<mp_units::isq::time[mp_units::si::second],
+                                           mp_units::chrono_point_origin<std::chrono::system_clock>>;
 
 // speed
-using velocity = units::quantity_kind<velocity_kind, units::isq::si::kilometre_per_hour>;
-using rate_of_climb = units::quantity_kind<rate_of_climb_kind, units::isq::si::metre_per_second>;
-
-// text output
-template<class CharT, class Traits>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const altitude& a)
-{
-  return os << a.relative().common() << " AMSL";
-}
-
-}  // namespace glide_computer
-
-template<>
-struct UNITS_STD_FMT::formatter<glide_computer::altitude> : formatter<units::isq::si::length<units::isq::si::metre>> {
-  template<typename FormatContext>
-  auto format(glide_computer::altitude a, FormatContext& ctx)
-  {
-    formatter<units::isq::si::length<units::isq::si::metre>>::format(a.relative().common(), ctx);
-    return UNITS_STD_FMT::format_to(ctx.out(), " AMSL");
-  }
-};
+using velocity = mp_units::quantity<mp_units::isq::speed[mp_units::si::kilo<mp_units::si::metre> / mp_units::si::hour]>;
+using rate_of_climb = mp_units::quantity<rate_of_climb_speed[mp_units::si::metre / mp_units::si::second]>;
 
 // definition of glide computer databases and utilities
-namespace glide_computer {
-
 struct glider {
   struct polar_point {
     velocity v;
@@ -127,7 +79,10 @@ struct glider {
   std::array<polar_point, 1> polar;
 };
 
-constexpr units::Dimensionless auto glide_ratio(const glider::polar_point& polar) { return polar.v / -polar.climb; }
+constexpr mp_units::QuantityOf<mp_units::dimensionless> auto glide_ratio(const glider::polar_point& polar)
+{
+  return polar.v / -polar.climb;
+}
 
 struct weather {
   height cloud_base;
@@ -137,7 +92,7 @@ struct weather {
 struct waypoint {
   std::string name;
   geographic::position<long double> pos;
-  altitude alt;
+  geographic::msl_altitude alt;
 };
 
 class task {
@@ -152,7 +107,7 @@ public:
     leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
     constexpr const waypoint& begin() const { return *begin_; };
     constexpr const waypoint& end() const { return *end_; }
-    constexpr const distance get_length() const { return length_; }
+    constexpr distance get_distance() const { return length_; }
   };
   using legs = std::vector<leg>;
 
@@ -170,7 +125,7 @@ public:
   const waypoint& get_start() const { return waypoints_.front(); }
   const waypoint& get_finish() const { return waypoints_.back(); }
 
-  distance get_length() const { return length_; }
+  distance get_distance() const { return length_; }
 
   distance get_leg_dist_offset(std::size_t leg_index) const
   {
@@ -203,21 +158,26 @@ struct aircraft_tow {
 
 struct flight_point {
   timestamp ts;
-  altitude alt;
+  geographic::msl_altitude alt;
   std::size_t leg_idx = 0;
   distance dist{};
 };
 
-altitude terrain_level_alt(const task& t, const flight_point& pos);
+geographic::msl_altitude terrain_level_alt(const task& t, const flight_point& pos);
 
-constexpr height agl(altitude glider_alt, altitude terrain_level) { return glider_alt - terrain_level; }
-
-inline units::isq::si::length<units::isq::si::kilometre> length_3d(distance dist, height h)
+constexpr height agl(geographic::msl_altitude glider_alt, geographic::msl_altitude terrain_level)
 {
-  return hypot(dist.common(), h.common());
+  return glider_alt - terrain_level;
 }
 
-distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s, altitude ground_alt);
+inline mp_units::quantity<mp_units::isq::length[mp_units::si::kilo<mp_units::si::metre>]> length_3d(distance dist,
+                                                                                                    height h)
+{
+  return hypot(dist, h);
+}
+
+distance glide_distance(const flight_point& pos, const glider& g, const task& t, const safety& s,
+                        geographic::msl_altitude ground_alt);
 
 void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
               const aircraft_tow& at);

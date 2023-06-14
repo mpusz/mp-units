@@ -20,37 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/format.h>
-#include <units/isq/si/international/length.h>
-#include <units/isq/si/international/speed.h>  // IWYU pragma: keep
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>  // IWYU pragma: keep
-#include <units/isq/si/time.h>
-#include <units/quantity_io.h>
+#include <mp-units/format.h>
+#include <mp-units/iostream.h>
+#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <iostream>
 
-using namespace units::isq;
+using namespace mp_units;
 
-constexpr Speed auto avg_speed(Length auto d, Time auto t) { return d / t; }
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
+{
+  return d / t;
+}
 
 int main()
 {
-  using namespace units::isq::si::literals;
-  using namespace units::isq::si::references;
-  using namespace units::aliases::isq::si::international;
+  using namespace mp_units::si::unit_symbols;
+  using namespace mp_units::international::unit_symbols;
 
-  constexpr Speed auto v1 = 110 * (km / h);
-  constexpr Speed auto v2 = mi_per_h<>(70.);
-  constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
-  constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
-#if UNITS_DOWNCAST_MODE == 0
-  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
-  constexpr Speed auto v6 = quantity_cast<si::dim_speed, si::metre_per_second>(v4);
-#else
-  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
-  constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
-#endif
-  constexpr Speed auto v7 = quantity_cast<int>(v6);
+  constexpr auto v1 = 110 * (km / h);
+  constexpr auto v2 = 70 * mph;
+  constexpr auto v3 = avg_speed(220. * km, 2 * h);
+  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * isq::duration[h]);
+  constexpr auto v5 = v3[m / s];
+  constexpr auto v6 = value_cast<m / s>(v4);
+  constexpr auto v7 = value_cast<int>(v6);
 
   std::cout << v1 << '\n';                                             // 110 km/h
   std::cout << v2 << '\n';                                             // 70 mi/h

@@ -36,8 +36,7 @@ vscode:
     - vivaxy.vscode-conventional-commits
     - hbenl.vscode-test-explorer
     - matepek.vscode-catch2-test-adapter
-    - trond-snekvik.simple-rst
-    - lextudio.restructuredtext
+    - redhat.vscode-yaml
     - ritwickdey.liveserver
     - ms-python.python
 
@@ -60,7 +59,17 @@ tasks:
         "restructuredtext.preview.scrollPreviewWithEditor": false,
         "liveServer.settings.root": "/build/docs/docs/sphinx/",
         "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
-        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "yaml.schemas": {
+          "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+        },
+        "yaml.customTags": [
+          "!ENV scalar",
+          "!ENV sequence",
+          "tag:yaml.org,2002:python/name:materialx.emoji.to_svg",
+          "tag:yaml.org,2002:python/name:materialx.emoji.twemoji",
+          "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
+        ]
       }
 
       EOF

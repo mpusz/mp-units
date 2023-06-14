@@ -23,11 +23,6 @@
 cmake_minimum_required(VERSION 3.2)
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
-
-if(NOT ${projectPrefix}LIBCXX)
-    target_sources(unit_tests_static_truncating PRIVATE quantity_kind_test.cpp quantity_point_kind_test.cpp)
-endif()
-
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
 target_compile_options(
     unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
@@ -35,35 +30,40 @@ target_compile_options(
 
 add_library(
     unit_tests_static
-    angle_test.cpp
+    angular_test.cpp
     cgs_test.cpp
     chrono_test.cpp
     concepts_test.cpp
-    custom_rep_test_min_expl.cpp
-    custom_unit_test.cpp
-    dimension_op_test.cpp
-    dimensions_concepts_test.cpp
+    # custom_rep_test_min_expl.cpp
+    custom_rep_test_min_impl.cpp
+    dimension_test.cpp
     fixed_string_test.cpp
-    fps_test.cpp
+    fractional_exponent_quantity.cpp
+    hep_test.cpp
+    iau_test.cpp
     iec80000_test.cpp
-    kind_test.cpp
+    imperial_test.cpp
+    international_test.cpp
+    isq_test.cpp
+    isq_angle_test.cpp
+    # magnitude_test.cpp
     math_test.cpp
-    point_origin_test.cpp
+    natural_test.cpp
     prime_test.cpp
+    quantity_spec_test.cpp
     ratio_test.cpp
-    references_test.cpp
+    reference_test.cpp
     si_test.cpp
-    si_cgs_test.cpp
-    si_fps_test.cpp
-    si_hep_test.cpp
     symbol_text_test.cpp
     type_list_test.cpp
+    typographic_test.cpp
     unit_test.cpp
-    us_test.cpp
+    unit_symbol_test.cpp
+    usc_test.cpp
 )
 
-if(NOT ${projectPrefix}LIBCXX)
-    target_sources(unit_tests_static PRIVATE custom_rep_test_min_impl.cpp quantity_point_test.cpp)
-endif()
-
+# if(NOT ${projectPrefix}LIBCXX)
+# target_sources(unit_tests_static PRIVATE custom_rep_test_min_impl.cpp quantity_point_test.cpp)
+# endif()
+target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
 target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating mp-units::mp-units)

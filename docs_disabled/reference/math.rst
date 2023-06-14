@@ -1,10 +1,10 @@
 Math
 ====
 
-.. doxygenfunction:: units::pow
+.. doxygenfunction:: mp_units::pow
 
-.. doxygenfunction:: units::sqrt
+.. doxygenfunction:: mp_units::sqrt
 
-.. doxygenfunction:: units::abs
+.. doxygenfunction:: mp_units::abs
 
-.. doxygenfunction:: units::epsilon
+.. doxygenfunction:: mp_units::epsilon

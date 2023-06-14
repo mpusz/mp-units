@@ -27,6 +27,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(projectPrefix UNITS_)
 
+option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
+message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
+
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
 ensure_entry_point()
@@ -44,6 +47,7 @@ add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
 
 # enable include-what-you-use
 option(${projectPrefix}IWYU "Enables include-what-you-use" OFF)
+
 if(${projectPrefix}IWYU)
     include(include-what-you-use)
     enable_iwyu(
@@ -52,12 +56,13 @@ if(${projectPrefix}IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
+
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(${projectPrefix}AS_SYSTEM_HEADERS ON)
     endif()
 endif()
 
-#enable_clang_tidy()
+# enable_clang_tidy()
 
 # add project code
 add_subdirectory(src)
@@ -66,10 +71,11 @@ add_subdirectory(src)
 add_subdirectory(example)
 
 # generate project documentation
-add_subdirectory(docs)
+# add_subdirectory(docs)
 
 # add unit tests
 enable_testing()
+
 add_subdirectory(test)
 
 # tests for standalone headers

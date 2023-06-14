@@ -6,6 +6,11 @@ quantity
 Interface
 ---------
 
+    The value of a quantity is generally expressed as the product of a number and a unit. The
+    unit is simply a particular example of the quantity concerned which is used as a reference,
+    and the number is the ratio of the value of the quantity to the unit.
+
+
 `quantity` class template provides a similar interface to
 `std::chrono::duration <https://en.cppreference.com/w/cpp/chrono/duration>`_.
 The difference is that it uses ``double`` as a default representation and has

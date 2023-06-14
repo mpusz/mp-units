@@ -21,36 +21,17 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/isq/si/thermodynamic_temperature.h>
-#include <units/math.h>
-#include <units/quantity_point.h>
-#include <units/unit.h>
+#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/thermodynamics.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
-// TODO Fix when Celsius is properly supported (#232)
-namespace units::isq::si {
-
-struct degree_celsius : alias_unit<kelvin, basic_symbol_text{"°C", "deg_C"}> {};
-
-namespace thermodynamic_temperature_references {
-
-inline constexpr auto deg_C = reference<dim_thermodynamic_temperature, degree_celsius>{};
-
-}  // namespace thermodynamic_temperature_references
-
-namespace references {
-
-using namespace thermodynamic_temperature_references;
-
-}  // namespace references
-
-}  // namespace units::isq::si
-
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex7
 
-using namespace units;
+using namespace mp_units;
 
 template<QuantityPoint QP>
 void print_header(kalman::estimation<QP> initial)
@@ -60,7 +41,7 @@ void print_header(kalman::estimation<QP> initial)
                                      "Curr. Estimate", "Next Estimate");
 }
 
-template<QuantityPoint QP, Dimensionless K>
+template<QuantityPoint QP, QuantityOf<dimensionless> K>
 void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, kalman::estimation<QP> next)
 {
   std::cout << UNITS_STD_FMT::format("{:2} | {:7%.4Q} | {:10%.3Q %q} | {:>18.3} | {:>18.3}\n", iteration, gain,
@@ -69,20 +50,21 @@ void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, 
 
 int main()
 {
+  constexpr auto deg_C = isq::Celsius_temperature[si::degree_Celsius];
+
   using namespace kalman;
-  using namespace units::isq;
-  using namespace units::isq::si::references;
 
   const auto process_noise_variance = 0.0001 * (deg_C * deg_C);
-  const estimation initial = {state{quantity_point(10. * deg_C)}, pow<2>(100. * deg_C)};
-  const std::array measurements = {quantity_point(50.45 * deg_C),  quantity_point(50.967 * deg_C),
-                                   quantity_point(51.6 * deg_C),   quantity_point(52.106 * deg_C),
-                                   quantity_point(52.492 * deg_C), quantity_point(52.819 * deg_C),
-                                   quantity_point(53.433 * deg_C), quantity_point(54.007 * deg_C),
-                                   quantity_point(54.523 * deg_C), quantity_point(54.99 * deg_C)};
+  const estimation initial = {state{quantity_point{10. * deg_C}}, pow<2>(100. * deg_C)};
+  const std::array measurements = {quantity_point{50.45 * deg_C},  quantity_point{50.967 * deg_C},
+                                   quantity_point{51.6 * deg_C},   quantity_point{52.106 * deg_C},
+                                   quantity_point{52.492 * deg_C}, quantity_point{52.819 * deg_C},
+                                   quantity_point{53.433 * deg_C}, quantity_point{54.007 * deg_C},
+                                   quantity_point{54.523 * deg_C}, quantity_point{54.99 * deg_C}};
   const auto measurement_uncertainty = pow<2>(0.1 * deg_C);
 
-  auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement, Dimensionless auto gain) {
+  auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement,
+                                      QuantityOf<dimensionless> auto gain) {
     return estimation{state_update(previous.state, meassurement, gain), covariance_update(previous.uncertainty, gain)};
   };
 

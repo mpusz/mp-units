@@ -21,17 +21,19 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex2
 
-using namespace units;
+template<class T>
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
+
+using namespace mp_units;
 
 void print_header(const kalman::State auto& initial)
 {
@@ -47,15 +49,15 @@ void print(auto iteration, Quantity auto measured, const kalman::State auto& cur
 
 int main()
 {
-  using namespace units::isq;
-  using namespace units::isq::si::references;
-  using state = kalman::state<si::length<si::metre>, si::speed<si::metre_per_second>>;
+  using namespace mp_units::si::unit_symbols;
+  using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
-  const auto interval = 5 * s;
+  const auto interval = isq::duration(5 * s);
   const state initial = {30 * km, 40 * (m / s)};
-  const std::array measurements = {30110 * m, 30265 * m, 30740 * m, 30750 * m, 31135 * m,
-                                   31015 * m, 31180 * m, 31610 * m, 31960 * m, 31865 * m};
-  std::array gain = {dimensionless<one>(0.2), dimensionless<one>(0.1)};
+  const quantity<isq::position_vector[m], int> measurements[] = {30'110 * m, 30'265 * m, 30'740 * m, 30'750 * m,
+                                                                 31'135 * m, 31'015 * m, 31'180 * m, 31'610 * m,
+                                                                 31'960 * m, 31'865 * m};
+  std::array gain = {0.2 * one, 0.1 * one};
 
   print_header(initial);
   state next = state_extrapolation(initial, interval);

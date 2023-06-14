@@ -21,15 +21,15 @@
 // SOFTWARE.
 
 #include "kalman.h"
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/si/mass.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <array>
 #include <iostream>
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex1
 
-using namespace units;
+using namespace mp_units;
 
 void print_header(const kalman::State auto& initial)
 {
@@ -38,27 +38,26 @@ void print_header(const kalman::State auto& initial)
                                      "Curr. Estimate", "Next Estimate");
 }
 
-void print(auto iteration, Dimensionless auto gain, Quantity auto measured, const kalman::State auto& current,
-           const kalman::State auto& next)
+void print(auto iteration, QuantityOf<dimensionless> auto gain, Quantity auto measured,
+           const kalman::State auto& current, const kalman::State auto& next)
 {
   std::cout << UNITS_STD_FMT::format("{:2} | {:9} | {:8} | {:14} | {:14}\n", iteration, gain, measured, current, next);
 }
 
 int main()
 {
-  using namespace units::isq;
-  using namespace units::isq::si::references;
-  using state = kalman::state<si::mass<si::gram>>;
+  using namespace mp_units::si::unit_symbols;
+  using state = kalman::state<quantity<isq::mass[g]>>;
 
   const state initial = {1 * kg};
-  const std::array measurements = {1030 * g, 989 * g,  1017 * g, 1009 * g, 1013 * g,
-                                   979 * g,  1008 * g, 1042 * g, 1012 * g, 1011 * g};
+  const std::array measurements = {1'030 * g, 989 * g,   1'017 * g, 1'009 * g, 1'013 * g,
+                                   979 * g,   1'008 * g, 1'042 * g, 1'012 * g, 1'011 * g};
 
   print_header(initial);
   state next = initial;
   for (int index = 1; const auto& m : measurements) {
     const auto& previous = next;
-    const dimensionless<one> gain = 1. / index;
+    const auto gain = 1. / index * one;
     const auto current = state_update(previous, m, gain);
     next = current;
     print(index++, gain, m, current, next);

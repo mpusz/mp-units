@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/symbol_text.h>
+#include <mp-units/bits/symbol_text.h>
 
-using namespace units;
+using namespace mp_units;
 
 namespace {
 
@@ -36,31 +36,31 @@ static_assert(sym1 <= 'b');
 static_assert(sym1 <= 'c');
 static_assert(sym1 >= 'b');
 static_assert(sym1 >= 'a');
-static_assert(sym1.standard() == "b");
+static_assert(sym1.unicode() == "b");
 static_assert(sym1.ascii() == "b");
 
 constexpr basic_symbol_text sym2('a', 'b');
 static_assert(sym2 == basic_symbol_text('a', 'b'));
 static_assert(sym2 != 'b');
-static_assert(sym2.standard() == 'a');
+static_assert(sym2.unicode() == 'a');
 static_assert(sym2.ascii() == 'b');
 
 constexpr basic_symbol_text sym3("ab");
-static_assert(sym3.standard() == "ab");
+static_assert(sym3.unicode() == "ab");
 static_assert(sym3.ascii() == "ab");
 
 constexpr basic_fixed_string txt1("bc");
 constexpr basic_symbol_text sym4(txt1);
-static_assert(sym4.standard() == "bc");
+static_assert(sym4.unicode() == "bc");
 static_assert(sym4.ascii() == "bc");
 
 constexpr basic_symbol_text sym5("bc", "de");
-static_assert(sym5.standard() == "bc");
+static_assert(sym5.unicode() == "bc");
 static_assert(sym5.ascii() == "de");
 
 constexpr basic_fixed_string txt2("de");
-constexpr basic_symbol_text sym6(sym4.standard(), txt2);
-static_assert(sym6.standard() == "bc");
+constexpr basic_symbol_text sym6(sym4.unicode(), txt2);
+static_assert(sym6.unicode() == "bc");
 static_assert(sym6.ascii() == "de");
 
 static_assert(sym6 == basic_symbol_text("bc", "de"));

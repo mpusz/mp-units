@@ -22,43 +22,39 @@
 
 #pragma once
 
-#include <units/bits/fmt_hacks.h>
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/dimensions/time.h>
-#include <units/math.h>
-#include <units/quantity.h>
-#include <units/quantity_point.h>
+#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/quantity.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <tuple>
 
 namespace kalman {
 
 template<typename T>
-concept QuantityOrQuantityPoint =
-  units::Quantity<T> || units::QuantityPoint<T>;  // TODO Should it also account for `kinds`?
+concept QuantityOrQuantityPoint = mp_units::Quantity<T> || mp_units::QuantityPoint<T>;
 
-template<typename... Qs>
+template<mp_units::Dimension auto... Ds>
 inline constexpr bool are_time_derivatives = false;
 
-template<typename Q>
-inline constexpr bool are_time_derivatives<Q> = true;
+template<mp_units::Dimension auto D>
+inline constexpr bool are_time_derivatives<D> = true;
 
-template<typename Q1, typename Q2, typename... Qs>
-inline constexpr bool are_time_derivatives<Q1, Q2, Qs...> =
-  units::DimensionOfT<typename decltype(Q1::reference / Q2::reference)::dimension,
-                      units::isq::dim_time> &&  // TODO Think on how to simplify this
-  are_time_derivatives<Q2, Qs...>;
+template<mp_units::Dimension auto D1, mp_units::Dimension auto D2, mp_units::Dimension auto... Ds>
+inline constexpr bool are_time_derivatives<D1, D2, Ds...> =
+  (D1 / D2 == mp_units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
 
 // state
 template<QuantityOrQuantityPoint... QQPs>
-  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs...>
+  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs::dimension...>
 struct state {
   std::tuple<QQPs...> variables_;
   constexpr state(QQPs... qqps) : variables_(std::move(qqps)...) {}
 };
 
 template<typename T>
-concept State = units::is_specialization_of<T, state>;
+concept State = mp_units::is_specialization_of<T, state>;
 
 template<std::size_t Idx, typename... Qs>
 constexpr auto& get(state<Qs...>& s)
@@ -76,38 +72,35 @@ constexpr const auto& get(const state<Qs...>& s)
 template<QuantityOrQuantityPoint QQP, QuantityOrQuantityPoint... QQPs>
 struct estimation {
 private:
-  using uncertainty_ref = decltype(QQP::reference * QQP::reference);
-  using uncertainty_type =
-    units::quantity<typename uncertainty_ref::dimension, typename uncertainty_ref::unit, typename QQP::rep>;
+  static constexpr auto uncertainty_ref = QQP::reference * QQP::reference;
+  using uncertainty_type = mp_units::quantity<uncertainty_ref, typename QQP::rep>;
 public:
-  kalman::state<QQP, QQPs...> state;  // TODO extend kalman functions to work with this variadic patermater list
+  kalman::state<QQP, QQPs...> state;  // TODO extend kalman functions to work with this variadic parameter list
   uncertainty_type uncertainty;
 };
 
-#if UNITS_COMP_MSVC || (UNITS_COMP_CLANG && UNITS_COMP_CLANG <= 16)
-
-template<QuantityOrQuantityPoint QQP, units::Quantity U>
+template<QuantityOrQuantityPoint QQP, mp_units::Quantity U>
 estimation(state<QQP>, U) -> estimation<QQP>;
 
-#endif
-
 // kalman gain
-template<units::Quantity Q>
-constexpr units::dimensionless<units::one> kalman_gain(Q estimate_uncertainty, Q measurement_uncertainty)
+template<mp_units::Quantity Q>
+constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain(Q estimate_uncertainty,
+                                                                                 Q measurement_uncertainty)
 {
   return estimate_uncertainty / (estimate_uncertainty + measurement_uncertainty);
 }
 
 // state update
-template<typename Q, QuantityOrQuantityPoint QM, units::Dimensionless K>
-  requires units::equivalent<typename Q::dimension, typename QM::dimension>
+template<typename Q, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
+  requires(Q::quantity_spec == QM::quantity_spec)
 constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
 {
   return {get<0>(predicted) + gain * (measured - get<0>(predicted))};
 }
 
-template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, units::Dimensionless K, units::isq::Time T>
-  requires units::equivalent<typename Q1::dimension, typename QM::dimension>
+template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
+         mp_units::QuantityOf<mp_units::isq::time> T>
+  requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured, std::array<K, 2> gain, T interval)
 {
   const auto q1 = get<0>(predicted) + get<0>(gain) * (measured - get<0>(predicted));
@@ -115,8 +108,9 @@ constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured
   return {q1, q2};
 }
 
-template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM, units::Dimensionless K, units::isq::Time T>
-  requires units::equivalent<typename Q1::dimension, typename QM::dimension>
+template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM,
+         mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
+  requires(Q1::quantity_spec == QM::quantity_spec)
 constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM measured, std::array<K, 3> gain,
                                          T interval)
 {
@@ -127,14 +121,14 @@ constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM 
 }
 
 // covariance update
-template<units::Quantity Q, units::Dimensionless K>
+template<mp_units::Quantity Q, mp_units::QuantityOf<mp_units::dimensionless> K>
 constexpr Q covariance_update(Q uncertainty, K gain)
 {
   return (1 - gain) * uncertainty;
 }
 
 // state extrapolation
-template<typename Q1, typename Q2, units::isq::Time T>
+template<typename Q1, typename Q2, mp_units::QuantityOf<mp_units::isq::time> T>
 constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval;
@@ -142,7 +136,7 @@ constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T in
   return {q1, q2};
 }
 
-template<typename Q1, typename Q2, typename Q3, units::isq::Time T>
+template<typename Q1, typename Q2, typename Q3, mp_units::QuantityOf<mp_units::isq::time> T>
 constexpr state<Q1, Q2, Q3> state_extrapolation(const state<Q1, Q2, Q3>& estimated, T interval)
 {
   const auto q1 = get<0>(estimated) + get<1>(estimated) * interval + get<2>(estimated) * pow<2>(interval) / 2;
@@ -152,7 +146,7 @@ constexpr state<Q1, Q2, Q3> state_extrapolation(const state<Q1, Q2, Q3>& estimat
 }
 
 // covariance extrapolation
-template<units::Quantity Q>
+template<mp_units::Quantity Q>
 constexpr Q covariance_extrapolation(Q uncertainty, Q process_noise_variance)
 {
   return uncertainty + process_noise_variance;
@@ -164,8 +158,8 @@ template<typename... Qs>
 struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
   constexpr auto parse(format_parse_context& ctx)
   {
-    units::detail::dynamic_specs_handler handler(specs, ctx);
-    return units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
+    mp_units::detail::dynamic_specs_handler handler(specs, ctx);
+    return mp_units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
   }
 
   template<typename FormatContext>
@@ -193,28 +187,28 @@ struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
     }
 
     std::string global_format_buffer;
-    units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
-    units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
+    mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
+    mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
     return UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer, UNITS_STD_FMT::make_format_args(value_buffer));
   }
 private:
-  units::detail::dynamic_format_specs<char> specs;
+  mp_units::detail::dynamic_format_specs<char> specs;
 };
 
 template<typename Q>
 struct UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
   constexpr auto parse(format_parse_context& ctx)
   {
-    units::detail::dynamic_specs_handler handler(specs, ctx);
-    return units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
+    mp_units::detail::dynamic_specs_handler handler(specs, ctx);
+    return mp_units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
   }
 
   template<typename FormatContext>
   auto format(kalman::estimation<Q> e, FormatContext& ctx)
   {
-    units::Quantity auto q = [](const Q& t) {
-      if constexpr (units::Quantity<Q>)
+    mp_units::Quantity auto q = [](const Q& t) {
+      if constexpr (mp_units::Quantity<Q>)
         return t;
       else
         return t.relative();
@@ -230,11 +224,11 @@ struct UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
     }
 
     std::string global_format_buffer;
-    units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
-    units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
+    mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
+    mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
     return UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer, UNITS_STD_FMT::make_format_args(value_buffer));
   }
 private:
-  units::detail::dynamic_format_specs<char> specs;
+  mp_units::detail::dynamic_format_specs<char> specs;
 };

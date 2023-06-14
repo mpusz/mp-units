@@ -22,10 +22,6 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-# core library options
-set(${projectPrefix}DOWNCAST_MODE ON CACHE STRING "Select downcasting mode")
-set_property(CACHE ${projectPrefix}DOWNCAST_MODE PROPERTY STRINGS AUTO ON OFF)
-
 # find dependencies
 if(NOT TARGET gsl::gsl-lite)
     find_package(gsl-lite CONFIG REQUIRED)
@@ -39,30 +35,41 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 add_library(
     mp-units-core
     INTERFACE
-    include/units/base_dimension.h
-    include/units/chrono.h
-    include/units/concepts.h
-    include/units/customization_points.h
-    include/units/derived_dimension.h
-    include/units/exponent.h
-    include/units/generic/angle.h
-    include/units/generic/dimensionless.h
-    include/units/generic/solid_angle.h
-    include/units/kind.h
-    include/units/magnitude.h
-    include/units/math.h
-    include/units/point_origin.h
-    include/units/prefix.h
-    include/units/quantity.h
-    include/units/quantity_cast.h
-    include/units/quantity_kind.h
-    include/units/quantity_point.h
-    include/units/quantity_point_kind.h
-    include/units/random.h
-    include/units/ratio.h
-    include/units/reference.h
-    include/units/symbol_text.h
-    include/units/unit.h
+    include/mp-units/bits/external/fixed_string.h
+    include/mp-units/bits/external/hacks.h
+    include/mp-units/bits/external/type_list.h
+    include/mp-units/bits/external/type_name.h
+    include/mp-units/bits/external/type_traits.h
+    include/mp-units/bits/algorithm.h
+    include/mp-units/bits/dimension_concepts.h
+    include/mp-units/bits/expression_template.h
+    include/mp-units/bits/get_associated_quantity.h
+    include/mp-units/bits/get_common_base.h
+    include/mp-units/bits/magnitude.h
+    include/mp-units/bits/math_concepts.h
+    include/mp-units/bits/prime.h
+    include/mp-units/bits/quantity_cast.h
+    include/mp-units/bits/quantity_concepts.h
+    include/mp-units/bits/quantity_point_concepts.h
+    include/mp-units/bits/quantity_spec_concepts.h
+    include/mp-units/bits/ratio.h
+    include/mp-units/bits/reference_concepts.h
+    include/mp-units/bits/representation_concepts.h
+    include/mp-units/bits/sudo_cast.h
+    include/mp-units/bits/symbol_text.h
+    include/mp-units/bits/text_tools.h
+    include/mp-units/bits/unit_concepts.h
+    include/mp-units/bits/value_cast.h
+    include/mp-units/concepts.h
+    include/mp-units/core.h
+    include/mp-units/customization_points.h
+    include/mp-units/dimension.h
+    include/mp-units/quantity.h
+    include/mp-units/quantity_point.h
+    include/mp-units/quantity_spec.h
+    include/mp-units/reference.h
+    include/mp-units/system_reference.h
+    include/mp-units/unit.h
 )
 target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
@@ -85,23 +92,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-if(DEFINED ${projectPrefix}DOWNCAST_MODE)
-    set(downcast_mode_options OFF ON AUTO)
-    list(FIND downcast_mode_options "${${projectPrefix}DOWNCAST_MODE}" downcast_mode)
-
-    if(downcast_mode EQUAL -1)
-        message(FATAL_ERROR
-                    "'${projectPrefix}DOWNCAST_MODE' should be one of ${downcast_mode_options} ('${${projectPrefix}DOWNCAST_MODE}' received)"
-        )
-    else()
-        message(STATUS "${projectPrefix}DOWNCAST_MODE: ${${projectPrefix}DOWNCAST_MODE}")
-        target_compile_definitions(mp-units-core INTERFACE ${projectPrefix}DOWNCAST_MODE=${downcast_mode})
-    endif()
-endif()
-
 set_target_properties(mp-units-core PROPERTIES EXPORT_NAME core)
 add_library(mp-units::core ALIAS mp-units-core)
 
 # installation
 install(TARGETS mp-units-core EXPORT mp-unitsTargets)
-install(DIRECTORY include/units TYPE INCLUDE)
+install(DIRECTORY include/mp-units TYPE INCLUDE)

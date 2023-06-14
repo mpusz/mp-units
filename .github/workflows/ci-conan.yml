@@ -35,7 +35,7 @@ env:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }} ${{ matrix.build_type }} [downcast=${{ matrix.downcast_mode }}]
+    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
@@ -190,7 +190,6 @@ jobs:
               conan-config: "",
             }
         build_type: ["Release", "Debug"]
-        downcast_mode: ["on", "auto"]
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
@@ -214,7 +213,7 @@ jobs:
       - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
-          key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.downcast_mode }}
+          key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}
           max-size: 50M
       - name: Install gcc-12
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '12'
@@ -282,7 +281,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -o downcast_mode=${{ matrix.downcast_mode }} -c user.build:all=True -c user.build:skip_docs=True ${{ matrix.config.conan-config }}
+                         -c user.build:all=True -c user.build:skip_docs=True ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash

@@ -20,11 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/ratio.h>
+#include <mp-units/bits/ratio.h>
 
 namespace {
 
-using namespace units;
+using namespace mp_units;
 
 static_assert(ratio(2, 4) == ratio(1, 2));
 
@@ -53,6 +53,7 @@ static_assert(common_ratio(ratio(1), ratio(1, 1000)) == ratio(1, 1000));
 static_assert(common_ratio(ratio(1, 1000), ratio(1)) == ratio(1, 1000));
 static_assert(common_ratio(ratio(100, 1), ratio(10, 1)) == ratio(10, 1));
 static_assert(common_ratio(ratio(100, 1), ratio(1, 10)) == ratio(1, 10));
+static_assert(common_ratio(ratio(2), ratio(4)) == ratio(2));
 
 // comparison
 static_assert((ratio(3, 4) <=> ratio(6, 8)) == (0 <=> 0));

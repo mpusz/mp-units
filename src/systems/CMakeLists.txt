@@ -23,36 +23,38 @@
 cmake_minimum_required(VERSION 3.19)
 
 # systems
+add_subdirectory(angular)
+add_subdirectory(iec80000)
 add_subdirectory(isq)
-add_subdirectory(isq-iec80000)
-add_subdirectory(isq-natural)
+add_subdirectory(isq_angle)
+add_subdirectory(natural)
 add_subdirectory(si)
-add_subdirectory(si-cgs)
-add_subdirectory(si-fps)
-add_subdirectory(si-hep)
-add_subdirectory(si-iau)
-add_subdirectory(si-imperial)
-add_subdirectory(si-international)
-add_subdirectory(si-typographic)
-add_subdirectory(si-uscs)
+add_subdirectory(cgs)
+add_subdirectory(hep)
+add_subdirectory(iau)
+add_subdirectory(imperial)
+add_subdirectory(international)
+add_subdirectory(typographic)
+add_subdirectory(usc)
 
 # wrapper for all the systems
 add_library(mp-units-systems INTERFACE)
 target_link_libraries(
     mp-units-systems
     INTERFACE
+        mp-units::angular
+        mp-units::iec80000
         mp-units::isq
-        mp-units::isq-iec80000
-        mp-units::isq-natural
+        mp-units::isq_angle
+        mp-units::natural
         mp-units::si
-        mp-units::si-cgs
-        mp-units::si-fps
-        mp-units::si-hep
-        mp-units::si-iau
-        mp-units::si-imperial
-        mp-units::si-international
-        mp-units::si-typographic
-        mp-units::si-uscs
+        mp-units::cgs
+        mp-units::hep
+        mp-units::iau
+        mp-units::imperial
+        mp-units::international
+        mp-units::typographic
+        mp-units::usc
 )
 add_library(mp-units::systems ALIAS mp-units-systems)
 set_target_properties(mp-units-systems PROPERTIES EXPORT_NAME systems)

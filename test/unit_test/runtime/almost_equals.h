@@ -21,16 +21,16 @@
 // SOFTWARE.
 
 #include <catch2/matchers/catch_matchers_templated.hpp>
-#include <units/format.h>
-#include <units/quantity.h>
+#include <mp-units/format.h>
+#include <mp-units/quantity.h>
 
-namespace units {
+namespace mp_units {
 
 template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   AlmostEqualsMatcher(const T& target) : target_{target} {}
 
-  template<QuantityEquivalentTo<T> U>
+  template<std::convertible_to<T> U>
     requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep>
   bool match(const U& other) const
   {
@@ -54,4 +54,4 @@ AlmostEqualsMatcher<T> AlmostEquals(const T& target)
   return {target};
 }
 
-}  // namespace units
+}  // namespace mp_units

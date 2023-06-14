@@ -436,3 +436,18 @@ class template::
 
     To learn more about unknown units please refer to the
     :ref:`use_cases/unknown_dimensions:Working with Unknown Dimensions and Their Units` chapter.
+
+
+## System reference
+
+"It is important to emphasize that each physical quantity has only one coherent SI unit, even
+though this unit can be expressed in different forms by using some of the special names and
+symbols."
+The converse, however, is not true, because in general several different quantities may
+share the same SI unit.
+
+
+For example, for the quantity heat capacity as well as for the
+quantity entropy the SI unit is joule per kelvin. Similarly, for the base quantity electric
+current as well as the derived quantity magnetomotive force the SI unit is the ampere. It is
+therefore important not to use the unit alone to specify the quantity.

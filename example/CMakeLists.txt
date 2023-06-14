@@ -33,17 +33,40 @@ function(add_example target)
     target_link_libraries(${target} PRIVATE ${ARGN})
 endfunction()
 
+add_example(avg_speed mp-units::core-io mp-units::si mp-units::cgs mp-units::usc)
+add_example(capacitor_time_curve mp-units::core-io mp-units::si mp-units::utility)
+add_example(
+    clcpp_response
+    mp-units::core-fmt
+    mp-units::core-io
+    mp-units::si
+    mp-units::iau
+    mp-units::imperial
+    mp-units::international
+    mp-units::typographic
+    mp-units::usc
+)
 add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
-add_example(custom_systems mp-units::core-io mp-units::si)
-add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::si-international)
+add_example(currency mp-units::core-io)
+add_example(foot_pound_second mp-units::core-fmt mp-units::international mp-units::imperial)
+add_example(glide_computer mp-units::core-fmt mp-units::international mp-units::utility glide_computer_lib)
+add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::usc)
 add_example(measurement mp-units::core-io mp-units::si)
 add_example(si_constants mp-units::core-fmt mp-units::si)
+add_example(storage_tank mp-units::core-fmt mp-units::si)
+add_example(
+    strong_angular_quantities mp-units::core-fmt mp-units::core-io mp-units::si mp-units::isq_angle mp-units::utility
+)
+add_example(total_energy mp-units::core-io mp-units::si mp-units::natural mp-units::utility)
+add_example(
+    unmanned_aerial_vehicle
+    mp-units::core-fmt
+    mp-units::core-io
+    mp-units::si
+    mp-units::international
+    mp-units::utility
+    example_utils
+)
 
-if(NOT ${projectPrefix}LIBCXX)
-    add_subdirectory(glide_computer)
-endif()
-
-add_subdirectory(aliases)
+add_subdirectory(glide_computer)
 add_subdirectory(kalman_filter)
-add_subdirectory(literals)
-add_subdirectory(references)

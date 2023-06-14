@@ -22,20 +22,23 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
-#include <units/customization_points.h>
-#include <units/format.h>
-#include <units/generic/dimensionless.h>
-#include <units/isq/si/cgs/cgs.h>
-#include <units/isq/si/si.h>
-#include <units/math.h>  // IWYU pragma: keep
-#include <units/quantity_io.h>
+#include <mp-units/customization_points.h>
+#include <mp-units/format.h>
+#include <mp-units/iostream.h>
+#include <mp-units/systems/cgs/cgs.h>
+#include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
 #include <iomanip>
 #include <limits>
 #include <locale>
 
-using namespace units;
-using namespace units::isq;
-using namespace units::isq::si;
+template<class T>
+  requires mp_units::is_scalar<T>
+inline constexpr bool mp_units::is_vector<T> = true;
+
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
@@ -45,7 +48,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
   {
     SECTION("integral representation")
     {
-      const auto q = 60_q_W;
+      const auto q = 60 * isq::power[W];
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "60 W"); }
@@ -57,7 +60,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("floating-point representation")
     {
-      const auto q = 1023.5_q_Pa;
+      const auto q = 1023.5 * isq::pressure[Pa];
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "1023.5 Pa"); }
@@ -70,61 +73,10 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
   SECTION("quantity with a predefined prefixed unit")
   {
-    const auto q = 125_q_us;
+    const auto q = 125 * isq::time[us];
     os << q;
 
     SECTION("iostream") { CHECK(os.str() == "125 µs"); }
-
-    SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-    SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-  }
-
-  SECTION("quantity with a predefined unit + prefix")
-  {
-    SECTION("in terms of base units")
-    {
-      const length<scaled_unit<pow<6>(mag<10>()), metre>> q(123);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "123 Mm"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("in terms of derived units")
-    {
-      const energy<scaled_unit<pow<-2>(mag<10>()), joule>> q(60);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "60 cJ"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-  }
-
-  SECTION("quantity with an alias unit")
-  {
-    const auto q = 2_q_l;
-    os << q;
-
-    SECTION("iostream") { CHECK(os.str() == "2 l"); }
-
-    SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-    SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-  }
-
-  SECTION("quantity with a prefixed alias unit")
-  {
-    const auto q = 2_q_ml;
-    os << q;
-
-    SECTION("iostream") { CHECK(os.str() == "2 ml"); }
 
     SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
 
@@ -137,7 +89,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     {
       SECTION("acceleration")
       {
-        const auto q = 20_q_m / 2_q_s / 1_q_s;
+        const auto q = 20 * isq::length[m] / (2 * isq::time[s]) / (1 * isq::time[s]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 m/s²"); }
@@ -149,7 +101,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("volume")
       {
-        const auto q = 2_q_m * 1_q_m * 1_q_m;
+        const auto q = 2 * isq::length[m] * (1 * isq::length[m]) * (1 * isq::length[m]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "2 m³"); }
@@ -161,7 +113,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("surface tension")
       {
-        const auto q = 20_q_N / 2_q_m;
+        const auto q = 20 * isq::force[N] / (2 * isq::length[m]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 N/m"); }
@@ -172,11 +124,11 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       }
     }
 
-    SECTION("deduced derived unit")
+    SECTION("scaled derived unit")
     {
       SECTION("speed")
       {
-        const auto q = 20_q_km / 2_q_h;
+        const auto q = 20 * isq::length[km] / (2 * isq::time[h]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 km/h"); }
@@ -186,14 +138,36 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
         SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
       }
 
-      SECTION("surface tension")
+      SECTION("angular impulse")
       {
-        struct newton_per_centimetre :
-            derived_scaled_unit<newton_per_centimetre, si::dim_surface_tension, newton, centimetre> {};
-        const surface_tension<newton_per_centimetre> q(123);
+        const auto q = 123 * isq::angular_impulse[N * m * s];
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "123 N/cm"); }
+        SECTION("iostream") { CHECK(os.str() == "123 N m s"); }
+
+        SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+        SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+      }
+
+      SECTION("compressibility")
+      {
+        const auto q = 123 * isq::compressibility[1 / Pa];
+        os << q;
+
+        SECTION("iostream") { CHECK(os.str() == "123 1/Pa"); }
+
+        SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+        SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+      }
+
+      SECTION("angular acceleration")
+      {
+        const auto q = 123 * isq::angular_acceleration[rad / s2];
+        os << q;
+
+        SECTION("iostream") { CHECK(os.str() == "123 rad/s²"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
 
@@ -202,75 +176,12 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
-  SECTION("quantity with a predefined dimension but unknown unit")
-  {
-    SECTION("unit::ratio as an SI prefix for a dimension with a special symbol")
-    {
-      const auto q = 4_q_N * 2_q_cm;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "8 cJ"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio for a dimension without a special symbol")
-    {
-      const auto q = 2_q_um * 2_q_cm * 2_q_cm;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "8 × 10⁻¹⁰ m³"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
-    {
-      const auto q = 4 * 2_q_min / (2_q_s * 2_q_s);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "2 [6 × 10¹] Hz"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
-    {
-      const auto q = 20_q_J / 2_q_min;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "10 [1/6 × 10⁻¹] W"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
-    {
-      const auto q = 60_q_kJ / 2_q_min;
-      os << q;
-
-      // TODO(chogg): Reinstate after format/Magnitude design.
-      // SECTION("iostream") { CHECK(os.str() == "30 [1/6 × 10²] W"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-  }
 
   SECTION("dimensionless quantity")
   {
     SECTION("one with ratio == 1")
     {
-      const auto q = 4_q_m / 2_q_m;
+      const auto q = 4 * isq::length[m] / (2 * isq::length[m]);
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "2"); }
@@ -282,189 +193,22 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
     SECTION("one with ratio.exp != 0")
     {
-      const auto q = 4_q_km / 2_q_m;
+      const auto q = 4 * isq::length[km] / (2 * isq::length[m]);
       os << q;
 
-      SECTION("iostream") { CHECK(os.str() == "2 × 10³"); }
+      SECTION("iostream") { CHECK(os.str() == "2 km/m"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
 
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == "2 × 10³"); }
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == "2 km/m"); }
     }
 
     SECTION("percents")
     {
-#if UNITS_DOWNCAST_MODE == 0
-      const auto q = quantity_cast<dim_one, percent>(15._q_m / 100._q_m);
-#else
-      const auto q = quantity_cast<percent>(15._q_m / 100._q_m);
-#endif
+      const auto q = value_cast<percent>(15. * isq::length[m] / (100. * isq::length[m]));
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "15 %"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-  }
-
-  SECTION("quantity with an unkown dimension")
-  {
-    SECTION("unit::ratio::num == 1 && unit::ratio::den == 1")
-    {
-      SECTION("SI base units")
-      {
-        const auto q = 2_q_s * 2_q_m * 2_q_kg;
-        os << q;
-
-        SECTION("iostream") { CHECK(os.str() == "8 m⋅kg⋅s"); }
-
-        SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-        SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-      }
-
-      SECTION("CGS base units")
-      {
-        const auto q = 2._q_s * si::cgs::length<si::cgs::centimetre>(2) * si::cgs::mass<si::cgs::gram>(2);
-        os << q;
-
-        SECTION("iostream") { CHECK(os.str() == "8 cm⋅g⋅s"); }
-
-        SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-        SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-      }
-    }
-
-    SECTION("unit::ratio as an SI prefix")
-    {
-      const auto q = 4_q_km * 2_q_s;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "8 × 10³ m⋅s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den == 1")
-    {
-      const auto q = 4_q_kg * 2_q_min / (2_q_s * 2_q_s);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "2 [6 × 10¹] kg/s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num == 1 && unit::ratio::den != 1")
-    {
-      const auto q = 20_q_kg / 2_q_min;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "10 [1/6 × 10⁻¹] kg/s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("CGS base units")
-    {
-      const auto q = 2._q_s * si::cgs::length<si::metre>(2) * si::cgs::mass<si::kilogram>(2);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "8 × 10⁵ cm⋅g⋅s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("unit::ratio::num != 1 && unit::ratio::den != 1")
-    {
-      const auto q = 60_q_min / 2_q_km;
-      os << q;
-
-      // TODO(chogg): Reinstate after format/Magnitude design.
-      // SECTION("iostream") { CHECK(os.str() == "30 [6 × 10⁻²] 1/m ⋅ s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("exponent::num == 1 && exponent::den == 1")
-    {
-      const auto q = 4_q_m * 2_q_s;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "8 m⋅s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("exponent::num == 2 && exponent::den == 1 for positive exponent")
-    {
-      const auto q = 4_q_m * 2_q_s * 2_q_s;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "16 m⋅s²"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (first dimension)")
-    {
-      const auto q = 8_q_s / 2_q_m / 2_q_m;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "2 1/m²⋅s"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("exponent::num == 2 && exponent::den == 1 for negative exponent (not first dimension)")
-    {
-      const auto q = 8_q_m / 2_q_kg / 2_q_kg;
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "2 m/kg²"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("fractional positive exponent")
-    {
-      const auto q = sqrt(9_q_m);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "3 m^(1/2)"); }
-
-      SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
-
-      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
-    }
-
-    SECTION("fractional negative exponent")
-    {
-      const auto q = sqrt(9 / 1_q_m);
-      os << q;
-
-      SECTION("iostream") { CHECK(os.str() == "3 1/m^(1/2)"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(UNITS_STD_FMT::format("{}", q) == os.str()); }
 
@@ -477,74 +221,254 @@ TEST_CASE("format string with only %Q should print quantity value only", "[text]
 {
   SECTION("integral representation")
   {
-    SECTION("positive value") { CHECK(UNITS_STD_FMT::format("{:%Q}", 123_q_km_per_h) == "123"); }
+    SECTION("positive value") { CHECK(UNITS_STD_FMT::format("{:%Q}", 123 * isq::speed[km / h]) == "123"); }
 
-    SECTION("negative value") { CHECK(UNITS_STD_FMT::format("{:%Q}", 5_q_m - 10_q_m) == "-5"); }
+    SECTION("negative value")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Q}", 5 * isq::length[m] - 10 * isq::length[m]) == "-5");
+    }
   }
 
   SECTION("floating-point representation")
   {
-    SECTION("positive value") { CHECK(UNITS_STD_FMT::format("{:%Q}", 221._q_km / 2_q_h) == "110.5"); }
+    SECTION("positive value")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Q}", 221. * isq::length[km] / (2 * isq::time[h])) == "110.5");
+    }
 
-    SECTION("negative value") { CHECK(UNITS_STD_FMT::format("{:%Q}", 3.14_q_m - 10_q_m) == "-6.86"); }
+    SECTION("negative value")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Q}", 3.14 * isq::length[m] - 10 * isq::length[m]) == "-6.86");
+    }
 
     SECTION("nan")
     {
-      CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(std::numeric_limits<double>::quiet_NaN())) == "nan");
+      CHECK(UNITS_STD_FMT::format("{:%Q}", std::numeric_limits<double>::quiet_NaN() * isq::length[m]) == "nan");
     }
 
     SECTION("inf")
     {
-      CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(std::numeric_limits<double>::infinity())) == "inf");
+      CHECK(UNITS_STD_FMT::format("{:%Q}", std::numeric_limits<double>::infinity() * isq::length[m]) == "inf");
     }
 
     SECTION("-inf")
     {
-      CHECK(UNITS_STD_FMT::format("{:%Q}", length<metre>(-std::numeric_limits<double>::infinity())) == "-inf");
+      CHECK(UNITS_STD_FMT::format("{:%Q}", -std::numeric_limits<double>::infinity() * isq::length[m]) == "-inf");
     }
   }
 }
 
 TEST_CASE("format string with only %q should print quantity unit symbol only", "[text][fmt]")
 {
-  SECTION("standard format for a unit without Unicode symbols")
+  SECTION("Text encoding")
   {
-    CHECK(UNITS_STD_FMT::format("{:%q}", 123_q_km_per_h) == "km/h");
+    SECTION("Unicode text output")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Uq}", 123 * isq::speed[km / h]) == "km/h");
+      // TODO enable this when resistance is defined
+      // CHECK(UNITS_STD_FMT::format("{:%Uq}", 123 * isq::resistance[kilo<ohm>]) == "kΩ");
+      CHECK(UNITS_STD_FMT::format("{:%Uq}", 123 * isq::time[us]) == "µs");
+      CHECK(UNITS_STD_FMT::format("{:%Uq}", 123 * isq::acceleration[m / s2]) == "m/s²");
+    }
+
+    SECTION("Unicode text output is used by default")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::speed[km / h]) == "km/h");
+      // CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::resistance[kilo<ohm>]) == "kΩ");
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::time[us]) == "µs");
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::acceleration[m / s2]) == "m/s²");
+    }
+
+    SECTION("ASCII text output")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%Aq}", 123 * isq::speed[km / h]) == "km/h");
+      // CHECK(UNITS_STD_FMT::format("{:%Aq}", 123 * isq::resistance[kilo<ohm>]) == "kohm");
+      CHECK(UNITS_STD_FMT::format("{:%Aq}", 123 * isq::time[us]) == "us");
+      CHECK(UNITS_STD_FMT::format("{:%Aq}", 123 * isq::acceleration[m / s2]) == "m/s^2");
+    }
   }
 
-  SECTION("ASCII format for a unit without Unicode symbols")
+  SECTION("Solidus")
   {
-    CHECK(UNITS_STD_FMT::format("{:%Aq}", 123_q_km_per_h) == "km/h");
+    SECTION("Solidus for only one element in denominator")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%oq}", 123 * isq::speed[km / h]) == "km/h");
+      CHECK(UNITS_STD_FMT::format("{:%oq}", 123 * isq::acceleration[m / s2]) == "m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%oq}", 123 * isq::pressure[kg / m / s2]) == "kg m⁻¹ s⁻²");
+    }
+
+    SECTION("Solidus for only one element in denominator is used by default")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::speed[km / h]) == "km/h");
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::acceleration[m / s2]) == "m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::pressure[kg / m / s2]) == "kg m⁻¹ s⁻²");
+    }
+
+    SECTION("Always use solidus")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%aq}", 123 * isq::speed[km / h]) == "km/h");
+      CHECK(UNITS_STD_FMT::format("{:%aq}", 123 * isq::acceleration[m / s2]) == "m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%aq}", 123 * isq::pressure[kg / m / s2]) == "kg/(m s²)");
+    }
+
+    SECTION("Never use solidus")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%nq}", 123 * isq::speed[km / h]) == "km h⁻¹");
+      CHECK(UNITS_STD_FMT::format("{:%nq}", 123 * isq::acceleration[m / s2]) == "m s⁻²");
+      CHECK(UNITS_STD_FMT::format("{:%nq}", 123 * isq::pressure[kg / m / s2]) == "kg m⁻¹ s⁻²");
+    }
   }
 
-  SECTION("standard format for a unit with Unicode symbols")
+  SECTION("Separator")
   {
-    SECTION("Unicode signs in a unit symbol") { CHECK(UNITS_STD_FMT::format("{:%q}", 123_q_kR) == "kΩ"); }
+    SECTION("Space")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%sq}", 123 * isq::force[kg * m / s2]) == "kg m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%sq}", 123 * isq::pressure[kg / m / s2]) == "kg m⁻¹ s⁻²");
+      CHECK(UNITS_STD_FMT::format("{:%asq}", 123 * isq::pressure[kg / m / s2]) == "kg/(m s²)");
+    }
 
-    SECTION("Unicode signs in a unit symbol prefix") { CHECK(UNITS_STD_FMT::format("{:%q}", 123_q_uV) == "µV"); }
+    SECTION("Space is used by default")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::force[kg * m / s2]) == "kg m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%q}", 123 * isq::pressure[kg / m / s2]) == "kg m⁻¹ s⁻²");
+      CHECK(UNITS_STD_FMT::format("{:%aq}", 123 * isq::pressure[kg / m / s2]) == "kg/(m s²)");
+    }
+
+    SECTION("Dot")
+    {
+      CHECK(UNITS_STD_FMT::format("{:%dq}", 123 * isq::force[kg * m / s2]) == "kg⋅m/s²");
+      CHECK(UNITS_STD_FMT::format("{:%dq}", 123 * isq::pressure[kg / m / s2]) == "kg⋅m⁻¹⋅s⁻²");
+      CHECK(UNITS_STD_FMT::format("{:%adq}", 123 * isq::pressure[kg / m / s2]) == "kg/(m⋅s²)");
+    }
+  }
+}
+
+TEST_CASE("unknown unit modifiers should throw", "[text][fmt][exception]")
+{
+  SECTION("only the invalid modifier")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%xq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
   }
 
-  SECTION("ASCII format for a unit with Unicode symbols")
+  SECTION("invalid modifier in the front")
   {
-    SECTION("Unicode signs in a unit symbol") { CHECK(UNITS_STD_FMT::format("{:%Aq}", 123_q_kR) == "kohm"); }
-
-    SECTION("Unicode signs in a unit symbol prefix") { CHECK(UNITS_STD_FMT::format("{:%Aq}", 123_q_uV) == "uV"); }
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%xUdaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
   }
+
+  SECTION("invalid modifier in the end")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%Udaxq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+
+  SECTION("invalid modifier in the middle")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%Udxaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+  }
+}
+
+TEST_CASE("repeated unit modifiers should throw", "[text][fmt][exception]")
+{
+  SECTION("text encoding")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%UdaUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dUaUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dUUaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("solidus")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%aUdaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%daUaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%daaUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("separator")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dUadq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dadUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%addUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+  }
+}
+
+TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][exception]")
+{
+  SECTION("text encoding")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%UdaAq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dAaUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dAUaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("solidus")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%aUdnq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dnUaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%daoUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+  }
+
+  SECTION("separator")
+  {
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dUasq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%sadUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%adsUq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                           UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+  }
+}
+
+TEST_CASE("dot separator requested for ASCII encoding should throw", "[text][fmt][exception]")
+{
+  REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dAaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
+                         UNITS_STD_FMT::format_error,
+                         Catch::Matchers::Message("dot unit separator allowed only for Unicode encoding"));
 }
 
 TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
 {
-  SECTION("no space") { CHECK(UNITS_STD_FMT::format("{:%Q%q}", 123_q_km_per_h) == "123km/h"); }
+  SECTION("no space") { CHECK(UNITS_STD_FMT::format("{:%Q%q}", 123 * isq::speed[km / h]) == "123km/h"); }
 
-  SECTION("separator") { CHECK(UNITS_STD_FMT::format("{:%Q###%q}", 123_q_km_per_h) == "123###km/h"); }
+  SECTION("separator") { CHECK(UNITS_STD_FMT::format("{:%Q###%q}", 123 * isq::speed[km / h]) == "123###km/h"); }
 
-  SECTION("opposite order") { CHECK(UNITS_STD_FMT::format("{:%q %Q}", 123_q_km_per_h) == "km/h 123"); }
-
-  SECTION("tabulator") { CHECK(UNITS_STD_FMT::format("{:%Q%t%q}", 123_q_km_per_h) == "123\tkm/h"); }
-
-  SECTION("new line") { CHECK(UNITS_STD_FMT::format("{:%Q%n%q}", 123_q_km_per_h) == "123\nkm/h"); }
-
-  SECTION("% sign") { CHECK(UNITS_STD_FMT::format("{:%Q%% %q}", 123_q_km_per_h) == "123% km/h"); }
+  SECTION("opposite order") { CHECK(UNITS_STD_FMT::format("{:%q %Q}", 123 * isq::speed[km / h]) == "km/h 123"); }
 }
 
 TEST_CASE("fill and align specification", "[text][fmt][ostream]")
@@ -555,107 +479,107 @@ TEST_CASE("fill and align specification", "[text][fmt][ostream]")
 
     SECTION("width = 10")
     {
-      os << "|" << std::setw(10) << 123_q_m << "|";
+      os << "|" << std::setw(10) << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|     123 m|");
     }
 
     SECTION("width = 10, align = right")
     {
-      os << "|" << std::setw(10) << std::right << 123_q_m << "|";
+      os << "|" << std::setw(10) << std::right << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|     123 m|");
     }
 
     SECTION("width = 10, align = left")
     {
-      os << "|" << std::setw(10) << std::left << 123_q_m << "|";
+      os << "|" << std::setw(10) << std::left << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|123 m     |");
     }
 
     SECTION("width = 10, fill = *")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << 123_q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|*****123 m|");
     }
 
     SECTION("width = 10, fill = *, align = right")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << std::right << 123_q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << std::right << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|*****123 m|");
     }
 
     SECTION("width = 10, fill = *, align = left")
     {
-      os << "|" << std::setw(10) << std::setfill('*') << std::left << 123_q_m << "|";
+      os << "|" << std::setw(10) << std::setfill('*') << std::left << 123 * isq::length[m] << "|";
       CHECK(os.str() == "|123 m*****|");
     }
   }
 
   SECTION("default format {} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("|{:0}|", 123_q_m) == "|123 m|");
-    CHECK(UNITS_STD_FMT::format("|{:10}|", 123_q_m) == "|     123 m|");
-    CHECK(UNITS_STD_FMT::format("|{:<10}|", 123_q_m) == "|123 m     |");
-    CHECK(UNITS_STD_FMT::format("|{:>10}|", 123_q_m) == "|     123 m|");
-    CHECK(UNITS_STD_FMT::format("|{:^10}|", 123_q_m) == "|  123 m   |");
-    CHECK(UNITS_STD_FMT::format("|{:*<10}|", 123_q_m) == "|123 m*****|");
-    CHECK(UNITS_STD_FMT::format("|{:*>10}|", 123_q_m) == "|*****123 m|");
-    CHECK(UNITS_STD_FMT::format("|{:*^10}|", 123_q_m) == "|**123 m***|");
+    CHECK(UNITS_STD_FMT::format("|{:0}|", 123 * isq::length[m]) == "|123 m|");
+    CHECK(UNITS_STD_FMT::format("|{:10}|", 123 * isq::length[m]) == "|     123 m|");
+    CHECK(UNITS_STD_FMT::format("|{:<10}|", 123 * isq::length[m]) == "|123 m     |");
+    CHECK(UNITS_STD_FMT::format("|{:>10}|", 123 * isq::length[m]) == "|     123 m|");
+    CHECK(UNITS_STD_FMT::format("|{:^10}|", 123 * isq::length[m]) == "|  123 m   |");
+    CHECK(UNITS_STD_FMT::format("|{:*<10}|", 123 * isq::length[m]) == "|123 m*****|");
+    CHECK(UNITS_STD_FMT::format("|{:*>10}|", 123 * isq::length[m]) == "|*****123 m|");
+    CHECK(UNITS_STD_FMT::format("|{:*^10}|", 123 * isq::length[m]) == "|**123 m***|");
   }
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("|{:0%Q%q}|", 123_q_m) == "|123m|");
-    CHECK(UNITS_STD_FMT::format("|{:10%Q%q}|", 123_q_m) == "|      123m|");
-    CHECK(UNITS_STD_FMT::format("|{:<10%Q%q}|", 123_q_m) == "|123m      |");
-    CHECK(UNITS_STD_FMT::format("|{:>10%Q%q}|", 123_q_m) == "|      123m|");
-    CHECK(UNITS_STD_FMT::format("|{:^10%Q%q}|", 123_q_m) == "|   123m   |");
-    CHECK(UNITS_STD_FMT::format("|{:*<10%Q%q}|", 123_q_m) == "|123m******|");
-    CHECK(UNITS_STD_FMT::format("|{:*>10%Q%q}|", 123_q_m) == "|******123m|");
-    CHECK(UNITS_STD_FMT::format("|{:*^10%Q%q}|", 123_q_m) == "|***123m***|");
+    CHECK(UNITS_STD_FMT::format("|{:0%Q%q}|", 123 * isq::length[m]) == "|123m|");
+    CHECK(UNITS_STD_FMT::format("|{:10%Q%q}|", 123 * isq::length[m]) == "|      123m|");
+    CHECK(UNITS_STD_FMT::format("|{:<10%Q%q}|", 123 * isq::length[m]) == "|123m      |");
+    CHECK(UNITS_STD_FMT::format("|{:>10%Q%q}|", 123 * isq::length[m]) == "|      123m|");
+    CHECK(UNITS_STD_FMT::format("|{:^10%Q%q}|", 123 * isq::length[m]) == "|   123m   |");
+    CHECK(UNITS_STD_FMT::format("|{:*<10%Q%q}|", 123 * isq::length[m]) == "|123m******|");
+    CHECK(UNITS_STD_FMT::format("|{:*>10%Q%q}|", 123 * isq::length[m]) == "|******123m|");
+    CHECK(UNITS_STD_FMT::format("|{:*^10%Q%q}|", 123 * isq::length[m]) == "|***123m***|");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("|{:0%Q}|", 123_q_m) == "|123|");
-    CHECK(UNITS_STD_FMT::format("|{:10%Q}|", 123_q_m) == "|       123|");
-    CHECK(UNITS_STD_FMT::format("|{:<10%Q}|", 123_q_m) == "|123       |");
-    CHECK(UNITS_STD_FMT::format("|{:>10%Q}|", 123_q_m) == "|       123|");
-    CHECK(UNITS_STD_FMT::format("|{:^10%Q}|", 123_q_m) == "|   123    |");
-    CHECK(UNITS_STD_FMT::format("|{:*<10%Q}|", 123_q_m) == "|123*******|");
-    CHECK(UNITS_STD_FMT::format("|{:*>10%Q}|", 123_q_m) == "|*******123|");
-    CHECK(UNITS_STD_FMT::format("|{:*^10%Q}|", 123_q_m) == "|***123****|");
+    CHECK(UNITS_STD_FMT::format("|{:0%Q}|", 123 * isq::length[m]) == "|123|");
+    CHECK(UNITS_STD_FMT::format("|{:10%Q}|", 123 * isq::length[m]) == "|       123|");
+    CHECK(UNITS_STD_FMT::format("|{:<10%Q}|", 123 * isq::length[m]) == "|123       |");
+    CHECK(UNITS_STD_FMT::format("|{:>10%Q}|", 123 * isq::length[m]) == "|       123|");
+    CHECK(UNITS_STD_FMT::format("|{:^10%Q}|", 123 * isq::length[m]) == "|   123    |");
+    CHECK(UNITS_STD_FMT::format("|{:*<10%Q}|", 123 * isq::length[m]) == "|123*******|");
+    CHECK(UNITS_STD_FMT::format("|{:*>10%Q}|", 123 * isq::length[m]) == "|*******123|");
+    CHECK(UNITS_STD_FMT::format("|{:*^10%Q}|", 123 * isq::length[m]) == "|***123****|");
   }
 
   SECTION("symbol only format {:%q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("|{:0%q}|", 123_q_m) == "|m|");
-    CHECK(UNITS_STD_FMT::format("|{:10%q}|", 123_q_m) == "|m         |");
-    CHECK(UNITS_STD_FMT::format("|{:<10%q}|", 123_q_m) == "|m         |");
-    CHECK(UNITS_STD_FMT::format("|{:>10%q}|", 123_q_m) == "|         m|");
-    CHECK(UNITS_STD_FMT::format("|{:^10%q}|", 123_q_m) == "|    m     |");
-    CHECK(UNITS_STD_FMT::format("|{:*<10%q}|", 123_q_m) == "|m*********|");
-    CHECK(UNITS_STD_FMT::format("|{:*>10%q}|", 123_q_m) == "|*********m|");
-    CHECK(UNITS_STD_FMT::format("|{:*^10%q}|", 123_q_m) == "|****m*****|");
+    CHECK(UNITS_STD_FMT::format("|{:0%q}|", 123 * isq::length[m]) == "|m|");
+    CHECK(UNITS_STD_FMT::format("|{:10%q}|", 123 * isq::length[m]) == "|         m|");
+    CHECK(UNITS_STD_FMT::format("|{:<10%q}|", 123 * isq::length[m]) == "|m         |");
+    CHECK(UNITS_STD_FMT::format("|{:>10%q}|", 123 * isq::length[m]) == "|         m|");
+    CHECK(UNITS_STD_FMT::format("|{:^10%q}|", 123 * isq::length[m]) == "|    m     |");
+    CHECK(UNITS_STD_FMT::format("|{:*<10%q}|", 123 * isq::length[m]) == "|m*********|");
+    CHECK(UNITS_STD_FMT::format("|{:*>10%q}|", 123 * isq::length[m]) == "|*********m|");
+    CHECK(UNITS_STD_FMT::format("|{:*^10%q}|", 123 * isq::length[m]) == "|****m*****|");
   }
 }
 
 TEST_CASE("sign specification", "[text][fmt]")
 {
-  length<metre> inf(std::numeric_limits<double>::infinity());
-  length<metre> nan(std::numeric_limits<double>::quiet_NaN());
+  auto inf = std::numeric_limits<double>::infinity() * si::metre;
+  auto nan = std::numeric_limits<double>::quiet_NaN() * si::metre;
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1_q_m) == "1m,+1m,1m, 1m");
-    CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", -1_q_m) == "-1m,-1m,-1m,-1m");
+    CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", 1 * isq::length[m]) == "1m,+1m,1m, 1m");
+    CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", -1 * isq::length[m]) == "-1m,-1m,-1m,-1m");
     CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", inf) == "infm,+infm,infm, infm");
     CHECK(UNITS_STD_FMT::format("{0:%Q%q},{0:%+Q%q},{0:%-Q%q},{0:% Q%q}", nan) == "nanm,+nanm,nanm, nanm");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", 1_q_m) == "1,+1,1, 1");
-    CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", -1_q_m) == "-1,-1,-1,-1");
+    CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", 1 * isq::length[m]) == "1,+1,1, 1");
+    CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", -1 * isq::length[m]) == "-1,-1,-1,-1");
     CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", inf) == "inf,+inf,inf, inf");
     CHECK(UNITS_STD_FMT::format("{0:%Q},{0:%+Q},{0:%-Q},{0:% Q}", nan) == "nan,+nan,nan, nan");
   }
@@ -665,32 +589,24 @@ TEST_CASE("precision specification", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%.0Q %q}", 1.2345_q_m) == "1 m");
-    CHECK(UNITS_STD_FMT::format("{:%.1Q %q}", 1.2345_q_m) == "1.2 m");
-    CHECK(UNITS_STD_FMT::format("{:%.2Q %q}", 1.2345_q_m) == "1.23 m");
-#ifdef UNITS_COMP_MSVC
-    CHECK(UNITS_STD_FMT::format("{:%.3Q %q}", 1.2345_q_m) == "1.234 m");
-#else
-    CHECK(UNITS_STD_FMT::format("{:%.3Q %q}", 1.2345_q_m) == "1.235 m");
-#endif
-    CHECK(UNITS_STD_FMT::format("{:%.4Q %q}", 1.2345_q_m) == "1.2345 m");
-    CHECK(UNITS_STD_FMT::format("{:%.5Q %q}", 1.2345_q_m) == "1.23450 m");
-    CHECK(UNITS_STD_FMT::format("{:%.10Q %q}", 1.2345_q_m) == "1.2345000000 m");
+    CHECK(UNITS_STD_FMT::format("{:%.0Q %q}", 1.2345 * isq::length[m]) == "1 m");
+    CHECK(UNITS_STD_FMT::format("{:%.1Q %q}", 1.2345 * isq::length[m]) == "1.2 m");
+    CHECK(UNITS_STD_FMT::format("{:%.2Q %q}", 1.2345 * isq::length[m]) == "1.23 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3Q %q}", 1.2345 * isq::length[m]) == "1.234 m");
+    CHECK(UNITS_STD_FMT::format("{:%.4Q %q}", 1.2345 * isq::length[m]) == "1.2345 m");
+    CHECK(UNITS_STD_FMT::format("{:%.5Q %q}", 1.2345 * isq::length[m]) == "1.23450 m");
+    CHECK(UNITS_STD_FMT::format("{:%.10Q %q}", 1.2345 * isq::length[m]) == "1.2345000000 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%.0Q}", 1.2345_q_m) == "1");
-    CHECK(UNITS_STD_FMT::format("{:%.1Q}", 1.2345_q_m) == "1.2");
-    CHECK(UNITS_STD_FMT::format("{:%.2Q}", 1.2345_q_m) == "1.23");
-#ifdef UNITS_COMP_MSVC
-    CHECK(UNITS_STD_FMT::format("{:%.3Q}", 1.2345_q_m) == "1.234");
-#else
-    CHECK(UNITS_STD_FMT::format("{:%.3Q}", 1.2345_q_m) == "1.235");
-#endif
-    CHECK(UNITS_STD_FMT::format("{:%.4Q}", 1.2345_q_m) == "1.2345");
-    CHECK(UNITS_STD_FMT::format("{:%.5Q}", 1.2345_q_m) == "1.23450");
-    CHECK(UNITS_STD_FMT::format("{:%.10Q}", 1.2345_q_m) == "1.2345000000");
+    CHECK(UNITS_STD_FMT::format("{:%.0Q}", 1.2345 * isq::length[m]) == "1");
+    CHECK(UNITS_STD_FMT::format("{:%.1Q}", 1.2345 * isq::length[m]) == "1.2");
+    CHECK(UNITS_STD_FMT::format("{:%.2Q}", 1.2345 * isq::length[m]) == "1.23");
+    CHECK(UNITS_STD_FMT::format("{:%.3Q}", 1.2345 * isq::length[m]) == "1.234");
+    CHECK(UNITS_STD_FMT::format("{:%.4Q}", 1.2345 * isq::length[m]) == "1.2345");
+    CHECK(UNITS_STD_FMT::format("{:%.5Q}", 1.2345 * isq::length[m]) == "1.23450");
+    CHECK(UNITS_STD_FMT::format("{:%.10Q}", 1.2345 * isq::length[m]) == "1.2345000000");
   }
 }
 
@@ -698,14 +614,14 @@ TEST_CASE("precision specification for integral representation should throw", "[
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q %q}", UNITS_STD_FMT::make_format_args(1_q_m)),
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q %q}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
                            UNITS_STD_FMT::format_error,
                            Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q}", UNITS_STD_FMT::make_format_args(1_q_m)),
+    REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%.1Q}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
                            UNITS_STD_FMT::format_error,
                            Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
@@ -715,84 +631,56 @@ TEST_CASE("type specification", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%bQ %q}", 42_q_m) == "101010 m");
-    CHECK(UNITS_STD_FMT::format("{:%BQ %q}", 42_q_m) == "101010 m");
-    CHECK(UNITS_STD_FMT::format("{:%dQ %q}", 42_q_m) == "42 m");
-    CHECK(UNITS_STD_FMT::format("{:%oQ %q}", 42_q_m) == "52 m");
-    CHECK(UNITS_STD_FMT::format("{:%xQ %q}", 42_q_m) == "2a m");
-    CHECK(UNITS_STD_FMT::format("{:%XQ %q}", 42_q_m) == "2A m");
+    CHECK(UNITS_STD_FMT::format("{:%bQ %q}", 42 * isq::length[m]) == "101010 m");
+    CHECK(UNITS_STD_FMT::format("{:%BQ %q}", 42 * isq::length[m]) == "101010 m");
+    CHECK(UNITS_STD_FMT::format("{:%dQ %q}", 42 * isq::length[m]) == "42 m");
+    CHECK(UNITS_STD_FMT::format("{:%oQ %q}", 42 * isq::length[m]) == "52 m");
+    CHECK(UNITS_STD_FMT::format("{:%xQ %q}", 42 * isq::length[m]) == "2a m");
+    CHECK(UNITS_STD_FMT::format("{:%XQ %q}", 42 * isq::length[m]) == "2A m");
 
-#ifdef UNITS_COMP_MSVC
-#if UNITS_USE_LIBFMT
-    CHECK(UNITS_STD_FMT::format("{:%aQ %q}", 1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x1.3c1p+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%AQ %q}", 1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ %q}", 1.2345678_q_m) == "0X1.3C1P+0 m");
-#else
-    CHECK(UNITS_STD_FMT::format("{:%aQ %q}", 1.2345678_q_m) == "1.3c0ca2a5b1d5dp+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "1.3c1p+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%AQ %q}", 1.2345678_q_m) == "1.3C0CA2A5B1D5DP+0 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ %q}", 1.2345678_q_m) == "1.3C1P+0 m");
-#endif  // UNITS_USE_LIBFMT
-#else
-    CHECK(UNITS_STD_FMT::format("{:%aQ %q}", 1.2345678_q_m) == "0x9.e065152d8eae841p-3 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ %q}", 1.2345678_q_m) == "0x9.e06p-3 m");
-    CHECK(UNITS_STD_FMT::format("{:%AQ %q}", 1.2345678_q_m) == "0X9.E065152D8EAE841P-3 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ %q}", 1.2345678_q_m) == "0X9.E06P-3 m");
-#endif
-    CHECK(UNITS_STD_FMT::format("{:%eQ %q}", 1.2345678_q_m) == "1.234568e+00 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3eQ %q}", 1.2345678_q_m) == "1.235e+00 m");
-    CHECK(UNITS_STD_FMT::format("{:%EQ %q}", 1.2345678_q_m) == "1.234568E+00 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3EQ %q}", 1.2345678_q_m) == "1.235E+00 m");
-    CHECK(UNITS_STD_FMT::format("{:%gQ %q}", 1.2345678_q_m) == "1.23457 m");
-    CHECK(UNITS_STD_FMT::format("{:%gQ %q}", 1.2345678e8_q_m) == "1.23457e+08 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3gQ %q}", 1.2345678_q_m) == "1.23 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3gQ %q}", 1.2345678e8_q_m) == "1.23e+08 m");
-    CHECK(UNITS_STD_FMT::format("{:%GQ %q}", 1.2345678_q_m) == "1.23457 m");
-    CHECK(UNITS_STD_FMT::format("{:%GQ %q}", 1.2345678e8_q_m) == "1.23457E+08 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3GQ %q}", 1.2345678_q_m) == "1.23 m");
-    CHECK(UNITS_STD_FMT::format("{:%.3GQ %q}", 1.2345678e8_q_m) == "1.23E+08 m");
+    CHECK(UNITS_STD_FMT::format("{:%aQ %q}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3aQ %q}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0 m");
+    CHECK(UNITS_STD_FMT::format("{:%AQ %q}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3AQ %q}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0 m");
+    CHECK(UNITS_STD_FMT::format("{:%eQ %q}", 1.2345678 * isq::length[m]) == "1.234568e+00 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3eQ %q}", 1.2345678 * isq::length[m]) == "1.235e+00 m");
+    CHECK(UNITS_STD_FMT::format("{:%EQ %q}", 1.2345678 * isq::length[m]) == "1.234568E+00 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3EQ %q}", 1.2345678 * isq::length[m]) == "1.235E+00 m");
+    CHECK(UNITS_STD_FMT::format("{:%gQ %q}", 1.2345678 * isq::length[m]) == "1.23457 m");
+    CHECK(UNITS_STD_FMT::format("{:%gQ %q}", 1.2345678e8 * isq::length[m]) == "1.23457e+08 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3gQ %q}", 1.2345678 * isq::length[m]) == "1.23 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3gQ %q}", 1.2345678e8 * isq::length[m]) == "1.23e+08 m");
+    CHECK(UNITS_STD_FMT::format("{:%GQ %q}", 1.2345678 * isq::length[m]) == "1.23457 m");
+    CHECK(UNITS_STD_FMT::format("{:%GQ %q}", 1.2345678e8 * isq::length[m]) == "1.23457E+08 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3GQ %q}", 1.2345678 * isq::length[m]) == "1.23 m");
+    CHECK(UNITS_STD_FMT::format("{:%.3GQ %q}", 1.2345678e8 * isq::length[m]) == "1.23E+08 m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%bQ}", 42_q_m) == "101010");
-    CHECK(UNITS_STD_FMT::format("{:%BQ}", 42_q_m) == "101010");
-    CHECK(UNITS_STD_FMT::format("{:%dQ}", 42_q_m) == "42");
-    CHECK(UNITS_STD_FMT::format("{:%oQ}", 42_q_m) == "52");
-    CHECK(UNITS_STD_FMT::format("{:%xQ}", 42_q_m) == "2a");
-    CHECK(UNITS_STD_FMT::format("{:%XQ}", 42_q_m) == "2A");
+    CHECK(UNITS_STD_FMT::format("{:%bQ}", 42 * isq::length[m]) == "101010");
+    CHECK(UNITS_STD_FMT::format("{:%BQ}", 42 * isq::length[m]) == "101010");
+    CHECK(UNITS_STD_FMT::format("{:%dQ}", 42 * isq::length[m]) == "42");
+    CHECK(UNITS_STD_FMT::format("{:%oQ}", 42 * isq::length[m]) == "52");
+    CHECK(UNITS_STD_FMT::format("{:%xQ}", 42 * isq::length[m]) == "2a");
+    CHECK(UNITS_STD_FMT::format("{:%XQ}", 42 * isq::length[m]) == "2A");
 
-#ifdef UNITS_COMP_MSVC
-#if UNITS_USE_LIBFMT
-    CHECK(UNITS_STD_FMT::format("{:%aQ}", 1.2345678_q_m) == "0x1.3c0ca2a5b1d5dp+0");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "0x1.3c1p+0");
-    CHECK(UNITS_STD_FMT::format("{:%AQ}", 1.2345678_q_m) == "0X1.3C0CA2A5B1D5DP+0");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ}", 1.2345678_q_m) == "0X1.3C1P+0");
-#else
-    CHECK(UNITS_STD_FMT::format("{:%aQ}", 1.2345678_q_m) == "1.3c0ca2a5b1d5dp+0");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "1.3c1p+0");
-    CHECK(UNITS_STD_FMT::format("{:%AQ}", 1.2345678_q_m) == "1.3C0CA2A5B1D5DP+0");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ}", 1.2345678_q_m) == "1.3C1P+0");
-#endif  // UNITS_USE_LIBFMT
-#else
-    CHECK(UNITS_STD_FMT::format("{:%aQ}", 1.2345678_q_m) == "0x9.e065152d8eae841p-3");
-    CHECK(UNITS_STD_FMT::format("{:%.3aQ}", 1.2345678_q_m) == "0x9.e06p-3");
-    CHECK(UNITS_STD_FMT::format("{:%AQ}", 1.2345678_q_m) == "0X9.E065152D8EAE841P-3");
-    CHECK(UNITS_STD_FMT::format("{:%.3AQ}", 1.2345678_q_m) == "0X9.E06P-3");
-#endif
-    CHECK(UNITS_STD_FMT::format("{:%eQ}", 1.2345678_q_m) == "1.234568e+00");
-    CHECK(UNITS_STD_FMT::format("{:%.3eQ}", 1.2345678_q_m) == "1.235e+00");
-    CHECK(UNITS_STD_FMT::format("{:%EQ}", 1.2345678_q_m) == "1.234568E+00");
-    CHECK(UNITS_STD_FMT::format("{:%.3EQ}", 1.2345678_q_m) == "1.235E+00");
-    CHECK(UNITS_STD_FMT::format("{:%gQ}", 1.2345678_q_m) == "1.23457");
-    CHECK(UNITS_STD_FMT::format("{:%gQ}", 1.2345678e8_q_m) == "1.23457e+08");
-    CHECK(UNITS_STD_FMT::format("{:%.3gQ}", 1.2345678_q_m) == "1.23");
-    CHECK(UNITS_STD_FMT::format("{:%.3gQ}", 1.2345678e8_q_m) == "1.23e+08");
-    CHECK(UNITS_STD_FMT::format("{:%GQ}", 1.2345678_q_m) == "1.23457");
-    CHECK(UNITS_STD_FMT::format("{:%GQ}", 1.2345678e8_q_m) == "1.23457E+08");
-    CHECK(UNITS_STD_FMT::format("{:%.3GQ}", 1.2345678_q_m) == "1.23");
-    CHECK(UNITS_STD_FMT::format("{:%.3GQ}", 1.2345678e8_q_m) == "1.23E+08");
+    CHECK(UNITS_STD_FMT::format("{:%aQ}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0");
+    CHECK(UNITS_STD_FMT::format("{:%.3aQ}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0");
+    CHECK(UNITS_STD_FMT::format("{:%AQ}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0");
+    CHECK(UNITS_STD_FMT::format("{:%.3AQ}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0");
+    CHECK(UNITS_STD_FMT::format("{:%eQ}", 1.2345678 * isq::length[m]) == "1.234568e+00");
+    CHECK(UNITS_STD_FMT::format("{:%.3eQ}", 1.2345678 * isq::length[m]) == "1.235e+00");
+    CHECK(UNITS_STD_FMT::format("{:%EQ}", 1.2345678 * isq::length[m]) == "1.234568E+00");
+    CHECK(UNITS_STD_FMT::format("{:%.3EQ}", 1.2345678 * isq::length[m]) == "1.235E+00");
+    CHECK(UNITS_STD_FMT::format("{:%gQ}", 1.2345678 * isq::length[m]) == "1.23457");
+    CHECK(UNITS_STD_FMT::format("{:%gQ}", 1.2345678e8 * isq::length[m]) == "1.23457e+08");
+    CHECK(UNITS_STD_FMT::format("{:%.3gQ}", 1.2345678 * isq::length[m]) == "1.23");
+    CHECK(UNITS_STD_FMT::format("{:%.3gQ}", 1.2345678e8 * isq::length[m]) == "1.23e+08");
+    CHECK(UNITS_STD_FMT::format("{:%GQ}", 1.2345678 * isq::length[m]) == "1.23457");
+    CHECK(UNITS_STD_FMT::format("{:%GQ}", 1.2345678e8 * isq::length[m]) == "1.23457E+08");
+    CHECK(UNITS_STD_FMT::format("{:%.3GQ}", 1.2345678 * isq::length[m]) == "1.23");
+    CHECK(UNITS_STD_FMT::format("{:%.3GQ}", 1.2345678e8 * isq::length[m]) == "1.23E+08");
   }
 }
 
@@ -800,20 +688,20 @@ TEST_CASE("different base types with the # specifier", "[text][fmt]")
 {
   SECTION("full format {:%Q %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%#bQ %q}", 42_q_m) == "0b101010 m");
-    CHECK(UNITS_STD_FMT::format("{:%#BQ %q}", 42_q_m) == "0B101010 m");
-    CHECK(UNITS_STD_FMT::format("{:%#oQ %q}", 42_q_m) == "052 m");
-    CHECK(UNITS_STD_FMT::format("{:%#xQ %q}", 42_q_m) == "0x2a m");
-    CHECK(UNITS_STD_FMT::format("{:%#XQ %q}", 42_q_m) == "0X2A m");
+    CHECK(UNITS_STD_FMT::format("{:%#bQ %q}", 42 * isq::length[m]) == "0b101010 m");
+    CHECK(UNITS_STD_FMT::format("{:%#BQ %q}", 42 * isq::length[m]) == "0B101010 m");
+    CHECK(UNITS_STD_FMT::format("{:%#oQ %q}", 42 * isq::length[m]) == "052 m");
+    CHECK(UNITS_STD_FMT::format("{:%#xQ %q}", 42 * isq::length[m]) == "0x2a m");
+    CHECK(UNITS_STD_FMT::format("{:%#XQ %q}", 42 * isq::length[m]) == "0X2A m");
   }
 
   SECTION("value only format {:%Q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format("{:%#bQ}", 42_q_m) == "0b101010");
-    CHECK(UNITS_STD_FMT::format("{:%#BQ}", 42_q_m) == "0B101010");
-    CHECK(UNITS_STD_FMT::format("{:%#oQ}", 42_q_m) == "052");
-    CHECK(UNITS_STD_FMT::format("{:%#xQ}", 42_q_m) == "0x2a");
-    CHECK(UNITS_STD_FMT::format("{:%#XQ}", 42_q_m) == "0X2A");
+    CHECK(UNITS_STD_FMT::format("{:%#bQ}", 42 * isq::length[m]) == "0b101010");
+    CHECK(UNITS_STD_FMT::format("{:%#BQ}", 42 * isq::length[m]) == "0B101010");
+    CHECK(UNITS_STD_FMT::format("{:%#oQ}", 42 * isq::length[m]) == "052");
+    CHECK(UNITS_STD_FMT::format("{:%#xQ}", 42 * isq::length[m]) == "0x2a");
+    CHECK(UNITS_STD_FMT::format("{:%#XQ}", 42 * isq::length[m]) == "0X2A");
   }
 }
 
@@ -834,18 +722,18 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
 
   SECTION("full format {:%LQ %q} on a quantity")
   {
-    CHECK(UNITS_STD_FMT::format(grp2, "{:%LQ %q}", 299792458_q_m_per_s) == "2_99_79_24_58 m/s");
-    CHECK(UNITS_STD_FMT::format(grp3, "{:%LQ %q}", 299792458_q_m_per_s) == "299'792'458 m/s");
+    CHECK(UNITS_STD_FMT::format(grp2, "{:%LQ %q}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
+    CHECK(UNITS_STD_FMT::format(grp3, "{:%LQ %q}", 299'792'458 * isq::speed[m / s]) == "299'792'458 m/s");
   }
 }
 
-TEST_CASE("quantity_cast", "[text][ostream]")
+TEST_CASE("value_cast", "[text][ostream]")
 {
   std::ostringstream os;
 
   SECTION("int to double representation")
   {
-    const auto q = 121_q_km / 2_q_h;
+    const auto q = 121 * isq::length[km] / (2 * isq::time[h]);
 
     SECTION("original")
     {
@@ -855,20 +743,20 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("int")
     {
-      os << quantity_cast<int>(q);
+      os << value_cast<int>(q);
       CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      os << quantity_cast<double>(q);
+      os << value_cast<double>(q);
       CHECK(os.str() == "60 km/h");
     }
   }
 
   SECTION("double to int representation")
   {
-    const auto q = 121._q_km / 2_q_h;
+    const auto q = 121. * isq::length[km] / (2 * isq::time[h]);
 
     SECTION("original")
     {
@@ -878,13 +766,13 @@ TEST_CASE("quantity_cast", "[text][ostream]")
 
     SECTION("int")
     {
-      os << quantity_cast<int>(q);
+      os << value_cast<int>(q);
       CHECK(os.str() == "60 km/h");
     }
 
     SECTION("double")
     {
-      os << quantity_cast<double>(q);
+      os << value_cast<double>(q);
       CHECK(os.str() == "60.5 km/h");
     }
   }

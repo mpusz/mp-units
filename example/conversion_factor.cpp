@@ -15,8 +15,10 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <units/format.h>
-#include <units/isq/si/length.h>
+#include <mp-units/format.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/units.h>
 #include <iostream>
 #include <type_traits>
 
@@ -27,27 +29,24 @@
 
 namespace {
 
-template<units::Quantity Target, units::Quantity Source>
-  requires units::equivalent<typename Source::dimension, typename Target::dimension>
-inline constexpr std::common_type_t<typename Target::rep, typename Source::rep> conversion_factor(Target, Source)
+template<mp_units::Quantity Target, mp_units::Quantity Source>
+  requires std::constructible_from<Target, Source>
+inline constexpr double conversion_factor(Target, Source)
 {
-  // get quantities looking like inputs but with Q::rep that doesn't have narrowing conversion
-  typedef std::common_type_t<typename Target::rep, typename Source::rep> rep;
-  typedef units::quantity<typename Source::dimension, typename Source::unit, rep> source;
-  typedef units::quantity<typename Target::dimension, typename Target::unit, rep> target;
-  return target{source{1}}.number();
+  return value_cast<Target::unit>(1. * Source::reference).number();
 }
 
 }  // namespace
 
 int main()
 {
-  using namespace units::isq::si;
+  using namespace mp_units;
+  using namespace mp_units::si::unit_symbols;
 
   std::cout << "conversion factor in mp-units...\n\n";
 
-  constexpr length<metre> lengthA(2.0);
-  constexpr length<millimetre> lengthB = lengthA;
+  constexpr auto lengthA = 2.0 * m;
+  constexpr auto lengthB = lengthA[mm];
 
   std::cout << UNITS_STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";

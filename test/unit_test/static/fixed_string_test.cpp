@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/bits/external/fixed_string.h>
+#include <mp-units/bits/external/fixed_string.h>
 
-using namespace units;
+using namespace mp_units;
 
 namespace {
 

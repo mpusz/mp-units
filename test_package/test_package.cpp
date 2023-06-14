@@ -20,22 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <units/isq/si/length.h>
-#include <units/isq/si/speed.h>
-#include <units/isq/si/time.h>
-#include <units/quantity_io.h>
+#include <mp-units/iostream.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <iostream>
 
-using namespace units;
+using namespace mp_units;
 
-template<isq::Length Length, isq::Time Time>
-constexpr auto avg_speed(Length d, Time t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }
 
 int main()
 {
-  using namespace units::isq::si::references;
+  using namespace mp_units::si::unit_symbols;
   std::cout << "Average speed = " << avg_speed(240 * km, 2 * h) << '\n';
 }

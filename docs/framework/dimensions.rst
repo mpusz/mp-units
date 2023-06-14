@@ -139,3 +139,68 @@ In order to obtain the base/coherent unit of any dimension type a
 
     static_assert(is_same_v<dimension_unit<si::dim_length>, si::metre>);
     static_assert(is_same_v<dimension_unit<si::dim_speed>, si::metre_per_second>);
+
+
+
+
+How do you feel about:
+
+inline constexpr second second;
+?
+
+We could do the same to dimensions to not have to type dim_length{} all the time.
+
+6 replies 2 new
+@JohelEGP
+JohelEGP
+2 days ago
+mp_units::units::second is a variable. The reference isq::si::second could stay a type and s continue to be a variable.
+
+@mpusz
+mpusz
+2 days ago
+Maintainer
+Author
+The problem is the following:
+
+Variables are really needed for a new design. We can ask users to put {} after every dimension unit, and reference types but it would be really nasty and a lot of boilerplate.
+Short names have to be opt-in as they collide with a lot of code (especially on MSVC).
+@JohelEGP
+JohelEGP
+yesterday
+As pointed out by #389 (reply in thread), I think it'd be OK suffix _t to the types.
+
+@mpusz
+mpusz
+10 hours ago
+Maintainer
+Author
+It will be visible in the compilation errors, which is inconvenient :-(
+
+Instead of:
+
+quantity<reference<derived_dimension<length_dim, per<time_dim>>, derived_unit<metre, per<second>>>
+we will have something like:
+
+quantity<reference<derived_dimension<length_dim_t, per<time_dim_t>>, derived_unit<metre_t, per<second_t>>>
+Personally, I like the first output more.
+
+Note that definition like:
+
+inline constexpr second second;
+besides, being really unconventional, is allowed by the language and will not impact our users at all. A user is about to always work with values in the code and observe types in the compilation errors. Using the same nicely blends those two domains together.
+
+@mpusz
+mpusz
+10 hours ago
+Maintainer
+Author
+I could use a list of values instead of types as template parameters in the dervied_dimension and derived_unit but in such case the error would look like:
+
+quantity<reference<derived_dimension<length_dim{}, per<time_dim{}>{}>{}, derived_unit<metre{}, per<second{}>{}>{}>>
+which also is not that nice.
+
+@JohelEGP
+JohelEGP
+6 hours ago
+That's convincing. This justification should definitely be part of the documentation.
