@@ -658,6 +658,13 @@ struct explode_to_equation_result {
   specs_convertible_result result;
 };
 
+#if UNITS_COMP_CLANG
+
+template<QuantitySpec Q>
+explode_to_equation_result(Q, specs_convertible_result) -> explode_to_equation_result<Q>;
+
+#endif
+
 template<QuantitySpec Q>
   requires requires { Q::_equation_; }
 [[nodiscard]] consteval auto explode_to_equation(Q q)
@@ -687,6 +694,13 @@ struct explode_result {
     return {quantity, std::min(result, res.result)};
   }
 };
+
+#if UNITS_COMP_CLANG
+
+template<QuantitySpec Q>
+explode_result(Q) -> explode_result<Q>;
+
+#endif
 
 template<int Complexity, IntermediateDerivedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q);
@@ -850,6 +864,13 @@ struct extract_results {
   prepend_rest prepend{};
   Elem elem{};
 };
+
+#if UNITS_COMP_CLANG
+
+template<typename... Ts>
+extract_results(bool, Ts...) -> extract_results<Ts...>;
+
+#endif
 
 template<typename From, typename To>
 [[nodiscard]] consteval auto extract_convertible_quantities(From from, To to)

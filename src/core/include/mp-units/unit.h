@@ -282,6 +282,13 @@ struct canonical_unit {
   U reference_unit;
 };
 
+#if UNITS_COMP_CLANG
+
+template<Magnitude M, Unit U>
+canonical_unit(M, U) -> canonical_unit<M, U>;
+
+#endif
+
 template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&);
 
