@@ -59,7 +59,7 @@ template<Quantity To, typename From>
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr Quantity auto sudo_cast(From&& q)
 {
-  if constexpr (q.unit == To::unit) {
+  if constexpr (std::remove_reference_t<From>::unit == To::unit) {
     // no scaling of the number needed
     return make_quantity<To::reference>(
       static_cast<TYPENAME To::rep>(std::forward<From>(q).number()));  // this is the only (and recommended) way to do
