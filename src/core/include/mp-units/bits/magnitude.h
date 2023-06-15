@@ -136,8 +136,26 @@ inline constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specializ
 
 }
 
+#if UNITS_COMP_CLANG
+
+template<typename T>
+struct mag_value {
+  T value;
+};
+
+template<typename T>
+mag_value(T) -> mag_value<T>;
+
+template<typename T>
+concept PowerVBase =
+  one_of<T, int, std::intmax_t> || is_specialization_of<T, mag_value> || detail::is_named_magnitude<T>;
+
+#else
+
 template<typename T>
 concept PowerVBase = one_of<T, int, std::intmax_t, long double> || detail::is_named_magnitude<T>;
+
+#endif
 
 // TODO Unify with `power` if UTPs (P1985) are accepted by the Committee
 template<PowerVBase auto V, int Num, int... Den>
@@ -166,8 +184,11 @@ namespace detail {
 template<MagnitudeSpec Element>
 [[nodiscard]] consteval auto get_base(Element element)
 {
-  if constexpr (detail::is_specialization_of_power_v<Element>)
-    return Element::base;
+  if constexpr (detail::is_specialization_of_power_v<Element>) return Element::base;
+#if UNITS_COMP_CLANG
+  else if constexpr (is_specialization_of<Element, mag_value>)
+    return element.value;
+#endif
   else
     return element;
 }
@@ -497,12 +518,20 @@ constexpr T get_value(const magnitude<Ms...>&)
   return result;
 }
 
-
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
+#if UNITS_COMP_CLANG
+
+inline constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
+} mag_pi;
+
+#else
+
 inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
 } mag_pi;
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude equality implementation.
