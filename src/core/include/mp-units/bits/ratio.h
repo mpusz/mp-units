@@ -23,6 +23,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
+#include <mp-units/bits/external/hacks.h>
 #include <compare>
 #include <cstdint>
 #include <numeric>
