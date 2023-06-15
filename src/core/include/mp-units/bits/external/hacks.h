@@ -106,6 +106,16 @@
 
 #endif
 
+#if UNITS_COMP_CLANG
+
+#define CONSTEVAL constexpr
+
+#else
+
+#define CONSTEVAL consteval
+
+#endif
+
 #if UNITS_COMP_MSVC
 
 #define UNITS_CONSTRAINED_AUTO_WORKAROUND(X)

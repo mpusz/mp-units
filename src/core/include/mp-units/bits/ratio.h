@@ -32,7 +32,7 @@ namespace mp_units {
 namespace detail {
 
 template<typename T>
-[[nodiscard]] consteval T abs(T v) noexcept
+[[nodiscard]] CONSTEVAL T abs(T v) noexcept
 {
   return v < 0 ? -v : v;
 }
@@ -66,7 +66,7 @@ struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 
-  consteval explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
+  CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
     gsl_Expects(den != 0);
     if (num == 0)
@@ -81,14 +81,14 @@ struct ratio {
   [[nodiscard]] friend consteval bool operator==(ratio, ratio) = default;
   [[nodiscard]] friend consteval auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
 
-  [[nodiscard]] friend consteval ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
+  [[nodiscard]] friend CONSTEVAL ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
 
-  [[nodiscard]] friend consteval ratio operator+(ratio lhs, ratio rhs)
+  [[nodiscard]] friend CONSTEVAL ratio operator+(ratio lhs, ratio rhs)
   {
     return ratio{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den};
   }
 
-  [[nodiscard]] friend consteval ratio operator-(ratio lhs, ratio rhs) { return lhs + (-rhs); }
+  [[nodiscard]] friend CONSTEVAL ratio operator-(ratio lhs, ratio rhs) { return lhs + (-rhs); }
 
   [[nodiscard]] friend consteval ratio operator*(ratio lhs, ratio rhs)
   {
