@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/isq/base_quantities.h>
+#include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/unit.h>
 

@@ -22,6 +22,7 @@
 
 #include "test_tools.h"
 #include <mp-units/chrono.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
 #include <limits>

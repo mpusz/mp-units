@@ -23,6 +23,7 @@
 #include <mp-units/format.h>
 #include <mp-units/systems/imperial/imperial.h>
 #include <mp-units/systems/international/international.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <iostream>
