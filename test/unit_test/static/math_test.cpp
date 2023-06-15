@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// #include "test_tools.h"
 #include <mp-units/math.h>  // IWYU pragma: keep
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
