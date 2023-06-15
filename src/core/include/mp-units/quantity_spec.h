@@ -356,14 +356,14 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
 
 #ifdef __cpp_explicit_this_parameter
 
-#define QUANTITY_SPEC(name, ...)                                            \
-  inline constexpr struct name : ::mp_units::quantity_spec<##__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                          \
+  inline constexpr struct name : ::mp_units::quantity_spec<__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC(name, ...)                                                  \
-  inline constexpr struct name : ::mp_units::quantity_spec<name, ##__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                                \
+  inline constexpr struct name : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
   } name
 
 #endif
