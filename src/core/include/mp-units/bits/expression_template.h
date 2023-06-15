@@ -268,10 +268,10 @@ struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T,
 
 
 // expr_less
-template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
+template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
 struct expr_less_impl : Pred<expr_type<Lhs>, expr_type<Rhs>> {};
 
-template<typename T, int... Ints, template<typename, typename> typename Pred>
+template<typename T, int... Ints, template<typename, typename, auto...> typename Pred>
 struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
 
 /**
@@ -280,7 +280,7 @@ struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
  * Algorithm accounts not only for explicit types but also for the case when they
  * are wrapped within `power<T, Num, Den>`.
  */
-template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
+template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
 using expr_less = expr_less_impl<Lhs, Rhs, Pred>;
 
 
