@@ -35,16 +35,16 @@ int main()
   std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
   std::cout.precision(3);
 
-  constexpr auto C = isq::capacitance(0.47 * uF);
+  constexpr auto CC = isq::capacitance(0.47 * uF);
   constexpr auto V0 = isq::voltage(5.0 * V);
-  constexpr auto R = isq::resistance(4.7 * si::kilo<si::ohm>);
+  constexpr auto RR = isq::resistance(4.7 * si::kilo<si::ohm>);
 
-  for (auto t = 0 * ms; t <= 50 * ms; ++t) {
-    const QuantityOf<isq::voltage> auto Vt = V0 * exp(dimensionless(-t / (R * C)));
+  for (auto tt = 0 * ms; tt <= 50 * ms; ++tt) {
+    const QuantityOf<isq::voltage> auto Vt = V0 * exp(dimensionless(-tt / (RR * CC)));
     // TODO try to make the below work instead
-    // const QuantityOf<isq::voltage> auto Vt = V0 * exp(-t / (R * C));
+    // const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
 
-    std::cout << "at " << t << " voltage is ";
+    std::cout << "at " << tt << " voltage is ";
 
     if (Vt >= 1 * V)
       std::cout << Vt[V];
