@@ -35,8 +35,8 @@ required_conan_version = ">=2.0.0"
 
 class MPUnitsConan(ConanFile):
     name = "mp-units"
-    homepage = "https://github.com/mpusz/units"
-    description = "Physical Quantities and Units library for C++"
+    homepage = "https://github.com/mpusz/mp-units"
+    description = "A Physical Quantities and Units library for C++"
     topics = (
         "units",
         "dimensions",
@@ -52,7 +52,7 @@ class MPUnitsConan(ConanFile):
         "quantity-manipulation",
     )
     license = "MIT"
-    url = "https://github.com/mpusz/units"
+    url = "https://github.com/mpusz/mp-units"
     settings = "os", "arch", "compiler", "build_type"
     exports = ["LICENSE.md"]
     exports_sources = [
