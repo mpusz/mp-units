@@ -74,8 +74,8 @@ static_assert(!std::constructible_from<quantity<si::metre, min_impl<double>>, mi
 static_assert(!std::convertible_to<min_impl<double>, quantity<si::metre, min_impl<double>>>);
 
 // multiply syntax should work
-template<typename T, Unit auto U>
-concept creates_quantity = requires { T{} * U; };
+template<typename T, auto U>
+concept creates_quantity = Unit<std::remove_cvref_t<decltype(U)>> && requires { T{} * U; };
 
 static_assert(creates_quantity<min_impl<int>, si::metre>);
 static_assert(creates_quantity<min_impl<double>, si::metre>);
