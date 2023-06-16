@@ -25,6 +25,9 @@
 #include <mp-units/systems/si/si.h>
 #include <mp-units/unit.h>
 
+template<>
+inline constexpr std::optional<std::intmax_t> mp_units::known_first_factor<334'524'384'739> = 334'524'384'739;
+
 namespace mp_units::hep {
 
 // energy
