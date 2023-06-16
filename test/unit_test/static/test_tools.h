@@ -139,14 +139,14 @@ inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V
 
 #ifdef __cpp_explicit_this_parameter
 
-#define QUANTITY_SPEC_(name, ...)                                  \
-  inline constexpr struct name##_ : quantity_spec<##__VA_ARGS__> { \
+#define QUANTITY_SPEC_(name, ...)                                \
+  inline constexpr struct name##_ : quantity_spec<__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC_(name, ...)                                           \
-  inline constexpr struct name##_ : quantity_spec<name##_, ##__VA_ARGS__> { \
+#define QUANTITY_SPEC_(name, ...)                                         \
+  inline constexpr struct name##_ : quantity_spec<name##_, __VA_ARGS__> { \
   } name
 
 #endif
