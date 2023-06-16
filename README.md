@@ -87,7 +87,8 @@ accuracy. Please see the below example for a quick preview of basic library feat
 
 using namespace mp_units;
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
+                                                QuantityOf<isq::time> auto t)
 {
   return d / t;
 }
@@ -115,4 +116,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/b4a3Ya6dY)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/rrTojn47v)._
