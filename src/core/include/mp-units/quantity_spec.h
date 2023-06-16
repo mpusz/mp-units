@@ -115,15 +115,15 @@ struct quantity_spec_interface {
     return make_quantity<reference<self, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
   }
 #else
-  template<UnitOf<Self{}> U>
+  template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] consteval Reference auto operator[](U u) const
   {
     return reference<Self{}, u>{};
   }
 
-  template<typename Q>
+  template<typename Q, typename Self_ = Self>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self{}))
+             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
@@ -291,15 +291,15 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
 
 #ifndef __cpp_explicit_this_parameter
-  template<UnitOf<Self{}> U>
+  template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] consteval Reference auto operator[](U u) const
   {
     return reference<Self{}, u>{};
   }
 
-  template<typename Q>
+  template<typename Q, typename Self_ = Self>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self{}))
+             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).number());
@@ -438,9 +438,6 @@ QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
  *
  * Specifies that the provided `Q` should be treated as a quantity kind.
  */
-template<auto Q>
-struct kind_of_;
-
 namespace detail {
 
 template<typename T>
@@ -448,13 +445,21 @@ concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::I
 
 }  // namespace detail
 
+#ifdef __cpp_explicit_this_parameter
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(get_kind(Q) == Q)
-#ifdef __cpp_explicit_this_parameter
 struct kind_of_<Q> : Q {
   static constexpr auto _quantity_spec_ = Q;
 };
 #else
+
+#if UNITS_COMP_CLANG
+template<auto Q>
+  requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> && (get_kind(Q) == Q)
+#else
+template<detail::QuantitySpecWithNoSpecifiers auto Q>
+  requires(get_kind(Q) == Q)
+#endif
 struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
   static constexpr auto _quantity_spec_ = Q;
 };
@@ -867,8 +872,8 @@ struct extract_results {
 
 #if UNITS_COMP_CLANG
 
-template<typename... Ts>
-extract_results(bool, Ts...) -> extract_results<Ts...>;
+template<QuantitySpec From = struct dimensionless, QuantitySpec To = struct dimensionless, typename Elem = int>
+extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extract_results<From, To, Elem>;
 
 #endif
 

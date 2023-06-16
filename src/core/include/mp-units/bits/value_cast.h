@@ -42,7 +42,7 @@ namespace mp_units {
  */
 template<Unit auto ToU, typename Q>
 [[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
-  requires Quantity<std::remove_cvref_t<Q>> && (convertible(q.reference, ToU))
+  requires Quantity<std::remove_cvref_t<Q>> && (convertible(std::remove_reference_t<Q>::reference, ToU))
 {
   using q_type = std::remove_reference_t<Q>;
   constexpr auto r = [] {
@@ -71,7 +71,7 @@ template<Representation ToRep, typename Q>
            std::constructible_from<ToRep, typename std::remove_reference_t<Q>::rep>
 [[nodiscard]] constexpr quantity<std::remove_reference_t<Q>::reference, ToRep> value_cast(Q&& q)
 {
-  return detail::sudo_cast<quantity<q.reference, ToRep>>(std::forward<Q>(q));
+  return detail::sudo_cast<quantity<std::remove_reference_t<Q>::reference, ToRep>>(std::forward<Q>(q));
 }
 
 }  // namespace mp_units

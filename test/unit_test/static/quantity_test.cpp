@@ -850,7 +850,7 @@ static_assert(10 * isq::mechanical_energy[J] == 5 * isq::force[N] * (2 * isq::le
 static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::speed[m / s]);
 
 // Different named dimensions
-template<Reference auto R1, Reference auto R2>
+template</*Reference*/ auto R1, /*Reference*/ auto R2>  // TODO Use `Reference` when Clang supports it.
 concept invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<activity[Bq], isq::frequency[Hz]>);
 

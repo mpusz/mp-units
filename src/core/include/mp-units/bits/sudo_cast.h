@@ -59,7 +59,8 @@ template<Quantity To, typename From>
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr Quantity auto sudo_cast(From&& q)
 {
-  if constexpr (std::remove_reference_t<From>::unit == To::unit) {
+  constexpr auto q_unit = std::remove_reference_t<From>::unit;
+  if constexpr (q_unit == To::unit) {
     // no scaling of the number needed
     return make_quantity<To::reference>(
       static_cast<TYPENAME To::rep>(std::forward<From>(q).number()));  // this is the only (and recommended) way to do
@@ -68,7 +69,7 @@ template<Quantity To, typename From>
                                                                        // warnings on conversions
   } else {
     // scale the number
-    constexpr Magnitude auto c_mag = get_canonical_unit(q.unit).mag / get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto c_mag = get_canonical_unit(q_unit).mag / get_canonical_unit(To::unit).mag;
     constexpr Magnitude auto num = numerator(c_mag);
     constexpr Magnitude auto den = denominator(c_mag);
     constexpr Magnitude auto irr = c_mag * (den / num);

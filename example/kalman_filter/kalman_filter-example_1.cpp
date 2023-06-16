@@ -55,11 +55,11 @@ int main()
 
   print_header(initial);
   state next = initial;
-  for (int index = 1; const auto& m : measurements) {
+  for (int index = 1; const auto& v : measurements) {
     const auto& previous = next;
     const auto gain = 1. / index * one;
-    const auto current = state_update(previous, m, gain);
+    const auto current = state_update(previous, v, gain);
     next = current;
-    print(index++, gain, m, current, next);
+    print(index++, gain, v, current, next);
   }
 }

@@ -326,7 +326,7 @@ public:
 private:
   template<Reference auto R2, typename Rep2>
     requires quantity<R2, std::remove_cvref_t<Rep2>>::_rep_safe_constructible_
-  friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&& v);
+  friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&&);
 
   template<typename Value>
     requires detail::RepSafeConstructibleFrom<rep, Value&&, unit>
