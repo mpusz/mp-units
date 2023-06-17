@@ -66,11 +66,12 @@ concept CastableNumber = CommonTypeWith<T, std::intmax_t> && ScalableNumber<std:
 
 // TODO Fix it according to sudo_cast implementation
 template<typename T>
-concept Scalable = CastableNumber<T> ||
-                   (requires { typename T::value_type; } && CastableNumber<typename T::value_type> &&
-                    ScalableNumber<T, std::common_type_t<typename T::value_type, std::intmax_t>>) ||
-                   (requires { typename T::element_type; } && CastableNumber<typename T::element_type> &&
-                    ScalableNumber<T, std::common_type_t<typename T::element_type, std::intmax_t>>);
+concept Scalable =
+  CastableNumber<T> ||
+  (requires { typename T::value_type; } && CastableNumber<typename T::value_type> &&
+   ScalableNumber<T, std::common_type_t<typename T::value_type, std::intmax_t>>) ||
+  (requires { typename T::element_type; } && CastableNumber<std::remove_reference_t<typename T::element_type>> &&
+   ScalableNumber<T, std::common_type_t<std::remove_reference_t<typename T::element_type>, std::intmax_t>>);
 
 }  // namespace detail
 
