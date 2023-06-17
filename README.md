@@ -46,9 +46,13 @@ analysis and unit/quantity manipulation.
 Here is a small example of possible operations:
 
 ```cpp
-#include <mp-units/systems/si/si.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/time.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/area.h>
+#include <units/isq/si/frequency.h>
 
-using namespace mp_units::si::unit_symbols;
+using namespace units::isq::si::references;
 
 // simple numeric operations
 static_assert(10 * km / 2 == 5 * km);
@@ -70,41 +74,41 @@ static_assert(10 * km / (5 * km) == 2);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/j8afKnarv)._
-
 This library heavily uses C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interfaces and all unit conversions
 and dimensional analysis can be performed without sacrificing on runtime performance or
 accuracy. Please see the below example for a quick preview of basic library features:
 
 ```cpp
-#include <mp-units/format.h>
-#include <mp-units/iostream.h>
-#include <mp-units/systems/international/international.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <units/format.h>
+#include <units/isq/si/international/length.h>
+#include <units/isq/si/international/speed.h>
+#include <units/isq/si/length.h>
+#include <units/isq/si/speed.h>
+#include <units/isq/si/time.h>
+#include <units/quantity_io.h>
 #include <iostream>
 
-using namespace mp_units;
+using namespace units::isq;
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                QuantityOf<isq::time> auto t)
+constexpr Speed auto avg_speed(Length auto d, Time auto t)
 {
   return d / t;
 }
 
 int main()
 {
-  using namespace mp_units::si::unit_symbols;
-  using namespace mp_units::international::unit_symbols;
+  using namespace units::isq::si::literals;
+  using namespace units::isq::si::references;
+  using namespace units::aliases::isq::si::international;
 
-  constexpr auto v1 = 110 * (km / h);
-  constexpr auto v2 = 70 * mph;
-  constexpr auto v3 = avg_speed(220. * km, 2 * h);
-  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * isq::duration[h]);
-  constexpr auto v5 = v3[m / s];
-  constexpr auto v6 = value_cast<m / s>(v4);
-  constexpr auto v7 = value_cast<int>(v6);
+  constexpr Speed auto v1 = 110 * (km / h);
+  constexpr Speed auto v2 = mi_per_h<double>(70.);
+  constexpr Speed auto v3 = avg_speed(220_q_km, 2_q_h);
+  constexpr Speed auto v4 = avg_speed(si::length<si::international::mile>(140), si::time<si::hour>(2));
+  constexpr Speed auto v5 = quantity_cast<si::speed<si::metre_per_second>>(v3);
+  constexpr Speed auto v6 = quantity_cast<si::metre_per_second>(v4);
+  constexpr Speed auto v7 = quantity_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
   std::cout << v2 << '\n';                                  // 70 mi/h
@@ -115,5 +119,3 @@ int main()
   std::cout << std::format("{:%Q}", v7) << '\n';            // 31
 }
 ```
-
-_Try it on the [Compiler Explorer](https://godbolt.org/z/rrTojn47v)._
