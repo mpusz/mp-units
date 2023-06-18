@@ -455,11 +455,11 @@ TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][e
   }
 }
 
-TEST_CASE("dot separator requested for ASCII encoding should throw", "[text][fmt][exception]")
+TEST_CASE("half_high_dot separator requested for ASCII encoding should throw", "[text][fmt][exception]")
 {
   REQUIRE_THROWS_MATCHES(UNITS_STD_FMT::vformat("{:%dAaq}", UNITS_STD_FMT::make_format_args(1 * isq::length[m])),
                          UNITS_STD_FMT::format_error,
-                         Catch::Matchers::Message("dot unit separator allowed only for Unicode encoding"));
+                         Catch::Matchers::Message("half_high_dot unit separator allowed only for Unicode encoding"));
 }
 
 TEST_CASE("%q and %Q can be put anywhere in a format string", "[text][fmt]")
