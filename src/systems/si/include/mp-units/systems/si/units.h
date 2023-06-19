@@ -82,9 +82,8 @@ inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day : named_unit<"d", mag<24> * hour> {} day;
 inline constexpr struct astronomical_unit : named_unit<"au", mag<149'597'870'700> * metre> {} astronomical_unit;
 inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
-// TODO how to disambiguate below angular units from time units (inline namespace `plane_angle`?)
-// inline constexpr struct minute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} minute;
-// inline constexpr struct second : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * minute> {} second;
+inline constexpr struct arcminute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
+inline constexpr struct arcsecond : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
 inline constexpr struct are : named_unit<"a", square(deca<metre>)> {} are;
 inline constexpr struct hectare : decltype(hecto<are>) {} hectare;
 inline constexpr struct litre : named_unit<"l", cubic(deci<metre>)> {} litre;

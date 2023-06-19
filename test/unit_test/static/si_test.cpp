@@ -78,6 +78,9 @@ static_assert(1 * d == 24 * h);
 
 static_assert(1 * au == 149'597'870'700 * m);
 
+static_assert(60. * arcmin == 1. * deg);
+static_assert(60. * arcsec == 1. * arcmin);
+
 static_assert(1 * a == 100 * m2);
 static_assert(1 * ha == 100 * a);
 
