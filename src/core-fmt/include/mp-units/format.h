@@ -350,8 +350,8 @@ private:
           f.specs.unit.separator = mp_units::unit_symbol_separator::space;
         else {
           if (f.specs.unit.encoding == mp_units::text_encoding::ascii)
-            throw UNITS_STD_FMT::format_error("dot unit separator allowed only for Unicode encoding");
-          f.specs.unit.separator = mp_units::unit_symbol_separator::dot;
+            throw UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
+          f.specs.unit.separator = mp_units::unit_symbol_separator::half_high_dot;
         }
       }
 

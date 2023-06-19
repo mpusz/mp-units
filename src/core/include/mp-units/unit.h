@@ -648,8 +648,8 @@ enum class unit_symbol_solidus {
 };
 
 enum class unit_symbol_separator {
-  space,  // kg m²/s²
-  dot,    // kg⋅m²/s²  (valid only for unicode encoding)
+  space,          // kg m²/s²
+  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
   default_separator = space
 };
 
@@ -681,9 +681,10 @@ constexpr Out copy(const basic_symbol_text<UnicodeCharT, N, M>& txt, text_encodi
 template<typename CharT, std::output_iterator<CharT> Out>
 constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
 {
-  if (fmt.separator == unit_symbol_separator::dot) {
+  if (fmt.separator == unit_symbol_separator::half_high_dot) {
     if (fmt.encoding != text_encoding::unicode)
-      throw std::invalid_argument("'unit_symbol_separator::dot' can be only used with 'text_encoding::unicode'");
+      throw std::invalid_argument(
+        "'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'");
     copy(std::string_view("⋅"), out);
   } else {
     *out++ = ' ';
