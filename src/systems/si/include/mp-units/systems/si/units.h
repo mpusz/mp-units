@@ -27,7 +27,9 @@
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/unit.h>
 
-namespace mp_units::si {
+namespace mp_units {
+
+namespace si {
 
 // clang-format off
 // base units
@@ -70,45 +72,56 @@ inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
-// inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
+// TODO add when isq::activity will be supported
+// inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct becquerel : named_unit<"Bq", 1 / second> {} becquerel;
 inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
 inline constexpr struct sievert : named_unit<"Sv", joule / kilogram> {} sievert;
 inline constexpr struct katal : named_unit<"kat", mole / second> {} katal;
+// clang-format on
 
+}  // namespace si
+
+namespace non_si {
+
+// clang-format off
 // non-SI units accepted for use with the SI
-inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct minute : named_unit<"min", mag<60> * si::second> {} minute;
 inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day : named_unit<"d", mag<24> * hour> {} day;
-inline constexpr struct astronomical_unit : named_unit<"au", mag<149'597'870'700> * metre> {} astronomical_unit;
-inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
+inline constexpr struct astronomical_unit : named_unit<"au", mag<149'597'870'700> * si::metre> {} astronomical_unit;
+inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
 inline constexpr struct arcminute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
 inline constexpr struct arcsecond : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
-inline constexpr struct are : named_unit<"a", square(deca<metre>)> {} are;
-inline constexpr struct hectare : decltype(hecto<are>) {} hectare;
-inline constexpr struct litre : named_unit<"l", cubic(deci<metre>)> {} litre;
-inline constexpr struct tonne : named_unit<"t", mag<1000> * kilogram> {} tonne;
-inline constexpr struct dalton : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * kilogram> {} dalton;
+inline constexpr struct are : named_unit<"a", square(si::deca<si::metre>)> {} are;
+inline constexpr struct hectare : decltype(si::hecto<are>) {} hectare;
+inline constexpr struct litre : named_unit<"l", cubic(si::deci<si::metre>)> {} litre;
+inline constexpr struct tonne : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
+inline constexpr struct dalton : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * si::kilogram> {} dalton;
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000
-inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * joule> {} electronvolt;
+inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * si::joule> {} electronvolt;
 // TODO the below are logarithmic units - how to support those?
 // neper
 // bel
 // decibel
-
 // clang-format on
 
-}  // namespace mp_units::si
+}  // namespace non_si
 
-namespace mp_units {
+namespace si {
+
+// Non-SI units are accepted for use with SI
+using namespace non_si;
+
+}  // namespace si
 
 template<>
 inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;
 template<>
-inline constexpr bool unit_can_be_prefixed<si::minute> = false;
+inline constexpr bool unit_can_be_prefixed<non_si::minute> = false;
 template<>
-inline constexpr bool unit_can_be_prefixed<si::hour> = false;
+inline constexpr bool unit_can_be_prefixed<non_si::hour> = false;
 template<>
-inline constexpr bool unit_can_be_prefixed<si::day> = false;
+inline constexpr bool unit_can_be_prefixed<non_si::day> = false;
 
 }  // namespace mp_units

@@ -25,7 +25,9 @@
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 
-namespace mp_units::si::unit_symbols {
+namespace mp_units {
+
+namespace si::unit_symbols {
 
 inline constexpr auto qm = quecto<metre>;
 inline constexpr auto rm = ronto<metre>;
@@ -730,7 +732,21 @@ inline constexpr auto Ykat = yotta<katal>;
 inline constexpr auto Rkat = ronna<katal>;
 inline constexpr auto Qkat = quetta<katal>;
 
-// TODO Should the following non-SI units have prefixes symbols predefiend as well?
+// no prefixes should be provided for the below units
+inline constexpr auto deg_C = degree_Celsius;
+
+// commonly used squared and cubic units
+inline constexpr auto m2 = square(metre);
+inline constexpr auto m3 = cubic(metre);
+inline constexpr auto m4 = pow<4>(metre);
+inline constexpr auto s2 = square(second);
+inline constexpr auto s3 = cubic(second);
+
+}  // namespace si::unit_symbols
+
+namespace non_si::unit_symbols {
+
+// TODO Should the following non-SI units have prefixed symbols predefiend as well?
 inline constexpr auto au = astronomical_unit;
 inline constexpr auto deg = degree;
 inline constexpr auto arcmin = arcminute;
@@ -742,17 +758,17 @@ inline constexpr auto t = tonne;
 inline constexpr auto Da = dalton;
 inline constexpr auto eV = electronvolt;
 
-// No prefixes should be provided for the below units
-inline constexpr auto deg_C = degree_Celsius;
+// no prefixes should be provided for the below units
 inline constexpr auto min = minute;
 inline constexpr auto h = hour;
 inline constexpr auto d = day;
 
-// commonly used squared and cubic units
-inline constexpr auto m2 = square(metre);
-inline constexpr auto m3 = cubic(metre);
-inline constexpr auto m4 = pow<4>(metre);
-inline constexpr auto s2 = square(second);
-inline constexpr auto s3 = cubic(second);
+}  // namespace non_si::unit_symbols
 
-}  // namespace mp_units::si::unit_symbols
+namespace si::unit_symbols {
+
+using namespace non_si::unit_symbols;
+
+}  // namespace si::unit_symbols
+
+}  // namespace mp_units
