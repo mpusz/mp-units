@@ -50,7 +50,7 @@ namespace mp_units {
  */
 template<Magnitude auto M, Unit U>
 struct scaled_unit {
-  static constexpr UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   static constexpr U reference_unit{};
 };
 
@@ -282,7 +282,7 @@ struct canonical_unit {
   U reference_unit;
 };
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 template<Magnitude M, Unit U>
 canonical_unit(M, U) -> canonical_unit<M, U>;

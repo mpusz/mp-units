@@ -47,7 +47,7 @@ static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
 static_assert(sizeof(quantity<si::metre, short>) == sizeof(short));
 static_assert(sizeof(quantity<isq::length[m], short>) == sizeof(short));
 
-#if UNITS_COMP_GCC != 10 || UNITS_COMP_GCC_MINOR > 2
+#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<isq::dim_length, double>; };  // dimension instead of reference
@@ -236,7 +236,7 @@ static_assert(quantity<isq::length[m]>(2000. * m)[km].number() == 2.);
 static_assert(quantity<isq::length[km], int>(2 * km)[km].number() == 2);
 static_assert(quantity<isq::length[km], int>(2 * km)[m].number() == 2000);
 
-#if UNITS_COMP_GCC != 10 || UNITS_COMP_GCC_MINOR > 2
+#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m)[km]; };  // truncating conversion
@@ -251,7 +251,7 @@ static_assert(quantity<isq::length[m]>(2000. * m).number_in(km) == 2.);
 static_assert(quantity<isq::length[km], int>(2 * km).number_in(km) == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).number_in(m) == 2000);
 
-#if UNITS_COMP_GCC != 10 || UNITS_COMP_GCC_MINOR > 2
+#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_getter_with_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m).number_in(km); };  // truncating conversion
@@ -411,7 +411,7 @@ static_assert((std::uint8_t(255) * m %= 257 * m).number() != [] {
 
 // TODO ICE
 // (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
-#ifndef UNITS_COMP_MSVC
+#ifndef MP_UNITS_COMP_MSVC
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
 static_assert((22 * m *= 33.33).number() == 733);

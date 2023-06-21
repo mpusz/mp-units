@@ -62,7 +62,7 @@ public:
   }
 
 
-#if UNITS_COMP_MSVC && UNITS_COMP_MSVC < 1930
+#if MP_UNITS_COMP_MSVC && MP_UNITS_COMP_MSVC < 1930
 
   constexpr explicit(false) operator T() const noexcept(std::is_nothrow_copy_constructible_v<T>)
     requires std::copyable<T>

@@ -96,7 +96,7 @@ constexpr It parse_units_rep(It begin, S end, Handler&& handler, bool treat_as_f
     if (treat_as_floating_point) {
       begin = parse_precision(begin, end, handler);
     } else
-      throw UNITS_STD_FMT::format_error("precision not allowed for integral quantity representation");
+      throw MP_UNITS_STD_FMT::format_error("precision not allowed for integral quantity representation");
     if (begin == end) return begin;
   }
 
@@ -126,12 +126,12 @@ constexpr It parse_units_format(It begin, S end, Handler&& handler)
     }
     if (begin != ptr) handler.on_text(begin, ptr);
     begin = ++ptr;  // consume '%'
-    if (ptr == end) throw UNITS_STD_FMT::format_error("invalid format");
+    if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid format");
     c = *ptr++;
 
     constexpr auto units_types = std::string_view{"Qq"};
     const auto new_end = find_first_of(begin, end, units_types.begin(), units_types.end());
-    if (new_end == end) throw UNITS_STD_FMT::format_error("invalid format");
+    if (new_end == end) throw MP_UNITS_STD_FMT::format_error("invalid format");
     if (*new_end == 'Q') {
       handler.on_quantity_value(begin, new_end);  // Edit `on_quantity_value` to add rep modifiers
     } else {
@@ -152,43 +152,43 @@ template<typename CharT, typename Rep, typename OutputIt, typename Locale>
   std::basic_string<CharT> buffer;
   auto to_buffer = std::back_inserter(buffer);
 
-  UNITS_STD_FMT::format_to(to_buffer, "{{:");
+  MP_UNITS_STD_FMT::format_to(to_buffer, "{{:");
   switch (rep_specs.sign) {
     case fmt_sign::none:
       break;
     case fmt_sign::plus:
-      UNITS_STD_FMT::format_to(to_buffer, "+");
+      MP_UNITS_STD_FMT::format_to(to_buffer, "+");
       break;
     case fmt_sign::minus:
-      UNITS_STD_FMT::format_to(to_buffer, "-");
+      MP_UNITS_STD_FMT::format_to(to_buffer, "-");
       break;
     case fmt_sign::space:
-      UNITS_STD_FMT::format_to(to_buffer, " ");
+      MP_UNITS_STD_FMT::format_to(to_buffer, " ");
       break;
   }
 
   if (rep_specs.alt) {
-    UNITS_STD_FMT::format_to(to_buffer, "#");
+    MP_UNITS_STD_FMT::format_to(to_buffer, "#");
   }
   auto type = rep_specs.type;
   if (auto precision = rep_specs.precision; precision >= 0) {
-    UNITS_STD_FMT::format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
+    MP_UNITS_STD_FMT::format_to(to_buffer, ".{}{}", precision, type == '\0' ? 'f' : type);
   } else if constexpr (treat_as_floating_point<Rep>) {
-    UNITS_STD_FMT::format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
+    MP_UNITS_STD_FMT::format_to(to_buffer, "{}", type == '\0' ? 'g' : type);
   } else {
     if (type != '\0') {
-      UNITS_STD_FMT::format_to(to_buffer, "{}", type);
+      MP_UNITS_STD_FMT::format_to(to_buffer, "{}", type);
     }
   }
   if (rep_specs.localized) {
-    UNITS_STD_FMT::format_to(to_buffer, "L");
+    MP_UNITS_STD_FMT::format_to(to_buffer, "L");
   }
 
-  UNITS_STD_FMT::format_to(to_buffer, "}}");
+  MP_UNITS_STD_FMT::format_to(to_buffer, "}}");
   if (rep_specs.localized) {
-    return UNITS_STD_FMT::vformat_to(out, UNITS_FMT_LOCALE(loc), buffer, UNITS_STD_FMT::make_format_args(val));
+    return MP_UNITS_STD_FMT::vformat_to(out, MP_UNITS_FMT_LOCALE(loc), buffer, MP_UNITS_STD_FMT::make_format_args(val));
   }
-  return UNITS_STD_FMT::vformat_to(out, buffer, UNITS_STD_FMT::make_format_args(val));
+  return MP_UNITS_STD_FMT::vformat_to(out, buffer, MP_UNITS_STD_FMT::make_format_args(val));
 }
 
 // Creates a global format string
@@ -196,25 +196,25 @@ template<typename CharT, typename Rep, typename OutputIt, typename Locale>
 template<typename CharT, typename OutputIt>
 OutputIt format_global_buffer(OutputIt out, const quantity_global_format_specs<CharT>& specs)
 {
-  UNITS_STD_FMT::format_to(out, "{{:");
+  MP_UNITS_STD_FMT::format_to(out, "{{:");
   if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
-    UNITS_STD_FMT::format_to(out, "{}", specs.fill.data());
+    MP_UNITS_STD_FMT::format_to(out, "{}", specs.fill.data());
   }
   switch (specs.align) {
     case fmt_align::left:
-      UNITS_STD_FMT::format_to(out, "<");
+      MP_UNITS_STD_FMT::format_to(out, "<");
       break;
     case fmt_align::right:
-      UNITS_STD_FMT::format_to(out, ">");
+      MP_UNITS_STD_FMT::format_to(out, ">");
       break;
     case fmt_align::center:
-      UNITS_STD_FMT::format_to(out, "^");
+      MP_UNITS_STD_FMT::format_to(out, "^");
       break;
     default:
       break;
   }
-  if (specs.width >= 1) UNITS_STD_FMT::format_to(out, "{}", specs.width);
-  return UNITS_STD_FMT::format_to(out, "}}");
+  if (specs.width >= 1) MP_UNITS_STD_FMT::format_to(out, "{}", specs.width);
+  return MP_UNITS_STD_FMT::format_to(out, "}}");
 }
 
 template<auto Reference, typename Rep, typename Locale, typename CharT, typename OutputIt>
@@ -254,18 +254,18 @@ template<std::input_iterator It, std::sentinel_for<It> S>
 {
   auto it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
   if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
-    throw UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
-                                      "' unit modifiers may be used in the format spec");
+    throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
+                                         "' unit modifiers may be used in the format spec");
   return it;
 }
 
 }  // namespace mp_units::detail
 
 template<auto Reference, typename Rep, typename CharT>
-struct UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, CharT> {
+struct MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, CharT> {
 private:
   using quantity = mp_units::quantity<Reference, Rep>;
-  using iterator = TYPENAME UNITS_STD_FMT::basic_format_parse_context<CharT>::iterator;
+  using iterator = TYPENAME MP_UNITS_STD_FMT::basic_format_parse_context<CharT>::iterator;
 
   bool quantity_value = false;
   bool quantity_unit = false;
@@ -274,7 +274,7 @@ private:
 
   struct spec_handler {
     formatter& f;
-    UNITS_STD_FMT::basic_format_parse_context<CharT>& context;
+    MP_UNITS_STD_FMT::basic_format_parse_context<CharT>& context;
 
     constexpr void on_fill(std::basic_string_view<CharT> fill) { f.specs.global.fill = fill; }
     constexpr void on_align(mp_units::detail::fmt_align align) { f.specs.global.align = align; }
@@ -290,7 +290,7 @@ private:
       if (valid_rep_types.find(type) != std::string_view::npos) {
         f.specs.rep.type = type;
       } else {
-        throw UNITS_STD_FMT::format_error("invalid quantity type specifier");
+        throw MP_UNITS_STD_FMT::format_error("invalid quantity type specifier");
       }
     }
 
@@ -326,7 +326,7 @@ private:
       constexpr auto valid_modifiers = std::string_view{"UAoansd"};
       for (auto it = begin; it != end; ++it) {
         if (valid_modifiers.find(*it) == std::string_view::npos)
-          throw UNITS_STD_FMT::format_error("invalid unit modifier specified");
+          throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
       }
 
       if (auto it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end) {
@@ -350,7 +350,7 @@ private:
           f.specs.unit.separator = mp_units::unit_symbol_separator::space;
         else {
           if (f.specs.unit.encoding == mp_units::text_encoding::ascii)
-            throw UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
+            throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
           f.specs.unit.separator = mp_units::unit_symbol_separator::half_high_dot;
         }
       }
@@ -359,7 +359,8 @@ private:
     }
   };
 
-  [[nodiscard]] constexpr std::pair<iterator, iterator> do_parse(UNITS_STD_FMT::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr std::pair<iterator, iterator> do_parse(
+    MP_UNITS_STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto begin = ctx.begin();
     auto end = ctx.end();
@@ -409,7 +410,7 @@ private:
   }
 
 public:
-  [[nodiscard]] constexpr auto parse(UNITS_STD_FMT::basic_format_parse_context<CharT>& ctx)
+  [[nodiscard]] constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<CharT>& ctx)
   {
     auto range = do_parse(ctx);
     if (range.first != range.second)
@@ -446,9 +447,9 @@ public:
       mp_units::detail::format_global_buffer<CharT>(std::back_inserter(global_format_buffer), specs.global);
 
       // Format the `quantity buffer` using specs from `global_format_buffer`
-      // In the example, equivalent to UNITS_STD_FMT::format("{:*^10}", "1.2_m")
-      return UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
-                                       UNITS_STD_FMT::make_format_args(quantity_buffer));
+      // In the example, equivalent to MP_UNITS_STD_FMT::format("{:*^10}", "1.2_m")
+      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                          MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
     }
   }
 };

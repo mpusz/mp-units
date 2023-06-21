@@ -51,12 +51,12 @@ inline constexpr struct newton : named_unit<"N", kilogram * metre / square(secon
 #ifdef pascal
 #pragma push_macro("pascal")
 #undef pascal
-#define UNITS_REDEFINE_PASCAL
+#define MP_UNITS_REDEFINE_PASCAL
 #endif
 inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
-#ifdef UNITS_REDEFINE_PASCAL
+#ifdef MP_UNITS_REDEFINE_PASCAL
 #pragma pop_macro("pascal")
-#undef UNITS_REDEFINE_PASCAL
+#undef MP_UNITS_REDEFINE_PASCAL
 #endif
 inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt : named_unit<"W", joule / second> {} watt;

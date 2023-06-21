@@ -52,11 +52,11 @@ static_assert(isq::length(1 * cb) == isq::length(120 * ftm));
 static_assert(isq::length(1 * nmi) == isq::length(1852 * si::metre));
 
 // US survey
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 static_assert(isq::length(3937 * us_ft) == isq::length(1200 * si::metre));
 static_assert(isq::length(3937 * us_mi) == isq::length(6336 * si::kilo<si::metre>));
-UNITS_DIAGNOSTIC_POP
+MP_UNITS_DIAGNOSTIC_POP
 
 static_assert(isq::length(50 * li) == isq::length(33 * ft));
 static_assert(isq::length(1 * rd) == isq::length(25 * li));

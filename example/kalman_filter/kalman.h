@@ -155,7 +155,7 @@ constexpr Q covariance_extrapolation(Q uncertainty, Q process_noise_variance)
 }  // namespace kalman
 
 template<typename... Qs>
-struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
+struct MP_UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
   constexpr auto parse(format_parse_context& ctx)
   {
     mp_units::detail::dynamic_specs_handler handler(specs, ctx);
@@ -169,35 +169,36 @@ struct UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
     auto to_value_buffer = std::back_inserter(value_buffer);
     if (specs.precision != -1) {
       if constexpr (sizeof...(Qs) == 1)
-        UNITS_STD_FMT::format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
       else if constexpr (sizeof...(Qs) == 2)
-        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision,
-                                 kalman::get<0>(s), kalman::get<1>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision,
+                                    kalman::get<0>(s), kalman::get<1>(s));
       else
-        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}", specs.precision,
-                                 kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}",
+                                    specs.precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
     } else {
       if constexpr (sizeof...(Qs) == 1)
-        UNITS_STD_FMT::format_to(to_value_buffer, "{}", kalman::get<0>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{}", kalman::get<0>(s));
       else if constexpr (sizeof...(Qs) == 2)
-        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
       else
-        UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s),
-                                 kalman::get<2>(s));
+        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s),
+                                    kalman::get<2>(s));
     }
 
     std::string global_format_buffer;
     mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
     mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer, UNITS_STD_FMT::make_format_args(value_buffer));
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(value_buffer));
   }
 private:
   mp_units::detail::dynamic_format_specs<char> specs;
 };
 
 template<typename Q>
-struct UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
+struct MP_UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
   constexpr auto parse(format_parse_context& ctx)
   {
     mp_units::detail::dynamic_specs_handler handler(specs, ctx);
@@ -217,17 +218,18 @@ struct UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
     std::string value_buffer;
     auto to_value_buffer = std::back_inserter(value_buffer);
     if (specs.precision != -1) {
-      UNITS_STD_FMT::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty),
-                               specs.precision);
+      MP_UNITS_STD_FMT::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty),
+                                  specs.precision);
     } else {
-      UNITS_STD_FMT::format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
+      MP_UNITS_STD_FMT::format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
     }
 
     std::string global_format_buffer;
     mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
     mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
 
-    return UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer, UNITS_STD_FMT::make_format_args(value_buffer));
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(value_buffer));
   }
 private:
   mp_units::detail::dynamic_format_specs<char> specs;

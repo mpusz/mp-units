@@ -43,13 +43,13 @@ using namespace mp_units;
 auto get_gliders()
 {
   using namespace mp_units::si::unit_symbols;
-  UNITS_DIAGNOSTIC_PUSH
-  UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_MISSING_BRACES
   static const std::array gliders = {glider{"SZD-30 Pirat", {83 * (km / h), -0.7389 * (m / s)}},
                                      glider{"SZD-51 Junior", {80 * (km / h), -0.6349 * (m / s)}},
                                      glider{"SZD-48 Jantar Std 3", {110 * (km / h), -0.77355 * (m / s)}},
                                      glider{"SZD-56 Diana", {110 * (km / h), -0.63657 * (m / s)}}};
-  UNITS_DIAGNOSTIC_POP
+  MP_UNITS_DIAGNOSTIC_POP
   return gliders;
 }
 
@@ -84,11 +84,11 @@ void print(const R& gliders)
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
       const auto ratio = value_cast<one>(glide_ratio(g.polar[0]));
-      std::cout << UNITS_STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v,
-                                         ratio,
-                                         // TODO is it possible to make ADL work below (we need another set of trig
-                                         // functions for strong angle in a different namespace)
-                                         value_cast<si::degree>(isq::asin(1 / ratio)));
+      std::cout << MP_UNITS_STD_FMT::format("  * {:%.4Q %q} @ {:%.1Q %q} -> {:%.1Q %q} ({:%.1Q %q})\n", p.climb, p.v,
+                                            ratio,
+                                            // TODO is it possible to make ADL work below (we need another set of trig
+                                            // functions for strong angle in a different namespace)
+                                            value_cast<si::degree>(isq::asin(1 / ratio)));
     }
     std::cout << "\n";
   }
@@ -103,8 +103,8 @@ void print(const R& conditions)
   for (const auto& c : conditions) {
     std::cout << "- " << c.first << "\n";
     const auto& w = c.second;
-    std::cout << "  * Cloud base:        " << UNITS_STD_FMT::format("{:%.0Q %q}", w.cloud_base) << " AGL\n";
-    std::cout << "  * Thermals strength: " << UNITS_STD_FMT::format("{:%.1Q %q}", w.thermal_strength) << "\n";
+    std::cout << "  * Cloud base:        " << MP_UNITS_STD_FMT::format("{:%.0Q %q}", w.cloud_base) << " AGL\n";
+    std::cout << "  * Thermals strength: " << MP_UNITS_STD_FMT::format("{:%.1Q %q}", w.thermal_strength) << "\n";
     std::cout << "\n";
   }
 }
@@ -116,7 +116,7 @@ void print(const R& waypoints)
   std::cout << "Waypoints:\n";
   std::cout << "==========\n";
   for (const auto& w : waypoints)
-    std::cout << UNITS_STD_FMT::format("- {}: {} {}, {:%.1Q %q}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
+    std::cout << MP_UNITS_STD_FMT::format("- {}: {} {}, {:%.1Q %q}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
   std::cout << "\n";
 }
 
@@ -127,12 +127,13 @@ void print(const task& t)
 
   std::cout << "- Start: " << t.get_start().name << "\n";
   std::cout << "- Finish: " << t.get_finish().name << "\n";
-  std::cout << "- Length:  " << UNITS_STD_FMT::format("{:%.1Q %q}", t.get_distance()) << "\n";
+  std::cout << "- Length:  " << MP_UNITS_STD_FMT::format("{:%.1Q %q}", t.get_distance()) << "\n";
 
   std::cout << "- Legs: "
             << "\n";
   for (const auto& l : t.get_legs())
-    std::cout << UNITS_STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name, l.get_distance());
+    std::cout << MP_UNITS_STD_FMT::format("  * {} -> {} ({:%.1Q %q})\n", l.begin().name, l.end().name,
+                                          l.get_distance());
   std::cout << "\n";
 }
 
@@ -140,7 +141,7 @@ void print(const safety& s)
 {
   std::cout << "Safety:\n";
   std::cout << "=======\n";
-  std::cout << "- Min AGL separation: " << UNITS_STD_FMT::format("{:%.0Q %q}", s.min_agl_height) << "\n";
+  std::cout << "- Min AGL separation: " << MP_UNITS_STD_FMT::format("{:%.0Q %q}", s.min_agl_height) << "\n";
   std::cout << "\n";
 }
 
@@ -149,8 +150,8 @@ void print(const aircraft_tow& tow)
   std::cout << "Tow:\n";
   std::cout << "====\n";
   std::cout << "- Type:        aircraft\n";
-  std::cout << "- Height:      " << UNITS_STD_FMT::format("{:%.0Q %q}", tow.height_agl) << "\n";
-  std::cout << "- Performance: " << UNITS_STD_FMT::format("{:%.1Q %q}", tow.performance) << "\n";
+  std::cout << "- Height:      " << MP_UNITS_STD_FMT::format("{:%.0Q %q}", tow.height_agl) << "\n";
+  std::cout << "- Performance: " << MP_UNITS_STD_FMT::format("{:%.1Q %q}", tow.performance) << "\n";
   std::cout << "\n";
 }
 
@@ -179,7 +180,7 @@ void example()
     for (const auto& c : weather_conditions) {
       std::string txt = "Scenario: Glider = " + g.name + ", Weather = " + c.first;
       std::cout << txt << "\n";
-      std::cout << UNITS_STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
+      std::cout << MP_UNITS_STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
 
       estimate(start_time, g, c.second, t, sfty, tow);
 

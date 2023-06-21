@@ -136,7 +136,7 @@ inline constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specializ
 
 }
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 template<typename T>
 struct mag_value {
@@ -185,7 +185,7 @@ template<MagnitudeSpec Element>
 [[nodiscard]] consteval auto get_base(Element element)
 {
   if constexpr (detail::is_specialization_of_power_v<Element>) return Element::base;
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
   else if constexpr (is_specialization_of<Element, mag_value>)
     return element.value;
 #endif
@@ -271,12 +271,12 @@ template<typename T>
 
   constexpr auto checked_multiply = [](auto a, auto b) {
     const auto result = a * b;
-    UNITS_DIAGNOSTIC_PUSH
-    UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
+    MP_UNITS_DIAGNOSTIC_PUSH
+    MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     if (result / a != b) {
       std::terminate();  // Wraparound detected
     }
-    UNITS_DIAGNOSTIC_POP
+    MP_UNITS_DIAGNOSTIC_POP
     return result;
   };
 
@@ -521,7 +521,7 @@ constexpr T get_value(const magnitude<Ms...>&)
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 inline constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
 } mag_pi;

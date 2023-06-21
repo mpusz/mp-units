@@ -45,7 +45,7 @@ std::ostream& operator<<(std::ostream& os, const ::vector<Rep>& v)
 {
   os << "|";
   for (auto i = 0U; i < v.size(); ++i) {
-    os << UNITS_STD_FMT::format(" {:>9}", v(i));
+    os << MP_UNITS_STD_FMT::format(" {:>9}", v(i));
   }
   os << " |";
   return os;

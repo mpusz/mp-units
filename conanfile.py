@@ -136,9 +136,8 @@ class MPUnitsConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["UNITS_BUILD_LA"] = self._build_all and not self._skip_la
-        tc.variables["UNITS_BUILD_DOCS"] = self._build_all and not self._skip_docs
-        tc.variables["UNITS_USE_LIBFMT"] = self._use_libfmt
+        tc.variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
+        tc.variables["MP_UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()

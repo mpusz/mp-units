@@ -41,7 +41,7 @@ endfunction()
 
 include(CMakeFindDependencyMacro)
 
-if(UNITS_USE_LIBFMT)
+if(MP_UNITS_USE_LIBFMT)
     find_dependency(fmt)
 endif()
 

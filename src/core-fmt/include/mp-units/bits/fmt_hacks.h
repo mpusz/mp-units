@@ -29,32 +29,32 @@
 
 #include <mp-units/bits/external/hacks.h>
 
-#ifndef UNITS_USE_LIBFMT
-#define UNITS_USE_LIBFMT 1
+#ifndef MP_UNITS_USE_LIBFMT
+#define MP_UNITS_USE_LIBFMT 1
 #endif
 
-#if UNITS_USE_LIBFMT
+#if MP_UNITS_USE_LIBFMT
 
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-UNITS_DIAGNOSTIC_IGNORE_SHADOW
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <fmt/format.h>
-UNITS_DIAGNOSTIC_POP
+MP_UNITS_DIAGNOSTIC_POP
 
-#define UNITS_STD_FMT fmt
-#define UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
-#define UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
-#define UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
+#define MP_UNITS_STD_FMT fmt
+#define MP_UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
+#define MP_UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
 
 // This re-uses code from fmt;
 #if FMT_EXCEPTIONS
 #if FMT_MSC_VERSION || defined(__NVCC__)
-#define UNITS_THROW(x) ::fmt::detail::do_throw(x)
+#define MP_UNITS_THROW(x) ::fmt::detail::do_throw(x)
 #else
-#define UNITS_THROW(x) throw x
+#define MP_UNITS_THROW(x) throw x
 #endif
 #else
-#define UNITS_THROW(x)             \
+#define MP_UNITS_THROW(x)          \
   do {                             \
     FMT_ASSERT(false, (x).what()); \
   } while (false)
@@ -68,10 +68,10 @@ UNITS_DIAGNOSTIC_POP
 
 #include <format>
 
-#define UNITS_STD_FMT std
-#define UNITS_FMT_LOCALE(loc) loc
-#define UNITS_FMT_TO_ARG_ID(arg) arg
-#define UNITS_FMT_FROM_ARG_ID(arg) arg
-#define UNITS_THROW(arg) throw arg
+#define MP_UNITS_STD_FMT std
+#define MP_UNITS_FMT_LOCALE(loc) loc
+#define MP_UNITS_FMT_TO_ARG_ID(arg) arg
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) arg
+#define MP_UNITS_THROW(arg) throw arg
 
 #endif

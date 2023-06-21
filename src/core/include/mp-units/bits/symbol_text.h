@@ -152,10 +152,10 @@ struct basic_symbol_text {
   [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
                                                   const basic_symbol_text<UnicodeCharT2, N2, M2>& rhs) noexcept
   {
-    UNITS_DIAGNOSTIC_PUSH
-    UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
+    MP_UNITS_DIAGNOSTIC_PUSH
+    MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
     if (const auto cmp = lhs.unicode() <=> rhs.unicode(); cmp != 0) return cmp;
-    UNITS_DIAGNOSTIC_POP
+    MP_UNITS_DIAGNOSTIC_POP
     return lhs.ascii() <=> rhs.ascii();
   }
 

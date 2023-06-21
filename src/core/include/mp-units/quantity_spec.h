@@ -453,7 +453,7 @@ struct kind_of_<Q> : Q {
 };
 #else
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 template<auto Q>
   requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> && (get_kind(Q) == Q)
 #else
@@ -663,7 +663,7 @@ struct explode_to_equation_result {
   specs_convertible_result result;
 };
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 template<QuantitySpec Q>
 explode_to_equation_result(Q, specs_convertible_result) -> explode_to_equation_result<Q>;
@@ -700,7 +700,7 @@ struct explode_result {
   }
 };
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 template<QuantitySpec Q>
 explode_result(Q) -> explode_result<Q>;
@@ -870,7 +870,7 @@ struct extract_results {
   Elem elem{};
 };
 
-#if UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG
 
 template<QuantitySpec From = struct dimensionless, QuantitySpec To = struct dimensionless, typename Elem = int>
 extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extract_results<From, To, Elem>;

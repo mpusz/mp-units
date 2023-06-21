@@ -139,6 +139,8 @@ void example()
 
   const auto length = measurement{123., 1.} * m;
   std::cout << "10 * " << length << " = " << 10 * length << '\n';
+
+  std::cout << "Mass of the Sun: " << measurement{19884, 2} * (mag_power<10, 26> * kg) << '\n';
 }
 
 }  // namespace

@@ -95,11 +95,11 @@ constexpr auto lexicographical_compare_three_way(I1 f1, I1 l1, I2 f2, I2 l2, Cmp
 
   bool exhaust1 = (f1 == l1);
   bool exhaust2 = (f2 == l2);
-  UNITS_DIAGNOSTIC_PUSH
-  UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
   for (; !exhaust1 && !exhaust2; exhaust1 = (++f1 == l1), exhaust2 = (++f2 == l2))
     if (auto c = comp(*f1, *f2); c != 0) return c;
-  UNITS_DIAGNOSTIC_POP
+  MP_UNITS_DIAGNOSTIC_POP
 
   return !exhaust1   ? std::strong_ordering::greater
          : !exhaust2 ? std::strong_ordering::less

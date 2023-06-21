@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(mp-units VERSION 2.0.0 LANGUAGES CXX)
 
-set(projectPrefix UNITS_)
+set(projectPrefix MP_UNITS_)
 
 option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")

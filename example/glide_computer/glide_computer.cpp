@@ -76,7 +76,7 @@ using namespace glide_computer;
 void print(std::string_view phase_name, timestamp start_ts, const glide_computer::flight_point& point,
            const glide_computer::flight_point& new_point)
 {
-  std::cout << UNITS_STD_FMT::format(
+  std::cout << MP_UNITS_STD_FMT::format(
     "| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) "
     "|\n",
     phase_name, value_cast<si::minute>(new_point.ts - point.ts), value_cast<si::minute>(new_point.ts - start_ts),
@@ -142,9 +142,9 @@ namespace glide_computer {
 void estimate(timestamp start_ts, const glider& g, const weather& w, const task& t, const safety& s,
               const aircraft_tow& at)
 {
-  std::cout << UNITS_STD_FMT::format("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration", "Distance",
-                                     "Height");
-  std::cout << UNITS_STD_FMT::format("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
+  std::cout << MP_UNITS_STD_FMT::format("| {:<12} | {:^28} | {:^26} | {:^21} |\n", "Flight phase", "Duration",
+                                        "Distance", "Height");
+  std::cout << MP_UNITS_STD_FMT::format("|{0:-^14}|{0:-^30}|{0:-^28}|{0:-^23}|\n", "");
 
   // ready to takeoff
   flight_point pos = takeoff(start_ts, t);

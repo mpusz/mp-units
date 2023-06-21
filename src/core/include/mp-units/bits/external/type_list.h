@@ -26,8 +26,8 @@
 #include <cstddef>
 #include <utility>
 
-UNITS_DIAGNOSTIC_PUSH
-UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
 
 namespace mp_units {
 
@@ -296,4 +296,4 @@ using type_list_sort = TYPENAME detail::type_list_sort_impl<List, Pred>::type;
 
 }  // namespace mp_units
 
-UNITS_DIAGNOSTIC_POP
+MP_UNITS_DIAGNOSTIC_POP

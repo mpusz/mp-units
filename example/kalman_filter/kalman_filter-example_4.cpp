@@ -37,14 +37,14 @@ using namespace mp_units;
 
 void print_header(const kalman::State auto& initial)
 {
-  std::cout << UNITS_STD_FMT::format("Initial: {}\n", initial);
-  std::cout << UNITS_STD_FMT::format("{:>2} | {:>8} | {:>35} | {:>35}\n", "N", "Measured", "Curr. Estimate",
-                                     "Next Estimate");
+  std::cout << MP_UNITS_STD_FMT::format("Initial: {}\n", initial);
+  std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>8} | {:>35} | {:>35}\n", "N", "Measured", "Curr. Estimate",
+                                        "Next Estimate");
 }
 
 void print(auto iteration, Quantity auto measured, const kalman::State auto& current, const kalman::State auto& next)
 {
-  std::cout << UNITS_STD_FMT::format("{:2} | {:8} | {:>35.1} | {:>35.1}\n", iteration, measured, current, next);
+  std::cout << MP_UNITS_STD_FMT::format("{:2} | {:8} | {:>35.1} | {:>35.1}\n", iteration, measured, current, next);
 }
 
 int main()

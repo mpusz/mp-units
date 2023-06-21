@@ -48,13 +48,13 @@ int main()
   constexpr auto lengthA = 2.0 * m;
   constexpr auto lengthB = lengthA[mm];
 
-  std::cout << UNITS_STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
+  std::cout << MP_UNITS_STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";
 
-  std::cout << UNITS_STD_FMT::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
+  std::cout << MP_UNITS_STD_FMT::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
 
-  std::cout << UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n",
-                                     lengthA, lengthB)
-            << UNITS_STD_FMT::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
-                                     lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
+  std::cout << MP_UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n",
+                                        lengthA, lengthB)
+            << MP_UNITS_STD_FMT::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
+                                        lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
 }
