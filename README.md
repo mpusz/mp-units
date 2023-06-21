@@ -25,8 +25,8 @@ enable the rest of mainstream compilers and update the documentation to reflect 
 
 ## Documentation
 
-An extensive project documentation for the previous release library version can be found on
-[mp-units GitHub Pages](https://mpusz.github.io/mp-units). It includes installation instructions and user's guide.
+An extensive project documentation can be found on [mp-units GitHub Pages](https://mpusz.github.io/mp-units).
+It includes installation instructions and a detailed user's guide.
 
 
 ## Terms and Definitions
@@ -100,8 +100,8 @@ int main()
 
   constexpr auto v1 = 110 * (km / h);
   constexpr auto v2 = 70 * mph;
-  constexpr auto v3 = avg_speed(220. * km, 2 * h);
-  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * isq::duration[h]);
+  constexpr auto v3 = avg_speed(220. * isq::distance[km], 2 * h);
+  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * h);
   constexpr auto v5 = v3[m / s];
   constexpr auto v6 = value_cast<m / s>(v4);
   constexpr auto v7 = value_cast<int>(v6);
@@ -116,4 +116,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/rrTojn47v)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/T8bovrqTP)._

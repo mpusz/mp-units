@@ -24,79 +24,29 @@ name: Documentation
 
 on:
   push:
-    paths:
-      - ".github/workflows/documentation.yml"
-      - "docs/**"
-      - "src/**"
-      - "example/**"
-  pull_request:
-    paths:
-      - ".github/workflows/documentation.yml"
-      - "docs/**"
-      - "src/**"
-      - "example/**"
+    branches:
+      - master 
+      - main
+permissions:
+  contents: write
 jobs:
-  docs:
-    name: Generate documentation
-    runs-on: ${{ matrix.os }}
-    env:
-      CC: gcc-10
-      CXX: g++-10
-      CMAKE_GENERATOR: Ninja
-      CONAN_CMAKE_GENERATOR: Ninja
-      OS: ubuntu-22.04
-      BUILD_TYPE: Debug
-      COMPILER_TYPE: GCC
-      COMPILER_VERSION: 10
-      STDLIB: libstdc++11
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
+  deploy:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cache Conan data
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-conan-data
+      - uses: actions/setup-python@v4
         with:
-          path: ~/.conan2/p
-          key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB-docs
+          python-version: 3.x
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      - uses: actions/cache@v3
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
           restore-keys: |
-            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
-            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
-            build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
-            build-${{ matrix.os }}-$BUILD_TYPE-
-            build-${{ matrix.os }}-
-      - name: Install Ninja
+            mkdocs-material-
+      - name: Installing pip packages
         run: |
-          sudo apt install -y ninja-build
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.8"
-      - name: Install Python dependencies
+          pip install conan mkdocs-material mike
+      - name: Building docs
         run: |
-          pip install -Ur docs/requirements.txt
-      - name: Install Conan
-        run: |
-          pip install -U conan
-      - name: Configure Conan
-        run: |
-          conan profile detect --force
-          conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-      - name: Install Conan dependencies
-        run: |
-          conan install . -s compiler.cppstd=20 -s compiler.libcxx=$STDLIB -c user.build:all=True -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -b missing
-      - name: Configure CMake
-        run: |
-          cmake --preset conan-default
-      - name: Generate documentation
-        run: |
-          cmake --build --preset conan-release --target documentation
-      - name: Deploy documentation
-        if: github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/docs/sphinx
+          mike deploy --push --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'` latest

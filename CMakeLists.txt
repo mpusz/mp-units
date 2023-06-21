@@ -25,7 +25,7 @@ project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-set(projectPrefix UNITS_)
+set(projectPrefix MP_UNITS_)
 
 option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
 message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
@@ -69,9 +69,6 @@ add_subdirectory(src)
 
 # add usage example
 add_subdirectory(example)
-
-# generate project documentation
-# add_subdirectory(docs)
 
 # add unit tests
 enable_testing()

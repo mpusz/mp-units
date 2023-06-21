@@ -83,10 +83,6 @@ class MPUnitsConan(ConanFile):
         return bool(self.conf.get("user.build:skip_la", default=False))
 
     @property
-    def _skip_docs(self):
-        return bool(self.conf.get("user.build:skip_docs", default=True))
-
-    @property
     def _use_libfmt(self):
         compiler = self.settings.compiler
         version = Version(self.settings.compiler.version)
@@ -118,8 +114,6 @@ class MPUnitsConan(ConanFile):
             self.test_requires("catch2/3.3.2")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
-            if not self._skip_docs:
-                self.tool_requires("doxygen/1.9.4")
 
     def validate(self):
         check_min_cppstd(self, self._min_cppstd)
