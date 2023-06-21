@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/format.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/constants.h>
@@ -28,6 +29,7 @@
 #include <mp-units/systems/si/units.h>
 #include <cassert>
 #include <iostream>
+#include <numbers>
 #include <utility>
 
 template<class T>
@@ -38,6 +40,13 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
+
+// add a custom quantity type of kind isq::length
+QUANTITY_SPEC(horizontal_length, isq::length);
+
+// add a custom derived quantity type of kind isq::area
+// with a constrained quantity equation
+QUANTITY_SPEC(horizontal_area, isq::area, horizontal_length* isq::width);
 
 inline constexpr auto g = 1 * si::standard_gravity;
 inline constexpr auto air_density = isq::mass_density(1.225 * (kg / m3));
@@ -80,14 +89,14 @@ public:
 class CylindricalStorageTank : public StorageTank {
 public:
   constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius, const quantity<isq::height[m]>& height) :
-      StorageTank(std::numbers::pi * radius * radius, height)
+      StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)), height)
   {
   }
 };
 
 class RectangularStorageTank : public StorageTank {
 public:
-  constexpr RectangularStorageTank(const quantity<isq::length[m]>& length, const quantity<isq::width[m]>& width,
+  constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length, const quantity<isq::width[m]>& width,
                                    const quantity<isq::height[m]>& height) :
       StorageTank(length * width, height)
   {
@@ -99,11 +108,8 @@ public:
 
 int main()
 {
-  using namespace mp_units;
-  using namespace mp_units::si::unit_symbols;
-
   const auto height = isq::height(200 * mm);
-  auto tank = RectangularStorageTank(isq::length(1'000 * mm), isq::width(500 * mm), height);
+  auto tank = RectangularStorageTank(horizontal_length(1'000 * mm), isq::width(500 * mm), height);
   tank.set_contents_density(1'000 * isq::mass_density[kg / m3]);
 
   const auto fill_time = 200 * s;       // time since starting fill

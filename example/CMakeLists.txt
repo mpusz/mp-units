@@ -53,7 +53,7 @@ add_example(glide_computer mp-units::core-fmt mp-units::international mp-units::
 add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::usc)
 add_example(measurement mp-units::core-io mp-units::si)
 add_example(si_constants mp-units::core-fmt mp-units::si)
-add_example(storage_tank mp-units::core-fmt mp-units::si)
+add_example(storage_tank mp-units::core-fmt mp-units::si mp-units::utility)
 add_example(
     strong_angular_quantities mp-units::core-fmt mp-units::core-io mp-units::si mp-units::isq_angle mp-units::utility
 )
