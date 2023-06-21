@@ -96,8 +96,8 @@ template<QuantityPointOf<isq::time> QP>
   requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
-  using clock = TYPENAME decltype(QP::absolute_point_origin)::clock;
-  using rep = TYPENAME QP::rep;
+  using clock = MP_UNITS_TYPENAME decltype(QP::absolute_point_origin)::clock;
+  using rep = MP_UNITS_TYPENAME QP::rep;
   constexpr auto canonical = detail::get_canonical_unit(QP::unit);
   constexpr ratio r = as_ratio(canonical.mag);
   using ret_type = std::chrono::time_point<clock, std::chrono::duration<rep, std::ratio<r.num, r.den>>>;

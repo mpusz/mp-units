@@ -442,7 +442,7 @@ public:
 template<typename ParseContext>
 class dynamic_specs_handler : public specs_setter<typename ParseContext::char_type> {
 public:
-  using char_type = TYPENAME ParseContext::char_type;
+  using char_type = MP_UNITS_TYPENAME ParseContext::char_type;
 
   constexpr dynamic_specs_handler(dynamic_format_specs<char_type>& specs, ParseContext& ctx) :
       specs_setter<char_type>(specs), specs_(specs), context_(ctx)

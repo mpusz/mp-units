@@ -194,7 +194,7 @@ template<MagnitudeSpec Element>
 }
 
 template<MagnitudeSpec Element>
-[[nodiscard]] CONSTEVAL ratio get_exponent(Element)
+[[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(Element)
 {
   if constexpr (detail::is_specialization_of_power_v<Element>)
     return Element::exponent;

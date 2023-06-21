@@ -46,7 +46,7 @@ struct conditional_impl<true> {
 }  // namespace detail
 
 template<bool B, typename T, typename F>
-using conditional = TYPENAME detail::conditional_impl<B>::template type<T, F>;
+using conditional = MP_UNITS_TYPENAME detail::conditional_impl<B>::template type<T, F>;
 
 // is_same
 template<class T, class U>

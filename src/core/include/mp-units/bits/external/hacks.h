@@ -99,21 +99,21 @@
 
 #if MP_UNITS_COMP_MSVC || (MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 16)
 
-#define TYPENAME typename
+#define MP_UNITS_TYPENAME typename
 
 #else
 
-#define TYPENAME
+#define MP_UNITS_TYPENAME
 
 #endif
 
 #if MP_UNITS_COMP_CLANG
 
-#define CONSTEVAL constexpr
+#define MP_UNITS_CONSTEVAL constexpr
 
 #else
 
-#define CONSTEVAL consteval
+#define MP_UNITS_CONSTEVAL consteval
 
 #endif
 

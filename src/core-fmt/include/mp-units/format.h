@@ -265,7 +265,7 @@ template<auto Reference, typename Rep, typename CharT>
 struct MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, CharT> {
 private:
   using quantity = mp_units::quantity<Reference, Rep>;
-  using iterator = TYPENAME MP_UNITS_STD_FMT::basic_format_parse_context<CharT>::iterator;
+  using iterator = MP_UNITS_TYPENAME MP_UNITS_STD_FMT::basic_format_parse_context<CharT>::iterator;
 
   bool quantity_value = false;
   bool quantity_unit = false;

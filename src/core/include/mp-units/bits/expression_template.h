@@ -113,7 +113,7 @@ struct expr_type_impl<power<T, Ints...>> : std::type_identity<T> {};
 }  // namespace detail
 
 template<typename T>
-using expr_type = TYPENAME detail::expr_type_impl<T>::type;
+using expr_type = MP_UNITS_TYPENAME detail::expr_type_impl<T>::type;
 
 namespace detail {
 
@@ -173,24 +173,25 @@ struct expr_consolidate_impl<type_list<T, Rest...>> {
 template<typename T, typename... Rest>
   requires(!is_specialization_of_power<T>)
 struct expr_consolidate_impl<type_list<T, T, Rest...>> {
-  using type = TYPENAME expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
+  using type = MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
 };
 
 // replaces the instance of a type and a power of it with one with incremented power
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
-  using type = TYPENAME expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
+  using type =
+    MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
 };
 
 // accumulates the powers of instances of the same type (removes the element in case the accumulation result is `0`)
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
   static constexpr ratio r = power<T, Ints1...>::exponent + power<T, Ints2...>::exponent;
-  using type = TYPENAME expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
+  using type = MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
 };
 
 template<typename List>
-using expr_consolidate = TYPENAME expr_consolidate_impl<List>::type;
+using expr_consolidate = MP_UNITS_TYPENAME expr_consolidate_impl<List>::type;
 
 
 /**
