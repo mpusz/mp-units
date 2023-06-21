@@ -185,22 +185,22 @@ Let's see another example:
     #include <mp-units/math.h>
     #include <mp-units/systems/si/si.h>
     #include <numbers>
-    
+
     using namespace mp_units;
-    
+
     class StorageTank {
       quantity<square(si::metre)> base_;
       quantity<si::metre> height_;
     public:
-      constexpr StorageTank(const quantity<square(si::metre)>& base, 
+      constexpr StorageTank(const quantity<square(si::metre)>& base,
                             const quantity<si::metre>& height) :
         base_(base), height_(height)
       {
       }
-    
+
       // ...
     };
-    
+
     class CylindricalStorageTank : public StorageTank {
     public:
       constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
@@ -209,7 +209,7 @@ Let's see another example:
       {
       }
     };
-    
+
     class RectangularStorageTank : public StorageTank {
     public:
       constexpr RectangularStorageTank(const quantity<si::metre>& length,
@@ -219,7 +219,7 @@ Let's see another example:
       {
       }
     };
-    
+
     int main()
     {
       using namespace mp_units::si::unit_symbols;
@@ -235,7 +235,7 @@ Let's see another example:
     #include <mp-units/systems/isq/space_and_time.h>
     #include <mp-units/systems/si/si.h>
     #include <numbers>
-    
+
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
 
@@ -257,10 +257,10 @@ Let's see another example:
         base_(base), height_(height)
       {
       }
-    
+
       // ...
     };
-    
+
     class CylindricalStorageTank : public StorageTank {
     public:
       constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
@@ -270,7 +270,7 @@ Let's see another example:
       {
       }
     };
-    
+
     class RectangularStorageTank : public StorageTank {
     public:
       constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
@@ -280,7 +280,7 @@ Let's see another example:
       {
       }
     };
-    
+
     int main()
     {
       auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),

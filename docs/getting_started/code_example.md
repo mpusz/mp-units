@@ -28,7 +28,7 @@ static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/j8afKnarv)"
-    
+
 
 This library requires some C++20 features ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
 [classes as NTTP](https://en.cppreference.com/w/cpp/language/template_parameters), ...). Thanks to them,
