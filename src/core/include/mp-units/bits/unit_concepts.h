@@ -84,7 +84,7 @@ concept NamedUnit =
  * provided.
  */
 template<Unit auto V>
-inline constexpr bool unit_can_be_prefixed = detail::NamedUnit<std::remove_const_t<decltype(V)>>;
+inline constexpr bool unit_can_be_prefixed = true;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
