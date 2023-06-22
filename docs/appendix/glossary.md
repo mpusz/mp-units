@@ -321,8 +321,24 @@
       associated with a specific quantity ([quantity specification](#quantity_spec) and
       [unit](#unit)).
 
+[`absolute quantity point origin`, `absolute point origin`](#absolute-point-origin){ #absolute-point-origin }
+
+:   - An explicit point on an axis of values of a specific [quantity](#quantity) type that serves
+      as an absolute reference point for all [quantity points](#quantity-point) which definitions
+      are (explicitly or implicitly) based on it.
+    - For example, mean sea level is commonly used as an absolute reference point to measure altitudes.
+
+[`quantity point origin`, `point origin`](#point-origin){ #point-origin }
+
+:   - An explicit point on an axis of values of a specific [quantity](#quantity) type serving as a reference
+      for other [quantities](#quantity).
+    - It might be ether an [absolute point origin](#absolute-point-origin) or a compile-time known
+      [quantity point](#quantity-point).
+    - For example, an ice point is a quantity point with a value of `273.15 K` that is used as
+      the zero point of a degree Celsius scale.
+
 [`quantity point`, `absolute quantity`](#quantity-point){ #quantity-point }
 
-:   - An absolute [quantity](#quantity) with respect to an origin
+:   - An absolute [quantity](#quantity) with respect to an [origin](#point-origin).
     - For example, timestamp (as opposed to duration), altitude (as opposed to height),
       absolute temperature (as opposed to temperature difference).
