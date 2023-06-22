@@ -217,7 +217,7 @@
     - A quantity value can be presented in more than one way.
     - In the case of vector or tensor quantities, each component has a quantity value.
         - For example, force acting on a given particle, e.g. in Cartesian components
-          $(F_x; F_y; F_z) = (−31.5; 43.2; 17.0) \mathsf{N}$.
+          $(F_x; F_y; F_z) = (−31.5; 43.2; 17.0)\;\mathsf{N}$.
 
 [`quantity equation`](#quantity-equation){ #quantity-equation }
 
@@ -247,7 +247,8 @@
 
 !!! info
 
-    The below terms are describing the implementation-related part of the **mp-units** library.
+    The below terms extend the official ISO glossary and are commonly referred to by the
+    **mp-units** library.
 
 [`base dimension`](#base-dimension){ #base-dimension }
 
@@ -306,3 +307,22 @@
         - additional constraints (i.e. non-negative)
     - [Dimension of a quantity](#dimension) is not enough to specify all the properties of
       a [quantity](#quantity).
+
+[`unit with an associated quantity, associated unit`](#associated-unit){ #associated-unit }
+
+:   - [Unit](#unit) that is used to measure [quantities of a specific kind](#kind) in a given
+      [system of units](#system-of-units).
+
+[`quantity reference, reference`](#reference){ #reference }
+
+:   - According to its definition, [quantity](#quantity) can be expressed by means of
+      a number and a reference
+    - In the **mp-units** library, a reference describes all the required meta-information
+      associated with a specific quantity ([quantity specification](#quantity_spec) and
+      [unit](#unit)).
+
+[`quantity point`, `absolute quantity`](#quantity-point){ #quantity-point }
+
+:   - An absolute [quantity](#quantity) with respect to an origin
+    - For example, timestamp (as opposed to duration), altitude (as opposed to height),
+      absolute temperature (as opposed to temperature difference).
