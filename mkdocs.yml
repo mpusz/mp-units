@@ -109,7 +109,12 @@ nav:
           - Systems of Units: users_guide/framework_basics/systems_of_units.md
           - Value Conversions: users_guide/framework_basics/value_conversions.md
           - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
+          - Quantity Arithmetics: users_guide/framework_basics/quantity_arithmetics.md
           - Quantities of Different Characters: users_guide/framework_basics/quantities_of_different_characters.md
+          - Dimensionless Quantities: users_guide/framework_basics/dimensionless_quantities.md
+          - The Affine Space: users_guide/framework_basics/the_affine_space.md
+          - Faster Than Lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
+          - Text Output: users_guide/framework_basics/text_output.md
       - Defining Systems:
           - Introduction: users_guide/defining_systems/introduction.md
           - International System of Quantities (ISQ): users_guide/defining_systems/isq.md
@@ -117,6 +122,7 @@ nav:
           - Strong Angular System: users_guide/defining_systems/strong_angular_system.md
           - Natural Units: users_guide/defining_systems/natural_units.md
       - Use Cases:
+          - Pure Dimensional Analysis: users_guide/use_cases/pure_dimensional_analysis.md
           - Working with Legacy Interfaces: users_guide/use_cases/working_with_legacy_interfaces.md
           - Using Custom Representation Types: users_guide/use_cases/using_custom_representation_types.md
           - Interoperability with Other Units Libraries: users_guide/use_cases/interoperability_with_other_units_libraries.md
@@ -125,6 +131,7 @@ nav:
           - hello_units: users_guide/examples/hello_units.md
   - Library Reference:
       - Core Library: library_reference/core_library.md
+      - Magnitudes: library_reference/magnitudes.md
   - Appendix:
       - Glossary: appendix/glossary.md
       - Mismeasure for Measure: appendix/mismeasure_for_measure.md
