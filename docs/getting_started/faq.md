@@ -56,6 +56,42 @@ Many reasons make UDLs a poor choice for a physical units library:
     ```
 
 
+## Why can't I create a quantity by passing a number to a constructor?
+
+A quantity class template in the **mp-units** library has no publicly available constructor taking a raw value.
+Such support is provided by the `std::chrono::duration` and was pointed out to us as a red flag safety issue
+by a few parties already.
+
+Consider the following structure and a code using it:
+
+```cpp
+struct X {
+  std::vector<std::chrono::milliseconds> vec;
+  // ...
+};
+```
+
+```cpp
+X x;
+x.vec.emplace_back(42);
+```
+
+Everything works fine for years until at some point someone changes the structure to:
+
+```cpp
+struct X {
+  std::vector<std::chrono::microseconds> vec;
+  // ...
+};
+```
+
+The code continues to compile just fine but all the calculations are off now. This is why we decided to not
+follow this path.
+
+In the **mp-units** library, both a number and a unit have to always be explicitly provided in order to
+form a quantity.
+
+
 ## Why `60 * km / h` does not compile?
 
 The library design does not allow multiplying or dividing a quantity (the result of `60 * km`)
