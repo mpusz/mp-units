@@ -19,7 +19,7 @@ theme:
     - content.action.view
     - content.code.annotate
     - content.code.copy
-    - navigation.expand
+    # - navigation.expand
     - navigation.indexes
     - navigation.sections
     # - navigation.tabs
@@ -99,14 +99,30 @@ nav:
       - FAQ: getting_started/faq.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
-      - Systems of Quantities: users_guide/systems_of_quantities.md
-      - Systems of Units: users_guide/systems_of_units.md
-      - Value Conversions: users_guide/value_conversions.md
-      - Simple and Typed Quantities: users_guide/simple_and_typed_quantities.md
-      - Basic Concepts: users_guide/basic_concepts.md
+      - Framework Basics:
+          - Basic Concepts: users_guide/framework_basics/basic_concepts.md
+          - Systems of Quantities: users_guide/framework_basics/systems_of_quantities.md
+          - Systems of Units: users_guide/framework_basics/systems_of_units.md
+          - Value Conversions: users_guide/framework_basics/value_conversions.md
+          - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
+          - Quantities of Different Characters: users_guide/framework_basics/quantities_of_different_characters.md
+      - Defining Systems:
+          - Introduction: users_guide/defining_systems/introduction.md
+          - International System of Quantities (ISQ): users_guide/defining_systems/isq.md
+          - International System of Units (SI): users_guide/defining_systems/si.md
+          - Strong Angular System: users_guide/defining_systems/strong_angular_system.md
+          - Natural Units: users_guide/defining_systems/natural_units.md
+      - Use Cases:
+          - Working with Legacy Interfaces: users_guide/use_cases/working_with_legacy_interfaces.md
+          - Using Custom Representation Types: users_guide/use_cases/using_custom_representation_types.md
+          - Interoperability with Other Units Libraries: users_guide/use_cases/interoperability_with_other_units_libraries.md
+          - Extending the Library: users_guide/use_cases/extending_the_library.md
+      - Examples:
+          - hello_units: users_guide/examples/hello_units.md
   - Library Reference:
       - Core Library: library_reference/core_library.md
   - Appendix:
       - Glossary: appendix/glossary.md
+      - Mismeasure for Measure: appendix/mismeasure_for_measure.md
       - Release Notes: appendix/release_notes.md
       - References: appendix/references.md
