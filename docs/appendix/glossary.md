@@ -271,7 +271,7 @@
           convertible to height)
         - common quantity type (i.e. width + height -> length)
 
-[`quantity character, character of the quantity, character`](#character){ #character }
+[`quantity character, character of a quantity, character`](#character){ #character }
 
 :   - Scalars, vectors and tensors are mathematical objects that can be used to denote
       certain [physical quantities](#quantity) and their [values](#quantity-value).
@@ -283,13 +283,17 @@
       expressed as a product of a number and a [unit](#unit).
     - Vectors and tensors can also be expressed as a numerical value vector or tensor,
       respectively, multiplied by a [unit](#unit).
+    - [Quantities](#quantity) of different characters support different set of operations.
+        - For example, a [quantity](#quantity) can be multiplied by another one only if any
+          of them has scalar character. Vectors and tensors can't be multiplied or divided,
+          but they support additional operations like dot and cross products, which
+          are not available for scalars.
     - The term ’character’ was borrowed from the below quote:
 
     !!! quote "ISO 80000-1_2009"
 
         In deriving the dimension of a quantity, no account is taken of its scalar,
         vector, or tensor **character**.
-
 
 [`quantity specification, quantity_spec`](#quantity_spec){ #quantity_spec }
 
