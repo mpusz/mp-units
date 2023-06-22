@@ -1,3 +1,7 @@
 mjx-math {
   font-size: 85% !important;
 }
+
+.mermaid {
+  text-align: center;
+}
