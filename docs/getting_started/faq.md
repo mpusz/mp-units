@@ -2,7 +2,8 @@
 
 ## Why do we spell `metre` instead of `meter`?
 
-This is how ISO 80000 defines it (British English spelling by default).
+This is how the BIPM defines it in the [SI Brochure](../../appendix/references/#SIBrochure)
+(British English spelling by default).
 
 
 ## Why don't we use UDLs to create quantities?
@@ -126,8 +127,10 @@ all the properties of scaled units and is consistent with the rest of the librar
 
 ## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
 
-Both C++ and ISO 80000 are standardized by the ISO. ISO 80000 and the SI standards specify Unicode symbols
-as the official unit names for some quantities (i.e. `Ω` symbol for the resistance quantity).
+Both C++ and [ISO 80000](../../appendix/references/#ISO80000) are standardized by the ISO.
+[ISO 80000](../../appendix/references/#ISO80000) and the [SI](../../appendix/references/#SIBrochure)
+standards specify Unicode symbols as the official unit names for some quantities
+(i.e. `Ω` symbol for the resistance quantity).
 As **mp-units** library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.
 

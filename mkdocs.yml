@@ -109,3 +109,4 @@ nav:
   - Appendix:
       - Glossary: appendix/glossary.md
       - Release Notes: appendix/release_notes.md
+      - References: appendix/references.md
