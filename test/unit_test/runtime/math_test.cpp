@@ -22,8 +22,8 @@
 
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
-#include <mp-units/iostream.h>
 #include <mp-units/math.h>
+#include <mp-units/ostream.h>
 #include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/iostream.h>
+#include <mp-units/ostream.h>
 #include <mp-units/quantity.h>
 #include <mp-units/quantity_point.h>
 #include <iostream>

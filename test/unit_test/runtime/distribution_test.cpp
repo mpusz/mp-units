@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/iostream.h>
+#include <mp-units/ostream.h>
 #include <mp-units/random.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>

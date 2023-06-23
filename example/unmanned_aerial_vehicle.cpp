@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "geographic.h"
-#include <mp-units/iostream.h>
+#include <mp-units/ostream.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>

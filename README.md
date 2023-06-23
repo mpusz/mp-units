@@ -79,7 +79,7 @@ accuracy. Please see the below example for a quick preview of basic library feat
 
 ```cpp
 #include <mp-units/format.h>
-#include <mp-units/iostream.h>
+#include <mp-units/ostream.h>
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
@@ -116,4 +116,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/T8bovrqTP)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/3q646qrb3)._

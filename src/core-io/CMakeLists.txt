@@ -22,4 +22,4 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(core-io DEPENDENCIES mp-units::core HEADERS include/mp-units/iostream.h)
+add_units_module(core-io DEPENDENCIES mp-units::core HEADERS include/mp-units/ostream.h)
