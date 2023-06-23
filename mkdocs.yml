@@ -106,6 +106,7 @@ nav:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
           - Basic Concepts: users_guide/framework_basics/basic_concepts.md
+          - Interface Introduction: users_guide/framework_basics/interface_introduction.md
           - Systems of Quantities: users_guide/framework_basics/systems_of_quantities.md
           - Systems of Units: users_guide/framework_basics/systems_of_units.md
           - Value Conversions: users_guide/framework_basics/value_conversions.md
