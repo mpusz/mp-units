@@ -28,8 +28,8 @@ theme:
     - search.highlight
     - search.share
     - search.suggest
-    # - toc.follow
-    # - toc.integrate
+    - toc.follow
+    - toc.integrate
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
