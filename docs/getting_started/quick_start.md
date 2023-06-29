@@ -39,6 +39,18 @@ auto q = 42 * m;
     why they are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols`
     namespace.
 
+In case someone doesn't like the multiply syntax or there is an ambiguity between `operator*`
+provided by this and other libraries, a quantity can also be created with a dedicated factory
+function:
+
+```cpp
+#include <mp-units/systems/si/si.h>
+
+using namespace mp_units;
+
+auto q = make_quantity<si::metre>(42);
+```
+
 
 ## User-provided unit wrappers
 
