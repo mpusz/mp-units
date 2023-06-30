@@ -115,7 +115,7 @@ public:
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
-      q_(qp.relative() + QP::zero() - zero())
+      q_(qp.relative() + QP::zero().absolute() - zero().absolute())
   {
   }
 
