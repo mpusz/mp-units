@@ -83,6 +83,12 @@ public:
   quantity_type q_;  // needs to be public for a structural type
 
   // static member functions
+  [[nodiscard]] static constexpr quantity_point zero() noexcept
+    requires requires { quantity_type::zero(); }
+  {
+    return quantity_point(quantity_type::zero());
+  }
+
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { quantity_type::min(); }
   {
