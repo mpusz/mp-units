@@ -197,7 +197,6 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
-
   SECTION("dimensionless quantity")
   {
     SECTION("one with ratio == 1")
@@ -230,6 +229,45 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       os << q;
 
       SECTION("iostream") { CHECK(os.str() == "15 %"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+    }
+  }
+
+  SECTION("8-bit integers")
+  {
+    SECTION("signed positive")
+    {
+      const auto q = std::int8_t{42} * si::second;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42 s"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+    }
+
+    SECTION("signed negative")
+    {
+      const auto q = std::int8_t{-42} * si::second;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "-42 s"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+    }
+
+    SECTION("unsigned")
+    {
+      const auto q = std::uint8_t{42} * si::second;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42 s"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
 
