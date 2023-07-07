@@ -23,6 +23,20 @@ behind this is that:
     a type and its instance.
 
 
+## Strong types instead of aliases
+
+Let's look again at the above units definitions. Another important point to notice is that
+all the types describing entities in the library are short, nicely named identifiers
+that derive from longer, more verbose class template instantiations. This is really important
+to improve the user experience while debugging the program or analyzing the compilation error.
+
+!!! note
+
+    Such a practice is rare in the industry. Some popular C++ physical units libraries
+    generate enormously long error messages where even only the first line failed o fit
+    on a slide with a tiny font.
+
+
 ## Entities composability
 
 Many physical units libraries (in C++ or any other programming language) assign strong types
@@ -62,6 +76,28 @@ auto q = la_vector{1, 2, 3} * isq::angular_momentum[kg * m2 / s];
 It is a much better solution. It is terse and easy to understand. Please also notice how
 easy it is to obtain any scaled version of such a unit (i.e. `mg * square(mm) / min`)
 without having to introduce hundreds of types to predefine them.
+
+
+## Value-based equations
+
+The **mp-units** library is based on C++20, which greatly improves a user's experience. One of
+such improvements are value-based equations.
+
+As we have learned above, the entities are being used as values in the code, and they compose.
+Moreover, derived entities can be defined in the library using such value-based equations.
+This is a huge improvement compared to what we can find in other physical units libraries or
+what we have to deal with when we want to write some equations for `std::ratio`.
+
+For example, below are a few definitions of the SI derived units showing the power of C++20
+extensions to Non-Type Template Parameters, which allows us to directly pass a result of
+the value-based [unit equation](../../../appendix/glossary/#unit-equation) to a class template
+definition:
+
+```cpp
+inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
+inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
+```
 
 
 ## Expression templates
