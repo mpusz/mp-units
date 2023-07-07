@@ -1,4 +1,4 @@
-# Faster than Lightspeed Constants
+# Faster-than-lightspeed Constants
 
 In most libraries, physical constants are implemented as constant (possibly `constexpr`)
 quantity values. Such an approach has some disadvantages, often resulting in longer
