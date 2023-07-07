@@ -26,8 +26,8 @@ errors and debugging as easy and user-friendly as possible.
 To achieve this goal, several techniques are applied:
 
 - usage of C++20 concepts,
-- using strong types for framework entities (instead of type aliases),
-- usage of expression templates to improve the readability of generated types,
+- [using strong types for framework entities (instead of type aliases)](../../users_guide/framework_basics/interface_introduction/#strong-types-instead-of-aliases),
+- [usage of expression templates to improve the readability of generated types](../../users_guide/framework_basics/interface_introduction/#expression-templates),
 - limiting the number of template arguments to the bare minimum.
 
 !!! note
@@ -40,11 +40,37 @@ To achieve this goal, several techniques are applied:
 
 ## Key Features
 
-| Feature                      | Description                                                                                                                                                                                                                                                                                                                                                                      |
-|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Safety**                   | - The affine space strong types (`quantity` and `quantity_point`)<br>- Compile-time checked conversions of quantities and units<br>- Unique support for many quantities of the same kind<br>- Type-safe equations on scalar, vector, and tensor quantities and their units<br>- Value-preserving conversions                                                                     |
-| **Performance**              | - All the compile-time logic implemented as immediate (`consteval`) functions<br>- As fast or even faster than working with fundamental types<br>- No space size overhead needed to implement high-level abstractions                                                                                                                                                            |
-| **Great User Experience**    | - Optimized for readable compilation errors and great debugging experience<br>- Efficient and composable way to specify a unit of choice<br>- Value-based dimension, unit, and quantity equations                                                                                                                                                                                |
-| **Feature Rich**             | - Systems of Quantities<br>- Systems of Units<br>- Scalar, vector, and tensor quantities<br>- The affine space<br>- [Natural units systems](https://en.wikipedia.org/wiki/Natural_units) support<br>- Strong angular system<br>- Supports any unit's magnitude (huge, small, floating-point)<br>- Faster-than-lightspeed constants<br>- Highly adjustable text-output formatting |
-| **Easy to Extend**           | - Each entity can be defined with a single line of code<br>- User can easily extend the systems with custom dimensions, quantities, and units                                                                                                                                                                                                                                    |
-| **Low Standardization Cost** | - Small number of predefined entities needed thanks to composability<br>- No external dependencies (assuming full C++20 support)<br>- No macros in the user interface (besides portability and standard-compliance issues)<br>- Possibility to be standardized as a [freestanding](https://en.cppreference.com/w/cpp/freestanding) part of the C++ Standard Library              |
+| Feature                      | Description                                                                                                                                                                                                                                                                                                                                         |
+|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Safety**                   | - [The affine space strong types] (`quantity` and `quantity_point`)<br>- [Compile-time checked conversions of quantities and units]<br>- [Unique support for many quantities of the same kind]<br>- [Type-safe equations on scalar, vector, and tensor quantities and their units]<br>- [Value-preserving conversions]                              |
+| **Performance**              | - All the compile-time logic implemented as immediate (`consteval`) functions<br>- As fast or even faster than working with fundamental types<br>- No space size overhead needed to implement high-level abstractions                                                                                                                               |
+| **Great User Experience**    | - [Optimized for readable compilation errors and great debugging experience]<br>- [Efficient and composable way to specify a unit of choice]<br>- [Value-based dimension, unit, and quantity equations]                                                                                                                                             |
+| **Feature Rich**             | - [Systems of Quantities]<br>- [Systems of Units]<br>- [Scalar, vector, and tensor quantities]<br>- [The affine space]<br>- [Natural units systems support]<br>- [Strong angular system]<br>- [Supports any unit's magnitude (huge, small, floating-point)]<br>- [Faster-than-lightspeed constants]<br>- [Highly adjustable text-output formatting] |
+| **Easy to Extend**           | - [Each entity can be defined with a single line of code]<br>- [User can easily extend the systems with custom dimensions, quantities, and units]                                                                                                                                                                                                   |
+| **Low Standardization Cost** | - Small number of predefined entities needed thanks to composability<br>- No external dependencies (assuming full C++20 support)<br>- No macros in the user interface (besides portability and standard-compliance issues)<br>- Possibility to be standardized as a [freestanding] part of the C++ Standard Library                                 |
+
+
+[The affine space strong types]: ../../users_guide/framework_basics/the_affine_space
+[Compile-time checked conversions of quantities and units]: ../../users_guide/framework_basics/systems_of_quantities/#converting-between-quantities
+[Unique support for many quantities of the same kind]: ../../users_guide/framework_basics/systems_of_quantities/#quantities-of-the-same-kind
+[Type-safe equations on scalar, vector, and tensor quantities and their units]: ../../users_guide/framework_basics/quantity_arithmetics
+[Value-preserving conversions]: ../../users_guide/framework_basics/value_conversions/#value-preserving-conversions
+
+[Optimized for readable compilation errors and great debugging experience]: ../../users_guide/framework_basics/simple_and_typed_quantities/#easy-to-understand-compilation-error-messages
+[Efficient and composable way to specify a unit of choice]: ../../users_guide/framework_basics/systems_of_units/#units-compose
+[Value-based dimension, unit, and quantity equations]: ../../users_guide/framework_basics/interface_introduction/#value-based-equations
+
+[Systems of Quantities]: ../../users_guide/framework_basics/systems_of_quantities
+[Systems of Units]: ../../users_guide/framework_basics/systems_of_units
+[Scalar, vector, and tensor quantities]: ../../users_guide/framework_basics/character_of_a_quantity
+[The affine space]: ../../users_guide/framework_basics/the_affine_space
+[Natural units systems support]: ../../users_guide/defining_systems/natural_units
+[Strong angular system]: ../../users_guide/defining_systems/strong_angular_system
+[Supports any unit's magnitude (huge, small, floating-point)]: ../../users_guide/framework_basics/systems_of_units/#scaled-units
+[Faster-than-lightspeed constants]: ../../users_guide/framework_basics/faster_than_lightspeed_constants
+[Highly adjustable text-output formatting]: ../../users_guide/framework_basics/text_output
+
+[Each entity can be defined with a single line of code]: ../../users_guide/framework_basics/interface_introduction/#new-style-of-definitions
+[User can easily extend the systems with custom dimensions, quantities, and units]: ../../users_guide/framework_basics/interface_introduction/#new-style-of-definitions
+
+[freestanding]: https://en.cppreference.com/w/cpp/freestanding
