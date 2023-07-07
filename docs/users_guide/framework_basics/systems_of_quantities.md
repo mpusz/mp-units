@@ -113,6 +113,40 @@ representation type (notice that `position_vector` and `displacement` are vector
 Analyzing such a hierarchy can help us in defining arithmetics and conversion rules.
 
 
+## Defining quantities
+
+In the **mp-units** library all the information about the quantity is provided with the `quantity_spec`
+class template. In order to define a specific quantity a user should inherit a strong type
+from such an instantiation.
+
+For example, here is how the above quantity kind tree can be modeled in the library:
+
+```cpp
+inline constexpr struct length : quantity_spec<dim_length> {} length;
+inline constexpr struct width : quantity_spec<length> {} width;
+inline constexpr auto breadth = width;
+inline constexpr struct height : quantity_spec<length> {} height;
+inline constexpr auto depth = height;
+inline constexpr auto altitude = height;
+inline constexpr struct thickness : quantity_spec<width> {} thickness;
+inline constexpr struct diameter : quantity_spec<width> {} diameter;
+inline constexpr struct radius : quantity_spec<width> {} radius;
+inline constexpr struct radius_of_curvature : quantity_spec<radius> {} radius_of_curvature;
+inline constexpr struct path_length : quantity_spec<length> {} path_length;
+inline constexpr auto arc_length = path_length;
+inline constexpr struct distance : quantity_spec<path_length> {} distance;
+inline constexpr struct radial_distance : quantity_spec<distance> {} radial_distance;
+inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
+inline constexpr struct position_vector : quantity_spec<length, quantity_character::vector> {} position_vector;
+inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+```
+
+!!! note
+
+    More information on how to define a system of quantities can be found in the
+    ["International System of Quantities (ISQ)"](../../defining_systems/isq) chapter.
+
+
 ## Comparing, adding, and subtracting quantities
 
 ISO 80000 explicitly states that `width` and `height` are quantities of the same kind, and as such they:
