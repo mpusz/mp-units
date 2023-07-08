@@ -2,8 +2,8 @@
 
 !!! warning
 
-    Features described in this chapter are experimental and are subject to change or removal. Please
-    share your feedback if something doesn't seem right or could be improved.
+    This chapter's features are experimental and subject to change or removal. Please share your feedback
+    if something seems wrong or could be improved.
 
 
 ## Scalars, vectors, and tensors
@@ -15,24 +15,24 @@
     whereas each scalar component of a vector or a tensor and each component vector and component
     tensor depend on that choice.
 
-While defining quantities ISO 80000 explicitly mentions when a specific quantity has a vector or tensor
-character. Such distinction is important because each quantity character represent different properties
-and allows different operations to be done on their quantities.
+Such distinction is important because each quantity character represents different properties
+and allows different operations to be done on its quantities.
 
-For example, imagine a physical units library that allows to create a `speed` quantity from both
+For example, imagine a physical units library that allows the creation of a `speed` quantity from both
 `length / time` and `length * time`. It wouldn't be too safe to use such a product, right?
 
-Now we have to realize that both of the above operations (multiplication and division) are even not
-mathematically defined for linear algebra types such as vector or tensors. On the other hand, two vectors
-can be passed as arguments to dot (`⋅`) and cross (`×`) product operations. The result of the first one is
-a scalar. The second one results with a vector that is perpendicular to both vectors passed as arguments.
+Now we have to realize that both of the above operations (multiplication and division) are not even
+mathematically defined for linear algebra types such as vectors or tensors. On the other hand, two vectors
+can be passed as arguments to dot and cross-product operations. The result of the first one is
+a scalar. The second one results in a vector that is perpendicular to both vectors passed as arguments.
 Again, it wouldn't be safe to allow replacing those two operations with each other or expect the same
 results from both cases. This simply can't work.
 
 
-## Examples from the ISQ
+## ISQ defines quantities of all characters
 
-To provide some examples for further discussion let's pick a few quantities defined in the ISO 80000:
+While defining quantities ISO 80000 explicitly mentions when a specific quantity has a vector or tensor
+character. Here are some examples:
 
 | Quantity               |  Character   |                 Quantity Equation                 |
 |------------------------|:------------:|:-------------------------------------------------:|
@@ -55,17 +55,27 @@ To provide some examples for further discussion let's pick a few quantities defi
 | `angular_momentum`     |  **vector**  |           `position_vector × momentum`            |
 | `moment_of_inertia`    | **_tensor_** |       `angular_momentum ⊗ angular_velocity`       |
 
+In the above equations:
+
+- `a * b` - regular multiplication where one of the arguments has to be scalar
+- `a / b` - regular division where the divisor has to be scalar
+- `a ⋅ b` - dot product of two vectors
+- `a × b` - cross product of two vectors
+- `|a|` - magnitude of a vector
+- `{unit-vector}` - a special vector with the magnitude of `1`
+- `a ⊗ b` - tensor product of two vectors or tensors
+
 !!! note
 
     As of now, all of the C++ physical units libraries on the market besides **mp-units** do not
-    support above-mentioned operations. They expose only multiplication and division operators which
-    do not work for proper linear-algebra-based representation types. In case one would like to
-    construct the quantities provided in the above table with those libraries, this would result with
-    a compile-time error stating that multiplication and division of two linear-algebra vectors is not
-    possible.
+    support the operations mentioned above. They expose only multiplication and division operators,
+    which do not work for linear algebra-based representation types. If a user of those libraries
+    would like to create the quantities provided in the above table properly, this would result in
+    a compile-time error stating that multiplication and division of two linear algebra vectors is
+    impossible.
 
 
-## Characters apply to quantities but not dimensions or units
+## Characters don't apply to dimensions and units
 
 ISO 80000 explicitly states that dimensions are orthogonal to quantity characters:
 
@@ -89,9 +99,17 @@ inline constexpr struct position_vector : quantity_spec<length, quantity_charact
 inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
 ```
 
-From now on all the quantities derived from `position_vector` or `displacement` will have a correct
-character consistent with the operations performed in the [quantity equation](../../../appendix/glossary/#quantity-equation)
-on their arguments.
+With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
+character determined according to the kind of operations included in the
+[quantity equation](../../../appendix/glossary/#quantity-equation) defining a
+[derived quantity](../../../appendix/glossary/#derived-quantity).
+
+For example, `velocity` in the below definition will be defined as a vector quantity (no explicit
+character override is needed):
+
+```cpp
+inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
+```
 
 
 ## Representation types for vector and tensor quantities
@@ -102,12 +120,14 @@ on their arguments.
     a representation type for vector and tensor quantities. This is why users are on their own here
     :worried:.
 
-    To provide examples and implement unit tests our library uses the types proposed in the [P1385](https://wg21.link/p1385)
-    and available as [a Conan package in the Conan Center](https://conan.io/center/wg21-linear_algebra).
+    To provide examples and implement unit tests, our library uses the types proposed in
+    the [P1385](https://wg21.link/p1385) and available as
+    [a Conan package in the Conan Center](https://conan.io/center/wg21-linear_algebra).
+    However, thanks to the provided customization points, any linear algebra library types can be used
+    as a vector or tensor quantity representation type.
 
-In order to enable the usage of a user-defined type as a representation type for vector or tensor
-quantities you need to provide a partial specialization of `is_vector` or `is_tensor` customization
-points.
+To enable the usage of a user-defined type as a representation type for vector or tensor quantities,
+you need to provide a partial specialization of `is_vector` or `is_tensor` customization points.
 
 For example, here is how it can be done for the [P1385](https://wg21.link/p1385) types:
 
@@ -123,12 +143,12 @@ inline constexpr bool mp_units::is_vector<la_vector> = true;
 
 ## Hacking the character
 
-Sometimes you want to use a vector quantity but you do not care about its direction. For example,
-the standard gravity acceleration constant is always pointing down and you might not care about this
-in a particular case. In such a case you may want to "hack" the library to allow scalar types
+Sometimes you want to use a vector quantity, but you don't care about its direction. For example,
+the standard gravity acceleration constant always points down, so you might not care about this
+in a particular scenario. In such a case, you may want to "hack" the library to allow scalar types
 to be used as a representation type for scalar quantities.
 
-For example, you can do something like this:
+For example, you can do the following:
 
 ```cpp
 template<class T>
@@ -136,7 +156,7 @@ template<class T>
 inline constexpr bool mp_units::is_vector<T> = true;
 ```
 
-which says that every type that can be used a scalar representation is also allowed for vector
+which says that every type that can be used as a scalar representation is also allowed for vector
 quantities.
 
 Doing the above is actually not such a big "hack" as the ISO 80000 explicitly allows it:
@@ -146,13 +166,5 @@ Doing the above is actually not such a big "hack" as the ISO 80000 explicitly al
 
     A vector is a tensor of the first order and a scalar is a tensor of order zero.
 
-However, for type-safety reasons, we do not want to allow of such a behavior by default.
-
-
-## Different shades of vector and tensor quantities
-
-
-
-    Instead of treating each coordinate of a vector as a physical quantity value (i.e. a number multiplied by
-    a unit), the vector could be written as a numerical vector multiplied by a unit. 
-    The same considerations apply to tensors of second and higher orders.
+Despite it being allowed by ISO 80000, for type-safety reasons, we do not allow such a behavior
+by default, and a user has to opt into such scenarios explicitly.
