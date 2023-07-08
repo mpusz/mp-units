@@ -111,8 +111,8 @@ nav:
           - Systems of Units: users_guide/framework_basics/systems_of_units.md
           - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
           - Value Conversions: users_guide/framework_basics/value_conversions.md
+          - Character of a Quantity: users_guide/framework_basics/character_of_a_quantity.md
           - Quantity Arithmetics: users_guide/framework_basics/quantity_arithmetics.md
-          - Quantities of Different Characters: users_guide/framework_basics/quantities_of_different_characters.md
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
           - Dimensionless Quantities: users_guide/framework_basics/dimensionless_quantities.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
