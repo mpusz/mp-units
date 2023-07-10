@@ -52,11 +52,11 @@ inline constexpr auto g = 1 * si::standard_gravity;
 inline constexpr auto air_density = isq::mass_density(1.225 * (kg / m3));
 
 class StorageTank {
-  quantity<isq::area[m2]> base_;
+  quantity<horizontal_area[m2]> base_;
   quantity<isq::height[m]> height_;
   quantity<isq::mass_density[kg / m3]> density_ = air_density;
 public:
-  constexpr StorageTank(const quantity<isq::area[m2]>& base, const quantity<isq::height[m]>& height) :
+  constexpr StorageTank(const quantity<horizontal_area[m2]>& base, const quantity<isq::height[m]>& height) :
       base_(base), height_(height)
   {
   }
