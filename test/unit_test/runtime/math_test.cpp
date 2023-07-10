@@ -37,7 +37,7 @@ using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("'pow<N>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
-  SECTION("'pow<0>(q)' returns '1'") { CHECK(pow<0>(2 * isq::length[m]) == 1); }
+  SECTION("'pow<0>(q)' returns '1'") { CHECK(pow<0>(2 * isq::length[m]) == 1 * one); }
 
   SECTION("'pow<1>(q)' returns 'q'") { CHECK(pow<1>(2 * isq::length[m]) == 2 * isq::length[m]); }
 

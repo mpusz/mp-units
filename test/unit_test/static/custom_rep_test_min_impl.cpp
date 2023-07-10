@@ -80,45 +80,6 @@ concept creates_quantity = Unit<std::remove_cvref_t<decltype(U)>> && requires { 
 static_assert(creates_quantity<min_impl<int>, si::metre>);
 static_assert(creates_quantity<min_impl<double>, si::metre>);
 
-// dimensionless quantity is constructible and convertible from a value
-static_assert(std::constructible_from<quantity<one, min_impl<int>>, min_impl<int>>);
-static_assert(std::convertible_to<min_impl<int>, quantity<one, min_impl<int>>>);
-
-static_assert(std::constructible_from<quantity<one, min_impl<double>>, min_impl<double>>);
-static_assert(std::convertible_to<min_impl<double>, quantity<one, min_impl<double>>>);
-
-static_assert(std::constructible_from<quantity<one, min_impl<double>>, min_impl<int>>);
-static_assert(std::convertible_to<min_impl<int>, quantity<one, min_impl<double>>>);
-
-static_assert(!std::constructible_from<quantity<one, min_impl<int>>, min_impl<double>>);  // narrowing conversion
-static_assert(!std::convertible_to<min_impl<double>, quantity<one, min_impl<int>>>);
-
-// and underlying type
-static_assert(std::constructible_from<quantity<one, min_impl<int>>, int>);
-static_assert(std::convertible_to<int, quantity<one, min_impl<int>>>);
-
-static_assert(std::constructible_from<quantity<one, min_impl<double>>, double>);
-static_assert(std::convertible_to<double, quantity<one, min_impl<double>>>);
-
-static_assert(std::constructible_from<quantity<one, min_impl<double>>, int>);
-static_assert(std::convertible_to<int, quantity<one, min_impl<double>>>);
-
-static_assert(!std::constructible_from<quantity<one, min_impl<int>>, double>);  // narrowing conversion
-static_assert(!std::convertible_to<double, quantity<one, min_impl<int>>>);
-
-// but only for ratio(1)
-static_assert(!std::constructible_from<quantity<percent, min_impl<int>>, min_impl<int>>);
-static_assert(!std::convertible_to<min_impl<int>, quantity<percent, min_impl<int>>>);
-
-static_assert(!std::constructible_from<quantity<percent, min_impl<double>>, min_impl<double>>);
-static_assert(!std::convertible_to<min_impl<double>, quantity<percent, min_impl<double>>>);
-
-static_assert(!std::constructible_from<quantity<percent, min_impl<double>>, min_impl<int>>);
-static_assert(!std::convertible_to<min_impl<int>, quantity<percent, min_impl<double>>>);
-
-static_assert(!std::constructible_from<quantity<percent, min_impl<int>>, min_impl<double>>);  // narrowing conversion
-static_assert(!std::convertible_to<min_impl<double>, quantity<percent, min_impl<int>>>);
-
 // multiply syntax
 static_assert(creates_quantity<min_impl<int>, one>);
 static_assert(creates_quantity<min_impl<double>, one>);
@@ -258,9 +219,9 @@ static_assert(min_impl<int>{123} * si::metre / (min_impl<double>(2.) * one) == m
 static_assert(min_impl<int>{123} * si::metre / (2. * one) == min_impl<double>{61.5} * si::metre);
 static_assert(123 * si::metre / (min_impl<double>(2.) * one) == min_impl<double>{61.5} * si::metre);
 
-static_assert(min_impl<int>{123} * si::metre / (min_impl<double>{2.} * si::metre) == 61.5);
-static_assert(min_impl<int>{123} * si::metre / (double{2.} * si::metre) == 61.5);
-static_assert(123 * si::metre / (min_impl<double>{2.} * si::metre) == 61.5);
+static_assert(min_impl<int>{123} * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
+static_assert(min_impl<int>{123} * si::metre / (double{2.} * si::metre) == 61.5 * one);
+static_assert(123 * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
 
 static_assert(min_impl<int>{123} * si::metre % (min_impl<int>(100) * si::metre) == 23 * si::metre);
 static_assert(min_impl<int>{123} * si::metre % (100 * si::metre) == 23 * si::metre);

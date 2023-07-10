@@ -147,13 +147,6 @@ public:
   {
   }
 
-  template<typename Value>
-    requires(dimension == dimension_one) &&
-            (unit == ::mp_units::one) && detail::RepSafeConstructibleFrom<rep, Value&&, unit>
-  constexpr explicit(!std::convertible_to<Value, Rep>) quantity(Value&& v) : number_(std::forward<Value>(v))
-  {
-  }
-
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
@@ -431,65 +424,6 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 {
   using ct = std::common_type_t<quantity<R1, Rep1>, quantity<R2, Rep2>>;
   return ct(lhs).number() <=> ct(rhs).number();
-}
-
-// binary operators on dimensionless quantities
-template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::plus<>, Rep, Value>
-[[nodiscard]] constexpr Quantity auto operator+(const quantity<R, Rep>& q, const Value& v)
-{
-  return q + make_quantity<::mp_units::one>(v);
-}
-
-template<typename Value, auto R, typename Rep>
-  requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::plus<>, Value, Rep>
-[[nodiscard]] constexpr Quantity auto operator+(const Value& v, const quantity<R, Rep>& q)
-{
-  return make_quantity<::mp_units::one>(v) + q;
-}
-
-template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::minus<>, Rep, Value>
-[[nodiscard]] constexpr Quantity auto operator-(const quantity<R, Rep>& q, const Value& v)
-{
-  return q - make_quantity<::mp_units::one>(v);
-}
-
-template<typename Value, auto R, typename Rep>
-  requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::minus<>, Value, Rep>
-[[nodiscard]] constexpr Quantity auto operator-(const Value& v, const quantity<R, Rep>& q)
-{
-  return make_quantity<::mp_units::one>(v) - q;
-}
-
-template<typename Value, auto R, typename Rep>
-  requires(!Quantity<Value>) && (quantity<R, Rep>::dimension == dimension_one) && (get_unit(R) == ::mp_units::one) &&
-          (!treat_as_floating_point<Value>) && (!treat_as_floating_point<Rep>) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::modulus<>, Value, Rep>
-[[nodiscard]] constexpr Quantity auto operator%(const Value& v, const quantity<R, Rep>& q)
-{
-  gsl_ExpectsAudit(q.number() != quantity_values<Rep>::zero());
-  return make_quantity<R>(v % q.number());
-}
-
-template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) &&
-          (quantity<R, Rep>::dimension == dimension_one) && std::equality_comparable_with<Rep, Value>
-[[nodiscard]] constexpr bool operator==(const quantity<R, Rep>& q, const Value& v)
-{
-  return q == make_quantity<::mp_units::one>(v);
-}
-
-template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) &&
-          (quantity<R, Rep>::dimension == dimension_one) && std::three_way_comparable_with<Rep, Value>
-[[nodiscard]] constexpr auto operator<=>(const quantity<R, Rep>& q, const Value& v)
-{
-  return q <=> make_quantity<::mp_units::one>(v);
 }
 
 // make_quantity

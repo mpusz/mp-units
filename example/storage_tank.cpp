@@ -121,7 +121,7 @@ int main()
 
   const QuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
   const QuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
-  const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1) * fill_time;
+  const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1 * one) * fill_time;
 
   const auto fill_ratio = fill_level / height;
 

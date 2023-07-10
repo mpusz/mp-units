@@ -124,7 +124,7 @@ constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM 
 template<mp_units::Quantity Q, mp_units::QuantityOf<mp_units::dimensionless> K>
 constexpr Q covariance_update(Q uncertainty, K gain)
 {
-  return (1 - gain) * uncertainty;
+  return (1 * mp_units::one - gain) * uncertainty;
 }
 
 // state extrapolation

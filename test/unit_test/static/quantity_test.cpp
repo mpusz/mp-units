@@ -131,43 +131,11 @@ static_assert(!std::convertible_to<double, quantity<isq::length[m]>>);
 static_assert(!std::constructible_from<quantity<isq::length[m], int>, int>);
 static_assert(!std::convertible_to<int, quantity<isq::length[m], int>>);
 
-// exception, implicit construction from a value allowed for a dimensionless quantity
-static_assert(std::constructible_from<quantity<dimensionless[one]>, double>);
-static_assert(std::convertible_to<double, quantity<dimensionless[one]>>);
+static_assert(!std::constructible_from<quantity<dimensionless[one]>, double>);
+static_assert(!std::convertible_to<double, quantity<dimensionless[one]>>);
 
-static_assert(std::constructible_from<quantity<dimensionless[one]>, float>);
-static_assert(std::convertible_to<float, quantity<dimensionless[one]>>);
-
-static_assert(std::constructible_from<quantity<dimensionless[one], float>, double>);
-static_assert(std::convertible_to<double, quantity<dimensionless[one], float>>);
-
-static_assert(std::constructible_from<quantity<dimensionless[one]>, int>);
-static_assert(std::convertible_to<int, quantity<dimensionless[one]>>);
-
-static_assert(std::constructible_from<quantity<dimensionless[one]>, short>);
-static_assert(std::convertible_to<short, quantity<dimensionless[one]>>);
-
-static_assert(std::constructible_from<quantity<dimensionless[one], short>, int>);
-static_assert(std::convertible_to<int, quantity<dimensionless[one], short>>);
-
-// but only if a dimensionless quantity has a ratio(1)
-static_assert(!std::constructible_from<quantity<dimensionless[percent]>, double>);
-static_assert(!std::convertible_to<double, quantity<dimensionless[percent]>>);
-
-static_assert(!std::constructible_from<quantity<dimensionless[percent]>, float>);
-static_assert(!std::convertible_to<float, quantity<dimensionless[percent]>>);
-
-static_assert(!std::constructible_from<quantity<dimensionless[percent], float>, double>);
-static_assert(!std::convertible_to<double, quantity<dimensionless[percent], float>>);
-
-static_assert(!std::constructible_from<quantity<dimensionless[percent]>, int>);
-static_assert(!std::convertible_to<int, quantity<dimensionless[percent]>>);
-
-static_assert(!std::constructible_from<quantity<dimensionless[percent]>, short>);
-static_assert(!std::convertible_to<short, quantity<dimensionless[percent]>>);
-
-static_assert(!std::constructible_from<quantity<dimensionless[percent], short>, int>);
-static_assert(!std::convertible_to<int, quantity<dimensionless[percent], short>>);
+static_assert(!std::constructible_from<quantity<dimensionless[one]>, int>);
+static_assert(!std::convertible_to<int, quantity<dimensionless[one]>>);
 
 
 ///////////////////////////////////////
@@ -715,29 +683,20 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] 
 // Implicit conversions allowed between quantities of `convertible` references
 constexpr quantity<isq::speed[km / h]> speed = 120 * isq::length[km] / (2 * isq::time[h]);
 
-
 // dimensionless
-
-static_assert((3 * one *= 2 * one) == 6);
-static_assert((6 * one /= 2 * one) == 3);
-static_assert(1 * one + 1 * one == 2);
-static_assert(1 + 1 * one == 2);
-static_assert(1 * one + 1 == 2);
-static_assert(2 * one - 1 * one == 1);
-static_assert(2 - 1 * one == 1);
-static_assert(2 * one - 1 == 1);
-static_assert(2 * one * (2 * one) == 4);
-static_assert(2 * (2 * one) == 4);
-static_assert(2 * one * 2 == 4);
-static_assert(4 * one / (2 * one) == 2);
-static_assert(4 / (2 * one) == 2);
-static_assert(4 * one / 2 == 2);
-static_assert(4 * one % (2 * one) == 0);
-static_assert(4 % (2 * one) == 0);
-static_assert(4 % (2 * one) == 0);
+static_assert((3 * one *= 2 * one) == 6 * one);
+static_assert((6 * one /= 2 * one) == 3 * one);
+static_assert(1 * one + 1 * one == 2 * one);
+static_assert(2 * one - 1 * one == 1 * one);
+static_assert(2 * one * (2 * one) == 4 * one);
+static_assert(2 * (2 * one) == 4 * one);
+static_assert(2 * one * 2 == 4 * one);
+static_assert(4 * one / (2 * one) == 2 * one);
+static_assert(4 / (2 * one) == 2 * one);
+static_assert(4 * one / 2 == 2 * one);
+static_assert(4 * one % (2 * one) == 0 * one);
 
 // modulo arithmetics
-
 static_assert(5 * h % (120 * min) == 60 * min);
 static_assert(300 * min % (2 * h) == 60 * min);
 static_assert(300 * min % (120 * min) == 60 * min);
@@ -754,17 +713,13 @@ constexpr auto quotient_remainder_theorem(auto q1, auto q2)
 static_assert(quotient_remainder_theorem(7 * m, 3 * m) == 7 * m);
 static_assert(quotient_remainder_theorem(3'000 * m, 400 * m) == 3'000 * m);
 
-static_assert(is_same_v<decltype(0 * one + 0.0), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0 * one - 0.0), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0.0 + 0 * one), decltype(0.0 * one)>);
-static_assert(is_same_v<decltype(0.0 + 0 * one), decltype(0.0 * one)>);
-static_assert(1 * one + 2.3 == (1 + 2.3) * one);
-static_assert(1 * one - 2.3 == (1 - 2.3) * one);
-static_assert(1.2 + 3 * one == (1.2 + 3) * one);
-static_assert(1.2 - 3 * one == (1.2 - 3) * one);
+static_assert(is_same_v<decltype(0 * one + 0.0 * one), decltype(0.0 * one)>);
+static_assert(is_same_v<decltype(0 * one - 0.0 * one), decltype(0.0 * one)>);
+static_assert(is_same_v<decltype(0.0 * one + 0 * one), decltype(0.0 * one)>);
+static_assert(is_same_v<decltype(0.0 * one - 0 * one), decltype(0.0 * one)>);
 
-static_assert(1 - 30 * percent == (100 - 30) * percent);
-static_assert(1 + 30 * percent == (100 + 30) * percent);
+static_assert(1 * one - 30 * percent == (100 - 30) * percent);
+static_assert(1 * one + 30 * percent == (100 + 30) * percent);
 
 static_assert(is_same_v<decltype((std::uint8_t(0) * one + std::uint8_t(0) * one).number()), int&&>);
 static_assert(is_same_v<decltype((std::uint8_t(0) * one - std::uint8_t(0) * one).number()), int&&>);
@@ -820,17 +775,6 @@ static_assert(123 * km == 123'000 * m);
 static_assert(321 * km != 123'000 * m);
 static_assert(!(123 * km == 321'000 * m));
 static_assert(!(123 * km != 123'000 * m));
-
-// dimensionless
-static_assert(std::equality_comparable_with<quantity<dimensionless[one]>, double>);
-static_assert(std::equality_comparable_with<quantity<dimensionless[one]>, int>);
-static_assert(std::equality_comparable_with<quantity<dimensionless[one], int>, int>);
-static_assert(std::equality_comparable_with<quantity<dimensionless[one], int>, double>);
-
-static_assert(123 * one == 123);
-static_assert(321 * one != 123);
-static_assert(123 == 123 * one);
-static_assert(123 != 321 * one);
 
 // Named and derived dimensions (same units)
 static_assert(10 * isq::length[m] / (2 * isq::time[s]) == 5 * isq::speed[m / s]);
@@ -907,21 +851,6 @@ static_assert(!(321 * km <= 123'000 * m));
 static_assert(!(123 * km > 321'000 * m));
 static_assert(!(123 * km > 123'000 * m));
 static_assert(!(123 * km >= 321'000 * m));
-
-// dimensionless
-static_assert(123 * one < 321);
-static_assert(123 * one <= 123);
-static_assert(123 * one <= 321);
-static_assert(321 * one > 123);
-static_assert(123 * one >= 123);
-static_assert(321 * one >= 123);
-
-static_assert(123 < 321 * one);
-static_assert(123 <= 123 * one);
-static_assert(123 <= 321 * one);
-static_assert(321 > 123 * one);
-static_assert(123 >= 123 * one);
-static_assert(321 >= 123 * one);
 
 
 //////////////////

@@ -285,60 +285,39 @@ static_assert(no_common_reference<radian, solid_angular_measure[steradian]>);
 static_assert(no_common_reference<angular_measure[radian], solid_angular_measure[steradian]>);
 
 // addition of various dimensionless quantities
-static_assert(is_of_type<1 * one + 1, quantity<one, int>>);
-static_assert(is_of_type<dimensionless(1 * one) + 1, quantity<dimensionless[one], int>>);
-
-static_assert(is_of_type<1 * radian + 1, quantity<radian, int>>);
 static_assert(is_of_type<1 * radian + 1 * one, quantity<radian, int>>);
 static_assert(is_of_type<1 * radian + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
-static_assert(is_of_type<angular_measure(1 * radian) + 1, quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) + 1 * one, quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
 
-static_assert(is_of_type<1 * steradian + 1, quantity<steradian, int>>);
 static_assert(is_of_type<1 * steradian + 1 * one, quantity<steradian, int>>);
 static_assert(is_of_type<1 * steradian + dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
-static_assert(is_of_type<solid_angular_measure(1 * steradian) + 1, quantity<solid_angular_measure[steradian], int>>);
 static_assert(
   is_of_type<solid_angular_measure(1 * steradian) + 1 * one, quantity<solid_angular_measure[steradian], int>>);
 static_assert(is_of_type<solid_angular_measure(1 * steradian) + dimensionless(1 * one),
                          quantity<solid_angular_measure[steradian], int>>);
 
 // subtraction of various dimensionless quantities
-static_assert(is_of_type<1 * one - 1, quantity<one, int>>);
-static_assert(is_of_type<dimensionless(1 * one) - 1, quantity<dimensionless[one], int>>);
-
-static_assert(is_of_type<1 * radian - 1, quantity<radian, int>>);
 static_assert(is_of_type<1 * radian - 1 * one, quantity<radian, int>>);
 static_assert(is_of_type<1 * radian - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
-static_assert(is_of_type<angular_measure(1 * radian) - 1, quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) - 1 * one, quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
 
-static_assert(is_of_type<1 * steradian - 1, quantity<steradian, int>>);
 static_assert(is_of_type<1 * steradian - 1 * one, quantity<steradian, int>>);
 static_assert(is_of_type<1 * steradian - dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
-static_assert(is_of_type<solid_angular_measure(1 * steradian) - 1, quantity<solid_angular_measure[steradian], int>>);
 static_assert(
   is_of_type<solid_angular_measure(1 * steradian) - 1 * one, quantity<solid_angular_measure[steradian], int>>);
 static_assert(is_of_type<solid_angular_measure(1 * steradian) - dimensionless(1 * one),
                          quantity<solid_angular_measure[steradian], int>>);
 
 // comparison of various dimensionless quantities
-static_assert(1 * one == 1);
-static_assert(dimensionless(1 * one) == 1);
-
-static_assert(1 * radian == 1);
 static_assert(1 * radian == 1 * one);
 static_assert(1 * radian == dimensionless(1 * one));
-static_assert(angular_measure(1 * radian) == 1);
 static_assert(angular_measure(1 * radian) == 1 * one);
 static_assert(angular_measure(1 * radian) == dimensionless(1 * one));
 
-static_assert(1 * steradian == 1);
 static_assert(1 * steradian == 1 * one);
 static_assert(1 * steradian == dimensionless(1 * one));
-static_assert(solid_angular_measure(1 * steradian) == 1);
 static_assert(solid_angular_measure(1 * steradian) == 1 * one);
 static_assert(solid_angular_measure(1 * steradian) == dimensionless(1 * one));
 
