@@ -95,11 +95,29 @@ including:
 
     `QuantitySpec` can be defined by the user in one of the following ways:
 
-    ```cpp
-    inline constexpr struct length : quantity_spec<dim_length> {} length;
-    inline constexpr struct height : quantity_spec<length> {} height;
-    inline constexpr struct speed : quantity_spec<length / time> {} speed;
-    ```
+    === "C++20"
+
+        ```cpp
+        inline constexpr struct length : quantity_spec<length, dim_length> {} length;
+        inline constexpr struct height : quantity_spec<height, length> {} height;
+        inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
+        ```
+
+    === "C++23"
+
+        ```cpp
+        inline constexpr struct length : quantity_spec<dim_length> {} length;
+        inline constexpr struct height : quantity_spec<length> {} height;
+        inline constexpr struct speed : quantity_spec<length / time> {} speed;
+        ```
+
+    === "Portable"
+
+        ```cpp
+        QUANTITY_SPEC(length, dim_length);
+        QUANTITY_SPEC(height, length);
+        QUANTITY_SPEC(speed, length / time);
+        ```
 
 
 ## `Unit`

@@ -94,10 +94,26 @@ Also, it explicitly states that:
 To specify that a specific quantity has a vector or tensor character a value of `quantity_character`
 enumeration can be appended to the `quantity_spec` describing such a quantity type:
 
-```cpp
-inline constexpr struct position_vector : quantity_spec<length, quantity_character::vector> {} position_vector;
-inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
-```
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct position_vector : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    ```
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct position_vector : quantity_spec<length, quantity_character::vector> {} position_vector;
+    inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    ```
+
+=== "Portable"
+
+    ```cpp
+    QUANTITY_SPEC(position_vector, length, quantity_character::vector);
+    QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    ```
 
 With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
 character determined according to the kind of operations included in the
@@ -107,9 +123,23 @@ character determined according to the kind of operations included in the
 For example, `velocity` in the below definition will be defined as a vector quantity (no explicit
 character override is needed):
 
-```cpp
-inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
-```
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct velocity : quantity_spec<velocity, speed, position_vector / duration> {} velocity;
+    ```
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
+    ```
+
+=== "Portable"
+
+    ```cpp
+    QUANTITY_SPEC(velocity, speed, position_vector / duration);
+    ```
 
 
 ## Representation types for vector and tensor quantities
