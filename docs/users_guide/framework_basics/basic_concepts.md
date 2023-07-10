@@ -316,12 +316,10 @@ class template.
 - the type of `V` satisfies [`PointOrigin`](#pointorigin) concept and the quantity point's
   [absolute point origin](../../../appendix/glossary/#absolute-point-origin) is convertible to `V`.
 
-## Interoperability concepts
+## `QuantityLike`
 
-### `QuantityLike`
-
-`QuantityLike` concept is satisfied by a type `T` for which an instantiation of `quantity_like_traits`
-type trait yields a valid type that provides:
+`QuantityLike` concept provides interoperability with other libraries and is satisfied by a type `T`
+for which an instantiation of `quantity_like_traits` type trait yields a valid type that provides:
 
 - static member `reference` that matches the [`Reference`](#reference) concept
 - `rep` type that matches [`RepresentationOf`](#representationof) concept with the character provided
@@ -341,10 +339,10 @@ type trait yields a valid type that provides:
     };
     ```
 
-### `QuantityPointLike`
+## `QuantityPointLike`
 
-`QuantityPointLike` concept is satisfied by a type `T` for which an instantiation of
-`quantity_point_like_traits` type trait yields a valid type that provides:
+`QuantityPointLike` concept provides interoperability with other libraries and is satisfied by a type `T`
+for which an instantiation of `quantity_point_like_traits` type trait yields a valid type that provides:
 
 - static member `reference` that matches the [`Reference`](#reference) concept
 - static member `point_origin` that matches the [`PointOrigin`](#pointorigin) concept
