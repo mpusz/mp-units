@@ -85,7 +85,7 @@ A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/W6Ej7aqxj)"
 
 
-## Easy to understand compilation error messages
+### Easy to understand compilation error messages
 
 In case a user makes an error in a quantity equation and the result of the calculation
 will not match the function return type, the compiler will detect such an issue at
@@ -171,7 +171,7 @@ error: could not convert 'mp_units::operator*<reference<isq::length(), si::metre
 As we can see above, the compilation error is longer but still relatively easy to understand.
 
 
-## Additional type safety with typed quantities
+### Additional type safety with typed quantities
 
 Based on the previous example, it might seem that typed quantities are not that useful,
 more to type and provide harder-to-understand error messages. It might be true in some cases,
@@ -361,7 +361,7 @@ note: candidate: 'constexpr StorageTank::StorageTank(const mp_units::quantity<mp
     to bring an additional level of safety to your project.
 
 
-## `quantity_cast()` to force unsafe conversions
+### `quantity_cast()` to force unsafe conversions
 
 Did you notice the `quantity_cast()` usage in the other child class?
 
