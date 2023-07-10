@@ -158,7 +158,8 @@ all the properties of scaled units and is consistent with the rest of the librar
 
 !!! info
 
-    More information on the current design can be found in the Dimensionless Quantities chapter.
+    More information on the current design can be found in
+    [the Dimensionless Quantities chapter](../../users_guide/framework_basics/dimensionless_quantities).
 
 
 ## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
