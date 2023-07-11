@@ -121,28 +121,6 @@ from such an instantiation.
 
 For example, here is how the above quantity kind tree can be modeled in the library:
 
-=== "C++20"
-
-    ```cpp
-    inline constexpr struct length : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct width : quantity_spec<width, length> {} width;
-    inline constexpr auto breadth = width;
-    inline constexpr struct height : quantity_spec<height, length> {} height;
-    inline constexpr auto depth = height;
-    inline constexpr auto altitude = height;
-    inline constexpr struct thickness : quantity_spec<thickness, width> {} thickness;
-    inline constexpr struct diameter : quantity_spec<diameter, width> {} diameter;
-    inline constexpr struct radius : quantity_spec<radius, width> {} radius;
-    inline constexpr struct radius_of_curvature : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
-    inline constexpr struct path_length : quantity_spec<path_length, length> {} path_length;
-    inline constexpr auto arc_length = path_length;
-    inline constexpr struct distance : quantity_spec<distance, path_length> {} distance;
-    inline constexpr struct radial_distance : quantity_spec<radial_distance, distance> {} radial_distance;
-    inline constexpr struct wavelength : quantity_spec<wavelength, length> {} wavelength;
-    inline constexpr struct position_vector : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
-    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
-    ```
-
 === "C++23"
 
     ```cpp
@@ -163,6 +141,28 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     inline constexpr struct wavelength : quantity_spec<length> {} wavelength;
     inline constexpr struct position_vector : quantity_spec<length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement : quantity_spec<length, quantity_character::vector> {} displacement;
+    ```
+
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct length : quantity_spec<length, dim_length> {} length;
+    inline constexpr struct width : quantity_spec<width, length> {} width;
+    inline constexpr auto breadth = width;
+    inline constexpr struct height : quantity_spec<height, length> {} height;
+    inline constexpr auto depth = height;
+    inline constexpr auto altitude = height;
+    inline constexpr struct thickness : quantity_spec<thickness, width> {} thickness;
+    inline constexpr struct diameter : quantity_spec<diameter, width> {} diameter;
+    inline constexpr struct radius : quantity_spec<radius, width> {} radius;
+    inline constexpr struct radius_of_curvature : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
+    inline constexpr struct path_length : quantity_spec<path_length, length> {} path_length;
+    inline constexpr auto arc_length = path_length;
+    inline constexpr struct distance : quantity_spec<distance, path_length> {} distance;
+    inline constexpr struct radial_distance : quantity_spec<radial_distance, distance> {} radial_distance;
+    inline constexpr struct wavelength : quantity_spec<wavelength, length> {} wavelength;
+    inline constexpr struct position_vector : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
+    inline constexpr struct displacement : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
     ```
 
 === "Portable"
