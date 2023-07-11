@@ -6,6 +6,8 @@ tags:
 
 # `hello_units`
 
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/5s9KMYh6d)"
+
 This is a really simple example showcasing the features of the **mp-units** library.
 
 ```cpp title="hello_units.cpp" linenums="1"
