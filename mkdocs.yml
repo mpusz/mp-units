@@ -49,6 +49,12 @@ theme:
     text: Roboto
     code: Roboto Mono
 
+# Plugins
+plugins:
+  - search
+  - tags:
+      tags_file: users_guide/examples/introduction.md
+
 # Customization
 extra:
   version:
@@ -132,6 +138,7 @@ nav:
           - Interoperability with Other Units Libraries: users_guide/use_cases/interoperability_with_other_units_libraries.md
           - Extending the Library: users_guide/use_cases/extending_the_library.md
       - Examples:
+          - Introduction: users_guide/examples/introduction.md
           - hello_units: users_guide/examples/hello_units.md
   - Library Reference:
       - Core Library: library_reference/core_library.md

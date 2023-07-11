@@ -1,3 +1,9 @@
+---
+tags:
+  - International System
+  - Text formatting
+---
+
 # `hello_units`
 
 This is a really simple example showcasing the features of the **mp-units** library.
