@@ -144,6 +144,18 @@ character override is needed):
 
 ## Representation types for vector and tensor quantities
 
+As we remember, the `quantity` class template is defined as follows:
+
+```cpp
+template<Reference auto R,
+         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+class quantity;
+```
+
+The second template parameter is constrained with a [`RepresentationOf`](../basic_concepts/#representationof)
+concept that checks if the provided representation type satisfies the requirements for the character
+associated with this quantity type.
+
 !!! note
 
     The current version of the C++ Standard Library does not provide any types that could be used as
@@ -169,6 +181,44 @@ using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
 template<>
 inline constexpr bool mp_units::is_vector<la_vector> = true;
 ```
+
+With the above, we can use `la_vector` as a representation type for our quantity:
+
+```cpp
+Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
+```
+
+In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra library, we can
+either:
+
+- use `make_quantity` factory function
+
+    ```cpp
+    Quantity auto q = make_quantity<isq::velocity[m / s]>(la_vector{1, 2, 3});
+    ```
+
+- provide a dedicated overload of `operator*` that will resolve the ambiguity and wrap the above
+
+    ```cpp
+    template<Reference R>
+    Quantity auto operator*(la_vector rep, R)
+    {
+      return make_quantity<R{}>(rep);
+    }
+    ```
+
+!!! note
+
+    The following does not work:
+
+    ```cpp
+    Quantity auto q1 = la_vector{1, 2, 3} * (m / s);
+    Quantity auto q2 = isq::velocity(la_vector{1, 2, 3} * (m / s));
+    quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * (m / s)};
+    ```
+
+    In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.
+    `la_vector` is not a correct representation type for a scalar quantity so the construction fails.
 
 
 ## Hacking the character
