@@ -140,10 +140,18 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   // data access
+#ifdef __cpp_explicit_this_parameter
+  template<typename Self>
+  [[nodiscard]] constexpr auto&& relative(this Self&& self) noexcept
+  {
+    return std::forward<Self>(self).q_;
+  }
+#else
   [[nodiscard]] constexpr quantity_type& relative() & noexcept { return q_; }
   [[nodiscard]] constexpr const quantity_type& relative() const& noexcept { return q_; }
   [[nodiscard]] constexpr quantity_type&& relative() && noexcept { return std::move(q_); }
   [[nodiscard]] constexpr const quantity_type&& relative() const&& noexcept { return std::move(q_); }
+#endif
 
   [[nodiscard]] constexpr Quantity auto absolute() const noexcept
   {

@@ -151,10 +151,18 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // data access
+#ifdef __cpp_explicit_this_parameter
+  template<typename Self>
+  [[nodiscard]] constexpr auto&& number(this Self&& self) noexcept
+  {
+    return std::forward<Self>(self).number_;
+  }
+#else
   [[nodiscard]] constexpr rep& number() & noexcept { return number_; }
   [[nodiscard]] constexpr const rep& number() const& noexcept { return number_; }
   [[nodiscard]] constexpr rep&& number() && noexcept { return std::move(number_); }
   [[nodiscard]] constexpr const rep&& number() const&& noexcept { return std::move(number_); }
+#endif
 
   template<Unit U>
     requires requires(quantity q) { q[U{}]; }
