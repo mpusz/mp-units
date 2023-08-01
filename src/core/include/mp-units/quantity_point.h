@@ -134,6 +134,7 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   // data access
+  [[nodiscard]] constexpr quantity_type& relative() & noexcept { return q_; }
   [[nodiscard]] constexpr const quantity_type& relative() const& noexcept { return q_; }
   [[nodiscard]] constexpr quantity_type&& relative() && noexcept { return std::move(q_); }
   [[nodiscard]] constexpr const quantity_type&& relative() const&& noexcept { return std::move(q_); }
