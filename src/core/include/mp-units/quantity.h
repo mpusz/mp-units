@@ -151,6 +151,7 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // data access
+  [[nodiscard]] constexpr rep& number() & noexcept { return number_; }
   [[nodiscard]] constexpr const rep& number() const& noexcept { return number_; }
   [[nodiscard]] constexpr rep&& number() && noexcept { return std::move(number_); }
   [[nodiscard]] constexpr const rep&& number() const&& noexcept { return std::move(number_); }
