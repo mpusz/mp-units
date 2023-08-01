@@ -258,14 +258,14 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
   requires std::three_way_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
 [[nodiscard]] constexpr auto operator<=>(const QP1& lhs, const QP2& rhs)
 {
-  return lhs.relative() <=> rhs.relative();
+  return lhs.absolute() <=> rhs.absolute();
 }
 
 template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
   requires std::equality_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
 [[nodiscard]] constexpr bool operator==(const QP1& lhs, const QP2& rhs)
 {
-  return lhs.relative() == rhs.relative();
+  return lhs.absolute() == rhs.absolute();
 }
 
 }  // namespace mp_units
