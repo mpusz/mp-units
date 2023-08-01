@@ -139,6 +139,17 @@ public:
   quantity_point& operator=(const quantity_point&) = default;
   quantity_point& operator=(quantity_point&&) = default;
 
+  template<PointOriginFor<quantity_spec> NewPO>
+  [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
+  {
+    if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<NewPO>) {
+      auto q = absolute() - origin.parent_origin.absolute();
+      return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
+    } else {
+      return quantity_point<reference, NewPO{}, Rep>(absolute());
+    }
+  }
+
   // data access
 #ifdef __cpp_explicit_this_parameter
   template<typename Self>
