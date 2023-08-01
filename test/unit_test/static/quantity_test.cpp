@@ -658,31 +658,27 @@ static_assert(10 * isq::length[m] / (2 * isq::time[s]) - 5 * isq::speed[m / s] =
 static_assert(5 * isq::speed[m / s] - 10 * isq::length[m] / (2 * isq::time[s]) == 0 * isq::speed[m / s]);
 
 static_assert(
-  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) + 5 * isq::speed[m / s],
-             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) + 5 * isq::speed[m / s], quantity<isq::speed[m / s], int>>);
 static_assert(
-  is_of_type<5 * isq::speed[m / s] + 10 * isq::length[m] / (2 * isq::time[s]),
-             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+  is_of_type<5 * isq::speed[m / s] + 10 * isq::length[m] / (2 * isq::time[s]), quantity<isq::speed[m / s], int>>);
 static_assert(
-  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) - 5 * isq::speed[m / s],
-             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+  is_of_type<10 * isq::length[m] / (2 * isq::time[s]) - 5 * isq::speed[m / s], quantity<isq::speed[m / s], int>>);
 static_assert(
-  is_of_type<5 * isq::speed[m / s] - 10 * isq::length[m] / (2 * isq::time[s]),
-             quantity<reference<isq::speed, derived_unit<struct si::metre, per<struct si::second>>{}>{}, int>>);
+  is_of_type<5 * isq::speed[m / s] - 10 * isq::length[m] / (2 * isq::time[s]), quantity<isq::speed[m / s], int>>);
 
 static_assert(10 / (2 * isq::time[s]) + 5 * isq::frequency[Hz] == 10 * isq::frequency[Hz]);
 static_assert(5 * isq::frequency[Hz] + 10 / (2 * isq::time[s]) == 10 * isq::frequency[Hz]);
 static_assert(10 / (2 * isq::time[s]) - 5 * isq::frequency[Hz] == 0 * isq::frequency[Hz]);
 static_assert(5 * isq::frequency[Hz] - 10 / (2 * isq::time[s]) == 0 * isq::frequency[Hz]);
 
-static_assert(is_of_type<10 / (2 * isq::period_duration[s]) + 5 * isq::frequency[Hz],
-                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
-static_assert(is_of_type<5 * isq::frequency[Hz] + 10 / (2 * isq::period_duration[s]),
-                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
-static_assert(is_of_type<10 / (2 * isq::period_duration[s]) - 5 * isq::frequency[Hz],
-                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
-static_assert(is_of_type<5 * isq::frequency[Hz] - 10 / (2 * isq::period_duration[s]),
-                         quantity<reference<isq::frequency, si::hertz>{}, int>>);
+static_assert(
+  is_of_type<10 / (2 * isq::period_duration[s]) + 5 * isq::frequency[Hz], quantity<isq::frequency[Hz], int>>);
+static_assert(
+  is_of_type<5 * isq::frequency[Hz] + 10 / (2 * isq::period_duration[s]), quantity<isq::frequency[Hz], int>>);
+static_assert(
+  is_of_type<10 / (2 * isq::period_duration[s]) - 5 * isq::frequency[Hz], quantity<isq::frequency[Hz], int>>);
+static_assert(
+  is_of_type<5 * isq::frequency[Hz] - 10 / (2 * isq::period_duration[s]), quantity<isq::frequency[Hz], int>>);
 
 // Different named dimensions
 template<typename... Ts>
@@ -813,6 +809,7 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::spe
 template</*Reference*/ auto R1, /*Reference*/ auto R2>  // TODO Use `Reference` when Clang supports it.
 concept invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<activity[Bq], isq::frequency[Hz]>);
+
 
 ///////////////////////
 // ordering operators
