@@ -60,22 +60,44 @@ inline constexpr bool is_derived_from_specialization_of_absolute_point_origin =
 template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
 
+template<QuantityPoint auto QP>
+struct relative_point_origin;
+
+namespace detail {
+
+template<typename T>
+inline constexpr bool is_specialization_of_relative_point_origin = false;
+
+template<auto QP>
+inline constexpr bool is_specialization_of_relative_point_origin<relative_point_origin<QP>> = true;
+
+template<auto QP>
+void to_base_specialization_of_relative_point_origin(const volatile relative_point_origin<QP>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_relative_point_origin =
+  requires(T* t) { to_base_specialization_of_relative_point_origin(t); };
+
+}  // namespace detail
+
 /**
  * @brief A concept matching all quantity point origins in the library
  *
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 template<typename T>
-concept PointOrigin = QuantityPoint<T> || detail::is_derived_from_specialization_of_absolute_point_origin<T>;
+concept PointOrigin = detail::is_derived_from_specialization_of_absolute_point_origin<T> ||
+                      (detail::is_derived_from_specialization_of_relative_point_origin<T> &&
+                       !detail::is_specialization_of_relative_point_origin<T>);
 
 /**
  * @brief A concept matching all quantity point origins for a specified quantity type in the library
  *
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
-template<typename T, auto Q>
+template<typename T, auto QS>
 concept PointOriginFor =
-  PointOrigin<T> && QuantitySpec<std::remove_const_t<decltype(Q)>> && implicitly_convertible(Q, T::quantity_spec);
+  PointOrigin<T> && QuantitySpec<std::remove_const_t<decltype(QS)>> && implicitly_convertible(QS, T::quantity_spec);
 
 template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
          RepresentationOf<get_quantity_spec(R).character> Rep>
@@ -108,7 +130,8 @@ concept QuantityPointOf =
   QuantityPoint<QP> &&
   (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
    (PointOrigin<std::remove_const_t<decltype(V)>> &&
-    (std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>> ||
+    (std::same_as<std::remove_const_t<decltype(QP::point_origin)>, std::remove_const_t<decltype(V)>> ||
+     std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>> ||
      (detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(QP::absolute_point_origin)>> &&
       detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(V)>> &&
       implicitly_convertible(QP::absolute_point_origin.quantity_spec, V.quantity_spec) &&

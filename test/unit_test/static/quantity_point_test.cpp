@@ -39,8 +39,13 @@ using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chro
 inline constexpr struct mean_sea_level : absolute_point_origin<isq::height> {
 } mean_sea_level;
 
-inline constexpr quantity_point<isq::height[m], mean_sea_level> ground_level{42 * isq::height[m]};
-inline constexpr quantity_point<isq::height[m], mean_sea_level> everest_base_camp{5364 * m};
+inline constexpr struct ground_level :
+    relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{42 * isq::height[m]}> {
+} ground_level;
+
+inline constexpr struct everest_base_camp :
+    relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{5364 * m}> {
+} everest_base_camp;
 
 QUANTITY_SPEC(special_height, isq::height);
 QUANTITY_SPEC(activity, 1 / isq::time);

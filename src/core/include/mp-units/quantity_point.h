@@ -34,12 +34,18 @@ struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = Q;
 };
 
+template<QuantityPoint auto QP>
+struct relative_point_origin {
+  static constexpr QuantityPoint auto parent_origin = QP;
+  static constexpr QuantitySpec auto quantity_spec = QP.quantity_spec;
+};
+
 namespace detail {
 
 [[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PointOrigin auto po)
 {
-  if constexpr (requires { po.absolute_point_origin; })
-    return po.absolute_point_origin;
+  if constexpr (requires { po.parent_origin.absolute_point_origin; })
+    return po.parent_origin.absolute_point_origin;
   else
     return po;
 }
@@ -145,7 +151,7 @@ public:
                     std::remove_const_t<decltype(point_origin)>>)
       return relative();
     else
-      return point_origin.absolute() + relative();
+      return point_origin.parent_origin.absolute() + relative();
   }
 
   template<Unit U>
