@@ -32,12 +32,6 @@ namespace mp_units {
 template<QuantitySpec auto Q>
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = Q;
-  absolute_point_origin() = default;
-  template<QuantitySpec auto Q2>
-    requires(implicitly_convertible(Q2, Q))
-  consteval absolute_point_origin(absolute_point_origin<Q2>)
-  {
-  }
 };
 
 namespace detail {
