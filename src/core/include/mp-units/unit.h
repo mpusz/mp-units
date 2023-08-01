@@ -641,9 +641,9 @@ enum class text_encoding {
 };
 
 enum class unit_symbol_solidus {
-  one_denominator,  // m/s;   kg m-1 s-1
+  one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
-  never,            // m s-1; kg m-1 s-1
+  never,            // m s⁻¹; kg m⁻¹ s⁻¹
   default_denominator = one_denominator
 };
 
