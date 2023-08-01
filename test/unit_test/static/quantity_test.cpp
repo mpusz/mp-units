@@ -462,9 +462,25 @@ static_assert(is_of_type<1 * m + 1 * m, quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m + 1 * km, quantity<si::metre, int>>);
 static_assert(is_of_type<1 * km + 1 * m, quantity<si::metre, int>>);
 
+static_assert(is_of_type<1 * m + isq::length(1 * m), quantity<isq::length[m], int>>);
+static_assert(is_of_type<1 * m + isq::length(1 * km), quantity<isq::length[m], int>>);
+static_assert(is_of_type<1 * km + isq::length(1 * m), quantity<isq::length[m], int>>);
+
+static_assert(is_of_type<isq::length(1 * m) + 1 * m, quantity<isq::length[m], int>>);
+static_assert(is_of_type<isq::length(1 * m) + 1 * km, quantity<isq::length[m], int>>);
+static_assert(is_of_type<isq::length(1 * km) + 1 * m, quantity<isq::length[m], int>>);
+
 static_assert(is_of_type<1 * m - 1 * m, quantity<si::metre, int>>);
 static_assert(is_of_type<1 * km - 1 * m, quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m - 1 * km, quantity<si::metre, int>>);
+
+static_assert(is_of_type<1 * m - isq::length(1 * m), quantity<isq::length[m], int>>);
+static_assert(is_of_type<1 * m - isq::length(1 * km), quantity<isq::length[m], int>>);
+static_assert(is_of_type<1 * km - isq::length(1 * m), quantity<isq::length[m], int>>);
+
+static_assert(is_of_type<isq::length(1 * m) - 1 * m, quantity<isq::length[m], int>>);
+static_assert(is_of_type<isq::length(1 * m) - 1 * km, quantity<isq::length[m], int>>);
+static_assert(is_of_type<isq::length(1 * km) - 1 * m, quantity<isq::length[m], int>>);
 
 static_assert(is_of_type<1 * N * (1 * m), quantity<derived_unit<struct si::newton, struct si::metre>{}, int>>);
 
