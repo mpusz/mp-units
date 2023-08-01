@@ -43,6 +43,10 @@ inline constexpr struct ground_level :
     relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{42 * isq::height[m]}> {
 } ground_level;
 
+inline constexpr struct tower_peak :
+    relative_point_origin<quantity_point<isq::height[m], ground_level>{42 * isq::height[m]}> {
+} tower_peak;
+
 inline constexpr struct everest_base_camp :
     relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{5364 * m}> {
 } everest_base_camp;
@@ -162,9 +166,15 @@ static_assert(quantity_point<isq::height[m], ground_level>::reference == isq::he
 static_assert(quantity_point<isq::height[m], ground_level>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m], ground_level>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m], ground_level>::unit == si::metre);
-static_assert(
-  is_of_type<quantity_point<isq::height[m], ground_level>::point_origin, std::remove_const_t<decltype(ground_level)>>);
+static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::point_origin, struct ground_level>);
 static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::absolute_point_origin, struct mean_sea_level>);
+
+static_assert(quantity_point<isq::height[m], tower_peak>::reference == isq::height[m]);
+static_assert(quantity_point<isq::height[m], tower_peak>::quantity_spec == isq::height);
+static_assert(quantity_point<isq::height[m], tower_peak>::dimension == isq::dim_length);
+static_assert(quantity_point<isq::height[m], tower_peak>::unit == si::metre);
+static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::point_origin, struct tower_peak>);
+static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::absolute_point_origin, struct mean_sea_level>);
 
 
 //////////////////
@@ -383,11 +393,31 @@ static_assert(quantity_point(dimensionless(1 * one)).relative() == 1 * one);
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).relative() == 42 * m);
 static_assert(quantity_point<isq::height[m], ground_level>(42 * m).relative() == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).relative() == 42 * m);
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], ground_level>(42 * m))
                 .relative() == 84 * m);
+static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
+                .relative() == 126 * m);
+
 static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], mean_sea_level>(84 * m))
                 .relative() == 42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
+                .relative() == 84 * m);
+
+static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], mean_sea_level>(42 * m))
+                .relative() == -42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], ground_level>(84 * m))
+                .relative() == 42 * m);
+
+static_assert(quantity_point<isq::height[m], ground_level>(42 * m).point_from(mean_sea_level).relative() == 84 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(mean_sea_level).relative() == 126 * m);
+
+static_assert(quantity_point<isq::height[m], mean_sea_level>(84 * m).point_from(ground_level).relative() == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(ground_level).relative() == 84 * m);
+
+static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(tower_peak).relative() == -42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(tower_peak).relative() == 42 * m);
 
 
 ///////////////////////////////////
@@ -405,8 +435,27 @@ static_assert(quantity_point<isq::height[m], ground_level>(42 * m).absolute() ==
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], ground_level>(42 * m))
                 .absolute() == 84 * m);
+static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
+                .absolute() == 126 * m);
+
 static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], mean_sea_level>(84 * m))
                 .absolute() == 84 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
+                .absolute() == 126 * m);
+
+static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], mean_sea_level>(42 * m))
+                .absolute() == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], ground_level>(84 * m))
+                .absolute() == 126 * m);
+
+static_assert(quantity_point<isq::height[m], ground_level>(42 * m).point_from(mean_sea_level).absolute() == 84 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(mean_sea_level).absolute() == 126 * m);
+
+static_assert(quantity_point<isq::height[m], mean_sea_level>(84 * m).point_from(ground_level).absolute() == 84 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(ground_level).absolute() == 126 * m);
+
+static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(tower_peak).absolute() == 42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(tower_peak).absolute() == 126 * m);
 
 
 ///////////////////////////////////
