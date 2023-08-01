@@ -197,16 +197,8 @@ public:
 };
 
 // CTAD
-template<Representation Rep>
-explicit quantity_point(Rep) -> quantity_point<dimensionless[one], absolute_point_origin<dimensionless>{}, Rep>;
-
 template<Quantity Q>
 explicit quantity_point(Q) -> quantity_point<Q::reference, absolute_point_origin<Q::quantity_spec>{}, typename Q::rep>;
-
-template<QuantityLike Q>
-explicit quantity_point(Q)
-  -> quantity_point<quantity_like_traits<Q>::reference, absolute_point_origin<quantity_like_traits<Q>::quantity_spec>{},
-                    typename quantity_like_traits<Q>::rep>;
 
 template<QuantityPointLike QP>
 explicit quantity_point(QP)
