@@ -37,7 +37,7 @@ QUANTITY_SPEC(pressure_coefficient, pressure / thermodynamic_temperature);
 QUANTITY_SPEC(isothermal_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
 QUANTITY_SPEC(isentropic_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
 // energy definition moved to mechanics
-QUANTITY_SPEC(heat, mass* pow<2>(length) / pow<2>(time));  // TODO what is a correct equation here?
+QUANTITY_SPEC(heat, energy);
 inline constexpr auto amount_of_heat = heat;
 QUANTITY_SPEC(latent_heat, heat);  // TODO what is a correct equation here?
 QUANTITY_SPEC(heat_flow_rate, heat / time);
