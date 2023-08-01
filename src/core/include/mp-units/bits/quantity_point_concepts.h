@@ -37,6 +37,12 @@ namespace detail {
 template<typename T>
 inline constexpr bool is_quantity_point = false;
 
+template<typename T>
+inline constexpr bool is_specialization_of_absolute_point_origin = false;
+
+template<auto Q>
+inline constexpr bool is_specialization_of_absolute_point_origin<absolute_point_origin<Q>> = true;
+
 template<auto Q>
 void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<Q>*);
 
@@ -102,7 +108,11 @@ concept QuantityPointOf =
   QuantityPoint<QP> &&
   (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
    (PointOrigin<std::remove_const_t<decltype(V)>> &&
-    std::convertible_to<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>>));
+    (std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>> ||
+     (detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(QP::absolute_point_origin)>> &&
+      detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(V)>> &&
+      implicitly_convertible(QP::absolute_point_origin.quantity_spec, V.quantity_spec) &&
+      !detail::DerivedFromQuantityKindSpecOf<QP::absolute_point_origin.quantity_spec, V.quantity_spec>))));
 
 /**
  * @brief A concept matching all external quantity point like types
