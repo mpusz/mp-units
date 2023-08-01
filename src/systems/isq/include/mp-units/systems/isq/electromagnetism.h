@@ -108,9 +108,8 @@ QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<
 QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor));
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(resistivity, 1 / conductivity);
-// QUANTITY_SPEC(power, voltage* electric_current);  // TODO conflicts with mechanical power
-// inline constexpr auto instantaneous_power = power;
-QUANTITY_SPEC(instantaneous_power, voltage* electric_current);
+QUANTITY_SPEC(electromagnetism_power, power, voltage* electric_current);
+inline constexpr auto instantaneous_power = electromagnetism_power;
 QUANTITY_SPEC(resistance, voltage / electric_current);
 QUANTITY_SPEC(conductance, 1 / resistance);
 QUANTITY_SPEC(phase_difference, phase_angle);

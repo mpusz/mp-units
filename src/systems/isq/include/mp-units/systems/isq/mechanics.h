@@ -86,14 +86,15 @@ inline constexpr auto drag_factor = drag_coefficient;
 QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_character::scalar);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
-QUANTITY_SPEC(power, force* velocity, quantity_character::scalar);
-QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time));             // ISO 80000 defines this in thermodynamics
-QUANTITY_SPEC(mechanical_energy, energy);                               // differs from ISO 80000
-QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
+QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time));                   // not in ISO 80000
+QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_character::scalar);
+QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time));  // differs from ISO 80000 (defined in thermodynamics)
+QUANTITY_SPEC(mechanical_energy, energy);                    // differs from ISO 80000
+QUANTITY_SPEC(potential_energy, mechanical_energy);          // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
 QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
 inline constexpr auto work = mechanical_work;
-QUANTITY_SPEC(efficiency_mechanics, power / power);
+QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);
 QUANTITY_SPEC(mass_change_rate, mass / time);

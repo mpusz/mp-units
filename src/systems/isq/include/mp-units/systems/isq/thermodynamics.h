@@ -80,7 +80,7 @@ inline constexpr auto specific_Gibbs_function = specific_Gibbs_energy;
 QUANTITY_SPEC(Massieu_function, Helmholtz_energy / thermodynamic_temperature);  // TODO how to handle "negative" part
 QUANTITY_SPEC(Planck_function, Gibbs_energy / thermodynamic_temperature);       // TODO how to handle "negative" part
 QUANTITY_SPEC(Joule_Thomson_coefficient, thermodynamic_temperature / pressure);
-QUANTITY_SPEC(efficiency_thermodynamics, dimensionless, work / heat);
+QUANTITY_SPEC(thermodynamic_efficiency, dimensionless, work / heat);
 QUANTITY_SPEC(maximum_efficiency, thermodynamic_temperature / thermodynamic_temperature);
 QUANTITY_SPEC(specific_gas_constant, entropy / mass);
 QUANTITY_SPEC(mass_concentration_of_water, mass / volume);
