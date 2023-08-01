@@ -214,6 +214,8 @@ explicit quantity_point(QP)
                     typename quantity_point_like_traits<QP>::rep>;
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
+// TODO simplify when gcc catches up
+  requires ReferenceOf<std::remove_const_t<decltype(R2)>, get_quantity_spec(R1)>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& lhs,
                                                      const quantity<R2, Rep2>& rhs)
   requires requires { lhs.relative() + rhs; }
@@ -224,6 +226,8 @@ template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 }
 
 template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
+// TODO simplify when gcc catches up
+  requires ReferenceOf<std::remove_const_t<decltype(R1)>, get_quantity_spec(R2)>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& lhs,
                                                      const quantity_point<R2, PO2, Rep2>& rhs)
   requires requires { rhs + lhs; }
@@ -232,6 +236,8 @@ template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
 }
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
+// TODO simplify when gcc catches up
+  requires ReferenceOf<std::remove_const_t<decltype(R2)>, get_quantity_spec(R1)>
 [[nodiscard]] constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& lhs,
                                                      const quantity<R2, Rep2>& rhs)
   requires requires { lhs.relative() - rhs; }
