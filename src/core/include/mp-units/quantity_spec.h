@@ -102,13 +102,13 @@ template<typename Self>
 struct quantity_spec_interface {
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, UnitOf<Self{}> U>
-  [[nodiscard]] consteval Reference auto operator[](this Self self, U u) const
+  [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
   {
     return reference<self, u>{};
   }
 
   template<typename Self, typename Q>
-  [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q) const
+  [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
     requires Quantity<std::remove_cvref_t<Q>> &&
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, self))
   {
