@@ -142,7 +142,9 @@ public:
   template<PointOriginFor<quantity_spec> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
   {
-    if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<NewPO>) {
+    if constexpr (std::is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>) {
+      return *this;
+    } else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<NewPO>) {
       auto q = absolute() - origin.quantity_point.absolute();
       return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
     } else {
