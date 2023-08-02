@@ -36,7 +36,7 @@ struct absolute_point_origin {
 
 template<QuantityPoint auto QP>
 struct relative_point_origin {
-  static constexpr QuantityPoint auto parent_origin = QP;
+  static constexpr QuantityPoint auto quantity_point = QP;
   static constexpr QuantitySpec auto quantity_spec = QP.quantity_spec;
 };
 
@@ -44,8 +44,8 @@ namespace detail {
 
 [[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PointOrigin auto po)
 {
-  if constexpr (requires { po.parent_origin.absolute_point_origin; })
-    return po.parent_origin.absolute_point_origin;
+  if constexpr (requires { po.quantity_point.absolute_point_origin; })
+    return po.quantity_point.absolute_point_origin;
   else
     return po;
 }
@@ -143,7 +143,7 @@ public:
   [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
   {
     if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<NewPO>) {
-      auto q = absolute() - origin.parent_origin.absolute();
+      auto q = absolute() - origin.quantity_point.absolute();
       return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
     } else {
       return quantity_point<reference, NewPO{}, Rep>(absolute());
@@ -170,7 +170,7 @@ public:
                     std::remove_const_t<decltype(point_origin)>>)
       return relative();
     else
-      return point_origin.parent_origin.absolute() + relative();
+      return point_origin.quantity_point.absolute() + relative();
   }
 
   template<Unit U>
