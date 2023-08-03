@@ -3,7 +3,7 @@
 ## New style of definitions
 
 The **mp-units** library decided to use a rather unusual pattern to define entities.
-Here is how we define `metre` and `second` [SI](../../../appendix/glossary/#si) base units:
+Here is how we define `metre` and `second` [SI](../../appendix/glossary.md#si) base units:
 
 ```cpp
 inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
@@ -42,7 +42,7 @@ to improve the user experience while debugging the program or analyzing the comp
 Many physical units libraries (in C++ or any other programming language) assign strong types
 to library entities (i.e. derived units). While `metre_per_second` as a type may not look too
 scary, consider, for example, units of angular momentum. If we followed this path, its
-[coherent unit](../../../appendix/glossary/#coherent-derived-unit) would look like
+[coherent unit](../../appendix/glossary.md#coherent-derived-unit) would look like
 `kilogram_metre_sq_per_second`. Now, consider how many scaled versions of this unit would you
 predefine in the library to ensure that all users are happy with your choice?
 How expensive would it be from the implementation point of view?
@@ -90,7 +90,7 @@ what we have to deal with when we want to write some equations for `std::ratio`.
 
 For example, below are a few definitions of the SI derived units showing the power of C++20
 extensions to Non-Type Template Parameters, which allows us to directly pass a result of
-the value-based [unit equation](../../../appendix/glossary/#unit-equation) to a class template
+the value-based [unit equation](../../appendix/glossary.md#unit-equation) to a class template
 definition:
 
 ```cpp
@@ -110,12 +110,12 @@ The **mp-units** library greatly improves the user experience by extensively usi
 expression templates. Such expressions are used consistently throughout the entire library
 to describe the results of:
 
-- [dimension equation](../../../appendix/glossary/#dimension-equation) - the result is put into
+- [dimension equation](../../appendix/glossary.md#dimension-equation) - the result is put into
   the `derived_dimension<>` class template
-- [quantity equation](../../../appendix/glossary/#quantity-equation) - the result is put into
+- [quantity equation](../../appendix/glossary.md#quantity-equation) - the result is put into
   the `derived_quantity_spec<>` class template
-- [unit equation](../../../appendix/glossary/#unit-equation) - the result is put into
-  the `derived_unit<>` class template
+- [unit equation](../../appendix/glossary.md#unit-equation) - the result is put into the
+  `derived_unit<>` class template
 
 For example, if we take the above-defined base units and put the results of their division into
 the quantity class template like this:

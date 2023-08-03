@@ -71,7 +71,8 @@ This repository contains three independent CMake-based projects:
     - _./src/CMakeLists.txt_ contains only a pure library definition and should be used by the customers
     that prefer to use CMake's `add_subdirectory()` to handle the dependencies.
 
-    To learn more about the rationale, please check our [FAQ](../faq/#why-dont-you-have-cmake-options-to-disable-building-of-tests-and-examples).
+    To learn more about the rationale, please check our
+    [FAQ](faq.md#why-dont-you-have-cmake-options-to-disable-building-of-tests-and-examples).
 
 
 ## Obtaining Dependencies

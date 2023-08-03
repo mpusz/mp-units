@@ -19,7 +19,7 @@ auto q = 42 * si::metre;
 !!! note
 
     The above spelling of `metre` is not a typo. For motivation, please check our
-    [FAQ](../faq/#why-do-we-spell-metre-instead-of-meter).
+    [FAQ](faq.md#why-do-we-spell-metre-instead-of-meter).
 
 The above creates an instance of `quantity<si::metre(), int>`. The same can be obtained using
 an optional unit symbol:
@@ -63,7 +63,7 @@ auto speed = 60 * (km / h);
 !!! note
 
     Please note that `60 * km / h` will not compile. To read more about the rationale for such
-    a design please check our [FAQ](../faq/#why-dont-we-use-udls-to-create-a-quantity).
+    a design please check our [FAQ](faq.md#why-dont-we-use-udls-to-create-a-quantity).
 
 In case such a unit is used a lot in the project, a user can easily provide a nicely named
 wrapper for it with:
@@ -85,4 +85,4 @@ auto speed = 60 * kmph;
 !!! note
 
     In case you wonder why this library does not use UDLs to create quantities, please check
-    our [FAQ](../faq/#why-dont-we-use-udls-to-create-quantities).
+    our [FAQ](faq.md#why-dont-we-use-udls-to-create-quantities).

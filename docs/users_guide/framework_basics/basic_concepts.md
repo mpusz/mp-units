@@ -26,23 +26,23 @@ flowchart TD
 
 ## `Dimension`
 
-`Dimension` concept matches a [dimension](../../../appendix/glossary/#dimension) of either a base
-or derived [quantity](../../../appendix/glossary/#quantity):
+`Dimension` concept matches a [dimension](../../appendix/glossary.md#dimension) of either a base
+or derived [quantity](../../appendix/glossary.md#quantity):
 
-- [Base dimensions](../../../appendix/glossary/#base-dimension) are explicitly defined by a user
+- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by a user
   by inheriting from the instantiation of a `base_dimension` class template. It should be instantiated with
   a unique symbol identifier describing this dimension in a specific
-  [system of quantities](../../../appendix/glossary/#system-of-quantities).
-- [Derived dimensions](../../../appendix/glossary/#derived-dimension) are implicitly created
-  by the library's framework based on the [quantity equation](../../../appendix/glossary/#quantity-equation)
-  provided in the [quantity specification](../../../appendix/glossary/#quantity_spec).
+  [system of quantities](../../appendix/glossary.md#system-of-quantities).
+- [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
+  by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
+  provided in the [quantity specification](../../appendix/glossary.md#quantity_spec).
 
 ??? abstract "Examples"
 
     `isq::dim_length`, `isq::dim_mass`, `isq::dim_time`, `isq::dim_electric_current`,
     `isq::dim_thermodynamic_temperature`, `isq::dim_amount_of_substance`, and
     `isq::dim_luminous_intensity` are the dimensions of base quantities in the
-    [ISQ](../../../appendix/glossary/#isq).
+    [ISQ](../../appendix/glossary.md#isq).
 
     IEC 80000 provides `iec80000::dim_traffic_intensity` base dimension to extend ISQ
     with information technology quantities.
@@ -59,36 +59,36 @@ or derived [quantity](../../../appendix/glossary/#quantity):
 
 ## `QuantitySpec`
 
-`QuantitySpec` concept matches all the [quantity specifications](../../../appendix/glossary/#quantity_spec)
+`QuantitySpec` concept matches all the [quantity specifications](../../appendix/glossary.md#quantity_spec)
 including:
 
-- [Base quantities](../../../appendix/glossary/#base-quantity) defined by a user by inheriting from
-  the `quantity_spec` class template instantiated with a [base dimension](../../../appendix/glossary/#base-dimension)
+- [Base quantities](../../appendix/glossary.md#base-quantity) defined by a user by inheriting from
+  the `quantity_spec` class template instantiated with a [base dimension](../../appendix/glossary.md#base-dimension)
   argument.
-- [Derived named quantities](../../../appendix/glossary/#derived-quantity) defined by a user by
+- [Derived named quantities](../../appendix/glossary.md#derived-quantity) defined by a user by
   inheriting from the `quantity_spec` class template instantiated with a result of a
-  [quantity equation](../../../appendix/glossary/#quantity-equation) passed as an argument.
-- Other named quantities forming a [hierarchy of quantities](../../../appendix/glossary/#quantity-hierarchy)
-  of the same [kind](../../../appendix/glossary/#kind) defined by a user by inheriting from the
+  [quantity equation](../../appendix/glossary.md#quantity-equation) passed as an argument.
+- Other named quantities forming a [hierarchy of quantities](../../appendix/glossary.md#quantity-hierarchy)
+  of the same [kind](../../appendix/glossary.md#kind) defined by a user by inheriting from the
   `quantity_spec` class template instantiated with another "parent" quantity specification passed as an
   argument.
-- [Quantity kinds](../../../appendix/glossary/#kind) describing a family of mutually comparable quantities.
-- Intermediate [derived quantity](../../../appendix/glossary/#derived-quantity) specifications being
-  a result of a [quantity equations](../../../appendix/glossary/#quantity-equation) on other specifications.
+- [Quantity kinds](../../appendix/glossary.md#kind) describing a family of mutually comparable quantities.
+- Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications being
+  a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on other specifications.
 
 ??? abstract "Examples"
 
     `isq::length`, `isq::mass`, `isq::time`, `isq::electric_current`, `isq::thermodynamic_temperature`,
     `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications of base quantities
-    in the [ISQ](../../../appendix/glossary/#isq).
+    in the [ISQ](../../appendix/glossary.md#isq).
 
     `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few of many
-    quantities of a kind length specified in the [ISQ](../../../appendix/glossary/#isq).
+    quantities of a kind length specified in the [ISQ](../../appendix/glossary.md#isq).
 
     `kind_of<isq::length>` behaves as any of the quantities of a kind length.
 
     `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many derived quantities provided
-    in the [ISQ](../../../appendix/glossary/#isq).
+    in the [ISQ](../../appendix/glossary.md#isq).
 
     `derived_quantity_spec<isq::length, per<isq::time>>` is a resulting quantity specification of
     `isq::length / isq::time`.
@@ -122,20 +122,20 @@ including:
 
 ## `Unit`
 
-`Unit` concept matches all the [units](../../../appendix/glossary/#unit) in the library including:
+`Unit` concept matches all the [units](../../appendix/glossary.md#unit) in the library including:
 
-- [Base units](../../../appendix/glossary/#base-unit) defined by a user by inheriting from the `named_unit`
+- [Base units](../../appendix/glossary.md#base-unit) defined by a user by inheriting from the `named_unit`
   class template instantiated with a unique symbol identifier describing this unit in a specific
-  [system of units](../../../appendix/glossary/#system-of-units).
+  [system of units](../../appendix/glossary.md#system-of-units).
 - Named scaled units defined by a user by inheriting from the `named_unit` class template instantiated
   with a unique symbol identifier and a product of multiplying another unit with some magnitude.
 - Prefixed units defined by a user by inheriting from the `prefixed_unit` class template instantiated
   with a magnitude and a unit to be prefixed.
-- [Derived named units](../../../appendix/glossary/#derived-unit) defined by a user by inheriting from the
+- [Derived named units](../../appendix/glossary.md#derived-unit) defined by a user by inheriting from the
   `named_unit` class template instantiated with a unique symbol identifier and a result of
-  [unit equation](../../../appendix/glossary/#unit-equation) passed as an argument.
-- [Derived unnamed units](../../../appendix/glossary/#derived-unit) being a result of a
-  [unit equations](../../../appendix/glossary/#unit-equation) on other units.
+  [unit equation](../../appendix/glossary.md#unit-equation) passed as an argument.
+- [Derived unnamed units](../../appendix/glossary.md#derived-unit) being a result of a
+  [unit equations](../../appendix/glossary.md#unit-equation) on other units.
 
 !!! note
 
@@ -144,12 +144,12 @@ including:
 ??? abstract "Examples"
 
     `si::second`, `si::metre`, `si::kilogram`, `si::ampere`, `si::kelvin`, `si::mole`, and `si::candela`
-    are the base units of [SI](../../../appendix/glossary/#si).
+    are the base units of [SI](../../appendix/glossary.md#si).
 
     `si::kilo<si::metre>` is a prefixed unit on length.
 
     `si::radian`, `si::newton`, and `si::watt` are examples of named derived quantities within
-    [SI](../../../appendix/glossary/#si).
+    [SI](../../appendix/glossary.md#si).
 
     `derived_unit<si::metre, per<si::second>>` is a resulting derived unit of `si::metre / si::second`.
 
@@ -170,17 +170,17 @@ including:
 
 ### `AssociatedUnit`
 
-`AssociatedUnit` concept describes a [unit with an associated quantity](../../../appendix/glossary/#associated-unit)
+`AssociatedUnit` concept describes a [unit with an associated quantity](../../appendix/glossary.md#associated-unit)
 and is satisfied by:
 
 - All units derived from a `named_unit` class template instantiated with a unique symbol identifier
   and a [`QuantitySpec`](#quantityspec).
-- All units being a result of a [unit equations](../../../appendix/glossary/#unit-equation) on other
+- All units being a result of a [unit equations](../../appendix/glossary.md#unit-equation) on other
   associated units.
 
 ??? abstract "Examples"
 
-    All units in the [SI](../../../appendix/glossary/#si) have associated quantities.
+    All units in the [SI](../../appendix/glossary.md#si) have associated quantities.
 
     Natural units typically do not have an associated quantity.
 
@@ -193,9 +193,9 @@ units can be passed as an argument to a `prefixed_unit` class template.
 
 ??? abstract "Examples"
 
-    All units in the [SI](../../../appendix/glossary/#si) can be prefixed with SI-defined prefixes.
+    All units in the [SI](../../appendix/glossary.md#si) can be prefixed with SI-defined prefixes.
 
-    Some [off-system units](../../../appendix/glossary/#off-system-unit) like `non_si::day`
+    Some [off-system units](../../appendix/glossary.md#off-system-unit) like `non_si::day`
     can't be prefixed.
 
 ### `UnitOf<QS>` { #unitof }
@@ -206,7 +206,7 @@ concept with an associated quantity type implicitly convertible to `QS`.
 
 ## `Reference`
 
-`Reference` concept is satisfied by all [quantity reference types](../../../appendix/glossary/#reference)
+`Reference` concept is satisfied by all [quantity reference types](../../appendix/glossary.md#reference)
 types. Such types provide all the meta-information required to create a [`Quantity`](#quantity).
 A `Reference` can be either:
 
@@ -216,7 +216,7 @@ A `Reference` can be either:
 
 ??? abstract "Examples"
 
-    `si::metre` is defined in the [SI](../../../appendix/glossary/#si) as a unit of `isq::length`
+    `si::metre` is defined in the [SI](../../appendix/glossary.md#si) as a unit of `isq::length`
     and thus can be used as a reference to instantiate a quantity of length.
 
     The expression `isq::height[m]` results with `reference<isq::height, si::metre>` which can be used to
@@ -237,13 +237,13 @@ A `Reference` can be either:
 ## `Representation`
 
 `Representation` concept constraints a type of a number that stores the
-[value of a quantity](../../../appendix/glossary/#quantity-value).
+[value of a quantity](../../appendix/glossary.md#quantity-value).
 
 
 ### `RepresentationOf<Ch>` { #representationof }
 
 `RepresentationOf<Ch>` concept is satisfied by all `Representation` types that are of a specified
-[quantity character](../../../appendix/glossary/#character). A user can declare a custom representation
+[quantity character](../../appendix/glossary.md#character). A user can declare a custom representation
 type to be of a specific character by providing the specialization with `true` for one or more of
 the following variable templates:
 
@@ -254,7 +254,7 @@ the following variable templates:
 
 ## `Quantity`
 
-`Quantity` concept matches every [quantity](../../../appendix/glossary/#quantity) in the library and is
+`Quantity` concept matches every [quantity](../../appendix/glossary.md#quantity) in the library and is
 satisfied by all types being or deriving from and instantiation of a `quantity` class template.
 
 ??? abstract "Examples"
@@ -272,7 +272,7 @@ is `true`.
 
 ## `PointOrigin`
 
-`PointOrigin` concept matches all [quantity point origins](../../../appendix/glossary/#point-origin) in
+`PointOrigin` concept matches all [quantity point origins](../../appendix/glossary.md#point-origin) in
 the library. It is satisfied by either:
 
 - Compile-time known [`QuantityPoint`](#quantitypoint)
@@ -314,7 +314,7 @@ class template.
 
 - a [`ReferenceOf<V>`](#referenceof) is `true`.
 - the type of `V` satisfies [`PointOrigin`](#pointorigin) concept and the quantity point's
-  [absolute point origin](../../../appendix/glossary/#absolute-point-origin) is convertible to `V`.
+  [absolute point origin](../../appendix/glossary.md#absolute-point-origin) is convertible to `V`.
 
 ## `QuantityLike`
 

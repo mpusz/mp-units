@@ -10,7 +10,7 @@ The affine space has two types of entities:
 
     The _vector_ described here is specific to the affine space theory and is not the same thing
     as the quantity of a vector character that we discussed in the
-    ["Scalars, vectors, and tensors" chapter](character_of_a_quantity/#scalars-vectors-and-tensors)
+    ["Scalars, vectors, and tensors" chapter](character_of_a_quantity.md#scalars-vectors-and-tensors)
     (although, in some cases, those terms may overlap).
 
 
@@ -63,7 +63,7 @@ class quantity_point;
 ```
 
 As we can see above, the `quantity_point` class template exposes one additional parameter compared
-to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](../basic_concepts/#pointoriginfor)
+to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](basic_concepts.md#pointoriginfor)
 and specifies the origin of our scale.
 
 

@@ -2,7 +2,7 @@
 
 ## Why do we spell `metre` instead of `meter`?
 
-This is how the BIPM defines it in the [SI Brochure](../../appendix/references/#SIBrochure)
+This is how the BIPM defines it in the [SI Brochure](../appendix/references.md#SIBrochure)
 (British English spelling by default).
 
 
@@ -159,13 +159,13 @@ all the properties of scaled units and is consistent with the rest of the librar
 !!! info
 
     More information on the current design can be found in
-    [the Dimensionless Quantities chapter](../../users_guide/framework_basics/dimensionless_quantities).
+    [the Dimensionless Quantities chapter](../users_guide/framework_basics/dimensionless_quantities.md).
 
 
 ## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
 
-Both C++ and [ISO 80000](../../appendix/references/#ISO80000) are standardized by the ISO.
-[ISO 80000](../../appendix/references/#ISO80000) and the [SI](../../appendix/references/#SIBrochure)
+Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
+[ISO 80000](../appendix/references.md#ISO80000) and the [SI](../appendix/references.md#SIBrochure)
 standards specify Unicode symbols as the official unit names for some quantities
 (i.e. `Ω` symbol for the resistance quantity).
 As **mp-units** library will be proposed for standardization as a part of the C++ Standard Library

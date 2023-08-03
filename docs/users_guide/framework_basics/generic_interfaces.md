@@ -61,11 +61,11 @@ some issues start to be clearly visible:
    means that the result will not be exactly equal to a direct division of the function's arguments.
 4. We have to use a floating-point representation type (the `quantity` class template by default uses
    `double` as a representation type) which is considered
-   [value preserving](../value_conversions/#value-preserving-conversions).
+   [value preserving](value_conversions.md#value-preserving-conversions).
    Trying to use an integral type in this scenario will work only for `s1`, while `s2` and `s3`
    will fail to compile. Failing to compile is a good thing here as the library tries to prevent
    the user from doing a clearly wrong thing. To make the code compile, the user needs to use
-   a dedicated [`value_cast`](../value_conversions/#value-truncating-conversions) like this:
+   a dedicated [`value_cast`](value_conversions.md#value-truncating-conversions) like this:
 
     ```cpp
     quantity<isq::speed[mi / h]> s2 = avg_speed(value_cast<km>(140 * mi), 2 * h);
@@ -107,7 +107,7 @@ accepts everything:
 
 ## Constraining function template arguments with concepts
 
-Much better generic code can be implemented using [basic concepts](../basic_concepts)
+Much better generic code can be implemented using [basic concepts](basic_concepts.md)
 provided with the library:
 
 ```cpp
@@ -119,7 +119,7 @@ auto avg_speed(QuantityOf<isq::length> auto distance,
 ```
 
 This explicitly states that the arguments passed by the user must not only satisfy
-a [`Quantity`](../basic_concepts/#quantity) concept but also their quantity specification must
+a [`Quantity`](basic_concepts.md#quantity) concept but also their quantity specification must
 be implicitly convertible to `isq::length` and `isq::time` accordingly. This no longer leaves
 room for error while still allowing the compiler to generate the most efficient code.
 
@@ -150,7 +150,7 @@ Doing so has two important benefits:
    the thing being returned there.
 2. Such a concept constrains the type returned from the function. This means that it works as
    a unit test to verify if our function actually performs what it is supposed to do. If there is
-   an error in [quantity equations](../../appendix/glossary/#quantity-equation), we will learn
+   an error in [quantity equations](../../appendix/glossary.md#quantity-equation), we will learn
    about it right away.
 
 
@@ -192,4 +192,4 @@ what we expected here.
 
     The `QuantityOf` and `QuantityPointOf` concepts are probably the most useful, but there
     are a few more to play with. A list of all the concepts can be found in
-    [the "Basic Concepts" chapter](../basic_concepts).
+    [the "Basic Concepts" chapter](basic_concepts.md).

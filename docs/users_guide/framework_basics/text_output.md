@@ -10,7 +10,7 @@ any quantity in the most user-friendly way.
     For example, the text output of `42 m` may mean many things and can also be confused with
     an output of a regular quantity. On the other hand, printing `42 m AMSL` for altitudes above
     mean sea level is a much better solution, but the library does not have enough information
-    to print it that way.  
+    to print it that way.
 
 
 ## Output Streams
@@ -33,14 +33,14 @@ std::cout << v1 << '\n';  // 110 km/h
 std::cout << v2 << '\n';  // 70 mi/h
 ```
 
-The text output will always print the [value of a quantity](../../../appendix/glossary/#quantity-value)
-typically followed by a space and then the symbol of a [unit](../../../appendix/glossary/#unit)
+The text output will always print the [value of a quantity](../../appendix/glossary.md#quantity-value)
+typically followed by a space and then the symbol of a [unit](../../appendix/glossary.md#unit)
 associated with this quantity.
 
 !!! note
 
     Remember that when we deal with a quantity of an "unknown" `auto` type, it is a good practice
-    to always [convert the unit to the expected one](../value_conversions/#value-conversions)
+    to always [convert the unit to the expected one](value_conversions.md#value-conversions)
     before passing it to the text output:
 
     ```cpp
@@ -100,7 +100,7 @@ In the above grammar:
 - tokens `Q` and `q` of `units-type` are described in the [time.format](https://wg21.link/time.format)
   chapter of the C++ standard specification,
 - `units-text-encoding` tokens specify the unit text encoding:
-    - `U` (default) uses the **Unicode** symbols defined by the [SI](../../../appendix/glossary/#si)
+    - `U` (default) uses the **Unicode** symbols defined by the [SI](../../appendix/glossary.md#si)
       specification (i.e. `m³`, `µs`)
     - `A` token forces non-standard **ASCII**-only output (i.e. `m^3`, `us`)
 - `units-unit-symbol-solidus` tokens specify how the division of units should look like:
@@ -147,7 +147,7 @@ std::println("|{:*^10}|", 123 * m);  // |**123 m***|
 
     [`std::println` is a C++23 facility](https://en.cppreference.com/w/cpp/io/print). In case you
     do not have access to C++23, you can obtain the same output with:
-    
+
     ```cpp
     std::cout << std::format("<format-string>\n", <format-args>);
     ```
@@ -237,7 +237,7 @@ std::println("{:%.3GQ %q}", 1.2345678e8 * m);    // 1.23E+08 m
 ### Unit symbol formatting
 
 Unit symbols of some quantities are specified to use Unicode signs by the
-[SI](../../../appendix/glossary/#si) (i.e. `Ω` symbol for the resistance quantity). The **mp-units**
+[SI](../../appendix/glossary.md#si) (i.e. `Ω` symbol for the resistance quantity). The **mp-units**
 library follows this by default. From the engineering point of view, sometimes Unicode text might
 not be the best solution as terminals of many (especially embedded) devices are ASCII-only.
 In such a case, the unit symbol can be forced to be printed using ASCII-only characters thanks to
@@ -252,7 +252,7 @@ std::println("{}", 9.8 * (m / s2));           // 9.8 m/s²
 std::println("{:%Q %Aq}", 9.8 * (m / s2));    // 9.8 m/s^2
 ```
 
-Additionally, both [ISQ](../../../appendix/glossary/#isq) and [SI](../../../appendix/glossary/#si)
+Additionally, both [ISQ](../../appendix/glossary.md#isq) and [SI](../../appendix/glossary.md#si)
 leave some freedom on how to print unit symbols. This is why two additional tokens were introduced.
 
 `units-unit-symbol-solidus` specifies how the division of units should look like. By default,

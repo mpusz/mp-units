@@ -1,14 +1,14 @@
 # Systems of Quantities
 
 The physical units libraries on the market typically only scope on modeling one or more
-[systems of units](../../../appendix/glossary/#system-of-units). However, this is not the
+[systems of units](../../appendix/glossary.md#system-of-units). However, this is not the
 only system kind to model. Another, and maybe even more important, system kind is a
-[system of quantities](../../../appendix/glossary/#system-of-quantities).
+[system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 !!! info
 
     Please note that the **mp-units** is probably the first library on the Open Source market
-    (in any programming language) that models the [ISQ](../../../appendix/glossary/#isq)
+    (in any programming language) that models the [ISQ](../../appendix/glossary.md#isq)
     with all its definitions provided in ISO 80000. Please provide feedback if something
     looks odd or could be improved.
 
@@ -55,12 +55,12 @@ physical properties.
 !!! info
 
     More than one quantity may be defined for the same dimension:
-    
+
     - quantities of _different kinds_ (i.e. frequency, modulation rate, activity, ...)
     - quantities of _the same kind_ (i.e. length, width, altitude, distance, radius, wavelength, position vector, ...)
 
 It turns out that the above issues can't be solved correctly without proper modeling of
-a [system of quantities](../../../appendix/glossary/#system-of-quantities).
+a [system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -77,7 +77,7 @@ a [system of quantities](../../../appendix/glossary/#system-of-quantities).
     - Quantities of the **same dimension are not necessarily of the same kind**
 
 The above quotes from ISO 80000 answer to all the issues above. Two quantities can't be
-added, subtracted, or compared unless they belong to the same [kind](../../../appendix/glossary/#kind).
+added, subtracted, or compared unless they belong to the same [kind](../../appendix/glossary.md#kind).
 As frequency, activity, and modulation rate are different kinds, the expression provided above should
 not compile.
 
@@ -190,7 +190,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 !!! note
 
     More information on how to define a system of quantities can be found in the
-    ["International System of Quantities (ISQ)"](../../defining_systems/isq) chapter.
+    ["International System of Quantities (ISQ)"](../defining_systems/isq.md) chapter.
 
 
 ## Comparing, adding, and subtracting quantities
@@ -289,7 +289,7 @@ flowchart TD
 ```
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
-in the same units, they have different [quantity equations](../../../appendix/glossary/#quantity-equation)
+in the same units, they have different [quantity equations](../../appendix/glossary.md#quantity-equation)
 used to create them implicitly:
 
 - `energy` is the most generic one and thus can be created from base quantities of `mass`, `length`,
@@ -304,7 +304,7 @@ used to create them implicitly:
 
 - `mechanical_energy` is a more "specialized" quantity than `energy` (not every `energy` is
   a `mechanical_energy`). It is why an explicit cast is needed to convert from either `energy` or
-  the results of its [quantity equation](../../../appendix/glossary/#quantity-equation).
+  the results of its [quantity equation](../../appendix/glossary.md#quantity-equation).
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -317,7 +317,7 @@ used to create them implicitly:
 
 - `gravitational_potential_energy` is not only even more specialized one but additionally,
   it is special in a way that it provides its own "constrained"
-  [quantity equation](../../../appendix/glossary/#quantity-equation). Maybe not every
+  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not every
   `mass * pow<2>(length) / pow<2>(time)` is a `gravitational_potential_energy`, but every
   `mass * acceleration_of_free_fall * height` is.
 
