@@ -158,13 +158,19 @@ As we can see above, the `relative()` member function returns a relative distanc
 point origin. In case we would like to know the absolute altitude that we reached on this climb,
 we can either:
 
-- add the two relative heights from both points
+- add the two relative heights from both _points_
 
     ```cpp
     static_assert(first_climb_alt.relative() + everest_base_camp_alt.relative() == 5406 * m);
     ```
 
-- call `absolute()` member function
+- subtract the "zero altitude" _point_ from the current _point_
+
+    ```cpp
+    static_assert(first_climb_alt - quantity_point{0 * m, mean_sea_level} == 5406 * m);
+    ```
+
+- call `absolute()` member function on the current _point_
 
     ```cpp
     static_assert(first_climb_alt.absolute() == 5406 * m);
