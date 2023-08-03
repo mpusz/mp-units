@@ -116,8 +116,8 @@ public:
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
       q_([&] {
-        if constexpr (std::is_same_v<std::remove_const_t<decltype(point_origin)>,
-                                     std::remove_const_t<decltype(QP::point_origin)>>) {
+        if constexpr (is_same_v<std::remove_const_t<decltype(point_origin)>,
+                                std::remove_const_t<decltype(QP::point_origin)>>) {
           return qp.relative();
         } else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<
                                std::remove_const_t<decltype(point_origin)>>) {
@@ -144,7 +144,7 @@ public:
   template<PointOriginFor<quantity_spec> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
   {
-    if constexpr (std::is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>) {
+    if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>) {
       return *this;
     } else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<NewPO>) {
       auto q = absolute() - origin.quantity_point.absolute();
@@ -276,21 +276,33 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
 [[nodiscard]] constexpr Quantity auto operator-(const QP1& lhs, const QP2& rhs)
   requires requires { lhs.absolute() - rhs.absolute(); }
 {
-  return lhs.absolute() - rhs.absolute();
+  if constexpr (is_same_v<std::remove_const_t<decltype(QP1::point_origin)>,
+                          std::remove_const_t<decltype(QP2::point_origin)>>)
+    return lhs.relative() - rhs.relative();
+  else
+    return lhs.absolute() - rhs.absolute();
 }
 
 template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
   requires std::three_way_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
 [[nodiscard]] constexpr auto operator<=>(const QP1& lhs, const QP2& rhs)
 {
-  return lhs.absolute() <=> rhs.absolute();
+  if constexpr (is_same_v<std::remove_const_t<decltype(QP1::point_origin)>,
+                          std::remove_const_t<decltype(QP2::point_origin)>>)
+    return lhs.relative() <=> rhs.relative();
+  else
+    return lhs.absolute() <=> rhs.absolute();
 }
 
 template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
   requires std::equality_comparable_with<typename QP1::quantity_type, typename QP2::quantity_type>
 [[nodiscard]] constexpr bool operator==(const QP1& lhs, const QP2& rhs)
 {
-  return lhs.absolute() == rhs.absolute();
+  if constexpr (is_same_v<std::remove_const_t<decltype(QP1::point_origin)>,
+                          std::remove_const_t<decltype(QP2::point_origin)>>)
+    return lhs.relative() == rhs.relative();
+  else
+    return lhs.absolute() == rhs.absolute();
 }
 
 }  // namespace mp_units
