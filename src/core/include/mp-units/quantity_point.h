@@ -108,7 +108,7 @@ public:
 
   template<typename T>
     requires std::constructible_from<quantity_type, T>
-  constexpr explicit quantity_point(T&& v) : q_(std::forward<T>(v))
+  constexpr explicit quantity_point(T&& v, decltype(point_origin) = point_origin) : q_(std::forward<T>(v))
   {
   }
 
@@ -229,6 +229,9 @@ public:
 // CTAD
 template<Quantity Q>
 explicit quantity_point(Q) -> quantity_point<Q::reference, absolute_point_origin<Q::quantity_spec>{}, typename Q::rep>;
+
+template<Quantity Q, PointOrigin PO>
+explicit quantity_point(Q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
 
 template<QuantityPointLike QP>
 explicit quantity_point(QP)

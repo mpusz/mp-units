@@ -39,17 +39,15 @@ using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chro
 inline constexpr struct mean_sea_level : absolute_point_origin<isq::height> {
 } mean_sea_level;
 
-inline constexpr struct ground_level :
-    relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{42 * isq::height[m]}> {
+inline constexpr struct ground_level : relative_point_origin<quantity_point{42 * isq::height[m], mean_sea_level}> {
 } ground_level;
 
-inline constexpr struct tower_peak :
-    relative_point_origin<quantity_point<isq::height[m], ground_level>{42 * isq::height[m]}> {
+inline constexpr struct tower_peak : relative_point_origin<quantity_point{42 * isq::height[m], ground_level}> {
 } tower_peak;
 
-inline constexpr struct everest_base_camp :
-    relative_point_origin<quantity_point<isq::height[m], mean_sea_level>{5364 * m}> {
-} everest_base_camp;
+inline constexpr struct other_ground_level :
+    relative_point_origin<quantity_point{123 * isq::height[m], mean_sea_level}> {
+} other_ground_level;
 
 QUANTITY_SPEC(special_height, isq::height);
 QUANTITY_SPEC(activity, 1 / isq::time);
@@ -492,6 +490,12 @@ static_assert(invalid_unit_conversion<quantity_point>);
 // CTAD
 /////////
 
+static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.point_origin)>,
+                             absolute_point_origin<kind_of<isq::length>>>);
+static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m, mean_sea_level}.point_origin)>,
+                             std::remove_const_t<decltype(mean_sea_level)>>);
+static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m, ground_level}.point_origin)>,
+                             std::remove_const_t<decltype(ground_level)>>);
 static_assert(std::is_same_v<decltype(quantity_point{123 * m})::rep, int>);
 static_assert(std::is_same_v<decltype(quantity_point{123. * m})::rep, double>);
 static_assert(quantity_point{123. * m}.unit == si::metre);
