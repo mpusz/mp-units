@@ -192,12 +192,22 @@ For this purpose, we can either use:
     static_assert(qp.relative() == 5406 * m);
     ```
 
+!!! note
+
+    It is allowed to only covert between various origins defined in terms of the same
+    `absolute_point_origin`. Even if it is possible to express the same _point_ as a _vector_
+    from another `absolute_point_origin`, the **mp-units** library will not allow it, and
+    a custom user-defined conversion function will be needed to provide such a functionality.
+
+    Said otherwise, in the **mp-units** library, there is no way to spell how two distinct
+    `absolute_point_origin` types relate to each other.
+
+
 ### _Point_ arithmetics
 
-Let's assume we are going to attend the CppCon conference that is hosted in Aurora, CO, and we
-want to estimate the distance we are going to travel. We have to take a taxi to a local airport, fly to
-DEN airport with a stopover in FRA, and in the end, get a taxi to the Gaylord Rockies Resort & Convention
-Center:
+Let's assume we will attend the CppCon conference hosted in Aurora, CO, and we want to estimate
+the distance we will travel. We have to take a taxi to a local airport, fly to DEN airport with
+a stopover in FRA, and in the end, get a cab to the Gaylord Rockies Resort & Convention Center:
 
 ```cpp
 constexpr struct home_location : absolute_point_origin<isq::distance> {} home_location;
@@ -258,8 +268,8 @@ using Celsius_point = quantity_point<isq::thermodynamic_temperature[deg_C], ice_
 
 !!! note
 
-    Notice that while stacking point origins we can use not only different representation types but
-    also different units for an origin and a _point_.
+    Notice that while stacking point origins, we can use not only different representation types
+    but also different units for an origin and a _point_.
 
 With the above, for example, if we want to implement a room temperature controller, we can type:
 
