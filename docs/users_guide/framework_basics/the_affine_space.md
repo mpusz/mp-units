@@ -79,8 +79,8 @@ the **mp-units** library, a `quantity_point` gets a `quantity` in its constructo
 - can be obtained with the `relative()` member function.
 
 ```cpp
-constexpr quantity_point<isq::altitude[m]> everest_base_camp{5364 * m};
-static_assert(everest_base_camp.relative() == 5364 * m);
+constexpr quantity_point<isq::altitude[m]> everest_base_camp_alt{5364 * m};
+static_assert(everest_base_camp_alt.relative() == 5364 * m);
 ```
 
 !!! note
@@ -89,7 +89,7 @@ static_assert(everest_base_camp.relative() == 5364 * m);
     direct initialization. This is why the code below that uses copy initialization does not compile:
 
     ```cpp
-    quantity_point<isq::altitude[m]> everest_base_camp = 5364 * m;  // ERROR
+    quantity_point<isq::altitude[m]> everest_base_camp_alt = 5364 * m;  // ERROR
     ```
 
 In the **mp-units** library, the origin is either provided implicitly (as above) or can be predefined
@@ -98,22 +98,56 @@ by the user and then provided explicitly as the `quantity_point` class template 
 ```cpp
 constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
 
-constexpr quantity_point<isq::altitude[m], mean_sea_level> everest_base_camp{5364 * m};
-static_assert(everest_base_camp.relative() == 5364 * m);
+constexpr quantity_point<isq::altitude[m], mean_sea_level> everest_base_camp_alt{5364 * m};
+static_assert(everest_base_camp_alt.relative() == 5364 * m);
 ```
 
+!!! note
 
-### Stacking _point_ origins
+    The `mean_sea_level` and the default `absolute_point_origin<isq::altitude>` origins are distinct from
+    each other, which means that _points_ defined with them are not compatible (can't be subtracted or
+    compared).
 
-We often do not have one ultimate "zero" point when we measure things.
+
+### Class Template Argument Deduction (CTAD)
+
+Typing the entire `quantity_point` type may sometimes be quite verbose. Also, please note that we
+"accidentally" used `double` as a representation type in the above examples, even though we operated
+only on integral values. This was done for the convenience of saving typing.
+
+To improve the developer's experience, the `quantity_point` class template comes with the user-defined
+class template argument deduction guides. Thanks to them, the above definitions can be rewritten as
+follows:
+
+- implicit default origin
+
+    ```cpp
+    constexpr quantity_point everest_base_camp_alt{isq::altitude(5364 * m)};
+    ```
+
+- explicit origin
+
+    ```cpp
+    constexpr quantity_point everest_base_camp_alt{isq::altitude(5364 * m), mean_sea_level};
+    ```
+
+
+### Relative _point_ origins
+
+We often do not have only one ultimate "zero" point when we measure things.
 
 Continuing the Mount Everest trip example above, measuring all daily hikes from the `mean_sea_level`
 might not be efficient. Maybe we know that we are not good climbers, so all our climbs can be
 represented with an 8-bit integer type which will allow us to save memory in our database of climbs?
-Why not use `everest_base_camp` as our reference point?
+Why not use `everest_base_camp_alt` as our reference point?
 
-It turns out that in the **mp-units** library, you can use a predefined at compile-time `quantity_point`
-as an origin as well:
+For this purpose, we can define a `relative_point_origin` in the following way:
+
+```cpp
+constexpr struct everest_base_camp : relative_point_origin<everest_base_camp_alt> {} everest_base_camp;
+```
+
+The above can be used as an origin for subsequent _points_:
 
 ```cpp
 constexpr quantity_point<isq::altitude[m], everest_base_camp, std::uint8_t> first_climb_alt{42 * m};
@@ -127,13 +161,7 @@ we can either:
 - add the two relative heights from both points
 
     ```cpp
-    static_assert(first_climb_alt.relative() + everest_base_camp.relative() == 5406 * m);
-    ```
-
-- do the same but in a slightly different way:
-
-    ```cpp
-    static_assert(first_climb_alt.relative() + first_climb_alt.point_origin.relative() == 5406 * m);
+    static_assert(first_climb_alt.relative() + everest_base_camp_alt.relative() == 5406 * m);
     ```
 
 - call `absolute()` member function
@@ -142,6 +170,27 @@ we can either:
     static_assert(first_climb_alt.absolute() == 5406 * m);
     ```
 
+
+### Converting between different representations of the same _point_
+
+As we might represent the same _point_ with _vectors_ from various origins, the **mp-units** library
+provides facilities to convert the _point_ to the `quantity_point` class templates expressed in terms
+of different origins.
+
+For this purpose, we can either use:
+
+- a converting constructor:
+
+    ```cpp
+    static_assert(quantity_point<isq::altitude[m], mean_sea_level>{first_climb_alt}.relative() == 5406 * m);
+    ```
+
+- a dedicated conversion interface:
+
+    ```cpp
+    constexpr QuantityPoint auto qp = first_climb_alt.point_from(mean_sea_level);
+    static_assert(qp.relative() == 5406 * m);
+    ```
 
 ### _Point_ arithmetics
 
@@ -178,7 +227,7 @@ quantity<isq::distance[km]> taxi2 = cppcon_venue - den_airport;
 quantity<isq::distance[km]> taxi = taxi1 + taxi2;
 ```
 
-Now it will print the results:
+Now if we will print the results:
 
 ```cpp
 std::cout << "Total distance:  " << total << "\n";
@@ -197,28 +246,28 @@ Taxi distance:   31.2544 km
 
 ### Temperature support
 
-Another important example of [stacking point origins](#stacking-point-origins) is support
+Another important example of [relative point origins](#relative-point-origins) is support
 of temperature quantity points in units different than kelvin [`K`].
 
 For example, the degree Celsius scale can be implemented as follows:
 
 ```cpp
-constexpr auto ice_point = quantity_point<isq::thermodynamic_temperature[K]>{273.15 * K};
-using Celsius_point = quantity_point<isq::Celsius_temperature[deg_C], ice_point>;
+constexpr struct ice_point : relative_point_origin<quantity_point<isq::thermodynamic_temperature[K]>{273.15 * K}> {} ice_point;
+using Celsius_point = quantity_point<isq::thermodynamic_temperature[deg_C], ice_point>;
 ```
 
 !!! note
 
-    While [stacking point origins](#stacking-point-origins) we can use not only different
-    representation types but also different units for an origin and a _point_.
+    Notice that while stacking point origins we can use not only different representation types but
+    also different units for an origin and a _point_.
 
 With the above, for example, if we want to implement a room temperature controller, we can type:
 
 ```cpp
-constexpr Celsius_point room_reference_temperature{21 * deg_C};
-using room_temperature = quantity_point<isq::Celsius_temperature[deg_C], room_reference_temperature>;
+constexpr struct room_reference_temperature : relative_point_origin<Celsius_point{21 * deg_C}> {} room_reference_temperature;
+using room_temperature = quantity_point<isq::thermodynamic_temperature[deg_C], room_reference_temperature>;
 
-constexpr auto step_delta = isq::Celsius_temperature(0.5 * deg_C);
+constexpr auto step_delta = isq::thermodynamic_temperature(0.5 * deg_C);
 constexpr int number_of_steps = 6;
 
 room_temperature room_default{};
@@ -261,7 +310,3 @@ The following operations are not allowed in the affine space:
 
     The usage of `quantity_point`, and affine space types in general, improves expressiveness and
     type-safety of the code we write.
-
-
-## Handling temperature points
-
