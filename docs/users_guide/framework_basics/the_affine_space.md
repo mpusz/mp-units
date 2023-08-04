@@ -302,6 +302,16 @@ Highest temp: 3 °C (24 °C)
 ```
 
 
+### No text output for _points_
+
+The library does not provide a text output for quantity points, as printing just a number and a unit
+is not enough to adequately describe a quantity point. Often an additional postfix is required.
+
+For example, the text output of `42 m` may mean many things and can also be confused with an output
+of a regular quantity. On the other hand, printing `42 m AMSL` for altitudes above mean sea level is
+a much better solution, but the library does not have enough information to print it that way by itself.
+
+
 ## The affine space is about type-safety
 
 The following operations are not allowed in the affine space:
