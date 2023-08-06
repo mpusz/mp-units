@@ -43,16 +43,14 @@ TEST_CASE("Enzimology calcuclations", "[enzimology]")
   SECTION("calculations")
   {
     const auto ml = milli<litre>;
-    const auto mM = milli<mole>;
-    const auto mkM = micro<mole>;
 
     const auto time = 5. * min;
-    const auto processed_substrate = 10. * mkM;
+    const auto processed_substrate = 10. * umol;
     const auto volume = 2. * ml;
 
     // Same values as above, expressed in different units.
     const auto time_same = 300. * second;
-    const auto processed_substrate_same = 0.01 * mM;
+    const auto processed_substrate_same = 0.01 * mmol;
 
     quantity<enzimology::unit> units = processed_substrate / time;
     CHECK(MP_UNITS_STD_FMT::format("{}", units) == "2 U");

@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "mp-units/systems/si/units.h"
+#include <mp-units/systems/si/units.h>
 #include <mp-units/dimension.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/systems/si/unit_symbols.h>
@@ -46,7 +46,7 @@ inline constexpr struct iu : named_unit<"IU", si::micro<si::mole> / non_si::minu
 inline constexpr struct katal : named_unit<"kat", si::mole / si::second> {} katal;
 
 // katal is a very large unit unlikely to be used. As recommeded per article, define immediately  nanokatal as more practical
-inline constexpr struct nanokatal : named_unit<"nkat", mag_power<10, -9> * katal> {} nanokatal;
+inline constexpr struct nanokatal : named_unit<"nkat", si::nano<katal>> {} nanokatal;
 
 // Activity is quoted in units per ml (U/ml),
 inline constexpr struct activity : named_unit<"U/ml", unit / si::milli<non_si::litre>> {} activity;
