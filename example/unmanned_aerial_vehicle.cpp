@@ -26,6 +26,7 @@
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
+#include <cassert>
 #include <iostream>
 
 using namespace mp_units;
@@ -56,6 +57,7 @@ constexpr const char* to_text(earth_gravity_model m)
     case egm2008_1:
       return "EGM2008-1";
   }
+  assert(false && "unsupported enum value");
 }
 
 template<earth_gravity_model M>
