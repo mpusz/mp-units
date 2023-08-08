@@ -27,18 +27,14 @@
 
 #pragma once
 
-#include <mp-units/systems/si/units.h>
-#include <mp-units/dimension.h>
-#include <mp-units/quantity_spec.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#include <mp-units/unit.h>
 
 namespace mp_units::enzimology {
 
 // clang-format off
 
 // 1 unit (U) is the amount of enzyme that catalyses the reaction of 1 micro-mol of substrate per minute
-// It is also marked as IU and named "international unit" in other sources so define these as compatible synonims.
+// It is also marked as IU and named "international unit" in other sources so define these as compatible synonyms.
 inline constexpr struct unit : named_unit<"U", si::micro<si::mole> / non_si::minute> {} unit;
 inline constexpr struct iu : named_unit<"IU", si::micro<si::mole> / non_si::minute> {} iu;
 
