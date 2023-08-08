@@ -49,7 +49,7 @@ inline constexpr struct katal : named_unit<"kat", si::mole / si::second> {} kata
 inline constexpr struct nanokatal : decltype(si::nano<katal>) {} nanokatal;
 
 // Activity is quoted in units per ml (U/ml),
-inline constexpr struct activity : named_unit<"U/ml", unit / si::milli<non_si::litre>> {} activity;
+inline constexpr struct activity : decltype(unit / si::milli<non_si::litre>) {} activity;
 
 //  ‘specific activity’ is the number of enzyme units per ml divided by the concentration of protein in mg/ml
 //  Hence the actual unit of measurement is U/mg.
