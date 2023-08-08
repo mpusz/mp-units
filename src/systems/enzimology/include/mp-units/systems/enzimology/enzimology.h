@@ -53,7 +53,7 @@ inline constexpr struct activity : decltype(unit / si::milli<non_si::litre>) {} 
 
 //  ‘specific activity’ is the number of enzyme units per ml divided by the concentration of protein in mg/ml
 //  Hence the actual unit of measurement is U/mg.
-inline constexpr struct specific_activity : named_unit<"U/mg", unit / si::milli<si::gram> > {} specific_activity;
+inline constexpr struct specific_activity : decltype(unit / si::milli<si::gram>) {} specific_activity;
 
 // clang-format on
 
