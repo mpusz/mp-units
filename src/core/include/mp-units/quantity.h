@@ -43,9 +43,6 @@ namespace mp_units {
 
 namespace detail {
 
-template<QuantityLike Q>
-using quantity_like_type = quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
-
 template<typename T, typename Arg, auto U>
 concept RepSafeConstructibleFrom = Unit<std::remove_const_t<decltype(U)>> && std::constructible_from<T, Arg> &&
                                    (treat_as_floating_point<T> || (!treat_as_floating_point<std::remove_cvref_t<Arg>> &&
@@ -142,8 +139,10 @@ public:
   }
 
   template<QuantityLike Q>
-    requires detail::QuantityConvertibleTo<detail::quantity_like_type<Q>, quantity>
-  constexpr explicit quantity(const Q& q) : quantity(detail::quantity_like_type<Q>(quantity_like_traits<Q>::number(q)))
+    requires detail::QuantityConvertibleTo<
+      quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
+  constexpr explicit quantity(const Q& q) :
+      quantity(make_quantity<quantity_like_traits<Q>::reference>(quantity_like_traits<Q>::number(q)))
   {
   }
 
