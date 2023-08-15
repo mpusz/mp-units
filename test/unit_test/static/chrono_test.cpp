@@ -80,6 +80,9 @@ static_assert(!std::convertible_to<sys_days, time_point<si::second, std::chrono:
 static_assert(std::constructible_from<time_point<si::day, std::chrono::system_clock>, sys_seconds>);
 static_assert(!std::convertible_to<sys_seconds, time_point<si::day, std::chrono::system_clock>>);
 
+static_assert(quantity<si::second>{1s} == 1 * s);
+static_assert(quantity<isq::time[si::second]>{1s} == 1 * s);
+static_assert(quantity<isq::period_duration[si::second]>{1s} == 1 * s);
 
 // CTAD
 static_assert(is_of_type<quantity{1s}, quantity<si::second, std::chrono::seconds::rep>>);
@@ -88,6 +91,18 @@ static_assert(
   is_of_type<quantity_point{sys_seconds{1s}}, time_point<si::second, std::chrono::system_clock, sys_seconds::rep>>);
 static_assert(is_of_type<quantity_point{sys_days{sys_days::duration{1}}},
                          time_point<si::day, std::chrono::system_clock, sys_days::rep>>);
+
+// units mapping
+static_assert(quantity{1ns} == 1 * ns);
+static_assert(quantity{1us} == 1 * us);
+static_assert(quantity{1ms} == 1 * ms);
+static_assert(quantity{1s} == 1 * s);
+static_assert(quantity{1min} == 1 * min);
+static_assert(quantity{1h} == 1 * h);
+static_assert(quantity{std::chrono::days{1}} == 1 * d);
+static_assert(quantity{std::chrono::weeks{1}} == 7 * d);
+static_assert(quantity{std::chrono::months{1}} == 2629746 * s);
+static_assert(quantity{std::chrono::years{1}} == 31556952 * s);
 
 // operators
 static_assert(quantity{1s} + 1 * s == 2 * s);
