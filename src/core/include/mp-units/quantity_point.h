@@ -150,7 +150,8 @@ public:
       auto q = absolute() - origin.quantity_point.absolute();
       return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
     } else {
-      return quantity_point<reference, NewPO{}, Rep>(absolute());
+      auto q = absolute();
+      return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
     }
   }
 
