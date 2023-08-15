@@ -52,6 +52,8 @@ template<typename Period>
     return hour;
   else if constexpr (is_same_v<Period, std::chrono::days::period>)
     return day;
+  else if constexpr (is_same_v<Period, std::chrono::weeks::period>)
+    return mag<7> * day;
   else
     return mag<ratio{Period::num, Period::den}> * second;
 }
