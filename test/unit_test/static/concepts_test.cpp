@@ -360,8 +360,7 @@ static_assert(!QuantityLike<int>);
 // QuantityPoint
 inline constexpr struct my_origin : absolute_point_origin<isq::length> {
 } my_origin;
-inline constexpr struct my_relative_origin :
-    relative_point_origin<quantity_point<isq::length[si::metre]>{42 * si::metre}> {
+inline constexpr struct my_relative_origin : relative_point_origin<quantity_point{isq::length(42 * si::metre)}> {
 } my_relative_origin;
 
 static_assert(QuantityPoint<quantity_point<si::metre>>);
