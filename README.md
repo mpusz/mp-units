@@ -13,8 +13,7 @@
 # `mp-units` - A Physical Quantities and Units library for C++
 
 **The mp-units library might be the subject of ISO standardization for C++29.
-More on this can be found in ISO C++ paper [P1935](https://wg21.link/p1935) and
-[Using std::cpp 2023 talk](https://www.youtube.com/watch?v=3XSVCmWQklI).
+More on this can be found in ISO C++ paper [P1935](https://wg21.link/p1935).
 We are actively looking for parties interested in field trialing the library.**
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/mp-units)
@@ -22,6 +21,13 @@ We are actively looking for parties interested in field trialing the library.**
 **NOTE: The master branch right now is under heavy development of the V2 framework.
 For now it compiles only on gcc-12+. In the upcoming months a lot of efforts will be done to
 enable the rest of mainstream compilers and update the documentation to reflect the V2 design.**
+
+
+## Video Introduction
+
+A brief introduction to the library's interfaces and the rationale for changes in the version 2.0
+of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the ["mp-units: Lessons Learned and a New C++ Library Design" talk at the ACCU 2023 conference](https://www.youtube.com/watch?v=l0rXdJfXLZc).
+
 
 ## Documentation
 
@@ -37,6 +43,7 @@ and improve domain-related communication and discussions. You can find essential
 project-related definitions in [our documentation's "Glossary" chapter](https://mpusz.github.io/mp-units/latest/appendix/glossary).
 Even more terms are provided in the official vocabulary of the [ISO](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en)
 and [BIPM](https://jcgm.bipm.org/vim/en).
+
 
 ## TL;DR
 

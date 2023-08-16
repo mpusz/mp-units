@@ -6,6 +6,12 @@ manipulation. The initial versions of the library were inspired by the
 but with each release, the interfaces diverged from the original to provide a better user
 experience.
 
+!!! note
+
+    A brief introduction to the library's interfaces and the rationale for changes in the version 2.0
+    of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
+    ["mp-units: Lessons Learned and a New C++ Library Design" talk at the ACCU 2023 conference](https://www.youtube.com/watch?v=l0rXdJfXLZc).
+
 
 ## Open Source
 
