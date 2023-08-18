@@ -66,9 +66,9 @@ int main()
 {
   using namespace mp_units::si::unit_symbols;
 
-  const auto distance = 110 * km;
-  const auto duration = 2 * h;
-  const auto speed = avg_speed(distance, duration);
+  const quantity distance = 110 * km;
+  const quantity duration = 2 * h;
+  const quantity speed = avg_speed(distance, duration);
 
   std::cout << "A car driving " << distance << " in " << duration
             << " has an average speed of " << speed
@@ -82,7 +82,7 @@ The code above prints:
 A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/W6Ej7aqxj)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/4zecYqn5z)"
 
 
 ### Easy to understand compilation error messages
@@ -140,9 +140,9 @@ constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
 
 int main()
 {
-  const auto distance = isq::distance(110 * km);
-  const auto duration = isq::time(2 * h);
-  const auto speed = avg_speed(distance, duration);
+  const quantity distance = isq::distance(110 * km);
+  const quantity duration = isq::time(2 * h);
+  const quantity speed = avg_speed(distance, duration);
 
   std::cout << "A car driving " << distance << " in " << duration
             << " has an average speed of " << speed
@@ -154,7 +154,7 @@ int main()
 A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/98YP8j9b4)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/jhfWjGadz)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message also containing information about the quantity type:

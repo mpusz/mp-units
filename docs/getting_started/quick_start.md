@@ -13,7 +13,7 @@ The quantity is created by multiplying a number with a predefined unit:
 
 using namespace mp_units;
 
-auto q = 42 * si::metre;
+quantity q = 42 * si::metre;
 ```
 
 !!! note
@@ -30,7 +30,7 @@ an optional unit symbol:
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-auto q = 42 * m;
+quantity q = 42 * m;
 ```
 
 !!! note
@@ -48,7 +48,7 @@ function:
 
 using namespace mp_units;
 
-auto q = make_quantity<si::metre>(42);
+quantity q = make_quantity<si::metre>(42);
 ```
 
 
@@ -57,7 +57,7 @@ auto q = make_quantity<si::metre>(42);
 Sometimes it might be awkward to type some derived units:
 
 ```cpp
-auto speed = 60 * (km / h);
+quantity speed = 60 * (km / h);
 ```
 
 !!! note
@@ -70,7 +70,7 @@ wrapper for it with:
 
 ```cpp
 constexpr auto kmph = km / h;
-auto speed = 60 * kmph;
+quantity speed = 60 * kmph;
 ```
 
 or even:
@@ -79,7 +79,7 @@ or even:
 constexpr auto kilometre = si::kilo<si::metre>;
 constexpr auto kilometre_per_hour = kilometre / si::hour;
 constexpr auto kmph = kilometre_per_hour;
-auto speed = 60 * kmph;
+quantity speed = 60 * kmph;
 ```
 
 !!! note
