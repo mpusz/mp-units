@@ -887,6 +887,15 @@ static_assert(value_cast<km>(2000 * m).number() == 2);
 static_assert(value_cast<int>(1.23 * m).number() == 1);
 static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).number() == 2);
 
+//////////////////
+// quantity_cast
+//////////////////
+
+static_assert(is_of_type<quantity_cast<isq::distance>(1 * m), quantity<isq::distance[m], int>>);
+static_assert(is_of_type<quantity_cast<isq::distance>(isq::length(1 * m)), quantity<isq::distance[m], int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::length(1 * m)), quantity<si::metre, int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::distance(1 * m)), quantity<si::metre, int>>);
+
 
 // QuantityOf
 static_assert(QuantityOf<quantity<isq::length[m]>, isq::length>);

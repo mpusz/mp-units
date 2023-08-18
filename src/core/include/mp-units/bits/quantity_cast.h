@@ -49,7 +49,11 @@ template<QuantitySpec auto ToQS, typename Q>
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
   requires Quantity<std::remove_cvref_t<Q>> && (castable(q.quantity_spec, ToQS))
 {
-  return make_quantity<reference<ToQS, q.unit>{}>(std::forward<Q>(q).number());
+  if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(ToQS)>> &&
+                AssociatedUnit<std::remove_const_t<decltype(q.unit)>>)
+    return make_quantity<q.unit>(std::forward<Q>(q).number());
+  else
+    return make_quantity<reference<ToQS, q.unit>{}>(std::forward<Q>(q).number());
 }
 
 }  // namespace mp_units
