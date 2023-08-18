@@ -1354,7 +1354,7 @@ template<QuantitySpec From, QuantitySpec To>
     else
       return exploded_kind_result(
         convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity)));
-  } else if constexpr (DerivedFromQuantityKindSpecOf<get_kind(to), from> && get_kind(to) == to)
+  } else if constexpr (NestedQuantityKindSpecOf<get_kind(to), from> && get_kind(to) == to)
     return yes;
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
     if constexpr (have_common_base(from, to)) {
@@ -1481,9 +1481,9 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   using QQ2 = std::remove_const_t<decltype(remove_kind(q2))>;
   if constexpr (is_same_v<Q1, Q2>)
     return q1;
-  else if constexpr (detail::DerivedFromQuantityKindSpecOf<q1, q2>)
+  else if constexpr (detail::NestedQuantityKindSpecOf<q1, q2>)
     return remove_kind(q1);
-  else if constexpr (detail::DerivedFromQuantityKindSpecOf<q2, q1>)
+  else if constexpr (detail::NestedQuantityKindSpecOf<q2, q1>)
     return remove_kind(q2);
   else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
                      (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&

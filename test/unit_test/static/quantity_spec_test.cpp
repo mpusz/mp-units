@@ -792,6 +792,7 @@ static_assert((velocity / acceleration).character == quantity_character::scalar)
 
 // common_quantity_spec
 static_assert(common_quantity_spec(length, length) == length);
+static_assert(common_quantity_spec(kind_of<length>, kind_of<length>) == kind_of<length>);
 static_assert(common_quantity_spec(kind_of<length>, length) == length);
 static_assert(common_quantity_spec(length, kind_of<length>) == length);
 static_assert(common_quantity_spec(width, kind_of<length>) == width);

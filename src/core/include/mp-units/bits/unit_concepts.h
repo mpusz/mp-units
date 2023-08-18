@@ -185,10 +185,10 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  * the provided quantity_spec type.
  */
 template<typename U, auto QS>
-concept UnitOf = AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
-                 implicitly_convertible(get_quantity_spec(U{}), QS) &&
-                 // the below is to make `dimensionless[radian]` invalid
-                 (get_kind(QS) == get_kind(get_quantity_spec(U{})) ||
-                  !detail::DerivedFromQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
+concept UnitOf =
+  AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
+  implicitly_convertible(get_quantity_spec(U{}), QS) &&
+  // the below is to make `dimensionless[radian]` invalid
+  (get_kind(QS) == get_kind(get_quantity_spec(U{})) || !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
 
 }  // namespace mp_units

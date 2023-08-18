@@ -101,4 +101,12 @@ concept DerivedDimension = is_derived_from_specialization_of<T, derived_dimensio
 template<typename T>
 concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
 
+/**
+ * @brief A concept checking if the argument is of the same dimension.
+ *
+ * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
+ */
+template<typename T, auto D>
+concept DimensionOf = Dimension<T> && Dimension<std::remove_const_t<decltype(D)>> && (T{} == D);
+
 }  // namespace mp_units
