@@ -105,6 +105,13 @@ inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 // clang-format on
 
+
+static_assert(is_of_type<length[metre], reference<length, metre>>);
+static_assert(is_of_type<kind_of<length>[metre], metre_>);
+
+static_assert(is_of_type<(length / time)[metre / second], reference<length / time, metre / second>>);
+static_assert(is_of_type<(kind_of<length> / kind_of<time>)[metre / second], derived_unit<metre_, per<second_>>>);
+
 // Unit as a reference
 static_assert(is_of_type<42 * metre, quantity<metre, int>>);
 static_assert(quantity<metre, int>::quantity_spec == length);
