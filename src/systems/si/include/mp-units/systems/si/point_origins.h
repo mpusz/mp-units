@@ -22,8 +22,14 @@
 
 #pragma once
 
-#include <mp-units/systems/si/constants.h>
-#include <mp-units/systems/si/point_origins.h>
-#include <mp-units/systems/si/prefixes.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/quantity_point.h>
 #include <mp-units/systems/si/units.h>
+
+namespace mp_units::si {
+
+// clang-format off
+inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273.15 * kelvin> {} ice_point;
+// clang-format on
+
+}  // namespace mp_units::si
