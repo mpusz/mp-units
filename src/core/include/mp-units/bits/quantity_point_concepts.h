@@ -116,7 +116,33 @@ template<typename T>
   requires is_derived_from_specialization_of_quantity_point<T>
 inline constexpr bool is_quantity_point<T> = true;
 
+// the below was introduced to workaround gcc-12 bug that produced an error
+// "error: ‘const struct mp_units::isq::time’ has no member named ‘absolute_point_origin’"
+template<typename PO1, typename PO2>
+constexpr bool same_absolute_point_origins_lazy(PO1, PO2)
+{
+  if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1> &&
+                is_derived_from_specialization_of_relative_point_origin<PO2>)
+    return std::same_as<std::remove_const_t<decltype(PO1::absolute_point_origin)>,
+                        std::remove_const_t<decltype(PO2::absolute_point_origin)>>;
+  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1>)
+    return std::same_as<std::remove_const_t<decltype(PO1::absolute_point_origin)>, PO2>;
+  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO2>)
+    return std::same_as<PO1, std::remove_const_t<decltype(PO2::absolute_point_origin)>>;
+  else
+    return false;
+}
+
 }  // namespace detail
+
+template<typename PO1, auto PO2>
+concept PointOriginOf =
+  PointOrigin<PO1> && PointOrigin<std::remove_const_t<decltype(PO2)>> &&
+  (std::same_as<PO1, std::remove_const_t<decltype(PO2)>> || detail::same_absolute_point_origins_lazy(PO1{}, PO2) ||
+   (detail::is_specialization_of_absolute_point_origin<PO1> &&
+    detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(PO2)>> &&
+    implicitly_convertible(PO1::quantity_spec, PO2.quantity_spec) &&
+    !detail::NestedQuantityKindSpecOf<PO1::quantity_spec, PO2.quantity_spec>));
 
 /**
  * @brief A concept matching all quantity points with provided dimension or quantity spec
@@ -127,15 +153,8 @@ inline constexpr bool is_quantity_point<T> = true;
  */
 template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> &&
-  (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
-   (PointOrigin<std::remove_const_t<decltype(V)>> &&
-    (std::same_as<std::remove_const_t<decltype(QP::point_origin)>, std::remove_const_t<decltype(V)>> ||
-     std::same_as<std::remove_const_t<decltype(QP::absolute_point_origin)>, std::remove_const_t<decltype(V)>> ||
-     (detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(QP::absolute_point_origin)>> &&
-      detail::is_specialization_of_absolute_point_origin<std::remove_const_t<decltype(V)>> &&
-      implicitly_convertible(QP::absolute_point_origin.quantity_spec, V.quantity_spec) &&
-      !detail::DerivedFromQuantityKindSpecOf<QP::absolute_point_origin.quantity_spec, V.quantity_spec>))));
+  QuantityPoint<QP> && (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
+                        PointOriginOf<std::remove_const_t<decltype(QP::absolute_point_origin)>, V>);
 
 /**
  * @brief A concept matching all external quantity point like types
