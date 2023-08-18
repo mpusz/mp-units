@@ -212,7 +212,7 @@ struct MP_UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
       if constexpr (mp_units::Quantity<Q>)
         return t;
       else
-        return t.relative();
+        return t.quantity_from_origin();
     }(kalman::get<0>(e.state));
 
     std::string value_buffer;

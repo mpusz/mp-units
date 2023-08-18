@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
@@ -163,7 +164,7 @@ concept QuantityPointOf =
  * all quantity_point-specific information.
  */
 template<typename T>
-concept QuantityPointLike = requires(T q) {
+concept QuantityPointLike = requires(T qp) {
   quantity_point_like_traits<T>::reference;
   quantity_point_like_traits<T>::point_origin;
   typename quantity_point_like_traits<T>::rep;
@@ -171,10 +172,11 @@ concept QuantityPointLike = requires(T q) {
   requires PointOrigin<std::remove_const_t<decltype(quantity_point_like_traits<T>::point_origin)>>;
   requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
                             get_quantity_spec(quantity_point_like_traits<T>::reference).character>;
+  requires Quantity<std::remove_cvref_t<decltype(quantity_point_like_traits<T>::quantity_from_origin(qp))>>;
   requires std::constructible_from<
-    typename quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
-                            typename quantity_point_like_traits<T>::rep>::quantity_type,
-    decltype(quantity_point_like_traits<T>::relative(q))>;
+    quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
+                   typename quantity_point_like_traits<T>::rep>,
+    decltype(quantity_point_like_traits<T>::quantity_from_origin(qp))>;
 };
 
 }  // namespace mp_units

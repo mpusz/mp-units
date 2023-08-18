@@ -198,15 +198,20 @@ static_assert(is_same_v<quantity_point<isq::length[m], absolute_point_origin<isq
 // static member functions
 ////////////////////////////
 
-static_assert(quantity_point<isq::length[m]>::zero().relative().number() == 0);
-static_assert(quantity_point<isq::length[m]>::min().relative().number() == std::numeric_limits<double>::lowest());
-static_assert(quantity_point<isq::length[m]>::max().relative().number() == std::numeric_limits<double>::max());
-static_assert(quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::zero().relative().number() ==
-              0);
-static_assert(quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::min().relative().number() ==
-              std::numeric_limits<int>::lowest());
-static_assert(quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::max().relative().number() ==
-              std::numeric_limits<int>::max());
+static_assert(quantity_point<isq::length[m]>::zero().quantity_from_origin().number() == 0);
+static_assert(quantity_point<isq::length[m]>::min().quantity_from_origin().number() ==
+              std::numeric_limits<double>::lowest());
+static_assert(quantity_point<isq::length[m]>::max().quantity_from_origin().number() ==
+              std::numeric_limits<double>::max());
+static_assert(
+  quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::zero().quantity_from_origin().number() ==
+  0);
+static_assert(
+  quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::min().quantity_from_origin().number() ==
+  std::numeric_limits<int>::lowest());
+static_assert(
+  quantity_point<isq::length[m], absolute_point_origin<isq::length>{}, int>::max().quantity_from_origin().number() ==
+  std::numeric_limits<int>::max());
 
 
 //////////////////////////////
@@ -383,42 +388,51 @@ static_assert(!std::convertible_to<sys_seconds, quantity_point<isq::time[s]>>);
 // obtaining a relative quantity
 //////////////////////////////////
 
-static_assert(quantity_point(42 * m).relative() == 42 * m);
-static_assert(quantity_point(isq::height(42 * m)).relative() == 42 * m);
+static_assert(quantity_point(42 * m).quantity_from_origin() == 42 * m);
+static_assert(quantity_point(isq::height(42 * m)).quantity_from_origin() == 42 * m);
 
-static_assert(quantity_point(1 * one).relative() == 1 * one);
-static_assert(quantity_point(dimensionless(1 * one)).relative() == 1 * one);
+static_assert(quantity_point(1 * one).quantity_from_origin() == 1 * one);
+static_assert(quantity_point(dimensionless(1 * one)).quantity_from_origin() == 1 * one);
 
-static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).relative() == 42 * m);
-static_assert(quantity_point<isq::height[m], ground_level>(42 * m).relative() == 42 * m);
-static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).relative() == 42 * m);
+static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).quantity_from_origin() == 42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(42 * m).quantity_from_origin() == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).quantity_from_origin() == 42 * m);
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], ground_level>(42 * m))
-                .relative() == 84 * m);
+                .quantity_from_origin() == 84 * m);
 static_assert(quantity_point<isq::height[m], mean_sea_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
-                .relative() == 126 * m);
+                .quantity_from_origin() == 126 * m);
 
 static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], mean_sea_level>(84 * m))
-                .relative() == 42 * m);
+                .quantity_from_origin() == 42 * m);
 static_assert(quantity_point<isq::height[m], ground_level>(quantity_point<isq::height[m], tower_peak>(42 * m))
-                .relative() == 84 * m);
+                .quantity_from_origin() == 84 * m);
 
 static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], mean_sea_level>(42 * m))
-                .relative() == -42 * m);
+                .quantity_from_origin() == -42 * m);
 static_assert(quantity_point<isq::height[m], tower_peak>(quantity_point<isq::height[m], ground_level>(84 * m))
-                .relative() == 42 * m);
+                .quantity_from_origin() == 42 * m);
 
-static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(mean_sea_level).relative() == 42 * m);
-static_assert(quantity_point<isq::height[m], ground_level>(42 * m).point_from(mean_sea_level).relative() == 84 * m);
-static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(mean_sea_level).relative() == 126 * m);
+static_assert(
+  quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(mean_sea_level).quantity_from_origin() == 42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(42 * m).point_from(mean_sea_level).quantity_from_origin() ==
+              84 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(mean_sea_level).quantity_from_origin() ==
+              126 * m);
 
-static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(ground_level).relative() == 84 * m);
-static_assert(quantity_point<isq::height[m], mean_sea_level>(84 * m).point_from(ground_level).relative() == 42 * m);
-static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(ground_level).relative() == 84 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(ground_level).quantity_from_origin() ==
+              84 * m);
+static_assert(quantity_point<isq::height[m], mean_sea_level>(84 * m).point_from(ground_level).quantity_from_origin() ==
+              42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(ground_level).quantity_from_origin() ==
+              84 * m);
 
-static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(tower_peak).relative() == 42 * m);
-static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(tower_peak).relative() == -42 * m);
-static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(tower_peak).relative() == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(42 * m).point_from(tower_peak).quantity_from_origin() ==
+              42 * m);
+static_assert(quantity_point<isq::height[m], mean_sea_level>(42 * m).point_from(tower_peak).quantity_from_origin() ==
+              -42 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(tower_peak).quantity_from_origin() ==
+              42 * m);
 
 static_assert(is_of_type<quantity_point<isq::height[m], ground_level, short>(42 * m).point_from(mean_sea_level),
                          quantity_point<isq::height[m], mean_sea_level, int>>);
@@ -468,13 +482,15 @@ static_assert(quantity_point<isq::height[m], ground_level>(84 * m).point_from(to
 // converting to a different unit
 ///////////////////////////////////
 
-static_assert(quantity_point<isq::length[km]>(2. * km)[km].relative().number() == 2.);
-static_assert(quantity_point<isq::length[km]>(2. * km)[m].relative().number() == 2000.);
-static_assert(quantity_point<isq::length[m]>(2000. * m)[km].relative().number() == 2.);
-static_assert(
-  quantity_point<isq::length[km], absolute_point_origin<isq::length>{}, int>(2 * km)[km].relative().number() == 2);
-static_assert(
-  quantity_point<isq::length[km], absolute_point_origin<isq::length>{}, int>(2 * km)[m].relative().number() == 2000);
+static_assert(quantity_point<isq::length[km]>(2. * km)[km].quantity_from_origin().number() == 2.);
+static_assert(quantity_point<isq::length[km]>(2. * km)[m].quantity_from_origin().number() == 2000.);
+static_assert(quantity_point<isq::length[m]>(2000. * m)[km].quantity_from_origin().number() == 2.);
+static_assert(quantity_point<isq::length[km], absolute_point_origin<isq::length>{}, int>(2 * km)[km]
+                .quantity_from_origin()
+                .number() == 2);
+static_assert(quantity_point<isq::length[km], absolute_point_origin<isq::length>{}, int>(2 * km)[m]
+                .quantity_from_origin()
+                .number() == 2000);
 
 #if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, auto, typename> typename QP>
@@ -521,18 +537,18 @@ static_assert(([]() {
                 quantity_point l1{1 * m}, l2{2 * m};
                 return l2 = l1;
               }())
-                .relative() == 1 * m);
+                .quantity_from_origin() == 1 * m);
 static_assert(([]() {
                 const quantity_point l1{1 * m};
                 quantity_point l2{2 * m};
                 return l2 = l1;
               }())
-                .relative() == 1 * m);
+                .quantity_from_origin() == 1 * m);
 static_assert(([]() {
                 quantity_point l1{1 * m}, l2{2 * m};
                 return l2 = std::move(l1);
               }())
-                .relative() == 1 * m);
+                .quantity_from_origin() == 1 * m);
 
 
 ////////////////////
@@ -562,14 +578,14 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert((quantity_point(1 * m) += 1 * m).relative().number() == 2);
-static_assert((quantity_point(2 * m) -= 1 * m).relative().number() == 1);
+static_assert((quantity_point(1 * m) += 1 * m).quantity_from_origin().number() == 2);
+static_assert((quantity_point(2 * m) -= 1 * m).quantity_from_origin().number() == 1);
 
 // different types
-static_assert((quantity_point(2.5 * m) += 3 * m).relative().number() == 5.5);
-static_assert((quantity_point(123 * m) += 1 * km).relative().number() == 1123);
-static_assert((quantity_point(5.5 * m) -= 3 * m).relative().number() == 2.5);
-static_assert((quantity_point(1123 * m) -= 1 * km).relative().number() == 123);
+static_assert((quantity_point(2.5 * m) += 3 * m).quantity_from_origin().number() == 5.5);
+static_assert((quantity_point(123 * m) += 1 * km).quantity_from_origin().number() == 1123);
+static_assert((quantity_point(5.5 * m) -= 3 * m).quantity_from_origin().number() == 2.5);
+static_assert((quantity_point(1123 * m) -= 1 * km).quantity_from_origin().number() == 123);
 
 
 template<template<auto, auto, typename> typename QP>
@@ -950,18 +966,21 @@ static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + other_ground_level), qu
 
 // check for integral types promotion
 static_assert(
-  is_same_v<decltype((quantity_point{std::uint8_t(0) * m} + std::uint8_t(0) * m).relative().number()), int&&>);
+  is_same_v<decltype((quantity_point{std::uint8_t(0) * m} + std::uint8_t(0) * m).quantity_from_origin().number()),
+            int&&>);
 static_assert(
-  is_same_v<decltype((std::uint8_t(0) * m + quantity_point{std::uint8_t(0) * m}).relative().number()), int&&>);
+  is_same_v<decltype((std::uint8_t(0) * m + quantity_point{std::uint8_t(0) * m}).quantity_from_origin().number()),
+            int&&>);
 static_assert(
-  is_same_v<decltype((quantity_point{std::uint8_t(0) * m} - std::uint8_t(0) * m).relative().number()), int&&>);
+  is_same_v<decltype((quantity_point{std::uint8_t(0) * m} - std::uint8_t(0) * m).quantity_from_origin().number()),
+            int&&>);
 static_assert(
   is_same_v<decltype((quantity_point{std::uint8_t(0) * m} - quantity_point{std::uint8_t(0) * m}).number()), int&&>);
-static_assert((quantity_point{std::uint8_t(128) * m} + std::uint8_t(128) * m).relative().number() ==
+static_assert((quantity_point{std::uint8_t(128) * m} + std::uint8_t(128) * m).quantity_from_origin().number() ==
               std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(128) * m + quantity_point{std::uint8_t(128) * m}).relative().number() ==
+static_assert((std::uint8_t(128) * m + quantity_point{std::uint8_t(128) * m}).quantity_from_origin().number() ==
               std::uint8_t(128) + std::uint8_t(128));
-static_assert((quantity_point{std::uint8_t(0) * m} - std::uint8_t(1) * m).relative().number() ==
+static_assert((quantity_point{std::uint8_t(0) * m} - std::uint8_t(1) * m).quantity_from_origin().number() ==
               std::uint8_t(0) - std::uint8_t(1));
 static_assert((quantity_point{std::uint8_t(0) * m} - quantity_point{std::uint8_t(1) * m}).number() ==
               std::uint8_t(0) - std::uint8_t(1));
@@ -1051,32 +1070,32 @@ static_assert(is_of_type<quantity_point{1 * km} - quantity_point{1. * m}, quanti
 static_assert(is_of_type<quantity_point{1. * km} - quantity_point{1. * m}, quantity<si::metre, double>>);
 
 
-static_assert((quantity_point{1 * m} + 1 * m).relative().number() == 2);
-static_assert((1 * m + quantity_point{1 * m}).relative().number() == 2);
-static_assert((quantity_point{1 * m} + 1 * km).relative().number() == 1001);
-static_assert((1 * m + quantity_point{1 * km}).relative().number() == 1001);
-static_assert((quantity_point{1 * km} + 1 * m).relative().number() == 1001);
-static_assert((1 * km + quantity_point{1 * m}).relative().number() == 1001);
-static_assert((quantity_point{2 * m} - 1 * m).relative().number() == 1);
-static_assert((quantity_point{1 * km} - 1 * m).relative().number() == 999);
+static_assert((quantity_point{1 * m} + 1 * m).quantity_from_origin().number() == 2);
+static_assert((1 * m + quantity_point{1 * m}).quantity_from_origin().number() == 2);
+static_assert((quantity_point{1 * m} + 1 * km).quantity_from_origin().number() == 1001);
+static_assert((1 * m + quantity_point{1 * km}).quantity_from_origin().number() == 1001);
+static_assert((quantity_point{1 * km} + 1 * m).quantity_from_origin().number() == 1001);
+static_assert((1 * km + quantity_point{1 * m}).quantity_from_origin().number() == 1001);
+static_assert((quantity_point{2 * m} - 1 * m).quantity_from_origin().number() == 1);
+static_assert((quantity_point{1 * km} - 1 * m).quantity_from_origin().number() == 999);
 
-static_assert((quantity_point{1.5 * m} + 1 * m).relative().number() == 2.5);
-static_assert((1.5 * m + quantity_point{1 * m}).relative().number() == 2.5);
-static_assert((quantity_point{1.5 * m} + 1 * km).relative().number() == 1001.5);
-static_assert((1.5 * m + quantity_point{1 * km}).relative().number() == 1001.5);
-static_assert((quantity_point{1.5 * km} + 1 * m).relative().number() == 1501);
-static_assert((1.5 * km + quantity_point{1 * m}).relative().number() == 1501);
-static_assert((quantity_point{2.5 * m} - 1 * m).relative().number() == 1.5);
-static_assert((quantity_point{1.5 * km} - 1 * m).relative().number() == 1499);
+static_assert((quantity_point{1.5 * m} + 1 * m).quantity_from_origin().number() == 2.5);
+static_assert((1.5 * m + quantity_point{1 * m}).quantity_from_origin().number() == 2.5);
+static_assert((quantity_point{1.5 * m} + 1 * km).quantity_from_origin().number() == 1001.5);
+static_assert((1.5 * m + quantity_point{1 * km}).quantity_from_origin().number() == 1001.5);
+static_assert((quantity_point{1.5 * km} + 1 * m).quantity_from_origin().number() == 1501);
+static_assert((1.5 * km + quantity_point{1 * m}).quantity_from_origin().number() == 1501);
+static_assert((quantity_point{2.5 * m} - 1 * m).quantity_from_origin().number() == 1.5);
+static_assert((quantity_point{1.5 * km} - 1 * m).quantity_from_origin().number() == 1499);
 
-static_assert((quantity_point{1 * m} + 1.5 * m).relative().number() == 2.5);
-static_assert((1 * m + quantity_point{1.5 * m}).relative().number() == 2.5);
-static_assert((quantity_point{1 * m} + 1.5 * km).relative().number() == 1501);
-static_assert((1 * m + quantity_point{1.5 * km}).relative().number() == 1501);
-static_assert((quantity_point{1 * km} + 1.5 * m).relative().number() == 1001.5);
-static_assert((1 * km + quantity_point{1.5 * m}).relative().number() == 1001.5);
-static_assert((quantity_point{2 * m} - 1.5 * m).relative().number() == 0.5);
-static_assert((quantity_point{1 * km} - 1.5 * m).relative().number() == 998.5);
+static_assert((quantity_point{1 * m} + 1.5 * m).quantity_from_origin().number() == 2.5);
+static_assert((1 * m + quantity_point{1.5 * m}).quantity_from_origin().number() == 2.5);
+static_assert((quantity_point{1 * m} + 1.5 * km).quantity_from_origin().number() == 1501);
+static_assert((1 * m + quantity_point{1.5 * km}).quantity_from_origin().number() == 1501);
+static_assert((quantity_point{1 * km} + 1.5 * m).quantity_from_origin().number() == 1001.5);
+static_assert((1 * km + quantity_point{1.5 * m}).quantity_from_origin().number() == 1001.5);
+static_assert((quantity_point{2 * m} - 1.5 * m).quantity_from_origin().number() == 0.5);
+static_assert((quantity_point{1 * km} - 1.5 * m).quantity_from_origin().number() == 998.5);
 
 static_assert((quantity_point{2 * m} - quantity_point{1 * m}).number() == 1);
 static_assert((quantity_point{1 * km} - quantity_point{1 * m}).number() == 999);
@@ -1098,18 +1117,18 @@ static_assert(quantity_point(42 * m, tower_peak) - quantity_point(42 * m, other_
 
 
 // commutativity and associativity
-static_assert((quantity_point{10 * isq::length[si::metre] / (2 * isq::time[s])} + 5 * isq::speed[m / s]).relative() ==
-              10 * isq::speed[m / s]);
-static_assert((10 * isq::length[si::metre] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]}).relative() ==
-              10 * isq::speed[m / s]);
-static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::time[s])).relative() ==
-              10 * isq::speed[m / s]);
-static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::time[s])}).relative() ==
-              10 * isq::speed[m / s]);
-static_assert((quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - 5 * isq::speed[m / s]).relative() ==
-              0 * isq::speed[m / s]);
-static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::time[s])).relative() ==
-              0 * isq::speed[m / s]);
+static_assert((quantity_point{10 * isq::length[si::metre] / (2 * isq::time[s])} + 5 * isq::speed[m / s])
+                .quantity_from_origin() == 10 * isq::speed[m / s]);
+static_assert((10 * isq::length[si::metre] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]})
+                .quantity_from_origin() == 10 * isq::speed[m / s]);
+static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::time[s]))
+                .quantity_from_origin() == 10 * isq::speed[m / s]);
+static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::time[s])})
+                .quantity_from_origin() == 10 * isq::speed[m / s]);
+static_assert((quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - 5 * isq::speed[m / s])
+                .quantity_from_origin() == 0 * isq::speed[m / s]);
+static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::time[s]))
+                .quantity_from_origin() == 0 * isq::speed[m / s]);
 static_assert(quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - quantity_point{5 * isq::speed[m / s]} ==
               0 * isq::speed[m / s]);
 static_assert(quantity_point{5 * isq::speed[m / s]} - quantity_point{10 * isq::length[m] / (2 * isq::time[s])} ==
@@ -1136,17 +1155,17 @@ static_assert(
              quantity<isq::speed[m / s], int>>);
 
 // NOTE: 1 / isq::time[s] works for quantities but not for quantity_point (origin can't be weakened)
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).relative() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_origin() ==
               10 * isq::frequency[Hz]);
-static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{5 * isq::frequency[Hz]}).relative() ==
+static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{5 * isq::frequency[Hz]}).quantity_from_origin() ==
               10 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).relative() ==
+static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_origin() ==
               10 * isq::frequency[Hz]);
-static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).relative() ==
+static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_origin() ==
               10 * isq::frequency[Hz]);
-static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).relative() ==
+static_assert((quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz]).quantity_from_origin() ==
               0 * isq::frequency[Hz]);
-static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).relative() ==
+static_assert((quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s])).quantity_from_origin() ==
               0 * isq::frequency[Hz]);
 static_assert(quantity_point{10 / (2 * isq::period_duration[s])} - quantity_point{5 * isq::frequency[Hz]} ==
               0 * isq::frequency[Hz]);
