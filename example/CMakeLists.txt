@@ -68,6 +68,7 @@ add_example(
     mp-units::utility
     example_utils
 )
+add_example(enzimology_calculations mp-units::core-io mp-units::si mp-units::enzimology)
 
 add_subdirectory(glide_computer)
 add_subdirectory(kalman_filter)
