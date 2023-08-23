@@ -136,7 +136,7 @@ struct quantity_values {
  * @brief Provides support for external quantity-like types
  *
  * The type trait should provide the @c reference object, a type alias @c rep,
- * and a static member function @c number(T) that returns the raw value of the quantity.
+ * and a static member function @c value(T) that returns the raw value of the quantity.
  *
  * Usage example can be found in @c units/chrono.h header file.
  *

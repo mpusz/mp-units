@@ -33,7 +33,7 @@ template<mp_units::Quantity Target, mp_units::Quantity Source>
   requires std::constructible_from<Target, Source>
 inline constexpr double conversion_factor(Target, Source)
 {
-  return mp_units::value_cast<Target::unit>(1. * Source::reference).number();
+  return mp_units::value_cast<Target::unit>(1. * Source::reference).value();
 }
 
 }  // namespace
@@ -55,6 +55,6 @@ int main()
 
   std::cout << MP_UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n",
                                         lengthA, lengthB)
-            << MP_UNITS_STD_FMT::format("lengthB.number( {} ) == lengthA.number( {} ) * conversion_factor( {} )\n",
-                                        lengthB.number(), lengthA.number(), conversion_factor(lengthB, lengthA));
+            << MP_UNITS_STD_FMT::format("lengthB.value( {} ) == lengthA.value( {} ) * conversion_factor( {} )\n",
+                                        lengthB.value(), lengthA.value(), conversion_factor(lengthB, lengthA));
 }

@@ -74,7 +74,7 @@ concept QuantityLike = requires(T q) {
   requires RepresentationOf<typename quantity_like_traits<T>::rep,
                             get_quantity_spec(quantity_like_traits<T>::reference).character>;
   {
-    quantity_like_traits<T>::number(q)
+    quantity_like_traits<T>::value(q)
   } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
 };
 

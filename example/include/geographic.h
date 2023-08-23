@@ -74,19 +74,19 @@ using longitude =
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (lat.number() > 0)
-    return os << "N" << lat.number();
+  if (lat.value() > 0)
+    return os << "N" << lat.value();
   else
-    return os << "S" << -lat.number();
+    return os << "S" << -lat.value();
 }
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (lon.number() > 0)
-    return os << "E" << lon.number();
+  if (lon.value() > 0)
+    return os << "E" << lon.value();
   else
-    return os << "W" << -lon.number();
+    return os << "W" << -lon.value();
 }
 
 inline namespace literals {
@@ -129,7 +129,7 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
-    return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.number() : -lat.number(), ctx);
+    return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.value() : -lat.value(), ctx);
   }
 };
 
@@ -139,7 +139,7 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
-    return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.number() : -lon.number(), ctx);
+    return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.value() : -lon.value(), ctx);
   }
 };
 

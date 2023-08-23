@@ -64,7 +64,7 @@ template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   using rep = Rep;
-  [[nodiscard]] static constexpr rep number(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
+  [[nodiscard]] static constexpr rep value(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
 };
 
 template<typename C>
@@ -92,7 +92,7 @@ template<QuantityOf<isq::time> Q>
 {
   constexpr auto canonical = detail::get_canonical_unit(Q::unit);
   constexpr ratio r = as_ratio(canonical.mag);
-  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.number()};
+  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.value()};
 }
 
 template<QuantityPointOf<isq::time> QP>

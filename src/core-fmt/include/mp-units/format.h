@@ -226,7 +226,7 @@ struct quantity_formatter {
 
   explicit quantity_formatter(OutputIt o, quantity<Reference, Rep> q, const quantity_format_specs<CharT>& fspecs,
                               Locale lc) :
-      out(o), val(std::move(q).number()), specs(fspecs), loc(std::move(lc))
+      out(o), val(std::move(q).value()), specs(fspecs), loc(std::move(lc))
   {
   }
 
@@ -396,7 +396,7 @@ private:
 
     if (begin == end || *begin == '}') {
       // default format should print value followed by the unit separated with 1 space
-      out = mp_units::detail::format_units_quantity_value<CharT>(out, q.number(), specs.rep, ctx.locale());
+      out = mp_units::detail::format_units_quantity_value<CharT>(out, q.value(), specs.rep, ctx.locale());
       if constexpr (mp_units::detail::has_unit_symbol(get_unit(Reference))) {
         *out++ = CharT(' ');
         out = unit_symbol_to<CharT>(out, get_unit(Reference));
