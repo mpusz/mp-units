@@ -104,7 +104,7 @@ template<QuantityPointOf<isq::time> QP>
   constexpr auto canonical = detail::get_canonical_unit(QP::unit);
   constexpr ratio r = as_ratio(canonical.mag);
   using ret_type = std::chrono::time_point<clock, std::chrono::duration<rep, std::ratio<r.num, r.den>>>;
-  return ret_type(to_chrono_duration(qp.absolute()));
+  return ret_type(to_chrono_duration(qp - qp.absolute_point_origin));
 }
 
 }  // namespace mp_units

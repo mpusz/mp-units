@@ -81,7 +81,8 @@ quantity<To, Rep> exchange_to(quantity<From, Rep> q)
 template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 {
-  return quantity_point{zero + static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.absolute().number()) * To};
+  return quantity_point{
+    zero + static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * (q - q.absolute_point_origin).number()) * To};
 }
 
 int main()
@@ -89,6 +90,6 @@ int main()
   quantity_point price_usd = zero + 100 * us_dollar;
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
-  std::cout << price_usd.absolute() << " -> " << price_euro.absolute() << "\n";
-  // std::cout << price_usd.absolute() + price_euro.absolute() << "\n";  // does not compile
+  std::cout << price_usd.quantity_from_origin() << " -> " << price_euro.quantity_from_origin() << "\n";
+  // std::cout << price_usd.quantity_from_origin() + price_euro.quantity_from_origin() << "\n";  // does not compile
 }

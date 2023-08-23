@@ -46,7 +46,7 @@ using msl_altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const msl_altitude& a)
 {
-  return os << a.absolute() << " AMSL";
+  return os << a - mean_sea_level << " AMSL";
 }
 
 }  // namespace geographic
@@ -56,7 +56,7 @@ struct MP_UNITS_STD_FMT::formatter<geographic::msl_altitude> : formatter<geograp
   template<typename FormatContext>
   auto format(const geographic::msl_altitude& a, FormatContext& ctx)
   {
-    formatter<geographic::msl_altitude::quantity_type>::format(a.absolute(), ctx);
+    formatter<geographic::msl_altitude::quantity_type>::format(a - geographic::mean_sea_level, ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };

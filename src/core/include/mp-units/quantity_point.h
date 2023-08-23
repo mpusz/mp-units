@@ -118,14 +118,10 @@ public:
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
       q_([&] {
         if constexpr (is_same_v<std::remove_const_t<decltype(point_origin)>,
-                                std::remove_const_t<decltype(QP::point_origin)>>) {
+                                std::remove_const_t<decltype(QP::point_origin)>>)
           return qp.quantity_from_origin();
-        } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<
-                               std::remove_const_t<decltype(point_origin)>>) {
-          return qp.absolute();
-        } else {
-          return qp.absolute() - zero().absolute();
-        }
+        else
+          return qp - point_origin;
       }())
   {
   }
@@ -144,14 +140,12 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   template<PointOriginFor<quantity_spec> NewPO>
-  [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
+  [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO new_origin) const
   {
     if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>)
       return *this;
-    else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<NewPO>)
-      return make_quantity_point<NewPO{}>(absolute());
     else
-      return make_quantity_point<NewPO{}>(absolute() - origin.quantity_point.absolute());
+      return make_quantity_point<new_origin>(*this - new_origin);
   }
 
   // data access
@@ -167,15 +161,6 @@ public:
   [[nodiscard]] constexpr quantity_type&& quantity_from_origin() && noexcept { return std::move(q_); }
   [[nodiscard]] constexpr const quantity_type&& quantity_from_origin() const&& noexcept { return std::move(q_); }
 #endif
-
-  [[nodiscard]] constexpr Quantity auto absolute() const noexcept
-  {
-    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<
-                    std::remove_const_t<decltype(point_origin)>>)
-      return quantity_from_origin();
-    else
-      return point_origin.quantity_point.absolute() + quantity_from_origin();
-  }
 
   template<Unit U>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
@@ -298,29 +283,35 @@ template<PointOrigin PO, Quantity Q>
 
 template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
 [[nodiscard]] constexpr Quantity auto operator-(const QP1& lhs, const QP2& rhs)
-  requires requires { lhs.absolute() - rhs.absolute(); }
+  // TODO consider constraining it for both branches
+  requires requires { lhs.quantity_from_origin() - rhs.quantity_from_origin(); }
 {
   if constexpr (is_same_v<std::remove_const_t<decltype(QP1::point_origin)>,
-                          std::remove_const_t<decltype(QP2::point_origin)>>) {
+                          std::remove_const_t<decltype(QP2::point_origin)>>)
     return lhs.quantity_from_origin() - rhs.quantity_from_origin();
-  } else
-    return lhs.absolute() - rhs.absolute();
+  else
+    return lhs.quantity_from_origin() - rhs.quantity_from_origin() + (lhs.point_origin - rhs.point_origin);
 }
 
 template<PointOrigin PO, QuantityPointOf<PO{}> QP>
   requires ReferenceOf<std::remove_const_t<decltype(QP::reference)>, PO::quantity_spec>
-[[nodiscard]] constexpr Quantity auto operator-(const QP& qp, PO)
+[[nodiscard]] constexpr Quantity auto operator-(const QP& qp, PO po)
 {
-  if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO>) {
-    if constexpr (is_same_v<std::remove_const_t<PO>, std::remove_const_t<decltype(QP::point_origin)>>)
+  if constexpr (is_same_v<std::remove_const_t<decltype(QP::point_origin)>, std::remove_const_t<PO>>)
+    return qp.quantity_from_origin();
+  else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO>) {
+    if constexpr (is_same_v<std::remove_const_t<decltype(QP::point_origin)>,
+                            std::remove_const_t<decltype(QP::absolute_point_origin)>>)
       return qp.quantity_from_origin();
     else
-      return qp.absolute();
+      return qp.quantity_from_origin() + (qp.point_origin - qp.absolute_point_origin);
   } else {
-    if constexpr (is_same_v<std::remove_const_t<PO>, std::remove_const_t<decltype(QP::point_origin)>>)
-      return qp.quantity_from_origin();
+    if constexpr (is_same_v<std::remove_const_t<decltype(QP::point_origin)>,
+                            std::remove_const_t<decltype(po.quantity_point.point_origin)>>)
+      return qp.quantity_from_origin() - po.quantity_point.quantity_from_origin();
     else
-      return qp.absolute() - PO::quantity_point.absolute();
+      return qp.quantity_from_origin() - po.quantity_point.quantity_from_origin() +
+             (qp.point_origin - po.quantity_point.point_origin);
   }
 }
 
@@ -338,9 +329,9 @@ template<PointOrigin PO1, PointOriginOf<PO1{}> PO2>
 [[nodiscard]] constexpr Quantity auto operator-(PO1 po1, PO2 po2)
 {
   if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1>) {
-    return -po2.quantity_point.absolute();
+    return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
   } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
-    return po1.quantity_point.absolute();
+    return po1.quantity_point - po1.quantity_point.absolute_point_origin;
   } else {
     return po1.quantity_point - po2.quantity_point;
   }
@@ -354,7 +345,7 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
                           std::remove_const_t<decltype(QP2::point_origin)>>)
     return lhs.quantity_from_origin() <=> rhs.quantity_from_origin();
   else
-    return lhs.absolute() <=> rhs.absolute();
+    return lhs - lhs.absolute_point_origin <=> rhs - rhs.absolute_point_origin;
 }
 
 template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
@@ -365,7 +356,7 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
                           std::remove_const_t<decltype(QP2::point_origin)>>)
     return lhs.quantity_from_origin() == rhs.quantity_from_origin();
   else
-    return lhs.absolute() == rhs.absolute();
+    return lhs - lhs.absolute_point_origin == rhs - rhs.absolute_point_origin;
 }
 
 // make_quantity_point

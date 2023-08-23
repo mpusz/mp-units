@@ -71,7 +71,7 @@ template<class CharT, class Traits, QuantityPoint QP>
   requires(is_hae(QP::absolute_point_origin))
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const QP& a)
 {
-  return os << a.absolute() << " HAE(" << to_text(a.absolute_point_origin.egm) << ")";
+  return os << a - a.absolute_point_origin << " HAE(" << to_text(a.absolute_point_origin.egm) << ")";
 }
 
 template<QuantityPoint QP>
@@ -80,7 +80,7 @@ struct MP_UNITS_STD_FMT::formatter<QP> : formatter<typename QP::quantity_type> {
   template<typename FormatContext>
   auto format(const QP& a, FormatContext& ctx)
   {
-    formatter<typename QP::quantity_type>::format(a.absolute(), ctx);
+    formatter<typename QP::quantity_type>::format(a - a.absolute_point_origin, ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAE({})", to_text(QP::absolute_point_origin.egm));
   }
 };
@@ -98,7 +98,7 @@ hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 {
   const auto geoid_undulation =
     isq::height(GeographicLibWhatsMyOffset(pos.lat.number_in(si::degree), pos.lon.number_in(si::degree)) * si::metre);
-  return height_above_ellipsoid<M> + (msl.absolute() - geoid_undulation);
+  return height_above_ellipsoid<M> + (msl - mean_sea_level - geoid_undulation);
 }
 
 
@@ -113,7 +113,7 @@ using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launc
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hal_altitude& a)
 {
-  return os << a.absolute() << " HAL";
+  return os << a.quantity_from_origin() << " HAL";
 }
 
 template<>
@@ -121,7 +121,7 @@ struct MP_UNITS_STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quant
   template<typename FormatContext>
   auto format(const hal_altitude& a, FormatContext& ctx)
   {
-    formatter<hal_altitude::quantity_type>::format(a.absolute(), ctx);
+    formatter<hal_altitude::quantity_type>::format(a.quantity_from_origin(), ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAL");
   }
 };
