@@ -179,10 +179,12 @@ concept QuantityPointLike = requires(T qp) {
   requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
                             get_quantity_spec(quantity_point_like_traits<T>::reference).character>;
   requires Quantity<std::remove_cvref_t<decltype(quantity_point_like_traits<T>::quantity_from_origin(qp))>>;
-  requires std::constructible_from<
-    quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
-                   typename quantity_point_like_traits<T>::rep>,
-    decltype(quantity_point_like_traits<T>::quantity_from_origin(qp))>;
+  {
+    make_quantity_point<quantity_point_like_traits<T>::point_origin>(
+      quantity_point_like_traits<T>::quantity_from_origin(qp))
+  }
+  -> std::same_as<quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
+                                 typename quantity_point_like_traits<T>::rep>>;
 };
 
 }  // namespace mp_units

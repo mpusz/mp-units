@@ -98,7 +98,7 @@ hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 {
   const auto geoid_undulation =
     isq::height(GeographicLibWhatsMyOffset(pos.lat.number_in(si::degree), pos.lon.number_in(si::degree)) * si::metre);
-  return hae_altitude<M>{msl.absolute() - geoid_undulation};
+  return height_above_ellipsoid<M> + (msl.absolute() - geoid_undulation);
 }
 
 
@@ -130,7 +130,7 @@ struct MP_UNITS_STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quant
 // **** UAV ****
 
 class unmanned_aerial_vehicle {
-  msl_altitude current_{0 * si::metre};
+  msl_altitude current_ = mean_sea_level + 0 * si::metre;
   msl_altitude launch_ = current_;
 public:
   void take_off(msl_altitude alt) { launch_ = alt; }
@@ -139,7 +139,7 @@ public:
   void current(msl_altitude alt) { current_ = alt; }
   msl_altitude current() const { return current_; }
 
-  hal_altitude hal() const { return hal_altitude{current_ - launch_}; }
+  hal_altitude hal() const { return height_above_launch + (current_ - launch_); }
 };
 
 
@@ -149,11 +149,11 @@ int main()
   using namespace mp_units::international::unit_symbols;
 
   unmanned_aerial_vehicle uav;
-  uav.take_off(msl_altitude{6'000 * ft});
-  uav.current(msl_altitude{10'000 * ft});
+  uav.take_off(mean_sea_level + 6'000 * ft);
+  uav.current(mean_sea_level + 10'000 * ft);
   std::cout << MP_UNITS_STD_FMT::format("hal = {}\n", uav.hal());
 
-  msl_altitude ground_level{123 * m};
+  msl_altitude ground_level = mean_sea_level + 123 * m;
   std::cout << MP_UNITS_STD_FMT::format("agl = {}\n", uav.current() - ground_level);
 
   struct waypoint {
@@ -162,7 +162,7 @@ int main()
     msl_altitude msl_alt;
   };
 
-  waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, msl_altitude{16. * ft}};
+  waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft};
   std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
                                         wpt.msl_alt, to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }

@@ -45,8 +45,7 @@ inline constexpr struct ground_level : relative_point_origin<mean_sea_level + 42
 inline constexpr struct tower_peak : relative_point_origin<ground_level + 42 * isq::height[m]> {
 } tower_peak;
 
-inline constexpr struct other_ground_level :
-    relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
+inline constexpr struct other_ground_level : relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
 } other_ground_level;
 
 inline constexpr struct other_absolute_level : absolute_point_origin<isq::height> {
@@ -281,22 +280,22 @@ static_assert(!std::convertible_to<int, quantity_point<dimensionless[one], zero,
 // construction from a quantity
 /////////////////////////////////
 
-static_assert(std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<si::metre>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<si::metre>>);
 static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<isq::height[m]>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<si::metre>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<si::metre>>);
 static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<isq::height[m]>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<special_height[m]>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<special_height[m]>>);
 static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<dimensionless[one], zero>, quantity<dimensionless[one]>>);
+static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one], zero>>);
 
 // different dimensions

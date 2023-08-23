@@ -29,6 +29,10 @@
 
 namespace mp_units {
 
+template<PointOrigin auto PO, Quantity Q>
+  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
+[[nodiscard]] constexpr quantity_point<Q::reference, PO, typename Q::rep> make_quantity_point(Q&& q);
+
 template<QuantitySpec auto QS>
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
@@ -37,7 +41,7 @@ struct absolute_point_origin {
 template<QuantityPoint auto QP>
 struct relative_point_origin {
   static constexpr QuantityPoint auto quantity_point = QP;
-  static constexpr QuantitySpec auto quantity_spec = [](){
+  static constexpr QuantitySpec auto quantity_spec = []() {
     // select the strongest of specs
     if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(QP.quantity_spec)>>)
       return QP.point_origin.quantity_spec;
@@ -56,11 +60,6 @@ namespace detail {
   else
     return po;
 }
-
-template<QuantityPointLike QP>
-using quantity_point_like_type =
-  quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
-                 typename quantity_point_like_traits<QP>::rep>;
 
 }  // namespace detail
 
@@ -113,13 +112,6 @@ public:
   quantity_point(const quantity_point&) = default;
   quantity_point(quantity_point&&) = default;
 
-  template<Quantity Q>
-    requires std::constructible_from<quantity_type, Q> &&
-             ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
-  constexpr explicit quantity_point(Q&& q, decltype(point_origin) = point_origin) : q_(std::forward<Q>(q))
-  {
-  }
-
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // TODO add perfect forwarding
@@ -141,10 +133,10 @@ public:
   template<QuantityPointLike QP>
     requires std::same_as<std::remove_const_t<decltype(quantity_point_like_traits<QP>::point_origin)>,
                           std::remove_const_t<decltype(point_origin)>> &&
-             std::convertible_to<typename detail::quantity_point_like_type<QP>::quantity_type, quantity_type>
-  constexpr explicit quantity_point(const QP& qp) :
-      q_(typename detail::quantity_point_like_type<QP>::quantity_type{
-        quantity_point_like_traits<QP>::quantity_from_origin(qp)})
+             std::convertible_to<
+               quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
+               quantity_type>
+  constexpr explicit quantity_point(const QP& qp) : q_(quantity_point_like_traits<QP>::quantity_from_origin(qp))
   {
   }
 
@@ -154,15 +146,12 @@ public:
   template<PointOriginFor<quantity_spec> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO origin) const
   {
-    if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>) {
+    if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>)
       return *this;
-    } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<NewPO>) {
-      auto q = absolute();
-      return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
-    } else {
-      auto q = absolute() - origin.quantity_point.absolute();
-      return quantity_point<reference, NewPO{}, typename decltype(q)::rep>(std::move(q));
-    }
+    else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<NewPO>)
+      return make_quantity_point<NewPO{}>(absolute());
+    else
+      return make_quantity_point<NewPO{}>(absolute() - origin.quantity_point.absolute());
   }
 
   // data access
@@ -192,7 +181,7 @@ public:
     requires detail::QuantityConvertibleTo<quantity_type, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
   [[nodiscard]] constexpr quantity_point<::mp_units::reference<quantity_spec, U{}>{}, PO, Rep> operator[](U) const
   {
-    return quantity_point<quantity_spec[U{}], PO, Rep>{*this};
+    return make_quantity_point<PO>(quantity_from_origin()[U{}]);
   }
 
   // member unary operators
@@ -235,6 +224,18 @@ public:
     q_ -= q;
     return *this;
   }
+
+private:
+  template<PointOrigin auto PO2, Quantity Q>
+    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO2.quantity_spec>
+  friend constexpr quantity_point<Q::reference, PO2, typename Q::rep> make_quantity_point(Q&&);
+
+  template<Quantity Q>
+    requires std::constructible_from<quantity_type, Q> &&
+             ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
+  constexpr explicit quantity_point(Q&& q) : q_(std::forward<Q>(q))
+  {
+  }
 };
 
 // CTAD
@@ -250,9 +251,7 @@ template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_from_origin() + q; }
 {
-  auto temp = qp.quantity_from_origin() + q;
-  using q_type = decltype(temp);
-  return quantity_point<q_type::reference, PO1, typename q_type::rep>(std::move(temp));
+  return make_quantity_point<PO1>(qp.quantity_from_origin() + q);
 }
 
 template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
@@ -269,7 +268,7 @@ template<PointOrigin PO, Quantity Q>
   requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
 [[nodiscard]] constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, Q&& q)
 {
-  return quantity_point<Q::reference, PO{}, typename Q::rep>(std::forward<Q>(q));
+  return make_quantity_point<PO{}>(std::forward<Q>(q));
 }
 
 template<Quantity Q, PointOrigin PO>
@@ -286,9 +285,7 @@ template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_from_origin() - q; }
 {
-  const auto temp = qp.quantity_from_origin() - q;
-  using q_type = decltype(temp);
-  return quantity_point<q_type::reference, PO1, typename q_type::rep>(std::move(temp));
+  return make_quantity_point<PO1>(qp.quantity_from_origin() - q);
 }
 
 template<PointOrigin PO, Quantity Q>
@@ -369,6 +366,14 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
     return lhs.quantity_from_origin() == rhs.quantity_from_origin();
   else
     return lhs.absolute() == rhs.absolute();
+}
+
+// make_quantity_point
+template<PointOrigin auto PO, Quantity Q>
+  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
+[[nodiscard]] constexpr quantity_point<Q::reference, PO, typename Q::rep> make_quantity_point(Q&& q)
+{
+  return quantity_point<Q::reference, PO, typename Q::rep>(std::forward<Q>(q));
 }
 
 }  // namespace mp_units

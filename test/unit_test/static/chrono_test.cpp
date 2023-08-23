@@ -40,7 +40,14 @@ template<Unit auto U, typename C, typename Rep = double>
 using time_point = quantity_point<U, chrono_point_origin<C>, Rep>;
 
 static_assert(QuantityLike<std::chrono::seconds>);
+static_assert(!Quantity<std::chrono::seconds>);
+static_assert(!QuantityPoint<std::chrono::seconds>);
+static_assert(!QuantityPointLike<std::chrono::seconds>);
+
 static_assert(QuantityPointLike<sys_seconds>);
+static_assert(!Quantity<sys_seconds>);
+static_assert(!QuantityLike<sys_seconds>);
+static_assert(!QuantityPoint<sys_seconds>);
 
 // construction - same rep type
 static_assert(
@@ -108,10 +115,8 @@ static_assert(quantity{std::chrono::years{1}} == 31556952 * s);
 static_assert(quantity{1s} + 1 * s == 2 * s);
 static_assert(quantity{1s} + 1 * min == 61 * s);
 static_assert(10 * m / quantity{2s} == 5 * (m / s));
-static_assert(quantity_point{sys_seconds{1s}} + 1 * s ==
-              time_point<si::second, std::chrono::system_clock, sys_seconds::rep>{2 * s});
-static_assert(quantity_point{sys_seconds{1s}} + 1 * min ==
-              time_point<si::second, std::chrono::system_clock, sys_seconds::rep>{61 * s});
+static_assert(quantity_point{sys_seconds{1s}} + 1 * s == chrono_point_origin<std::chrono::system_clock> + 2 * s);
+static_assert(quantity_point{sys_seconds{1s}} + 1 * min == chrono_point_origin<std::chrono::system_clock> + 61 * s);
 
 // to_chrono_duration
 static_assert(to_chrono_duration(1 * s) == 1s);
