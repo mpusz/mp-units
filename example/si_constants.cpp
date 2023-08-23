@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #include <mp-units/format.h>
-#include <mp-units/systems/si/constants.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/si.h>
 #include <iostream>
 
 template<class T>
@@ -37,18 +41,18 @@ int main()
   std::cout << "The seven defining constants of the SI and the seven corresponding units they define:\n";
   std::cout << MP_UNITS_STD_FMT::format("- hyperfine transition frequency of Cs: {} = {:%.0Q %q}\n",
                                         1. * si2019::hyperfine_structure_transition_frequency_of_cs,
-                                        (1. * si2019::hyperfine_structure_transition_frequency_of_cs)[Hz]);
+                                        (1. * si2019::hyperfine_structure_transition_frequency_of_cs).in(Hz));
   std::cout << MP_UNITS_STD_FMT::format("- speed of light in vacuum:             {} = {:%.0Q %q}\n",
                                         1. * si2019::speed_of_light_in_vacuum,
-                                        (1. * si2019::speed_of_light_in_vacuum)[m / s]);
+                                        (1. * si2019::speed_of_light_in_vacuum).in(m / s));
   std::cout << MP_UNITS_STD_FMT::format("- Planck constant:                      {} = {:%.8eQ %q}\n",
-                                        1. * si2019::planck_constant, (1. * si2019::planck_constant)[J * s]);
+                                        1. * si2019::planck_constant, (1. * si2019::planck_constant).in(J * s));
   std::cout << MP_UNITS_STD_FMT::format("- elementary charge:                    {} = {:%.9eQ %q}\n",
-                                        1. * si2019::elementary_charge, (1. * si2019::elementary_charge)[C]);
+                                        1. * si2019::elementary_charge, (1. * si2019::elementary_charge).in(C));
   std::cout << MP_UNITS_STD_FMT::format("- Boltzmann constant:                   {} = {:%.6eQ %q}\n",
-                                        1. * si2019::boltzmann_constant, (1. * si2019::boltzmann_constant)[J / K]);
+                                        1. * si2019::boltzmann_constant, (1. * si2019::boltzmann_constant).in(J / K));
   std::cout << MP_UNITS_STD_FMT::format("- Avogadro constant:                    {} = {:%.8eQ %q}\n",
-                                        1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant)[1 / mol]);
+                                        1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant).in(1 / mol));
   // TODO uncomment the below when ISQ is done
   // std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n",
   // si2019::luminous_efficacy(1.),

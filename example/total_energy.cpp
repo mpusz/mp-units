@@ -48,31 +48,31 @@ void si_example()
   using namespace mp_units::si::unit_symbols;
   constexpr auto GeV = si::giga<si::electronvolt>;
   constexpr QuantityOf<isq::speed> auto c = 1. * si::si2019::speed_of_light_in_vacuum;
-  auto c2 = pow<2>(c);
+  constexpr auto c2 = pow<2>(c);
 
   const auto p1 = isq::momentum(4. * GeV / c);
   const QuantityOf<isq::mass> auto m1 = 3. * GeV / c2;
   const auto E = total_energy(p1, m1, c);
 
-  std::cout << "\n*** SI units (c = " << c << " = " << c[si::metre / s] << ") ***\n";
+  std::cout << "\n*** SI units (c = " << c << " = " << c.in(si::metre / s) << ") ***\n";
 
   std::cout << "\n[in `GeV` and `c`]\n"
             << "p = " << p1 << "\n"
             << "m = " << m1 << "\n"
             << "E = " << E << "\n";
 
-  const auto p2 = p1[GeV / (m / s)];
-  const auto m2 = m1[GeV / pow<2>(m / s)];
-  const auto E2 = total_energy(p2, m2, c)[GeV];
+  const auto p2 = p1.in(GeV / (m / s));
+  const auto m2 = m1.in(GeV / pow<2>(m / s));
+  const auto E2 = total_energy(p2, m2, c).in(GeV);
 
   std::cout << "\n[in `GeV`]\n"
             << "p = " << p2 << "\n"
             << "m = " << m2 << "\n"
             << "E = " << E2 << "\n";
 
-  const auto p3 = p1[kg * m / s];
-  const auto m3 = m1[kg];
-  const auto E3 = total_energy(p3, m3, c)[J];
+  const auto p3 = p1.in(kg * m / s);
+  const auto m3 = m1.in(kg);
+  const auto E3 = total_energy(p3, m3, c).in(J);
 
   std::cout << "\n[in SI base units]\n"
             << "p = " << p3 << "\n"

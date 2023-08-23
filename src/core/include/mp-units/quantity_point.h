@@ -164,9 +164,9 @@ public:
 
   template<Unit U>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
-  [[nodiscard]] constexpr quantity_point<::mp_units::reference<quantity_spec, U{}>{}, PO, Rep> operator[](U) const
+  [[nodiscard]] constexpr quantity_point<::mp_units::reference<quantity_spec, U{}>{}, PO, Rep> in(U) const
   {
-    return make_quantity_point<PO>(quantity_from_origin()[U{}]);
+    return make_quantity_point<PO>(quantity_from_origin().in(U{}));
   }
 
   // member unary operators

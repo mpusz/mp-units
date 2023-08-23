@@ -126,10 +126,10 @@ int main()
   const auto fill_ratio = fill_level / height;
 
   std::cout << MP_UNITS_STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level,
-                                        fill_ratio[percent]);
-  std::cout << MP_UNITS_STD_FMT::format("fill weight at {} = {} ({})\n", fill_time, filled_weight, filled_weight[N]);
+                                        fill_ratio.in(percent));
+  std::cout << MP_UNITS_STD_FMT::format("fill weight at {} = {} ({})\n", fill_time, filled_weight, filled_weight.in(N));
   std::cout << MP_UNITS_STD_FMT::format("spare capacity at {} = {}\n", fill_time, spare_capacity);
   std::cout << MP_UNITS_STD_FMT::format("input flow rate = {}\n", input_flow_rate);
   std::cout << MP_UNITS_STD_FMT::format("float rise rate = {}\n", float_rise_rate);
-  std::cout << MP_UNITS_STD_FMT::format("tank full E.T.A. at current flow rate = {}\n", fill_time_left[s]);
+  std::cout << MP_UNITS_STD_FMT::format("tank full E.T.A. at current flow rate = {}\n", fill_time_left.in(s));
 }

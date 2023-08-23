@@ -576,21 +576,21 @@ static_assert(is_of_type<(ground_level + isq::height(short(42) * m)).point_for(m
 // converting to a different unit
 ///////////////////////////////////
 
-static_assert((mean_sea_level + 2. * km)[km].quantity_from_origin().number() == 2.);
-static_assert((mean_sea_level + 2. * km)[m].quantity_from_origin().number() == 2000.);
-static_assert((mean_sea_level + 2000. * m)[km].quantity_from_origin().number() == 2.);
-static_assert((ground_level + 2. * km)[km].quantity_from_origin().number() == 2.);
-static_assert((ground_level + 2. * km)[m].quantity_from_origin().number() == 2000.);
-static_assert((ground_level + 2000. * m)[km].quantity_from_origin().number() == 2.);
-static_assert((tower_peak + 2. * km)[km].quantity_from_origin().number() == 2.);
-static_assert((tower_peak + 2. * km)[m].quantity_from_origin().number() == 2000.);
-static_assert((tower_peak + 2000. * m)[km].quantity_from_origin().number() == 2.);
+static_assert((mean_sea_level + 2. * km).in(km).quantity_from_origin().number() == 2.);
+static_assert((mean_sea_level + 2. * km).in(m).quantity_from_origin().number() == 2000.);
+static_assert((mean_sea_level + 2000. * m).in(km).quantity_from_origin().number() == 2.);
+static_assert((ground_level + 2. * km).in(km).quantity_from_origin().number() == 2.);
+static_assert((ground_level + 2. * km).in(m).quantity_from_origin().number() == 2000.);
+static_assert((ground_level + 2000. * m).in(km).quantity_from_origin().number() == 2.);
+static_assert((tower_peak + 2. * km).in(km).quantity_from_origin().number() == 2.);
+static_assert((tower_peak + 2. * km).in(m).quantity_from_origin().number() == 2000.);
+static_assert((tower_peak + 2000. * m).in(km).quantity_from_origin().number() == 2.);
 
 #if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, auto, typename> typename QP>
 concept invalid_unit_conversion = requires {
-  requires !requires { QP<isq::height[m], mean_sea_level, int>(2000 * m)[km]; };  // truncating conversion
-  requires !requires { QP<isq::height[m], mean_sea_level, int>(2 * m)[s]; };      // invalid unit
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(2000 * m).in(km); };  // truncating conversion
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity_point>);
 #endif

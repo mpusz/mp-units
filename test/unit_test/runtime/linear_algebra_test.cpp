@@ -31,17 +31,14 @@
 #include <cmath>
 #include <matrix>
 
-
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
 template<typename Rep>
 inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
 
-namespace STD_LA {
-
 template<typename Rep>
-std::ostream& operator<<(std::ostream& os, const ::vector<Rep>& v)
+std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)
 {
   os << "|";
   for (auto i = 0U; i < v.size(); ++i) {
@@ -50,8 +47,6 @@ std::ostream& operator<<(std::ostream& os, const ::vector<Rep>& v)
   os << " |";
   return os;
 }
-
-}  // namespace STD_LA
 
 namespace {
 
@@ -88,7 +83,7 @@ TEST_CASE("vector quantity", "[la]")
     SECTION("non-truncating")
     {
       const auto v = vector<int>{3, 2, 1} * isq::position_vector[km];
-      CHECK(v[m].number() == vector<int>{3000, 2000, 1000});
+      CHECK(v.in(m).number() == vector<int>{3000, 2000, 1000});
     }
 
     SECTION("truncating")

@@ -198,17 +198,17 @@ static_assert(quantity<isq::length[km]>(1500 * m).number() == 1.5);
 // converting to a different unit
 ///////////////////////////////////
 
-static_assert(quantity<isq::length[km]>(2. * km)[km].number() == 2.);
-static_assert(quantity<isq::length[km]>(2. * km)[m].number() == 2000.);
-static_assert(quantity<isq::length[m]>(2000. * m)[km].number() == 2.);
-static_assert(quantity<isq::length[km], int>(2 * km)[km].number() == 2);
-static_assert(quantity<isq::length[km], int>(2 * km)[m].number() == 2000);
+static_assert(quantity<isq::length[km]>(2. * km).in(km).number() == 2.);
+static_assert(quantity<isq::length[km]>(2. * km).in(m).number() == 2000.);
+static_assert(quantity<isq::length[m]>(2000. * m).in(km).number() == 2.);
+static_assert(quantity<isq::length[km], int>(2 * km).in(km).number() == 2);
+static_assert(quantity<isq::length[km], int>(2 * km).in(m).number() == 2000);
 
 #if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
-  requires !requires { Q<isq::length[m], int>(2000 * m)[km]; };  // truncating conversion
-  requires !requires { Q<isq::length[m], int>(2 * m)[s]; };      // invalid unit
+  requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };  // truncating conversion
+  requires !requires { Q<isq::length[m], int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity>);
 #endif
@@ -648,7 +648,7 @@ static_assert((7 * one % (2 * one)).number() == 1);
 static_assert((10 * m2 * (10 * m2)) / (50 * m2) == 2 * m2);
 
 static_assert((10 * km / (5 * m)).number() == 2);
-static_assert((10 * km / (5 * m))[one].number() == 2000);
+static_assert((10 * km / (5 * m)).in(one).number() == 2000);
 static_assert((10 * s * (2 * kHz)).number() == 20);
 
 // commutativity and associativity
@@ -872,10 +872,10 @@ static_assert(!(123 * km >= 321'000 * m));
 
 static_assert(is_of_type<10 * km / (5 * km), quantity<one, int>>);
 
-static_assert((50. * m / (100. * m))[percent].number() == 50);
+static_assert((50. * m / (100. * m)).in(percent).number() == 50);
 static_assert(50. * m / (100. * m) == 50 * percent);
 
-static_assert(((50. * percent)[one]).number() == 0.5);
+static_assert((50. * percent).in(one).number() == 0.5);
 
 
 //////////////////

@@ -135,7 +135,7 @@ void example()
   const auto t = measurement{1.2, 0.1} * s;
 
   const QuantityOf<isq::velocity> auto v = a * t;
-  std::cout << a << " * " << t << " = " << v << " = " << v[km / h] << '\n';
+  std::cout << a << " * " << t << " = " << v << " = " << v.in(km / h) << '\n';
 
   const auto length = measurement{123., 1.} * m;
   std::cout << "10 * " << length << " = " << 10 * length << '\n';

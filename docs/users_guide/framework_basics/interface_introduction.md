@@ -264,7 +264,7 @@ using namespace mp_units::si::unit_symbols;
 auto speed = 60. * isq::speed[km / h];
 auto duration = 8 * s;
 auto acceleration = speed / duration;
-std::cout << "acceleration: " << acceleration << " (" << acceleration[m / s2] << ")\n";
+std::cout << "acceleration: " << acceleration << " (" << acceleration.in(m / s2) << ")\n";
 ```
 
 The `acceleration`, being the result of the above code, has the following type

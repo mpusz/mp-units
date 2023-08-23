@@ -4,7 +4,7 @@
 
 ```cpp
 auto q1 = 5 * km;
-std::cout << q1[m] << '\n';
+std::cout << q1.in(m) << '\n';
 quantity<si::metre, int> q2 = q1;
 ```
 
@@ -23,7 +23,7 @@ In case a user would like to perform an opposite transformation:
 
 ```cpp
 auto q1 = 5 * m;
-std::cout << q1[km] << '\n';
+std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>, int> q2 = q1;
 ```
 
@@ -34,7 +34,7 @@ representation type:
 
 ```cpp
 auto q1 = 5. * m;
-std::cout << q1[km] << '\n';
+std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>> q2 = q1;
 ```
 

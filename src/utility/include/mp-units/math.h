@@ -304,7 +304,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
-  return make_quantity<one>(static_cast<Rep>(sin(q[si::radian].number())));
+  return make_quantity<one>(static_cast<Rep>(sin(q.in(si::radian).number())));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
@@ -313,7 +313,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
-  return make_quantity<one>(static_cast<Rep>(cos(q[si::radian].number())));
+  return make_quantity<one>(static_cast<Rep>(cos(q.in(si::radian).number())));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
@@ -322,7 +322,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
-  return make_quantity<one>(static_cast<Rep>(tan(q[si::radian].number())));
+  return make_quantity<one>(static_cast<Rep>(tan(q.in(si::radian).number())));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
@@ -362,7 +362,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   requires requires { sin(q.number()); } || requires { std::sin(q.number()); }
 {
   using std::sin;
-  return make_quantity<one>(static_cast<Rep>(sin(q[radian].number())));
+  return make_quantity<one>(static_cast<Rep>(sin(q.in(radian).number())));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
@@ -371,7 +371,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   requires requires { cos(q.number()); } || requires { std::cos(q.number()); }
 {
   using std::cos;
-  return make_quantity<one>(static_cast<Rep>(cos(q[radian].number())));
+  return make_quantity<one>(static_cast<Rep>(cos(q.in(radian).number())));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
@@ -380,7 +380,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   requires requires { tan(q.number()); } || requires { std::tan(q.number()); }
 {
   using std::tan;
-  return make_quantity<one>(static_cast<Rep>(tan(q[radian].number())));
+  return make_quantity<one>(static_cast<Rep>(tan(q.in(radian).number())));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>

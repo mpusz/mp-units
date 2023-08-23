@@ -44,7 +44,7 @@ associated with this quantity.
     before passing it to the text output:
 
     ```cpp
-    std::cout << v1[km / h] << '\n';             // 110 km/h
+    std::cout << v1.in(km / h) << '\n';          // 110 km/h
     std::cout << value_cast<m / s>(v1) << '\n';  // 30.5556 m/s
     ```
 

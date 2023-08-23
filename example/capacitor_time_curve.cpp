@@ -47,15 +47,15 @@ int main()
     std::cout << "at " << tt << " voltage is ";
 
     if (Vt >= 1 * V)
-      std::cout << Vt[V];
+      std::cout << Vt.in(V);
     else if (Vt >= 1 * mV)
-      std::cout << Vt[mV];
+      std::cout << Vt.in(mV);
     else if (Vt >= 1 * uV)
-      std::cout << Vt[uV];
+      std::cout << Vt.in(uV);
     else if (Vt >= 1 * nV)
-      std::cout << Vt[nV];
+      std::cout << Vt.in(nV);
     else
-      std::cout << Vt[pV];
+      std::cout << Vt.in(pV);
     std::cout << "\n";
   }
 }

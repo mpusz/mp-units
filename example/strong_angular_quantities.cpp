@@ -44,5 +44,5 @@ int main()
   const auto torque = isq_angle::torque(lever * force * angular::sin(angle) / (1 * isq_angle::cotes_angle));
 
   std::cout << "Applying a perpendicular force of " << force << " to a " << lever << " long lever results in "
-            << torque[N * m / rad] << " of torque.\n";
+            << torque.in(N * m / rad) << " of torque.\n";
 }

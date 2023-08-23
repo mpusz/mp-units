@@ -72,7 +72,7 @@ int main()
 
   std::cout << "A car driving " << distance << " in " << duration
             << " has an average speed of " << speed
-            << " (" << speed[km / h] << ")\n";
+            << " (" << speed.in(km / h) << ")\n";
 }
 ```
 
@@ -82,7 +82,7 @@ The code above prints:
 A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/4zecYqn5z)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zWe8ecf93)"
 
 
 ### Easy to understand compilation error messages
@@ -146,7 +146,7 @@ int main()
 
   std::cout << "A car driving " << distance << " in " << duration
             << " has an average speed of " << speed
-            << " (" << speed[km / h] << ")\n";
+            << " (" << speed.in(km / h) << ")\n";
 }
 ```
 
@@ -154,7 +154,7 @@ int main()
 A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/jhfWjGadz)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/q3PzMzqsh)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message also containing information about the quantity type:

@@ -76,9 +76,9 @@ the following:
 ```cpp
 auto q1 = 42 * W;
 std::cout << q1 << "\n";
-std::cout << q1[J / s] << "\n";
-std::cout << q1[N * m / s] << "\n";
-std::cout << q1[kg * m2 / s3] << "\n";
+std::cout << q1.in(J / s) << "\n";
+std::cout << q1.in(N * m / s) << "\n";
+std::cout << q1.in(kg * m2 / s3) << "\n";
 ```
 
 prints:

@@ -46,7 +46,7 @@ int main()
   std::cout << "conversion factor in mp-units...\n\n";
 
   constexpr auto lengthA = 2.0 * m;
-  constexpr auto lengthB = lengthA[mm];
+  constexpr auto lengthB = lengthA.in(mm);
 
   std::cout << MP_UNITS_STD_FMT::format("lengthA( {} ) and lengthB( {} )\n", lengthA, lengthB)
             << "represent the same length in different units.\n\n";

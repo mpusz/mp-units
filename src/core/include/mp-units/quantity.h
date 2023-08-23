@@ -164,15 +164,15 @@ public:
 #endif
 
   template<Unit U>
-    requires requires(quantity q) { q[U{}]; }
+    requires requires(quantity q) { q.in(U{}); }
   [[nodiscard]] constexpr rep number_in(U) const noexcept
   {
-    return (*this)[U{}].number();
+    return (*this).in(U{}).number();
   }
 
   template<Unit U>
     requires detail::QuantityConvertibleTo<quantity, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
-  [[nodiscard]] constexpr quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep> operator[](U) const
+  [[nodiscard]] constexpr quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep> in(U) const
   {
     return quantity<quantity_spec[U{}], Rep>{*this};
   }

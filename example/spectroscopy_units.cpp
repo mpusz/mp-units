@@ -60,8 +60,9 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
          QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line_si(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
-  MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", std::get<0>(t)[eV],
-                            std::get<1>(t)[1 / cm], std::get<2>(t)[THz], std::get<3>(t)[K], std::get<4>(t)[um]);
+  MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", std::get<0>(t).in(eV),
+                            std::get<1>(t).in(1 / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
+                            std::get<4>(t).in(um));
 }
 
 int main()

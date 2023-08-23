@@ -81,24 +81,24 @@ void quantities_with_typed_units()
 
   std::cout << meter << '\n';
 
-  std::cout << " = " << meter[astronomical_unit] << '\n';
-  std::cout << " = " << meter[iau::angstrom] << '\n';
-  std::cout << " = " << meter[imperial::chain] << '\n';
-  std::cout << " = " << meter[imperial::fathom] << '\n';
-  std::cout << " = " << meter[usc::fathom] << '\n';
-  std::cout << " = " << meter[international::foot] << '\n';
-  std::cout << " = " << meter[usc::survey1893::us_survey_foot] << '\n';
-  std::cout << " = " << meter[international::inch] << '\n';
-  std::cout << " = " << meter[iau::light_year] << '\n';
-  std::cout << " = " << meter[international::mile] << '\n';
-  std::cout << " = " << meter[international::nautical_mile] << '\n';
-  std::cout << " = " << meter[iau::parsec] << '\n';
-  std::cout << " = " << meter[typographic::pica_dtp] << '\n';
-  std::cout << " = " << meter[typographic::pica_us] << '\n';
-  std::cout << " = " << meter[typographic::point_dtp] << '\n';
-  std::cout << " = " << meter[typographic::point_us] << '\n';
-  std::cout << " = " << meter[imperial::rod] << '\n';
-  std::cout << " = " << meter[international::yard] << '\n';
+  std::cout << " = " << meter.in(astronomical_unit) << '\n';
+  std::cout << " = " << meter.in(iau::angstrom) << '\n';
+  std::cout << " = " << meter.in(imperial::chain) << '\n';
+  std::cout << " = " << meter.in(imperial::fathom) << '\n';
+  std::cout << " = " << meter.in(usc::fathom) << '\n';
+  std::cout << " = " << meter.in(international::foot) << '\n';
+  std::cout << " = " << meter.in(usc::survey1893::us_survey_foot) << '\n';
+  std::cout << " = " << meter.in(international::inch) << '\n';
+  std::cout << " = " << meter.in(iau::light_year) << '\n';
+  std::cout << " = " << meter.in(international::mile) << '\n';
+  std::cout << " = " << meter.in(international::nautical_mile) << '\n';
+  std::cout << " = " << meter.in(iau::parsec) << '\n';
+  std::cout << " = " << meter.in(typographic::pica_dtp) << '\n';
+  std::cout << " = " << meter.in(typographic::pica_us) << '\n';
+  std::cout << " = " << meter.in(typographic::point_dtp) << '\n';
+  std::cout << " = " << meter.in(typographic::point_us) << '\n';
+  std::cout << " = " << meter.in(imperial::rod) << '\n';
+  std::cout << " = " << meter.in(international::yard) << '\n';
 }
 
 void calcs_comparison()
@@ -119,8 +119,8 @@ void calcs_comparison()
                "or small values in other units to the base unit.\n"
                "This is both inefficient and inaccurate\n\n";
 
-  const auto L1B = L1A[m];
-  const auto L2B = L2A[m];
+  const auto L1B = L1A.in(m);
+  const auto L2B = L2A.in(m);
   const auto LrB = L1B + L2B;
   std::cout << MP_UNITS_STD_FMT::format("{:%.30eQ %q}\n + {:%.30eQ %q}\n   = {:%.30eQ %q}\n\n", L1B, L2B, LrB);
 

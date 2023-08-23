@@ -61,7 +61,7 @@ constexpr auto speed_of_light_in_vacuum = 1 * si::si2019::speed_of_light_in_vacu
 
 QuantityOf<isq::permittivity_of_vacuum> auto q = 1 / (permeability_of_vacuum * pow<2>(speed_of_light_in_vacuum));
 
-std::cout << "permittivity of vacuum = " << q << " = " << q[F / m] << "\n";
+std::cout << "permittivity of vacuum = " << q << " = " << q.in(F / m) << "\n";
 ```
 
 The above first prints the following:
@@ -99,18 +99,18 @@ std::cout << "in `GeV` and `c`:\n"
           << "m = " << m1 << "\n"
           << "E = " << E << "\n";
 
-const auto p2 = p1[GeV / (m / s)];
-const auto m2 = m1[GeV / pow<2>(m / s)];
-const auto E2 = total_energy(p2, m2, c)[GeV];
+const auto p2 = p1.in(GeV / (m / s));
+const auto m2 = m1.in(GeV / pow<2>(m / s));
+const auto E2 = total_energy(p2, m2, c).in(GeV);
 
 std::cout << "\nin `GeV`:\n"
           << "p = " << p2 << "\n"
           << "m = " << m2 << "\n"
           << "E = " << E2 << "\n";
 
-const auto p3 = p1[kg * m / s];
-const auto m3 = m1[kg];
-const auto E3 = total_energy(p3, m3, c)[J];
+const auto p3 = p1.in(kg * m / s);
+const auto m3 = m1.in(kg);
+const auto E3 = total_energy(p3, m3, c).in(J);
 
 std::cout << "\nin SI base units:\n"
           << "p = " << p3 << "\n"
