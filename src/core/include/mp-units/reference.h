@@ -29,10 +29,6 @@
 
 namespace mp_units {
 
-template<Reference auto R, typename Rep>
-  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
-[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
-
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
   return detail::get_associated_quantity(u);

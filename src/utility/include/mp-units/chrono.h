@@ -80,7 +80,7 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   static constexpr auto point_origin = chrono_point_origin<C>;
   using rep = Rep;
-  [[nodiscard]] static constexpr auto quantity_from_origin(
+  [[nodiscard]] static constexpr quantity<reference, rep> quantity_from_origin(
     const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
   {
     return quantity{qp.time_since_epoch()};

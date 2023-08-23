@@ -32,6 +32,10 @@ namespace mp_units {
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
+template<Reference auto R, typename Rep>
+  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
+[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
+
 namespace detail {
 
 template<auto R, typename Rep>
@@ -74,8 +78,8 @@ concept QuantityLike = requires(T q) {
   requires RepresentationOf<typename quantity_like_traits<T>::rep,
                             get_quantity_spec(quantity_like_traits<T>::reference).character>;
   {
-    quantity_like_traits<T>::value(q)
-  } -> std::convertible_to<typename quantity_like_traits<T>::rep>;
+    make_quantity<quantity_like_traits<T>::reference>(quantity_like_traits<T>::value(q))
+  } -> std::same_as<quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>>;
 };
 
 }  // namespace mp_units
