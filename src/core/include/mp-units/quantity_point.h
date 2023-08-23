@@ -238,12 +238,6 @@ public:
 };
 
 // CTAD
-template<Quantity Q>
-explicit quantity_point(Q) -> quantity_point<Q::reference, absolute_point_origin<Q::quantity_spec>{}, typename Q::rep>;
-
-template<Quantity Q, PointOrigin PO>
-explicit quantity_point(Q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
-
 template<QuantityPointLike QP>
 explicit quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
