@@ -29,16 +29,21 @@
 
 namespace mp_units {
 
-template<QuantitySpec auto Q>
+template<QuantitySpec auto QS>
 struct absolute_point_origin {
-  static constexpr QuantitySpec auto quantity_spec = Q;
+  static constexpr QuantitySpec auto quantity_spec = QS;
 };
 
 template<QuantityPoint auto QP>
 struct relative_point_origin {
   static constexpr QuantityPoint auto quantity_point = QP;
-  static constexpr QuantitySpec auto quantity_spec =
-    common_quantity_spec(QP.quantity_spec, QP.point_origin.quantity_spec);
+  static constexpr QuantitySpec auto quantity_spec = [](){
+    // select the strongest of specs
+    if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(QP.quantity_spec)>>)
+      return QP.point_origin.quantity_spec;
+    else
+      return QP.quantity_spec;
+  }();
   static constexpr PointOrigin auto absolute_point_origin = QP.absolute_point_origin;
 };
 

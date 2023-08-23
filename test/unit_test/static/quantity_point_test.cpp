@@ -1156,5 +1156,22 @@ static_assert(invalid_addition(5 * activity[Bq], 10 / (2 * isq::time[s]), zero_H
 static_assert(invalid_subtraction(zero_Bq + 5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 
 
+/////////////////////////
+// relative point origin
+/////////////////////////
+
+template<auto QS>
+struct absolute_po_ : absolute_point_origin<QS> {};
+template<auto QS>
+inline constexpr absolute_po_<QS> absolute_po;
+
+template<auto QP>
+struct relative_po_ : relative_point_origin<QP> {};
+template<auto QP>
+inline constexpr relative_po_<QP> relative_po;
+
+static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quantity_spec == isq::height);
+static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);
+static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == isq::height);
 
 }  // namespace
