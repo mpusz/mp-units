@@ -140,7 +140,7 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   template<PointOriginFor<quantity_spec> NewPO>
-  [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_from(NewPO new_origin) const
+  [[nodiscard]] constexpr QuantityPointOf<NewPO{}> auto point_for(NewPO new_origin) const
   {
     if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>)
       return *this;

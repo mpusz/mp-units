@@ -556,19 +556,19 @@ static_assert(quantity_point<isq::height[m], ground_level>(tower_peak + 42 * m).
 static_assert(quantity_point<isq::height[m], tower_peak>(mean_sea_level + 42 * m).quantity_from_origin() == -42 * m);
 static_assert(quantity_point<isq::height[m], tower_peak>(ground_level + 84 * m).quantity_from_origin() == 42 * m);
 
-static_assert((mean_sea_level + 42 * m).point_from(mean_sea_level).quantity_from_origin() == 42 * m);
-static_assert((ground_level + 42 * m).point_from(mean_sea_level).quantity_from_origin() == 84 * m);
-static_assert((tower_peak + 42 * m).point_from(mean_sea_level).quantity_from_origin() == 126 * m);
+static_assert((mean_sea_level + 42 * m).point_for(mean_sea_level).quantity_from_origin() == 42 * m);
+static_assert((ground_level + 42 * m).point_for(mean_sea_level).quantity_from_origin() == 84 * m);
+static_assert((tower_peak + 42 * m).point_for(mean_sea_level).quantity_from_origin() == 126 * m);
 
-static_assert((ground_level + 84 * m).point_from(ground_level).quantity_from_origin() == 84 * m);
-static_assert((mean_sea_level + 84 * m).point_from(ground_level).quantity_from_origin() == 42 * m);
-static_assert((tower_peak + 42 * m).point_from(ground_level).quantity_from_origin() == 84 * m);
+static_assert((ground_level + 84 * m).point_for(ground_level).quantity_from_origin() == 84 * m);
+static_assert((mean_sea_level + 84 * m).point_for(ground_level).quantity_from_origin() == 42 * m);
+static_assert((tower_peak + 42 * m).point_for(ground_level).quantity_from_origin() == 84 * m);
 
-static_assert((tower_peak + 42 * m).point_from(tower_peak).quantity_from_origin() == 42 * m);
-static_assert((mean_sea_level + 42 * m).point_from(tower_peak).quantity_from_origin() == -42 * m);
-static_assert((ground_level + 84 * m).point_from(tower_peak).quantity_from_origin() == 42 * m);
+static_assert((tower_peak + 42 * m).point_for(tower_peak).quantity_from_origin() == 42 * m);
+static_assert((mean_sea_level + 42 * m).point_for(tower_peak).quantity_from_origin() == -42 * m);
+static_assert((ground_level + 84 * m).point_for(tower_peak).quantity_from_origin() == 42 * m);
 
-static_assert(is_of_type<(ground_level + isq::height(short(42) * m)).point_from(mean_sea_level),
+static_assert(is_of_type<(ground_level + isq::height(short(42) * m)).point_for(mean_sea_level),
                          quantity_point<isq::height[m], mean_sea_level, int>>);
 
 
