@@ -51,6 +51,10 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_absolute_point_origin =
   requires(T* t) { to_base_specialization_of_absolute_point_origin(t); };
 
+template<typename T>
+concept AbsolutePointOrigin =
+  is_derived_from_specialization_of_absolute_point_origin<T> && !is_specialization_of_absolute_point_origin<T>;
+
 }  // namespace detail
 
 /**
@@ -79,6 +83,10 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_relative_point_origin =
   requires(T* t) { to_base_specialization_of_relative_point_origin(t); };
 
+template<typename T>
+concept RelativePointOrigin =
+  is_derived_from_specialization_of_relative_point_origin<T> && !is_specialization_of_relative_point_origin<T>;
+
 }  // namespace detail
 
 /**
@@ -87,9 +95,7 @@ inline constexpr bool is_derived_from_specialization_of_relative_point_origin =
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 template<typename T>
-concept PointOrigin = detail::is_derived_from_specialization_of_absolute_point_origin<T> ||
-                      (detail::is_derived_from_specialization_of_relative_point_origin<T> &&
-                       !detail::is_specialization_of_relative_point_origin<T>);
+concept PointOrigin = detail::AbsolutePointOrigin<T> || detail::RelativePointOrigin<T>;
 
 /**
  * @brief A concept matching all quantity point origins for a specified quantity type in the library

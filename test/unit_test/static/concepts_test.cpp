@@ -38,6 +38,13 @@ namespace {
 
 using namespace mp_units;
 
+inline constexpr struct my_origin : absolute_point_origin<isq::length> {
+} my_origin;
+inline constexpr struct another_origin : absolute_point_origin<isq::length> {
+} another_origin;
+inline constexpr struct my_relative_origin : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
+} my_relative_origin;
+
 struct dim_speed : decltype(isq::dim_length / isq::dim_time) {};
 
 // BaseDimension
@@ -316,7 +323,7 @@ static_assert(Quantity<quantity<isq::length[si::metre]>>);
 static_assert(Quantity<quantity<si::metre, int>>);
 static_assert(Quantity<quantity<isq::length[si::metre], int>>);
 static_assert(!Quantity<std::chrono::seconds>);
-static_assert(!Quantity<quantity_point<si::metre>>);
+static_assert(!Quantity<quantity_point<si::metre, my_origin>>);
 static_assert(!Quantity<std::remove_const_t<decltype(isq::length[si::metre])>>);
 
 // QuantityOf
@@ -354,19 +361,14 @@ static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::angular_measure>);
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityLike<std::chrono::hours>);
 static_assert(!QuantityLike<quantity<isq::time[si::second]>>);
-static_assert(!QuantityLike<quantity_point<isq::time[si::second]>>);
+static_assert(!QuantityLike<quantity_point<isq::length[si::metre], my_origin>>);
 static_assert(!QuantityLike<int>);
 
 // QuantityPoint
-inline constexpr struct my_origin : absolute_point_origin<isq::length> {
-} my_origin;
-inline constexpr struct my_relative_origin : relative_point_origin<quantity_point{isq::length(42 * si::metre)}> {
-} my_relative_origin;
-
-static_assert(QuantityPoint<quantity_point<si::metre>>);
-static_assert(QuantityPoint<quantity_point<isq::length[si::metre]>>);
-static_assert(QuantityPoint<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>>);
-static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(QuantityPoint<quantity_point<si::metre, my_origin>>);
+static_assert(QuantityPoint<quantity_point<si::metre, my_relative_origin>>);
+static_assert(QuantityPoint<quantity_point<isq::length[si::metre], my_origin>>);
+static_assert(QuantityPoint<quantity_point<isq::length[si::metre], my_relative_origin, int>>);
 static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], my_origin>>);
 static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], my_relative_origin>>);
 static_assert(!QuantityPoint<std::remove_const_t<decltype(isq::length[si::metre])>>);
@@ -378,56 +380,34 @@ static_assert(!QuantityPoint<std::chrono::time_point<std::chrono::system_clock>>
 static_assert(!QuantityPoint<int>);
 
 // QuantityPointOf
-static_assert(QuantityPointOf<quantity_point<si::metre>, isq::length>);
-static_assert(QuantityPointOf<quantity_point<si::metre>, isq::radius>);
-static_assert(QuantityPointOf<quantity_point<isq::length[si::metre]>, isq::length>);
-static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, isq::radius>);
-static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, isq::length>);
-static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, isq::radius>);
-static_assert(
-  QuantityPointOf<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
-static_assert(
-  !QuantityPointOf<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
-static_assert(
-  QuantityPointOf<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
-static_assert(
-  QuantityPointOf<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_origin>, isq::length>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_origin>, isq::radius>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre], my_origin>, isq::length>);
+static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre], my_origin>, isq::radius>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, isq::length>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, isq::radius>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, isq::length>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, isq::radius>);
-static_assert(QuantityPointOf<quantity_point<si::metre>, absolute_point_origin<isq::length>{}>);
-static_assert(QuantityPointOf<quantity_point<si::metre>, absolute_point_origin<isq::radius>{}>);
-static_assert(!QuantityPointOf<quantity_point<si::metre>, my_origin>);
-static_assert(!QuantityPointOf<quantity_point<si::metre>, my_relative_origin>);
-static_assert(QuantityPointOf<quantity_point<isq::length[si::metre]>, absolute_point_origin<isq::length>{}>);
-static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, absolute_point_origin<isq::radius>{}>);
-static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, my_origin>);
-static_assert(!QuantityPointOf<quantity_point<isq::length[si::metre]>, my_relative_origin>);
-static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, absolute_point_origin<isq::length>{}>);
-static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre]>, absolute_point_origin<isq::radius>{}>);
-static_assert(!QuantityPointOf<quantity_point<isq::radius[si::metre]>, my_origin>);
-static_assert(!QuantityPointOf<quantity_point<isq::radius[si::metre]>, my_relative_origin>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_origin>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_origin>, my_relative_origin>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_relative_origin>, my_relative_origin>);
+static_assert(QuantityPointOf<quantity_point<si::metre, my_relative_origin>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre], my_origin>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre], my_origin>, my_relative_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre], my_relative_origin>, my_relative_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::length[si::metre], my_relative_origin>, my_origin>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, my_origin>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, my_relative_origin>);
 static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, my_relative_origin>);
-static_assert(
-  QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, absolute_point_origin<isq::length>{}>);
-static_assert(
-  !QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, absolute_point_origin<isq::length>{}>);
-static_assert(
-  !QuantityPointOf<quantity_point<isq::radius[si::metre], my_origin>, absolute_point_origin<isq::radius>{}>);
-static_assert(
-  !QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, absolute_point_origin<isq::radius>{}>);
+static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative_origin>, my_origin>);
 
 // PointOrigin
-static_assert(PointOrigin<absolute_point_origin<isq::length>>);
 static_assert(PointOrigin<struct my_origin>);
 static_assert(PointOrigin<struct my_relative_origin>);
-static_assert(!PointOrigin<relative_point_origin<quantity_point<si::metre>{42 * si::metre}>>);
-static_assert(!PointOrigin<quantity_point<si::metre>>);
-static_assert(!PointOrigin<quantity_point<isq::length[si::metre]>>);
-static_assert(!PointOrigin<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>>);
-static_assert(!PointOrigin<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>>);
+static_assert(!PointOrigin<absolute_point_origin<isq::length>>);
+static_assert(!PointOrigin<relative_point_origin<my_origin + 42 * si::metre>>);
+static_assert(!PointOrigin<quantity_point<si::metre, my_origin>>);
+static_assert(!PointOrigin<quantity_point<isq::length[si::metre], my_origin>>);
 static_assert(!PointOrigin<quantity_point<isq::radius[si::metre], my_origin>>);
 static_assert(!PointOrigin<std::remove_const_t<decltype(isq::length[si::metre])>>);
 static_assert(!PointOrigin<std::chrono::seconds>);
@@ -435,50 +415,18 @@ static_assert(!PointOrigin<std::chrono::time_point<std::chrono::system_clock>>);
 static_assert(!PointOrigin<int>);
 
 // PointOriginFor
-static_assert(PointOriginFor<absolute_point_origin<isq::length>, isq::length>);
-static_assert(!PointOriginFor<absolute_point_origin<isq::radius>, isq::length>);
-static_assert(PointOriginFor<absolute_point_origin<isq::length>, isq::radius>);
-static_assert(PointOriginFor<absolute_point_origin<isq::radius>, isq::radius>);
-static_assert(!PointOriginFor<absolute_point_origin<isq::length>, isq::time>);
 static_assert(PointOriginFor<struct my_origin, isq::length>);
 static_assert(PointOriginFor<struct my_origin, isq::radius>);
 static_assert(!PointOriginFor<struct my_origin, isq::time>);
 static_assert(PointOriginFor<struct my_relative_origin, isq::length>);
 static_assert(PointOriginFor<struct my_relative_origin, isq::radius>);
 static_assert(!PointOriginFor<struct my_relative_origin, isq::time>);
-static_assert(!PointOriginFor<quantity_point<si::metre>, isq::length>);
-static_assert(!PointOriginFor<quantity_point<si::metre>, isq::radius>);
-static_assert(!PointOriginFor<quantity_point<si::metre>, isq::time>);
-static_assert(!PointOriginFor<quantity_point<isq::length[si::metre]>, isq::length>);
-static_assert(!PointOriginFor<quantity_point<isq::length[si::metre]>, isq::radius>);
-static_assert(!PointOriginFor<quantity_point<isq::length[si::metre]>, isq::time>);
-static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::length>);
-static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::radius>);
-static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre]>, isq::time>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::length>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::radius>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::length[si::metre], absolute_point_origin<isq::length>{}, int>, isq::time>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::length>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::radius>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::radius>{}, int>, isq::time>);
-static_assert(!PointOriginFor<
-              quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::length>);
-static_assert(!PointOriginFor<
-              quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::radius>);
-static_assert(!PointOriginFor<
-              quantity_point<isq::length[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::time>);
-static_assert(!PointOriginFor<
-              quantity_point<isq::radius[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::length>);
-static_assert(!PointOriginFor<
-              quantity_point<isq::radius[si::metre], absolute_point_origin<kind_of<isq::length>>{}, int>, isq::radius>);
-static_assert(
-  !PointOriginFor<quantity_point<isq::radius[si::metre], absolute_point_origin<isq::length>{}, int>, isq::time>);
+static_assert(!PointOriginFor<quantity_point<si::metre, my_origin>, isq::length>);
+static_assert(!PointOriginFor<quantity_point<si::metre, my_origin>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<si::metre, my_origin>, isq::time>);
+static_assert(!PointOriginFor<quantity_point<isq::length[si::metre], my_origin>, isq::length>);
+static_assert(!PointOriginFor<quantity_point<isq::length[si::metre], my_origin>, isq::radius>);
+static_assert(!PointOriginFor<quantity_point<isq::length[si::metre], my_origin>, isq::time>);
 static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::length>);
 static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::radius>);
 static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_origin>, isq::time>);
@@ -494,7 +442,7 @@ static_assert(!PointOriginFor<int, isq::length>);
 static_assert(QuantityPointLike<std::chrono::time_point<std::chrono::system_clock>>);
 static_assert(!QuantityPointLike<std::chrono::seconds>);
 static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
-static_assert(!QuantityPointLike<quantity_point<isq::time[si::second]>>);
+static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);
 
 }  // namespace

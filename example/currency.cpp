@@ -33,6 +33,8 @@ inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
+constexpr struct zero : absolute_point_origin<currency> {} zero;
+
 inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
 inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
 inline constexpr struct great_british_pound : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
@@ -40,6 +42,7 @@ inline constexpr struct japanese_jen : named_unit<"JPY", kind_of<currency>> {} j
 // clang-format on
 
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
+
 
 #if 0
 
@@ -78,13 +81,13 @@ quantity<To, Rep> exchange_to(quantity<From, Rep> q)
 template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 {
-  return quantity_point{static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.absolute().number()) * To};
+  return quantity_point{zero + static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.absolute().number()) * To};
 }
 
 int main()
 {
-  auto price_usd = quantity_point{100 * us_dollar};
-  auto price_euro = quantity_point{exchange_to<euro>(price_usd)};
+  quantity_point price_usd = zero + 100 * us_dollar;
+  quantity_point price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.absolute() << " -> " << price_euro.absolute() << "\n";
   // std::cout << price_usd.absolute() + price_euro.absolute() << "\n";  // does not compile

@@ -25,7 +25,7 @@
 #include <mp-units/math.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/thermodynamics.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/si.h>
 #include <array>
 #include <iostream>
 
@@ -55,12 +55,12 @@ int main()
   using namespace kalman;
 
   const auto process_noise_variance = 0.15 * (deg_C * deg_C);
-  const estimation initial = {state{quantity_point{10. * deg_C}}, pow<2>(100. * deg_C)};
-  const std::array measurements = {quantity_point{50.45 * deg_C},  quantity_point{50.967 * deg_C},
-                                   quantity_point{51.6 * deg_C},   quantity_point{52.106 * deg_C},
-                                   quantity_point{52.492 * deg_C}, quantity_point{52.819 * deg_C},
-                                   quantity_point{53.433 * deg_C}, quantity_point{54.007 * deg_C},
-                                   quantity_point{54.523 * deg_C}, quantity_point{54.99 * deg_C}};
+  const estimation initial = {state{si::ice_point + 10. * deg_C}, pow<2>(100. * deg_C)};
+  const std::array measurements = {si::ice_point + 50.45 * deg_C,  si::ice_point + 50.967 * deg_C,
+                                   si::ice_point + 51.6 * deg_C,   si::ice_point + 52.106 * deg_C,
+                                   si::ice_point + 52.492 * deg_C, si::ice_point + 52.819 * deg_C,
+                                   si::ice_point + 53.433 * deg_C, si::ice_point + 54.007 * deg_C,
+                                   si::ice_point + 54.523 * deg_C, si::ice_point + 54.99 * deg_C};
   const auto measurement_uncertainty = pow<2>(0.1 * deg_C);
 
   auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement,
