@@ -107,7 +107,7 @@ concept Magnitude = detail::is_magnitude<T>;
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
  *
- * The public API is that there is a `power` member variable (of type `ratio`), and a `get_base()` member function (of
+ * The public API is that there is a `power` member variable (of type `ratio`), and a `get_base_value()` member function (of
  * type either `std::intmax_t` or `long double`, as appropriate), for any specialization.
  *
  * These types exist to be used as NTTPs for the variadic `magnitude<...>` template.  We represent a magnitude (which is
@@ -185,6 +185,14 @@ template<MagnitudeSpec Element>
 [[nodiscard]] consteval auto get_base(Element element)
 {
   if constexpr (detail::is_specialization_of_power_v<Element>) return Element::base;
+  else
+    return element;
+}
+
+template<MagnitudeSpec Element>
+[[nodiscard]] consteval auto get_base_value(Element element)
+{
+  if constexpr (detail::is_specialization_of_power_v<Element>) return get_base_value(Element::base);
 #if MP_UNITS_COMP_CLANG
   else if constexpr (is_specialization_of<Element, mag_value>)
     return element.value;
@@ -234,15 +242,13 @@ template<auto V>
 template<PowerVBase auto V, ratio R>
 [[nodiscard]] consteval auto power_v_or_T()
 {
-  constexpr auto shortT = shorten_T<V>();
-
   if constexpr (R.den == 1) {
     if constexpr (R.num == 1)
-      return shortT;
+      return shorten_T<V>();
     else
-      return power_v<shortT, R.num>{};
+      return power_v<shorten_T<V>(), R.num>{};
   } else {
-    return power_v<shortT, R.num, R.den>{};
+    return power_v<shorten_T<V>(), R.num, R.den>{};
   }
 }
 
@@ -319,7 +325,7 @@ template<typename T>
   }
 
   auto power = exp.num;
-  return int_power(static_cast<widen_t<T>>(get_base(el)), power);
+  return int_power(static_cast<widen_t<T>>(get_base_value(el)), power);
 }
 
 // A converter for the value member variable of magnitude (below).
@@ -382,13 +388,13 @@ namespace detail {
 //   if (get_exponent(element) == 0) {
 //     return false;
 //   }
-//   if constexpr (std::integral<decltype(get_base(element))>) {
+//   if constexpr (std::integral<decltype(get_base_value(element))>) {
 //     // Some prime numbers are so big, that we can't check their primality without exhausting limits on constexpr
 //     steps
 //     // and/or iterations.  We can still _perform_ the factorization for these by using the `known_first_factor`
 //     // workaround.  However, we can't _check_ that they are prime, because this workaround depends on the input being
 //     // usable in a constexpr expression.  This is true for `prime_factorization` (below), where the input `N` is a
-//     // template parameter, but is not true for our case, where the input `bp.get_base()` is a function parameter.
+//     // template parameter, but is not true for our case, where the input `bp.get_base_value()` is a function parameter.
 //     (See
 //     // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1045r1.html for some background reading on this
 //     // distinction.)
@@ -575,13 +581,13 @@ namespace detail {
 
 consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 {
-  using lhs_base_t = decltype(get_base(lhs));
-  using rhs_base_t = decltype(get_base(rhs));
+  using lhs_base_t = decltype(get_base_value(lhs));
+  using rhs_base_t = decltype(get_base_value(rhs));
 
   if constexpr (is_named_magnitude<lhs_base_t> && is_named_magnitude<rhs_base_t>)
     return type_name<lhs_base_t>() < type_name<rhs_base_t>();
   else if constexpr (!is_named_magnitude<lhs_base_t> && !is_named_magnitude<rhs_base_t>)
-    return get_base(lhs) < get_base(rhs);
+    return get_base_value(lhs) < get_base_value(rhs);
   else
     return is_named_magnitude<lhs_base_t>;
 }
@@ -731,10 +737,10 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 {
   using detail::remove_positive_power;
 
-  if constexpr (detail::get_base(H1) < detail::get_base(H2)) {
+  if constexpr (detail::get_base_value(H1) < detail::get_base_value(H2)) {
     // When H1 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{});
-  } else if constexpr (detail::get_base(H2) < detail::get_base(H1)) {
+  } else if constexpr (detail::get_base_value(H2) < detail::get_base_value(H1)) {
     // When H2 has the smaller base, prepend to result from recursion.
     return remove_positive_power(magnitude<H2>{}) * common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{});
   } else {
@@ -751,7 +757,7 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 template<auto... Ms>
 [[nodiscard]] consteval auto common_magnitude_type_impl(magnitude<Ms...>)
 {
-  return (... * decltype(get_base(Ms)){}) * std::intmax_t{};
+  return (... * decltype(get_base_value(Ms)){}) * std::intmax_t{};
 }
 
 // Returns the most precise type to express the magnitude factor
@@ -828,7 +834,7 @@ namespace detail {
 template<typename T, auto... Ms>
 [[nodiscard]] consteval ratio get_power(T base, magnitude<Ms...>)
 {
-  return ((get_base(Ms) == base ? get_exponent(Ms) : ratio{0}) + ... + ratio{0});
+  return ((get_base_value(Ms) == base ? get_exponent(Ms) : ratio{0}) + ... + ratio{0});
 }
 
 [[nodiscard]] consteval std::intmax_t integer_part(ratio r) { return r.num / r.den; }
