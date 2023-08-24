@@ -54,17 +54,12 @@ QUANTITY_SPEC_(arc_length, length);
 QUANTITY_SPEC_(frequency, 1 / time);
 QUANTITY_SPEC_(activity, 1 / time);
 QUANTITY_SPEC_(area, length* length);
-QUANTITY_SPEC_(volume, area* length);
 QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
 QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 QUANTITY_SPEC_(speed, length / time);
 QUANTITY_SPEC_(acceleration, speed / time);
 QUANTITY_SPEC_(force, mass* acceleration);
-QUANTITY_SPEC_(moment_of_force, length* force);
-QUANTITY_SPEC_(torque, moment_of_force);
 QUANTITY_SPEC_(power, force* speed);
-QUANTITY_SPEC_(efficiency, power / power);
-QUANTITY_SPEC_(energy, force* length);
 QUANTITY_SPEC_(storage_capacity, dimensionless, is_kind);
 
 // base units
@@ -78,13 +73,10 @@ namespace nu {
 
 inline constexpr struct second_ : named_unit<"s"> {} second;
 inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct gram_ : named_unit<"g"> {} gram;
-inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
 
 inline constexpr struct time : system_reference<time_{}, second> {} time;
 inline constexpr struct length : system_reference<length_{}, second> {} length;
 inline constexpr struct speed : system_reference<speed_{}, second / second> {} speed;
-inline constexpr struct force : system_reference<force_{}, kilogram / second> {} force;
 
 }
 
@@ -94,7 +86,6 @@ inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(met
 inline constexpr struct hertz_ : named_unit<"Hz", 1 / second, kind_of<frequency>> {} hertz;
 inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
 inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct pascal_ : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
 

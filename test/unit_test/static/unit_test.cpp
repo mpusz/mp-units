@@ -71,18 +71,9 @@ inline constexpr struct degree_Celsius_ : named_unit<basic_symbol_text{"°C", "`
 
 inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct day_ : named_unit<"d", mag<24> * hour> {} day;
-inline constexpr struct astronomical_unit_ : named_unit<"au", mag<149'597'870'700> * metre> {} astronomical_unit;
 inline constexpr struct degree_ : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
-inline constexpr struct are_ : named_unit<"a", square(si::deca<metre>)> {} are;
-inline constexpr struct hectare_ : decltype(si::hecto<are>) {} hectare;
-inline constexpr struct litre_ : named_unit<"l", cubic(si::deci<metre>)> {} litre;
-inline constexpr struct tonne_ : named_unit<"t", mag<1000> * kilogram> {} tonne;
-inline constexpr struct dalton_ : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * kilogram> {} dalton;
-inline constexpr struct electronvolt_ : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * joule> {} electronvolt;
 
 inline constexpr struct yard_ : named_unit<"yd", mag<ratio{9'144, 10'000}> * metre> {} yard;
-inline constexpr struct foot_ : named_unit<"ft", mag<ratio(1, 3)> * yard> {} foot;
 inline constexpr struct mile_ : named_unit<"mi", mag<1760> * yard> {} mile;
 
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
@@ -119,7 +110,6 @@ static_assert(detail::NamedUnit<minute_>);
 static_assert(detail::NamedUnit<radian_>);
 static_assert(!detail::NamedUnit<kilogram_>);
 static_assert(!detail::NamedUnit<kilojoule_>);
-static_assert(!detail::NamedUnit<hectare_>);
 static_assert(!detail::NamedUnit<decltype(si::kilo<gram>)>);
 static_assert(!detail::NamedUnit<decltype(square(metre))>);
 static_assert(!detail::NamedUnit<decltype(cubic(metre))>);
