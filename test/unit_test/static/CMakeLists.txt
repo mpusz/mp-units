@@ -50,6 +50,7 @@ add_library(
     math_test.cpp
     natural_test.cpp
     prime_test.cpp
+    quantity_point_test.cpp
     quantity_spec_test.cpp
     ratio_test.cpp
     reference_test.cpp
@@ -62,8 +63,5 @@ add_library(
     usc_test.cpp
 )
 
-# if(NOT ${projectPrefix}LIBCXX)
-# target_sources(unit_tests_static PRIVATE custom_rep_test_min_impl.cpp quantity_point_test.cpp)
-# endif()
 target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
 target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating mp-units::mp-units)
