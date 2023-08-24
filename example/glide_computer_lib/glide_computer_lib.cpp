@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "glide_computer.h"
+#include "glide_computer_lib.h"
 #include <mp-units/format.h>
 #include <iostream>
 #include <numeric>

@@ -69,5 +69,5 @@ add_example(
     example_utils
 )
 
-add_subdirectory(glide_computer)
+add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)
