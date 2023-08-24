@@ -448,7 +448,7 @@ template<Unit Lhs, Unit Rhs>
     return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
-[[nodiscard]] consteval Unit auto operator/(int value, Unit auto u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(int value, Unit auto u)
 {
   gsl_Expects(value == 1);
   return detail::expr_invert<derived_unit, struct one>(u);
@@ -720,7 +720,7 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_
     constexpr auto mag_txt = magnitude_text<M>();
     out = copy<CharT>(mag_txt, fmt.encoding, out);
 
-    if constexpr (has_unit_symbol(u.reference_unit)) {
+    if constexpr (has_unit_symbol(scaled_unit<M, U>::reference_unit)) {
       *out++ = ' ';
       return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
     } else {

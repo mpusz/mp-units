@@ -62,7 +62,6 @@ inline constexpr bool is_derived_from_specialization_of_quantity_spec =
 
 #ifdef __cpp_explicit_this_parameter
 template<BaseDimension auto Dim, auto... Args>
-template<auto... Args>
 void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Dim, Args...>*);
 #else
 template<typename Self, BaseDimension auto Dim, auto... Args>

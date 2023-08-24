@@ -48,9 +48,11 @@ constexpr auto pow_res = pow<2>(amplitude_spectral_density[si::volt / sqrt(si::h
 static_assert(implicitly_convertible(power_spectral_density, get_quantity_spec(pow_res)));
 static_assert(square(si::volt) / si::hertz == get_unit(pow_res));
 
+#if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
 static_assert(sqrt(16 * power_spectral_density[square(si::volt) / si::hertz]) ==
               4 * amplitude_spectral_density[si::volt / sqrt(si::hertz)]);
 static_assert(16 * power_spectral_density[square(si::volt) / si::hertz] ==
               pow<2>(4 * amplitude_spectral_density[si::volt / sqrt(si::hertz)]));
+#endif
 
 }  // namespace

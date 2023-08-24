@@ -693,7 +693,7 @@ static_assert(invalid_arithmetic(5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * 
 static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] == 299'792'468 * isq::speed[m / s]);
 
 // Implicit conversions allowed between quantities of `convertible` references
-constexpr quantity<isq::speed[km / h]> speed = 120 * isq::length[km] / (2 * isq::time[h]);
+[[maybe_unused]] constexpr quantity<isq::speed[km / h]> speed = 120 * isq::length[km] / (2 * isq::time[h]);
 
 // dimensionless
 static_assert((3 * one *= 2 * one) == 6 * one);

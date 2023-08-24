@@ -26,6 +26,8 @@
 #include <mp-units/systems/si/unit_symbols.h>
 #include <optional>
 
+#if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
+
 namespace {
 
 using namespace mp_units;
@@ -80,7 +82,6 @@ static_assert(compare(pow<1, 4>(4. * isq::area[square(km)]), sqrt(2.) * pow<1, 4
 static_assert(compare(pow<1, 4>(4. * isq::area[square(ft)]), sqrt(2.) * pow<1, 4>(isq::area)[sqrt(ft)],
                       std::sqrt(2.) * sqrt(isq::length[ft])));
 
-// #if __cpp_lib_constexpr_cmath
 // floor
 // integral types
 static_assert(compare(floor<si::second>(1 * s), 1 * s));
@@ -200,6 +201,6 @@ static_assert(compare(round<si::second>(-1499. * isq::time[ms]), -1. * isq::time
 static_assert(compare(round<si::second>(-1500. * isq::time[ms]), -2. * isq::time[s]));
 static_assert(compare(round<si::second>(-1999. * isq::time[ms]), -2. * isq::time[s]));
 
-// #endif
-
 }  // namespace
+
+#endif
