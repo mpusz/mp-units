@@ -93,14 +93,14 @@ concept invalid_types = requires {
 };
 static_assert(invalid_types<quantity_point>);
 
-template<template<auto, auto> typename QP>
+template<template<auto, auto, typename> typename QP>
 concept valid_types = requires {
-  typename QP<si::metre, mean_sea_level>;
-  typename QP<isq::height[m], mean_sea_level>;
-  typename QP<special_height[m], mean_sea_level>;
-  typename QP<si::metre, ground_level>;
-  typename QP<isq::height[m], ground_level>;
-  typename QP<special_height[m], ground_level>;
+  typename QP<si::metre, mean_sea_level, int>;
+  typename QP<isq::height[m], mean_sea_level, int>;
+  typename QP<special_height[m], mean_sea_level, int>;
+  typename QP<si::metre, ground_level, int>;
+  typename QP<isq::height[m], ground_level, int>;
+  typename QP<special_height[m], ground_level, int>;
 };
 static_assert(valid_types<quantity_point>);
 
@@ -690,42 +690,42 @@ static_assert(invalid_compound_assignments<quantity_point>);
 // binary operators
 ////////////////////
 
-template<template<auto, auto> typename QP, auto Origin, auto OtherOrigin>
+template<template<auto, auto, typename> typename QP, auto Origin, auto OtherOrigin>
 concept invalid_binary_operations = requires {
   // can't add two quantity points
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) + QP<isq::height[m], mean_sea_level>(1 * m); };
-  requires !requires { mean_sea_level + QP<isq::height[m], mean_sea_level>(1 * m); };
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) + mean_sea_level; };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + QP<isq::height[m], mean_sea_level, int>(1 * m); };
+  requires !requires { mean_sea_level + QP<isq::height[m], mean_sea_level, int>(1 * m); };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + mean_sea_level; };
   requires !requires { Origin + Origin; };
 
   // can't add more generic quantity (violates point_origin quantity_spec)
-  requires !requires { QP<si::metre, mean_sea_level>(1 * m) + isq::length(1 * m); };
-  requires !requires { isq::length(1 * m) + QP<si::metre, mean_sea_level>(1 * m); };
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) + isq::length(1 * m); };
-  requires !requires { isq::length(1 * m) + QP<isq::height[m], mean_sea_level>(1 * m); };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1 * m) + isq::length(1 * m); };
+  requires !requires { isq::length(1 * m) + QP<si::metre, mean_sea_level, int>(1 * m); };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + isq::length(1 * m); };
+  requires !requires { isq::length(1 * m) + QP<isq::height[m], mean_sea_level, int>(1 * m); };
   requires !requires { Origin + isq::length(1 * m); };
   requires !requires { isq::length(1 * m) + Origin; };
 
   // can't subtract more generic quantity (violates point_origin quantity_spec)
-  requires !requires { QP<si::metre, mean_sea_level>(1 * m) - isq::length(1 * m); };
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) - isq::length(1 * m); };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1 * m) - isq::length(1 * m); };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - isq::length(1 * m); };
   requires !requires { Origin - isq::length(1 * m); };
 
   // quantity point can't be subtracted from a quantity
-  requires !requires { 1 * m - QP<si::metre, mean_sea_level>(1 * m); };
+  requires !requires { 1 * m - QP<si::metre, mean_sea_level, int>(1 * m); };
   requires !requires { 1 * m - Origin; };
 
   // no crossdimensional addition and subtraction
-  requires !requires { QP<si::metre, mean_sea_level>(1 * m) + 1 * s; };
-  requires !requires { QP<si::metre, mean_sea_level>(1 * m) - 1 * s; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1 * m) + 1 * s; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1 * m) - 1 * s; };
   requires !requires { Origin + 1 * s; };
   requires !requires { Origin - 1 * s; };
 
   // can't subtract two quantity points of incompatible origins
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) - QP<isq::height[m], other_absolute_level>(1 * m); };
-  requires !requires { QP<isq::height[m], other_absolute_level>(1 * m) - QP<isq::height[m], mean_sea_level>(1 * m); };
-  requires !requires { mean_sea_level - QP<isq::height[m], other_absolute_level>(1 * m); };
-  requires !requires { QP<isq::height[m], mean_sea_level>(1 * m) - other_absolute_level; };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - QP<isq::height[m], other_absolute_level, int>(1 * m); };
+  requires !requires { QP<isq::height[m], other_absolute_level, int>(1 * m) - QP<isq::height[m], mean_sea_level, int>(1 * m); };
+  requires !requires { mean_sea_level - QP<isq::height[m], other_absolute_level, int>(1 * m); };
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - other_absolute_level; };
 
   // cant'subtract two unrelated points
   requires !requires { Origin - OtherOrigin; };
@@ -734,12 +734,12 @@ concept invalid_binary_operations = requires {
   requires !requires { Origin - Origin; };
 
   // unit constants
-  requires !requires { QP<si::metre, mean_sea_level>(1) + m; };
-  requires !requires { QP<si::metre, mean_sea_level>(1) - m; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1) + m; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1) - m; };
   requires !requires { Origin + m; };
   requires !requires { Origin - m; };
-  requires !requires { m + QP<si::metre, mean_sea_level>(1); };
-  requires !requires { m - QP<si::metre, mean_sea_level>(1); };
+  requires !requires { m + QP<si::metre, mean_sea_level, int>(1); };
+  requires !requires { m - QP<si::metre, mean_sea_level, int>(1); };
   requires !requires { m + Origin; };
   requires !requires { m - Origin; };
 };
