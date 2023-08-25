@@ -141,7 +141,8 @@ template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M, U>> = true;
 
 template<typename T>
-  requires requires(T* t) { is_unit_impl(t); } && (!is_specialization_of_named_unit<T>) && (!is_specialization_of_prefixed_unit<T>)
+  requires requires(T* t) { is_unit_impl(t); } && (!is_specialization_of_named_unit<T>) &&
+           (!is_specialization_of_prefixed_unit<T>)
 struct is_unit<T> : std::true_type {};
 
 template<Unit U>

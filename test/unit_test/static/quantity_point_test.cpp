@@ -693,7 +693,9 @@ static_assert(invalid_compound_assignments<quantity_point>);
 template<template<auto, auto, typename> typename QP, auto Origin, auto OtherOrigin>
 concept invalid_binary_operations = requires {
   // can't add two quantity points
-  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + QP<isq::height[m], mean_sea_level, int>(1 * m); };
+  requires !requires {
+    QP<isq::height[m], mean_sea_level, int>(1 * m) + QP<isq::height[m], mean_sea_level, int>(1 * m);
+  };
   requires !requires { mean_sea_level + QP<isq::height[m], mean_sea_level, int>(1 * m); };
   requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + mean_sea_level; };
   requires !requires { Origin + Origin; };
@@ -722,8 +724,12 @@ concept invalid_binary_operations = requires {
   requires !requires { Origin - 1 * s; };
 
   // can't subtract two quantity points of incompatible origins
-  requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - QP<isq::height[m], other_absolute_level, int>(1 * m); };
-  requires !requires { QP<isq::height[m], other_absolute_level, int>(1 * m) - QP<isq::height[m], mean_sea_level, int>(1 * m); };
+  requires !requires {
+    QP<isq::height[m], mean_sea_level, int>(1 * m) - QP<isq::height[m], other_absolute_level, int>(1 * m);
+  };
+  requires !requires {
+    QP<isq::height[m], other_absolute_level, int>(1 * m) - QP<isq::height[m], mean_sea_level, int>(1 * m);
+  };
   requires !requires { mean_sea_level - QP<isq::height[m], other_absolute_level, int>(1 * m); };
   requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - other_absolute_level; };
 

@@ -33,7 +33,8 @@ using namespace mp_units;
 using namespace mp_units::natural::unit_symbols;
 
 static_assert(1 * natural::length[1 / GeV] / (1 * natural::time[1 / GeV]) == 1 * natural::speed[one]);
-static_assert(1 * natural::length[1 / GeV] / (1 * natural::time[1 / GeV] * (1 * natural::time[1 / GeV])) == 1 * natural::acceleration[GeV]);
+static_assert(1 * natural::length[1 / GeV] / (1 * natural::time[1 / GeV] * (1 * natural::time[1 / GeV])) ==
+              1 * natural::acceleration[GeV]);
 static_assert(1 * natural::mass[GeV] * (1 * natural::velocity[one]) == 1 * natural::momentum[GeV]);
 static_assert(1 * natural::mass[GeV] * (1 * natural::acceleration[GeV]) == 1 * natural::force[GeV2]);
 static_assert(1 * natural::mass[GeV] * (1 * natural::acceleration[GeV]) * (1 * natural::length[1 / GeV]) ==

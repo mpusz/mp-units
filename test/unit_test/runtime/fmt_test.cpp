@@ -415,23 +415,20 @@ TEST_CASE("unknown unit modifiers should throw", "[text][fmt][exception]")
 
   SECTION("invalid modifier in the front")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%xUdaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%xUdaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
   }
 
   SECTION("invalid modifier in the end")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%Udaxq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%Udaxq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
   }
 
   SECTION("invalid modifier in the middle")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%Udxaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%Udxaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error, Catch::Matchers::Message("invalid unit modifier specified"));
   }
 }
 
@@ -441,50 +438,41 @@ TEST_CASE("repeated unit modifiers should throw", "[text][fmt][exception]")
 
   SECTION("text encoding")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%UdaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dUaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dUUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%UdaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dUaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dUUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
   }
 
   SECTION("solidus")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%aUdaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%daUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%daaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%aUdaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%daUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%daaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
   }
 
   SECTION("separator")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dUadq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dadUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%addUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dUadq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dadUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%addUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
   }
 }
 
@@ -494,50 +482,41 @@ TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][e
 
   SECTION("text encoding")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%UdaAq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dAaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dAUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%UdaAq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dAaUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dAUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
   }
 
   SECTION("solidus")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%aUdnq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dnUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%daoUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%aUdnq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dnUaq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%daoUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'oan' unit modifiers may be used in the format spec"));
   }
 
   SECTION("separator")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%dUasq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%sadUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%adsUq}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%dUasq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%sadUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%adsUq}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("only one of 'sd' unit modifiers may be used in the format spec"));
   }
 }
 
@@ -704,10 +683,9 @@ TEST_CASE("precision specification for integral representation should throw", "[
 
   SECTION("full format {:%Q %q} on a quantity")
   {
-    REQUIRE_THROWS_MATCHES(
-      MP_UNITS_STD_FMT::vformat("{:%.1Q %q}", MP_UNITS_STD_FMT::make_format_args(q)),
-      MP_UNITS_STD_FMT::format_error,
-      Catch::Matchers::Message("precision not allowed for integral quantity representation"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:%.1Q %q}", MP_UNITS_STD_FMT::make_format_args(q)),
+                           MP_UNITS_STD_FMT::format_error,
+                           Catch::Matchers::Message("precision not allowed for integral quantity representation"));
   }
 
   SECTION("value only format {:%Q} on a quantity")

@@ -107,8 +107,8 @@ concept Magnitude = detail::is_magnitude<T>;
 /**
  * @brief  A basis vector in our magnitude representation, raised to some rational power.
  *
- * The public API is that there is a `power` member variable (of type `ratio`), and a `get_base_value()` member function (of
- * type either `std::intmax_t` or `long double`, as appropriate), for any specialization.
+ * The public API is that there is a `power` member variable (of type `ratio`), and a `get_base_value()` member function
+ * (of type either `std::intmax_t` or `long double`, as appropriate), for any specialization.
  *
  * These types exist to be used as NTTPs for the variadic `magnitude<...>` template.  We represent a magnitude (which is
  * a positive real number) as the product of rational powers of "basis vectors", where each "basis vector" is a positive
@@ -184,7 +184,8 @@ namespace detail {
 template<MagnitudeSpec Element>
 [[nodiscard]] consteval auto get_base(Element element)
 {
-  if constexpr (detail::is_specialization_of_power_v<Element>) return Element::base;
+  if constexpr (detail::is_specialization_of_power_v<Element>)
+    return Element::base;
   else
     return element;
 }
@@ -394,8 +395,8 @@ namespace detail {
 //     // and/or iterations.  We can still _perform_ the factorization for these by using the `known_first_factor`
 //     // workaround.  However, we can't _check_ that they are prime, because this workaround depends on the input being
 //     // usable in a constexpr expression.  This is true for `prime_factorization` (below), where the input `N` is a
-//     // template parameter, but is not true for our case, where the input `bp.get_base_value()` is a function parameter.
-//     (See
+//     // template parameter, but is not true for our case, where the input `bp.get_base_value()` is a function
+//     parameter. (See
 //     // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1045r1.html for some background reading on this
 //     // distinction.)
 //     //
