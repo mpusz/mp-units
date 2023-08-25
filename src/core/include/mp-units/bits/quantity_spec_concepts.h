@@ -60,18 +60,6 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_quantity_spec =
   requires(T* t) { to_base_specialization_of_quantity_spec(t); };
 
-#ifdef __cpp_explicit_this_parameter
-template<BaseDimension auto Dim, auto... Args>
-void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Dim, Args...>*);
-#else
-template<typename Self, BaseDimension auto Dim, auto... Args>
-void to_base_specialization_of_base_quantity_spec(const volatile quantity_spec<Self, Dim, Args...>*);
-#endif
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_base_quantity_spec =
-  requires(T* t) { to_base_specialization_of_base_quantity_spec(t); };
-
 template<typename T>
 inline constexpr bool is_specialization_of_quantity_spec = false;
 
@@ -91,15 +79,6 @@ inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args..
 template<typename T>
 concept NamedQuantitySpec = is_derived_from_specialization_of_quantity_spec<T> &&
                             (!is_specialization_of_quantity_spec<T>)&&(!QuantityKindSpec<T>);
-
-/**
- * @brief Concept matching all named base quantity specification types
- *
- * Satisfied by all types that derive from `quantity_spec` taking a base dimension
- * as a template parameter.
- */
-template<typename T>
-concept BaseQuantitySpec = NamedQuantitySpec<T> && is_derived_from_specialization_of_base_quantity_spec<T>;
 
 template<typename T>
 struct is_dimensionless : std::false_type {};
