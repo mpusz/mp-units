@@ -110,6 +110,10 @@ template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
          RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity_point;
 
+template<PointOrigin auto PO, Quantity Q>
+  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
+[[nodiscard]] constexpr quantity_point<Q::reference, PO, typename Q::rep> make_quantity_point(Q&& q);
+
 namespace detail {
 
 template<auto R, auto PO, typename Rep>

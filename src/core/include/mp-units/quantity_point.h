@@ -29,10 +29,6 @@
 
 namespace mp_units {
 
-template<PointOrigin auto PO, Quantity Q>
-  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
-[[nodiscard]] constexpr quantity_point<Q::reference, PO, typename Q::rep> make_quantity_point(Q&& q);
-
 template<QuantitySpec auto QS>
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
