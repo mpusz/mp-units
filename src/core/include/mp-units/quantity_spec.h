@@ -36,10 +36,6 @@
 
 namespace mp_units {
 
-template<Reference auto R, typename Rep>
-  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
-[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
-
 namespace detail {
 
 // TODO revise the note in the below comment
