@@ -325,8 +325,12 @@ public:
   }
 
 private:
+#if MP_UNITS_COMP_CLANG < 17
+  template<auto R2, typename Rep2>
+#else
   template<Reference auto R2, typename Rep2>
     requires quantity<R2, std::remove_cvref_t<Rep2>>::_rep_safe_constructible_
+#endif
   friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&&);
 
   template<typename Value>
@@ -435,8 +439,12 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 // make_quantity
+#if MP_UNITS_COMP_CLANG < 17
+template<auto R, typename Rep>
+#else
 template<Reference auto R, typename Rep>
   requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
+#endif
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v)
 {
   return quantity<R, std::remove_cvref_t<Rep>>(std::forward<Rep>(v));

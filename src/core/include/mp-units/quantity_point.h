@@ -207,8 +207,12 @@ public:
   }
 
 private:
+#if MP_UNITS_COMP_CLANG < 17
+  template<auto PO2, typename Q>
+#else
   template<PointOrigin auto PO2, Quantity Q>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO2.quantity_spec>
+#endif
   friend constexpr quantity_point<Q::reference, PO2, typename Q::rep> make_quantity_point(Q&&);
 
   template<Quantity Q>
@@ -356,8 +360,12 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
 }
 
 // make_quantity_point
+#if MP_UNITS_COMP_CLANG < 17
+template<auto PO, typename Q>
+#else
 template<PointOrigin auto PO, Quantity Q>
   requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
+#endif
 [[nodiscard]] constexpr quantity_point<Q::reference, PO, typename Q::rep> make_quantity_point(Q&& q)
 {
   return quantity_point<Q::reference, PO, typename Q::rep>(std::forward<Q>(q));
