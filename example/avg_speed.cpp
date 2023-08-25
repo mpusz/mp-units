@@ -51,8 +51,7 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, 
 template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
-  using namespace mp_units::si::unit_symbols;
-  const auto result_in_kmph = value_cast<km / h>(speed);
+  const auto result_in_kmph = value_cast<si::kilo<si::metre> / non_si::hour>(speed);
   std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
             << ".\n";
 }
