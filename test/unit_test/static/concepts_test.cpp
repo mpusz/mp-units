@@ -40,8 +40,6 @@ using namespace mp_units;
 
 inline constexpr struct my_origin : absolute_point_origin<isq::length> {
 } my_origin;
-inline constexpr struct another_origin : absolute_point_origin<isq::length> {
-} another_origin;
 inline constexpr struct my_relative_origin : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
 } my_relative_origin;
 
