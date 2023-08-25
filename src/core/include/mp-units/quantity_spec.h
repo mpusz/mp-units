@@ -115,7 +115,7 @@ struct quantity_spec_interface {
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] consteval Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
     if constexpr (detail::QuantityKindSpec<Self_>)
       return u;
@@ -294,7 +294,7 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
 
 #ifndef __cpp_explicit_this_parameter
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] consteval Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
     if constexpr (detail::QuantityKindSpec<Self>)
       return u;

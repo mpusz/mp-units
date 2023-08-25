@@ -46,7 +46,7 @@ template<Unit auto ToU, typename Q>
 {
   using q_type = std::remove_reference_t<Q>;
   constexpr auto r = [] {
-    if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(q_type::reference)>> ||
+    if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(q_type::reference)>>::value ||
                   !AssociatedUnit<std::remove_const_t<decltype(ToU)>>)
       return reference<q_type::quantity_spec, ToU>{};
     else

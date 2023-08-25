@@ -32,11 +32,12 @@ struct reference;
 
 namespace detail {
 
+// do not refactor below to a variable template - GCC-11 does not like it
 template<typename T>
-inline constexpr bool is_specialization_of_reference = false;
+struct is_specialization_of_reference : std::false_type {};
 
 template<auto Q, auto U>
-inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
+struct is_specialization_of_reference<reference<Q, U>> : std::true_type {};
 
 }  // namespace detail
 
@@ -46,7 +47,7 @@ inline constexpr bool is_specialization_of_reference<reference<Q, U>> = true;
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>;
+concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>::value;
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
 

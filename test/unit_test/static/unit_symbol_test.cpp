@@ -30,7 +30,7 @@ using namespace mp_units;
 using namespace mp_units::si;
 using namespace mp_units::iec80000;
 
-#ifdef __cpp_lib_constexpr_string
+#if __cpp_lib_constexpr_string && (!defined MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC > 11)
 
 using enum text_encoding;
 using enum unit_symbol_solidus;

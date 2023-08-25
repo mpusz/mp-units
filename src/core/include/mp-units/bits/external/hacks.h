@@ -107,7 +107,7 @@
 
 #endif
 
-#if MP_UNITS_COMP_CLANG < 17
+#if (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17) || (defined MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 12)
 
 #define MP_UNITS_CONSTEVAL constexpr
 

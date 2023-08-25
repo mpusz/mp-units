@@ -31,8 +31,9 @@ namespace mp_units {
 
 namespace detail {
 
+// do not refactor below to a variable template - GCC-11 does not like it
 template<typename T>
-inline constexpr bool is_unit = false;
+struct is_unit : std::false_type {};
 
 }  // namespace detail
 
@@ -42,7 +43,7 @@ inline constexpr bool is_unit = false;
  * Satisfied by all unit types provided by the library.
  */
 template<typename T>
-concept Unit = detail::is_unit<T>;
+concept Unit = detail::is_unit<T>::value;
 
 template<Magnitude auto M, Unit U>
 struct scaled_unit;
@@ -140,8 +141,8 @@ template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M, U>> = true;
 
 template<typename T>
-  requires requires(T* t) { is_unit_impl(t); }
-inline constexpr bool is_unit<T> = !is_specialization_of_named_unit<T> && !is_specialization_of_prefixed_unit<T>;
+  requires requires(T* t) { is_unit_impl(t); } && (!is_specialization_of_named_unit<T>) && (!is_specialization_of_prefixed_unit<T>)
+struct is_unit<T> : std::true_type {};
 
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U);
