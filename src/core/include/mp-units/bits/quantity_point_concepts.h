@@ -110,7 +110,7 @@ template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
          RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity_point;
 
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 template<auto PO, typename Q>
 #else
 template<PointOrigin auto PO, Quantity Q>

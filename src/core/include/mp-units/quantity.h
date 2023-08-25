@@ -325,7 +325,7 @@ public:
   }
 
 private:
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
   template<auto R2, typename Rep2>
 #else
   template<Reference auto R2, typename Rep2>
@@ -439,7 +439,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 // make_quantity
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 template<auto R, typename Rep>
 #else
 template<Reference auto R, typename Rep>

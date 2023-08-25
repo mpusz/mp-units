@@ -32,7 +32,7 @@ namespace mp_units {
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 template<auto R, typename Rep>
 #else
 template<Reference auto R, typename Rep>

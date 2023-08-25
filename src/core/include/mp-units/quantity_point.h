@@ -207,7 +207,7 @@ public:
   }
 
 private:
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
   template<auto PO2, typename Q>
 #else
   template<PointOrigin auto PO2, Quantity Q>
@@ -360,7 +360,7 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
 }
 
 // make_quantity_point
-#if MP_UNITS_COMP_CLANG < 17
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 template<auto PO, typename Q>
 #else
 template<PointOrigin auto PO, Quantity Q>
