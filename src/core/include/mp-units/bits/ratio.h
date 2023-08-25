@@ -79,8 +79,8 @@ struct ratio {
     }
   }
 
-  [[nodiscard]] friend consteval bool operator==(ratio, ratio) = default;
-  [[nodiscard]] friend consteval auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL bool operator==(ratio, ratio) = default;
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL auto operator<=>(ratio lhs, ratio rhs) { return (lhs - rhs).num <=> 0; }
 
   [[nodiscard]] friend MP_UNITS_CONSTEVAL ratio operator-(ratio r) { return ratio{-r.num, r.den}; }
 
