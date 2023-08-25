@@ -45,7 +45,7 @@ std::vector<distance> task::make_leg_total_distances(const legs& legs)
   std::vector<distance> res;
   res.reserve(legs.size());
   auto to_length = [](const leg& l) { return l.get_distance(); };
-  std::transform_inclusive_scan(legs.cbegin(), legs.cend(), std::back_inserter(res), std::plus(), to_length);
+  std::transform_inclusive_scan(legs.cbegin(), legs.cend(), std::back_inserter(res), std::plus(), to_length, distance::zero());
   return res;
 }
 
