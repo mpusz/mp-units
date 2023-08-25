@@ -41,9 +41,11 @@ static_assert(isq::length(1 * LD) == 384'399 * si::kilo<si::metre>);
 static_assert(isq::length(1 * ly) == 9'460'730'472'580'800 * si::metre);
 static_assert(isq::length(10'000'000'000 * A) == 1 * si::metre);
 
+#if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
 // TODO Should the below work for `1 * pc`? If yes, how to extent the type and how to convert it to a floating-point
 // representation for comparison purposes?
 static_assert(round<si::metre>(isq::length(1.L * pc)) == 30'856'775'814'913'673 * si::metre);
+#endif
 
 static_assert(isq::speed(1 * c_0) == 299'792'458 * (si::metre / si::second));
 
