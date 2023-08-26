@@ -80,6 +80,19 @@ jobs:
               conan-config: "",
             }
           - {
+              name: "Ubuntu GCC-13",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 13,
+                  cc: "gcc-13",
+                  cxx: "g++-13",
+                  std: 20,
+                },
+              conan-config: "",
+            }
+          - {
               name: "Ubuntu Clang-16 + libc++",
               os: ubuntu-22.04,
               compiler:
@@ -134,6 +147,11 @@ jobs:
           max-size: 50M
       - name: Install gcc-12
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '12'
+        shell: bash
+        run: |
+          sudo apt install -y g++-${{ matrix.config.compiler.version }}
+      - name: Install gcc-13
+        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
