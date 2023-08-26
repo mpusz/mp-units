@@ -170,8 +170,8 @@ template<Unit auto To, auto R, typename Rep>
     if constexpr (To == get_unit(R)) {
       return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(q.value())));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
-        static_cast<Rep>(floor(value_cast<To>(q).value()))));
+      return handle_signed_results(
+        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(value_cast<To>(q).value()))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -207,8 +207,8 @@ template<Unit auto To, auto R, typename Rep>
     if constexpr (To == get_unit(R)) {
       return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(q.value())));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
-        static_cast<Rep>(ceil(value_cast<To>(q).value()))));
+      return handle_signed_results(
+        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(value_cast<To>(q).value()))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
