@@ -267,7 +267,7 @@ using Celsius_point = quantity_point<isq::Celsius_temperature[deg_C], si::ice_po
     point origin is defined in terms of `si::kelvin`, while the quantity point uses
     `si::degree_Celsius`.
 
-To play a bit w temperatures we can implement a simple room's AC temperature controller in
+To play a bit with temperatures we can implement a simple room's AC temperature controller in
 the following way:
 
 ```cpp
