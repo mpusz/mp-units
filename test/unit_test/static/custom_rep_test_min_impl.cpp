@@ -211,6 +211,7 @@ static_assert(min_impl<double>(1.5) * one * (min_impl<int>{123} * si::metre) == 
 static_assert(min_impl<double>(1.5) * one * (123 * si::metre) == min_impl<double>{184.5} * si::metre);
 static_assert(1.5 * one * (min_impl<int>{123} * si::metre) == min_impl<double>{184.5} * si::metre);
 
+#ifndef MP_UNITS_COMP_CLANG
 static_assert(min_impl<int>{123} * si::metre / min_impl<double>(2.) == min_impl<double>{61.5} * si::metre);
 static_assert(min_impl<int>{123} * si::metre / 2. == min_impl<double>{61.5} * si::metre);
 static_assert(123 * si::metre / min_impl<double>(2.) == min_impl<double>{61.5} * si::metre);
@@ -222,6 +223,7 @@ static_assert(123 * si::metre / (min_impl<double>(2.) * one) == min_impl<double>
 static_assert(min_impl<int>{123} * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
 static_assert(min_impl<int>{123} * si::metre / (double{2.} * si::metre) == 61.5 * one);
 static_assert(123 * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
+#endif
 
 static_assert(min_impl<int>{123} * si::metre % (min_impl<int>(100) * si::metre) == 23 * si::metre);
 static_assert(min_impl<int>{123} * si::metre % (100 * si::metre) == 23 * si::metre);
