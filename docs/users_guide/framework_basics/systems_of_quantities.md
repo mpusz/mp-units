@@ -119,6 +119,17 @@ In the **mp-units** library all the information about the quantity is provided w
 class template. In order to define a specific quantity a user should inherit a strong type
 from such an instantiation.
 
+!!! tip
+
+    Quantity specification definitions benefit from an
+    [explicit object parameter](https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter)
+    added in C++23 to remove the need for CRTP idiom, which significantly simplifies the code.
+    However, as C++23 is far from being mainstream today, a portability macro `QUANTITY_SPEC()`
+    is provided and used consistently through the library to allow the code to compile with C++20
+    compilers, thanks to the CRTP usage under the hood.
+
+    *[CRTP]: Curiously Recurring Template Parameter
+
 For example, here is how the above quantity kind tree can be modeled in the library:
 
 === "C++23"
