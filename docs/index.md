@@ -21,12 +21,13 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     from C++23.
 
     Even though the library benefits from C++23 (if available), C++20 is enough to compile and
-    use all of the library's functionality. C++23 features are hidden behind a preprocessor macro
+    use all of the library's functionality. C++23 features are hidden behind
+    a [preprocessor macro](users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
-    Sadly, as of today, only a few compilers provide full C++20 support. The library compiles fine
-    on the following compilers (or newer):
+    As of today, the library compiles fine on the following compilers (or newer):
 
-    - gcc-12.2
-
-    In the upcoming weeks, we will be actively working to extend the support to other compilers as well.
+    - gcc-11
+        - please note that we observed some ICEs on gcc-11
+        - no problems with gcc-12.2+
+    - clang-16
