@@ -170,7 +170,7 @@ template<Unit auto To, auto R, typename Rep>
     if constexpr (To == get_unit(R)) {
       return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(q.value())));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(q.reference)>(
+      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
         static_cast<Rep>(floor(value_cast<To>(q).value()))));
     }
   } else {
@@ -205,9 +205,9 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
     if constexpr (To == get_unit(R)) {
-      return make_quantity<detail::clone_reference_with<To>(q.reference)>(static_cast<Rep>(ceil(q.value())));
+      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(q.value())));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(q.reference)>(
+      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
         static_cast<Rep>(ceil(value_cast<To>(q).value()))));
     }
   } else {
@@ -238,7 +238,7 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (To == get_unit(R)) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
-      return make_quantity<detail::clone_reference_with<To>(q.reference)>(static_cast<Rep>(round(q.value())));
+      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(round(q.value())));
     } else {
       return value_cast<To>(q);
     }
