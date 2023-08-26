@@ -72,7 +72,11 @@ class MPUnitsConan(ConanFile):
 
     @property
     def _minimum_compilers_version(self):
-        return {"gcc": "10.3", "clang": "12", "apple-clang": "13", "msvc": "192"}
+        return {
+            "gcc": "11",
+            "clang": "16"
+            # , "apple-clang": "13", "msvc": "192"
+        }
 
     @property
     def _build_all(self):
