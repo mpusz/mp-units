@@ -90,7 +90,7 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep = double>
 class quantity {
 public:
-  Rep number_;  // needs to be public for a structural type
+  Rep value_;  // needs to be public for a structural type
 
   // member types and values
   static constexpr Reference auto reference = R;
@@ -134,7 +134,7 @@ public:
 
   template<detail::QuantityConvertibleTo<quantity> Q>
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
-      number_(detail::sudo_cast<quantity>(q).value())
+      value_(detail::sudo_cast<quantity>(q).value())
   {
   }
 
@@ -154,13 +154,13 @@ public:
   template<typename Self>
   [[nodiscard]] constexpr auto&& value(this Self&& self) noexcept
   {
-    return std::forward<Self>(self).number_;
+    return std::forward<Self>(self).value_;
   }
 #else
-  [[nodiscard]] constexpr rep& value() & noexcept { return number_; }
-  [[nodiscard]] constexpr const rep& value() const& noexcept { return number_; }
-  [[nodiscard]] constexpr rep&& value() && noexcept { return std::move(number_); }
-  [[nodiscard]] constexpr const rep&& value() const&& noexcept { return std::move(number_); }
+  [[nodiscard]] constexpr rep& value() & noexcept { return value_; }
+  [[nodiscard]] constexpr const rep& value() const& noexcept { return value_; }
+  [[nodiscard]] constexpr rep&& value() && noexcept { return std::move(value_); }
+  [[nodiscard]] constexpr const rep&& value() const&& noexcept { return std::move(value_); }
 #endif
 
   template<Unit U>
@@ -205,7 +205,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    ++number_;
+    ++value_;
     return *this;
   }
 
@@ -216,7 +216,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(number_++);
+    return make_quantity<reference>(value_++);
   }
 
   constexpr quantity& operator--()
@@ -226,7 +226,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    --number_;
+    --value_;
     return *this;
   }
 
@@ -237,7 +237,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(number_--);
+    return make_quantity<reference>(value_--);
   }
 
   constexpr quantity& operator+=(const quantity& q)
@@ -247,7 +247,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    number_ += q.value();
+    value_ += q.value();
     return *this;
   }
 
@@ -258,7 +258,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    number_ -= q.value();
+    value_ -= q.value();
     return *this;
   }
 
@@ -270,7 +270,7 @@ public:
     }
   constexpr quantity& operator*=(const Value& v)
   {
-    number_ *= v;
+    value_ *= v;
     return *this;
   }
 
@@ -282,7 +282,7 @@ public:
     }
   constexpr quantity& operator*=(const Q& rhs)
   {
-    number_ *= rhs.value();
+    value_ *= rhs.value();
     return *this;
   }
 
@@ -295,7 +295,7 @@ public:
   constexpr quantity& operator/=(const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    number_ /= v;
+    value_ /= v;
     return *this;
   }
 
@@ -308,7 +308,7 @@ public:
   constexpr quantity& operator/=(const Q& rhs)
   {
     gsl_ExpectsAudit(rhs.value() != quantity_values<typename Q::rep>::zero());
-    number_ /= rhs.value();
+    value_ /= rhs.value();
     return *this;
   }
 
@@ -320,7 +320,7 @@ public:
     }
   {
     gsl_ExpectsAudit(q.value() != quantity_values<rep>::zero());
-    number_ %= q.value();
+    value_ %= q.value();
     return *this;
   }
 
@@ -335,7 +335,7 @@ private:
 
   template<typename Value>
     requires detail::RepSafeConstructibleFrom<rep, Value&&, unit>
-  constexpr explicit quantity(Value&& v) : number_(std::forward<Value>(v))
+  constexpr explicit quantity(Value&& v) : value_(std::forward<Value>(v))
   {
   }
 };
