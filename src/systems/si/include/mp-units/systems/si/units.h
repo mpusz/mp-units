@@ -39,7 +39,6 @@ inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
 inline constexpr struct ampere : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
 inline constexpr struct kelvin : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
-// inline constexpr struct kelvin : named_unit<"K", isq::thermodynamic_temperature, not_for<isq::Celsius_temperature> {} kelvin;
 inline constexpr struct mole : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
 inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
 
