@@ -138,7 +138,7 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
     formatter<typename geographic::latitude<T>::quantity_type>::format(
-      is_gt_zero(lat) ? lat.quantity_from_origin() : -lat.quantity_from_origin(), ctx);
+      is_gt_zero(lat) ? lat.quantity_ref_from(geographic::equator) : -lat.quantity_ref_from(geographic::equator), ctx);
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lat) ? " N" : "S");
     return ctx.out();
   }
@@ -151,7 +151,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
     formatter<typename geographic::longitude<T>::quantity_type>::format(
-      is_gt_zero(lon) ? lon.quantity_from_origin() : -lon.quantity_from_origin(), ctx);
+      is_gt_zero(lon) ? lon.quantity_ref_from(geographic::prime_meridian)
+                      : -lon.quantity_ref_from(geographic::prime_meridian),
+      ctx);
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lon) ? " E" : " W");
     return ctx.out();
   }
@@ -175,10 +177,10 @@ distance spherical_distance(position<T> from, position<T> to)
 
   using isq::sin, isq::cos, isq::asin, isq::acos;
 
-  const auto& from_lat = from.lat.quantity_from_origin();
-  const auto& from_lon = from.lon.quantity_from_origin();
-  const auto& to_lat = to.lat.quantity_from_origin();
-  const auto& to_lon = to.lon.quantity_from_origin();
+  const auto& from_lat = from.lat.quantity_ref_from(equator);
+  const auto& from_lon = from.lon.quantity_ref_from(prime_meridian);
+  const auto& to_lat = to.lat.quantity_ref_from(equator);
+  const auto& to_lon = to.lon.quantity_ref_from(prime_meridian);
 
   // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
   if constexpr (sizeof(T) >= 8) {
