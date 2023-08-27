@@ -9,7 +9,7 @@
 
     Even though the library benefits from C++23 (if available), C++20 is enough to compile and
     use all of the library's functionality. C++23 features are hidden behind
-    a [preprocessor macro](users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
+    a [preprocessor macro](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
     As of today, the library compiles fine on the following compilers (or newer):
