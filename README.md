@@ -18,15 +18,12 @@ We are actively looking for parties interested in field trialing the library.**
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/mp-units)
 
-**NOTE: The master branch right now is under heavy development of the V2 framework.
-For now it compiles only on gcc-12+. In the upcoming months a lot of efforts will be done to
-enable the rest of mainstream compilers and update the documentation to reflect the V2 design.**
-
 
 ## Video Introduction
 
 A brief introduction to the library's interfaces and the rationale for changes in the version 2.0
-of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the ["mp-units: Lessons Learned and a New C++ Library Design" talk at the ACCU 2023 conference](https://www.youtube.com/watch?v=l0rXdJfXLZc).
+of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
+["mp-units: Lessons Learned and a New C++ Library Design" talk at the ACCU 2023 conference](https://www.youtube.com/watch?v=l0rXdJfXLZc).
 
 
 ## Documentation
