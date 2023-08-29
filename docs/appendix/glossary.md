@@ -328,14 +328,17 @@
       are (explicitly or implicitly) based on it.
     - For example, mean sea level is commonly used as an absolute reference point to measure altitudes.
 
-[`quantity point origin`, `point origin`](#point-origin){ #point-origin }
+[`relative quantity point origin`, `relative point origin`](#relative-point-origin){ #relative-point-origin }
 
-:   - An explicit point on an axis of values of a specific [quantity](#quantity) type serving as a reference
-      for other [quantities](#quantity).
-    - It might be ether an [absolute point origin](#absolute-point-origin) or a compile-time known
-      [quantity point](#quantity-point).
+:   - An explicit, known at compile-time, point on an axis of values of a specific [quantity](#quantity)
+      type serving as a reference for other [quantities](#quantity).
     - For example, an ice point is a quantity point with a value of `273.15 K` that is used as
       the zero point of a degree Celsius scale.
+
+[`quantity point origin`, `point origin`](#point-origin){ #point-origin }
+
+:   - Either an [absolute point origin](#absolute-point-origin) or
+      a [relative point origin](#relative-point-origin).
 
 [`quantity point`, `absolute quantity`](#quantity-point){ #quantity-point }
 
