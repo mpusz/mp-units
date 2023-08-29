@@ -322,7 +322,7 @@ template<PointOrigin PO, QuantityPointOf<PO{}> QP>
   return -(qp - po);
 }
 
-template<PointOrigin PO1, PointOriginOf<PO1{}> PO2>
+template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
   requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
            (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
             detail::is_derived_from_specialization_of_relative_point_origin<PO2>)

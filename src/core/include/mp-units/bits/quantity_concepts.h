@@ -77,8 +77,8 @@ concept QuantityOf = Quantity<Q> && ReferenceOf<std::remove_const_t<decltype(Q::
 template<typename T>
 concept QuantityLike = requires(T q) {
   quantity_like_traits<T>::reference;
-  typename quantity_like_traits<T>::rep;
   requires Reference<std::remove_const_t<decltype(quantity_like_traits<T>::reference)>>;
+  typename quantity_like_traits<T>::rep;
   requires RepresentationOf<typename quantity_like_traits<T>::rep,
                             get_quantity_spec(quantity_like_traits<T>::reference).character>;
   {
