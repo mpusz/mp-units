@@ -159,7 +159,6 @@ template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
 template<typename Rep, Reference R>
-  requires quantity<R{}, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
 [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
   return make_quantity<R{}>(std::forward<Rep>(lhs));

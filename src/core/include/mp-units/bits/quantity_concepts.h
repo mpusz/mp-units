@@ -36,7 +36,6 @@ class quantity;
 template<auto R, typename Rep>
 #else
 template<Reference auto R, typename Rep>
-  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
 #endif
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
 

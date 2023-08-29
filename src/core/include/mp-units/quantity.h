@@ -43,11 +43,6 @@ namespace mp_units {
 
 namespace detail {
 
-template<typename T, typename Arg, auto U>
-concept RepSafeConstructibleFrom = Unit<std::remove_const_t<decltype(U)>> && std::constructible_from<T, Arg> &&
-                                   (treat_as_floating_point<T> || (!treat_as_floating_point<std::remove_cvref_t<Arg>> &&
-                                                                   is_rational(get_canonical_unit(U).mag)));
-
 template<auto UFrom, auto UTo>
 concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
                                    is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
@@ -98,9 +93,6 @@ public:
   static constexpr Dimension auto dimension = quantity_spec.dimension;
   static constexpr Unit auto unit = get_unit(reference);
   using rep = Rep;
-
-  // helper used to constrain `make_quantity()` and `operator*(Representation, Unit)`
-  static constexpr bool _rep_safe_constructible_ = detail::RepSafeConstructibleFrom<Rep, Rep&&, unit>;
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
@@ -329,12 +321,11 @@ private:
   template<auto R2, typename Rep2>
 #else
   template<Reference auto R2, typename Rep2>
-    requires quantity<R2, std::remove_cvref_t<Rep2>>::_rep_safe_constructible_
 #endif
   friend constexpr quantity<R2, std::remove_cvref_t<Rep2>> make_quantity(Rep2&&);
 
   template<typename Value>
-    requires detail::RepSafeConstructibleFrom<rep, Value&&, unit>
+    requires std::constructible_from<rep, Value&&>
   constexpr explicit quantity(Value&& v) : value_(std::forward<Value>(v))
   {
   }
@@ -443,7 +434,6 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R, typename Rep>
 #else
 template<Reference auto R, typename Rep>
-  requires quantity<R, std::remove_cvref_t<Rep>>::_rep_safe_constructible_
 #endif
 [[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v)
 {
