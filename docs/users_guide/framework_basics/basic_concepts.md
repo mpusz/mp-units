@@ -369,7 +369,7 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
 ??? abstract "Examples"
 
     `ice_point` can serve as a point origin for _points_ of `isq::Celsius_temperature` because this quantity
-    type implicitly converts to `isq::thermodynamic_temperature`. 
+    type implicitly converts to `isq::thermodynamic_temperature`.
 
     However, if we define `mean_sea_level` in the following way:
 
@@ -379,7 +379,7 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
 
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them
     is implicitly convertible to `isq::altitude`:
-    
+
     - not every "length" is an "altitude",
     - "width" is not compatible with "altitude".
 
