@@ -119,7 +119,7 @@ auto avg_speed(QuantityOf<isq::length> auto distance,
 ```
 
 This explicitly states that the arguments passed by the user must not only satisfy
-a [`Quantity`](basic_concepts.md#quantity) concept but also their quantity specification must
+a [`Quantity`](basic_concepts.md#Quantity) concept but also their quantity specification must
 be implicitly convertible to `isq::length` and `isq::time` accordingly. This no longer leaves
 room for error while still allowing the compiler to generate the most efficient code.
 
